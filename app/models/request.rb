@@ -155,7 +155,7 @@ class Request < ApplicationRecord
         'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
       ])
       .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
-      .where(state: ['started', 'pending'])
+      .where(state: %w[started pending])
       .where([
         'container_associations.container_id=?',
         plate.id
@@ -191,7 +191,7 @@ class Request < ApplicationRecord
   scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
-  scope :full_inbox, -> { where(state: ['pending', 'hold']) }
+  scope :full_inbox, -> { where(state: %w[pending hold]) }
 
   scope :with_asset, -> { where.not(asset_id: nil) }
   # Ensures the actual record is present
@@ -219,7 +219,7 @@ class Request < ApplicationRecord
     where.not(state: states)
   }
   scope :ordered, -> { order('id ASC') }
-  scope :full_inbox, -> { where(state: ['pending', 'hold']) }
+  scope :full_inbox, -> { where(state: %w[pending hold]) }
   scope :hold, -> { where(state: 'hold') }
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
@@ -375,6 +375,7 @@ class Request < ApplicationRecord
 
   def project_id=(project_id)
     raise RuntimeError, 'Initial project already set' if initial_project_id
+
     self.initial_project_id = project_id
   end
 
@@ -391,16 +392,19 @@ class Request < ApplicationRecord
 
   def project=(project)
     return unless project
+
     self.project_id = project.id
   end
 
   def study_id=(study_id)
     raise RuntimeError, 'Initial study already set' if initial_study_id
+
     self.initial_study_id = study_id
   end
 
   def study=(study)
     return unless study
+
     self.study_id = study.id
   end
 
@@ -408,6 +412,7 @@ class Request < ApplicationRecord
     return [initial_study] if initial_study.present?
     return asset.studies.uniq if asset.present?
     return submission.studies if submission.present?
+
     []
   end
 
@@ -428,8 +433,10 @@ class Request < ApplicationRecord
 
   def get_value(request_information_type)
     return '' unless request_metadata.respond_to?(request_information_type.key.to_sym)
+
     value = request_metadata.send(request_information_type.key.to_sym)
     return value.to_s if value.blank? or request_information_type.data_type != 'Date'
+
     value.to_date.strftime('%d %B %Y')
   end
 
@@ -457,12 +464,14 @@ class Request < ApplicationRecord
 
   def next_requests
     return [] if submission.nil? || next_request_type_id.nil?
+
     next_requests_via_asset || next_requests_via_submission
   end
 
   def next_request_type_id
     # May be nil, so can't use lazy assignment
     return @next_request_type_id if instance_variable_defined?('@next_request_type_id')
+
     @next_request_type_id = calculate_next_request_type_id
   end
 
@@ -489,12 +498,14 @@ class Request < ApplicationRecord
 
   def return_pending_to_inbox!
     raise StandardError, "Can only return pending requests, request is #{state}" unless pending?
+
     remove_unused_assets
   end
 
   def remove_unused_assets
     ActiveRecord::Base.transaction do
       return if target_asset.nil?
+
       target_asset.ancestors.clear
       target_asset.destroy
       save!
@@ -505,7 +516,7 @@ class Request < ApplicationRecord
     return [] if lab_events.empty?
 
     events.map do |event|
-      next if event.family.nil? or not ['pass', 'fail'].include?(event.family.downcase)
+      next if event.family.nil? or not %w[pass fail].include?(event.family.downcase)
 
       message = event.message || '(No message was specified)'
       { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message, 'created_at' => event.created_at }
@@ -522,7 +533,7 @@ class Request < ApplicationRecord
 
   def update_priority
     priority = (self.priority + 1) % 4
-    submission.update_attributes!(priority: priority)
+    submission.update!(priority: priority)
   end
 
   def priority
@@ -549,6 +560,7 @@ class Request < ApplicationRecord
     # Hopefully we shouldn't get any requests that don't have a submission. But validation is turned off, so
     # we should assume it it possible.
     return '' if submission.nil?
+
     submission.created_at.strftime('%Y-%m-%d')
   end
 
@@ -562,6 +574,7 @@ class Request < ApplicationRecord
 
   def product_line
     return nil if request_type.product_line.nil?
+
     request_type.product_line.name
   end
 

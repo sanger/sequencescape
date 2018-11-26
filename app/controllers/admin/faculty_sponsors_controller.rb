@@ -34,7 +34,7 @@ class Admin::FacultySponsorsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @faculty_sponsor.update_attributes(params[:faculty_sponsor])
+      if @faculty_sponsor.update(params[:faculty_sponsor])
         flash[:notice] = 'Faculty Sponsor was successfully updated.'
         format.html { redirect_to(admin_faculty_sponsors_path) }
       else

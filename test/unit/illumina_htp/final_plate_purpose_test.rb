@@ -17,7 +17,7 @@ class IlluminaHtp::FinalPlatePurposeTest < ActiveSupport::TestCase
         @child.stubs(:wells).returns(@child_wells)
       end
 
-      ['passed', 'cancelled'].each do |state|
+      %w[passed cancelled].each do |state|
         should "not alter pre-pcr plate when transitioning entire plate to #{state}" do
           @purpose.expects(:transition_state_requests).with(@child_wells, state)
           @purpose.transition_to(@child, state, @user, nil)

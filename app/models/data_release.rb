@@ -6,6 +6,7 @@ module DataRelease
     return false if study_metadata.data_release_study_type.try(:is_not_specified?)
     return false if study_metadata.data_release_strategy.try(:blank?)
     return false if study_metadata.data_release_timing.try(:blank?)
+
     true
   end
 
@@ -15,6 +16,7 @@ module DataRelease
     return false if study_metadata.data_release_study_type.try(:studies_excluded_for_release?)
     # TODO[xxx]: was this removed?
     return false if study_metadata.never_release?
+
     true
   end
 

@@ -17,6 +17,7 @@ module SequencescapeExcel
 
       def update(attributes = {})
         return unless valid? && attributes[:aliquot].present? && foreign_barcode_format.present?
+
         # checking if the plate this well belongs to already has this foreign barcode set in its list of barcodes.
         # or if it contains a foreign barcode with the same format, then update that existing one
         foreign_barcode = attributes[:aliquot].receptacle.plate.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
@@ -35,6 +36,7 @@ module SequencescapeExcel
 
       def check_container
         return if value == sample.wells.first.plate.human_barcode
+
         check_for_foreign_barcode
       end
 
@@ -49,6 +51,7 @@ module SequencescapeExcel
 
       def check_foreign_barcode_unique
         return if Barcode.unique_for_format?(foreign_barcode_format, value).blank?
+
         errors.add(:sample, 'The sample container foreign barcode is already in use.')
       end
     end

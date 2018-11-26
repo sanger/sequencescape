@@ -167,7 +167,7 @@ class TransferRequest < ApplicationRecord
   def perform_transfer_of_contents
     return if asset.failed? || asset.cancelled?
 
-    target_asset.aliquots << asset.aliquots.each_with_index.map do |aliquot, _index|
+    target_asset.aliquots << asset.aliquots.map do |aliquot|
       aliquot.dup(aliquot_attributes(aliquot))
     end
   rescue ActiveRecord::RecordNotUnique => exception

@@ -15,6 +15,7 @@ module SequencescapeExcel
       def check_equality
         accession_number = sample.sample_metadata.sample_ebi_accession_number
         return unless value.present? && accession_number.present?
+
         errors.add(:base, 'The accession number does not match the existing accession number.')
       end
     end

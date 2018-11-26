@@ -21,7 +21,7 @@ module TubePurposeHelper
     def to(target_purpose)
       request_types.each do |key|
         say "Updating #{key}..."
-        RequestType.find_by!(key: key).update_attributes!(target_purpose_id: target_purpose.id)
+        RequestType.find_by!(key: key).update!(target_purpose_id: target_purpose.id)
       end
     end
 
@@ -35,7 +35,7 @@ module TubePurposeHelper
           joins: 'LEFT JOIN requests ON requests.target_asset_id = assets.id',
           conditions: ['assets.plate_purpose_id = ? AND request_type_id = ?', old_purpose.id, rt.id]
         ) do |library_tube|
-          library_tube.update_attributes!(purpose: new_purpose)
+          library_tube.update!(purpose: new_purpose)
           updated += 1
         end
         say "#{updated} assets updated"

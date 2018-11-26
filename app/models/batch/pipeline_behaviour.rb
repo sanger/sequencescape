@@ -26,6 +26,7 @@ module Batch::PipelineBehaviour
 
   def show_actions?
     return true if pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline) || pipeline.is_a?(CherrypickForPulldownPipeline)
+
     !released?
   end
 

@@ -37,6 +37,7 @@ module Accession
     # are comparable.
     def <=>(other)
       return unless other.is_a?(self.class)
+
       to_a <=> other.to_a
     end
   end

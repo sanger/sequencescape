@@ -45,14 +45,14 @@ module IlluminaC::PlatePurposes
   OUTPUT_PLATE_PURPOSES = []
 
   PLATE_PURPOSE_TYPE = {
-    'ILC QC Pool'        => IlluminaC::QcPoolPurpose,
-    'ILC Stock'          => IlluminaC::StockPurpose,
-    'ILC AL Libs'        => PlatePurpose::InitialPurpose,
-    'ILC Lib PCR'        => IlluminaC::LibPcrPurpose,
-    'ILC Lib PCR-XP'     => IlluminaC::LibPcrXpPurpose,
+    'ILC QC Pool' => IlluminaC::QcPoolPurpose,
+    'ILC Stock' => IlluminaC::StockPurpose,
+    'ILC AL Libs' => PlatePurpose::InitialPurpose,
+    'ILC Lib PCR' => IlluminaC::LibPcrPurpose,
+    'ILC Lib PCR-XP' => IlluminaC::LibPcrXpPurpose,
     'ILC AL Libs Tagged' => IlluminaC::AlLibsTaggedPurpose,
-    'ILC Lib Chromium'   => IlluminaC::AlLibsTaggedPurpose,
-    'ILC Lib Pool Norm'  => IlluminaC::MxTubePurpose
+    'ILC Lib Chromium' => IlluminaC::AlLibsTaggedPurpose,
+    'ILC Lib Pool Norm' => IlluminaC::MxTubePurpose
   }
 
   def self.request_type_prefix

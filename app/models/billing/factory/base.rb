@@ -21,16 +21,19 @@ module Billing
 
       def passed_date=(request)
         return unless request.present?
+
         @passed_date = request.date_for_state('passed')
       end
 
       def passed_date
         return if @passed_date.nil?
+
         @passed_date.strftime('%Y%m%d')
       end
 
       def billing_product=(request)
         return unless request.present?
+
         @billing_product = request.billing_product
       end
 
@@ -56,6 +59,7 @@ module Billing
 
       def create!
         return unless valid?
+
         Billing::Item.create!(
           request: request,
           project_cost_code: project_cost_code,

@@ -30,7 +30,7 @@ module Tasks::AssignTagsHandler
         AssetLink.create_edge(request.target_asset, multiplexed_library)
 
         request.next_requests.select(&:pending?).each do |sequencing_request|
-          sequencing_request.update_attributes!(asset: multiplexed_library)
+          sequencing_request.update!(asset: multiplexed_library)
         end
 
         TransferRequest.create!(asset: request.target_asset, target_asset: multiplexed_library, state: 'passed')

@@ -159,6 +159,7 @@ class Plate < Asset
 
   def barcode_dilution_factor_created_at_hash
     return {} if primary_barcode.blank?
+
     {
       barcode: ean13_barcode.to_s,
       dilution_factor: dilution_factor.to_s,
@@ -310,6 +311,7 @@ class Plate < Asset
   def find_well_by_rowcol(row, col)
     map_description = map_description(row, col)
     return nil if map_description.nil?
+
     find_well_by_name(map_description)
   end
 
@@ -383,6 +385,7 @@ class Plate < Asset
 
   def barcode_for_tecan
     raise StandardError, 'Purpose is not valid' if plate_purpose.present? && !plate_purpose.valid?
+
     plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
   end
 
@@ -411,14 +414,17 @@ class Plate < Asset
 
   def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
     return nil if plates.empty?
+
     plate_barcodes = plates.map(&:barcode_number)
     asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.current.to_formatted_s(:sortable)} ", study)
     plates.each do |plate|
       next if plate.wells.empty?
+
       asset_group.assets << plate.create_sample_tubes_and_print_barcodes(barcode_printer)
     end
 
     return nil if asset_group.assets.empty?
+
     asset_group.save!
 
     asset_group
@@ -426,6 +432,7 @@ class Plate < Asset
 
   def stock_plate?
     return true if plate_purpose.nil?
+
     plate_purpose.stock_plate? && plate_purpose.attatched?(self)
   end
 
@@ -435,11 +442,13 @@ class Plate < Asset
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id
+
     ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
   def ancestors_of_purpose(ancestor_purpose_id)
     return [self] if plate_purpose_id == ancestor_purpose_id
+
     ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id)
   end
 
@@ -593,8 +602,12 @@ class Plate < Asset
   end
 
   def lookup_labwhere_location
+    lookup_labwhere(machine_barcode) || lookup_labwhere(human_barcode)
+  end
+
+  def lookup_labwhere(barcode)
     begin
-      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(machine_barcode)
+      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(barcode)
     rescue LabWhereClient::LabwhereException => e
       return "Not found (#{e.message})"
     end

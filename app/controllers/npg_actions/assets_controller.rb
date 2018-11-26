@@ -67,6 +67,7 @@ class NpgActions::AssetsController < ApplicationController
   def find_request
     requests = @asset.requests_as_target
     raise ActiveRecord::RecordNotFound, "Unable to find a request for Asset: #{params[:id]}" unless requests.one?
+
     @request = requests.includes(batch: { requests: :asset }).first
   end
 

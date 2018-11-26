@@ -5,7 +5,7 @@ class AddHiseq4000RequestTypes < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      ['htp', 'c'].each do |pipeline|
+      %w[htp c].each do |pipeline|
         RequestType.create!(key: "illumina_#{pipeline}_hiseq_4000_paired_end_sequencing",
                             name: "Illumina-#{pipeline.upcase} HiSeq 4000 Paired end sequencing",
                             workflow_id: SubmissionWorkflow.find_by(key: 'short_read_sequencing').id,
@@ -36,7 +36,7 @@ class AddHiseq4000RequestTypes < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      ['htp', 'c'].each do |pipeline|
+      %w[htp c].each do |pipeline|
         RequestType.find_by(key: "illumina_#{pipeline}_hiseq_4000_paired_end_sequencing").destroy
         RequestType.find_by(key: "illumina_#{pipeline}_hiseq_4000_single_end_sequencing").destroy
       end

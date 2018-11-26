@@ -7,6 +7,7 @@ class BroadcastEvent::AssetAudit < BroadcastEvent
 
   def user_identifier
     return seed.created_by if user.nil?
+
     user.email.presence || user.login
   end
 

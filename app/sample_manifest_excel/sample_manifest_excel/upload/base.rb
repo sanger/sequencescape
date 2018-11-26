@@ -46,6 +46,7 @@ module SampleManifestExcel
       # If it can't be found the upload will fail.
       def derive_sample_manifest
         return unless start_row.present? && sanger_sample_id_column.present?
+
         sample = Sample.find_by(sanger_sample_id: data.cell(1, sanger_sample_id_column.number))
         sample.sample_manifest if sample.present?
       end
@@ -59,6 +60,7 @@ module SampleManifestExcel
           sample_manifest.start!
           processor.run(tag_group)
           return true if processed?
+
           # One of out post processing checks failed, something went wrong, so we
           # roll everything back
           raise ActiveRecord::Rollback
@@ -118,6 +120,7 @@ module SampleManifestExcel
 
       def check_object(object)
         return if object.valid?
+
         object.errors.each do |key, value|
           errors.add key, value
         end

@@ -71,7 +71,7 @@ class RequestsController < ApplicationController
     end
 
     begin
-      if @request.update_attributes(parameters)
+      if @request.update(parameters)
         flash[:notice] = 'Request details have been updated'
         redirect_to request_path(@request)
       else
@@ -143,18 +143,6 @@ class RequestsController < ApplicationController
 
   def list_inboxes
     @tasks = Task.all
-  end
-
-  def expanded(_options = {})
-    render plain: '', status: :gone
-  end
-
-  def pending
-    render plain: '', status: :gone
-  end
-
-  def incomplete_requests_for_family(_options = {})
-    render plain: '', status: :gone
   end
 
   def redirect_if_not_owner_or_admin

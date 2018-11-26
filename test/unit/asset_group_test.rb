@@ -56,7 +56,7 @@ class AssetGroupTest < ActiveSupport::TestCase
     end
 
     should 'report its asset types' do
-      assert_equal ['Tube', 'Well'], @asset_group.asset_types
+      assert_equal %w[Tube Well], @asset_group.asset_types
     end
 
     should 'not support automatic_move?' do
@@ -122,7 +122,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         setup do
           5.times do |_i|
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update_attributes!(sample_metadata_attributes: { sample_ebi_accession_number: 'ERS00001' })
+            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: 'ERS00001' })
             @asset_group.assets << asset
           end
         end
@@ -136,7 +136,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         context 'except 1 have accession numbers' do
           setup do
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update_attributes!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
+            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
             @asset_group.assets << asset
           end
           should 'return false' do
@@ -148,7 +148,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         setup do
           5.times do |_i|
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update_attributes!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
+            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
             @asset_group.assets << asset
           end
         end

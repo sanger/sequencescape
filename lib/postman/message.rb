@@ -83,6 +83,7 @@ class Postman
       json = JSON.parse(payload)
       raise InvalidPayload, "Payload #{payload} is not an array" unless json.is_a?(Array)
       raise InvalidPayload, "Payload #{payload} is not the correct length" unless json.length == 2
+
       json
     rescue JSON::ParserError => exception
       raise InvalidPayload, "Payload #{payload} is not JSON: #{exception.message}"

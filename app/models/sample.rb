@@ -4,7 +4,7 @@ class Sample < ApplicationRecord
   GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
   DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
-  SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
+  SRA_HOLD_VALUES = %w[Hold Public Protect]
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
@@ -158,6 +158,7 @@ class Sample < ApplicationRecord
 
     def reference_genome_name=(reference_genome_name)
       return unless reference_genome_name.present?
+
       @reference_genome_set_by_name = reference_genome_name
       self.reference_genome = ReferenceGenome.find_by(name: reference_genome_name)
     end
@@ -166,6 +167,7 @@ class Sample < ApplicationRecord
       # A reference genome of nil automatically get converted to the reference genome named "", so
       # we need to explicitly check the name has been set as expected.
       return true if reference_genome.name == reference_genome_set_by_name
+
       errors.add(:base, "Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
       false
     end
@@ -226,7 +228,7 @@ class Sample < ApplicationRecord
 
   # this method has to be before validation_guarded_by
   def rename_to!(new_name)
-    update_attributes!(name: new_name)
+    update!(name: new_name)
   end
 
   validation_guard(:can_rename_sample)
@@ -333,6 +335,7 @@ class Sample < ApplicationRecord
   # and we have a common name for the sample return true else false
   def accession_could_be_generated?
     return false unless sample_metadata.sample_ebi_accession_number.blank?
+
     required_tags.each do |tag|
       return false if sample_metadata.send(tag).blank?
     end
@@ -350,6 +353,7 @@ class Sample < ApplicationRecord
 
   def sample_empty?(supplier_sample_name = name)
     return true if empty_supplier_sample_name
+
     sample_supplier_name_empty?(supplier_sample_name)
   end
 
@@ -361,9 +365,11 @@ class Sample < ApplicationRecord
   def accession_service
     services = studies.group_by { |s| s.accession_service.priority }
     return UnsuitableAccessionService.new([]) if services.empty?
+
     highest_priority = services.keys.max
     suitable_study = services[highest_priority].detect { |study| study.send_samples_to_service? }
     return suitable_study.accession_service if suitable_study
+
     UnsuitableAccessionService.new(services[highest_priority])
   end
 
@@ -429,6 +435,7 @@ class Sample < ApplicationRecord
   def sample_reference_genome
     return sample_metadata.reference_genome unless sample_metadata.reference_genome.try(:name).blank?
     return study_reference_genome unless study_reference_genome.try(:name).blank?
+
     nil
   end
 

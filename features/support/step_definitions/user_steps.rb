@@ -22,7 +22,7 @@ end
 
 Given /^user "([^"]*)" exists with barcode "([^"]*)"$/ do |user_name, barcode|
   if User.find_by(login: user_name)
-    User.find_by(login: user_name).update_attributes!(barcode: barcode)
+    User.find_by(login: user_name).update!(barcode: barcode)
   else
     FactoryBot.create :user, barcode: barcode, login: user_name
   end

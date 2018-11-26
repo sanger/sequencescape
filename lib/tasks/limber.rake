@@ -136,7 +136,7 @@ namespace :limber do
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA',
         library_types: ['scRNA','GnT scRNA'],
-        default_purpose: ['scRNA Stock', 'GnT Stock']
+        default_purposes: ['scRNA Stock', 'GnT Stock']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -149,13 +149,13 @@ namespace :limber do
       Limber::Helper::RequestTypeConstructor.new(
         'GnT Picoplex',
         library_types: ['GnT Picoplex'],
-        default_purpose: 'GnT Stock'
+        default_purposes: ['GnT Stock']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'GnT MDA',
         library_types: ['GnT MDA'],  # 'GnT scRNA' should be a default_purpose of 'scRNA'.
-        default_purpose: 'GnT Stock'              # It requires default_purpose to accept an array.
+        default_purposes: ['GnT Stock']              # It requires default_purpose to accept an array.
       ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
@@ -244,9 +244,6 @@ namespace :limber do
       # GnT pipeline requires UAT
       'GnT Picoplex' => {
         sequencing_list: base_without_hiseq
-      },
-      'GnT MDA' => {
-        sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
       }
     }
 
@@ -262,6 +259,8 @@ namespace :limber do
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
+      mda_catalogue = ProductCatalogue.find_or_create_by!(name: 'GnT MDA')
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GnT MDA', catalogue: mda_catalogue).build!
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')

@@ -57,7 +57,7 @@ Given /^Well "([^\"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_
   well = Plate.find_from_barcode(plate_barcode).wells.located_at(well).first
   request = Request.find_by(asset_id: well.id)
   tube = request.target_asset
-  tube.update_attributes!(name: well.display_name)
+  tube.update!(name: well.display_name)
   tube.primary_barcode.update!(barcode: library_tube_barcode)
 end
 
@@ -65,8 +65,8 @@ Given /^I have a fast PacBio sequencing batch$/ do
   step('I have a PacBio submission')
   library_1 = FactoryBot.create :pac_bio_library_tube, smrt_cells_available: 3, barcode: '333'
   library_2 = FactoryBot.create :pac_bio_library_tube, barcode: '444'
-  PacBioSequencingRequest.first.update_attributes!(asset: library_1)
-  PacBioSequencingRequest.last.update_attributes!(asset: library_2)
+  PacBioSequencingRequest.first.update!(asset: library_1)
+  PacBioSequencingRequest.last.update!(asset: library_2)
   step('I am on the show page for pipeline "PacBio Sequencing"')
   step('I check "Select Request Group 0"')
 
@@ -94,11 +94,11 @@ end
 
 Given /^the sample tubes are part of the study$/ do
   sample_tube = SampleTube.find_from_barcode('NT111')
-  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(sample_common_name: 'Homo Sapien', sample_taxon_id: 9606)
+  sample_tube.primary_aliquot.sample.sample_metadata.update!(sample_common_name: 'Homo Sapien', sample_taxon_id: 9606)
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 
   sample_tube = SampleTube.find_from_barcode('NT222')
-  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(sample_common_name: 'Flu', sample_taxon_id: 123, sample_strain_att: 'H1N1')
+  sample_tube.primary_aliquot.sample.sample_metadata.update!(sample_common_name: 'Flu', sample_taxon_id: 123, sample_strain_att: 'H1N1')
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 end
 
@@ -158,7 +158,7 @@ Then /^the sample reference sequence table should look like:$/ do |expected_resu
 end
 
 Given /^the study "([^"]*)" has a reference genome of "([^"]*)"$/ do |study_name, reference_genome_name|
-  Study.find_by(name: study_name).study_metadata.update_attributes!(reference_genome: ReferenceGenome.find_by(name: reference_genome_name))
+  Study.find_by(name: study_name).study_metadata.update!(reference_genome: ReferenceGenome.find_by(name: reference_genome_name))
 end
 
 Then /^the PacBio manifest should be:$/ do |expected_results_table|

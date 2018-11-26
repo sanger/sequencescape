@@ -53,6 +53,7 @@ module ViewsSchema
 
   def self.drop_view(name)
     raise "Invalid name: `#{name}`" unless /^[a-z0-9_]*$/.match?(name)
+
     ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS `#{name}`;")
   end
 end

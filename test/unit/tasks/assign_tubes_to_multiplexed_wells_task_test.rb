@@ -50,7 +50,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
           @tags = [1, 2, 3, 4, 5, 5, 7, 8].map { |i| tag_hash[i] }
           @requests = (1..8).map do |i|
             asset = create :pac_bio_library_tube
-            asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
+            asset.aliquots.first.update!(tag: @tags[i - 1])
             mock("request_#{i}",
                  asset: asset).tap do |request|
               request.expects(:target_asset=).with(@mock_wells[request_target[i]])
@@ -75,7 +75,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
           @tags = [1, 2, 3, 4, 5, 5, 6, 6].map { |i| tag_hash[i] }
           @requests = (1..8).map do |i|
             asset = create :pac_bio_library_tube
-            asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
+            asset.aliquots.first.update!(tag: @tags[i - 1])
             mock("request_#{i}",
                  asset: asset).tap do |request|
               request.expects(:id).at_least_once.returns(i)
@@ -104,7 +104,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
           @tags = [1, 2, 3, 4, 5, 5, 7, 8].map { |i| tag_hash[i] }
           @requests = (1..8).map do |i|
             asset = create :pac_bio_library_tube
-            asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
+            asset.aliquots.first.update!(tag: @tags[i - 1])
             mock("request_#{i}",
                  asset: asset).tap do |request|
               request.expects(:id).at_least_once.returns(i)

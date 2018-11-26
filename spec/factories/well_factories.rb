@@ -43,10 +43,10 @@ FactoryBot.define do
     after(:build) do |well|
       als = Array.new(2) do
         {
-          sample:  create(:sample),
-          study:   create(:study),
+          sample: create(:sample),
+          study: create(:study),
           project: create(:project),
-          tag:     create(:tag)
+          tag: create(:tag)
         }
       end
       well.aliquots.build(als)
@@ -67,7 +67,7 @@ FactoryBot.define do
     map { create(:map) }
 
     after(:create) do |well, evaluator|
-      well.aliquots.each { |a| a.update_attributes!(study: evaluator.study) }
+      well.aliquots.each { |a| a.update!(study: evaluator.study) }
     end
   end
 

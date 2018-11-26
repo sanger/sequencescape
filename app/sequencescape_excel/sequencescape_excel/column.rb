@@ -32,6 +32,7 @@ module SequencescapeExcel
     # create a new validation object
     def validation=(validation)
       return if validation.nil?
+
       @validation = if validation.is_a?(Hash)
                       Validation.new(validation)
                     else
@@ -44,6 +45,7 @@ module SequencescapeExcel
     # otherwise create a new conditional formatting list
     def conditional_formattings=(conditional_formattings)
       return if conditional_formattings.nil?
+
       @conditional_formattings = if conditional_formattings.is_a?(Hash)
                                    ConditionalFormattingList.new(conditional_formattings)
                                  else
@@ -55,6 +57,7 @@ module SequencescapeExcel
     # Creates a new Range object.
     def range=(attributes)
       return if attributes.nil?
+
       @range = if attributes.empty?
                  NullRange.new
                else
@@ -148,6 +151,7 @@ module SequencescapeExcel
 
       def combine_conditional_formattings(defaults)
         return if arguments[:conditional_formattings].blank?
+
         arguments[:conditional_formattings].each do |k, cf|
           arguments[:conditional_formattings][k] = defaults.find_by(:type, k).combine(cf)
         end

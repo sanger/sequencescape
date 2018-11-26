@@ -57,6 +57,7 @@ module Aliquot::Remover
       to_remove = aliquots.select { |aliquot| aliquot.matches?(aliquot_to_remove) }
       raise "Duplicate aliquots detected in asset #{display_name}." if to_remove.count > 1
       next unless to_remove.count == 1
+
       removed_aliquot = AliquotRecord.new(to_remove.first)
       to_remove.first.destroy
       removed_aliquot

@@ -18,11 +18,13 @@ class RobotProperty < ApplicationRecord
 
   def human_barcode
     return nil unless name.nil?
+
     'BD' + value.to_s + Barcode.calculate_checksum('BD', value.to_i)
   end
 
   def barcode
     return nil unless name.nil?
+
     value.to_i
   end
 

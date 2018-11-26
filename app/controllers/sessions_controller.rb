@@ -17,6 +17,7 @@ class SessionsController < ApplicationController
 
   def login
     return unless request.post?
+
     self.current_user = User.authenticate(params[:login], params[:password])
     if logged_in?
       flash[:notice] = 'Logged in successfully'

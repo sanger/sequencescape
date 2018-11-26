@@ -1,5 +1,5 @@
 class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
-  class Purpose < ActiveRecord::Base
+  class Purpose < ApplicationRecord
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil
   end
@@ -9,8 +9,9 @@ class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
       each_name_and_old_class do |name, _old_class|
         purpose = Purpose.find_by(name: name)
         next if purpose.nil?
+
         say "Migrating #{purpose.name}"
-        purpose.update_attributes!(type: 'PlatePurpose')
+        purpose.update!(type: 'PlatePurpose')
       end
     end
   end
@@ -20,8 +21,9 @@ class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
       each_name_and_old_class do |name, old_class|
         purpose = Purpose.find_by(name: name)
         next if purpose.nil?
+
         say "Migrating #{purpose.name}"
-        purpose.update_attributes!(type: old_class)
+        purpose.update!(type: old_class)
       end
     end
   end
@@ -37,12 +39,12 @@ class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
       ['EnRichment 3', 'PulldownEnrichmentThreePlatePurpose'],
       ['EnRichment 2', 'PulldownEnrichmentTwoPlatePurpose'],
       ['Pulldown PCR', 'PulldownPcrPlatePurpose'],
-      ['Pulldown', 'PulldownPlatePurpose'],
+      %w[Pulldown PulldownPlatePurpose],
       ['Pulldown qPCR', 'PulldownQpcrPlatePurpose'],
       ['Run of Robot', 'PulldownRunOfRobotPlatePurpose'],
       ['Sequence Capture', 'PulldownSequenceCapturePlatePurpose'],
-      ['Sonication', 'PulldownSonicationPlatePurpose'],
-      ['Sequenom', 'QcPlatePurpose'],
+      %w[Sonication PulldownSonicationPlatePurpose],
+      %w[Sequenom QcPlatePurpose],
       ['Gel Dilution', 'WorkingDilutionPlatePurpose'],
       ['Gel Dilution Plates', 'WorkingDilutionPlatePurpose']
     ].each(&block)

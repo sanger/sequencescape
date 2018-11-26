@@ -5,6 +5,7 @@ module Submission::RequestOptionsBehaviour
   class HashWrapper
     def self.load(hash_yaml)
       return hash_yaml if hash_yaml.nil?
+
       YAML.load(hash_yaml)
     end
 
@@ -22,6 +23,7 @@ module Submission::RequestOptionsBehaviour
 
   def request_options=(options)
     return super(options.nested_under_indifferent_access) if options.is_a?(Hash)
+
     super
   end
 

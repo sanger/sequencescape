@@ -4,6 +4,7 @@ class ::Core::Io::Registry < ::Core::Registry
   def lookup_target_class_in_registry(model_class)
     in_current_registry = super
     return in_current_registry unless in_current_registry.nil?
+
     register(model_class, "::Io::#{model_class.name}".constantize)
   rescue NameError => exception
     nil

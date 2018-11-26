@@ -8,6 +8,7 @@ class PlateSummariesController < ApplicationController
   def show
     @plate = Plate.find_from_any_barcode(params[:id])
     raise ActiveRecord::RecordNotFound if @plate.nil?
+
     @custom_metadatum_collection = @plate.custom_metadatum_collection || NullCustomMetadatumCollection.new
     @sequencing_batches = @plate.descendant_lanes.include_creation_batches.map(&:creation_batches).flatten.uniq
   end

@@ -7,7 +7,7 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
     finder = Asset::Finder.new(submission_parameters.fetch(:asset_barcodes, '').split(/\s+/))
     download = BulkSubmissionExcel::Download.new(
       column_list: BulkSubmissionExcel.configuration.columns.all,
-      range_list:  BulkSubmissionExcel.configuration.ranges,
+      range_list: BulkSubmissionExcel.configuration.ranges,
       defaults: params[:defaults],
       assets: finder.resolve
     )

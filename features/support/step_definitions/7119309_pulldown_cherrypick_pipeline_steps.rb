@@ -7,7 +7,7 @@ end
 Given(/^plate "([^"]*)" has concentration results$/) do |plate_barcode|
   plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells.each_with_index do |well, index|
-    well.well_attribute.update_attributes!(concentration: index * 40)
+    well.well_attribute.update!(concentration: index * 40)
   end
 end
 
@@ -17,7 +17,7 @@ Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
   plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells.each_with_index do |well, _index|
     if well.well_attribute.concentration == 0.0
-      well.well_attribute.update_attributes!(concentration: 1)
+      well.well_attribute.update!(concentration: 1)
     end
   end
 end
@@ -25,7 +25,7 @@ end
 Given(/^plate "([^"]*)" has measured volume results$/) do |plate_barcode|
   plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells.each_with_index do |well, index|
-    well.well_attribute.update_attributes!(measured_volume: index * 11)
+    well.well_attribute.update!(measured_volume: index * 11)
   end
 end
 
@@ -42,6 +42,6 @@ Given(/^I have a plate "([^"]*)" with the following wells:$/) do |plate_barcode,
   plate = FactoryBot.create :plate, barcode: plate_barcode
   well_details.hashes.each do |well_detail|
     well = Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: 96), plate: plate)
-    well.well_attribute.update_attributes!(concentration: well_detail[:measured_concentration], measured_volume: well_detail[:measured_volume])
+    well.well_attribute.update!(concentration: well_detail[:measured_concentration], measured_volume: well_detail[:measured_volume])
   end
 end
