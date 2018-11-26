@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'support/lab_where_client_helper'
 
 RSpec.configure do |c|
   c.include LabWhereClientHelper
@@ -46,7 +47,8 @@ feature 'Viewing an asset' do
 
     context 'Not in labwhere' do
       setup do
-        allow(LabWhereClient::Labware).to receive(:find_by_barcode).with(asset.machine_barcode).and_return(nil)
+        stub_lwclient_labware_find_by_bc(lw_barcode: asset.human_barcode)
+        stub_lwclient_labware_find_by_bc(lw_barcode: asset.machine_barcode)
       end
       it_behaves_like 'an asset'
     end

@@ -2,8 +2,32 @@
 
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
+require 'support/lab_where_client_helper'
+
+RSpec.configure do |c|
+  c.include LabWhereClientHelper
+end
 
 describe Plate do
+  context 'labwhere' do
+    let(:plate) { create :plate, barcode: 1 }
+    let(:parentage) { 'Sanger / Ogilvie / AA316' }
+    let(:location) { 'Shelf 1' }
+
+    setup do
+      stub_lwclient_labware_find_by_bc(lw_barcode: plate.human_barcode,
+                                       lw_locn_name: location,
+                                       lw_locn_parentage: parentage)
+      stub_lwclient_labware_find_by_bc(lw_barcode: plate.machine_barcode,
+                                       lw_locn_name: location,
+                                       lw_locn_parentage: parentage)
+    end
+
+    subject { plate.labwhere_location }
+
+    it { is_expected.to eq "#{parentage} - #{location}" }
+  end
+
   context 'barcodes' do
     # Maintaining existing barcode behaviour
     context 'sanger barcodes' do
