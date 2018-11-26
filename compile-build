@@ -37,7 +37,7 @@ tar \
   --exclude='./vendor/bundle' \
   --exclude='./yarn.lock' \
   --exclude='release.tar.gz' \
-  -zcvf /tmp/release.tar.gz ./
+  -zcf /tmp/release.tar.gz ./
 mv /tmp/release.tar.gz ./release.tar.gz
 echo 'Release complete!'
 echo `pwd`/release.tar.gz
