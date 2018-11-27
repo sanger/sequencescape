@@ -32,6 +32,7 @@ namespace :working do
     BarcodePrinter.find_or_create_by!(name: 'g316bc',  barcode_printer_type: plate)
     BarcodePrinter.find_or_create_by!(name: 'g317bc',  barcode_printer_type: plate)
     BarcodePrinter.find_or_create_by!(name: 'g314bc',  barcode_printer_type: plate)
+    BarcodePrinter.find_or_create_by!(name: 'f225bc',  barcode_printer_type: plate)
     BarcodePrinter.find_or_create_by!(name: 'g311bc1', barcode_printer_type: tube)
   end
 
