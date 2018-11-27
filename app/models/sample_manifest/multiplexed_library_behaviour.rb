@@ -24,7 +24,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def generate_sample_and_aliquot(sanger_sample_id, tube)
-      build_sample_and_aliquot(sanger_sample_id, tube)
+      @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
     end
 
     delegate :samples, to: :@manifest

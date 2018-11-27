@@ -34,7 +34,7 @@ module SampleManifestExcel
 
       def find_or_create_sample
         sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
-        sample.present? ? sample : create_sample
+        sample.presence || create_sample
       end
 
       ##

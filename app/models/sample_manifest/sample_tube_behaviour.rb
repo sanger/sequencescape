@@ -25,7 +25,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def generate_sample_and_aliquot(sanger_sample_id, tube)
-      sample = build_sample_and_aliquot(sanger_sample_id, tube)
+      sample = @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
       tube.register_stock!
       sample
     end

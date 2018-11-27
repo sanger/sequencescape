@@ -13,7 +13,6 @@ module SampleManifest::LibraryBehaviour
   end
 
   class Core
-
     attr_reader :tubes
 
     def initialize(manifest)
@@ -41,7 +40,7 @@ module SampleManifest::LibraryBehaviour
     end
 
     def generate_sample_and_aliquot(sanger_sample_id, tube)
-      build_sample_and_aliquot(sanger_sample_id, tube)
+      @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
     end
 
     def updated_by!(user, samples)

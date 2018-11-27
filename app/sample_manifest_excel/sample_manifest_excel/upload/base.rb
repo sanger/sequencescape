@@ -46,6 +46,7 @@ module SampleManifestExcel
       # If it can't be found the upload will fail.
       def derive_sample_manifest
         return unless start_row.present? && sanger_sample_id_column.present?
+
         sanger_sample_id = data.cell(1, sanger_sample_id_column.number)
         sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
         if sample.present?

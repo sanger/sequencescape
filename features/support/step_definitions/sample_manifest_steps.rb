@@ -32,19 +32,22 @@ end
 Given /^I reset all of the sanger sample ids to a known number sequence$/ do
   # raise StandardError, "Only works for plate manifests!" if Plate.count == 0
 
-  index = 0
-  Plate.order(:id).each do |plate|
-    sequence_sanger_sample_ids_for(plate) do |well_index|
-      "sample_#{index + well_index}"
-    end
-    index += plate.size
+  # index = 0
+  # Plate.order(:id).each do |plate|
+  #   sequence_sanger_sample_ids_for(plate) do |well_index|
+  #     "sample_#{index + well_index}"
+  #   end
+  #   index += plate.size
+  # end
+  # SampleTube.order(:id).each_with_index do |tube, idx|
+  #   tube.aliquots.first.sample.update!(sanger_sample_id: "tube_sample_#{idx + 1}")
+  # end
+  SampleManifestAsset.order(:asset_id).each_with_index do |sm_asset, idx|
+    sm_asset.update!(sanger_sample_id: "sample_#{idx + 1}")
   end
-  SampleTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update!(sanger_sample_id: "tube_sample_#{idx + 1}")
-  end
-  LibraryTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update!(sanger_sample_id: "tube_sample_#{idx + 1}")
-  end
+  # LibraryTube.order(:id).each_with_index do |tube, idx|
+  #   tube.aliquots.first.sample.update!(sanger_sample_id: "tube_sample_#{idx + 1}")
+  # end
 end
 
 Given /^the Sanger sample IDs will be sequentially generated$/ do

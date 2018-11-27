@@ -18,7 +18,7 @@ module SampleManifest::InputBehaviour
 
     def find_or_create_sample(sanger_sample_id)
       sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
-      sample.present? ? sample : create_sample(sanger_sample_id)
+      sample.presence || create_sample(sanger_sample_id)
     end
 
     def create_sample(sanger_sample_id)
