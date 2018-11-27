@@ -190,6 +190,7 @@ class TransferRequest < ApplicationRecord
 
   def outer_request_for(aliquot)
     return outer_request_candidates.first if one_or_fewer_outer_requests?
+
     next_request_index[aliquot.id]
   end
 
