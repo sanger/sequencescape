@@ -88,7 +88,7 @@ context 'base plate' do
     expect(label.create_label(plate)[:barcode]).to eq(plate.ean13_barcode)
   end
 
-  it 'working dilution plate should output human readable barcode' do
+  xit 'working dilution plate should output human readable barcode' do
     plate = create(:working_dilution_plate)
     label = LabelPrinter::Label::AssetPlate.new([plate])
     expect(label.create_label(plate)[:barcode]).to eq(plate.human_barcode)
