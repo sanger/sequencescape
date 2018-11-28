@@ -9,6 +9,7 @@ Feature: Sample manifest
     Given I am an "External" user logged in as "john"
     And the configuration exists for creating sample manifest Excel spreadsheets
     And the "1D Tube" barcode printer "xyz" exists
+    And the library type "Standard" exists
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
     And I have a tag group called "test tag group" with 7 tags

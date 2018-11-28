@@ -2,6 +2,10 @@ Given /^a supplier called "(.*)" exists$/ do |supplier_name|
   Supplier.create!(name: supplier_name)
 end
 
+Given /^the library type "([^\"]+)" exists$/ do |name|
+  LibraryType.find_or_create_by(name: name)
+end
+
 Given /^the study "(.*)" has a abbreviation$/ do |study_name|
   study = Study.find_by(name: study_name)
   study.study_metadata.study_name_abbreviation = 'TEST'
