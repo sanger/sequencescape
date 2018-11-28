@@ -129,6 +129,7 @@ module Metadata
       # Replace attributes with the default if the value is nil
       instance_defaults.each do |attribute, value|
         next unless send(attribute).nil?
+
         send(:"#{attribute}=", value)
       end
     end

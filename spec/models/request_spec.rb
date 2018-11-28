@@ -411,8 +411,8 @@ RSpec.describe Request do
 
   describe '#open and #closed' do
     setup do
-      @open_states = ['pending', 'started']
-      @closed_states = ['passed', 'failed', 'cancelled']
+      @open_states = %w[pending started]
+      @closed_states = %w[passed failed cancelled]
 
       @all_states = @open_states + @closed_states
 
@@ -451,13 +451,13 @@ RSpec.describe Request do
     end
 
     it 'update when request is started' do
-      @request.request_metadata.update_attributes!(customer_accepts_responsibility: true)
+      @request.request_metadata.update!(customer_accepts_responsibility: true)
       assert @request.request_metadata.customer_accepts_responsibility?
     end
 
     it 'not update once a request is failed' do
       @request.fail!
-      expect { @request.request_metadata.update_attributes!(customer_accepts_responsibility: true) }.to raise_error ActiveRecord::RecordInvalid
+      expect { @request.request_metadata.update!(customer_accepts_responsibility: true) }.to raise_error ActiveRecord::RecordInvalid
     end
   end
 

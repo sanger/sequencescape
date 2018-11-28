@@ -24,6 +24,7 @@ module SampleManifestExcel
         # If the processor is valid the samples and manifest are updated.
         def run(tag_group)
           return unless valid?
+
           update_samples(tag_group)
           update_sample_manifest
         end
@@ -68,6 +69,7 @@ module SampleManifestExcel
 
         def check_upload_type
           return if upload.instance_of?(SampleManifestExcel::Upload::Base)
+
           errors.add(:base, 'This is not a recognised upload type.')
         end
 
@@ -75,18 +77,23 @@ module SampleManifestExcel
         # Uniqueness of foreign barcodes in the database is checked in the specialised field sanger_tube_id.
         def check_for_barcodes_unique
           return unless any_duplicate_barcodes?
+
           errors.add(:base, 'Duplicate barcodes detected, the barcode must be unique for each tube.')
         end
 
         def any_duplicate_barcodes?
           return false unless upload.respond_to?('rows')
+
           unique_bcs = []
           upload.rows.each do |row|
             next if row.columns.blank? || row.data.blank?
+
             col_num = row.columns.find_column_or_null(:name, 'sanger_tube_id').number
             next unless col_num.present? && col_num.positive?
+
             curr_bc = row.data[col_num - 1]
             return true if unique_bcs.include?(curr_bc)
+
             unique_bcs << curr_bc
           end
           false

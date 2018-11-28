@@ -2,16 +2,19 @@ class Api::Messages::FluidigmPlateIO < Api::Base
   module WellExtensions
     def cost_code
       return nil if primary_aliquot.nil?
+
       primary_aliquot.project.project_cost_code
     end
 
     def primary_sample_uuid
       return nil if primary_aliquot.nil?
+
       primary_aliquot.sample.uuid
     end
 
     def primary_study_uuid
       return nil if primary_aliquot.nil?
+
       primary_aliquot.study.uuid
     end
 

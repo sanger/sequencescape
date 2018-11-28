@@ -67,6 +67,7 @@ class WellAttribute < ApplicationRecord
   def quantity_in_micro_grams
     return nil if estimated_volume.nil? || concentration.nil?
     return 0   if estimated_volume < 0 || concentration < 0
+
     (estimated_volume * concentration) / 1000
   end
 

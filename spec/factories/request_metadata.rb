@@ -96,6 +96,7 @@ FactoryBot.define do
   RequestType.all.each do |rt|
     factory_name =  :"request_metadata_for_#{rt.name.downcase.gsub(/[^a-z]+/, '_')}"
     next if FactoryBot.factories.registered?(factory_name)
+
     factory(factory_name, parent: :request_metadata)
   end
 end

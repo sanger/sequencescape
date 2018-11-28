@@ -8,7 +8,6 @@ class Transfer::BetweenPlates < Transfer
 
   include TransfersBySchema
   include TransfersToKnownDestination
-  include BuildsStockWellLinks
 
   include Asset::Ownership::ChangesOwner
   set_target_for_owner(:destination)

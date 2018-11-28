@@ -49,7 +49,7 @@ class Admin::RobotsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @robot.update_attributes(params[:robot])
+      if @robot.update(params[:robot])
         flash[:notice] = 'Robot was successfully updated.'
         format.html { redirect_to admin_robot_path(@robot) }
         format.xml  { head :ok }

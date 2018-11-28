@@ -57,7 +57,7 @@ unless Rails.env.test?
     asset_shape: AssetShape.find_by(name: 'Standard'),
     barcode_for_tecan: 'ean13_barcode'
   )
-  AssignTubesToMultiplexedWellsTask.all.each { |task| task.update_attributes!(purpose: pbs) }
+  AssignTubesToMultiplexedWellsTask.all.each { |task| task.update!(purpose: pbs) }
 
   set_pipeline_flow_to('PacBio Tagged Library Prep' => 'PacBio Sequencing')
 end

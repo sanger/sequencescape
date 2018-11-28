@@ -33,6 +33,7 @@ end
 
 def file_send(path, file)
   raise StandardError, 'You must explicitly set the API version you are using' if @api_path.nil?
+
   @cookies ||= {}
 
   headers = {}

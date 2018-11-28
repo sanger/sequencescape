@@ -29,6 +29,7 @@ class PacBioSamplePrepPipeline < Pipeline
       smrt_cells_available = request.target_asset.pac_bio_library_tube_metadata.smrt_cells_available
       smrt_cells_requested = number_of_smrt_cells_requested(request)
       next if smrt_cells_available.nil? || smrt_cells_requested.nil?
+
       if smrt_cells_available < smrt_cells_requested
         cancel_excess_downstream_requests(request, (smrt_cells_requested - smrt_cells_available))
       end

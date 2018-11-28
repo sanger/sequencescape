@@ -123,10 +123,10 @@ def finalise_pipeline_for(plate)
   plate.purpose.connect_requests(plate, 'qc_complete')
   plate.wells.each do |well|
     well.requests_as_target.each do |r|
-      r.update_attributes!(state: 'passed')
+      r.update!(state: 'passed')
     end
     well.transfer_requests_as_target.each do |r|
-      r.update_attributes!(state: 'qc_complete')
+      r.update!(state: 'qc_complete')
     end
   end
 end
@@ -183,7 +183,7 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
     end]
   end.uniq!
   expected = Hash[table.raw.map do |attribute, value|
-    value = value.to_i if ['fragment_size_required_from', 'fragment_size_required_to'].include?(attribute)
+    value = value.to_i if %w[fragment_size_required_from fragment_size_required_to].include?(attribute)
     [attribute, value]
   end]
   assert_equal([expected], results, 'Request details are not identical')

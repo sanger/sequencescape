@@ -20,7 +20,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
 
   def terminated_states
-    ['cancelled', 'failed']
+    %w[cancelled failed]
   end
   private :terminated_states
 
@@ -31,6 +31,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
     until assets.empty?
       asset = assets.shift
       return asset.plate if asset.is_a?(Well) and asset.plate.stock_plate?
+
       assets.push(asset.transfer_requests_as_target.first.asset).compact
     end
 

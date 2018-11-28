@@ -11,7 +11,7 @@ describe Api::Messages::QcResultIO do
       'assay' => qc_result.assay,
       'value' => qc_result.value,
       'units' => qc_result.units,
-      'cv'    => qc_result.cv,
+      'cv' => qc_result.cv,
       'qc_type' => qc_result.key,
       'id_pool_lims' => qc_result.asset.external_identifier,
       'labware_purpose' => qc_result.asset.labware_purpose,

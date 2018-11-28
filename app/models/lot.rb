@@ -35,6 +35,7 @@ class Lot < ApplicationRecord
 
   scope :with_qc_asset, ->(qc_asset) {
                           return none if qc_asset.nil?
+
                           sibling = qc_asset.transfers_as_destination.first.source
                           tag2_siblings = Tag2Layout.where(plate_id: qc_asset.id).pluck(:source_id)
 
@@ -48,6 +49,7 @@ class Lot < ApplicationRecord
   def valid_template?
     return false unless lot_type.present?
     return true if template.is_a?(valid_template_class)
+
     errors.add(:template, "is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")
     false
   end

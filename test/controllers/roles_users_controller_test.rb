@@ -15,7 +15,7 @@ module Admin
         resource_test(
           'user', parent: 'role',
                   actions: ['index'],
-                  ignore_actions: ['show', 'create'],
+                  ignore_actions: %w[show create],
                   user: -> { FactoryBot.create(:admin) },
                   formats: ['html']
         )

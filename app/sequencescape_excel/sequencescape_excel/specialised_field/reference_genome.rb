@@ -24,6 +24,7 @@ module SequencescapeExcel
 
       def check_reference_genome_exists
         return if reference_genome.present?
+
         errors.add(:base, "could not find #{value} reference genome.")
       end
     end

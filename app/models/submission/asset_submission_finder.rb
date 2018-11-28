@@ -10,6 +10,7 @@ module Submission::AssetSubmissionFinder
   def find_all_assets_by_id_or_name_including_samples!(ids, names)
     return Receptacle.including_samples.find(*ids) if ids.present?
     raise StandardError, 'Must specify at least an ID or a name' if names.blank?
+
     Receptacle.including_samples.where(name: names).tap do |found|
       missing = names - found.map(&:name)
       raise ActiveRecord::RecordNotFound, "Could not find #{name} with names #{missing.inspect}" if missing.present?
@@ -22,9 +23,11 @@ module Submission::AssetSubmissionFinder
     barcode = barcodes.first
     plate = Plate.find_from_barcode(barcode)
     raise StandardError, "Cannot find plate with barcode #{barcode} for #{details['rows']}" if plate.nil?
+
     well_locations = well_list.map(&:strip)
     wells = plate.wells.including_samples.located_at(well_locations)
     raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.length != well_locations.size
+
     wells
   end
 

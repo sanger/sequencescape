@@ -92,7 +92,7 @@ RSpec.describe Order, type: :model do
     order = create :order, assets: sample_manifest.labware
     expect(order.not_ready_samples.count).to eq 5
     sample = sample_manifest.samples.first
-    sample.sample_metadata.update_attributes(supplier_name: 'new_name')
+    sample.sample_metadata.update(supplier_name: 'new_name')
     expect(order.reload.not_ready_samples.count).to eq 4
 
     no_manifest_sample = create :sample, assets: [asset]

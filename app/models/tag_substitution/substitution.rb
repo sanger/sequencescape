@@ -104,6 +104,7 @@ class TagSubstitution::Substitution
   # @return [String] A description of the substitution
   def comment(oligo_index)
     return '' unless updated?
+
     comment = +"Sample #{sample_id}:"
     comment << " Tag changed from #{oligo_index[original_tag_id]} to #{oligo_index[substitute_tag_id]};" if substitute_tag?
     comment << " Tag2 changed from #{oligo_index[original_tag2_id]} to #{oligo_index[substitute_tag2_id]};" if substitute_tag2?

@@ -31,7 +31,7 @@ class Admin::ProgramsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @program.update_attributes(program_params)
+      if @program.update(program_params)
         flash[:notice] = 'Program was successfully updated.'
         format.html { redirect_to(admin_programs_path) }
       else

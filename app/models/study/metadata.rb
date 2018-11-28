@@ -75,6 +75,7 @@ class Study
       # use the inbuilt ruby URI parser, a bit like here:
       # http://www.simonecarletti.com/blog/2009/04/validating-the-format-of-an-url-with-rails/
       return true if dac_policy.blank?
+
       dac_policy.insert(0, 'http://') unless dac_policy.include?('://') # Add an http protocol if no protocol is defined
       begin
         uri = URI.parse(dac_policy)
@@ -97,11 +98,13 @@ class Study
 
     def snp_parent_study
       return nil if snp_parent_study_id.nil?
+
       self.class.where(snp_study_id: snp_parent_study_id).includes(:study).try(:study)
     end
 
     def snp_child_studies
       return nil if snp_study_id.nil?
+
       self.class.where(snp_parent_study_id: snp_study_id).includes(:study).map(&:study)
     end
   end

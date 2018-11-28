@@ -8,6 +8,7 @@ class Robot < ApplicationRecord
 
   scope :with_barcode, ->(barcode) {
                          return none unless Barcode.prefix_from_barcode(barcode) == prefix
+
                          where(barcode: Barcode.number_to_human(barcode))
                        }
 

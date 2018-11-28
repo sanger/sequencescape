@@ -49,6 +49,7 @@ class Postman
 
     def queue
       raise StandardError, 'No queue configured' if @queue_name.nil?
+
       channel.queue(@queue_name, arguments: queue_arguments, durable: true)
     end
 

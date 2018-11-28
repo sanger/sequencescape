@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ExternalPropertied < ActiveRecord::Base
+class ExternalPropertied < ApplicationRecord
   include ExternalProperties
   self.table_name = :assets
 end

@@ -52,7 +52,7 @@ class BarcodePrintersController < ApplicationController
     @barcode_printer.barcode_printer_type = BarcodePrinterType.find(params[:barcode_printer_type_id])
 
     respond_to do |format|
-      if @barcode_printer.update_attributes(params[:barcode_printer])
+      if @barcode_printer.update(params[:barcode_printer])
         flash[:notice] = 'Barcode Printer was successfully updated.'
         format.html { redirect_to(barcode_printers_url) }
       else

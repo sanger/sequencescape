@@ -16,9 +16,9 @@ module Asset::Stock
 
         def new_stock_asset(attributes = {}, &block)
           self.class.stock_asset_type.new(attributes.reverse_merge(
-                                            name:     "(s) #{name}",
+                                            name: "(s) #{name}",
                                             aliquots: aliquots.map(&:dup),
-                                            purpose:  self.class.stock_asset_purpose
+                                            purpose: self.class.stock_asset_purpose
                                           ), &block)
         end
 

@@ -36,6 +36,7 @@ module Aker
       # Persists a Job and all associated materials.
       def create
         return unless valid?
+
         @model = Aker::Job.create(aker_job_id: aker_job_id, job_uuid: job_uuid, samples: materials.map(&:create), aker_job_url: aker_job_url)
       end
 
@@ -47,8 +48,10 @@ module Aker
 
       def study
         return @study if @study
+
         uuid = Uuid.find_by(external_id: data_release_uuid)
         return nil unless uuid
+
         @study = Study.find(uuid.resource_id)
       end
 
@@ -89,6 +92,7 @@ module Aker
       def check_materials
         materials.each do |material|
           next if material.valid?
+
           material.errors.each do |key, value|
             errors.add key, value
           end

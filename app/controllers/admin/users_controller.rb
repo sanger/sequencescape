@@ -10,7 +10,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def edit
-    @user_roles = @user.roles.where(name: ['administrator', 'manager', 'internal'])
+    @user_roles = @user.roles.where(name: %w[administrator manager internal])
     @all_roles = Role.distinct.pluck(:name)
     @users_roles = @user.study_and_project_roles.order(name: :asc)
     @studies = Study.order(:id)
@@ -41,7 +41,7 @@ class Admin::UsersController < ApplicationController
     end
 
     if @user.id == params[:id].to_i
-      @user.update_attributes(params[:user])
+      @user.update(params[:user])
     end
     if @user.save
       flash[:notice] = 'Profile updated'

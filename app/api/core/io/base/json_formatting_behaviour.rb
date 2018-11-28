@@ -30,6 +30,7 @@ module Core::Io::Base::JsonFormattingBehaviour
     # need to determine the I/O class that deals with it and hand off the error handling to it.
     association, *association_parts = attribute.to_s.split('.')
     return attribute.to_s if association_parts.empty?
+
     reflection = model_for_input.reflections[association]
     return attribute.to_s if reflection.nil?
 
@@ -64,6 +65,7 @@ module Core::Io::Base::JsonFormattingBehaviour
     attribute_to_json, json_to_attribute = [], []
     StringIO.new(mapping).each_line do |line|
       next if line.blank? or line =~ /^\s*#/
+
       match = VALID_LINE_REGEXP.match(line) or raise StandardError, "Invalid line: #{line.inspect}"
       attribute_to_json.push([match[1], match[3]]) if (match[2] =~ /<?=>/)
       json_to_attribute.push([match[3], (match[2] =~ /<=>?/) ? match[1] : nil])

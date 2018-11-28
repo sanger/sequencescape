@@ -53,12 +53,14 @@ class Barcode < ApplicationRecord
 
   def self.unique_for_format?(barcode_format, search_barcode)
     return unless barcode_format.present? && search_barcode.present?
+
     Barcode.find_by(format: barcode_format, barcode: search_barcode)
   end
 
   def self.extract_barcodes(barcodes)
     barcodes.flatten.each_with_object([]) do |source_bc, store|
       next if source_bc.blank?
+
       store.concat(Barcode.extract_barcode(source_bc))
     end
   end

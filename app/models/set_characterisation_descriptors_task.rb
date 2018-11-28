@@ -14,6 +14,7 @@ class SetCharacterisationDescriptorsTask < Task
 
   def sub_events_for_event(event)
     return [] unless event.eventful.respond_to?(:asset)
+
     subassets = subassets_for_asset(event.eventful.asset).select do |asset|
       # we don't want anything except fragment gel so far ...
       asset.is_a?(Fragment) && name == 'Gel'

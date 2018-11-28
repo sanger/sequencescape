@@ -26,7 +26,10 @@ FactoryBot.define do
   end
 
   factory :tagged_well, parent: :well, aliases: [:well_with_sample_and_without_plate] do
-    aliquots { build_list(:tagged_aliquot, 1, aliquot_options) }
+    transient do
+      aliquot_count { 1 }
+    end
+    aliquots { build_list(:tagged_aliquot, aliquot_count, aliquot_options) }
   end
 
   factory :well_with_sample_and_plate, parent: :tagged_well do
@@ -40,10 +43,10 @@ FactoryBot.define do
     after(:build) do |well|
       als = Array.new(2) do
         {
-          sample:  create(:sample),
-          study:   create(:study),
+          sample: create(:sample),
+          study: create(:study),
           project: create(:project),
-          tag:     create(:tag)
+          tag: create(:tag)
         }
       end
       well.aliquots.build(als)
@@ -64,7 +67,7 @@ FactoryBot.define do
     map { create(:map) }
 
     after(:create) do |well, evaluator|
-      well.aliquots.each { |a| a.update_attributes!(study: evaluator.study) }
+      well.aliquots.each { |a| a.update!(study: evaluator.study) }
     end
   end
 

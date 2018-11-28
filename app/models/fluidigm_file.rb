@@ -29,6 +29,7 @@ class FluidigmFile
 
       def content(index = nil)
         raise StandardError, 'Multiple files found' if data.size > 1 && index.nil?
+
         @data[index || 0].retrive
       end
     end
@@ -50,7 +51,7 @@ class FluidigmFile
   class Assay
     attr_reader :name, :result
 
-    @@valid_markers = ['XX', 'XY', 'YY']
+    @@valid_markers = %w[XX XY YY]
     @@gender_map    = { 'XX' => 'F', 'YY' => 'F', 'XY' => 'M' }
 
     def initialize(name, result)
@@ -145,6 +146,7 @@ class FluidigmFile
     (data_start_index...@csv.size).each do |row_index|
       row = @csv[row_index]
       next if row[column('Experiment Information Sample Name')] == 'Water'
+
       well = well_at(row[column('Experiment Information Chamber ID')].split('-').first)
       well.add_assay(row[column('Experiment Information SNP Assay and Allele Names Assay')], row[column('Results Call Information Final')])
     end

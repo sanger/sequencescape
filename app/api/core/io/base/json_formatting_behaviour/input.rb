@@ -34,7 +34,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     end)
 
     # Now the harder bit: for attribute we need to work out how we would fill in the attribute
-    # structure for an update_attributes! call.
+    # structure for an update! call.
     initial_structure = {}
     read_write.each do |json, attribute|
       steps       = attribute.split('.')
@@ -51,6 +51,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
             [nil, step]
           elsif association = model.reflections[step]
             raise StandardError, 'Nested attributes only works with belongs_to or has_one' unless [:belongs_to, :has_one].include?(association.macro.to_sym)
+
             [association.klass, :"#{step}_attributes"]
           else
             [nil, step]
@@ -108,6 +109,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     value = path.inject(json) do |current, step|
       return unless current.respond_to?(:key?) # Could be nested attribute but not present!
       return unless current.key?(step)
+
       current[step]
     end
     yield(value)

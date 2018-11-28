@@ -125,6 +125,7 @@ class Batch < ApplicationRecord
     # We've deprecated the ability to fail a batch but not its requests.
     # Keep this check here until we're sure we haven't missed anything.
     raise StandardError, 'Can not fail batch without failing requests' if ignore_requests
+
     # create failures
     failures.create(reason: reason, comment: comment, notify_remote: false)
 
@@ -207,10 +208,12 @@ class Batch < ApplicationRecord
 
   def shift_item_positions(position, number)
     return unless number
+
     BatchRequest.transaction do
       batch_requests.each do |batch_request|
         next unless batch_request.position >= position
         next if batch_request.request.asset.try(:resource?)
+
         batch_request.move_to_position!(batch_request.position + number)
       end
     end
@@ -268,6 +271,7 @@ class Batch < ApplicationRecord
 
   def plate_group_barcodes
     return nil unless pipeline.group_by_parent || requests.first.target_asset.is_a?(Well)
+
     output_plate_group.presence || input_plate_group
   end
 
@@ -339,6 +343,7 @@ class Batch < ApplicationRecord
       request_ids.each do |request_id|
         request = Request.find(request_id)
         next if request.nil?
+
         request.failures.create(reason: reason, comment: comment, notify_remote: true)
         detach_request(request)
       end
@@ -388,6 +393,7 @@ class Batch < ApplicationRecord
 
   def parent_of_purpose(name)
     return nil if requests.empty?
+
     requests.first.asset.ancestors.joins(
       'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id'
     )
@@ -404,14 +410,14 @@ class Batch < ApplicationRecord
 
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
-      batch_request_left.request.lab_events.each  { |event| event.update_attributes!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id  }
-      batch_request_right.request.lab_events.each { |event| event.update_attributes!(batch_id: batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id }
+      batch_request_left.request.lab_events.each  { |event| event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id  }
+      batch_request_right.request.lab_events.each { |event| event.update!(batch_id: batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id }
 
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but ensuring that the
       # two requests don't clash on position by removing one of them.
       original_left_batch_id, original_left_position, original_right_request_id = batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
       batch_request_right.destroy
-      batch_request_left.update_attributes!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
+      batch_request_left.update!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
       batch_request_right = BatchRequest.create!(batch_id: original_left_batch_id, position: original_left_position, request_id: original_right_request_id)
 
       # Finally record the fact that the batch was swapped
@@ -453,11 +459,13 @@ class Batch < ApplicationRecord
     request = requests.first
     return DEFAULT_VOLUME unless request.asset.is_a?(Well)
     return DEFAULT_VOLUME unless request.target_asset.is_a?(Well)
+
     request.target_asset.get_requested_volume
   end
 
   def robot_verified!(user_id)
     return if has_event('robot verified')
+
     pipeline.robot_verified!(self)
     lab_events.create(description: 'Robot verified', message: 'Robot verification completed and source volumes updated.', user_id: user_id)
   end
@@ -546,7 +554,7 @@ class Batch < ApplicationRecord
         requests_to_update.concat(downstream_requests.map { |r| [r.id, target_asset.id] })
       end
 
-      request.update_attributes!(target_asset: target_asset)
+      request.update!(target_asset: target_asset)
 
       # All links between the two assets as new, so we can bulk create them!
       asset_links << [request.asset.id, request.target_asset.id]
@@ -555,7 +563,7 @@ class Batch < ApplicationRecord
     AssetLink::BuilderJob.create(asset_links)
 
     requests_to_update.each do |request_details|
-      Request.find(request_details.first).update_attributes!(asset_id: request_details.last)
+      Request.find(request_details.first).update!(asset_id: request_details.last)
     end
   end
 

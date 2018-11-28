@@ -77,6 +77,7 @@ class RequestType < ApplicationRecord
 
   def construct_request(construct_method, attributes, klass = request_class)
     raise RequestType::DeprecatedError if deprecated?
+
     new_request = klass.public_send(construct_method, attributes) do |request|
       request.request_type = self
       request.request_purpose ||= request_purpose
@@ -137,6 +138,7 @@ class RequestType < ApplicationRecord
   def extract_metadata_from_hash(request_options)
     # WARNING: we need a copy of the options (we delete stuff from attributes)
     return {} unless request_options
+
     attributes = request_options.symbolize_keys
     common_attributes = request_class::Metadata.attribute_details.map(&:name)
     common_attributes.concat(request_class::Metadata.association_details.map(&:assignable_attribute_name))

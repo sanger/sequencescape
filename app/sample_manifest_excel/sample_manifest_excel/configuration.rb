@@ -19,6 +19,7 @@ module SampleManifestExcel
 
     def ==(other)
       return false unless other.is_a?(self.class)
+
       folder == other.folder &&
         conditional_formattings == other.conditional_formattings &&
         manifest_types == other.manifest_types &&

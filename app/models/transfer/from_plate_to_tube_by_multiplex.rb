@@ -13,6 +13,7 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
     source.wells.each_with_object({}) do |well, store|
       tube = locate_mx_library_tube_for(well)
       next if tube.nil? or should_well_not_be_transferred?(well)
+
       store[well] = [tube, tube.requests_as_target.map(&:asset)]
     end
   end
