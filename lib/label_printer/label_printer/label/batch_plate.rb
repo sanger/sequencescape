@@ -1,6 +1,7 @@
 module LabelPrinter
   module Label
     class BatchPlate < BasePlate
+      include Label::BatchPlates
       attr_reader :count, :printable, :batch
 
       def initialize(options)
@@ -15,11 +16,6 @@ module LabelPrinter
 
       def bottom_right(plate)
         "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate.barcode_number}"
-      end
-
-      def plates
-        barcodes = printable.select { |_barcode, check| check == 'on' }.keys
-        batch.plate_group_barcodes.keys.select { |plate| barcodes.include?(plate.human_barcode) }
       end
     end
   end
