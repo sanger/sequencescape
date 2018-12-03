@@ -30,7 +30,7 @@ module PlatePurpose::Stock
     case unique_states.sort
     when ['failed'] then 'failed'
     when ['cancelled'] then 'cancelled'
-    when ['cancelled', 'failed'] then 'failed'
+    when %w[cancelled failed] then 'failed'
     else READY_STATE
     end
   end

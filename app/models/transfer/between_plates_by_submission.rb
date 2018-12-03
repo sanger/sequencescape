@@ -7,7 +7,6 @@ class Transfer::BetweenPlatesBySubmission < Transfer
 
   include TransfersToKnownDestination
   include ControlledDestinations
-  include BuildsStockWellLinks
 
   include Asset::Ownership::ChangesOwner
   set_target_for_owner(:destination)

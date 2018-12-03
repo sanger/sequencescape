@@ -20,19 +20,19 @@ class AddHiseq4000SubmissionTemplates < ActiveRecord::Migration
   def each_template
     # High Throughput
 
-    ['illumina_htp_hiseq_4000_paired_end_sequencing', 'illumina_htp_hiseq_4000_single_end_sequencing'].each do |sequencing_key|
+    %w[illumina_htp_hiseq_4000_paired_end_sequencing illumina_htp_hiseq_4000_single_end_sequencing].each do |sequencing_key|
       [
-        { request_types: ['illumina_a_shared', 'illumina_a_isc'], request_type_name: 'HTP ISC', product_catalogue: 'ISC', order_role: 'ISC' },
+        { request_types: %w[illumina_a_shared illumina_a_isc], request_type_name: 'HTP ISC', product_catalogue: 'ISC', order_role: 'ISC' },
         { request_types: ['illumina_a_re_isc'], request_type_name: 'ISC Repool', product_catalogue: 'ReISC', order_role: 'ReISC' },
-        { request_types: ['illumina_b_shared', 'illumina_b_pool'], request_type_name: 'Pooled MWGS', product_catalogue: 'MWGS', order_role: 'MWGS' },
-        { request_types: ['illumina_b_shared', 'illumina_b_pool'], request_type_name: 'Pooled PWGS', product_catalogue: 'PWGS', order_role: 'PWGS' }
+        { request_types: %w[illumina_b_shared illumina_b_pool], request_type_name: 'Pooled MWGS', product_catalogue: 'MWGS', order_role: 'MWGS' },
+        { request_types: %w[illumina_b_shared illumina_b_pool], request_type_name: 'Pooled PWGS', product_catalogue: 'PWGS', order_role: 'PWGS' }
 
       ].each do |request_options|
         yield parameters('IHTP', 'Illumina-HTP', sequencing_key, request_options)
       end
     end
     # Bespoke
-    ['illumina_c_hiseq_4000_paired_end_sequencing', 'illumina_c_hiseq_4000_single_end_sequencing'].each do |sequencing_key|
+    %w[illumina_c_hiseq_4000_paired_end_sequencing illumina_c_hiseq_4000_single_end_sequencing].each do |sequencing_key|
       [
         { request_types: ['illumina_c_nopcr'], request_type_name: 'General no PCR', product_catalogue: 'GenericNoPCR', order_role: 'NoPCR' },
         { request_types: ['illumina_c_pcr'], request_type_name: 'General PCR', product_catalogue: 'GenericPCR', order_role: 'PCR' },

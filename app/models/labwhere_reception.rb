@@ -44,7 +44,7 @@ class LabwhereReception
         return false
       end
     rescue LabWhereClient::LabwhereException => exception
-      errors.add(:base, 'Could not connect to Labwhere. Sequencescape location has still been updated')
+      errors.add(:base, 'Could not connect to Labwhere.')
       return false
     end
 
@@ -61,6 +61,10 @@ class LabwhereReception
   end
 
   def missing_barcodes
-    asset_barcodes - @assets.map(&:ean13_barcode)
+    machine_barcodes = assets.map(&:machine_barcode).to_set
+    human_barcodes = assets.map(&:human_barcode).to_set
+    asset_barcodes.delete_if do |barcode|
+      human_barcodes.include?(barcode) || machine_barcodes.include?(barcode)
+    end
   end
 end

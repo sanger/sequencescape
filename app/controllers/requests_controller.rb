@@ -145,18 +145,6 @@ class RequestsController < ApplicationController
     @tasks = Task.all
   end
 
-  def expanded(_options = {})
-    render plain: '', status: :gone
-  end
-
-  def pending
-    render plain: '', status: :gone
-  end
-
-  def incomplete_requests_for_family(_options = {})
-    render plain: '', status: :gone
-  end
-
   def redirect_if_not_owner_or_admin
     unless current_user == @request.user or current_user.is_administrator? or current_user.is_manager?
       flash[:error] = 'Request details can only be altered by the owner or a manager'

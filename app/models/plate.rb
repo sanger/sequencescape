@@ -602,8 +602,12 @@ class Plate < Asset
   end
 
   def lookup_labwhere_location
+    lookup_labwhere(machine_barcode) || lookup_labwhere(human_barcode)
+  end
+
+  def lookup_labwhere(barcode)
     begin
-      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(machine_barcode)
+      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(barcode)
     rescue LabWhereClient::LabwhereException => e
       return "Not found (#{e.message})"
     end

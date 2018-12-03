@@ -1,7 +1,7 @@
 module Billing
   # Simple record that stores (dynamic) data required to generate billing BIF file
   # it store request_id, project_cost_code, units, billing_product_code, billing_product_description, request_passed_date
-  class Item < ActiveRecord::Base
+  class Item < ApplicationRecord
     belongs_to :request
 
     def self.created_between(start_date, end_date)

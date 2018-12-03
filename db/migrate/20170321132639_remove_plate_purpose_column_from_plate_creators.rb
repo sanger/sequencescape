@@ -1,9 +1,9 @@
 class RemovePlatePurposeColumnFromPlateCreators < ActiveRecord::Migration
-  class PlateCreators < ActiveRecord::Base
+  class PlateCreators < ApplicationRecord
     self.table_name = 'plate_creators'
   end
 
-  class PlatePurpose < ActiveRecord::Base
+  class PlatePurpose < ApplicationRecord
     self.table_name = 'plate_purposes'
   end
 

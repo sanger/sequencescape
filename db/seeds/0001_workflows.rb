@@ -229,7 +229,7 @@ PulldownLibraryCreationPipeline.create!(name: 'Pulldown library preparation') do
   end
 end
 
-cluster_formation_se_request_type = ['a', 'b', 'c'].map do |pl|
+cluster_formation_se_request_type = %w[a b c].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_single_ended_sequencing",
     name: "Illumina-#{pl.upcase} Single ended sequencing",
@@ -335,7 +335,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-single_ended_hi_seq_sequencing = ['a', 'b', 'c'].map do |pl|
+single_ended_hi_seq_sequencing = %w[a b c].map do |pl|
   RequestType.create!(key: "illumina_#{pl}_single_ended_hi_seq_sequencing", name: "Illumina-#{pl.upcase} Single ended hi seq sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
@@ -409,7 +409,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-cluster_formation_pe_request_types = ['a', 'b', 'c'].map do |pl|
+cluster_formation_pe_request_types = %w[a b c].map do |pl|
   RequestType.create!(key: "illumina_#{pl}_paired_end_sequencing", name: "Illumina-#{pl.upcase} Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
@@ -431,7 +431,7 @@ end << RequestType.create!(
          request_type.request_class = SequencingRequest
        end
 
-hiseq_2500_request_types = ['a', 'b', 'c'].map do |pl|
+hiseq_2500_request_types = %w[a b c].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_hiseq_2500_paired_end_sequencing",
     name: "Illumina-#{pl.upcase} HiSeq 2500 Paired end sequencing",
@@ -445,7 +445,7 @@ hiseq_2500_request_types = ['a', 'b', 'c'].map do |pl|
   )
 end
 
-hiseq_2500_se_request_types = ['a', 'b', 'c'].map do |pl|
+hiseq_2500_se_request_types = %w[a b c].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_hiseq_2500_single_end_sequencing",
     name: "Illumina-#{pl.upcase} HiSeq 2500 Single end sequencing",
@@ -657,7 +657,7 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
   pipeline.active          = true
   pipeline.group_by_parent = false
 
-  ['a', 'b', 'c'].each do |pl|
+  %w[a b c].each do |pl|
     pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
       request_type.billable          = true
       request_type.initial_state     = 'pending'
@@ -859,10 +859,10 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines
 ['Pulldown', 'Illumina-A Pulldown'].each do |lab|
-  [
-    'WGS',
-    'SC',
-    'ISC'
+  %w[
+    WGS
+    SC
+    ISC
   ].each do |pipeline_type|
     pipeline_name = "#{lab} #{pipeline_type}"
     Pipeline.create!(name: pipeline_name) do |pipeline|
@@ -903,7 +903,7 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
     request_type.request_class_name = MiSeqSequencingRequest.name
   end
 
-  ['a', 'b', 'c'].each do |pl|
+  %w[a b c].each do |pl|
     pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_miseq_sequencing", name: "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
@@ -1035,7 +1035,7 @@ CherrypickPipeline.create!(
 ) do |pipeline|
 end
 
-v4_requests_types_pe = ['a', 'b', 'c'].map do |pipeline|
+v4_requests_types_pe = %w[a b c].map do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
 
@@ -1059,7 +1059,7 @@ v4_requests_types_se = [
                       product_line: ProductLine.find_by(name: 'Illumina-C'))
 ]
 
-x10_requests_types = ['a', 'b'].map do |pipeline|
+x10_requests_types = %w[a b].map do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_x_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq X Paired end sequencing",
 
@@ -1225,7 +1225,7 @@ end
   end
 end
 
-['htp', 'c'].each do |pipeline|
+%w[htp c].each do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_4000_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq 4000 Paired end sequencing",
 

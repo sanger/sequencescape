@@ -23,9 +23,9 @@ class Asset < ApplicationRecord
   SAMPLE_PARTIAL = 'assets/samples_partials/blank'
 
   QC_STATES = [
-    ['passed',  'pass'],
-    ['failed',  'fail'],
-    ['pending', 'pending'],
+    %w[passed pass],
+    %w[failed fail],
+    %w[pending pending],
     [nil, '']
   ]
 

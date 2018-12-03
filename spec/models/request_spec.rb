@@ -411,8 +411,8 @@ RSpec.describe Request do
 
   describe '#open and #closed' do
     setup do
-      @open_states = ['pending', 'started']
-      @closed_states = ['passed', 'failed', 'cancelled']
+      @open_states = %w[pending started]
+      @closed_states = %w[passed failed cancelled]
 
       @all_states = @open_states + @closed_states
 

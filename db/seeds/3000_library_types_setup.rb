@@ -104,7 +104,7 @@ unless Rails.env.test?
     end
   end
 
-  ['a', 'b', 'c'].each do |pipeline|
+  %w[a b c].each do |pipeline|
     rt = RequestType.find_by(key: "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing")
     RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [125, 75])
   end
@@ -155,7 +155,7 @@ unless Rails.env.test?
     valid_options: RequestType::Validator::LibraryTypeValidator.new(rt_pf.id)
   )
 
-  ['a', 'b'].each do |pipeline|
+  %w[a b].each do |pipeline|
     rt = RequestType.find_by!(key: "illumina_#{pipeline}_hiseq_x_paired_end_sequencing")
     RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150])
     rt.library_types << LibraryType.find_by(name: 'Standard')

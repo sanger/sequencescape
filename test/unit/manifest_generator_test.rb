@@ -202,7 +202,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
     end
 
     context '#well_sample_parent' do
-      ['mother', 'father'].each do |parent|
+      %w[mother father].each do |parent|
         context "for #{parent}" do
           setup do
             @well = create :well
@@ -241,7 +241,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
     end
 
     context '#well_map_description' do
-      [['A1', 'A01'], ['C2', 'C02'], ['H12', 'H12'], ['G9', 'G09']].each do |input_map, expected_map|
+      [%w[A1 A01], %w[C2 C02], %w[H12 H12], %w[G9 G09]].each do |input_map, expected_map|
         context "for #{input_map}" do
           setup do
             @well = create :well, map: Map.find_by(description: input_map, asset_size: 96)

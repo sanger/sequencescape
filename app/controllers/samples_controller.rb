@@ -45,7 +45,7 @@ class SamplesController < ApplicationController
 
   def show
     @sample  = Sample.includes(:assets, :studies).find(params[:id])
-    @studies = Study.where(state: ['pending', 'active']).alphabetical
+    @studies = Study.where(state: %w[pending active]).alphabetical
 
     respond_to do |format|
       format.html

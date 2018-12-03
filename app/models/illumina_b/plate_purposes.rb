@@ -13,9 +13,9 @@ module IlluminaB::PlatePurposes
   ]
 
   TUBE_PURPOSE_FLOWS = [
-    [
-      'ILB_STD_STOCK',
-      'ILB_STD_MX'
+    %w[
+      ILB_STD_STOCK
+      ILB_STD_MX
     ]
   ]
 

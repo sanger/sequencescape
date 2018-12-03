@@ -183,7 +183,7 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
     end]
   end.uniq!
   expected = Hash[table.raw.map do |attribute, value|
-    value = value.to_i if ['fragment_size_required_from', 'fragment_size_required_to'].include?(attribute)
+    value = value.to_i if %w[fragment_size_required_from fragment_size_required_to].include?(attribute)
     [attribute, value]
   end]
   assert_equal([expected], results, 'Request details are not identical')

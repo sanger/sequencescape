@@ -4,7 +4,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
   context Core::Io::Json::Grammar::Leaf do
     context 'nested attribute value' do
       setup do
-        @target = Core::Io::Json::Grammar::Leaf.new(:attribute_name, ['root', 'leaf'])
+        @target = Core::Io::Json::Grammar::Leaf.new(:attribute_name, %w[root leaf])
         @object, @stream = mock('Target object'), mock('Stream')
       end
 

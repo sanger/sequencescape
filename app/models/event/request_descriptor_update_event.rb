@@ -4,11 +4,11 @@ module Event::RequestDescriptorUpdateEvent
   end
 
   def pass_or_fail_event?
-    ['fail', 'pass'].include?(family)
+    %w[fail pass].include?(family)
   end
 
   def library_creation_descriptor?
-    ['library_creation_complete', 'multiplexed_library_creation'].include?(descriptor_key)
+    %w[library_creation_complete multiplexed_library_creation].include?(descriptor_key)
   end
 
   def set_request_metadata
