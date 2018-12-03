@@ -71,22 +71,20 @@ context 'printing labels' do
   let(:batch) { create :batch }
   let(:study) { create :study }
   let(:request1) do
-    asset = create(:empty_sample_tube)
     order = create(:order,
                    order_role: OrderRole.new(role: 'test_role'),
                    study: study,
-                   assets: [asset])
+                   assets: [create(:empty_sample_tube)])
     create(:well_request,
            asset: create(:well_with_sample_and_plate),
            target_asset: create(:well_with_sample_and_plate),
            order: order)
   end
   let(:request2) do
-    asset = create(:empty_sample_tube)
     order = create(:order,
                    order_role: OrderRole.new(role: 'test_role'),
                    study: study,
-                   assets: [asset])
+                   assets: [create(:empty_sample_tube)])
     create(:well_request,
            asset: create(:well_with_sample_and_plate),
            target_asset: create(:well_with_sample_and_plate),
