@@ -13,7 +13,7 @@ shared_examples 'a correct single label printer' do
             bottom_right: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number}",
             top_far_right: nil,
             top_left: date_today,
-            top_right: "#{batch.studies.first.abbreviation}"
+            top_right: batch.studies.first.abbreviation
           }
         }]
       }
@@ -67,7 +67,7 @@ end
 
 context 'printing labels' do
   let(:count) { '1' }
-  let(:date_today) { Date.today.strftime('%e-%^b-%Y') }
+  let(:date_today) { Time.zone.today.strftime('%e-%^b-%Y') }
   let(:batch) { create :batch }
   let(:study) { create :study }
   let(:request1) do

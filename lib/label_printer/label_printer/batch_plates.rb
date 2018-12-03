@@ -10,4 +10,3 @@ module LabelPrinter
     end
   end
 end
-
