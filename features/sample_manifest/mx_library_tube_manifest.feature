@@ -43,90 +43,90 @@ Feature: Sample manifest
     #   | Contains                  | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
     #   | 5 multiplexed_libraries   | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
 
-  Scenario: Create a mx manifest
+#   Scenario: Create a mx manifest
 
-    When I fill in "File to upload" with the file "test/data/multiplexed_library_manifest.csv"
-    And I press "Upload manifest"
-    Given 2 pending delayed jobs are processed
-    When I refresh the page
-    Then print any manifest errors for debugging
-    Then I should see the manifest table:
-      | Contains                  | Study      | Supplier           | Manifest       | Upload              | Errors | State     | Created by |
-      | 5 multiplexed_libraries   | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
-    When I follow "Manifest for Test study"
-    Then I should see "NT81M"
+#     When I fill in "File to upload" with the file "test/data/multiplexed_library_manifest.csv"
+#     And I press "Upload manifest"
+#     Given 2 pending delayed jobs are processed
+#     When I refresh the page
+#     Then print any manifest errors for debugging
+#     Then I should see the manifest table:
+#       | Contains                  | Study      | Supplier           | Manifest       | Upload              | Errors | State     | Created by |
+#       | 5 multiplexed_libraries   | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
+#     When I follow "Manifest for Test study"
+#     Then I should see "NT81M"
 
-    Then the samples table should look like:
-      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id |
-      | sample_1         | aaaa          | false                      | 9606            |
-      | sample_2         | bbbb          | false                      | 9606            |
-      | sample_3         | cccc          | false                      | 9606            |
-      | sample_4         | dddd          | false                      | 9606            |
-      | sample_5         | eeee          | false                      | 9606            |
+#     Then the samples table should look like:
+#       | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id |
+#       | sample_1         | aaaa          | false                      | 9606            |
+#       | sample_2         | bbbb          | false                      | 9606            |
+#       | sample_3         | cccc          | false                      | 9606            |
+#       | sample_4         | dddd          | false                      | 9606            |
+#       | sample_5         | eeee          | false                      | 9606            |
 
-    And the samples should be tagged in library and multiplexed library tubes with:
-      | tube_barcode | sanger_sample_id | tag_group      | tag_index | library_type | insert_size_from | insert_size_to | tag2_group | tag2_index |
-      | NT81         | sample_1         | test tag group | 1         | Standard     | 100              | 200            |            |            |
-      | NT82         | sample_2         | test tag group | 2         | Standard     | 100              | 200            |            |            |
-      | NT83         | sample_3         | test tag group | 3         | Standard     | 100              | 200            |            |            |
-      | NT84         | sample_4         | test tag group | 5         | Standard     | 100              | 200            |            |            |
-      | NT85         | sample_5         | test tag group | 7         | Standard     | 100              | 200            |            |            |
+#     And the samples should be tagged in library and multiplexed library tubes with:
+#       | tube_barcode | sanger_sample_id | tag_group      | tag_index | library_type | insert_size_from | insert_size_to | tag2_group | tag2_index |
+#       | NT81         | sample_1         | test tag group | 1         | Standard     | 100              | 200            |            |            |
+#       | NT82         | sample_2         | test tag group | 2         | Standard     | 100              | 200            |            |            |
+#       | NT83         | sample_3         | test tag group | 3         | Standard     | 100              | 200            |            |            |
+#       | NT84         | sample_4         | test tag group | 5         | Standard     | 100              | 200            |            |            |
+#       | NT85         | sample_5         | test tag group | 7         | Standard     | 100              | 200            |            |            |
 
-    When I fill in "File to upload" with the file "test/data/updated_multiplexed_library_manifest.csv"
-    And I check "Override previously uploaded samples"
-    And I press "Upload manifest"
-    Given 2 pending delayed jobs are processed
-    When I refresh the page
-    Then print any manifest errors for debugging
+#     When I fill in "File to upload" with the file "test/data/updated_multiplexed_library_manifest.csv"
+#     And I check "Override previously uploaded samples"
+#     And I press "Upload manifest"
+#     Given 2 pending delayed jobs are processed
+#     When I refresh the page
+#     Then print any manifest errors for debugging
 
-    Then the samples table should look like:
-      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id |
-      | sample_1         | ffff          | false                      | 9606            |
-      | sample_2         | gggg          | false                      | 9606            |
-      | sample_3         | hhhh          | false                      | 9606            |
-      | sample_4         | iiii          | false                      | 9606            |
-      | sample_5         | jjjj          | false                      | 9606            |
+#     Then the samples table should look like:
+#       | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id |
+#       | sample_1         | ffff          | false                      | 9606            |
+#       | sample_2         | gggg          | false                      | 9606            |
+#       | sample_3         | hhhh          | false                      | 9606            |
+#       | sample_4         | iiii          | false                      | 9606            |
+#       | sample_5         | jjjj          | false                      | 9606            |
 
-    # Ideally we'd update everywhere, but until we can, we won't update anywhere
-    And the samples should be tagged in library and multiplexed library tubes with:
-      | tube_barcode | sanger_sample_id | tag_group      | tag_index | library_type | insert_size_from | insert_size_to | tag2_group | tag2_index |
-      | NT81         | sample_1         | test tag group | 1         | Standard     | 100              | 200            |            |            |
-      | NT82         | sample_2         | test tag group | 2         | Standard     | 100              | 200            |            |            |
-      | NT83         | sample_3         | test tag group | 3         | Standard     | 100              | 200            |            |            |
-      | NT84         | sample_4         | test tag group | 5         | Standard     | 100              | 200            |            |            |
-      | NT85         | sample_5         | test tag group | 7         | Standard     | 100              | 200            |            |            |
+#     # Ideally we'd update everywhere, but until we can, we won't update anywhere
+#     And the samples should be tagged in library and multiplexed library tubes with:
+#       | tube_barcode | sanger_sample_id | tag_group      | tag_index | library_type | insert_size_from | insert_size_to | tag2_group | tag2_index |
+#       | NT81         | sample_1         | test tag group | 1         | Standard     | 100              | 200            |            |            |
+#       | NT82         | sample_2         | test tag group | 2         | Standard     | 100              | 200            |            |            |
+#       | NT83         | sample_3         | test tag group | 3         | Standard     | 100              | 200            |            |            |
+#       | NT84         | sample_4         | test tag group | 5         | Standard     | 100              | 200            |            |            |
+#       | NT85         | sample_5         | test tag group | 7         | Standard     | 100              | 200            |            |            |
 
 
-Scenario: Create a dual indexed mx manifest
+# Scenario: Create a dual indexed mx manifest
 
-    Given I have a tag group called "test tag group2" with 2 tags
-    And I have a tag group called "test tag group3" with 2 tags
+#     Given I have a tag group called "test tag group2" with 2 tags
+#     And I have a tag group called "test tag group3" with 2 tags
 
-    When I fill in "File to upload" with the file "test/data/multiplexed_di_library_manifest.csv"
-    And I press "Upload manifest"
-    Given 2 pending delayed jobs are processed
-    When I refresh the page
-    Then print any manifest errors for debugging
-    Then I should see the manifest table:
-      | Contains                  | Study      | Supplier           | Manifest       | Upload              | Errors | State     | Created by |
-      | 5 multiplexed_libraries   | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
-    When I follow "Manifest for Test study"
-    Then I should see "NT81M"
+#     When I fill in "File to upload" with the file "test/data/multiplexed_di_library_manifest.csv"
+#     And I press "Upload manifest"
+#     Given 2 pending delayed jobs are processed
+#     When I refresh the page
+#     Then print any manifest errors for debugging
+#     Then I should see the manifest table:
+#       | Contains                  | Study      | Supplier           | Manifest       | Upload              | Errors | State     | Created by |
+#       | 5 multiplexed_libraries   | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
+#     When I follow "Manifest for Test study"
+#     Then I should see "NT81M"
 
-    Then the samples table should look like:
-      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id |
-      | sample_1         | aaaa          | false                      | 9606            |
-      | sample_2         | bbbb          | false                      | 9606            |
-      | sample_3         | cccc          | false                      | 9606            |
-      | sample_4         | dddd          | false                      | 9606            |
-      | sample_5         | eeee          | false                      | 9606            |
+#     Then the samples table should look like:
+#       | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id |
+#       | sample_1         | aaaa          | false                      | 9606            |
+#       | sample_2         | bbbb          | false                      | 9606            |
+#       | sample_3         | cccc          | false                      | 9606            |
+#       | sample_4         | dddd          | false                      | 9606            |
+#       | sample_5         | eeee          | false                      | 9606            |
 
-    And the samples should be tagged in library and multiplexed library tubes with:
-      | tube_barcode | sanger_sample_id | tag_group       | tag_index | tag2_group      | tag2_index | library_type | insert_size_from | insert_size_to |
-      | NT81         | sample_1         | test tag group  | 1         | test tag group2 | 1          | Standard     | 100              | 200            |
-      | NT82         | sample_2         | test tag group  | 2         | test tag group2 | 1          | Standard     | 100              | 200            |
-      | NT83         | sample_3         | test tag group  | 3         | test tag group2 | 1          | Standard     | 100              | 200            |
-      | NT84         | sample_4         | test tag group3 | 1         | test tag group2 | 1          | Standard     | 100              | 200            |
-      | NT85         | sample_5         | test tag group3 | 2         | test tag group2 | 1          | Standard     | 100              | 200            |
+#     And the samples should be tagged in library and multiplexed library tubes with:
+#       | tube_barcode | sanger_sample_id | tag_group       | tag_index | tag2_group      | tag2_index | library_type | insert_size_from | insert_size_to |
+#       | NT81         | sample_1         | test tag group  | 1         | test tag group2 | 1          | Standard     | 100              | 200            |
+#       | NT82         | sample_2         | test tag group  | 2         | test tag group2 | 1          | Standard     | 100              | 200            |
+#       | NT83         | sample_3         | test tag group  | 3         | test tag group2 | 1          | Standard     | 100              | 200            |
+#       | NT84         | sample_4         | test tag group3 | 1         | test tag group2 | 1          | Standard     | 100              | 200            |
+#       | NT85         | sample_5         | test tag group3 | 2         | test tag group2 | 1          | Standard     | 100              | 200            |
 
 
