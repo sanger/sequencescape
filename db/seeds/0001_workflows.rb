@@ -1262,6 +1262,7 @@ def build_4000_tasks_for(workflow, paired_only = false)
       { kind: 'Text', sorter: 4, name: 'CBOT' },
       { kind: 'Text', sorter: 5, name: '-20 Temp. Read 1 Cluster Kit (Box 1 of 2) Lot #' },
       { kind: 'Text', sorter: 6, name: '-20 Temp. Read 1 Cluster Kit (Box 1 of 2) RGT #' },
+      { kind: 'Text', sorter: 7, name: 'PhiX lot #' },
       { kind: 'Text', sorter: 8, name: 'Comment' }
     ])
   end
