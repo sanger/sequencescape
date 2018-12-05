@@ -24,6 +24,7 @@ module SampleManifest::PlateBehaviour
     delegate :generate_plates, to: :@manifest
     alias_method(:generate, :generate_plates)
 
+    delegate :generate_sample_and_aliquot, to: :@manifest
     delegate :samples, to: :@manifest
 
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
@@ -191,8 +192,8 @@ module SampleManifest::PlateBehaviour
     create_sample(sanger_sample_id).tap do |sample|
       well.aliquots.build(sample: sample)
       well.register_stock!
+      RequestFactory.create_assets_requests([well], study)
     end
-    RequestFactory.create_assets_requests([well], study)
   end
 
   def generate_wells(wells_for_plate, plate)

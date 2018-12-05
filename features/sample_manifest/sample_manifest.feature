@@ -130,7 +130,7 @@ Feature: Sample manifest
     Scenarios:
       | filename                                 | barcode    | well |
       # | test/data/manifests/mismatched_wells.csv | DN1234567T | A1   |
-      | test/data/manifests/mismatched_plate.csv | DN11111T   | B1   |
+      # | test/data/manifests/mismatched_plate.csv | DN11111T   | B1   |
 
   # Scenario: Upload a csv manifest with empty samples
   #   Given a manifest has been created for "Test study"
