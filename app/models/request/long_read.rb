@@ -23,7 +23,5 @@ class Request
     def aasm_validate_states
       true
     end
-
-  
   end
 end
