@@ -80,6 +80,10 @@ module SampleManifest::SampleTubeBehaviour
       samples.map { |sample| sample.assets.first }
     end
 
+    def labware=(labware)
+      @tubes = labware
+    end
+
     def labware
       labware_from_samples | tubes
     end
