@@ -57,6 +57,27 @@ module Barcode::FormatHandlers
     end
   end
 
+  #
+  # The revised Sequencescape barcode format. results in:
+  # Human readable form: DN12345U
+  # Standard code39 machine format: DN12345U
+  # Ean13 fallback: 1220012345855
+  # This class mostly wraps the SBCF Gem
+  #
+  # @author [jg16]
+  #
+  class SangerCode39 < SangerEan13
+    # The gem was yielding integers for backward compatible reasons.
+    # We'll convert for the time being, but should probably fix that.
+    def ean13_barcode
+      barcode_object.machine_barcode.to_s
+    end
+
+    alias machine_barcode human_barcode
+    alias code128_barcode human_barcode
+    alias serialize_barcode human_barcode
+  end
+
   # A basic class for barodes that can be validated and decomposed by simple regular expressions
   # Classes that inherit from this should define a regular expression with optional names matchers
   # for prefix, number and suffix. This regex should be assigned to self.format

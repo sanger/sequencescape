@@ -87,6 +87,35 @@ describe Barcode, type: :model do
     end
   end
 
+  context 'sanger_code39' do
+    let(:barcode) { build :sanger_code39, barcode: barcode_value, format: barcode_format }
+
+    let(:barcode_value) { 'DN12345U' }
+    let(:number) { 12345 }
+    let(:barcode_prefix) { 'DN' }
+    let(:suffix) { 'U' }
+    let(:barcode_format) { 'sanger_code39' }
+    let(:human_barcode) { 'DN12345U' }
+    let(:machine_barcode) { 'DN12345U' }
+    let(:ean13_barcode) { '1220012345855' }
+    let(:code128_barcode) { 'DN12345U' }
+    it_behaves_like 'a basic barcode'
+    it_behaves_like 'a composable barcode'
+    it_behaves_like 'an ean13 barcode'
+    it_behaves_like 'a code128 barcode'
+
+    it 'is valid' do
+      expect(barcode).to be_valid
+    end
+
+    context 'with an incompatible format' do
+      let(:barcode_value) { 'notabarcode' }
+      it 'is not valid' do
+        expect(barcode).not_to be_valid
+      end
+    end
+  end
+
   context 'infinium' do
     let(:barcode) { build :infinium, barcode: barcode_value, format: barcode_format }
 
