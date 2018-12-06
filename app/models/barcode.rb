@@ -23,16 +23,25 @@ class Barcode < ApplicationRecord
 
   scope(:sanger_barcode, lambda do |prefix, number|
     human_barcode = SBCF::SangerBarcode.from_prefix_and_number(prefix, number).human_barcode
-    where(format: :sanger_ean13, barcode: human_barcode)
+    where(format: [:sanger_ean13, :sanger_code39], barcode: human_barcode)
   end)
   scope :for_search_query, ->(*input) { where(barcode: Barcode.extract_barcodes(input)).includes(:asset) }
 
+  delegate :=~, to: :handler
   delegate_missing_to :handler
 
   def self.build_sanger_ean13(attributes)
+    build_sanger_barcode(attributes, format: :sanger_ean13)
+  end
+
+  def self.build_sanger_code39(attributes)
+    build_sanger_barcode(attributes, format: :sanger_code39)
+  end
+
+  def self.build_sanger_barcode(attributes, format:)
     # We need to symbolize our hash keys to allow them to get passed in to named arguments.
     safe_attributes = attributes.slice(:number, :prefix, :human_barcode, :machine_barcode).symbolize_keys
-    new(format: :sanger_ean13, barcode: SBCF::SangerBarcode.new(safe_attributes).human_barcode)
+    new(format: format, barcode: SBCF::SangerBarcode.new(safe_attributes).human_barcode)
   end
 
   # Extract barcode from user input
@@ -77,6 +86,10 @@ class Barcode < ApplicationRecord
   def barcode=(new_barcode)
     @handler = nil
     super
+  end
+
+  def sanger_barcode?
+    sanger_ean13? || sanger_code39?
   end
 
   private

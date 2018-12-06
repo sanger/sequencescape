@@ -58,7 +58,7 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
 
   context 'on a plate' do
     let(:expected_barcode_hash) do
-      { 'ean13_barcode' => '1220000011748', 'machine_barcode' => '1220000011748', 'human_barcode' => 'DN11J' }
+      { 'ean13_barcode' => '1220000011748', 'machine_barcode' => 'DN11J', 'human_barcode' => 'DN11J' }
     end
     it_behaves_like 'a plate resource'
   end

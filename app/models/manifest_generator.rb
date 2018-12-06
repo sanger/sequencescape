@@ -17,7 +17,7 @@ class ManifestGenerator
         plate = Plate.find(plate_id)
         plate_label = institute_plate_label(plate)
         plate.wells.order(:id).each do |well|
-          barcode = plate.barcodes.sanger_ean13.first&.number.to_s
+          barcode = plate.sanger_barcode.number.to_s
           csv << generate_manifest_row(well, barcode, plate_label).unshift(row)
           row = row + 1
         end
@@ -125,7 +125,7 @@ class ManifestGenerator
 
   def self.construct_sample_label(plate_barcode, well)
     check_well_sample_exists(well)
-    plate_barcode + '_' + well_map_description(well) + '_' + well.primary_aliquot.sample.sanger_sample_id
+    "#{plate_barcode}_#{well_map_description(well)}_#{well.primary_aliquot.sample.sanger_sample_id}"
   end
 
   def self.create_header(csv_obj, study)

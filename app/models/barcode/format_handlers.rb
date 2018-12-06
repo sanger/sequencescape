@@ -25,7 +25,7 @@ module Barcode::FormatHandlers
       @barcode_object = SBCF::SangerBarcode.from_human(barcode)
     end
 
-    delegate :human_barcode, to: :barcode_object
+    delegate :human_barcode, :=~, to: :barcode_object # =~ is defined on Object, so we need to explicitly delegate
     delegate_missing_to :barcode_object
 
     # The gem was yielding integers for backward compatible reasons.
@@ -138,6 +138,10 @@ module Barcode::FormatHandlers
 
     def code39_barcode
       human_barcode if code39_barcode?
+    end
+
+    def =~(other)
+      human_barcode == other
     end
 
     alias machine_barcode human_barcode
