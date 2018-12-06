@@ -19,7 +19,7 @@ class Sequenom96PlateTest < ActiveSupport::TestCase
                top_right: (top).to_s,
                bottom_right: (bottom).to_s,
                top_far_right: (purpose).to_s,
-               barcode: (plate1.ean13_barcode).to_s }
+               barcode: plate1.machine_barcode }
   end
 
   test 'should have assets' do

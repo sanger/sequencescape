@@ -20,7 +20,7 @@ describe LabelPrinter::Label::SampleManifestPlateDouble do
             main_label: {
               left_text: plate.human_barcode,
               right_text: "#{sample_manifest.study.abbreviation} #{plate.barcode_number}",
-              barcode: plate.ean13_barcode
+              barcode: plate.machine_barcode
             }
           },
                  {

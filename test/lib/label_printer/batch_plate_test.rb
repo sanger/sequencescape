@@ -30,7 +30,7 @@ class BatchPlateTest < ActiveSupport::TestCase
                top_right: (study_abbreviation).to_s,
                bottom_right: "#{role} #{purpose} #{barcode1}",
                top_far_right: nil,
-               barcode: (plate1.ean13_barcode).to_s }
+               barcode: plate1.machine_barcode }
   end
 
   test 'should have count' do

@@ -60,6 +60,10 @@ class LocationReport::LocationReportForm
     ActiveModel::Name.new(LocationReport)
   end
 
+  def barcodes
+    @barcodes ||= barcodes_text&.squish&.split(/[\s\,]+/) || []
+  end
+
   #######
 
   private
@@ -91,10 +95,6 @@ class LocationReport::LocationReportForm
     return if location_report.valid?
 
     add_location_errors
-  end
-
-  def barcodes
-    @barcodes ||= barcodes_text&.squish&.split(/[\s\,]+/) || []
   end
 
   def barcode_unique(valid_barcodes, cur_bc)
