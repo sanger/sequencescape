@@ -38,9 +38,10 @@ FactoryBot.define do
       factory :tube_sample_manifest_with_tubes_and_manifest_assets do
         transient do
           tube_count { 1 }
+          tube_factory { :empty_sample_tube }
         end
 
-        labware { create_list :empty_sample_tube, tube_count }
+        labware { create_list tube_factory, tube_count }
 
         after(:build) do |sample_manifest|
           sample_manifest.labware.each do |tube|
@@ -49,13 +50,14 @@ FactoryBot.define do
                    asset: tube,
                    sample_manifest: sample_manifest)
           end
+          sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)
         end
       end
 
       factory :tube_sample_manifest_with_samples do
         samples { create_list(:sample_tube, 5).map(&:samples).flatten }
 
-        factory :tube_sample_manifest_with_tubes do
+        factory :tube_sample_manifest_with_sample_tubes do
           count { 5 }
 
           after(:build) do |sample_manifest|

@@ -102,9 +102,14 @@ RSpec.describe SampleManifest, type: :model do
           end
 
           it 'create sample manifest asset' do
+            library_tube_purpose = Tube::Purpose.standard_library_tube
+            mx_tube_purpose = Tube::Purpose.standard_mx_tube
             assets = manifest.sample_manifest_assets.map(&:asset)
-            expect(assets.count).to eq(LibraryTube.count - @initial_library_tubes)
-            expect(assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
+            library_tubes = assets.select { |asset| asset.purpose == library_tube_purpose }
+            mx_tubes = assets.select { |asset| asset.purpose == mx_tube_purpose }
+            expect(library_tubes.count).to eq(LibraryTube.count - @initial_library_tubes)
+            expect(mx_tubes.count).to eq(MultiplexedLibraryTube.count - @initial_mx_tubes)
+            expect(library_tubes).to eq(LibraryTube.with_barcode(manifest.barcodes))
           end
 
           describe '#labware' do

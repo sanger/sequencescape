@@ -18,16 +18,19 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     delegate :generate_mx_library, to: :@manifest
+    delegate :study, to: :@manifest
+    delegate :samples, to: :@manifest
+    delegate :sample_manifest_assets, to: :@manifest
 
     def generate
       @mx_tube = generate_mx_library
     end
 
     def generate_sample_and_aliquot(sanger_sample_id, tube)
-      @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
+      sample = @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
+      RequestFactory.create_external_multiplexed_library_creation_requests([tube], multiplexed_library_tube, study)
+      return sample
     end
-
-    delegate :samples, to: :@manifest
 
     def io_samples
       samples.map do |sample|
@@ -46,13 +49,29 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def multiplexed_library_tube
-      # Should we add something to be able to find the multiplexed library tube from database
-      # samples.first.primary_receptacle.requests.first.target_asset
-      @mx_tube || samples.first.primary_receptacle.requests.first.target_asset || raise(MxLibraryTubeException.new, 'Mx tube not found')
+      mx_tube || samples.first.primary_receptacle.requests.first.target_asset || raise(MxLibraryTubeException.new, 'Mx tube not found')
+    end
+
+    def mx_tube
+      @mx_tube ||= mx_tube_from_manifest_asset
+    end
+
+    def mx_tube_from_manifest_asset
+      mx_tube_purpose = Tube::Purpose.standard_mx_tube
+      sm_assets = SampleManifestAsset.where(sample_manifest: self).select do |sm_asset|
+        sm_asset.asset.purpose == mx_tube_purpose
+      end
+      raise(MxLibraryTubeException.new, 'Multiple MX Tubes found') if sm_assets.count > 1
+      sm_assets.first&.asset
     end
 
     def pending_external_library_creation_requests
       multiplexed_library_tube.requests_as_target.for_state('pending')
+    end
+
+    def labware=(labware)
+      raise ArgumentError, 'labware should contain only one element' if labware.count > 1
+      @mx_tube = labware.first
     end
 
     def labware
@@ -174,6 +193,8 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
   def generate_mx_library
     @library_tubes = generate_tubes(Tube::Purpose.standard_library_tube)
-    Tube::Purpose.standard_mx_tube.create!
+    mx_tube = Tube::Purpose.standard_mx_tube.create!
+    SampleManifestAsset.create(asset: mx_tube, sample_manifest: self)
+    return mx_tube
   end
 end

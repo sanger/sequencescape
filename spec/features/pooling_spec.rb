@@ -41,7 +41,7 @@ feature 'Pooling', js: true do
   end
 
   feature 'from sample manifest page' do
-    let!(:sample_manifest) { create :tube_sample_manifest_with_tubes, asset_type: 'library' }
+    let!(:sample_manifest) { create :tube_sample_manifest_with_sample_tubes, asset_type: 'library' }
 
     background do
       aliquot = Tube.last.aliquots.first
