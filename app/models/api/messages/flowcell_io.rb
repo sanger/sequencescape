@@ -114,24 +114,11 @@ class Api::Messages::FlowcellIO < Api::Base
     def control_aliquot_type
       tag.present? ? 'library_indexed_spike' : 'library_control'
     end
-
-    def external_library_id
-      library.external_identifier
-    end
   end
 
   module ProjectExtensions
-    module ClassMethods
-    end
-
-    def self.included(base)
-      base.class_eval do
-        extend ClassMethods
-
-        def project_cost_code_for_uwh
-          project_cost_code.length > 20 ? 'Custom' : project_cost_code
-        end
-      end
+    def project_cost_code_for_uwh
+      project_cost_code.length > 20 ? 'Custom' : project_cost_code
     end
   end
 
@@ -218,7 +205,9 @@ class Api::Messages::FlowcellIO < Api::Base
       with_association(:primer_panel) do
         map_attribute_to_json_attribute(:name, 'primer_panel')
       end
-      map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
+      with_association(:library) do
+        map_attribute_to_json_attribute(:external_identifier, 'id_library_lims')
+      end
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
       map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
     end
@@ -240,7 +229,9 @@ class Api::Messages::FlowcellIO < Api::Base
         map_attribute_to_json_attribute(:uuid, 'study_uuid')
       end
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
-      map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
+      with_association(:library) do
+        map_attribute_to_json_attribute(:external_identifier, 'id_library_lims')
+      end
       map_attribute_to_json_attribute(:control_aliquot_type, 'entity_type')
     end
   end
