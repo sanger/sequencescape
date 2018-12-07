@@ -190,7 +190,7 @@ module SampleManifest::PlateBehaviour
 
   def generate_sample_and_aliquot(sanger_sample_id, well)
     create_sample(sanger_sample_id).tap do |sample|
-      well.aliquots.build(sample: sample)
+      well.aliquots.create!(sample: sample, study: study)
       well.register_stock!
       study.samples << sample
     end

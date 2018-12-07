@@ -52,6 +52,7 @@ RSpec.describe SampleManifest, type: :model do
             expect(Sample.count - @initial_samples).to eq(count * 96)
             expect(study.samples.count - @initial_in_study).to eq(count * 96)
             expect(Messenger.count - @initial_messenger_count).to eq(count * 96)
+            manifest.samples.reset
             expect(manifest.samples.first.primary_aliquot.study).to eq(study)
           end
         end
@@ -74,7 +75,7 @@ RSpec.describe SampleManifest, type: :model do
       context 'rapid generation' do
         let(:manifest) { create :sample_manifest, study: study, count: 1, purpose: purpose, rapid_generation: true }
         it 'does not add created broadcast event if subjects are not ready (created on delayed job)' do
-          # expect { manifest.generate }.not_to change { BroadcastEvent::SampleManifestCreated.count }
+          expect { manifest.generate }.not_to change { BroadcastEvent::SampleManifestCreated.count }
         end
       end
       context 'no rapid generation' do
