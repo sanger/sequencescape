@@ -123,7 +123,7 @@ class SampleManifest < ApplicationRecord
       core_behaviour.generate
     end
     created_broadcast_event if broadcast_event_subjects_ready?
-    nil
+    return nil
   end
 
   def create_sample_and_aliquot(sanger_sample_id, asset)

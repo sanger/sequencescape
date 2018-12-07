@@ -33,20 +33,26 @@ RSpec.describe SampleManifest, type: :model do
           setup { manifest.generate }
 
           it "create #{count} plate(s) and #{count * 96} wells" do
-            # expect(Sample.count - @initial_samples).to eq(count * 96)
             expect(Plate.count - @initial_plates).to eq(count * 1)
             expect(Well.count - @initial_wells).to eq(count * 96)
-            # expect(study.samples.count - @initial_in_study).to eq(count * 96)
-            # expect(Messenger.count - @initial_messenger_count).to eq(count * 96)
-            # expect(manifest.samples.first.primary_aliquot.study).to eq(study)
             expect(manifest.labware.count).to eq(count)
             expect(manifest.labware.first).to be_a(Plate)
           end
 
-          it "create #{count} sample manifest assets" do
+          it 'create sample manifest assets' do
             expect(SampleManifestAsset.count - @initial_sample_manifest_assets).to eq(manifest.labware.count * 96)
             wells = Plate.with_barcode(manifest.barcodes).flat_map(&:wells)
-            expect(manifest.sample_manifest_assets.map(&:asset)).to eq(wells)
+            expect(manifest.assets).to eq(wells)
+          end
+
+          it 'create sample and aliquots' do
+            SampleManifestAsset.where(sample_manifest: manifest).each do |sma|
+              manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset)
+            end
+            expect(Sample.count - @initial_samples).to eq(count * 96)
+            expect(study.samples.count - @initial_in_study).to eq(count * 96)
+            expect(Messenger.count - @initial_messenger_count).to eq(count * 96)
+            expect(manifest.samples.first.primary_aliquot.study).to eq(study)
           end
         end
       end
@@ -104,8 +110,7 @@ RSpec.describe SampleManifest, type: :model do
           it 'create sample manifest asset' do
             library_tube_purpose = Tube::Purpose.standard_library_tube
             mx_tube_purpose = Tube::Purpose.standard_mx_tube
-            assets = manifest.sample_manifest_assets.map(&:asset)
-            library_tubes = assets.select { |asset| asset.purpose == library_tube_purpose }
+            library_tubes = manifest.assets.select { |asset| asset.purpose == library_tube_purpose }
             mx_tubes = assets.select { |asset| asset.purpose == mx_tube_purpose }
             expect(library_tubes.count).to eq(LibraryTube.count - @initial_library_tubes)
             expect(mx_tubes.count).to eq(MultiplexedLibraryTube.count - @initial_mx_tubes)
@@ -143,9 +148,8 @@ RSpec.describe SampleManifest, type: :model do
         end
 
         it 'create sample manifest asset' do
-          assets = manifest.sample_manifest_assets.map(&:asset)
-          expect(assets.count).to eq(LibraryTube.count - @initial_library_tubes)
-          expect(assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
+          expect(manifest.assets.count).to eq(LibraryTube.count - @initial_library_tubes)
+          expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
         end
 
         describe '#labware' do

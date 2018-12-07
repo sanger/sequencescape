@@ -27,9 +27,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def generate_sample_and_aliquot(sanger_sample_id, tube)
-      sample = @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
-      RequestFactory.create_external_multiplexed_library_creation_requests([tube], multiplexed_library_tube, study)
-      return sample
+      @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
     end
 
     def io_samples
@@ -57,12 +55,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def mx_tube_from_manifest_asset
-      mx_tube_purpose = Tube::Purpose.standard_mx_tube
-      sm_assets = SampleManifestAsset.where(sample_manifest: self).select do |sm_asset|
-        sm_asset.asset.purpose == mx_tube_purpose
-      end
-      raise(MxLibraryTubeException.new, 'Multiple MX Tubes found') if sm_assets.count > 1
-      sm_assets.first&.asset
+      @manifest.assets.first.requests.first.target_asset
     end
 
     def pending_external_library_creation_requests
@@ -193,8 +186,8 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
   def generate_mx_library
     @library_tubes = generate_tubes(Tube::Purpose.standard_library_tube)
-    mx_tube = Tube::Purpose.standard_mx_tube.create!
-    SampleManifestAsset.create(asset: mx_tube, sample_manifest: self)
-    return mx_tube
+    Tube::Purpose.standard_mx_tube.create!.tap do |mx_tube|
+      RequestFactory.create_external_multiplexed_library_creation_requests(@library_tubes, mx_tube, study)
+    end
   end
 end

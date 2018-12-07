@@ -192,7 +192,7 @@ module SampleManifest::PlateBehaviour
     create_sample(sanger_sample_id).tap do |sample|
       well.aliquots.build(sample: sample)
       well.register_stock!
-      RequestFactory.create_assets_requests([well], study)
+      study.samples << sample
     end
   end
 
@@ -204,6 +204,7 @@ module SampleManifest::PlateBehaviour
                                    sample_manifest: self)
       end
     end
+    RequestFactory.create_assets_requests(plate.wells, study)
     plate.events.created_using_sample_manifest!(user)
   end
 end
