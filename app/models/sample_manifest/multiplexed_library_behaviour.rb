@@ -47,15 +47,19 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def multiplexed_library_tube
-      mx_tube || samples.first.primary_receptacle.requests.first.target_asset || raise(MxLibraryTubeException.new, 'Mx tube not found')
+      mx_tube || raise(MxLibraryTubeException.new, 'Mx tube not found')
     end
 
     def mx_tube
-      @mx_tube ||= mx_tube_from_manifest_asset
+      @mx_tube ||= (mx_tube_from_sample || mx_tube_from_manifest_asset)
+    end
+
+    def mx_tube_from_sample
+      samples.first&.primary_receptacle&.requests&.first&.target_asset
     end
 
     def mx_tube_from_manifest_asset
-      @manifest.assets.first.requests.first.target_asset
+      @manifest.assets.first&.requests&.first&.target_asset
     end
 
     def pending_external_library_creation_requests

@@ -108,13 +108,9 @@ RSpec.describe SampleManifest, type: :model do
           end
 
           it 'create sample manifest asset' do
-            library_tube_purpose = Tube::Purpose.standard_library_tube
-            mx_tube_purpose = Tube::Purpose.standard_mx_tube
-            library_tubes = manifest.assets.select { |asset| asset.purpose == library_tube_purpose }
-            mx_tubes = assets.select { |asset| asset.purpose == mx_tube_purpose }
-            expect(library_tubes.count).to eq(LibraryTube.count - @initial_library_tubes)
-            expect(mx_tubes.count).to eq(MultiplexedLibraryTube.count - @initial_mx_tubes)
-            expect(library_tubes).to eq(LibraryTube.with_barcode(manifest.barcodes))
+            expect(manifest.assets.count).to eq(LibraryTube.count - @initial_library_tubes)
+            expect(manifest.labware.count).to eq(MultiplexedLibraryTube.count - @initial_mx_tubes)
+            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
           end
 
           describe '#labware' do
@@ -183,9 +179,8 @@ RSpec.describe SampleManifest, type: :model do
           end
 
           it 'create sample manifest asset' do
-            assets = manifest.sample_manifest_assets.map(&:asset)
-            expect(assets.count).to eq(SampleTube.count - @initial_sample_tubes)
-            expect(assets).to eq(SampleTube.with_barcode(manifest.barcodes))
+            expect(manifest.assets.count).to eq(SampleTube.count - @initial_sample_tubes)
+            expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes))
           end
 
           it 'create create asset requests when jobs are processed' do
