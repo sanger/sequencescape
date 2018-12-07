@@ -60,12 +60,13 @@ FactoryBot.define do
   factory :multiplexed_library_tube, traits: [:tube_barcode] do
     transient do
       sample_count { 0 }
+      study { create(:study) }
     end
 
     name { generate :asset_name }
     association(:purpose, factory: :mx_tube_purpose)
     after(:build) do |tube, evaluator|
-      tube.aliquots = build_list(:tagged_aliquot, evaluator.sample_count) unless evaluator.sample_count == 0
+      tube.aliquots = build_list(:library_aliquot, evaluator.sample_count, study: evaluator.study) unless evaluator.sample_count == 0
     end
   end
 

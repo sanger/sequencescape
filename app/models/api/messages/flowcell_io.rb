@@ -19,7 +19,10 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def flowcell_barcode
-          lab_events.each { |e| e.descriptor_value_for(flowcell_identifier).tap { |bc| return bc unless bc.nil? } }
+          lab_events.each do |e|
+            e.descriptor_value_for(flowcell_identifier).tap { |bc| return bc if bc.present? }
+          end
+          nil # We have no flowcell barcode
         end
 
         def lane_samples
