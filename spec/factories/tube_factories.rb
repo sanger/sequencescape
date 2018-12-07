@@ -169,4 +169,13 @@ FactoryBot.define do
     name     { |_a| generate :asset_name }
     purpose  { Tube::Purpose.stock_library_tube }
   end
+
+  factory :spiked_buffer do
+    name { generate :asset_name }
+    after(:build) do |tube|
+      tag = create(:tag, map_id: 888, oligo: 'G')
+      tube.aliquots << build(:aliquot, sample: SpikedBuffer.phix_sample, library: tube, tag: tag)
+    end
+    volume { 50 }
+  end
 end

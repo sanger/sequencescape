@@ -14,15 +14,8 @@ class Api::Messages::FlowcellIO < Api::Base
           MANUAL_QC_BOOLS[target_asset.try(:qc_state)]
         end
 
-        def flowcell_identifier
-          'Chip Barcode'
-        end
-
         def flowcell_barcode
-          lab_events.each do |e|
-            e.descriptor_value_for(flowcell_identifier).tap { |bc| return bc if bc.present? }
-          end
-          nil # We have no flowcell barcode
+          detect_descriptor(flowcell_identifier)
         end
 
         def lane_samples
@@ -45,6 +38,29 @@ class Api::Messages::FlowcellIO < Api::Base
 
         def request_purpose_key
           request_purpose.try(:key)
+        end
+
+        def workflow
+          detect_descriptor('Workflow (Standard or Xp)')
+        end
+
+        def spiked_phix_barcode
+          spiked_in_buffer&.human_barcode
+        end
+
+        def spiked_phix_percentage
+          detect_descriptor('PhiX %')
+        end
+
+        def loading_concentration
+          detect_descriptor('Lane loading concentration (pM)')
+        end
+
+        def detect_descriptor(name)
+          lab_events.each do |e|
+            e.descriptor_value_for(name).tap { |bc| return bc if bc.present? }
+          end
+          nil # We have no flowcell barcode
         end
       end
     end
@@ -91,25 +107,16 @@ class Api::Messages::FlowcellIO < Api::Base
   end
 
   module AliquotExtensions
-    module ClassMethods
+    def aliquot_type
+      tag.present? ? 'library_indexed' : 'library'
     end
 
-    def self.included(base)
-      base.class_eval do
-        extend ClassMethods
+    def control_aliquot_type
+      tag.present? ? 'library_indexed_spike' : 'library_control'
+    end
 
-        def aliquot_type
-          tag.present? ? 'library_indexed' : 'library'
-        end
-
-        def control_aliquot_type
-          tag.present? ? 'library_indexed_spike' : 'library_control'
-        end
-
-        def external_library_id
-          library.external_identifier
-        end
-      end
+    def external_library_id
+      library.external_identifier
     end
   end
 
@@ -145,10 +152,6 @@ class Api::Messages::FlowcellIO < Api::Base
         end
         # We alias is as the json generator assumes each method is called only once.
         alias :reverse_read_length :read_length
-
-        def lanes
-          requests
-        end
       end
     end
   end
@@ -162,7 +165,7 @@ class Api::Messages::FlowcellIO < Api::Base
 
   map_attribute_to_json_attribute(:updated_at)
 
-  with_nested_has_many_association(:lanes) do # actually requests
+  with_nested_has_many_association(:requests, as: :lanes) do # actually requests
     map_attribute_to_json_attribute(:manual_qc)
     map_attribute_to_json_attribute(:position)
     map_attribute_to_json_attribute(:priority)
@@ -171,6 +174,10 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:lane_identifier, 'entity_id_lims')
     map_attribute_to_json_attribute(:product_line, 'team')
     map_attribute_to_json_attribute(:request_purpose, 'purpose')
+    map_attribute_to_json_attribute(:spiked_phix_barcode)
+    map_attribute_to_json_attribute(:spiked_phix_percentage)
+    map_attribute_to_json_attribute(:workflow)
+    map_attribute_to_json_attribute(:loading_concentration)
 
     with_nested_has_many_association(:lane_samples, as: :samples) do # actually aliquots
       map_attribute_to_json_attribute(:aliquot_index_value, 'tag_index')

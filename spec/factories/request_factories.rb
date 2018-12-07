@@ -67,13 +67,13 @@ FactoryBot.define do
 
     factory(:complete_sequencing_request) do
       transient do
-        flowcell_barcode { 'fcb' }
+        event_descriptors { { 'Chip Barcode' => 'fcb' } }
       end
       association(:asset, factory: :library_tube)
       association(:target_asset, factory: :lane)
 
       after(:build) do |request, evaluator|
-        request.lab_events << build(:flowcell_event, flowcell_barcode: evaluator.flowcell_barcode)
+        request.lab_events << build(:flowcell_event, descriptors: evaluator.event_descriptors)
       end
     end
   end
