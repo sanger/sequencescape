@@ -241,7 +241,8 @@ RSpec.describe SampleManifest, type: :model do
     context 'where a well has a plate' do
       it 'adds an event to the plate' do
         SampleManifest::PlateBehaviour::Core.new(SampleManifest.new)
-          .updated_by!(user, [well_with_sample_and_plate.primary_aliquot.sample])
+                                            .updated_by!(user,
+                                                         [well_with_sample_and_plate.primary_aliquot.sample])
         expect(Event.last).to eq(well_with_sample_and_plate.plate.events.last)
         expect(well_with_sample_and_plate.plate.events.last).to_not be_nil
       end

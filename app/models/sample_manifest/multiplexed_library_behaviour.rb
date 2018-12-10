@@ -68,6 +68,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
     def labware=(labware)
       raise ArgumentError, 'labware should contain only one element' if labware.count > 1
+
       @mx_tube = labware.first
     end
 
