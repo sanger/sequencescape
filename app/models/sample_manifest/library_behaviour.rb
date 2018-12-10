@@ -76,7 +76,7 @@ module SampleManifest::LibraryBehaviour
     end
 
     def labware
-      labware_from_samples | tubes
+      tubes | labware_from_samples | @manifest.assets
     end
     alias printables labware
 
