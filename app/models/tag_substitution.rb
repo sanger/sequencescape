@@ -12,7 +12,7 @@
 class TagSubstitution
   include ActiveModel::Model
 
-  attr_accessor :user, :ticket, :comment
+  attr_accessor :user, :ticket, :comment, :disable_clash_detection
   attr_reader :substitutions
   attr_writer :name
 
@@ -32,7 +32,7 @@ class TagSubstitution
 
   validates :substitutions, presence: true
   validate :substitutions_valid?, if: :substitutions
-  validate :no_duplicate_tag_pairs, if: :substitutions
+  validate :no_duplicate_tag_pairs, if: :substitutions, unless: :disable_clash_detection
 
   def substitutions_valid?
     @substitutions.reduce(true) do |valid, sub|
