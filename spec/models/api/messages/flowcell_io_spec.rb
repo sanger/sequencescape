@@ -80,9 +80,9 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
           'team' => team.name,
           'purpose' => 'standard',
           'spiked_phix_barcode' => phix.human_barcode,
-          'spiked_phix_percentage' => '12',
+          'spiked_phix_percentage' => 12.0,
           'workflow' => 'standard',
-          'loading_concentration' => '20',
+          'loading_concentration' => 20.0,
           'samples' => [{
             'tag_index' => 1,
             'suboptimal' => false,

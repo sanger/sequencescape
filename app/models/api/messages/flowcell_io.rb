@@ -49,11 +49,28 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def spiked_phix_percentage
-          detect_descriptor('PhiX %')
+          detect_float_descriptor('PhiX %', '%')
         end
 
         def loading_concentration
-          detect_descriptor('Lane loading concentration (pM)')
+          detect_float_descriptor('Lane loading concentration (pM)', 'pM')
+        end
+
+        # Currently the tangled mass that is descriptors does little in the way of validation
+        # This means non-float values have been entered in some case (such as ranges)
+        # This extracts floats only until the data can be repaired, and validation added to prevent
+        # bad data from being added in future
+        def detect_float_descriptor(name, ignored_unit)
+          value = detect_descriptor(name)
+          begin
+            # If someone has added the units to the input, strip them off then convert to a float
+            # We also strip whitespace.
+            # However if float conversion fails, then the input is unsuitable.
+            # Note: .to_f is too permissive here
+            Float(value.gsub(ignored_unit, '').strip)
+          rescue ArgumentError
+            nil
+          end
         end
 
         def detect_descriptor(name)
