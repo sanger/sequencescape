@@ -72,19 +72,13 @@ RSpec.describe SampleManifest, type: :model do
     end
 
     context 'created broadcast event' do
-      context 'rapid generation' do
-        let(:manifest) { create :sample_manifest, study: study, count: 1, purpose: purpose, rapid_generation: true }
-        it 'does not add created broadcast event if subjects are not ready (created on delayed job)' do
-          expect { manifest.generate }.not_to change { BroadcastEvent::SampleManifestCreated.count }
-        end
-      end
       context 'no rapid generation' do
-        let(:manifest) { create :sample_manifest, study: study, count: 1, purpose: purpose }
-        it 'adds created broadcast event when samples are created in real time' do
-          # expect { manifest.generate }.to change { BroadcastEvent::SampleManifestCreated.count }.by(1)
-          # broadcast_event = BroadcastEvent::SampleManifestCreated.last
-          # expect(broadcast_event.subjects.count).to eq 98
-          # expect(broadcast_event.to_json).to be_a String
+        let(:manifest) { create :sample_manifest, study: study }
+        it 'adds created broadcast event when sample manifest is created' do
+          expect { manifest.generate }.to change { BroadcastEvent::SampleManifestCreated.count }.by(1)
+          broadcast_event = BroadcastEvent::SampleManifestCreated.last
+          expect(broadcast_event.subjects.count).to eq 2
+          expect(broadcast_event.to_json).to be_a String
         end
       end
     end

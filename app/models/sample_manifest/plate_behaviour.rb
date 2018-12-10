@@ -129,8 +129,14 @@ module SampleManifest::PlateBehaviour
       end
     end
 
+    # This retrieves plates from old sample manifest that don't have records in
+    # SampleManifestAsset
     def labware_from_samples
       samples.map { |s| s.primary_receptacle.plate }.uniq
+    end
+
+    def labware_from_manifest_assets
+      @manifest.assets.map(&:plate).uniq
     end
 
     def labware=(labware)
@@ -138,7 +144,7 @@ module SampleManifest::PlateBehaviour
     end
 
     def labware
-      labware_from_samples | plates
+      plates | labware_from_samples | labware_from_manifest_assets
     end
     alias printables labware
   end
