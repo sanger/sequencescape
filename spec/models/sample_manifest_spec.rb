@@ -92,20 +92,27 @@ RSpec.describe SampleManifest, type: :model do
           setup { manifest.generate }
 
           it 'create 1 MX tube' do
-            # assert_equal count, Sample.count                 - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal count, LibraryTube.count - @initial_library_tubes
-            # assert LibraryTube.last.aliquots.first.library_id
-            assert_equal 1, MultiplexedLibraryTube.count - @initial_mx_tubes
-            # assert_equal count, study.samples.count - @initial_in_study
-            # expect(BroadcastEvent.count - @initial_broadcast_events).to eq 1
-            # expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+            expect(LibraryTube.count - @initial_library_tubes).to eq(count)
+            expect(MultiplexedLibraryTube.count - @initial_mx_tubes).to eq(1)
           end
 
           it 'create sample manifest asset' do
             expect(manifest.assets.count).to eq(LibraryTube.count - @initial_library_tubes)
             expect(manifest.labware.count).to eq(MultiplexedLibraryTube.count - @initial_mx_tubes)
             expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
+          end
+
+          it 'create sample and aliquots' do
+            SampleManifestAsset.where(sample_manifest: manifest).each do |sma|
+              manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset)
+            end
+            expect(Sample.count - @initial_samples).to eq(count)
+            expect(LibraryTube.last.aliquots.first.library).to eq(manifest.assets.last)
+            expect(study.samples.count - @initial_in_study).to eq(count)
+            expect(BroadcastEvent.count - @initial_broadcast_events).to eq(1)
+            manifest.samples.reset
+            expect(manifest.samples.first.primary_aliquot.study).to eq(study)
           end
 
           describe '#labware' do
@@ -128,19 +135,27 @@ RSpec.describe SampleManifest, type: :model do
         setup { manifest.generate }
 
         it 'create 1 tube' do
-          # assert_equal 1, Sample.count - @initial_samples
           # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-          assert_equal 1, LibraryTube.count - @initial_library_tubes
-          # assert LibraryTube.last.aliquots.first.library_id
-          assert_equal @initial_mx_tubes, MultiplexedLibraryTube.count
-          # assert_equal 1, study.samples.count - @initial_in_study
-          assert_equal @initial_sample_tubes, SampleTube.count
-          # expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+          expect(LibraryTube.count - @initial_library_tubes).to eq(count)
+          expect(MultiplexedLibraryTube.count).to eq(@initial_mx_tubes)
+          expect(SampleTube.count).to eq(@initial_sample_tubes)
         end
 
         it 'create sample manifest asset' do
           expect(manifest.assets.count).to eq(LibraryTube.count - @initial_library_tubes)
           expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
+        end
+
+        it 'create sample and aliquots' do
+          SampleManifestAsset.where(sample_manifest: manifest).each do |sma|
+            manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset)
+          end
+          expect(Sample.count - @initial_samples).to eq(count)
+          expect(LibraryTube.last.aliquots.first.library).to eq(manifest.assets.last)
+          expect(study.samples.count - @initial_in_study).to eq(count)
+          expect(BroadcastEvent.count - @initial_broadcast_events).to eq(count)
+          manifest.samples.reset
+          expect(manifest.samples.first.primary_aliquot.study).to eq(study)
         end
 
         describe '#labware' do
@@ -164,13 +179,8 @@ RSpec.describe SampleManifest, type: :model do
           setup { manifest.generate }
 
           it "create #{count} tubes(s)" do
-            # assert_equal count, Sample.count - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal count, SampleTube.count - @initial_sample_tubes
-            # expect(SampleTube.last.aliquots.first.library_id).to be_nil
-            # assert_equal count, study.samples.count - @initial_in_study
-            # assert_equal count, Messenger.count - @initial_messenger_count
-            # expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+            expect(SampleTube.count - @initial_sample_tubes).to eq(count)
           end
 
           it 'create sample manifest asset' do
@@ -178,11 +188,23 @@ RSpec.describe SampleManifest, type: :model do
             expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes))
           end
 
+          it 'create sample and aliquots' do
+            SampleManifestAsset.where(sample_manifest: manifest).each do |sma|
+              manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset)
+            end
+            expect(Sample.count - @initial_samples).to eq(count)
+            expect(SampleTube.last.aliquots.first.library).to be_nil
+            expect(study.samples.count - @initial_in_study).to eq(count)
+            expect(Messenger.count - @initial_messenger_count).to eq(count)
+            manifest.samples.reset
+            expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+          end
+
           it 'create create asset requests when jobs are processed' do
             # Not entirely certain this behaviour is all that useful to us.
             Delayed::Worker.new.work_off
-            # assert_equal SampleTube.last.requests.count, 1
-            # assert SampleTube.last.requests.first.is_a?(CreateAssetRequest)
+            expect(SampleTube.last.requests.count).to eq(1)
+            expect(SampleTube.last.requests.first).to be_a(CreateAssetRequest)
           end
 
           describe '#labware' do
@@ -218,8 +240,9 @@ RSpec.describe SampleManifest, type: :model do
     end
     context 'where a well has a plate' do
       it 'adds an event to the plate' do
-        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(user, [well_with_sample_and_plate.primary_aliquot.sample])
-        assert_equal Event.last, well_with_sample_and_plate.plate.events.last
+        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new)
+          .updated_by!(user, [well_with_sample_and_plate.primary_aliquot.sample])
+        expect(Event.last).to eq(well_with_sample_and_plate.plate.events.last)
         expect(well_with_sample_and_plate.plate.events.last).to_not be_nil
       end
     end
@@ -238,7 +261,7 @@ RSpec.describe SampleManifest, type: :model do
     end
 
     it 'should have one job per plate' do
-      assert_equal(manifest.count, Delayed::Job.count, 'number of delayed jobs does not match number of plates')
+      expect(Delayed::Job.count).to eq(manifest.count)
     end
 
     context 'delayed jobs' do
@@ -248,10 +271,16 @@ RSpec.describe SampleManifest, type: :model do
         Delayed::Job.first.invoke_job
       end
 
-      it 'change Sample.count by 96' do
-        # assert_equal 96, Sample.count - @sample_count, 'Expected Sample.count to change by 96'
-        # expect(BroadcastEvent.count - @initial_broadcast_events).to eq 1
-        # expect(BroadcastEvent.last.subjects.count).to eq 98
+      it 'broadcast one event with two subjects' do
+        expect(BroadcastEvent.count - @initial_broadcast_events).to eq(1)
+        expect(BroadcastEvent.last.subjects.count).to eq(2)
+      end
+
+      it 'create samples' do
+        SampleManifestAsset.where(sample_manifest: manifest).each do |sma|
+          manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset)
+        end
+        expect(Sample.count - @sample_count).to eq(96)
       end
     end
   end
