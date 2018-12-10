@@ -10,46 +10,75 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
     let(:asset_invalid_uuid) { attributes_for(:qc_result) }
     let(:asset_invalid_key) { attributes_for(:qc_result).except(:key).merge(uuid: create(:asset).uuid) }
 
-    it 'creates a resource for each item passed' do
-      factory = QcResultFactory.new([asset_1, asset_2, asset_3])
-      expect(factory.resources.count).to eq(3)
-    end
+    context 'passed as an array' do
+      it 'creates a resource for each item passed' do
+        factory = QcResultFactory.new([asset_1, asset_2, asset_3])
+        expect(factory.resources.count).to eq(3)
+      end
 
-    it 'creates an assay to group all items passed' do
-      factory = QcResultFactory.new([asset_1, asset_2, asset_3])
-      expect(factory.qc_assay).to be_a(QcAssay)
-      factory.resources.each do |resource|
-        expect(resource.qc_assay).to eq(factory.qc_assay)
+      it 'creates an assay to group all items passed' do
+        factory = QcResultFactory.new([asset_1, asset_2, asset_3])
+        expect(factory.qc_assay).to be_a(QcAssay)
+        factory.resources.each do |resource|
+          expect(resource.qc_assay).to eq(factory.qc_assay)
+        end
+      end
+
+      it '#save saves all of the resources if they are valid' do
+        factory = QcResultFactory.new([asset_1, asset_2, asset_3])
+        expect(factory).to be_valid
+        expect(factory.save).to be_truthy
+        expect(QcResult.all.count).to eq(3)
+        expect(QcAssay.all.count).to eq(1)
+        QcResult.all.each do |qc_result|
+          expect(qc_result.qc_assay).to eq QcAssay.last
+        end
+      end
+
+      it 'produces sensible error messages if the resource is not valid' do
+        factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_uuid])
+        expect(factory).to_not be_valid
+        expect(factory.errors.full_messages.first).to include(factory.resources.last.message_id)
+
+        factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_key])
+        expect(factory).to_not be_valid
+        expect(factory.errors.full_messages.first).to include(factory.resources.last.message_id)
+      end
+
+      it '#save does not save any of the resources unless they are all valid' do
+        factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_key])
+        expect(factory).to_not be_valid
+        expect(factory.save).to be_falsey
+        expect(QcResult.all).to be_empty
+        expect(QcAssay.all).to be_empty
       end
     end
 
-    it '#save saves all of the resources if they are valid' do
-      factory = QcResultFactory.new([asset_1, asset_2, asset_3])
-      expect(factory).to be_valid
-      expect(factory.save).to be_truthy
-      expect(QcResult.all.count).to eq(3)
-      expect(QcAssay.all.count).to eq(1)
-      QcResult.all.each do |qc_result|
-        expect(qc_result.qc_assay).to eq QcAssay.last
+    context 'passed as an object' do
+      it 'creates a resource for each item passed' do
+        factory = QcResultFactory.new(qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567')
+        expect(factory.resources.count).to eq(3)
       end
-    end
 
-    it 'produces sensible error messages if the resource is not valid' do
-      factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_uuid])
-      expect(factory).to_not be_valid
-      expect(factory.errors.full_messages.first).to include(factory.resources.last.message_id)
+      it 'creates an assay to group all items passed' do
+        factory = QcResultFactory.new(qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567')
+        expect(factory.qc_assay).to be_a(QcAssay)
+        expect(factory.qc_assay.lot_number).to eq('LN1234567')
+        factory.resources.each do |resource|
+          expect(resource.qc_assay).to eq(factory.qc_assay)
+        end
+      end
 
-      factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_key])
-      expect(factory).to_not be_valid
-      expect(factory.errors.full_messages.first).to include(factory.resources.last.message_id)
-    end
-
-    it '#save does not save any of the resources unless they are all valid' do
-      factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_key])
-      expect(factory).to_not be_valid
-      expect(factory.save).to be_falsey
-      expect(QcResult.all).to be_empty
-      expect(QcAssay.all).to be_empty
+      it '#save saves all of the resources if they are valid' do
+        factory = QcResultFactory.new(qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567')
+        expect(factory).to be_valid
+        expect(factory.save).to be_truthy
+        expect(QcResult.all.count).to eq(3)
+        expect(QcAssay.all.count).to eq(1)
+        QcResult.all.each do |qc_result|
+          expect(qc_result.qc_assay).to eq QcAssay.last
+        end
+      end
     end
   end
 
