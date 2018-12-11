@@ -28,7 +28,7 @@ module SampleManifestExcel
       def initialize(attributes = {})
         super
         @data = Upload::Data.new(filename, start_row)
-        @columns = column_list.extract(data.header_row || [])
+        @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
         @rows = Upload::Rows.new(data, columns)
         @sample_manifest = derive_sample_manifest

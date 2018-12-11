@@ -316,27 +316,6 @@ Feature: Sample manifest
   #     | sample_3         | c             | Genomic                        |
   #     | sample_4         | d             | Amniocentesis Cultured         |
 
-  # @is_control
-  # Scenario: Check is_control and is_resubmit are set properly in an uploaded manifest
-  #   Given a manifest has been created for "Test study"
-  #   When I fill in "File to upload" with the file "test/data/test_is_control_is_resubmit.csv"
-  #   And I press "Upload manifest"
-  #   Given 1 pending delayed jobs are processed
-  #   When I refresh the page
-  #   Then I should see the manifest table:
-  #     | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
-  #     | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
-  #   Then the sample controls and resubmits should look like:
-  #     | sanger_sample_id | supplier_name | is_control | is_resubmit |
-  #     | sample_1         | a             | false      | true        |
-  #     | sample_2         | b             | false      | true        |
-  #     | sample_3         | c             | false      | true        |
-  #     | sample_4         | d             | false      | true        |
-  #     | sample_5         | e             | true       | false       |
-  #     | sample_6         | f             | true       | false       |
-  #     | sample_7         | g             | true       | false       |
-  #     | sample_8         | h             | true       | false       |
-
 
   # @override
   # Scenario: Upload some empty samples, reupload with samples but without override set
