@@ -29,14 +29,14 @@ shared_examples 'a correct double label printer' do
         body: [{
           main_label: {
             left_text: plate1.human_barcode,
-            right_text: "#{batch.studies.first.abbreviation} #{plate1.barcode_number}",
+            right_text: "#{plate1.barcode_number}",
             barcode: plate1.ean13_barcode
           }
         },
         {
           extra_label: {
             left_text: date_today,
-            right_text: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number}"
+            right_text: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
           }
         }]
       }

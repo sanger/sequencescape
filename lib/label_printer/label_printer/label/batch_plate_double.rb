@@ -17,13 +17,13 @@ module LabelPrinter
 
       def create_label(plate)
         { left_text: plate.human_barcode,
-          right_text: "#{@batch.studies.first.abbreviation} #{plate.barcode_number}",
+          right_text: "#{plate.barcode_number}",
           barcode: barcode(plate) }
       end
 
       def create_extra_label(plate)
         { left_text: date_today,
-          right_text: "#{@batch.output_plate_role} #{@batch.output_plate_purpose.name} #{plate.barcode_number}" }
+          right_text: "#{@batch.output_plate_role} #{@batch.output_plate_purpose.name} #{plate.barcode_number} #{@batch.studies.first.abbreviation}" }
       end
     end
   end
