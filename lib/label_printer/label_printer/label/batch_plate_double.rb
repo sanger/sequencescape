@@ -16,8 +16,8 @@ module LabelPrinter
       end
 
       def create_label(plate)
-        { left_text: plate.human_barcode,
-          right_text: "#{plate.barcode_number}",
+        { left_text: plate.human_barcode.to_s,
+          right_text: plate.barcode_number.to_s,
           barcode: barcode(plate) }
       end
 

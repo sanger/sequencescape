@@ -28,8 +28,8 @@ shared_examples 'a correct double label printer' do
       labels: {
         body: [{
           main_label: {
-            left_text: plate1.human_barcode,
-            right_text: "#{plate1.barcode_number}",
+            left_text: plate1.human_barcode.to_s,
+            right_text: plate1.barcode_number.to_s,
             barcode: plate1.ean13_barcode
           }
         },
