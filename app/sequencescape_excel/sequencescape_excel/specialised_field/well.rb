@@ -15,9 +15,9 @@ module SequencescapeExcel
       private
 
       def check_container
-        return if value == sample.wells.first.map.description
+        return if value == sample.primary_receptacle.try(:map_description)
 
-        errors.add(:sample, 'You can not move samples between plates or modify barcodes')
+        errors.add(:sample, 'cannot be moved between wells. The well and Sanger sample id columns should not be changed.')
       end
     end
   end

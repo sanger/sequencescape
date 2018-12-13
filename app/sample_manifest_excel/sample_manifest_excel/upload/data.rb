@@ -4,7 +4,7 @@ module SampleManifestExcel
   module Upload
     ##
     # An object to store the data for a particular manifest upload.
-    # The data is split into a header row (clumn names) and the actual data.
+    # The data is split into a header row (column names) and the actual data.
     class Data
       include ActiveModel::Model
       include Enumerable
@@ -12,6 +12,7 @@ module SampleManifestExcel
       attr_reader :sheet, :header_row, :data, :start_row, :filename
 
       validates_presence_of :start_row, :filename
+      validates :file_extension, inclusion: { in: ['.csv', '.xlsx'].freeze, message: 'is unsupported; should be csv or xlsx' }
 
       ##
       # The file is opened as a Roo spreadsheet.
@@ -20,7 +21,6 @@ module SampleManifestExcel
       def initialize(filename, start_row)
         @filename = filename
         @start_row = start_row
-
         if valid?
           @sheet = Roo::Spreadsheet.open(filename).sheet(0)
           @header_row = sheet.row(start_row)
@@ -33,6 +33,10 @@ module SampleManifestExcel
 
       def each(&block)
         data.each(&block)
+      end
+
+      def file_extension
+        File.extname(filename)
       end
 
       ##

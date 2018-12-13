@@ -15,7 +15,7 @@ class SampleManifest::Uploader
 
   validate :check_upload
 
-  delegate :processed?, to: :upload
+  delegate :processed?, :study, to: :upload
 
   def initialize(filename, configuration, user, override)
     @filename = filename

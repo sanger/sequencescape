@@ -45,7 +45,7 @@ Feature: Sample manifest
       | Contains  | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
       | 5 1dtubes | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
 
-    Then follow "using the new sample manifest upload page here"
+    # Then follow "using the new sample manifest upload page here"
     When I fill in "File to upload" with the file "test/data/tube_sample_manifest.csv"
     And I press "Upload manifest"
     Then I should see the manifest table:

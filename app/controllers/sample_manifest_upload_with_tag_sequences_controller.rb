@@ -11,7 +11,8 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
       if @uploader.valid?
         if @uploader.run!
           flash[:notice] = 'Sample manifest successfully uploaded.'
-          redirect_to '/sample_manifest_upload_with_tag_sequences/new'
+          redirect_target = (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
+          redirect_to redirect_target
         else
           flash.now[:error] = 'Your sample manifest couldn\'t be uploaded.'
           prepare_manifest_pagination

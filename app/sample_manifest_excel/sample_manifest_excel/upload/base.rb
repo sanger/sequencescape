@@ -19,11 +19,15 @@ module SampleManifestExcel
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
-      validate :check_columns, :check_processor, :check_rows
+      validate :check_data
+      # If the file isn't valid, and hasn't been read, then don't the contents
+      # it will just appear to be empty, which is confusing.
+      validate :check_columns, :check_processor, :check_rows, if: :data_valid?
       validate :check_processor, if: :processor?
 
       delegate :processed?, to: :processor
       delegate :data_at, to: :rows
+      delegate :study, to: :sample_manifest, allow_nil: true
 
       def initialize(attributes = {})
         super
@@ -109,6 +113,14 @@ module SampleManifestExcel
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end
+      end
+
+      def data_valid?
+        data.valid?
+      end
+
+      def check_data
+        check_object(data)
       end
 
       def check_rows

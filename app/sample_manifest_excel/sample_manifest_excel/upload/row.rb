@@ -13,7 +13,7 @@ module SampleManifestExcel
       include ActiveModel::Model
 
       attr_accessor :number, :data, :columns
-      attr_reader :sample, :sanger_sample_id
+      attr_reader :sanger_sample_id
 
       validates :number, presence: true, numericality: true
       validates_presence_of :data, :columns
@@ -27,14 +27,8 @@ module SampleManifestExcel
       def initialize(attributes = {})
         super
         @sanger_sample_id ||= value(:sanger_sample_id) if columns.present? && data.present?
-        @sample ||= find_or_create_sample if sanger_sample_id.present?
         @specialised_fields = create_specialised_fields if sanger_sample_id.present?
         link_tag_groups_and_indexes
-      end
-
-      def find_or_create_sample
-        sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
-        sample.presence || create_sample
       end
 
       ##
@@ -80,13 +74,16 @@ module SampleManifestExcel
       # *Saving the aliquot, metadata and sample
       def update_sample(tag_group, override)
         return unless valid?
-        return if sample.updated_by_manifest && !override
 
-        update_specialised_fields(tag_group)
-        aliquot.save
-        metadata.save
-        sample.updated_by_manifest = true
-        @sample_updated = sample.save
+        if sample.updated_by_manifest && !override
+          @sample_skipped = true
+        else
+          update_specialised_fields(tag_group)
+          aliquot.save!
+          metadata.save!
+          sample.updated_by_manifest = true
+          @sample_updated = sample.save
+        end
       end
 
       def update_specialised_fields(tag_group)
@@ -118,8 +115,16 @@ module SampleManifestExcel
         @reuploaded || false
       end
 
+      def sample
+        @sample ||= find_or_create_sample if sanger_sample_id.present? && !empty?
+      end
+
       def sample_updated?
         @sample_updated || false
+      end
+
+      def sample_skipped_or_updated?
+        @sample_skipped || sample_updated?
       end
 
       def aliquot_transferred?
@@ -128,12 +133,17 @@ module SampleManifestExcel
 
       def empty?
         primary_column = 'supplier_name'
-        return true unless sample.present? && columns.present? && columns.valid? && columns.names.include?(primary_column)
+        return true unless columns.present? && columns.valid? && columns.names.include?(primary_column)
 
         value(primary_column).blank?
       end
 
       private
+
+      def find_or_create_sample
+        sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
+        sample.presence || create_sample
+      end
 
       def create_sample
         manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)

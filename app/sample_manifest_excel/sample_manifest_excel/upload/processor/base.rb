@@ -36,7 +36,7 @@ module SampleManifestExcel
         end
 
         def samples_updated?
-          upload.rows.all?(&:sample_updated?) || log_error_and_return_false('could not update samples.')
+          upload.rows.all?(&:sample_skipped_or_updated?) || log_error_and_return_false('Could not update samples')
         end
 
         def processed?

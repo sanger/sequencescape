@@ -29,7 +29,7 @@ end
 
 def sequence_sanger_sample_ids_for(plate)
   plate.wells.in_column_major_order.each_with_index do |well, index|
-    well.primary_aliquot.sample.update!(sanger_sample_id: yield(index))
+    well.primary_aliquot&.sample&.update!(sanger_sample_id: yield(index))
   end
 end
 
@@ -47,7 +47,7 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
   #   tube.aliquots.first.sample.update!(sanger_sample_id: "tube_sample_#{idx + 1}")
   # end
   SampleManifestAsset.order(:asset_id).each_with_index do |sm_asset, idx|
-    sm_asset.update!(sanger_sample_id: "sample_#{idx + 1}")
+    sm_asset.update!(sanger_sample_id: "sample_#{idx}")
   end
   # LibraryTube.order(:id).each_with_index do |tube, idx|
   #   tube.aliquots.first.sample.update!(sanger_sample_id: "tube_sample_#{idx + 1}")
@@ -65,25 +65,26 @@ end
 Then /^the samples table should look like:$/ do |table|
   table.hashes.each do |expected_data|
     sanger_sample_id = expected_data[:sanger_sample_id]
-    sample = Sample.find_by(sanger_sample_id: sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
+    sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
 
-    if expected_data[:empty_supplier_sample_name] == 'true'
-      assert(sample.empty_supplier_sample_name, "Supplier sample name not nil for #{sanger_sample_id}")
+    if expected_data[:empty_supplier_sample_name] || expected_data[:sample_absent] == 'true'
+      assert_nil sample, "#{sanger_sample_id} exists but should not be created"
     else
+      assert sample.present?, "#{sanger_sample_id} does not exist, yet should be present"
       assert_equal(expected_data[:supplier_name], sample.sample_metadata.supplier_name, "Supplier sample name invalid for #{sanger_sample_id}")
     end
 
-    if sample.sample_metadata.sample_taxon_id.blank?
-      assert_nil(sample.sample_metadata.sample_taxon_id, "Sample taxon ID not nil for #{sanger_sample_id}")
+    if expected_data[:sample_taxon_id].blank?
+      assert_nil(sample&.sample_metadata&.sample_taxon_id, "Sample taxon ID not nil for #{sanger_sample_id}")
     else
       assert_equal(expected_data[:sample_taxon_id].to_i, sample.sample_metadata.sample_taxon_id, "Sample taxon ID invalid for #{sanger_sample_id}")
     end
 
     expected_data.each do |k, v|
       next if v.blank?
-      next if [:sanger_sample_id, :empty_supplier_sample_name, :supplier_name, :sample_taxon_id].include?(:"#{k}")
+      next if [:sanger_sample_id, :empty_supplier_sample_name, :sample_absent, :supplier_name, :sample_taxon_id].include?(:"#{k}")
 
-      assert_equal(v, sample.sample_metadata.send(k), "Sample #{k} invalid for #{sanger_sample_id}")
+      assert_equal(v, sample.sample_metadata.send(k), "Sample #{k} does not match the expected value for #{sanger_sample_id}")
     end
   end
 end
