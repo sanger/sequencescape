@@ -45,9 +45,9 @@ Feature: Sample manifest
       | Contains  | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
       | 5 1dtubes | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
 
-    # Then follow "using the new sample manifest upload page here"
     When I fill in "File to upload" with the file "test/data/tube_sample_manifest.csv"
     And I press "Upload manifest"
+    Then I should see "Sample manifest successfully uploaded."
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors | State   | Created by |
       | 5 1dtubes | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
@@ -56,11 +56,11 @@ Feature: Sample manifest
     And study "Test study" should have 5 samples
 
     Then the samples table should look like:
-      | sanger_sample_id      | supplier_name | empty_supplier_sample_name | sample_taxon_id |
-      | sample_1         | aaaa          | false                      | 9606            |
-      | sample_2         | bbbb          | false                      | 9606            |
-      | sample_3         | cccc          | false                      | 9606            |
-      | sample_4         | dddd          | false                      | 9606            |
-      | sample_5         | eeee          | false                      | 9606            |
+      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id |
+      | sample_0         | aaaa          | false                      | 9606            |
+      | sample_1         | bbbb          | false                      | 9606            |
+      | sample_2         | cccc          | false                      | 9606            |
+      | sample_3         | dddd          | false                      | 9606            |
+      | sample_4         | eeee          | false                      | 9606            |
 
 

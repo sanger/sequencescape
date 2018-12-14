@@ -67,7 +67,7 @@ Then /^the samples table should look like:$/ do |table|
     sanger_sample_id = expected_data[:sanger_sample_id]
     sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
 
-    if expected_data[:empty_supplier_sample_name] || expected_data[:sample_absent] == 'true'
+    if expected_data.fetch(:empty_supplier_sample_name, expected_data[:sample_absent]) == 'true'
       assert_nil sample, "#{sanger_sample_id} exists but should not be created"
     else
       assert sample.present?, "#{sanger_sample_id} does not exist, yet should be present"

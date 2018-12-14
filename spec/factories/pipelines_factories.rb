@@ -283,7 +283,7 @@ FactoryBot.define do
     oligo
   end
 
-  factory :tag_group do |_t|
+  factory :tag_group do
     sequence(:name) { |n| "Tag Group #{n}" }
 
     transient do
