@@ -208,7 +208,7 @@ class Sample < ApplicationRecord
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
 
-  belongs_to :sample_manifest
+  belongs_to :sample_manifest, inverse_of: :samples
 
   has_many_lab_events
   acts_as_authorizable

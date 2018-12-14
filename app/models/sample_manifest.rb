@@ -53,7 +53,7 @@ class SampleManifest < ApplicationRecord
   belongs_to :project
   belongs_to :user
   belongs_to :purpose
-  has_many :samples
+  has_many :samples, inverse_of: :sample_manifest
   accepts_nested_attributes_for :samples
 
   has_many :sample_manifest_assets
