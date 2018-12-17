@@ -7,8 +7,15 @@ class QcResultFactory
 
   validate :check_resources
 
+  attr_accessor :lot_number
+
   def initialize(attributes = [])
-    build_resources(attributes)
+    if attributes.is_a?(Array)
+      build_resources(attributes)
+    else
+      @lot_number = attributes[:lot_number]
+      build_resources(attributes[:qc_results])
+    end
   end
 
   def resources
@@ -16,7 +23,7 @@ class QcResultFactory
   end
 
   def qc_assay
-    @qc_assay ||= QcAssay.new
+    @qc_assay ||= QcAssay.new(lot_number: lot_number)
   end
 
   def build_resources(assets)

@@ -25,7 +25,7 @@ describe LabelPrinter::Label::SampleManifestPlateDouble do
           },
                  {
                    extra_label: {
-                     left_text: Date.today.strftime('%e-%^b-%Y'),
+                     left_text: Time.zone.today.strftime('%e-%^b-%Y'),
                      right_text: sample_manifest.purpose.name
                    }
                  }]

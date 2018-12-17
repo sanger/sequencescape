@@ -193,6 +193,18 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             expect(processor.downstream_aliquots_updated?).to be_truthy
           end
 
+          it 'will update the aliquots downstream in dual index cases where the subtitured tags along look like a tag clash' do
+            # We already have distinct tag2s, so by setting these to the same, we aren't creating a tag clash.
+            download.worksheet.axlsx_worksheet.rows[10].cells[2].value = 'ATAGATAGATAG'
+            download.worksheet.axlsx_worksheet.rows[11].cells[2].value = 'ATAGATAGATAG'
+            download.save(new_test_file)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
+            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
+            processor.update_samples_and_aliquots(tag_group)
+            expect(processor.aliquots_updated?).to be_truthy
+            expect(processor.downstream_aliquots_updated?).to be_truthy
+          end
+
           it 'will not update the aliquots downstream if there is nothing to update' do
             download.save(new_test_file)
             reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)

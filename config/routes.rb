@@ -27,6 +27,7 @@ Sequencescape::Application.routes.draw do
       jsonapi_resources :projects
       jsonapi_resources :qc_results
       jsonapi_resources :assets
+      jsonapi_resources :qc_assays
 
       namespace :aker do
         resources :jobs, only: [:create]
