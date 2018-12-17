@@ -10,9 +10,10 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     end
   end
 
-  let(:test_file)               { 'test_file.xlsx' }
-  let!(:tag_group)              { create(:tag_group) }
-  let(:columns)                 { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
+  let(:test_file) { 'test_file.xlsx' }
+  let!(:tag_group) { create(:tag_group) }
+  let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
+  let(:user) { create :user, login: 'test_user' }
 
   it 'is valid if all of the headings relate to a column' do
     download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
@@ -67,15 +68,16 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload.sample_manifest.state).to eq 'completed'
   end
 
-  it 'knows how to create sample_manifest.updated broadcast event' do
+  it 'knows how to create sample_manifest.updated broadcast event for library tubes' do
     download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
-    user = create :user, login: 'test_user'
     expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
     # subjects are 1 study, 6 tubes and 6 samples
     expect(BroadcastEvent.first.subjects.count).to eq 13
+  end
 
+  it 'knows how to create sample_manifest.updated broadcast event for multiplex tubes' do
     download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
