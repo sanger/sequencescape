@@ -29,8 +29,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def export
     @manifest = SampleManifest.find(params[:id])
     send_data(@manifest.generated_document.current_data,
-              filename: "manifest_#{@manifest.id}.xlsx",
-              type: 'application/excel')
+              filename: "#{@manifest.default_filename}.xlsx",
+              type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   end
 
   def uploaded_spreadsheet

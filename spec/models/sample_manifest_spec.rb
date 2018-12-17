@@ -3,6 +3,15 @@ require 'rails_helper'
 RSpec.describe SampleManifest, type: :model do
   let(:user) { create :user }
 
+  context '#default_filename' do
+    let(:study) { create :study }
+    let(:manifest) { create :sample_manifest, study: study, created_at: Date.parse('25/10/2018') }
+
+    it 'includes the information requested' do
+      expect(manifest.default_filename).to eq("#{study.id}stdy_manifest_#{manifest.id}_251018")
+    end
+  end
+
   context '#generate' do
     let(:study) { create :study }
     let(:manifest) { create :sample_manifest, study: study, count: count, asset_type: asset_type, purpose: purpose }

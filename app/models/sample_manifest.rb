@@ -101,6 +101,10 @@ class SampleManifest < ApplicationRecord
     "Manifest_#{id}"
   end
 
+  def default_filename
+    "#{study_id}stdy_manifest_#{id}_#{created_at.to_formatted_s(:dmy)}"
+  end
+
   # TODO[xxx] Consider index to make it faster
   scope :pending_manifests, ->() {
     order('sample_manifests.id DESC')
