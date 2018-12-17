@@ -36,8 +36,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def uploaded_spreadsheet
     @manifest = SampleManifest.find(params[:id])
     send_data(@manifest.uploaded_document.current_data,
-              filename: "manifest_#{@manifest.id}.csv",
-              type: 'application/excel')
+              filename: @manifest.uploaded_document.filename,
+              type: @manifest.uploaded_document.content_type || 'application/vnd.ms-excel')
   end
 
   def new
