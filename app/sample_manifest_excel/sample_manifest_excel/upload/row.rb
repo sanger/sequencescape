@@ -86,6 +86,10 @@ module SampleManifestExcel
         end
       end
 
+      def changed?
+        @sample_updated && sample.previous_changes.present? || metadata.previous_changes.present? || aliquot.previous_changes.present?
+      end
+
       def update_specialised_fields(tag_group)
         specialised_fields.each do |specialised_field|
           specialised_field.update(aliquot: aliquot, tag_group: tag_group)
@@ -136,6 +140,10 @@ module SampleManifestExcel
         return true unless columns.present? && columns.valid? && columns.names.include?(primary_column)
 
         value(primary_column).blank?
+      end
+
+      def labware
+        sample.primary_receptacle.labware
       end
 
       private

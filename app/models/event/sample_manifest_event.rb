@@ -15,7 +15,7 @@ class Event::SampleManifestEvent < Event
       message: 'Updated by Sample Manifest',
       content: Date.today.to_s,
       family: 'updated_sample_using_sample_manifest',
-      created_by: user ? user.login : nil
+      created_by: user&.login
     )
   end
 end

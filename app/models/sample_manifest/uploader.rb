@@ -11,8 +11,8 @@ class SampleManifest::Uploader
 
   attr_reader :filename, :configuration, :tag_group, :upload, :user, :override
 
-  validates :filename, :configuration, :tag_group, :user, presence: true
-
+  validates :filename, :configuration, :user, presence: true
+  validates :tag_group, presence: { message: 'is not correctly configured for manifest generation' }
   validate :check_upload
 
   delegate :processed?, :study, to: :upload
@@ -48,7 +48,7 @@ class SampleManifest::Uploader
   private
 
   def create_tag_group
-    TagGroup.find_or_create_by(name: configuration.tag_group) if configuration.tag_group.present?
+    TagGroup.find_or_create_by!(name: configuration.tag_group) if configuration.tag_group.present?
   end
 
   def check_upload

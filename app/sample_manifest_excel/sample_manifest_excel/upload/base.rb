@@ -82,7 +82,14 @@ module SampleManifestExcel
       end
 
       def broadcast_sample_manifest_updated_event(user)
-        sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted)
+        # Send to event warehouse
+        sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted.map(&:id))
+        # Log legacy events: Show on history page, and may be used by reports.
+        # We can get rid of these when:
+        # - History page is updates with event warehouse viewer
+        # - We've confirmed that no external reports use these events
+        samples_to_be_broadcasted.each { |sample| sample.handle_update_event(user) }
+        labware_to_be_broadcasted.each { |labware| labware.events.updated_using_sample_manifest!(user) }
       end
 
       def complete
@@ -148,7 +155,11 @@ module SampleManifestExcel
       end
 
       def samples_to_be_broadcasted
-        rows.map { |row| row.sample.id }
+        @samples_to_be_broadcasted ||= rows.select(&:changed?).map(&:sample)
+      end
+
+      def labware_to_be_broadcasted
+        @labware_to_be_broadcasted ||= rows.select(&:changed?).reduce(Set.new) { |set, row| set << row.labware }
       end
     end
   end
