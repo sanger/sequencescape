@@ -9,22 +9,22 @@
 class SampleManifest::Uploader
   include ActiveModel::Validations
 
-  attr_reader :filename, :configuration, :tag_group, :upload, :user, :override
+  attr_reader :file, :configuration, :tag_group, :upload, :user, :override
 
-  validates :filename, :configuration, :tag_group, :user, presence: true
+  validates :file, :configuration, :tag_group, :user, presence: true
 
   validate :check_upload
 
   delegate :processed?, to: :upload
 
-  def initialize(filename, configuration, user, override)
-    @filename = filename
+  def initialize(file, configuration, user, override)
+    @file = file
     @configuration = configuration || SequencescapeExcel::NullObjects::NullConfiguration.new
     @user = user
     @override = override
     @tag_group = create_tag_group
     @upload = SampleManifestExcel::Upload::Base.new(
-      filename: filename,
+      file: file,
       column_list: self.configuration.columns.all,
       start_row: SampleManifestExcel::FIRST_ROW,
       override: override

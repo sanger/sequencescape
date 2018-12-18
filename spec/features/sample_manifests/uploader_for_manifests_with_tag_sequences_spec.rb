@@ -28,7 +28,7 @@ feature 'Sample manifest with tag sequences' do
         scenario 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
-          attach_file('File to upload', "/Users/jg16/projects/james/sequencescape_2/#{test_file}")
+          attach_file('File to upload', Rails.root.join(test_file))
           click_button('Upload manifest')
           expect(page).to have_content('Sample manifest successfully uploaded.')
           click_link 'Completed manifest'

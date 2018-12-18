@@ -9,20 +9,20 @@ module SampleManifestExcel
       include ActiveModel::Model
       include Enumerable
 
-      attr_reader :sheet, :header_row, :data, :start_row, :filename
+      attr_reader :sheet, :header_row, :data, :start_row, :file
 
-      validates_presence_of :start_row, :filename
+      validates_presence_of :start_row, :file
 
       ##
       # The file is opened as a Roo spreadsheet.
       # If it is valid it is split by the start row.
       # Start row of column headers and data put into separate rows.
-      def initialize(filename, start_row)
-        @filename = filename
+      def initialize(file, start_row)
+        @file = file
         @start_row = start_row
 
         if valid?
-          @sheet = Roo::Spreadsheet.open(filename).sheet(0)
+          @sheet = Roo::Spreadsheet.open(file).sheet(0)
           @header_row = sheet.row(start_row)
           @data = sheet.drop(start_row)
         else
@@ -48,7 +48,7 @@ module SampleManifestExcel
       end
 
       def inspect
-        "<#{self.class}: @header_row=#{header_row}, @data=#{data}, @start_row=#{start_row}, @filename=#{filename}>"
+        "<#{self.class}: @header_row=#{header_row}, @data=#{data}, @start_row=#{start_row}, @file=#{file}>"
       end
     end
   end

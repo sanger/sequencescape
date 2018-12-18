@@ -4,7 +4,7 @@ module SampleManifestExcel
   module Upload
     ##
     # An upload will:
-    # *Create a Data object based on the filename.
+    # *Create a Data object based on the file.
     # *Extract the columns based on the headings in the spreadsheet
     # *Find the sanger sample id column
     # *Create some Rows
@@ -14,7 +14,7 @@ module SampleManifestExcel
     class Base
       include ActiveModel::Model
 
-      attr_accessor :filename, :column_list, :start_row, :override
+      attr_accessor :file, :column_list, :start_row, :override
 
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor
 
@@ -27,7 +27,7 @@ module SampleManifestExcel
 
       def initialize(attributes = {})
         super
-        @data = Upload::Data.new(filename, start_row)
+        @data = Upload::Data.new(file, start_row)
         @columns = column_list.extract(data.header_row || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
         @rows = Upload::Rows.new(data, columns)
@@ -37,7 +37,7 @@ module SampleManifestExcel
       end
 
       def inspect
-        "<#{self.class}: @filename=#{filename}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
+        "<#{self.class}: @file=#{file}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
       end
 
       ##
