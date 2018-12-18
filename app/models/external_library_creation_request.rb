@@ -15,6 +15,8 @@ class ExternalLibraryCreationRequest < SystemRequest
     event :cancel do
       transitions to: :cancelled, from: :pending
     end
+
+    event :cancel_before_started # No transitions.
   end
 
   def manifest_processed!
