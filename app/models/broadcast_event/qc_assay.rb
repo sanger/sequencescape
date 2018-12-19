@@ -12,6 +12,14 @@ class BroadcastEvent::QcAssay < BroadcastEvent
     end
   end
 
+  has_subjects(:sample) { |_qc_assay, event| event.samples }
+  has_subjects(:study) { |_qc_assay, event| event.studies }
+  has_subjects(:assayed_labware) { |_qc_assay, event| event.assayed_labware }
+  has_subjects(:stock_plate) { |_qc_assay, event| event.stock_plates }
+
+  has_metadata(:lot_number, :lot_number)
+  has_metadata(:assay_version) { |_qc_assay, event| event.assay_version }
+
   def event_type
     "quant_#{assay_type.downcase.gsub(/[^\w]+/, '_')}"
   end
@@ -20,28 +28,24 @@ class BroadcastEvent::QcAssay < BroadcastEvent
     properties.fetch(:assay_type, template_result.assay_type)
   end
 
-  has_subjects(:sample) { |_qc_assay, event| event.samples }
-  has_subjects(:study) { |_qc_assay, event| event.studies }
-  has_subjects(:assayed_labware) { |_qc_assay, event| event.assayed_labware }
-  has_subjects(:stock_plate) { |_qc_assay, event| event.stock_plates }
-
-  has_metadata(:lot_number, :lot_number)
-  has_metadata(:assay_version) { |_qc_assay, event| event.template_result.assay_version }
+  def assay_version
+    properties.fetch(:assay_version, template_result.assay_version)
+  end
 
   def template_result
     seed.qc_results.first
   end
 
   def qc_results
-    @qc_results || seed.qc_results.where(properties).includes(asset: %i[samples studies])
+    @qc_results || seed.qc_results.where(properties).includes(%i[asset samples studies])
   end
 
   def samples
-    qc_results.flat_map { |qcr| qcr.asset.samples }.uniq
+    qc_results.flat_map(&:samples).uniq
   end
 
   def studies
-    qc_results.flat_map { |qcr| qcr.asset.studies }.uniq
+    qc_results.flat_map(&:studies).uniq
   end
 
   def assayed_labware
