@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 # QcResult
+# QC results record any measurement, qualitative or quantitative about an asset
+# For example, volume/concentration
+# Assay type: The protocol/equipment used. Might also indicate the stage of the process.
+# Assay version: Allows versioning and comparison of different protocols
+# Value: The measurement recorded
+# Units: eg. nM, the units in which the measurement was recorded
+# Key: The attribute being measured. Eg. Concentration
+# qc_assay: Groups together qc results performed at the same time.
 class QcResult < ApplicationRecord
   include Api::Messages::QcResultIO::Extensions
 

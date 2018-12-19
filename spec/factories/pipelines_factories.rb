@@ -11,7 +11,7 @@ FactoryBot.define do
   end
 
   factory :asset do
-    name                { |_a| generate :asset_name }
+    name                { generate :asset_name }
     value               { '' }
     qc_state            { '' }
   end
