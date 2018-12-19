@@ -45,7 +45,7 @@ class Batch < ApplicationRecord
   validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
 
   after_create :generate_target_assets_for_requests, if: :need_target_assets_on_requests?
-  after_save :rebroadcast
+  after_commit :rebroadcast
 
   # Named scope for search by query string behavior
   scope :for_search_query, ->(query) {
