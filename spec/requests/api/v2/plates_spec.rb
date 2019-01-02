@@ -69,5 +69,20 @@ describe 'Plates API', with: :api_v2 do
         expect(types).to include('tubes')
       end
     end
+
+    context 'with comments on plates' do
+      before do
+        resource_model.comments.create(title: 'Test', description: 'I can see this', user: create(:user))
+      end
+
+      it 'returns the comment' do
+        api_get "/api/v2/plates/#{resource_model.id}/comments"
+        expect(response).to have_http_status(:success), response.body
+        expect(json['data'].length).to eq(1)
+        types = json['data'].map { |comment| comment['type'] }
+        expect(types).to include('comments')
+        expect(json['data'].first['attributes']['title']).to eq('Test')
+      end
+    end
   end
 end
