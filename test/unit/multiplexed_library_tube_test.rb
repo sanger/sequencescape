@@ -42,7 +42,8 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
 
       context 'should allow overriding of attributes' do
         setup do
-          @stock = @multiplexed_library_tube.create_stock_asset!(name: 'Foo', barcode: '1111')
+          @custom_barcode = generate(:barcode_number).to_s
+          @stock = @multiplexed_library_tube.create_stock_asset!(name: 'Foo', barcode: @custom_barcode)
         end
 
         should 'use the specified name' do
@@ -50,7 +51,7 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
         end
 
         should 'set the barcode' do
-          assert_equal '1111', @stock.barcode_number.to_s
+          assert_equal @custom_barcode, @stock.barcode_number.to_s
         end
       end
     end

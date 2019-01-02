@@ -62,6 +62,33 @@ describe '/api/1/plate-uuid/submission_pools' do
       it_behaves_like 'an API/1 GET endpoint'
     end
 
+    context 'a submission with canceleld requests' do
+      let(:plate) { create :input_plate, well_count: 2 }
+
+      before do
+        plate.wells.each do |well|
+          create :library_creation_request, asset: well, submission: submission, request_type: request_type, state: 'cancelled'
+        end
+      end
+
+      let(:response_body) do
+        %({
+            "actions": {
+              "read": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
+              "first": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
+              "last": "http://www.example.com/api/1/#{uuid}/submission_pools/1"
+            },
+            "size":1,
+            "submission_pools":[{
+              "plates_in_submission":0,
+              "used_tag2_layout_templates":[],
+              "used_tag_layout_templates":[]
+           }]
+       })
+      end
+      it_behaves_like 'an API/1 GET endpoint'
+    end
+
     context 'a submission and a used tag template' do
       let(:plate) { create :input_plate, well_count: 2 }
 
