@@ -53,7 +53,13 @@
           <% end %>
           <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
             <td><%= link_to 'Copy', copy_request_url(request)   %></td>
-            <td><%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %></td>
+            <td>
+              <% if request.try(:may_cancel_before_started?) %>
+                <%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %>
+              <% else %>
+                Uncancelable
+              <% end %>
+            </td>
           <% end %>
           <td><%=h request.created_at.to_formatted_s(:long) %></td>
         </tr>
@@ -105,7 +111,13 @@
           <% end %>
           <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
             <td><%= link_to 'Copy', copy_request_url(request)   %></td>
-            <td><%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %></td>
+            <td>
+              <% if request.try(:may_cancel_before_started?) %>
+                <%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %>
+              <% else %>
+                Uncancelable
+              <% end %>
+            </td>
           <% end %>
           <td><%=h request.created_at.to_formatted_s(:long) %></td>
         </tr>
