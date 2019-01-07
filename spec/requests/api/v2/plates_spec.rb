@@ -72,7 +72,7 @@ describe 'Plates API', with: :api_v2 do
 
     context 'with comments on plates' do
       before do
-        resource_model.comments.create(title: 'Test', description: 'I can see this', user: create(:user))
+        resource_model.comments.create(title: 'Test', description: 'We have some text', user: create(:user))
       end
 
       it 'returns the comment' do

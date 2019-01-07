@@ -1,6 +1,6 @@
 class Comment < ApplicationRecord
   # include Uuid::Uuidable
-  belongs_to :commentable, polymorphic: true
+  belongs_to :commentable, polymorphic: true, required: true
   has_many :comments, as: :commentable
   belongs_to :user
 

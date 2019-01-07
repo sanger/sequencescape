@@ -49,4 +49,33 @@ describe 'Comments API', with: :api_v2 do
       # eg. expect(json.dig('data', 'attributes', 'state')).to eq('started')
     end
   end
+
+  describe '#post' do
+    let(:plate) { create :plate }
+
+    let(:payload) do
+      {
+        'data' => {
+          'type' => 'comments',
+          'attributes' => {
+            'title' => 'comment',
+            'description' => 'This plate is pretty'
+          },
+          'relationships' => {
+            'commentable' => {
+              'data' => { 'type' => 'assets', 'id' => plate.id.to_s }
+            }
+          }
+        }
+      }
+    end
+
+    # Remove if immutable
+    it 'allows creation of a Comment' do
+      api_post '/api/v2/comments', payload
+      expect(response).to have_http_status(:success), response.body
+      expect(json.dig('data', 'type')).to eq('comments')
+      expect(json.dig('data', 'attributes', 'description')).to eq('This plate is pretty')
+    end
+  end
 end
