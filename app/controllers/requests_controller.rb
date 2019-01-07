@@ -117,18 +117,16 @@ class RequestsController < ApplicationController
 
   def cancel
     @request = Request.find(params[:id])
-    if @request.cancelable?
+    if @request.try(:may_cancel_before_started?)
       if @request.cancel_before_started && @request.save
         flash[:notice] = "Request #{@request.id} has been cancelled"
-        redirect_to request_path(@request)
       else
         flash[:error] = "Failed to cancel request #{@request.id}"
-        redirect_to request_path(@request)
       end
     else
-      flash[:error] = "Request #{@request.id} in progress. Can't be cancelled"
-      redirect_to request_path(@request)
+      flash[:error] = "Request #{@request.id} can't be cancelled"
     end
+    redirect_to request_path(@request)
   end
 
   # Displays history of events
