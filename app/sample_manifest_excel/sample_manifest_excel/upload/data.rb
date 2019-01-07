@@ -38,7 +38,7 @@ module SampleManifestExcel
       def file_extension
         return nil if file.nil?
 
-        File.extname(file)
+        File.extname(file.path)
       end
 
       ##
