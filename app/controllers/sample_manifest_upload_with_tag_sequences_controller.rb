@@ -7,7 +7,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
 
   def create
     if params[:upload].present?
-      @uploader = SampleManifest::Uploader.new(params[:upload].open, SampleManifestExcel.configuration, current_user, params[:override])
+      @uploader = SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, params[:override])
       if @uploader.valid?
         if @uploader.run!
           flash[:notice] = 'Sample manifest successfully uploaded.'

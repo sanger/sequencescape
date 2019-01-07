@@ -46,9 +46,7 @@ module SampleManifestExcel
         ##
         # Override the sample manifest with the raw uploaded data.
         def update_sample_manifest
-          File.open(upload.filename) do |file|
-            @sample_manifest_updated = upload.sample_manifest.update(uploaded: file)
-          end
+          @sample_manifest_updated = upload.sample_manifest.update(uploaded: upload.file)
         end
 
         def sample_manifest_updated?

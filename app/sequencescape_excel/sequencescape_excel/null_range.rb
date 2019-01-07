@@ -11,9 +11,9 @@ module SequencescapeExcel
     end
 
     ##
-    # Always returns worksheet1!A1:A10
+    # Always returns Ranges!A1:A10
     def absolute_reference
-      "worksheet1!#{reference}"
+      "Ranges!#{reference}"
     end
 
     def ==(other)
