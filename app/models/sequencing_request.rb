@@ -4,7 +4,10 @@ class SequencingRequest < CustomerRequest
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
 
+  class_attribute :flowcell_identifier
+
   self.sequencing = true
+  self.flowcell_identifier = 'Chip Barcode'
 
   has_metadata as: Request do
     # redundant with library creation , but THEY are using it .
