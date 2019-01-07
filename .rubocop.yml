@@ -14,6 +14,7 @@ AllCops:
     # Travis installs gems in the vendor directory, which causes rubocop to try
     # and cop our gems. We don't want it to.
     - vendor/**/*
+    - sbin/*
 
 # The cop is meant to enforce conventions regarding variables containing numbers
 # However in 0.43.0 it is bugged. Both changed on master and disabled by default

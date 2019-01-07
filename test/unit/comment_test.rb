@@ -70,5 +70,17 @@ class CommentTest < ActiveSupport::TestCase
         @submission2.requests.all? { |r| r.comments.length == 1 }
       end
     end
+    context 'adding to a plate' do
+      setup do
+        @plate = create :plate, well_count: 1
+        @submission = create :submission
+        @request = create :request, asset: @plate.wells.first, submission: @submission
+      end
+
+      should 'also add to the request' do
+        create :comment, commentable: @plate, description: 'Hello'
+        assert_equal @request.reload.comments.first.description, 'Hello'
+      end
+    end
   end
 end

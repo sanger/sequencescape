@@ -52,6 +52,7 @@ describe 'Comments API', with: :api_v2 do
 
   describe '#post' do
     let(:plate) { create :plate }
+    let!(:request) { create :well_request, asset: plate.wells.first }
 
     let(:payload) do
       {

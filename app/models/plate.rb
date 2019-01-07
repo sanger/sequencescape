@@ -585,6 +585,10 @@ class Plate < Asset
     raise StandardError, "#generate_barcode has been called on plate, which wasn't supposed to happen, and probably indicates a bug."
   end
 
+  def after_comment_addition(comment)
+    submissions.each { |s| s.add_comment(comment.description, comment.user) }
+  end
+
   private
 
   def plate_type_descriptor

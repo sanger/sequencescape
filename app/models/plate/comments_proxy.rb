@@ -28,17 +28,11 @@ class Plate::CommentsProxy
     @asn ||= Comment.for_plate(plate)
   end
 
-  ##
-  # We add the comments to each submission to ensure that are available for all the requests.
-  # At time of writing, submissions add comments to each request, so there are a lot of comments
-  # getting created here. (The intent is to change this so requests are treated similarly to plates)
   def create!(options)
-    plate.submissions.each { |s| s.add_comment(options[:description], options[:user]) }
     Comment.create!(options.merge(commentable: plate))
   end
 
   def create(options)
-    plate.submissions.each { |s| s.add_comment(options[:description], options[:user]) }
     Comment.create(options.merge(commentable: plate))
   end
 

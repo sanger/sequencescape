@@ -4,6 +4,8 @@ class Comment < ApplicationRecord
   has_many :comments, as: :commentable
   belongs_to :user
 
+  after_create :trigger_commentable_callback
+
   scope :for_plate, ->(plate) {
     submissions = plate.all_submission_ids
 
@@ -37,5 +39,16 @@ class Comment < ApplicationRecord
 
     type = commentables.first.class.base_class.name
     where(commentable_type: type, commentable_id: commentables.map(&:id)).group(:commentable_id).count
+  end
+
+  private
+
+  ##
+  # We add the comments to each submission to ensure that are available for all the requests.
+  # At time of writing, submissions add comments to each request, so there are a lot of comments
+  # getting created here. We should consider either storing comments on submissions, orders,
+  # or having a many-to-many relationship.
+  def trigger_commentable_callback
+    commentable.after_comment_addition(self)
   end
 end
