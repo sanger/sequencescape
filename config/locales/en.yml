@@ -63,6 +63,7 @@ en:
       projects: "Projects"
       samples: "Samples"
       admin: "Admin"
+      uat_actions: "UAT"
       pipelines: "Pipelines"
       batches: "Batches"
       reception: "Reception"
