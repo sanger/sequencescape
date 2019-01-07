@@ -72,6 +72,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    upload.rows.each { |row| expect(row).to receive(:changed?).at_least(:once).and_return(true) }
     expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
     # subjects are 1 study, 6 tubes and 6 samples
     expect(BroadcastEvent.first.subjects.count).to eq 13
@@ -81,6 +82,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    upload.rows.each { |row| expect(row).to receive(:changed?).at_least(:once).and_return(true) }
     expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
     # subjects are 1 study, 1 tubes and 6 samples
     expect(BroadcastEvent.last.subjects.count).to eq 8
