@@ -297,7 +297,7 @@ class BatchesController < ApplicationController
   end
 
   def print_plate_barcodes
-    print_handler(LabelPrinter::Label::BatchPlate)
+    print_handler(LabelPrinter::Label::BatchRedirect)
   end
 
   def print_barcodes
@@ -447,9 +447,9 @@ class BatchesController < ApplicationController
 
   private
 
-  def print_handler(template)
+  def print_handler(print_class)
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                           template,
+                                           print_class,
                                            count: params[:count], printable: params[:printable], batch: @batch)
     if print_job.execute
       flash[:notice] = print_job.success

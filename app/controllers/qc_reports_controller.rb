@@ -46,7 +46,7 @@ class QcReportsController < ApplicationController
   end
 
   def show
-    qc_report = QcReport.find_by(report_identifier: params[:id])
+    qc_report = QcReport.find_by!(report_identifier: params[:id])
     queue_count = qc_report.queued? ? Delayed::Job.count : 0
     @report_presenter = Presenters::QcReportPresenter.new(qc_report, queue_count)
 

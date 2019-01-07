@@ -41,7 +41,11 @@ FactoryBot.define do
     key                 { '' }
   end
 
-  factory :lab_event do |e|
+  factory :lab_event do
+    factory :flowcell_event do
+      descriptors { { 'Chip Barcode' => 'fcb' } }
+      descriptor_fields { descriptors.keys }
+    end
   end
 
   factory :family do
@@ -221,6 +225,11 @@ FactoryBot.define do
       batch
       association(:request, factory: :cherrypick_request)
     end
+
+    factory :sequencing_batch_request do
+      batch
+      association(:request, factory: :complete_sequencing_request)
+    end
   end
 
   factory :request_information_type do
@@ -281,6 +290,7 @@ FactoryBot.define do
   factory :tag, aliases: [:tag2] do
     tag_group
     oligo
+    map_id { 1 }
   end
 
   factory :tag_group do |_t|
