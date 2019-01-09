@@ -72,7 +72,7 @@ describe Plate do
       before do
         submission = create :submission
         request = create :well_request, submission: submission
-        plate.wells.first.aliquots << create(:aliquot, request:request)
+        plate.wells.first.aliquots << create(:aliquot, request: request)
         create :transfer_request, target_asset: plate.wells.first, submission: submission
         create :comment, commentable: request, description: 'Comment on request'
         plate.reload

@@ -183,7 +183,7 @@ class Plate < Asset
   end
 
   def comments
-    @comments ||= CommentsProxy.new(self)
+    @comments ||= CommentsProxy::Plate.new(self)
   end
 
   def priority

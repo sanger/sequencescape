@@ -33,7 +33,7 @@ class Tube < Receptacle
   delegate :source_purpose, to: :purpose, allow_nil: true
 
   def comments
-    @comments ||= CommentsProxy.new(self)
+    @comments ||= CommentsProxy::Tube.new(self)
   end
 
   def submission

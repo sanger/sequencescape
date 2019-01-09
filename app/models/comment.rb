@@ -6,18 +6,6 @@ class Comment < ApplicationRecord
 
   after_create :trigger_commentable_callback
 
-  scope :for_asset_and_requests, ->(asset, requests) {
-    where(commentable_type: 'Request', commentable_id: requests)
-      .or(where(commentable: asset))
-      .create_with(commentable: asset)
-      .select(
-        # We need to describe how we select values which aren't included in the group by
-        # This is required with default configurations of MySQL 5.7 and ensures reproducible
-        # queries with other set-ups.
-        ['MIN(id) AS id', :title, :user_id, :description, 'MIN(created_at) AS created_at', 'MIN(updated_at) AS updated_at']
-      ).group(:description, :title, :user_id)
-  }
-
   scope :include_uuid, -> { all }
 
   # Caution, only works for a single class
