@@ -17,23 +17,15 @@
 # - It would be vastly easier if comments just sat on submissions
 # - Although even then we'd need to copy them across if work is re-requested.
 class Plate::CommentsProxy
-  attr_reader :plate
+  attr_reader :comment_assn
   delegate_missing_to :comment_assn
 
   def initialize(plate)
-    @plate = plate
-  end
-
-  def comment_assn
-    @asn ||= Comment.for_plate(plate)
-  end
-
-  def create!(options)
-    Comment.create!(options.merge(commentable: plate))
-  end
-
-  def create(options)
-    Comment.create(options.merge(commentable: plate))
+    request_ids = plate.well_requests_as_source.pluck(:id).presence ||
+                    plate.in_progress_requests.pluck(:id).presence ||
+                    # This is a final fallback to support legacy plates prior to request on aliquot
+                    Request.where(submission_id: plate.all_submission_ids).pluck(:id)
+    @comment_assn = Comment.for_asset_and_requests(plate, request_ids)
   end
 
   # By default rails treats sizes for grouped queries different to sizes
@@ -45,15 +37,11 @@ class Plate::CommentsProxy
   # rails bug with count and custom selects.
   def size(*args)
     s = super
-    return s.length if s.respond_to?(:length)
-
-    s
+    s.try(:length) || s
   end
 
   def count(*_args)
     s = super(:all)
-    return s.length if s.respond_to?(:length)
-
-    s
+    s.try(:length) || s
   end
 end

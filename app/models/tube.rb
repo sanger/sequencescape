@@ -32,6 +32,10 @@ class Tube < Receptacle
 
   delegate :source_purpose, to: :purpose, allow_nil: true
 
+  def comments
+    @comments ||= CommentsProxy.new(self)
+  end
+
   def submission
     submissions.first
   end
@@ -75,6 +79,10 @@ class Tube < Receptacle
 
   def details
     purpose.try(:name) || 'Tube'
+  end
+
+  def after_comment_addition(comment)
+    submissions.each { |s| s.add_comment(comment.description, comment.user) }
   end
 
   def self.create_with_barcode!(*args, &block)
