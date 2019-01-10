@@ -62,6 +62,8 @@ class Api::Messages::FlowcellIO < Api::Base
         # bad data from being added in future
         def detect_float_descriptor(name, ignored_unit)
           value = detect_descriptor(name)
+          return nil if value.nil?
+
           begin
             # If someone has added the units to the input, strip them off then convert to a float
             # We also strip whitespace.
