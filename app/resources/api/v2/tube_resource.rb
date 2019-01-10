@@ -15,6 +15,11 @@ module Api
       has_many :studies, readonly: true
       has_many :projects, readonly: true
 
+      has_many :ancestors, readonly: true, polymorphic: true
+      has_many :descendants, readonly: true, polymorphic: true
+      has_many :parents, readonly: true, polymorphic: true
+      has_many :children, readonly: true, polymorphic: true
+
       # Attributes
       attribute :uuid, readonly: true
       attribute :name, delegate: :display_name, readonly: true
@@ -30,6 +35,7 @@ module Api
       def labware_barcode
         {
           'ean13_barcode' => _model.ean13_barcode,
+          'machine_barcode' => _model.machine_barcode,
           'human_barcode' => _model.human_barcode
         }
       end
