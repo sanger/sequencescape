@@ -16,7 +16,7 @@ class RemoveRedundantPlateClasses < ActiveRecord::Migration[5.1]
     %w[PulldownQpcrPlate Plate FS],
     %w[PulldownRunOfRobotPlate Plate FE],
     %w[PulldownSequenceCapturePlate Plate FO],
-    %w[PulldownSonicationPlate Plate FC],
+    %w[PulldownSonicationPlate Plate FC]
     # Can't remove this at the moment as use the class in a controller
     # %w[GelDilutionPlate WorkingDilutionPlate GD]
   ].freeze

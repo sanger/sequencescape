@@ -10,8 +10,10 @@ FactoryBot.define do
     end
 
     after(:create) do |library_tube, evaluator|
-      library_tube.aliquots = evaluator.samples.map do |s|
-        create(evaluator.aliquot_factory, sample: s, library_type: 'Standard')
+      if evaluator.samples.present?
+        library_tube.aliquots = evaluator.samples.map do |s|
+          create(evaluator.aliquot_factory, sample: s, library_type: 'Standard')
+        end
       end
     end
   end

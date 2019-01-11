@@ -10,6 +10,10 @@ class LabwhereReception
   attr_reader :asset_barcodes, :user_code, :location_barcode
 
   validates :asset_barcodes, :user_code, presence: true
+  validates :user, presence: {
+    message: 'could not be found with that swipecard or barcode. '\
+             'You may need to update your swipecard in Sequencescape.'
+  }
 
   def initialize(user_code, location_barcode, asset_barcodes)
     @asset_barcodes = (asset_barcodes || []).map(&:strip)

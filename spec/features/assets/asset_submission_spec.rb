@@ -89,7 +89,7 @@ feature 'Asset submission', js: true do
       it_behaves_like 'it allows additional sequencing'
     end
     context 'when cross study pooled' do
-      let(:asset) { create :multiplexed_library_tube, sample_count: 2 }
+      let(:asset) { create :multiplexed_library_tube, aliquots: build_list(:library_aliquot, 2) }
       let(:study) { asset.aliquots.first.study }
       let(:project) { asset.aliquots.first.project }
       let!(:original_request) do
