@@ -15,7 +15,7 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
     is_expected.to have_attribute :role
     is_expected.to_not have_updatable_field(:id)
     is_expected.to_not have_updatable_field(:uuid)
-    is_expected.to have_updatable_field(:state)
+    is_expected.to_not have_updatable_field(:state)
     is_expected.to_not have_updatable_field(:role)
     is_expected.to have_one(:submission).with_class_name('Submission')
     is_expected.to have_one(:order).with_class_name('Order')
