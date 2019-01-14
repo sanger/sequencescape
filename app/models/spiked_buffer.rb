@@ -17,11 +17,11 @@ class SpikedBuffer < LibraryTube
   # Before the validations are run on creation we need to ensure that there is at least an aliquot of phiX
   # in this tube.
   before_validation(on: :create) do |record|
-    record.aliquots.build(sample: record.class.phix_sample) if record.aliquots.empty?
+    record.aliquots.build(sample: record.class.phix_sample, library_id: record) if record.aliquots.empty?
   end
 
   def self.phix_sample
-    Sample.find_by(name: 'phiX_for_spiked_buffers') or raise StandardError, 'Cannot find phiX_for_spiked_buffers sample'
+    Sample.find_or_create_by!(name: 'phiX_for_spiked_buffers')
   end
 
   def percentage_of_index

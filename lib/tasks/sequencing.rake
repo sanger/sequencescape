@@ -18,7 +18,7 @@ namespace :sequencing do
                               billable: true,
                               product_line: ProductLine.find_by(name: 'Illumina-HTP'),
                               request_purpose: :standard).tap do |rt|
-            RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150])
+            RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150, 50, 75, 100])
           end
         end
         unless SequencingPipeline.where(name: 'NovaSeq 6000 PE').exists?
