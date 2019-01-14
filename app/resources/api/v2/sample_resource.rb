@@ -7,6 +7,8 @@ module Api
 
       default_includes :uuid_object
 
+      has_one :sample_metadata
+
       attribute :name
       attribute :sanger_sample_id
       attribute :uuid

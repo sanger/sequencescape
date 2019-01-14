@@ -103,7 +103,8 @@ module Sequencescape
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '*', headers: :any, methods: [:get, :post, :options]
+        # Acces-Control-Allow-Origin: *
+        resource '*', headers: :any, methods: [:get, :post, :options, :patch], credentials: false
       end
     end
   end
