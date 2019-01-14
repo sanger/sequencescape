@@ -23,11 +23,16 @@ module Api
       # Attributes
       attribute :uuid, readonly: true
       attribute :role, readonly: true
-      attribute :state, readonly: true
+      attribute :state, readonly: false
       attribute :priority, readonly: true
       attribute :options
 
       # Filters
+      filter :state
+
+      filter :type, apply: (lambda do |records, value, _options|
+        records.joins(:request_type).where(request_types: { key: value })
+      end)
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about
