@@ -2,7 +2,9 @@ language: ruby
 # We don't specify a list of ruby versions, as Travis will fall back to .ruby-version
 dist: xenial
 sudo: required
-services: mysql
+services:
+  - mysql
+  - xvfb
 addons:
   apt:
     packages:
