@@ -19,7 +19,6 @@ env:
   - TZ=Europe/London
   - CUCUMBER_FORMAT=DebugFormatter
   - PATH=$PATH:/usr/lib/chromium-browser/
-  - DISPLAY=:99.0
 before_install:
 - mv config/aker.yml.example config/aker.yml
 jobs:
@@ -52,7 +51,7 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: xvfb-run bundle exec rsepc
+    script: xvfb-run bundle exec rspec
     name: Rspec
   - if: type != cron
     env:
