@@ -30,7 +30,7 @@ jobs:
       > ./cc-test-reporter
     - chmod +x ./cc-test-reporter
     - "./cc-test-reporter before-build"
-    script: "xvfb-run ./run_coverage"
+    script: "xvfb-run -a ./run_coverage"
     name: Coverage
     after_script:
     - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
@@ -51,7 +51,7 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: xvfb-run bundle exec rspec
+    script: xvfb-run -a bundle exec rspec
     name: Rspec
   - if: type != cron
     env:
@@ -62,7 +62,7 @@ jobs:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     name: Cucumber Test 1
-    script: xvfb-run bundle exec rake knapsack:cucumber
+    script: xvfb-run -a bundle exec rake knapsack:cucumber
   - if: type != cron
     env:
     - RAILS_ENV=cucumber
@@ -72,7 +72,7 @@ jobs:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     name: Cucumber Test 2
-    script: xvfb-run bundle exec rake knapsack:cucumber
+    script: xvfb-run -a bundle exec rake knapsack:cucumber
   - stage: build
     if: tag IS present
     script: "./compile-build"
