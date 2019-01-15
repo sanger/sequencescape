@@ -1,4 +1,3 @@
-
 class Transfer::BetweenTubesBySubmission < Transfer
   include TransfersToKnownDestination
 
@@ -17,7 +16,7 @@ class Transfer::BetweenTubesBySubmission < Transfer
 
   after_create :update_destination_tube_name
   def update_destination_tube_name
-    destination.update_attributes!(name: source.name_for_child_tube)
+    destination.update!(name: source.name_for_child_tube)
   end
 
   def each_transfer

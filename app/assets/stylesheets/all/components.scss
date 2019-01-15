@@ -116,3 +116,48 @@ dl.order-summary {
   dt { @extend .col-2; text-align: right }
   dd { @extend .col-10; }
 }
+
+// State-colour extensions
+// These extend the bootstrap classes to cover our states
+.badge-building { @extend .badge-info; }
+.badge-cancelled { @extend .badge-secondary; }
+.badge-failed { @extend .badge-danger; }
+.badge-pending { @extend .badge-warning; }
+.badge-processing { @extend .badge-primary; }
+.badge-ready { @extend .badge-success; }
+.badge-active { @extend .badge-success; }
+.badge-inactive { @extend .badge-danger; }
+.badge-completed { @extend .badge-info; }
+.badge-discarded { @extend .badge-secondary; }
+.badge-released { @extend .badge-success; }
+.badge-started { @extend .badge-primary; }
+.badge-passed { @extend .badge-success; }
+
+// Request progress bars
+.request_progress {
+  .request_progress_header {
+    @extend .row;
+    @extend .align-items-center;
+
+    .request_type_name, .request_progress_totals { @extend .col-2; @extend .h6; }
+    .request_type_name { text-align: right; }
+    .key { @extend .col-8; }
+  }
+  .request_progress_section {
+    @extend .row;
+    margin-bottom: 0.2em;
+
+    .request_type_name, .request_progress_totals { @extend .col-2; @extend .align-self-center; }
+    .bar-container { @extend .col-8; @extend .align-self-center; }
+    .request_type_name { text-align: right; }
+  }
+  .progress-state-cancelled { @extend .bg-warning }
+  .progress-state-failed { @extend .bg-danger }
+  .progress-state-started { @extend .bg-info }
+  .progress-state-passed { @extend .bg-success }
+  .progress-state-other { @extend .bg-primary }
+
+  .key {
+    span { @extend .badge; @extend .text-white; }
+  }
+}

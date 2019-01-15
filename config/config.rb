@@ -52,6 +52,9 @@ configatron.sanger_auth_freshness = 60
 configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 configatron.tecan_files_location = "#{Rails.root}/data"
 configatron.tecan_minimum_volume = 1.0
+configatron.swipecard_pmb_template = 'swipecard_barcode_template'
+
+configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/display/PSDPUB'
 
 configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
@@ -59,6 +62,8 @@ configatron.external_applications = [
   ['Gatekeeper', 'http://www.example.com'],
   ['Crier', 'http://www.example.com']
 ]
+
+configatron.help_link_base_url = 'http://wwww.example.com'
 
 if Rails.env.development? || Rails.env.profile?
 
@@ -91,7 +96,6 @@ if Rails.env.development? || Rails.env.profile?
   configatron.tecan_minimum_volume = 1.0
   configatron.two_d_barcode_files_location = "#{Rails.root}/data/2d"
   configatron.uploaded_spreadsheet.max_number_of_samples = 384
-  configatron.uploaded_spreadsheet.max_number_of_move_samples = 0
   configatron.xml_files_location = "#{Rails.root}/data/"
   configatron.data_sharing_contact.name = 'John Doe'
   configatron.data_sharing_contact.email = 'foo'
@@ -130,7 +134,6 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.tecan_precision = 1
   configatron.tecan_minimum_volume = 1.0
   configatron.uploaded_spreadsheet.max_number_of_samples = 380
-  configatron.uploaded_spreadsheet.max_number_of_move_samples = 0
 
   configatron.data_sharing_contact.name = 'John Doe'
   configatron.data_sharing_contact.email = 'foo'

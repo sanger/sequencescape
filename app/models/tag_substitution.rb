@@ -12,7 +12,7 @@
 class TagSubstitution
   include ActiveModel::Model
 
-  attr_accessor :user, :ticket, :comment
+  attr_accessor :user, :ticket, :comment, :disable_clash_detection
   attr_reader :substitutions
   attr_writer :name
 
@@ -32,22 +32,24 @@ class TagSubstitution
 
   validates :substitutions, presence: true
   validate :substitutions_valid?, if: :substitutions
-  validate :no_duplicate_tag_pairs, if: :substitutions
+  validate :no_duplicate_tag_pairs, if: :substitutions, unless: :disable_clash_detection
 
   def substitutions_valid?
     @substitutions.reduce(true) do |valid, sub|
       next valid if sub.valid?
+
       errors.add(:substitution, sub.errors.full_messages)
       valid && false
     end
   end
 
   def substitutions=(substitutions)
-    @substitutions = substitutions.map { |attrs| Substitution.new(attrs) }
+    @substitutions = substitutions.map { |attrs| Substitution.new(attrs.dup) }
   end
 
   def save
     return false unless valid?
+
     # First set all tags to null to avoid the issue of tag clashes
     ActiveRecord::Base.transaction do
       @substitutions.each(&:nullify_tags)
@@ -59,6 +61,7 @@ class TagSubstitution
   rescue ActiveRecord::RecordNotUnique => exception
     # We'll specifically handle tag clashes here so that we can produce more informative messages
     raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
+
     errors.add(:base, 'A tag clash was detected while performing the substitutions. No changes have been made.')
     false
   end
@@ -92,6 +95,7 @@ class TagSubstitution
   def tag_pairs
     @substitutions.each_with_object([]) do |sub, substitutions|
       next unless sub.tag_substitutions?
+
       tag, tag2 = sub.tag_pair
       substitutions << [oligo_index[tag], oligo_index[tag2]]
     end
@@ -138,6 +142,8 @@ class TagSubstitution
   end
 
   def rebroadcast_flowcells
-    Batch.joins(:requests).where(requests: { target_asset_id: lane_ids }).distinct.each(&:rebroadcast)
+    # Touch updates the batch (and hence message timestamp) and triggers the after_comit callback
+    # which broadcasts the batch.
+    Batch.joins(:requests).where(requests: { target_asset_id: lane_ids }).distinct.each(&:touch)
   end
 end

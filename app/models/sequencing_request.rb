@@ -4,7 +4,10 @@ class SequencingRequest < CustomerRequest
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
 
+  class_attribute :flowcell_identifier
+
   self.sequencing = true
+  self.flowcell_identifier = 'Chip Barcode'
 
   has_metadata as: Request do
     # redundant with library creation , but THEY are using it .
@@ -40,6 +43,7 @@ class SequencingRequest < CustomerRequest
     return false if asset.nil? || asset.most_tagged_aliquot.nil?
     # Rejects any assets which haven't been scanned in
     return false if asset.scanned_in_date.blank?
+
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
     upstream_requests.empty? ||
@@ -53,8 +57,10 @@ class SequencingRequest < CustomerRequest
 
   def concentration
     return ' ' if lab_events_for_batch(batch).empty?
+
     conc = lab_events_for_batch(batch).first.descriptor_value('Concentration')
     return "#{conc}μl" if conc.present?
+
     dna = lab_events_for_batch(batch).first.descriptor_value('DNA Volume')
     rsb = lab_events_for_batch(batch).first.descriptor_value('RSB Volume')
     "#{dna}μl DNA in #{rsb}μl RSB"

@@ -9,7 +9,7 @@
 class SampleManifest::Uploader
   include ActiveModel::Validations
 
-  attr_reader :filename, :configuration, :tag_group, :upload, :user
+  attr_reader :filename, :configuration, :tag_group, :upload, :user, :override
 
   validates :filename, :configuration, :tag_group, :user, presence: true
 
@@ -17,21 +17,30 @@ class SampleManifest::Uploader
 
   delegate :processed?, to: :upload
 
-  def initialize(filename, configuration, user)
+  def initialize(filename, configuration, user, override)
     @filename = filename
-    @configuration = configuration || SampleManifestExcel::NullConfiguration.new
+    @configuration = configuration || SequencescapeExcel::NullObjects::NullConfiguration.new
     @user = user
+    @override = override
     @tag_group = create_tag_group
-    @upload = SampleManifestExcel::Upload::Base.new(filename: filename, column_list: self.configuration.columns.all, start_row: SampleManifestExcel::FIRST_ROW)
+    @upload = SampleManifestExcel::Upload::Base.new(
+      filename: filename,
+      column_list: self.configuration.columns.all,
+      start_row: SampleManifestExcel::FIRST_ROW,
+      override: override
+    )
   end
 
   def run!
-    if valid?
-      upload.process(tag_group)
+    return false unless valid?
+
+    if upload.process(tag_group)
+      upload.complete
       upload.broadcast_sample_manifest_updated_event(user)
-      upload.complete if upload.processed?
-      # Delayed::Job.enqueue SampleManifestUploadProcessingJob.new(upload, tag_group)
+      true
     else
+      extract_errors
+      upload.fail
       false
     end
   end
@@ -44,6 +53,11 @@ class SampleManifest::Uploader
 
   def check_upload
     return true if upload.valid?
+
+    extract_errors
+  end
+
+  def extract_errors
     upload.errors.each do |key, value|
       errors.add key, value
     end

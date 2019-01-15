@@ -1,4 +1,3 @@
-
 require 'lab_where_client'
 # A simple class to handle the behaviour from the labwhere reception controller
 class LabwhereReception
@@ -11,6 +10,10 @@ class LabwhereReception
   attr_reader :asset_barcodes, :user_code, :location_barcode
 
   validates :asset_barcodes, :user_code, presence: true
+  validates :user, presence: {
+    message: 'could not be found with that swipecard or barcode. '\
+             'You may need to update your swipecard in Sequencescape.'
+  }
 
   def initialize(user_code, location_barcode, asset_barcodes)
     @asset_barcodes = (asset_barcodes || []).map(&:strip)
@@ -45,12 +48,12 @@ class LabwhereReception
         return false
       end
     rescue LabWhereClient::LabwhereException => exception
-      errors.add(:base, 'Could not connect to Labwhere. Sequencescape location has still been updated')
+      errors.add(:base, 'Could not connect to Labwhere.')
       return false
     end
 
     assets.each do |asset|
-      asset.events.create_scanned_into_lab!(location_barcode)
+      asset.events.create_scanned_into_lab!(location_barcode, user.login)
       BroadcastEvent::LabwareReceived.create!(seed: asset, user: user, properties: { location_barcode: location_barcode })
     end
 
@@ -62,6 +65,10 @@ class LabwhereReception
   end
 
   def missing_barcodes
-    asset_barcodes - @assets.map(&:ean13_barcode)
+    machine_barcodes = assets.map(&:machine_barcode).to_set
+    human_barcodes = assets.map(&:human_barcode).to_set
+    asset_barcodes.delete_if do |barcode|
+      human_barcodes.include?(barcode) || machine_barcodes.include?(barcode)
+    end
   end
 end

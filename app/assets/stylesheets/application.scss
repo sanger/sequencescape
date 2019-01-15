@@ -5,6 +5,8 @@
  */
 @import "jquery-tablesorter/theme.bootstrap";
 @import "jquery-ui";
+@import "font-awesome-sprockets";
+@import "font-awesome";
 @import "all/sequencescape";
 @import "all/header";
 @import "all/footer";
@@ -14,9 +16,7 @@
 @import "all/sessions";
 @import "all/misc_buttons";
 @import "all/pipelines_pages";
-//@import "all/screen";
 @import "all/components";
-//@import "bootstrap-sprockets";
 @import "all/bootstrap_variables";
 @import "bootstrap";
 @import "formtastic";

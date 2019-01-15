@@ -2,23 +2,23 @@
 
 FactoryBot.define do
   factory :sample_metadata_for_accessioning, class: Sample::Metadata do
-    sample_taxon_id 1
-    sample_common_name 'A common name'
-    donor_id '1'
-    gender 'Unknown'
-    phenotype 'Indescribeable'
-    growth_condition 'No'
-    sample_public_name 'Sample 666'
-    disease_state 'Awful'
+    sample_taxon_id { 1 }
+    sample_common_name { 'A common name' }
+    donor_id { '1' }
+    gender { 'Unknown' }
+    phenotype { 'Indescribeable' }
+    growth_condition { 'No' }
+    sample_public_name { 'Sample 666' }
+    disease_state { 'Awful' }
 
     factory :sample_metadata_with_accession_number do
-      sample_ebi_accession_number 'EBI1234'
+      sample_ebi_accession_number { 'EBI1234' }
     end
   end
 
   factory :minimal_sample_metadata_for_accessioning, class: Sample::Metadata do
-    sample_taxon_id 1
-    sample_common_name 'A common name'
+    sample_taxon_id { 1 }
+    sample_common_name { 'A common name' }
   end
 
   factory :sample_for_accessioning, parent: :sample do

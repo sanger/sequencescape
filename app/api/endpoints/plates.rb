@@ -1,4 +1,3 @@
-
 class ::Endpoints::Plates < ::Core::Endpoint::Base
   model do
   end

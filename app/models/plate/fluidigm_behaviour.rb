@@ -1,4 +1,3 @@
-
 module Plate::FluidigmBehaviour
   class FluidigmError < StandardError; end
 
@@ -25,18 +24,24 @@ module Plate::FluidigmBehaviour
     ActiveRecord::Base.transaction do
       fluidigm_data = FluidigmFile::Finder.find(fluidigm_barcode)
       return false if fluidigm_data.empty? # Return false if we have no data
+
       apply_fluidigm_data(FluidigmFile.new(fluidigm_data.content))
       return true
     end
   end
 
   def apply_fluidigm_data(fluidigm_file)
+    qc_assay = QcAssay.new
     raise FluidigmError, 'File does not match plate' unless fluidigm_file.for_plate?(fluidigm_barcode)
 
     wells.located_at(fluidigm_file.well_locations).include_stock_wells.each do |well|
       well.stock_wells.each do |sw|
-        sw.update_gender_markers!(fluidigm_file.well_at(well.map_description).gender_markers, 'FLUIDIGM')
-        sw.update_sequenom_count!(fluidigm_file.well_at(well.map_description).count, 'FLUIDIGM')
+        gender_markers = fluidigm_file.well_at(well.map_description).gender_markers.join('')
+        loci_passed = fluidigm_file.well_at(well.map_description).count
+        QcResult.create!([
+          { asset: sw, key: 'gender_markers', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: gender_markers, units: 'bases', qc_assay: qc_assay },
+          { asset: sw, key: 'loci_passed', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: loci_passed, units: 'bases', qc_assay: qc_assay }
+        ])
       end
     end
     events.updated_fluidigm_plate!('FLUIDIGM_DATA')

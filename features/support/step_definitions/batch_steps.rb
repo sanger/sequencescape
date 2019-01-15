@@ -1,4 +1,3 @@
-
 Given /^I release the last completed batch$/ do
   batch = Batch.where(state: 'Completed').last
   visit release_batch_path(batch)
@@ -22,7 +21,7 @@ end
 
 Given /^"([^\"]+)" is the owner of batch with ID (\d+)$/ do |login, id|
   user = User.find_by(login: login) or raise StandardError, "Cannot find user login #{login.inspect}"
-  Batch.find(id).update_attributes!(user: user)
+  Batch.find(id).update!(user: user)
 end
 
 When /^the batch is started$/ do

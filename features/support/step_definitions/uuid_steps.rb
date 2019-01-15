@@ -1,4 +1,3 @@
-
 def set_uuid_for(object, uuid_value)
   uuid   = object.uuid_object
   uuid ||= object.build_uuid_object
@@ -181,7 +180,7 @@ end
 
 Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model, uuid_value|
   target = model.gsub(/\s+/, '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
-  target.uuid_object.update_attributes!(external_id: uuid_value)
+  target.uuid_object.update!(external_id: uuid_value)
 end
 
 # TODO: It's 'UUID' not xxxing 'uuid'.
@@ -223,7 +222,7 @@ end
 
 Given /^all of the requests have appropriate assets with samples$/ do
   Request.find_each do |request|
-    request.update_attributes!(asset: FactoryBot.create(request.request_type.asset_type.underscore.to_sym))
+    request.update!(asset: FactoryBot.create(request.request_type.asset_type.underscore.to_sym))
   end
 end
 

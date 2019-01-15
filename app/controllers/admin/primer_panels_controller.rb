@@ -31,7 +31,7 @@ class Admin::PrimerPanelsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @primer_panel.update_attributes(primer_panel_params)
+      if @primer_panel.update(primer_panel_params)
         flash[:notice] = 'Primer Panel was successfully updated.'
         format.html { redirect_to(admin_primer_panels_path) }
       else

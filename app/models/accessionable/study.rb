@@ -1,4 +1,3 @@
-
 module Accessionable
   class Study < Base
     attr_reader :study_title, :description, :center_study_name, :study_abstract, :existing_study_type, :tags, :related_studies
@@ -124,6 +123,7 @@ module Accessionable
 
     def build(xml)
       return if db_label.blank?
+
       xml.RELATED_STUDY {
         xml.RELATED_LINK {
           xml.DB db_label

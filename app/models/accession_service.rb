@@ -1,4 +1,3 @@
-
 class AccessionService
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
@@ -161,10 +160,10 @@ class AccessionService
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.SUBMISSION(
-      'xmlns:xsi'      => 'http://www.w3.org/2001/XMLSchema-instance',
-      :center_name     => submission[:center_name],
-      :broker_name     => submission[:broker],
-      :alias           => submission[:submission_id],
+      'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+      :center_name => submission[:center_name],
+      :broker_name => submission[:broker],
+      :alias => submission[:submission_id],
       :submission_date => submission[:submission_date]
     ) {
       xml.CONTACTS {

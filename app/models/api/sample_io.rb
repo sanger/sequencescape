@@ -1,4 +1,3 @@
-
 class Api::SampleIO < Api::Base
   module Extensions
     module ClassMethods
@@ -56,6 +55,7 @@ class Api::SampleIO < Api::Base
     map_attribute_to_json_attribute(:sample_ebi_accession_number)
     map_attribute_to_json_attribute(:sample_description)
     map_attribute_to_json_attribute(:sample_sra_hold)
+    map_attribute_to_json_attribute(:developmental_stage)
     with_association(:reference_genome, lookup_by: :name) do
       map_attribute_to_json_attribute(:name, 'reference_genome')
     end

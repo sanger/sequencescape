@@ -1,5 +1,5 @@
 class RemoveIlluminaBTubesSearch < ActiveRecord::Migration
-  class Search < ActiveRecord::Base
+  class Search < ApplicationRecord
     self.table_name = 'searches'
     self.inheritance_column = nil
   end

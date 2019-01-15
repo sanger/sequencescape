@@ -6,13 +6,16 @@ RSpec/AggregateFailures:
   Include:
     - 'spec/**/*.rb'
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
   Exclude:
     - db/schema.rb
     - db/views_schema.rb
     - db/archived_migrations/*
+    # Travis installs gems in the vendor directory, which causes rubocop to try
+    # and cop our gems. We don't want it to.
     - vendor/**/*
-
+    - bin/*
+    - sbin/*
 
 # The cop is meant to enforce conventions regarding variables containing numbers
 # However in 0.43.0 it is bugged. Both changed on master and disabled by default
@@ -43,14 +46,35 @@ Style/NumericLiterals:
 # We should be careful keeping rake tasks here, as large tasks are still an issue.
 # Not sure if we need to split namespaces across several files though.
 Metrics/BlockLength:
-  Exclude:
-    - 'test/**/*'
-    - 'spec/**/*'
-    - 'config/routes.rb'
-    - 'lib/tasks/*'
+  ExcludedMethods:
+    - describe
+    - context
+    - background
+    - scenario
+    - namespace
+    - task
+    - included
+    - shared_context
+    - shared_examples
+    - state_machine
+    - configure
+    - draw
+    - feature
+    - subject
+    - let
+    - let!
+    - factory
+    - define
+    - guard
+    - transient
+    - with_nested_has_many_association
+    - with_association
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
+  Exclude:
+    - 'app/sample_manifest_excel/**/*'
+    - 'test/app/sample_manifest_excel/**/*'
   Whitelist:
     - find_by_sql
     - find_by_id_or_name

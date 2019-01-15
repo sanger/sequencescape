@@ -1,4 +1,3 @@
-
 module BatchesHelper
   def purpose_for_plate(plate)
     if plate.plate_purpose.nil? || plate.plate_purpose.name.blank?
@@ -45,13 +44,14 @@ module BatchesHelper
 
   def workflow_name(batch)
     return unless batch and batch.workflow
+
     batch.workflow.name.gsub(/Cluster formation | \([^\)]*\)/, '')
   end
 
   def batch_link(batch, options)
     link_text = content_tag(:strong, "Batch #{batch.id} ") <<
                 content_tag(:span, batch.pipeline.name, class: 'pipline-name') << ' ' <<
-                content_tag(:span, batch.state, class: "batch-state badge badge-#{bootstrapify_batch_state(batch.state)}")
+                content_tag(:span, batch.state, class: "batch-state badge badge-#{batch.state}")
     link_to(link_text, batch_path(batch), options)
   end
 end

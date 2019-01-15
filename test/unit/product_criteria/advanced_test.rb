@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
@@ -18,11 +17,11 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
 
     context 'with a list of target wells' do
       setup do
-        @well_attribute = create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: ['M', 'M', 'U']
+        @well_attribute = create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: %w[M M U]
         @well = create :well, well_attribute: @well_attribute
 
         @target_wells = create_list :well, 7
-        @target_wells[4].well_attribute.update_attributes(concentration: 30, updated_at: Time.current + 1.hour)
+        @target_wells[4].well_attribute.update(concentration: 30, updated_at: Time.current + 1.hour)
         @criteria = ProductCriteria::Advanced.new(@params, @well, @target_wells)
       end
       should 'get the most recent target well from the supplied list' do

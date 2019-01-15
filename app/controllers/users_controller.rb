@@ -1,4 +1,3 @@
-
 class UsersController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -12,6 +11,18 @@ class UsersController < ApplicationController
   end
 
   def show
+    barcode_printers = BarcodePrinter.alphabetical.includes(:barcode_printer_type)
+    @printer_list = barcode_printers.select { |printer| printer.barcode_printer_type.name == '96 Well Plate' }
+    begin
+      label_template = LabelPrinter::PmbClient.get_label_template_by_name(configatron.swipecard_pmb_template).fetch('data').first
+      @label_template_id ||= label_template['id']
+    rescue LabelPrinter::PmbException => e
+      @label_template_id = nil
+      flash[:error] = "Print My Barcode: #{e}"
+    rescue NoMethodError
+      @label_template_id = nil
+      flash[:error] = 'Wrong PMB Label Template'
+    end
   end
 
   def edit
@@ -21,7 +32,7 @@ class UsersController < ApplicationController
     params[:user].delete(:swipecard_code) if params[:user][:swipecard_code].blank?
     @user = User.find(params[:id])
     if @user.id == params[:id].to_i
-      @user.update_attributes(params[:user])
+      @user.update(params[:user])
     end
     if @user.save
       flash[:notice] = 'Profile updated'

@@ -1,4 +1,3 @@
-
 module PlatesHelper
   class AliquotError < StandardError; end
 
@@ -12,6 +11,8 @@ module PlatesHelper
 
   private
 
+  # Remove deprecate use of Well.sample
+  # Github Issue https://github.com/sanger/sequencescape/issues/1908
   def well_properties(well)
     [
       well.sample.name,
@@ -35,6 +36,7 @@ module PlatesHelper
       wells[:overide] = ['', '', 'NTC']
       plate.wells.each do |well|
         raise AliquotError if well.aliquots.count > 1
+
         wells[well.map.row_order] = well_properties(well)
       end
     end

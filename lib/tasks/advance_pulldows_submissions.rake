@@ -55,10 +55,11 @@ namespace :benchmark do
         $stderr.print '.'
         next unless r.is_a?(CherrypickRequest)
         next if r.passed?
+
         r.start!
         r.pass!
-        r.target_asset.update_attributes!(container: plate)
-        r.target_asset.update_attributes!(map_id: r.asset.map_id)
+        r.target_asset.update!(container: plate)
+        r.target_asset.update!(map_id: r.asset.map_id)
         r.save!
       end
       $stderr.puts ''

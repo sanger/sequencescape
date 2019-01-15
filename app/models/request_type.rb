@@ -1,4 +1,3 @@
-
 class RequestType < ApplicationRecord
   include RequestType::Validation
 
@@ -66,26 +65,19 @@ class RequestType < ApplicationRecord
 
   serialize :request_parameters
 
-  delegate :accessioning_required?, to: :request_class
+  delegate :accessioning_required?, :sequencing?, to: :request_class
 
   # Couple of named scopes for finding billable types
   scope :billable, -> { where(billable: true) }
+  scope :active, -> { where(deprecated: false) }
   scope :non_billable, -> { where(billable: false) }
   scope :needing_target_asset, -> { where(target_purpose: nil, target_asset_type: nil) }
-  scope :applicable_for_asset, ->(asset) {
-                                 where([
-                                   'asset_type = ?
-                                    AND request_class_name != "ControlRequest"
-                                    AND deprecated IS FALSE',
-                                   asset.asset_type_for_request_types.name
-                                 ])
-                               }
-
-  # Temporary scope: Remove once converted to enum
-  scope :standard, -> { where(request_purpose: :standard) }
+  scope :applicable_for_asset, ->(asset) { where(asset_type: asset.asset_type_for_request_types.name) }
+  scope :for_multiplexing, -> { where(for_multiplexing: true) }
 
   def construct_request(construct_method, attributes, klass = request_class)
     raise RequestType::DeprecatedError if deprecated?
+
     new_request = klass.public_send(construct_method, attributes) do |request|
       request.request_type = self
       request.request_purpose ||= request_purpose
@@ -146,6 +138,7 @@ class RequestType < ApplicationRecord
   def extract_metadata_from_hash(request_options)
     # WARNING: we need a copy of the options (we delete stuff from attributes)
     return {} unless request_options
+
     attributes = request_options.symbolize_keys
     common_attributes = request_class::Metadata.attribute_details.map(&:name)
     common_attributes.concat(request_class::Metadata.association_details.map(&:assignable_attribute_name))
@@ -183,6 +176,10 @@ class RequestType < ApplicationRecord
     else
       request_type_validators.find_by(request_option: request_option.to_s)
     end || RequestType::Validator::NullValidator.new
+  end
+
+  def request_attributes
+    request_class::Metadata.attribute_details + request_class::Metadata.association_details
   end
 
   delegate :pool_count,             to: :pooling_method

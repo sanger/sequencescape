@@ -1,4 +1,3 @@
-
 module SearchBehaviour
   MINIMUM_QUERY_LENGTH = 3
 
@@ -27,7 +26,7 @@ module SearchBehaviour
   end
 
   def clazz_search(clazz, query)
-    instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz_query(clazz, query))
+    instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz_query(clazz, query).to_a)
   end
 
   def clazz_query(clazz, query)
@@ -43,6 +42,7 @@ module SearchBehaviour
 
   def query_invalid?
     return false if params[:q].length >= MINIMUM_QUERY_LENGTH
+
     flash.now[:error] = "Queries should be at least #{MINIMUM_QUERY_LENGTH} characters long"
   end
 end

@@ -18,12 +18,16 @@ class RequestsController < ApplicationController
 
     # Ok, here we pick the initial source for the Requests.  They either come from Request (as in all Requests), or they
     # are limited by the Asset / Item.
-    request_source = Request.order(created_at: :desc).includes(:asset, :request_type).where(search_params).paginate(per_page: 200, page: params[:page])
+    request_source = Request.includes(:request_type, :initial_study, :user, :events, asset: :barcodes)
+                            .order(id: :desc)
+                            .where(search_params)
+                            .paginate(per_page: 200, page: params[:page])
 
-    @item               = Item.find(params[:item_id]) if params[:item_id]
-    @item ||= @asset_id = Asset.find(params[:asset_id]) if params[:asset_id]
-    @request_type       = RequestType.find(params[:request_type_id]) if params[:request_type_id]
-    @study              = Study.find(params[:study_id]) if params[:study_id]
+    @asset        = Asset.find(params[:asset_id]) if params[:asset_id]
+    @request_type = RequestType.find(params[:request_type_id]) if params[:request_type_id]
+    @study        = Study.find(params[:study_id]) if params[:study_id]
+
+    @subtitle = (@study&.name || @asset&.display_name)
 
     # Deprecated?: It would be great if we could remove this
     if params[:request_type] and params[:workflow]
@@ -67,7 +71,7 @@ class RequestsController < ApplicationController
     end
 
     begin
-      if @request.update_attributes(parameters)
+      if @request.update(parameters)
         flash[:notice] = 'Request details have been updated'
         redirect_to request_path(@request)
       else
@@ -113,18 +117,16 @@ class RequestsController < ApplicationController
 
   def cancel
     @request = Request.find(params[:id])
-    if @request.cancelable?
+    if @request.try(:may_cancel_before_started?)
       if @request.cancel_before_started && @request.save
         flash[:notice] = "Request #{@request.id} has been cancelled"
-        redirect_to request_path(@request)
       else
         flash[:error] = "Failed to cancel request #{@request.id}"
-        redirect_to request_path(@request)
       end
     else
-      flash[:error] = "Request #{@request.id} in progress. Can't be cancelled"
-      redirect_to request_path(@request)
+      flash[:error] = "Request #{@request.id} can't be cancelled"
     end
+    redirect_to request_path(@request)
   end
 
   # Displays history of events
@@ -139,18 +141,6 @@ class RequestsController < ApplicationController
 
   def list_inboxes
     @tasks = Task.all
-  end
-
-  def expanded(_options = {})
-    render plain: '', status: :gone
-  end
-
-  def pending
-    render plain: '', status: :gone
-  end
-
-  def incomplete_requests_for_family(_options = {})
-    render plain: '', status: :gone
   end
 
   def redirect_if_not_owner_or_admin
@@ -202,7 +192,7 @@ class RequestsController < ApplicationController
   end
 
   def search_params
-    permitted = params.permit(:asset_id, :item_id, :state, :request_type_id)
+    permitted = params.permit(:asset_id, :state, :request_type_id, :submission_id)
     permitted[:initial_study_id] = params[:study_id] if params[:study_id]
     permitted
   end

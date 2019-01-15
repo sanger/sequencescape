@@ -1,6 +1,6 @@
 class MetadataMigration < ActiveRecord::Migration
-  class Property < ActiveRecord::Base
-    class Definition < ActiveRecord::Base
+  class Property < ApplicationRecord
+    class Definition < ApplicationRecord
       self.table_name = ('property_definitions')
       has_many :properties, class_name: 'MetadataMigration::Property', foreign_key: :property_definition_id, dependent: :destroy
 

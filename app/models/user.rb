@@ -1,4 +1,3 @@
-
 require 'net/ldap'
 require 'openssl'
 require 'digest/sha1'
@@ -41,21 +40,16 @@ class User < ApplicationRecord
 
   scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct }
 
+  scope :with_user_code, ->(*codes) { where(barcode: codes.map { |code| Barcode.barcode_to_human(code) }.compact).or(with_swipecard_code(codes)) }
+
   attr_accessor :password
 
   def self.prefix
     'ID'
   end
 
-  def self.lookup_by_barcode(user_barcode)
-    barcode = Barcode.barcode_to_human(user_barcode)
-    return find_by(barcode: barcode) if barcode
-    nil
-  end
-
   def self.find_with_barcode_or_swipecard_code(user_code)
-    lookup_by_barcode(user_code) ||
-      with_swipecard_code(user_code).first
+    with_user_code(user_code).first
   end
 
   # returns emails of all admins
@@ -68,17 +62,6 @@ class User < ApplicationRecord
     Digest::SHA1.hexdigest("--#{salt}--#{password}--")
   end
 
-  def self.valid_barcode?(code)
-    begin
-      human_code = Barcode.barcode_to_human!(code, prefix)
-    rescue
-      return false
-    end
-    return false unless find_by(barcode: human_code)
-
-    true
-  end
-
   def study_roles
     user_roles('Study')
   end
@@ -88,7 +71,7 @@ class User < ApplicationRecord
   end
 
   def study_and_project_roles
-    roles.where(authorizable_type: ['Study', 'Project'])
+    roles.where(authorizable_type: %w[Study Project])
   end
 
   def user_roles(authorizable_class_name)
@@ -129,8 +112,10 @@ class User < ApplicationRecord
 
   def projects
     return Project.all if is_administrator?
+
     atuhorized = authorized_projects
     return Project.all if ((atuhorized.blank?) && (privileged?))
+
     atuhorized
   end
 
@@ -172,6 +157,7 @@ class User < ApplicationRecord
 
   def lab_manager?
     return @lab_manager if instance_variable_defined?('@lab_manager')
+
     @lab_manager = has_role? 'lab_manager'
   end
 
@@ -189,6 +175,7 @@ class User < ApplicationRecord
 
   def owner?(item)
     return false if item.nil?
+
     has_role? 'owner', item
   end
 
@@ -246,6 +233,7 @@ class User < ApplicationRecord
   # before filter
   def encrypt_password
     return if password.blank?
+
     self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end

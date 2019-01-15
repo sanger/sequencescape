@@ -1,4 +1,3 @@
-
 class PacBio::SampleSheet
   def header_metadata(batch)
     [
@@ -84,6 +83,7 @@ class PacBio::SampleSheet
   def lookup_collection_protocol(request)
     return 'Standard Seq v3' if request.request_metadata.sequencing_type == 'Standard'
     return 'MagBead Standard Seq v2' if request.request_metadata.sequencing_type == 'MagBead'
+
     request.request_metadata.sequencing_type
   end
 end

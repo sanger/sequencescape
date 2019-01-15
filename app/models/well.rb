@@ -1,4 +1,3 @@
-
 class Well < Receptacle
   include Api::WellIO::Extensions
   include ModelExtensions::Well
@@ -26,14 +25,16 @@ class Well < Receptacle
 
   has_many :stock_wells, through: :stock_well_links, source: :source_well do
     def attach!(wells)
-      attach(wells).tap do |_|
-        proxy_association.owner.save!
-      end
+      Well::Link.import(attach(wells))
     end
 
     def attach(wells)
       proxy_association.owner.stock_well_links.build(wells.map { |well| { type: 'stock', source_well: well } })
     end
+  end
+
+  def stock_wells_for_downstream_wells
+    plate&.stock_plate? ? [self] : stock_wells
   end
 
   def subject_type
@@ -53,6 +54,7 @@ class Well < Receptacle
 
   def self.hash_stock_with_targets(wells, purpose_names)
     return {} unless purpose_names
+
     purposes = PlatePurpose.where(name: purpose_names)
     # We might need to be careful about this line in future.
     target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).preload(:well_attribute).with_concentration
@@ -112,7 +114,6 @@ class Well < Receptacle
       .where(aliquots: { study_id: study })
   }
 
-  #
   scope :without_report, ->(product_criteria) {
     joins([
       'LEFT OUTER JOIN qc_metrics AS wr_qcm ON wr_qcm.asset_id = assets.id',
@@ -201,10 +202,28 @@ class Well < Receptacle
     def writer_for_well_attribute_as_float(attribute)
       class_eval <<-END_OF_METHOD_DEFINITION
         def set_#{attribute}(value)
-          self.well_attribute.update_attributes!(:#{attribute} => value.to_f)
+          self.well_attribute.update!(:#{attribute} => value.to_f)
         end
       END_OF_METHOD_DEFINITION
     end
+  end
+
+  def qc_results_by_key
+    @qc_results_by_key ||= qc_results.by_key
+  end
+
+  def qc_result_for(key)
+    result =  if key == 'quantity_in_nano_grams'
+                well_attribute.quantity_in_nano_grams
+              else
+                results = qc_results_by_key[key]
+                results.first.value if results.present?
+              end
+
+    return if result.nil?
+    return result.to_f.round(3) if result.to_s.include?('.')
+
+    result.to_i
   end
 
   def generate_name(_)
@@ -229,7 +248,6 @@ class Well < Receptacle
   writer_for_well_attribute_as_float(:rin)
 
   delegate_to_well_attribute(:concentration)
-  alias_method(:get_pico_result, :get_concentration)
   writer_for_well_attribute_as_float(:concentration)
 
   delegate_to_well_attribute(:molarity)
@@ -261,16 +279,6 @@ class Well < Receptacle
 
   delegate_to_well_attribute(:gender_markers)
 
-  def update_qc_values_with_hash(updated_data, scale)
-    ActiveRecord::Base.transaction do
-      scale.each do |attribute, multiplier|
-        value = extract_float(updated_data[attribute])
-        next if value.blank?
-        send(attribute, value * multiplier)
-      end
-    end
-  end
-
   def update_gender_markers!(gender_markers, resource)
     if well_attribute.gender_markers == gender_markers
       gender_marker_event = events.where(family: 'update_gender_markers').order('id desc').first
@@ -283,14 +291,14 @@ class Well < Receptacle
       events.update_gender_markers!(resource)
     end
 
-    well_attribute.update_attributes!(gender_markers: gender_markers)
+    well_attribute.update!(gender_markers: gender_markers)
   end
 
   def update_sequenom_count!(sequenom_count, resource)
     unless well_attribute.sequenom_count == sequenom_count
       events.update_sequenom_count!(resource)
     end
-    well_attribute.update_attributes!(sequenom_count: sequenom_count)
+    well_attribute.update!(sequenom_count: sequenom_count)
   end
 
   # The sequenom pass value is either the string 'Unknown' or it is the combination of gender marker values.
@@ -336,6 +344,7 @@ class Well < Receptacle
 
   def details
     return 'Not yet picked' if plate.nil?
+
     plate.purpose.try(:name) || 'Unknown plate purpose'
   end
 
@@ -354,15 +363,5 @@ class Well < Receptacle
 
   def update_from_qc(qc_result)
     Well::AttributeUpdater.update(self, qc_result)
-  end
-
-  private
-
-  def extract_float(value)
-    # If we're already numeric, we don't care.
-    return value if value.is_a?(Numeric) || value.nil?
-    matches = /\A\({0,1}(?<decimal>\d+\.{0,1}\d*)/.match(value.strip)
-    return nil if matches.nil?
-    matches[:decimal].to_f
   end
 end

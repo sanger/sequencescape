@@ -1,4 +1,3 @@
-
 module ModelExtensions::Sample
   def self.included(base)
     base.class_eval do

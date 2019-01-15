@@ -32,7 +32,7 @@ RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
 
       'current_volume' => 15.0,
       'initial_volume' => nil,
-      'concentration'  => 23.2,
+      'concentration' => 23.2,
 
       'gel_pass' => 'Pass',
       'pico_pass' => 'Pass',

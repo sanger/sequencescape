@@ -1,3 +1,2 @@
-
 module ModelExtensions::Asset
 end

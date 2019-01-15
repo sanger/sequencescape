@@ -8,6 +8,7 @@ class AddFurtherHistoricEvents < ActiveRecord::Migration
       print sc.id
       tube = sc.target
       next if BroadcastEvent::LibraryComplete.find_by(seed_id: tube.id, seed_type: 'Asset').present?
+
       user = sc.user
       orders = sc.target.requests_as_target.pluck(:order_id).compact.uniq
       orders.each do |order_id|
@@ -24,6 +25,7 @@ class AddFurtherHistoricEvents < ActiveRecord::Migration
       print sc.id
       plate = sc.target
       next if LibraryEvent.find_by(seed_id: plate.id, seed_type: 'Asset').present?
+
       user = sc.user
       orders = sc.target.requests_as_target.pluck(:order_id).compact.uniq
       orders.each do |_order_id|

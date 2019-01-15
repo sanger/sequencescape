@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180613160225) do
+ActiveRecord::Schema.define(version: 20181119105427) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20180613160225) do
     t.index ["receptacle_id", "tag_id", "tag2_id"], name: "aliquot_tags_and_tag2s_are_unique_within_receptacle", unique: true
     t.index ["request_id"], name: "fk_rails_37734e1810"
     t.index ["sample_id"], name: "index_aliquots_on_sample_id"
+    t.index ["study_id", "receptacle_id"], name: "index_aliquots_on_study_id_and_receptacle_id"
     t.index ["study_id"], name: "index_aliquots_on_study_id"
     t.index ["tag_id"], name: "tag_id_idx"
   end
@@ -93,7 +94,7 @@ ActiveRecord::Schema.define(version: 20180613160225) do
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
   end
 
-  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", comment: "AL" do |t|
+  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
   end
 
   create_table "asset_creation_parents", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1012,6 +1013,7 @@ ActiveRecord::Schema.define(version: 20180613160225) do
   create_table "qc_assays", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "lot_number"
   end
 
   create_table "qc_decision_qcables", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

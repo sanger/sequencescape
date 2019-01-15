@@ -1,4 +1,3 @@
-
 require './test/test_helper'
 require 'csv'
 
@@ -56,15 +55,10 @@ class PlateReaderParserTest < ActiveSupport::TestCase
         @parser = Parsers::PlateReaderParser.new(CSV.parse(content))
       end
 
-      # should "parse last sample of testing file correctly" do
-      #  assert_equal "1", @parser.parse_overall([157,158])
-      # end
-
-      # should "use get_groups method to find matching regexp" do
-      #  test_data = [[24, 25], [37, 38], [49, 50], [61, 62], [73, 74], [85, 86],
-      #  [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157,158]]
-      #  assert_equal test_data, @parser.get_groups(/Overall.*/m)
-      # end
+      should 'return basic metadata' do
+        assert_equal 'Plate Reader', @parser.assay_type
+        assert_equal 'v0.1', @parser.assay_version
+      end
 
       should 'parses a CSV example file' do
         assert_equal '75.783', @parser.concentration('A1')
@@ -73,22 +67,23 @@ class PlateReaderParserTest < ActiveSupport::TestCase
 
       should 'map by well' do
         results = [
-          ['A1', '75.783'],
-          ['B1', '70.487'],
-          ['C1', '78.785'],
-          ['D1', '59.62'],
-          ['E1', '38.78'],
-          ['F1', '34.294'],
-          ['G1', '25.496'],
-          ['H1', '32.952'],
-          ['A2', '76.92'],
-          ['B2', '29.055'],
-          ['C2', '76.69'],
-          ['D2', '80.721']
+          ['A1', { 'concentration' => Unit.new('75.783 ng/ul') }],
+          ['B1', { 'concentration' => Unit.new('70.487 ng/ul') }],
+          ['C1', { 'concentration' => Unit.new('78.785 ng/ul') }],
+          ['D1', { 'concentration' => Unit.new('59.62 ng/ul') }],
+          ['E1', { 'concentration' => Unit.new('38.78 ng/ul') }],
+          ['F1', { 'concentration' => Unit.new('34.294 ng/ul') }],
+          ['G1', { 'concentration' => Unit.new('25.496 ng/ul') }],
+          ['H1', { 'concentration' => Unit.new('32.952 ng/ul') }],
+          ['A2', { 'concentration' => Unit.new('76.92 ng/ul') }],
+          ['B2', { 'concentration' => Unit.new('29.055 ng/ul') }],
+          ['C2', { 'concentration' => Unit.new('76.69 ng/ul') }],
+          ['D2', { 'concentration' => Unit.new('80.721 ng/ul') }]
         ]
-        results.each do |location, conc|
-          assert_equal @parser.concentration(location), conc
+        @parser.each_well_and_parameters do |*args|
+          assert results.delete(args).present?, "#{args.inspect} was an unexpected result"
         end
+        assert results.empty?, "Some expected results were not returned: #{results.inspect}"
       end
     end
     context 'with an invalid CSV ISC file' do

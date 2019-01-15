@@ -1,4 +1,3 @@
-
 module Batch::TecanBehaviour
   def generate_tecan_data(target_barcode, override_plate_type = nil)
     data_object = {
@@ -15,7 +14,7 @@ module Batch::TecanBehaviour
       full_source_barcode = request.asset.plate.barcode_for_tecan
       full_destination_barcode = request.target_asset.plate.barcode_for_tecan
 
-      source_plate_name = override_plate_type.presence || request.asset.plate.stock_plate_name.tr('_', "\s")
+      source_plate_name = override_plate_type.presence || request.asset.plate.plate_type.tr('_', "\s")
 
       if data_object['source'][full_source_barcode].nil?
         data_object['source'][full_source_barcode] = { 'name' => source_plate_name, 'plate_size' => request.asset.plate.size }
@@ -31,9 +30,9 @@ module Batch::TecanBehaviour
       end
 
       data_object['destination'][full_destination_barcode]['mapping'] << {
-        'src_well'  => [full_source_barcode, request.asset.map.description],
-        'dst_well'  => request.target_asset.map.description,
-        'volume'    => (request.target_asset.get_picked_volume),
+        'src_well' => [full_source_barcode, request.asset.map.description],
+        'dst_well' => request.target_asset.map.description,
+        'volume' => (request.target_asset.get_picked_volume),
         'buffer_volume' => (request.target_asset.get_buffer_volume)
       }
     end

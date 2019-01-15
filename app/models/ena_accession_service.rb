@@ -1,4 +1,3 @@
-
 class EnaAccessionService < AccessionService
   self.priority = 1
   self.operational = true

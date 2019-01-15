@@ -1,4 +1,3 @@
-
 # A Tag is a short, know sequence of DNA which gets applied to a sample.
 # The tag remains attached through subsequent processing, and means that it is
 # possible to identify the origin of a sample if multiple samples are subsequently
@@ -9,7 +8,7 @@
 class Tag < ApplicationRecord
   module Associations
     def untag!
-      aliquots.first.try(:update_attributes!, tag: nil)
+      aliquots.first.try(:update!, tag: nil)
     end
   end
 
@@ -39,6 +38,7 @@ class Tag < ApplicationRecord
   # Allows the application of multiple tags to an aliquot
   def multitag!(asset)
     raise StandardError, 'Cannot tag an empty asset'   if asset.aliquots.empty?
+
     asset.aliquots.group_by { |aliquot| aliquot.sample_id }.each do |_sample_id, aliquots|
       new_aliquot = aliquots.first.untagged? ? aliquots.first : aliquots.first.dup
       # dup automatically unsets receptacle, so we reallocate it here.

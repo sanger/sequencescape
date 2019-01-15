@@ -1,4 +1,3 @@
-
 class RequestType::PoolingMethod < ApplicationRecord
   has_many :request_types
   validates_presence_of :pooling_behaviour
@@ -10,6 +9,7 @@ class RequestType::PoolingMethod < ApplicationRecord
 
   def import_behaviour
     return if pooling_behaviour.nil?
+
     behavior_module = "RequestType::PoolingMethod::#{pooling_behaviour}".constantize
     class_eval do
       include(behavior_module)

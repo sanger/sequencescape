@@ -1,4 +1,3 @@
-
 class ::Io::Supplier < ::Core::Io::Base
   # This module adds the behaviour we require from the Supplier module.
   module ApiIoSupport

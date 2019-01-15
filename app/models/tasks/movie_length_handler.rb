@@ -1,4 +1,3 @@
-
 module Tasks::MovieLengthHandler
   def render_movie_length_task(task, params)
     @valid_movie_lengths = task.descriptors.find_by(name: 'Movie length').selection
@@ -16,7 +15,7 @@ module Tasks::MovieLengthHandler
           return false
         end
 
-        asset.pac_bio_library_tube_metadata.update_attributes!(movie_length: movie_length)
+        asset.pac_bio_library_tube_metadata.update!(movie_length: movie_length)
       end
     end
 

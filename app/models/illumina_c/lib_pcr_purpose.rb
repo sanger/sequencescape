@@ -1,4 +1,3 @@
-
 class IlluminaC::LibPcrPurpose < PlatePurpose
   include PlatePurpose::Library
 
@@ -10,7 +9,7 @@ class IlluminaC::LibPcrPurpose < PlatePurpose
   end
 
   def nudge_parent_plate(plate, state, user, contents)
-    plate.parent.transition_to(state, user, contents) if ['started', 'passed'].include?(state)
+    plate.parent.transition_to(state, user, contents) if %w[started passed].include?(state)
   end
   private :nudge_parent_plate
 end

@@ -1,34 +1,23 @@
-
 module Limber::Helper
   require 'hiseq_2500_helper'
-
-  ACCEPTABLE_SEQUENCING_REQUESTS = %w(
-    illumina_b_hiseq_2500_paired_end_sequencing
-    illumina_b_hiseq_2500_single_end_sequencing
-    illumina_b_miseq_sequencing
-    illumina_b_hiseq_v4_paired_end_sequencing
-    illumina_b_hiseq_x_paired_end_sequencing
-    illumina_htp_hiseq_4000_paired_end_sequencing
-    illumina_htp_hiseq_4000_single_end_sequencing
-  )
 
   PIPELINE = 'Limber-Htp'
   PIPELINE_REGEX = /Illumina-[A-z]{1,3} /
   PRODUCTLINE = 'Illumina-Htp'
   DEFAULT_REQUEST_CLASS = 'IlluminaHtp::Requests::StdLibraryRequest'
   DEFAULT_LIBRARY_TYPES = ['Standard']
-  DEFAULT_PURPOSE = 'LB Cherrypick'
+  DEFAULT_PURPOSES = ['LB Cherrypick']
 
   class RequestTypeConstructor
     def initialize(prefix,
                    request_class: DEFAULT_REQUEST_CLASS,
                    library_types: DEFAULT_LIBRARY_TYPES,
-                   default_purpose: DEFAULT_PURPOSE,
+                   default_purposes: DEFAULT_PURPOSES,
                    for_multiplexing: false)
       @prefix = prefix
       @request_class = request_class
       @library_types = library_types
-      @default_purpose = default_purpose
+      @default_purposes = default_purposes
       @for_multiplexing = for_multiplexing
     end
 
@@ -40,6 +29,7 @@ module Limber::Helper
     # already exists.
     def build!
       return true if RequestType.where(key: key).exists?
+
       rt = RequestType.create!(
         name: "Limber #{@prefix}",
         key: key,
@@ -52,7 +42,7 @@ module Limber::Helper
         request_purpose: :standard,
         for_multiplexing: @for_multiplexing
       ) do |rt|
-        rt.acceptable_plate_purposes << Purpose.find_by!(name: @default_purpose)
+        rt.acceptable_plate_purposes = Purpose.where(name: @default_purpose)
         rt.library_types = @library_types.map { |name| LibraryType.find_or_create_by(name: name) }
       end
 
@@ -91,7 +81,7 @@ module Limber::Helper
     # The following are optional and change the range of submission templates constructed.
     # @param [String] skip_cherrypick: true Boolean. Set to false to generate submission templates with in built cherrypicking.
     # @param [Array] sequencing: Array of sequencing request type keys to build templates for. Defaults to all appropriate request types.
-    def initialize(name: nil, type: nil, role: nil, prefix: nil, skip_cherrypick: true, sequencing: ACCEPTABLE_SEQUENCING_REQUESTS, catalogue:)
+    def initialize(name: nil, type: nil, role: nil, prefix: nil, skip_cherrypick: true, sequencing: [], catalogue:)
       @name = name
       @type = type
       @role = role
@@ -118,6 +108,7 @@ module Limber::Helper
         raise "Must provide a #{value} or prefix" if send(value).nil?
       end
       raise 'Must provide a catalogue' if catalogue.nil?
+
       true
     end
 
@@ -135,7 +126,8 @@ module Limber::Helper
     def update!
       each_submission_template do |options|
         next if options[:submission_parameters][:input_field_infos].nil?
-        SubmissionTemplate.find_by!(name: options[:name]).update_attributes!(submission_parameters: options[:submission_parameters])
+
+        SubmissionTemplate.find_by!(name: options[:name]).update!(submission_parameters: options[:submission_parameters])
       end
     end
 
@@ -169,6 +161,7 @@ module Limber::Helper
       cherrypick_options.each do |cherrypick|
         sequencing.each do |sequencing_request_type|
           next if SubmissionTemplate.where(name: name_for(cherrypick, sequencing_request_type)).exists?
+
           yield({
             name: name_for(cherrypick, sequencing_request_type),
             submission_class_name: 'LinearSubmission',

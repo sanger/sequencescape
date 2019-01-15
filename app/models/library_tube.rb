@@ -4,7 +4,7 @@ class LibraryTube < Tube
   include Api::LibraryTubeIO::Extensions
   include ModelExtensions::LibraryTube
 
-  def is_sequenceable?
+  def sequenceable?
     true
   end
 
@@ -27,13 +27,11 @@ class LibraryTube < Tube
   end
 
   def specialized_from_manifest=(attributes)
-    if first_update?
-      # library_id is assigned on aliquot creation in `tube_sample_creation` method
-      # in sample_manifest `library` and `multiplexed library` behaviours
-      # library_id should be removed from here at some point (20/04/2017)
-      aliquots.first.update_attributes!(attributes.merge(library_id: id))
-      requests.each(&:manifest_processed!)
-    end
+    # library_id is assigned on aliquot creation in `tube_sample_creation` method
+    # in sample_manifest `library` and `multiplexed library` behaviours
+    # library_id should be removed from here at some point (20/04/2017)
+    aliquots.first.update!(attributes.merge(library_id: id)) if first_update?
+    external_library_creation_requests.each(&:manifest_processed!)
   end
 
   def first_update?

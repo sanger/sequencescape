@@ -1,4 +1,3 @@
-
 class IlluminaC::QcPoolPurpose < Tube::Purpose
   def transition_to(tube, state, _user, _ = nil, _customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do
@@ -9,7 +8,7 @@ class IlluminaC::QcPoolPurpose < Tube::Purpose
   end
 
   def terminated_states
-    ['cancelled', 'failed']
+    %w[cancelled failed]
   end
   private :terminated_states
 end

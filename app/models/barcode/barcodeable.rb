@@ -65,6 +65,14 @@ module Barcode::Barcodeable
     barcodes.fluidigm.first_or_initialize.barcode = barcode
   end
 
+  def cgap_barcode
+    barcodes.detect(&:cgap?)&.machine_barcode
+  end
+
+  def cgap_barcode=(barcode)
+    barcodes.cgap.first_or_initialize.barcode = barcode
+  end
+
   def external_barcode
     barcodes.detect(&:external?)&.machine_barcode
   end
@@ -99,6 +107,7 @@ module Barcode::Barcodeable
 
   def build_barcode_when_complete
     return unless @barcode_number && @barcode_prefix
+
     self.primary_barcode = Barcode.build_sanger_ean13(prefix: @barcode_prefix, number: @barcode_number)
     # We've effectively modified the barcodes relationship, so lets reset it.
     # This probably indicates we should handle primary barcode ourself, and load

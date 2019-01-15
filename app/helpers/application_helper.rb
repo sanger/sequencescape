@@ -1,4 +1,3 @@
-
 module ApplicationHelper
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
@@ -16,24 +15,6 @@ module ApplicationHelper
     content_tag('div', id: identifier, class: 'error', style: 'display:none;') do
       'An error has occurred and the results can not be shown at the moment'
     end
-  end
-
-  # PhantomJS is effectively an ancient browser, and struggles
-  # with bootstrap collapsible menus.
-  def phantom_js?
-    request.user_agent&.include?('PhantomJS')
-  end
-
-  def display_for_setting(setting)
-    display = true
-    if logged_in?
-      if current_user.setting_for? setting
-        if current_user.value_for(setting) == 'hide'
-          display = false
-        end
-      end
-    end
-    display
   end
 
   def required_marker
@@ -56,7 +37,7 @@ module ApplicationHelper
 
   def display_user_guide(display_text, link = nil)
     alert(:user_guide) do
-      link.present? ? link_to(display_text, link) : display_text
+      concat link.present? ? link_to(display_text, link) : display_text
     end
   end
 
@@ -67,7 +48,9 @@ module ApplicationHelper
   end
 
   def display_status(status)
-    content_tag(:span, status, class: "request-state badge badge-#{bootstrapify_request_state(status)}")
+    return if status.blank?
+
+    content_tag(:span, status, class: "request-state badge badge-#{status}")
   end
 
   def dynamic_link_to(summary_item)
@@ -144,10 +127,6 @@ module ApplicationHelper
     add :about, title
   end
 
-  def render_help(help = '')
-    add :help, help
-  end
-
   def tabulated_error_messages_for(*params)
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
     objects = params.collect { |object_name| instance_variable_get("@#{object_name}") }.compact
@@ -163,10 +142,6 @@ module ApplicationHelper
          raw(error_messages)
        end].join.html_safe
     end
-  end
-
-  def horizontal_tab(name, key, related_div, tab_no, active = false)
-    link_to name, '#', 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: key.to_s, class: "nav-link #{active ? "active" : ""} tab#{tab_no}"
   end
 
   # <li class="nav-item">
@@ -218,9 +193,9 @@ module ApplicationHelper
 
   def display_ready_for_manual_qc(v)
     if v
-      image_tag('accept.png')
+      icon('far', 'check-circle')
     else
-      image_tag('error.png')
+      icon('fas', 'exclamation-circle', class: 'text-danger')
     end
   end
 
@@ -232,9 +207,9 @@ module ApplicationHelper
   def display_boolean_results(result)
     return 'NA' if (!result || result.empty?)
     if result == 'pass' || result == '1' || result == 'true'
-      return image_tag('accept.png', title: result)
+      return icon('far', 'check-circle', title: result)
     else
-      return image_tag('error.png', title: result)
+      return icon('fas', 'exclamation-circle', class: 'text-danger', title: result)
     end
   end
 
@@ -254,12 +229,14 @@ module ApplicationHelper
     label_tag(name, text, options.merge(style: 'display:none;'))
   end
 
-  def non_breaking_space
-    '&nbsp;'.html_safe
-  end
-
   def help_text(&block)
     content_tag(:small, class: 'form-text text-muted col', &block)
+  end
+
+  def help_link(text, entry = '', options = {})
+    url = "#{configatron.help_link_base_url}/#{entry}"
+    options[:class] = "#{options[:class]} external_help"
+    link_to text, url, options
   end
 
   # The admin email address should be stored in config.yml for the current environment

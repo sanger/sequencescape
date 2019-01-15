@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class SubmissionTemplateTest < ActiveSupport::TestCase
@@ -27,28 +26,6 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
       setup do
         @comment = 'my comment'
         @order.comments = @comment
-      end
-
-      should 'be savable as a template' do
-        template = SubmissionTemplate.new_from_submission('template 1', @order)
-        assert template
-        assert template.is_a?(SubmissionTemplate)
-      end
-
-      context 'saved as a template' do
-        setup do
-          @template_name = 'template 2'
-          @template = SubmissionTemplate.new_from_submission(@template_name, @order)
-        end
-
-        should 'set the name to template' do
-          assert_equal @template_name, @template.name
-        end
-
-        should 'set parameters to template' do
-          assert @template.submission_parameters
-          assert_equal @comment, @template.submission_parameters[:comments]
-        end
       end
     end
 

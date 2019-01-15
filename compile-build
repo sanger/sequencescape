@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -e
+echo 'Cleaning up'
+NODE_ENV=production bundle exec rake assets:clobber
+echo 'Compiling assets'
+NODE_ENV=production bundle exec rake assets:precompile
+echo 'Generating sha'
+git rev-parse HEAD > REVISION
+git tag -l --points-at HEAD --sort -version:refname | head -1 > TAG
+git rev-parse --abbrev-ref HEAD > BRANCH
+echo 'Compiling tar.gz'
+tar \
+  --exclude='./*.swp' \
+  --exclude='./.bundle' \
+  --exclude='./.codeclimate.yml' \
+  --exclude='./.git' \
+  --exclude='./.gitignore' \
+  --exclude='./.rspec' \
+  --exclude='./.rubocop*' \
+  --exclude='./.simplecov' \
+  --exclude='./.tags' \
+  --exclude='./.travis.yml' \
+  --exclude='./README*' \
+  --exclude='./compile-build' \
+  --exclude='./coverage' \
+  --exclude='./features' \
+  --exclude='./knapsack_cucumber_report.json' \
+  --exclude='./log/*' \
+  --exclude='./node_modules' \
+  --exclude='./run_coverage' \
+  --exclude='./sbin' \
+  --exclude='./*.sublime-project' \
+  --exclude='./spec' \
+  --exclude='./test' \
+  --exclude='./tmp' \
+  --exclude='./vendor/bundle' \
+  --exclude='./yarn.lock' \
+  --exclude='release.tar.gz' \
+  -zcf /tmp/release.tar.gz ./
+mv /tmp/release.tar.gz ./release.tar.gz
+echo 'Release complete!'
+echo `pwd`/release.tar.gz

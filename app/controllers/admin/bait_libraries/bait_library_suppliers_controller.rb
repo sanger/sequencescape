@@ -1,4 +1,3 @@
-
 class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationController
   before_action :admin_login_required
   before_action :discover_bait_library_supplier, only: [:edit, :update, :destroy]
@@ -25,7 +24,7 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
 
   def update
     respond_to do |format|
-      if @bait_library_supplier.update_attributes(bait_library_supplier_params)
+      if @bait_library_supplier.update(bait_library_supplier_params)
         flash[:notice] = 'Supplier was successfully updated.'
         format.html { redirect_to(admin_bait_libraries_path) }
       else

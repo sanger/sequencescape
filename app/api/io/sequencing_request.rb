@@ -1,4 +1,3 @@
-
 class Io::SequencingRequest < ::Io::Request
   set_model_for_input(::SequencingRequest)
   set_json_root(:sequencing_request)

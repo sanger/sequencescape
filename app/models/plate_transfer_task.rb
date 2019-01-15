@@ -1,4 +1,3 @@
-
 class PlateTransferTask < Task
   belongs_to :purpose
 

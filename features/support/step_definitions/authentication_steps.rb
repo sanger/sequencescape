@@ -1,4 +1,3 @@
-
 Given /^I am using "(.*)" to authenticate$/ do |auth_method|
   configatron.authentication = auth_method
 end
@@ -35,5 +34,5 @@ end
 
 Given /^user "([^"]*)" has nil first and last names$/ do |login|
   user = User.find_by(login: login)
-  user.update_attributes!(last_name: nil, first_name: nil)
+  user.update!(last_name: nil, first_name: nil)
 end

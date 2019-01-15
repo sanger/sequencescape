@@ -8,7 +8,7 @@ module Aker
     class Job
       include ActiveModel::Model
       ATTRIBUTES = %i[job_id job_uuid work_order_id aker_job_url product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment desired_date data_release_uuid priority].freeze
-      DEFAULT_ATTRIBUTES = { materials: {} }.freeze
+      DEFAULT_ATTRIBUTES = { data_release_uuid: nil, materials: {} }.freeze
       IGNORE_ATTRIBUTES = %w[container_id num_of_rows num_of_cols].freeze
 
       attr_accessor(*ATTRIBUTES)
@@ -36,13 +36,23 @@ module Aker
       # Persists a Job and all associated materials.
       def create
         return unless valid?
-        @model = Aker::Job.create(aker_job_id: aker_job_id, job_uuid: job_uuid, samples: collect_materials, aker_job_url: aker_job_url)
+
+        @model = Aker::Job.create(aker_job_id: aker_job_id, job_uuid: job_uuid, samples: materials.map(&:create), aker_job_url: aker_job_url)
       end
 
       def as_json(_options = {})
         {
           job: json_attributes
         }
+      end
+
+      def study
+        return @study if @study
+
+        uuid = Uuid.find_by(external_id: data_release_uuid)
+        return nil unless uuid
+
+        @study = Study.find(uuid.resource_id)
       end
 
       private
@@ -70,18 +80,8 @@ module Aker
       def build_materials(materials)
         (materials || []).collect do |material|
           indifferent_material = material.to_h.with_indifferent_access
-          sample = Sample.find_by(name: indifferent_material[:_id])
-          if sample
-            sample_material = Aker::Material.new(sample)
-            ActiveRecord::Base.transaction do
-              sample_material.update!(indifferent_material)
-              sample_material.container.update!(@container_params.merge(address: indifferent_material[:address]))
-            end
-          end
-          sample ||
-            Aker::Factories::Material.new(indifferent_material).tap do |m|
-              m.container = build_container(indifferent_material[:address])
-            end
+          address = indifferent_material[:address]
+          Aker::Factories::Material.new(indifferent_material, build_container(address), study)
         end
       end
 
@@ -92,6 +92,7 @@ module Aker
       def check_materials
         materials.each do |material|
           next if material.valid?
+
           material.errors.each do |key, value|
             errors.add key, value
           end
@@ -104,12 +105,6 @@ module Aker
           errors.add(:data_release_uuid, 'is unknown')
         else
           errors.add(:data_release_uuid, 'is not active') unless Study.find(study.resource_id).active?
-        end
-      end
-
-      def collect_materials
-        materials.collect do |material|
-          material.instance_of?(Aker::Factories::Material) ? material.create : material
         end
       end
     end

@@ -1,4 +1,3 @@
-
 require 'control_request_type_creation'
 
 Pipeline.send(:include, ControlRequestTypeCreation)
@@ -175,8 +174,8 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparat
     workflow.locale = 'External'
   end.tap do |workflow|
     {
-      TagGroupsTask      => { name: 'Tag Groups',       sorted: 1, lab_activity: true },
-      AssignTagsTask     => { name: 'Assign Tags',      sorted: 2, lab_activity: true },
+      TagGroupsTask => { name: 'Tag Groups', sorted: 1, lab_activity: true },
+      AssignTagsTask => { name: 'Assign Tags', sorted: 2, lab_activity: true },
       SetDescriptorsTask => { name: 'Initial QC',       sorted: 3, batched: false, lab_activity: true },
       SetDescriptorsTask => { name: 'Gel',              sorted: 4, batched: false, lab_activity: true },
       SetDescriptorsTask => { name: 'Characterisation', sorted: 5, batched: true, lab_activity: true }
@@ -230,7 +229,7 @@ PulldownLibraryCreationPipeline.create!(name: 'Pulldown library preparation') do
   end
 end
 
-cluster_formation_se_request_type = ['a', 'b', 'c'].map do |pl|
+cluster_formation_se_request_type = %w[a b c].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_single_ended_sequencing",
     name: "Illumina-#{pl.upcase} Single ended sequencing",
@@ -336,7 +335,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-single_ended_hi_seq_sequencing = ['a', 'b', 'c'].map do |pl|
+single_ended_hi_seq_sequencing = %w[a b c].map do |pl|
   RequestType.create!(key: "illumina_#{pl}_single_ended_hi_seq_sequencing", name: "Illumina-#{pl.upcase} Single ended hi seq sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
@@ -410,7 +409,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-cluster_formation_pe_request_types = ['a', 'b', 'c'].map do |pl|
+cluster_formation_pe_request_types = %w[a b c].map do |pl|
   RequestType.create!(key: "illumina_#{pl}_paired_end_sequencing", name: "Illumina-#{pl.upcase} Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
@@ -432,7 +431,7 @@ end << RequestType.create!(
          request_type.request_class = SequencingRequest
        end
 
-hiseq_2500_request_types = ['a', 'b', 'c'].map do |pl|
+hiseq_2500_request_types = %w[a b c].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_hiseq_2500_paired_end_sequencing",
     name: "Illumina-#{pl.upcase} HiSeq 2500 Paired end sequencing",
@@ -446,7 +445,7 @@ hiseq_2500_request_types = ['a', 'b', 'c'].map do |pl|
   )
 end
 
-hiseq_2500_se_request_types = ['a', 'b', 'c'].map do |pl|
+hiseq_2500_se_request_types = %w[a b c].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_hiseq_2500_single_end_sequencing",
     name: "Illumina-#{pl.upcase} HiSeq 2500 Single end sequencing",
@@ -658,7 +657,7 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
   pipeline.active          = true
   pipeline.group_by_parent = false
 
-  ['a', 'b', 'c'].each do |pl|
+  %w[a b c].each do |pl|
     pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
       request_type.billable          = true
       request_type.initial_state     = 'pending'
@@ -860,10 +859,10 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines
 ['Pulldown', 'Illumina-A Pulldown'].each do |lab|
-  [
-    'WGS',
-    'SC',
-    'ISC'
+  %w[
+    WGS
+    SC
+    ISC
   ].each do |pipeline_type|
     pipeline_name = "#{lab} #{pipeline_type}"
     Pipeline.create!(name: pipeline_name) do |pipeline|
@@ -904,7 +903,7 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
     request_type.request_class_name = MiSeqSequencingRequest.name
   end
 
-  ['a', 'b', 'c'].each do |pl|
+  %w[a b c].each do |pl|
     pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_miseq_sequencing", name: "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
@@ -1036,12 +1035,7 @@ CherrypickPipeline.create!(
 ) do |pipeline|
 end
 
-tosta = RequestType.find_by(key: 'pick_to_sta').id
-tosta2 = RequestType.find_by(key: 'pick_to_sta2').id
-ptst = RequestType.find_by(key: 'pick_to_snp_type').id
-tofluidigm = RequestType.find_by(key: 'pick_to_fluidigm').id
-
-v4_requests_types_pe = ['a', 'b', 'c'].map do |pipeline|
+v4_requests_types_pe = %w[a b c].map do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
 
@@ -1065,7 +1059,7 @@ v4_requests_types_se = [
                       product_line: ProductLine.find_by(name: 'Illumina-C'))
 ]
 
-x10_requests_types = ['a', 'b'].map do |pipeline|
+x10_requests_types = %w[a b].map do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_x_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq X Paired end sequencing",
 
@@ -1095,7 +1089,7 @@ st_x10 = [RequestType.create!(key: 'hiseq_x_paired_end_sequencing',
                               billable: true,
                               product_line: ProductLine.find_by(name: 'Illumina-B'))]
 
-v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
+['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq v4 PE #{type}",
     automated: false,
@@ -1164,7 +1158,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
   end
 end
 
-x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
+['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
     automated: false,
@@ -1198,7 +1192,7 @@ x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     pipeline.request_types = x10_requests_types
   end
 end
-st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
+['(spiked in controls) from strip-tubes'].each do |type|
   UnrepeatableSequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
     automated: false,
@@ -1231,7 +1225,7 @@ st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
   end
 end
 
-['htp', 'c'].each do |pipeline|
+%w[htp c].each do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_4000_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq 4000 Paired end sequencing",
 
@@ -1268,6 +1262,7 @@ def build_4000_tasks_for(workflow, paired_only = false)
       { kind: 'Text', sorter: 4, name: 'CBOT' },
       { kind: 'Text', sorter: 5, name: '-20 Temp. Read 1 Cluster Kit (Box 1 of 2) Lot #' },
       { kind: 'Text', sorter: 6, name: '-20 Temp. Read 1 Cluster Kit (Box 1 of 2) RGT #' },
+      { kind: 'Text', sorter: 7, name: 'PhiX lot #' },
       { kind: 'Text', sorter: 8, name: 'Comment' }
     ])
   end
@@ -1369,7 +1364,7 @@ RequestType.find_each do |request_type|
     # By request class
     'HiSeqSequencingRequest' => [50, 75, 100],
     'MiSeqSequencingRequest' => [25, 50, 130, 150, 250, 300],
-    'SequencingRequest'      => [37, 54, 76, 108]
+    'SequencingRequest' => [37, 54, 76, 108]
   }[request_type.request_class_name]
 
   RequestType::Validator.create!(request_type: request_type, request_option: 'read_length', valid_options: read_lengths) if read_lengths.present?

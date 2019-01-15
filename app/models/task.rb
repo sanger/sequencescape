@@ -1,4 +1,3 @@
-
 class Task < ApplicationRecord
   belongs_to :workflow, class_name: 'Workflow', foreign_key: :pipeline_workflow_id
   has_many :families
@@ -56,6 +55,7 @@ class Task < ApplicationRecord
 
   def self.init_class
     return if @init_done
+
     @init_done = true
     @subclass_attributes = {}
     @subclass_attributes_ordered_names = []
@@ -140,6 +140,7 @@ class Task < ApplicationRecord
 
   def subassets_for_asset(asset)
     return [] unless asset
+
     sub_assets = []
     family_map = families.index_by(&:name)
     asset.children.select { |a| family_map[a.sti_type] }

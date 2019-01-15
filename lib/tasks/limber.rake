@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Disabling rubocop temporarily to preserve nice comments format
+# rubocop:disable all
+
 # We'll try and do this through the API with the live version
 namespace :limber do
   desc 'Setup all the necessary limber records'
@@ -23,7 +26,11 @@ namespace :limber do
                 { name: 'scRNA-384 Stock',
                   size: 384 },
                 { name: 'GBS Stock',
-                  size: 384 }]
+                  size: 384 },
+                # GnT Pipeline requires UAT
+                { name: 'GnT Stock',
+                  size: 96 }
+                ]
 
     purposes.each do |purpose|
       name = purpose[:name]
@@ -78,7 +85,7 @@ namespace :limber do
       end
       Limber::Helper::RequestTypeConstructor.new(
         'PCR Free',
-        default_purpose: 'PF Cherrypicked'
+        default_purposes: ['PF Cherrypicked']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -91,39 +98,64 @@ namespace :limber do
         'GBS',
         request_class: 'IlluminaHtp::Requests::GbsRequest',
         library_types: ['GBS'],
-        default_purpose: 'GBS Stock',
+        default_purposes: ['GBS Stock'],
         for_multiplexing: true
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAA',
         library_types: ['RNA PolyA'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'RNAR',
+        library_types: ['RNA Ribo'],
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAAG',
         library_types: ['RNA Poly A Globin'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'RNARG',
+        library_types: ['RNA Ribo Globin'],
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'ReISC',
         request_class: 'Pulldown::Requests::ReIscLibraryRequest',
         library_types: ['Agilent Pulldown'],
-        default_purpose: 'LB Lib PCR-XP'
+        default_purposes: ['LB Lib PCR-XP']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA',
-        library_types: ['scRNA'],
-        default_purpose: 'scRNA Stock'
+        library_types: ['scRNA','GnT scRNA'],
+        default_purposes: ['scRNA Stock', 'GnT Stock']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA-384',
         library_types: ['scRNA 384'],
-        default_purpose: 'scRNA-384 Stock'
+        default_purposes: ['scRNA-384 Stock']
+      ).build!
+
+      # GnT Pipeline requires UAT
+      Limber::Helper::RequestTypeConstructor.new(
+        'GnT Picoplex',
+        library_types: ['GnT Picoplex'],
+        default_purposes: ['GnT Stock']
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'GnT MDA',
+        library_types: ['GnT MDA'],  # 'GnT scRNA' should be a default_purpose of 'scRNA'.
+        default_purposes: ['GnT Stock']              # It requires default_purpose to accept an array.
       ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
@@ -166,15 +198,29 @@ namespace :limber do
   end
 
   desc 'Create the limber submission templates'
-  task create_submission_templates: [:environment, :create_request_types, :create_barcode_printer_types, 'sequencing:novaseq:setup'] do
+  task create_submission_templates: [:environment,
+                                     :create_request_types,
+                                     :create_barcode_printer_types,
+                                     'sequencing:novaseq:setup',
+                                     'sequencing:gbs_miseq:setup'] do
     puts 'Creating submission templates....'
 
-    base_list = Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS
-    base_with_novaseq = base_list + ['illumina_htp_novaseq_6000_paired_end_sequencing']
+    base_list = %w(
+      illumina_b_hiseq_2500_paired_end_sequencing
+      illumina_b_hiseq_2500_single_end_sequencing
+      illumina_b_miseq_sequencing
+      illumina_b_hiseq_v4_paired_end_sequencing
+      illumina_b_hiseq_x_paired_end_sequencing
+      illumina_htp_hiseq_4000_paired_end_sequencing
+      illumina_htp_hiseq_4000_single_end_sequencing
+      illumina_htp_novaseq_6000_paired_end_sequencing
+    )
+    # HiSeqX is filtered out for non-WGS library types due to specific restrictions
+    # that limit the use of the technology to WGS.
     base_without_hiseq = base_list - ['illumina_b_hiseq_x_paired_end_sequencing']
     st_params = {
       'WGS' => {
-        sequencing_list: base_with_novaseq
+        sequencing_list: base_list
       },
       'ISC' => {
         sequencing_list: base_list
@@ -191,12 +237,21 @@ namespace :limber do
       'RNAA' => {
         sequencing_list: base_without_hiseq
       },
+      'RNAR' => {
+        sequencing_list: base_without_hiseq
+      },
       'RNAAG' => {
         sequencing_list: base_without_hiseq
       },
+      'RNARG' => {
+        sequencing_list: base_without_hiseq
+      },
       'PCR Free' => {
-        sequencing_list: base_with_novaseq,
+        sequencing_list: base_list,
         catalogue_name: 'PFHSqX'
+      },
+      'GnT Picoplex' => {
+        sequencing_list: base_without_hiseq
       }
     }
 
@@ -212,17 +267,19 @@ namespace :limber do
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
+      mda_catalogue = ProductCatalogue.find_or_create_by!(name: 'GnT MDA')
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GnT MDA', catalogue: mda_catalogue).build!
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
-      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue).build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing: base_list).build!
 
       unless SubmissionTemplate.find_by(name: 'MiSeq for GBS')
         SubmissionTemplate.create!(
           name: 'MiSeq for GBS',
           submission_class_name: 'AutomatedOrder',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'miseq_sequencing').pluck(:id)]
+            request_type_ids_list: [RequestType.where(key: 'gbs_miseq_sequencing').pluck(:id)]
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
@@ -231,3 +288,5 @@ namespace :limber do
     end
   end
 end
+
+# rubocop:enable all

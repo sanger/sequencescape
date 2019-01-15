@@ -1,4 +1,3 @@
-
 Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/ do |study_name, group_name, count|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find the study #{study_name.inspect}"
 
@@ -88,6 +87,7 @@ def build_batch_for(name, count)
   # in some form.
   requests = pipeline.requests.ready_in_storage.all
   raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}" if requests.size != count.to_i
+
   batch = Batch.create!(pipeline: pipeline, user: user, requests: requests)
 end
 
@@ -103,8 +103,8 @@ end
 # Bad, I know, but it gets the job done for the genotyping pipelines!
 Given /^the batch and all its requests are pending$/ do
   batch = Batch.first or raise StandardError, 'There appears to be no batches!'
-  batch.update_attributes!(state: 'pending')
-  batch.requests.each { |r| r.update_attributes!(state: 'pending') }
+  batch.update!(state: 'pending')
+  batch.requests.each { |r| r.update!(state: 'pending') }
 end
 
 SEQUENCING_PIPELINES = [

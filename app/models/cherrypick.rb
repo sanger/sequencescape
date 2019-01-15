@@ -1,4 +1,3 @@
-
 module Cherrypick
   # Various types of error that can occur during cherrypicking
   Error              = Class.new(StandardError)

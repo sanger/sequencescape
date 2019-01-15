@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class WorkflowTest < ActiveSupport::TestCase
@@ -9,7 +8,7 @@ class WorkflowTest < ActiveSupport::TestCase
     setup do
       pipeline  = create :pipeline, name: 'Pipeline for WorkflowTest'
       @workflow = pipeline.workflow
-      @workflow.update_attributes!(name: 'Workflow for WorkflowTest')
+      @workflow.update!(name: 'Workflow for WorkflowTest')
 
       task = create :task, workflow: @workflow
       create :descriptor, task: task, name: 'prop', value: 'something', key: 'something'

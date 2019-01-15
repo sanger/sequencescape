@@ -1,4 +1,3 @@
-
 class PlateTemplate < Plate
   include Lot::Template
 

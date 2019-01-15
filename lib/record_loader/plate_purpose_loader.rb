@@ -25,6 +25,7 @@ module RecordLoader
       ActiveRecord::Base.transaction do
         @config.each do |name, config|
           next if existing_purposes.include?(name)
+
           create_purpose(name, config)
         end
       end
@@ -76,7 +77,9 @@ module RecordLoader
     end
 
     def barcode_printer_type(name)
-      @printer_cache ||= Hash.new { |hash, name| hash[name] = BarcodePrinterType.find_by(name: name) }
+      @printer_cache ||= Hash.new do |hash, uncached_type_name|
+        hash[uncached_type_name] = BarcodePrinterType.find_by(name: uncached_type_name)
+      end
       @printer_cache[name || DEFAULT_PRINTER_TYPE]
     end
 

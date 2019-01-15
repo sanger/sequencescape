@@ -1,4 +1,3 @@
-
 module SampleManifest::MultiplexedLibraryBehaviour
   module ClassMethods
     def create_for_multiplexed_library!(attributes, *args, &block)
@@ -85,6 +84,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     def validate_sample_container(sample, row)
       manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.human_barcode
       return if primary_barcode == manifest_barcode
+
       yield("You can not move samples between tubes. #{sample.sanger_sample_id} is supposed to be in '#{primary_barcode}'' but has been moved to '#{manifest_barcode}'.")
     end
 
@@ -121,6 +121,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
       # Tag Group validation
       tag_group = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
       return yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}'" if tag_group.nil?
+
       yield "#{tag_group.name} doesn't include a tag with index #{row['TAG INDEX']}" if tag_group.tags.detect { |tag| tag.map_id == row['TAG INDEX'].to_i }.nil?
 
       # Keep track if our first row is dual indexed or not.
@@ -130,6 +131,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
       tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
       return yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}' for tag 2" if tag2_group.nil?
+
       yield "#{tag2_group.name} doesn't include a tag with index #{row[SampleManifest::Headers::TAG2_INDEX_FIELD]}" if tag2_group.tags.detect { |tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i }.nil?
     end
 

@@ -1,4 +1,3 @@
-
 class Failure < ApplicationRecord
   belongs_to :failable, polymorphic: true
   after_create :notify_remote

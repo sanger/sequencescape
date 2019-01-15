@@ -1,4 +1,3 @@
-
 module BroadcastEvent::MetadataHelpers
   class SimpleMetadataFinder
     attr_reader :name, :method
@@ -28,6 +27,7 @@ module BroadcastEvent::MetadataHelpers
     def has_metadata(key, method = nil, &block)
       return metadata_finders << SimpleMetadataFinder.new(key, method) unless method.nil?
       return metadata_finders << BlockMetadataFinder.new(key, &block) unless block.nil?
+
       raise StandardError, "No block or method defined for #{key} on #{name}"
     end
 

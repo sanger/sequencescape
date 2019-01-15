@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class DummyWorkflowController < WorkflowsController
@@ -19,7 +18,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         @tags = [1, 2, 3, 4, 5, 5, 6, 6].map { |i| tag_hash[i] }
         @requests = (1..8).map do |i|
           r = create :pooled_cherrypick_request
-          r.asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
+          r.asset.aliquots.first.update!(tag: @tags[i - 1])
           r
         end
 
@@ -87,7 +86,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
           @requests = (1..8).map do |i|
             r = create :pooled_cherrypick_request
-            r.asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
+            r.asset.aliquots.first.update!(tag: @tags[i - 1])
             r
           end
 
@@ -117,7 +116,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
           @tags = Array.new(8) { create :tag }
           @requests = (1..8).map do |i|
             r = create :pooled_cherrypick_request
-            r.asset.aliquots.first.update_attributes!(tag: @tags[i])
+            r.asset.aliquots.first.update!(tag: @tags[i])
             r
           end
 
@@ -150,7 +149,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
           @sample = create :sample
           @requests = (1..8).map do |_i|
             r = create :pooled_cherrypick_request
-            r.asset.aliquots.first.update_attributes!(tag: @tag, sample: @sample)
+            r.asset.aliquots.first.update!(tag: @tag, sample: @sample)
             r
           end
 

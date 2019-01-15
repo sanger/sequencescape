@@ -13,7 +13,7 @@ FactoryBot.define do
     transient do
       barcode_number { barcode }
       barcode { generate :barcode_number }
-      prefix 'NT'
+      prefix { 'NT' }
     end
     sanger_barcode { { prefix: prefix, number: barcode_number } }
   end
@@ -30,10 +30,10 @@ FactoryBot.define do
 
   factory :empty_sample_tube, class: SampleTube, traits: [:tube_barcode] do
     name                { generate :asset_name }
-    value               ''
-    descriptors         []
-    descriptor_fields   []
-    qc_state            ''
+    value               { '' }
+    descriptors         { [] }
+    descriptor_fields   { [] }
+    qc_state            { '' }
     association(:purpose, factory: :sample_tube_purpose) # { Tube::Purpose.standard_sample_tube }
   end
 
@@ -59,19 +59,20 @@ FactoryBot.define do
 
   factory :multiplexed_library_tube, traits: [:tube_barcode] do
     transient do
-      sample_count 0
+      sample_count { 0 }
+      study { create(:study) }
     end
 
     name { generate :asset_name }
     association(:purpose, factory: :mx_tube_purpose)
     after(:build) do |tube, evaluator|
-      tube.aliquots = build_list(:tagged_aliquot, evaluator.sample_count) unless evaluator.sample_count == 0
+      tube.aliquots = build_list(:library_aliquot, evaluator.sample_count, study: evaluator.study) unless evaluator.sample_count == 0
     end
   end
 
   factory :pulldown_multiplexed_library_tube, traits: [:tube_barcode] do
     name { generate :asset_name }
-    public_name 'ABC'
+    public_name { 'ABC' }
   end
 
   factory :stock_multiplexed_library_tube, traits: [:tube_barcode] do
@@ -88,18 +89,28 @@ FactoryBot.define do
     association(:purpose, factory: :library_tube_purpose) #  { Tube::Purpose.standard_library_tube }
 
     transient do
-      sample_count 0
+      sample_count { 0 }
       samples { create_list(:sample, sample_count) }
       aliquot_factory { :untagged_aliquot }
+      study { build :study }
     end
 
     after(:build) do |library_tube, evaluator|
       next if evaluator.sample_count.zero?
-      library_tube.aliquots = evaluator.samples.map { |s| create(evaluator.aliquot_factory, sample: s, library_type: 'Standard', receptacle: library_tube) }
+
+      library_tube.aliquots = evaluator.samples.map do |s|
+        create(
+          evaluator.aliquot_factory,
+          sample: s,
+          library_type: 'Standard',
+          receptacle: library_tube,
+          study: evaluator.study
+        )
+      end
     end
 
     factory(:library_tube) do
-      transient { sample_count 1 }
+      transient { sample_count { 1 } }
     end
 
     factory(:library_tube_with_barcode) do
@@ -112,19 +123,20 @@ FactoryBot.define do
 
   factory(:tagged_library_tube, class: LibraryTube, traits: [:tube_barcode]) do
     transient do
-      tag_map_id 1
+      tag_map_id { 1 }
+      sample { create(:sample_with_sanger_sample_id) }
     end
 
     after(:create) do |library_tube, evaluator|
-      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id), receptacle: library_tube)
+      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id), receptacle: library_tube, sample: evaluator.sample)
     end
   end
 
   factory :pac_bio_library_tube, traits: [:tube_barcode] do
     transient do
       aliquot { build(:tagged_aliquot) }
-      prep_kit_barcode 999
-      smrt_cells_available 1
+      prep_kit_barcode { 999 }
+      smrt_cells_available { 1 }
     end
     pac_bio_library_tube_metadata_attributes do
       {
@@ -156,5 +168,14 @@ FactoryBot.define do
   factory :stock_library_tube do
     name     { |_a| generate :asset_name }
     purpose  { Tube::Purpose.stock_library_tube }
+  end
+
+  factory :spiked_buffer do
+    name { generate :asset_name }
+    after(:build) do |tube|
+      tag = create(:tag, map_id: 888, oligo: 'G')
+      tube.aliquots << build(:aliquot, sample: SpikedBuffer.phix_sample, library: tube, tag: tag)
+    end
+    volume { 50 }
   end
 end

@@ -53,3 +53,6 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   end
   private :generate_events_for
 end
+require_dependency 'illumina_c/mx_tube_purpose'
+require_dependency 'illumina_b/mx_tube_purpose'
+require_dependency 'illumina_htp/mx_tube_no_qc_purpose'

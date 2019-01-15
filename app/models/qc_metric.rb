@@ -1,13 +1,12 @@
-
 class QcMetric < ApplicationRecord
   extend QcMetric::QcState
 
   InvalidValue = Class.new(StandardError)
 
   QC_DECISION_TRANSITIONS = {
-    'passed'          => 'manually_passed',
+    'passed' => 'manually_passed',
     'manually_passed' => 'manually_passed',
-    'failed'          => 'manually_failed',
+    'failed' => 'manually_failed',
     'manually_failed' => 'manually_failed'
   }
 
@@ -56,6 +55,7 @@ class QcMetric < ApplicationRecord
     return if qc_decision == decision
     return self.qc_decision = decision_to_manual_state(decision) if qc_automatic?
     return self.qc_decision = decision if original_qc_decision == decision
+
     self.qc_decision = decision_to_manual_state(decision)
   end
 
@@ -65,6 +65,7 @@ class QcMetric < ApplicationRecord
 
   def human_proceed=(h_proceed)
     return self.proceed = nil if h_proceed.blank?
+
     self.proceed = proceedable? && human_to_bool(PROCEED_TRANSLATION, h_proceed.upcase)
   end
 

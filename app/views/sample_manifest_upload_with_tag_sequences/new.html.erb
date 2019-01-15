@@ -1,14 +1,18 @@
 
-<h2>Upload a sample manifest (only if it includes tag sequences)</h2>
+<%= render partial: "side_links" %>
 
-<%= form_tag(sample_manifest_upload_with_tag_sequences_path, multipart: true) do -%>
-  <fieldset>
-    <div class="form-group">
-      <%= label_tag :upload, 'File to upload' %>
-      <%= file_field_tag :upload %>
-    </div>
-    <div class="form-group">
-      <%= submit_tag 'Upload manifest' %>
-    </div>
-  </fieldset>
-<% end -%>
+<%= page_title "Sample Manifests", "New and upload" %>
+
+<% if @uploader %>
+  <%= alert(:danger) do %>
+    <% @uploader.errors.full_messages.each do |message| %>
+      <p><%= message %></p>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= render partial: "upload" %>
+
+<%= pagination @sample_manifests %>
+<%= render partial: 'shared/manifests', locals: { manifests: @display_manifests, show_uploaded: true} %>
+<%= pagination @sample_manifests %>

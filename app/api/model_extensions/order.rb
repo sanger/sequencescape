@@ -1,4 +1,3 @@
-
 module ModelExtensions::Order
   class RequestOptionForValidation < OpenStruct
     delegate :errors, :include_unset_values?, to: :owner
@@ -37,6 +36,7 @@ module ModelExtensions::Order
 
   def validate_new_record(assets)
     raise StandardError, 'requested action is not supported on this resource' if not new_record? and asset_group? and assets.present?
+
     true
   end
 
@@ -92,6 +92,7 @@ module ModelExtensions::Order
     def []=(*keys_and_values)
       value = keys_and_values.pop
       return if value.nil?
+
       node_and_leaf(*keys_and_values) { |node, leaf| node[leaf] = value }
     end
 
@@ -159,6 +160,7 @@ module ModelExtensions::Order
 
   def request_type_objects
     return [] if request_types.blank?
+
     ::RequestType.find(request_types)
   end
 end

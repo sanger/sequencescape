@@ -1,4 +1,3 @@
-
 class QcReportsController < ApplicationController
   before_action :login_required
   before_action :check_required, only: :create
@@ -47,7 +46,7 @@ class QcReportsController < ApplicationController
   end
 
   def show
-    qc_report = QcReport.find_by(report_identifier: params[:id])
+    qc_report = QcReport.find_by!(report_identifier: params[:id])
     queue_count = qc_report.queued? ? Delayed::Job.count : 0
     @report_presenter = Presenters::QcReportPresenter.new(qc_report, queue_count)
 
@@ -73,10 +72,12 @@ class QcReportsController < ApplicationController
   def check_required
     return fail('No report options were provided') unless params[:qc_report].present?
     return fail('You must select a product') if params[:qc_report][:product_id].nil?
+
     @product = Product.find_by(id: params[:qc_report][:product_id])
     return fail('Could not find product') if @product.nil?
     return fail("#{product.name} is inactive") if @product.deprecated?
     return fail("#{product.name} does not have any stock criteria set") if @product.stock_criteria.nil?
+
     true
   end
 

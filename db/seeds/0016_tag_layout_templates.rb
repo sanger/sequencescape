@@ -1,4 +1,3 @@
-
 unless Rails.env.test?
   ActiveRecord::Base.transaction do
     # Pulldown
@@ -68,6 +67,7 @@ unless Rails.env.test?
 
     ['Sanger_168tags - 10 mer tags', 'TruSeq small RNA index tags - 6 mer tags', 'TruSeq mRNA Adapter Index Sequences'].each do |name|
       next if TagGroup.find_by(name: name).nil?
+
       TagLayoutTemplate.create!(
         name: "Illumina C - #{name}",
         walking_algorithm: 'TagLayout::WalkWellsOfPlate',

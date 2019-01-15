@@ -1,4 +1,3 @@
-
 class Admin::PlatePurposesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -52,7 +51,7 @@ class Admin::PlatePurposesController < ApplicationController
 
   def update
     respond_to do |format|
-      if @plate_purpose.update_attributes(params[:plate_purpose])
+      if @plate_purpose.update(params[:plate_purpose])
         flash[:notice] = 'Plate Purpose was successfully updated.'
         format.html { redirect_to(admin_plate_purposes_path) }
         format.xml  { head :ok }

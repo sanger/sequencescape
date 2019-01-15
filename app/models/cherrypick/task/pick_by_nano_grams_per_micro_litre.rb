@@ -1,4 +1,3 @@
-
 module Cherrypick::Task::PickByNanoGramsPerMicroLitre
   def valid_params_for_nano_grams_per_micro_litre_pick?(options)
     [options[:volume_required], options[:concentration_required]].all?(&method(:valid_float_param?))

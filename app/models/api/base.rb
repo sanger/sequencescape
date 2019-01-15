@@ -1,4 +1,3 @@
-
 class Api::Base
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
   #
@@ -14,8 +13,8 @@ class Api::Base
       model_class.create!(attributes_from_json(params))
     end
 
-    def update_attributes!(object, params)
-      object.update_attributes!(attributes_from_json(params))
+    def update!(object, params)
+      object.update!(attributes_from_json(params))
     end
 
     # Maps the attribute names in the errors to their JSON counterparts, so that the end user gets
@@ -143,6 +142,7 @@ class Api::Base
 
   def self.newer_than(object, timestamp)
     return if object.nil? or timestamp.nil?
+
     modified, object_timestamp = false, ((object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp)
     timestamp, modified = object_timestamp, true if object_timestamp > timestamp
     associations.each do |association, helper|
@@ -192,6 +192,7 @@ class Api::Base
   def self.lookup_associated_record_from(json_attributes)
     attributes = convert_json_attributes_to_attributes(json_attributes)
     return unless attributes.key?(lookup_by)
+
     search_parameters = { lookup_by => attributes[lookup_by] }
     yield(association.to_s.classify.constantize.find_by(search_parameters))
   end
@@ -249,11 +250,13 @@ class Api::Base
         if attribute_or_association.to_s =~ /_id$/ and rest.empty?
           association = associations[attribute_or_association.to_s.sub(/_id$/, '').to_sym]
           raise StandardError, "Unexpected association #{attribute_or_association.inspect}" if association.nil?
+
           return association.json_attribute_for_attribute(:name)
         end
         json_attribute = associations[attribute_or_association.to_sym].json_attribute_for_attribute(*rest)
       end
       raise StandardError, "Unexpected attribute #{attribute_or_association.inspect} does not appear to be mapped" if json_attribute.blank?
+
       json_attribute
     end
   end

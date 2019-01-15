@@ -1,4 +1,3 @@
-
 Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
@@ -75,12 +74,12 @@ end
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do
   step('I have a released cherrypicking batch with 1 samples and the minimum robot pick is "1"')
   plate = Plate.last
-  plate.wells.each { |well| well.well_attribute.update_attributes!(buffer_volume: nil) }
+  plate.wells.each { |well| well.well_attribute.update!(buffer_volume: nil) }
 end
 
 Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode|
   user = User.find_by(login: login)
-  user.update_attributes!(barcode: user_barcode)
+  user.update!(barcode: user_barcode)
 end
 
 Transform /^the last batch$/ do |_|

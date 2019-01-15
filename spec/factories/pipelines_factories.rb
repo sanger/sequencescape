@@ -12,8 +12,8 @@ FactoryBot.define do
 
   factory :asset do
     name                { |_a| generate :asset_name }
-    value               ''
-    qc_state            ''
+    value               { '' }
+    qc_state            { '' }
   end
 
   factory :plate_creator_purpose, class: Plate::Creator::PurposeRelationship do |_t|
@@ -26,42 +26,46 @@ FactoryBot.define do
   end
 
   factory :control do
-    name 'New control'
+    name { 'New control' }
     pipeline
   end
 
   factory :descriptor do
-    name                'Desc name'
-    value               ''
-    selection           ''
+    name                { 'Desc name' }
+    value               { '' }
+    selection           { '' }
     task
-    kind                ''
-    required            0
-    sorter              nil
-    key                 ''
+    kind                { '' }
+    required            { 0 }
+    sorter              { nil }
+    key                 { '' }
   end
 
-  factory :lab_event do |e|
+  factory :lab_event do
+    factory :flowcell_event do
+      descriptors { { 'Chip Barcode' => 'fcb' } }
+      descriptor_fields { descriptors.keys }
+    end
   end
 
   factory :family do
-    name                  'New Family name'
-    description           'Something goes here'
-    relates_to            ''
+    name                  { 'New Family name' }
+    description           { 'Something goes here' }
+    relates_to            { '' }
     task
     association(:workflow, factory: :lab_workflow)
   end
 
   factory :pipeline do
     name                  { generate :pipeline_name }
-    automated             false
-    active                true
-    next_pipeline_id      nil
-    previous_pipeline_id  nil
+    automated             { false }
+    active                { true }
+    next_pipeline_id      { nil }
+    previous_pipeline_id  { nil }
 
     transient do
-      item_limit 2
-      locale 'Internal'
+      item_limit { 2 }
+      locale { 'Internal' }
     end
 
     after(:build) do |pipeline, evaluator|
@@ -71,20 +75,20 @@ FactoryBot.define do
     end
 
     factory :multiplexed_pipeline do
-      multiplexed true
+      multiplexed { true }
     end
   end
 
   factory :cherrypick_pipeline do
     name            { generate :pipeline_name }
-    automated       false
-    active          true
-    group_by_parent true
-    asset_type      'Well'
-    max_size        3000
-    summary         true
-    externally_managed false
-    min_size 1
+    automated       { false }
+    active          { true }
+    group_by_parent { true }
+    asset_type      { 'Well' }
+    max_size        { 3000 }
+    summary         { true }
+    externally_managed { false }
+    min_size { 1 }
 
     association(:workflow, factory: :lab_workflow_for_pipeline, item_limit: 3000)
 
@@ -96,25 +100,26 @@ FactoryBot.define do
   end
 
   factory :sequencing_pipeline do
-    name                  { FactoryBot.generate :pipeline_name }
-    automated             false
-    active                true
-    next_pipeline_id      nil
-    previous_pipeline_id  nil
+    name                  { generate :pipeline_name }
+    automated             { false }
+    active                { true }
 
-    association(:workflow, factory: :lab_workflow_for_pipeline)
+    workflow { build :lab_workflow_for_pipeline }
+
+    #   association(:workflow, factory: :lab_workflow_for_pipeline)
     after(:build) do |pipeline|
       pipeline.request_types << create(:sequencing_request_type)
       pipeline.add_control_request_type
-      pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal', pipeline: pipeline) if pipeline.workflow.nil?
+      #    pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal', pipeline: pipeline) if pipeline.workflow.nil?
     end
   end
 
   factory :pac_bio_sequencing_pipeline do
     name { FactoryBot.generate :pipeline_name }
-    active true
-    association(:workflow, factory: :lab_workflow_for_pipeline)
-    control_request_type_id(-1)
+    active { true }
+    #  association(:workflow, factory: :lab_workflow_for_pipeline)
+    control_request_type_id { -1 }
+    workflow { build :lab_workflow_for_pipeline }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:pac_bio_sequencing_request_type)
@@ -123,10 +128,10 @@ FactoryBot.define do
 
   factory :qc_pipeline do
     name                  { |_a| FactoryBot.generate :pipeline_name }
-    automated             false
-    active                true
-    next_pipeline_id      nil
-    previous_pipeline_id  nil
+    automated             { false }
+    active                { true }
+    next_pipeline_id      { nil }
+    previous_pipeline_id  { nil }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -137,10 +142,10 @@ FactoryBot.define do
 
   factory :library_creation_pipeline do
     name                  { |_a| FactoryBot.generate :pipeline_name }
-    automated             false
-    active                true
-    next_pipeline_id      nil
-    previous_pipeline_id  nil
+    automated             { false }
+    active                { true }
+    next_pipeline_id      { nil }
+    previous_pipeline_id  { nil }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -160,7 +165,7 @@ FactoryBot.define do
     end
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose :standard
+    request_purpose { :standard }
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 300
       request.request_metadata.fragment_size_required_to   = 500
@@ -170,10 +175,10 @@ FactoryBot.define do
 
   factory :pulldown_library_creation_pipeline do
     name                  { |_a| FactoryBot.generate :pipeline_name }
-    automated             false
-    active                true
-    next_pipeline_id      nil
-    previous_pipeline_id  nil
+    automated             { false }
+    active                { true }
+    next_pipeline_id      { nil }
+    previous_pipeline_id  { nil }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -183,32 +188,32 @@ FactoryBot.define do
   end
 
   factory :task do
-    name        'New task'
+    name        { 'New task' }
     association(:workflow, factory: :lab_workflow)
-    sorted      nil
-    batched     nil
-    location    ''
-    interactive nil
+    sorted      { nil }
+    batched     { nil }
+    location    { '' }
+    interactive { nil }
   end
 
   factory :pipeline_admin, class: User do
-    login         'ad1'
+    login         { 'ad1' }
     email         { |a| "#{a.login}@example.com".downcase }
-    pipeline_administrator true
+    pipeline_administrator { true }
   end
 
   factory :workflow, aliases: [:lab_workflow] do
     name                  { FactoryBot.generate :lab_workflow_name }
-    item_limit            2
-    locale                'Internal'
+    item_limit            { 2 }
+    locale                { 'Internal' }
     # Bit grim. Otherwise pipeline behaves a little weird and tries to build a second workflow.
     pipeline { |workflow| workflow.association(:pipeline, workflow: workflow.instance_variable_get('@instance')) }
   end
 
   factory :lab_workflow_for_pipeline, class: Workflow do
     name                  { |_a| FactoryBot.generate :lab_workflow_name }
-    item_limit            2
-    locale                'Internal'
+    item_limit            { 2 }
+    locale                { 'Internal' }
   end
 
   factory :batch_request do
@@ -220,13 +225,18 @@ FactoryBot.define do
       batch
       association(:request, factory: :cherrypick_request)
     end
+
+    factory :sequencing_batch_request do
+      batch
+      association(:request, factory: :complete_sequencing_request)
+    end
   end
 
   factory :request_information_type do
-    name                   ''
-    key                    ''
-    label                  ''
-    hide_in_inbox          ''
+    name                   { '' }
+    key                    { '' }
+    label                  { '' }
+    hide_in_inbox          { '' }
   end
 
   factory :pipeline_request_information_type do
@@ -235,35 +245,35 @@ FactoryBot.define do
   end
 
   factory :implement do
-    name                'CS03'
-    barcode             'LE6G'
-    equipment_type      'Cluster Station'
+    name                { 'CS03' }
+    barcode             { 'LE6G' }
+    equipment_type      { 'Cluster Station' }
   end
 
   factory :robot do
-    name      'myrobot'
-    location  'lab'
+    name      { 'myrobot' }
+    location  { 'lab' }
   end
 
   factory :robot_property do
-    name      'myrobot'
-    value     'lab'
-    key       'key_robot'
+    name      { 'myrobot' }
+    value     { 'lab' }
+    key       { 'key_robot' }
   end
 
   factory :map do
-    description      'A2'
-    asset_size       '96'
-    location_id      2
-    row_order        1
-    column_order     8
-    asset_shape AssetShape.default
+    description      { 'A2' }
+    asset_size       { '96' }
+    location_id      { 2 }
+    row_order        { 1 }
+    column_order     { 8 }
+    asset_shape { AssetShape.default }
   end
 
   factory :plate_template do
-    name      'testtemplate'
-    value     96
-    size      96
+    name      { 'testtemplate' }
+    value     { 96 }
+    size      { 96 }
   end
 
   factory :asset_link do
@@ -280,13 +290,14 @@ FactoryBot.define do
   factory :tag, aliases: [:tag2] do
     tag_group
     oligo
+    map_id { 1 }
   end
 
   factory :tag_group do |_t|
     sequence(:name) { |n| "Tag Group #{n}" }
 
     transient do
-      tag_count 0
+      tag_count { 0 }
     end
 
     after(:build) do |tag_group, evaluator|
@@ -297,7 +308,7 @@ FactoryBot.define do
 
     factory :tag_group_with_tags do
       transient do
-        tag_count 5
+        tag_count { 5 }
       end
     end
   end
@@ -308,7 +319,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Tag Group #{n}" }
 
     transient do
-      oligos_count 0
+      oligos_count { 0 }
     end
 
     after(:build) do |tag_group_form_object, evaluator|
@@ -324,7 +335,7 @@ FactoryBot.define do
 
     factory :tag_group_form_object_with_oligos do
       transient do
-        oligos_count 5
+        oligos_count { 5 }
       end
     end
   end
@@ -352,15 +363,15 @@ FactoryBot.define do
   end
 
   factory :cherrypick_task do |_t|
-    name 'New task'
+    name { 'New task' }
     pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
-    sorted                nil
-    location              ''
-    batched               nil
-    interactive           nil
+    sorted                { nil }
+    location              { '' }
+    batched               { nil }
+    interactive           { nil }
   end
 
   factory :barcode_prefix do
-    prefix 'DN'
+    prefix { 'DN' }
   end
 end

@@ -1,0 +1,15 @@
+<h4 class="card-title">All submission templates</h4>
+<div id="accordion" role="tablist" aria-multiselectable="true">
+  <% @submission_template_groups.each do |group,templates| %>
+    <div class="card">
+      <div class="card-header" role="tab" id="heading<%= group.gsub(' ','_').camelize %>" data-toggle="collapse" data-parent="#accordion" href="#collapse<%= group.gsub(' ','_').camelize %>">
+        <h5 class="dropdown-toggle"><%= group %></h5>
+      </div>
+      <div id='collapse<%= group.gsub(' ','_').camelize %>' class="card-collapse collapse" role="tabpanel" aria-labelledby="heading<%= group.gsub(' ','_').camelize %>">
+        <ul class='list-group list-group-flush'><% templates.each do |template| %>
+          <li class='list-group-item'><%= template.name %></li>
+        <% end %></ul>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,4 +1,3 @@
-
 class EventSender
   # format message expected output
   # <?xml version='1.0'?>

@@ -1,4 +1,3 @@
-
 class Core::Endpoint::Base
   module InstanceBehaviour
     class Handler < Core::Endpoint::BasicHandler

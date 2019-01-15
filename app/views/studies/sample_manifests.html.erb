@@ -1,7 +1,7 @@
 
 <%= render partial: "shared/create_manifests_side_links", locals: { study_id: @study.id }  %>
 
-<h2>Sample Manifests for <%= @study.name %></h2>
+<%= page_title 'Sample Manifests', @study.name %>
 <%= pagination @sample_manifests %>
 <%= render partial: 'shared/manifests', locals: { manifests: @sample_manifests, show_uploaded: true} %>
 <%= pagination @sample_manifests %>

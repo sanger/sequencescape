@@ -1,4 +1,3 @@
-
 require 'eventful_record'
 require 'external_properties'
 
@@ -24,9 +23,9 @@ class Asset < ApplicationRecord
   SAMPLE_PARTIAL = 'assets/samples_partials/blank'
 
   QC_STATES = [
-    ['passed',  'pass'],
-    ['failed',  'fail'],
-    ['pending', 'pending'],
+    %w[passed pass],
+    %w[failed fail],
+    %w[pending pending],
     [nil, '']
   ]
 
@@ -58,6 +57,7 @@ class Asset < ApplicationRecord
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   # :requests should go before :events_on_requests, through: :requests
   has_many :requests
+  has_many :external_library_creation_requests
   has_many :events_on_requests, through: :requests, source: :events, validate: false
   has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
@@ -73,6 +73,8 @@ class Asset < ApplicationRecord
   has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
 
   belongs_to :map
+
+  delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
 
   extend EventfulRecord
   has_many_events do
@@ -99,6 +101,8 @@ class Asset < ApplicationRecord
   has_one_event_with_family 'moved_to_2d_tube'
 
   delegate :metadata, to: :custom_metadatum_collection
+
+  delegate :last_qc_result_for, to: :qc_results
 
   broadcast_via_warren
 
@@ -133,26 +137,25 @@ class Asset < ApplicationRecord
 
   # Named scope for search by query string behaviour
   scope :for_search_query, ->(query) {
-    barcode_compatible.where.not(sti_type: 'Well').where('assets.name LIKE :name', name: "%#{query}%")
-                      .or(barcode_compatible.with_safe_id(query))
-                      .or(with_barcode(query))
+    where.not(sti_type: 'Well').where('assets.name LIKE :name', name: "%#{query}%").includes(:barcodes)
+         .or(where.not(sti_type: 'Well').with_safe_id(query).includes(:barcodes))
   }
 
   scope :for_lab_searches_display, -> { includes(:barcodes, requests: [:pipeline, :batch]).order('requests.pipeline_id ASC') }
 
-  scope :barcode_compatible, -> { joins(:barcodes).references(:barcodes).distinct }
+  scope :barcode_compatible, -> { includes(:barcodes).references(:barcodes).distinct }
 
   # We accept not only an individual barcode but also an array of them.
   scope :with_barcode, ->(*barcodes) {
     db_barcodes = Barcode.extract_barcodes(barcodes)
-    joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+    includes(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
   }
 
   # In contrast to with_barocde, filter_by_barcode only filters in the event
   # a parameter is supplied. eg. an empty string does not filter the data
   scope :filter_by_barcode, ->(*barcodes) {
     db_barcodes = Barcode.extract_barcodes(barcodes)
-    db_barcodes.blank? ? joins(:barcodes) : joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+    db_barcodes.blank? ? includes(:barcodes) : includes(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
   }
 
   scope :source_assets_from_machine_barcode, ->(destination_barcode) {
@@ -221,7 +224,7 @@ class Asset < ApplicationRecord
     {}
   end
 
-  def is_sequenceable?
+  def sequenceable?
     false
   end
 
@@ -273,6 +276,7 @@ class Asset < ApplicationRecord
     if asset_group.study
       wells.each do |well|
         next unless well.sample
+
         well.sample.studies << asset_group.study
         well.sample.save!
       end
@@ -286,7 +290,7 @@ class Asset < ApplicationRecord
   end
 
   def generate_name_with_id
-    update_attributes!(name: "#{name} #{id}")
+    update!(name: "#{name} #{id}")
   end
 
   def generate_name(new_name)
@@ -361,11 +365,13 @@ class Asset < ApplicationRecord
 
   def external_release_text
     return 'Unknown' if external_release.nil?
+
     external_release? ? 'Yes' : 'No'
   end
 
   def add_parent(parent)
     return unless parent
+
     # should be self.parents << parent but that doesn't work
     save!
     parent.save!
@@ -381,7 +387,8 @@ class Asset < ApplicationRecord
     return if tags.empty?
     raise StandardError, 'Cannot tag an empty asset'   if aliquots.empty?
     raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
-    aliquots.first.update_attributes!(tags)
+
+    aliquots.first.update!(tags)
   end
   alias attach_tags attach_tag
 
@@ -396,7 +403,7 @@ class Asset < ApplicationRecord
     self.class.create!(name: name) do |new_asset|
       new_asset.aliquots = aliquots.map(&:dup)
       new_asset.volume   = transfer_volume
-      update_attributes!(volume: volume - transfer_volume) #  Update ourselves
+      update!(volume: volume - transfer_volume) #  Update ourselves
     end.tap do |new_asset|
       new_asset.add_parent(self)
     end
@@ -472,11 +479,16 @@ class Asset < ApplicationRecord
   # asset. In most cases this is because the asset is not a stock
   def register_stock!
     raise StandardError, "No stock template configured for #{self.class.name}. If #{self.class.name} is a stock, set stock_template on the class." if stock_message_template.nil?
+
     Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
   end
 
   def update_from_qc(qc_result)
     Rails.logger.info "#{self.class.name} #{id} updated by QcResult #{qc_result.id}"
+  end
+
+  def get_qc_result_value_for(key)
+    last_qc_result_for(key).pluck(:value).first
   end
 
   private

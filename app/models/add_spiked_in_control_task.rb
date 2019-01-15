@@ -1,4 +1,3 @@
-
 class AddSpikedInControlTask < Task
   def partial
     'add_spiked_in_control'
@@ -13,8 +12,10 @@ class AddSpikedInControlTask < Task
 
     batch.requests.each do |request|
       next unless request_id_set.include? request.id
+
       lane = request.target_asset
       next unless lane
+
       AssetLink.create_edge(control_asset, lane)
     end
 

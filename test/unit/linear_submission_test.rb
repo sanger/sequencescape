@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class LinearSubmissionTest < ActiveSupport::TestCase
@@ -210,7 +209,10 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               end
 
               subject { @request_to_check.request_metadata }
-              should_default_everything(Request::Metadata)
+
+              should 'not set customer_accepts_responsibility' do
+                assert_nil subject.customer_accepts_responsibility
+              end
             end
 
             context 'library creation request type' do
@@ -219,11 +221,12 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               end
 
               subject { @request_to_check.request_metadata }
-              should_default_everything_but(Request::Metadata, :fragment_size_required_to, :fragment_size_required_from)
 
               should 'assign fragment_size_required_to and assign fragment_size_required_from' do
                 assert_equal '200', subject.fragment_size_required_to
                 assert_equal '150', subject.fragment_size_required_from
+                assert_equal @library_creation_request_type.default_library_type.name, subject.library_type
+                assert_nil subject.customer_accepts_responsibility
               end
             end
 
@@ -233,10 +236,13 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               end
 
               subject { @request_to_check.request_metadata }
-              should_default_everything_but(Request::Metadata, :read_length)
 
               should 'assign read_length' do
+                assert_equal '200', subject.fragment_size_required_to
+                assert_equal '150', subject.fragment_size_required_from
                 assert_equal 108, subject.read_length
+                assert_nil subject.customer_accepts_responsibility
+                assert_nil subject.gigabases_expected
               end
             end
           end

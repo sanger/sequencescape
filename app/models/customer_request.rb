@@ -1,4 +1,3 @@
-
 # A class for requests that have some business meaning outside of Sequencescape
 class CustomerRequest < Request
   self.customer_request = true
@@ -12,11 +11,12 @@ class CustomerRequest < Request
 
   def update_responsibilities!
     return if qc_metrics.stock_metric.empty?
+
     customer_accepts_responsibility! if qc_metrics.stock_metric.all?(&:poor_quality_proceed)
   end
 
   def customer_accepts_responsibility!
-    request_metadata.update_attributes!(customer_accepts_responsibility: true)
+    request_metadata.update!(customer_accepts_responsibility: true)
   end
 
   #

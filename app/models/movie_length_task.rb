@@ -1,4 +1,3 @@
-
 class MovieLengthTask < Task
   class MovieLengthData < Task::RenderElement
     def initialize(request)
@@ -25,6 +24,7 @@ class MovieLengthTask < Task
 
   def valid_movie_length?(movie_length)
     return false if movie_length.blank?
+
     movie_length.split(/,/).each do |movie_timing|
       return false if (movie_timing.blank? || !movie_timing.to_i.is_a?(Integer) || movie_timing.to_i < 0)
     end

@@ -1,4 +1,3 @@
-
 Given /^I have a hybridization spiked buffer called "([^\"]+)"$/ do |name|
   FactoryBot.create(:spiked_buffer, name: name)
 end

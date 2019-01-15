@@ -1,4 +1,3 @@
-
 class ProductCatalogue::LibraryDriven
   attr_reader :product
 

@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'studies_controller'
 
@@ -12,7 +11,7 @@ class StudiesControllerTest < ActionController::TestCase
     resource_test(
       'study',         defaults: { name: 'study name' },
                        user: :admin,
-                       other_actions: ['properties', 'study_status'],
+                       other_actions: %w[properties study_status],
                        ignore_actions: %w(show create update destroy),
                        formats: ['xml']
     )

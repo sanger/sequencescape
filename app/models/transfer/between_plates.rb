@@ -1,4 +1,3 @@
-
 # Picks the specified wells from one plate into the wells of another.  In this case transfers
 # is a hash from source to destination well location and destination is the target plate for
 # the transfers.
@@ -9,7 +8,6 @@ class Transfer::BetweenPlates < Transfer
 
   include TransfersBySchema
   include TransfersToKnownDestination
-  include BuildsStockWellLinks
 
   include Asset::Ownership::ChangesOwner
   set_target_for_owner(:destination)

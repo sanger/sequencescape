@@ -1,10 +1,9 @@
-
 # Advanced Product Criteria can have 'unprocessable' thresholds
 # as well as fails.
 class ProductCriteria::Advanced < ProductCriteria::Basic
   attr_reader :qc_decision
 
-  STATE_ORDER = ['failed', 'unprocessable']
+  STATE_ORDER = %w[failed unprocessable]
 
   TARGET_PLATE_PURPOSES = 'target_plate_purposes'
 

@@ -1,4 +1,3 @@
-
 module SamplesHelper
   # Use this wherever you are editing a sample so that you get the sample 'common name' lookup
   # behaviour.  Attach 'data-organism' attribute to the 'common name' and 'taxon ID' fields

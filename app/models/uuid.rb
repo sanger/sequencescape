@@ -1,4 +1,3 @@
-
 class Uuid < ApplicationRecord
   # Allows tests to dictate the next UUID generted for a given class
   class_attribute :store_for_tests
@@ -19,13 +18,14 @@ class Uuid < ApplicationRecord
 
         # Some named scopes ...
         scope :include_uuid, ->() { includes(:uuid_object) }
+        scope :with_uuid, ->(uuid) { include_uuid.where(uuids: { external_id: uuid }) }
       end
     end
 
     # In the test environment we need to have a slightly different behaviour, as we can predefine
     # the UUID for a record to make things predictable.  In production new records always have new
     # UUIDs.
-    if ['test', 'cucumber'].include?(Rails.env)
+    if %w[test cucumber].include?(Rails.env)
       def ensure_uuid_created
         new_uuid = Uuid.store_for_tests && Uuid.store_for_tests.next_uuid_for(self.class.base_class)
         create_uuid_object!(resource: self, external_id: new_uuid)
@@ -117,6 +117,7 @@ class Uuid < ApplicationRecord
   # @return [String] the uuid .
   def self.find_uuid!(resource_type, resource_id)
     return unless resource_id # return nil for nil
+
     find_uuid(resource_type, resource_id) ||
       create!(resource_type: resource_type, resource_id: resource_id).external_id
   end
@@ -127,6 +128,7 @@ class Uuid < ApplicationRecord
   # @return [String] the uuid .
   def self.generate_uuids!(resource_type, resource_ids)
     return if resource_ids.empty?
+
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
     uuids_to_create = ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid) }
     # Uuid.import uuids_to_create unless uuids_to_create.empty?

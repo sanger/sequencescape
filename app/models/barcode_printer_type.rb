@@ -1,4 +1,3 @@
-
 class BarcodePrinterType < ApplicationRecord
   has_many :barcode_printers
   validates_presence_of :name

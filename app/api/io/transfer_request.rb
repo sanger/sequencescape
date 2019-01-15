@@ -1,4 +1,3 @@
-
 module Io
   class TransferRequest < ::Core::Io::Base
     set_model_for_input(::TransferRequest)

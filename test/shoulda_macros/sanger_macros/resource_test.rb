@@ -17,7 +17,7 @@ module Sanger
           raise Exception.new, ':actions need to be an Array' unless actions.instance_of?(Array)
 
           other_actions   = params[:other_actions] || []
-          formats         = params[:formats] || ['html', 'xml', 'json']
+          formats         = params[:formats] || %w[html xml json]
 
           context 'should be a resource' do
             setup do
@@ -47,7 +47,7 @@ module Sanger
 
                 @input_params.merge!(
                   "#{grand_parent_resource}_id" => grand_parent.id,
-                  "#{parent_resource}_id"       => parent.id
+                  "#{parent_resource}_id" => parent.id
                 )
               end
             elsif parent_resource

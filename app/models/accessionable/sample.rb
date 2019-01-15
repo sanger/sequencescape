@@ -1,4 +1,3 @@
-
 module Accessionable
   class Sample < Base
     attr_reader :common_name, :taxon_id, :links, :tags
@@ -26,6 +25,7 @@ module Accessionable
         ::Sample::ArrayExpressFields.each do |datum|
           value = sample.sample_metadata.send(datum)
           next unless value.present?
+
           @tags << ArrayExpressTag.new(label_scope, datum, value)
         end
       end

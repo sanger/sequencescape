@@ -1,4 +1,3 @@
-
 class Map < ApplicationRecord
   validates_presence_of :description, :asset_size, :location_id, :row_order, :column_order, :asset_shape
   validates_numericality_of :asset_size, :row_order, :column_order
@@ -8,7 +7,7 @@ class Map < ApplicationRecord
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
     PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(
-      96  => [12, 8],
+      96 => [12, 8],
       384 => [24, 16]
     )
 
@@ -18,31 +17,39 @@ class Map < ApplicationRecord
 
     def self.description_to_horizontal_plate_position(well_description, plate_size)
       return nil unless Map.valid_well_description_and_plate_size?(well_description, plate_size)
+
       split_well = Map.split_well_description(well_description)
       width = plate_width(plate_size)
       return nil if width.nil?
+
       (width * split_well[:row]) + split_well[:col]
     end
 
     def self.description_to_vertical_plate_position(well_description, plate_size)
       return nil unless Map.valid_well_description_and_plate_size?(well_description, plate_size)
+
       split_well = Map.split_well_description(well_description)
       length = plate_length(plate_size)
       return nil if length.nil?
+
       (length * (split_well[:col] - 1)) + split_well[:row] + 1
     end
 
     def self.horizontal_plate_position_to_description(well_position, plate_size)
       return nil unless Map.valid_plate_position_and_plate_size?(well_position, plate_size)
+
       width = plate_width(plate_size)
       return nil if width.nil?
+
       horizontal_position_to_description(well_position, width)
     end
 
     def self.vertical_plate_position_to_description(well_position, plate_size)
       return nil unless Map.valid_plate_position_and_plate_size?(well_position, plate_size)
+
       length = plate_length(plate_size)
       return nil if length.nil?
+
       vertical_position_to_description(well_position, length)
     end
 
@@ -96,11 +103,14 @@ class Map < ApplicationRecord
       # NOTE: I hate the nil returns but external code would take too long to change this time round
       def alternate_position(well_position, size, *dimensions)
         return nil unless Map.valid_well_position?(well_position)
+
         divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
         return nil if divisor.nil? or multiplier.nil?
+
         column, row = (well_position - 1).divmod(divisor)
         return nil unless (0...multiplier).cover?(column)
         return nil unless (0...divisor).cover?(row)
+
         (row * multiplier) + column + 1
       end
       private :alternate_position
@@ -144,12 +154,14 @@ class Map < ApplicationRecord
     return false unless valid_well_position?(well_position)
     return false unless valid_plate_size?(plate_size)
     return false if well_position > plate_size
+
     true
   end
 
   def self.valid_well_description_and_plate_size?(well_description, plate_size)
     return false if well_description.blank?
     return false unless valid_plate_size?(plate_size)
+
     true
   end
 
@@ -187,6 +199,7 @@ class Map < ApplicationRecord
 
   def snp_id
     raise StandardError, 'Only standard maps can be converted to SNP' unless map.standard?
+
     horizontal_plate_position
   end
 

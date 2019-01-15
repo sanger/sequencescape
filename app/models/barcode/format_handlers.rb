@@ -44,6 +44,10 @@ module Barcode::FormatHandlers
       true
     end
 
+    def number_as_string
+      number.to_s
+    end
+
     def code128_barcode?
       true
     end
@@ -113,6 +117,18 @@ module Barcode::FormatHandlers
 
     def valid?
       true
+    end
+  end
+
+  # CGAP barcodes are externally generated foreign barcodes.
+  class Cgap < BaseRegExBarcode
+    # They have a prefix 'CGAP-', then a hex number that will grow in length.
+    # The last character is a checksum hex digit.
+    self.format = /\A(?<prefix>CGAP-)(?<number>[0-9a-fA-F]+)(?<suffix>[0-9a-fA-F])\z/
+
+    def number
+      # number is a hexadecimal string here
+      @matches[:number] if @matches&.names&.include?('number')
     end
   end
 

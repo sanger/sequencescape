@@ -1,4 +1,3 @@
-
 class TaskTestBase < ActiveSupport::TestCase
   class << self
     def expected_partial(name)

@@ -1,4 +1,3 @@
-
 module Asset::Ownership
   module ChangesOwner
     # Included in events which change ownership of plates
@@ -48,9 +47,9 @@ module Asset::Ownership
 
     def change_owner_to(owner, source_event)
       if plate_owner.nil?
-        update_attributes!(plate_owner: PlateOwner.create!(user: owner, eventable: source_event, plate: self))
+        update!(plate_owner: PlateOwner.create!(user: owner, eventable: source_event, plate: self))
       else
-        plate_owner.update_attributes!(user: owner, eventable: source_event)
+        plate_owner.update!(user: owner, eventable: source_event)
       end
     end
   end

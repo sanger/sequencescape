@@ -1,4 +1,3 @@
-
 class ReceptionsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -30,6 +29,7 @@ class ReceptionsController < ApplicationController
       else
         all_barcodes_blank = false
       end
+
       unless barcode.size == 13
         @errors << "Invalid barcode size for: #{barcode}"
         next
@@ -80,7 +80,7 @@ class ReceptionsController < ApplicationController
           @errors << "Asset not found with asset ID #{asset_id}"
         else
           asset_count += 1
-          asset.events.create_scanned_into_lab!('OLD RECEPTION')
+          asset.events.create_scanned_into_lab!('OLD RECEPTION', current_user.login)
           BroadcastEvent::LabwareReceived.create!(seed: asset, user: current_user, properties: { location_barcode: 'OLD RECEPTION' })
         end
       end

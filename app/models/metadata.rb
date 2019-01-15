@@ -1,4 +1,3 @@
-
 require_dependency 'attributable'
 
 module Metadata
@@ -36,13 +35,10 @@ module Metadata
       class_attribute :lazy_metadata
       self.lazy_metadata = false
 
-      def #{association_name}_with_initialization
-        #{association_name}_without_initialization ||
+      def #{association_name}
+        super ||
         build_#{association_name}
       end
-
-      alias_method(:#{association_name}_without_initialization, :#{association_name})
-      alias_method(:#{association_name}, :#{association_name}_with_initialization)
 
       def validating_ena_required_fields=(state)
         @validating_ena_required_fields = !!state
@@ -99,18 +95,16 @@ module Metadata
   end
 
   def construct_metadata_class(table_name, as_class, &block)
-    metadata = Class.new(self == as_class ? Base : as_class::Metadata)
-    metadata.instance_eval(&block) if block_given?
+    parent_class = self == as_class ? Metadata::Base : as_class::Metadata
+    metadata = Class.new(parent_class, &block)
 
     as_name = as_class.name.demodulize.underscore
 
     # Ensure that it is correctly associated back to the owner model and that the table name
     # is correctly set.
-    metadata.instance_eval "
-      self.table_name =('#{table_name}')
-      belongs_to :#{as_name}, :class_name => #{name.inspect}, :validate => false, :autosave => false
-      belongs_to :owner, :foreign_key => :#{as_name}_id, :class_name => #{name.inspect}, :validate => false, :autosave => false, :inverse_of => :#{as_name}_metadata
-    "
+    metadata.table_name = table_name
+    metadata.belongs_to :"#{as_name}", class_name: name, validate: false, autosave: false
+    metadata.belongs_to :owner, foreign_key: :"#{as_name}_id", class_name: name, validate: false, autosave: false, inverse_of: :"#{as_name}_metadata"
 
     # Finally give it a name!
     const_set(:Metadata, metadata)
@@ -135,6 +129,7 @@ module Metadata
       # Replace attributes with the default if the value is nil
       instance_defaults.each do |attribute, value|
         next unless send(attribute).nil?
+
         send(:"#{attribute}=", value)
       end
     end

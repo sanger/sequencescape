@@ -1,4 +1,3 @@
-
 class MultiplexedCherrypickingTask < Task
   include Tasks::PlatePurposeBehavior
 
@@ -43,6 +42,7 @@ class MultiplexedCherrypickingTask < Task
 
   def target_plate(barcode, plate_purpose_id)
     return Plate.with_barcode(barcode).first unless barcode.blank?
+
     PlatePurpose.find(plate_purpose_id).create!
   end
 end

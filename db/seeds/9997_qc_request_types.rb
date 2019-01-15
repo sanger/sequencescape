@@ -1,4 +1,3 @@
-
 unless Rails.env.test?
   rt = RequestType.create!(
     key: 'qc_miseq_sequencing',
@@ -13,8 +12,8 @@ unless Rails.env.test?
     billable: true,
     deprecated: false,
     no_target_asset: false
-  ) do |rt|
-    Pipeline.find_by(name: 'MiSeq sequencing').request_types << rt
+  ) do |qc_miseq_sequencing|
+    Pipeline.find_by(name: 'MiSeq sequencing').request_types << qc_miseq_sequencing
   end
   RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [11, 25])
 end

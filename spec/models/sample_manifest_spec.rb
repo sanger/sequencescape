@@ -1,4 +1,3 @@
-
 require 'rails_helper'
 
 RSpec.describe SampleManifest, type: :model do
@@ -149,7 +148,7 @@ RSpec.describe SampleManifest, type: :model do
             assert_equal count, Sample.count - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
             assert_equal count, SampleTube.count - @initial_sample_tubes
-            refute SampleTube.last.aliquots.first.library_id
+            expect(SampleTube.last.aliquots.first.library_id).to be_nil
             assert_equal count, study.samples.count - @initial_in_study
             assert_equal count, Messenger.count - @initial_messenger_count
             expect(manifest.samples.first.primary_aliquot.study).to eq(study)

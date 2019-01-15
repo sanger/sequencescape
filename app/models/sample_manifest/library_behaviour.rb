@@ -1,4 +1,3 @@
-
 # This module is very similar to SampleManifest::MultiplexedLibraryBehaviour
 # Differences are:
 #   (1)this module does not have methods needed for 'old' upload

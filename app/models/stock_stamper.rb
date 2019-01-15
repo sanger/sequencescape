@@ -45,10 +45,11 @@ class StockStamper
     }
     plate.wells.without_blank_samples.each do |well|
       next unless well.get_current_volume
+
       data_object['destination'][destination_barcode]['mapping'] << {
-        'src_well'  => [source_barcode, well.map.description],
-        'dst_well'  => well.map.description,
-        'volume'    => volume(well),
+        'src_well' => [source_barcode, well.map.description],
+        'dst_well' => well.map.description,
+        'volume' => volume(well),
         'buffer_volume' => well.get_buffer_volume
       }
     end
@@ -74,8 +75,10 @@ class StockStamper
 
   def user_barcode=(barcode)
     @user_barcode = barcode
-    return unless User.valid_barcode?(barcode)
-    @user = User.find_by(barcode: Barcode.barcode_to_human!(barcode, 'ID'))
+    user = User.find_with_barcode_or_swipecard_code(barcode)
+    return if user.nil?
+
+    @user = user
   end
 
   def destination_plate_barcode=(barcode)
@@ -108,6 +111,7 @@ class StockStamper
 
   def plates_barcodes_should_be_identical
     return unless source_plate_barcode.present? && destination_plate_barcode.present?
+
     errors.add(:plates_barcodes, 'are not identical') unless source_plate_barcode == destination_plate_barcode
   end
 end

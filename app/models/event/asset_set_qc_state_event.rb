@@ -1,4 +1,3 @@
-
 class Event::AssetSetQcStateEvent < Event
   class << self
     def self.constructor_for_event_type(type)

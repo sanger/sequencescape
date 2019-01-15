@@ -77,7 +77,7 @@ RSpec.describe Request do
         @request2 = create :request, item: @item, submission: @submission, request_type: @genotyping_request_type
       end
       it 'return the correct next request' do
-        assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
+        assert_equal [@request2], @request1.next_requests
       end
     end
 
@@ -86,7 +86,7 @@ RSpec.describe Request do
         @request2 = create :request, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type
       end
       it 'return the correct next request' do
-        assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
+        assert_equal [@request2], @request1.next_requests
       end
     end
 
@@ -102,6 +102,129 @@ RSpec.describe Request do
       end
       it 'set the target asset of request 1 to be the asset of request 2' do
         assert_equal @request1.target_asset, @request2.asset
+      end
+    end
+  end
+
+  # Next requests is used to find downstream requests
+  # The current behaviour is explicitly linked to the order in which requests are created
+  # so these tests use the submission builder. Please don't switch to building the requests
+  # themselves via FactoryBot until the two behaviours are uncoupled
+  describe '#next_requests' do
+    let(:submission) { create :submission, orders: [order1, order2], state: 'pending' }
+    let(:order1) { create(:linear_submission, request_types: order1_request_types, request_options: request_options) }
+    let(:order2) { create(:linear_submission, request_types: order2_request_types, request_options: request_options) }
+    let(:order1_request1) { submission.requests.detect { |r| r.order == order1 && r.request_type_id == order1_request_types.first } }
+    let(:order2_request1) { submission.requests.detect { |r| r.order == order2 && r.request_type_id == order2_request_types.first } }
+    let(:request_options) { {} }
+
+    before do
+      submission.build_batch
+    end
+
+    context 'for a non-multiplexed_submission' do
+      let(:order1_request_types) { create_list(:request_type, 3).map(&:id) }
+      let(:order2_request_types) { order1_request_types }
+
+      it 'returns a distinct request graph for each request' do
+        expect(submission.requests.count).to eq(6)
+        order1_request2 = order1_request1.next_requests
+        expect(order1_request2.length).to eq(1)
+        order1_request3 = order1_request2.first.next_requests
+        expect(order1_request3.length).to eq(1)
+        order2_request2 = order2_request1.next_requests
+        expect(order2_request2.length).to eq(1)
+        order2_request3 = order2_request2.first.next_requests
+        expect(order2_request3.length).to eq(1)
+
+        expect(order1_request1).not_to eq(order2_request1)
+        expect(order1_request2).not_to eq(order2_request2)
+        expect(order1_request2.first.request_type_id).to eq(order1_request_types[1])
+        expect(order2_request2.first.request_type_id).to eq(order2_request_types[1])
+        expect(order1_request3).not_to eq(order2_request3)
+        expect(order1_request3.first.request_type_id).to eq(order1_request_types[2])
+        expect(order2_request3.first.request_type_id).to eq(order2_request_types[2])
+      end
+    end
+
+    context 'for a multiplexed_submission' do
+      let(:order1_request_types) { [create(:request_type).id, create(:request_type, for_multiplexing: true).id, create(:request_type).id] }
+      let(:order2_request_types) { order1_request_types }
+
+      it 'returns a merging request graph for each request post multiplexing' do
+        expect(submission.requests.count).to eq(5)
+        order1_request2 = order1_request1.next_requests
+        expect(order1_request2.length).to eq(1)
+        order1_request3 = order1_request2.first.next_requests
+        expect(order1_request3.length).to eq(1)
+        order2_request2 = order2_request1.next_requests
+        expect(order2_request2.length).to eq(1)
+        order2_request3 = order2_request2.first.next_requests
+        expect(order2_request3.length).to eq(1)
+
+        expect(order1_request1).not_to eq(order2_request1)
+        expect(order1_request2).not_to eq(order2_request2)
+        expect(order1_request2.first.request_type_id).to eq(order1_request_types[1])
+        expect(order2_request2.first.request_type_id).to eq(order2_request_types[1])
+        expect(order1_request3).to eq(order2_request3)
+        expect(order1_request3.first.request_type_id).to eq(order1_request_types[2])
+        expect(order2_request3.first.request_type_id).to eq(order2_request_types[2])
+      end
+    end
+
+    context 'for a multiplexed_submission with a multiplier' do
+      let(:post_mx_request_type) { create(:request_type).id }
+      let(:order1_request_types) { [create(:request_type).id, create(:request_type, for_multiplexing: true).id, post_mx_request_type] }
+      let(:order2_request_types) { order1_request_types }
+
+      let(:request_options) { { multiplier: { post_mx_request_type.to_s => 3 } } }
+
+      it 'returns a merging request graph for each request post multiplexing' do
+        expect(submission.requests.count).to eq(7)
+        order1_request2 = order1_request1.next_requests
+        expect(order1_request2.length).to eq(1)
+        order1_request3 = order1_request2.first.next_requests
+        expect(order1_request3.length).to eq(3)
+        order2_request2 = order2_request1.next_requests
+        expect(order2_request2.length).to eq(1)
+        order2_request3 = order2_request2.first.next_requests
+        expect(order2_request3.length).to eq(3)
+
+        expect(order1_request1).not_to eq(order2_request1)
+        expect(order1_request2).not_to eq(order2_request2)
+        expect(order1_request2.first.request_type_id).to eq(order1_request_types[1])
+        expect(order2_request2.first.request_type_id).to eq(order2_request_types[1])
+        expect(order1_request3).to eq(order2_request3)
+        expect(order1_request3.first.request_type_id).to eq(order1_request_types[2])
+        expect(order2_request3.first.request_type_id).to eq(order2_request_types[2])
+      end
+    end
+
+    context 'for a mixed-order multiplexed_submission' do
+      let(:post_mx_request_type) { create(:request_type).id }
+      let(:mx_request_type) { create(:request_type, for_multiplexing: true).id }
+      let(:order1_request_types) { [create(:request_type).id, mx_request_type, post_mx_request_type] }
+      let(:order2_request_types) { [create(:request_type).id, mx_request_type, post_mx_request_type] }
+
+      it 'returns a merging request graph for each request post multiplexing' do
+        expect(submission.requests.count).to eq(5)
+        order1_request2 = order1_request1.next_requests
+        expect(order1_request2.length).to eq(1)
+        order1_request3 = order1_request2.first.next_requests
+        expect(order1_request3.length).to eq(1)
+        order2_request2 = order2_request1.next_requests
+        expect(order2_request2.length).to eq(1)
+        order2_request3 = order2_request2.first.next_requests
+        expect(order2_request3.length).to eq(1)
+        expect(order1_request1).not_to eq(order2_request1)
+        expect(order1_request2).not_to eq(order2_request2)
+        expect(order1_request2.length).to eq(1)
+        expect(order1_request2.first.request_type_id).to eq(order1_request_types[1])
+        expect(order2_request2.first.request_type_id).to eq(order2_request_types[1])
+        expect(order1_request3).to eq(order2_request3)
+        expect(order1_request3.length).to eq(1)
+        expect(order1_request3.first.request_type_id).to eq(order1_request_types[2])
+        expect(order2_request3.first.request_type_id).to eq(order2_request_types[2])
       end
     end
   end
@@ -288,8 +411,8 @@ RSpec.describe Request do
 
   describe '#open and #closed' do
     setup do
-      @open_states = ['pending', 'started']
-      @closed_states = ['passed', 'failed', 'cancelled']
+      @open_states = %w[pending started]
+      @closed_states = %w[passed failed cancelled]
 
       @all_states = @open_states + @closed_states
 
@@ -328,18 +451,57 @@ RSpec.describe Request do
     end
 
     it 'update when request is started' do
-      @request.request_metadata.update_attributes!(customer_accepts_responsibility: true)
+      @request.request_metadata.update!(customer_accepts_responsibility: true)
       assert @request.request_metadata.customer_accepts_responsibility?
     end
 
     it 'not update once a request is failed' do
       @request.fail!
-      expect { @request.request_metadata.update_attributes!(customer_accepts_responsibility: true) }.to raise_error ActiveRecord::RecordInvalid
+      expect { @request.request_metadata.update!(customer_accepts_responsibility: true) }.to raise_error ActiveRecord::RecordInvalid
     end
   end
 
   it 'should respond to #billing_product_identifier' do
     request = Request.new
     expect(request.billing_product_identifier).to be nil
+  end
+
+  describe '::progress_statistics' do
+    let(:request_type1) { create :request_type }
+    let(:request_type2) { create :request_type }
+
+    setup do
+      create_list :request, 2, state: 'pending', request_type: request_type1
+      create_list :request, 1, state: 'started', request_type: request_type1
+      create_list :request, 3, state: 'passed', request_type: request_type1
+      create_list :request, 1, state: 'failed', request_type: request_type1
+      create_list :request, 2, state: 'pending', request_type: request_type2
+      create_list :request, 1, state: 'started', request_type: request_type2
+      create_list :request, 3, state: 'cancelled', request_type: request_type2
+      create_list :request, 1, state: 'failed', request_type: request_type2
+    end
+
+    subject { Request.progress_statistics }
+
+    it 'returns a summary' do
+      expect(subject[request_type1]).to be_a Request::Statistics::Counter
+      expect(subject[request_type1].total).to eq(7)
+      expect(subject[request_type1].progress).to eq(50)
+      expect(subject[request_type1].pending).to eq(2)
+      expect(subject[request_type1].failed).to eq(1)
+      expect(subject[request_type1].passed).to eq(3)
+      expect(subject[request_type1].cancelled).to eq(0)
+      expect(subject[request_type1].completed).to eq(4)
+      expect(subject[request_type1].started).to eq(1)
+      expect(subject[request_type2]).to be_a Request::Statistics::Counter
+      expect(subject[request_type2].total).to eq(4)
+      expect(subject[request_type2].progress).to eq(0)
+      expect(subject[request_type2].pending).to eq(2)
+      expect(subject[request_type2].failed).to eq(1)
+      expect(subject[request_type2].passed).to eq(0)
+      expect(subject[request_type2].cancelled).to eq(3)
+      expect(subject[request_type2].completed).to eq(1)
+      expect(subject[request_type2].started).to eq(1)
+    end
   end
 end

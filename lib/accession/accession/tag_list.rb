@@ -86,6 +86,7 @@ module Accession
 
     def <=>(other)
       return unless other.is_a?(self.class)
+
       tags <=> other.tags
     end
 

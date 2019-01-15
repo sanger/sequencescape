@@ -1,5 +1,4 @@
-
-raise StandardError, 'Your database is already seeded.' if ApiApplication.find_by(name: 'Default Application')
+abort 'Your database is already seeded.' if ApiApplication.find_by(name: 'Default Application')
 
 ApiApplication.new(
   name: 'Default Application',

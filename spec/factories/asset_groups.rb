@@ -6,8 +6,8 @@ FactoryBot.define do
     study
 
     transient do
-      asset_type :untagged_well
-      asset_count 0
+      asset_type { :untagged_well }
+      asset_count { 0 }
     end
 
     assets do

@@ -1,12 +1,12 @@
-
 class RobotVerification
   attr_reader :errors
 
   def validate_barcode_params(barcode_hash)
     return yield('No barcodes specified')      if barcode_hash.nil?
+
     yield('Worksheet barcode invalid')         if barcode_hash[:batch_barcode].blank?             or not Batch.valid_barcode?(barcode_hash[:batch_barcode])
     yield('Tecan robot barcode invalid')       if barcode_hash[:robot_barcode].blank?             or not Robot.valid_barcode?(barcode_hash[:robot_barcode])
-    yield('User barcode invalid')              if barcode_hash[:user_barcode].blank?              or not User.valid_barcode?(barcode_hash[:user_barcode])
+    yield('User barcode invalid')              if barcode_hash[:user_barcode].blank?              or not User.find_with_barcode_or_swipecard_code(barcode_hash[:user_barcode])
     yield('Destination plate barcode invalid') if barcode_hash[:destination_plate_barcode].blank? or not Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
   end
 
@@ -24,6 +24,7 @@ class RobotVerification
 
   def valid_plates_on_robot?(beds, plates, bed_prefix, robot, _batch, expected_plate_layout)
     return false if expected_plate_layout.blank?
+
     expected_plate_layout.each do |plate_barcode, bed_number|
       scanned_bed_barcode = Barcode.number_to_human(beds[bed_number.to_s].strip)
       expected_bed_barcode = robot.robot_properties.find_by!(key: "#{bed_prefix}#{bed_number}")
@@ -77,6 +78,7 @@ class RobotVerification
   def set_plate_types(plate_types_params)
     plate_types_params.each do |plate_barcode, plate_type|
       next if plate_barcode.blank? || plate_type.blank?
+
       plate = Plate.with_barcode(plate_barcode).first or raise "Unable to locate plate #{plate_barcode.inspect} for robot verification"
       plate.set_plate_type(plate_type)
     end

@@ -1,0 +1,46 @@
+# frozen_string_literal: true
+
+FactoryBot.define do
+  factory :test_download_plates, class: SampleManifestExcel::TestDownload do
+    columns { FactoryBot.build(:column_list) }
+    validation_errors { [] }
+    num_plates { 2 }
+    num_samples_per_plate { 2 }
+    study { 'WTCCC' }
+    supplier { 'Test Supplier' }
+    partial { false }
+    cgap { false }
+    type { 'Plates' }
+    manifest_type { 'plate_full' }
+    data do
+      {
+        supplier_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line',
+        date_of_sample_collection: 'Nov-16', date_of_sample_extraction: 'Nov-16', sample_purified: 'No',
+        sample_public_name: 'SCG--1222_A0', sample_taxon_id: 9606, sample_common_name: 'Homo sapiens', phenotype: 'Unknown'
+      }.with_indifferent_access
+    end
+
+    initialize_with do
+      new(data: data, columns: columns, validation_errors: validation_errors, partial: partial, cgap: cgap, study: study,
+          supplier: supplier, num_plates: num_plates, num_samples_per_plate: num_samples_per_plate, type: type,
+          manifest_type: manifest_type)
+    end
+
+    skip_create
+
+    # in partial download, last 2 rows are left empty
+    factory :test_download_plates_partial, class: SampleManifestExcel::TestDownload do
+      partial { true }
+    end
+
+    # in cgap download, the sanger_plate_id column values are cgap barcodes
+    factory :test_download_plates_cgap, class: SampleManifestExcel::TestDownload do
+      cgap { true }
+    end
+
+    factory :test_download_plates_partial_cgap, class: SampleManifestExcel::TestDownload do
+      partial { true }
+      cgap { true }
+    end
+  end
+end

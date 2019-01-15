@@ -11,12 +11,13 @@ FactoryBot.define do
   end
 
   factory :submission_template do
-    submission_class_name LinearSubmission.name
-    name                  'my_template'
-
     transient do
-      request_type_ids_list []
+      request_type_ids_list { request_types.map { |rt| [rt.id] } }
+      request_types { [] }
     end
+
+    submission_class_name { LinearSubmission.name }
+    sequence(:name) { |i| "Template #{i}" }
     submission_parameters { { request_type_ids_list: request_type_ids_list } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
 
@@ -24,11 +25,11 @@ FactoryBot.define do
       transient do
         request_types { [create(:library_request_type)] }
       end
-      sequence(:name) { |i| "Template #{i}" }
-      submission_parameters do
-        {
-          request_type_ids_list: request_types.map { |rt| [rt.id] }
-        }
+    end
+
+    factory :libray_and_sequencing_template do
+      transient do
+        request_types { [create(:library_request_type), create(:sequencing_request_type)] }
       end
     end
   end
@@ -45,10 +46,6 @@ FactoryBot.define do
     factory :order_with_submission do
       after(:build) { |o| o.create_submission(user_id: o.user_id) }
     end
-
-    factory :library_order do
-      request_options { { fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: 'Standard' } }
-    end
   end
 
   factory :linear_submission do
@@ -58,6 +55,12 @@ FactoryBot.define do
     submission
     assets                { create_list(:sample_tube, 1) }
     request_types         { [create(:request_type).id] }
+
+    factory :library_order do
+      assets { create_list :untagged_well, 1 }
+      request_types { [create(:library_request_type).id] }
+      request_options { { fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: 'Standard' } }
+    end
   end
 
   factory :flexible_submission do
@@ -100,7 +103,7 @@ class FactoryHelp
     end
     submission = FactoryBot.create(:order_with_submission, options).submission
     # trying to skip StateMachine
-    submission.update_attributes!(submission_options) if submission_options.present?
+    submission.update!(submission_options) if submission_options.present?
     submission.reload
   end
 end

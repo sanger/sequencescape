@@ -17,6 +17,6 @@ class Tube::StandardMx < Tube::Purpose
   private
 
   def update_all_requests?(state)
-    !['started', 'pending'].include?(state)
+    !%w[started pending].include?(state)
   end
 end

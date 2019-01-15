@@ -8,7 +8,7 @@ FactoryBot.define do
       well_locations { Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count)) }
     end
     plate_purpose
-    size 96
+    size { 96 }
 
     after(:create) do |plate, evaluator|
       plate.wells << evaluator.well_locations.map do |location|
@@ -22,12 +22,12 @@ FactoryBot.define do
     user
     association(:source,      factory: :transfer_plate)
     association(:destination, factory: :transfer_plate)
-    transfers('A1' => 'A1', 'B1' => 'B1')
+    transfers { { 'A1' => 'A1', 'B1' => 'B1' } }
 
     factory(:full_transfer_between_plates) do
       association(:source,      factory: :full_plate)
       association(:destination, factory: :full_plate)
-      transfers(Hash[('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.map { |w| [w, w] }])
+      transfers { Hash[('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.map { |w| [w, w] }] }
     end
   end
 
@@ -35,27 +35,30 @@ FactoryBot.define do
     user
     source      { |target| target.association(:transfer_plate) }
     destination { |target| target.association(:library_tube) }
-    transfers(%w[A1 B1])
+
+    factory(:transfer_from_plate_to_tube_with_transfers) do
+      transfers { %w[A1 B1] }
+    end
   end
 
   factory(:transfer_template) do
     sequence(:name) { |n| "Transfer Template #{n}" }
-    transfer_class_name 'Transfer::BetweenPlates'
-    transfers('A1' => 'A1', 'B1' => 'B1')
+    transfer_class_name { 'Transfer::BetweenPlates' }
+    transfers { { 'A1' => 'A1', 'B1' => 'B1' } }
 
     factory(:pooling_transfer_template) do
-      transfer_class_name 'Transfer::BetweenPlatesBySubmission'
-      transfers nil
+      transfer_class_name { 'Transfer::BetweenPlatesBySubmission' }
+      transfers { nil }
     end
 
     factory(:multiplex_transfer_template) do
-      transfer_class_name 'Transfer::FromPlateToTubeByMultiplex'
-      transfers nil
+      transfer_class_name { 'Transfer::FromPlateToTubeByMultiplex' }
+      transfers { nil }
     end
 
     factory :between_tubes_transfer_template do
-      transfer_class_name 'Transfer::BetweenTubesBySubmission'
-      transfers nil
+      transfer_class_name { 'Transfer::BetweenTubesBySubmission' }
+      transfers { nil }
     end
   end
   # A tag group that works for the tag layouts
@@ -65,7 +68,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Tag group layout #{n}" }
 
     transient do
-      tag_sequences %w[ACGT TGCA]
+      tag_sequences { %w[ACGT TGCA] }
     end
 
     after(:create) do |tag_group, evaluator|
@@ -78,21 +81,21 @@ FactoryBot.define do
   # Tag layouts and their templates
   factory(:tag_layout_template) do
     transient do
-      tags []
+      tags { [] }
     end
 
     sequence(:name) { |n| "Tag Layout Template #{n}" }
-    direction_algorithm 'TagLayout::InColumns'
-    walking_algorithm   'TagLayout::WalkWellsByPools'
+    direction_algorithm { 'TagLayout::InColumns' }
+    walking_algorithm   { 'TagLayout::WalkWellsByPools' }
     tag_group { |target| target.association(:tag_group_for_layout, name: target.name, tag_sequences: target.tags) }
 
     factory(:inverted_tag_layout_template) do
-      direction_algorithm 'TagLayout::InInverseColumns'
-      walking_algorithm   'TagLayout::WalkWellsOfPlate'
+      direction_algorithm { 'TagLayout::InInverseColumns' }
+      walking_algorithm   { 'TagLayout::WalkWellsOfPlate' }
     end
 
     factory(:entire_plate_tag_layout_template) do
-      walking_algorithm   'TagLayout::WalkWellsOfPlate'
+      walking_algorithm   { 'TagLayout::WalkWellsOfPlate' }
     end
   end
 
@@ -106,8 +109,8 @@ FactoryBot.define do
     plate     { |target| target.association(:full_plate_with_samples) }
     tag_group { |target| target.association(:tag_group_for_layout)    }
 
-    direction_algorithm 'TagLayout::InColumns'
-    walking_algorithm   'TagLayout::WalkWellsOfPlate'
+    direction_algorithm { 'TagLayout::InColumns' }
+    walking_algorithm   { 'TagLayout::WalkWellsOfPlate' }
   end
 
   factory(:plate_creation) do
@@ -149,14 +152,14 @@ FactoryBot.define do
 
   factory(:bait_library_type) do
     sequence(:name) { |i| "Bait Library Supplier #{i}" }
-    category 'custom'
+    category { 'custom' }
   end
 
   factory(:bait_library) do
     bait_library_supplier
     bait_library_type
     sequence(:name) { |i| "Bait Library #{i}" }
-    target_species 'Human'
+    target_species { 'Human' }
   end
 
   factory(:isc_request, class: Pulldown::Requests::IscLibraryRequest, aliases: [:pulldown_isc_request]) do
@@ -167,7 +170,7 @@ FactoryBot.define do
     association(:request_type, factory: :library_creation_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose :standard
+    request_purpose { :standard }
     request_metadata_attributes do
       {
         fragment_size_required_from: 100,
@@ -182,7 +185,7 @@ FactoryBot.define do
     association(:request_type, factory: :library_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose :standard
+    request_purpose { :standard }
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400
@@ -193,7 +196,7 @@ FactoryBot.define do
   factory(:state_change) do
     user
     target { |target| target.association(:plate) }
-    target_state 'passed'
+    target_state { 'passed' }
   end
 
   factory(:plate_owner) do

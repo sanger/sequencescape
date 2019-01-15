@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'csv'
 
@@ -6,7 +5,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
   XY = 'M'
   XX = 'F'
   YY = 'F'
-  NC = 'Unknown'
+  NC = 'U'
 
   context 'A fluidigm file' do
     setup do
@@ -48,6 +47,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
       @fluidigm.each_well do |well|
         assert well.description != 'S96'
         next if @well_maps[well.description].nil?
+
         assert_equal @well_maps[well.description][:markers].sort, well.gender_markers.sort
         assert_equal @well_maps[well.description][:count], well.count
         checked += 1

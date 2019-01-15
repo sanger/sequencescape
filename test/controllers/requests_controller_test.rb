@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'requests_controller'
 
@@ -30,7 +29,7 @@ class RequestsControllerTest < ActionController::TestCase
         request = FactoryBot.create :request, state: 'started', user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(:study, name: 'ReqCon2')
         get :cancel, params: { id: request.id }
 
-        assert_equal flash[:error], "Request #{request.id} in progress. Can't be cancelled"
+        assert_equal flash[:error], "Request #{request.id} can't be cancelled"
         assert_response :redirect
       end
     end

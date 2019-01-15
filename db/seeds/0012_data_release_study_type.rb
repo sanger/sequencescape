@@ -1,4 +1,3 @@
-
 unless Rails.env.test?
   dr_study_types = [
     ['genomic sequencing',           false, false],

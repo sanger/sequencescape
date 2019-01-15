@@ -1,4 +1,3 @@
-
 Given /^plate "([^"]*)" has "([^"]*)" wells$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_from_barcode('DN' + plate_barcode)
   1.upto(number_of_wells.to_i) do |i|
@@ -14,7 +13,7 @@ end
 Given /^plate "([^\"]*)" has concentration and volume results$/ do |plate_barcode|
   plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
-    well.well_attribute.update_attributes!(
+    well.well_attribute.update!(
       current_volume: 10 + (index % 30),
       concentration: 205 + (index % 50)
     )
@@ -24,7 +23,7 @@ end
 Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_barcode|
   plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
-    well.well_attribute.update_attributes!(
+    well.well_attribute.update!(
       current_volume: 10 + (index % 30),
       concentration: 50 + (index % 50)
     )
@@ -40,6 +39,7 @@ end
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   bc = SBCF::SangerBarcode.from_machine(machine_barcode)
   raise 'Currently only supports DN barcodes' unless bc.prefix.human == 'DN'
+
   FactoryBot.create :plate, barcode: bc.number
 end
 
@@ -52,23 +52,25 @@ Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" e
 end
 
 Given /^plate (\d+) has is a stock plate$/ do |plate_id|
-  Plate.find(plate_id).update_attributes(plate_purpose: PlatePurpose.stock_plate_purpose)
+  Plate.find(plate_id).update(plate_purpose: PlatePurpose.stock_plate_purpose)
 end
 
 Given /^the plate with ID (\d+) has a plate purpose of "([^\"]+)"$/ do |id, name|
   purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
-  Plate.find(id).update_attributes!(plate_purpose: purpose)
+  Plate.find(id).update!(plate_purpose: purpose)
 end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
   FactoryBot.create(:plate,
                     sanger_barcode: { machine_barcode: machine_barcode },
+                    well_count: 8,
                     plate_purpose: Purpose.find_by(name: plate_purpose_name))
 end
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   @stock_plate = FactoryBot.create(:plate,
                                    name: 'A_TEST_STOCK_PLATE',
+                                   well_count: 8,
                                    sanger_barcode: { machine_barcode: machine_barcode },
                                    plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
 end
@@ -85,13 +87,13 @@ end
 Given /^the well with ID (\d+) is at position "([^\"]+)" on the plate with ID (\d+)$/ do |well_id, position, plate_id|
   plate = Plate.find(plate_id)
   map   = Map.where_description(position).where_plate_size(plate.size).where_plate_shape(plate.asset_shape).first or raise StandardError, "Could not find position #{position}"
-  Well.find(well_id).update_attributes!(plate: plate, map: map)
+  Well.find(well_id).update!(plate: plate, map: map)
 end
 
 Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   well = Uuid.find_by(external_id: well_uuid).resource
   plate = Uuid.find_by(external_id: plate_uuid).resource
-  well.update_attributes!(plate: plate, map: Map.find_by(description: 'A1'))
+  well.update!(plate: plate, map: Map.find_by(description: 'A1'))
   step("the barcode for plate #{plate.id} is \"DN1S\"")
 end
 
@@ -106,12 +108,12 @@ end
 
 Given(/^a plate called "([^"]*)" exists with purpose "([^"]*)"$/) do |name, purpose_name|
   purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
-  FactoryBot.create(:plate, name: name, purpose: purpose)
+  FactoryBot.create(:plate, name: name, purpose: purpose, well_count: 8)
 end
 
 Given(/^a full plate called "([^"]*)" exists with purpose "([^"]*)" and barcode "([^"]*)"$/) do |name, purpose_name, barcode|
   purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
-  FactoryBot.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode)
+  FactoryBot.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode, well_count: 16)
 end
 
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name, barcode|
@@ -175,7 +177,7 @@ Given /^I have a plate with uuid "([^"]*)" with the following wells:$/ do |uuid,
   plate = Uuid.find_by(external_id: uuid).resource
   well_details.hashes.each do |well_detail|
     well = Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: 96), plate: plate)
-    well.well_attribute.update_attributes!(concentration: well_detail[:measured_concentration], measured_volume: well_detail[:measured_volume])
+    well.well_attribute.update!(concentration: well_detail[:measured_concentration], measured_volume: well_detail[:measured_volume])
   end
 end
 

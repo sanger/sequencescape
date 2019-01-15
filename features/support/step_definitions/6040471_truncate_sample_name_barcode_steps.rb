@@ -1,8 +1,7 @@
-
 When /^I print the following labels in the asset group$/ do |table|
   label_bitmaps = {}
   table.hashes.each do |h|
-    field, value = ['Field', 'Value'].map { |k| h[k] }
+    field, value = %w[Field Value].map { |k| h[k] }
     label_bitmaps[field] = Regexp.new(value)
   end
 

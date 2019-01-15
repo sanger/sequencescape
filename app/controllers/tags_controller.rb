@@ -1,4 +1,3 @@
-
 class TagsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -15,7 +14,7 @@ class TagsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @tag.update_attributes(params[:tag])
+      if @tag.update(params[:tag])
         flash[:notice] = 'Tag was successfully updated.'
         format.html { redirect_to(@tag_group) }
       else

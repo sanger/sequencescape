@@ -1,4 +1,3 @@
-
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
 # inheritance
 
@@ -54,12 +53,12 @@ module Pulldown::PlatePurposes
   ]
 
   PLATE_PURPOSE_TYPE = {
-    'ISCH lib pool'       => Pulldown::InitialDownstreamPlatePurpose,
-    'ISCH hyb'            => IlluminaHtp::DownstreamPlatePurpose,
-    'ISCH cap lib'        => IlluminaHtp::DownstreamPlatePurpose,
-    'ISCH cap lib PCR'    => IlluminaHtp::DownstreamPlatePurpose,
+    'ISCH lib pool' => Pulldown::InitialDownstreamPlatePurpose,
+    'ISCH hyb' => IlluminaHtp::DownstreamPlatePurpose,
+    'ISCH cap lib' => IlluminaHtp::DownstreamPlatePurpose,
+    'ISCH cap lib PCR' => IlluminaHtp::DownstreamPlatePurpose,
     'ISCH cap lib PCR-XP' => IlluminaHtp::DownstreamPlatePurpose,
-    'ISCH cap lib pool'   => IlluminaHtp::DownstreamPlatePurpose
+    'ISCH cap lib pool' => IlluminaHtp::DownstreamPlatePurpose
   }
 
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [

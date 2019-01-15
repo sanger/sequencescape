@@ -1,4 +1,3 @@
-
 class SpecificTubeCreation < TubeCreation
   class ChildPurpose < ApplicationRecord
     self.table_name = 'specific_tube_creation_purposes'

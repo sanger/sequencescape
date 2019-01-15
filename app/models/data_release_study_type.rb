@@ -1,4 +1,3 @@
-
 class DataReleaseStudyType < ApplicationRecord
   extend Attributable::Association::Target
 

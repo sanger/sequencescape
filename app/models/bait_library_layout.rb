@@ -1,4 +1,3 @@
-
 class BaitLibraryLayout < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::BaitLibraryLayout
@@ -56,6 +55,7 @@ class BaitLibraryLayout < ApplicationRecord
     plate.stock_wells.each do |well, stock_wells|
       bait_library = stock_wells.map { |w| w.requests_as_source.for_submission_id(well.pool_id).first }.compact.map(&:request_metadata).map(&:bait_library).uniq
       raise StandardError, "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.human_barcode}" if bait_library.size > 1
+
       yield(well, bait_library.first)
     end
   end
@@ -76,6 +76,7 @@ class BaitLibraryLayout < ApplicationRecord
   def self.preview!(attributes = {}, &block)
     new(attributes, &block).tap do |layout|
       raise ActiveRecord::RecordInvalid, layout unless layout.valid?
+
       layout.unsaved_uuid!
       layout.send(:generate_for_preview)
     end

@@ -7,11 +7,13 @@ module TagSubstitutionHelper
   # Returns a user friendly name for the corresponding tag
   def tag_name(tag_id)
     return 'Untagged' if tag_id == Aliquot::UNASSIGNED_TAG
+
     @complete_tags.dig(tag_id.to_i, 0)
   end
 
   def tag_options_for(tag_id)
     return { 'No group' => [['Untagged', Aliquot::UNASSIGNED_TAG]] } if tag_id == Aliquot::UNASSIGNED_TAG
+
     tags_in_groups.slice(@complete_tags.fetch(tag_id.to_i).last)
   end
 

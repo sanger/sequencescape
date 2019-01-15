@@ -1,4 +1,12 @@
+# frozen_string_literal: true
+
 module Attributable
+  # Summarises the validations for an attribute
+  # In addition to the basis rails validation also provides:
+  # 1) Information to assist with automatically generating form elements
+  # 2) Tools to assist with validating eg. submissions prior to the creation of the
+  #    requests themselves
+  # 3) Wiping out some fields on the condition of others
   class Attribute
     attr_reader :name
     attr_reader :default
@@ -123,36 +131,45 @@ module Attributable
       Attribute.find_display_name(@owner, name)
     end
 
-    def find_default(object = nil, metadata = nil)
-      default_from(metadata) || object.try(name) || default
+    #
+    # Find the default value for the attribute.
+    # Validator source needs to respond to #validator_for
+    # such as metadata or a request type.
+    # @param validator_source [#validator_for] In cases where defaults are dynamic
+    # such as those on request types, you can pass in the validators here.
+    #
+    # @return [type] [description]
+    def find_default(validator_source = nil)
+      default_from(validator_source) || default
     end
 
     def kind
       return FieldInfo::SELECTION if selection?
       return FieldInfo::BOOLEAN if boolean?
       return FieldInfo::NUMERIC if integer? || float?
+
       FieldInfo::TEXT
     end
 
-    def selection_from_metadata(metadata)
-      return nil unless metadata.present?
-      return metadata.validator_for(name).valid_options.to_a if validator?
+    def selection_from_metadata(validator_source)
+      return nil if validator_source.blank?
+      return validator_source.validator_for(name).valid_options.to_a if validator?
     end
 
-    def selection_options(metadata)
-      selection_values || selection_from_metadata(metadata) || []
+    def selection_options(validator_source)
+      selection_values || selection_from_metadata(validator_source) || []
     end
 
-    def to_field_info(object = nil, metadata = nil)
+    def to_field_info(validator_source = nil)
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
         display_name: display_name,
         key: assignable_attribute_name,
-        default_value: find_default(object, metadata),
+        default_value: find_default(validator_source),
         kind: kind,
         required: required?
       }
-      options.update(selection: selection_options(metadata)) if selection?
+      options.update(selection: selection_options(validator_source)) if selection?
       options.update(step: 1, min: minimum) if integer?
       options.update(step: 0.1, min: 0) if float?
       FieldInfo.new(options)

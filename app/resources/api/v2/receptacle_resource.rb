@@ -5,8 +5,6 @@ module Api
     # Provides a JSON API representation of receptacle
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class ReceptacleResource < BaseResource
-      # Constants...
-
       immutable # uncomment to make the resource immutable
 
       default_includes :uuid_object

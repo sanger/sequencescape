@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'batches_controller'
 
@@ -154,7 +153,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           @ws = @pipeline.workflow # :name => 'A New workflow', :item_limit => 2
           @ws_two = @pipeline_qc.workflow # :name => 'Another workflow', :item_limit => 2
-          @ws_two.update_attributes!(locale: 'External')
+          @ws_two.update!(locale: 'External')
 
           @batch_one = create(:batch, pipeline: @pipeline)
           @batch_two = create(:batch, pipeline: @pipeline_qc)
@@ -217,6 +216,40 @@ class BatchesControllerTest < ActionController::TestCase
             should 'create_batch  with no controls' do
               assert_equal @old_count + 1, Batch.count
               assert_redirected_to batch_path(assigns(:batch))
+            end
+          end
+
+          context 'hide_requests' do
+            setup do
+              post :create, params: {
+                id: @pipeline.id,
+                request: { @request_three.id => '0', @request_four.id => '1' },
+                action_on_requests: 'hide_from_inbox'
+              }
+            end
+
+            should 'hide the requests from the inbox' do
+              assert_redirected_to pipeline_path(@pipeline)
+              assert_equal 'Requests hidden from inbox', flash[:notice]
+              assert_not @request_three.reload.hold?
+              assert @request_four.reload.hold?
+            end
+          end
+
+          context 'cancel_requests' do
+            setup do
+              post :create, params: {
+                id: @pipeline.id,
+                request: { @request_three.id => '0', @request_four.id => '1' },
+                action_on_requests: 'cancel_requests'
+              }
+            end
+
+            should 'cancel the requests' do
+              assert_redirected_to pipeline_path(@pipeline)
+              assert_equal 'Requests cancelled', flash[:notice]
+              assert_not @request_three.reload.cancelled?
+              assert @request_four.reload.cancelled?
             end
           end
 

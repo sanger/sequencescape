@@ -1,4 +1,3 @@
-
 require 'carrierwave'
 
 class Document < ApplicationRecord
@@ -7,11 +6,10 @@ class Document < ApplicationRecord
   module Associations
     # Adds accessors for named fields and attaches documents to them
 
-    def has_uploaded_document(field, options = {})
+    def has_uploaded_document(field, differentiator: field.to_s)
       # Options
       #  differentiator - this is a string used to separate multiple documents related to your model
       #     for example, you can have both a "generated" and an "uploaded" document in one Sample Manifest
-      differentiator = options.fetch(:differentiator, field.to_s)
 
       line = __LINE__ + 1
       class_eval(%Q{
@@ -23,7 +21,7 @@ class Document < ApplicationRecord
         end
 
         def #{field}=(file)
-          create_#{field}_document(:uploaded_data => file, :documentable_extended => '#{differentiator}') unless file.blank?
+          create_#{field}_document(uploaded_data: file, documentable_extended: '#{differentiator}') unless file.blank?
         end
       }, __FILE__, line)
     end
@@ -43,6 +41,8 @@ class Document < ApplicationRecord
   # Handle some of the metadata with this callback
   before_save :update_document_attributes
 
+  private
+
   # Save Size/content_type Metadata
   def update_document_attributes
     if uploaded_data.present?
@@ -50,5 +50,4 @@ class Document < ApplicationRecord
       self.size = uploaded_data.file.size
     end
   end
-  private :update_document_attributes
 end

@@ -1,67 +1,54 @@
-
 module Request::Statistics
-  module DeprecatedMethods
-    # TODO: - Move these to named scope on Request
-    def total_requests(request_type)
-      requests.request_type(request_type).distinct.count(:id)
-    end
-
-    def completed_requests(request_type)
-      requests.request_type(request_type).completed.distinct.count(:id)
-    end
-
-    def passed_requests(request_type)
-      requests.request_type(request_type).passed.distinct.count(:id)
-    end
-
-    def failed_requests(request_type)
-      requests.request_type(request_type).failed.distinct.count(:id)
-    end
-
-    def pending_requests(request_type)
-      requests.request_type(request_type).pending.distinct.count(:id)
-    end
-
-    def started_requests(request_type)
-      requests.request_type(request_type).started.distinct.count(:id)
-    end
-
-    def cancelled_requests(request_type)
-      # distinct.count(:id) in rails_4
-      requests.request_type(request_type).cancelled.distinct.count(:id)
-    end
-
-    def total_requests_report(request_types)
-      requests.where(request_type_id: request_types).group(:request_type_id).count
-    end
-  end
-
   class Counter
-    def initialize
-      @statistics = Hash.new { |h, k| h[k] = 0 }
+    def initialize(statistics = {})
+      @statistics = Hash.new(0).merge(statistics)
     end
 
     delegate :[], :[]=, to: :@statistics
 
+    # Cancelled requests get filtered out, as generally they are administrative decisions
     def total
-      @statistics.values.sum
+      @statistics.values.sum - @statistics['cancelled']
     end
 
     def completed
-      ['passed', 'failed'].map(&method(:[])).sum
+      %w[passed failed].map(&method(:[])).sum
     end
 
     def pending
-      ['pending', 'blocked'].map(&method(:[])).sum
+      %w[pending blocked].map(&method(:[])).sum
     end
 
     [:started, :passed, :failed, :cancelled].each do |direct_type|
-      class_eval("def #{direct_type} ; self[#{direct_type.to_s.inspect}] ; end")
+      define_method(direct_type) { @statistics[direct_type.to_s] }
     end
 
+    # Returns each state, with is absolute and percentage contribution to the total.
+    # Excluded states don't get returned, ideal for excluding pending from progress bars.
+    # Note: excluded states still form part of the calculations
+    def states(exclude: [])
+      filtered_states = sorted_states.reject do |state, _statistics|
+        exclude.include?(state) || state == 'cancelled'
+      end
+      filtered_states.map do |state, absolute|
+        [state, absolute, (absolute * 100) / total]
+      end
+    end
+
+    # Percentage of passed requests out of those which haven't been failed.
+    # I believe the reason failed requests are subtracted from the total, rather than added
+    # to pending, are because failed sequencing requests get duplicated, and in this case
+    # it wouldn't make sense to increment progress.
     def progress
       return 0 if passed.zero? # If there are no passed then the progress is 0% by definition
+
       (passed * 100) / (total - failed)
+    end
+
+    private
+
+    def sorted_states
+      @statistics.sort_by { |state, _statistics| Request::Statemachine::SORT_ORDER.index(state) || state.each_byte.sum }
     end
   end
 

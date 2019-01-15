@@ -1,4 +1,3 @@
-
 class Plate::Creator < ApplicationRecord
   PlateCreationError = Class.new(StandardError)
 
@@ -31,6 +30,7 @@ class Plate::Creator < ApplicationRecord
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
+
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                                LabelPrinter::Label::PlateCreator,
@@ -65,11 +65,13 @@ class Plate::Creator < ApplicationRecord
       create_plate_without_parent(creator_parameters)
     else
       # In the majority of cases the users are creating stamps of the provided plates.
-      scanned_barcodes = source_plate_barcodes.scan(/\d+/)
+      scanned_barcodes = source_plate_barcodes.split(/[\s,]+/)
       raise PlateCreationError, "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
+
       # NOTE: Plate barcodes are not unique within certain laboratories.  That means that we cannot do:
       #  plates = Plate.with_barcode(*scanned_barcodes).all(:include => [ :location, { :wells => :aliquots } ])
       # Because then you get multiple matches.  So we take the first match, which is just not right.
+
       scanned_barcodes.each_with_object([]) do |scanned, plates|
         plate =
           Plate.with_barcode(scanned).eager_load(wells: :aliquots).first or

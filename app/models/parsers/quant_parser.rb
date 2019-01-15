@@ -4,11 +4,27 @@ class Parsers::QuantParser
   HEADER_IDENTIFIER = 'Headers'.freeze
   LOCATION_HEADER = 'Well Location'.freeze
   COLUMN_MAPS = {
-    'concentration' => :set_concentration,
-    'molarity'      => :set_molarity,
-    'volume'        => :set_current_volume,
-    'rin'           => :set_rin
+    'concentration' => ['concentration', 'ng/ul'],
+    'molarity' => ['molarity', 'nmol/l'],
+    'volume' => %w[volume ul],
+    'rin' => %w[RIN RIN]
   }.freeze
+
+  # Extract decimals from columns.
+  # Ignores preceding ( and allows optional decimal point
+  # Any characters after the digits are ignored.
+  # eg.
+  # 12.345 => 12.345
+  # 13 => 13
+  # (45.2) => 45.2
+  # sausages => nil
+  # 34 ng/ul => 35
+  VALUE_REGEX = /\A\({0,1}(?<decimal>\d+\.{0,1}\d*)/
+
+  class_attribute :assay_type, :assay_version
+
+  self.assay_type = 'QuantEssential'
+  self.assay_version = 'v0.1'
 
   def initialize(content)
     @content = content
@@ -26,6 +42,7 @@ class Parsers::QuantParser
     data_section.each do |row|
       # If location is nil or blank, ignore the row
       next if row[location_index].nil? || row[location_index].strip.blank?
+
       yield(row[location_index], qc_values_for_row(row))
     end
   end
@@ -48,15 +65,22 @@ class Parsers::QuantParser
     COLUMN_MAPS
   end
 
-  def method_set_list
-    @method_set_list ||= headers_section.map do |description|
-      next if description.blank?
-      column_maps[description.strip.downcase]
+  def header_options
+    @header_options ||= headers_section.each_with_object([]).with_index do |(description, array), index|
+      key, units = column_maps[description&.strip&.downcase]
+      next if key.nil? # Our column is not one we are interested in
+
+      array << [key, units, index]
     end
   end
 
   def qc_values_for_row(row)
-    Hash[method_set_list.zip(row).reject { |header, _value| header.nil? }]
+    header_options.each_with_object({}) do |(key, units, index), hash|
+      matches = VALUE_REGEX.match(row[index])
+      next if matches.nil?
+
+      hash[key] = Unit.new(matches[:decimal].to_f, units)
+    end
   end
 
   def headers_index

@@ -1,4 +1,3 @@
-
 require 'aasm'
 
 module Submission::StateMachine
@@ -94,10 +93,10 @@ module Submission::StateMachine
   end
   private :configure_state_machine
 
-  UnprocessedStates = ['building', 'pending', 'processing']
+  UnprocessedStates = %w[building pending processing]
   def configure_named_scopes
     scope :unprocessed, -> { where(state: UnprocessedStates) }
-    scope :processed, -> { where(state: ['ready', 'failed']) }
+    scope :processed, -> { where(state: %w[ready failed]) }
   end
 
   private :configure_named_scopes

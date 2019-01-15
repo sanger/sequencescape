@@ -1,4 +1,3 @@
-
 class Io::Asset < Core::Io::Base
   set_model_for_input(::Asset)
   set_json_root(:asset)

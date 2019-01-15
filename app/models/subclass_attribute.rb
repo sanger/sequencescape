@@ -1,4 +1,3 @@
-
 class SubclassAttribute < ApplicationRecord
   belongs_to :attributable, polymorphic: true
 

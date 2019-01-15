@@ -1,4 +1,3 @@
-
 class Tube < Receptacle
   include Barcode::Barcodeable
   include ModelExtensions::Tube
@@ -37,13 +36,19 @@ class Tube < Receptacle
     submissions.first
   end
 
+  def pool_id
+    submissions.ids.first
+  end
+
   def source_plate
     return nil if purpose.nil?
+
     @source_plate ||= purpose.source_plate(self)
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id
+
     ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
@@ -57,11 +62,15 @@ class Tube < Receptacle
 
   # TODO: change column name to account for purpose, not plate_purpose!
   belongs_to :purpose, class_name: 'Tube::Purpose', foreign_key: :plate_purpose_id
-  delegate_to_purpose(:transition_to, :pool_id, :name_for_child_tube, :stock_plate)
+  delegate_to_purpose(:transition_to, :stock_plate)
   delegate :barcode_type, to: :purpose
 
   def name_for_label
     (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
+  end
+
+  def name_for_child_tube
+    name
   end
 
   def details

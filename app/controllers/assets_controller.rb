@@ -1,4 +1,3 @@
-
 class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -96,7 +95,7 @@ class AssetsController < ApplicationController
               else
                 # Discard the 'asset' that was build initially as it is being replaced by the asset
                 # created from the extraction process.
-                extract.update_attributes!(name: asset.name)
+                extract.update!(name: asset.name)
                 asset, parent_used = extract, nil
               end
             end
@@ -146,7 +145,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @asset.update_attributes(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
+      if @asset.update(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
         flash[:notice] = 'Asset was successfully updated.'
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.human_barcode) }
@@ -163,7 +162,7 @@ class AssetsController < ApplicationController
 
   private def asset_params
     permitted = [:volume, :concentration]
-    permitted << :name if current_user.administrator? #
+    permitted << :name if current_user.administrator?
     permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
     params.require(:asset).permit(permitted)
   end
@@ -236,7 +235,7 @@ class AssetsController < ApplicationController
   end
 
   def new_request
-    @request_types = RequestType.applicable_for_asset(@asset)
+    @request_types = RequestType.standard.active.applicable_for_asset(@asset)
     # In rare cases the user links in to the 'new request' page
     # with a specific study specified. In even rarer cases this may
     # conflict with the assets primary study.

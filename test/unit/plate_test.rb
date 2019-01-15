@@ -1,5 +1,5 @@
-
 require 'test_helper'
+require './spec/lib/mock_parser'
 
 class PlateTest < ActiveSupport::TestCase
   def create_plate_with_fluidigm(fluidigm_barcode)
@@ -190,24 +190,10 @@ class PlateTest < ActiveSupport::TestCase
   end
 
   context 'with existing well data' do
-    class MockParser
-      def each_well_and_parameters
-        yield('B1', { set_concentration: '2', set_molarity: '3' })
-        yield('C1', { set_concentration: '4', set_molarity: '5' })
-      end
-    end
-
     setup do
       @plate = create :plate_with_empty_wells, well_count: 3
-      # @plate.wells.build([
-      #   { map: Map.find_by(description: 'A1') },
-      #   { map: Map.find_by(description: 'B1') },
-      #   { map: Map.find_by(description: 'C1') }
-      #   ])
       @plate.wells.first.set_concentration('12')
       @plate.wells.first.set_molarity('34')
-      # @plate.save! # Because we use a well scope, and mocking it is asking for trouble
-
       @plate.update_qc_values_with_parser(MockParser.new)
     end
 
@@ -219,6 +205,23 @@ class PlateTest < ActiveSupport::TestCase
       assert_equal 3.0, well_b1.get_molarity
       assert_equal 4.0, well_c1.get_concentration
       assert_equal 5.0, well_c1.get_molarity
+    end
+
+    should 'create QcResults per well' do
+      well_b1 = @plate.wells.detect { |w| w.map_description == 'B1' }.reload
+      well_c1 = @plate.wells.detect { |w| w.map_description == 'C1' }.reload
+      assert_equal 4, well_b1.qc_results.count
+      assert_equal 4, well_c1.qc_results.count
+      keys = well_b1.qc_results.map(&:key)
+      assert_includes keys, 'Concentration'
+      assert_includes keys, 'Molarity'
+      assert_equal 'Mock parser', well_b1.qc_results.first.assay_type
+      assert_equal '1.0', well_b1.qc_results.first.assay_version
+    end
+
+    should 'not create QcResults for missing wells' do
+      well_a1 = @plate.wells.detect { |w| w.map_description == 'A1' }.reload
+      assert_equal 0, well_a1.qc_results.count
     end
 
     should 'not clear existing data' do

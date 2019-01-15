@@ -1,4 +1,3 @@
-
 require 'aasm'
 
 class Study < ApplicationRecord
@@ -18,7 +17,6 @@ class Study < ApplicationRecord
   include SharedBehaviour::Named
   include ReferenceGenome::Associations
   include SampleManifest::Associations
-  include Request::Statistics::DeprecatedMethods
   include Role::Authorized
   include StudyRelation::Associations
 
@@ -32,7 +30,7 @@ class Study < ApplicationRecord
   YES_OR_NO = [YES, NO]
   Other_type = 'Other'
 
-  STUDY_SRA_HOLDS = ['Hold', 'Public']
+  STUDY_SRA_HOLDS = %w[Hold Public]
 
   DATA_RELEASE_STRATEGY_OPEN = 'open'
   DATA_RELEASE_STRATEGY_MANAGED = 'managed'
@@ -102,7 +100,8 @@ class Study < ApplicationRecord
   has_many :initial_requests, class_name: 'Request', foreign_key: :initial_study_id
   has_many :assets_through_aliquots,  ->() { distinct }, class_name: 'Asset', through: :aliquots, source: :receptacle
   has_many :assets_through_requests,  ->() { distinct }, class_name: 'Asset', through: :initial_requests, source: :asset
-  has_many :requests, through: :assets_through_aliquots, source: :requests_as_source
+  has_many :requests, through: :assets_through_aliquots, source: :requests
+  has_many :request_types, ->() { distinct }, through: :requests
   has_many :items, ->() { distinct }, through: :requests
   has_many :projects, ->() { distinct }, through: :orders
   has_many :comments, as: :commentable
@@ -303,7 +302,7 @@ class Study < ApplicationRecord
 
   scope :by_state, ->(state) { where(state: state) }
 
-  scope :by_user, ->(login) { joins(:roles, :users).where(roles: { name: ['follower', 'manager', 'owner'], users: { login: [login] } }) }
+  scope :by_user, ->(login) { joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } }) }
 
   # Delegations
   alias_attribute :friendly_name, :name
@@ -316,6 +315,7 @@ class Study < ApplicationRecord
 
   def validate_ethically_approved
     return true if valid_ethically_approved?
+
     message = ethical_approval_required? ? 'should be either true or false for this study.' : 'should be not applicable (null) not false.'
     errors.add(:ethically_approved, message)
     false
@@ -361,22 +361,22 @@ class Study < ApplicationRecord
     comments.each_with_object([]) { |c, array| array << c.description unless c.description.blank? }.join(', ')
   end
 
-  def completed(_workflow = nil)
-    rts = RequestType.standard.pluck(:id)
-    total = requests.request_type(rts).count
-    failed = requests.failed.request_type(rts).count
-    cancelled = requests.cancelled.request_type(rts).count
+  def completed
+    counts = requests.standard.group('state').count
+    total = counts.values.sum
+    failed = counts['failed'] || 0
+    cancelled = counts['cancelled'] || 0
     if (total - failed - cancelled) > 0
-      completed_percent = ((requests.passed.request_type(rts).count.to_f / (total - failed - cancelled).to_f) * 100)
-      completed_percent.to_i
+      (counts.fetch('passed', 0) * 100) / (total - failed - cancelled)
     else
       return 0
     end
   end
 
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
+  # Used initial requests, which won't capture cross study sequencing requests.
   def request_progress
-    yield(initial_requests.progress_statistics)
+    yield(@stats_cache ||= initial_requests.progress_statistics) if block_given?
   end
 
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.

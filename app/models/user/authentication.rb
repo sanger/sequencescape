@@ -1,4 +1,3 @@
-
 module User::Authentication
   def self.included(base)
     base.class_eval do
@@ -38,6 +37,7 @@ module User::Authentication
         authenticated ? register_or_update_via_ldap(login) : nil
       elsif configatron.authentication == 'none'
         raise StandardError, 'Can only disable authentication in development' unless Rails.env.development?
+
         User.find_by(login: login)
       else
         authenticated = authenticate_by_local(login, password)

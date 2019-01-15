@@ -1,4 +1,3 @@
-
 class ProjectManager < ApplicationRecord
   extend Attributable::Association::Target
 

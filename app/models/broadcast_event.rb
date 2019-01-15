@@ -1,4 +1,3 @@
-
 class BroadcastEvent < ApplicationRecord
   EVENT_JSON_ROOT = 'event'
   UNKNOWN_USER_IDENTIFIER = 'UNKNOWN'
@@ -20,12 +19,14 @@ class BroadcastEvent < ApplicationRecord
 
   def initialize(*args)
     raise StandardError, 'BroadcastEvents can not be created directly' unless self.class < BroadcastEvent
+
     super
   end
 
   # Prefer email, fall back to login if missing
   def user_identifier
     return UNKNOWN_USER_IDENTIFIER if user.nil? # User has probably been deleted
+
     user.email.presence || user.login
   end
 
