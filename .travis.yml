@@ -20,9 +20,6 @@ env:
   - DISPLAY=:99.0
 before_install:
 - mv config/aker.yml.example config/aker.yml
-- sh -e /etc/init.d/xvfb start
-script:
-- bundle exec $SUITE
 jobs:
   include:
   - stage: test
@@ -32,16 +29,15 @@ jobs:
       > ./cc-test-reporter
     - chmod +x ./cc-test-reporter
     - "./cc-test-reporter before-build"
-    script: "./run_coverage"
+    script: "xvfb-run ./run_coverage"
     name: Coverage
     after_script:
     - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
   - if: type != cron
-    env: SUITE=rubocop
+    script: bundle exec rubocop
     name: Rubocop
   - if: type != cron
     env:
-    - SUITE='rake test'
     - RAILS_ENV=test
     - RUBYOPT='-W0'
     before_script:
@@ -50,15 +46,14 @@ jobs:
     name: Rake Test
   - if: type != cron
     env:
-    - SUITE=rspec
     - RAILS_ENV=test
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
+    script: xvfb-run bundle exec rsepc
     name: Rspec
   - if: type != cron
     env:
-    - SUITE='rake knapsack:cucumber'
     - RAILS_ENV=cucumber
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=0
@@ -66,9 +61,9 @@ jobs:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     name: Cucumber Test 1
+    script: xvfb-run bundle exec rake knapsack:cucumber
   - if: type != cron
     env:
-    - SUITE='rake knapsack:cucumber'
     - RAILS_ENV=cucumber
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=1
@@ -76,6 +71,7 @@ jobs:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     name: Cucumber Test 2
+    script: xvfb-run bundle exec rake knapsack:cucumber
   - stage: build
     if: tag IS present
     script: "./compile-build"
