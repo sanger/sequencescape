@@ -23,12 +23,14 @@ module Limber::Helper
                    request_class: DEFAULT_REQUEST_CLASS,
                    library_types: DEFAULT_LIBRARY_TYPES,
                    default_purposes: DEFAULT_PURPOSES,
-                   for_multiplexing: false)
+                   for_multiplexing: false,
+                   product_line: PRODUCTLINE)
       @prefix = prefix
       @request_class = request_class
       @library_types = library_types
       @default_purposes = default_purposes
       @for_multiplexing = for_multiplexing
+      @product_line = product_line
     end
 
     def key
@@ -38,23 +40,22 @@ module Limber::Helper
     # Builds the corresponding request type, unless it
     # already exists.
     def build!
-      return true if RequestType.where(key: key).exists?
-
-      rt = RequestType.create!(
+      rt = RequestType.create_with(
         name: "Limber #{@prefix}",
-        key: key,
         request_class_name: @request_class,
         asset_type: 'Well',
         order: 1,
         initial_state: 'pending',
         billable: true,
-        product_line: ProductLine.find_by(name: PRODUCTLINE),
+        product_line: ProductLine.find_or_create_by!(name: @product_line),
         request_purpose: :standard,
         for_multiplexing: @for_multiplexing
-      ) do |rt|
+      ).find_or_create_by!(key: key) do |rt|
         rt.acceptable_plate_purposes = Purpose.where(name: @default_purpose)
-        rt.library_types = @library_types.map { |name| LibraryType.find_or_create_by(name: name) }
+        rt.library_types = @library_types.map { |name| LibraryType.find_or_create_by!(name: name) }
       end
+
+      return true if rt.request_type_validators.where(request_option: 'library_type').exist?
 
       RequestType::Validator.create!(
         request_type: rt,

@@ -23,6 +23,8 @@ namespace :limber do
                   size: 96 },
                 { name: 'LBR Cherrypick',
                   size: 96 },
+                { name: 'LBB Cherrypick',
+                  size: 96 },
                 { name: 'scRNA-384 Stock',
                   size: 384 },
                 { name: 'GBS Stock',
@@ -156,6 +158,46 @@ namespace :limber do
         'GnT MDA',
         library_types: ['GnT MDA'],  # 'GnT scRNA' should be a default_purpose of 'scRNA'.
         default_purposes: ['GnT Stock']              # It requires default_purpose to accept an array.
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'PCR Bespoke',
+        library_types: [
+          'Manual Standard WGS (Plate)',
+          'ChIP-Seq Auto',
+          'TruSeq mRNA (RNA Seq)',
+          'Small RNA (miRNA)',
+          'RNA-seq dUTP eukaryotic',
+          'RNA-seq dUTP prokaryotic',
+          'Standard',
+          'Ribozero RNA depletion',
+          'Ribozero RNA-seq (Bacterial)',
+          'Ribozero RNA-seq (HMR)',
+          'TraDIS',
+          'Chromium genome',
+          'Chromium exome',
+          'Chromium single cell',
+          'TruSeq Custom Amplicon',
+          'Chromium single cell CNV'
+        ],
+        product_line: 'Bespoke',
+        default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'PCR Free Bespoke',
+        library_types:  [
+          'No PCR (Plate)',
+          'HiSeqX PCR free',
+          'DAFT-seq',
+          'Chromium genome',
+          'Chromium exome',
+          'Chromium single cell',
+          'TruSeq Custom Amplicon',
+          'Chromium single cell CNV'
+        ],
+        product_line: 'Bespoke',
+        default_purposes: ['LBB Cherrypick']              # It requires default_purpose to accept an array.
       ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
