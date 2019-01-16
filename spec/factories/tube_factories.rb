@@ -60,12 +60,13 @@ FactoryBot.define do
   factory :multiplexed_library_tube, traits: [:tube_barcode] do
     transient do
       sample_count { 0 }
+      study { create(:study) }
     end
 
     name { generate :asset_name }
     association(:purpose, factory: :mx_tube_purpose)
     after(:build) do |tube, evaluator|
-      tube.aliquots = build_list(:tagged_aliquot, evaluator.sample_count) unless evaluator.sample_count == 0
+      tube.aliquots = build_list(:library_aliquot, evaluator.sample_count, study: evaluator.study) unless evaluator.sample_count == 0
     end
   end
 
@@ -167,5 +168,14 @@ FactoryBot.define do
   factory :stock_library_tube do
     name     { |_a| generate :asset_name }
     purpose  { Tube::Purpose.stock_library_tube }
+  end
+
+  factory :spiked_buffer do
+    name { generate :asset_name }
+    after(:build) do |tube|
+      tag = create(:tag, map_id: 888, oligo: 'G')
+      tube.aliquots << build(:aliquot, sample: SpikedBuffer.phix_sample, library: tube, tag: tag)
+    end
+    volume { 50 }
   end
 end

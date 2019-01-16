@@ -68,7 +68,7 @@ test: &test
 
 cucumber:
   <<: *test
-
+  database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>_cuke
 
 # In production environments adapter should be 'oracle_enhanced',
 # Username, password and database are values that go to sqlplus login <username>/<password>@<database>

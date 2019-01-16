@@ -1,16 +1,6 @@
 module Limber::Helper
   require 'hiseq_2500_helper'
 
-  ACCEPTABLE_SEQUENCING_REQUESTS = %w(
-    illumina_b_hiseq_2500_paired_end_sequencing
-    illumina_b_hiseq_2500_single_end_sequencing
-    illumina_b_miseq_sequencing
-    illumina_b_hiseq_v4_paired_end_sequencing
-    illumina_b_hiseq_x_paired_end_sequencing
-    illumina_htp_hiseq_4000_paired_end_sequencing
-    illumina_htp_hiseq_4000_single_end_sequencing
-  )
-
   PIPELINE = 'Limber-Htp'
   PIPELINE_REGEX = /Illumina-[A-z]{1,3} /
   PRODUCTLINE = 'Illumina-Htp'
@@ -92,7 +82,7 @@ module Limber::Helper
     # The following are optional and change the range of submission templates constructed.
     # @param [String] skip_cherrypick: true Boolean. Set to false to generate submission templates with in built cherrypicking.
     # @param [Array] sequencing: Array of sequencing request type keys to build templates for. Defaults to all appropriate request types.
-    def initialize(name: nil, type: nil, role: nil, prefix: nil, skip_cherrypick: true, sequencing: ACCEPTABLE_SEQUENCING_REQUESTS, catalogue:)
+    def initialize(name: nil, type: nil, role: nil, prefix: nil, skip_cherrypick: true, sequencing: [], catalogue:)
       @name = name
       @type = type
       @role = role
