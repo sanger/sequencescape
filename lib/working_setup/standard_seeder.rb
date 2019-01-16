@@ -89,7 +89,7 @@ module WorkingSetup
     end
 
     def faculty_sponsor
-      @faculty_sponsor ||= FacultySponsor.find_by(name: 'Faculty Sponsor') || FacultySponsor.create!(name: 'Faculty Sponsor')
+      @faculty_sponsor ||= UatActions::StaticRecords.faculty_sponsor
     end
 
     def create_project(name)

@@ -1,0 +1,31 @@
+# frozen_string_literal: true
+
+# Will construct plates with well_count wells filled with samples
+class UatActions::<%= camelcase %> < UatActions
+  self.title = '<%= title %>'
+  # The description displays on the list of UAT actions to provide additional information
+  self.description = '<%= description %>'
+
+  attr_reader :report
+
+  # Form fields
+  # form_field :resource_id, :select, label: 'Resource', help: 'Select a resource from the list', select_options: -> { Resource.scope.pluck(:name, :id) }
+  # form_field :number_needed, :number_field, label: 'Number needed', help: 'Fill in a number', options: { minimum: 1, maximum: 20 }
+
+  def self.default
+    new
+  end
+
+  def perform
+    # Called by the controller once the form is filled in. Add your actual actions here.
+    # All the form fields are accessible as simple attributes
+  end
+
+  private
+
+  # Any helper methods
+
+  def user
+    UatActions::StaticRecords.user
+  end
+end

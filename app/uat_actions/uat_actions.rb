@@ -2,6 +2,8 @@
 
 #
 # Base class for Uat Actions
+# Adding a new action:
+# 1) rails generate uat_action MyNewAction --description=My action description
 #
 # @author [jg16]
 #
@@ -51,6 +53,14 @@ class UatActions
     def permitted
       form_fields.map(&:attribute)
     end
+
+    def default
+      new
+    end
+  end
+
+  def report
+    @report || {}
   end
 
   def form_fields
@@ -58,7 +68,7 @@ class UatActions
   end
 
   def save
-    valid? && perform
+    valid? && ActiveRecord::Base.transaction { perform }
   end
 
   def perform
@@ -67,4 +77,7 @@ class UatActions
   end
 end
 
-require_dependency 'uat_actions/test_action'
+# Load all uat_action modules so that they register themselves
+Dir[File.join(__dir__, 'uat_actions', '*.rb')].each do |file|
+  require_dependency file
+end

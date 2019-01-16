@@ -10,13 +10,13 @@ class UatActionsController < ApplicationController
   end
 
   def show
-    @uat_action = @uat_action_class.new
+    @uat_action = @uat_action_class.default
   end
 
   def create
     @uat_action = @uat_action_class.new(uat_action_params)
     if @uat_action.save
-      redirect_to uat_actions_path, flash: { success: @uat_action.message }
+      render :create
     else
       render :show
     end
