@@ -11,6 +11,8 @@ class UatActions::GeneratePlates < UatActions
   form_field :study_id, :select, label: 'Study', help: 'The study under which samples begin. List includes all active studies.', select_options: -> { Study.active.pluck(:name, :id) }
   form_field :well_layout, :select, label: 'Well layout', help: 'The order in which wells are laid out. Affects where empty wells are located.', select_options: %w[Column Row Random]
 
+  validate :well_count_smaller_than_plate_size
+
   def self.default
     new(
       plate_count: 1,
@@ -31,6 +33,13 @@ class UatActions::GeneratePlates < UatActions
   end
 
   private
+
+  def well_count_smaller_than_plate_size
+    return true if well_count.to_i <= plate_purpose.size
+
+    errors.add(:well_count, "is larger than the size of a #{plate_purpose.name} (plate_purpose.size)")
+    false
+  end
 
   def construct_wells(plate)
     wells(plate).each do |well|
