@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
-require './app/resources/api/v2/sample/metadatum_resource'
+require './app/resources/api/v2/sample_metadata_resource'
 
 RSpec.describe Api::V2::SampleMetadataResource, type: :resource do
   describe 'it works' do
@@ -9,6 +11,5 @@ RSpec.describe Api::V2::SampleMetadataResource, type: :resource do
     it 'has the expected attributes' do
       is_expected.to have_attribute :sample_common_name
     end
-
   end
 end

@@ -21,6 +21,8 @@ module Api
         model_hint model: subclass, resource: :request
       end
 
+      # model_hint model: Sample::Metadata, resource: :sample_metadata
+
       # This extension allows the readonly property to be used on attributes/relationships
       # prior to the 0.10 upgrade. This avoids the need to override updatable_fields on
       # every resource. Readonly does not work on attributes in 0.9 by default

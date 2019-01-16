@@ -12,6 +12,6 @@ RSpec.describe Api::V2::SampleResource, type: :resource do
   end
 
   it 'has sample metadata information' do
-    is_expected.to have_one(:sample_metadata).with_class_name('Sample::Metadata')
+    is_expected.to have_one(:sample_metadata).with_class_name('SampleMetadata')
   end
 end

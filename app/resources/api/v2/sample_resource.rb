@@ -7,7 +7,7 @@ module Api
 
       default_includes :uuid_object
 
-      has_one :sample_metadata
+      has_one :sample_metadata, class_name: 'SampleMetadata', foreign_key_on: :related
 
       attribute :name
       attribute :sanger_sample_id
