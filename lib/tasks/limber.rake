@@ -185,6 +185,13 @@ namespace :limber do
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
+        'Chromium Bespoke',
+        library_types: ['Chromium genome', 'Chromium exome', 'Chromium single cell', 'Chromium single cell CNV'],
+        product_line: 'Bespoke',
+        default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
         'PCR Free Bespoke',
         library_types:  [
           'No PCR (Plate)',
@@ -257,6 +264,9 @@ namespace :limber do
       illumina_htp_hiseq_4000_single_end_sequencing
       illumina_htp_novaseq_6000_paired_end_sequencing
     )
+    full_list = base_list + %w(
+      illumina_c_hiseq_v4_single_end_sequencing
+    )
     # HiSeqX is filtered out for non-WGS library types due to specific restrictions
     # that limit the use of the technology to WGS.
     base_without_hiseq = base_list - ['illumina_b_hiseq_x_paired_end_sequencing']
@@ -304,7 +314,7 @@ namespace :limber do
                                     .find_or_create_by!(name: catalogue_name)
         Limber::Helper::TemplateConstructor.new(prefix: prefix,
                                                 catalogue: catalogue,
-                                                sequencing: params[:sequencing_list]).build!
+                                                sequencing_keys: params[:sequencing_list]).build!
       end
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
@@ -314,7 +324,17 @@ namespace :limber do
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
-      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing: base_list).build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing_keys: base_list).build!
+
+      generic_pcr = ProductCatalogue.create_with(selection_behaviour: 'LibraryDriven').find_or_create_by!(name: 'GenericPCR')
+      generic_no_pcr = ProductCatalogue.create_with(selection_behaviour: 'LibraryDriven').find_or_create_by!(name: 'GenericNoPCR')
+      chromium = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Chromium')
+      Limber::Helper::TemplateConstructor.new(prefix: 'PCR Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: generic_pcr, sequencing_keys: full_list).build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'PCR Free Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: generic_no_pcr, sequencing_keys: full_list).build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'Chromium Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: chromium, sequencing_keys: full_list, role: 'Chromium').build!
+
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'PCR Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: generic_pcr).build!
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'PCR Free Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: generic_no_pcr).build!
 
       unless SubmissionTemplate.find_by(name: 'MiSeq for GBS')
         SubmissionTemplate.create!(
