@@ -97,6 +97,10 @@ class Tube < Receptacle
     primary_barcode = { prefix: prefix, number: barcode }
     create!(attributes.merge(sanger_barcode: primary_barcode), &block)
   end
+
+  def update_from_qc(qc_result)
+    Tube::AttributeUpdater.update(self, qc_result)
+  end
 end
 
 require_dependency 'sample_tube'
