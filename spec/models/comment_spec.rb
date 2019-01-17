@@ -5,11 +5,11 @@ require 'rails_helper'
 RSpec.describe Comment, type: :model do
   context 'A comment has relationships' do
     it 'should belong to commentable' do
-      belong_to :commentable
+      should belong_to :commentable
     end
 
     it 'should belong to a user' do
-      belong_to :user
+      should belong_to :user
     end
 
     it 'can have many comments' do
@@ -34,19 +34,14 @@ RSpec.describe Comment, type: :model do
     let(:submission) { order1.submission }
     let(:submission2) { order4.submission }
 
-    let(:sequencing_request) { create :request_with_sequencing_request_type, submission: submission }
-    let(:request) { create :request, order: order1, asset: asset, submission: submission }
-    let(:request2) { create :request, order: order2, submission: submission }
+    let!(:sequencing_request) { create :request_with_sequencing_request_type, submission: submission }
+    let!(:request) { create :request, order: order1, asset: asset, submission: submission }
+    let!(:request2) { create :request, order: order2, submission: submission }
 
-    let(:request3) { create :request, order: order4, submission: order4.submission }
-    let(:sequencing_request2) { create :request_with_sequencing_request_type, submission: order4.submission }
+    let!(:request3) { create :request, order: order4, submission: order4.submission }
+    let!(:sequencing_request2) { create :request_with_sequencing_request_type, submission: order4.submission }
 
     before do
-      sequencing_request
-      request
-      request2
-      sequencing_request2
-      request3
       asset.aliquots.create!(sample: create(:sample, studies: [study]))
       asset2.aliquots.create!(sample: create(:sample, studies: [study]))
       submission.orders.push(order2)
@@ -65,46 +60,53 @@ RSpec.describe Comment, type: :model do
       end
 
       it 'adds comments just to the requests that relates with the order' do
-        assert_equal 1, request.comments.length
-        assert_equal 1, request2.comments.length
-        assert_equal 1, request3.comments.length
+        expect(request.comments.length).to eq(1)
+        expect(request2.comments.length).to eq(1)
+        expect(request3.comments.length).to eq(1)
       end
 
       it 'always adds comments to the sequencing requests of the submission' do
-        assert_equal 3, sequencing_request.comments.length
-        assert_equal 1, sequencing_request2.comments.length
+        expect(sequencing_request.comments.length).to eq(3)
+        expect(sequencing_request2.comments.length).to eq(1)
       end
 
       it 'includes all the comments in the submission requests comment list' do
-        assert_equal 5, submission.requests.map(&:comments).flatten.length
-        assert_equal 2, order4.submission.requests.map(&:comments).flatten.length
+        expect(submission.requests.map(&:comments).flatten.length).to eq(5)
+        expect(order4.submission.requests.map(&:comments).flatten.length).to eq(2)
       end
     end
 
     context 'from a submission' do
       setup do
         submission.add_comment('My comment from submission 1', user)
-        submission2.add_comment('My comment from submission 2', user)
+        submission2.add_comment('My comment from submission 2', user, 'Test')
       end
 
       it 'includes that comment in all the requests of the submission' do
-        submission.requests.all? { |r| r.comments.length == 1 }
-        submission2.requests.all? { |r| r.comments.length == 1 }
+        expect(submission.requests.count).to eq(3)
+        expect(submission2.requests.count).to eq(2)
+        submission.requests.all? { |r| expect(r.comments.length).to eq(1) }
+        submission2.requests.all? { |r| expect(r.comments.length).to eq(1) }
+      end
+
+      it 'sets the title on request comments' do
+        submission2.requests.all? { |r| expect(r.comments.first.title).to eq('Test') }
       end
     end
 
     context 'adding to a plate' do
       let(:plate) { create :plate, well_count: 1 }
       let(:submission) { create :submission }
-      let(:request) { create :request, asset: plate.wells.first, submission: submission }
-
-      before do
-        request
-      end
+      let!(:request) { create :request, asset: plate.wells.first, submission: submission }
 
       it 'also adds to the request' do
         create :comment, commentable: plate, description: 'Hello'
-        assert_equal request.reload.comments.first.description, 'Hello'
+        expect(request.reload.comments.first.description).to eq('Hello')
+      end
+
+      it 'propagates titles' do
+        create :comment, commentable: plate, description: 'Hello', title: 'Test'
+        expect(request.reload.comments.first.title).to eq('Test')
       end
     end
   end

@@ -23,13 +23,15 @@ describe Tube, type: :model do
       end
     end
 
-    context 'with requests out of the wells' do
+    context 'with requests' do
+      let(:submission) { create :submission }
+      let!(:request) { create :well_request, asset: tube, submission: submission }
+
       before do
-        submission = create :submission
-        request = create :well_request, asset: tube, submission: submission
         create :comment, commentable: request, description: 'Comment on request'
         tube.reload
       end
+
       it 'exposes its comments and those of the request' do
         expect(tube.comments.count).to eq(2)
         expect(tube.comments.map(&:description)).to include('Comment on tube')
@@ -40,6 +42,7 @@ describe Tube, type: :model do
         tube.comments.create!(description: 'Works')
         comment = Comment.where(commentable: tube, description: 'Works')
         expect(comment.count).to eq(1)
+        expect(request.reload.comments.count).to eq(2)
       end
     end
 

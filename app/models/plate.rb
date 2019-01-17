@@ -587,7 +587,7 @@ class Plate < Asset
   end
 
   def after_comment_addition(comment)
-    submissions.each { |s| s.add_comment(comment.description, comment.user) }
+    comments.add_comment_to_submissions(comment)
   end
 
   private

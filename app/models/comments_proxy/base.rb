@@ -3,7 +3,7 @@
 # Some resource need to collate comments via a variety of sources and de-duplicate
 # them. CommentsProxies deal with this behaviour and isolate it.
 module CommentsProxy
-  # Base object handling comment proxies. Subclasses should impliment #request_ids
+  # Base object handling comment proxies. Subclasses should implement #request_ids
   class Base
     delegate_missing_to :comment_assn
 
@@ -36,7 +36,15 @@ module CommentsProxy
       comment_assn.count(:all).length
     end
 
+    def add_comment_to_submissions(comment)
+      Submission.where(id: submission_ids).find_each { |submission| submission.add_comment(comment.description, comment.user, comment.title) }
+    end
+
     private
+
+    def submission_ids
+      Request.where(id: request_ids).uniq.pluck(:submission_id).compact
+    end
 
     def request_ids
       raise 'Must be implimented on subclass'
