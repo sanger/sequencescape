@@ -173,12 +173,7 @@ namespace :limber do
           'Ribozero RNA depletion',
           'Ribozero RNA-seq (Bacterial)',
           'Ribozero RNA-seq (HMR)',
-          'TraDIS',
-          'Chromium genome',
-          'Chromium exome',
-          'Chromium single cell',
-          'TruSeq Custom Amplicon',
-          'Chromium single cell CNV'
+          'TraDIS'
         ],
         product_line: 'Bespoke',
         default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
@@ -197,11 +192,7 @@ namespace :limber do
           'No PCR (Plate)',
           'HiSeqX PCR free',
           'DAFT-seq',
-          'Chromium genome',
-          'Chromium exome',
-          'Chromium single cell',
-          'TruSeq Custom Amplicon',
-          'Chromium single cell CNV'
+          'TruSeq Custom Amplicon'
         ],
         product_line: 'Bespoke',
         default_purposes: ['LBB Cherrypick']              # It requires default_purpose to accept an array.
@@ -329,12 +320,12 @@ namespace :limber do
       generic_pcr = ProductCatalogue.create_with(selection_behaviour: 'LibraryDriven').find_or_create_by!(name: 'GenericPCR')
       generic_no_pcr = ProductCatalogue.create_with(selection_behaviour: 'LibraryDriven').find_or_create_by!(name: 'GenericNoPCR')
       chromium = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Chromium')
-      Limber::Helper::TemplateConstructor.new(prefix: 'PCR Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: generic_pcr, sequencing_keys: full_list).build!
-      Limber::Helper::TemplateConstructor.new(prefix: 'PCR Free Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: generic_no_pcr, sequencing_keys: full_list).build!
-      Limber::Helper::TemplateConstructor.new(prefix: 'Chromium Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: chromium, sequencing_keys: full_list, role: 'Chromium').build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'PCR Bespoke', name: 'PCR', pipeline: 'Limber-Bespoke', product_line: 'Bespoke', catalogue: generic_pcr, sequencing_keys: full_list).build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'PCR Free Bespoke', name: 'PCR Free', pipeline: 'Limber-Bespoke', product_line: 'Bespoke', catalogue: generic_no_pcr, sequencing_keys: full_list).build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'Chromium Bespoke', name: 'Chromium', pipeline: 'Limber-Bespoke', product_line: 'Bespoke', catalogue: chromium, sequencing_keys: full_list, role: 'Chromium').build!
 
-      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'PCR Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: generic_pcr).build!
-      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'PCR Free Bespoke', pipeline: 'Bespoke', product_line: 'Bespoke', catalogue: generic_no_pcr).build!
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'PCR Bespoke', name: 'PCR', pipeline: 'Limber-Bespoke', product_line: 'Bespoke', catalogue: generic_pcr).build!
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'PCR Free Bespoke', name: 'PCR Free', pipeline: 'Limber-Bespoke', product_line: 'Bespoke', catalogue: generic_no_pcr).build!
 
       unless SubmissionTemplate.find_by(name: 'MiSeq for GBS')
         SubmissionTemplate.create!(
