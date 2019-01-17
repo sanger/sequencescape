@@ -25,11 +25,14 @@ FactoryBot.define do
       tag { nil }
       tag2 { nil }
     end
-  end
 
-  factory :spiked_buffer do
-    name { generate :asset_name }
-    samples { [Sample.find_or_create_by!(name: 'phiX_for_spiked_buffers')] }
-    volume { 50 }
+    factory :library_aliquot do
+      library { build :library_tube }
+      library_type { 'Standard' }
+      bait_library
+      primer_panel
+      insert_size_from { 100 }
+      insert_size_to   { 200 }
+    end
   end
 end

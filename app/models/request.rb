@@ -573,9 +573,7 @@ class Request < ApplicationRecord
   end
 
   def product_line
-    return nil if request_type.product_line.nil?
-
-    request_type.product_line.name
+    request_type.product_line&.name
   end
 
   def manifest_processed!; end
