@@ -17,7 +17,11 @@ FactoryBot.define do
     end
 
     after(:build) do |batch, evaluator|
-      batch.batch_requests = build_list(evaluator.batch_request_factory, evaluator.request_count, batch: batch) if evaluator.request_count.positive?
+      if evaluator.request_count.positive?
+        batch.batch_requests = build_list(evaluator.batch_request_factory,
+                                          evaluator.request_count,
+                                          batch: batch)
+      end
     end
 
     factory :multiplexed_batch do

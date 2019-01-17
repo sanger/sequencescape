@@ -45,11 +45,29 @@ Style/NumericLiterals:
 # We should be careful keeping rake tasks here, as large tasks are still an issue.
 # Not sure if we need to split namespaces across several files though.
 Metrics/BlockLength:
-  Exclude:
-    - 'test/**/*'
-    - 'spec/**/*'
-    - 'config/routes.rb'
-    - 'lib/tasks/*'
+  ExcludedMethods:
+    - describe
+    - context
+    - background
+    - scenario
+    - namespace
+    - task
+    - included
+    - shared_context
+    - shared_examples
+    - state_machine
+    - configure
+    - draw
+    - feature
+    - subject
+    - let
+    - let!
+    - factory
+    - define
+    - guard
+    - transient
+    - with_nested_has_many_association
+    - with_association
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
