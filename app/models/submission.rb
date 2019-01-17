@@ -99,9 +99,9 @@ class Submission < ApplicationRecord
   # @param user [User] The user making the comment
   #
   # @return [Void]
-  def add_comment(description, user)
+  def add_comment(description, user, title = nil)
     requests.each do |request|
-      request.add_comment(description, user)
+      request.add_comment(description, user, title)
     end
   end
 
