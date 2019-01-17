@@ -46,7 +46,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
             amount                =>  amount
           )
         end
-        let(:asset) { create :asset }
+        let(:asset) { create :receptacle }
         let(:container) { create :container, asset: asset }
 
         before do

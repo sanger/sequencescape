@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-shared_examples 'a correct filter' do
+shared_examples 'a correct asset filter' do
   subject { described_class.new(options).assets }
 
   describe 'from asset group controller' do
@@ -53,7 +53,7 @@ describe LabelPrinter::Label::AssetRedirect do
     let(:asset1) { create :child_plate }
     let(:asset2) { create :child_plate }
     let(:asset3) { create :child_plate }
-    it_behaves_like 'a correct filter'
+    it_behaves_like 'a correct asset filter'
     it_behaves_like 'a correct plate renderer'
   end
 
@@ -61,7 +61,7 @@ describe LabelPrinter::Label::AssetRedirect do
     let(:asset1) { create :empty_sample_tube }
     let(:asset2) { create :empty_sample_tube }
     let(:asset3) { create :empty_sample_tube }
-    it_behaves_like 'a correct filter'
+    it_behaves_like 'a correct asset filter'
     it_behaves_like 'a correct tube renderer'
   end
 end
