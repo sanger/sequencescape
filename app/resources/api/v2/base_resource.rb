@@ -42,8 +42,8 @@ module Api
 
       # Extends the default behaviour to add our default inclusions if provided
       def self.apply_includes(records, options = {})
-        if @default_includes.present?
-          super&.preload(*inclusions)
+        if @default_includes.present? && records.respond_to?(:preload)
+          super(records.preload(*inclusions), options)
         else
           super
         end

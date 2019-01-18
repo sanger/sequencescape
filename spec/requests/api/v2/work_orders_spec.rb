@@ -76,7 +76,7 @@ describe 'WorkOrders API', with: :api_v2 do
     it 'can inline all necessary information' do
       api_get '/api/v2/work_orders?include=study,samples,project,source_receptacle'
       # test for the 200 status-code
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:success), response.body
       # check to make sure the right amount of messages are returned
       expect(json['included']).to include_json(expected_includes)
     end
