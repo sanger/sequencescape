@@ -378,7 +378,7 @@ GEM
       unicode-display_width (~> 1.4.0)
     rubocop-rspec (1.31.0)
       rubocop (>= 0.60.0)
-    ruby-oci8 (2.2.6.1)
+    ruby-oci8 (2.2.7)
     ruby-ole (1.2.12.1)
     ruby-plsql (0.6.0)
     ruby-prof (0.17.0)
