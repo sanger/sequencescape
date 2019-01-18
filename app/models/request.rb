@@ -492,8 +492,8 @@ class Request < ApplicationRecord
     asset.requests.any?(&:failed?)
   end
 
-  def add_comment(comment, user)
-    comments.create(description: comment, user: user)
+  def add_comment(comment, user, title = nil)
+    comments.create(description: comment, user: user, title: title)
   end
 
   def return_pending_to_inbox!

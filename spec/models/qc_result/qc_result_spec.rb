@@ -51,7 +51,7 @@ RSpec.describe QcResult, type: :model, qc_result: true do
   end
 
   context 'with an asset' do
-    let(:asset) { build :asset }
+    let(:asset) { build :receptacle }
 
     it 'can update its asset' do
       expect(asset).to receive(:update_from_qc).with(an_instance_of(QcResult))

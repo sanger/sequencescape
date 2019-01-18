@@ -23,6 +23,10 @@ RSpec.describe Api::V2::TubeResource, type: :resource do
   # Add tests for any custom methods you've added.
   describe '#labware_barcode' do
     subject { resource.labware_barcode }
-    it { is_expected.to eq('ean13_barcode' => '3980000001795', 'human_barcode' => 'NT1O') }
+    it do
+      is_expected.to eq('ean13_barcode' => '3980000001795',
+                        'human_barcode' => 'NT1O',
+                        'machine_barcode' => '3980000001795')
+    end
   end
 end
