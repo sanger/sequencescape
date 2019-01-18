@@ -17,6 +17,7 @@ module Api
       has_many :studies, readonly: true
       has_many :projects, readonly: true
       has_many :wells, readonly: true
+      has_many :comments, readonly: true
 
       has_many :ancestors, readonly: true, polymorphic: true
       has_many :descendants, readonly: true, polymorphic: true

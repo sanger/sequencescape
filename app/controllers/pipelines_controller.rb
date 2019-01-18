@@ -38,18 +38,21 @@ class PipelinesController < ApplicationController
       # We use the inbox presenter
       @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
     elsif @pipeline.group_by_submission?
-      requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
+      # Convert to an array now as otherwise the comments counter attempts to be too clever
+      # and treats the requests like a scope. Not only does this result in a more complicated
+      # query, but also an invalid one
+      requests = @pipeline.requests.inbox(@show_held_requests, @current_page).to_a
       @grouped_requests = requests.group_by(&:submission_id)
       @requests_comment_count = Comment.counts_for(requests)
       @assets_comment_count = Comment.counts_for(requests.map(&:asset))
     else
-      @requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
+      @requests = @pipeline.requests.inbox(@show_held_requests, @current_page).to_a
       # We convert to an array here as otherwise tails tries to be smart
       # and use the scope. Not only does it fail, but we may as well cache
       # the result now anyway.
-      @requests_comment_count = Comment.counts_for(@requests.to_a)
+      @requests_comment_count = Comment.counts_for(@requests)
       @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
-      @requests_samples_count = Request.where(id: @requests.to_a).joins(:samples).group(:id).count
+      @requests_samples_count = Request.where(id: @requests).joins(:samples).group(:id).count
     end
   end
 
