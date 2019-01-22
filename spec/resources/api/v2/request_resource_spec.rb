@@ -22,6 +22,7 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
     is_expected.to have_one(:request_type).with_class_name('RequestType')
     is_expected.to have_one(:primer_panel).with_class_name('PrimerPanel')
     is_expected.to have_one(:pre_capture_pool).with_class_name('PreCapturePool')
+    is_expected.to have_many(:samples)
   end
 
   let(:expected_metadata) { { 'customer_accepts_responsibility' => false } }
