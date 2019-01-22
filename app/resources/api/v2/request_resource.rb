@@ -7,7 +7,7 @@ module Api
     class RequestResource < BaseResource
       # Constants...
 
-      # immutable # uncomment to make the resource immutable
+      immutable # uncomment to make the resource immutable
 
       # model_name / model_hint if required
 
