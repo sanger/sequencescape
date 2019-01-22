@@ -6,6 +6,8 @@ describe 'TagGroups API', with: :api_v2 do
   context 'with multiple TagGroups' do
     before do
       create_list(:tag_group, 5)
+      # Invisible tag groups should be hidden
+      create_list(:tag_group, 2, visible: false)
     end
 
     it 'sends a list of tag_groups' do

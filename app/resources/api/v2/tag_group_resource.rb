@@ -21,6 +21,7 @@ module Api
       attribute :tags, readonly: true
 
       # Filters
+      filter :visible, default: true
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about
