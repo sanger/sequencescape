@@ -391,7 +391,8 @@ class Sample < ApplicationRecord
     if configatron.accession_samples
       accessionable = Accession::Sample.new(Accession.configuration.tags, self)
       if accessionable.valid?
-        Delayed::Job.enqueue SampleAccessioningJob.new(accessionable)
+        # Accessioning jobs are lower priority (higher number) than submissions and reports
+        Delayed::Job.enqueue SampleAccessioningJob.new(accessionable), priority: 200
       end
     end
   end

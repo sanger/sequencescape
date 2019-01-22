@@ -35,7 +35,7 @@ class SubmissionPool < ApplicationRecord
   # It was agreed with Jamie that it was more important to detect clashes than it was to handle unlikely
   # possible future scenarios.
   def plates_in_submission
-    outer_request.submission_plate_count
+    outer_request&.submission_plate_count || 0 # If all requests have been cancelled, we can ignore the submission.
   end
 
   def used_tag2_layout_templates

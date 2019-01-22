@@ -7,10 +7,6 @@ feature 'Asset submission', js: true do
   let(:plate) { create :plate }
   let(:user) { create :user }
 
-  background do
-    plate # has been created
-  end
-
   scenario 'upload a qc file' do
     login_user user
     visit asset_path(plate)

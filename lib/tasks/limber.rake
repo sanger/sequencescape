@@ -205,16 +205,25 @@ namespace :limber do
                                      'sequencing:gbs_miseq:setup'] do
     puts 'Creating submission templates....'
 
-    base_list = Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS
-    base_with_novaseq = base_list + ['illumina_htp_novaseq_6000_paired_end_sequencing']
+    base_list = %w(
+      illumina_b_hiseq_2500_paired_end_sequencing
+      illumina_b_hiseq_2500_single_end_sequencing
+      illumina_b_miseq_sequencing
+      illumina_b_hiseq_v4_paired_end_sequencing
+      illumina_b_hiseq_x_paired_end_sequencing
+      illumina_htp_hiseq_4000_paired_end_sequencing
+      illumina_htp_hiseq_4000_single_end_sequencing
+      illumina_htp_novaseq_6000_paired_end_sequencing
+    )
+    # HiSeqX is filtered out for non-WGS library types due to specific restrictions
+    # that limit the use of the technology to WGS.
     base_without_hiseq = base_list - ['illumina_b_hiseq_x_paired_end_sequencing']
-    base_with_novaseq_no_hiseq = base_without_hiseq + ['illumina_htp_novaseq_6000_paired_end_sequencing']
     st_params = {
       'WGS' => {
-        sequencing_list: base_with_novaseq
+        sequencing_list: base_list
       },
       'ISC' => {
-        sequencing_list: base_with_novaseq
+        sequencing_list: base_list
       },
       'ReISC' => {
         sequencing_list: base_list
@@ -226,7 +235,7 @@ namespace :limber do
         sequencing_list: base_without_hiseq
       },
       'RNAA' => {
-        sequencing_list: base_with_novaseq_no_hiseq
+        sequencing_list: base_without_hiseq
       },
       'RNAR' => {
         sequencing_list: base_without_hiseq
@@ -238,10 +247,9 @@ namespace :limber do
         sequencing_list: base_without_hiseq
       },
       'PCR Free' => {
-        sequencing_list: base_with_novaseq,
+        sequencing_list: base_list,
         catalogue_name: 'PFHSqX'
       },
-      # GnT pipeline requires UAT
       'GnT Picoplex' => {
         sequencing_list: base_without_hiseq
       }
@@ -264,7 +272,7 @@ namespace :limber do
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
-      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue).build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing: base_list).build!
 
       unless SubmissionTemplate.find_by(name: 'MiSeq for GBS')
         SubmissionTemplate.create!(

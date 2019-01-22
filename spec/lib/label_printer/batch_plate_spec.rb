@@ -34,12 +34,12 @@ context 'printing different asset types from batch' do
               barcode: plate1.ean13_barcode
             }
           },
-          {
-            extra_label: {
-              left_text: date_today,
-              right_text: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
-            }
-          }]
+                 {
+                   extra_label: {
+                     left_text: date_today,
+                     right_text: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
+                   }
+                 }]
         }
       }
       expect(subject.to_h).to eq(expected_label)
@@ -64,7 +64,6 @@ context 'printing different asset types from batch' do
       expect(subject.assets).to eq([plate1, plate2])
     end
   end
-
 
   context 'printing labels' do
     let(:count) { '1' }
