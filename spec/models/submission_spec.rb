@@ -1,36 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe Submission, type: :model do
-  def orders_compatible?(a, b, key = nil)
-    submission = Submission.new(user: create(:user), orders: [a, b])
-    submission.save!
-    true
-  rescue ActiveRecord::RecordInvalid
-    if key
-      !submission.errors[key]
-    else
-      false
-    end
-  end
-
   context '#priority' do
-    setup do
-      @submission = Submission.new(user: create(:user))
-    end
+    let(:submission) { Submission.new(user: create(:user)) }
 
     it 'be 0 by default' do
-      assert_equal 0, @submission.priority
+      expect(submission.priority).to eq 0
     end
 
     it 'be changable' do
-      @submission.priority = 3
-      assert @submission.valid?
-      assert_equal 3, @submission.priority
+      submission.priority = 3
+      expect(submission).to be_valid
+      expect(submission.priority).to eq 3
     end
 
     it 'have a maximum of 3' do
-      @submission.priority = 4
-      assert_equal false, @submission.valid?
+      submission.priority = 4
+      expect(submission).not_to be_valid
     end
   end
 
@@ -101,5 +87,30 @@ RSpec.describe Submission, type: :model do
     submission = Submission.new(user: create(:user), orders: [order1, order2])
 
     expect(submission.not_ready_samples).to eq samples
+  end
+
+  describe '#used_tags' do
+    let(:submission) { create :submission }
+    let(:request_1) { create :request, submission: submission }
+    let(:request_2) { create :request, submission: submission }
+    let(:tag_a) { create :tag }
+    let(:tag2_a) { create :tag }
+    let(:tag_b) { create :tag }
+    let(:tag2_b) { create :tag }
+
+    before do
+      # Some untagged aliquots upstream of tagging
+      create :untagged_aliquot, request: request_1
+      create :untagged_aliquot, request: request_2
+      # Once tagged, we may have multiple tagged aliquots
+      create :aliquot, request: request_1, tag: tag_a, tag2: tag2_a
+      create :aliquot, request: request_2, tag: tag_b, tag2: tag2_b
+      create :aliquot, request: request_1, tag: tag_a, tag2: tag2_a
+      create :aliquot, request: request_2, tag: tag_b, tag2: tag2_b
+    end
+
+    it 'returns an array of used tag pairs' do
+      expect(submission.used_tags).to eq([[tag_a.oligo, tag2_a.oligo], [tag_b.oligo, tag2_b.oligo]])
+    end
   end
 end
