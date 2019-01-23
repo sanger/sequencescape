@@ -25,7 +25,7 @@ module SampleManifest::PlateBehaviour
     alias_method(:generate, :generate_plates)
 
     delegate :generate_sample_and_aliquot, to: :@manifest
-    delegate :samples, to: :@manifest
+    delegate :samples, :sample_manifest_assets, to: :@manifest
 
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
     # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
@@ -118,14 +118,17 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def details
-      samples.each do |sample|
-        well = sample.wells.includes([:container, :map]).first
-        yield({
-          barcode: well.plate.human_barcode,
-          position: well.map.description,
-          sample_id: sample.sanger_sample_id
-        })
+    def details(&block)
+      details_array.each(&block)
+    end
+
+    def details_array
+      sample_manifest_assets.includes(asset: [:map, { plate: :barcodes }]).map do |sample_manifest_asset|
+        {
+          barcode: sample_manifest_asset.asset.plate.human_barcode,
+          position: sample_manifest_asset.asset.map_description,
+          sample_id: sample_manifest_asset.sanger_sample_id
+        }
       end
     end
 

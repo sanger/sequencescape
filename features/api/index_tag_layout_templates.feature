@@ -36,7 +36,7 @@ Feature: Access tag 2 layout templates through the API
           "name": "Test tag layout",
 
           "tag": {
-            "name": "Tag ",
+            "name": "Tag 1",
             "oligo": "AAA"
           }
         }
@@ -87,7 +87,7 @@ Feature: Access tag 2 layout templates through the API
           "uuid": "00000000-1111-2222-3333-000000000002",
 
           "tag": {
-            "name": "Tag ",
+            "name": "Tag 1",
             "oligo": "AAA"
           }
         }

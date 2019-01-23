@@ -87,4 +87,41 @@ RSpec.describe SequencingRequest, type: :model do
       expect(sequencing_request.billing_product_identifier).to eq 150
     end
   end
+
+  describe '#loading_concentration' do
+    let(:request) do
+      create :complete_sequencing_request, event_descriptors: { 'Lane loading concentration (pM)' => user_input }
+    end
+
+    subject { request.loading_concentration }
+
+    context 'with the expected input' do
+      let(:user_input) { '20.5' }
+      it { is_expected.to eq 20.5 }
+    end
+
+    context 'with an unnecessary but correct unit' do
+      let(:user_input) { '20 pM' }
+      it { is_expected.to eq 20.0 }
+    end
+
+    context 'with a wrong unit' do
+      let(:user_input) { '20 nM' }
+      # We don't convert, as a wrong unit shows a deviation from SOP, and possibly
+      # indicated that the user has input the WRONG concentration
+      it { is_expected.to eq nil }
+    end
+
+    context 'with unpredictable information' do
+      let(:user_input) { '20 - 50 nM' }
+      # Have some ranges in the database.
+      it { is_expected.to eq nil }
+    end
+
+    context 'with lots of whitespace' do
+      let(:user_input) { '  20    pM  ' }
+      # Have some ranges in the database.
+      it { is_expected.to eq 20.0 }
+    end
+  end
 end

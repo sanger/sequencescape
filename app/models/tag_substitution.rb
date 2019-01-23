@@ -142,6 +142,8 @@ class TagSubstitution
   end
 
   def rebroadcast_flowcells
-    Batch.joins(:requests).where(requests: { target_asset_id: lane_ids }).distinct.each(&:rebroadcast)
+    # Touch updates the batch (and hence message timestamp) and triggers the after_comit callback
+    # which broadcasts the batch.
+    Batch.joins(:requests).where(requests: { target_asset_id: lane_ids }).distinct.each(&:touch)
   end
 end

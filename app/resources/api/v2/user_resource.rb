@@ -16,6 +16,8 @@ module Api
       # Attributes
       attribute :uuid, readonly: true
       attribute :login, readonly: true
+      attribute :first_name, readonly: true
+      attribute :last_name, readonly: true
 
       # Filters
       filter :user_code, apply: lambda { |records, value, _options|

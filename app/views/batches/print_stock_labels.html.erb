@@ -2,11 +2,9 @@
 <% add :about, "Print labels" -%>
 <% add :back_menu, "Back to batch" => batch_path(@batch) -%>
 
-<div class="page-header"><h1>PRINT LABELS</h1></div>
+<%= page_title 'Print Labels', "Batch #{@batch.id}" %>
+
 <div class="content">
-  <div class="info">
-    Print labels for Batch <%= @batch.id %>
-  </div>
 
   <div class="info">
     <%= form_tag(controller: :batches, action: :print_barcodes, stock: true, method: :post) %>

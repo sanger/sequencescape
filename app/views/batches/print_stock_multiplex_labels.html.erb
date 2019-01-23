@@ -2,11 +2,9 @@
 <% add :about, "Print labels" -%>
 <% add :back_menu, "Back to batch" => batch_path(@batch) -%>
 
-<div class="page-header"><h1>PRINT LABELS</h1></div>
+<%= page_title 'Print Labels', "Batch #{@batch.id}" %>
+
 <div class="content">
-  <div class="info">
-    Print labels for Batch <%= @batch.id %>
-  </div>
   <div class="info">
     <form action='/batches/print_multiplex_barcodes' method='POST'>
     <%= render partial: "shared/print" %>
@@ -25,7 +23,7 @@
         </tr>
         <tr>
           <td width="35%" class="item">&nbsp;</td>
-          <td width="65%"><input type='submit' value='Print labels'> or <%= link_to 'cancel', controller: 'batches', action: 'show', id: @batch.id %></td>
+          <td width="65%"><input type='submit' value='Print labels' class="print-button"> or <%= link_to 'cancel', controller: 'batches', action: 'show', id: @batch.id %></td>
         </tr>
       </table>
     <input type='hidden' name='batch_id' value='<%= @batch.id %>' />
