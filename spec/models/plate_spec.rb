@@ -28,6 +28,80 @@ describe Plate do
     it { is_expected.to eq "#{parentage} - #{location}" }
   end
 
+  describe '#comments' do
+    let(:plate) { create :plate, well_count: 2 }
+
+    before do
+      create :comment, commentable: plate, description: 'Comment on plate'
+    end
+
+    it 'allows comment addition' do
+      plate.comments.create!(description: 'Works')
+      comment = Comment.where(commentable: plate, description: 'Works')
+      expect(comment.count).to eq(1)
+    end
+
+    context 'without requests' do
+      it 'exposes its comments' do
+        expect(plate.comments.length).to eq(1)
+        expect(plate.comments.first.description).to eq('Comment on plate')
+      end
+    end
+
+    context 'with requests out of the wells' do
+      before do
+        submission = create :submission
+        request = create :well_request, asset: plate.wells.first, submission: submission
+        create :comment, commentable: request, description: 'Comment on request'
+        plate.reload
+      end
+      it 'exposes its comments and those of the request' do
+        expect(plate.comments.count).to eq(2)
+        expect(plate.comments.map(&:description)).to include('Comment on plate')
+        expect(plate.comments.map(&:description)).to include('Comment on request')
+      end
+
+      it 'allows comment addition' do
+        plate.comments.create!(description: 'Works')
+        comment = Comment.where(commentable: plate, description: 'Works')
+        expect(comment.count).to eq(1)
+      end
+    end
+
+    context 'with requests in progress the wells' do
+      before do
+        submission = create :submission
+        request = create :well_request, submission: submission
+        plate.wells.first.aliquots << create(:aliquot, request: request)
+        create :transfer_request, target_asset: plate.wells.first, submission: submission
+        create :comment, commentable: request, description: 'Comment on request'
+        plate.reload
+      end
+      it 'exposes its comments and those of the request' do
+        expect(plate.comments.count).to eq(2)
+        expect(plate.comments.map(&:description)).to include('Comment on plate')
+        expect(plate.comments.map(&:description)).to include('Comment on request')
+      end
+    end
+
+    context 'with multiple identical comments' do
+      before do
+        submission = create :submission
+        request = create :well_request, asset: plate.wells.first, submission: submission
+        request2 = create :well_request, asset: plate.wells.last, submission: submission
+        create :comment, commentable: request, description: 'Duplicate comment'
+        create :comment, commentable: request2, description: 'Duplicate comment'
+        create :comment, commentable: plate, description: 'Duplicate comment'
+        plate.reload
+      end
+      it 'de-duplicates repeat comments' do
+        expect(plate.comments.count).to eq(2)
+        expect(plate.comments.map(&:description)).to include('Comment on plate')
+        expect(plate.comments.map(&:description)).to include('Duplicate comment')
+      end
+    end
+  end
+
   context 'barcodes' do
     # Maintaining existing barcode behaviour
     context 'sanger barcodes' do

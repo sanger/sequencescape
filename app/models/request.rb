@@ -42,7 +42,7 @@ class Request < ApplicationRecord
   belongs_to :initial_project, class_name: 'Project'
   # same as project with study
   belongs_to :initial_study, class_name: 'Study'
-  belongs_to :work_order, required: false
+  belongs_to :work_order, optional: true
 
   has_one :order_role, through: :order
 
@@ -492,8 +492,8 @@ class Request < ApplicationRecord
     asset.requests.any?(&:failed?)
   end
 
-  def add_comment(comment, user)
-    comments.create(description: comment, user: user)
+  def add_comment(comment, user, title = nil)
+    comments.create(description: comment, user: user, title: title)
   end
 
   def return_pending_to_inbox!

@@ -22,7 +22,7 @@ class Submission < ApplicationRecord
 
   self.per_page = 500
 
-  belongs_to :user, required: true
+  belongs_to :user, optional: false
 
   # Created during the lifetime ...
   # Once a submission has requests we REALLY shouldn't be destroying it.
@@ -99,9 +99,9 @@ class Submission < ApplicationRecord
   # @param user [User] The user making the comment
   #
   # @return [Void]
-  def add_comment(description, user)
+  def add_comment(description, user, title = nil)
     requests.each do |request|
-      request.add_comment(description, user)
+      request.add_comment(description, user, title)
     end
   end
 

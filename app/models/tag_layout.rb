@@ -36,12 +36,12 @@ class TagLayout < ApplicationRecord
   serialize :substitutions, Hash
 
   # The user performing the layout
-  belongs_to :user, required: true
+  belongs_to :user, optional: false
   # The tag group to layout on the plate, along with the substitutions that should be made
-  belongs_to :tag_group, required: true
+  belongs_to :tag_group, optional: false
   belongs_to :tag2_group, class_name: 'TagGroup'
   # The plate we'll be laying out the tags into
-  belongs_to :plate, required: true
+  belongs_to :plate, optional: false
 
   validates :direction, inclusion: { in: DIRECTIONS.keys }
   validates :walking_by, inclusion: { in: WALKING_ALGORITHMS.keys }

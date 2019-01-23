@@ -9,7 +9,7 @@ class Barcode < ApplicationRecord
   require 'sanger_barcode_format/legacy_methods'
   extend SBCF::LegacyMethods
 
-  belongs_to :asset, required: true
+  belongs_to :asset, optional: false
   before_validation :serialize_barcode
 
   after_commit :broadcast_barcode

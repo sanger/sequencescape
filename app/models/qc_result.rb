@@ -1,14 +1,25 @@
 # frozen_string_literal: true
 
 # QcResult
+# QC results record any measurement, qualitative or quantitative about an asset
+# For example, volume/concentration
+# Assay type: The protocol/equipment used. Might also indicate the stage of the process.
+# Assay version: Allows versioning and comparison of different protocols
+# Value: The measurement recorded
+# Units: eg. nM, the units in which the measurement was recorded
+# Key: The attribute being measured. Eg. Concentration
+# qc_assay: Groups together qc results performed at the same time.
 class QcResult < ApplicationRecord
   include Api::Messages::QcResultIO::Extensions
 
   # Set to disable updating well_attributes
   attr_accessor :suppress_updates
 
-  belongs_to :asset, required: true
-  belongs_to :qc_assay, required: false
+  belongs_to :asset, optional: false, class_name: 'Receptacle'
+  belongs_to :qc_assay, optional: true
+
+  has_many :samples, through: :asset, source: :samples
+  has_many :studies, through: :asset
 
   after_create :update_asset, unless: :suppress_updates
   after_commit :broadcast_qc_result, on: [:create, :update]
