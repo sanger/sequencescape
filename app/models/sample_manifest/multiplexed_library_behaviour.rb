@@ -84,23 +84,16 @@ module SampleManifest::MultiplexedLibraryBehaviour
       # Does nothing at the moment
     end
 
-    def details
-      samples.each do |sample|
-        yield({
-          barcode: sample.assets.first.human_barcode,
-          sample_id: sample.sanger_sample_id
-        })
-      end
+    def details(&block)
+      details_array.each(&block)
     end
 
     def details_array
-      [].tap do |details|
-        samples.each do |sample|
-          details << {
-            barcode: sample.assets.first.human_barcode,
-            sample_id: sample.sanger_sample_id
-          }
-        end
+      sample_manifest_assets.includes(asset: :barcodes).map do |sample_manifest_asset|
+        {
+          barcode: sample_manifest_asset.human_barcode,
+          sample_id: sample_manifest_asset.sanger_sample_id
+        }
       end
     end
 
