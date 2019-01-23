@@ -22,7 +22,7 @@ class TransferRequestCollection < ApplicationRecord
   # especially when we are trying to eager load that information.
   has_many :target_tubes, -> { distinct }, through: :transfer_requests, source: :target_asset, class_name: 'Tube'
 
-  belongs_to :user, required: true
+  belongs_to :user, optional: false
   accepts_nested_attributes_for :transfer_requests
 
   # The api is terrible at handling nested has_many relationships

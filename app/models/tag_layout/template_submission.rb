@@ -18,8 +18,8 @@
 # @author Genome Research Ltd.
 #
 class TagLayout::TemplateSubmission < ApplicationRecord
-  belongs_to :submission, required: true
-  belongs_to :tag_layout_template, required: true
+  belongs_to :submission, optional: false
+  belongs_to :tag_layout_template, optional: false
 
   # @!attribute [rw] enforce_uniqueness
   #   @return [nil, true] true to enforce uniqueness of a template within a submission
