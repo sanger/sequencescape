@@ -22,7 +22,7 @@ class Submission < ApplicationRecord
 
   self.per_page = 500
 
-  belongs_to :user, required: true
+  belongs_to :user, optional: false
 
   # Created during the lifetime ...
   # Once a submission has requests we REALLY shouldn't be destroying it.
