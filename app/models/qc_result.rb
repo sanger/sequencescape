@@ -15,8 +15,8 @@ class QcResult < ApplicationRecord
   # Set to disable updating well_attributes
   attr_accessor :suppress_updates
 
-  belongs_to :asset, required: true, class_name: 'Receptacle'
-  belongs_to :qc_assay, required: false
+  belongs_to :asset, optional: false, class_name: 'Receptacle'
+  belongs_to :qc_assay, optional: true
 
   has_many :samples, through: :asset, source: :samples
   has_many :studies, through: :asset

@@ -3,7 +3,7 @@
 # It is likely that its behaviour will be extended in future
 class WorkOrder < ApplicationRecord
   has_many :requests
-  belongs_to :work_order_type, required: true
+  belongs_to :work_order_type, optional: false
 
   # where.not(work_order_id: nil assists the MySQL query optimizer as otherwise is seems
   # to get confused by the large number of null entries in requests.work_order_id
