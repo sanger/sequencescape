@@ -21,14 +21,6 @@ module WorkflowsHelper
     ) { 'None' }
   end
 
-  def shorten(string)
-    truncate string, 10, '...'
-  end
-
-  def not_so_shorten(string)
-    truncate string, 15, '...'
-  end
-
   def tag_index_for(request)
     batch_tag_index[request.asset_id]
   end
@@ -42,7 +34,6 @@ module WorkflowsHelper
 
   def qc_select_box(request, status, html_options = {})
     select_options = %w[pass fail]
-    select_options.unshift('') if html_options.delete(:generate_blank)
     select_tag("#{request.id}[qc_state]", options_for_select(select_options, status), html_options.merge(class: 'qc_state'))
   end
 
