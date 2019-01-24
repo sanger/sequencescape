@@ -7,7 +7,7 @@ module Api
     class SubmissionResource < BaseResource
       # Constants...
 
-      # immutable # uncomment to make the resource immutable
+      immutable # uncomment to make the resource immutable
 
       # model_name / model_hint if required
 
@@ -17,6 +17,8 @@ module Api
 
       # Attributes
       attribute :uuid, readonly: true
+      attribute :name, readonly: true
+      attribute :used_tags, readonly: true
 
       # Filters
 
