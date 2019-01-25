@@ -14,6 +14,11 @@ module ApiV2Helper
     patch(path, params: payload.to_json, headers: headers)
   end
 
+  def api_post(path, payload, headers: {})
+    headers.merge!(DEFAULT_HEADERS)
+    post(path, params: payload.to_json, headers: headers)
+  end
+
   def json
     JSON.parse(response.body)
   end

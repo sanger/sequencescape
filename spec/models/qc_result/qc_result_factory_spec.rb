@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe QcResultFactory, type: :model, qc_result: true do
   describe 'multiple resources' do
-    let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
-    let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
-    let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
+    let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
+    let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
+    let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
     let(:asset_invalid_uuid) { attributes_for(:qc_result) }
-    let(:asset_invalid_key) { attributes_for(:qc_result).except(:key).merge(uuid: create(:asset).uuid) }
+    let(:asset_invalid_key) { attributes_for(:qc_result).except(:key).merge(uuid: create(:receptacle).uuid) }
 
     context 'passed as an array' do
       it 'creates a resource for each item passed' do
@@ -83,7 +83,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
   end
 
   describe QcResultFactory::Resource do
-    let(:asset) { create(:asset) }
+    let(:asset) { create(:receptacle) }
     let(:qc_result_attributes) { attributes_for(:qc_result) }
 
     context 'Asset' do

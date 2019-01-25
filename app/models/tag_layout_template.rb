@@ -6,7 +6,7 @@ class TagLayoutTemplate < ApplicationRecord
 
   attr_writer :enforce_uniqueness
 
-  belongs_to :tag_group, required: true
+  belongs_to :tag_group, optional: false
   belongs_to :tag2_group, class_name: 'TagGroup'
 
   validates_presence_of :name

@@ -30,17 +30,22 @@ module SampleManifestExcel
             row.transfer_aliquot # Requests are smart enough to only transfer once
             substitutions << row.aliquot.substitution_hash if row.reuploaded?
           end
-          update_downstream_aliquots if substitutions.present?
+          update_downstream_aliquots unless no_substitutions?
         end
 
         # if manifest is reuploaded, only aliquots, that are in 'fake' library tubes will be updated
         # actual aliquots in multiplexed library tube and other aliquots downstream are updated by this method
         # library updates all aliquots in one go, doing it row by row is inefficient and may trigger tag clash
         def update_downstream_aliquots
-          @downstream_aliquots_updated = if no_substitutions?
-                                           false
+          substituter = TagSubstitution.new(
+            substitutions: substitutions.compact,
+            comment: 'Manifest updated',
+            disable_clash_detection: true
+          )
+          @downstream_aliquots_updated = if substituter.save
+                                           true
                                          else
-                                           TagSubstitution.new(substitutions: substitutions.compact, comment: 'Manifest updated').save
+                                           log_error_and_return_false(substituter.errors.full_messages.join('; '))
                                          end
         end
 
@@ -73,10 +78,12 @@ module SampleManifestExcel
         end
 
         def aliquots_updated?
-          downstream_aliquots_updated? ||
-            no_substitutions? ||
-            log_error_and_return_false('Could not update tags in other assets.')
-          aliquots_transferred? || log_error_and_return_false('Could not transfer aliquots.')
+          [
+            downstream_aliquots_updated? ||
+              no_substitutions? ||
+              log_error_and_return_false('Could not update tags in other assets.'),
+            aliquots_transferred? || log_error_and_return_false('Could not transfer aliquots.')
+          ].all?
         end
       end
     end

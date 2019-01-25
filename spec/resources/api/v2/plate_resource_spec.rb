@@ -42,6 +42,7 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
     it { is_expected.to have_many(:wells).with_class_name('Well') }
     it { is_expected.to have_many(:projects).with_class_name('Project') }
     it { is_expected.to have_many(:studies).with_class_name('Study') }
+    it { is_expected.to have_many(:comments).with_class_name('Comment') }
 
     it { is_expected.to have_many(:ancestors) }
     it { is_expected.to have_many(:descendants) }

@@ -32,6 +32,10 @@ class Tube < Receptacle
 
   delegate :source_purpose, to: :purpose, allow_nil: true
 
+  def comments
+    @comments ||= CommentsProxy::Tube.new(self)
+  end
+
   def submission
     submissions.first
   end
@@ -81,6 +85,10 @@ class Tube < Receptacle
     purpose.try(:name) || 'Tube'
   end
 
+  def after_comment_addition(comment)
+    comments.add_comment_to_submissions(comment)
+  end
+
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     barcode    = args.first || attributes.delete(:barcode)
@@ -92,6 +100,10 @@ class Tube < Receptacle
     barcode ||= AssetBarcode.new_barcode
     primary_barcode = { prefix: prefix, number: barcode }
     create!(attributes.merge(sanger_barcode: primary_barcode), &block)
+  end
+
+  def update_from_qc(qc_result)
+    Tube::AttributeUpdater.update(self, qc_result)
   end
 end
 
