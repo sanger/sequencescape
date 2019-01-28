@@ -9,7 +9,7 @@ module Api
 
       immutable # uncomment to make the resource immutable
 
-      default_includes :uuid_object, :barcodes
+      default_includes :uuid_object, :barcodes, :plate_purpose, :transfer_requests
 
       # Associations:
       has_one :purpose, readonly: true, foreign_key: :plate_purpose_id
