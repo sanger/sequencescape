@@ -43,7 +43,7 @@ class Order < ApplicationRecord
   # Required at initial construction time ...
   belongs_to :study, optional: true
   belongs_to :project, optional: true
-  belongs_to :user, required: true
+  belongs_to :user, optional: false
   belongs_to :product, optional: true
   belongs_to :order_role, optional: true
   belongs_to :submission, inverse_of: :orders

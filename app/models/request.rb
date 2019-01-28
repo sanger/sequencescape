@@ -42,7 +42,7 @@ class Request < ApplicationRecord
   belongs_to :initial_project, class_name: 'Project'
   # same as project with study
   belongs_to :initial_study, class_name: 'Study'
-  belongs_to :work_order, required: false
+  belongs_to :work_order, optional: true
 
   has_one :order_role, through: :order
 

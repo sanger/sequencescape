@@ -8,6 +8,8 @@ module Api
       # Constants...
 
       immutable # uncomment to make the resource immutable
+      
+      default_includes :uuid_object, :barcodes, :transfer_requests_as_target
 
       # Associations:
       has_one :purpose, readonly: true, foreign_key: :plate_purpose_id, class_name: 'Purpose'
