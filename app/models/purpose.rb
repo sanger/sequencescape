@@ -9,7 +9,7 @@ class Purpose < ApplicationRecord
   # There's a barcode printer type that has to be used to print the labels for this type of plate.
   belongs_to :barcode_printer_type
   belongs_to :source_purpose, class_name: 'Purpose'
-  belongs_to :barcode_prefix, required: true
+  belongs_to :barcode_prefix, optional: false
   # Things that are created are often in a default location!
   has_many :messenger_creators, inverse_of: :purpose
 

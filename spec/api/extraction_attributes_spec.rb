@@ -272,21 +272,20 @@ describe '/api/1/extraction_attributes' do
 
         context 'with 2 plates with samples already' do
           let(:first_plate) { create :plate_with_tagged_wells }
-          it 'reracks to the second plate and racks into the first plate' do
-            pending 'If the well was reracked, it does not exist anymore and we cannot rack on it'
-            well_at_a1 = first_plate.wells.located_at('A1').first
-            well_at_b1 = second_plate.wells.located_at('B1').first
-            authorized_api_request :post, second_plate_subject, payload_rerack
-            [well_at_a1, well_at_b1].each(&:reload)
-            expect(status).to eq(response_code)
-            expect(second_plate.wells.located_at('A1').first).to eq(well1)
-            expect(second_plate.wells.located_at('B1').first).to eq(well2)
-            expect(first_plate.wells.located_at('A1').first.nil?).to eq(true)
-            expect(first_plate.wells.located_at('B1').first.nil?).to eq(true)
-            authorized_api_request :post, first_plate_subject, payload_rack
-            expect(status).to eq(response_code)
-            expect(first_plate.wells.located_at('A1').first.samples).to eq(sample_tube.samples)
-            expect(first_plate.wells.located_at('B1').first.samples).to eq(sample_tube2.samples)
+          context 'when performing a rerack from a position and then try to rack back' do
+            it 'reracks to the second plate but fails to rack into the first plate' do
+              well_at_a1 = first_plate.wells.located_at('A1').first
+              well_at_b1 = second_plate.wells.located_at('B1').first
+              authorized_api_request :post, second_plate_subject, payload_rerack
+              [well_at_a1, well_at_b1].each(&:reload)
+              expect(status).to eq(response_code)
+              expect(second_plate.wells.located_at('A1').first).to eq(well1)
+              expect(second_plate.wells.located_at('B1').first).to eq(well2)
+              expect(first_plate.wells.located_at('A1').first.nil?).to eq(true)
+              expect(first_plate.wells.located_at('B1').first.nil?).to eq(true)
+              authorized_api_request :post, first_plate_subject, payload_rack
+              expect(response).to have_http_status(:error)
+            end
           end
           it 'reracks to the second and reracks back to the first' do
             well_at_a1 = second_plate.wells.located_at('A1').first

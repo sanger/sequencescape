@@ -34,7 +34,7 @@
 
 <%= page_title "BATCH #{@batch.id}", @task.name %>
 <h2><% if @batch.failed? %><span style="color: red">(failed)</span><% end %></h2>
-<% if not @task.partial.blank? %>
+<% if @task.partial.present? %>
   <%= render partial: @task.partial, locals: { requests: @batch.requests } %>
 <% elsif not @batch.processing_in_manual_qc? %>
   <%= form_for :workflow, url: { action: "stage", id: @stage }, html: { id: "stage_form"} do |form| %>
