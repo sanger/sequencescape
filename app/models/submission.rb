@@ -236,7 +236,7 @@ class Submission < ApplicationRecord
   #
   # @return [Array<String,String>] Array of arrays of two strings, the i7 oligo (tag) followed by the i5 (tag2)
   def used_tags
-    aliquots.includes(:tag, :tag2).uniq.pluck('tags.oligo', 'tag2s_aliquots.oligo')
+    aliquots.includes(:tag, :tag2).any_tags.distinct.pluck('tags.oligo', 'tag2s_aliquots.oligo')
   end
 
   private
