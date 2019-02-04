@@ -47,6 +47,28 @@ describe Barcode, type: :model do
     end
   end
 
+  shared_examples 'a code39 barcode' do
+    describe '#code39_barcode?' do
+      subject { barcode.code39_barcode? }
+      it { is_expected.to be true }
+    end
+    describe '#code39_barcode' do
+      subject { barcode.code39_barcode }
+      it { is_expected.to eq code39_barcode }
+    end
+  end
+
+  shared_examples 'not a code39 barcode' do
+    describe '#code39_barcode?' do
+      subject { barcode.code39_barcode? }
+      it { is_expected.to be false }
+    end
+    describe '#code39_barcode' do
+      subject { barcode.code39_barcode }
+      it { is_expected.to eq nil }
+    end
+  end
+
   shared_examples 'not an ean13 barcode' do
     describe '#ean13_barcode?' do
       subject { barcode.ean13_barcode? }
@@ -70,10 +92,43 @@ describe Barcode, type: :model do
     let(:machine_barcode) { '1220012345855' }
     let(:ean13_barcode) { '1220012345855' }
     let(:code128_barcode) { '1220012345855' }
+    let(:code39_barcode) { '1220012345855' }
     it_behaves_like 'a basic barcode'
     it_behaves_like 'a composable barcode'
     it_behaves_like 'an ean13 barcode'
     it_behaves_like 'a code128 barcode'
+    it_behaves_like 'a code39 barcode'
+
+    it 'is valid' do
+      expect(barcode).to be_valid
+    end
+
+    context 'with an incompatible format' do
+      let(:barcode_value) { 'notabarcode' }
+      it 'is not valid' do
+        expect(barcode).not_to be_valid
+      end
+    end
+  end
+
+  context 'sanger_code39' do
+    let(:barcode) { build :sanger_code39, barcode: barcode_value, format: barcode_format }
+
+    let(:barcode_value) { 'DN12345U' }
+    let(:number) { 12345 }
+    let(:barcode_prefix) { 'DN' }
+    let(:suffix) { 'U' }
+    let(:barcode_format) { 'sanger_code39' }
+    let(:human_barcode) { 'DN12345U' }
+    let(:machine_barcode) { 'DN12345U' }
+    let(:ean13_barcode) { '1220012345855' }
+    let(:code128_barcode) { 'DN12345U' }
+    let(:code39_barcode) { 'DN12345U' }
+    it_behaves_like 'a basic barcode'
+    it_behaves_like 'a composable barcode'
+    it_behaves_like 'an ean13 barcode'
+    it_behaves_like 'a code128 barcode'
+    it_behaves_like 'a code39 barcode'
 
     it 'is valid' do
       expect(barcode).to be_valid
@@ -98,11 +153,13 @@ describe Barcode, type: :model do
     let(:human_barcode) { 'WG0010602-DNA' }
     let(:machine_barcode) { 'WG0010602-DNA' }
     let(:code128_barcode) { 'WG0010602-DNA' }
+    let(:code39_barcode) { 'WG0010602-DNA' }
 
     it_behaves_like 'a basic barcode'
     it_behaves_like 'a composable barcode'
     it_behaves_like 'not an ean13 barcode'
     it_behaves_like 'a code128 barcode'
+    it_behaves_like 'a code39 barcode'
 
     context 'with an incompatible format' do
       let(:barcode_value) { 'notabarcode' }
@@ -120,11 +177,13 @@ describe Barcode, type: :model do
     let(:human_barcode) { '1662051218' }
     let(:machine_barcode) { '1662051218' }
     let(:code128_barcode) { '1662051218' }
+    let(:code39_barcode) { '1662051218' }
     let(:prefix) { nil }
 
     it_behaves_like 'a basic barcode'
     it_behaves_like 'not an ean13 barcode'
     it_behaves_like 'a code128 barcode'
+    it_behaves_like 'a code39 barcode'
 
     context 'with an incompatible format' do
       let(:barcode_value) { 'notabarcode' }
@@ -151,6 +210,7 @@ describe Barcode, type: :model do
     it_behaves_like 'not an ean13 barcode'
     it_behaves_like 'a composable barcode'
     it_behaves_like 'a code128 barcode'
+    it_behaves_like 'not a code39 barcode'
   end
 
   context 'external - odd format' do
@@ -164,12 +224,14 @@ describe Barcode, type: :model do
     let(:human_barcode) { 'Q123RT12E45' }
     let(:machine_barcode) { 'Q123RT12E45' }
     let(:code128_barcode) { 'Q123RT12E45' }
+    let(:code39_barcode) { 'Q123RT12E45' }
     let(:prefix) { nil }
 
     it_behaves_like 'a basic barcode'
     it_behaves_like 'not an ean13 barcode'
     it_behaves_like 'a composable barcode'
     it_behaves_like 'a code128 barcode'
+    it_behaves_like 'a code39 barcode'
   end
 
   context 'foreign - CGAP format' do
@@ -183,6 +245,7 @@ describe Barcode, type: :model do
     let(:human_barcode) { 'CGAP-ABC123' }
     let(:machine_barcode) { 'CGAP-ABC123' }
     let(:code128_barcode) { 'CGAP-ABC123' }
+    let(:code39_barcode) { 'CGAP-ABC123' }
     let(:prefix) { nil }
 
     let(:summary) do
@@ -196,5 +259,6 @@ describe Barcode, type: :model do
     it_behaves_like 'not an ean13 barcode'
     it_behaves_like 'a composable barcode'
     it_behaves_like 'a code128 barcode'
+    it_behaves_like 'a code39 barcode'
   end
 end

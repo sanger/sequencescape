@@ -35,7 +35,7 @@ context 'printing plates' do
             top_right: "#{asset.prefix} #{asset.barcode_number}",
             bottom_right: "#{asset.name_for_label} #{asset.barcode_number}",
             top_far_right: nil,
-            barcode: asset.ean13_barcode.to_s } }
+            barcode: asset.machine_barcode.to_s } }
       end
     end
 
@@ -48,7 +48,7 @@ context 'printing plates' do
         [{ main_label:
            { left_text: asset.human_barcode.to_s,
              right_text: "#{asset.prefix} #{asset.barcode_number}",
-             barcode: asset.ean13_barcode.to_s } },
+             barcode: asset.machine_barcode.to_s } },
          { extra_label:
            { left_text: date,
              right_text: asset.purpose.name } }]
@@ -73,7 +73,7 @@ context 'printing tubes' do
           bottom_line: date,
           round_label_top_line: asset.prefix,
           round_label_bottom_line: asset.barcode_number,
-          barcode: asset.ean13_barcode.to_s } }
+          barcode: asset.machine_barcode.to_s } }
       end
     end
 
@@ -85,12 +85,6 @@ context 'base plate' do
   it 'normal plate should output ean13 barcode' do
     plate = create(:plate)
     label = LabelPrinter::Label::AssetPlate.new([plate])
-    expect(label.create_label(plate)[:barcode]).to eq(plate.ean13_barcode)
-  end
-
-  xit 'working dilution plate should output human readable barcode' do
-    plate = create(:working_dilution_plate)
-    label = LabelPrinter::Label::AssetPlate.new([plate])
-    expect(label.create_label(plate)[:barcode]).to eq(plate.human_barcode)
+    expect(label.create_label(plate)[:barcode]).to eq(plate.machine_barcode)
   end
 end

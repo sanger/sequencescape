@@ -77,6 +77,10 @@ class Tube < Receptacle
     name
   end
 
+  def sanger_barcode=(attributes)
+    barcodes << Barcode.build_sanger_ean13(attributes)
+  end
+
   def details
     purpose.try(:name) || 'Tube'
   end
