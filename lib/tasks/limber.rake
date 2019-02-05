@@ -29,7 +29,6 @@ namespace :limber do
                   size: 384 },
                 { name: 'GBS Stock',
                   size: 384 },
-                # GnT Pipeline requires UAT
                 { name: 'GnT Stock',
                   size: 96 }
                 ]
@@ -87,6 +86,7 @@ namespace :limber do
       end
       Limber::Helper::RequestTypeConstructor.new(
         'PCR Free',
+        library_types: ['PCR Free 384'],
         default_purposes: ['PF Cherrypicked']
       ).build!
 
