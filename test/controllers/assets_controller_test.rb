@@ -13,6 +13,7 @@ class AssetsControllerTest < ActionController::TestCase
   context '#create a new asset with JSON input' do
     setup do
       FactoryBot.create(:sample, name: 'phiX_for_spiked_buffers') # Required by controller
+
       @asset_count = Asset.count
 
       @barcode = { number: FactoryBot.generate(:barcode_number), prefix: 'NT' }

@@ -1,0 +1,16 @@
+C;
+C; This file created by abc on 2008-09-01 12:00:00 +0100
+C;
+A;DN1S_s;;ABgene 0765;1;;180.0
+D;DN1S_d;;ABgene 0800;1;;180.0
+W;
+A;DN1S_s;;ABgene 0765;10;;180.0
+D;DN1S_d;;ABgene 0800;10;;180.0
+W;
+A;DN1S_s;;ABgene 0765;45;;180.0
+D;DN1S_d;;ABgene 0800;45;;180.0
+W;
+C;
+C; SCRC1 = DN1S_s
+C;
+C; DEST1 = DN1S_d
