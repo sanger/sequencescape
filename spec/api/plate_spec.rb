@@ -117,7 +117,8 @@ describe '/api/1/plate-uuid' do
             "prefix": "DN",
             "number": "1",
             "ean13": "1220000001831",
-            "type": 1
+            "type": 1,
+            "machine": "DN1S"
           },
 
           "stock_plate": {
@@ -125,7 +126,7 @@ describe '/api/1/plate-uuid' do
               "number":"2",
               "prefix":"DN",
               "ean13":"1220000002845",
-              "machine":"1220000002845"
+              "machine":"DN2T"
             },
             "uuid":"#{stock_plate&.uuid}"
           },

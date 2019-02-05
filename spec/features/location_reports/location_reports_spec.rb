@@ -139,30 +139,6 @@ feature 'Location reports' do
       expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
-    scenario 'with a single invalid barcode' do
-      login_user user
-      visit location_reports_path
-      expect(page).to have_content 'Plate Location Reports'
-      within('#new_report_from_selection') do
-        fill_in 'Report name', with: 'Test report'
-        fill_in 'List of Barcodes (separated by new lines, spaces or commas)', with: 'INVALIDBC'
-      end
-      click_button('Create report from selection')
-      expect(page).to have_content 'Barcodes text Invalid barcodes found, no report generated: INVALIDBC'
-    end
-
-    scenario 'with a mix of valid and invalid barcodes' do
-      login_user user
-      visit location_reports_path
-      expect(page).to have_content 'Plate Location Reports'
-      within('#new_report_from_selection') do
-        fill_in 'Report name', with: 'Test report'
-        fill_in 'List of Barcodes (separated by new lines, spaces or commas)', with: "#{plate_1.machine_barcode} INVALIDBC"
-      end
-      click_button('Create report from selection')
-      expect(page).to have_content 'Failed to create report: Barcodes text Invalid barcodes found, no report generated: INVALIDBC'
-    end
-
     scenario 'with selection criteria that find no results' do
       login_user user
       visit location_reports_path

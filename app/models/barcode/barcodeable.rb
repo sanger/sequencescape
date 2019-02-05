@@ -38,15 +38,11 @@ module Barcode::Barcodeable
   end
 
   def sanger_barcode
-    barcodes.detect(&:sanger_ean13?)
+    barcodes.detect(&:sanger_barcode?)
   end
 
   def primary_barcode
     barcodes.last
-  end
-
-  def sanger_barcode=(attributes)
-    barcodes << Barcode.build_sanger_ean13(attributes)
   end
 
   def infinium_barcode

@@ -384,12 +384,6 @@ class Plate < Asset
 
   attr_reader :storage_location_service
 
-  def barcode_for_tecan
-    raise StandardError, 'Purpose is not valid' if plate_purpose.present? && !plate_purpose.valid?
-
-    plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
-  end
-
   def self.plate_ids_from_requests(requests)
     with_requests(requests).pluck(:id)
   end
@@ -584,6 +578,10 @@ class Plate < Asset
   # and generate all barcodes in the plate style. (That is, as part of the factory on, eg. plate purpose)
   def generate_barcode
     raise StandardError, "#generate_barcode has been called on plate, which wasn't supposed to happen, and probably indicates a bug."
+  end
+
+  def sanger_barcode=(attributes)
+    barcodes << Barcode.build_sanger_code39(attributes)
   end
 
   def after_comment_addition(comment)

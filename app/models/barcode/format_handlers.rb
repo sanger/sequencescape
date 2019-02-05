@@ -14,33 +14,31 @@ module Barcode::FormatHandlers
     end
   end
   #
-  # The original Sequencescape barcode format. results in:
-  # Human readable form: DN12345U
-  # Ean13 compatible machine readable form: 1220012345855
+  # Base Sequencescape barcode
   # This class mostly wraps the SBCF Gem
   #
   # @author [jg16]
   #
-  class SangerEan13
+  class SangerBase
     attr_reader :barcode_object
     def initialize(barcode)
       @barcode_object = SBCF::SangerBarcode.from_human(barcode)
     end
 
-    delegate :human_barcode, to: :barcode_object
+    delegate :human_barcode, :=~, to: :barcode_object # =~ is defined on Object, so we need to explicitly delegate
     delegate_missing_to :barcode_object
 
     # The gem was yielding integers for backward compatible reasons.
     # We'll convert for the time being, but should probably fix that.
-    def machine_barcode
+    def ean13_barcode
       barcode_object.machine_barcode.to_s
     end
 
-    alias ean13_barcode machine_barcode
-    alias code128_barcode machine_barcode
-    alias serialize_barcode human_barcode
-
     def ean13_barcode?
+      true
+    end
+
+    def code39_barcode?
       true
     end
 
@@ -55,6 +53,45 @@ module Barcode::FormatHandlers
     def barcode_prefix
       prefix.human
     end
+  end
+
+  #
+  # The original Sequencescape barcode format. results in:
+  # Human readable form: DN12345U
+  # Ean13 compatible machine readable form: 1220012345855
+  # This class mostly wraps the SBCF Gem
+  #
+  # @author [jg16]
+  #
+  class SangerEan13 < SangerBase
+    # The gem was yielding integers for backward compatible reasons.
+    # We'll convert for the time being, but should probably fix that.
+    def machine_barcode
+      ean13_barcode
+    end
+
+    alias code128_barcode machine_barcode
+    alias code39_barcode machine_barcode
+    alias serialize_barcode human_barcode
+  end
+
+  #
+  # The revised Sequencescape barcode format. results in:
+  # Human readable form: DN12345U
+  # Standard code39 machine format: DN12345U
+  # Ean13 fallback: 1220012345855
+  # This class mostly wraps the SBCF Gem
+  #
+  # @author [jg16]
+  #
+  class SangerCode39 < SangerBase
+    def machine_barcode
+      human_barcode
+    end
+
+    alias code128_barcode machine_barcode
+    alias code39_barcode machine_barcode
+    alias serialize_barcode human_barcode
   end
 
   # A basic class for barodes that can be validated and decomposed by simple regular expressions
@@ -84,14 +121,29 @@ module Barcode::FormatHandlers
     end
 
     def code128_barcode?
-      true
+      /\A[[:ascii:]]+\z/.match?(@human_barcode)
+    end
+
+    def code39_barcode?
+      %r{\A[A-Z0-9 \-\.$\/\+%]+\z}.match?(@human_barcode)
     end
 
     def valid?
       format.match? @human_barcode
     end
 
-    alias code128_barcode human_barcode
+    def code128_barcode
+      human_barcode if code128_barcode?
+    end
+
+    def code39_barcode
+      human_barcode if code39_barcode?
+    end
+
+    def =~(other)
+      human_barcode == other
+    end
+
     alias machine_barcode human_barcode
     alias serialize_barcode human_barcode
   end

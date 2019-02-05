@@ -2,45 +2,42 @@
 
 require 'rails_helper'
 
-context 'printing different asset types from batch' do
-  shared_examples 'a correct single label printer' do
-    it 'should produce the correct label' do
-      expected_label = {
-        labels: {
-          body: [{
-            main_label: {
-              barcode: plate1.ean13_barcode,
-              bottom_left: plate1.human_barcode,
-              bottom_right: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number}",
-              top_far_right: nil,
-              top_left: date_today,
-              top_right: batch.studies.first.abbreviation
-            }
-          }]
-        }
+shared_examples 'a correct single label printer' do
+  it 'should produce the correct label' do
+    expected_label = {
+      labels: {
+        body: [{
+          main_label: {
+            barcode: plate1.machine_barcode,
+            bottom_left: plate1.human_barcode,
+            bottom_right: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number}",
+            top_far_right: nil,
+            top_left: date_today,
+            top_right: batch.studies.first.abbreviation
+          }
+        }]
       }
       expect(subject.to_h).to eq(expected_label)
     end
   end
 
-  shared_examples 'a correct double label printer' do
-    it 'should produce the correct label' do
-      expected_label = {
-        labels: {
-          body: [{
-            main_label: {
-              left_text: plate1.human_barcode.to_s,
-              right_text: plate1.barcode_number.to_s,
-              barcode: plate1.ean13_barcode
-            }
-          },
-                 {
-                   extra_label: {
-                     left_text: date_today,
-                     right_text: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
-                   }
-                 }]
-        }
+shared_examples 'a correct double label printer' do
+  it 'should produce the correct label' do
+    expected_label = {
+      labels: {
+        body: [{
+          main_label: {
+            left_text: plate1.human_barcode.to_s,
+            right_text: plate1.barcode_number.to_s,
+            barcode: plate1.machine_barcode
+          }
+        },
+        {
+          extra_label: {
+            left_text: date_today,
+            right_text: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
+          }
+        }]
       }
       expect(subject.to_h).to eq(expected_label)
     end
