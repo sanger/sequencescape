@@ -44,11 +44,11 @@ class SampleRegistrar < ApplicationRecord
   NoSamplesError = Class.new(RegistrationError)
 
   # We are registering samples on the behalf of a specified user within a specified study
-  belongs_to :user, required: true
-  belongs_to :study, required: true
-  belongs_to :sample, validate: true, autosave: true, required: true
+  belongs_to :user, optional: false
+  belongs_to :study, optional: false
+  belongs_to :sample, validate: true, autosave: true, optional: false
   # Samples always come in a SampleTube when coming through SampleReception
-  belongs_to :sample_tube, validate: true, autosave: true, required: true
+  belongs_to :sample_tube, validate: true, autosave: true, optional: false
   belongs_to :asset_group, validate: true, autosave: true
 
   accepts_nested_attributes_for :sample

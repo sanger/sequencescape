@@ -181,7 +181,7 @@ When /^I refresh the page$/ do
 end
 
 Then /^Pmb is down$/ do
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template")
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template_code39")
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_raise(Errno::ECONNREFUSED)
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_1dtube_label_template")

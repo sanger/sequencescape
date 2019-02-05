@@ -24,7 +24,7 @@ class PlateCreatorTest < ActiveSupport::TestCase
                top_right: (purpose_name).to_s,
                bottom_right: "#{user} #{study_abbreviation}",
                top_far_right: (parent_barcode).to_s,
-               barcode: (plate1.ean13_barcode).to_s }
+               barcode: plate1.machine_barcode }
   end
 
   test 'should have plates' do

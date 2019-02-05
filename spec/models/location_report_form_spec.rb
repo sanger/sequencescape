@@ -125,11 +125,6 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
         expect(location_report_form).to_not be_valid
       end
 
-      it 'is not valid if there is a poorly formatted barcode in the list' do
-        location_report_form.barcodes_text = "#{plate_1.machine_barcode} INVALID123 #{plate_2.human_barcode}"
-        expect(location_report_form).to_not be_valid
-      end
-
       it 'is valid to use human readable barcodes' do
         location_report_form.barcodes_text = plate_1.human_barcode.to_s
         expect(location_report_form).to be_valid
@@ -207,7 +202,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
         expect(location_report_form.location_report.start_date.strftime('%Y-%m-%d %H:%M:%S')).to eq('2016-01-01 00:00:00')
         expect(location_report_form.location_report.end_date.strftime('%Y-%m-%d %H:%M:%S')).to eq('2016-03-01 00:00:00')
         expect(location_report_form.location_report.plate_purpose_ids).to eq([plt_1_purpose.id])
-        expect(location_report_form.location_report.barcodes).to eq([plate_1.machine_barcode.to_s])
+        expect(location_report_form.location_report.barcodes).to eq([plate_1.machine_barcode])
       end
     end
 
