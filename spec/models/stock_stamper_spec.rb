@@ -26,7 +26,7 @@ describe StockStamper do
       'time' => new_time,
       'source' =>
                     {
-                      "#{plate.ean13_barcode}_s" =>
+                      "#{plate.machine_barcode}_s" =>
                       {
                         'name' => 'ABgene 0765',
                         'plate_size' => 96
@@ -34,14 +34,14 @@ describe StockStamper do
                     },
       'destination' =>
                     {
-                      "#{plate.ean13_barcode}_d" =>
+                      "#{plate.machine_barcode}_d" =>
                       {
                         'name' => 'ABgene 0800',
                         'plate_size' => 96,
                         'mapping' => [
                           {
                             'src_well' => [
-                              "#{plate.ean13_barcode}_s",
+                              "#{plate.machine_barcode}_s",
                               'A1'
                             ],
                             'dst_well' => 'A1',
@@ -50,7 +50,7 @@ describe StockStamper do
                           },
                           {
                             'src_well' => [
-                              "#{plate.ean13_barcode}_s",
+                              "#{plate.machine_barcode}_s",
                               'B2'
                             ],
                             'dst_well' => 'B2',
@@ -59,7 +59,7 @@ describe StockStamper do
                           },
                           {
                             'src_well' => [
-                              "#{plate.ean13_barcode}_s",
+                              "#{plate.machine_barcode}_s",
                               'E6'
                             ],
                             'dst_well' => 'E6',
@@ -101,7 +101,7 @@ describe StockStamper do
     end
 
     it 'should generate the right tecan file' do
-      file = File.open(configatron.tecan_files_location + '/tecan/' + 'stock_stamper.gwl', 'rb')
+      file = File.open('spec/data/tecan/' + 'stock_stamper.gwl', 'rb')
       expected_output = file.read
       @stock_stamper.generate_tecan_gwl_file_as_text
       expect(@stock_stamper.file_content).to eq expected_output
