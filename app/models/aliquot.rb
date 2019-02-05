@@ -1,5 +1,18 @@
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
+
+# A note on tags:
+# Aliquots can have up to two tags attached, the i7 (tag) and the i5(tag2)
+# Tags are short DNA sequences which can be used to track samples following pooling.
+# If two samples with the same tags are pooled together it becomes impossible to
+# distinguish between them.
+# To avoid this we have an index which ensures unique tags are maintained per pool.
+# (Limitation: This restriction assumes that each oligo sequence is represented only once
+# in the database. This is not the case, so additional slower checks are required where cross
+# tag group pools are possible)
+# MySQL indexes treat NULL values as non identical, so -1 (UNASSIGNED_TAG) is used to represent
+# an untagged well.
+# We have some performance optimizations in place to avoid trying to look up tag -1
 class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
@@ -52,8 +65,8 @@ class Aliquot < ApplicationRecord
 
   has_one :aliquot_index, dependent: :destroy
 
-  before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
-  before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
+  before_validation { |record| record.tag_id ||= UNASSIGNED_TAG unless tag }
+  before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG unless tag2 }
 
   broadcast_via_warren
 
@@ -91,11 +104,11 @@ class Aliquot < ApplicationRecord
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
   # would result in sample dropouts. (presumably because << triggers save not save!)
   def untagged?
-    tag_id.nil? || tag_id == UNASSIGNED_TAG
+    tag_id == UNASSIGNED_TAG || tag.nil?
   end
 
   def no_tag2?
-    tag2_id.nil? || tag2_id == UNASSIGNED_TAG
+    tag2_id == UNASSIGNED_TAG || tag2.nil?
   end
 
   def tagged?
@@ -124,7 +137,7 @@ class Aliquot < ApplicationRecord
 
   # Optimization: Avoids us hitting the database for untagged aliquots
   def tag
-    untagged? ? nil : super
+    super unless tag_id == UNASSIGNED_TAG
   end
 
   def set_library

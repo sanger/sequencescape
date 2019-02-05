@@ -21,7 +21,7 @@ FactoryBot.define do
   factory(:transfer_between_plates, class: Transfer::BetweenPlates) do
     user
     association(:source,      factory: :transfer_plate)
-    association(:destination, factory: :transfer_plate)
+    association(:destination, factory: :plate_with_empty_wells)
     transfers { { 'A1' => 'A1', 'B1' => 'B1' } }
 
     factory(:full_transfer_between_plates) do

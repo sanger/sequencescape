@@ -6,8 +6,10 @@ FactoryBot.define do
 
     factory :sample_with_well do
       sequence(:sanger_sample_id, &:to_s)
-      wells { [FactoryBot.create(:well_with_sample_and_plate)] }
-      assets { [wells.first.plate] }
+
+      after(:build) do |sample, _evaluator|
+        sample.wells = create_list(:well_with_sample_and_plate, 1, sample: sample)
+      end
     end
 
     factory :sample_with_gender do
