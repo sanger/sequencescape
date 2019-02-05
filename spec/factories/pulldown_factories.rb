@@ -71,15 +71,15 @@ FactoryBot.define do
       tag_sequences { %w[ACGT TGCA] }
     end
 
-    after(:create) do |tag_group, evaluator|
-      evaluator.tag_sequences.each_with_index do |oligo, index|
-        tag_group.tags.create!(map_id: index + 1, oligo: oligo)
+    tags do
+      tag_sequences.each_with_index.map do |oligo, index|
+        build(:tag, map_id: index + 1, oligo: oligo)
       end
     end
   end
 
   # Tag layouts and their templates
-  factory(:tag_layout_template) do
+  factory :tag_layout_template do
     transient do
       tags { [] }
     end

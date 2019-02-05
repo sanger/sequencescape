@@ -12,7 +12,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     include SequencescapeExcel::SpecialisedField::ValueRequired
   end
 
-  let!(:sample) { create(:sample_with_well) }
+  let(:map) { create :map }
+  let!(:sample) { create(:untagged_well, map: map).samples.first }
   let!(:library_type) { create(:library_type) }
   let!(:reference_genome) { create(:reference_genome, name: 'new one') }
   let(:aliquot) { sample.aliquots.first }
