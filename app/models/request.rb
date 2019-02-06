@@ -69,7 +69,7 @@ class Request < ApplicationRecord
   # Related aliquots are those made as a request is being processed.
   # They can be intermediate aliquots, created while a request is being processed, and wont always
   # reflect the final product of a request.
-  has_many :related_aliquots, through: :asset, source: :aliquots
+  has_many :related_aliquots, class_name: 'Aliquot', inverse_of: :request
 
   delegate :flowcell, to: :batch, allow_nil: true
   delegate :for_multiplexing?, to: :request_type
