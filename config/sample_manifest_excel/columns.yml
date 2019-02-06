@@ -586,6 +586,19 @@ sample_public_name:
 sample_taxon_id:
   heading: TAXON ID
   unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: true
+      showInputMessage: true
+      promptTitle: "Taxon ID"
+      prompt: "The identifier for a Taxon."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Taxon ID"
+      error: "Taxon ID must a number."
   conditional_formattings:
     empty_cell:
 sample_common_name:
