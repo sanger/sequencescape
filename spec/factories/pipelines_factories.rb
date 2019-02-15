@@ -277,8 +277,11 @@ FactoryBot.define do
   end
 
   factory :asset_link do
-    association(:ancestor, factory: :asset)
-    association(:descendant, factory: :asset)
+    # Asset links get annoyed if created between nodes which have
+    # not been persisted.
+    association(:ancestor, factory: :asset, strategy: :create)
+    association(:descendant, factory: :asset, strategy: :create)
+    direct { true }
   end
 
   # Converts i to base 4, then substitutes in ATCG to
