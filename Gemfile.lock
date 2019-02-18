@@ -433,7 +433,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    test-prof (0.7.3)
+    test-prof (0.7.4)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
