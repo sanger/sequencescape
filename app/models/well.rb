@@ -141,7 +141,7 @@ class Well < Receptacle
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
-  has_one :container_association, -> { includes(:plate) }, foreign_key: :content_id, inverse_of: :well
+  has_one :container_association, -> { joins(:plate) }, foreign_key: :content_id, inverse_of: :well
   has_one :plate, through: :container_association, inverse_of: :wells
 
   def labware
