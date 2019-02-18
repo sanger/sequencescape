@@ -96,6 +96,32 @@ namespace :pmb do
                 ] } } }
         end
 
+        def sqsc_96plate_label_template_code39
+          label_type_id = get_label_type_id('Plate')
+          { 'data' =>
+            { 'attributes' =>
+              { 'name' => 'sqsc_96plate_label_template_code39',
+                'label_type_id' => label_type_id,
+                'labels_attributes' => [
+                  { 'name' => 'main_label',
+                    'bitmaps_attributes' => [
+                      { 'x_origin' => '0030', 'y_origin' => '0035', 'field_name' => 'top_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0030', 'y_origin' => '0065', 'field_name' => 'bottom_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0570', 'y_origin' => '0035', 'field_name' => 'top_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0570', 'y_origin' => '0065', 'field_name' => 'bottom_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0750', 'y_origin' => '0035', 'field_name' => 'top_far_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0750', 'y_origin' => '0065', 'field_name' => 'bottom_far_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0890', 'y_origin' => '0065', 'field_name' => 'label_counter_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '33' }
+                    ],
+                    'barcodes_attributes' => [
+                      { 'x_origin' => '0200', 'y_origin' => '0000', 'field_name' => 'barcode', 'barcode_type' => 'B', 'one_module_width' => '02',
+                        'height' => '0070', 'rotational_angle' => '0', 'one_cell_width' => nil, 'type_of_check_digit' => '1', 'bar_height' => nil,
+                        'no_of_columns' => nil, 'narrow_bar_width' => '01', 'narrow_space_width' => '01', 'wide_bar_width' => '03', 'wide_space_width' => '03',
+                        'char_to_char_space_width' => '03' }
+                    ] }
+                ] } } }
+        end
+
         def sqsc_384plate_label_template
           label_type_id = get_label_type_id('Plate')
           { 'data' =>
@@ -272,6 +298,10 @@ namespace :pmb do
           unregistered_templates = [
             {
               name: 'sqsc_96plate_label_template',
+              type: BarcodePrinterType96Plate
+            },
+            {
+              name: 'sqsc_96plate_label_template_code39',
               type: BarcodePrinterType96Plate
             },
             {

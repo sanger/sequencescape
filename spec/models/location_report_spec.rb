@@ -169,9 +169,9 @@ RSpec.describe LocationReport, type: :model do
 
         before(:each) do
           [
-            [plate_1.ean13_barcode.to_s, 'Shelf 1', locn_prefix],
-            [plate_2.ean13_barcode.to_s, 'Shelf 2', locn_prefix],
-            [plate_3.ean13_barcode.to_s, 'Shelf 3', locn_prefix]
+            [plate_1.machine_barcode.to_s, 'Shelf 1', locn_prefix],
+            [plate_2.machine_barcode.to_s, 'Shelf 2', locn_prefix],
+            [plate_3.machine_barcode.to_s, 'Shelf 3', locn_prefix]
           ].each do |lw_barcode, lw_locn_name, lw_locn_parentage|
             stub_lwclient_labware_find_by_bc(lw_barcode: lw_barcode, lw_locn_name: lw_locn_name, lw_locn_parentage: lw_locn_parentage)
           end
@@ -287,7 +287,7 @@ RSpec.describe LocationReport, type: :model do
           let(:expected_lines) { [headers_line, plt_4_line] }
 
           before(:each) do
-            stub_lwclient_labware_find_by_bc(lw_barcode: plate_4.ean13_barcode.to_s, lw_locn_name: 'Shelf 1', lw_locn_parentage: locn_prefix)
+            stub_lwclient_labware_find_by_bc(lw_barcode: plate_4.machine_barcode.to_s, lw_locn_name: 'Shelf 1', lw_locn_parentage: locn_prefix)
           end
 
           it_behaves_like 'a successful report'

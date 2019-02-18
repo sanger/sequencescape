@@ -42,6 +42,7 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
     it { is_expected.to have_many(:wells).with_class_name('Well') }
     it { is_expected.to have_many(:projects).with_class_name('Project') }
     it { is_expected.to have_many(:studies).with_class_name('Study') }
+    it { is_expected.to have_many(:comments).with_class_name('Comment') }
 
     it { is_expected.to have_many(:ancestors) }
     it { is_expected.to have_many(:descendants) }
@@ -58,7 +59,7 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
 
   context 'on a plate' do
     let(:expected_barcode_hash) do
-      { 'ean13_barcode' => '1220000011748', 'machine_barcode' => '1220000011748', 'human_barcode' => 'DN11J' }
+      { 'ean13_barcode' => '1220000011748', 'machine_barcode' => 'DN11J', 'human_barcode' => 'DN11J' }
     end
     it_behaves_like 'a plate resource'
   end

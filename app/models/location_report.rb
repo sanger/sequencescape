@@ -12,7 +12,7 @@ class LocationReport < ApplicationRecord
   enum report_type: %i[type_selection type_labwhere]
 
   # relations
-  belongs_to :study, required: false
+  belongs_to :study, optional: true
   belongs_to :user
 
   # scopes

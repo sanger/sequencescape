@@ -64,6 +64,7 @@ class Plate < Asset
   has_many :projects, -> { distinct }, through: :wells
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
   has_many :well_requests_as_source, through: :wells, source: :requests_as_source
+  has_many :in_progress_requests, through: :conatined_aliquots, source: :request
   has_many :orders_as_target, -> { distinct }, through: :well_requests_as_target, source: :order
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
   has_many :stock_requests, -> { distinct }, through: :stock_well_associations, source: :requests
@@ -182,7 +183,7 @@ class Plate < Asset
   end
 
   def comments
-    @comments ||= CommentsProxy.new(self)
+    @comments ||= CommentsProxy::Plate.new(self)
   end
 
   def priority
@@ -383,12 +384,6 @@ class Plate < Asset
 
   attr_reader :storage_location_service
 
-  def barcode_for_tecan
-    raise StandardError, 'Purpose is not valid' if plate_purpose.present? && !plate_purpose.valid?
-
-    plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
-  end
-
   def self.plate_ids_from_requests(requests)
     with_requests(requests).pluck(:id)
   end
@@ -583,6 +578,14 @@ class Plate < Asset
   # and generate all barcodes in the plate style. (That is, as part of the factory on, eg. plate purpose)
   def generate_barcode
     raise StandardError, "#generate_barcode has been called on plate, which wasn't supposed to happen, and probably indicates a bug."
+  end
+
+  def sanger_barcode=(attributes)
+    barcodes << Barcode.build_sanger_code39(attributes)
+  end
+
+  def after_comment_addition(comment)
+    comments.add_comment_to_submissions(comment)
   end
 
   private

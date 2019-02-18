@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Api::V2::QcAssaysController, type: :request, qc_result: true do
-  let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
-  let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
-  let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
+  let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
+  let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
+  let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
   let(:asset_invalid) { attributes_for(:qc_result) }
 
   it 'should be true' do

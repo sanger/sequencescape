@@ -111,26 +111,26 @@ feature 'cherrypick pipeline', js: true do
     fill_in('Scan user ID', with: '2470041440697')
     fill_in('Scan Tecan robot', with: '4880000444853')
     fill_in('Scan worksheet', with: '550000555760')
-    fill_in('Scan destination plate', with: '1220099999705')
+    fill_in('Scan destination plate', with: 'DN99999F')
     click_button 'Check'
-    expect(page).to have_content('Scan robot beds and plates')
+    expect(page).to have_content('Scan Robot Beds And Plates')
 
     table = [['Bed', 'Scanned robot beds', 'Plate ID', 'Scanned plates', 'Plate type'],
-             ['SCRC 1', '', '1220000001831', '', plate_type_list],
-             ['SCRC 2', '', '1220000010734', '', plate_type_list],
-             ['SCRC 3', '', '1220000005877', '', plate_type_list],
-             ['DEST 1', '', '1220099999705', '', 'ABgene_0800']]
+             ['SCRC 1', '', 'DN1S', '', plate_type_list],
+             ['SCRC 2', '', 'DN10I', '', plate_type_list],
+             ['SCRC 3', '', 'DN5W', '', plate_type_list],
+             ['DEST 1', '', 'DN99999F', '', 'ABgene_0800']]
 
     expect(fetch_table('table#source_beds')).to eq(table)
 
     fill_in('SCRC 1', with: '4880000001780')
-    fill_in('1220000001831', with: '1220000001831')
+    fill_in('DN1S', with: 'DN1S')
     fill_in('SCRC 2', with: '4880000002794')
-    fill_in('1220000005877', with: '1220000005877')
+    fill_in('DN5W', with: 'DN5W')
     fill_in('SCRC 3', with: '4880000003807')
-    fill_in('1220000010734', with: '1220000010734')
+    fill_in('DN10I', with: 'DN10I')
     fill_in('DEST 1', with: '4880000020729')
-    fill_in('1220099999705', with: '1220099999705')
+    fill_in('DN99999F', with: 'DN99999F')
 
     click_button 'Verify'
     click_link('Download TECAN file')
@@ -145,48 +145,48 @@ feature 'cherrypick pipeline', js: true do
       C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
       C;
       A;BUFF;;96-TROUGH;1;;49.1
-      D;1220099999705;;ABgene 0800;1;;49.1
+      D;DN99999F;;ABgene 0800;1;;49.1
       W;
       A;BUFF;;96-TROUGH;2;;49.2
-      D;1220099999705;;ABgene 0800;2;;49.2
+      D;DN99999F;;ABgene 0800;2;;49.2
       W;
       A;BUFF;;96-TROUGH;3;;49.1
-      D;1220099999705;;ABgene 0800;3;;49.1
+      D;DN99999F;;ABgene 0800;3;;49.1
       W;
       A;BUFF;;96-TROUGH;4;;49.2
-      D;1220099999705;;ABgene 0800;4;;49.2
+      D;DN99999F;;ABgene 0800;4;;49.2
       W;
       A;BUFF;;96-TROUGH;5;;49.1
-      D;1220099999705;;ABgene 0800;5;;49.1
+      D;DN99999F;;ABgene 0800;5;;49.1
       W;
       A;BUFF;;96-TROUGH;6;;49.2
-      D;1220099999705;;ABgene 0800;6;;49.2
+      D;DN99999F;;ABgene 0800;6;;49.2
       W;
       C;
-      A;1220000001831;;ABgene 0765;1;;15.9
-      D;1220099999705;;ABgene 0800;1;;15.9
+      A;DN1S;;ABgene 0765;1;;15.9
+      D;DN99999F;;ABgene 0800;1;;15.9
       W;
-      A;1220000001831;;ABgene 0765;2;;15.8
-      D;1220099999705;;ABgene 0800;2;;15.8
+      A;DN1S;;ABgene 0765;2;;15.8
+      D;DN99999F;;ABgene 0800;2;;15.8
       W;
-      A;1220000010734;;ABgene 0765;1;;15.9
-      D;1220099999705;;ABgene 0800;3;;15.9
+      A;DN10I;;ABgene 0765;1;;15.9
+      D;DN99999F;;ABgene 0800;3;;15.9
       W;
-      A;1220000010734;;ABgene 0765;2;;15.8
-      D;1220099999705;;ABgene 0800;4;;15.8
+      A;DN10I;;ABgene 0765;2;;15.8
+      D;DN99999F;;ABgene 0800;4;;15.8
       W;
-      A;1220000005877;;ABgene 0765;1;;15.9
-      D;1220099999705;;ABgene 0800;5;;15.9
+      A;DN5W;;ABgene 0765;1;;15.9
+      D;DN99999F;;ABgene 0800;5;;15.9
       W;
-      A;1220000005877;;ABgene 0765;2;;15.8
-      D;1220099999705;;ABgene 0800;6;;15.8
+      A;DN5W;;ABgene 0765;2;;15.8
+      D;DN99999F;;ABgene 0800;6;;15.8
       W;
       C;
-      C; SCRC1 = 1220000001831
-      C; SCRC2 = 1220000010734
-      C; SCRC3 = 1220000005877
+      C; SCRC1 = DN1S
+      C; SCRC2 = DN10I
+      C; SCRC3 = DN5W
       C;
-      C; DEST1 = 1220099999705
+      C; DEST1 = DN99999F
     TECAN
 
     expected_file_lines = expected_file.lines
@@ -240,30 +240,30 @@ feature 'cherrypick pipeline', js: true do
       C;
       C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100
       C;
-      A;1220000001831;;ABgene 0765;1;;30.0
-      D;1220099999705;;ABgene 0800;1;;30.0
+      A;DN1S;;ABgene 0765;1;;30.0
+      D;DN99999F;;ABgene 0800;1;;30.0
       W;
-      A;1220000001831;;ABgene 0765;2;;31.0
-      D;1220099999705;;ABgene 0800;2;;31.0
+      A;DN1S;;ABgene 0765;2;;31.0
+      D;DN99999F;;ABgene 0800;2;;31.0
       W;
-      A;1220000010734;;ABgene 0765;1;;30.0
-      D;1220099999705;;ABgene 0800;3;;30.0
+      A;DN10I;;ABgene 0765;1;;30.0
+      D;DN99999F;;ABgene 0800;3;;30.0
       W;
-      A;1220000010734;;ABgene 0765;2;;31.0
-      D;1220099999705;;ABgene 0800;4;;31.0
+      A;DN10I;;ABgene 0765;2;;31.0
+      D;DN99999F;;ABgene 0800;4;;31.0
       W;
-      A;1220000005877;;ABgene 0765;1;;30.0
-      D;1220099999705;;ABgene 0800;5;;30.0
+      A;DN5W;;ABgene 0765;1;;30.0
+      D;DN99999F;;ABgene 0800;5;;30.0
       W;
-      A;1220000005877;;ABgene 0765;2;;31.0
-      D;1220099999705;;ABgene 0800;6;;31.0
+      A;DN5W;;ABgene 0765;2;;31.0
+      D;DN99999F;;ABgene 0800;6;;31.0
       W;
       C;
-      C; SCRC1 = 1220000001831
-      C; SCRC2 = 1220000010734
-      C; SCRC3 = 1220000005877
+      C; SCRC1 = DN1S
+      C; SCRC2 = DN10I
+      C; SCRC3 = DN5W
       C;
-      C; DEST1 = 1220099999705
+      C; DEST1 = DN99999F
     TECAN
 
     expected_file_lines = expected_file.lines

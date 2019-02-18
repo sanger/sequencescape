@@ -8,7 +8,7 @@ module LabelPrinter
       include Label::MultipleDoubleLabels
 
       def barcode(plate)
-        plate.ean13_barcode
+        plate.machine_barcode
       end
 
       def date_today

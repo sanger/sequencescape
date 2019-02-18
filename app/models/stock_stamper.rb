@@ -27,8 +27,8 @@ class StockStamper
   end
 
   def generate_tecan_data
-    source_barcode = "#{plate.barcode_for_tecan}_s"
-    destination_barcode = "#{plate.barcode_for_tecan}_d"
+    source_barcode = "#{plate.machine_barcode}_s"
+    destination_barcode = "#{plate.machine_barcode}_d"
     data_object = {
       'user' => user.login,
       'time' => Time.now,
