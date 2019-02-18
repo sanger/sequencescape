@@ -44,13 +44,17 @@ module SampleManifestExcel
       ##
       # Find a cell of data based on the column and row
       def cell(row, column)
-        data.try(:fetch, row - 1).try(:fetch, column - 1)
+        val = data.try(:fetch, row - 1).try(:fetch, column - 1)
+        val.try(:strip) || val
       end
 
       ##
       # Return a column of data for a particular column number
       def column(col_num)
-        data.map { |row| row[col_num - 1] }
+        data.map do |row|
+          val = row[col_num - 1]
+          val.try(:strip) || val
+        end
       end
 
       def inspect

@@ -89,7 +89,7 @@ module SampleManifestExcel
             col_num = row.columns.find_column_or_null(:name, 'sanger_tube_id').number
             next unless col_num.present? && col_num.positive?
 
-            curr_bc = row.data[col_num - 1]
+            curr_bc = row.at(col_num)
             return true if unique_bcs.include?(curr_bc)
 
             unique_bcs << curr_bc

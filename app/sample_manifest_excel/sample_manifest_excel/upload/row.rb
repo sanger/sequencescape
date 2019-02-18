@@ -35,7 +35,8 @@ module SampleManifestExcel
       # Finds the data value for a particular column.
       # Offset by 1. Columns have numbers data is an array
       def at(col_num)
-        data[col_num - 1]
+        val = data[col_num - 1]
+        val.try(:strip) || val
       end
 
       ##
