@@ -23,6 +23,21 @@ FactoryBot.define do
       end
     end
 
+    factory :sanger_code39 do
+      transient do
+        prefix { 'DN' }
+        barcode_number
+      end
+      format { 'sanger_code39' }
+      barcode { SBCF::SangerBarcode.new(prefix: prefix, number: barcode_number).human_barcode }
+
+      factory :sanger_code39_tube do
+        transient do
+          prefix { 'NT' }
+        end
+      end
+    end
+
     factory :infinium do
       transient do
         prefix { 'WG' }

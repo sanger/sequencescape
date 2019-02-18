@@ -55,9 +55,9 @@ Given(/^I have a released cherrypicking batch with 3 plates and the minimum robo
   step('a plate barcode webservice is available and returns "99999"')
   step('a plate template exists')
   step('a robot exists with barcode "444"')
-  step('plate "1220000010734" has concentration and volume results')
-  step('plate "1220000001831" has concentration and volume results')
-  step('plate "1220000005877" has concentration and volume results')
+  step('plate "DN10I" has concentration and volume results')
+  step('plate "DN1S" has concentration and volume results')
+  step('plate "DN5W" has concentration and volume results')
 
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')
