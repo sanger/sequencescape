@@ -4,7 +4,7 @@ module SampleManifestExcel
   module Upload
     ##
     # An upload will:
-    # *Create a Data object based on the filename.
+    # *Create a Data object based on the file.
     # *Extract the columns based on the headings in the spreadsheet
     # *Find the sanger sample id column
     # *Create some Rows
@@ -14,21 +14,25 @@ module SampleManifestExcel
     class Base
       include ActiveModel::Model
 
-      attr_accessor :filename, :column_list, :start_row, :override
+      attr_accessor :file, :column_list, :start_row, :override
 
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
-      validate :check_columns, :check_processor, :check_rows
+      validate :check_data
+      # If the file isn't valid, and hasn't been read, then don't the contents
+      # it will just appear to be empty, which is confusing.
+      validate :check_columns, :check_processor, :check_rows, if: :data_valid?
       validate :check_processor, if: :processor?
 
       delegate :processed?, to: :processor
       delegate :data_at, to: :rows
+      delegate :study, to: :sample_manifest, allow_nil: true
 
       def initialize(attributes = {})
         super
-        @data = Upload::Data.new(filename, start_row)
-        @columns = column_list.extract(data.header_row || [])
+        @data = Upload::Data.new(file, start_row)
+        @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
         @rows = Upload::Rows.new(data, columns)
         @sample_manifest = derive_sample_manifest
@@ -37,7 +41,7 @@ module SampleManifestExcel
       end
 
       def inspect
-        "<#{self.class}: @filename=#{filename}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
+        "<#{self.class}: @file=#{file}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
       end
 
       ##
@@ -47,8 +51,13 @@ module SampleManifestExcel
       def derive_sample_manifest
         return unless start_row.present? && sanger_sample_id_column.present?
 
-        sample = Sample.find_by(sanger_sample_id: data.cell(1, sanger_sample_id_column.number))
-        sample.sample_manifest if sample.present?
+        sanger_sample_id = data.cell(1, sanger_sample_id_column.number)
+        sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
+        if sample.present?
+          return sample.sample_manifest
+        else
+          return SampleManifestAsset.where(sanger_sample_id: sanger_sample_id).first&.sample_manifest
+        end
       end
 
       ##
@@ -73,7 +82,14 @@ module SampleManifestExcel
       end
 
       def broadcast_sample_manifest_updated_event(user)
-        sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted)
+        # Send to event warehouse
+        sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted.map(&:id))
+        # Log legacy events: Show on history page, and may be used by reports.
+        # We can get rid of these when:
+        # - History page is updates with event warehouse viewer
+        # - We've confirmed that no external reports use these events
+        samples_to_be_broadcasted.each { |sample| sample.handle_update_event(user) }
+        labware_to_be_broadcasted.each { |labware| labware.events.updated_using_sample_manifest!(user) }
       end
 
       def complete
@@ -106,6 +122,14 @@ module SampleManifestExcel
         end
       end
 
+      def data_valid?
+        data.valid?
+      end
+
+      def check_data
+        check_object(data)
+      end
+
       def check_rows
         check_object(rows)
       end
@@ -131,7 +155,11 @@ module SampleManifestExcel
       end
 
       def samples_to_be_broadcasted
-        rows.map { |row| row.sample.id }
+        @samples_to_be_broadcasted ||= rows.select(&:changed?).map(&:sample)
+      end
+
+      def labware_to_be_broadcasted
+        @labware_to_be_broadcasted ||= rows.select(&:changed?).reduce(Set.new) { |set, row| set << row.labware }
       end
     end
   end

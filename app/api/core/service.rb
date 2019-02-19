@@ -27,6 +27,11 @@ module Core
       self.api_error_message = 'requested action is not supported on this resource'
     end
 
+    class DeprecatedAction < Error
+      self.api_error_code    = 410
+      self.api_error_message = 'requested action is no longer supported'
+    end
+
     class MethodNotAllowed < Error
       def initialize(allowed_http_verbs)
         super('HTTP verb was not allowed!')

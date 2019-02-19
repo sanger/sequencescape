@@ -28,9 +28,11 @@ feature 'Sample manifest with tag sequences' do
         scenario 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
-          attach_file('File to upload', test_file)
+          attach_file('File to upload', Rails.root.join(test_file))
           click_button('Upload manifest')
           expect(page).to have_content('Sample manifest successfully uploaded.')
+          click_link 'Completed manifest'
+          expect(page.driver.response.headers['Content-Disposition']).to eq("attachment; filename=\"#{test_file}\"")
         end
 
         scenario 'reupload and override' do
@@ -88,7 +90,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
 
         scenario 'no file' do
@@ -107,7 +109,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
       end
 
@@ -119,7 +121,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
       end
     end
@@ -195,7 +197,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
           expect(page).to have_content('Same tags AA, TT are used on rows 10, 15.')
         end
 
@@ -215,7 +217,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
       end
 
@@ -227,7 +229,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
       end
     end
@@ -303,7 +305,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
           expect(page).to have_content('Row 10 - could not find My personal library type library type.')
           expect(page.text).to match(/Tags clash Same tags [A-Z]+, [A-Z]+ are used on rows 10, 15./)
         end
@@ -324,7 +326,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
       end
 
@@ -336,7 +338,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
       end
     end
@@ -422,7 +424,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
       end
 
@@ -434,7 +436,7 @@ feature 'Sample manifest with tag sequences' do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
       end
     end

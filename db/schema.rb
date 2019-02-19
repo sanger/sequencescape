@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(version: 20181119105427) do
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
   end
 
-  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", comment: "AL" do |t|
   end
 
   create_table "asset_creation_parents", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1310,8 +1310,21 @@ ActiveRecord::Schema.define(version: 20181119105427) do
     t.bigint "job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "aker_material_uuid"
+    t.index ["aker_material_uuid"], name: "index_sample_jobs_on_aker_material_uuid", unique: true
     t.index ["job_id"], name: "index_sample_jobs_on_job_id"
     t.index ["sample_id"], name: "index_sample_jobs_on_sample_id"
+  end
+
+  create_table "sample_manifest_assets", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "sample_manifest_id"
+    t.bigint "asset_id"
+    t.string "sanger_sample_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id"], name: "index_sample_manifest_assets_on_asset_id"
+    t.index ["sample_manifest_id"], name: "index_sample_manifest_assets_on_sample_manifest_id"
+    t.index ["sanger_sample_id"], name: "index_sample_manifest_assets_on_sanger_sample_id"
   end
 
   create_table "sample_manifests", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

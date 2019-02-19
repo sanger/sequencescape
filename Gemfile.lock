@@ -113,6 +113,8 @@ GEM
     autoprefixer-rails (8.6.0)
       execjs
     backports (3.11.4)
+    binding_of_caller (0.8.0)
+      debug_inspector (>= 0.0.1)
     bootstrap (4.1.1)
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
@@ -174,6 +176,7 @@ GEM
     cucumber-wire (0.0.1)
     daemons (1.3.1)
     database_cleaner (1.7.0)
+    debug_inspector (0.0.3)
     delayed_job (4.1.5)
       activesupport (>= 3.0, < 5.3)
     delayed_job_active_record (4.1.3)
@@ -294,6 +297,9 @@ GEM
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    pry-stack_explorer (0.4.9.3)
+      binding_of_caller (>= 0.7)
+      pry (>= 0.9.11)
     public_suffix (3.0.3)
     puma (3.12.0)
     pusher-client (0.6.2)
@@ -532,6 +538,7 @@ DEPENDENCIES
   net-ldap
   nokogiri
   pry
+  pry-stack_explorer
   puma
   rack-acceptable
   rack-cors

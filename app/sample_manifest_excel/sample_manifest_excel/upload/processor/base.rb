@@ -36,7 +36,7 @@ module SampleManifestExcel
         end
 
         def samples_updated?
-          upload.rows.all?(&:sample_updated?) || log_error_and_return_false('could not update samples.')
+          upload.rows.all?(&:sample_skipped_or_updated?) || log_error_and_return_false('Could not update samples')
         end
 
         def processed?
@@ -46,9 +46,7 @@ module SampleManifestExcel
         ##
         # Override the sample manifest with the raw uploaded data.
         def update_sample_manifest
-          File.open(upload.filename) do |file|
-            @sample_manifest_updated = upload.sample_manifest.update(uploaded: file)
-          end
+          @sample_manifest_updated = upload.sample_manifest.update(uploaded: upload.file)
         end
 
         def sample_manifest_updated?
@@ -91,7 +89,7 @@ module SampleManifestExcel
             col_num = row.columns.find_column_or_null(:name, 'sanger_tube_id').number
             next unless col_num.present? && col_num.positive?
 
-            curr_bc = row.data[col_num - 1]
+            curr_bc = row.at(col_num)
             return true if unique_bcs.include?(curr_bc)
 
             unique_bcs << curr_bc

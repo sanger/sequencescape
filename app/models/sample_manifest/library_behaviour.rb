@@ -13,12 +13,16 @@ module SampleManifest::LibraryBehaviour
   end
 
   class Core
+    attr_reader :tubes
+
     def initialize(manifest)
       @manifest = manifest
+      @tubes = []
     end
 
     delegate :samples, to: :@manifest
     delegate :generate_library, to: :@manifest
+    delegate :samples, :sample_manifest_assets, to: :@manifest
 
     def io_samples
       samples.map do |sample|
@@ -33,30 +37,27 @@ module SampleManifest::LibraryBehaviour
     end
 
     def generate
-      generate_library
+      @tubes = generate_library
+    end
+
+    def generate_sample_and_aliquot(sanger_sample_id, tube)
+      @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
     end
 
     def updated_by!(user, samples)
       # Does nothing at the moment
     end
 
-    def details
-      samples.each do |sample|
-        yield({
-          barcode: sample.assets.first.human_barcode,
-          sample_id: sample.sanger_sample_id
-        })
-      end
+    def details(&block)
+      details_array.each(&block)
     end
 
     def details_array
-      [].tap do |details|
-        samples.each do |sample|
-          details << {
-            barcode: sample.assets.first.human_barcode,
-            sample_id: sample.sanger_sample_id
-          }
-        end
+      sample_manifest_assets.includes(asset: :barcodes).map do |sample_manifest_asset|
+        {
+          barcode: sample_manifest_asset.human_barcode,
+          sample_id: sample_manifest_asset.sanger_sample_id
+        }
       end
     end
 
@@ -64,8 +65,12 @@ module SampleManifest::LibraryBehaviour
       true
     end
 
-    def labware
+    def labware_from_samples
       samples.map { |sample| sample.assets.first }
+    end
+
+    def labware
+      tubes | labware_from_samples | @manifest.assets
     end
     alias printables labware
 
@@ -83,6 +88,6 @@ module SampleManifest::LibraryBehaviour
   end
 
   def generate_library
-    tubes = generate_tubes(Tube::Purpose.standard_library_tube)
+    generate_tubes(Tube::Purpose.standard_library_tube)
   end
 end

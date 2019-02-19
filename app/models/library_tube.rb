@@ -71,3 +71,5 @@ class LibraryTube < Tube
 
   extend Asset::Stock::CanCreateStockAsset
 end
+
+require_dependency 'spiked_buffer'

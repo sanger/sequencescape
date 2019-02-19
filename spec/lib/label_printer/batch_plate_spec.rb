@@ -64,7 +64,6 @@ shared_examples 'a correct filter' do
   end
 end
 
-
 context 'printing labels' do
   let(:count) { '1' }
   let(:date_today) { Time.zone.today.strftime('%e-%^b-%Y') }

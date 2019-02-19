@@ -14,6 +14,7 @@ module SampleManifest::PlateBehaviour
 
     def initialize(manifest)
       @manifest = manifest
+      @plates = []
     end
 
     def acceptable_purposes
@@ -23,7 +24,8 @@ module SampleManifest::PlateBehaviour
     delegate :generate_plates, to: :@manifest
     alias_method(:generate, :generate_plates)
 
-    delegate :samples, to: :@manifest
+    delegate :generate_sample_and_aliquot, to: :@manifest
+    delegate :samples, :sample_manifest_assets, to: :@manifest
 
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
     # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
@@ -91,6 +93,7 @@ module SampleManifest::PlateBehaviour
 
   class Core < Base
     def generate_wells(well_data, plates)
+      @plates = plates.sort_by(&:human_barcode)
       generate_wells_for_plates(well_data, plates, &@manifest.method(:generate_wells))
     end
 
@@ -115,19 +118,36 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def details
-      samples.each do |sample|
-        well = sample.wells.includes([:container, :map]).first
-        yield({
-          barcode: well.plate.human_barcode,
-          position: well.map.description,
-          sample_id: sample.sanger_sample_id
-        })
+    def details(&block)
+      details_array.each(&block)
+    end
+
+    def details_array
+      sample_manifest_assets.includes(asset: [:map, { plate: :barcodes }]).map do |sample_manifest_asset|
+        {
+          barcode: sample_manifest_asset.asset.plate.human_barcode,
+          position: sample_manifest_asset.asset.map_description,
+          sample_id: sample_manifest_asset.sanger_sample_id
+        }
       end
     end
 
-    def labware
+    # This retrieves plates from old sample manifest that don't have records in
+    # SampleManifestAsset
+    def labware_from_samples
       samples.map { |s| s.primary_receptacle.plate }.uniq
+    end
+
+    def labware_from_manifest_assets
+      @manifest.assets.map(&:plate).uniq
+    end
+
+    def labware=(labware)
+      @plates = labware
+    end
+
+    def labware
+      plates | labware_from_samples | labware_from_manifest_assets
     end
     alias printables labware
   end
@@ -174,20 +194,26 @@ module SampleManifest::PlateBehaviour
     self.barcodes = plates.map(&:human_barcode)
 
     save!
+    @plates = plates.sort_by(&:human_barcode)
+  end
+
+  def generate_sample_and_aliquot(sanger_sample_id, well)
+    create_sample(sanger_sample_id).tap do |sample|
+      well.aliquots.create!(sample: sample, study: study)
+      well.register_stock!
+      study.samples << sample
+    end
   end
 
   def generate_wells(wells_for_plate, plate)
-    study.samples << wells_for_plate.map do |map, sanger_sample_id|
-      create_sample(sanger_sample_id).tap do |sample|
-        plate.wells.create!(map: map) do |well|
-          well.aliquots.build(sample: sample)
-          well.register_stock!
-        end
+    wells_for_plate.map do |map, sanger_sample_id|
+      plate.wells.create!(map: map) do |well|
+        SampleManifestAsset.create(sanger_sample_id: sanger_sample_id,
+                                   asset: well,
+                                   sample_manifest: self)
       end
     end
-
-    plate.events.created_using_sample_manifest!(user)
-
     RequestFactory.create_assets_requests(plate.wells, study)
+    plate.events.created_using_sample_manifest!(user)
   end
 end

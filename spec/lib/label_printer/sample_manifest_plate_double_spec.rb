@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe LabelPrinter::Label::SampleManifestPlateDouble do
-  let(:sample_manifest) { create :sample_manifest_with_samples }
+  let(:sample_manifest) { create :sample_manifest_with_empty_plate }
   let(:label_options) { { sample_manifest: sample_manifest, only_first_label: only_first_label } }
   let(:sample_manifest_plates) { sample_manifest.printables }
 

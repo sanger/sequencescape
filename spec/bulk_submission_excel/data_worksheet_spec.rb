@@ -68,14 +68,6 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
       expect(spreadsheet.sheet(0).last_row).to eq(assets.count + 2)
     end
 
-    it 'adds the attributes for each details' do
-      [].each do |detail|
-        worksheet.columns.each do |column|
-          expect(spreadsheet.sheet(0).cell(sample_manifest.details_array.index(detail) + 10, column.number)).to eq(column.attribute_value(detail))
-        end
-      end
-    end
-
     it 'updates all of the columns' do
       expect(worksheet.columns.values.all?(&:updated?)).to be_truthy
     end

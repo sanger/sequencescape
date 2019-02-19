@@ -9,10 +9,9 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
   def setup
     @manifest = create :sample_manifest, asset_type: '1dtube', count: 3
     @manifest.generate
-
-    @tube1 = manifest.samples.first.assets.first
-    @tube2 = manifest.samples[1].assets.first
-    @tube3 = manifest.samples[2].assets.first
+    @tube1 = manifest.printables[0]
+    @tube2 = manifest.printables[1]
+    @tube3 = manifest.printables[2]
     @tubes = [tube1, tube2, tube3]
 
     @prefix = 'NT'
@@ -38,7 +37,7 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
     @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
 
     assert_equal 1, tube_label.tubes.count
-    assert_equal manifest.samples.first.assets.first, tube_label.tubes.first
+    assert_equal manifest.printables.first, tube_label.tubes.first
   end
 
   test 'should return correct top line' do

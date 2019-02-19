@@ -74,6 +74,9 @@ class Asset < ApplicationRecord
 
   belongs_to :map
 
+  has_many :sample_manifest_assets
+  has_many :sample_manifests, through: :sample_manifest_assets
+
   delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
 
   extend EventfulRecord

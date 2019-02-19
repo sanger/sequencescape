@@ -10,17 +10,17 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     end
   end
 
-  let(:columns)       { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
-  let(:data)          do
-    [sample_tube.samples.first.assets.first.human_barcode, sample_tube.samples.first.sanger_sample_id,
+  let(:columns)           { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
+  let!(:library_type)     { create(:library_type, name: 'My New Library Type') }
+  let!(:reference_genome) { create(:reference_genome, name: 'My reference genome') }
+  let!(:sample_manifest)  { create(:tube_sample_manifest_with_tubes_and_manifest_assets) }
+  let!(:tag_group)        { create(:tag_group) }
+  let(:data) do
+    [sample_manifest.labware.first.human_barcode, sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
      'AA', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
      'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
      9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
   end
-  let!(:library_type) { create(:library_type, name: 'My New Library Type') }
-  let!(:reference_genome) { create(:reference_genome, name: 'My reference genome') }
-  let!(:sample_tube)  { create(:sample_tube_with_sanger_sample_id) }
-  let!(:tag_group)    { create(:tag_group) }
 
   it 'is not valid without row number' do
     expect(SampleManifestExcel::Upload::Row.new(number: 'one', data: data, columns: columns)).to_not be_valid
@@ -36,7 +36,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it '#value returns value for specified key' do
-    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(sample_tube.samples.first.sanger_sample_id)
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id)
   end
 
   it '#at returns value at specified index (offset by 1)' do
@@ -48,8 +48,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it 'is not valid without a primary receptacle or sample' do
-    sample = create(:sample)
-    data[1] = sample.id
+    data[1] = 2
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
     data[1] = 999999
     row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
@@ -74,9 +73,11 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it 'updates the aliquot with the specialised fields' do
+    sample_count = Sample.count
     row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
     row.update_specialised_fields(tag_group)
     aliquot = row.aliquot
+    expect(Sample.count - sample_count).to eq(1)
     expect(aliquot.tag.oligo).to eq('AA')
     expect(aliquot.tag2).to be nil
     expect(aliquot.insert_size_from).to eq(200)
@@ -109,10 +110,10 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it 'knows if it is empty' do
-    empty_data = [sample_tube.samples.first.assets.first.human_barcode, sample_tube.samples.first.sanger_sample_id,
+    empty_data = [sample_manifest.labware.first.human_barcode, sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
                   '', '', '', '', '', '', '', '', '', '', '', '', '',
                   '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-                  '', '', '', '', '', '', '', sample_tube.samples.first.sanger_sample_id, '']
+                  '', '', '', '', '', '', '', sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id, '']
     row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
     empty_row = SampleManifestExcel::Upload::Row.new(number: 1, data: empty_data, columns: columns)
     expect(row.empty?).to be false

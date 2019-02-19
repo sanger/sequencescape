@@ -27,7 +27,7 @@ module SequencescapeExcel
 
       def errors
         {
-          sample_manifest: 'Does not exist'
+          sample_manifest: 'Does not exist. Double check that Sanger sample ids have not been changed.'
         }
       end
     end

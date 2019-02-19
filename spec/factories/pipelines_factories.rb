@@ -296,7 +296,7 @@ FactoryBot.define do
     map_id { 1 }
   end
 
-  factory :tag_group do |_t|
+  factory :tag_group do
     sequence(:name) { |n| "Tag Group #{n}" }
 
     transient do
