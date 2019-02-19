@@ -40,8 +40,7 @@ And I have a "full" authorised user with the key "cucumber"
       {
         "sample_manifest": {
           "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
           "study": {
             "actions": {
@@ -58,18 +57,7 @@ And I have a "full" authorised user with the key "cucumber"
           "state": "pending",
           "last_errors": null,
 
-          "samples": [
-            {
-              "container": {
-                "barcode": "NT9999J"
-              },
-              "sample": {
-                "sanger": {
-                  "sample_id": "WTCCC99"
-                }
-              }
-            }
-          ]
+          "samples": []
         }
       }
       """
@@ -89,42 +77,8 @@ And I have a "full" authorised user with the key "cucumber"
         }
       }
       """
-    Then the HTTP response should be "201 Created"
+   Then the HTTP response should be "410 GONE"
     And the JSON should match the following for the specified fields:
       """
-      {
-        "sample_manifest": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-          "study": {
-            "actions": {
-              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
-            }
-          },
-          "supplier": {
-            "actions": {
-              "read": "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
-            }
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444",
-          "state": "pending",
-          "last_errors": null,
-
-          "samples": [
-            {
-              "container": {
-
-              },
-              "sample": {
-                "sanger": {
-                  "sample_id": "WTCCC1"
-                }
-              }
-            }
-          ]
-        }
-      }
+      { "general": ["requested action is no longer supported"] }
       """

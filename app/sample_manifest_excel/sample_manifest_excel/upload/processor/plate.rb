@@ -46,7 +46,7 @@ module SampleManifestExcel
           col_num = row.columns.find_column_or_null(:name, col_name).number
           return nil unless col_num.present? && col_num.positive?
 
-          row.data[col_num - 1]
+          row.at(col_num)
         end
 
         def find_plate_id_for_sample_id(sample_id)

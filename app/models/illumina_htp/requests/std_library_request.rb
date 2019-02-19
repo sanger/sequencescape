@@ -4,8 +4,6 @@ module IlluminaHtp::Requests
   # The basic request for limber library requests
   # Also used as the base class of some of the older WGS requests
   class StdLibraryRequest < Request::LibraryCreation
-    include Request::ApplyLibraryInfoOnPass
-
     fragment_size_details(:no_default, :no_default)
 
     const_get(:Metadata).class_eval do

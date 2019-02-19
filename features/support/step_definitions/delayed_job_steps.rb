@@ -1,4 +1,4 @@
-Given /^([1-9]|[1-9]\d+) pending delayed jobs are processed$/ do |count|
+Given /^(\d+) pending delayed jobs are processed$/ do |count|
   Delayed::Worker.new(quiet: ENV['LOUD_DELAYED_JOBS'].nil?).work_off(count.to_i)
   errors = Delayed::Job.all.map { |j| j.run_at? && j.last_error }.reject(&:blank?)
   raise StandardError, "Delayed jobs have failed #{errors.to_yaml}" if errors.present?

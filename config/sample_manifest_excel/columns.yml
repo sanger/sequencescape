@@ -485,7 +485,7 @@ sample_storage_conditions:
       errorStyle: :stop
       errorTitle: "DNA Storage Conditions"
       error: "You must enter a Temperature from the list provided, in the correct format e.g.+4C."
-    range_name: :sample_storage_conditions
+    range_name: :dna_storage_conditions
   conditional_formattings:
     empty_cell:
     is_error:
@@ -586,6 +586,19 @@ sample_public_name:
 sample_taxon_id:
   heading: TAXON ID
   unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      promptTitle: "Taxon ID"
+      prompt: "The identifier for a Taxon."
+      errorTitle: "Taxon ID"
+      error: "Taxon ID must a number."
   conditional_formattings:
     empty_cell:
 sample_common_name:
@@ -705,6 +718,7 @@ disease:
   conditional_formattings:
     empty_cell:
 donor_id2:
+  name: :donor_id
   heading: DONOR ID (required for cancer samples)
   unlocked: true
   conditional_formattings:

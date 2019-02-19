@@ -10,6 +10,12 @@ module SequencescapeExcel
 
       validate :check_equality
 
+      def update(_attributes = {})
+        return if value.blank?
+
+        sample.sample_metadata.sample_ebi_accession_number ||= value if valid?
+      end
+
       private
 
       def check_equality

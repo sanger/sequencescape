@@ -63,10 +63,9 @@ module SampleManifest::InputBehaviour::SampleUpdating
     end
   end
 
-  def handle_update_event
-    events.updated_using_sample_manifest!(user_performing_manifest_update) unless @generate_no_update_event
+  def handle_update_event(user = user_performing_manifest_update)
+    events.updated_using_sample_manifest!(user) unless @generate_no_update_event
   end
-  private :handle_update_event
 
   def generate_no_update_event
     @generate_no_update_event = true

@@ -99,16 +99,10 @@ module SampleManifestExcel
 
       def add_multiplexed_library_tube_barcode
         if sample_manifest.asset_type == 'multiplexed_library'
-          add_row ['Multiplexed library tube barcode:', find_multiplexed_library_tube_barcode]
+          add_row ['Multiplexed library tube barcode:', sample_manifest.labware.first.human_barcode]
         else
           add_row
         end
-      end
-
-      def find_multiplexed_library_tube_barcode
-        Tube.with_barcode(sample_manifest.barcodes).first.requests.first.target_asset.human_barcode
-      rescue StandardError
-        ''
       end
     end
   end

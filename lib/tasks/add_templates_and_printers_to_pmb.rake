@@ -68,6 +68,7 @@ namespace :pmb do
 
         def get_label_type_id(name)
           return label_types[name] if label_types.include? name.downcase
+
           label_type = label_type_params(name)
           res = RestClient.post(label_type_url, label_type.to_json, LabelPrinter::PmbClient.headers)
           JSON.parse(res)['data']['id']
@@ -218,16 +219,16 @@ namespace :pmb do
                     space_adjustment: '00',
                     rotational_angles: '00'
                   },
-                  {
-                    x_origin: '0470',
-                    y_origin: '0040',
-                    field_name: 'right_text',
-                    horizontal_magnification: '08',
-                    vertical_magnification: '09',
-                    font: 'N',
-                    space_adjustment: '00',
-                    rotational_angles: '00'
-                  }],
+                                       {
+                                         x_origin: '0470',
+                                         y_origin: '0040',
+                                         field_name: 'right_text',
+                                         horizontal_magnification: '08',
+                                         vertical_magnification: '09',
+                                         font: 'N',
+                                         space_adjustment: '00',
+                                         rotational_angles: '00'
+                                       }],
                   barcodes_attributes: [{
                     x_origin: '0210',
                     y_origin: '0000',
@@ -242,29 +243,29 @@ namespace :pmb do
                     no_of_columns: nil
                   }]
                 },
-                {
-                  name: 'extra_label',
-                  bitmaps_attributes: [{
-                    x_origin: '0010',
-                    y_origin: '0035',
-                    field_name: 'left_text',
-                    horizontal_magnification: '05',
-                    vertical_magnification: '06',
-                    font: 'N',
-                    space_adjustment: '00',
-                    rotational_angles: '00'
-                  },
-                  {
-                    x_origin: '0150',
-                    y_origin: '0035',
-                    field_name: 'right_text',
-                    horizontal_magnification: '06',
-                    vertical_magnification: '07',
-                    font: 'N',
-                    space_adjustment: '00',
-                    rotational_angles: '00'
-                  }]
-                }]
+                                    {
+                                      name: 'extra_label',
+                                      bitmaps_attributes: [{
+                                        x_origin: '0010',
+                                        y_origin: '0035',
+                                        field_name: 'left_text',
+                                        horizontal_magnification: '05',
+                                        vertical_magnification: '06',
+                                        font: 'N',
+                                        space_adjustment: '00',
+                                        rotational_angles: '00'
+                                      },
+                                                           {
+                                                             x_origin: '0150',
+                                                             y_origin: '0035',
+                                                             field_name: 'right_text',
+                                                             horizontal_magnification: '06',
+                                                             vertical_magnification: '07',
+                                                             font: 'N',
+                                                             space_adjustment: '00',
+                                                             rotational_angles: '00'
+                                                           }]
+                                    }]
               }
             }
           }

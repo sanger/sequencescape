@@ -13,6 +13,10 @@ module SampleManifest::UnspecifiedBehaviour
     def generate
       raise StandardError, 'UnspecifiedBehaviour can not be used to build manifests'
     end
+
+    def generate_sample_and_aliquot(sanger_sample_id, asset)
+      raise StandardError, "UnspecifiedBehaviour can not be used to create Sample: #{sanger_sample_id}, for Asset: #{asset.display_name}."
+    end
   end
 
   class RapidCore < Core

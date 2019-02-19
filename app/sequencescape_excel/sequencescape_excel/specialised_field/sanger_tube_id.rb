@@ -44,7 +44,7 @@ module SequencescapeExcel
         if foreign_barcode_format.present?
           check_foreign_barcode_unique
         else
-          errors.add(:sample, 'If you modify the sample container barcode it must be to a valid foreign barcode format')
+          errors.add(:sample, 'barcode has been modified, but it is not a valid foreign barcode format')
         end
       end
 

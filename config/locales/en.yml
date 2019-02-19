@@ -180,6 +180,8 @@ en:
         volume: "Volume"
       "samples/sample_metadata":
         <<: *sample_metadata
+      "sample/metadata":
+        <<: *sample_metadata
       study_metadata:
         faculty_sponsor_id: "Faculty sponsor"
         faculty_sponsor: "Faculty sponsor"

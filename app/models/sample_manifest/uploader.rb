@@ -9,22 +9,22 @@
 class SampleManifest::Uploader
   include ActiveModel::Validations
 
-  attr_reader :filename, :configuration, :tag_group, :upload, :user, :override
+  attr_reader :file, :configuration, :tag_group, :upload, :user, :override
 
-  validates :filename, :configuration, :tag_group, :user, presence: true
-
+  validates :tag_group, presence: { message: 'is not correctly configured for manifest generation' }
+  validates :file, :configuration, :user, presence: true
   validate :check_upload
 
-  delegate :processed?, to: :upload
+  delegate :processed?, :study, to: :upload
 
-  def initialize(filename, configuration, user, override)
-    @filename = filename
+  def initialize(file, configuration, user, override)
+    @file = file
     @configuration = configuration || SequencescapeExcel::NullObjects::NullConfiguration.new
     @user = user
     @override = override
     @tag_group = create_tag_group
     @upload = SampleManifestExcel::Upload::Base.new(
-      filename: filename,
+      file: file,
       column_list: self.configuration.columns.all,
       start_row: SampleManifestExcel::FIRST_ROW,
       override: override
@@ -48,7 +48,7 @@ class SampleManifest::Uploader
   private
 
   def create_tag_group
-    TagGroup.find_or_create_by(name: configuration.tag_group) if configuration.tag_group.present?
+    TagGroup.find_or_create_by!(name: configuration.tag_group) if configuration.tag_group.present?
   end
 
   def check_upload
