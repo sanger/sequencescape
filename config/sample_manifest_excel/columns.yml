@@ -591,12 +591,12 @@ sample_taxon_id:
       type: :whole
       operator: :greaterThanOrEqual
       formula1: "1"
-      allowBlank: true
+      allowBlank: false
       showInputMessage: true
-      promptTitle: "Taxon ID"
-      prompt: "The identifier for a Taxon."
       showErrorMessage: true
       errorStyle: :stop
+      promptTitle: "Taxon ID"
+      prompt: "The identifier for a Taxon."
       errorTitle: "Taxon ID"
       error: "Taxon ID must a number."
   conditional_formattings:

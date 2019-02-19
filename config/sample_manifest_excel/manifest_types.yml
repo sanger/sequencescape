@@ -231,6 +231,7 @@ tube_multiplexed_library:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
+    - :supplier_name
     - :tag_group
     - :tag_index
     - :tag2_group
@@ -238,7 +239,6 @@ tube_multiplexed_library:
     - :library_type
     - :insert_size_from
     - :insert_size_to
-    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -273,13 +273,13 @@ tube_library_with_tag_sequences:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
+    - :supplier_name
     - :i7
     - :i5
     - :reference_genome
     - :library_type
     - :insert_size_from
     - :insert_size_to
-    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -314,13 +314,13 @@ tube_multiplexed_library_with_tag_sequences:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
+    - :supplier_name
     - :i7
     - :i5
     - :reference_genome
     - :library_type
     - :insert_size_from
     - :insert_size_to
-    - :supplier_name
     - :cohort
     - :volume
     - :concentration
