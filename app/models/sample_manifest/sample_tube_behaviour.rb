@@ -10,14 +10,25 @@ module SampleManifest::SampleTubeBehaviour
   class Core
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
-    def initialize(manifest)
-      @manifest = manifest
-    end
+    attr_reader :tubes
 
     delegate :generate_1dtubes, to: :@manifest
-    alias_method(:generate, :generate_1dtubes)
+    delegate :samples, :sample_manifest_assets, to: :@manifest
 
-    delegate :samples, to: :@manifest
+    def initialize(manifest)
+      @manifest = manifest
+      @tubes = []
+    end
+
+    def generate
+      @tubes = generate_1dtubes
+    end
+
+    def generate_sample_and_aliquot(sanger_sample_id, tube)
+      sample = @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
+      tube.register_stock!
+      sample
+    end
 
     def io_samples
       samples.map do |sample|
@@ -38,23 +49,16 @@ module SampleManifest::SampleTubeBehaviour
       # Does nothing at the moment
     end
 
-    def details
-      samples.each do |sample|
-        yield({
-          barcode: sample.assets.first.human_barcode,
-          sample_id: sample.sanger_sample_id
-        })
-      end
+    def details(&block)
+      details_array.each(&block)
     end
 
     def details_array
-      [].tap do |details|
-        samples.each do |sample|
-          details << {
-            barcode: sample.assets.first.human_barcode,
-            sample_id: sample.sanger_sample_id
-          }
-        end
+      sample_manifest_assets.includes(asset: :barcodes).map do |sample_manifest_asset|
+        {
+          barcode: sample_manifest_asset.human_barcode,
+          sample_id: sample_manifest_asset.sanger_sample_id
+        }
       end
     end
 
@@ -65,8 +69,16 @@ module SampleManifest::SampleTubeBehaviour
       yield("You cannot move samples between tubes or modify their barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode}' but the manifest is trying to put it in '#{manifest_barcode}'")
     end
 
-    def labware
+    def labware_from_samples
       samples.map { |sample| sample.assets.first }
+    end
+
+    def labware=(labware)
+      @tubes = labware
+    end
+
+    def labware
+      tubes | labware_from_samples | @manifest.assets
     end
     alias printables labware
 
@@ -86,6 +98,6 @@ module SampleManifest::SampleTubeBehaviour
   end
 
   def generate_1dtubes
-    generate_tubes(Tube::Purpose.standard_sample_tube).each(&:register_stock!)
+    generate_tubes(Tube::Purpose.standard_sample_tube)
   end
 end

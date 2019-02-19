@@ -95,7 +95,7 @@
                 <% if source_well.plate.is_a?(ControlPlate) %>
                   <td class="control">
                 <% elsif source_well.is_a?(Well) %>
-                  <td class="<%= source_plate_colour[source_well.plate.ean13_barcode.to_s]%> ">
+                  <td class="<%= source_plate_colour[source_well.plate.machine_barcode]%> ">
                 <% else %>
                   <td>
                 <% end -%>

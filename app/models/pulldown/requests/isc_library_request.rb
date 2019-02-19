@@ -9,7 +9,6 @@ module Pulldown::Requests
   class IscLibraryRequest < LibraryCreation
     include BaitLibraryRequest
     include PreCapturePool::Poolable
-    include Request::ApplyLibraryInfoOnPass
 
     Metadata.class_eval do
       custom_attribute(:pre_capture_plex_level, default: 8, integer: true)

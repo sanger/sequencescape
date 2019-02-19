@@ -9,10 +9,11 @@ module Batch::TecanBehaviour
 
     requests.includes([{ asset: :plate }, { target_asset: :plate }]).where(state: 'passed').find_each do |request|
       target_plate = request.target_asset.plate
-      next unless [target_plate.human_barcode, target_plate.machine_barcode].include?(target_barcode)
 
-      full_source_barcode = request.asset.plate.barcode_for_tecan
-      full_destination_barcode = request.target_asset.plate.barcode_for_tecan
+      next unless target_plate.barcodes.any? { |plate_barcode| plate_barcode =~ target_barcode }
+
+      full_source_barcode = request.asset.plate.machine_barcode
+      full_destination_barcode = request.target_asset.plate.machine_barcode
 
       source_plate_name = override_plate_type.presence || request.asset.plate.plate_type.tr('_', "\s")
 

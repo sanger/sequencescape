@@ -30,12 +30,7 @@ Given(/^plate "([^"]*)" has measured volume results$/) do |plate_barcode|
 end
 
 Given(/^I have a tag group called "([^"]*)" with (\d+) tags$/) do |tag_group_name, number_of_tags|
-  oligos = %w(ATCACG CGATGT TTAGGC TGACCA)
-  tag_group = TagGroup.create!(name: tag_group_name)
-  tags = []
-  1.upto(number_of_tags.to_i) do |i|
-    Tag.create!(oligo: oligos[(i - 1) % oligos.size], map_id: i, tag_group_id: tag_group.id)
-  end
+  FactoryBot.create :tag_group, name: tag_group_name, tag_count: number_of_tags.to_i
 end
 
 Given(/^I have a plate "([^"]*)" with the following wells:$/) do |plate_barcode, well_details|

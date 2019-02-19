@@ -5,7 +5,8 @@ FactoryBot.define do
     transient do
       study { build :study }
       project { build :project }
-      aliquot_options { |_e, well| { study: study, project: project, receptacle: well } }
+      sample { build :sample }
+      aliquot_options { |_e, well| { study: study, project: project, receptacle: well, sample: sample } }
     end
     association(:well_attribute, strategy: :build)
 

@@ -22,7 +22,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
       end
     end
 
-    let(:test_file) { 'test_file.xlsx' }
+    let(:test_file_name) { 'test_file.xlsx' }
+    let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
 
     describe 'for tube manifests' do
       let(:library_with_tag_seq_cols)            { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
@@ -36,12 +37,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         allow(PlateBarcode).to receive(:create).and_return(barcode)
 
         download.worksheet.sample_manifest.generate
-        download.save(test_file)
+        download.save(test_file_name)
       end
 
       context 'Library Tubes' do
         before(:each) do
-          @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: library_with_tag_seq_cols, start_row: 9)
+          @upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: library_with_tag_seq_cols, start_row: 9)
         end
 
         context 'valid' do
@@ -58,7 +59,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
             processor.run(tag_group)
             expect(processor).to be_sample_manifest_updated
-            expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
           it 'will be processed' do
@@ -70,7 +71,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
         context 'manifest reuploaded and overriden' do
           let!(:download) { build(:test_download_tubes, columns: library_with_tag_seq_cols, manifest_type: 'tube_library_with_tag_sequences') }
-          let!(:new_test_file) { 'new_test_file.xlsx' }
+          let!(:new_test_file_name) { 'new_test_file.xlsx' }
+          let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before(:each) do
             upload.process(tag_group)
@@ -80,8 +82,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           it 'will update the aliquots if aliquots data has changed and override is set true' do
             download.worksheet.axlsx_worksheet.rows[10].cells[11].value = '50'
             download.worksheet.axlsx_worksheet.rows[10].cells[12].value = 'Female'
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: library_with_tag_seq_cols, start_row: 9, override: true)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: library_with_tag_seq_cols, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::OneDTube.new(reupload)
             processor.update_samples(tag_group)
             expect(reupload.rows.all?(&:sample_updated?)).to be_truthy
@@ -93,8 +95,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           it 'will not update the aliquots if aliquots data has changed and override is set false' do
             download.worksheet.axlsx_worksheet.rows[10].cells[11].value = '50'
             download.worksheet.axlsx_worksheet.rows[10].cells[12].value = 'Female'
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: library_with_tag_seq_cols, start_row: 9)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: library_with_tag_seq_cols, start_row: 9)
             processor = SampleManifestExcel::Upload::Processor::OneDTube.new(reupload)
             processor.update_samples(tag_group)
             expect(reupload.rows.all?(&:sample_updated?)).to be_falsey
@@ -104,14 +106,14 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
 
           after(:each) do
-            File.delete(new_test_file) if File.exist?(new_test_file)
+            File.delete(new_test_file) if File.exist?(new_test_file_name)
           end
         end
       end
 
       context 'Multiplexed Library Tubes with Tag Sequences' do
         before(:each) do
-          @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9)
+          @upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9)
         end
 
         context 'valid' do
@@ -128,7 +130,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(tag_group)
             expect(processor).to be_sample_manifest_updated
-            expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
           it 'will transfer the aliquots to the multiplexed library tube' do
@@ -162,7 +164,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
         context 'manifest reuploaded and overriden' do
           let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
-          let!(:new_test_file) { 'new_test_file.xlsx' }
+          let!(:new_test_file_name) { 'new_test_file.xlsx' }
+          let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before(:each) do
             upload.process(tag_group)
@@ -172,8 +175,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
             download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '100'
             download.worksheet.axlsx_worksheet.rows[11].cells[7].value = '1000'
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.substitutions[1]).to include('insert_size_from' => 100)
@@ -186,8 +189,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             i7_2 = download.worksheet.axlsx_worksheet.rows[11].cells[2].value
             download.worksheet.axlsx_worksheet.rows[10].cells[2].value = i7_2
             download.worksheet.axlsx_worksheet.rows[11].cells[2].value = i7_1
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.downstream_aliquots_updated?).to be_truthy
@@ -197,8 +200,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             # We already have distinct tag2s, so by setting these to the same, we aren't creating a tag clash.
             download.worksheet.axlsx_worksheet.rows[10].cells[2].value = 'ATAGATAGATAG'
             download.worksheet.axlsx_worksheet.rows[11].cells[2].value = 'ATAGATAGATAG'
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.aliquots_updated?).to be_truthy
@@ -206,8 +209,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
 
           it 'will not update the aliquots downstream if there is nothing to update' do
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.substitutions.compact).to be_empty
@@ -215,7 +218,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
 
           after(:each) do
-            File.delete(new_test_file) if File.exist?(new_test_file)
+            File.delete(new_test_file_name) if File.exist?(new_test_file_name)
           end
         end
 
@@ -232,7 +235,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
       context 'Multiplexed Library Tubes with Tag Groups and Indexes' do
         before(:each) do
-          @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9)
+          @upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9)
         end
 
         context 'valid' do
@@ -249,7 +252,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(nil)
             expect(processor).to be_sample_manifest_updated
-            expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
           it 'will transfer the aliquots to the multiplexed library tube' do
@@ -283,7 +286,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
         context 'manifest reuploaded and overriden' do
           let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
-          let!(:new_test_file) { 'new_test_file.xlsx' }
+          let!(:new_test_file_name) { 'new_test_file.xlsx' }
+          let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before(:each) do
             upload.process(nil)
@@ -293,8 +297,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
             download.worksheet.axlsx_worksheet.rows[10].cells[7].value = '100'
             download.worksheet.axlsx_worksheet.rows[11].cells[8].value = '1000'
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9, override: true)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor.substitutions[1]).to include('insert_size_from' => 100)
@@ -311,16 +315,16 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             download.worksheet.axlsx_worksheet.rows[10].cells[3].value = tag_index_2
             download.worksheet.axlsx_worksheet.rows[11].cells[2].value = tag_group_1
             download.worksheet.axlsx_worksheet.rows[11].cells[3].value = tag_index_1
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9, override: true)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor.downstream_aliquots_updated?).to be_truthy
           end
 
           it 'will not update the aliquots downstream if there is nothing to update' do
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9, override: true)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor.substitutions.compact).to be_empty
@@ -328,7 +332,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
 
           after(:each) do
-            File.delete(new_test_file) if File.exist?(new_test_file)
+            File.delete(new_test_file_name) if File.exist?(new_test_file_name)
           end
         end
 
@@ -353,8 +357,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         allow(PlateBarcode).to receive(:create).and_return(barcode)
 
         download.worksheet.sample_manifest.generate
-        download.save(test_file)
-        @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: plate_columns, start_row: 9)
+        download.save(test_file_name)
+        @upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: plate_columns, start_row: 9)
       end
 
       context 'valid' do
@@ -371,7 +375,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
           processor.run(nil)
           expect(processor).to be_sample_manifest_updated
-          expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+          expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
         end
 
         it 'will be processed' do
@@ -413,7 +417,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
             processor.run(nil)
             expect(processor).to be_sample_manifest_updated
-            expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
           it 'will be processed' do
@@ -444,7 +448,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
         context 'manifest reuploaded and overriden' do
           let!(:download) { build(:test_download_plates, columns: plate_columns) }
-          let!(:new_test_file) { 'new_test_file.xlsx' }
+          let!(:new_test_file_name) { 'new_test_file.xlsx' }
+          let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before(:each) do
             upload.process(nil)
@@ -454,8 +459,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           it 'will update the aliquots if aliquots data has changed and override is set true' do
             download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '50'
             download.worksheet.axlsx_worksheet.rows[10].cells[7].value = 'Female'
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: plate_columns, start_row: 9, override: true)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: plate_columns, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::Plate.new(reupload)
             processor.update_samples(nil)
             expect(reupload.rows.all?(&:sample_updated?)).to be_truthy
@@ -467,8 +472,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           it 'will not update the aliquots if aliquots data has changed and override is set false' do
             download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '50'
             download.worksheet.axlsx_worksheet.rows[10].cells[7].value = 'Female'
-            download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: plate_columns, start_row: 9)
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: plate_columns, start_row: 9)
             processor = SampleManifestExcel::Upload::Processor::Plate.new(reupload)
             processor.update_samples(nil)
             expect(reupload.rows.all?(&:sample_updated?)).to be_falsey
@@ -478,7 +483,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
 
           after(:each) do
-            File.delete(new_test_file) if File.exist?(new_test_file)
+            File.delete(new_test_file_name) if File.exist?(new_test_file_name)
           end
         end
       end
@@ -496,7 +501,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
     end
 
     after(:each) do
-      File.delete(test_file) if File.exist?(test_file)
+      File.delete(test_file_name) if File.exist?(test_file_name)
     end
   end
 end

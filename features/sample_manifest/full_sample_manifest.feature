@@ -23,8 +23,7 @@ Feature: Full sample manifest
     Given a manifest has been created for "Test study"
     When I fill in "File to upload" with the file "test/data/full_manifest.csv"
     And I press "Upload manifest"
-    Given 1 pending delayed jobs are processed
-    When I refresh the page
+    Then I should see "Sample manifest successfully uploaded."
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors | State   | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
@@ -32,16 +31,16 @@ Feature: Full sample manifest
     Then I should see "DN1234567T"
 
     Then the samples table should look like:
-      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id | cell_type  |
-      | sample_1         | aaaa          | false                      | 9606            | Epithelial |
-      | sample_2         | bbbb          | false                      | 9606            | Epithelial |
-      | sample_3         | cccc          | false                      | 9606            | Epithelial |
-      | sample_4         | dddd          | false                      | 9606            | Epithelial |
-      | sample_5         | eeee          | false                      | 9606            | Epithelial |
-      | sample_6         | ffff          | false                      | 9606            | Epithelial |
-      | sample_7         | gggg          | false                      | 9606            | Epithelial |
-      | sample_8         | hhhh          | false                      | 9606            | Epithelial |
-      | sample_9         | iiii          | false                      | 9606            | Epithelial |
-      | sample_10        | jjjj          | false                      | 9606            | Epithelial |
-      | sample_11        | kkkk          | false                      | 9606            | Epithelial |
-      | sample_12        | llll          | false                      | 9606            | Epithelial |
+      | sanger_sample_id | supplier_name | sample_absent | sample_taxon_id | cell_type  |
+      | sample_1         | aaaa          | false         | 9606            | Epithelial |
+      | sample_2         | bbbb          | false         | 9606            | Epithelial |
+      | sample_3         | cccc          | false         | 9606            | Epithelial |
+      | sample_4         | dddd          | false         | 9606            | Epithelial |
+      | sample_5         | eeee          | false         | 9606            | Epithelial |
+      | sample_6         | ffff          | false         | 9606            | Epithelial |
+      | sample_7         | gggg          | false         | 9606            | Epithelial |
+      | sample_8         | hhhh          | false         | 9606            | Epithelial |
+      | sample_9         | iiii          | false         | 9606            | Epithelial |
+      | sample_10        | jjjj          | false         | 9606            | Epithelial |
+      | sample_11        | kkkk          | false         | 9606            | Epithelial |
+      | sample_12        | llll          | false         | 9606            | Epithelial |

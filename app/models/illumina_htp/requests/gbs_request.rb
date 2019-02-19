@@ -14,7 +14,8 @@ module IlluminaHtp::Requests
     Metadata.class_eval do
       belongs_to :primer_panel
       association(:primer_panel, :name)
-      validates :primer_panel, presence: true
+      # ON create, check our actual primer panel
+      validates :primer_panel, presence: true, on: :create
     end
 
     #

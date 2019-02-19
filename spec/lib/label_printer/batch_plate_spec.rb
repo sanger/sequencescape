@@ -8,7 +8,7 @@ shared_examples 'a correct single label printer' do
       labels: {
         body: [{
           main_label: {
-            barcode: plate1.ean13_barcode,
+            barcode: plate1.machine_barcode,
             bottom_left: plate1.human_barcode,
             bottom_right: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number}",
             top_far_right: nil,
@@ -30,7 +30,7 @@ shared_examples 'a correct double label printer' do
           main_label: {
             left_text: plate1.human_barcode.to_s,
             right_text: plate1.barcode_number.to_s,
-            barcode: plate1.ean13_barcode
+            barcode: plate1.machine_barcode
           }
         },
         {
@@ -63,7 +63,6 @@ shared_examples 'a correct filter' do
     expect(subject.assets).to eq([plate1, plate2])
   end
 end
-
 
 context 'printing labels' do
   let(:count) { '1' }

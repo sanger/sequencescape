@@ -38,8 +38,7 @@ Feature: Access sample manifests through the API
       {
         "sample_manifest": {
           "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
           "study": {
             "actions": {
@@ -56,28 +55,7 @@ Feature: Access sample manifests through the API
           "state": "pending",
           "last_errors": null,
 
-          "samples": [
-            {
-              "container": {
-                "barcode": "NT100F"
-              },
-              "sample": {
-                "sanger": {
-                  "sample_id": "WTCCC1"
-                }
-              }
-            },
-            {
-              "container": {
-                "barcode": "NT101G"
-              },
-              "sample": {
-                "sanger": {
-                  "sample_id": "WTCCC2"
-                }
-              }
-            }
-          ]
+          "samples": []
         }
       }
       """
@@ -97,53 +75,10 @@ Feature: Access sample manifests through the API
         }
       }
       """
-    Then the HTTP response should be "201 Created"
+    Then the HTTP response should be "410 GONE"
     And the JSON should match the following for the specified fields:
       """
-      {
-        "sample_manifest": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-          "study": {
-            "actions": {
-              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
-            }
-          },
-          "supplier": {
-            "actions": {
-              "read": "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
-            }
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444",
-          "state": "pending",
-          "last_errors": null,
-
-          "samples": [
-            {
-              "container": {
-
-              },
-              "sample": {
-                "sanger": {
-                  "sample_id": "WTCCC1"
-                }
-              }
-            },
-            {
-              "container": {
-              },
-              "sample": {
-                "sanger": {
-                  "sample_id": "WTCCC2"
-                }
-              }
-            }
-          ]
-        }
-      }
+      { "general": ["requested action is no longer supported"] }
       """
 
   @update
@@ -169,8 +104,7 @@ Feature: Access sample manifests through the API
         "sample_manifest": {
           "samples": [
             {
-              "uuid": "11111111-2222-3333-4444-000000000001",
-
+              "container": { "barcode": "NT100F" },
               "supplier": {
                 "sample_name": "flurby_wurby_sample",
                 "measurements": {
@@ -193,8 +127,7 @@ Feature: Access sample manifests through the API
               }
             },
             {
-              "uuid": "11111111-2222-3333-4444-000000000002",
-
+              "container": { "barocde": "NT100F" },
               "supplier": {
                 "sample_name": "hurdy_gurdy_sample",
                 "measurements": {
@@ -220,93 +153,9 @@ Feature: Access sample manifests through the API
         }
       }
       """
-    Then the HTTP response should be "200 OK"
+    Then the HTTP response should be "410 OK"
     And the JSON should match the following for the specified fields:
       """
-      {
-        "sample_manifest": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-          "study": {
-            "actions": {
-              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
-            }
-          },
-          "supplier": {
-            "actions": {
-              "read": "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
-            }
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444",
-          "state": "pending",
-          "last_errors": null,
-
-          "samples": [
-            {
-              "container": {
-                "barcode": "NT100F"
-              },
-              "sample": {
-                "sanger": {
-                  "sample_id": "WTCCC1"
-                },
-                "supplier": {
-                  "sample_name": "flurby_wurby_sample",
-                  "measurements": {
-                    "volume": "100",
-                    "concentration": "10"
-                  }
-                }
-              },
-              "library_information": {
-                "tag": {
-                  "tag_group": "Test tag group",
-                  "tag_index": "1"
-                },
-                "tag2": {
-                  "tag_group": "Test tag group 2",
-                  "tag_index": "1"
-                },
-                "library_type": "standard",
-                "insert_size_from": 100,
-                "insert_size_to": 100
-              }
-            },
-            {
-              "container": {
-                "barcode": "NT101G"
-              },
-              "sample": {
-                "sanger": {
-                  "sample_id": "WTCCC2"
-                },
-                "supplier": {
-                  "sample_name": "hurdy_gurdy_sample",
-                  "measurements": {
-                    "volume": "200",
-                    "concentration": "5"
-                  }
-                }
-              },
-              "library_information": {
-                "tag": {
-                  "tag_group": "Test tag group",
-                  "tag_index": "2"
-                },
-                "tag2": {
-                  "tag_group": "Test tag group 2",
-                  "tag_index": "1"
-                },
-                "library_type": "standard",
-                "insert_size_from": 100,
-                "insert_size_to": 100
-              }
-            }
-          ]
-        }
-      }
+      { "general": ["requested action is no longer supported"] }
       """
 

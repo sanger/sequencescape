@@ -5,7 +5,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
   context 'Sanger::Robots::Tecan::Generator' do
     @testcases = []
     # original
-    file = File.open(configatron.tecan_files_location + '/tecan/' + 'original.gwl', 'rb')
+    file = File.open('test/data/tecan/original.gwl', 'rb')
     expected_output = file.read
     data_object = {
       'user' => 'xyz987',
@@ -60,7 +60,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
     @testcases << { data_object: data_object, expected_output: expected_output }
 
-    file = File.open(configatron.tecan_files_location + '/tecan/' + '127073.gwl', 'rb')
+    file = File.open('test/data/tecan/127073.gwl', 'rb')
     expected_output = file.read
     data_object = {
       'user' => 'xyz987',
@@ -96,7 +96,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
     @testcases << { data_object: data_object, expected_output: expected_output }
 
-    file = File.open(configatron.tecan_files_location + '/tecan/' + 'pooled_cherrypick.gwl', 'rb')
+    file = File.open('test/data/tecan/pooled_cherrypick.gwl', 'rb')
     expected_output = file.read
     data_object = {
       'user' => 'xyz987',

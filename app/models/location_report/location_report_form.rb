@@ -17,23 +17,19 @@ class LocationReport::LocationReportForm
                 :study_id,
                 :start_date,
                 :end_date,
-                :plate_purpose_ids,
-                :barcodes,
-                :invalid_barcodes
+                :plate_purpose_ids
 
   attr_reader :barcodes_text,
               :name
 
-  attr_writer :location_report
+  attr_writer :location_report,
+              :barcodes
 
   # validations
   validate :check_labwhere_location_exists, :check_maxlength_of_barcodes, :check_for_valid_barcodes,
-           :check_for_invalid_barcodes, :check_location_report
+           :check_location_report
 
-  def barcodes_text=(input_text)
-    @barcodes_text = input_text
-    parse_barcodes
-  end
+  attr_writer :barcodes_text
 
   def name=(input_name)
     @name = input_name.gsub(/[^A-Za-z0-9_\-\.\s]/, '').squish.gsub(/\s/, '_') if input_name.present?
@@ -64,6 +60,10 @@ class LocationReport::LocationReportForm
     ActiveModel::Name.new(LocationReport)
   end
 
+  def barcodes
+    @barcodes ||= barcodes_text&.squish&.split(/[\s\,]+/) || []
+  end
+
   #######
 
   private
@@ -91,41 +91,10 @@ class LocationReport::LocationReportForm
     errors.add(:barcodes_text, I18n.t('location_reports.errors.no_valid_barcodes_found'))
   end
 
-  def check_for_invalid_barcodes
-    return unless report_type == 'type_selection'
-    return if barcodes_text.blank? || invalid_barcodes.blank?
-
-    errors.add(:barcodes_text, I18n.t('location_reports.errors.invalid_barcodes_found') + invalid_barcodes.join(','))
-  end
-
   def check_location_report
     return if location_report.valid?
 
     add_location_errors
-  end
-
-  def parse_barcodes
-    @invalid_barcodes = []
-    valid_barcodes_hash = {}
-    parsed_barcodes.each do |cur_bc|
-      if barcode_is_human_readable?(cur_bc)
-        begin
-          cur_bc = Barcode.human_to_machine_barcode(cur_bc).to_s
-          barcode_unique(valid_barcodes_hash, cur_bc)
-        rescue SBCF::InvalidBarcode
-          invalid_barcodes << cur_bc
-        end
-      elsif barcode_is_ean13?(cur_bc)
-        barcode_unique(valid_barcodes_hash, cur_bc)
-      else
-        invalid_barcodes << cur_bc
-      end
-    end
-    @barcodes ||= valid_barcodes_hash.keys if valid_barcodes_hash.present?
-  end
-
-  def parsed_barcodes
-    barcodes_text&.squish&.split(/[\s\,]+/) || []
   end
 
   def barcode_unique(valid_barcodes, cur_bc)
