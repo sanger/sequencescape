@@ -30,7 +30,7 @@ class Plate < Asset
   belongs_to :plate_purpose, foreign_key: :plate_purpose_id, inverse_of: :plates
   belongs_to :purpose, foreign_key: :plate_purpose_id
 
-  has_many :container_associations, foreign_key: :container_id, inverse_of: :plate, dependent: :destroy
+  has_many :container_associations, -> { joins(:well) }, foreign_key: :container_id, inverse_of: :plate, dependent: :destroy
   has_many :wells, through: :container_associations, inverse_of: :plate do
     # Build empty wells for the plate.
     def construct!
