@@ -35,7 +35,8 @@ module SequencescapeExcel
       private
 
       def check_container
-        return if value == sample.wells.first.plate.human_barcode
+        primary_receptacle = sample.primary_receptacle
+        return if value == primary_receptacle.labware.human_barcode
 
         check_for_foreign_barcode
       end
