@@ -42,7 +42,7 @@ class Batch < ApplicationRecord
   accepts_nested_attributes_for :requests
   broadcast_via_warren
 
-  validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
+  validate :requests_have_same_read_length, :batch_meets_minimum_size, :all_requests_are_ready?, on: :create, if: :pipeline
 
   after_create :generate_target_assets_for_requests, if: :need_target_assets_on_requests?
   after_commit :rebroadcast
@@ -108,8 +108,8 @@ class Batch < ApplicationRecord
     self if sequencing?
   end
 
-  def cluster_formation_requests_must_be_over_minimum
-    if (!pipeline.min_size.nil?) && (requests.size < pipeline.min_size)
+  def batch_meets_minimum_size
+    if pipeline.min_size && (requests.size < pipeline.min_size)
       errors.add :base, "You must create batches of at least #{pipeline.min_size} requests in the pipeline #{pipeline.name}"
     end
   end
