@@ -18,6 +18,15 @@ module Api
       has_many :studies
       has_many :projects
 
+      has_many :requests_as_source, readonly: true
+      has_many :requests_as_target, readonly: true
+      has_many :aliquots, readonly: true
+
+      has_many :downstream_assets, readonly: true, polymorphic: true
+      has_many :downstream_wells, readonly: true
+      has_many :downstream_plates, readonly: true
+      has_many :downstream_tubes, readonly: true
+
       # Attributes
       attribute :uuid, readonly: true
       attribute :name, delegate: :display_name, readonly: true
