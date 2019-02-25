@@ -51,7 +51,7 @@ module SampleManifestExcel
 
         def find_plate_id_for_sample_id(sample_id)
           sample = Sample.find_by(sanger_sample_id: sample_id)
-          sample&.assets&.first&.plate&.human_barcode
+          sample&.primary_receptacle&.labware&.human_barcode
         end
       end
     end
