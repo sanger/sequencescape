@@ -7,6 +7,11 @@ Sequencescape::Application.routes.draw do
 
   namespace :api do
     namespace :v2 do
+      jsonapi_resources :lot_types
+      jsonapi_resources :lots
+      jsonapi_resources :qcables
+      jsonapi_resources :tag_layout_templates
+      jsonapi_resources :tag_groups
       jsonapi_resources :comments
       jsonapi_resources :pre_capture_pools
       jsonapi_resources :primer_panels

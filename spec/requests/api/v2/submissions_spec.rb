@@ -22,31 +22,19 @@ describe 'Submissions API', with: :api_v2 do
   context 'with a submission' do
     let(:resource_model) { create :submission }
 
-    it 'sends an individual submission' do
-      api_get "/api/v2/submissions/#{resource_model.id}"
+    it 'sends an individual submission without tags' do
+      api_get "/api/v2/submissions/#{resource_model.id}?fields[submissions]"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('submissions')
+      expect(json.dig('data', 'attributes', 'used_tags')).to eq(nil)
     end
 
-    let(:payload) do
-      {
-        'data' => {
-          'id' => resource_model.id,
-          'type' => 'submissions',
-          'attributes' => {
-            # Set new attributes
-          }
-        }
-      }
-    end
-
-    # Remove if immutable
-    it 'allows update of a submission' do
-      api_patch "/api/v2/submissions/#{resource_model.id}", payload
+    it 'sends an individual submission without tags' do
+      api_get "/api/v2/submissions/#{resource_model.id}?fields[submissions]=used_tags,name"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('submissions')
-      # Double check at least one of the attributes
-      # eg. expect(json.dig('data', 'attributes', 'state')).to eq('started')
+      expect(json.dig('data', 'attributes', 'used_tags')).to eq(resource_model.used_tags)
+      expect(json.dig('data', 'attributes', 'name')).to eq(resource_model.name)
     end
   end
 end
