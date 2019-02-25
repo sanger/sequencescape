@@ -8,6 +8,7 @@ namespace :devour do
 
     config = Api::V2.constants
                     .reject { |resource_key| resource_key == :BaseResource }
+                    .sort
                     .map do |resource_key|
 
       resource = Api::V2.const_get(resource_key)
