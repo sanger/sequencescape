@@ -8,7 +8,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
     end
 
     should belong_to :study
-    should belong_to :user
+    should belong_to(:user).required
 
     context 'build (Submission factory)' do
       setup do

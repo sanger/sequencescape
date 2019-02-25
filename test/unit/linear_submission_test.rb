@@ -6,7 +6,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
   context 'LinearSubmission' do
     should belong_to :study
-    should belong_to :user
+    should belong_to(:user).required
   end
 
   context 'A LinearSubmission' do
