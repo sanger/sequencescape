@@ -27,12 +27,6 @@
   </div>
 <% end %>
 
-<%= fields_for(study) do |form| %>
-  <%= form.fields_for(:study_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
-    <%= metadata_fields.select_by_association(:reference_genome, {}, {class: 'custom-select select2'}) %>
-  <% end %>
-<% end %>
-
 <h3>Properties</h3>
 <%= render partial: 'shared/metadata/edit/study', locals: { study: study } %>
 
