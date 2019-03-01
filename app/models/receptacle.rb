@@ -6,16 +6,15 @@ class Receptacle < Asset
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
-  has_many :upstream_assets, through: :transfer_requests_as_target, source: :asset
 
   has_many :downstream_assets, through: :transfer_requests_as_source, source: :target_asset
   has_many :downstream_wells, through: :transfer_requests_as_source, source: :target_asset, class_name: 'Well'
   has_many :downstream_tubes, through: :transfer_requests_as_source, source: :target_asset, class_name: 'Tube'
   has_many :downstream_plates, through: :downstream_wells, source: :plate
 
-  has_many :upstream_assets, through: :transfer_requests_as_target, source: :source_asset
-  has_many :upstream_wells, through: :transfer_requests_as_target, source: :source_asset, class_name: 'Well'
-  has_many :upstream_tubes, through: :transfer_requests_as_target, source: :source_asset, class_name: 'Tube'
+  has_many :upstream_assets, through: :transfer_requests_as_target, source: :asset
+  has_many :upstream_wells, through: :transfer_requests_as_target, source: :asset, class_name: 'Well'
+  has_many :upstream_tubes, through: :transfer_requests_as_target, source: :asset, class_name: 'Tube'
   has_many :upstream_plates, through: :upstream_wells, source: :plate
 
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id
