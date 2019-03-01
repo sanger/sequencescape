@@ -133,6 +133,8 @@ dl.order-summary {
 .badge-started { @extend .badge-primary; }
 .badge-passed { @extend .badge-success; }
 
+.btn-default { @extend .btn-primary; }
+
 // Request progress bars
 .request_progress {
   .request_progress_header {
