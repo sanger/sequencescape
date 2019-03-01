@@ -27,6 +27,11 @@ module Api
       has_many :downstream_plates, readonly: true
       has_many :downstream_tubes, readonly: true
 
+      has_many :upstream_assets, readonly: true, polymorphic: true
+      has_many :upstream_wells, readonly: true
+      has_many :upstream_plates, readonly: true
+      has_many :upstream_tubes, readonly: true
+
       # Attributes
       attribute :uuid, readonly: true
       attribute :name, delegate: :display_name, readonly: true

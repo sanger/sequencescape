@@ -13,6 +13,11 @@ class Receptacle < Asset
   has_many :downstream_tubes, through: :transfer_requests_as_source, source: :target_asset, class_name: 'Tube'
   has_many :downstream_plates, through: :downstream_wells, source: :plate
 
+  has_many :upstream_assets, through: :transfer_requests_as_target, source: :source_asset
+  has_many :upstream_wells, through: :transfer_requests_as_target, source: :source_asset, class_name: 'Well'
+  has_many :upstream_tubes, through: :transfer_requests_as_target, source: :source_asset, class_name: 'Tube'
+  has_many :upstream_plates, through: :upstream_wells, source: :plate
+
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id
   has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
