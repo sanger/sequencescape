@@ -2,23 +2,25 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of submission
+    # Provides a JSON API representation of Lot
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
-    class SubmissionResource < BaseResource
+    class LotResource < BaseResource
       # Constants...
 
-      immutable # uncomment to make the resource immutable
+      # immutable # uncomment to make the resource immutable
 
       # model_name / model_hint if required
 
       default_includes :uuid_object
 
       # Associations:
+      has_one :lot_type
+      has_one :user
+      has_one :template, polymorphic: true
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :name, readonly: true
-      attribute :used_tags, readonly: true
+      attribute :lot_number, readonly: true
 
       # Filters
 

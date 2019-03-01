@@ -77,6 +77,8 @@ class Aliquot < ApplicationRecord
        LEFT OUTER JOIN tags AS tag2s ON tag2s.id = aliquots.tag2_id'
     ).order('tag1s.map_id ASC, tag2s.map_id ASC')
   }
+  scope :untagged, -> { where(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
+  scope :any_tags, -> { where.not(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
 
   # returns a hash, where keys are cost_codes and values are number of aliquots related to particular cost code
   # {'cost_code_1' => 20, 'cost_code_2' => 3, 'cost_code_3' => 8 }
