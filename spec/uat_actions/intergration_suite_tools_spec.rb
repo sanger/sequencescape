@@ -2,14 +2,15 @@
 
 require 'rails_helper'
 
-describe UatActions::<%= camelcase %> do
+describe UatActions::IntergrationSuiteTools do
   context 'valid options' do
     let(:parameters) { {} }
     let(:uat_action) { described_class.new(parameters) }
     let(:report) do
-      # A report is a hash of key value pairs which get returned to the user.
-      # It should include information such as barcodes and identifiers
-      {}
+      {
+        user_swipecard: '__uat_test__',
+        user_login: '__uat_test__'
+      }
     end
 
     it 'can be performed' do

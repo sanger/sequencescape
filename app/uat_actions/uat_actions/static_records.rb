@@ -2,6 +2,11 @@
 
 # Provides simple consistent records where multiple records are not needed.
 module UatActions::StaticRecords
+  # Swipecard code of the test user.
+  # It gets hashed when persisted to the database, so we store it as a constant
+  # here to allow us to access it in the integration suite tools.
+  SWIPECARD_CODE = '__uat_test__'
+
   def self.study
     Study.create_with(
       state: 'active',
@@ -32,7 +37,7 @@ module UatActions::StaticRecords
       email: configatron.admin_email,
       first_name: 'Test',
       last_name: 'User',
-      swipecard_code: '__uat_test__'
+      swipecard_code: SWIPECARD_CODE
     ).find_or_create_by(login: '__uat_test__')
   end
 
