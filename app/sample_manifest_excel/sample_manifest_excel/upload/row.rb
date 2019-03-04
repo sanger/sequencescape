@@ -83,6 +83,7 @@ module SampleManifestExcel
           aliquot.save!
           metadata.save!
           sample.updated_by_manifest = true
+          sample.empty_supplier_sample_name = false
           @sample_updated = sample.save
         end
       end
