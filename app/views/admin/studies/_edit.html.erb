@@ -6,32 +6,20 @@
       Study <%= study.id %> &middot; Created on <%= study.created_at.to_formatted_s(:long) %> &middot; <%= study.state.capitalize %>
     </div>
 
-    <div class='row'>
-      <div class='col-md-6'>
-        <%= panel(:info,title:'Study state') do %>
-          <%= form_group do %>
-            <%= form.label :state, "State", class: 'col-md-4' %>
-            <div class='col-md-8'>
-              <%= form.select :state, Study.aasm.states_for_select, {}, {class: 'custom-select'} %>
-            </div>
-          <% end %>
+    <div class='columnize'>
+      <%= panel(:info,title:'Study state') do %>
+        <%= form_group do %>
+          <%= form.label :state, "State", class: 'col-md-4' %>
+          <div class='col-md-8'>
+            <%= form.select :state, Study.aasm.states_for_select, {}, {class: 'custom-select'} %>
+          </div>
         <% end %>
-      </div>
+      <% end %>
 
-      <div class='col-md-6'>
-        <%= panel(:info,title:'Contacts') do %>
-            <%= link_to "View Study Contacts", collaborators_study_path(study) %>
-        <% end %>
-      </div>
+      <%= panel(:info,title:'Contacts') do %>
+          <%= link_to "View Study Contacts", collaborators_study_path(study) %>
+      <% end %>
     </div>
-
-    <%= panel(:info,title:'Study information') do %>
-        <%= fields_for(study) do |form| %>
-          <%= form.fields_for(:study_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
-            <%= metadata_fields.select_by_association(:reference_genome, {}, { class: 'select2' }) %>
-          <% end %>
-        <% end %>
-    <% end %>
 
     <%= render partial: "studies/managed_study", locals: {read_only: false, form: form, study: study} %>
 

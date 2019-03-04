@@ -559,6 +559,8 @@ Sequencescape::Application.routes.draw do
     end
   end
 
+  resources :uat_actions
+
   resources :billing_reports, only: [:new, :create]
 
   resources :location_reports, only: [:index, :show, :create]

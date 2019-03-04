@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'rails', '~> 5.1.2'
+  gem 'rails', '~> 5.1.6'
 
   # State machine
   gem 'aasm'
