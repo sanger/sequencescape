@@ -2,10 +2,10 @@
 
 require 'rails_helper'
 
-describe UatActions::<%= camelcase %>, do
+describe UatActions::<%= camelcase %> do
   context 'valid options' do
     let(:parameters) { {} }
-    let(:uat_action) { described_class.new(parameters)}
+    let(:uat_action) { described_class.new(parameters) }
     let(:report) do
       # A report is a hash of key value pairs which get returned to the user.
       # It should include information such as barcodes and identifiers
@@ -13,7 +13,7 @@ describe UatActions::<%= camelcase %>, do
     end
 
     it 'can be performed' do
-      expect(uat_action.perform).to be_true
+      expect(uat_action.perform).to eq true
       expect(uat_action.report).to eq report
     end
   end

@@ -60,7 +60,7 @@ class UatActions
   end
 
   def report
-    @report || {}
+    @report ||= {}
   end
 
   def form_fields
