@@ -8,6 +8,7 @@ module Api
 
       default_includes :uuid_object
 
+      has_one :custom_metadatum_collection
       has_many :comments, readonly: true
 
       filter :purpose_name, apply: (lambda do |records, value, _options|
