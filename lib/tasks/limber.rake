@@ -10,9 +10,10 @@ namespace :limber do
 
   desc 'Create Barcode Printer Types'
   task create_barcode_printer_types: :environment do
-    BarcodePrinterType384DoublePlate.find_or_create_by!(name: '384 Well Plate Double',
-                                                        printer_type_id: 10,
-                                                        label_template_name: 'plate_6mm_double')
+    BarcodePrinterType384DoublePlate.create_with(
+      printer_type_id: 10,
+      label_template_name: 'plate_6mm_double_code39'
+    ).find_or_create_by!(name: '384 Well Plate Double')
   end
 
   desc 'Create the Limber cherrypick plates'
