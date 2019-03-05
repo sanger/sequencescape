@@ -86,7 +86,7 @@ namespace :limber do
       end
       Limber::Helper::RequestTypeConstructor.new(
         'PCR Free',
-        library_types: ['PCR Free 384'],
+        library_types: ['HiSeqX PCR free', 'PCR Free 384', 'Chromium single cell CNV', 'DAFT-seq'],
         default_purposes: ['PF Cherrypicked']
       ).build!
 
