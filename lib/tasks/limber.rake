@@ -198,6 +198,24 @@ namespace :limber do
     LotType.find_or_create_by!(name: 'Pre Stamped Tags - 384', template_class: 'TagLayoutTemplate', target_purpose: btp)
   end
 
+  desc 'Create tag layout templates'
+  task create_tag_layout_templates: :environment do
+    i7_group = TagGroup.find_by(name: 'IDT for Illumina i7 UDI v1')
+    i5_group = TagGroup.find_by(name: 'IDT for Illumina i5 UDI v1')
+
+    if i7_group.nil? || i5_group.nil?
+      puts "Could not find tag groups to create templates. Skipping."
+    else
+      puts "Creating tag Group - IDT for Illumina v1 - 384 Quadrant"
+      TagLayoutTemplate.create_with(
+                          tag_group: i7_group,
+                          tag2_group: i5_group,
+                          walking_algorithm: 'TagLayout::Quadrants',
+                          direction_algorithm: 'TagLayout::InColumns')
+                       .find_or_create_by!(name: 'IDT for Illumina v1 - 384 Quadrant')
+    end
+  end
+
   desc 'Create the limber submission templates'
   task create_submission_templates: [:environment,
                                      :create_request_types,
