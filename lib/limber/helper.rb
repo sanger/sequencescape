@@ -42,8 +42,9 @@ module Limber::Helper
         for_multiplexing: @for_multiplexing
       ).find_or_create_by!(key: key) do |rt|
         rt.acceptable_plate_purposes = Purpose.where(name: @default_purpose)
-        rt.library_types = @library_types.map { |name| LibraryType.find_or_create_by!(name: name) }
       end
+
+      @library_types.each { |name| rt.library_types.find_or_create_by!(name: name) }
 
       return true if rt.request_type_validators.where(request_option: 'library_type').exists?
 
