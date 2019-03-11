@@ -88,10 +88,22 @@ class SubmissionTemplate < ApplicationRecord
     request_types.any?(&:sequencing)
   end
 
+  def input_asset_type
+    sorted_request_types.first.asset_type
+  end
+
+  def input_plate_purposes
+    sorted_request_types.first.acceptable_plate_purposes
+  end
+
   private
 
   def request_types
     @request_types ||= RequestType.where(id: request_type_ids)
+  end
+
+  def sorted_request_types
+    request_types.sort_by { |rt| request_type_ids.index(rt.id) }
   end
 
   def request_type_ids
