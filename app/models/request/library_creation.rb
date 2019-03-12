@@ -20,7 +20,8 @@ class Request::LibraryCreation < CustomerRequest
   # The columns in the database are strings and we need them to be integers, hence we force
   # that here.
   def self.fragment_size_details(minimum = :no_default, maximum = :no_default)
-    minimum_details, maximum_details = { required: true, integer: true }, { required: true, integer: true }
+    minimum_details = { required: true, integer: true, minimum: 1 }
+    maximum_details = { required: true, integer: true, minimum: 1 }
     minimum_details[:default] = minimum unless minimum == :no_default
     maximum_details[:default] = maximum unless maximum == :no_default
 
