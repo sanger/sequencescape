@@ -48,21 +48,6 @@ class PlateTest < ActiveSupport::TestCase
         end
       end
     end
-
-    context '#sample?' do
-      setup do
-        @plate = create :plate
-        @sample = create :sample, name: 'abc'
-        @well_asset = Well.create!.tap { |well| well.aliquots.create!(sample: @sample) }
-        @plate.add_and_save_well @well_asset
-      end
-      should 'find the sample name if its valid' do
-        assert Plate.find(@plate.id).sample?('abc')
-      end
-      should 'not find the sample name if its invalid' do
-        assert_equal false, Plate.find(@plate.id).sample?('abcdef')
-      end
-    end
   end
 
   context '#iteration' do

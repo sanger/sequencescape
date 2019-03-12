@@ -371,13 +371,6 @@ class Plate < Asset
     well_requests_as_source.first&.role
   end
 
-  # A plate has a sample with the specified name if any of its wells have that sample.
-  def sample?(sample_name)
-    wells.any? do |well|
-      well.aliquots.any? { |aliquot| aliquot.sample.name == sample_name }
-    end
-  end
-
   def storage_location
     @storage_location ||= obtain_storage_location
   end
