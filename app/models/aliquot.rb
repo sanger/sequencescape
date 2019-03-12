@@ -105,28 +105,30 @@ class Aliquot < ApplicationRecord
   # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
   # would result in sample dropouts. (presumably because << triggers save not save!)
-  def untagged?
+  def no_tag1?
     tag_id == UNASSIGNED_TAG || tag.nil?
   end
+  alias untagged? no_tag1?
+
+  def tag1?
+    !no_tag1?
+  end
+  alias tagged? tag1?
 
   def no_tag2?
     tag2_id == UNASSIGNED_TAG || tag2.nil?
   end
 
-  def tagged?
-    !untagged?
-  end
-
-  def dual_tagged?
+  def tag2?
     !no_tag2?
   end
 
-  def tag_count
-    # Find the most highly tagged aliquot
-    return 2 if dual_tagged?
-    return 1 if tagged?
+  def tags?
+    !no_tags?
+  end
 
-    0
+  def no_tags?
+    no_tag1? && no_tag2?
   end
 
   def tags_combination
@@ -212,5 +214,15 @@ class Aliquot < ApplicationRecord
     [:sample_id, :tag_id, :tag2_id, :library_id, :bait_library_id, :insert_size_from, :insert_size_to, :library_type, :project_id, :study_id].all? do |attrib|
       send(attrib) == other.send(attrib)
     end
+  end
+
+  private
+
+  def tag_count
+    # Find the most highly tagged aliquot
+    return 2 if tag2?
+    return 1 if tag1?
+
+    0
   end
 end

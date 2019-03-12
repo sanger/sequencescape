@@ -127,11 +127,11 @@ class Api::Messages::FlowcellIO < Api::Base
 
   module AliquotExtensions
     def aliquot_type
-      tag.present? ? 'library_indexed' : 'library'
+      tags? ? 'library_indexed' : 'library'
     end
 
     def control_aliquot_type
-      tag.present? ? 'library_indexed_spike' : 'library_control'
+      tags? ? 'library_indexed_spike' : 'library_control'
     end
   end
 

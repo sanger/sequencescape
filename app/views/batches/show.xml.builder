@@ -48,7 +48,7 @@ xml.batch do
           if target_asset_aliquots.empty?
             # This is a batch that has yet to be started
             xml.comment!("This batch has yet to be started so no information about what's on this lane is available yet")
-          elsif target_asset_aliquots.all?(&:tagged?)
+          elsif target_asset_aliquots.any?(&:tags?)
             # Any lane where every aliquot is tagged is considered to be a pool
             xml.pool(
               "id" => request.asset.id, # TODO: remove
