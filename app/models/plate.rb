@@ -21,8 +21,14 @@ class Plate < Asset
 
   extend QcFile::Associations
 
+  SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
+  DEFAULT_SIZE = 96
+
   # Shouldn't actually be falling back to this, but its here just in case
   self.default_prefix = 'DN'
+  self.per_page = 50
+
+  attr_reader :storage_location_service
 
   has_qc_files
 
@@ -111,8 +117,6 @@ class Plate < Asset
   def source_plate
     purpose&.source_plate(self)
   end
-
-  SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
 
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, to: :plate_purpose, allow_nil: true
@@ -204,10 +208,6 @@ class Plate < Asset
     wells.first.try(:study)
   end
   deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
-
-  DEFAULT_SIZE = 96
-
-  self.per_page = 50
 
   before_create :set_plate_name_and_size
 
@@ -320,11 +320,6 @@ class Plate < Asset
     wells << well
   end
 
-  def add_well(well, row = nil, col = nil)
-    add_well_holder(well)
-    well.map = find_map_by_rowcol(row, col) if row
-  end
-
   def add_well_by_map_description(well, map_description)
     add_well_holder(well)
     well.map = Map.find_by(description: map_description, asset_size: size)
@@ -373,8 +368,6 @@ class Plate < Asset
   def storage_location
     @storage_location ||= obtain_storage_location
   end
-
-  attr_reader :storage_location_service
 
   def self.plate_ids_from_requests(requests)
     with_requests(requests).pluck(:id)
@@ -581,6 +574,11 @@ class Plate < Asset
   end
 
   private
+
+  def add_well(well, row = nil, col = nil)
+    add_well_holder(well)
+    well.map = find_map_by_rowcol(row, col) if row
+  end
 
   def plate_type_descriptor
     descriptor_value('Plate Type')
