@@ -17,6 +17,10 @@ class AssetLink < ApplicationRecord
         extend ClassMethods
 
         has_dag_links link_class_name: 'AssetLink'
+        has_many :child_plates, through: :links_as_parent, source: :descendant, class_name: 'Plate'
+        has_many :child_tubes, through: :links_as_parent, source: :descendant, class_name: 'Tube'
+        has_many :parent_tubes, through: :links_as_child, source: :ancestor, class_name: 'Tube'
+        has_many :parent_plates, through: :links_as_child, source: :ancestor, class_name: 'Plate'
       end
       base.extend(ClassMethods)
     end

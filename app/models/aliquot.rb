@@ -77,6 +77,8 @@ class Aliquot < ApplicationRecord
        LEFT OUTER JOIN tags AS tag2s ON tag2s.id = aliquots.tag2_id'
     ).order('tag1s.map_id ASC, tag2s.map_id ASC')
   }
+  scope :untagged, -> { where(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
+  scope :any_tags, -> { where.not(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
 
   # returns a hash, where keys are cost_codes and values are number of aliquots related to particular cost code
   # {'cost_code_1' => 20, 'cost_code_2' => 3, 'cost_code_3' => 8 }
@@ -103,28 +105,28 @@ class Aliquot < ApplicationRecord
   # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
   # would result in sample dropouts. (presumably because << triggers save not save!)
-  def untagged?
+  def no_tag1?
     tag_id == UNASSIGNED_TAG || tag.nil?
+  end
+
+  def tag1?
+    !no_tag1?
   end
 
   def no_tag2?
     tag2_id == UNASSIGNED_TAG || tag2.nil?
   end
 
-  def tagged?
-    !untagged?
-  end
-
-  def dual_tagged?
+  def tag2?
     !no_tag2?
   end
 
-  def tag_count
-    # Find the most highly tagged aliquot
-    return 2 if dual_tagged?
-    return 1 if tagged?
+  def tags?
+    !no_tags?
+  end
 
-    0
+  def no_tags?
+    no_tag1? && no_tag2?
   end
 
   def tags_combination
@@ -162,53 +164,37 @@ class Aliquot < ApplicationRecord
     raise StandardError, 'The Behaviour of clone has changed in Rails 3. Please use dup instead!'
   end
 
-  # return all aliquots originated from the current one
-  # ie aliquots sharing the sample, tag information, descending the requess graph
-  def descendants(include_self = false)
-    (include_self ? self : requests).walk_objects(Aliquot => :receptacle,
-                                                  Receptacle => [:aliquots, :requests_as_source],
-                                                  Request => :target_asset) do |object|
-      case object
-      when Aliquot
-        # we cut the walk if the new aliquot doesn't "match" the current one
-        object if object.match?(self)
-      else # other objects
-        [] # are walked but not returned
-      end
-    end
-  end
-
-  # An aliquot approximates another aliquot if:
-  # - They have matching samples
-  # - They have matching tags
-  # - They have matching tag2s
-  # If either aliquot is missing a tag, that tag is ignored
-  # This method is primarily provided for legacy reasons. #matches? is much more robust
-  def =~(other)
-    other &&
-      (sample_id == other.sample_id) &&
-      (untagged? || other.untagged? || (tag_id == other.tag_id)) &&
-      (no_tag2?  || other.no_tag2?  || (tag2_id == other.tag2_id))
-  end
-
   def matches?(object)
     # Note: This function is directional, and assumes that the downstream aliquot
-    # is checking the upstream aliquot (or the AliquotRecord)
+    # is checking the upstream aliquot
     case
     when sample_id != object.sample_id                                                   then false # The samples don't match
     when object.library_id.present?      && (library_id      != object.library_id)       then false # Our librarys don't match.
     when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)  then false # We have different bait libraries
-    when untagged? && object.tagged?                                                     then raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
-    when object.untagged? && object.no_tag2? then true # The upstream aliquot was untagged, we don't need to check tags
-    else (object.untagged? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
+    when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)                        then raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
+    when object.no_tags? then true # The upstream aliquot was untagged, we don't need to check tags
+    else (object.no_tag1? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
     end
   end
 
   # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
   # only id, timestamps and receptacles are excluded
   def equivalent?(other)
-    [:sample_id, :tag_id, :tag2_id, :library_id, :bait_library_id, :insert_size_from, :insert_size_to, :library_type, :project_id, :study_id].all? do |attrib|
+    [
+      :sample_id, :tag_id, :tag2_id, :library_id, :bait_library_id,
+      :insert_size_from, :insert_size_to, :library_type, :project_id, :study_id
+    ].all? do |attrib|
       send(attrib) == other.send(attrib)
     end
+  end
+
+  private
+
+  def tag_count
+    # Find the most highly tagged aliquot
+    return 2 if tag2?
+    return 1 if tag1?
+
+    0
   end
 end

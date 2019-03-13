@@ -18,7 +18,6 @@ Lint/AmbiguousBlockAssociation:
     - 'app/models/qcable/statemachine.rb'
     - 'features/support/step_definitions/bulk_submission_steps.rb'
     - 'test/controllers/admin_users_controller_test.rb'
-    - 'test/unit/linear_submission_test.rb'
     - 'test/unit/tasks/plate_transfer_task_test.rb'
 
 # Offense count: 8
@@ -404,7 +403,6 @@ Naming/UncommunicativeMethodParamName:
     - 'app/models/request_type/pooling_method/submission.rb'
     - 'app/models/sample_manifest/headers.rb'
     - 'app/models/sequencing_request.rb'
-    - 'app/models/submission.rb'
     - 'app/models/submission/linear_request_graph.rb'
     - 'app/models/tag2_layout_template.rb'
     - 'app/models/tag_layout_template.rb'
@@ -469,7 +467,6 @@ Rails/Blank:
     - 'app/models/request/auto_multiplexing.rb'
     - 'app/models/request_type/pooling_method/plate_row.rb'
     - 'app/models/sample.rb'
-    - 'app/models/submission.rb'
     - 'app/models/tasks/plate_transfer_handler.rb'
     - 'app/views/batches/show.xml.builder'
     - 'features/support/step_definitions/pulldown_steps.rb'
@@ -1112,7 +1109,6 @@ Style/Alias:
     - 'app/models/product_criteria/basic.rb'
     - 'app/models/sample_manifest/plate_behaviour.rb'
     - 'app/models/sanger_sample_id.rb'
-    - 'app/models/submission.rb'
     - 'app/models/submission/flexible_request_graph.rb'
     - 'app/models/tube.rb'
     - 'app/models/well.rb'
@@ -1373,14 +1369,6 @@ Style/CharacterLiteral:
   Exclude:
     - 'app/helpers/plates_helper.rb'
     - 'app/models/map.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: is_a?, kind_of?
-Style/ClassCheck:
-  Exclude:
-    - 'test/unit/linear_submission_test.rb'
 
 # Offense count: 16
 Style/ClassVars:
@@ -4165,7 +4153,6 @@ Style/FrozenStringLiteralComment:
     - 'test/unit/lib_pool_norm_tube_generator_test.rb'
     - 'test/unit/library_creation_pipeline_test.rb'
     - 'test/unit/library_tube_test.rb'
-    - 'test/unit/linear_submission_test.rb'
     - 'test/unit/manifest_generator_test.rb'
     - 'test/unit/map_test.rb'
     - 'test/unit/messaging/hash_generation_test.rb'
@@ -4357,7 +4344,6 @@ Style/IfUnlessModifier:
     - 'app/models/study.rb'
     - 'app/models/study/metadata.rb'
     - 'app/models/study_type.rb'
-    - 'app/models/submission.rb'
     - 'app/models/task.rb'
     - 'app/models/tasks/set_characterisation_descriptors_handler.rb'
     - 'app/models/tasks/set_descriptors_handler.rb'
@@ -4585,7 +4571,6 @@ Style/MutableConstant:
     - 'app/models/sample_manifest/headers.rb'
     - 'app/models/shared_behaviour/immutable.rb'
     - 'app/models/study.rb'
-    - 'app/models/submission.rb'
     - 'app/models/submission/state_machine.rb'
     - 'app/models/transfer/between_plate_and_tubes.rb'
     - 'app/models/uuid.rb'
@@ -4817,7 +4802,6 @@ Style/ParenthesesAroundCondition:
     - 'app/models/movie_length_task.rb'
     - 'app/models/parsers/bioanalysis_csv_parser.rb'
     - 'app/models/presenters/batch_submenu_presenter.rb'
-    - 'app/models/submission.rb'
     - 'app/models/user.rb'
 
 # Offense count: 202
@@ -4977,7 +4961,6 @@ Style/RedundantException:
   Exclude:
     - 'app/models/request.rb'
     - 'app/models/study_relation_type.rb'
-    - 'app/models/submission.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.

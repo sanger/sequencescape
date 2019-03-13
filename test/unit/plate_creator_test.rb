@@ -40,7 +40,7 @@ class CreatorTest < ActiveSupport::TestCase
     assert_equal @creator_purpose, child.purpose
 
     parent.wells.each_with_index do |well, i|
-      matching_aliquots = (well.aliquots.first =~ child.wells[i].aliquots.first)
+      matching_aliquots = well.aliquots.first.matches?(child.wells[i].aliquots.first)
       assert matching_aliquots, "Aliquots do not match in #{well.map_description}: #{well.aliquots.first} !~= #{child.wells[i].aliquots.first}"
     end
   end

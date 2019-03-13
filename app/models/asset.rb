@@ -451,11 +451,6 @@ class Asset < ApplicationRecord
     false
   end
 
-  # See Receptacle for handling of assets with contents
-  def tag_count
-    nil
-  end
-
   # We only support wells for the time being
   def latest_stock_metrics(_product, *_args)
     []

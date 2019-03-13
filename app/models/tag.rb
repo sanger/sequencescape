@@ -40,7 +40,7 @@ class Tag < ApplicationRecord
     raise StandardError, 'Cannot tag an empty asset'   if asset.aliquots.empty?
 
     asset.aliquots.group_by { |aliquot| aliquot.sample_id }.each do |_sample_id, aliquots|
-      new_aliquot = aliquots.first.untagged? ? aliquots.first : aliquots.first.dup
+      new_aliquot = aliquots.first.no_tag1? ? aliquots.first : aliquots.first.dup
       # dup automatically unsets receptacle, so we reallocate it here.
       new_aliquot.receptacle = asset
       new_aliquot.tag = self

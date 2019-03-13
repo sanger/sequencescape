@@ -7,6 +7,19 @@ module Api
     class SubmissionsController < JSONAPI::ResourceController
       # By default JSONAPI::ResourceController provides most the standard
       # behaviour, and in many cases this file may be left empty.
+
+      # JSONAPI-Resource doesn't currently allow for non-default fields
+      # See https://github.com/cerebris/jsonapi-resources/issues/855
+      # This is a temporary override, although probably won't help if submission
+      # is included in a different resource
+      def params
+        default = super
+        return default if default.dig('fields', 'submissions')
+
+        default['fields'] ||= {}
+        default['fields']['submissions'] = 'uuid,name'
+        default
+      end
     end
   end
 end
