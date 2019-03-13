@@ -166,7 +166,7 @@ class Aliquot < ApplicationRecord
 
   def matches?(object)
     # Note: This function is directional, and assumes that the downstream aliquot
-    # is checking the upstream aliquot (or the AliquotRecord)
+    # is checking the upstream aliquot
     case
     when sample_id != object.sample_id                                                   then false # The samples don't match
     when object.library_id.present?      && (library_id      != object.library_id)       then false # Our librarys don't match.
