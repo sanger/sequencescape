@@ -3,7 +3,7 @@
 #
 # The aliquot indexer is passed a Receptacle (usually a Lane) and
 # generates an index for all aliquots. This is a unique index that NPG
-# use to identify dplexed sequencing data. It replaces the previous role of
+# use to identify deplexed sequencing data. It replaces the previous role of
 # the map id of tag 1 (the i7) and allows a single identifier to be used to
 # represent both indices.
 # - Aliquots are sorted by the tag_2 map id, then the tag_1 map id.
