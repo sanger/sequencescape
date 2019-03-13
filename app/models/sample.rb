@@ -479,6 +479,6 @@ class Sample < ApplicationRecord
 
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')
-    false
+    throw(:abort)
   end
 end

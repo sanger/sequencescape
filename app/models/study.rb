@@ -513,7 +513,6 @@ class Study < ApplicationRecord
 
   def set_default_ethical_approval
     self.ethically_approved ||= ethical_approval_required? ? false : nil
-    true
   end
 end
 

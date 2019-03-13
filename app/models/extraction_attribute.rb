@@ -50,7 +50,6 @@ class ExtractionAttribute < ApplicationRecord
       attributes_update_with_resources.each do |well_info|
         is_reracking?(well_info) ? rerack_well(well_info) : rack_well(well_info)
       end
-      true
     end
   end
 
