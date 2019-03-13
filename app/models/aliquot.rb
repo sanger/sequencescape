@@ -108,12 +108,10 @@ class Aliquot < ApplicationRecord
   def no_tag1?
     tag_id == UNASSIGNED_TAG || tag.nil?
   end
-  alias untagged? no_tag1?
 
   def tag1?
     !no_tag1?
   end
-  alias tagged? tag1?
 
   def no_tag2?
     tag2_id == UNASSIGNED_TAG || tag2.nil?
@@ -182,19 +180,6 @@ class Aliquot < ApplicationRecord
     end
   end
 
-  # An aliquot approximates another aliquot if:
-  # - They have matching samples
-  # - They have matching tags
-  # - They have matching tag2s
-  # If either aliquot is missing a tag, that tag is ignored
-  # This method is primarily provided for legacy reasons. #matches? is much more robust
-  def =~(other)
-    other &&
-      (sample_id == other.sample_id) &&
-      (untagged? || other.untagged? || (tag_id == other.tag_id)) &&
-      (no_tag2?  || other.no_tag2?  || (tag2_id == other.tag2_id))
-  end
-
   def matches?(object)
     # Note: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot (or the AliquotRecord)
@@ -202,16 +187,19 @@ class Aliquot < ApplicationRecord
     when sample_id != object.sample_id                                                   then false # The samples don't match
     when object.library_id.present?      && (library_id      != object.library_id)       then false # Our librarys don't match.
     when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)  then false # We have different bait libraries
-    when untagged? && object.tagged?                                                     then raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
-    when object.untagged? && object.no_tag2? then true # The upstream aliquot was untagged, we don't need to check tags
-    else (object.untagged? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
+    when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)                        then raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
+    when object.no_tags? then true # The upstream aliquot was untagged, we don't need to check tags
+    else (object.no_tag1? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
     end
   end
 
   # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
   # only id, timestamps and receptacles are excluded
   def equivalent?(other)
-    [:sample_id, :tag_id, :tag2_id, :library_id, :bait_library_id, :insert_size_from, :insert_size_to, :library_type, :project_id, :study_id].all? do |attrib|
+    [
+      :sample_id, :tag_id, :tag2_id, :library_id, :bait_library_id,
+      :insert_size_from, :insert_size_to, :library_type, :project_id, :study_id
+    ].all? do |attrib|
       send(attrib) == other.send(attrib)
     end
   end

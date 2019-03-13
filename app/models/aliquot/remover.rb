@@ -17,11 +17,11 @@ module Aliquot::Remover
       @tag2_id = aliquot.tag2_id
     end
 
-    def tagged?
-      !untagged?
+    def tag1?
+      !no_tag1?
     end
 
-    def untagged?
+    def no_tag1?
       tag_id.nil? || (tag_id == Aliquot::UNASSIGNED_TAG)
     end
 
