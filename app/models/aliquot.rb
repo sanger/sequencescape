@@ -164,22 +164,6 @@ class Aliquot < ApplicationRecord
     raise StandardError, 'The Behaviour of clone has changed in Rails 3. Please use dup instead!'
   end
 
-  # return all aliquots originated from the current one
-  # ie aliquots sharing the sample, tag information, descending the requess graph
-  def descendants(include_self = false)
-    (include_self ? self : requests).walk_objects(Aliquot => :receptacle,
-                                                  Receptacle => [:aliquots, :requests_as_source],
-                                                  Request => :target_asset) do |object|
-      case object
-      when Aliquot
-        # we cut the walk if the new aliquot doesn't "match" the current one
-        object if object.match?(self)
-      else # other objects
-        [] # are walked but not returned
-      end
-    end
-  end
-
   def matches?(object)
     # Note: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot (or the AliquotRecord)
