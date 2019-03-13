@@ -34,12 +34,6 @@ GIT
     irods_reader (0.0.2)
 
 GIT
-  remote: git://github.com/sanger/ruby_walk.git
-  revision: 6e86c0413ab508933de899d7a3c6bc3b415e2acb
-  specs:
-    ruby_walk (0.0.3)
-
-GIT
   remote: git://github.com/sanger/sanger_barcode_format.git
   revision: 35846331c2b88d049a14b7cace08e18664494de1
   branch: development
@@ -557,7 +551,6 @@ DEPENDENCIES
   ruby-oci8
   ruby-prof
   ruby-units
-  ruby_walk (>= 0.0.3)!
   rubyzip
   sanger_barcode_format!
   sass-rails
