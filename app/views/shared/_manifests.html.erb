@@ -7,6 +7,7 @@
     <th><%= link_to "Study", "javascript:void(0);" %></th>
     <th><%= link_to "Supplier", "javascript:void(0);" %></th>
     <th><%= link_to "Created", "javascript:void(0);" %></th>
+    <th><%= link_to "Updated", "javascript:void(0);" %></th>
     <th><%= link_to "Created by", "javascript:void(0);" %></th>
     <th><%= link_to "Manifest", "javascript:void(0);" %></th>
     <th><%= link_to "Upload", "javascript:void(0);" %></th>
@@ -22,6 +23,7 @@
       <td><%= link_to manifest.study.name, study_path(manifest.study) %></td>
       <td><%= link_to manifest.supplier.name, supplier_path(manifest.supplier) %></td>
       <td class="strong faint"><span style="display:none"><%= manifest.created_at %></span><%= manifest.created_at.to_formatted_s(:sortable) %></td>
+      <td class="strong faint"><span style="display:none"><%= manifest.updated_at %></span><%= manifest.updated_at.to_formatted_s(:sortable) %></td>
       <td>
         <% if manifest.user %>
           <%= link_to manifest.user.login, profile_path(manifest.user) %>

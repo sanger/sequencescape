@@ -34,22 +34,16 @@ GIT
     irods_reader (0.0.2)
 
 GIT
-  remote: git://github.com/sanger/ruby_walk.git
-  revision: 6e86c0413ab508933de899d7a3c6bc3b415e2acb
-  specs:
-    ruby_walk (0.0.3)
-
-GIT
   remote: git://github.com/sanger/sanger_barcode_format.git
-  revision: ea1fa6840c8d41f8ce9ccf32b422f44d6edda859
+  revision: 35846331c2b88d049a14b7cace08e18664494de1
   branch: development
   specs:
-    sanger_barcode_format (0.0.3)
+    sanger_barcode_format (0.1.1)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (5.0.1)
+    aasm (5.0.2)
       concurrent-ruby (~> 1.0)
     actioncable (5.1.6.1)
       actionpack (= 5.1.6.1)
@@ -92,7 +86,7 @@ GEM
       activemodel (= 5.1.6.1)
       activesupport (= 5.1.6.1)
       arel (~> 8.0)
-    activerecord-import (0.28.1)
+    activerecord-import (1.0.0)
       activerecord (>= 3.2)
     activerecord-nulldb-adapter (0.3.9)
       activerecord (>= 2.0.0)
@@ -113,6 +107,8 @@ GEM
     autoprefixer-rails (8.6.0)
       execjs
     backports (3.11.4)
+    binding_of_caller (0.8.0)
+      debug_inspector (>= 0.0.1)
     bootstrap (4.1.1)
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
@@ -121,7 +117,7 @@ GEM
     bullet (5.9.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
-    bunny (2.13.0)
+    bunny (2.14.1)
       amq-protocol (~> 2.3, >= 2.3.0)
     cancan (1.6.10)
     capybara (2.18.0)
@@ -174,6 +170,7 @@ GEM
     cucumber-wire (0.0.1)
     daemons (1.3.1)
     database_cleaner (1.7.0)
+    debug_inspector (0.0.3)
     delayed_job (4.1.5)
       activesupport (>= 3.0, < 5.3)
     delayed_job_active_record (4.1.3)
@@ -192,11 +189,11 @@ GEM
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
     execjs (2.7.0)
-    factory_bot (4.11.1)
-      activesupport (>= 3.0.0)
-    factory_bot_rails (4.11.1)
-      factory_bot (~> 4.11.1)
-      railties (>= 3.0.0)
+    factory_bot (5.0.0)
+      activesupport (>= 4.2.0)
+    factory_bot_rails (5.0.1)
+      factory_bot (~> 5.0.0)
+      railties (>= 4.2.0)
     faraday (0.15.3)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.12.2)
@@ -223,7 +220,7 @@ GEM
       net-http-persistent (>= 2.7)
       net-http-pipeline
     gherkin (4.1.3)
-    globalid (0.4.1)
+    globalid (0.4.2)
       activesupport (>= 4.2.0)
     gmetric (0.1.3)
     hashdiff (0.3.7)
@@ -231,7 +228,7 @@ GEM
     htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (1.5.2)
+    i18n (1.5.3)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.2)
     jquery-rails (4.3.3)
@@ -242,7 +239,7 @@ GEM
       railties (>= 3.2, < 6)
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
-    json (2.1.0)
+    json (2.2.0)
     jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
       concurrent-ruby
@@ -294,6 +291,10 @@ GEM
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    pry-stack_explorer (0.4.9.3)
+      binding_of_caller (>= 0.7)
+      pry (>= 0.9.11)
+    psych (3.1.0)
     public_suffix (3.0.3)
     puma (3.12.0)
     pusher-client (0.6.2)
@@ -303,7 +304,7 @@ GEM
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
     rack-cors (1.0.2)
-    rack-mini-profiler (1.0.1)
+    rack-mini-profiler (1.0.2)
       rack (>= 1.2.0)
     rack-protection (2.0.5)
       rack
@@ -347,7 +348,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    roo (2.8.1)
+    roo (2.8.2)
       nokogiri (~> 1)
       rubyzip (>= 1.2.1, < 2.0.0)
     rspec-core (3.8.0)
@@ -368,15 +369,16 @@ GEM
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
-    rubocop (0.63.1)
+    rubocop (0.65.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.5, != 2.5.1.1)
       powerpack (~> 0.1)
+      psych (>= 3.1.0)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.4.0)
-    rubocop-rspec (1.31.0)
+    rubocop-rspec (1.32.0)
       rubocop (>= 0.60.0)
     ruby-oci8 (2.2.7)
     ruby-ole (1.2.12.1)
@@ -406,8 +408,8 @@ GEM
       rubyzip (~> 1.2)
     sexp_processor (4.11.0)
     shoulda-context (1.2.2)
-    shoulda-matchers (3.1.2)
-      activesupport (>= 4.0.0)
+    shoulda-matchers (4.0.1)
+      activesupport (>= 4.2.0)
     simplecov (0.16.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -418,7 +420,7 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.5)
       tilt (~> 2.0)
-    spreadsheet (1.1.8)
+    spreadsheet (1.2.2)
       ruby-ole (>= 1.0)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
@@ -427,7 +429,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    test-prof (0.7.3)
+    test-prof (0.7.5)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
@@ -471,7 +473,7 @@ GEM
     whenever (0.10.0)
       chronic (>= 0.6.3)
     will_paginate (3.1.6)
-    will_paginate-bootstrap (1.0.1)
+    will_paginate-bootstrap (1.0.2)
       will_paginate (>= 3.0.3)
     xpath (3.1.0)
       nokogiri (~> 1.8)
@@ -532,11 +534,12 @@ DEPENDENCIES
   net-ldap
   nokogiri
   pry
+  pry-stack_explorer
   puma
   rack-acceptable
   rack-cors
   rack-mini-profiler
-  rails (~> 5.1.2)
+  rails (~> 5.1.6)
   rails-controller-testing
   rails-perftest
   rest-client
@@ -548,7 +551,6 @@ DEPENDENCIES
   ruby-oci8
   ruby-prof
   ruby-units
-  ruby_walk (>= 0.0.3)!
   rubyzip
   sanger_barcode_format!
   sass-rails
@@ -573,4 +575,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.16.4
+   1.17.2

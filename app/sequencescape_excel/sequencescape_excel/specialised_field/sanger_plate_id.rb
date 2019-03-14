@@ -35,7 +35,8 @@ module SequencescapeExcel
       private
 
       def check_container
-        return if value == sample.wells.first.plate.human_barcode
+        primary_receptacle = sample.primary_receptacle
+        return if value == primary_receptacle.labware.human_barcode
 
         check_for_foreign_barcode
       end
@@ -45,7 +46,7 @@ module SequencescapeExcel
         if foreign_barcode_format.present?
           check_foreign_barcode_unique
         else
-          errors.add(:sample, 'If you modify the sample container barcode it must be to a valid foreign barcode format')
+          errors.add(:sample, 'barcode has been modified, but it is not a valid foreign barcode format')
         end
       end
 

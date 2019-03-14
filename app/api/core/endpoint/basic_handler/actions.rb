@@ -70,6 +70,18 @@ module Core::Endpoint::BasicHandler::Actions
     end
   end
 
+  def deprecate(*actions)
+    actions.each do |action|
+      line = __LINE__ + 1
+      singleton_class.class_eval("
+        def _#{action}(request, response)
+          raise ::Core::Service::DeprecatedAction
+        end
+      ", __FILE__, line)
+      @actions.delete(action.to_sym)
+    end
+  end
+
   def action(name, options = {}, &block)
     declare_action(name, options, &block)
     attach_action(options[:as] || name, name)

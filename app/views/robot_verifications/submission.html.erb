@@ -1,7 +1,8 @@
 
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
 <%= form_for :robot_verifications, url: {action: "download"} do |f| %>
-<h2>Step 2 of 3: Scan robot beds and plates</h2>
+
+<%= page_title "Scan Robot Beds And Plates", "Step 2 of 3" %>
 
 <table class="bed_verification" id="source_beds">
   <thead>

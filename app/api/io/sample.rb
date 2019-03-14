@@ -4,6 +4,7 @@ class Io::Sample < Core::Io::Base
   set_eager_loading { |model| model.include_sample_metadata.include_studies }
 
   define_attribute_and_json_mapping("
+                                    sm_container <= container
                                            name  => sanger.name
                                sanger_sample_id  => sanger.sample_id
                  sample_metadata.is_resubmitted <=> sanger.resubmitted

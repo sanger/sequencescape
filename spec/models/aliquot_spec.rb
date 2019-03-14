@@ -62,11 +62,6 @@ RSpec.describe Aliquot, type: :model do
     it_behaves_like 'a tag matcher'
   end
 
-  describe '#=~' do
-    subject { aliquot1 =~ aliquot2 }
-    it_behaves_like 'a tag matcher'
-  end
-
   context 'mixing tests' do
     let(:asset) { create :empty_well }
 

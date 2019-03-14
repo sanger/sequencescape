@@ -46,12 +46,12 @@ module SampleManifestExcel
           col_num = row.columns.find_column_or_null(:name, col_name).number
           return nil unless col_num.present? && col_num.positive?
 
-          row.data[col_num - 1]
+          row.at(col_num)
         end
 
         def find_plate_id_for_sample_id(sample_id)
           sample = Sample.find_by(sanger_sample_id: sample_id)
-          sample&.assets&.first&.plate&.human_barcode
+          sample&.primary_receptacle&.labware&.human_barcode
         end
       end
     end

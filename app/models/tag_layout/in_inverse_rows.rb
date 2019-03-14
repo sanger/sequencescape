@@ -7,4 +7,17 @@ module TagLayout::InInverseRows
   def self.well_order_scope
     :in_inverse_row_major_order
   end
+
+  # Returns the tag index for the primary tag
+  # That is the one laid out in columns with four copies of each
+  def self.quad_tag_index(row, column, scale, height, width)
+    tag_col = (column / scale)
+    tag_row = (row / scale)
+    (height / scale) * (width / scale) -
+      (tag_col + (width / scale * tag_row)) - 1
+  end
+
+  def self.quad_tag2_index(row, column, scale, height, width)
+    quad_tag_index(row, column, scale, height, width)
+  end
 end

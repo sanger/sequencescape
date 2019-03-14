@@ -135,7 +135,7 @@ module SequencescapeExcel
       attr_reader :arguments
 
       def initialize(args, key, default_conditional_formattings)
-        @arguments = args.merge(name: key)
+        @arguments = args.reverse_merge(name: key)
         combine_conditional_formattings(default_conditional_formattings)
       end
 

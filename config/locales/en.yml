@@ -63,6 +63,7 @@ en:
       projects: "Projects"
       samples: "Samples"
       admin: "Admin"
+      uat_actions: "UAT"
       pipelines: "Pipelines"
       batches: "Batches"
       reception: "Reception"
@@ -179,6 +180,8 @@ en:
         dna_source: "DNA source"
         volume: "Volume"
       "samples/sample_metadata":
+        <<: *sample_metadata
+      "sample/metadata":
         <<: *sample_metadata
       study_metadata:
         faculty_sponsor_id: "Faculty sponsor"

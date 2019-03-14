@@ -133,8 +133,8 @@ class SampleRegistrarTest < ActiveSupport::TestCase
       end
     end
 
-    should belong_to :user
-    should belong_to :study
+    should belong_to(:user).required
+    should belong_to(:study).required
     should belong_to(:sample).validate(true)
     should belong_to(:sample_tube).validate(true)
 

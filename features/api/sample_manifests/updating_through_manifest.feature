@@ -57,47 +57,10 @@ And I have a "full" authorised user with the key "cucumber"
         }
       }
       """
-    Then the HTTP response should be "200 OK"
-     And the JSON should match the following for the specified fields:
+    Then the HTTP response should be "410 GONE"
+    And the JSON should match the following for the specified fields:
       """
-      {
-        "sample_manifest": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-          "study": {
-            "actions": {
-              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
-            }
-          },
-          "supplier": {
-            "actions": {
-              "read": "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
-            }
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444",
-          "state": "pending",
-          "last_errors": null,
-
-          "samples": [
-            {
-              "container": {
-                "barcode": "NT9999J"
-              },
-              "sample": {
-                "sanger": {
-                  "sample_id": "WTCCC99"
-                },
-                "supplier": {
-                  "sample_name": "Original Name"
-                }
-              }
-            }
-          ]
-        }
-      }
+      { "general": ["requested action is no longer supported"] }
       """
 
   @override
@@ -125,79 +88,8 @@ And I have a "full" authorised user with the key "cucumber"
         }
       }
       """
-    Then the HTTP response should be "200 OK"
-     And the JSON should match the following for the specified fields:
+   Then the HTTP response should be "410 GONE"
+    And the JSON should match the following for the specified fields:
       """
-      {
-        "sample_manifest": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-          "study": {
-            "actions": {
-              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
-            }
-          },
-          "supplier": {
-            "actions": {
-              "read": "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
-            }
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444",
-          "state": "pending",
-          "last_errors": null,
-
-          "samples": [
-            {
-              "container": {
-                "barcode": "NT9999J"
-              },
-              "sample": {
-                "supplier": {
-                  "sample_name": "flurby_wurby_sample"
-                },
-                "sanger": {
-                  "sample_id": "WTCCC99"
-                }
-              }
-            }
-          ]
-        }
-      }
+      { "general": ["requested action is no longer supported"] }
       """
-
-  @error
-  Scenario Outline: Updating a manifest where required fields are missing
-    When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
-      """
-      {
-        "sample_manifest": {
-          "samples": [
-            {
-              "uuid": "11111111-2222-3333-4444-000000000001",
-
-              "supplier": {
-                "sample_name": "flurby_wurby_sample",
-                "measurements": {
-                  <field set>
-                }
-              }
-            }
-          ]
-        }
-      }
-      """
-    Then the HTTP response should be "422 Unprocessable Entity"
-    Then the JSON should be:
-      """
-      {
-        "content": { <error> }
-      }
-      """
-
-    Examples:
-      | field set          | error                                                                        |
-      | "volume":100       | "samples.supplier.measurements.concentration":["can't be blank for WTCCC99"] |
-      | "concentration":10 | "samples.supplier.measurements.volume":["can't be blank for WTCCC99"]        |

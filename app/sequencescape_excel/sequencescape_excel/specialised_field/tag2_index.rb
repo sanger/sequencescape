@@ -23,6 +23,8 @@ module SequencescapeExcel
 
       # check the index exists within the group exists here, check the group/index combination later
       def check_tag2_index
+        return if value.blank?
+
         if sf_tag2_group.nil?
           errors.add(:base, "no corresponding tag2 group supplied for tag2 index #{value}")
         else

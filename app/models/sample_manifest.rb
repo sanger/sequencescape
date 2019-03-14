@@ -53,8 +53,11 @@ class SampleManifest < ApplicationRecord
   belongs_to :project
   belongs_to :user
   belongs_to :purpose
-  has_many :samples
+  has_many :samples, inverse_of: :sample_manifest
   accepts_nested_attributes_for :samples
+
+  has_many :sample_manifest_assets
+  has_many :assets, through: :sample_manifest_assets
 
   serialize :last_errors
   serialize :barcodes
@@ -69,7 +72,7 @@ class SampleManifest < ApplicationRecord
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
-  delegate :printables, :acceptable_purposes, :labware, :pending_external_library_creation_requests, to: :core_behaviour
+  delegate :printables, :acceptable_purposes, :labware, :labware=, :pending_external_library_creation_requests, to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
 
   def truncate_errors
@@ -101,6 +104,10 @@ class SampleManifest < ApplicationRecord
     "Manifest_#{id}"
   end
 
+  def default_filename
+    "#{study_id}stdy_manifest_#{id}_#{created_at.to_formatted_s(:dmy)}"
+  end
+
   # TODO[xxx] Consider index to make it faster
   scope :pending_manifests, ->() {
     order('sample_manifests.id DESC')
@@ -123,8 +130,12 @@ class SampleManifest < ApplicationRecord
     nil
   end
 
+  def create_sample_and_aliquot(sanger_sample_id, asset)
+    core_behaviour.generate_sample_and_aliquot(sanger_sample_id, asset)
+  end
+
   def broadcast_event_subjects_ready?
-    samples.present? && labware.present? && study.present?
+    labware.present? && study.present?
   end
 
   def create_sample(sanger_sample_id)

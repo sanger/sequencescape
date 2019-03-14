@@ -15,6 +15,7 @@ class WorkCompletion < ApplicationRecord
   REQUEST_INCLUDES = [{ submission: :orders },
                       { request_type: :request_type_validators },
                       { target_asset: :aliquots },
+                      :order,
                       :request_events,
                       :billing_product,
                       :billing_items,

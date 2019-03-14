@@ -74,6 +74,9 @@ class Asset < ApplicationRecord
 
   belongs_to :map
 
+  has_many :sample_manifest_assets
+  has_many :sample_manifests, through: :sample_manifest_assets
+
   delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
 
   extend EventfulRecord
@@ -148,7 +151,7 @@ class Asset < ApplicationRecord
   # We accept not only an individual barcode but also an array of them.
   scope :with_barcode, ->(*barcodes) {
     db_barcodes = Barcode.extract_barcodes(barcodes)
-    includes(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+    joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
   }
 
   # In contrast to with_barocde, filter_by_barcode only filters in the event
@@ -446,11 +449,6 @@ class Asset < ApplicationRecord
 
   def automatic_move?
     false
-  end
-
-  # See Receptacle for handling of assets with contents
-  def tag_count
-    nil
   end
 
   # We only support wells for the time being

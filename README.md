@@ -131,4 +131,4 @@ which represents a flowcell.
 [NPG Software](http://www.sanger.ac.uk/resources/software/npg/)
 
 
-Copyright (c) 2007, 2010-2018  Genome Research Ltd.
+Copyright (c) 2007, 2010-2019  Genome Research Ltd.

@@ -10,12 +10,13 @@ RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_
     end
   end
 
-  let(:test_file)               { 'test_file.xlsx' }
-  let(:columns)                 { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
-  let!(:download)               { build(:test_download_tubes, columns: columns) }
+  let(:test_file_name) { 'test_file.xlsx' }
+  let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
+  let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
+  let!(:download) { build(:test_download_tubes, columns: columns) }
 
   before(:each) do
-    download.save(test_file)
+    download.save(test_file_name)
   end
 
   it 'is not valid without a filename' do
@@ -46,7 +47,7 @@ RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_
   end
 
   after(:each) do
-    File.delete(test_file) if File.exist?(test_file)
+    File.delete(test_file_name) if File.exist?(test_file_name)
   end
 
   after(:all) do

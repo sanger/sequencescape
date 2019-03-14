@@ -8,17 +8,62 @@ FactoryBot.define do
     count { 1 }
 
     factory :sample_manifest_with_samples do
-      samples { FactoryBot.create_list(:sample_with_well, 5) }
+      samples { create_list(:sample_with_well, 5) }
+    end
+
+    factory :sample_manifest_with_empty_plate do
+      transient do
+        well_count { 96 }
+        plate_count { 1 }
+      end
+      labware { create_list(:plate_with_empty_wells, plate_count, well_count: well_count) }
+
+      factory :sample_manifest_with_empty_plate_and_manifest_assets do
+        after(:build) do |sample_manifest|
+          sample_manifest.labware.each do |plate|
+            plate.wells.each do |well|
+              create(:sample_manifest_asset,
+                     sanger_sample_id: generate(:sanger_sample_id),
+                     asset: well,
+                     sample_manifest: sample_manifest)
+            end
+          end
+        end
+      end
     end
 
     factory :tube_sample_manifest do
       asset_type { '1dtube' }
 
-      factory :tube_sample_manifest_with_samples do
-        samples { FactoryBot.create_list(:sample_tube, 5).map(&:samples).flatten }
+      factory :tube_sample_manifest_with_tubes_and_manifest_assets do
+        transient do
+          tube_count { 1 }
+          tube_factory { :empty_sample_tube }
+        end
+
+        labware { create_list tube_factory, tube_count }
+
+        after(:build) do |sample_manifest|
+          sample_manifest.labware.each do |tube|
+            create(:sample_manifest_asset,
+                   sanger_sample_id: generate(:sanger_sample_id),
+                   asset: tube,
+                   sample_manifest: sample_manifest)
+          end
+          sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)
+        end
       end
-      factory :tube_sample_manifest_with_several_tubes do
-        count { 5 }
+
+      factory :tube_sample_manifest_with_samples do
+        samples { create_list(:sample_tube, 5).map(&:samples).flatten }
+
+        factory :tube_sample_manifest_with_sample_tubes do
+          count { 5 }
+
+          after(:build) do |sample_manifest|
+            sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)
+          end
+        end
       end
     end
 

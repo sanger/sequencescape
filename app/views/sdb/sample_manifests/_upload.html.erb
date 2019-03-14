@@ -1,16 +1,17 @@
 
 <h2>Upload a sample manifest</h2>
-<p>Use this upload screen for older plate manifests, and for tube manifests with old style tag groups.</p>
 
-<div class='alert alert-warning'>
-  <strong>Warning!</strong> Sample manifests for library or multiplex tubes with tag sequences, or for plate and tube manifests with foreign barcodes should be uploaded <%= link_to('using the new sample manifest upload page here', controller: '/sample_manifest_upload_with_tag_sequences', action: 'new') %>.
-</div>
-
-<%= form_for :sample_manifest, url: upload_sample_manifests_url, html: { multipart: true } do |form| -%>
-  <label style='display: none;' for="sample_manifest_uploaded">File to upload</label>
-  <%= form.file_field :uploaded, required: true %><br/><br />
-  <%= form.check_box :override %>&nbsp;<label  for="sample_manifest_override">Override previously uploaded samples</label>
-  <br/><br />
-  <%= form.submit 'Upload manifest', class: 'btn btn-success' %>
-  <br /><br />
-<% end %>
+<%= form_tag(sample_manifest_upload_with_tag_sequences_path, multipart: true) do -%>
+  <fieldset>
+    <div class="form-group">
+      <%= label_tag :upload, 'File to upload', style: "display: none;" %></br>
+      <%= file_field_tag :upload, required: true %>
+    </div>
+    <div class="form-group">
+      <%= check_box_tag :override %>&nbsp;<%= label_tag :override, 'Override previously uploaded samples' %>
+    </div>
+    <div class="form-group">
+      <%= submit_tag 'Upload manifest', class: 'btn btn-success' %>
+    </div>
+  </fieldset>
+<% end -%>

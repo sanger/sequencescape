@@ -111,8 +111,7 @@ class Study < ApplicationRecord
   has_many :suppliers, ->() { distinct }, through: :sample_manifests
 
   # Validations
-  validates_presence_of :name
-  validates :name, on: :create, uniqueness: { case_sensitive: false }
+  validates :name, uniqueness: { case_sensitive: false }, presence: true
   validates_length_of :name, maximum: 200
   validates_format_of :abbreviation, with: /\A[\w_-]+\z/i, allow_blank: false, message: 'cannot contain spaces or be blank'
   validate :validate_ethically_approved

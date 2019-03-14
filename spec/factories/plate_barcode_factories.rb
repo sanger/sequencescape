@@ -14,6 +14,6 @@ FactoryBot.define do
     sequence(:name) { |i| "96 Well Plate #{i}" }
     printer_type_id { 1 }
     type { 'BarcodePrinterType96Plate' }
-    label_template_name { 'sqsc_96plate_label_template' }
+    label_template_name { 'sqsc_96plate_label_template_code39' }
   end
 end

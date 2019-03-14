@@ -7,6 +7,7 @@ Sequencescape::Application.routes.draw do
 
   namespace :api do
     namespace :v2 do
+      jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :lot_types
       jsonapi_resources :lots
       jsonapi_resources :qcables
@@ -564,6 +565,8 @@ Sequencescape::Application.routes.draw do
       end
     end
   end
+
+  resources :uat_actions
 
   resources :billing_reports, only: [:new, :create]
 

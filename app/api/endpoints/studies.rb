@@ -8,21 +8,19 @@ class Endpoints::Studies < Core::Endpoint::Base
     has_many(:asset_groups, json: 'asset_groups', to: 'asset_groups')
 
     has_many(:sample_manifests, json: 'sample_manifests', to: 'sample_manifests') do
-      def self.constructor(name, method)
+      def self.deprecated_constructor(name)
         line = __LINE__ + 1
         instance_eval("
           bind_action(:create, :as => #{name.to_sym.inspect}, :to => #{name.to_s.inspect}) do |_, request, response|
-            ActiveRecord::Base.transaction do
-              manifest = request.target.#{method}(request.attributes)
-              request.io.eager_loading_for(manifest.class).include_uuid.find(manifest.id)
-            end
+            raise ::Core::Service::DeprecatedAction
           end
         ", __FILE__, line)
       end
 
-      constructor(:create_for_plates, :create_for_plate!)
-      constructor(:create_for_tubes, :create_for_sample_tube!)
-      constructor(:create_for_multiplexed_libraries, :create_for_multiplexed_library!)
+      deprecated_constructor(:create_for_plates)
+      deprecated_constructor(:create_for_tubes)
+      deprecated_constructor(:create_for_multiplexed_libraries)
+      deprecate :create_for_plates, :create_for_tubes, :create_for_multiplexed_libraries
     end
   end
 end

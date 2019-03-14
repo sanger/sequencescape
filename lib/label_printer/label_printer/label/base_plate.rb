@@ -30,7 +30,7 @@ module LabelPrinter
       end
 
       def barcode(plate)
-        plate.ean13_barcode
+        plate.machine_barcode
       end
 
       # TODO: Revert to code 39 once Tecan issue has been fixed

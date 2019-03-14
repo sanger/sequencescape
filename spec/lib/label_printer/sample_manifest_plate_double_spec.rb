@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe LabelPrinter::Label::SampleManifestPlateDouble do
-  let(:sample_manifest) { create :sample_manifest_with_samples }
+  let(:sample_manifest) { create :sample_manifest_with_empty_plate }
   let(:label_options) { { sample_manifest: sample_manifest, only_first_label: only_first_label } }
   let(:sample_manifest_plates) { sample_manifest.printables }
 
@@ -20,7 +20,7 @@ describe LabelPrinter::Label::SampleManifestPlateDouble do
             main_label: {
               left_text: plate.human_barcode,
               right_text: "#{sample_manifest.study.abbreviation} #{plate.barcode_number}",
-              barcode: plate.ean13_barcode
+              barcode: plate.machine_barcode
             }
           },
                  {

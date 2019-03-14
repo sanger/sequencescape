@@ -50,7 +50,6 @@ configatron.site_url = 'localhost:3000'
 configatron.sta_plate_purpose_name = 'STA'
 configatron.sanger_auth_freshness = 60
 configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
-configatron.tecan_files_location = "#{Rails.root}/data"
 configatron.tecan_minimum_volume = 1.0
 configatron.swipecard_pmb_template = 'swipecard_barcode_template'
 
@@ -130,7 +129,6 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.plate_volume_files = "#{Rails.root}/test/data/plate_volume/"
 
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
-  configatron.tecan_files_location = "#{Rails.root}/data"
   configatron.tecan_precision = 1
   configatron.tecan_minimum_volume = 1.0
   configatron.uploaded_spreadsheet.max_number_of_samples = 380
