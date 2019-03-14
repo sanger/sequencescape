@@ -9,4 +9,8 @@ RSpec.describe Api::V2::SampleResource, type: :resource do
     is_expected.to have_attribute :sanger_sample_id
     is_expected.to have_attribute :uuid
   end
+
+  it 'has sample metadata information' do
+    is_expected.to have_one(:sample_metadata).with_class_name('SampleMetadata')
+  end
 end
