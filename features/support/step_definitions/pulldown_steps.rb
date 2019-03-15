@@ -1,11 +1,3 @@
-Transform /^submitted to "([^\"]+)"$/ do |name|
-  SubmissionTemplate.find_by(name: name) or raise StandardError, "Cannot find submission template #{name.inspect}"
-end
-
-Transform /^all submissions$/ do |_|
-  Submission.all
-end
-
 class WellRange
   WELL_REGEXP = /^([A-H])(\d+)$/
 
@@ -37,10 +29,6 @@ class WellRange
   end
 
   delegate :size, to: :to_a
-end
-
-Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
-  WellRange.new(start, finish)
 end
 
 def create_submission_of_assets(template, assets, request_options = {})
@@ -147,22 +135,6 @@ end
 Given /^(all submissions) have been worked until the last plate of the "Illumina-B HTP" pipeline$/ do |submissions|
   plate = work_pipeline_for(submissions, 'Lib PCR-XP', TransferTemplate.find_by!(name: 'Transfer columns 1-1'))
   finalise_pipeline_for(plate)
-end
-
-Transform /^the (sample|library) tube "([^\"]+)"$/ do |type, name|
-  "#{type}_tube".classify.constantize.find_by(name: name) or raise StandardError, "Could not find the #{type} tube #{name.inspect}"
-end
-
-Transform /^the (?:.+\s)?plate "([^\"]+)"$/ do |name|
-  Plate.find_by(name: name) || raise(ActiveRecord::RecordNotFound, "Could not find Plate names #{name} in #{Plate.all.pluck(:name)}")
-end
-
-Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
-  Uuid.lookup_single_uuid(uuid).resource
-end
-
-Transform /^the study "([^\"]+)"$/ do |name|
-  Study.find_by!(name: name)
 end
 
 Then /^the state of (the .+) should be "([^\"]+)"$/ do |target, state|

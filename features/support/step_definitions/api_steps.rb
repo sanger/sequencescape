@@ -221,7 +221,8 @@ end
 Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   match = /^(\d+).*/.match(status) or raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
   begin
-    assert_equal(match[1].to_i, page.driver.status_code)
+    # assert_equal(match[1].to_i, page.driver.status_code)
+    expect(page.driver.status_code).to eq match[1].to_i
   rescue MiniTest::Assertion => e
     step 'show me the HTTP response body'
     raise e

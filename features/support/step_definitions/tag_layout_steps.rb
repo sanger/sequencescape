@@ -9,14 +9,6 @@ end
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
 TAG_LAYOUT_REGEXP          = 'tag layout with ID \d+'
 
-Transform /^tag layout template "([^\"]+)"$/ do |name|
-  TagLayoutTemplate.find_by(name: name) or raise StandardError, "Cannot find tag layout template #{name}"
-end
-
-Transform /^tag layout with ID (\d+)$/ do |id|
-  TagLayout.find(id)
-end
-
 Given /^the tag group for (tag layout template .+) has (\d+) tags$/ do |template, count|
   (1..count.to_i).each { |index| template.tag_group.tags.create!(map_id: index, oligo: "TAG#{index}") }
 end

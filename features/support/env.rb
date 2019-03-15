@@ -70,8 +70,8 @@ Cucumber::Rails::Database.javascript_strategy = :transaction
 require 'transactional_capybara'
 TransactionalCapybara.share_connection
 
-require 'minitest/spec'
 World(MultiTest::MinitestWorld)
+MultiTest.disable_autorun
 
 After('@javascript') do
   # See https://github.com/iangreenleaf/transactional_capybara

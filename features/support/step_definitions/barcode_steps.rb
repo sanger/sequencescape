@@ -15,22 +15,6 @@ Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
   BarcodePrinter.create!(name: name, barcode_printer_type: printer_type, active: true)
 end
 
-Transform /^the last plate$/ do |_|
-  Plate.last or raise StandardError, 'There appear to be no plates'
-end
-
-Transform /^the last multiplexed library tube$/ do |_|
-  MultiplexedLibraryTube.last or raise StandardError, 'There appear to be no multiplexed library tubes'
-end
-
-Transform /^the plate "([^\"]+)"$/ do |name|
-  Plate.find_by(name: name) or raise StandardError, "Could not find the plate #{name.inspect}"
-end
-
-Transform /^the plate with ID (\d+)$/ do |id|
-  Plate.find(id)
-end
-
 Given /^(the .+) has a barcode of "([^\"]+)"$/ do |barcoded, barcode|
   # Annoyingly this is used for batches, as well as labware
   if barcoded.respond_to?(:primary_barcode)
