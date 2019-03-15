@@ -252,7 +252,7 @@ class Study < ApplicationRecord
   scope :is_inactive, -> { where(state: 'inactive') }
   scope :is_pending,  -> { where(state: 'pending') }
 
-  scope :newest_first, -> { order("#{quoted_table_name}.created_at DESC") }
+  scope :newest_first, -> { order(created_at: :desc) }
   scope :with_user_included, -> { includes(:user) }
 
   scope :in_assets, ->(assets) {

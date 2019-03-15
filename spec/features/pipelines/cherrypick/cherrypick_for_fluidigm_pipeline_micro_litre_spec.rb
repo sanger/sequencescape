@@ -8,7 +8,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
   let(:pipeline_name) { 'Cherrypick for Fluidigm' }
-  let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
+  let(:pipeline) { Pipeline.find_by!(name: pipeline_name) }
   let(:submission) { create :submission }
   let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
   let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10' }

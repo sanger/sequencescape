@@ -45,7 +45,7 @@ feature 'Asset submission', js: true do
       select(selected_request_type.name, from: 'Request type')
       fill_in 'Fragment size required (from)', with: '100'
       fill_in 'Fragment size required (to)', with: '200'
-      select(selected_read_length, from: 'Read length')
+      select(selected_read_length.to_s, from: 'Read length')
       click_button 'Create'
       expect(page).to have_content 'Created request'
       expect(page).to have_current_path(asset_path(asset))

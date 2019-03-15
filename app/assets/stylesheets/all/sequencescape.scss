@@ -131,6 +131,15 @@ h3.card-header-custom {
 .text-started { @extend .text-primary; }
 .text-cancelled { @extend .text-warning; }
 
+.errorExplanation {
+  @extend .alert;
+  @extend .alert-danger;
+  h2 {
+    @extend .h5;
+    @extend .alert-heading;
+  }
+}
+
 div.quota {
   @extend .card;
   @extend .bg-info;
@@ -871,9 +880,9 @@ background-color: #BBBBBB;
 }
 
 td.comment {
-    padding: 5px;
+  padding: 5px;
   margin: 5px;
-border-top: 1px solid #cdd;
+  border-top: 1px solid #cdd;
   background-color: #eee;
 }
 

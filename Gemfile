@@ -3,7 +3,8 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'rails', '~> 5.1.6'
+  gem 'bootsnap'
+  gem 'rails', '~> 5.2.2'
 
   # State machine
   gem 'aasm'
@@ -117,7 +118,7 @@ group :warehouse do
   gem 'ruby-oci8', platforms: :mri
   # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   # any newer version requires ruby-oci8 => 2.0.1
-  gem 'activerecord-oracle_enhanced-adapter', '~> 1.8'
+  gem 'activerecord-oracle_enhanced-adapter'
 end
 
 group :development do

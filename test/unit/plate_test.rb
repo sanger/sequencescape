@@ -28,26 +28,6 @@ class PlateTest < ActiveSupport::TestCase
         assert_nothing_raised { create_plate_with_fluidigm('1234567890') }
       end
     end
-
-    context '#add_well' do
-      [[96, 7, 11], [384, 15, 23]].each do |plate_size, row_size, col_size|
-        context "for #{plate_size} plate" do
-          setup do
-            @well = Well.new
-            @plate = Plate.new(name: 'Test Plate', size: plate_size, purpose: Purpose.find_by(name: 'Stock Plate'))
-          end
-          context 'with valid row and col combinations' do
-            (0..row_size).step(1) do |row|
-              (0..col_size).step(1) do |col|
-                should "not return nil: row=> #{row}, col=>#{col}" do
-                  assert @plate.add_well(@well, row, col)
-                end
-              end
-            end
-          end
-        end
-      end
-    end
   end
 
   context '#iteration' do

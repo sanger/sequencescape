@@ -13,6 +13,10 @@ class Comment < ApplicationRecord
     where(commentable: commentables).group(:commentable_id).count
   end
 
+  def can_be_deleted_by?(deleting_user)
+    user == deleting_user || user.administrator?
+  end
+
   private
 
   ##

@@ -17,7 +17,7 @@ feature 'Create a new tag layout template' do
     visit tag_group_path(tag_group_1)
     expect(page).to have_content 'Test tag group 1'
     click_on 'Create a new tag layout template from this tag group'
-    expect(page).to have_content 'New Tag Layout Template'
+    expect(page).to have_content 'Tag Layout Template New'
     within('#new_tag_layout_template') do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
       select('InColumns', from: 'tag_layout_template_direction_algorithm')
@@ -35,7 +35,7 @@ feature 'Create a new tag layout template' do
   scenario 'create a new layout template directly', js: true do
     login_user user
     visit new_tag_layout_template_path
-    expect(page).to have_content 'New Tag Layout Template'
+    expect(page).to have_content 'Tag Layout Template New'
     within('#new_tag_layout_template') do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
       select(tag_group_1.name, from: 'tag_layout_template_tag_group_id')
@@ -55,12 +55,15 @@ feature 'Create a new tag layout template' do
   scenario 'get an error when creating a new layout template', js: true do
     login_user user
     visit new_tag_layout_template_path
-    expect(page).to have_content 'New Tag Layout Template'
+    expect(page).to have_content 'Tag Layout Template New'
+
     within('#new_tag_layout_template') do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
       select('InColumns', from: 'tag_layout_template_direction_algorithm')
       click_on 'Create tag layout template'
     end
-    expect(page).to have_content 'error prohibited this tag layout template from being saved There were problems with the following fields: Tag group must exist'
+
+    expect(page).to have_content 'error prohibited this tag layout template from being saved'
+    expect(page).to have_content 'Tag group must exist'
   end
 end

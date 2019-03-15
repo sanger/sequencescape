@@ -4,7 +4,7 @@ require 'factory_bot'
 
 FactoryBot.define do
   trait :scanned_into_lab do
-    after(:build) do |asset, _evaluator|
+    after(:create) do |asset, _evaluator|
       asset.create_scanned_into_lab_event!(content: '2018-01-01')
     end
   end
