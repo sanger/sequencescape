@@ -32,11 +32,15 @@ class QcResultFactory
     end
   end
 
+  def except_blank_wells
+    resources.reject(&:blank_well?)
+  end
+
   def save
     return false unless valid?
 
     ActiveRecord::Base.transaction do
-      resources.collect(&:save)
+      except_blank_wells.collect(&:save)
     end
     true
   end
@@ -133,10 +137,15 @@ class QcResultFactory
       parent_qc_result.save!
     end
 
+    def blank_well?
+      asset.blank? && well_location.present?
+    end
+
     private
 
     def check_asset
       return if asset.present?
+      return if well_location.present? && asset.blank?
 
       errors.add(:uuid, "#{message_id} does not belong to a valid asset")
     end
@@ -145,7 +154,7 @@ class QcResultFactory
       return if qc_result.valid?
 
       qc_result.errors.each do |k, v|
-        errors.add(k, v)
+        errors.add(k, v) unless k == :asset && blank_well?
       end
     end
 
