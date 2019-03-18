@@ -9,11 +9,15 @@ end
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
 TAG_LAYOUT_REGEXP          = 'tag layout with ID \d+'
 
-Given /^the tag group for (tag layout template .+) has (\d+) tags$/ do |template, count|
-  (1..count.to_i).each { |index| template.tag_group.tags.create!(map_id: index, oligo: "TAG#{index}") }
+Given 'the tag group for {tag_layout_template} has {int} tags' do |template, count|
+  (1..count).each { |index| template.tag_group.tags.create!(map_id: index, oligo: "TAG#{index}") }
 end
 
-Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}|#{TAG_LAYOUT_REGEXP}) is called "([^"]+)"$/ do |target, group_name|
+Given 'the tag group for {tag_layout_template} is called {string}' do |target, group_name|
+  target.tag_group.update!(name: group_name)
+end
+
+Given 'the tag group for {tag_layout} is called {string}' do |target, group_name|
   target.tag_group.update!(name: group_name)
 end
 
@@ -24,7 +28,7 @@ def replace_tag_layout_tags(template, index_to_oligo)
   end
 end
 
-Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}) contains the following tags:$/ do |template, table|
+Given /^the tag group for (tag layout template "([^\"]+)") contains the following tags:$/ do |template, table|
   replace_tag_layout_tags(template, table.hashes)
 end
 
@@ -118,12 +122,12 @@ end
 # This fakes out the transfers so that they look like they came from different submissions, effectively meaning
 # that the source plate is pooled in columns to the destination plate (it's not actually pooled, it's just the
 # indication of what pools will occur).
-Given /^the wells for (the plate.+) have been pooled in columns to (the plate.+)$/ do |source, destination|
+Given 'the wells for {plate_name} have been pooled in columns to {plate_name}' do |source, destination|
   pool_by_strategy(source, destination, [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8])
 end
 
-Given /^the wells for (the plate.+) have been pooled to (the plate.+) according to the pooling strategy (\d+(?:,\s*\d+)*)$/ do |source, destination, pooling_strategy|
-  pool_by_strategy(source, destination, pooling_strategy.split(',').map(&:to_i))
+Given 'the wells for {plate_name} have been pooled to {plate_name} according to the pooling strategy {integer_array}' do |source, destination, pooling_strategy|
+  pool_by_strategy(source, destination, pooling_strategy)
 end
 
 Given /^the tag group "(.*?)" exists$/ do |name|

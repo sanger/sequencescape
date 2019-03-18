@@ -1,35 +1,4 @@
-class WellRange
-  WELL_REGEXP = /^([A-H])(\d+)$/
-
-  def initialize(start, finish)
-    start_match, finish_match = WELL_REGEXP.match(start), WELL_REGEXP.match(finish)
-    @rows    = (start_match[1]..finish_match[1])
-    @columns = (start_match[2].to_i..finish_match[2].to_i)
-  end
-
-  def include?(well)
-    include_well_location?(well.map.description)
-  end
-
-  def include_well_location?(location)
-    well_match = WELL_REGEXP.match(location)
-    @rows.include?(well_match[1]) and @columns.include?(well_match[2].to_i)
-  end
-  private :include_well_location?
-
-  def to_a
-    [].tap do |wells|
-      (1..12).each do |column|
-        ('A'..'H').each do |row|
-          well = "#{row}#{column}"
-          wells << well if include_well_location?(well)
-        end
-      end
-    end
-  end
-
-  delegate :size, to: :to_a
-end
+require 'active_support'
 
 def create_submission_of_assets(template, assets, request_options = {})
   template.create_with_submission!(
@@ -42,7 +11,7 @@ def create_submission_of_assets(template, assets, request_options = {})
   step 'all pending delayed jobs are processed'
 end
 
-Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |range, plate, template|
+Given '{well_range} of {plate_uuid} have been {submitted_to}' do |range, plate, template|
   request_options = { read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200 }
   request_options[:bait_library_name] = 'Human all exon 50MB' if template.name.match?(/Pulldown I?SC/)
 
@@ -53,21 +22,40 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
   )
 end
 
-Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range, plate|
+Given '{well_range} of {plate_name} have been {submitted_to}' do |range, plate, template|
+  request_options = { read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200 }
+  request_options[:bait_library_name] = 'Human all exon 50MB' if template.name.match?(/Pulldown I?SC/)
+
+  create_submission_of_assets(
+    template,
+    plate.wells.select(&range.method(:include?)),
+    request_options
+  )
+end
+
+Given '{well_range} of {plate_name} are part of the same submission' do |range, plate|
   submission = FactoryBot.create :submission
   plate.wells.select(&range.method(:include?)).each do |well|
     FactoryBot.create :transfer_request, submission: submission, target_asset: well
   end
 end
 
-Given /^"([^\"]+)" of (the plate .+) have been failed$/ do |range, plate|
+Given '{well_range} of {plate_name} have been failed' do |range, plate|
   plate.wells.select(&range.method(:include?)).each do |well|
     well.aliquots.clear
     well.requests_as_target.map(&:destroy)
   end
 end
 
-Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^\"]+") with the following request options:$/ do |range, plate, template, table|
+Given '{well_range} of {plate_name} have been {submitted_to} with the following request options:' do |range, plate, template, table|
+  create_submission_of_assets(
+    template,
+    plate.wells.select(&range.method(:include?)),
+    Hash[table.raw]
+  )
+end
+
+Given '{well_range} of {plate_uuid} have been {submitted_to} with the following request options:' do |range, plate, template, table|
   create_submission_of_assets(
     template,
     plate.wells.select(&range.method(:include?)),
@@ -83,7 +71,7 @@ Given /^the plate (.+) and (.+) have been submitted to "([^"]+)"$/ do |info, inf
   step(%Q{"A1-H12" of the plate #{info} and the plate #{info2} both been submitted to "#{template}"})
 end
 
-Given /^H12 on (the plate .+) is empty$/ do |plate|
+Given 'H12 on {asset_name} is empty' do |plate|
   plate.wells.located_at('H12').first.aliquots.clear
 end
 
@@ -137,11 +125,15 @@ Given /^(all submissions) have been worked until the last plate of the "Illumina
   finalise_pipeline_for(plate)
 end
 
-Then /^the state of (the .+) should be "([^\"]+)"$/ do |target, state|
+Then 'the state of {uuid} should be {string}' do |target, state|
   assert_equal(state, target.state, 'State is invalid')
 end
 
-Given /^all of the wells on (the plate .+) are in an asset group called "([^"]+)" owned by (the study .+)$/ do |plate, name, study|
+Then 'the state of {asset_name} should be {string}' do |target, state|
+  assert_equal(state, target.state, 'State is invalid')
+end
+
+Given 'all of the wells on {plate_name} are in an asset group called {string} owned by {study_name}' do |plate, name, study|
   AssetGroup.create!(study: study, name: name, assets: plate.wells)
 end
 
@@ -171,7 +163,7 @@ Given /^all transfer requests are in the last submission$/ do
   TransferRequest.update_all("submission_id=#{submission.id}")
 end
 
-Given /^(the plate .+) will pool into 1 tube$/ do |plate|
+Given '{plate_name} will pool into 1 tube' do |plate|
   well_count = plate.wells.count
   stock_plate = FactoryBot.create :full_stock_plate, well_count: well_count
   stock_wells = stock_plate.wells

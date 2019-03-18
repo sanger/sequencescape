@@ -1,4 +1,5 @@
 require 'selenium/webdriver'
+require 'capybara'
 
 # Capybara.configure do |config|
 #   config.server = :puma

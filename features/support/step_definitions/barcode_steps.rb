@@ -15,15 +15,39 @@ Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
   BarcodePrinter.create!(name: name, barcode_printer_type: printer_type, active: true)
 end
 
-Given /^(the .+) has a barcode of "([^\"]+)"$/ do |barcoded, barcode|
-  # Annoyingly this is used for batches, as well as labware
-  if barcoded.respond_to?(:primary_barcode)
-    bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
-    barcoded.primary_barcode.update(barcode: bc)
-  else
-    barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
-  end
+# Given /^(the .+) has a barcode of "([^\"]+)"$/ do |barcoded, barcode|
+#   # Annoyingly this is used for batches, as well as labware
+#   if barcoded.respond_to?(:primary_barcode)
+#     bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+#     barcoded.primary_barcode.update(barcode: bc)
+#   else
+#     barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
+#   end
+# end
+
+Given '{asset_id} has a barcode of {string}' do |barcoded, barcode|
+  bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+  barcoded.primary_barcode.update(barcode: bc)
 end
+
+Given '{asset_name} has a barcode of {string}' do |barcoded, barcode|
+  bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+  barcoded.primary_barcode.update(barcode: bc)
+end
+
+Given '{batch} has a barcode of {string}' do |barcoded, barcode|
+  barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
+end
+
+# Given "{plate_name} has a barcode of {string}" do |barcoded, barcode|
+#   # Annoyingly this is used for batches, as well as labware
+#   if barcoded.respond_to?(:primary_barcode)
+#     bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+#     barcoded.primary_barcode.update(barcode: bc)
+#   else
+#     barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
+#   end
+# end
 
 Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
   bc = SBCF::SangerBarcode.new(prefix: 'NT', number: barcode).human_barcode
