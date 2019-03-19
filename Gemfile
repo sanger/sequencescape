@@ -45,9 +45,6 @@ group :default do
   # Locked for ruby version
   gem 'delayed_job_active_record'
 
-  gem 'ruby_walk', '>= 0.0.3',
-      github: 'sanger/ruby_walk'
-
   gem 'irods_reader', '>=0.0.2',
       github: 'sanger/irods_reader'
 

@@ -48,7 +48,7 @@ xml.batch do
           if target_asset_aliquots.empty?
             # This is a batch that has yet to be started
             xml.comment!("This batch has yet to be started so no information about what's on this lane is available yet")
-          elsif target_asset_aliquots.all?(&:tagged?)
+          elsif target_asset_aliquots.any?(&:tags?)
             # Any lane where every aliquot is tagged is considered to be a pool
             xml.pool(
               "id" => request.asset.id, # TODO: remove
@@ -56,17 +56,12 @@ xml.batch do
               "request_id" => request.id,
               "qc_state" => request.target_asset.compatible_qc_state
             ) {
-              spiked_in_phiX = request.target_asset.spiked_in_buffer
-
               target_asset_aliquots.each do |aliquot|
-                next if spiked_in_phiX && spiked_in_phiX.primary_aliquot =~ aliquot
-
                 output_aliquot(xml, aliquot)
               end
             }
           else
-            # This is a lane that is not multiplexed.  It may have spiked in phiX in it, which is tagged, so we'll remove
-            # any aliquots that are tagged from the view.
+            # This is a lane that is not multiplexed.
             xml.library(
               "id" => request.target_asset.primary_aliquot.library_id, # TODO: remove
               "name" => request.asset.name, # TODO: remove
@@ -74,7 +69,7 @@ xml.batch do
               "qc_state" => request.target_asset.compatible_qc_state
             ) {
               target_asset_aliquots.each do |aliquot|
-                output_aliquot(xml, aliquot) unless aliquot.tag.present?
+                output_aliquot(xml, aliquot)
               end
             }
           end

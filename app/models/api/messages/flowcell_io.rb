@@ -19,11 +19,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def lane_samples
-          some_untagged = target_asset.aliquots.any?(&:untagged?)
-          target_asset.aliquots.reject do |a|
-            (spiked_in_buffer.present? && spiked_in_buffer.primary_aliquot =~ a) or
-              some_untagged && a.tagged? # Reproduces behaviour of batch.xml. Needed due to odd legacy data
-          end
+          target_asset.aliquots
         end
 
         delegate :spiked_in_buffer, :external_release, to: :target_asset, allow_nil: true
@@ -127,11 +123,11 @@ class Api::Messages::FlowcellIO < Api::Base
 
   module AliquotExtensions
     def aliquot_type
-      tag.present? ? 'library_indexed' : 'library'
+      tags? ? 'library_indexed' : 'library'
     end
 
     def control_aliquot_type
-      tag.present? ? 'library_indexed_spike' : 'library_control'
+      tags? ? 'library_indexed_spike' : 'library_control'
     end
   end
 
