@@ -106,7 +106,7 @@ GEM
     amq-protocol (2.3.0)
     arel (9.0.0)
     ast (2.4.0)
-    autoprefixer-rails (9.5.0)
+    autoprefixer-rails (8.6.5)
       execjs
     backports (3.12.0)
     binding_of_caller (0.8.0)
@@ -250,7 +250,7 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     json (2.2.0)
-    jsonapi-resources (0.9.5)
+    jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
       concurrent-ruby
       railties (>= 4.1)
@@ -503,6 +503,7 @@ DEPENDENCIES
   activerecord-oracle_enhanced-adapter
   activeresource!
   acts-as-dag!
+  autoprefixer-rails (< 9.0.0)
   axlsx!
   bootsnap
   bootstrap (< 4.2.1)
@@ -534,7 +535,7 @@ DEPENDENCIES
   jquery-tablesorter
   jquery-ui-rails
   json
-  jsonapi-resources
+  jsonapi-resources (= 0.9.0)
   jsonapi-resources-matchers
   knapsack
   launchy

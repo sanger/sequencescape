@@ -6,6 +6,12 @@ group :default do
   gem 'bootsnap'
   gem 'rails', '~> 5.2.2'
 
+  # Used by bootstrap, not used directly. Added here to allow us to pin the version.
+  # Can be removed once we're no longer compiling assets on the servers.
+  # We're currently pinning to keep ruby-racer support. THe suggested alternative
+  # mini-racer doesn't compile on the old machines.
+  gem 'autoprefixer-rails', '< 9.0.0'
+
   # State machine
   gem 'aasm'
   gem 'configatron'
@@ -57,7 +63,13 @@ group :default do
   gem 'uuidtools'
 
   # API v2
-  gem 'jsonapi-resources'
+  # Pinned to 0.9.0
+  # We apply some monkey patches to this which aren't compatible with later version
+  # I've done some preliminary work here:
+  # https://github.com/JamesGlover/sequencescape/tree/depfu/update/jsonapi-resources-0.9.5
+  # but not only is there a failing test, but performance was tanking in a few places
+  # due to not correctly eager loading dependencies on nested resources.
+  gem 'jsonapi-resources', '0.9.0'
 
   # Bunny is a RabbitMQ client.
   gem 'bunny'
