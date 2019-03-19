@@ -62,7 +62,7 @@ group :default do
   # Bunny is a RabbitMQ client.
   gem 'bunny'
 
-  gem 'bootstrap'
+  gem 'bootstrap', '< 4.2.1' # Pinned to 4.2.1 while we are dependent on older GCCs.
   gem 'coffee-rails'
   gem 'jquery-rails'
   gem 'jquery-tablesorter'
@@ -184,12 +184,11 @@ group :test, :cucumber do
 end
 
 group :cucumber do
+  gem 'cucumber'
   gem 'cucumber-rails', require: false
+  gem 'knapsack'
   gem 'mime-types'
   gem 'rubyzip'
-  # Cucumber 3 removes Transform in favour of ParameterType. We may be able to migrate
-  gem 'cucumber'
-  gem 'knapsack'
   gem 'webmock'
 end
 
