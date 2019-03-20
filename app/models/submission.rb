@@ -18,7 +18,7 @@ class Submission < ApplicationRecord
   include ModelExtensions::Submission
   include Submission::Priorities
 
-  PER_ORDER_REQUEST_OPTIONS = %w[pre_capture_plex_level gigabases_expected]
+  PER_ORDER_REQUEST_OPTIONS = %w[pre_capture_plex_level gigabases_expected].freeze
 
   self.per_page = 500
 
@@ -27,6 +27,7 @@ class Submission < ApplicationRecord
   # Created during the lifetime ...
   # Once a submission has requests we REALLY shouldn't be destroying it.
   has_many :requests, inverse_of: :submission, dependent: :restrict_with_exception
+  has_many :aliquots, through: :requests, source: :related_aliquots
   # Items are a legacy item that used to represent libraries which had yet to be made.
   # JG: I don't think we have any behaviour that depends on them. They can probably be removed.
   has_many :items, through: :requests
@@ -34,9 +35,6 @@ class Submission < ApplicationRecord
   # Orders are the main submission workhorses, and do most the heavy lifting. They group together
   # assets, under a study and project, and collect together the request types which will be built,
   # and the request options.
-  # Currently submissions check that all their orders have the same request types, and check that
-  # #check_orders_compatible? but in practice we probably only NEED to ensure that sequencing request
-  # types / read_lengths match.
   # Submissions with orders cannot be destroyed
   has_many :orders, inverse_of: :submission, dependent: :restrict_with_error
   has_many :studies, through: :orders
@@ -132,7 +130,6 @@ class Submission < ApplicationRecord
       raise ActiveRecord::RecordInvalid, self if errors.present?
     end
   end
-  alias_method(:create_requests, :process_submission!)
 
   def multiplexed?
     orders.any? { |o| RequestType.find(o.request_types).any?(&:for_multiplexing?) }
@@ -144,18 +141,6 @@ class Submission < ApplicationRecord
   def multiplexed_asset
     # All our multiplexed requests end up in a single asset, so we don't care which one we find.
     requests.joins(:request_type).find_by(request_types: { for_multiplexing: true }).target_asset
-  end
-
-  def multiplex_started_passed
-    multiplex_started_passed_result = false
-    if multiplexed?
-      requests = Request.where(submission_id: id)
-      states = requests.map(&:state).uniq
-      if (states.include?('started') || states.include?('passed'))
-        multiplex_started_passed_result = true
-      end
-    end
-    multiplex_started_passed_result
   end
 
   def each_submission_warning
@@ -178,18 +163,9 @@ class Submission < ApplicationRecord
     @not_ready_samples_names ||= not_ready_samples.map(&:name).join(', ')
   end
 
-  def request_options_compatible?(a, b)
-    a.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) }
-  end
-
-  def check_studies_compatible?(a, b)
-    errors.add(:study, "Can't mix contaminated and non contaminated human DNA") unless a.study_metadata.contaminated_human_dna == b.study_metadata.contaminated_human_dna
-    errors.add(:study, "Can't mix X and autosome removal with non-removal") unless a.study_metadata.remove_x_and_autosomes == b.study_metadata.remove_x_and_autosomes
-  end
-
   # This is no longer valid.
   def request_type_ids
-    return [] unless orders.present?
+    return [] if orders.blank?
 
     orders.first.request_types.map(&:to_i)
   end
@@ -211,7 +187,7 @@ class Submission < ApplicationRecord
   #
   # @return [Array<Request>] An array of downstream requests
   def next_requests_via_submission(request)
-    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
+    raise "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
 
     # Pick out the siblings of the request, so we can work out where it is in the list, and all of
     # the requests in the subsequent request type, so that we can tie them up.  We order by ID
@@ -255,6 +231,14 @@ class Submission < ApplicationRecord
     multiplexed? && orders.map(&:study_id).uniq.size > 1
   end
 
+  #
+  # Used tags returns an array of unique [i7_oligo, i5_oligo] used as part of the submission
+  #
+  # @return [Array<String,String>] Array of arrays of two strings, the i7 oligo (tag) followed by the i5 (tag2)
+  def used_tags
+    aliquots.includes(:tag, :tag2).any_tags.distinct.pluck('tags.oligo', 'tag2s_aliquots.oligo')
+  end
+
   private
 
   # When passing libraries we may end up iterating over requests in a submission
@@ -287,7 +271,7 @@ class Submission < ApplicationRecord
       # Determine the number of requests that should come next from the multipliers in the orders.
       # NOTE: This will only work whilst you order the same number of requests.
       multipliers = orders.reduce(Set.new) { |set, order| set << order.multiplier_for(request_type_id) }
-      raise RuntimeError, "Mismatched multiplier information for submission #{id}" unless multipliers.one?
+      raise "Mismatched multiplier information for submission #{id}" unless multipliers.one?
 
       # Now we can take the group of requests from next_possible_requests that tie up.
       cache[request_type_id] = multipliers.first

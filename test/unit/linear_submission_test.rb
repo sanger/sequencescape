@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class LinearSubmissionTest < ActiveSupport::TestCase
@@ -6,7 +8,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
   context 'LinearSubmission' do
     should belong_to :study
-    should belong_to :user
+    should belong_to(:user).required
   end
 
   context 'A LinearSubmission' do
@@ -167,7 +169,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         should 'save request_types as array of Integers' do
           assert_kind_of Array, @submission.orders.first.request_types
-          assert @submission.orders.first.request_types.all? { |sample| sample.kind_of?(Integer) }
+          @submission.orders.first.request_types.all? { |request_type_id| assert_kind_of Integer, request_type_id }
         end
 
         should "save a comment if there's one passed in" do
@@ -188,7 +190,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             setup do
               @request_count =  Request.count
               @comment_count =  Comment.count
-              @submission.create_requests
+              @submission.process_submission!
             end
 
             should "change Request.count by #{SX_ASSET_COUNT * 3}" do

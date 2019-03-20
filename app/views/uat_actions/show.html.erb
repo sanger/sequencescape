@@ -1,0 +1,17 @@
+<%= page_title 'UAT', @uat_action.title %>
+<p class="lead"><%= @uat_action.description %></p>
+<% if @uat_action.errors.present? %>
+  <%= alert(:danger) do %>
+    <strong>Sorry!</strong>
+    <p>We couldn't complete that action.</p>
+    <ul><% @uat_action.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %></ul>
+  <% end %>
+<% end %>
+<div class="uat-action">
+  <%= form_for(@uat_action, url:uat_actions_path(id: @uat_action.class.id), as: :uat_action) do |f| %>
+    <%= render partial: @uat_action.form_fields, locals: { f: f } %>
+    <%= f.submit %>
+  <% end %>
+</div>

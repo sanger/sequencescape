@@ -56,7 +56,7 @@ RSpec.describe Postman::Message do
       let(:payload) { 'Invalid payload' }
 
       it 'acknowledges but logs the message' do
-        expect(Rails.logger).to receive(:warn).with("Payload Invalid payload is not JSON: 765: unexpected token at 'Invalid payload'")
+        expect(Rails.logger).to receive(:warn).with("Payload Invalid payload is not JSON: 785: unexpected token at 'Invalid payload'")
         expect(main_exchange).to receive(:ack).with('delivery_tag')
         subject.process
       end

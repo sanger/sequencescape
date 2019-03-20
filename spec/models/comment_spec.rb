@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Comment, type: :model do
   context 'A comment has relationships' do
     it 'should belong to commentable' do
-      should belong_to :commentable
+      should belong_to(:commentable).required
     end
 
     it 'should belong to a user' do

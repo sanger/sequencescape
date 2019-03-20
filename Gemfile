@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'rails', '~> 5.1.2'
+  gem 'rails', '~> 5.1.6'
 
   # State machine
   gem 'aasm'
@@ -43,9 +43,6 @@ group :default do
   # For background processing
   # Locked for ruby version
   gem 'delayed_job_active_record'
-
-  gem 'ruby_walk', '>= 0.0.3',
-      github: 'sanger/ruby_walk'
 
   gem 'irods_reader', '>=0.0.2',
       github: 'sanger/irods_reader'

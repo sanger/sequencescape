@@ -10,8 +10,11 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
   # Test attributes
   it 'works', :aggregate_failures do
     is_expected.to have_attribute :uuid
+    is_expected.to have_attribute :name
+    is_expected.to have_attribute :used_tags
     is_expected.to_not have_updatable_field(:id)
     is_expected.to_not have_updatable_field(:uuid)
+    is_expected.to_not have_updatable_field :used_tags
   end
 
   # Updatable fields

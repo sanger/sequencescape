@@ -11,7 +11,7 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object, :request_metadata, :pooled_request, :order_role, :submission
+      default_includes :uuid_object, { request_metadata: :bait_library }, :pooled_request, :order_role, :submission
 
       # Associations:
       has_one :submission, always_include_linkage_data: true

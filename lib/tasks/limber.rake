@@ -10,9 +10,10 @@ namespace :limber do
 
   desc 'Create Barcode Printer Types'
   task create_barcode_printer_types: :environment do
-    BarcodePrinterType384DoublePlate.find_or_create_by!(name: '384 Well Plate Double',
-                                                        printer_type_id: 10,
-                                                        label_template_name: 'plate_6mm_double')
+    BarcodePrinterType384DoublePlate.create_with(
+      printer_type_id: 10,
+      label_template_name: 'plate_6mm_double_code39'
+    ).find_or_create_by!(name: '384 Well Plate Double')
   end
 
   desc 'Create the Limber cherrypick plates'
@@ -195,6 +196,24 @@ namespace :limber do
     LotType.find_or_create_by!(name: 'Pre Stamped Tags', template_class: 'TagLayoutTemplate', target_purpose: pstp)
     LotType.find_or_create_by!(name: 'Tag 2 Tubes',      template_class: 'Tag2LayoutTemplate', target_purpose: itt)
     LotType.find_or_create_by!(name: 'Pre Stamped Tags - 384', template_class: 'TagLayoutTemplate', target_purpose: btp)
+  end
+
+  desc 'Create tag layout templates'
+  task create_tag_layout_templates: :environment do
+    i7_group = TagGroup.find_by(name: 'IDT for Illumina i7 UDI v1')
+    i5_group = TagGroup.find_by(name: 'IDT for Illumina i5 UDI v1')
+
+    if i7_group.nil? || i5_group.nil?
+      puts "Could not find tag groups to create templates. Skipping."
+    else
+      puts "Creating tag Group - IDT for Illumina v1 - 384 Quadrant"
+      TagLayoutTemplate.create_with(
+                          tag_group: i7_group,
+                          tag2_group: i5_group,
+                          walking_algorithm: 'TagLayout::Quadrants',
+                          direction_algorithm: 'TagLayout::InColumns')
+                       .find_or_create_by!(name: 'IDT for Illumina v1 - 384 Quadrant')
+    end
   end
 
   desc 'Create the limber submission templates'

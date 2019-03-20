@@ -1,0 +1,10 @@
+<%= page_title 'UAT', @uat_action.title %>
+<%= alert(:success) do %>
+  <%= @uat_action.message %>
+<% end %>
+<dl>
+  <% @uat_action.report.each do |key, value| %>
+    <dt><%= key %></dt>
+    <dd><%= value %></dd>
+  <% end %>
+</dl>
