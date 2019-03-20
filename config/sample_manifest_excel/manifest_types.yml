@@ -6,6 +6,7 @@ plate_default:
     - :well
     - :sanger_sample_id
     - :supplier_name
+    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -42,6 +43,7 @@ plate_full:
     - :well
     - :sanger_sample_id
     - :supplier_name
+    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -94,6 +96,7 @@ plate_rnachip:
     - :well
     - :sanger_sample_id
     - :supplier_name
+    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -120,6 +123,7 @@ tube_default:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
+    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -155,6 +159,7 @@ tube_full:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
+    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -206,6 +211,7 @@ tube_rnachip:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
+    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -236,6 +242,7 @@ tube_multiplexed_library:
     - :tag_index
     - :tag2_group
     - :tag2_index
+    - :reference_genome
     - :library_type
     - :insert_size_from
     - :insert_size_to
