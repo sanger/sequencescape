@@ -4,7 +4,6 @@ Feature: Printing new plate barcodes
     Given I am logged in as "user"
     And the plate barcode webservice returns "1234569"
     And the "96 Well Plate" barcode printer "xyz" exists
-    And I freeze time at "Mon Jul 12 10:23:58 UTC 2010"
     Given user "jack" exists with barcode "ID100I"
 
   Scenario: Creating plates without scanning the user barcode
@@ -27,6 +26,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Failed to create plates"
 
+  @javascript
   Scenario: Creating plates where the scanner appends a carriage return
     Given I am on the new plate page
     When I fill in "User barcode" with multiline text
@@ -95,6 +95,7 @@ Feature: Printing new plate barcodes
 
   @xml @qc_event
   Scenario: Create all QC plates for SLF
+    When I freeze time at "Mon Jul 12 10:23:58 UTC 2010"
     Given a plate with purpose "Stock plate" and barcode "1221234567841" exists
     And a plate with barcode "1220001454858" exists
     Given I am on the new plate page
