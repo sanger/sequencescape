@@ -16,7 +16,7 @@ class BatchesControllerTest < ActionController::TestCase
 
       context 'NPG xml view' do
         setup do
-          pipeline = Pipeline.find_by!(name: 'Cluster formation PE (no controls)')
+          pipeline = create :sequencing_pipeline
 
           @study = create(:study)
           @project = create(:project)

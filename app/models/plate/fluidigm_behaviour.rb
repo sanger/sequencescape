@@ -4,17 +4,17 @@ module Plate::FluidigmBehaviour
   def self.included(base)
     base.class_eval do
       scope :requiring_fluidigm_data, -> {
-        fluidigm_request_id = RequestType.find_by!(key: 'pick_to_fluidigm').id
+        fluidigm_request_ids = RequestType.where(key: 'pick_to_fluidigm').ids
 
         joins([
-          # 'INNER JOIN barcodes ON barcodes.asset_id = assets.id AND barcodes.format = 2',
-          'INNER JOIN container_associations AS fluidigm_plate_association ON fluidigm_plate_association.container_id = assets.id', # The fluidigm wells
-          "INNER JOIN requests ON requests.target_asset_id = fluidigm_plate_association.content_id AND state = \'passed\' AND requests.request_type_id = #{fluidigm_request_id}", # Link to their requests
-          'INNER JOIN well_links AS stock_well_link ON stock_well_link.target_well_id = fluidigm_plate_association.content_id AND type= \'stock\'',
+          :well_requests_as_target,
           'LEFT OUTER JOIN events ON eventful_id = assets.id AND eventful_type = "Asset" AND family = "update_fluidigm_plate" AND content = "FLUIDIGM_DATA" '
         ])
           .includes(:barcodes)
-          .where('events.id IS NULL')
+          .where(
+            events: { id: nil },
+            requests: { request_type_id: fluidigm_request_ids }
+          )
           .distinct
       }
     end

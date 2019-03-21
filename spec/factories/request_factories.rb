@@ -130,6 +130,10 @@ FactoryBot.define do
     request_metadata_attributes do
       { target_purpose: target_purpose }
     end
+
+    factory :final_cherrypick_for_fluidigm_request do
+      association(:request_type, factory: :request_type, key: 'pick_to_fluidigm')
+    end
   end
 
   factory :request_without_assets, parent: :request_base do

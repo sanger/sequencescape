@@ -30,7 +30,7 @@ class SequenomQcPlatesController < ApplicationController
           plate_prefix: params[:plate_prefix],
           gender_check_bypass: gender_check_bypass,
           user_barcode: user_barcode,
-          purpose: PlatePurpose.find_by(name: 'Sequenom')
+          purpose: SequenomQcPlate.default_purpose
         )
         # Need to be done before saving the plate
         valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)

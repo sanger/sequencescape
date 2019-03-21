@@ -2,7 +2,7 @@ require 'test_helper'
 
 class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
   def setup
-    @pipeline = Pipeline.find_by(name: 'Illumina-B MX Library Preparation') or raise StandardError, 'Cannot find the Illumina-B MX Library Preparation pipeline'
+    @pipeline = create :multiplexed_library_creation_pipeline
     @user     = create(:user)
   end
 

@@ -53,11 +53,34 @@ FactoryBot.define do
     factory :stock_plate_purpose do
       stock_plate { true }
     end
+
+    factory :pico_assay_purpose do
+      target_type { 'PicoAssayPlate' }
+    end
+
+    factory :fluidigm_96_purpose do
+      cherrypick_direction { 'interlaced_column' }
+      barcode_for_tecan { 'fluidigm_barcode' }
+      size { 96 }
+      association(:asset_shape, factory: :fluidigm_96_shape)
+    end
+    factory :fluidigm_192_purpose do
+      cherrypick_direction { 'interlaced_column' }
+      barcode_for_tecan { 'fluidigm_barcode' }
+      size { 192 }
+      association(:asset_shape, factory: :fluidigm_192_shape)
+    end
   end
 
   factory :dilution_plate_purpose do
     prefix { 'DN' }
     name { 'Dilution' }
+  end
+
+  factory :working_dilution_plate_purpose, class: DilutionPlatePurpose do
+    name { generate :purpose_name }
+    target_type { 'WorkingDilutionPlate' }
+    prefix { 'WD' }
   end
 
   factory :tube_purpose, class: Tube::Purpose do

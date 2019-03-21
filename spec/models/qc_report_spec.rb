@@ -120,15 +120,20 @@ RSpec.describe QcReport, type: :model do
   context 'limit by plate purposes' do
     attr_reader :qc_report
 
-    let!(:study)          { create(:study) }
-    let(:plate_purposes)  { ['ISC lib PCR-XP', 'Lib PCR-XP', 'PF Post Shear'] }
+    let!(:study)              { create(:study) }
+    let(:plate_purposes)      { create_list :plate_purpose, 3 }
+    let(:plate_purpose_names) { plate_purposes.map(&:name) }
 
     before(:each) do
-      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'ISC lib PCR-XP')))
-      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: create(:plate_purpose, name: 'Lib PCR-XP')))
-      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: create(:plate_purpose, name: 'PF Post Shear')))
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[0]))
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[1]))
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[2]))
 
-      @qc_report = create :qc_report, study: study, exclude_existing: false, product_criteria: create(:product_criteria), plate_purposes: plate_purposes
+      @qc_report = create :qc_report,
+                          study: study,
+                          exclude_existing: false,
+                          product_criteria: create(:product_criteria),
+                          plate_purposes: plate_purpose_names
       qc_report.generate!
     end
 

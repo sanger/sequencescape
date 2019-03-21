@@ -9,8 +9,8 @@ feature 'cherrypick pipeline', js: true do
   let(:user) { create :admin, barcode: 'ID41440E' }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
-  let(:pipeline_name) { 'Cherrypick' }
-  let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
+  let(:pipeline_name) { pipeline.name }
+  let(:pipeline) { create :cherrypick_pipeline }
   let(:submission) { create :submission }
   let(:plate1) { create  :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
   let(:plate2) { create  :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
@@ -139,7 +139,7 @@ feature 'cherrypick pipeline', js: true do
     generated_lines = generated_file.lines
     # Shift off the comment lines
     generated_lines.shift(2)
-    expect(generated_lines).to be_truthy
+
     expected_file = <<~TECAN
       C;
       C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
@@ -223,6 +223,7 @@ feature 'cherrypick pipeline', js: true do
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
+
     click_link('Tecan file')
     batch = Batch.last
     # We proceed to check the generated TECAN file here.
@@ -279,6 +280,7 @@ feature 'cherrypick pipeline', js: true do
     within('#output_assets') do
       click_link 'Show plate'
     end
+
     expect(page).to have_content(plate1.contained_samples.first.name)
   end
 end
