@@ -23,6 +23,7 @@ namespace :test do
       if Rails.env.test?
         DatabaseCleaner.strategy = :transaction
         DatabaseCleaner.cleaning do
+          PlateMapGeneration.generate!
           puts 'Linting factories.'
           FactoryBot.lint
           puts 'Linted'
