@@ -24,5 +24,14 @@ FactoryBot.define do
         shape.generate_map(192)
       end
     end
+
+    factory :strip_tube_column_shape do
+      horizontal_ratio { 1 }
+      vertical_ratio { 8 }
+      description_strategy { 'Map::Sequential' }
+      after(:create) do |shape|
+        shape.generate_map(8)
+      end
+    end
   end
 end

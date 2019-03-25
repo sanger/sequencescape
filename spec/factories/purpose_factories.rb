@@ -28,7 +28,7 @@ FactoryBot.define do
     prefix { 'LS' }
     name               { generate :purpose_name }
     size               { '8' }
-    asset_shape        { AssetShape.find_by!(name: 'StripTubeColumn') }
+    asset_shape        { create :strip_tube_column_shape }
     target_type { 'StripTube' }
   end
 
