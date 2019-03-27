@@ -5,12 +5,12 @@ class UatActions::GenerateTagPlates < UatActions
   self.title = 'Generate Tag Plates'
   self.description = 'Generate available tag plates. All tag plates will be part of a new lot.'
 
-  form_field :tag_layout_template_id,
+  form_field :tag_layout_template_name,
              :select,
              label: 'Tag Layout Template',
              help: 'Select the tag layout for the generated plates',
-             select_options: -> { TagLayoutTemplate.where.not(walking_algorithm: 'TagLayout::WalkWellsByPools').pluck(:name, :id) }
-  form_field :lot_type_id, :select, label: 'Lot Type', help: 'The lot type to use.', select_options: -> { LotType.where(template_class: 'TagLayoutTemplate').pluck(:name, :id) }
+             select_options: -> { TagLayoutTemplate.where.not(walking_algorithm: 'TagLayout::WalkWellsByPools').pluck(:name) }
+  form_field :lot_type_name, :select, label: 'Lot Type', help: 'The lot type to use.', select_options: -> { LotType.where(template_class: 'TagLayoutTemplate').pluck(:name) }
   form_field :plate_count, :number_field, label: 'Plate Count', help: 'The number of plates to generate', options: { minimum: 1, maximum: 20 }
 
   def self.default
@@ -41,10 +41,10 @@ class UatActions::GenerateTagPlates < UatActions
   end
 
   def lot_type
-    LotType.find(lot_type_id)
+    LotType.find_by!(name: lot_type_name)
   end
 
   def template
-    TagLayoutTemplate.find(tag_layout_template_id)
+    TagLayoutTemplate.find_by!(name: tag_layout_template_name)
   end
 end

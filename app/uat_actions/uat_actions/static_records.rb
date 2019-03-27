@@ -25,7 +25,19 @@ module UatActions::StaticRecords
   end
 
   def self.project
-    Project.find_or_create_by!(name: 'UAT Study')
+    Project.create_with(
+      approved: true,
+      state: 'active',
+      project_metadata_attributes: {
+        project_cost_code: 'FAKE1',
+        project_funding_model: 'Internal',
+        budget_division: budget_division
+      }
+    ).find_or_create_by!(name: 'UAT Project')
+  end
+
+  def self.budget_division
+    BudgetDivision.find_or_create_by!(name: 'UAT TESTING')
   end
 
   def self.program
