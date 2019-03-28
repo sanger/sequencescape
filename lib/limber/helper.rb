@@ -41,7 +41,7 @@ module Limber::Helper
         request_purpose: :standard,
         for_multiplexing: @for_multiplexing
       ).find_or_create_by!(key: key) do |rt|
-        rt.acceptable_plate_purposes = Purpose.where(name: @default_purpose)
+        rt.acceptable_plate_purposes = Purpose.where(name: @default_purposes)
       end
 
       @library_types.each { |name| rt.library_types.find_or_create_by!(name: name) }
