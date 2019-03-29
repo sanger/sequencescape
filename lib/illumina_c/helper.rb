@@ -1,6 +1,4 @@
 module IlluminaC::Helper
-  require 'hiseq_2500_helper'
-
   ACCEPTABLE_REQUEST_TYPES = %w(illumina_c_pcr illumina_c_nopcr illumina_c_multiplexing illumina_c_chromium_library)
   ACCEPTABLE_SEQUENCING_REQUESTS = %w(
     illumina_c_single_ended_sequencing
