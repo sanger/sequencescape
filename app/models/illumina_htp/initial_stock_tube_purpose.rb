@@ -8,6 +8,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
       tube.transfer_requests_as_target.where.not(state: terminated_states).find_each do |request|
         request.transition_to(state)
         next unless request.outer_request.present?
+        next if state == 'cancelled'
 
         new_outer_state = %w[started passed qc_complete].include?(state) ? 'started' : state
         request.outer_request.customer_accepts_responsibility! if customer_accepts_responsibility

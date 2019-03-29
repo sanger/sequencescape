@@ -7,6 +7,10 @@ Then /^launch the debugger$/ do
   puts
 end
 
+Then /^log the page body$/ do
+  $stdout.puts page.body
+end
+
 Then /^debug the javascript$/ do
   p page.driver.network_traffic
   page.driver.debug
