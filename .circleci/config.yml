@@ -132,6 +132,7 @@ jobs:
     <<: *defaults
     environment:
       RAILS_ENV: cucumber
+      CUCUMBER_FORMAT: DebugFormatter
     parallelism: 3
     steps:
       - checkout
