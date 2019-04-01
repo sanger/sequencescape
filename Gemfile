@@ -162,6 +162,7 @@ group :test do
   # with rails versions.
   gem 'minitest', '5.10.3'
   gem 'minitest-profiler'
+  gem 'rspec_junit_formatter'
 end
 
 group :test, :cucumber do
