@@ -17,7 +17,7 @@ defaults: &defaults
           MYSQL_DATABASE: circleci
           DATABASE_URL: 'mysql2://root@127.0.0.1:3306/'
           TZ: Europe/London
-    - image: tkuchiki/delayed-mysql
+    - image: circleci/mysql:5.7.24
       environment:
         BUNDLE_JOBS: 4
         BUNDLE_RETRY: 3
