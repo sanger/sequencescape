@@ -16,6 +16,7 @@ defaults: &defaults
           MYSQL_ROOT_PASSWORD: ''
           MYSQL_DATABASE: circleci
           DATABASE_URL: 'mysql2://root@127.0.0.1:3306/'
+          TZ: Europe/London
     - image: tkuchiki/delayed-mysql
       environment:
         BUNDLE_JOBS: 4
@@ -69,6 +70,7 @@ jobs:
 
   run-specs:
     <<: *defaults
+    parallelism: 1
     steps:
       - checkout
       - attach_workspace:
@@ -87,15 +89,11 @@ jobs:
           name: run tests
           command: |
             mkdir /tmp/test-results
-            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | \
-              circleci tests split --split-by=timings)"
-
             bundle exec rspec \
               --format progress \
               --format RspecJunitFormatter \
               --out /tmp/test-results/rspec.xml \
-              --format progress \
-              $TEST_FILES
+              --format progress
 
       # collect reports
       - store_test_results:
@@ -105,6 +103,7 @@ jobs:
           destination: test-results
   run-tests:
     <<: *defaults
+    parallelism: 1
     steps:
       - checkout
       - attach_workspace:
