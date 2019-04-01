@@ -7,6 +7,11 @@ defaults: &defaults
   docker:
     # specify the version you desire here
     - image: circleci/ruby:2.4.1-node-browsers
+      environment:
+        BUNDLE_JOBS: 4
+        BUNDLE_RETRY: 3
+        BUNDLE_PATH: vendor/bundle
+        BUNDLE_WITHOUT: 'warehouse deployment'
 
     # Specify service dependencies here if necessary
     # CircleCI maintains a library of pre-built images
@@ -30,7 +35,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+            bundle install
       - run:
          name:  Download cc-test-reporter
          command: |
@@ -54,7 +59,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: bundle exec bin/setup
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
@@ -86,7 +91,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: bundle exec bin/setup
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
@@ -113,7 +118,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: bundle exec bin/setup
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
@@ -139,10 +144,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
-      # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
+      - run: bundle install
 
       # run tests!
       - run:
