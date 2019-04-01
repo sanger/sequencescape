@@ -43,7 +43,7 @@ jobs:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
       - persist_to_workspace:
-          root: .
+          root: ~/repo
           paths:
             - tmp/cc-test-reporter
             - vendor/bundle
@@ -54,6 +54,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - run: bundle install
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
@@ -83,6 +84,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: bundle install
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
@@ -107,6 +109,7 @@ jobs:
     parallelism: 3
     steps:
       - checkout
+      - run: bundle install
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
@@ -129,6 +132,7 @@ jobs:
     environment:
       RAILS_ENV: cucumber
     steps:
+      - run: bundle install
       - checkout
       # Database setup
       - run: bundle exec rake db:create
