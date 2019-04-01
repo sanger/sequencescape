@@ -80,7 +80,7 @@ jobs:
           # preinstalled in circleci/* docker image
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
       - run: echo $DATABASE_URL
-      - run: bundle exec bin/setup
+      - run: RAILS_ENV=test bundle exec bin/setup
 
       # run tests!
       - run:
@@ -115,7 +115,7 @@ jobs:
           name: Wait for DB
           # preinstalled in circleci/* docker image
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
-      - run: bundle exec bin/setup
+      - run: RAILS_ENV=test bundle exec bin/setup
 
       # run tests!
       - run:
