@@ -15,7 +15,7 @@ defaults: &defaults
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_ROOT_PASSWORD: ''
           MYSQL_DATABASE: circleci
-          DATABASE_URL: 'mysql2://root@127.0.0.1:3306'
+          DATABASE_URL: 'mysql2://root@127.0.0.1:3306/'
     - image: tkuchiki/delayed-mysql
       environment:
         BUNDLE_JOBS: 4
@@ -25,7 +25,7 @@ defaults: &defaults
         MYSQL_ALLOW_EMPTY_PASSWORD: yes
         MYSQL_ROOT_PASSWORD: ''
         MYSQL_DATABASE: circleci
-        DATABASE_URL: 'mysql2://root@127.0.0.1:3306'
+        DATABASE_URL: 'mysql2://root@127.0.0.1:3306/'
 
     # Specify service dependencies here if necessary
     # CircleCI maintains a library of pre-built images
@@ -74,6 +74,7 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: cp ./.circleci/database.yml ./config/database.yml
       - run:
           name: Wait for DB
           # preinstalled in circleci/* docker image
@@ -109,6 +110,7 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: cp ./.circleci/database.yml ./config/database.yml
       - run:
           name: Wait for DB
           # preinstalled in circleci/* docker image
@@ -138,6 +140,7 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: cp ./.circleci/database.yml ./config/database.yml
       - run:
           name: Wait for DB
           # preinstalled in circleci/* docker image
