@@ -68,6 +68,7 @@ jobs:
           name: Wait for DB
           # preinstalled in circleci/* docker image
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+      - run: cat /var/run/mysqld/mysqld.sock
       - run: bundle exec bin/setup
 
       # run tests!
