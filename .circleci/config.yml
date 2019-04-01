@@ -59,10 +59,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       - run: bundle exec bin/setup
-      # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
 
       # run tests!
       - run:
@@ -91,10 +89,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       - run: bundle exec bin/setup
-      # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
 
       # run tests!
       - run:
@@ -118,10 +114,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       - run: bundle exec bin/setup
-      # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
 
       # run tests!
       - run:
@@ -144,7 +138,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: bundle install
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
 
       # run tests!
       - run:
