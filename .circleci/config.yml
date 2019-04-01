@@ -7,6 +7,15 @@ defaults: &defaults
   docker:
     # specify the version you desire here
     - image: circleci/ruby:2.4.1-node-browsers
+      environment:
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          BUNDLE_WITHOUT: 'warehouse deployment'
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_DATABASE: circleci
+          DATABASE_URL: 'mysql2://root@127.0.0.1:3306'
     - image: tkuchiki/delayed-mysql
       environment:
         BUNDLE_JOBS: 4
@@ -133,7 +142,7 @@ jobs:
           name: Wait for DB
           # preinstalled in circleci/* docker image
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
-      - run: bundle exec bin/setup
+      - run: RAILS_ENV=cucumber bundle exec bin/setup
 
       # run tests!
       - run:
