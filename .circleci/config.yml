@@ -35,7 +35,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            bundle install
+            bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       - run:
          name:  Download cc-test-reporter
          command: |
