@@ -1,6 +1,23 @@
 require 'eventful_record'
 require 'external_properties'
 
+# Asset is a very busy class which combines what should probably be two separate concepts:
+# Labware: A physical item which can move round the lab, such as a {Plate} or {Tube}
+# {Receptacle}: Something which can contain aliquots, such as a {Well} or {Tube}
+# Currently those these all share a table, and exhibit single table inheritance.
+# Key subclasses are:
+# {Plate}: A piece of labware containing multiple receptacles known as {Well wells}.
+# Plates can be a variety of shapes and sizes, although the marority are 12*8 (96) or
+# 24*16 (384) wells in size.
+# {Well}: A receptacle on a plate. Wells themselves do not exist independently of plates in reality,
+# although may occasionally be modelled as such.
+# {Tube}: A piece of labware with a single {Receptacle}. These behaviours are currently coupled together.
+# {Lane}: Forms part of a sequencing Flowcell. The flowcell itself is not currently modelled but can be
+# approximated by a {Batch}
+# {Fragment}: Represents an isolated segment of DNA on a Gel. Historical.
+# {Receptacle}: Abstract class inherited by any asset which can contain stuff directly
+#
+# Some of the above are further subclasses to handle specific behaviours.
 class Asset < ApplicationRecord
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
