@@ -54,7 +54,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: bundle install
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
@@ -84,7 +84,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: bundle install
+      - attach_workspace:
+          at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
@@ -109,7 +111,9 @@ jobs:
     parallelism: 3
     steps:
       - checkout
-      - run: bundle install
+      - attach_workspace:
+          at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
@@ -132,8 +136,10 @@ jobs:
     environment:
       RAILS_ENV: cucumber
     steps:
-      - run: bundle install
       - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
