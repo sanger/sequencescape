@@ -1,3 +1,8 @@
+# Represents policy information about who will have access to information associatied
+# with manages (EGA) {Accessionable::Study studies}
+# Comprised of a {Accessionable::Dac DAC} and a URL.
+# Should ideally be a completely separate record  from {Study} but currently just
+# a group of attributes in the {Study::Metadata}
 class Accessionable::Policy < Accessionable::Base
   attr_reader :policy_url, :dac_accession_number, :title
 

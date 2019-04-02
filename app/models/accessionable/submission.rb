@@ -1,3 +1,5 @@
+# Used by {AccessionService} to wrap one of the other {Accessionable accessionables}
+# when making an accessioning submission.
 class Accessionable::Submission < Accessionable::Base
   attr_reader :broker, :alias, :date, :accessionables, :contact
 

@@ -1,3 +1,24 @@
+# The EBI operates two key AccessionServices
+# {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
+# {EgaAccessionService EGA}: Mostly for human data, provides managed access to uploaded data
+# We also submit information to ArrayExpress, but this happens indirectly via the accession services above.
+#
+# Accessioning involves submitting metadata to an external database as XML files.
+# This data receives a unique 'accession number' which we store in the database.
+# These accession numbers can then be used in publications to allow external researchers
+# access to the metadata.
+#
+# Accessionables
+# --------------
+# {Accessionable::Sample}     Represents information about the sample, maps to a Sequencescape {Sample}.
+# {Accessionable::Study}      Represents information about the study. Indicates WHY the samples have been sequenced.
+#                             Maps to a Sequencescape {Study}.
+# {Accessionable::Submission} Wrapper object required by the submission service. We use one per accessionable.
+# The following are associated with EGA studies.
+# {Accessionable::Dac}    Data access committee. Information about who to contact to gain access to the data. (EGA)
+# {Accessionable::Policy} Details about how the data may be used. (EGA)
+#
+# Accessioning of samples has been partially migrated to {Accession 'a separate accession library'}
 class AccessionService
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class

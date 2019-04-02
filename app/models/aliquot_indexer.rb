@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 #
-# The aliquot indexer is passed a Receptacle (usually a Lane) and
-# generates an index for all aliquots. This is a unique index that NPG
+# The aliquot indexer is passed a {Receptacle} (usually a {Lane}) and
+# generates an {AliquotIndex index} for all aliquots. This is a unique index that NPG
 # use to identify deplexed sequencing data. It replaces the previous role of
 # the map id of tag 1 (the i7) and allows a single identifier to be used to
 # represent both indices.
