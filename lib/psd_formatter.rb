@@ -4,11 +4,11 @@ require 'syslog/logger'
 require 'ostruct'
 
 class PsdFormatter < Syslog::Logger::Formatter
-  LINE_FORMAT = "(thread-%s) [%s] %5s -- : %s\n"
+  LINE_FORMAT = "(thread-%s) [%s] %5s -- : %s\n".freeze
 
   def initialize(deployment_info)
     info = OpenStruct.new(deployment_info)
-    @app_tag = "#{info.version}:#{info.environment}"
+    @app_tag = [info.name, info.version, info.environment].compact.join(':').freeze
     super()
   end
 

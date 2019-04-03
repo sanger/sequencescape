@@ -11,6 +11,7 @@ module SampleManifestExcel
     # *columns: The columns which relate to the data.
     class Row
       include ActiveModel::Model
+      include Converters
 
       attr_accessor :number, :data, :columns
       attr_reader :sanger_sample_id
@@ -36,7 +37,7 @@ module SampleManifestExcel
       # Offset by 1. Columns have numbers data is an array
       def at(col_num)
         val = data[col_num - 1]
-        val.try(:strip) || val
+        strip_all_blanks(val)
       end
 
       ##

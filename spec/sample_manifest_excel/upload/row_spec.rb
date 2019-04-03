@@ -21,6 +21,13 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
      'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
      9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
   end
+  let(:data_with_spaces) do
+    [sample_manifest.labware.first.human_barcode, sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
+     ' ATTACTCG ', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
+     'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
+     9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
+  end
+
 
   it 'is not valid without row number' do
     expect(SampleManifestExcel::Upload::Row.new(number: 'one', data: data, columns: columns)).to_not be_valid
@@ -41,6 +48,28 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
   it '#at returns value at specified index (offset by 1)' do
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns).at(3)).to eq('AA')
+  end
+
+  it '#at strips down spaces including non-breaking ones (\u00A0)' do
+    row = SampleManifestExcel::Upload::Row.new(number: 1, data: data_with_spaces, columns: columns)
+    tag_cell_content = data_with_spaces[2]
+    tag_cell_content_retrieved = row.at(3)
+    expect(tag_cell_content.bytes[0]).to eq(32)
+    expect(tag_cell_content.bytes[10]).to eq(160)
+    expect(tag_cell_content_retrieved).to eq('ATTACTCG')
+  end
+
+  it '#at strips down spaces' do
+    row = SampleManifestExcel::Upload::Row.new(number: 1, data: data_with_spaces, columns: columns)
+    reference_genome_cell_content = data_with_spaces[4]
+    reference_genome_cell_content_retrieved = row.at(5)
+    volume_cell_content = data_with_spaces[6]
+    volume_cell_content_retrieved = row.at(7)
+    empty_cell_content = data_with_spaces[3]
+    empty_cell_content_retrieved = row.at(4)
+    expect(reference_genome_cell_content_retrieved).to eq(reference_genome_cell_content)
+    expect(volume_cell_content_retrieved).to eq(volume_cell_content)
+    expect(empty_cell_content_retrieved).to eq(empty_cell_content)
   end
 
   it '#first? is true if this is the first row' do

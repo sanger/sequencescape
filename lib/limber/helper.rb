@@ -41,7 +41,7 @@ module Limber::Helper
         request_purpose: :standard,
         for_multiplexing: @for_multiplexing
       ).find_or_create_by!(key: key) do |rt|
-        rt.acceptable_plate_purposes = Purpose.where(name: @default_purpose)
+        rt.acceptable_plate_purposes = Purpose.where(name: @default_purposes)
       end
 
       @library_types.each { |name| rt.library_types.find_or_create_by!(name: name) }
@@ -77,18 +77,18 @@ module Limber::Helper
 
     # Construct submission templates for the Limber pipeline
     #
-    # @param [String] prefix: nil The prefix for the given limber pipeline (eg. WGS)
+    # @param [String] prefix nil The prefix for the given limber pipeline (eg. WGS)
     # @param [ProductCatalogue] catalogue: The product catalogue that matches the submission.
     #                           Note: Most limber stuff will use a simple SingleProduct catalogue with a product names after the prefix.
     # The following parameters are optional, and usually get calculated from the prefix.
-    # @param [String] name: nil Optional: The library creation portion of the submission template name
+    # @param [String] name nil Optional: The library creation portion of the submission template name
     #                           defaults to the prefix.
-    # @param [String] type: nil Optional: The library creation request key (eg. limber_wgs) for the templates.
+    # @param [String] type nil Optional: The library creation request key (eg. limber_wgs) for the templates.
     #                           Calculated from the prefix by default.
-    # @param [String] role: nil Optional: A string matching the desired order role. Defaults to the prefix.
+    # @param [String] role nil Optional: A string matching the desired order role. Defaults to the prefix.
     # The following are optional and change the range of submission templates constructed.
-    # @param [String] cherrypicked: true Boolean. Set to false to generate submission templates with in built cherrypicking.
-    # @param [Array] sequencing_keys: Array of sequencing request type keys to build templates for. Defaults to all appropriate request types.
+    # @param [String] cherrypicked true Boolean. Set to false to generate submission templates with in built cherrypicking.
+    # @param [Array] sequencing_keys Array of sequencing request type keys to build templates for. Defaults to all appropriate request types.
 
     def name
       @name || prefix

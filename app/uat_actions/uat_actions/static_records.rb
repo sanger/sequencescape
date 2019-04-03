@@ -12,9 +12,9 @@ module UatActions::StaticRecords
       state: 'active',
       study_metadata_attributes: {
         data_access_group: 'dag',
-        study_type: StudyType.first,
+        study_type: study_type,
         faculty_sponsor: faculty_sponsor,
-        data_release_study_type: DataReleaseStudyType.default,
+        data_release_study_type: data_release_study_type,
         study_description: 'A study generated for UAT',
         contaminated_human_dna: 'No',
         contains_human_dna: 'No',
@@ -22,6 +22,15 @@ module UatActions::StaticRecords
         program: program
       }
     ).find_or_create_by!(name: 'UAT Study')
+  end
+
+  def self.study_type
+    StudyType.create_with(valid_type: true, valid_for_creation: true)
+             .find_or_create_by!(name: 'UAT')
+  end
+
+  def self.data_release_study_type
+    DataReleaseStudyType.default || DataReleaseStudyType.find_or_create_by(name: 'UAT')
   end
 
   def self.project

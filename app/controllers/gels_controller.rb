@@ -1,4 +1,8 @@
 class GelsController < ApplicationController
+  # JG 29/03/2019
+  # The GelQC process is no longer actively performed, although we should be careful
+  # of hiding access to historical data.
+
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!

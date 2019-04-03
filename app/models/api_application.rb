@@ -1,3 +1,6 @@
+# An external application using the V1 API
+# Provides an api_key which can be used to authenticate the application,
+# as well as contact information should the API change
 class ApiApplication < ApplicationRecord
   include SharedBehaviour::Named
 
