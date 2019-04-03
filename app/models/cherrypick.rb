@@ -1,3 +1,5 @@
+# Cherrypicking describes the transfer of selected samples from one or more plate, onto new
+# locations on other plates.
 module Cherrypick
   # Various types of error that can occur during cherrypicking
   Error              = Class.new(StandardError)

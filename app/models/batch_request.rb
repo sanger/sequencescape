@@ -1,3 +1,6 @@
+# Join table linking {Batch} to {Request}
+# Requests can be alocated a specific order by setting 'position'. This is
+# especially useful for determining {Lane} order for {SequencingRequest}.
 class BatchRequest < ApplicationRecord
   include Api::BatchRequestIO::Extensions
   include Uuid::Uuidable

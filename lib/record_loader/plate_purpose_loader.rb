@@ -9,8 +9,8 @@ module RecordLoader
     #
     # Create a new purpose loader from yaml files
     #
-    # @param [Array,NilClass] files: pass in an array of files to load, or nil to load all files.
-    # @param [Pathname, String] directory: The directory from which to load the files.
+    # @param files [Array,NilClass] pass in an array of files to load, or nil to load all files.
+    # @param directory [Pathname, String] The directory from which to load the files.
     #   defaults to config/default_records/plate_purposes
     #
     def initialize(files: nil, directory: DEFAULT_DIRECTORY)

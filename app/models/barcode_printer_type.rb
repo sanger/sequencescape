@@ -1,3 +1,5 @@
+# Used by {ParcodePrinter barcode printers} to identify which label type is loaded
+# in them
 class BarcodePrinterType < ApplicationRecord
   has_many :barcode_printers
   validates_presence_of :name

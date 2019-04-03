@@ -3,10 +3,11 @@
 require 'lab_where_client'
 
 #
-# A plate is a piece of labware made up of a number of 'wells'. This class represents the physical piece of plastic.
-# PlatePuprose: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets processed.
-# Well: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
-# PlateType: Identifies the plates form factor, typically provided by robots to ensure tips are positioned correctly.
+# A plate is a piece of labware made up of a number of {Well wells}. This class represents the physical piece of plastic.
+#
+#   - {PlatePuprose}: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets processed.
+#   - {Well}: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
+#   - {PlateType}: Identifies the plates form factor, typically provided by robots to ensure tips are positioned correctly.
 #
 class Plate < Asset
   include Api::PlateIO::Extensions
