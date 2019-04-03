@@ -49,7 +49,7 @@ class UatActions::GenerateTagGroup < UatActions
   end
 
   def existing_tags
-    @tag_group.tags.count
+    existing_tag_group.tags.count
   end
 
   private
@@ -57,7 +57,7 @@ class UatActions::GenerateTagGroup < UatActions
   # Any helper methods
 
   def existing_tag_group
-    @tag_group ||= TagGroup.find_by(name: name)
+    @existing_tag_group ||= TagGroup.find_by(name: name)
   end
 
   #
