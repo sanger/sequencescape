@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Gets included in the workflows controller and processed cherrypicking
-# CAUTION! This pattern is best avoided.
+# Handles the behaviour of {CherrypickTask} and included in {WorkflowsController}
+# {include:CherrypickTask}
 module Tasks::CherrypickHandler
   def self.included(base)
     base.class_eval do

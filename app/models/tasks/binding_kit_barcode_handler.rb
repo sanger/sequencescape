@@ -1,3 +1,5 @@
+# Handles the behaviour of {BindingKitBarcodeTask} and included in {WorkflowsController}
+# {include:BindingKitBarcodeTask}
 module Tasks::BindingKitBarcodeHandler
   def render_binding_kit_barcode_task(task, params)
   end
