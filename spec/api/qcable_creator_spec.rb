@@ -34,5 +34,13 @@ describe '/api/1/qcable_creators' do
       expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
       expect(status).to eq(response_code)
     end
+
+    it 'creates qcables for each barcode' do
+      api_request :post, subject, payload
+
+      lot.qcables.each_with_index do |qc, i|
+        expect(qc.asset.external_barcode).to eq(barcodes[i])
+      end
+    end
   end
 end
