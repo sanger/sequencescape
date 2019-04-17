@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe '/api/1/qcable_creators' do
-
   subject { '/api/1/qcable_creators' }
 
   let(:authorised_app) { create :api_application }
   let(:user) { create :user }
   let(:lot) {  create :tag2_lot }
-  let(:barcodes) { ['CGAP-1', 'CGAP-2', 'CGAP-3', 'CGAP-4', 'CGAP-5']}
+  let(:barcodes) { ['CGAP-1', 'CGAP-2', 'CGAP-3', 'CGAP-4', 'CGAP-5'] }
 
   context '#post' do
     let(:payload) do

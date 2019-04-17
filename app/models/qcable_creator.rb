@@ -13,16 +13,21 @@ class QcableCreator < ApplicationRecord
   after_create :make_qcables!
 
   def make_qcables!
-    if count.present?
-      lot.qcables.build([{ qcable_creator: self }] * count).tap do |_|
-        lot.save!
-      end
+    qcables_by_count! if count.present?
+    qcables_by_barcode! if barcodes.present?
+  end
+
+  private
+
+  def qcables_by_count!
+    lot.qcables.build([{ qcable_creator: self }] * count).tap do |_|
+      lot.save!
     end
-    
-    if barcodes.present?
-      barcodes.split(',').collect do |barcode|
-        lot.qcables.create!(qcable_creator: self, barcode: barcode)
-      end
+  end
+
+  def qcables_by_barcode!
+    barcodes.split(',').collect do |barcode|
+      lot.qcables.create!(qcable_creator: self, barcode: barcode)
     end
   end
 end

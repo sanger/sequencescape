@@ -59,11 +59,10 @@ class Qcable < ApplicationRecord
   def create_asset!
     return true if lot.nil?
 
-    if barcode.present?
-      self.asset ||= asset_purpose.create!(external_barcode: barcode)
-    else
-      self.asset ||= asset_purpose.create!
-    end
-
+    self.asset ||= if barcode.present?
+                     asset_purpose.create!(external_barcode: barcode)
+                   else
+                     asset_purpose.create!
+                   end
   end
 end
