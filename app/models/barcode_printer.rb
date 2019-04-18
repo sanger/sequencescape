@@ -1,3 +1,9 @@
+# Represents a barcode printer, where {#name} is the hostname of the printer
+# eg. d304bc
+# BarcodePrinterType records which label type (eg. tube or plate labels) is loaded
+# in the printer, and ensures that we can:
+#  - Correctly filter the list of printers displayed to be suitable for the asset
+#  - Send an appropriate label template to the printer
 class BarcodePrinter < ApplicationRecord
   include Uuid::Uuidable
 

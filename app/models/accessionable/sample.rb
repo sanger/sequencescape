@@ -1,3 +1,5 @@
+# Handles the submission of {Sample} information to the ENA or EGA
+# It should have a 1 to 1 mapping with Sequencescape {Sample samples}.
 module Accessionable
   class Sample < Base
     attr_reader :common_name, :taxon_id, :links, :tags

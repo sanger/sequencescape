@@ -2,6 +2,9 @@ require 'timeout'
 require 'tecan_file_generation'
 require 'aasm'
 
+# A {Batch} groups 1 or more {Request requests} together to enable processing in a
+# {Pipeline}. All requests in a batch get usually processed together, although it is
+# possible for requests to get removed from a batch in a handful of cases.
 class Batch < ApplicationRecord
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions

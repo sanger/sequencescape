@@ -1,3 +1,13 @@
+# A {Task} used in {CherrypickPipeline cherrypick pipelines}
+# Performs the main bulk of cherrypick action. Although a lot of the options
+# on this page are presented as part of the previous step, and get persisted on this
+# page as hidden fields.
+# This page shows a drag-drop plate layout which lets users set-up the way the plate will be picked.
+# The target asset of each request will have its plate and map set accordingly.
+# Well attributes are set to track picking volumes
+#
+# @see PlateTransferTask for previous step
+# @see Tasks::CherrypickHandler for behaviour included in the {WorkflowsController}
 class CherrypickTask < Task
   EMPTY_WELL          = [0, 'Empty', '']
   TEMPLATE_EMPTY_WELL = [0, '---', '']

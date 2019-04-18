@@ -1,3 +1,7 @@
+# Handles the behaviour of {AssignTubesToMultiplexedWellsTask} and {AssignTubesToWellsTask}
+# and included in {WorkflowsController}
+# {include:AssignTubesToMultiplexedWellsTask}
+# {include:AssignTubesToWellsTask}
 module Tasks::AssignTubesToWellsHandler
   # Plate is an option parameter for a target plate. Used in multiplexed
   # cherrypicking. In its absence a plate is created
