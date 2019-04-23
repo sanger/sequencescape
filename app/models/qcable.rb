@@ -11,6 +11,8 @@ class Qcable < ApplicationRecord
   include AASM
   include Qcable::Statemachine
 
+  attr_accessor :barcode
+
   belongs_to :lot, inverse_of: :qcables
   belongs_to :asset
   belongs_to :qcable_creator, inverse_of: :qcables
@@ -57,6 +59,10 @@ class Qcable < ApplicationRecord
   def create_asset!
     return true if lot.nil?
 
-    self.asset ||= asset_purpose.create!
+    self.asset ||= if barcode.present?
+                     asset_purpose.create!(external_barcode: barcode)
+                   else
+                     asset_purpose.create!
+                   end
   end
 end
