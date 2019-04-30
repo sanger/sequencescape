@@ -76,6 +76,23 @@ namespace :limber do
         barcode_for_tecan: 'ean13_barcode'
       )
     end
+
+    # Added to ensure purpose exists before creating Limber Multiplexing
+    # request type later. Otherwise request type has target purpose nil
+    # and Limber Submissions fail to create final tubes for pipelines.
+    unless Purpose.where(name: 'LB Lib Pool Norm').exists?
+      IlluminaHtp::MxTubeNoQcPurpose.create!(
+        name: 'LB Lib Pool Norm',
+        target_type: 'MultiplexedLibraryTube',
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '1D Tube'),
+        cherrypickable_target: true,
+        cherrypick_direction: 'column',
+        size: 96,
+        barcode_for_tecan: 'ean13_barcode',
+        barcode_prefix: BarcodePrefix.find_by(prefix: 'NT')
+      )
+    end
   end
 
   desc 'Create the limber request types'
