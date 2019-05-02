@@ -1,5 +1,5 @@
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
-# of a sample, or it might be a library (a combination of the DNA sample and a tag).
+# of a sample, or it might be a library (a combination of the DNA sample and a {Tag tag}).
 
 # A note on tags:
 # Aliquots can have up to two tags attached, the i7 (tag) and the i5(tag2)
@@ -13,6 +13,7 @@
 # MySQL indexes treat NULL values as non identical, so -1 (UNASSIGNED_TAG) is used to represent
 # an untagged well.
 # We have some performance optimizations in place to avoid trying to look up tag -1
+# @see Tag
 class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions

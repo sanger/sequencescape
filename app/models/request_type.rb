@@ -23,6 +23,9 @@ class RequestType < ApplicationRecord
     # we don't do many-to-many so far
   ]
 
+  # @!attribute key
+  #   @return [String] A simple text identifier for the request type designed for programmatic use
+
   has_many :requests, inverse_of: :request_type
   has_many :pipelines_request_types, inverse_of: :request_type
   has_many :pipelines, through: :pipelines_request_types

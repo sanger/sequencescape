@@ -15,6 +15,7 @@ class BaitLibrary < ApplicationRecord
     end
   end
 
+  # The company or individual who supplies the {BaitLibrary}
   class Supplier < ApplicationRecord
     self.table_name = ('bait_library_suppliers')
 

@@ -1,3 +1,6 @@
+#
+# Bait libraries come in two types, custom and standard, which can affect costs.
+#
 class BaitLibraryType < ApplicationRecord
   include SharedBehaviour::Named
 

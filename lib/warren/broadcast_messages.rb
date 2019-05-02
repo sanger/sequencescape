@@ -20,7 +20,7 @@ module Warren::BroadcastMessages
     #
     # When records of this type are saved, broadcast the associated records
     #
-    # @param [Symbol,Array<Symbol>] *associated One or more symbols indicating the associations to broadcast.
+    # @param [Symbol,Array<Symbol>] associated One or more symbols indicating the associations to broadcast.
     #
     # @return [void]
     #

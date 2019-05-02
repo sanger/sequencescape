@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 # This class is due to replace CherrypickForPulldownRequest
+# A cherrypick represents a request to transfer material from one plate to another,
+# usually for the purposes of consolidation for library creation.
 class CherrypickRequest < CustomerRequest
   after_create :transfer_aliquots
 
