@@ -22,12 +22,6 @@ describe 'PrimerPanels API', with: :api_v2 do
   context 'with a primer_panel' do
     let(:resource_model) { create :primer_panel }
 
-    it 'sends an individual primer_panel' do
-      api_get "/api/v2/primer_panels/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('primer_panels')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -38,6 +32,12 @@ describe 'PrimerPanels API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual primer_panel' do
+      api_get "/api/v2/primer_panels/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('primer_panels')
     end
 
     # Remove if immutable

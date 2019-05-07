@@ -24,12 +24,6 @@ describe 'TagGroups API', with: :api_v2 do
   context 'with a TagGroup' do
     let(:resource_model) { create :tag_group }
 
-    it 'sends an individual TagGroup' do
-      api_get "/api/v2/tag_groups/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('tag_groups')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -40,6 +34,12 @@ describe 'TagGroups API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual TagGroup' do
+      api_get "/api/v2/tag_groups/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('tag_groups')
     end
   end
 end

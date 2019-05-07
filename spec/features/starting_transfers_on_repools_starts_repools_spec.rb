@@ -17,7 +17,7 @@
 
 require 'rails_helper'
 
-feature 'Starting transfers on repools starts repools' do
+describe 'Starting transfers on repools starts repools' do
   let(:original_input_plate) { create :input_plate_for_pooling }
   let(:secondary_input_plate) do
     plate = PlateCreation.create!(user: user, parent: original_input_plate, child_purpose: create(:plate_purpose)).child
@@ -51,7 +51,7 @@ feature 'Starting transfers on repools starts repools' do
     )
   end
 
-  scenario 'The target plate is started' do
+  it 'The target plate is started' do
     StateChange.create(user: user, target: target_plate, target_state: 'started')
     expect(library_creation_request_a1.reload).to be_started
     expect(library_creation_request_b1.reload).to be_started

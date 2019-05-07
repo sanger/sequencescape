@@ -122,7 +122,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
 
       it 'is not valid if the barcodes list only contains whitespace' do
         location_report_form.barcodes_text = '       '
-        expect(location_report_form).to_not be_valid
+        expect(location_report_form).not_to be_valid
       end
 
       it 'is valid to use human readable barcodes' do
@@ -146,7 +146,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       end
 
       context 'when barcodes are input with varied spacing or spaces at the beginning or end' do
-        before(:each) do
+        before do
           location_report_form.barcodes_text = " #{plate_1.machine_barcode} #{plate_2.human_barcode}     #{plate_3.machine_barcode}        "
         end
 
@@ -168,7 +168,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       let(:end_date) { '2016-11-17 00:00:00' }
 
       it 'the form object model is not valid' do
-        expect(location_report_form).to_not be_valid
+        expect(location_report_form).not_to be_valid
       end
     end
 
@@ -182,7 +182,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       let(:plate_purpose_ids) { [plt_1_purpose.id] }
       let(:barcodes_text) { plate_1.machine_barcode.to_s }
 
-      before(:each) do
+      before do
         location_report_form.save
       end
 
@@ -211,7 +211,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       let(:report_type) { 'type_labwhere' }
       let(:locn_prefix) { 'Sanger - Ogilvie - AA209 - Freezer 1' }
 
-      before(:each) do
+      before do
         stub_lwclient_locn_find_by_bc(locn_barcode: '1001', locn_name: 'Shelf 1', locn_parentage: locn_prefix)
         stub_lwclient_locn_find_by_bc(locn_barcode: '9999', locn_name: nil, locn_parentage: nil)
       end
@@ -228,7 +228,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
         let(:location_barcode) { '9999' }
 
         it 'the model is not valid' do
-          expect(location_report_form).to_not be_valid
+          expect(location_report_form).not_to be_valid
         end
       end
     end
@@ -239,7 +239,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       let(:location_barcode) { '1001' }
       let(:locn_prefix) { 'Sanger - Ogilvie - AA209 - Freezer 1' }
 
-      before(:each) do
+      before do
         stub_lwclient_locn_find_by_bc(locn_barcode: '1001', locn_name: 'Shelf 1', locn_parentage: locn_prefix)
         location_report_form.save
       end

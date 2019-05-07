@@ -5,18 +5,18 @@ require 'rails_helper'
 RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest_excel: true do
   let(:configuration) { SampleManifestExcel::Configuration.new }
 
-  it 'should be comparable' do
+  it 'is comparable' do
     expect(configuration).to eq(SampleManifestExcel::Configuration.new)
   end
 
-  it 'should be able to add a new file' do
+  it 'is able to add a new file' do
     configuration.add_file 'a_new_file'
     expect(configuration.files.length).to eq SampleManifestExcel::Configuration::FILES.length + 1
     expect(configuration.files).to include :a_new_file
     expect(configuration).to respond_to('a_new_file=')
   end
 
-  it 'should be able to set and get a tag group' do
+  it 'is able to set and get a tag group' do
     expect(configuration.tag_group).to be nil
     configuration.tag_group = 'Main test group'
     expect(configuration.tag_group).to eq('Main test group')
@@ -25,14 +25,14 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
   describe 'without a folder' do
     it 'will not be loaded' do
       configuration.load!
-      expect(configuration).to_not be_loaded
+      expect(configuration).not_to be_loaded
     end
   end
 
   describe 'with a valid folder' do
     let(:folder) { File.join('spec', 'data', 'sample_manifest_excel') }
 
-    before(:each) do
+    before do
       configuration.folder = folder
       configuration.tag_group = 'My Magic Tag Group'
       configuration.load!

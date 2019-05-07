@@ -2,12 +2,12 @@ require 'rails_helper'
 require 'record_loader/plate_purpose_loader'
 
 RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
-  let(:test_directory) { Rails.root.join('spec', 'data', 'record_loader', 'plate_purposes') }
-  let(:created_purposes) { ['Basic Plate', 'Other Plate', 'Type with creator'] }
-
   subject do
     RecordLoader::PlatePurposeLoader.new(directory: test_directory, files: selected_files)
   end
+
+  let(:test_directory) { Rails.root.join('spec', 'data', 'record_loader', 'plate_purposes') }
+  let(:created_purposes) { ['Basic Plate', 'Other Plate', 'Type with creator'] }
 
   context 'with no files specified' do
     let(:selected_files) { nil }
@@ -42,6 +42,7 @@ RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
       subject.create!
     end
     let(:the_creator) { Plate::Creator.joins(:plate_purposes).find_by(plate_purposes: { name: created_purposes.last }) }
+
     it 'creates purposes from the selected file files' do
       expect(Purpose.where(name: created_purposes).count).to eq(1)
       expect(Purpose.where(name: created_purposes.last).count).to eq(1)

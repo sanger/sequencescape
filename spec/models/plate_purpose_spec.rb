@@ -11,6 +11,7 @@ describe PlatePurpose, type: :model do
     end
     describe '#create!' do
       subject { plate_purpose.create! }
+
       it { is_expected.to be_a expected_plate_class }
 
       it 'set an appropriate barcode prefix' do
@@ -38,6 +39,7 @@ describe PlatePurpose, type: :model do
     # generation.
     describe '#create!(:without_wells)' do
       subject { plate_purpose.create!(:nope) }
+
       it 'does not create wells' do
         expect(subject.wells).to be_empty
       end
@@ -49,6 +51,7 @@ describe PlatePurpose, type: :model do
     let(:target_type) { 'Plate' }
     let(:expected_plate_class) { Plate }
     let(:size) { 96 }
+
     it_behaves_like 'a plate factory'
   end
 
@@ -57,6 +60,7 @@ describe PlatePurpose, type: :model do
     let(:target_type) { 'WorkingDilutionPlate' }
     let(:expected_plate_class) { WorkingDilutionPlate }
     let(:size) { 384 }
+
     it_behaves_like 'a plate factory'
   end
 end

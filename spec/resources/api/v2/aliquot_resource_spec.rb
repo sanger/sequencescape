@@ -4,25 +4,26 @@ require 'rails_helper'
 require './app/resources/api/v2/aliquot_resource'
 
 RSpec.describe Api::V2::AliquotResource, type: :resource do
-  let(:resource_model) { create :aliquot }
   subject { described_class.new(resource_model, {}) }
+
+  let(:resource_model) { create :aliquot }
 
   # Test attributes
   it 'works', :aggregate_failures do
-    is_expected.to have_attribute :tag_oligo
-    is_expected.to have_attribute :tag2_oligo
+    expect(subject).to have_attribute :tag_oligo
+    expect(subject).to have_attribute :tag2_oligo
     # Not sure about these two. They become really tricky to
     # handle if we re-factor tags. But v. useful to users
     # Possibly store as some kind of metadata with other useful details
     # (eg. tag set, lot number?)
-    is_expected.to have_attribute :tag_index
-    is_expected.to have_attribute :tag2_index
-    is_expected.to have_attribute :suboptimal
-    is_expected.to_not have_updatable_field(:id)
-    is_expected.to_not have_updatable_field(:tag_oligo)
-    is_expected.to_not have_updatable_field(:tag2_oligo)
-    is_expected.to_not have_updatable_field(:suboptimal)
-    is_expected.to have_one(:sample).with_class_name('Sample')
+    expect(subject).to have_attribute :tag_index
+    expect(subject).to have_attribute :tag2_index
+    expect(subject).to have_attribute :suboptimal
+    expect(subject).not_to have_updatable_field(:id)
+    expect(subject).not_to have_updatable_field(:tag_oligo)
+    expect(subject).not_to have_updatable_field(:tag2_oligo)
+    expect(subject).not_to have_updatable_field(:suboptimal)
+    expect(subject).to have_one(:sample).with_class_name('Sample')
   end
 
   # Custom method tests

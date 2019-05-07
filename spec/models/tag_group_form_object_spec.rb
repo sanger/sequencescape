@@ -16,26 +16,26 @@ RSpec.describe TagGroup::FormObject, type: :model do
     context 'when an invalid oligo is entered with valid oligos' do
       it 'the model is invalid' do
         tag_group_form_object.oligos_text = 'ACGTACGT INVALID ACTGCATG'
-        expect(tag_group_form_object).to_not be_valid
+        expect(tag_group_form_object).not_to be_valid
       end
     end
 
     context 'when only invalid oligos are entered' do
       it 'the model is invalid' do
         tag_group_form_object.oligos_text = 'INVALID1 INVALID2 INVALID3'
-        expect(tag_group_form_object).to_not be_valid
+        expect(tag_group_form_object).not_to be_valid
       end
     end
 
     context 'when a duplicate oligo is entered' do
       it 'the model is invalid' do
         tag_group_form_object.oligos_text = 'ACGTACGT ACTGCATG ACTGCATG'
-        expect(tag_group_form_object).to_not be_valid
+        expect(tag_group_form_object).not_to be_valid
       end
     end
 
     context 'when oligos are separated by multiple spaces' do
-      before(:each) do
+      before do
         tag_group_form_object.oligos_text = ' ACGTACGT    ACTGCATG  ACTGGGCC   '
       end
 
@@ -52,7 +52,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     context 'when no oligos are entered' do
       it 'the model is invalid' do
         tag_group_form_object.oligos_text = '        '
-        expect(tag_group_form_object).to_not be_valid
+        expect(tag_group_form_object).not_to be_valid
       end
     end
 
@@ -65,7 +65,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     end
 
     context 'when the oligos are entered with commas separating them' do
-      before(:each) do
+      before do
         tag_group_form_object.oligos_text = 'ACCTTGGA,GGTTACAC,TAATCGCA'
       end
 
@@ -80,7 +80,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     end
 
     context 'when the oligos are entered with commas and spaces separating them' do
-      before(:each) do
+      before do
         tag_group_form_object.oligos_text = 'ACCTTGGA, GGTTACAC,  TAATCGCA'
       end
 
@@ -95,7 +95,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     end
 
     context 'when the oligos are entered as lowercase' do
-      before(:each) do
+      before do
         tag_group_form_object.oligos_text = 'accttgga'
       end
 
@@ -114,7 +114,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     let(:tag_group_form_object) { build(:tag_group_form_object, oligos_count: 3, name: nil) }
 
     it 'the model is invalid' do
-      expect(tag_group_form_object).to_not be_valid
+      expect(tag_group_form_object).not_to be_valid
     end
   end
 
@@ -122,7 +122,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     let(:tag_group_form_object) { build(:tag_group_form_object, oligos_count: 3, name: '    ') }
 
     it 'the model is invalid' do
-      expect(tag_group_form_object).to_not be_valid
+      expect(tag_group_form_object).not_to be_valid
     end
   end
 

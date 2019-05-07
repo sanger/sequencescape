@@ -8,6 +8,7 @@ describe 'WorkOrders API', with: :api_v2 do
     let(:other_request_type) { create :request_type }
     let(:our_work_order_type) { create :work_order_type, name: our_request_type.key }
     let(:other_work_order_type) { create :work_order_type, name: other_request_type.key }
+
     before do
       [
         { work_order_type: our_work_order_type, request_type: our_request_type, state: 'pending' },
@@ -86,12 +87,6 @@ describe 'WorkOrders API', with: :api_v2 do
     let(:requests) { create_list :library_request, 2 }
     let(:work_order) { create :work_order, requests: requests }
 
-    it 'sends an individual work_order' do
-      api_get "/api/v2/work_orders/#{work_order.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('work_orders')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -103,6 +98,12 @@ describe 'WorkOrders API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual work_order' do
+      api_get "/api/v2/work_orders/#{work_order.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('work_orders')
     end
 
     it 'allows update of a work order' do

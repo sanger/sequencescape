@@ -10,7 +10,7 @@ module Core::Endpoint::BasicHandler::EndpointLookup
 
     begin
       endpoint_name.constantize
-    rescue NameError => exception
+    rescue NameError => e
       # Some performance improvement can be made by storing the class that is found for those
       # that are missing.  Meaning the next time we shouldn't be coming through this path.
       cache_endpoint_as(endpoint_name, endpoint_for(model.superclass, root))

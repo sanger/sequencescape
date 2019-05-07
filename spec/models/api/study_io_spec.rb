@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::StudyIO, type: :model do
-  let(:reference_genome) { create :reference_genome }
-
   subject do
     create :study,
            ethically_approved: true,
@@ -18,6 +16,8 @@ RSpec.describe Api::StudyIO, type: :model do
              ega_dac_accession_number: 'DAC333'
            }
   end
+
+  let(:reference_genome) { create :reference_genome }
 
   let!(:manager) { create :manager, authorizable: subject }
 

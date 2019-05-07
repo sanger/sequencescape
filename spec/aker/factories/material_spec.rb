@@ -52,17 +52,17 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
 
   it 'is not valid without a name' do
     material = Aker::Factories::Material.new(params.except('_id'), container, study)
-    expect(material).to_not be_valid
+    expect(material).not_to be_valid
   end
 
   it 'is not valid without a gender' do
     material = Aker::Factories::Material.new(params.except('gender'), container, study)
-    expect(material).to_not be_valid
+    expect(material).not_to be_valid
   end
 
   it 'is not valid without a container' do
     material = Aker::Factories::Material.new(params, nil, study)
-    expect(material).to_not be_valid
+    expect(material).not_to be_valid
   end
 
   it 'is not valid unless the container is valid' do
@@ -71,7 +71,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
                                              study)
     material.create
 
-    expect(material).to_not be_valid
+    expect(material).not_to be_valid
   end
 
   it 'sets the container for the sample' do

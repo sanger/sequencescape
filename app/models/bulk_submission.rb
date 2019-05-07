@@ -152,8 +152,8 @@ class BulkSubmission
               # Collect successful submissions
               @submission_ids << submission.id
               @completed_submissions[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
-            rescue Submission::ProjectValidation::Error => exception
-              errors.add :spreadsheet, "There was an issue with a project: #{exception.message}"
+            rescue Submission::ProjectValidation::Error => e
+              errors.add :spreadsheet, "There was an issue with a project: #{e.message}"
             end
           end
         end
@@ -336,8 +336,8 @@ class BulkSubmission
         new_order.request_options[:multiplier][multiplexed_request_type_id] = number_of_lanes
       end
     end
-  rescue => exception
-    errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
+  rescue => e
+    errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{e.message}"
     nil
   end
 

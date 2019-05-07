@@ -22,12 +22,6 @@ describe 'Qcables API', with: :api_v2 do
   context 'with a Qcable' do
     let(:resource_model) { create :qcable }
 
-    it 'sends an individual Qcable' do
-      api_get "/api/v2/qcables/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('qcables')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -38,6 +32,12 @@ describe 'Qcables API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual Qcable' do
+      api_get "/api/v2/qcables/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('qcables')
     end
 
     # Remove if immutable

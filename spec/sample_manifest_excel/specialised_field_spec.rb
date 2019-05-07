@@ -27,9 +27,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
     it 'knows if value is present' do
       thing = Thing.new(sample: sample)
-      expect(thing.value_present?).to be_falsey
+      expect(thing).not_to be_value_present
       thing.value = 'value'
-      expect(thing.value_present?).to be_truthy
+      expect(thing).to be_value_present
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   describe 'Library Type' do
     it 'will not be valid without a persisted library type' do
       expect(SequencescapeExcel::SpecialisedField::LibraryType.new(value: library_type.name, sample: sample)).to be_valid
-      expect(SequencescapeExcel::SpecialisedField::LibraryType.new(value: 'A new library type', sample: sample)).to_not be_valid
+      expect(SequencescapeExcel::SpecialisedField::LibraryType.new(value: 'A new library type', sample: sample)).not_to be_valid
     end
 
     it 'will add the the value to the aliquot' do
@@ -61,7 +61,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
     it 'will not be valid without a persisted reference genome if a value is provided' do
       expect(SequencescapeExcel::SpecialisedField::ReferenceGenome.new(value: reference_genome.name, sample: sample)).to be_valid
-      expect(SequencescapeExcel::SpecialisedField::ReferenceGenome.new(value: 'A new reference genome', sample: sample)).to_not be_valid
+      expect(SequencescapeExcel::SpecialisedField::ReferenceGenome.new(value: 'A new reference genome', sample: sample)).not_to be_valid
     end
 
     it 'will add reference genome to sample_metadata' do
@@ -73,8 +73,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
   describe 'Insert Size From' do
     it 'value must be a valid number greater than 0' do
-      expect(SequencescapeExcel::SpecialisedField::InsertSizeFrom.new(value: 'zero')).to_not be_valid
-      expect(SequencescapeExcel::SpecialisedField::InsertSizeFrom.new(value: -1)).to_not be_valid
+      expect(SequencescapeExcel::SpecialisedField::InsertSizeFrom.new(value: 'zero')).not_to be_valid
+      expect(SequencescapeExcel::SpecialisedField::InsertSizeFrom.new(value: -1)).not_to be_valid
     end
 
     it 'will add the value to the aliquot' do
@@ -86,8 +86,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
   describe 'Insert Size To' do
     it 'value must be a valid number greater than 0' do
-      expect(SequencescapeExcel::SpecialisedField::InsertSizeTo.new(value: 'zero', sample: sample)).to_not be_valid
-      expect(SequencescapeExcel::SpecialisedField::InsertSizeTo.new(value: -1, sample: sample)).to_not be_valid
+      expect(SequencescapeExcel::SpecialisedField::InsertSizeTo.new(value: 'zero', sample: sample)).not_to be_valid
+      expect(SequencescapeExcel::SpecialisedField::InsertSizeTo.new(value: -1, sample: sample)).not_to be_valid
     end
 
     it 'will add the value to the aliquot' do
@@ -103,7 +103,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
     it 'will be valid if the value matches the sanger human barcode' do
       expect(SequencescapeExcel::SpecialisedField::SangerPlateId.new(value: sample_1_plate.human_barcode, sample: sample_1)).to be_valid
-      expect(SequencescapeExcel::SpecialisedField::SangerPlateId.new(value: '1234', sample: sample_1)).to_not be_valid
+      expect(SequencescapeExcel::SpecialisedField::SangerPlateId.new(value: '1234', sample: sample_1)).not_to be_valid
     end
 
     describe 'with foreign barcodes' do
@@ -115,7 +115,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'will not be valid if the value matches an already used cgap foreign barcode' do
         sample_1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
-        expect(SequencescapeExcel::SpecialisedField::SangerPlateId.new(value: 'CGAP-ABC011', sample: sample_2)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::SangerPlateId.new(value: 'CGAP-ABC011', sample: sample_2)).not_to be_valid
       end
 
       it 'will be valid to overwrite a foreign barcode with a new foreign barcode of the same format' do
@@ -124,7 +124,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         expect(field).to be_valid
         field.update(aliquot: sample_1.wells.first.aliquots.first)
         expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
-        expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).to_not be_nil
+        expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
       end
     end
   end
@@ -141,7 +141,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
     it 'will be valid if the value matches the sanger human barcode' do
       expect(SequencescapeExcel::SpecialisedField::SangerTubeId.new(value: sample_1_tube.human_barcode, sample: sample_1)).to be_valid
-      expect(SequencescapeExcel::SpecialisedField::SangerTubeId.new(value: '1234', sample: sample_1)).to_not be_valid
+      expect(SequencescapeExcel::SpecialisedField::SangerTubeId.new(value: '1234', sample: sample_1)).not_to be_valid
     end
 
     describe 'with foreign barcodes' do
@@ -154,7 +154,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'will not be valid if the value matches an already used cgap foreign barcode' do
         sample_1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
-        expect(SequencescapeExcel::SpecialisedField::SangerTubeId.new(value: 'CGAP-ABC011', sample: sample_2)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::SangerTubeId.new(value: 'CGAP-ABC011', sample: sample_2)).not_to be_valid
       end
 
       it 'will be valid to overwrite a foreign barcode with a new foreign barcode of the same format' do
@@ -163,14 +163,14 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         expect(field).to be_valid
         field.update(aliquot: sample_1_tube.aliquots.first)
         expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
-        expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).to_not be_nil
+        expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
       end
     end
   end
 
   describe 'Well' do
     it 'will not be valid unless the value matches the well description' do
-      expect(SequencescapeExcel::SpecialisedField::Well.new(value: 'well', sample: sample)).to_not be_valid
+      expect(SequencescapeExcel::SpecialisedField::Well.new(value: 'well', sample: sample)).not_to be_valid
       expect(SequencescapeExcel::SpecialisedField::Well.new(value: sample.wells.first.map.description, sample: sample)).to be_valid
     end
   end
@@ -181,7 +181,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       expect(SequencescapeExcel::SpecialisedField::SampleEbiAccessionNumber.new(value: 'EB123', sample: sample)).to be_valid
       sample.sample_metadata.sample_ebi_accession_number = 'EB123'
       expect(SequencescapeExcel::SpecialisedField::SampleEbiAccessionNumber.new(value: '', sample: sample)).to be_valid
-      expect(SequencescapeExcel::SpecialisedField::SampleEbiAccessionNumber.new(value: 'EB1234', sample: sample)).to_not be_valid
+      expect(SequencescapeExcel::SpecialisedField::SampleEbiAccessionNumber.new(value: 'EB1234', sample: sample)).not_to be_valid
     end
   end
 
@@ -198,10 +198,10 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'acgt', sample: sample)).to be_valid
         expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'aatc', sample: sample)).to be_valid
 
-        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'ACGT ACGT', sample: sample)).to_not be_valid
-        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'BCGT', sample: sample)).to_not be_valid
-        expect(SequencescapeExcel::SpecialisedField::I7.new(value: '-CGT', sample: sample)).to_not be_valid
-        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'xCGT', sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'ACGT ACGT', sample: sample)).not_to be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'BCGT', sample: sample)).not_to be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: '-CGT', sample: sample)).not_to be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'xCGT', sample: sample)).not_to be_valid
       end
 
       it 'will add the value' do
@@ -238,7 +238,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'will not be valid if the tag does not contain A, C, G or T' do
         expect(SequencescapeExcel::SpecialisedField::I5.new(value: 'ACGT', sample: sample)).to be_valid
-        expect(SequencescapeExcel::SpecialisedField::I5.new(value: 'BCGT', sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::I5.new(value: 'BCGT', sample: sample)).not_to be_valid
       end
 
       it 'will add the value' do
@@ -272,7 +272,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
 
       it 'will not be valid without an existing tag group name' do
-        expect(SequencescapeExcel::SpecialisedField::TagGroup.new(value: 'unknown', sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::TagGroup.new(value: 'unknown', sample: sample)).not_to be_valid
       end
 
       it 'responds to update method but does nothing to tag on aliquot' do
@@ -290,14 +290,14 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
 
       it 'will not have a valid tag index when unlinked from a tag group' do
-        expect(SequencescapeExcel::SpecialisedField::TagIndex.new(value: tag_index, sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::TagIndex.new(value: tag_index, sample: sample)).not_to be_valid
       end
 
       describe 'linking' do
         let!(:sf_tag_group) { SequencescapeExcel::SpecialisedField::TagGroup.new(value: tag_group_name, sample: sample) }
         let!(:sf_tag_index) { SequencescapeExcel::SpecialisedField::TagIndex.new(value: tag_index, sample: sample) }
 
-        before(:each) do
+        before do
           sf_tag_index.sf_tag_group = sf_tag_group
         end
 
@@ -308,7 +308,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         it 'will not have a valid tag index when index does not match to a map_id in the tag group' do
           sf_tag_index2 = SequencescapeExcel::SpecialisedField::TagIndex.new(value: 10, sample: sample)
           sf_tag_index2.sf_tag_group = sf_tag_group
-          expect(sf_tag_index2).to_not be_valid
+          expect(sf_tag_index2).not_to be_valid
         end
 
         it 'will update the aliquot with tag if its oligo is present' do
@@ -345,7 +345,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
 
       it 'will not be valid without an existing tag2 group name' do
-        expect(SequencescapeExcel::SpecialisedField::Tag2Group.new(value: 'unknown', sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::Tag2Group.new(value: 'unknown', sample: sample)).not_to be_valid
       end
 
       it 'responds to update method but does nothing to tag2 on aliquot' do
@@ -363,14 +363,14 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
 
       it 'will not have a valid tag index when unlinked from a tag group' do
-        expect(SequencescapeExcel::SpecialisedField::Tag2Index.new(value: tag2_index, sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::Tag2Index.new(value: tag2_index, sample: sample)).not_to be_valid
       end
 
       describe 'linking' do
         let!(:sf_tag2_group) { SequencescapeExcel::SpecialisedField::Tag2Group.new(value: tag2_group_name, sample: sample) }
         let!(:sf_tag2_index) { SequencescapeExcel::SpecialisedField::Tag2Index.new(value: tag2_index, sample: sample) }
 
-        before(:each) do
+        before do
           sf_tag2_index.sf_tag2_group = sf_tag2_group
         end
 
@@ -381,7 +381,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         it 'will not have a valid tag index when index does not match to a map_id in the tag group' do
           sf_tag2_index2 = SequencescapeExcel::SpecialisedField::Tag2Index.new(value: 10, sample: sample)
           sf_tag2_index2.sf_tag2_group = sf_tag2_group
-          expect(sf_tag2_index2).to_not be_valid
+          expect(sf_tag2_index2).not_to be_valid
         end
 
         it 'will update the aliquot with tag2 if its oligo is present' do

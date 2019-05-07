@@ -36,6 +36,7 @@ describe TagLayout do
 
   context 'substitutions' do
     let(:tag_layout) { build_stubbed :tag_layout }
+
     it 'defaults to an empty hash' do
       expect(tag_layout.substitutions).to eq({})
     end
@@ -63,6 +64,7 @@ describe TagLayout do
           let(:expected_tag_layout) do
             { 'A1' => [1], 'B1' => [2], 'C1' => [3], 'D1' => [4], 'E1' => [5], 'F1' => [6], 'G1' => [7], 'H1' => [8] }
           end
+
           it_behaves_like 'a tag layout'
         end
 
@@ -73,6 +75,7 @@ describe TagLayout do
           let(:expected_tag_layout) do
             { 'A1' => [1], 'C1' => [3], 'D1' => [4], 'E1' => [5], 'F1' => [6], 'G1' => [7], 'H1' => [8] }
           end
+
           it_behaves_like 'a tag layout'
         end
       end
@@ -84,6 +87,7 @@ describe TagLayout do
           let(:expected_tag_layout) do
             { 'A1' => [1], 'B1' => [2], 'C1' => [3], 'D1' => [4], 'E1' => [5], 'F1' => [6], 'G1' => [7], 'H1' => [8] }
           end
+
           it_behaves_like 'a tag layout'
         end
 
@@ -93,12 +97,14 @@ describe TagLayout do
           let(:expected_tag_layout) do
             { 'A1' => [1], 'C1' => [3], 'D1' => [4], 'E1' => [5], 'F1' => [6], 'G1' => [7], 'H1' => [8] }
           end
+
           it_behaves_like 'a tag layout'
         end
       end
 
       context 'quadrants' do
         let(:walking_by) { 'quadrants' }
+
         context 'with column then row directions' do
           let(:direction) { 'column then row' }
 
@@ -122,17 +128,20 @@ describe TagLayout do
                 'A4' => [2], 'B4' => [4], 'C4' => [2], 'D4' => [4], 'E4' => [2], 'F4' => [4], 'G4' => [2], 'H4' => [4], 'I4' => [2], 'J4' => [4], 'K4' => [2], 'L4' => [4], 'M4' => [2], 'N4' => [4], 'O4' => [2], 'P4' => [4]
               }
             end
-            it_behaves_like 'a tag layout'
             let(:expected_tag2s) do
               expected_tag2_layout.transform_values do |map_ids|
                 map_ids.map { |id| tag2_group.tags.detect { |tag| tag.map_id == id } }
               end
             end
+
+            it_behaves_like 'a tag layout'
+
             it 'applies the expected tag2 layout' do
               expect(generate_tag_layout(plate, :tag2)).to eq expected_tag2s
             end
           end
         end
+
         context 'with column directions' do
           let(:direction) { 'column' }
 
@@ -156,17 +165,20 @@ describe TagLayout do
                 'A4' => [9], 'B4' => [9], 'C4' => [10], 'D4' => [10], 'E4' => [11], 'F4' => [11], 'G4' => [12], 'H4' => [12], 'I4' => [13], 'J4' => [13], 'K4' => [14], 'L4' => [14], 'M4' => [15], 'N4' => [15], 'O4' => [16], 'P4' => [16]
               }
             end
-            it_behaves_like 'a tag layout'
             let(:expected_tag2s) do
               expected_tag2_layout.transform_values do |map_ids|
                 map_ids.map { |id| tag2_group.tags.detect { |tag| tag.map_id == id } }
               end
             end
+
+            it_behaves_like 'a tag layout'
+
             it 'applies the expected tag2 layout' do
               expect(generate_tag_layout(plate, :tag2)).to eq expected_tag2s
             end
           end
         end
+
         context 'with inverse column directions' do
           let(:direction) { 'inverse column' }
 
@@ -190,17 +202,20 @@ describe TagLayout do
                 'A4' => [88], 'B4' => [88], 'C4' => [87], 'D4' => [87], 'E4' => [86], 'F4' => [86], 'G4' => [85], 'H4' => [85], 'I4' => [84], 'J4' => [84], 'K4' => [83], 'L4' => [83], 'M4' => [82], 'N4' => [82], 'O4' => [81], 'P4' => [81]
               }
             end
-            it_behaves_like 'a tag layout'
             let(:expected_tag2s) do
               expected_tag2_layout.transform_values do |map_ids|
                 map_ids.map { |id| tag2_group.tags.detect { |tag| tag.map_id == id } }
               end
             end
+
+            it_behaves_like 'a tag layout'
+
             it 'applies the expected tag2 layout' do
               expect(generate_tag_layout(plate, :tag2)).to eq expected_tag2s
             end
           end
         end
+
         context 'with row directions' do
           let(:direction) { 'row' }
 
@@ -224,12 +239,14 @@ describe TagLayout do
                 'A4' => [2], 'B4' => [2], 'C4' => [14], 'D4' => [14], 'E4' => [26], 'F4' => [26], 'G4' => [38], 'H4' => [38], 'I4' => [50], 'J4' => [50], 'K4' => [62], 'L4' => [62], 'M4' => [74], 'N4' => [74], 'O4' => [86], 'P4' => [86]
               }
             end
-            it_behaves_like 'a tag layout'
             let(:expected_tag2s) do
               expected_tag2_layout.transform_values do |map_ids|
                 map_ids.map { |id| tag2_group.tags.detect { |tag| tag.map_id == id } }
               end
             end
+
+            it_behaves_like 'a tag layout'
+
             it 'applies the expected tag2 layout' do
               expect(generate_tag_layout(plate, :tag2)).to eq expected_tag2s
             end
@@ -245,6 +262,7 @@ describe TagLayout do
           let(:expected_tag_layout) do
             { 'A1' => [1, 2, 3, 4], 'B1' => [5, 6, 7, 8], 'C1' => [9, 10, 11, 12], 'D1' => [13, 14, 15, 16], 'E1' => [17, 18, 19, 20], 'F1' => [21, 22, 23, 24], 'G1' => [25, 26, 27, 28], 'H1' => [29, 30, 31, 32] }
           end
+
           it_behaves_like 'a tag layout'
         end
 
@@ -254,6 +272,7 @@ describe TagLayout do
           let(:expected_tag_layout) do
             { 'H1' => [1, 2, 3, 4], 'A1' => [5, 6, 7, 8], 'B1' => [9, 10, 11, 12], 'C1' => [13, 14, 15, 16], 'D1' => [17, 18, 19, 20], 'E1' => [21, 22, 23, 24], 'F1' => [25, 26, 27, 28], 'G1' => [29, 30, 31, 32] }
           end
+
           it_behaves_like 'a tag layout'
         end
       end
@@ -265,6 +284,7 @@ describe TagLayout do
       let(:expected_tag_layout) do
         { 'A1' => [8], 'B1' => [7], 'C1' => [6], 'D1' => [5], 'E1' => [4], 'F1' => [3], 'G1' => [2], 'H1' => [1] }
       end
+
       it_behaves_like 'a tag layout'
     end
 
@@ -281,6 +301,7 @@ describe TagLayout do
           map_ids.map { |id| tag2_group.tags.detect { |tag| tag.map_id == id } }
         end
       end
+
       it 'applies the expected tag2 layout' do
         expect(generate_tag_layout(plate, :tag2)).to eq expected_tag2s
       end

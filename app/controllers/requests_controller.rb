@@ -78,8 +78,8 @@ class RequestsController < ApplicationController
         flash[:error] = 'Request was not updated. No change specified ?'
         render action: 'edit', id: @request.id
       end
-    rescue => exception
-      error_message = "An error has occurred, category:'#{exception.class}'\ndescription:'#{exception.message}'"
+    rescue => e
+      error_message = "An error has occurred, category:'#{e.class}'\ndescription:'#{e.message}'"
       EventFactory.request_update_note_to_manager(@request, current_user, error_message)
       flash[:error] = 'Failed to update request. ' << error_message
       render action: 'edit', id: @request.id
@@ -185,9 +185,9 @@ class RequestsController < ApplicationController
     @change_decision = Request::ChangeDecision.new({ request: @request, user: @current_user }.merge(params[:change_decision] || {})).execute!
     flash[:notice] = 'Update. Below you find the new situation.'
     redirect_to filter_change_decision_request_path(params[:id])
-  rescue Request::ChangeDecision::InvalidDecision => exception
+  rescue Request::ChangeDecision::InvalidDecision => e
     flash[:error] = 'Failed! Please, read the list of problem below.'
-    @change_decision = exception.object
+    @change_decision = e.object
     render(action: :filter_change_decision)
   end
 

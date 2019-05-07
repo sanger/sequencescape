@@ -22,12 +22,6 @@ describe 'PreCapturePools API', with: :api_v2 do
   context 'with a pre_capture_pool' do
     let(:resource_model) { create :pre_capture_pool }
 
-    it 'sends an individual pre_capture_pool' do
-      api_get "/api/v2/pre_capture_pools/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('pre_capture_pools')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -38,6 +32,12 @@ describe 'PreCapturePools API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual pre_capture_pool' do
+      api_get "/api/v2/pre_capture_pools/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('pre_capture_pools')
     end
 
     # Remove if immutable

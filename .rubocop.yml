@@ -1,6 +1,8 @@
 inherit_from: .rubocop_todo.yml
 require:
  - 'test_prof/rubocop'
+ - 'rubocop-performance'
+ - rubocop-rspec
 RSpec/AggregateFailures:
   Enabled: true
   Include:
@@ -69,6 +71,7 @@ Metrics/BlockLength:
     - transient
     - with_nested_has_many_association
     - with_association
+    - it
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
@@ -85,7 +88,7 @@ Metrics/MethodLength:
   Exclude:
     - 'db/migrate/*'
 
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   EnforcedStyle: consistent
 Style/ClassAndModuleChildren:
   Enabled: false

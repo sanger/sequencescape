@@ -22,7 +22,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
     end
   end
 
-  before(:each) do
+  before do
     barcode = double('barcode')
     allow(barcode).to receive(:barcode).and_return(23)
     allow(PlateBarcode).to receive(:create).and_return(barcode)
@@ -31,11 +31,19 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
     sample_manifest.generate
   end
 
+  after(:all) do
+    SampleManifestExcel.reset!
+  end
+
+  after do
+    File.delete(test_file) if File.exist?(test_file)
+  end
+
   context 'validations ranges worksheet' do
     let!(:range_list) { SampleManifestExcel.configuration.ranges.dup }
     let!(:worksheet) { SequencescapeExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list) }
 
-    before(:each) do
+    before do
       save_file
     end
 
@@ -54,15 +62,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
     it 'set absolute references in ranges' do
       range = range_list.ranges.values.first
       expect(range.absolute_reference).to eq("Ranges!#{range.fixed_reference}")
-      expect(range_list.all? { |_k, rng| rng.absolute_reference.present? }).to be_truthy
+      expect(range_list).to be_all { |_k, rng| rng.absolute_reference.present? }
     end
-  end
-
-  after(:each) do
-    File.delete(test_file) if File.exist?(test_file)
-  end
-
-  after(:all) do
-    SampleManifestExcel.reset!
   end
 end

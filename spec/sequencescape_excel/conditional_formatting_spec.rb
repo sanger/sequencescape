@@ -8,16 +8,16 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
 
   it 'is comparable' do
     expect(SequencescapeExcel::ConditionalFormatting.new(rule)).to eq(SequencescapeExcel::ConditionalFormatting.new(rule))
-    expect(SequencescapeExcel::ConditionalFormatting.new(rule)).to_not eq(SequencescapeExcel::ConditionalFormatting.new(rule.merge(options: { option1: 'another_value' })))
+    expect(SequencescapeExcel::ConditionalFormatting.new(rule)).not_to eq(SequencescapeExcel::ConditionalFormatting.new(rule.merge(options: { option1: 'another_value' })))
   end
 
   it 'is not valid without a name' do
     expect(SequencescapeExcel::ConditionalFormatting.new(rule)).to be_valid
-    expect(SequencescapeExcel::ConditionalFormatting.new(rule.except(:name))).to_not be_valid
+    expect(SequencescapeExcel::ConditionalFormatting.new(rule.except(:name))).not_to be_valid
   end
 
   it 'is not valid without a name' do
-    expect(SequencescapeExcel::ConditionalFormatting.new(rule.except(:options))).to_not be_valid
+    expect(SequencescapeExcel::ConditionalFormatting.new(rule.except(:options))).not_to be_valid
   end
 
   context 'without formula' do
@@ -47,7 +47,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
       dup = conditional_formatting.dup
       expect(dup.formula).to be_nil
       conditional_formatting.update(worksheet: worksheet)
-      expect(dup).to_not be_styled
+      expect(dup).not_to be_styled
     end
   end
 
@@ -75,8 +75,8 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
     it 'duplicate correctly' do
       dup = conditional_formatting.dup
       conditional_formatting.update(references.merge(worksheet: worksheet))
-      expect(dup.options).to_not eq(conditional_formatting.options)
-      expect(dup.formula).to_not eq(conditional_formatting.formula)
+      expect(dup.options).not_to eq(conditional_formatting.options)
+      expect(dup.formula).not_to eq(conditional_formatting.formula)
     end
   end
 end

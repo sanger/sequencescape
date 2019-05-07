@@ -3,16 +3,16 @@
 require 'rails_helper'
 
 describe LabelPrinter::Label::SampleManifestPlateDouble do
+  subject { described_class.new(label_options) }
+
   let(:sample_manifest) { create :sample_manifest_with_empty_plate }
   let(:label_options) { { sample_manifest: sample_manifest, only_first_label: only_first_label } }
   let(:sample_manifest_plates) { sample_manifest.printables }
 
-  subject { described_class.new(label_options) }
-
   context 'printing only the first label' do
     let(:only_first_label) { true }
 
-    it 'should produce the correct label' do
+    it 'produces the correct label' do
       plate = sample_manifest_plates.first
       expected_label = {
         labels: {
@@ -38,7 +38,7 @@ describe LabelPrinter::Label::SampleManifestPlateDouble do
   context 'printing all labels' do
     let(:only_first_label) { false }
 
-    it 'should have the correct plates' do
+    it 'has the correct plates' do
       expect(subject.assets).to eq(sample_manifest_plates)
     end
   end

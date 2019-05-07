@@ -254,7 +254,7 @@ class AccessionService
     else
       return ''
     end
-  rescue StandardError => exception
+  rescue StandardError => e
     raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
   end
 end

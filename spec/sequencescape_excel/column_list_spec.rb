@@ -19,7 +19,7 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
     columns = build_list(:column, 5)
     column_list = SequencescapeExcel::ColumnList.new(build_list(:column, 5))
     expect(column_list.count).to eq(columns.length)
-    expect(column_list.all? { |column| column_list.find_by(:name, column.name).present? }).to be_truthy
+    expect(column_list).to be_all { |column| column_list.find_by(:name, column.name).present? }
   end
 
   it 'has some conditional formattings' do
@@ -77,13 +77,13 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
   it '#extract with invalid key provides a descriptive error message' do
     bad_column = build(:column)
     new_list = column_list.extract(column_list.headings << bad_column.heading)
-    expect(new_list).to_not be_valid
+    expect(new_list).not_to be_valid
     expect(new_list.errors.full_messages.to_s).to include(bad_column.heading)
   end
 
   it '#update updates columns' do
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
-    expect(column_list.all?(&:updated?)).to be_truthy
+    expect(column_list).to be_all(&:updated?)
   end
 
   it 'duplicates correctly' do
@@ -92,12 +92,12 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
     expect(column_list.count).to eq(n)
     expect(dupped.count).to eq(n)
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
-    expect(dupped.any?(&:updated?)).to be_falsey
+    expect(dupped).not_to be_any(&:updated?)
   end
 
   it 'must have some columns to be valid' do
     expect(SequencescapeExcel::ColumnList.new(yaml, conditional_formattings)).to be_valid
-    expect(SequencescapeExcel::ColumnList.new(nil, conditional_formattings)).to_not be_valid
+    expect(SequencescapeExcel::ColumnList.new(nil, conditional_formattings)).not_to be_valid
   end
 
   it '#find_column_or_null returns a null object if none exists for key and value' do

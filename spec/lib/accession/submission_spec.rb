@@ -4,19 +4,19 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
   let!(:user)     { create(:user) }
   let!(:sample)   { build(:accession_sample) }
 
-  it 'should not be valid without a user' do
-    expect(Accession::Submission.new(user, nil)).to_not be_valid
+  it 'is not valid without a user' do
+    expect(Accession::Submission.new(user, nil)).not_to be_valid
   end
 
-  it 'should not be valid without an accession sample' do
-    expect(Accession::Submission.new(nil, sample)).to_not be_valid
+  it 'is not valid without an accession sample' do
+    expect(Accession::Submission.new(nil, sample)).not_to be_valid
   end
 
-  it 'should not be valid unless sample is valid' do
-    expect(Accession::Submission.new(user, build(:invalid_accession_sample))).to_not be_valid
+  it 'is not valid unless sample is valid' do
+    expect(Accession::Submission.new(user, build(:invalid_accession_sample))).not_to be_valid
   end
 
-  it 'should create some xml with valid attributes' do
+  it 'creates some xml with valid attributes' do
     submission = Accession::Submission.new(user, sample)
     xml = Nokogiri::XML::Document.parse(submission.to_xml)
 
@@ -40,14 +40,14 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
     expect(action_xml.attribute('schema').value).to eq(submission.sample.schema_type)
   end
 
-  it 'should create a payload' do
+  it 'creates a payload' do
     payload = Accession::Submission.new(user, sample).payload
     expect(payload.count).to eq(2)
-    expect(payload.all? { |_, file| File.file?(file) }).to be_truthy
-    expect(payload.all? { |key, _| key.match(/\p{Lower}/).nil? }).to be_truthy
+    expect(payload).to be_all { |_, file| File.file?(file) }
+    expect(payload).to be_all { |key, _| key.match(/\p{Lower}/).nil? }
   end
 
-  it 'should post the submission and return an appropriate response' do
+  it 'posts the submission and return an appropriate response' do
     submission = Accession::Submission.new(user, sample)
 
     allow(Accession::Request).to receive(:post).with(submission).and_return(build(:successful_accession_response))
@@ -56,13 +56,13 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
 
     allow(Accession::Request).to receive(:post).with(submission).and_return(build(:failed_accession_response))
     submission.post
-    expect(submission).to_not be_accessioned
+    expect(submission).not_to be_accessioned
   end
 
-  it 'should update the accession number if the submission is successfully posted' do
+  it 'updates the accession number if the submission is successfully posted' do
     submission = Accession::Submission.new(user, sample)
     submission.update_accession_number
-    expect(submission.sample).to_not be_accessioned
+    expect(submission.sample).not_to be_accessioned
 
     allow(Accession::Request).to receive(:post).with(submission).and_return(build(:successful_accession_response))
     submission.post

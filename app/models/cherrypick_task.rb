@@ -187,8 +187,8 @@ class CherrypickTask < Task
 
   def do_task(workflow, params)
     workflow.do_cherrypick_task(self, params)
-  rescue Cherrypick::Error => exception
-    workflow.send(:flash)[:error] = exception.message
+  rescue Cherrypick::Error => e
+    workflow.send(:flash)[:error] = e.message
     return false
   end
 

@@ -4,27 +4,28 @@ require 'rails_helper'
 require './app/resources/api/v2/request_resource'
 
 RSpec.describe Api::V2::RequestResource, type: :resource do
-  let(:resource_model) { create :request }
   subject { described_class.new(resource_model, {}) }
 
-  # Test attributes
-  it 'works', :aggregate_failures do
-    is_expected.to have_attribute :uuid
-    is_expected.to have_attribute :state
-    is_expected.to have_attribute :priority
-    is_expected.to have_attribute :role
-    is_expected.to_not have_updatable_field(:id)
-    is_expected.to_not have_updatable_field(:uuid)
-    is_expected.to_not have_updatable_field(:state)
-    is_expected.to_not have_updatable_field(:role)
-    is_expected.to have_one(:submission).with_class_name('Submission')
-    is_expected.to have_one(:order).with_class_name('Order')
-    is_expected.to have_one(:request_type).with_class_name('RequestType')
-    is_expected.to have_one(:primer_panel).with_class_name('PrimerPanel')
-    is_expected.to have_one(:pre_capture_pool).with_class_name('PreCapturePool')
-  end
+  let(:resource_model) { create :request }
 
+  # Test attributes
   let(:expected_metadata) { { 'customer_accepts_responsibility' => false } }
+
+  it 'works', :aggregate_failures do
+    expect(subject).to have_attribute :uuid
+    expect(subject).to have_attribute :state
+    expect(subject).to have_attribute :priority
+    expect(subject).to have_attribute :role
+    expect(subject).not_to have_updatable_field(:id)
+    expect(subject).not_to have_updatable_field(:uuid)
+    expect(subject).not_to have_updatable_field(:state)
+    expect(subject).not_to have_updatable_field(:role)
+    expect(subject).to have_one(:submission).with_class_name('Submission')
+    expect(subject).to have_one(:order).with_class_name('Order')
+    expect(subject).to have_one(:request_type).with_class_name('RequestType')
+    expect(subject).to have_one(:primer_panel).with_class_name('PrimerPanel')
+    expect(subject).to have_one(:pre_capture_pool).with_class_name('PreCapturePool')
+  end
 
   # Custom method tests
   # Add tests for any custom methods you've added.

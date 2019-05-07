@@ -5,9 +5,9 @@ require 'rails_helper'
 RSpec.describe SubmissionsController, type: :controller do
   render_views
 
-  it_behaves_like 'it requires login'
-
   let(:request_type) { create :well_request_type }
+
+  it_behaves_like 'it requires login'
 
   context 'Submissions controller' do
     setup do
