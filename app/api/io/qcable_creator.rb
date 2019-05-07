@@ -6,6 +6,7 @@ class Io::QcableCreator < Core::Io::Base
                 user <=> user
                  lot <=> lot
                count <= count
+               barcodes <= barcodes
 
   ")
 end
