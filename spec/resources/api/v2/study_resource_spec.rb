@@ -2,11 +2,12 @@ require 'rails_helper'
 require './app/resources/api/v2/study_resource'
 
 RSpec.describe Api::V2::StudyResource, type: :resource do
-  let(:study) { create :study }
   subject { described_class.new(study, {}) }
 
+  let(:study) { create :study }
+
   it 'works', :aggregate_failures do
-    is_expected.to have_attribute :name
-    is_expected.to have_attribute :uuid
+    expect(subject).to have_attribute :name
+    expect(subject).to have_attribute :uuid
   end
 end

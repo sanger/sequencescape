@@ -3,14 +3,14 @@ require 'rails_helper'
 describe Billing::ProductCatalogue, billing: true do
   let!(:product_catalogue) { create :billing_product_catalogue, name: 'general' }
 
-  it 'should have a unique name' do
+  it 'has a unique name' do
     expect(product_catalogue.name).to eq 'general'
     expect(product_catalogue.valid?).to be true
     product_catalogue_with_nonunique_name = build :billing_product_catalogue, name: 'general'
     expect(product_catalogue_with_nonunique_name.valid?).to be false
   end
 
-  it 'should know if it is a single product catalogue' do
+  it 'knows if it is a single product catalogue' do
     create :billing_product, billing_product_catalogue: product_catalogue
     product_catalogue.reload
     expect(product_catalogue.single_product?).to eq true

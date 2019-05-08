@@ -17,6 +17,7 @@ RSpec.describe StockAssetsController do
     context 'with an empty batch' do
       let(:batch) { create :batch }
       let(:warning) { 'No requests to create stock tubes' }
+
       it_behaves_like 'an inactive endpoint'
     end
 
@@ -37,11 +38,12 @@ RSpec.describe StockAssetsController do
       end
 
       context 'with stock tube already existing' do
-        before(:each) do
+        before do
           batch.reload.requests.each { |r| r.target_asset.parents << create(:stock_library_tube) }
         end
 
         let(:warning) { 'Stock tubes have already been created' }
+
         it_behaves_like 'an inactive endpoint'
       end
     end
@@ -51,13 +53,14 @@ RSpec.describe StockAssetsController do
 
       context 'without mx tubes' do
         let(:warning) { "There's no multiplexed library tube available to have a stock tube." }
+
         it_behaves_like 'an inactive endpoint'
       end
 
       context 'with mx tubes' do
         let(:multiplexed_library_tube) { create :multiplexed_library_tube }
 
-        before(:each) do
+        before do
           batch.reload.requests.each do |request|
             request.target_asset.children << multiplexed_library_tube
           end
@@ -76,11 +79,12 @@ RSpec.describe StockAssetsController do
         end
 
         context 'with stock tube already existing' do
-          before(:each) do
+          before do
             multiplexed_library_tube.parents << create(:stock_multiplexed_library_tube)
           end
 
           let(:warning) { 'Stock tubes have already been created' }
+
           it_behaves_like 'an inactive endpoint'
         end
       end
@@ -101,7 +105,7 @@ RSpec.describe StockAssetsController do
       expect(response).to redirect_to(batch)
       expect(flash[:notice]).to eq('2 stock tubes created')
       expect(library_tube_1.reload.parents.first).to be_a(StockLibraryTube)
-      expect(library_tube_1.reload.parents.first.primary_barcode).to_not be_nil
+      expect(library_tube_1.reload.parents.first.primary_barcode).not_to be_nil
     end
   end
 end

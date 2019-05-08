@@ -5,11 +5,11 @@ describe RequestEvent do
     let!(:request) { create :customer_request, asset: create(:well), target_asset: create(:well) }
 
     context 'creating requests' do
-      it 'should record a RequestEvent' do
-        expect(RequestEvent.count).to eq 1
+      it 'records a RequestEvent' do
+        expect(described_class.count).to eq 1
       end
 
-      it 'should record a RequestEvent for each new Request' do
+      it 'records a RequestEvent for each new Request' do
         expect(request.request_events.count).to eq 1
         expect(request.current_request_event.from_state).to be_nil
         expect(request.current_request_event.to_state).to eq 'pending'
@@ -19,25 +19,25 @@ describe RequestEvent do
     end
 
     context 'changing request state to start' do
-      before(:each) do
+      before do
         request.start!
       end
 
-      it 'should record new state change RequestEvents for each request' do
-        expect(RequestEvent.count).to eq 2
+      it 'records new state change RequestEvents for each request' do
+        expect(described_class.count).to eq 2
       end
 
-      it 'should record a new state change RequestEvent from "pending"' do
+      it 'records a new state change RequestEvent from "pending"' do
         event = request.current_request_event
         expect(event.from_state).to eq 'pending'
       end
 
-      it 'should record a new state change RequestEvent to "started"' do
+      it 'records a new state change RequestEvent to "started"' do
         event = request.current_request_event
         expect(event.to_state).to eq 'started'
       end
 
-      it 'should set a current_to stamp on old events' do
+      it 'sets a current_to stamp on old events' do
         old_event = request.request_events.order('id ASC').first
         expect(old_event.current_to.present?).to be true
         new_event = request.current_request_event
@@ -46,13 +46,13 @@ describe RequestEvent do
     end
 
     context 'destroying a request' do
-      before(:each) do
+      before do
         @old_request_id = request.id
         request.destroy
-        @destroyed_ids = RequestEvent.where(event_name: 'destroyed').pluck(:request_id)
+        @destroyed_ids = described_class.where(event_name: 'destroyed').pluck(:request_id)
       end
 
-      it 'should record a destroy RequestEvent for each request' do
+      it 'records a destroy RequestEvent for each request' do
         expect(@destroyed_ids).to eq [@old_request_id]
       end
     end

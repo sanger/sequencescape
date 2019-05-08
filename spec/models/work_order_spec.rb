@@ -5,11 +5,13 @@ describe WorkOrder do
 
   context 'with a work_order_type' do
     let(:work_order_type) { create :work_order_type }
+
     it { is_expected.to be_valid }
   end
 
   context 'without an work_order_type' do
     let(:work_order_type) { nil }
+
     it { is_expected.not_to be_valid }
   end
 
@@ -19,6 +21,7 @@ describe WorkOrder do
 
     describe '#state=' do
       before { work_order.state = 'passed' }
+
       it 'update the associated requests' do
         requests.each do |request|
           expect(request.state).to eq('passed')
@@ -28,12 +31,13 @@ describe WorkOrder do
   end
 
   describe WorkOrder::Factory do
+    subject(:factory) { described_class.new(submission) }
+
     let(:submission) { create :submission, requests: requests }
     let(:request_type) { create :request_type }
 
     let(:requests_set_a) { create_list(:request, 3, asset: create(:well), request_type: request_type) }
     let(:requests) { requests_set_a + requests_set_b }
-    subject(:factory) { described_class.new(submission) }
 
     context 'where request types match' do
       let(:requests_set_b) { create_list(:request, 3, asset: create(:well), request_type: request_type) }
@@ -64,6 +68,7 @@ describe WorkOrder do
 
     context 'where request types clash' do
       let(:requests_set_b) { create_list(:request, 3, asset: create(:well)) }
+
       it { is_expected.not_to be_valid }
     end
   end

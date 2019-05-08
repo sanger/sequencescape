@@ -2,10 +2,12 @@ require 'rails_helper'
 
 describe '/api/1/extraction_attributes' do
   context '#post' do
+    subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
+
     let(:user) { create :user, login: 'test' }
     let(:authorised_app) { create :api_application }
     let(:target_plate) { create :plate_with_empty_wells }
-    subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
+
     let(:response_code) { 201 }
 
     it 'supports attributes update on a plate' do
@@ -38,6 +40,7 @@ describe '/api/1/extraction_attributes' do
           }
         }}
       end
+
       context 'with an empty plate' do
         it 'racks a tube into a well' do
           authorized_api_request :post, subject, payload
@@ -48,12 +51,14 @@ describe '/api/1/extraction_attributes' do
         it 'does not rack a tube into a well if the tube does not exist' do
           sample_tube2.destroy
           authorized_api_request :post, subject, payload
-          expect(target_plate.wells.located_at('B1').first.samples.count).to_not eq(1)
+          expect(target_plate.wells.located_at('B1').first.samples.count).not_to eq(1)
         end
       end
+
       context 'with a plate with wells' do
-        let(:target_plate) { create :plate_with_tagged_wells }
         subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
+
+        let(:target_plate) { create :plate_with_tagged_wells }
 
         it 'does not rack with error a tube into a well that already has a sample in it' do
           authorized_api_request :post, subject, payload
@@ -72,12 +77,14 @@ describe '/api/1/extraction_attributes' do
     end
 
     context '#reracking' do
+      subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
+
       let(:previous_plate) { create :plate_with_tagged_wells }
       let(:previous_plate2) { create :plate_with_tagged_wells }
       let(:target_plate) { create :plate_with_empty_wells }
       let(:well1) { previous_plate.wells.first }
       let(:well2) { previous_plate2.wells.first }
-      subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
+
       let(:payload) do
         %{{
           "extraction_attribute":{
@@ -107,11 +114,13 @@ describe '/api/1/extraction_attributes' do
       end
 
       context 'with a tube that reracks to a location that depends on the rerack of another tube that should be moved in the same request' do
+        subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
+
         let(:target_plate) { create :plate_with_tagged_wells }
         let(:well1) { target_plate.wells[0] }
         let(:well2) { target_plate.wells[1] }
         let(:well3) { target_plate.wells[2] }
-        subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
+
         let(:payload) do
           %{{
             "extraction_attribute":{
@@ -190,6 +199,7 @@ describe '/api/1/extraction_attributes' do
         end
       end
     end
+
     context '#racking + #reracking' do
       let(:previous_plate) { create :plate_with_tagged_wells }
       let(:previous_plate2) { create :plate_with_tagged_wells }
@@ -218,6 +228,7 @@ describe '/api/1/extraction_attributes' do
             }
           }}
         end
+
         it 'racks and reracks' do
           samples_from_first_plate = previous_plate.wells.located_at('A1').first.samples
           samples_from_second_plate = previous_plate2.wells.located_at('A1').first.samples
@@ -272,6 +283,7 @@ describe '/api/1/extraction_attributes' do
 
         context 'with 2 plates with samples already' do
           let(:first_plate) { create :plate_with_tagged_wells }
+
           context 'when performing a rerack from a position and then try to rack back' do
             it 'reracks to the second plate but fails to rack into the first plate' do
               well_at_a1 = first_plate.wells.located_at('A1').first
@@ -287,6 +299,7 @@ describe '/api/1/extraction_attributes' do
               expect(response).to have_http_status(:error)
             end
           end
+
           it 'reracks to the second and reracks back to the first' do
             well_at_a1 = second_plate.wells.located_at('A1').first
             well_at_b1 = second_plate.wells.located_at('B1').first
@@ -306,8 +319,10 @@ describe '/api/1/extraction_attributes' do
             expect(second_plate.wells.located_at('B1').first.nil?).to eq(true)
           end
         end
+
         context 'with a first empty plate and second full plate' do
           let(:first_plate) { create :plate_with_empty_wells }
+
           it 'racks to the first plate and reracks to the second plate' do
             authorized_api_request :post, first_plate_subject, payload_rack
             expect(status).to eq(response_code)

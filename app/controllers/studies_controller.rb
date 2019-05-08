@@ -68,7 +68,7 @@ class StudiesController < ApplicationController
       format.xml  { render xml: @study, status: :created, location: @study }
       format.json { render json: @study, status: :created, location: @study }
     end
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Problems creating your new study'
     respond_to do |format|
       format.html { render action: 'new' }
@@ -112,7 +112,7 @@ class StudiesController < ApplicationController
 
       redirect_to study_path(@study)
     end
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid => e
     Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: 'edit', id: @study.id
@@ -171,9 +171,9 @@ class StudiesController < ApplicationController
         yield(relation_type_name, related_study)
         redirect_to action: 'related_studies'
         return
-      rescue ActiveRecord::RecordInvalid, RuntimeError => ex
+      rescue ActiveRecord::RecordInvalid, RuntimeError => e
         status = 403
-        flash.now[:error] = ex.to_s
+        flash.now[:error] = e.to_s
       end
 
     else
@@ -255,17 +255,17 @@ class StudiesController < ApplicationController
 
   def rescue_accession_errors
     yield
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid => e
     flash[:error] = 'Please fill in the required fields'
     render(action: :edit)
-  rescue AccessionService::NumberNotRequired => exception
-    flash[:warning] = exception.message || 'An accession number is not required for this study'
+  rescue AccessionService::NumberNotRequired => e
+    flash[:warning] = e.message || 'An accession number is not required for this study'
     redirect_to(study_path(@study))
-  rescue AccessionService::NumberNotGenerated => exception
+  rescue AccessionService::NumberNotGenerated => e
     flash[:warning] = 'No accession number was generated'
     redirect_to(study_path(@study))
-  rescue AccessionService::AccessionServiceError => exception
-    flash[:error] = exception.message
+  rescue AccessionService::AccessionServiceError => e
+    flash[:error] = e.message
     redirect_to(edit_study_path(@study))
   end
 

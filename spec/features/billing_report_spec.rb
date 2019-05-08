@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Billing report', js: true, billing: true do
+describe 'Billing report', js: true, billing: true do
   before do
     Billing.configure do |config|
       config.fields = config.load_file(File.join('spec', 'data', 'billing'), 'fields')
@@ -10,8 +10,8 @@ feature 'Billing report', js: true, billing: true do
 
   let(:user) { create :user, email: 'login@example.com' }
 
-  feature 'generate BIF file' do
-    scenario 'file was generated' do
+  describe 'generate BIF file' do
+    it 'file was generated' do
       login_user user
       visit new_billing_report_path
       expect(page).to have_content 'Billing report (BIF)'

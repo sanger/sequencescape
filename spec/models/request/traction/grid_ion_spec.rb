@@ -3,6 +3,7 @@ require 'shared_contexts/limber_shared_context'
 
 describe Request::Traction::GridIon do
   subject { build :request_traction_grid_ion, asset: well, request_metadata_attributes: metadata, order: order, submission: submission, request_type: request_type, state: state }
+
   let(:order) { build(:order, submission: submission, assets: [well], request_types: [request_type.id]) }
   let(:request_type) { create :well_request_type }
   let(:submission) { build(:submission) }
@@ -13,6 +14,7 @@ describe Request::Traction::GridIon do
     let(:metadata) do
       { library_type: 'Rapid', data_type: 'basecalls and raw data' }
     end
+
     it { is_expected.to be_valid }
 
     it 'saves the metadata' do
@@ -34,12 +36,14 @@ describe Request::Traction::GridIon do
 
     context 'with custom states' do
       let(:state) { 'custom_external_state' }
+
       it { is_expected.to be_valid }
     end
   end
 
   context '::sequencing?' do
     subject { described_class.sequencing? }
+
     it { is_expected.to be true }
   end
 end

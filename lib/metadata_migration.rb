@@ -83,8 +83,8 @@ class MetadataMigration < ActiveRecord::Migration
         raise
       end
     end
-  rescue ActiveRecord::RecordInvalid => exception
-    $stderr.puts "Invalid record: #{exception.record.inspect}"
+  rescue ActiveRecord::RecordInvalid => e
+    $stderr.puts "Invalid record: #{e.record.inspect}"
     raise
   end
 

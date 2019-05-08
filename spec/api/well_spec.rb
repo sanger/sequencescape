@@ -12,7 +12,7 @@ describe '/api/1/well-uuid' do
   let(:well) { create :well_with_sample_and_plate }
   let(:sample) { well.samples.first }
 
-  before(:each) do
+  before do
     well
   end
 

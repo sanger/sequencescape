@@ -47,20 +47,20 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
 
   it 'must have an aker job id which is a number' do
     job = Aker::Factories::Job.new(params.except(:job_id))
-    expect(job).to_not be_valid
+    expect(job).not_to be_valid
   end
 
   it 'must have some materials' do
     job = Aker::Factories::Job.new(params.except(:materials))
-    expect(job).to_not be_valid
+    expect(job).not_to be_valid
 
     job = Aker::Factories::Job.new(params.merge(materials: []))
-    expect(job).to_not be_valid
+    expect(job).not_to be_valid
   end
 
   it 'is not valid unless all of the materials are valid' do
     job = Aker::Factories::Job.new(params.merge(materials: params[:materials].push(params[:materials].first.except(:_id))))
-    expect(job).to_not be_valid
+    expect(job).not_to be_valid
   end
 
   context 'when trying to update data from aker into ss' do
@@ -72,12 +72,14 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
       @material.sample_metadata.reload
       expect(@material.sample_metadata.sample_common_name).to eq('Some name')
     end
+
     context 'when the update from aker to ss is defined' do
       before do
         Aker::Material.config = %(
           sample_metadata.sample_common_name  <=   common_name
         )
       end
+
       it '#create updates the materials if they already exist' do
         job = Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid))
         expect(job).to be_present
@@ -90,6 +92,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
       before do
         Aker::Material.config = ''
       end
+
       it '#create does not update the materials data if they already exist' do
         job = Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid))
         expect(job).to be_present
@@ -155,18 +158,18 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
 
   it 'is not valid unless there is a data release uuid (study)' do
     job = Aker::Factories::Job.new(params.except(:data_release_uuid))
-    expect(job).to_not be_valid
+    expect(job).not_to be_valid
   end
 
   it 'is not valid unless the study exists' do
     job = Aker::Factories::Job.new(params.merge(data_release_uuid: SecureRandom.uuid))
-    expect(job).to_not be_valid
+    expect(job).not_to be_valid
   end
 
   it 'is not valid unless the study is active' do
     study = create(:study_for_study_list_inactive)
     job = Aker::Factories::Job.new(params.merge(data_release_uuid: study.uuid))
-    expect(job).to_not be_valid
+    expect(job).not_to be_valid
   end
 
   it 'ignores extra container params' do

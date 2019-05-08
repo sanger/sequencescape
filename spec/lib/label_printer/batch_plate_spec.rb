@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 shared_examples 'a correct single label printer' do
-  it 'should produce the correct label' do
+  it 'produces the correct label' do
     expected_label = {
       labels: {
         body: [{
@@ -23,7 +23,7 @@ shared_examples 'a correct single label printer' do
 end
 
 shared_examples 'a correct double label printer' do
-  it 'should produce the correct label' do
+  it 'produces the correct label' do
     expected_label = {
       labels: {
         body: [{
@@ -33,12 +33,12 @@ shared_examples 'a correct double label printer' do
             barcode: plate1.machine_barcode
           }
         },
-        {
-          extra_label: {
-            left_text: date_today,
-            right_text: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
-          }
-        }]
+               {
+                 extra_label: {
+                   left_text: date_today,
+                   right_text: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
+                 }
+               }]
       }
     }
     expect(subject.to_h).to eq(expected_label)
@@ -59,12 +59,14 @@ shared_examples 'a correct filter' do
       plate2.human_barcode => 'on' }
   end
 
-  it 'should have the correct plates' do
+  it 'has the correct plates' do
     expect(subject.assets).to eq([plate1, plate2])
   end
 end
 
 context 'printing labels' do
+  subject { described_class.new(label_options) }
+
   let(:count) { '1' }
   let(:date_today) { Time.zone.today.strftime('%e-%^b-%Y') }
   let(:batch) { create :batch }
@@ -98,8 +100,6 @@ context 'printing labels' do
     batch.requests << request1
     batch.requests << request2
   end
-
-  subject { described_class.new(label_options) }
 
   describe LabelPrinter::Label::BatchPlateDouble do
     context 'printing double labels' do

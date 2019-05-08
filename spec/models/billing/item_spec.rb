@@ -5,7 +5,7 @@ describe Billing::Item, billing: true do
   let(:fields_list) { Billing::FieldsList.new(fields_attributes) }
   let!(:billing_item) { create :billing_item }
 
-  it 'should have required attributes' do
+  it 'has required attributes' do
     expect(Billing::Item.count).to eq 1
     expect(billing_item.request.class).to eq Request
     expect(billing_item.project_cost_code).to eq 'cost_code'

@@ -35,7 +35,7 @@ module Accession
       if valid?
         begin
           Accession::Response.new(resource.post(submission.payload.open))
-        rescue StandardError => exception
+        rescue StandardError => e
           Accession::NullResponse.new
         ensure
           submission.payload.close!

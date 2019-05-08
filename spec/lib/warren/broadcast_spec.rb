@@ -4,20 +4,21 @@ RSpec.describe 'Warren::Broadcast' do
   subject(:warren) do
     Warren::Broadcast.new(server: server_options, exchange: 'exchange', pool_size: 2)
   end
+
   let(:server_options) { { heartbeat: 30, frame_max: 0 } }
   let(:bun_session) { instance_double(Bunny::Session) }
   let(:bun_channel) { instance_double(Bunny::Channel) }
   let(:bun_exchange) { instance_double(Bunny::Exchange) }
 
   describe '#connect' do
+    subject { warren.connect }
+
     before do
       expect(Bunny).to receive(:new)
         .with(server_options)
         .and_return(bun_session)
       expect(bun_session).to receive(:start)
     end
-
-    subject { warren.connect }
 
     it { is_expected.to eq true }
   end
@@ -40,8 +41,9 @@ RSpec.describe 'Warren::Broadcast' do
     let(:channel) { Warren::Broadcast::Channel.new(bun_channel, exchange: 'exchange') }
 
     describe '#<<' do
-      let(:message) { double('message', routing_key: 'key', payload: 'payload') }
       subject { channel << message }
+
+      let(:message) { double('message', routing_key: 'key', payload: 'payload') }
 
       before do
         expect(bun_channel).to receive(:topic)

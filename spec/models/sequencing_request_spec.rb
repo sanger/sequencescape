@@ -18,6 +18,7 @@ RSpec.describe SequencingRequest, type: :model do
 
       context 'with empty assets' do
         let(:library_tube) { create :empty_library_tube }
+
         it { is_expected.to be false }
       end
     end
@@ -25,6 +26,7 @@ RSpec.describe SequencingRequest, type: :model do
     context 'with no reception event' do
       context 'with missing assets' do
         let(:library_tube) { nil }
+
         it { is_expected.to be false }
       end
 
@@ -48,6 +50,7 @@ RSpec.describe SequencingRequest, type: :model do
       context 'which are both pending' do
         let(:library_request_1_state) { 'pending' }
         let(:library_request_2_state) { 'pending' }
+
         it { is_expected.to be false }
       end
 
@@ -55,6 +58,7 @@ RSpec.describe SequencingRequest, type: :model do
       context 'which are passed' do
         let(:library_request_1_state) { 'passed' }
         let(:library_request_2_state) { 'passed' }
+
         it { is_expected.to be true }
       end
 
@@ -62,6 +66,7 @@ RSpec.describe SequencingRequest, type: :model do
       context 'where one is pending, the other passed' do
         let(:library_request_1_state) { 'pending' }
         let(:library_request_2_state) { 'passed' }
+
         it { is_expected.to be false }
       end
 
@@ -70,6 +75,7 @@ RSpec.describe SequencingRequest, type: :model do
       context 'where one is passed, the other cancelled' do
         let(:library_request_1_state) { 'cancelled' }
         let(:library_request_2_state) { 'passed' }
+
         it { is_expected.to be true }
       end
 
@@ -78,30 +84,33 @@ RSpec.describe SequencingRequest, type: :model do
       context 'which are both cancelled' do
         let(:library_request_1_state) { 'cancelled' }
         let(:library_request_2_state) { 'cancelled' }
+
         it { is_expected.to be false }
       end
     end
 
-    it 'should know #billing_product_identifier' do
+    it 'knows #billing_product_identifier' do
       sequencing_request.request_metadata.update(read_length: 150)
       expect(sequencing_request.billing_product_identifier).to eq 150
     end
   end
 
   describe '#loading_concentration' do
+    subject { request.loading_concentration }
+
     let(:request) do
       create :complete_sequencing_request, event_descriptors: { 'Lane loading concentration (pM)' => user_input }
     end
 
-    subject { request.loading_concentration }
-
     context 'with the expected input' do
       let(:user_input) { '20.5' }
+
       it { is_expected.to eq 20.5 }
     end
 
     context 'with an unnecessary but correct unit' do
       let(:user_input) { '20 pM' }
+
       it { is_expected.to eq 20.0 }
     end
 
@@ -109,18 +118,21 @@ RSpec.describe SequencingRequest, type: :model do
       let(:user_input) { '20 nM' }
       # We don't convert, as a wrong unit shows a deviation from SOP, and possibly
       # indicated that the user has input the WRONG concentration
+
       it { is_expected.to eq nil }
     end
 
     context 'with unpredictable information' do
       let(:user_input) { '20 - 50 nM' }
       # Have some ranges in the database.
+
       it { is_expected.to eq nil }
     end
 
     context 'with lots of whitespace' do
       let(:user_input) { '  20    pM  ' }
       # Have some ranges in the database.
+
       it { is_expected.to eq 20.0 }
     end
   end

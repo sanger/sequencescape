@@ -5,7 +5,7 @@ require 'rails_helper'
 describe Submission::SubmissionCreator do
   describe '#order_fields' do
     let(:user) { create :user }
-    let(:creator) { Submission::SubmissionCreator.new(user, template_id: template.id) }
+    let(:creator) { described_class.new(user, template_id: template.id) }
 
     context 'a full template' do
       let(:template) { create :libray_and_sequencing_template }

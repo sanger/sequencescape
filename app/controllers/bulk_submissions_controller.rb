@@ -31,9 +31,9 @@ class BulkSubmissionsController < ApplicationController
         flash.now[:error] = 'There was a problem with your upload'
         render action: 'new'
       end
-    rescue ActiveRecord::RecordInvalid => exception
+    rescue ActiveRecord::RecordInvalid => e
       flash.now[:error] = 'There was a problem when building your submissions'
-      @bulk_submission.errors.add(:base, exception.message)
+      @bulk_submission.errors.add(:base, e.message)
       render action: 'new'
     end
   end

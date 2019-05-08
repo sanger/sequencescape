@@ -4,16 +4,17 @@ require 'rails_helper'
 require './app/resources/api/v2/comment_resource'
 
 RSpec.describe Api::V2::CommentResource, type: :resource do
-  let(:resource_model) { create :comment }
   subject { described_class.new(resource_model, {}) }
+
+  let(:resource_model) { create :comment }
 
   # Test attributes
   it 'works', :aggregate_failures do
-    is_expected.to have_attribute :title
-    is_expected.to have_attribute :description
-    is_expected.to_not have_updatable_field(:id)
-    is_expected.to have_one(:user).with_class_name('User')
-    is_expected.to have_one(:commentable)
+    expect(subject).to have_attribute :title
+    expect(subject).to have_attribute :description
+    expect(subject).not_to have_updatable_field(:id)
+    expect(subject).to have_one(:user).with_class_name('User')
+    expect(subject).to have_one(:commentable)
   end
 
   # Custom method tests

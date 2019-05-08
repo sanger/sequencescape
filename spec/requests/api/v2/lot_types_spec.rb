@@ -22,12 +22,6 @@ describe 'LotTypes API', with: :api_v2 do
   context 'with a LotType' do
     let(:resource_model) { create :lot_type }
 
-    it 'sends an individual LotType' do
-      api_get "/api/v2/lot_types/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('lot_types')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -38,6 +32,12 @@ describe 'LotTypes API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual LotType' do
+      api_get "/api/v2/lot_types/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('lot_types')
     end
   end
 end

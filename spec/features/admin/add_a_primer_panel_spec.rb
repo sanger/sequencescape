@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-feature 'Primer Panel' do
+describe 'Primer Panel' do
   let(:user) { create :admin, email: 'login@example.com' }
   let(:primer_panel) { create :primer_panel, name: 'Primer Panel 1' }
 
-  scenario 'user can add a new primer panel' do
+  it 'user can add a new primer panel' do
     login_user user
     click_on 'Admin'
     click_on 'Primer Panel'
@@ -21,7 +21,7 @@ feature 'Primer Panel' do
     expect(page).to have_content("Created 'My Primer panel'")
   end
 
-  scenario 'user can edit a primer panel' do
+  it 'user can edit a primer panel' do
     login_user user
     visit edit_admin_primer_panel_path(primer_panel)
     expect(page).to have_content('Editing a primer panel will affect all experiments where a primer panel has been used.')

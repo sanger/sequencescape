@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe BulkSubmission, with: :uploader do
+  subject do
+    BulkSubmission.new(spreadsheet: submission_file, encoding: encoding)
+  end
+
   let(:encoding) { 'Windows-1252' }
   let(:spreadsheet_path) { Rails.root.join('features', 'submission', 'csv', spreadsheet_filename) }
   let(:submission_file) { fixture_file_upload(spreadsheet_path) }
@@ -10,7 +14,7 @@ describe BulkSubmission, with: :uploader do
   let(:generated_submission) { generated_submissions.first }
   let(:request_types) { create_list :well_request_type, 2 }
 
-  after(:each) { submission_file.close }
+  after { submission_file.close }
 
   let!(:study) { create :study, name: 'abc123_study' }
   let!(:asset_group) { create :asset_group, name: 'assetgroup123', study: study, asset_count: 2 }
@@ -18,10 +22,6 @@ describe BulkSubmission, with: :uploader do
   before do
     create :user, login: 'user'
     create :project, name: 'Test project'
-  end
-
-  subject do
-    BulkSubmission.new(spreadsheet: submission_file, encoding: encoding)
   end
 
   context 'a simple submission' do
@@ -71,6 +71,7 @@ describe BulkSubmission, with: :uploader do
                                  request_types: request_types.map(&:key) }
       }
     end
+
     setup do
       SubmissionSerializer.construct!(submission_template_hash)
     end

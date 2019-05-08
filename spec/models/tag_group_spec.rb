@@ -9,7 +9,7 @@ RSpec.describe TagGroup, type: :model do
 
     it 'is not a valid model' do
       tag_group_1
-      expect(tag_group_2.valid?).to be_falsey
+      expect(tag_group_2).not_to be_valid
     end
   end
 
@@ -21,14 +21,14 @@ RSpec.describe TagGroup, type: :model do
     let(:tag_4) { create(:tag, map_id: 3, tag_group: tag_group_1) }
 
     context 'by map id' do
-      it 'should return the tags in the correct order' do
+      it 'returns the tags in the correct order' do
         tag_group_1.tags << tag_1 << tag_2 << tag_3 << tag_4
         expect(tag_group_1.tags_sorted_by_map_id).to eq([tag_1, tag_3, tag_4, tag_2])
       end
     end
 
     context 'by index' do
-      it 'should return the tags in the correct order' do
+      it 'returns the tags in the correct order' do
         tag_group_1.tags << tag_1 << tag_2 << tag_3 << tag_4
         expect(tag_group_1.indexed_tags).to eq(1 => tag_1.oligo, 2 => tag_3.oligo, 3 => tag_4.oligo, 4 => tag_2.oligo)
       end
@@ -40,8 +40,8 @@ RSpec.describe TagGroup, type: :model do
     let!(:tag_group_2) { create(:tag_group_with_tags, name: 'TG2', visible: false) }
     let!(:tag_group_3) { create(:tag_group_with_tags, name: 'TG3') }
 
-    it 'should not be selectable by the visible scope' do
-      expect(TagGroup.visible).to_not include(tag_group_2)
+    it 'is not selectable by the visible scope' do
+      expect(TagGroup.visible).not_to include(tag_group_2)
     end
 
     it 'remaining tag groups should be selectable by the visible scope' do

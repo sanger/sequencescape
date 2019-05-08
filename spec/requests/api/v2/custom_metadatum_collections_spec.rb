@@ -22,12 +22,6 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
   context 'with a custom_metadatum_collection' do
     let(:resource_model) { create :custom_metadatum_collection }
 
-    it 'sends an individual custom_metadatum_collection' do
-      api_get "/api/v2/custom_metadatum_collections/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('custom_metadatum_collections')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -38,6 +32,12 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual custom_metadatum_collection' do
+      api_get "/api/v2/custom_metadatum_collections/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('custom_metadatum_collections')
     end
 
     # Remove if immutable

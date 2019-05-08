@@ -79,7 +79,7 @@ module ::Core::Io::Json::Grammar
       instance_handler.tree_for(object, options).merge(self) do |children|
         self.class.new(@owner, children)
       end
-    rescue Core::Endpoint::BasicHandler::EndpointLookup::MissingEndpoint => exception
+    rescue Core::Endpoint::BasicHandler::EndpointLookup::MissingEndpoint => e
       # There is no endpoint for this, even though it has a UUID!
       self
     end

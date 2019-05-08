@@ -7,7 +7,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
   context 'accessioning' do
     let!(:user) { create(:user, api_key: configatron.accession_local_key) }
 
-    before(:each) do
+    before do
       configatron.accession_samples = true
       Delayed::Worker.delay_jobs = false
       Accession.configure do |config|
@@ -16,7 +16,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       end
     end
 
-    after(:each) do
+    after do
       Delayed::Worker.delay_jobs = true
       configatron.accession_samples = false
     end
@@ -42,27 +42,27 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
   context 'can be included in submission' do
     it 'knows if it was registered through manifest' do
       stand_alone_sample = create :sample
-      expect(stand_alone_sample.registered_through_manifest?).to be_falsey
+      expect(stand_alone_sample).not_to be_registered_through_manifest
 
       sample_manifest = create :tube_sample_manifest_with_samples
       sample_manifest.samples.each do |sample|
-        expect(sample.registered_through_manifest?).to be_truthy
+        expect(sample).to be_registered_through_manifest
       end
     end
 
     it 'knows when it can be included in submission if it was registered through manifest' do
       sample_manifest = create :tube_sample_manifest_with_samples
       sample_manifest.samples.each do |sample|
-        expect(sample.can_be_included_in_submission?).to be_falsey
+        expect(sample).not_to be_can_be_included_in_submission
       end
       sample = sample_manifest.samples.first
       sample.sample_metadata.supplier_name = 'new sample'
-      expect(sample.can_be_included_in_submission?).to be_truthy
+      expect(sample).to be_can_be_included_in_submission
     end
 
     it 'knows when it can be included in submission if it was not registered through manifest' do
       sample = create :sample
-      expect(sample.can_be_included_in_submission?).to be_truthy
+      expect(sample).to be_can_be_included_in_submission
     end
   end
 
@@ -71,6 +71,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
     before do
       mock_plate_barcode_service
     end
+
     it 'can have many work orders' do
       job = create(:aker_job)
       expect(create(:sample, jobs: [job]).jobs).to include(job)

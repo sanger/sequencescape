@@ -2,10 +2,10 @@
 
 require 'rails_helper'
 
-feature 'Contact us' do
+describe 'Contact us' do
   let(:user) { create :user, email: 'login@example.com' }
 
-  scenario 'user can ask for help' do
+  it 'user can ask for help' do
     number_of_mails = ActionMailer::Base.deliveries.count
     login_user user
     visit root_path

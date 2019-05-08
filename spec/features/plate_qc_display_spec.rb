@@ -2,13 +2,13 @@
 
 require 'rails_helper'
 
-feature 'Plate QC display' do
+describe 'Plate QC display' do
   let(:user) { create :user, email: 'login@example.com' }
 
-  feature 'with no QC results' do
+  describe 'with no QC results' do
     let!(:plate) { create(:plate, sample_count: 3) }
 
-    scenario 'displays an empty table' do
+    it 'displays an empty table' do
       login_user user
       visit plate_path(plate)
       %w[concentration volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
@@ -26,7 +26,7 @@ feature 'Plate QC display' do
     end
   end
 
-  feature 'with QC results' do
+  describe 'with QC results' do
     let!(:plate) do
       plate = create(:plate, sample_count: 3)
       plate.wells.each do |well|
@@ -35,12 +35,12 @@ feature 'Plate QC display' do
       plate
     end
 
-    before(:each) do
+    before do
       login_user user
       visit plate_path(plate)
     end
 
-    scenario 'displays the correct data' do
+    it 'displays the correct data' do
       %w[concentration volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
         within("##{qc_result}") do
           plate.wells.each_with_index do |well, index|
