@@ -257,6 +257,48 @@ describe TagLayout do
           it_behaves_like 'a tag layout'
         end
       end
+
+      context 'fixed group by plate' do
+        let(:walking_by) { 'as fixed group by plate' }
+        let(:tag_count) { 32 }
+
+        context 'with no offset' do
+          let(:expected_tag_layout) do
+            { 'A1' => [1, 2, 3, 4], 'B1' => [5, 6, 7, 8], 'C1' => [9, 10, 11, 12], 'D1' => [13, 14, 15, 16], 'E1' => [17, 18, 19, 20], 'F1' => [21, 22, 23, 24], 'G1' => [25, 26, 27, 28], 'H1' => [29, 30, 31, 32] }
+          end
+          it_behaves_like 'a tag layout'
+        end
+
+        context 'with a partial plate' do
+          setup do
+            plate.wells.located_at('B1').first.aliquots.clear
+          end
+          let(:expected_tag_layout) do
+            { 'A1' => [1, 2, 3, 4], 'C1' => [9, 10, 11, 12], 'D1' => [13, 14, 15, 16], 'E1' => [17, 18, 19, 20], 'F1' => [21, 22, 23, 24], 'G1' => [25, 26, 27, 28], 'H1' => [29, 30, 31, 32] }
+          end
+          it_behaves_like 'a tag layout'
+        end
+
+        context 'with an initial_tag' do
+          let(:initial_tag) { 4 }
+
+          let(:expected_tag_layout) do
+            { 'A1' => [5, 6, 7, 8], 'B1' => [9, 10, 11, 12], 'C1' => [13, 14, 15, 16], 'D1' => [17, 18, 19, 20], 'E1' => [21, 22, 23, 24], 'F1' => [25, 26, 27, 28], 'G1' => [29, 30, 31, 32], 'H1' => [1, 2, 3, 4] }
+          end
+          it_behaves_like 'a tag layout'
+        end
+
+        context 'with a partial plate and initial tag' do
+          setup do
+            plate.wells.located_at('B1').first.aliquots.clear
+          end
+          let(:initial_tag) { 4 }
+          let(:expected_tag_layout) do
+            { 'A1' => [5, 6, 7, 8], 'C1' => [13, 14, 15, 16], 'D1' => [17, 18, 19, 20], 'E1' => [21, 22, 23, 24], 'F1' => [25, 26, 27, 28], 'G1' => [29, 30, 31, 32], 'H1' => [1, 2, 3, 4] }
+          end
+          it_behaves_like 'a tag layout'
+        end
+      end
     end
 
     context 'inverted layout' do
