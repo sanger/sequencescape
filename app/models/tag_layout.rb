@@ -29,7 +29,7 @@ class TagLayout < ApplicationRecord
     'as group by plate' => 'TagLayout::AsGroupByPlate',
     'manual by plate' => 'TagLayout::WalkManualWellsOfPlate',
     'quadrants' => 'TagLayout::Quadrants',
-    'as fixed group by plate' => 'TagLayout::AsFixedGroupByPlate',
+    'as fixed group by plate' => 'TagLayout::AsFixedGroupByPlate'
   }.freeze
 
   self.inheritance_column = 'sti_type'

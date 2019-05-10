@@ -1,5 +1,6 @@
-# Assigns multiple tags to each well sequentially.
+# frozen_string_literal: true
 
+# Assigns multiple tags to each well sequentially.
 class TagLayout::AsFixedGroupByPlate < TagLayout::Walker
   DEFAULT_TAGS_PER_WELL = 4
 
