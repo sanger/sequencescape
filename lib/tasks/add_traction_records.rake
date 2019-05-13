@@ -52,4 +52,17 @@ namespace :traction do
       end
     end
   end
+
+  desc 'Create the traction purposes'
+  task create_purposes: [:environment] do
+    puts 'Creating purposes...'
+    ActiveRecord::Base.transaction do
+      (barcode_printer_type = BarcodePrinterType.find_by(name: '1D Tube')) || raise('Cannot find 1D printer')
+      {
+        'Saphyr' => ['Tube::Purpose', 'SampleTube']
+      }.each do |name, (type, asset_type)|
+        type.constantize.create!(name: name, barcode_printer_type: barcode_printer_type, target_type: asset_type)
+      end
+    end
+  end
 end
