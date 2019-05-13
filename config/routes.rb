@@ -206,7 +206,7 @@ Sequencescape::Application.routes.draw do
       get :accession_all_samples
     end
 
-    resources :assets, except: [:destroy, :create, :new]
+    resources :assets, except: [:destroy]
 
     resources :sample_registration, only: [:index, :new, :create], controller: 'studies/sample_registration' do
       collection do
@@ -465,7 +465,7 @@ Sequencescape::Application.routes.draw do
 
   resources :tag_layout_templates, only: [:index, :new, :create, :show]
 
-  resources :assets do
+  resources :assets, except: [:create, :new] do
     collection do
       get :snp_register
       get :reception
