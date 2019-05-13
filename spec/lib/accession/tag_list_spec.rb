@@ -7,22 +7,22 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
   let(:yaml)        { load_file(folder, 'tags') }
   let(:tag_list)    { Accession::TagList.new(yaml) }
 
-  it 'should have the correct number of tags' do
+  it 'has the correct number of tags' do
     expect(tag_list.count).to eq(yaml.count)
   end
 
-  it 'should be able to find a tag by its key' do
+  it 'is able to find a tag by its key' do
     expect(tag_list.find(yaml.keys.first.to_s).name).to eq(yaml.keys.first)
     expect(tag_list.find(yaml.keys.first.to_sym).name).to eq(yaml.keys.first)
     expect(tag_list.find(:dodgy_tag)).to be_nil
   end
 
-  it 'should pick out tags which are required for each service' do
+  it 'picks out tags which are required for each service' do
     expect(tag_list.required_for(build(:ena_service)).count).to eq(2)
     expect(tag_list.required_for(build(:ega_service)).count).to eq(5)
   end
 
-  it 'should group the tags' do
+  it 'groups the tags' do
     tags = tag_list.by_group
     expect(tags.count).to eq(3)
     expect(tags[:sample_name].count).to eq(2)
@@ -51,18 +51,18 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
     expect(extract.groups).to include(:sample_name, :sample_attributes, :array_express)
   end
 
-  it 'should indicate whether service requirements are met' do
+  it 'indicates whether service requirements are met' do
     extract = tag_list.extract(create(:sample_metadata_for_accessioning))
-    expect(extract.meets_service_requirements?(build(:ena_service), tag_list)).to be_truthy
-    expect(extract.meets_service_requirements?(build(:ega_service), tag_list)).to be_truthy
+    expect(extract).to be_meets_service_requirements(build(:ena_service), tag_list)
+    expect(extract).to be_meets_service_requirements(build(:ega_service), tag_list)
 
     extract = tag_list.extract(create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
-    expect(extract.meets_service_requirements?(build(:ena_service), tag_list)).to be_falsey
-    expect(extract.meets_service_requirements?(build(:ega_service), tag_list)).to be_falsey
+    expect(extract).not_to be_meets_service_requirements(build(:ena_service), tag_list)
+    expect(extract).not_to be_meets_service_requirements(build(:ega_service), tag_list)
     expect(extract.missing).to include('sample_taxon_id')
   end
 
-  it 'should be able to create a list of tags from a hash of tags' do
+  it 'is able to create a list of tags from a hash of tags' do
     tags = build_list(:accession_tag, 5).index_by(&:name)
     tag_list = Accession::TagList.new(tags)
     expect(tag_list.count).to eq(tags.count)

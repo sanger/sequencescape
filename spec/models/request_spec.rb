@@ -45,10 +45,10 @@ RSpec.describe Request do
     end
 
     it 'can be used as any other request scope' do
-      assert_equal 2, Request.for_order_including_submission_based_requests(@order1).length
-      assert_equal 2, Request.for_order_including_submission_based_requests(@order2).length
-      assert_equal 1, Request.for_order_including_submission_based_requests(@order3).length
-      assert_equal 2, Request.for_order_including_submission_based_requests(@order4).length
+      assert_equal 2, described_class.for_order_including_submission_based_requests(@order1).length
+      assert_equal 2, described_class.for_order_including_submission_based_requests(@order2).length
+      assert_equal 1, described_class.for_order_including_submission_based_requests(@order3).length
+      assert_equal 2, described_class.for_order_including_submission_based_requests(@order4).length
     end
   end
 
@@ -399,12 +399,16 @@ RSpec.describe Request do
   describe '#eventful_studies' do
     let(:asset) { create :untagged_well }
     let(:request) { create :request, asset: asset, initial_study: study }
+
     context 'with no study itself' do
       let(:study) { nil }
+
       it { expect(request.eventful_studies).to eq(asset.studies) }
     end
+
     context 'with a study itself' do
       let(:study) { create :study }
+
       it { expect(request.eventful_studies).to eq([study]) }
     end
   end
@@ -420,16 +424,17 @@ RSpec.describe Request do
         create :request, state: state
       end
 
-      assert_equal @all_states.size, Request.count
+      assert_equal @all_states.size, described_class.count
     end
     context 'open requests' do
       it 'total right number' do
-        assert_equal @open_states.size, Request.opened.count
+        assert_equal @open_states.size, described_class.opened.count
       end
     end
+
     context 'closed requests' do
       it 'total right number' do
-        assert_equal @closed_states.size, Request.closed.count
+        assert_equal @closed_states.size, described_class.closed.count
       end
     end
   end
@@ -461,12 +466,14 @@ RSpec.describe Request do
     end
   end
 
-  it 'should respond to #billing_product_identifier' do
-    request = Request.new
+  it 'responds to #billing_product_identifier' do
+    request = described_class.new
     expect(request.billing_product_identifier).to be nil
   end
 
   describe '::progress_statistics' do
+    subject { described_class.progress_statistics }
+
     let(:request_type1) { create :request_type }
     let(:request_type2) { create :request_type }
 
@@ -480,8 +487,6 @@ RSpec.describe Request do
       create_list :request, 3, state: 'cancelled', request_type: request_type2
       create_list :request, 1, state: 'failed', request_type: request_type2
     end
-
-    subject { Request.progress_statistics }
 
     it 'returns a summary' do
       expect(subject[request_type1]).to be_a Request::Statistics::Counter

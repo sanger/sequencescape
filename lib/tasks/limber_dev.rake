@@ -74,6 +74,21 @@ namespace :limber do
         end
       end
 
+      desc 'Generate a mock PF-384 tag set if required'
+      task pf384_tag_set: ['working:env_check', :environment] do
+        next if TagLayoutTemplate.find_by(name: 'IDT for Illumina v1 - 384 Quadrant')
+
+        tg = TagGroup.create!(name: 'IDT for Illumina v1 - MOCK') do |group|
+          group.tags.build(OligoEnumerator.new(384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } })
+        end
+        TagLayoutTemplate.create!(
+          name: 'IDT for Illumina v1 - 384 Quadrant',
+          direction_algorithm: 'TagLayout::InColumns',
+          walking_algorithm: 'TagLayout::Quadrants',
+          tag_group: tg, tag2_group: tg
+        )
+      end
+
       desc 'Generate a dummy primer panel'
       task gbs_primer_panel: ['working:env_check', :environment] do
         PrimerPanel.create_with(snp_count: 20, programs: {

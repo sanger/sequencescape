@@ -29,11 +29,9 @@ class Warren::Broadcast
   #
   # Creates a warren but does not connect.
   #
-  # @param [Hash] server: {} Server config options passes straight to Bunny
-  # @param [String] exchange: The name of the exchange to connect to
-  # @param [Integer] pool_size: The connection pool size
-  # @param [Void] subscriptions: Not used by warren. Used by consumers
-  #
+  # @param [Hash] server Server config options passes straight to Bunny
+  # @param [String] exchange The name of the exchange to connect to
+  # @param [Integer] pool_size The connection pool size
   def initialize(server: {}, exchange:, pool_size: 14)
     @server = server
     @exchange_name = exchange

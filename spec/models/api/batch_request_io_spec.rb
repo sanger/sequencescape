@@ -3,8 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Api::BatchRequestIO, type: :model do
-  let(:request) { create :request }
   subject { create :batch_request, request: request }
+
+  let(:request) { create :request }
 
   let(:expected_json) do
     {

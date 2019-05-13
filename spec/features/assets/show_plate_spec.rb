@@ -2,15 +2,15 @@
 
 require 'rails_helper'
 
-feature 'Show plate', js: true do
+describe 'Show plate', js: true do
   let(:plate) { create :plate, well_count: 3 }
   let(:user) { create :user }
 
-  background do
+  before do
     plate # has been created
   end
 
-  scenario 'the samples table shows empty wells' do
+  it 'the samples table shows empty wells' do
     login_user user
     visit asset_path(plate)
     expect(fetch_table('#plate-samples-table')).to eq([

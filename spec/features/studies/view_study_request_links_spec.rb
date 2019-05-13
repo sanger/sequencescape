@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'View study properties' do
+describe 'View study properties' do
   let(:user) { create :admin }
   let(:study) { create(:study, name: 'Study 3871492') }
   let(:sample) { create(:sample, name: 'sample_1-3871492') }
@@ -11,7 +11,7 @@ feature 'View study properties' do
   let(:library_tube) { create(:library_tube, samples: [sample], study: study) }
   let(:sample_tube) { create(:sample_tube, sample: sample, study: study) }
 
-  background do
+  before do
     user
     study.samples << sample
     sample_tube
@@ -21,26 +21,26 @@ feature 'View study properties' do
     visit study_path(study)
   end
 
-  scenario 'No links to absent requests', js: true do
+  it 'No links to absent requests', js: true do
     click_link sequencing_request_type.name
     expect(page).not_to have_link(title: "#{library_tube.name} started")
   end
 
-  scenario 'Single requests link directly to the request', js: true do
+  it 'Single requests link directly to the request', js: true do
     click_link sequencing_request_type.name
     expect(page).to have_link('1', title: "#{library_tube.name} passed")
     click_link('1', title: "#{library_tube.name} passed")
     expect(page).to have_text("This request for #{sequencing_request_type.name.downcase} is PASSED")
   end
 
-  scenario 'Multiple requests link to the summary', js: true do
+  it 'Multiple requests link to the summary', js: true do
     click_link sequencing_request_type.name
     expect(page).to have_link('2', title: "#{library_tube.name} failed")
     click_link('2', title: "#{library_tube.name} failed")
     expect(page).to have_text("#{sequencing_request_type.name} Study 3871492")
   end
 
-  scenario 'Filtering by asset type', js: true do
+  it 'Filtering by asset type', js: true do
     click_link 'Assets progress'
     within '#summary' do
       expect(page).to have_text sample_tube.name

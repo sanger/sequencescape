@@ -5,11 +5,11 @@ class UatActions::GeneratePlates < UatActions
   self.title = 'Generate Plate'
   self.description = 'Generate plates in the selected study.'
 
-  form_field :plate_purpose_id,
+  form_field :plate_purpose_name,
              :select,
              label: 'Plate Purpose',
              help: 'Select the plate purpose to create',
-             select_options: -> { PlatePurpose.alphabetical.pluck(:name, :id) }
+             select_options: -> { PlatePurpose.alphabetical.pluck(:name) }
   form_field :plate_count,
              :number_field,
              label: 'Plate Count',
@@ -20,23 +20,25 @@ class UatActions::GeneratePlates < UatActions
              label: 'Well Count',
              help: 'The number of occupied wells on each plate',
              options: { minimum: 1 }
-  form_field :study_id,
+  form_field :study_name,
              :select,
              label: 'Study',
              help: 'The study under which samples begin. List includes all active studies.',
-             select_options: -> { Study.active.pluck(:name, :id) }
+             select_options: -> { Study.active.pluck(:name) }
   form_field :well_layout,
              :select,
              label: 'Well layout',
              help: 'The order in which wells are laid out. Affects where empty wells are located.',
              select_options: %w[Column Row Random]
 
+  validate :well_count_smaller_than_plate_size
+
   def self.default
     new(
       plate_count: 1,
       well_count: 96,
-      study_id: UatActions::StaticRecords.study.id,
-      plate_purpose_id: PlatePurpose.stock_plate_purpose.id,
+      study_name: UatActions::StaticRecords.study.name,
+      plate_purpose_name: PlatePurpose.stock_plate_purpose.name,
       well_layout: 'Column'
     )
   end
@@ -51,6 +53,13 @@ class UatActions::GeneratePlates < UatActions
   end
 
   private
+
+  def well_count_smaller_than_plate_size
+    return true if well_count.to_i <= plate_purpose.size
+
+    errors.add(:well_count, "is larger than the size of a #{plate_purpose.name} (plate_purpose.size)")
+    false
+  end
 
   def construct_wells(plate)
     wells(plate).each do |well|
@@ -69,10 +78,10 @@ class UatActions::GeneratePlates < UatActions
   end
 
   def study
-    @study ||= Study.find(study_id)
+    @study ||= Study.find_by!(name: study_name)
   end
 
   def plate_purpose
-    Purpose.find(plate_purpose_id)
+    Purpose.find_by!(name: plate_purpose_name)
   end
 end

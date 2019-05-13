@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'Bulk submission', js: false do
+describe 'Bulk submission', js: false do
   let(:user) { create :admin, login: 'user' }
   let(:study) { create :study, name: 'abc123_study' }
 
@@ -12,7 +12,7 @@ feature 'Bulk submission', js: false do
     click_button 'Create Bulk submission'
   end
 
-  background do
+  before do
     login_user user
     create :project, name: 'Test project'
     create :asset_group, name: 'assetgroup123', study: study, asset_count: 2
@@ -49,6 +49,7 @@ feature 'Bulk submission', js: false do
   context 'with default encoding' do
     let(:template_name) { 'Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' }
     before { SubmissionSerializer.construct!(submission_template_hash) }
+
     let(:encoding) { nil }
 
     context 'with one submission' do
@@ -57,6 +58,7 @@ feature 'Bulk submission', js: false do
       context 'Uploading a valid file with 1 submission' do
         let(:file_name) { '1_valid_rows.csv' }
         let(:expected_content) { 'Your bulk submission has been processed.' }
+
         it_behaves_like 'bulk submission file upload'
 
         it 'sets bait library' do
@@ -69,6 +71,7 @@ feature 'Bulk submission', js: false do
         let(:template_name) { 'Example template' }
         let(:file_name) { 'with_empty_column.csv' }
         let(:expected_content) { 'Your bulk submission has been processed' }
+
         it_behaves_like 'bulk submission file upload'
       end
 
@@ -78,6 +81,7 @@ feature 'Bulk submission', js: false do
         let(:template_name) { 'Example template' }
         let(:file_name) { 'with_moved_header.csv' }
         let(:expected_content) { 'Your bulk submission has been processed' }
+
         it_behaves_like 'bulk submission file upload'
       end
     end
@@ -102,48 +106,56 @@ feature 'Bulk submission', js: false do
         let(:deprecated) { true }
         let(:file_name) { '1_deprecated_rows.csv' }
         let(:expected_content) { "Template: 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' is deprecated and no longer in use." }
+
         it_behaves_like 'bulk submission file upload'
       end
 
       context 'Uploading an invalid file with 1 submissions' do
         let(:file_name) { '1_invalid_rows.csv' }
         let(:expected_content) { 'No user specified for testing124' }
+
         it_behaves_like 'bulk submission file upload'
       end
 
       context 'Uploading an invalid file with 2 submissions' do
         let(:file_name) { '2_invalid_rows.csv' }
         let(:expected_content) { 'There was a problem on row(s)' }
+
         it_behaves_like 'bulk submission file upload'
       end
 
       context 'Uploading a file with conflicting orders' do
         let(:file_name) { 'with_conflicting_submissions.csv' }
         let(:expected_content) { "read length should be identical for all requests in asset group 'assetgroup123'" }
+
         it_behaves_like 'bulk submission file upload'
       end
 
       context 'Uploading an invalid file with 2 submissions' do
         let(:file_name) { '1_valid_1_invalid.csv' }
         let(:expected_content) { 'There was a problem on row(s)' }
+
         it_behaves_like 'bulk submission file upload'
       end
 
       context 'Uploading an empty file' do
         let(:file_name) { 'no_rows.csv' }
         let(:expected_content) { 'The supplied file was empty' }
+
         it_behaves_like 'bulk submission file upload'
       end
 
       context 'Uploading a file without a (valid) header row' do
         let(:file_name) { 'bad_header.csv' }
         let(:expected_content) { 'The supplied file does not contain a valid header row' }
+
         it_behaves_like 'bulk submission file upload'
       end
 
       context 'Uploading an invalid file with 1 submissions Windows-1252 encoded characters' do
         let(:file_name) { 'invalid_cp1252_rows.csv' }
         let(:expected_content) { 'abc123 — study' }
+
         it_behaves_like 'bulk submission file upload'
       end
 
@@ -159,6 +171,7 @@ feature 'Bulk submission', js: false do
         let(:template_name) { 'Example template' }
         let(:file_name) { 'with_headerless_column.csv' }
         let(:expected_content) { 'Row 2, column 4 contains data but no heading.' }
+
         it_behaves_like 'bulk submission file upload'
       end
     end
@@ -169,6 +182,7 @@ feature 'Bulk submission', js: false do
     let(:encoding) { 'UTF-8' }
     let(:expected_content) { 'abc123 — study' }
     let(:submission_count) { 0 }
+
     it_behaves_like 'bulk submission file upload'
   end
 end

@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pry'
 
-feature 'cherrypick pipeline', js: true do
+describe 'cherrypick pipeline', js: true do
   include FetchTable
 
   let(:user) { create :admin, barcode: 'ID41440E' }
@@ -21,7 +21,7 @@ feature 'cherrypick pipeline', js: true do
   let!(:plate_template) { create :plate_template }
   let!(:target_purpose) { create :plate_purpose }
 
-  before(:each) do
+  before do
     assets = plates.each_with_object([]) do |plate, wells|
       wells.concat(plate.wells)
       plate.wells.each_with_index do |well, index|
@@ -48,7 +48,7 @@ feature 'cherrypick pipeline', js: true do
     robot.robot_properties.create(key: 'DEST1', value: '20')
   end
 
-  scenario 'requests leave inbox' do
+  it 'requests leave inbox' do
     login_user(user)
     visit pipeline_path(pipeline)
     expect(page).to have_content("Pipeline #{pipeline_name}")
@@ -59,10 +59,10 @@ feature 'cherrypick pipeline', js: true do
     first(:select, 'action_on_requests').select('Create Batch')
     first(:button, 'Submit').click
     click_link 'Back to pipeline'
-    expect(page).to_not have_content('DN1S')
+    expect(page).not_to have_content('DN1S')
   end
 
-  scenario 'Pick by µl - 13' do
+  it 'Pick by µl - 13' do
     login_user(user)
     visit pipeline_path(pipeline)
     check('Select DN1S for batch')
@@ -81,7 +81,7 @@ feature 'cherrypick pipeline', js: true do
     expect(page).to have_content('Batch released!')
   end
 
-  scenario 'Pick by ng/µl: 65, conc default' do
+  it 'Pick by ng/µl: 65, conc default' do
     create :plate_type, name: 'ABgene_0765', maximum_volume: 800
     plate_type_list = PlateType.all.pluck(:name).join(' ')
     login_user(user)
@@ -200,7 +200,7 @@ feature 'cherrypick pipeline', js: true do
     end
   end
 
-  scenario 'Pick by ng' do
+  it 'Pick by ng' do
     create :plate_type, name: 'ABgene_0765', maximum_volume: 800
     login_user(user)
     visit pipeline_path(pipeline)

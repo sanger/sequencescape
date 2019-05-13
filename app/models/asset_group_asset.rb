@@ -1,3 +1,4 @@
+# Join table between an {Asset} and an {AssetGroup}
 class AssetGroupAsset < ApplicationRecord
   default_scope ->() { includes(:asset, :asset_group) }
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :asset_group_assets

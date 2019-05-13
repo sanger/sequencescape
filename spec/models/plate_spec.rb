@@ -10,6 +10,8 @@ end
 
 describe Plate do
   context 'labwhere' do
+    subject { plate.labwhere_location }
+
     let(:plate) { create :plate, barcode: 1 }
     let(:parentage) { 'Sanger / Ogilvie / AA316' }
     let(:location) { 'Shelf 1' }
@@ -22,8 +24,6 @@ describe Plate do
                                        lw_locn_name: location,
                                        lw_locn_parentage: parentage)
     end
-
-    subject { plate.labwhere_location }
 
     it { is_expected.to eq "#{parentage} - #{location}" }
   end
@@ -55,6 +55,7 @@ describe Plate do
         create :comment, commentable: request, description: 'Comment on request'
         plate.reload
       end
+
       it 'exposes its comments and those of the request' do
         expect(plate.comments.count).to eq(2)
         expect(plate.comments.map(&:description)).to include('Comment on plate')
@@ -77,6 +78,7 @@ describe Plate do
         create :comment, commentable: request, description: 'Comment on request'
         plate.reload
       end
+
       it 'exposes its comments and those of the request' do
         expect(plate.comments.count).to eq(2)
         expect(plate.comments.map(&:description)).to include('Comment on plate')
@@ -94,6 +96,7 @@ describe Plate do
         create :comment, commentable: plate, description: 'Duplicate comment'
         plate.reload
       end
+
       it 'de-duplicates repeat comments' do
         expect(plate.comments.count).to eq(2)
         expect(plate.comments.map(&:description)).to include('Comment on plate')
@@ -111,16 +114,19 @@ describe Plate do
 
       describe '#human_barcode' do
         subject { plate.human_barcode }
+
         it { is_expected.to eq 'DN12345U' }
       end
 
       describe '#human_barcode' do
         subject { plate.human_barcode }
+
         it { is_expected.to eq 'DN12345U' }
       end
 
       describe '#ean13_barcode' do
         subject { plate.ean13_barcode }
+
         it { is_expected.to eq '1220012345855' }
       end
     end
@@ -175,6 +181,7 @@ describe Plate do
 
       describe 'input_plate#pools' do
         subject { input_plate.pools }
+
         let(:expected_pools_hash) do
           {
             target_submission.uuid => {

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'track SampleManifest updates' do
+describe 'track SampleManifest updates' do
   include FetchTable
 
   def load_manifest_spec
@@ -26,14 +26,18 @@ feature 'track SampleManifest updates' do
     end
   end
 
-  background do
+  before do
     login_user user
     load_manifest_spec
     visit(study_path(study))
     click_link('Sample Manifests')
   end
 
-  scenario 'Some samples get updated by a manifest and events get created' do
+  after do
+    Timecop.return
+  end
+
+  it 'Some samples get updated by a manifest and events get created' do
     broadcast_events_count = BroadcastEvent.count
     expect(page).to have_content('Create manifest for plates')
 

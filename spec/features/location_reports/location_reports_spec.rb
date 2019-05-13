@@ -7,7 +7,7 @@ RSpec.configure do |c|
   c.include LabWhereClientHelper
 end
 
-feature 'Location reports' do
+describe 'Location reports' do
   let(:user) { create(:admin) }
 
   let!(:study_1) { create(:study) }
@@ -42,8 +42,8 @@ feature 'Location reports' do
     )
   end
 
-  feature 'by selection' do
-    scenario 'with a start and end date selected' do
+  describe 'by selection' do
+    it 'with a start and end date selected' do
       login_user user
       visit location_reports_path
       expect(page).to have_content 'Plate Location Reports'
@@ -56,7 +56,7 @@ feature 'Location reports' do
       expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
-    scenario 'with a faculty sponsor and start and end date selected' do
+    it 'with a faculty sponsor and start and end date selected' do
       login_user user
       visit location_reports_path
       expect(page).to have_content 'Plate Location Reports'
@@ -70,7 +70,7 @@ feature 'Location reports' do
       expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
-    scenario 'with a study, start and end date selected' do
+    it 'with a study, start and end date selected' do
       login_user user
       visit location_reports_path
       expect(page).to have_content 'Plate Location Reports'
@@ -84,7 +84,7 @@ feature 'Location reports' do
       expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
-    scenario 'with a start and end date and a purpose seleced' do
+    it 'with a start and end date and a purpose seleced' do
       login_user user
       visit location_reports_path
       expect(page).to have_content 'Plate Location Reports'
@@ -98,7 +98,7 @@ feature 'Location reports' do
       expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
-    scenario 'with a faculty_sponsor, study, start and end date and a purpose selected' do
+    it 'with a faculty_sponsor, study, start and end date and a purpose selected' do
       login_user user
       visit location_reports_path
       expect(page).to have_content 'Plate Location Reports'
@@ -114,7 +114,7 @@ feature 'Location reports' do
       expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
-    scenario 'without a start date selected' do
+    it 'without a start date selected' do
       login_user user
       visit location_reports_path
       expect(page).to have_content 'Plate Location Reports'
@@ -127,7 +127,7 @@ feature 'Location reports' do
       expect(page).to have_content 'Failed to create report: Start date Both start and end date are required if either one is used.'
     end
 
-    scenario 'with a single valid barcode' do
+    it 'with a single valid barcode' do
       login_user user
       visit location_reports_path
       expect(page).to have_content 'Plate Location Reports'
@@ -139,7 +139,7 @@ feature 'Location reports' do
       expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
-    scenario 'with selection criteria that find no results' do
+    it 'with selection criteria that find no results' do
       login_user user
       visit location_reports_path
       expect(page).to have_content 'Plate Location Reports'
@@ -155,10 +155,10 @@ feature 'Location reports' do
     end
   end
 
-  feature 'by labwhere location' do
+  describe 'by labwhere location' do
     let(:labwhere_locn_prefix) { 'Building - Room - Freezer' }
 
-    scenario 'with a valid labwhere location barcode' do
+    it 'with a valid labwhere location barcode' do
       # set up LabWhere stubs
       labwhere_locn_bc = 'lw-mylocn-123'
       p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Shelf 1', lw_locn_parentage: labwhere_locn_prefix }
@@ -178,7 +178,7 @@ feature 'Location reports' do
       expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
-    scenario 'with an invalid labwhere location barcode' do
+    it 'with an invalid labwhere location barcode' do
       # set up LabWhere stubs
       labwhere_locn_bc = 'lw-fake-locn'
       stub_lwclient_locn_find_by_bc(locn_barcode: labwhere_locn_bc, locn_name: nil, locn_parentage: nil)

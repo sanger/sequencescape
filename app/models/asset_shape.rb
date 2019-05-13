@@ -1,3 +1,12 @@
+# Describes the shape of the plate and its numbering system.
+# The majority of our {Plate plates} have a 3:2 width height ratio:
+# eg. 12*8 or 24*16
+# And wells are numbered by 'coordinate' eg. A1, H12
+# However FluidigmPlates have different dimensions:
+# - 6 * 16 (96)
+# - 12 * 16 (192)
+# In addition, wells are labeled sequentially in column order, padded with zeros:
+# eg. S01-S96 and S001-S192
 class AssetShape < ApplicationRecord
   include SharedBehaviour::Named
 

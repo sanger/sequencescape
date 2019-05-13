@@ -11,8 +11,8 @@ class SequencingRequest < CustomerRequest
 
   has_metadata as: Request do
     # redundant with library creation , but THEY are using it .
-    custom_attribute(:fragment_size_required_from, integer: true)
-    custom_attribute(:fragment_size_required_to, integer: true)
+    custom_attribute(:fragment_size_required_from, integer: true, minimum: 1)
+    custom_attribute(:fragment_size_required_to, integer: true, minimum: 1)
 
     custom_attribute(:read_length, integer: true, validator: true, required: true, selection: true)
   end

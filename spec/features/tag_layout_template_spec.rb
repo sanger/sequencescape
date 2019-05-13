@@ -2,17 +2,17 @@
 
 require 'rails_helper'
 
-feature 'Create a new tag layout template' do
+describe 'Create a new tag layout template' do
   let(:user) { create :admin }
   let(:tag_group_1) { create(:tag_group_with_tags, name: 'Test tag group 1') }
   let(:tag_group_2) { create(:tag_group_with_tags, name: 'Test tag group 2') }
 
-  before(:each) do
+  before do
     tag_group_1
     tag_group_2
   end
 
-  scenario 'create a new layout template from a tag group', js: true do
+  it 'create a new layout template from a tag group', js: true do
     login_user user
     visit tag_group_path(tag_group_1)
     expect(page).to have_content 'Test tag group 1'
@@ -32,7 +32,7 @@ feature 'Create a new tag layout template' do
     expect(page).to have_content 'To tag layout templates list'
   end
 
-  scenario 'create a new layout template directly', js: true do
+  it 'create a new layout template directly', js: true do
     login_user user
     visit new_tag_layout_template_path
     expect(page).to have_content 'Tag Layout Template New'
@@ -52,7 +52,7 @@ feature 'Create a new tag layout template' do
     expect(page).to have_content 'To tag layout templates list'
   end
 
-  scenario 'get an error when creating a new layout template', js: true do
+  it 'get an error when creating a new layout template', js: true do
     login_user user
     visit new_tag_layout_template_path
     expect(page).to have_content 'Tag Layout Template New'

@@ -34,7 +34,7 @@ RSpec.describe Asset, type: :model do
       let(:parents) { [parent_asset_1, parent_asset_2] }
       let(:child_asset) { create(:asset) }
 
-      before(:each) do
+      before do
         asset.assign_relationships(parents, child_asset)
       end
 
@@ -62,7 +62,7 @@ RSpec.describe Asset, type: :model do
       let(:parents) { [parent_asset_1, parent_asset_2] }
       let(:child_asset) { create(:asset) }
 
-      before(:each) do
+      before do
         asset.parents = [parent_asset_1, parent_asset_2]
         asset.reload
         asset.assign_relationships(asset.parents, child_asset)
@@ -148,6 +148,7 @@ RSpec.describe Asset, type: :model do
       end
     end
   end
+
   context 'when checking scopes' do
     describe '#with_barcode' do
       let!(:ean13_plates_list) { create_list(:plate, 2) }

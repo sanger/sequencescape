@@ -17,12 +17,12 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList, type: :model, samp
 
   it '#options provides a list of conditional formatting options' do
     expect(conditional_formatting_list.options.count).to eq(rules.length)
-    expect(rules.values.all? { |rule| conditional_formatting_list.options.include? rule['options'] }).to be_truthy
+    expect(rules.values).to be_all { |rule| conditional_formatting_list.options.include? rule['options'] }
   end
 
   it '#update updates all of the conditional formatting rules' do
     conditional_formatting_list.update(options)
-    expect(conditional_formatting_list.all?(&:styled?)).to be_truthy
+    expect(conditional_formatting_list).to be_all(&:styled?)
   end
 
   it '#update should update the worksheet with conditional formatting rules' do
@@ -35,7 +35,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList, type: :model, samp
   it '#update should only work if there are some conditional formattings in the list' do
     conditional_formatting_list = SequencescapeExcel::ConditionalFormattingList.new
     conditional_formatting_list.update(options)
-    expect(conditional_formatting_list).to_not be_saved
+    expect(conditional_formatting_list).not_to be_saved
   end
 
   # TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from worksheet is ugly.
@@ -46,16 +46,16 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList, type: :model, samp
     expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(ERB::Util.html_escape(SequencescapeExcel::Formula.new(options.merge(FactoryBot.attributes_for(:conditional_formatting_with_formula)[:formula])).to_s))
   end
 
-  it 'should be comparable' do
+  it 'is comparable' do
     expect(SequencescapeExcel::ConditionalFormattingList.new(rules)).to eq(conditional_formatting_list)
     rules.shift
-    expect(SequencescapeExcel::ConditionalFormattingList.new(rules)).to_not eq(conditional_formatting_list)
-    expect(SequencescapeExcel::ConditionalFormattingList.new(rules)).to_not eq([])
+    expect(SequencescapeExcel::ConditionalFormattingList.new(rules)).not_to eq(conditional_formatting_list)
+    expect(SequencescapeExcel::ConditionalFormattingList.new(rules)).not_to eq([])
   end
 
-  it 'should be duplicated correctly' do
+  it 'is duplicated correctly' do
     dup = conditional_formatting_list.dup
     conditional_formatting_list.update(options)
-    expect(dup.any?(&:styled?)).to be_falsey
+    expect(dup).not_to be_any(&:styled?)
   end
 end

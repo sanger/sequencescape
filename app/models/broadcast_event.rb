@@ -1,3 +1,5 @@
+# @see https://github.com/sanger/event_warehouse Event Warehouse
+# Abstract class used to generate events; use subclass to specify how your particular event is generated.
 class BroadcastEvent < ApplicationRecord
   EVENT_JSON_ROOT = 'event'
   UNKNOWN_USER_IDENTIFIER = 'UNKNOWN'
@@ -40,23 +42,36 @@ class BroadcastEvent < ApplicationRecord
     Hash[self.class.metadata_finders.map { |mf| mf.for(seed, self) }]
   end
 
+  # Routing key generated for the broadcasted event.
+  # @return [String] Rouring key. eg. production.event.library_created.123
   def routing_key
     "#{Rails.env}.event.#{event_type}.#{id}"
   end
 
+  # @return [String] the root of the generated json object. 'event'
   def json_root
     EVENT_JSON_ROOT
   end
 
+  # Override in subclasses if you want dynamic event types
+  # @return [String] The value of the event_type key in the generated message
   def event_type
     self.class.event_type
   end
 
+  #
+  # Use in subclasses to specify a fixed event type
+  # @param event_type [String] The event type to use for this subclass
+  #
+  # @return [String] The event type
   def self.set_event_type(event_type)
     @event_type = event_type
   end
 
+  # @return [String] The value of the event_type key in the generated message
   def self.event_type
     @event_type
   end
 end
+
+require_dependency 'broadcast_event/qc_assay'

@@ -6,10 +6,13 @@ describe Barcode, type: :model do
   shared_examples 'a basic barcode' do
     describe '#human_barcode' do
       subject { barcode.human_barcode }
+
       it { is_expected.to eq human_barcode }
     end
+
     describe '#machine_barcode' do
       subject { barcode.machine_barcode }
+
       it { is_expected.to eq machine_barcode }
     end
   end
@@ -17,10 +20,13 @@ describe Barcode, type: :model do
   shared_examples 'a composable barcode' do
     describe '#barcode_number' do
       subject { barcode.number }
+
       it { is_expected.to eq number }
     end
+
     describe '#barcode_prefix' do
       subject { barcode.barcode_prefix }
+
       it { is_expected.to eq barcode_prefix }
     end
   end
@@ -28,10 +34,13 @@ describe Barcode, type: :model do
   shared_examples 'an ean13 barcode' do
     describe '#ean13_barcode?' do
       subject { barcode.ean13_barcode? }
+
       it { is_expected.to be true }
     end
+
     describe '#ean13_barcode' do
       subject { barcode.ean13_barcode }
+
       it { is_expected.to eq ean13_barcode }
     end
   end
@@ -39,10 +48,13 @@ describe Barcode, type: :model do
   shared_examples 'a code128 barcode' do
     describe '#code128_barcode?' do
       subject { barcode.code128_barcode? }
+
       it { is_expected.to be true }
     end
+
     describe '#code128_barcode' do
       subject { barcode.code128_barcode }
+
       it { is_expected.to eq code128_barcode }
     end
   end
@@ -50,10 +62,13 @@ describe Barcode, type: :model do
   shared_examples 'a code39 barcode' do
     describe '#code39_barcode?' do
       subject { barcode.code39_barcode? }
+
       it { is_expected.to be true }
     end
+
     describe '#code39_barcode' do
       subject { barcode.code39_barcode }
+
       it { is_expected.to eq code39_barcode }
     end
   end
@@ -61,10 +76,13 @@ describe Barcode, type: :model do
   shared_examples 'not a code39 barcode' do
     describe '#code39_barcode?' do
       subject { barcode.code39_barcode? }
+
       it { is_expected.to be false }
     end
+
     describe '#code39_barcode' do
       subject { barcode.code39_barcode }
+
       it { is_expected.to eq nil }
     end
   end
@@ -72,10 +90,13 @@ describe Barcode, type: :model do
   shared_examples 'not an ean13 barcode' do
     describe '#ean13_barcode?' do
       subject { barcode.ean13_barcode? }
+
       it { is_expected.to be false }
     end
+
     describe '#ean13_barcode' do
       subject { barcode.ean13_barcode }
+
       it { is_expected.to be_nil }
     end
   end
@@ -93,6 +114,7 @@ describe Barcode, type: :model do
     let(:ean13_barcode) { '1220012345855' }
     let(:code128_barcode) { '1220012345855' }
     let(:code39_barcode) { '1220012345855' }
+
     it_behaves_like 'a basic barcode'
     it_behaves_like 'a composable barcode'
     it_behaves_like 'an ean13 barcode'
@@ -105,6 +127,7 @@ describe Barcode, type: :model do
 
     context 'with an incompatible format' do
       let(:barcode_value) { 'notabarcode' }
+
       it 'is not valid' do
         expect(barcode).not_to be_valid
       end
@@ -124,6 +147,7 @@ describe Barcode, type: :model do
     let(:ean13_barcode) { '1220012345855' }
     let(:code128_barcode) { 'DN12345U' }
     let(:code39_barcode) { 'DN12345U' }
+
     it_behaves_like 'a basic barcode'
     it_behaves_like 'a composable barcode'
     it_behaves_like 'an ean13 barcode'
@@ -136,6 +160,7 @@ describe Barcode, type: :model do
 
     context 'with an incompatible format' do
       let(:barcode_value) { 'notabarcode' }
+
       it 'is not valid' do
         expect(barcode).not_to be_valid
       end
@@ -163,6 +188,7 @@ describe Barcode, type: :model do
 
     context 'with an incompatible format' do
       let(:barcode_value) { 'notabarcode' }
+
       it 'is not valid' do
         expect(barcode).not_to be_valid
       end
@@ -187,6 +213,7 @@ describe Barcode, type: :model do
 
     context 'with an incompatible format' do
       let(:barcode_value) { 'notabarcode' }
+
       it 'is not valid' do
         expect(barcode).not_to be_valid
       end
@@ -255,6 +282,7 @@ describe Barcode, type: :model do
         machine_barcode: 'CGAP-ABC123'
       }
     end
+
     it_behaves_like 'a basic barcode'
     it_behaves_like 'not an ean13 barcode'
     it_behaves_like 'a composable barcode'

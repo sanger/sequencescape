@@ -33,6 +33,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
       expect(t[:ss_model]).to eq(:self)
     end
   end
+
   context '#parse' do
     context 'when two colums receive the same attribute' do
       let(:my_config) do
@@ -41,6 +42,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
           t1.current_volume  <= volume
         )
       end
+
       it 'returns the list with both columns' do
         expect(Aker::ConfigParser.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: { t1: { measured_volume: [:volume], current_volume: [:volume] } },
@@ -57,6 +59,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
           t1.current_volume  => volume
         )
       end
+
       it 'returns the list with both columns' do
         expect(Aker::ConfigParser.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: { t1: { measured_volume: [:volume], current_volume: [:volume] } },
@@ -73,6 +76,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
           t1.measured_volume <= other_volume
         )
       end
+
       it 'returns the list with both columns' do
         expect(Aker::ConfigParser.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: { t1: { measured_volume: [:volume, :other_volume] } },
@@ -94,6 +98,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
           amount                               =>  amount
         )
       end
+
       it 'returns the right config object content' do
         expect(Aker::ConfigParser.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: {

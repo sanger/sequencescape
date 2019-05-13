@@ -4,11 +4,13 @@ require 'timecop'
 
 describe Well do
   subject(:well) { create :well, well_attribute_attributes: well_attributes }
+
   let(:well_attributes) { {} }
 
   describe '#update_gender_markers!' do
     context 'with gender_markers results' do
       let(:well_attributes) { { gender_markers: %w[M F F] } }
+
       it 'create an event if nothings changed and there are no previous events' do
         expect { well.update_gender_markers!(%w[M F F], 'SNP') }.to change { well.events.count }.by 1
       end
@@ -64,6 +66,7 @@ describe Well do
     let(:well_attributes) { { concentration: nil } }
 
     let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
+
     setup { well.update_from_qc(qc_result) }
     context 'key: concentration with nM' do
       let(:key) { 'concentration' }
@@ -71,6 +74,7 @@ describe Well do
 
       context 'units: nM' do
         let(:units) { 'nM' }
+
         it 'works', :aggregate_failures do
           expect(well.get_concentration).to eq(nil)
           expect(well.get_molarity).to eq(100)
@@ -79,6 +83,7 @@ describe Well do
 
       context 'units: ng/ul' do
         let(:units) { 'ng/ul' }
+
         it 'works', :aggregate_failures do
           expect(well.get_concentration).to eq(100)
           expect(well.get_molarity).to eq(nil)
@@ -90,45 +95,56 @@ describe Well do
       let(:key) { 'volume' }
       let(:units) { 'ul' }
       let(:value) { 100 }
+
       it { expect(well.get_volume).to eq(100) }
     end
+
     context 'key: volume, units: ml' do
       let(:key) { 'volume' }
       let(:units) { 'ml' }
       let(:value) { 1 }
+
       it { expect(well.get_volume).to eq(1000) }
     end
+
     context 'key: snp_count' do
       let(:key) { 'snp_count' }
       let(:units) { 'bases' }
       let(:value) { 100 }
+
       it 'works', :aggregate_failures do
         expect(well.get_sequenom_count).to eq(100)
         expect(well.events.reload.last.content).to eq 'assay 1'
       end
     end
+
     context 'key: loci_passed' do
       let(:key) { 'snp_count' }
       let(:units) { 'bases' }
       let(:value) { 100 }
+
       it 'works', :aggregate_failures do
         expect(well.get_sequenom_count).to eq(100)
         expect(well.events.reload.last.content).to eq 'assay 1'
       end
     end
+
     context 'key: gender_markers' do
       let(:key) { 'gender_markers' }
       let(:units) { 'bases' }
       let(:value) { 'MFU' }
+
       it 'works', :aggregate_failures do
         expect(well.get_gender_markers).to eq(%w[M F Unknown])
         expect(well.events.reload.last.content).to eq 'assay 1'
       end
     end
+
     context 'key: RIN' do
       let(:key) { 'RIN' }
       let(:units) { 'RIN' }
       let(:value) { 6 }
+
       it { expect(well.get_rin).to eq(6) }
     end
   end
@@ -154,7 +170,7 @@ describe Well do
       end
     end
 
-    result = Well.hash_stock_with_targets(stock_plate.wells, purposes.map(&:name))
+    result = described_class.hash_stock_with_targets(stock_plate.wells, purposes.map(&:name))
 
     assert_equal result.count, 3
     assert_equal result[stock_plate.wells[1].id].count, 1
@@ -370,6 +386,7 @@ describe Well do
       end
     end
   end
+
   context 'proceed test' do
     setup do
       @our_product_criteria = create :product_criteria
@@ -399,7 +416,7 @@ describe Well do
     subject { well.register_stock! }
 
     it 'allow registration of messengers' do
-      expect { subject }.to change { Messenger.count }.by(1)
+      expect { subject }.to change(Messenger, :count).by(1)
       expect(subject.root).to eq 'stock_resource'
       expect(subject.template).to eq 'WellStockResourceIO'
       expect(subject.target).to eq well

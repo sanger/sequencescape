@@ -45,7 +45,7 @@ context 'printing different asset types' do
     context 'printing tube' do
       let(:options) { { printables: asset1 } }
 
-      it { should have_key(:round_label_top_line) }
+      it { is_expected.to have_key(:round_label_top_line) }
     end
   end
 
@@ -54,6 +54,7 @@ context 'printing different asset types' do
       let(:asset1) { create :child_plate }
       let(:asset2) { create :child_plate }
       let(:asset3) { create :child_plate }
+
       it_behaves_like 'a correct filter'
       it_behaves_like 'a correct plate renderer'
     end
@@ -62,6 +63,7 @@ context 'printing different asset types' do
       let(:asset1) { create :empty_sample_tube }
       let(:asset2) { create :empty_sample_tube }
       let(:asset3) { create :empty_sample_tube }
+
       it_behaves_like 'a correct filter'
       it_behaves_like 'a correct tube renderer'
     end

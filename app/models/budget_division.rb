@@ -1,3 +1,5 @@
+# Property of {Project} set on {Project::Metadata}
+# High level organisational area for funding
 class BudgetDivision < ApplicationRecord
   extend Attributable::Association::Target
 

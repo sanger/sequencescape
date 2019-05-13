@@ -1,3 +1,9 @@
+# Handles submission of {Study} information to the EGA or ENA
+# A study gathers together multiple {Accessionable::Sample samples} and essentially
+# describes why they are being sequenced. It should have a 1 to 1 mapping with Sequencescape
+# {Study studies}.
+# A study can either be open (ENA) or managed (EGA) which determines which {AccessionService} it
+# uses.
 module Accessionable
   class Study < Base
     attr_reader :study_title, :description, :center_study_name, :study_abstract, :existing_study_type, :tags, :related_studies

@@ -9,14 +9,14 @@ RSpec.describe LotType do
       create :lot
     end
 
-    it { should validate_uniqueness_of :name }
+    it { is_expected.to validate_uniqueness_of :name }
   end
 
   it 'is validated', :aggregate_failures do
-    is_expected.to validate_presence_of :name
-    is_expected.to validate_presence_of :template_class
-    is_expected.to have_many :lots
-    is_expected.to belong_to :target_purpose
+    expect(subject).to validate_presence_of :name
+    expect(subject).to validate_presence_of :template_class
+    expect(subject).to have_many :lots
+    expect(subject).to belong_to :target_purpose
   end
 
   context '#lot' do
@@ -27,7 +27,7 @@ RSpec.describe LotType do
 
     context 'create' do
       it 'change Lot.count by 1' do
-        expect { lot }.to change { Lot.count }.by 1
+        expect { lot }.to change(Lot, :count).by 1
       end
 
       it 'set the lot properties' do

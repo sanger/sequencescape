@@ -8,6 +8,7 @@ describe Tube::Purpose, type: :model do
   shared_examples 'a tube factory' do
     describe '#create!' do
       subject { tube_purpose.create! }
+
       it { is_expected.to be_a expected_tube_class }
 
       it 'set an appropriate barcode prefix' do
@@ -24,6 +25,7 @@ describe Tube::Purpose, type: :model do
     let(:barcode_prefix) { 'NT' }
     let(:target_type) { 'SampleTube' }
     let(:expected_tube_class) { SampleTube }
+
     it_behaves_like 'a tube factory'
   end
 
@@ -31,6 +33,7 @@ describe Tube::Purpose, type: :model do
     let(:barcode_prefix) { 'NT' }
     let(:target_type) { 'LibraryTube' }
     let(:expected_tube_class) { LibraryTube }
+
     it_behaves_like 'a tube factory'
   end
 end

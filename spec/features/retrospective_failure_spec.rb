@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'Retrospective failure' do
+describe 'Retrospective failure' do
   # Occasionally users fail a well after additional work has been done
   # on it. This is usually because they forgot to fail the well
   # at the appropriate stage, although may also happen if additional information
@@ -44,7 +44,7 @@ feature 'Retrospective failure' do
       well
     end
 
-    background do
+    before do
       # Note: These transfer requests automatically handle the transfer of our aliquot.
       create :transfer_request, asset: target_well, target_asset: child_well_1
       # Apply tags to make sure that gets handled correctly
@@ -57,7 +57,7 @@ feature 'Retrospective failure' do
       expect(child_well_2.aliquots.count).to eq(2)
     end
 
-    scenario 'fail removed downstream aliquots' do
+    it 'fail removed downstream aliquots' do
       target_request.fail!
       # We don't remove the aliquot from the failed well itself
       expect(target_well.aliquots.count).to eq(1)
@@ -82,14 +82,14 @@ feature 'Retrospective failure' do
       create :lane
     end
 
-    background do
+    before do
       # Note: These transfer requests automatically handle the transfer of our aliquot.
       create :transfer_request, asset: target_well, target_asset: child_well_1
       create :transfer_request, asset: target_well, target_asset: qc_tube
       create :transfer_request, asset: qc_tube, target_asset: lane
     end
 
-    scenario 'fail removed downstream aliquots' do
+    it 'fail removed downstream aliquots' do
       target_request.fail!
       # We don't remove the aliquot from the failed well itself
       expect(target_well.aliquots.count).to eq(1)

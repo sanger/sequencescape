@@ -3,10 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Api::PlateIO, type: :model do
+  subject { create :plate, plate_purpose: purpose, barcode: barcode, prefix: prefix }
+
   let(:purpose) { create :plate_purpose }
   let(:barcode) { '12345' }
   let(:prefix) { 'DN' }
-  subject { create :plate, plate_purpose: purpose, barcode: barcode, prefix: prefix }
+
   let(:expected_json) do
     {
       'uuid' => subject.uuid,
@@ -36,11 +38,13 @@ RSpec.describe Api::PlateIO, type: :model do
         'infinium_barcode' => 'WG1234567-DNA'
       }
     end
+
     it_behaves_like('an IO object')
   end
 
   context 'with an fluidigm barcode' do
     subject { create :plate, plate_purpose: purpose, barcode: barcode, prefix: prefix, fluidigm_barcode: '1234567890' }
+
     let(:expected_json) do
       {
         'uuid' => subject.uuid,
@@ -51,6 +55,7 @@ RSpec.describe Api::PlateIO, type: :model do
         'fluidigm_barcode' => '1234567890'
       }
     end
+
     it_behaves_like('an IO object')
   end
 end

@@ -257,6 +257,7 @@ FactoryBot.define do
     after(:build) do |workflow|
       workflow.pipeline = build(:fluidigm_pipeline, workflow: workflow) unless workflow.pipeline
     end
+
     tasks do
       [
         build(:fluidigm_template_task, workflow: nil),

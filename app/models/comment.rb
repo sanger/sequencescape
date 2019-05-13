@@ -1,8 +1,14 @@
+# A comment can be assigned to any commentable record.
 class Comment < ApplicationRecord
   # include Uuid::Uuidable
   belongs_to :commentable, polymorphic: true, optional: false
   has_many :comments, as: :commentable
   belongs_to :user
+
+  # @!attribute title
+  #   @return [String] A short string, best used to identify the comment source.
+  # @!attribute key
+  #   @return [String] Longer text containing the main body of the comment
 
   after_create :trigger_commentable_callback
 

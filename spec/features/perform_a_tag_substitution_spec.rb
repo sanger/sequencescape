@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'Perform a tag substitution', js: true do
+describe 'Perform a tag substitution', js: true do
   let(:sample_a) { create :sample }
   let(:sample_b) { create :sample }
   let(:library_tube_a) { create :library_tube }
@@ -20,7 +20,7 @@ feature 'Perform a tag substitution', js: true do
 
   let(:user) { create :user }
 
-  background do
+  before do
     create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: library_tube_a
     create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: library_tube_b
     create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: mx_library_tube
@@ -29,7 +29,7 @@ feature 'Perform a tag substitution', js: true do
     create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: lane
   end
 
-  scenario 'Performing a tag swap' do
+  it 'Performing a tag swap' do
     login_user user
     visit asset_path(lane)
     click_link 'perform tag substitution'
@@ -59,7 +59,7 @@ feature 'Perform a tag substitution', js: true do
                                 )
   end
 
-  scenario 'Performing an invalid tag swap' do
+  it 'Performing an invalid tag swap' do
     login_user user
     visit asset_path(lane)
     click_link 'perform tag substitution'

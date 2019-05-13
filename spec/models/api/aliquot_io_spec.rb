@@ -3,12 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::AliquotIO, type: :model do
-  let(:well) { create :empty_well }
-  let(:sample) { create :sample }
-  let(:study) { create :study }
-  let(:project) { create :project }
-  let(:tag) { create :tag }
-  let(:bait_library) { create :bait_library }
   subject do
     create :aliquot,
            receptacle: well,
@@ -21,6 +15,13 @@ RSpec.describe Api::AliquotIO, type: :model do
            insert_size_to: 200,
            bait_library: bait_library
   end
+
+  let(:well) { create :empty_well }
+  let(:sample) { create :sample }
+  let(:study) { create :study }
+  let(:project) { create :project }
+  let(:tag) { create :tag }
+  let(:bait_library) { create :bait_library }
 
   let(:expected_json) do
     {

@@ -85,7 +85,7 @@ end
 
 RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
   it 'is not directly instantiated' do
-    expect(BroadcastEvent.new).to_not be_valid
+    expect(BroadcastEvent.new).not_to be_valid
   end
 
   context 'ExampleEvent' do

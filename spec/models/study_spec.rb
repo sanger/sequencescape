@@ -61,7 +61,7 @@ RSpec.describe Study, type: :model do
     let!(:user1)          { create(:user) }
     let!(:user2)          { create(:user) }
 
-    before(:each) do
+    before do
       user1.has_role('owner', study)
       user1.has_role('follower', study)
       user2.has_role('follower', study)
@@ -69,23 +69,23 @@ RSpec.describe Study, type: :model do
     end
 
     it 'deals with followers' do
-      expect(study.followers).to_not be_empty
+      expect(study.followers).not_to be_empty
       expect(study.followers).to include(user1)
       expect(study.followers).to include(user2)
       expect(another_study.followers).to be_empty
     end
 
     it 'deals with managers' do
-      expect(study.managers).to_not be_empty
-      expect(study.managers).to_not include(user1)
+      expect(study.managers).not_to be_empty
+      expect(study.managers).not_to include(user1)
       expect(study.managers).to include(user2)
       expect(another_study.managers).to be_empty
     end
 
     it 'deals with owners' do
-      expect(study.owners).to_not be_empty
+      expect(study.owners).not_to be_empty
       expect(study.owners).to include(user1)
-      expect(study.owners).to_not include(user2)
+      expect(study.owners).not_to include(user2)
       expect(another_study.owners).to be_empty
     end
   end
@@ -94,14 +94,14 @@ RSpec.describe Study, type: :model do
     let!(:study)  { create(:study) }
 
     context 'when contains human DNA' do
-      before(:each) do
+      before do
         study.study_metadata.contains_human_dna = Study::YES
         study.ethically_approved = false
         study.save!
       end
 
       context "and isn't contaminated with human DNA and does not contain sample commercially available" do
-        before(:each) do
+        before do
           study.study_metadata.contaminated_human_dna = Study::NO
           study.study_metadata.commercially_available = Study::NO
           study.ethically_approved = false
@@ -114,20 +114,20 @@ RSpec.describe Study, type: :model do
       end
 
       context 'and is contaminated with human DNA' do
-        before(:each) do
+        before do
           study.study_metadata.contaminated_human_dna = Study::YES
           study.ethically_approved = nil
           study.save!
         end
 
         it 'not appear in the awaiting ethical approval list' do
-          expect(Study.awaiting_ethical_approval).to_not include(study)
+          expect(Study.awaiting_ethical_approval).not_to include(study)
         end
       end
     end
 
     context 'when needing ethical approval' do
-      before(:each) do
+      before do
         study.study_metadata.contains_human_dna = Study::YES
         study.study_metadata.contaminated_human_dna = Study::NO
         study.study_metadata.commercially_available = Study::NO
@@ -151,7 +151,7 @@ RSpec.describe Study, type: :model do
     end
 
     context 'when not needing ethical approval' do
-      before(:each) do
+      before do
         study.study_metadata.contains_human_dna = Study::YES
         study.study_metadata.contaminated_human_dna = Study::YES
         study.study_metadata.commercially_available = Study::NO
@@ -178,7 +178,7 @@ RSpec.describe Study, type: :model do
       let!(:study_remove) { create(:study) }
       let!(:study_keep)   { create(:study) }
 
-      before(:each) do
+      before do
         study_remove.study_metadata.remove_x_and_autosomes = Study::YES
         study_remove.save!
         study_keep.study_metadata.remove_x_and_autosomes = Study::NO
@@ -187,14 +187,14 @@ RSpec.describe Study, type: :model do
 
       it 'show in the filters' do
         expect(Study.with_remove_x_and_autosomes).to include(study_remove)
-        expect(Study.with_remove_x_and_autosomes).to_not include(study_keep)
+        expect(Study.with_remove_x_and_autosomes).not_to include(study_keep)
       end
     end
 
     context 'with check y separation' do
       let!(:study) { create(:study) }
 
-      before(:each) do
+      before do
         study.study_metadata.separate_y_chromosome_data = true
       end
 
@@ -214,7 +214,7 @@ RSpec.describe Study, type: :model do
       let!(:asset)  { create(:sample_tube) }
 
       context 'with submissions still unprocessed' do
-        before(:each) do
+        before do
           FactoryHelp::submission study: study, state: 'building', assets: [asset]
           FactoryHelp::submission study: study, state: 'pending', assets: [asset]
           FactoryHelp::submission study: study, state: 'processing', assets: [asset]
@@ -226,19 +226,19 @@ RSpec.describe Study, type: :model do
       end
 
       context 'with no submissions unprocessed' do
-        before(:each) do
+        before do
           FactoryHelp::submission study: study, state: 'ready', assets: [asset]
           FactoryHelp::submission study: study, state: 'failed', assets: [asset]
         end
 
         it 'returns false' do
-          expect(study).to_not be_unprocessed_submissions
+          expect(study).not_to be_unprocessed_submissions
         end
       end
 
       context 'with no submissions at all' do
         it 'returns false' do
-          expect(study).to_not be_unprocessed_submissions
+          expect(study).not_to be_unprocessed_submissions
         end
       end
     end
@@ -247,13 +247,13 @@ RSpec.describe Study, type: :model do
       let!(:study)          { create(:study) }
       let!(:request_type)   { create(:request_type) }
 
-      before(:each) do
+      before do
         2.times do
           r = create(:passed_request, request_type: request_type, initial_study_id: study.id)
           r.asset.aliquots.each { |al| al.study = study; al.save! }
         end
 
-        2.times { create(:order, study: study) }
+        create_list(:order, 2, study: study)
         study.projects.each do |project|
           project.enforce_quotas = true
         end
@@ -268,7 +268,7 @@ RSpec.describe Study, type: :model do
       end
 
       it 'not cancel any associated requests' do
-        expect(study.requests.all? { |request| request.passed? }).to be_truthy
+        expect(study.requests).to be_all { |request| request.passed? }
       end
     end
 
@@ -300,7 +300,7 @@ RSpec.describe Study, type: :model do
 
       it 'require a data access group' do
         study.study_metadata.data_access_group = ''
-        expect(study).to_not be_valid
+        expect(study).not_to be_valid
         expect(study.errors['study_metadata.data_access_group']).to include("can't be blank")
       end
     end
@@ -365,8 +365,8 @@ RSpec.describe Study, type: :model do
 
       it 'not include studies that do not have accession numbers' do
         studies = Study.for_sample_accessioning
-        expect(studies).to_not include(study_1)
-        expect(studies).to_not include(study_4)
+        expect(studies).not_to include(study_1)
+        expect(studies).not_to include(study_4)
       end
 
       it 'not include studies that do not have the correct data release timings' do
@@ -376,7 +376,7 @@ RSpec.describe Study, type: :model do
 
       it 'not include studies that do not have the correct data release strategies' do
         studies = Study.for_sample_accessioning
-        expect(studies).to_not include(study_8)
+        expect(studies).not_to include(study_8)
       end
     end
 
@@ -410,16 +410,19 @@ RSpec.describe Study, type: :model do
   end
 
   describe '#mailing_list_of_managers' do
-    let(:study) { create :study }
     subject { study.mailing_list_of_managers }
+
+    let(:study) { create :study }
 
     context 'with a manger' do
       before { create :manager, authorizable: study, email: 'manager@example.com' }
+
       it { is_expected.to eq ['manager@example.com'] }
     end
 
     context 'without a manger' do
       before { create :admin }
+
       it { is_expected.to eq ['ssr@example.com'] }
     end
   end
@@ -575,23 +578,23 @@ RSpec.describe Study, type: :model do
       end
 
       it 'must have a study type' do
-        expect(study.study_metadata.study_type).to_not be_nil
+        expect(study.study_metadata.study_type).not_to be_nil
       end
 
       it 'must have a data release study type' do
-        expect(study.study_metadata.data_release_study_type).to_not be_nil
+        expect(study.study_metadata.data_release_study_type).not_to be_nil
       end
 
       it 'must have a reference genome' do
-        expect(study.study_metadata.reference_genome).to_not be_nil
+        expect(study.study_metadata.reference_genome).not_to be_nil
       end
 
       it 'must have a faculty sponsor' do
-        expect(study.study_metadata.faculty_sponsor).to_not be_nil
+        expect(study.study_metadata.faculty_sponsor).not_to be_nil
       end
 
       it 'must have a program' do
-        expect(study.study_metadata.program).to_not be_nil
+        expect(study.study_metadata.program).not_to be_nil
       end
     end
 

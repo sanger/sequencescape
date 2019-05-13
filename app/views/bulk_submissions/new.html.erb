@@ -1,19 +1,22 @@
 <%= page_title "Bulk Submission", "New" %>
 
-<div class="columnize">
-  <%= panel(:form) do %>
-    <%= render 'upload' %>
-  <% end %>
+<div class="row">
+  <div class="col">
+    <%= panel(:form) do %>
+      <%= render 'upload' %>
+    <% end %>
 
-  <%= panel do %>
-    <%= render 'bulk_submission_template' %>
-  <% end %>
+    <%= panel do %>
+      <%= render 'bulk_submission_template' %>
+    <% end %>
+  </div>
+  <div class="col">
+    <%= panel(:help) do %>
+      <%= render 'guidance' %>
+    <% end %>
 
-  <%= panel(:help) do %>
-    <%= render 'guidance' %>
-  <% end %>
-
-  <%= panel(:templates) do %>
-    <%= render 'submission_templates' %>
-  <% end %>
+    <%= panel(:templates) do %>
+      <%= render 'submission_templates' %>
+    <% end %>
+  </div>
 </div>

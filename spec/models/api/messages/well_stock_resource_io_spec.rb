@@ -4,7 +4,10 @@ require 'rails_helper'
 require 'timecop'
 
 RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
+  subject { Api::Messages::WellStockResourceIO.to_hash(well) }
+
   before { Timecop.freeze(Time.zone.parse('2012-03-11 10:22:42')) }
+
   after { Timecop.return }
 
   let(:sample) { create :sample }
@@ -13,8 +16,6 @@ RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
   let(:aliquot) { create :aliquot, study: study, sample: sample, receptacle: well }
 
   setup { aliquot }
-
-  subject { Api::Messages::WellStockResourceIO.to_hash(well) }
 
   let(:expected_json) do
     {
