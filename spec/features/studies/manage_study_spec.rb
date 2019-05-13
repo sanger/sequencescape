@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-feature 'Manage a study' do
+describe 'Manage a study' do
   let(:user) { create :admin }
   let!(:study) { create :study, name: 'Original name' }
 
-  scenario 'Rename a study', js: true do
+  it 'Rename a study', js: true do
     login_user(user)
     visit study_path(study)
     click_link 'Manage'

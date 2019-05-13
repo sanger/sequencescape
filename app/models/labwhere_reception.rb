@@ -47,7 +47,7 @@ class LabwhereReception
         errors.add(:scan, scan.error)
         return false
       end
-    rescue LabWhereClient::LabwhereException => exception
+    rescue LabWhereClient::LabwhereException => e
       errors.add(:base, 'Could not connect to Labwhere.')
       return false
     end

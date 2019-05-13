@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+
+# A {Task} used in the {SequencingPipeline sequencing pipelines}.
+# Associates a tube of {SpikedBuffer} with a {Lane} indicating that PhiX has
+# been added to the lane in question.
+# @see Tasks::AddSpikedInControlHandler for behaviour included in the {WorkflowsController}
 class AddSpikedInControlTask < Task
   def partial
     'add_spiked_in_control'

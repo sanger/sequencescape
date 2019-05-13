@@ -37,17 +37,17 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
 
       it 'produces sensible error messages if the resource is not valid' do
         factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_uuid])
-        expect(factory).to_not be_valid
+        expect(factory).not_to be_valid
         expect(factory.errors.full_messages.first).to include(factory.resources.last.message_id)
 
         factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_key])
-        expect(factory).to_not be_valid
+        expect(factory).not_to be_valid
         expect(factory.errors.full_messages.first).to include(factory.resources.last.message_id)
       end
 
       it '#save does not save any of the resources unless they are all valid' do
         factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_key])
-        expect(factory).to_not be_valid
+        expect(factory).not_to be_valid
         expect(factory.save).to be_falsey
         expect(QcResult.all).to be_empty
         expect(QcAssay.all).to be_empty
@@ -80,6 +80,30 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
         end
       end
     end
+
+    context 'plate with blank wells' do
+      let(:plate) { create(:plate_with_empty_wells, well_count: 12) }
+      let(:qc_result_attributes) { attributes_for(:qc_result).merge(uuid: plate.uuid) }
+      let(:asset_1) { qc_result_attributes.merge(well_location: plate.wells.first.map.description) }
+      let(:asset_2) { qc_result_attributes.merge(well_location: plate.wells[1].map.description) }
+      let(:asset_3) { qc_result_attributes.merge(well_location: 'Z999') }
+      let(:factory) { QcResultFactory.new([asset_1, asset_2, asset_3]) }
+
+      it 'will create all of the resources' do
+        expect(factory.resources.length).to eq(3)
+      end
+
+      it 'will ignore those resources with blank wells' do
+        no_blank_wells = factory.except_blank_wells
+        expect(no_blank_wells.length).to eq(2)
+        expect(no_blank_wells).not_to include(asset_3)
+      end
+
+      it 'will save all of the assets with valid wells' do
+        expect(factory.save).to be_truthy
+        expect(QcResult.all.count).to eq(2)
+      end
+    end
   end
 
   describe QcResultFactory::Resource do
@@ -91,12 +115,12 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
 
       it 'is not valid unless the resource exists' do
         expect(QcResultFactory::Resource.new(attributes)).to be_valid
-        expect(QcResultFactory::Resource.new(attributes.except(:uuid))).to_not be_valid
-        expect(QcResultFactory::Resource.new(attributes.merge(uuid: SecureRandom.uuid))).to_not be_valid
+        expect(QcResultFactory::Resource.new(attributes.except(:uuid))).not_to be_valid
+        expect(QcResultFactory::Resource.new(attributes.merge(uuid: SecureRandom.uuid))).not_to be_valid
       end
 
       it 'is not valid unless the qc result is valid' do
-        expect(QcResultFactory::Resource.new(attributes.except(:key))).to_not be_valid
+        expect(QcResultFactory::Resource.new(attributes.except(:key))).not_to be_valid
       end
 
       it '#save should create a qc_result record if valid' do
@@ -117,9 +141,13 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
     context 'Plate' do
       let(:plate) { create(:plate_with_empty_wells, well_count: 12) }
 
-      it 'is not valid unless the well location is valid' do
+      it 'is valid if the well location is valid' do
         expect(QcResultFactory::Resource.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: plate.wells.first.map.description))).to be_valid
-        expect(QcResultFactory::Resource.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: 'Z999'))).to_not be_valid
+      end
+
+      it 'is a blank well if the asset is a plate and the well does not exist' do
+        expect(QcResultFactory::Resource.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: 'Z999'))).to be_valid
+        expect(QcResultFactory::Resource.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: 'Z999'))).to be_blank_well
       end
     end
 
@@ -131,6 +159,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       end
 
       it 'will not create a valid resource with an invalid barcode' do
+        expect(QcResultFactory::Resource.new(qc_result_attributes.merge(barcode: 'DODGY_BARCODE', well_location: plate.wells.first.map.description))).not_to be_valid
       end
     end
 
@@ -186,7 +215,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
         it '#save will not update the parent well if it is a working dilution' do
           resource = QcResultFactory::Resource.new(working_dilution_attributes)
           resource.save
-          expect(QcResult.find_by(asset_id: stock_plate.wells.first.id)).to_not be_present
+          expect(QcResult.find_by(asset_id: stock_plate.wells.first.id)).not_to be_present
         end
       end
     end

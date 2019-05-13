@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'timecop'
 
-feature 'track SampleManifest updates' do
+describe 'track SampleManifest updates' do
   include FetchTable
 
   def load_manifest_spec
@@ -21,7 +21,7 @@ feature 'track SampleManifest updates' do
   let!(:supplier) { create :supplier }
   let!(:study) { create :study }
 
-  background do
+  before do
     new_time = Time.zone.local(2010, 7, 12, 10, 25, 0)
     Timecop.freeze new_time
     login_user user
@@ -30,7 +30,11 @@ feature 'track SampleManifest updates' do
     click_link('Sample Manifests')
   end
 
-  scenario 'Some samples get updated by a manifest and events get created' do
+  after do
+    Timecop.return
+  end
+
+  it 'Some samples get updated by a manifest and events get created' do
     broadcast_events_count = BroadcastEvent.count
     expect(page).to have_content('Create manifest for plates')
 
@@ -127,9 +131,5 @@ feature 'track SampleManifest updates' do
              ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'jane'],
              ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'jane']]
     expect(fetch_table('table#events')).to eq(table)
-  end
-
-  after do
-    Timecop.return
   end
 end

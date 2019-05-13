@@ -16,6 +16,7 @@ describe '/api/1/plate-uuid/submission_pools' do
 
   context '#get' do
     subject { '/api/1/' + uuid + '/submission_pools' }
+
     let(:response_code) { 200 }
 
     context 'a plate without submissions' do
@@ -31,6 +32,7 @@ describe '/api/1/plate-uuid/submission_pools' do
            "submission_pools": []
        })
       end
+
       it_behaves_like 'an API/1 GET endpoint'
     end
 
@@ -59,6 +61,7 @@ describe '/api/1/plate-uuid/submission_pools' do
            }]
        })
       end
+
       it_behaves_like 'an API/1 GET endpoint'
     end
 
@@ -86,6 +89,7 @@ describe '/api/1/plate-uuid/submission_pools' do
            }]
        })
       end
+
       it_behaves_like 'an API/1 GET endpoint'
     end
 
@@ -114,6 +118,7 @@ describe '/api/1/plate-uuid/submission_pools' do
            }]
        })
       end
+
       it_behaves_like 'an API/1 GET endpoint'
     end
 
@@ -145,6 +150,7 @@ describe '/api/1/plate-uuid/submission_pools' do
            }]
        })
       end
+
       it_behaves_like 'an API/1 GET endpoint'
     end
 
@@ -178,6 +184,7 @@ describe '/api/1/plate-uuid/submission_pools' do
            }]
        })
       end
+
       it_behaves_like 'an API/1 GET endpoint'
     end
   end

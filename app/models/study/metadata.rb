@@ -36,7 +36,7 @@ class Study
       DATA_RELEASE_DELAY_PERIODS.include?(data_release_delay_period)
     end
 
-    validates :number_of_gigabases_per_sample, numericality: { greater_than_or_equal_to: 0.15, allow_blank: true, allow_nil: true }
+    validates :number_of_gigabases_per_sample, numericality: { greater_than_or_equal_to: 0.15, allow_blank: true }
 
     has_one :data_release_non_standard_agreement, class_name: 'Document', as: :documentable
     accepts_nested_attributes_for :data_release_non_standard_agreement

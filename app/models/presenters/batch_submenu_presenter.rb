@@ -1,6 +1,13 @@
 module Presenters
+  # The {Batch} show page in the {BatchesController} has a side menu which displays
+  # a variety of options depending on properties of the batch. The {BatchSubmenuPresenter}
+  # encapsulates the logic which was previously in the view itself.
   class BatchSubmenuPresenter
     attr_reader :options
+    # Provide access to url_for and other Rails URL helpers {ActionDispatch::Routing::UrlFor}
+    # Included directly as Rails.application.routes.url_helpers itself generates a
+    # new module every time it is called
+    # @see https://api.rubyonrails.org/v5.1/classes/ActionDispatch/Routing/UrlFor.html
     include Rails.application.routes.url_helpers
     include ActionView::Helpers::TextHelper
 

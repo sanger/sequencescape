@@ -3,10 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Api::LibraryTubeIO, type: :model do
+  subject { create :empty_library_tube, public_name: 'ABC', closed: false, aliquots: aliquots, volume: 12.0, concentration: 8.0 }
+
   let(:sample) { create :sample }
   let(:tag) { create :tag }
   let(:aliquots) { [create(:aliquot, sample: sample, tag: tag, library_type: 'Standard')] }
-  subject { create :empty_library_tube, public_name: 'ABC', closed: false, aliquots: aliquots, volume: 12.0, concentration: 8.0 }
 
   let!(:library_request) { create :library_creation_request, target_asset: subject }
 
@@ -59,6 +60,7 @@ RSpec.describe Api::LibraryTubeIO, type: :model do
         'source_request_internal_id' => library_request.id
       }
     end
+
     it 'does not include sample information' do
       expect(described_class.to_hash(subject)['sample_uuid']).to be nil
     end

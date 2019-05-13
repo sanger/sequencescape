@@ -52,13 +52,13 @@ class Postman
       begin
         broadcast_payload
         ack
-      rescue Postman::ConnectionMissing => exception
+      rescue Postman::ConnectionMissing => e
         # We have some temporary database issues. Requeue the message and pause
         # until the issue is resolved.
-        requeue(exception)
+        requeue(e)
         postman.pause!
-      rescue StandardError => exception
-        deadletter(exception)
+      rescue StandardError => e
+        deadletter(e)
       end
 
       debug 'Finished message process'
@@ -71,8 +71,8 @@ class Postman
       klass.find(json.last).broadcast
     rescue ActiveRecord::RecordNotFound
       debug "#{payload} not found."
-    rescue InvalidPayload => exception
-      warn exception.message
+    rescue InvalidPayload => e
+      warn e.message
     end
 
     def json
@@ -85,8 +85,8 @@ class Postman
       raise InvalidPayload, "Payload #{payload} is not the correct length" unless json.length == 2
 
       json
-    rescue JSON::ParserError => exception
-      raise InvalidPayload, "Payload #{payload} is not JSON: #{exception.message}"
+    rescue JSON::ParserError => e
+      raise InvalidPayload, "Payload #{payload} is not JSON: #{e.message}"
     end
 
     def headers

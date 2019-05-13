@@ -423,11 +423,11 @@ class Sample < ApplicationRecord
     # Do not alter the order of this line, otherwise @ena_study won't be set correctly!
     @ena_study, self.validating_ena_required_fields = studies.first, true
     valid? or raise ActiveRecord::RecordInvalid, self
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid => e
     @ena_study.errors.full_messages.each do |message|
       errors.add(:base, "#{message} on study")
     end unless @ena_study.nil?
-    raise exception
+    raise e
   ensure
     # Do not alter the order of this line, otherwise the @ena_study won't be reset!
     self.validating_ena_required_fields, @ena_study = false, nil

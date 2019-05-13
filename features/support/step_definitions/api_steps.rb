@@ -131,7 +131,7 @@ end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^\"]+)"$/ do |tube_type, name|
   tube = "#{tube_type}_tube".classify.constantize.find_by(name: name) or raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
-  visit(url_for(:controller => 'api/requests', :action => 'index', :"#{ tube_type }_tube_id" => tube.id, :format => :json))
+  visit(url_for(controller: 'api/requests', action: 'index', "#{ tube_type }_tube_id": tube.id, format: :json))
 end
 
 When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model, name|
@@ -182,7 +182,7 @@ end
 # I like to know where my JSON is wrong!
 def decode_json(json, source)
   ActiveSupport::JSON.decode(json)
-rescue StandardError => exception
+rescue StandardError => e
   raise StandardError, "#{source} JSON is invalid: #{json.inspect}"
 end
 

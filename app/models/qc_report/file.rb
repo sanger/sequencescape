@@ -33,8 +33,8 @@ class QcReport::File
         each_group_of_decisions do |group|
           process_group(group)
         end
-      rescue DataError, QcMetric::InvalidValue => exception
-        invalid(exception.message)
+      rescue DataError, QcMetric::InvalidValue => e
+        invalid(e.message)
         raise ActiveRecord::Rollback
       end
     end

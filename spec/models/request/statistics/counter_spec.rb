@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Request::Statistics::Counter do
-  subject { Request::Statistics::Counter.new }
+  subject { described_class.new }
 
   # The counter isn't initialized with a hash but rather gets
   # set up in a loop. So we mimic the behaviour here

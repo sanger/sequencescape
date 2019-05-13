@@ -13,7 +13,7 @@ RSpec.describe SequencescapeExcel::RangeList, type: :model, sample_manifest_exce
     expect(range_list.count).to eq(ranges.count)
   end
 
-  it 'should create the right ranges' do
+  it 'creates the right ranges' do
     static_range = range_list.first[1]
     dynamic_range = range_list.find_by(ranges.keys.last)
     expect(static_range).not_to be_dynamic
@@ -25,8 +25,8 @@ RSpec.describe SequencescapeExcel::RangeList, type: :model, sample_manifest_exce
   end
 
   it '#find_by returns correct range' do
-    expect(range_list.find_by(ranges.keys.first)).to_not be_nil
-    expect(range_list.find_by(ranges.keys.first.to_sym)).to_not be_nil
+    expect(range_list.find_by(ranges.keys.first)).not_to be_nil
+    expect(range_list.find_by(ranges.keys.first.to_sym)).not_to be_nil
   end
 
   it '#set_worksheet_names will set worksheet names' do

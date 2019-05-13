@@ -11,7 +11,7 @@ module ViewsSchema
                    end
       yield(name, definition)
     end
-  rescue ActiveRecord::StatementInvalid => exception
+  rescue ActiveRecord::StatementInvalid => e
     puts "\e[1;31m
 ==============================================================
 *                          WARNING!                          *
@@ -29,7 +29,7 @@ module ViewsSchema
 *                        disruption.                         *
 ==============================================================
 \e[0m"
-    raise exception
+    raise e
   end
 
   def self.all_views

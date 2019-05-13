@@ -30,15 +30,6 @@ class Tube::Purpose < ::Purpose
 
   # Define some simple helper methods
   class << self
-    # ['Stock', 'Standard'].each do |purpose_type|
-    #   ['sample', 'library', 'MX'].each do |tube_type|
-    #     name = "#{purpose_type} #{tube_type}"
-    #     puts name
-    #     define_method("#{name.downcase.tr(' ', '_')}_tube") do
-    #       find_by(name: name) or raise "Cannot find #{name} tube"
-    #     end
-    #   end
-    # end
     def stock_library_tube
       Tube::Purpose.create_with(
         target_type: 'StockLibraryTube'

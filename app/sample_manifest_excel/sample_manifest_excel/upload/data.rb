@@ -8,6 +8,7 @@ module SampleManifestExcel
     class Data
       include ActiveModel::Model
       include Enumerable
+      include Converters
 
       attr_reader :sheet, :header_row, :data, :start_row, :file
 
@@ -45,7 +46,7 @@ module SampleManifestExcel
       # Find a cell of data based on the column and row
       def cell(row, column)
         val = data.try(:fetch, row - 1).try(:fetch, column - 1)
-        val.try(:strip) || val
+        strip_all_blanks(val)
       end
 
       ##
@@ -53,7 +54,7 @@ module SampleManifestExcel
       def column(col_num)
         data.map do |row|
           val = row[col_num - 1]
-          val.try(:strip) || val
+          strip_all_blanks(val)
         end
       end
 

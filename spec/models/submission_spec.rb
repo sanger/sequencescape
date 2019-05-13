@@ -51,7 +51,7 @@ RSpec.describe Submission, type: :model do
       order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
       request_types[3] = request_type_4.id
       order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      expect(build(:submission, orders: [order1, order2, order3, order4])).to_not be_valid
+      expect(build(:submission, orders: [order1, order2, order3, order4])).not_to be_valid
     end
 
     it 'are not compatible if any of the read lengths are different' do
@@ -60,7 +60,7 @@ RSpec.describe Submission, type: :model do
       order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
       order3 = create(:order, request_types: request_types, request_options: { read_length: 200 })
       order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      expect(build(:submission, orders: [order1, order2, order3, order4])).to_not be_valid
+      expect(build(:submission, orders: [order1, order2, order3, order4])).not_to be_valid
     end
 
     it 'are not compatible if at least one of the request types are not for multiplexing' do
@@ -70,7 +70,7 @@ RSpec.describe Submission, type: :model do
       order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
       request_types = [request_type_1.id, request_type_2.id, request_type_3.id, request_type_4.id]
       order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      expect(build(:submission, orders: [order1, order2, order3, order4])).to_not be_valid
+      expect(build(:submission, orders: [order1, order2, order3, order4])).not_to be_valid
     end
   end
 

@@ -6,7 +6,7 @@ RSpec.describe Lane do
   let(:lane) { create :lane_with_stock_plate }
   let!(:request) { create :sequencing_request_with_assets, target_asset: lane }
 
-  it 'should find lanes that have requested aliquots' do
+  it 'finds lanes that have requested aliquots' do
     aliquots = create_list(:aliquot, 5)
     requested_aliquots = [aliquots.pop, aliquots.pop]
     requested_aliquots_ids = requested_aliquots.map(&:id)
@@ -21,7 +21,7 @@ RSpec.describe Lane do
     lane2.aliquots << requested_aliquots.last
     lanes_to_be_found = [lane1, lane2]
 
-    expect(Lane.with_required_aliquots(requested_aliquots_ids)).to match_array(lanes_to_be_found)
+    expect(described_class.with_required_aliquots(requested_aliquots_ids)).to match_array(lanes_to_be_found)
   end
 
   it 'can be rebroadcasted' do

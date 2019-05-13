@@ -110,8 +110,8 @@ class SamplesController < ApplicationController
     study = Study.find(params[:study][:id])
     study.samples << sample
     redirect_to sample_path(sample)
-  rescue ActiveRecord::RecordInvalid => exception
-    flash[:error] = exception.record.errors.full_messages
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:error] = e.record.errors.full_messages
     redirect_to sample_path(sample)
   end
 
@@ -138,17 +138,17 @@ class SamplesController < ApplicationController
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
     redirect_to(sample_path(@sample))
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid => e
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample))
-  rescue AccessionService::NumberNotRequired => exception
-    flash[:warning] = exception.message || 'An accession number is not required for this study'
+  rescue AccessionService::NumberNotRequired => e
+    flash[:warning] = e.message || 'An accession number is not required for this study'
     redirect_to(sample_path(@sample))
-  rescue AccessionService::NumberNotGenerated => exception
-    flash[:warning] = "No accession number was generated: #{exception.message}"
+  rescue AccessionService::NumberNotGenerated => e
+    flash[:warning] = "No accession number was generated: #{e.message}"
     redirect_to(sample_path(@sample))
-  rescue AccessionService::AccessionServiceError => exception
-    flash[:error] = exception.message
+  rescue AccessionService::AccessionServiceError => e
+    flash[:error] = e.message
     redirect_to(sample_path(@sample))
   end
 

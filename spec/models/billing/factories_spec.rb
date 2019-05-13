@@ -5,21 +5,21 @@ describe 'Billing::Factories', billing: true do
 
   it 'is not valid without a request' do
     factory = Billing::Factory::Base.new
-    expect(factory).to_not be_valid
-    expect(factory.errors).to_not be_empty
+    expect(factory).not_to be_valid
+    expect(factory.errors).not_to be_empty
   end
 
   it 'is not valid unless the request has a passed date' do
     factory = Billing::Factory::Base.new(request: request)
-    expect(factory).to_not be_valid
-    expect(factory.errors).to_not be_empty
+    expect(factory).not_to be_valid
+    expect(factory.errors).not_to be_empty
   end
 
   it 'is not valid unless the request has a billing_product' do
     request = create :sequencing_request_with_assets
     factory = Billing::Factory::Base.new(request: request)
-    expect(factory).to_not be_valid
-    expect(factory.errors).to_not be_empty
+    expect(factory).not_to be_valid
+    expect(factory.errors).not_to be_empty
   end
 
   it 'will revert no project cost code' do
@@ -66,7 +66,7 @@ describe 'Billing::Factories', billing: true do
   end
 
   describe Billing::Factory::Sequencing do
-    before(:each) do
+    before do
       request.start!
       request.pass!
     end
@@ -75,7 +75,7 @@ describe 'Billing::Factories', billing: true do
       request.target_asset.aliquots = []
       request.save
       factory = Billing::Factory::Sequencing.new(request: request)
-      expect(factory).to_not be_valid
+      expect(factory).not_to be_valid
     end
 
     it 'creates some billing items' do

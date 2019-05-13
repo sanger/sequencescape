@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe Api::Messages::QcResultIO do
-  subject { Api::Messages::QcResultIO.to_hash(qc_result) }
+  subject { described_class.to_hash(qc_result) }
 
   let(:sample_tube) { create :sample_tube }
   let(:expected_json) do

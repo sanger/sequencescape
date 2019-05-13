@@ -44,9 +44,6 @@ group :default do
   # Locked for ruby version
   gem 'delayed_job_active_record'
 
-  gem 'ruby_walk', '>= 0.0.3',
-      github: 'sanger/ruby_walk'
-
   gem 'irods_reader', '>=0.0.2',
       github: 'sanger/irods_reader'
 
@@ -129,6 +126,7 @@ group :development do
   gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
   gem 'rubocop', require: false
+  gem 'rubocop-performance'
   gem 'rubocop-rspec', require: false
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.

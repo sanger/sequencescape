@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Tag2LayoutTemplate, type: :model do
+  subject { tag2_layout_template.create! plate: plate, tag: tag, user: user }
+
   let(:plate) { create :plate_with_untagged_wells, :with_submissions, sample_count: 2 }
   let(:tag) { create :tag }
   let(:user) { create :user }
   let(:tag2_layout_template) { create :tag2_layout_template, tag: tag }
-
-  subject { tag2_layout_template.create! plate: plate, tag: tag, user: user }
 
   it 'applies its tag to every well of the plate' do
     expect(subject.plate.wells).to be_present

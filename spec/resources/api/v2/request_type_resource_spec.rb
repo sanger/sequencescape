@@ -4,20 +4,21 @@ require 'rails_helper'
 require './app/resources/api/v2/request_type_resource'
 
 RSpec.describe Api::V2::RequestTypeResource, type: :resource do
-  let(:resource_model) { create :request_type }
   subject { described_class.new(resource_model, {}) }
+
+  let(:resource_model) { create :request_type }
 
   # Test attributes
   it 'works', :aggregate_failures do
-    is_expected.to have_attribute :uuid
-    is_expected.to have_attribute :name
-    is_expected.to have_attribute :key
-    is_expected.to have_attribute :for_multiplexing
-    is_expected.to_not have_updatable_field(:id)
-    is_expected.to_not have_updatable_field(:uuid)
-    is_expected.to_not have_updatable_field(:name)
-    is_expected.to_not have_updatable_field(:key)
-    is_expected.to_not have_updatable_field(:for_multiplexing)
+    expect(subject).to have_attribute :uuid
+    expect(subject).to have_attribute :name
+    expect(subject).to have_attribute :key
+    expect(subject).to have_attribute :for_multiplexing
+    expect(subject).not_to have_updatable_field(:id)
+    expect(subject).not_to have_updatable_field(:uuid)
+    expect(subject).not_to have_updatable_field(:name)
+    expect(subject).not_to have_updatable_field(:key)
+    expect(subject).not_to have_updatable_field(:for_multiplexing)
   end
 
   # Updatable fields

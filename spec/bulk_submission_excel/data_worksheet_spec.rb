@@ -22,6 +22,10 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
 
   let(:spreadsheet) { Roo::Spreadsheet.open(test_file) }
 
+  after do
+    File.delete(test_file) if File.exist?(test_file)
+  end
+
   context 'data worksheet' do
     let!(:worksheet) do
       BulkSubmissionExcel::Worksheet::DataWorksheet.new(workbook: workbook,
@@ -69,7 +73,7 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
     end
 
     it 'updates all of the columns' do
-      expect(worksheet.columns.values.all?(&:updated?)).to be_truthy
+      expect(worksheet.columns.values).to be_all(&:updated?)
     end
 
     it 'panes should be frozen correctly' do
@@ -100,9 +104,5 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
         end
       end
     end
-  end
-
-  after do
-    File.delete(test_file) if File.exist?(test_file)
   end
 end

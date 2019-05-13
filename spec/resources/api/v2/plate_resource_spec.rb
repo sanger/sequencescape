@@ -4,8 +4,9 @@ require 'rails_helper'
 require './app/resources/api/v2/plate_resource'
 
 RSpec.describe Api::V2::PlateResource, type: :resource do
-  let(:resource_model) { create :plate, barcode: 11, well_count: 3 }
   subject(:resource) { described_class.new(resource_model, {}) }
+
+  let(:resource_model) { create :plate, barcode: 11, well_count: 3 }
 
   shared_examples 'a plate resource' do
     # Test attributes
@@ -18,13 +19,13 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
     it { is_expected.to have_attribute :created_at }
 
     # Read only attributes (almost certainly id, uuid)
-    it { is_expected.to_not have_updatable_field(:id) }
-    it { is_expected.to_not have_updatable_field(:uuid) }
-    it { is_expected.to_not have_updatable_field(:name) }
-    it { is_expected.to_not have_updatable_field(:labware_barcode) }
-    it { is_expected.to_not have_updatable_field(:state) }
-    it { is_expected.to_not have_updatable_field(:pools) }
-    it { is_expected.to_not have_updatable_field(:created_at) }
+    it { is_expected.not_to have_updatable_field(:id) }
+    it { is_expected.not_to have_updatable_field(:uuid) }
+    it { is_expected.not_to have_updatable_field(:name) }
+    it { is_expected.not_to have_updatable_field(:labware_barcode) }
+    it { is_expected.not_to have_updatable_field(:state) }
+    it { is_expected.not_to have_updatable_field(:pools) }
+    it { is_expected.not_to have_updatable_field(:created_at) }
 
     # Updatable fields
     # eg. it { is_expected.to have_updatable_field(:state) }
@@ -53,6 +54,7 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
     # Add tests for any custom methods you've added.
     describe '#labware_barcode' do
       subject { resource.labware_barcode }
+
       it { is_expected.to eq(expected_barcode_hash) }
     end
   end
@@ -61,6 +63,7 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
     let(:expected_barcode_hash) do
       { 'ean13_barcode' => '1220000011748', 'machine_barcode' => 'DN11J', 'human_barcode' => 'DN11J' }
     end
+
     it_behaves_like 'a plate resource'
   end
 end

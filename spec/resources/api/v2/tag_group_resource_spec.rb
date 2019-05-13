@@ -4,6 +4,8 @@ require 'rails_helper'
 require './app/resources/api/v2/tag_group_resource'
 
 RSpec.describe Api::V2::TagGroupResource, type: :resource do
+  subject { described_class.new(resource_model, {}) }
+
   let(:resource_model) { create :tag_group, tags: tags }
   let(:tags) do
     [
@@ -13,16 +15,15 @@ RSpec.describe Api::V2::TagGroupResource, type: :resource do
       build(:tag, oligo: 'GGG', map_id: 4)
     ]
   end
-  subject { described_class.new(resource_model, {}) }
 
   # Test attributes
   it 'exposes attributes', :aggregate_failures do
-    is_expected.to have_attribute :uuid
-    is_expected.to have_attribute :name
-    is_expected.to have_attribute :tags
-    is_expected.to_not have_updatable_field(:id)
-    is_expected.to_not have_updatable_field(:uuid)
-    is_expected.to_not have_updatable_field(:name)
+    expect(subject).to have_attribute :uuid
+    expect(subject).to have_attribute :name
+    expect(subject).to have_attribute :tags
+    expect(subject).not_to have_updatable_field(:id)
+    expect(subject).not_to have_updatable_field(:uuid)
+    expect(subject).not_to have_updatable_field(:name)
   end
 
   # Updatable fields
