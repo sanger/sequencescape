@@ -43,7 +43,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (5.0.2)
+    aasm (5.0.4)
       concurrent-ruby (~> 1.0)
     actioncable (5.1.6.1)
       actionpack (= 5.1.6.1)
@@ -145,7 +145,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.4)
+    concurrent-ruby (1.1.5)
     configatron (4.5.1)
     connection_pool (2.2.2)
     crack (0.4.3)
