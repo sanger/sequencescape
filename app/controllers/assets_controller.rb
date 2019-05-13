@@ -119,7 +119,7 @@ class AssetsController < ApplicationController
       flash[:error] = print_job.errors.full_messages.join('; ')
     end
 
-    redirect_to new_asset_url
+    redirect_to phi_x_url
   end
 
   def print_assets
