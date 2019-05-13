@@ -13,6 +13,8 @@ development:
   <<: *DEFAULT
 test:
   <<: *DEFAULT
+cucumber:
+  <<: *DEFAULT
 production:
   <<: *DEFAULT
 staging:

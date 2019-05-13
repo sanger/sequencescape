@@ -10,27 +10,6 @@ class AssetsControllerTest < ActionController::TestCase
 
   should_require_login
 
-  context '#create a new asset with JSON input' do
-    setup do
-      FactoryBot.create(:sample, name: 'phiX_for_spiked_buffers') # Required by controller
-
-      @asset_count = Asset.count
-
-      @barcode = { number: FactoryBot.generate(:barcode_number), prefix: 'NT' }
-
-      @json_data = json_new_asset(@barcode)
-
-      @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'
-      post :create, params: ActiveSupport::JSON.decode(@json_data)
-    end
-
-    should set_flash.to(/Asset was successfully created/)
-
-    should 'change Asset.count by 1' do
-      assert_equal 1, Asset.count - @asset_count, 'Expected Asset.count to change by 1'
-    end
-  end
-
   context 'create request with JSON input' do
     setup do
       @submission_count = Submission.count
@@ -95,21 +74,6 @@ class AssetsControllerTest < ActionController::TestCase
             "fragment_size_required_to": 500,
             "read_length": 108
           }
-        }
-      }
-    )
-  end
-
-  def json_new_asset(barcode)
-    # /assets
-    %(
-      {
-        "api_version": "#{RELEASE.api_version}",
-        "api_key": "abc",
-        "asset": {
-          "sti_type": "SampleTube",
-          "sanger_barcode": #{barcode.to_json},
-          "label": "SampleTube"
         }
       }
     )

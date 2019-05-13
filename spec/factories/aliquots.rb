@@ -34,5 +34,14 @@ FactoryBot.define do
       insert_size_from { 100 }
       insert_size_to   { 200 }
     end
+
+    factory :phi_x_aliquot do
+      sample { PhiX.sample }
+      library { build :library_tube }
+      tag { PhiX.find_tag('Single', :i7_oligo) }
+      tag2 { nil }
+      study { nil }
+      project { nil }
+    end
   end
 end

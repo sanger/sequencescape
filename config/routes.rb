@@ -206,7 +206,7 @@ Sequencescape::Application.routes.draw do
       get :accession_all_samples
     end
 
-    resources :assets, except: :destroy
+    resources :assets, except: [:destroy, :create, :new]
 
     resources :sample_registration, only: [:index, :new, :create], controller: 'studies/sample_registration' do
       collection do
