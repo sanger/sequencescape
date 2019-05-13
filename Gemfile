@@ -150,6 +150,7 @@ group :test do
   gem 'rspec-rails', require: false
   # Rails performance tests
   gem 'rails-perftest'
+  gem 'rspec-collection_matchers' # Provides matchers for dealing with arrays
   gem 'test-prof'
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.

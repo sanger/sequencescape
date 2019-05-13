@@ -161,6 +161,29 @@ div.quota {
   }
 }
 
+.phi-x-form {
+  @extend .form-group;
+  @extend .row;
+  label {
+    @extend .col-sm-4;
+    @extend .col-form-label;
+  }
+  div.field {
+    @extend .col-sm-8;
+    input { @extend .form-control; }
+    select { @extend .custom-select; }
+    .form-help {
+      @extend .text-muted;
+    }
+  }
+  .field_with_errors {
+    @extend .col-sm-4;
+    @extend .p-0;
+  }
+}
+
+.field_with_errors { input { @extend .is-invalid; } }
+
 #barcode_list li {
   width: 20em;
   border: 1px solid black;

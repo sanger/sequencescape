@@ -3,6 +3,13 @@ Sequencescape::Application.routes.draw do
   resource :health, only: [:show]
   resource :home, only: [:show]
 
+  resource :phi_x, only: [:show] do
+    scope module: :phi_x do
+      resources :stocks
+      resources :spiked_buffers
+    end
+  end
+
   mount Api::RootService.new => '/api/1'
 
   namespace :api do

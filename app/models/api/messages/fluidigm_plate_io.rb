@@ -1,3 +1,4 @@
+# Generates warehouse messages describing a fluidigm plate.
 class Api::Messages::FluidigmPlateIO < Api::Base
   module WellExtensions
     def cost_code

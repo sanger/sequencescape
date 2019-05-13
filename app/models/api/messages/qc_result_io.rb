@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Generates a warehouse message describing a {QcResult}
 class Api::Messages::QcResultIO < Api::Base
   module Extensions
     def assay

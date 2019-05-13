@@ -1,0 +1,23 @@
+default: &DEFAULT
+  tag_group_name: Control Tag Group 888
+  tag_map_id: 888
+  tag_options:
+    Single:
+      i7_oligo: ACAACGCAAT
+      i5_oligo: null
+    Dual:
+      i7_oligo: TGTGCAGC
+      i5_oligo: ACTGATGT
+  default_tag_option: Dual
+development:
+  <<: *DEFAULT
+test:
+  <<: *DEFAULT
+production:
+  <<: *DEFAULT
+staging:
+  <<: *DEFAULT
+staging_2:
+  <<: *DEFAULT
+training:
+  <<: *DEFAULT

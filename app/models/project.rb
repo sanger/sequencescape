@@ -131,6 +131,7 @@ class Project < ApplicationRecord
   ]
 
   extend Metadata
+  # @!parse class Project::Metadata < Metadata::Base; end
   has_metadata do
     # NOTE: The following attribute is not required for Microarray Genotyping.
     # I think this might be broken and suggests that there should be separate classes for project: one for

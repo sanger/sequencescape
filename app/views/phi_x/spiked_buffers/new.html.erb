@@ -1,0 +1,10 @@
+<%= page_title 'PhiX Spiked Buffers', 'new' %>
+<%= alert(:danger) do %>
+  <strong>Sorry, we couldn't do that</strong>
+  <ul>
+    <% @spiked_buffer.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
+<%= render partial: 'phixes/spiked_buffer', locals: { spiked_buffer: @spiked_buffer } %>

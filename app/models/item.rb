@@ -1,7 +1,7 @@
 # Legacy class which used to represent potential products before they had actually
 # been created.
-# @deprecate JG: As far as I am aware while these are still being generated in a few places
-#            they are no longer required and can probably be removed.
+# @deprecated JG: As far as I am aware while these are still being generated in a few places
+#             they are no longer required and can probably be removed.
 class Item < ApplicationRecord
   include Uuid::Uuidable
   include EventfulRecord

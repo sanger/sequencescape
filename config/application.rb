@@ -83,6 +83,7 @@ module Sequencescape
     config.cherrypickable_default_type = 'ABgene_0800'
 
     config.aker = config_for(:aker).with_indifferent_access
+    config.phi_x = config_for(:phi_x).with_indifferent_access
 
     config.generators do |g|
       g.test_framework :rspec,

@@ -1,0 +1,3 @@
+<%= page_title 'PhiX Spiked Buffers', 'created' %>
+<p class="lead">Below are the spiked buffers which have been created. Please select the assets you want to print labels and the printer you want them to be printed from.</p>
+<%= render partial: 'shared/assets_to_print', locals: { path: print_labels_assets_path, assets: @spiked_buffers } %>

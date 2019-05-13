@@ -1,0 +1,42 @@
+<h3 class="card-title">PhiX Stock</h3>
+<p class="lead">A stock of PhiX, which will later be split prior to use in sequencing</p>
+<%= form_for stock do |form| %>
+  <div class='phi-x-form'>
+    <%= form.label :name %>
+    <div class="field">
+      <%= form.text_field :name, required: true %>
+      <div class="form-help">
+        Provide a shared root name for the generated stocks.
+        ie. The name 'Example' will result in 'Example #1', 'Example #2'
+      </div>
+    </div>
+  </div>
+  <div class='phi-x-form'>
+    <%= form.label :tags %>
+    <div class="field">
+      <%= form.select :tags, tag_option_names, required: true %>
+      <div class="form-help">Select which tags are being applied to the PhiX.</div>
+    </div>
+  </div>
+  <div class='phi-x-form'>
+    <%= form.label :concentration %>
+    <div class="field">
+    <div class="input-group">
+      <%= form.number_field :concentration, min: 0, step: 0.01 %>
+      <div class="input-group-append">
+        <span class="input-group-text" id="basic-addon2">nM</span>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class='phi-x-form'>
+    <%= form.label :number %>
+    <div class="field">
+      <%= form.number_field :number, min: 1, step: 1, required: true %>
+      <div class="form-help">The number of stocks which will be generated.</div>
+    </div>
+  </div>
+  <div class='phi-x-form'>
+    <%= form.submit class: 'btn btn-success btn-block' %>
+  </div>
+<% end %>
