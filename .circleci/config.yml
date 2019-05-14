@@ -27,12 +27,6 @@ defaults: &defaults
         MYSQL_ROOT_PASSWORD: ''
         MYSQL_DATABASE: circleci
         DATABASE_URL: 'mysql2://root@127.0.0.1:3306/'
-
-    # Specify service dependencies here if necessary
-    # CircleCI maintains a library of pre-built images
-    # documented at https://circleci.com/docs/2.0/circleci-images/
-    # - image: circleci/postgres:9.4
-
   working_directory: ~/repo
 jobs:
   build:
@@ -102,6 +96,9 @@ jobs:
               --format documentation \
               --format RspecJunitFormatter \
               --out /tmp/test-results/rspec.xml
+      - run:
+          name: Build coverage
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.specs.json coverage/.resultset.json
 
       # collect reports
       - store_test_results:
@@ -109,6 +106,10 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - tmp/codeclimate.specs.json
   run-tests:
     <<: *defaults
     parallelism: 1
@@ -131,12 +132,19 @@ jobs:
             mkdir /tmp/test-results
             bundle exec rake test
       # collect reports
+      - run:
+          name: Build coverage
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.tests.json coverage/.resultset.json
 
       - store_test_results:
           path: /tmp/test-results
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - tmp/codeclimate.tests.json
   run-cukes:
     <<: *defaults
     environment:
@@ -161,13 +169,19 @@ jobs:
           command: |
             mkdir /tmp/test-results
             bundle exec rake knapsack:cucumber
-
+      - run:
+          name: Build coverage
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.cukes.json coverage/.resultset.json
       # collect reports
       - store_test_results:
           path: /tmp/test-results
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - tmp/codeclimate.cukes.json
   run-rubocop:
     <<: *defaults
     environment:
@@ -191,6 +205,17 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+  upload-coverage:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Upload coverage results to Code Climate
+          command: |
+            ls ./tmp
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json -p 3 -o tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.total.json
 
 workflows:
   version: 2
@@ -210,3 +235,8 @@ workflows:
       - run-rubocop:
           requires:
             - build
+      - upload-coverage:
+          requires:
+            - run-specs
+            - run-tests
+            - run-cukes
