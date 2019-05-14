@@ -259,6 +259,56 @@ RSpec.describe SampleManifest, type: :model do
         end
       end
     end
+
+    context 'for a saphyr tube' do
+      let(:asset_type) { 'saphyr' }
+      let!(:saphyr_purpose) { create(:saphyr_tube_purpose) }
+
+      [1, 2].each do |count|
+        context "#{count} tubes(s)" do
+          let(:count) { count }
+
+          it "create #{count} tubes(s)" do
+            expect { manifest.generate }.to change(SampleTube, :count).by(count)
+                                        .and change { manifest.assets.count }.by(count)
+            expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes))
+          end
+
+          context 'after generation' do
+            setup { manifest.generate }
+
+            it 'create sample and aliquots' do
+              sma = manifest.sample_manifest_assets.last
+              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }
+                .to change(Sample, :count).by(1)
+                .and change { study.samples.count }.by(1)
+                .and change(Messenger, :count).by(1)
+              expect(SampleTube.last.aliquots.first.library).to be_nil
+              manifest.samples.reset
+              expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+            end
+
+            it 'create create asset requests when jobs are processed' do
+              # Not entirely certain this behaviour is all that useful to us.
+              Delayed::Worker.new.work_off
+              expect(SampleTube.last.requests.count).to eq(1)
+              expect(SampleTube.last.requests.first).to be_a(CreateAssetRequest)
+            end
+
+            describe '#labware' do
+              subject { manifest.labware }
+
+              it 'has one element' do
+                expect(subject.count).to eq(count)
+              end
+              it 'is a sample tube' do
+                expect(subject.first).to be_a(SampleTube)
+              end
+            end
+          end
+        end
+      end
+    end
   end
 
   context 'update event' do

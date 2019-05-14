@@ -27,6 +27,7 @@ module SampleManifest::CoreBehaviour
 
   def behaviour_module
     case asset_type
+    when 'saphyr'              then 'LongReadBehaviour'
     when '1dtube'              then 'SampleTubeBehaviour'
     when 'plate'               then 'PlateBehaviour'
     when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'

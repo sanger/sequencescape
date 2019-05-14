@@ -9,6 +9,7 @@ class SampleManifest < ApplicationRecord
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour
   include SampleManifest::SharedTubeBehaviour
+  include SampleManifest::LongReadBehaviour
   extend SampleManifest::StateMachine
   extend Document::Associations
 
