@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
+# SampleManifest::LongReadBehaviour
 module SampleManifest::LongReadBehaviour
+  # ClassMethods
   module ClassMethods
   end
 
+  # Core
   class Core
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
@@ -58,7 +63,8 @@ module SampleManifest::LongReadBehaviour
     end
 
     def validate_sample_container(sample, row)
-      manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.human_barcode
+      manifest_barcode = row['SANGER TUBE ID']
+      primary_barcode = sample.primary_receptacle.human_barcode
       return if primary_barcode == manifest_barcode
 
       yield("You cannot move samples between tubes or modify their barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode}' but the manifest is trying to put it in '#{manifest_barcode}'")
@@ -93,6 +99,6 @@ module SampleManifest::LongReadBehaviour
   end
 
   def generate_long_read_tubes
-    generate_tubes(Tube::Purpose.find_by_name(asset_type))
+    generate_tubes(Tube::Purpose.find_by(name: asset_type))
   end
 end

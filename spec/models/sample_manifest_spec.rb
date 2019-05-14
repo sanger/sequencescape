@@ -262,7 +262,10 @@ RSpec.describe SampleManifest, type: :model do
 
     context 'for a saphyr tube' do
       let(:asset_type) { 'saphyr' }
-      let!(:saphyr_purpose) { create(:saphyr_tube_purpose) }
+
+      before do
+        create(:saphyr_tube_purpose)
+      end
 
       [1, 2].each do |count|
         context "#{count} tubes(s)" do

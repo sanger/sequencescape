@@ -81,7 +81,6 @@ FactoryBot.define do
       name { 'saphyr' }
       target_type { 'SampleTube' }
     end
-
   end
 
   factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do
