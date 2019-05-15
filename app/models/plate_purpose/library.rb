@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+# Assigns library information to the {Aliquot aliquots} when the {Plate} is passed.
+# This behaviour is now mostly handled by the library creation requests themselves
 module PlatePurpose::Library
   def self.included(base)
     base.class_eval do
