@@ -3,7 +3,14 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'rails', '~> 5.1.6'
+  gem 'bootsnap'
+  gem 'rails', '~> 5.2.2'
+
+  # Used by bootstrap, not used directly. Added here to allow us to pin the version.
+  # Can be removed once we're no longer compiling assets on the servers.
+  # We're currently pinning to keep ruby-racer support. THe suggested alternative
+  # mini-racer doesn't compile on the old machines.
+  gem 'autoprefixer-rails', '< 9.0.0'
 
   # State machine
   gem 'aasm'
@@ -56,12 +63,18 @@ group :default do
   gem 'uuidtools'
 
   # API v2
-  gem 'jsonapi-resources'
+  # Pinned to 0.9.0
+  # We apply some monkey patches to this which aren't compatible with later version
+  # I've done some preliminary work here:
+  # https://github.com/JamesGlover/sequencescape/tree/depfu/update/jsonapi-resources-0.9.5
+  # but not only is there a failing test, but performance was tanking in a few places
+  # due to not correctly eager loading dependencies on nested resources.
+  gem 'jsonapi-resources', '0.9.0'
 
   # Bunny is a RabbitMQ client.
   gem 'bunny'
 
-  gem 'bootstrap'
+  gem 'bootstrap', '< 4.2.1' # Pinned to 4.2.1 while we are dependent on older GCCs.
   gem 'coffee-rails'
   gem 'jquery-rails'
   gem 'jquery-tablesorter'
@@ -114,7 +127,7 @@ group :warehouse do
   gem 'ruby-oci8', platforms: :mri
   # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   # any newer version requires ruby-oci8 => 2.0.1
-  gem 'activerecord-oracle_enhanced-adapter', '~> 1.8'
+  gem 'activerecord-oracle_enhanced-adapter'
 end
 
 group :development do
@@ -161,6 +174,7 @@ group :test do
   # with rails versions.
   gem 'minitest', '5.10.3'
   gem 'minitest-profiler'
+  gem 'rspec_junit_formatter'
 end
 
 group :test, :cucumber do
@@ -185,12 +199,11 @@ group :test, :cucumber do
 end
 
 group :cucumber do
+  gem 'cucumber'
   gem 'cucumber-rails', require: false
+  gem 'knapsack'
   gem 'mime-types'
   gem 'rubyzip'
-  # Cucumber 3 removes Transform in favour of ParameterType. We may be able to migrate
-  gem 'cucumber', '~>2.99.0'
-  gem 'knapsack'
   gem 'webmock'
 end
 

@@ -32,21 +32,6 @@ require './lib/plate_map_generation'
 
 require 'pry'
 
-Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
-end
-
-Capybara.register_driver :headless_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new
-
-  options.add_argument('--headless')
-  options.add_argument('--disable_gpu')
-  # options.add_argument('--disable-popup-blocking')
-  options.add_argument('--window-size=1600,3200')
-  driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
-  enable_chrome_headless_downloads(driver, DownloadHelpers::PATH.to_s)
-end
-
 def enable_chrome_headless_downloads(driver, directory)
   bridge = driver.browser.send(:bridge)
   path = "/session/#{bridge.session_id}/chromium/send_command"
@@ -58,7 +43,7 @@ def enable_chrome_headless_downloads(driver, directory)
   driver
 end
 
-Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
+Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'selenium_chrome_headless').to_sym
 
 WebMock.disable_net_connect!(allow_localhost: true)
 

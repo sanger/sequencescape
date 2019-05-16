@@ -6,7 +6,7 @@ class PlatesController < ApplicationController
 
   def new
     @plate_creators   = Plate::Creator.order(:name)
-    @barcode_printers = BarcodePrinterType.find_by(name: '96 Well Plate').barcode_printers
+    @barcode_printers = BarcodePrinterType96Plate.first.barcode_printers
     @barcode_printers = BarcodePrinter.order('name asc') if @barcode_printers.blank?
 
     respond_to do |format|

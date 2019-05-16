@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_dependency 'qc_assay'
+
 # Serializes lab events for the event warehouse
 class BroadcastEvent::QcAssay < BroadcastEvent
-  seed_class QcAssay
+  seed_class ::QcAssay
 
   def self.generate_events(qc_assay)
     # A qc_assay is made up of multiple qc_results, which usually have the same assay_type, don't HAVE to.

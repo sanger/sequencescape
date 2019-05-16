@@ -5,7 +5,7 @@ def assert_equal_aliquots(expected, received)
   assert_equal expected_details, received_details, 'Aliqouts are not as expected'
 end
 
-Then /^the aliquots of (the .+) should be the same as the wells "([^\"]+)" of (the plate .+)$/ do |receptacle, range, plate|
+Then 'the aliquots of {uuid} should be the same as the wells {well_range} of {plate_name}' do |receptacle, range, plate|
   assert_equal_aliquots(
     plate.wells.select(&range.method(:include?)).map(&:aliquots).flatten,
     receptacle.aliquots

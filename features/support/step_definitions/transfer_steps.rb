@@ -25,7 +25,7 @@ Given /^the ((?:pooling ||multiplex )?transfer template) called "([^\"]+)" exist
   FactoryBot.create(type.gsub(/\s/, '_').to_sym, name: name)
 end
 
-Then /^the transfers from (the plate .+) to (the plate .+) should be:$/ do |source, destination, table|
+Then 'the transfers from {plate_name} to {plate_name} should be:' do |source, destination, table|
   table.hashes.each do |transfers|
     source_well_location, destination_well_location = transfers['source'], transfers['destination']
 
@@ -83,55 +83,54 @@ def change_request_state(state, targets, direction, request_class)
   Request.where(id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id)).update_all(state: state)
 end
 
-{
-  'plate' => 'target.wells',
-  'multiplexed library tube' => 'target'
-}.each do |target, request_holder|
-  line = __LINE__
-  instance_eval(%Q{
-    Then /^the state of all the transfer requests (to|from) (the #{target} .+) should be "([^"]+)"$/ do |direction, target, state|
-      assert_request_state(state, #{request_holder}, direction, TransferRequest)
-    end
-
-    Then /^the state of all the pulldown library creation requests (to|from) (the #{target} .+) should be "([^"]+)"$/ do |direction, target, state|
-      assert_request_state(state, #{request_holder}, direction, Pulldown::Requests::LibraryCreation)
-    end
-
-    Given /^the state of all the pulldown library creation requests (to|from) (the #{target} .+) is "([^"]+)"$/ do |direction, target, state|
-      change_request_state(state, #{request_holder}, direction, Pulldown::Requests::LibraryCreation)
-    end
-
-    Then /^the state of all the illumina-b library creation requests (to|from) (the #{target} .+) should be "([^"]+)"$/ do |direction, target, state|
-      assert_request_state(state, #{request_holder}, direction, IlluminaB::Requests::StdLibraryRequest)
-    end
-
-    Given /^the state of all the illumina-b library creation requests (to|from) (the #{target} .+) is "([^"]+)"$/ do |direction, target, state|
-      change_request_state(state, #{request_holder}, direction, IlluminaB::Requests::StdLibraryRequest)
-    end
-  }, __FILE__, line)
+Then 'the state of all the {request_class} requests {direction} {uuid} should be {string}' do |request_class, direction, target, state|
+  request_holder = target.respond_to?(:wells) ? target.wells : target
+  assert_request_state(state, request_holder, direction, request_class)
 end
 
-Then /^the state of transfer requests (to|from) "([^\"]+)" on (the plate .+) should be "([^\"]+)"$/ do |direction, range, plate, state|
+Then 'the state of all the {request_class} requests {direction} {asset_name} should be {string}' do |request_class, direction, target, state|
+  request_holder = target.respond_to?(:wells) ? target.wells : target
+  assert_request_state(state, request_holder, direction, request_class)
+end
+
+Given 'the state of all the {request_class} requests {direction} {uuid} is {string}' do |request_class, direction, target, state|
+  request_holder = target.respond_to?(:wells) ? target.wells : target
+  change_request_state(state, request_holder, direction, request_class)
+end
+
+Then 'the state of all the transfer requests to {uuid} should be {string}' do |target, state|
+  assert_equal target.transfer_requests_as_target.distinct.pluck(:state), [state]
+end
+
+Then 'the state of all the transfer requests to {asset_name} should be {string}' do |target, state|
+  assert_equal target.transfer_requests_as_target.distinct.pluck(:state), [state]
+end
+
+Then 'the state of all the transfer requests from {uuid} should be {string}' do |target, state|
+  assert_equal target.transfer_requests_as_source.distinct.pluck(:state), [state]
+end
+
+Then 'the state of transfer requests {direction} {well_range} on {plate_name} should be {string}' do |direction, range, plate, state|
   plate.wells.select(&range.method(:include?)).each do |well|
     assert_request_state(state, well, direction, TransferRequest)
   end
 end
 
-Then /^the state of pulldown library creation requests (to|from) "([^\"]+)" on (the plate .+) should be "([^\"]+)"$/ do |direction, range, plate, state|
+Then 'the state of {request_class} requests {direction} {well_range} on {plate_name} should be {string}' do |request_class, direction, range, plate, state|
   plate.wells.select(&range.method(:include?)).each do |well|
-    assert_request_state(state, well, direction, Pulldown::Requests::LibraryCreation)
+    assert_request_state(state, well, direction, request_class)
   end
 end
 
-Given /the wells "([^\"]+)" on (the plate .+) are empty$/ do |range, plate|
+Given 'the wells {well_range} on {plate_name} are empty' do |range, plate|
   plate.wells.select(&range.method(:include?)).each { |well| well.aliquots.clear }
 end
 
-Then /^the study for the aliquots in the wells of (the plate .+) should match the last submission$/ do |plate|
+Then 'the study for the aliquots in the wells of {uuid} should match the last submission' do |plate|
   study = Submission.last.orders.first.study
-  plate.wells.each { |w| w.aliquots.each { |a| assert_equal study, a.study } }
+  plate.wells.includes(:aliquots).each { |w| w.aliquots.each { |a| assert_equal study.id, a.study_id } }
 end
-Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
-  plate_purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
+Given '{asset_name} is a {string}' do |plate, name|
+  plate_purpose = Purpose.find_by!(name: name)
   plate.update!(plate_purpose: plate_purpose)
 end

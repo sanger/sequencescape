@@ -14,16 +14,14 @@ class BroadcastEvent < ApplicationRecord
   belongs_to :user
   validates_presence_of :seed
 
+  # Recommended way of preventing the base class from being instantiated
+  # https://api.rubyonrails.org/classes/ActiveRecord/Inheritance/ClassMethods.html
+  validates :sti_type, presence: true
+
   serialize :properties
   self.inheritance_column = 'sti_type'
 
   broadcast_via_warren
-
-  def initialize(*args)
-    raise StandardError, 'BroadcastEvents can not be created directly' unless self.class < BroadcastEvent
-
-    super
-  end
 
   # Prefer email, fall back to login if missing
   def user_identifier
@@ -75,3 +73,5 @@ class BroadcastEvent < ApplicationRecord
     @event_type
   end
 end
+
+require_dependency 'broadcast_event/qc_assay'
