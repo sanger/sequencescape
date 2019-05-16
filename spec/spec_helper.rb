@@ -32,6 +32,13 @@ require './lib/plate_map_generation'
 
 require 'pry'
 
+Capybara.register_driver :headless_chrome do |app|
+  enable_chrome_headless_downloads(
+    Capybara.drivers[:selenium_chrome_headless].call(app),
+    DownloadHelpers::PATH.to_s
+  )
+end
+
 def enable_chrome_headless_downloads(driver, directory)
   bridge = driver.browser.send(:bridge)
   path = "/session/#{bridge.session_id}/chromium/send_command"
@@ -135,6 +142,10 @@ RSpec.configure do |config|
     Warren.handler.enable!
     ex.run
     Warren.handler.disable!
+  end
+
+  config.before(:each, js: true) do
+    page.driver.browser.manage.window.resize_to(1024, 800)
   end
 
   # Seed global randomization in this process using the `--seed` CLI option.

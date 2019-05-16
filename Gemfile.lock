@@ -43,7 +43,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (5.0.2)
+    aasm (5.0.4)
       concurrent-ruby (~> 1.0)
     actioncable (5.2.2.1)
       actionpack (= 5.2.2.1)
@@ -109,7 +109,7 @@ GEM
     ast (2.4.0)
     autoprefixer-rails (8.6.5)
       execjs
-    backports (3.12.0)
+    backports (3.14.0)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     bootsnap (1.4.1)
@@ -122,7 +122,7 @@ GEM
     bullet (5.9.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
-    bunny (2.14.1)
+    bunny (2.14.2)
       amq-protocol (~> 2.3, >= 2.3.0)
     cancan (1.6.10)
     capybara (3.14.0)
@@ -202,8 +202,8 @@ GEM
     execjs (2.7.0)
     factory_bot (5.0.2)
       activesupport (>= 4.2.0)
-    factory_bot_rails (5.0.1)
-      factory_bot (~> 5.0.0)
+    factory_bot_rails (5.0.2)
+      factory_bot (~> 5.0.2)
       railties (>= 4.2.0)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
@@ -286,10 +286,11 @@ GEM
     msgpack (1.2.9)
     multi_json (1.13.1)
     multi_test (0.1.2)
-    multipart-post (2.0.0)
+    multipart-post (2.1.1)
     mustermann (1.0.3)
     mysql2 (0.5.2)
-    net-http-persistent (2.9.4)
+    net-http-persistent (3.0.1)
+      connection_pool (~> 2.2)
     net-http-pipeline (1.0.1)
     net-ldap (0.16.1)
     netrc (0.11.0)
@@ -372,7 +373,7 @@ GEM
     rspec-expectations (3.8.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
-    rspec-json_expectations (2.1.0)
+    rspec-json_expectations (2.2.0)
     rspec-mocks (3.8.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
@@ -386,7 +387,13 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
     rspec_junit_formatter (0.4.1)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.5, != 2.5.1.1)
+      rainbow (>= 2.2.2, < 4.0)
       rspec-core (>= 2, < 4, != 2.12.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.6)
     rubocop (0.68.1)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
@@ -404,7 +411,7 @@ GEM
     ruby-prof (0.17.0)
     ruby-progressbar (1.10.0)
     ruby-units (2.3.1)
-    ruby_parser (3.13.0)
+    ruby_parser (3.13.1)
       sexp_processor (~> 4.9)
     rubyzip (1.2.2)
     safe_yaml (1.0.5)
@@ -459,7 +466,7 @@ GEM
       rails (>= 3.0.0)
     transactional_capybara (0.2.0)
       capybara
-    travis (1.8.9)
+    travis (1.8.10)
       backports
       faraday (~> 0.9)
       faraday_middleware (~> 0.9, >= 0.9.1)
@@ -598,4 +605,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
