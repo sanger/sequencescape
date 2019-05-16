@@ -11,6 +11,8 @@ default: &DEFAULT
   default_tag_option: Dual
 development:
   <<: *DEFAULT
+next_release:
+  <<: *DEFAULT
 test:
   <<: *DEFAULT
 cucumber:
