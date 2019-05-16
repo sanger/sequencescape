@@ -558,7 +558,7 @@ DEPENDENCIES
   rack-acceptable
   rack-cors
   rack-mini-profiler
-  rails (~> 5.2.2)
+  rails (~> 5.2.3)
   rails-controller-testing
   rails-perftest
   rest-client

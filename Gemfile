@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'rails', '~> 5.2.2'
+  gem 'rails', '~> 5.2.3'
 
   # Used by bootstrap, not used directly. Added here to allow us to pin the version.
   # Can be removed once we're no longer compiling assets on the servers.
