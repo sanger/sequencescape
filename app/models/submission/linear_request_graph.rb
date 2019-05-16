@@ -90,14 +90,14 @@ module Submission::LinearRequestGraph
       # they don't get disrupted by the shift operation at the start of this method.
       next if request_type_and_multiplier_pairs.empty?
 
-      target_assets_items =
+      target_data_set =
         if request_type.for_multiplexing? # May have many nil assets for non-multiplexing
           if multiplexing_assets.nil?
             criteria = source_data_set.map(&:qc_metric).flatten.uniq
             target_assets.uniq.map { |asset| SourceData.new(asset, criteria, nil) }
           else
             associate_built_requests(target_assets.uniq.compact)
-            SourceData.new(nil, nil, nil)
+            []
           end
         else
           target_assets.each_with_index.map do |asset, index|
@@ -106,7 +106,7 @@ module Submission::LinearRequestGraph
           end
         end
 
-      create_request_chain!(request_type_and_multiplier_pairs.dup, target_assets_items, multiplexing_assets, &block)
+      create_request_chain!(request_type_and_multiplier_pairs.dup, target_data_set, multiplexing_assets, &block)
     end
   end
 
