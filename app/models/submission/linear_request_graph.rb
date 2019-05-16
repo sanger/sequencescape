@@ -2,7 +2,6 @@
 module Submission::LinearRequestGraph
   # Source data is used to pass information down the request graph
   SourceData = Struct.new(:asset, :qc_metric, :sample)
-  # TODO: When Item dies this code will not need to hand it around so much!
 
   # Builds the entire request graph for this submission.  If you want to reuse the multiplexing assets then
   # pass them in as the 'multiplexing_assets' parameter; specify a block if you want to know when they have
