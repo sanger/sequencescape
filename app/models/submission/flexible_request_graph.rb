@@ -224,10 +224,9 @@ module Submission::FlexibleRequestGraph
   module OrderMethods
     def build_request_graph!(multiplexing_assets = nil)
       ActiveRecord::Base.transaction do
-        RequestChain.new(self, assets, multiplexing_assets).tap do |chain|
-          chain.build!
-          yield chain.multiplexing_assets if chain.multiplexed?
-        end
+        chain = RequestChain.new(self, assets, multiplexing_assets)
+        chain.build!
+        chain.multiplexing_assets if chain.multiplexed?
       end
     end
   end

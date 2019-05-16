@@ -239,9 +239,9 @@ class Submission < ApplicationRecord
   def process_submission!
     # for now, we just delegate the requests creation to orders
     ActiveRecord::Base.transaction do
-      multiplexing_assets = nil
-      orders.each do |order|
-        order.build_request_graph!(multiplexing_assets) { |a| multiplexing_assets ||= a }
+      orders.reduce(nil) do |multiplexing_assets, order|
+        # build_request_graph! returns multiplexing_assets for passing into the next order
+        order.build_request_graph!(multiplexing_assets)
       end
 
       PreCapturePool::Builder.new(self).build!

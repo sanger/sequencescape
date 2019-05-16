@@ -1,19 +1,32 @@
-# This module can be included where the submission has a linear behaviour, with no branching.
+# This module can be included where the {Order} has a linear behaviour,
+# with no branching. Eg. in {LinearSubmission}
 module Submission::LinearRequestGraph
   # Source data is used to pass information down the request graph
+  # asset
+  # @param asset             [Asset, nil]   The asset from which the request will be build.
+  #                                        nil indicates no upstream asset in cases where target assets
+  #                                        are generated later.
+  # @param qc_metric         [QcMetric]     The Qc Metric associated with this asset for this request type
+  # @param previous_requests [Array<Request>, nil] Used to pass requests down the chain when building the
+  #                                        request graph. Used to. eg. pass down libraries
   SourceData = Struct.new(:asset, :qc_metric, :sample)
 
-  # Builds the entire request graph for this submission.  If you want to reuse the multiplexing assets then
-  # pass them in as the 'multiplexing_assets' parameter; specify a block if you want to know when they have
-  # been used.
-  def build_request_graph!(multiplexing_assets = nil, &block)
+  # Builds the entire request graph for this {Order}
+  # This is called from {Submission#process_submission!} which processes each order in turn,
+  # multiplexing_assets returned by the first order get passed into subsequent orders.
+  # @note The block behaviour here looks a bit odd, and is a result of the previous behaviour
+  #       in which the multiplexing assets were yielded directly to the submission.
+  #       This behaviour can be simplified eventually, but is maintained for the time being to
+  #       reduce risk of a more significant re-write.
+  def build_request_graph!(multiplexing_assets = nil)
     ActiveRecord::Base.transaction do
+      mx_assets_tmp = nil
       create_request_chain!(
         build_request_type_multiplier_pairs,
         assets.map { |asset| SourceData.new(asset, asset.latest_stock_metrics(product), nil) },
-        multiplexing_assets,
-        &block
-      )
+        multiplexing_assets
+      ) { |a| mx_assets_tmp = a }
+      mx_assets_tmp
     end
   end
 
@@ -40,8 +53,10 @@ module Submission::LinearRequestGraph
   end
 
   # Creates the next step in the request graph, taking the first request type specified and building
-  # enough requests for the source requests.  It will recursively call itself if there are more requests
+  # enough requests for the source assets.  It will recursively call itself if there are more requests
   # that need creating.
+  # @yieldreturn [Array<Asset>] For orders with multiplexed request types, yields the target asset of
+  #                             the multiplexing, such as a {MultiplexedLibraryTube}.
   def create_request_chain!(request_type_and_multiplier_pairs, source_data_set, multiplexing_assets, &block)
     raise StandardError, 'No request types specified!' if request_type_and_multiplier_pairs.empty?
 
