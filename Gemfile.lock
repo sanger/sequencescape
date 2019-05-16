@@ -392,7 +392,7 @@ GEM
     ruby-prof (0.17.0)
     ruby-progressbar (1.10.0)
     ruby-units (2.3.1)
-    ruby_parser (3.11.0)
+    ruby_parser (3.13.1)
       sexp_processor (~> 4.9)
     rubyzip (1.2.2)
     safe_yaml (1.0.4)
@@ -583,4 +583,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
