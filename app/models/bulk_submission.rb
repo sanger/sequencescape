@@ -280,9 +280,10 @@ class BulkSubmission
 
     # Check the library type matches a value from the table
     if request_options['library_type'].present?
-      lt = LibraryType.find_by(name: request_options['library_type']) or raise StandardError, "Cannot find library type #{request_options['library_type'].inspect}"
       # find is case insensitive but we want the correct case sensitive name for requests or we get issues downstream in NPG
-      request_options['library_type'] = lt.name
+      lt = LibraryType.find_by(name: request_options['library_type'])&.name or
+        raise StandardError, "Cannot find library type #{request_options['library_type'].inspect}"
+      request_options['library_type'] = lt
     end
 
     # Set up the order attributes
