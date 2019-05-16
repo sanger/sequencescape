@@ -75,3 +75,5 @@ class BroadcastEvent < ApplicationRecord
     @event_type
   end
 end
+
+require_dependency 'broadcast_event/qc_assay'
