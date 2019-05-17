@@ -108,7 +108,7 @@ module SampleManifestExcel
       def create_processor
         if sample_manifest.present?
           case sample_manifest.asset_type
-          when '1dtube', 'saphyr'
+          when '1dtube'
             Upload::Processor::OneDTube.new(self)
           when 'library'
             Upload::Processor::LibraryTube.new(self)

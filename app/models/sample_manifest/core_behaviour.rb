@@ -14,7 +14,7 @@ module SampleManifest::CoreBehaviour
       alias_method(:rapid_generation?, :rapid_generation)
 
       def self.supported_asset_type?(asset_type)
-        asset_type.nil? || %w(1dtube plate multiplexed_library library saphyr).include?(asset_type)
+        asset_type.nil? || %w(1dtube plate multiplexed_library library).include?(asset_type)
       end
     end
   end
@@ -27,7 +27,6 @@ module SampleManifest::CoreBehaviour
 
   def behaviour_module
     case asset_type
-    when 'saphyr'              then 'LongReadBehaviour'
     when '1dtube'              then 'SampleTubeBehaviour'
     when 'plate'               then 'PlateBehaviour'
     when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'

@@ -31,7 +31,7 @@ describe 'SampleManifest controller' do
       end
       select('Default Plate', from: 'Template')
       select(printer.name, from: 'Barcode printer')
-      select(selected_purpose.name, from: 'Plate purpose') if selected_purpose
+      select(selected_purpose.name, from: 'purpose') if selected_purpose
       click_button('Create manifest and print labels')
       expect(page).to have_text('Upload a sample manifest')
       expect(created_plate.purpose).to eq(created_purpose)
@@ -67,7 +67,7 @@ describe 'SampleManifest controller' do
       within('#sample_manifest_template') do
         expect(page).to have_selector('option', count: 12)
       end
-      select(created_purpose.name, from: 'Plate purpose')
+      select(created_purpose.name, from: 'purpose')
       expect(page).to have_text('Used for plate manifests only')
     end
   end

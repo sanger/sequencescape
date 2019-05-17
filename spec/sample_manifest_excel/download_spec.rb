@@ -149,7 +149,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     before do
       create(:saphyr_tube_purpose)
       # asset_type might be changed, based on how upload would work
-      sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: 'saphyr', rapid_generation: true)
+      sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: '1dtube', rapid_generation: true)
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
                                                     SampleManifestExcel.configuration.columns.saphyr.dup, SampleManifestExcel.configuration.ranges.dup)

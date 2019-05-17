@@ -42,7 +42,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def acceptable_purposes
-      Purpose.none
+      [Tube::Purpose.standard_sample_tube, Tube::Purpose.find_by(name: 'saphyr')]
     end
 
     def updated_by!(user, samples)
@@ -98,6 +98,6 @@ module SampleManifest::SampleTubeBehaviour
   end
 
   def generate_1dtubes
-    generate_tubes(Tube::Purpose.standard_sample_tube)
+    generate_tubes(purpose)
   end
 end

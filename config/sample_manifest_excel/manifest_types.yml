@@ -358,7 +358,7 @@ tube_multiplexed_library_with_tag_sequences:
     - :phenotype
 saphyr:
   heading: "Saphyr"
-  asset_type: "saphyr"
+  asset_type: "1dtube"
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
