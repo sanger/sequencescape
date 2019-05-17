@@ -50,7 +50,7 @@ def enable_chrome_headless_downloads(driver, directory)
   driver
 end
 
-Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'selenium_chrome_headless').to_sym
+Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
