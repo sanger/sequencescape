@@ -38,7 +38,7 @@ Feature: Gel QC
     Given I am on the gel QC page
     Then I should see "Find gel plate"
     Then log the page body
-    Then I should not see "123"
+    Then I should not see "DN123H"
 
   @qc_event
   Scenario: Gel dilution with score should display rescore
@@ -49,7 +49,7 @@ Feature: Gel QC
     And plate "1220000123724" is the parent of plate "1930000123708"
     Given I am on the gel QC page
     Then I should see "Find gel plate"
-    Then I should see "123"
+    Then I should see "DN123H"
     And I should not see "Rescore"
     When I follow "Score"
     And I press "Update gel values"
