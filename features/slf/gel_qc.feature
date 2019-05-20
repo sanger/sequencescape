@@ -37,7 +37,6 @@ Feature: Gel QC
     And a "Gel Dilution" plate purpose and of type "GelDilutionPlate" with barcode "1930000123708" exists
     Given I am on the gel QC page
     Then I should see "Find gel plate"
-    Then log the page body
     Then I should not see "DN123H"
 
   @qc_event
@@ -56,7 +55,6 @@ Feature: Gel QC
     When I am on the gel QC page
     Then I should see "Rescore"
     Then the plate "1220000123724" and each well should have a 'gel_analysed' event
-    Then log the page body
     When I follow "123"
     And I follow "Event history"
     Then the events table should be:
