@@ -28,7 +28,6 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
   end
 
   test 'should return the right list of tubes' do
-
     assert_equal 3, tube_label.tubes.count
     assert_equal tubes, tube_label.assets
   end
