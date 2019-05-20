@@ -27,6 +27,7 @@ Feature: Sample manifest
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
     And I select "Default Tube" from "Template"
+    And I select "Standard sample" from "purpose"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I fill in the field labeled "Tubes required" with "5"
@@ -63,5 +64,3 @@ Feature: Sample manifest
       | sample_2         | cccc          | false                      | 9606            |
       | sample_3         | dddd          | false                      | 9606            |
       | sample_4         | eeee          | false                      | 9606            |
-
-
