@@ -10,6 +10,7 @@ Feature: Sample manifest
   Background:
     Given I am an "External" user logged in as "john"
     And the configuration exists for creating sample manifest Excel spreadsheets
+    And the Saphyr tube purpose exists
     And the "1D Tube" barcode printer "xyz1d" exists
     And the plate barcode webservice returns "1234567"
     Given a supplier called "Test supplier name" exists

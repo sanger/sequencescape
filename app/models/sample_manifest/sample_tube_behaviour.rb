@@ -98,6 +98,7 @@ module SampleManifest::SampleTubeBehaviour
   end
 
   def generate_1dtubes
-    generate_tubes(purpose)
+    # generate_tubes(purpose)
+    generate_tubes(Tube::Purpose.standard_sample_tube)
   end
 end
