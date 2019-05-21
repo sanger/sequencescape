@@ -16,7 +16,7 @@ class RequestType::Validator < ApplicationRecord
     end
 
     def include?(option)
-      request_type.library_types.where(name: option).exists?
+      request_type.library_types.where(name: option).pluck(:name).include?(option)
     end
 
     def default
