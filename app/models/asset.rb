@@ -133,13 +133,8 @@ class Asset < ApplicationRecord
 
   after_create :generate_name_with_id, if: :name_needs_to_be_generated?
 
-  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
-
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
-
-  scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
-  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
 
   scope :sorted, ->() { order('map_id ASC') }
   scope :for_summary, -> { includes(:map, :barcodes) }
@@ -163,8 +158,6 @@ class Asset < ApplicationRecord
   }
 
   scope :for_lab_searches_display, -> { includes(:barcodes, requests: [:pipeline, :batch]).order('requests.pipeline_id ASC') }
-
-  scope :barcode_compatible, -> { includes(:barcodes).references(:barcodes).distinct }
 
   # We accept not only an individual barcode but also an array of them.
   scope :with_barcode, ->(*barcodes) {
