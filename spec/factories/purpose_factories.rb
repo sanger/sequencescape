@@ -76,6 +76,11 @@ FactoryBot.define do
     factory :mx_tube_purpose do
       target_type { 'MultiplexedLibraryTube' }
     end
+
+    factory :saphyr_tube_purpose do
+      name { 'saphyr' }
+      target_type { 'SampleTube' }
+    end
   end
 
   factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do

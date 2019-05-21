@@ -213,6 +213,7 @@ RSpec.describe SampleManifest, type: :model do
 
     context 'for a sample tube' do
       let(:asset_type) { '1dtube' }
+      let(:purpose) { Tube::Purpose.standard_sample_tube }
 
       [1, 2].each do |count|
         context "#{count} tubes(s)" do
