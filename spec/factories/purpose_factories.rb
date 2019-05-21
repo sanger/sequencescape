@@ -83,6 +83,12 @@ FactoryBot.define do
     end
   end
 
+  factory :std_mx_tube_purpose, class: Tube::StandardMx do
+    prefix { 'NT' }
+    name        { generate :purpose_name }
+    target_type { 'MultiplexedLibraryTube' }
+  end
+
   factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do
     prefix { 'NT' }
     sequence(:name) { |n| "Illumina HTP Mx Tube Purpose #{n}" }
