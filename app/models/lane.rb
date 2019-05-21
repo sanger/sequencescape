@@ -18,7 +18,7 @@ class Lane < Receptacle
 
   LIST_REASONS = [''] + LIST_REASONS_NEGATIVE + LIST_REASONS_POSITIVE
 
-  SAMPLE_PARTIAL = 'assets/samples_partials/lane_samples'
+  self.sample_partial = 'assets/samples_partials/lane_samples'
 
   extend Metadata
 

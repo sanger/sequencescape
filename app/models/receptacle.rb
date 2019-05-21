@@ -2,7 +2,7 @@ class Receptacle < Asset
   include Transfer::State
   include Aliquot::Remover
 
-  SAMPLE_PARTIAL = 'assets/samples_partials/asset_samples'.freeze
+  self.sample_partial = 'assets/samples_partials/asset_samples'.freeze
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id

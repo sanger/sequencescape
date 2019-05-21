@@ -11,12 +11,9 @@ class Tube < Receptacle
 
   # Fallback for tubes without a purpose
   self.default_prefix = 'NT'
+  self.automatic_move = true
 
   has_qc_files
-
-  def automatic_move?
-    true
-  end
 
   def subject_type
     'tube'

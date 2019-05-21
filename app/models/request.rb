@@ -284,13 +284,7 @@ class Request < ApplicationRecord
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query) { where(['id=?', query]) }
-
-  scope :find_all_target_asset, ->(target_asset_id) {
-    where(['target_asset_id = ?', target_asset_id.to_s])
-  }
-  scope :for_studies, ->(*studies) {
-    where(initial_study_id: studies)
-  }
+  scope :for_studies, ->(*studies) { where(initial_study_id: studies) }
 
   scope :with_assets_for_starting_requests, -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }

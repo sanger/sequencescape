@@ -30,16 +30,12 @@ class Asset < ApplicationRecord
   # Key/value stores and attributes
   include ExternalProperties
   include ActsAsDescriptable
-
   include Uuid::Uuidable
 
   # Links to other databases
   include Identifiable
-
   include Commentable
   include Event::PlateEvents
-
-  SAMPLE_PARTIAL = 'assets/samples_partials/blank'
 
   QC_STATES = [
     %w[passed pass],
@@ -59,12 +55,19 @@ class Asset < ApplicationRecord
   end
 
   class_attribute :stock_message_template, instance_writer: false
+  # The partial used to render the list of assets on the asset show page
+  class_attribute :sample_partial, instance_writer: false
+  # When set to true, allows assets of this type to be automatically moved
+  # from the asset_group show page
+  class_attribute :automatic_move, instance_writer: false
 
   class VolumeError < StandardError
   end
 
   self.per_page = 500
   self.inheritance_column = 'sti_type'
+  self.sample_partial = 'assets/samples_partials/blank'
+  self.automatic_move = false
 
   has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
   has_many :asset_groups, through: :asset_group_assets
@@ -139,10 +142,6 @@ class Asset < ApplicationRecord
   scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
 
   scope :sorted, ->() { order('map_id ASC') }
-
-  scope :position_name, ->(description, size) {
-    joins(:map).where(description: description, asset_size: size)
-  }
   scope :for_summary, -> { includes(:map, :barcodes) }
 
   scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
@@ -217,10 +216,6 @@ class Asset < ApplicationRecord
     }
   end
 
-  def sample_partial
-    self.class::SAMPLE_PARTIAL
-  end
-
   # to override in subclass
   def location
     nil
@@ -286,25 +281,6 @@ class Asset < ApplicationRecord
 
   def scanned_in_date
     scanned_into_lab_event.try(:content) || ''
-  end
-
-  def create_asset_group_wells(user, params)
-    asset_group = AssetGroup.create(params)
-    asset_group.user = user
-    asset_group.assets = wells
-    asset_group.save!
-
-    # associate sample to study
-    if asset_group.study
-      wells.each do |well|
-        next unless well.sample
-
-        well.sample.studies << asset_group.study
-        well.sample.save!
-      end
-    end
-
-    asset_group
   end
 
   def role
@@ -414,10 +390,6 @@ class Asset < ApplicationRecord
   end
   alias attach_tags attach_tag
 
-  def requests_status(request_type)
-    requests.order('id ASC').where(request_type: request_type).pluck(:state)
-  end
-
   def transfer(max_transfer_volume)
     transfer_volume = [max_transfer_volume.to_f, volume || 0.0].min
     raise VolumeError, 'not enough volume left' if transfer_volume <= 0
@@ -437,10 +409,6 @@ class Asset < ApplicationRecord
 
   def has_stock_asset?
     false
-  end
-
-  def has_many_requests?
-    Request.find_all_target_asset(id).size > 1
   end
 
   def compatible_purposes
@@ -464,10 +432,6 @@ class Asset < ApplicationRecord
   # Returns nil because assets really don't have barcodes!
   def barcode_type
     nil
-  end
-
-  def automatic_move?
-    false
   end
 
   # We only support wells for the time being
