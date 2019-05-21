@@ -27,6 +27,6 @@ describe 'Create a QC report' do
       end
     end
     click_button('Create report')
-    expect(QcReport.first.plate_purposes & plate_purpose_names).to eq(plate_purpose_names)
+    expect(QcReport.first.plate_purposes & plate_purpose_names).to contain_exactly(*plate_purpose_names)
   end
 end
