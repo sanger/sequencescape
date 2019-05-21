@@ -96,6 +96,19 @@ module PhiX
   end
 
   #
+  # Performs a lookup of the tag option matching the given oligo pair.
+  # If no option can be found returns:
+  # UNKOWN i7:i7_olgo i5:i5_oligo
+  # @param i7_oligo: [String] The i7 (tag) oligo sequence
+  # @param i5_oligo: [String] The i5 (tag2) oligo sequence
+  #
+  # @return [String] The named tag option.
+  def self.tag_option_for(i7_oligo:, i5_oligo:)
+    tag_options.key('i7_oligo' => i7_oligo, 'i5_oligo' => i5_oligo) ||
+      "UNKNOWN i7:#{i7_oligo || '-'} i5:#{i5_oligo || '-'}"
+  end
+
+  #
   # Returns the appropriate tag or creates it if it doesn't exist.
   # @param tag_option [String] The selected tag_option from which the tags will be selected. eg. 'Single'
   # @param tag_type [:i7_oligo, :i5_oligo] The tag which will be applied

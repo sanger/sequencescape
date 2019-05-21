@@ -115,4 +115,32 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
       end
     end
   end
+
+  describe '#tags' do
+    let(:phi_x_spiked_buffer) do
+      build :phi_x_spiked_buffer,
+            name: 'Example',
+            parent_barcode: parent.human_barcode,
+            parent: nil,
+            concentration: '0.8',
+            volume: '10',
+            number: 2
+    end
+
+    context 'when single' do
+      let(:parent) { create :phi_x_stock_tube, tag_option: 'Single' }
+
+      it 'returns Single' do
+        expect(phi_x_spiked_buffer.tags).to eq('Single')
+      end
+    end
+
+    context 'when dual' do
+      let(:parent) { create :phi_x_stock_tube, tag_option: 'Dual' }
+
+      it 'returns Dual' do
+        expect(phi_x_spiked_buffer.tags).to eq('Dual')
+      end
+    end
+  end
 end

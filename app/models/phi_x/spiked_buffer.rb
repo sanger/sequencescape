@@ -55,7 +55,7 @@ class PhiX::SpikedBuffer
   #
   # @return [Tube] The parent tube
   def parent
-    @parent ||= Tube.includes(aliquots: :sample).find_by_barcode(parent_barcode)
+    @parent ||= Tube.includes(aliquots: %i[sample tag tag2]).find_by_barcode(parent_barcode)
   end
 
   # Validates the contents of the parent
@@ -66,6 +66,11 @@ class PhiX::SpikedBuffer
                    parent.aliquots.all? { |aliquot| aliquot.sample == PhiX.sample }
 
     errors.add(:parent_barcode, 'does not contain PhiX')
+  end
+
+  def tags
+    i7_oligo, i5_oligo = parent.aliquots.first.tags_combination
+    PhiX.tag_option_for(i7_oligo: i7_oligo, i5_oligo: i5_oligo)
   end
 
   private
