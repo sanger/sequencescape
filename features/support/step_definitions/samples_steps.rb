@@ -7,8 +7,9 @@ Then /^the following samples should be in the sample registration fields:$/ do |
   approved_heads = table.headers
   heads = find('table#samples_to_register').find_all('thead th').map { |th| th.text }
   rows = find('table#samples_to_register').find_all("tbody tr:nth-child(-n+#{number})")
+
   hashes = rows.map do |tr|
-    hash = Hash[heads.zip(tr.find_all('td').map { |td| td.first('input').try(:value) || td.first('select').try(:value) })]
+    hash = Hash[heads.zip(tr.find_all('td').map { |td| td.first('input,select').try(:value) })]
     hash.slice(*approved_heads)
   end
   assert_equal table.hashes, hashes

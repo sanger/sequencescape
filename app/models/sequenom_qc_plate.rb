@@ -10,6 +10,10 @@ class SequenomQcPlate < Plate
 
   after_create :schedule_populate_wells_from_source_plates
 
+  def self.default_purpose
+    PlatePurpose.create_with(size: DEFAULT_SIZE).find_or_create_by!(name: 'Sequenom')
+  end
+
   def source_plates
     return [] if parents.empty?
 

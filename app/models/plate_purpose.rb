@@ -25,7 +25,11 @@ class PlatePurpose < Purpose
   before_validation :set_default_target_type
   before_validation :set_default_printer_type
 
-  belongs_to :asset_shape
+  belongs_to :asset_shape, optional: false
+
+  def asset_shape
+    super || AssetShape.default
+  end
 
   def source_plate(plate)
     source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate

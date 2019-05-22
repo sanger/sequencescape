@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'timecop'
 
 describe 'track SampleManifest updates' do
   include FetchTable
@@ -21,9 +20,13 @@ describe 'track SampleManifest updates' do
   let!(:supplier) { create :supplier }
   let!(:study) { create :study }
 
+  around do |example|
+    travel_to(Time.zone.local(2010, 7, 12, 10, 25, 0)) do
+      example.run
+    end
+  end
+
   before do
-    new_time = Time.zone.local(2010, 7, 12, 10, 25, 0)
-    Timecop.freeze new_time
     login_user user
     load_manifest_spec
     visit(study_path(study))

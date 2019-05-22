@@ -26,6 +26,7 @@ require 'webmock/rspec'
 require 'support/user_login'
 require 'jsonapi/resources/matchers'
 require 'aasm/rspec'
+require 'rspec/collection_matchers'
 
 require './lib/plate_map_generation'
 
