@@ -14,7 +14,6 @@ class Plate < Asset
   include ModelExtensions::Plate
   include Transfer::Associations
   include Transfer::State::PlateState
-  # include PlatePurpose::Associations
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
   include Plate::FluidigmBehaviour
@@ -23,8 +22,14 @@ class Plate < Asset
 
   extend QcFile::Associations
 
+  DEFAULT_SIZE = 96
+
   # Shouldn't actually be falling back to this, but its here just in case
   self.default_prefix = 'DN'
+  self.sample_partial = 'assets/samples_partials/plate_samples'
+  self.per_page = 50
+
+  attr_reader :storage_location_service
 
   has_qc_files
 
@@ -114,8 +119,6 @@ class Plate < Asset
     purpose&.source_plate(self)
   end
 
-  self.sample_partial = 'assets/samples_partials/plate_samples'
-
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, to: :plate_purpose, allow_nil: true
   delegate :asset_shape, to: :plate_purpose, allow_nil: true
@@ -196,10 +199,6 @@ class Plate < Asset
     wells.first.try(:study)
   end
   deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
-
-  DEFAULT_SIZE = 96
-
-  self.per_page = 50
 
   before_create :set_plate_name_and_size
 
@@ -312,11 +311,6 @@ class Plate < Asset
     wells << well
   end
 
-  def add_well(well, row = nil, col = nil)
-    add_well_holder(well)
-    well.map = find_map_by_rowcol(row, col) if row
-  end
-
   def add_well_by_map_description(well, map_description)
     add_well_holder(well)
     well.map = Map.find_by(description: map_description, asset_size: size)
@@ -362,18 +356,9 @@ class Plate < Asset
     well_requests_as_source.first&.role
   end
 
-  # A plate has a sample with the specified name if any of its wells have that sample.
-  def sample?(sample_name)
-    wells.any? do |well|
-      well.aliquots.any? { |aliquot| aliquot.sample.name == sample_name }
-    end
-  end
-
   def storage_location
     @storage_location ||= obtain_storage_location
   end
-
-  attr_reader :storage_location_service
 
   def self.plate_ids_from_requests(requests)
     with_requests(requests).pluck(:id)
@@ -580,6 +565,11 @@ class Plate < Asset
   end
 
   private
+
+  def add_well(well, row = nil, col = nil)
+    add_well_holder(well)
+    well.map = find_map_by_rowcol(row, col) if row
+  end
 
   def plate_type_descriptor
     descriptor_value('Plate Type')

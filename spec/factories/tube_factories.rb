@@ -4,7 +4,7 @@ require 'factory_bot'
 
 FactoryBot.define do
   trait :scanned_into_lab do
-    after(:build) do |asset, _evaluator|
+    after(:create) do |asset, _evaluator|
       asset.create_scanned_into_lab_event!(content: '2018-01-01')
     end
   end
@@ -171,12 +171,29 @@ FactoryBot.define do
   end
 
   factory :spiked_buffer do
-    name { generate :asset_name }
-    after(:build) do |tube|
-      tag = create(:tag, map_id: 888, oligo: 'G')
-      tube.aliquots << build(:aliquot, sample: SpikedBuffer.phix_sample, library: tube, tag: tag)
+    transient do
+      tag_option { 'Single' } # The PhiX Tag option to use, eg. Single/Dual
     end
 
+    name { generate :asset_name }
+    concentration { 12.0 }
     volume { 50 }
+
+    after(:build) do |tube, evaluator|
+      tube.aliquots << build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option)
+    end
+  end
+
+  factory :phi_x_stock_tube, class: LibraryTube, traits: [:tube_barcode] do
+    transient do
+      tag_option { 'Single' } # The PhiX Tag option to use, eg. Single/Dual
+    end
+
+    name { generate :asset_name }
+    concentration { 12.0 }
+
+    after(:build) do |tube, evaluator|
+      tube.aliquots << build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option)
+    end
   end
 end

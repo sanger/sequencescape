@@ -1,4 +1,6 @@
 class CreateAssetRequest < SystemRequest
+  before_save :initialize_aliquots
+
   def initialize_aliquots
     # set study on aliquot
     asset.try(:aliquots).try(:each) do |aliquot|
@@ -8,5 +10,4 @@ class CreateAssetRequest < SystemRequest
     end
   end
   private :initialize_aliquots
-  before_save :initialize_aliquots
 end

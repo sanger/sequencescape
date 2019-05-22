@@ -36,6 +36,14 @@
         "*.zip",
         "*.xls"
       ]
+    },
+    {
+      "name": "Documentation",
+      "path": "doc"
+    },
+    {
+      "name": "Factories",
+      "path": "spec/factories"
     }
   ],
   // These settings will be applied to anyone working

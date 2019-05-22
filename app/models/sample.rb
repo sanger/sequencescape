@@ -1,4 +1,27 @@
 require 'rexml/text'
+
+#
+# A {Sample} is an abstract concept, with represents the life of a sample of DNA/RNA
+# as it moves through our processes. As a result, a sample may exist in multiple
+# {Receptacle receptacles} at the same time, in the form of an {Aliquot}. As a result
+# {Sample} is mainly concerned with dealing with aspects which are *always* true,
+# such as tracking where it originally came from.
+#
+# An individual sample may be subject to library creation and sequencing multiple
+# different times. These processes may be different each time.
+#
+# ## Sample Creation
+# Samples can enter Sequencescape via a number of different routes. Such as:
+# - {SampleManifest}: Large spreadsheets of sample information are generated.
+#                     When uploaded samples are created in the corresponding
+#                     {Receptacle}.
+# - {SampleRegistrar}: Largely superseded by {SampleManifest} provides a web form
+#                      and spreadsheet upload providing similar functionality to
+#                      SampleManifest
+# - S2 Bridge: A handful of samples are injected directly into the database via
+#              the S2 bridge application.
+# - {Aker::Factories::Material}: Samples imported from Aker
+# - Special samples: Samples such as {PhiX} are generated internally
 class Sample < ApplicationRecord
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
   GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
@@ -479,6 +502,6 @@ class Sample < ApplicationRecord
 
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')
-    false
+    throw(:abort)
   end
 end

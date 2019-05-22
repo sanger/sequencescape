@@ -60,6 +60,8 @@ class Asset < ApplicationRecord
   # When set to true, allows assets of this type to be automatically moved
   # from the asset_group show page
   class_attribute :automatic_move, instance_writer: false
+  # Set to true on the products of library creation. Controls name generation.
+  class_attribute :library_prep, instance_writer: false
 
   class VolumeError < StandardError
   end
@@ -68,6 +70,7 @@ class Asset < ApplicationRecord
   self.inheritance_column = 'sti_type'
   self.sample_partial = 'assets/samples_partials/blank'
   self.automatic_move = false
+  self.library_prep = false
 
   has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
   has_many :asset_groups, through: :asset_group_assets
@@ -302,10 +305,6 @@ class Asset < ApplicationRecord
     self
   end
 
-  def library_prep?
-    false
-  end
-
   def display_name
     name.presence || "#{sti_type} #{id}"
   end
@@ -381,19 +380,6 @@ class Asset < ApplicationRecord
     aliquots.first.update!(tags)
   end
   alias attach_tags attach_tag
-
-  def transfer(max_transfer_volume)
-    transfer_volume = [max_transfer_volume.to_f, volume || 0.0].min
-    raise VolumeError, 'not enough volume left' if transfer_volume <= 0
-
-    self.class.create!(name: name) do |new_asset|
-      new_asset.aliquots = aliquots.map(&:dup)
-      new_asset.volume   = transfer_volume
-      update!(volume: volume - transfer_volume) #  Update ourselves
-    end.tap do |new_asset|
-      new_asset.add_parent(self)
-    end
-  end
 
   def spiked_in_buffer
     nil

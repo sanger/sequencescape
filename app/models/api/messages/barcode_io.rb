@@ -1,3 +1,4 @@
+# Generates messages for the barcode warehouse summarising barcodes
 class Api::Messages::BarcodeIO < Api::Base
   renders_model(::Barcode)
 

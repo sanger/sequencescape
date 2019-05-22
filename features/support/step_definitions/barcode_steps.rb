@@ -15,31 +15,39 @@ Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
   BarcodePrinter.create!(name: name, barcode_printer_type: printer_type, active: true)
 end
 
-Transform /^the last plate$/ do |_|
-  Plate.last or raise StandardError, 'There appear to be no plates'
+# Given /^(the .+) has a barcode of "([^\"]+)"$/ do |barcoded, barcode|
+#   # Annoyingly this is used for batches, as well as labware
+#   if barcoded.respond_to?(:primary_barcode)
+#     bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+#     barcoded.primary_barcode.update(barcode: bc)
+#   else
+#     barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
+#   end
+# end
+
+Given '{asset_id} has a barcode of {string}' do |barcoded, barcode|
+  bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+  barcoded.primary_barcode.update(barcode: bc)
 end
 
-Transform /^the last multiplexed library tube$/ do |_|
-  MultiplexedLibraryTube.last or raise StandardError, 'There appear to be no multiplexed library tubes'
+Given '{asset_name} has a barcode of {string}' do |barcoded, barcode|
+  bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+  barcoded.primary_barcode.update(barcode: bc)
 end
 
-Transform /^the plate "([^\"]+)"$/ do |name|
-  Plate.find_by(name: name) or raise StandardError, "Could not find the plate #{name.inspect}"
+Given '{batch} has a barcode of {string}' do |barcoded, barcode|
+  barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
 end
 
-Transform /^the plate with ID (\d+)$/ do |id|
-  Plate.find(id)
-end
-
-Given /^(the .+) has a barcode of "([^\"]+)"$/ do |barcoded, barcode|
-  # Annoyingly this is used for batches, as well as labware
-  if barcoded.respond_to?(:primary_barcode)
-    bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
-    barcoded.primary_barcode.update(barcode: bc)
-  else
-    barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
-  end
-end
+# Given "{plate_name} has a barcode of {string}" do |barcoded, barcode|
+#   # Annoyingly this is used for batches, as well as labware
+#   if barcoded.respond_to?(:primary_barcode)
+#     bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+#     barcoded.primary_barcode.update(barcode: bc)
+#   else
+#     barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
+#   end
+# end
 
 Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
   bc = SBCF::SangerBarcode.new(prefix: 'NT', number: barcode).human_barcode

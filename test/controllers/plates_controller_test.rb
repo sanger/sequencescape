@@ -7,9 +7,11 @@ class PlatesControllerTest < ActionController::TestCase
       @controller = PlatesController.new
       @request    = ActionController::TestRequest.create(@controller)
 
-      @pico_assay_plate_creator = FactoryBot.create :plate_creator, plate_purposes: PlatePurpose.where(name: ['Pico Assay A', 'Pico Assay B'])
-      @dilution_plates_creator = FactoryBot.create :plate_creator, plate_purposes: PlatePurpose.where(name: 'Working dilution')
-      @gel_dilution_plates_creator = FactoryBot.create :plate_creator, plate_purposes: PlatePurpose.where(name: 'Gel Dilution Plates')
+      @pico_purposes = create_list :pico_assay_purpose, 2
+      @working_dilution = create_list :working_dilution_plate_purpose, 1
+
+      @pico_assay_plate_creator = FactoryBot.create :plate_creator, plate_purposes: @pico_purposes
+      @dilution_plates_creator = FactoryBot.create :plate_creator, plate_purposes: @working_dilution
 
       @barcode_printer = create :barcode_printer
       @plate_barcode = mock('plate barcode')
@@ -42,7 +44,7 @@ class PlatesControllerTest < ActionController::TestCase
         context 'with no source plates' do
           setup do
             @plate_count = Plate.count
-            post :create, params: { plates: { creator_id: @gel_dilution_plates_creator.id, barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
+            post :create, params: { plates: { creator_id: @dilution_plates_creator.id, barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
           end
 
           should 'change Plate.count by 1' do
@@ -245,7 +247,7 @@ class PlatesControllerTest < ActionController::TestCase
 
               should 'add a child to the parent plate' do
                 assert Plate.find(@parent_plate.id).children.first.is_a?(Plate)
-                assert_equal PlatePurpose.find_by(name: 'Pico Assay A'), Plate.find(@parent_plate.id).children.first.plate_purpose
+                assert_equal @pico_purposes.first, Plate.find(@parent_plate.id).children.first.plate_purpose
               end
 
               should respond_with :redirect
@@ -287,7 +289,7 @@ class PlatesControllerTest < ActionController::TestCase
             should 'have child plates' do
               [@parent_plate, @parent_plate2, @parent_plate3].each do |plate|
                 assert Plate.find(plate.id).children.first.is_a?(Plate)
-                assert_equal PlatePurpose.find_by(name: 'Pico Assay A'), Plate.find(plate.id).children.first.plate_purpose
+                assert_equal @pico_purposes.first, Plate.find(plate.id).children.first.plate_purpose
               end
             end
             should respond_with :redirect

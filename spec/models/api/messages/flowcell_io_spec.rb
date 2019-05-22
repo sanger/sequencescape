@@ -36,7 +36,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
       end
     end
 
-    let(:phix) { create :spiked_buffer }
+    let(:phix) { create :spiked_buffer, tag_option: 'Dual' }
 
     let(:tags) { lane1.aliquots.map(&:tag) }
     let(:tag2s) { lane1.aliquots.map(&:tag2) }
@@ -110,9 +110,12 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
             }],
             'controls' => [{
               'tag_index' => 888,
-              'tag_sequence' => phix.aliquots[0].tag.oligo,
+              'tag_sequence' => 'TGTGCAGC',
               'tag_set_id_lims' => phix.aliquots[0].tag.tag_group_id,
-              'tag_set_name' => phix.aliquots[0].tag.tag_group.name,
+              'tag_set_name' => 'Control Tag Group 888',
+              'tag2_sequence' => 'ACTGATGT',
+              'tag2_set_id_lims' => phix.aliquots[0].tag.tag_group_id,
+              'tag2_set_name' => 'Control Tag Group 888',
               'sample_uuid' => phix.aliquots[0].sample.uuid,
               'id_library_lims' => phix.human_barcode,
               'legacy_library_id' => phix.id,

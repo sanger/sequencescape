@@ -1,3 +1,8 @@
+# A Well is a {Receptacle} on a {Plate}, it can contain one or more {Aliquot aliquots}.
+# A plate may have multiple wells, with the two most common sizes being 12*8 (96) and
+# 24*26 (384). The wells are differentiated via their {Map} which corresponds to a
+# row and column. Most well locations are identified by a letter-number combination,
+# eg. A1, H12.
 class Well < Receptacle
   include Api::WellIO::Extensions
   include ModelExtensions::Well
@@ -21,8 +26,10 @@ class Well < Receptacle
     scope :stock, ->() { where(type: 'stock') }
   end
 
-  has_many :stock_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :target_well_id
+  self.stock_message_template = 'WellStockResourceIO'
+  self.per_page = 500
 
+  has_many :stock_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :target_well_id
   has_many :stock_wells, through: :stock_well_links, source: :source_well do
     def attach!(wells)
       Well::Link.import(attach(wells))
@@ -32,46 +39,30 @@ class Well < Receptacle
       proxy_association.owner.stock_well_links.build(wells.map { |well| { type: 'stock', source_well: well } })
     end
   end
-
-  def stock_wells_for_downstream_wells
-    plate&.stock_plate? ? [self] : stock_wells
-  end
-
-  def subject_type
-    'well'
-  end
-
   has_many :customer_requests, class_name: 'CustomerRequest', foreign_key: :asset_id
   has_many :outer_requests, through: :stock_wells, source: :customer_requests
-
-  def outer_request(submission_id)
-    outer_requests.order(id: :desc).find_by(submission_id: submission_id)
-  end
-
-  self.stock_message_template = 'WellStockResourceIO'
-
   has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
+  # has_many due to eager loading requirement and can't have a has one through a has_many
+  has_many :latest_child_well, ->() { limit(1).order('asset_links.descendant_id DESC').where(assets: { sti_type: 'Well' }) }, class_name: 'Well', through: :links_as_parent, source: :descendant
+  has_many :target_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
+  has_many :target_wells, through: :target_well_links, source: :target_well
 
-  def self.hash_stock_with_targets(wells, purpose_names)
-    return {} unless purpose_names
+  has_one :container_association, -> { joins(:plate) }, foreign_key: :content_id, inverse_of: :well
+  has_one :plate, through: :container_association, inverse_of: :wells
+  has_one :well_attribute, inverse_of: :well
 
-    purposes = PlatePurpose.where(name: purpose_names)
-    # We might need to be careful about this line in future.
-    target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).preload(:well_attribute).with_concentration
-
-    target_wells.group_by(&:stock_well_id)
+  validate(on: :save) do |record|
+    record.errors.add(:name, 'cannot be specified for a well') unless record.name.blank?
   end
+
+  accepts_nested_attributes_for :well_attribute
+
+  before_create :well_attribute # Ensure all wells have attributes
 
   scope :with_concentration, ->() {
     joins(:well_attribute)
       .where('well_attributes.concentration IS NOT NULL')
   }
-
-  has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
-
-  # hams_many due to eager loading requirement and can't have a has one through a has_many
-  has_many :latest_child_well, ->() { limit(1).order('asset_links.descendant_id DESC').where(assets: { sti_type: 'Well' }) }, class_name: 'Well', through: :links_as_parent, source: :descendant
-
   scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
   scope :include_stock_wells_for_modification, -> {
     # Preload rather than include, as otherwise joins result
@@ -94,21 +85,15 @@ class Well < Receptacle
             })
   }
   scope :include_map, -> { includes(:map) }
-
-  scope :located_at, ->(location) {
-    joins(:map).where(maps: { description: location })
-  }
-
+  scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
   scope :on_plate_purpose, ->(purposes) {
     joins(:plate)
       .where(plates_assets: { plate_purpose_id: purposes })
   }
-
   scope :for_study_through_aliquot, ->(study) {
     joins(:aliquots)
       .where(aliquots: { study_id: study })
   }
-
   scope :without_report, ->(product_criteria) {
     joins([
       'LEFT OUTER JOIN qc_metrics AS wr_qcm ON wr_qcm.asset_id = assets.id',
@@ -118,39 +103,17 @@ class Well < Receptacle
       .group('assets.id')
       .having('NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)', product_criteria.product_id, product_criteria.stage)
   }
-
-  has_many :target_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
-  has_many :target_wells, through: :target_well_links, source: :target_well
-
   scope :stock_wells_for, ->(wells) {
     joins(:target_well_links)
       .where(well_links: { target_well_id: [wells].flatten.map(&:id) })
   }
-
   scope :target_wells_for, ->(wells) {
     select('assets.*, well_links.source_well_id AS stock_well_id')
       .joins(:stock_well_links).where(well_links: {
                                         source_well_id: wells
                                       })
   }
-
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
-
-  has_one :container_association, -> { joins(:plate) }, foreign_key: :content_id, inverse_of: :well
-  has_one :plate, through: :container_association, inverse_of: :wells
-
-  def labware
-    plate
-  end
-
-  delegate :location, :location_id, :location_id=, :printable_target, to: :plate, allow_nil: true
-  self.per_page = 500
-
-  has_one :well_attribute, inverse_of: :well
-  accepts_nested_attributes_for :well_attribute
-
-  before_create :well_attribute # Ensure all wells have attributes
-
   scope :pooled_as_target_by_transfer, ->() {
     joins('LEFT JOIN transfer_requests patb ON assets.id=patb.target_asset_id')
       .select('assets.*, patb.submission_id AS pool_id').distinct
@@ -160,16 +123,13 @@ class Well < Receptacle
       .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
       .select('assets.*, pasb.submission_id AS pool_id').distinct
   }
-
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
   scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select('assets.*, column_order') }
   scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select('assets.*, row_order') }
   scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC').select('assets.*, column_order') }
   scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select('assets.*, row_order') }
-
   scope :in_plate_column, ->(col, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size), asset_size: size }) }
   scope :in_plate_row,    ->(row, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size), asset_size: size }) }
-
   scope :with_blank_samples, -> {
     joins([
       'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id',
@@ -177,13 +137,13 @@ class Well < Receptacle
     ])
       .where(['samples.empty_supplier_sample_name=?', true])
   }
-
   scope :without_blank_samples, ->() {
     joins(aliquots: :sample)
       .where(samples: { empty_supplier_sample_name: false })
   }
-
   scope :with_contents, -> { joins(:aliquots) }
+
+  delegate :location, :location_id, :location_id=, :printable_target, to: :plate, allow_nil: true
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
@@ -201,6 +161,32 @@ class Well < Receptacle
         end
       END_OF_METHOD_DEFINITION
     end
+
+    def hash_stock_with_targets(wells, purpose_names)
+      return {} unless purpose_names
+
+      purposes = PlatePurpose.where(name: purpose_names)
+      # We might need to be careful about this line in future.
+      target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).preload(:well_attribute).with_concentration
+
+      target_wells.group_by(&:stock_well_id)
+    end
+  end
+
+  def stock_wells_for_downstream_wells
+    plate&.stock_plate? ? [self] : stock_wells
+  end
+
+  def subject_type
+    'well'
+  end
+
+  def outer_request(submission_id)
+    outer_requests.order(id: :desc).find_by(submission_id: submission_id)
+  end
+
+  def labware
+    plate
   end
 
   def qc_results_by_key
@@ -325,10 +311,6 @@ class Well < Receptacle
   # If we eager load, things fair badly, and we end up returning all children.
   def find_latest_child_well
     latest_child_well.max_by(&:id)
-  end
-
-  validate(on: :save) do |record|
-    record.errors.add(:name, 'cannot be specified for a well') unless record.name.blank?
   end
 
   def display_name

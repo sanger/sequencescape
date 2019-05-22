@@ -118,7 +118,7 @@ RSpec.describe SampleManifest, type: :model do
 
           it 'create sample manifest asset' do
             expect { manifest.generate }.to  change(SampleManifestAsset, :count).by(count)
-            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
+            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes).sort_by(&:human_barcode))
           end
 
           context 'after generation' do
@@ -213,6 +213,7 @@ RSpec.describe SampleManifest, type: :model do
 
     context 'for a sample tube' do
       let(:asset_type) { '1dtube' }
+      let(:purpose) { Tube::Purpose.standard_sample_tube }
 
       [1, 2].each do |count|
         context "#{count} tubes(s)" do

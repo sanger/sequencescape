@@ -15,11 +15,7 @@ end
 
 Then /^the inbox should contain (\d+) requests?$/ do |count|
   with_scope('#pipeline_inbox') do
-    if page.respond_to? :should
-      page.should have_xpath('//td[contains(@class, "request")]', count: count.to_i)
-    else
-      assert page.has_xpath?('//td[contains(@class, "request")]', count: count.to_i), 'Page missing xpath'
-    end
+    assert page.has_xpath?('//td[contains(@class, "request")]', count: count.to_i), 'Page missing xpath'
   end
 end
 

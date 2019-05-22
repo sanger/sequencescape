@@ -1,4 +1,2 @@
-unless Rails.env.test?
-  StudyRelationType.create!(name: 'sra public study', reversed_name: 'ega private study')
-  StudyRelationType.create!(name: 'test', reversed_name: 'reversed test')
-end
+StudyRelationType.create!(name: 'sra public study', reversed_name: 'ega private study')
+StudyRelationType.create!(name: 'test', reversed_name: 'reversed test')

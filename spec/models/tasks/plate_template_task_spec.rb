@@ -7,7 +7,7 @@ require 'rails_helper'
 RSpec.describe PlateTemplateTask, type: :model do
   subject(:task) { create :plate_template_task }
 
-  let(:pipeline) { create :cherrypick_pipeline }
+  let(:pipeline) { task.workflow.pipeline }
   let(:requests) do
     requests = []
     plate_a.wells.each do |well|

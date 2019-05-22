@@ -3,7 +3,7 @@ require 'test_helper'
 class FluidigmPlateTest < ActiveSupport::TestCase
   context 'A 96:96 Fluidigm Plate' do
     setup do
-      @plate = PlatePurpose.find_by(name: 'Fluidigm 96-96').create!(barcode: FactoryBot.generate(:barcode))
+      @plate = create(:fluidigm_96_purpose).create!(barcode: FactoryBot.generate(:barcode))
     end
 
     should 'have 96 wells' do
@@ -24,7 +24,7 @@ class FluidigmPlateTest < ActiveSupport::TestCase
 
   context 'A 192:24 Fluidigm Plate' do
     setup do
-      @plate = PlatePurpose.find_by(name: 'Fluidigm 192-24').create!(barcode: FactoryBot.generate(:barcode))
+      @plate = create(:fluidigm_192_purpose).create!(barcode: FactoryBot.generate(:barcode))
     end
 
     should 'have 192 wells' do
