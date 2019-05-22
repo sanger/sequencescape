@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Billing::Product, billing: true do
   let(:product) { create :billing_product, name: 'name' }
 
-  it 'should have a unique name' do
+  it 'has a unique name' do
     expect(product.name).to eq 'name'
     expect(product.valid?).to be true
     product_with_nonunique_name = build :billing_product, name: product.name
@@ -15,7 +15,7 @@ describe Billing::Product, billing: true do
     expect(product.identifier). to eq 'test'
   end
 
-  it 'should have a particular category' do
+  it 'has a particular category' do
     expect(product.category).to eq 'sequencing'
     product.category = 'library_creation'
     expect(product.category).to eq 'library_creation'

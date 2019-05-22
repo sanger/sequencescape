@@ -93,10 +93,10 @@ module Net
             s.post_connection_check(@address)
           end
           @ssl_session = s.session
-        rescue => exception
-          D "Conn close because of connect error #{exception}"
+        rescue => e
+          D "Conn close because of connect error #{e}"
           @socket.close if @socket and not @socket.closed?
-          raise exception
+          raise e
         end
       end
       on_connect

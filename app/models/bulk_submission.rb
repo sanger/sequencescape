@@ -152,8 +152,8 @@ class BulkSubmission
               # Collect successful submissions
               @submission_ids << submission.id
               @completed_submissions[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
-            rescue Submission::ProjectValidation::Error => exception
-              errors.add :spreadsheet, "There was an issue with a project: #{exception.message}"
+            rescue Submission::ProjectValidation::Error => e
+              errors.add :spreadsheet, "There was an issue with a project: #{e.message}"
             end
           end
         end
@@ -275,13 +275,24 @@ class BulkSubmission
     project = Project.find_by_id_or_name!(details['project id'], details['project name'])
     user    = User.find_by(login: details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
 
-    # The order attributes are initially
+    # Extract the request options from the row details
+    request_options = extract_request_options(details)
+
+    # Check the library type matches a value from the table
+    if request_options['library_type'].present?
+      # find is case insensitive but we want the correct case sensitive name for requests or we get issues downstream in NPG
+      lt = LibraryType.find_by(name: request_options['library_type'])&.name or
+        raise StandardError, "Cannot find library type #{request_options['library_type'].inspect}"
+      request_options['library_type'] = lt
+    end
+
+    # Set up the order attributes
     attributes = {
       study: study,
       project: project,
       user: user,
       comments: details['comments'],
-      request_options: extract_request_options(details),
+      request_options: request_options,
       pre_cap_group: details['pre-capture group']
     }
 
@@ -336,8 +347,8 @@ class BulkSubmission
         new_order.request_options[:multiplier][multiplexed_request_type_id] = number_of_lanes
       end
     end
-  rescue => exception
-    errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
+  rescue => e
+    errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{e.message}"
     nil
   end
 

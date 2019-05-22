@@ -6,6 +6,7 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
     mock_plate_barcode_service
     build(:sample_tube_purpose, name: 'Standard sample').save
   end
+
   let(:json) do
     file = File.read(File.join('spec', 'data', 'aker', 'job.json'))
     JSON.parse(file).with_indifferent_access
@@ -26,7 +27,7 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
 
   it 'must have a barcode' do
     container = Aker::Factories::Container.new(params.except(:barcode))
-    expect(container).to_not be_valid
+    expect(container).not_to be_valid
   end
 
   context '#create' do

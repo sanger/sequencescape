@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'Asset submission', js: true do
+describe 'Asset submission', js: true do
   let(:project) { create :project }
   let(:study) { create :study }
   let(:request_factory) { :sequencing_request }
@@ -20,7 +20,7 @@ feature 'Asset submission', js: true do
   end
 
   shared_examples 'it allows additional sequencing' do
-    scenario 'request additional sequencing' do
+    it 'request additional sequencing' do
       login_user user
       visit asset_path(asset)
       click_link 'Request additional sequencing'
@@ -38,7 +38,7 @@ feature 'Asset submission', js: true do
   end
 
   shared_examples 'it allows cross study sequencing' do
-    scenario 'request additional sequencing without study' do
+    it 'request additional sequencing without study' do
       login_user user
       visit asset_path(asset)
       click_link 'Request additional sequencing'
@@ -52,7 +52,7 @@ feature 'Asset submission', js: true do
       expect { Delayed::Worker.new.work_off }.to change { asset.requests.where(request_type_id: selected_request_type).count }.by 1
     end
 
-    scenario 'request additional sequencing with override study' do
+    it 'request additional sequencing with override study' do
       login_user user
       visit asset_path(asset)
       click_link 'Request additional sequencing'
@@ -72,7 +72,7 @@ feature 'Asset submission', js: true do
   end
 
   shared_examples 'it forbids additional sequencing' do
-    scenario 'the link is not visible' do
+    it 'the link is not visible' do
       login_user user
       visit asset_path(asset)
       expect(page).not_to have_text('Request additional sequencing')
@@ -81,13 +81,17 @@ feature 'Asset submission', js: true do
 
   context 'when an admin' do
     let(:user) { create :admin }
+
     context 'with the original request_type' do
       it_behaves_like 'it allows additional sequencing'
     end
+
     context 'with a new request_type' do
       let(:selected_request_type) { request_types.last }
+
       it_behaves_like 'it allows additional sequencing'
     end
+
     context 'when cross study pooled' do
       let(:asset) { create :multiplexed_library_tube, aliquots: build_list(:library_aliquot, 2) }
       let(:study) { asset.aliquots.first.study }
@@ -100,12 +104,14 @@ feature 'Asset submission', js: true do
                request_type: original_request_type)
       end
       let(:selected_read_length) { 108 }
+
       it_behaves_like 'it allows cross study sequencing'
     end
   end
 
   context 'when a regular user' do
     let(:user) { create :user }
+
     it_behaves_like 'it forbids additional sequencing'
   end
 end

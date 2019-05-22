@@ -116,9 +116,9 @@ class AssetsController < ApplicationController
           asset
         end
       end # transaction
-    rescue => exception
+    rescue => e
       saved = false
-      flash[:error] = exception.message
+      flash[:error] = e.message
     end
 
     respond_to do |format|
@@ -281,23 +281,23 @@ class AssetsController < ApplicationController
       format.html { redirect_to asset_path(@asset) }
       format.json { render json: submission.requests, status: :created }
     end
-  rescue Submission::ProjectValidation::Error => exception
+  rescue Submission::ProjectValidation::Error => e
     respond_to do |format|
-      flash[:error] = exception.message.truncate(2000, separator: ' ')
+      flash[:error] = e.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
-      format.json { render json: exception.message, status: :unprocessable_entity }
+      format.json { render json: e.message, status: :unprocessable_entity }
     end
-  rescue ActiveRecord::RecordNotFound => exception
+  rescue ActiveRecord::RecordNotFound => e
     respond_to do |format|
-      flash[:error] = exception.message.truncate(2000, separator: ' ')
+      flash[:error] = e.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
-      format.json { render json: exception.message, status: :precondition_failed }
+      format.json { render json: e.message, status: :precondition_failed }
     end
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid => e
     respond_to do |format|
-      flash[:error] = exception.message.truncate(2000, separator: ' ')
+      flash[:error] = e.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
-      format.json { render json: exception.message, status: :precondition_failed }
+      format.json { render json: e.message, status: :precondition_failed }
     end
   end
 

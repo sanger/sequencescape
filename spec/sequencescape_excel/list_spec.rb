@@ -47,14 +47,14 @@ RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: tr
     expect(my_list.items.attr_c.count).to eq(3)
   end
 
-  it 'it is possible to find an item by a defined key' do
+  it 'is possible to find an item by a defined key' do
     expect(my_list.find_by(:attr_a, 'a')).to eq(item_1)
     expect(my_list.find_by(:attr_b, 'f')).to eq(item_2)
     expect(my_list.find_by(:attr_b, :f)).to eq(item_2)
     expect(my_list.find_by(:attr_c, 'k')).to eq(item_3)
   end
 
-  it 'it should be possible to find an attribute using any key' do
+  it 'is possible to find an attribute using any key' do
     expect(my_list.find('a')).to eq(item_1)
     expect(my_list.find('f')).to eq(item_2)
     expect(my_list.find(:f)).to eq(item_2)
@@ -66,7 +66,7 @@ RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: tr
     items = my_list.items
     my_list.reset!
     expect(my_list.values).to be_empty
-    expect(my_list.items).to_not eq(items)
+    expect(my_list.items).not_to eq(items)
     expect(my_list.items.attr_a).to be_empty
     expect(my_list.items.attr_b).to be_empty
     expect(my_list.items.attr_c).to be_empty
@@ -81,11 +81,11 @@ RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: tr
   it 'copy adds a copy of the object to the list' do
     item = ListItem.new('q', 'r', 's', 't')
     my_list.add_copy item
-    expect(my_list.find_by(:attr_a, 'q')).to_not eq(item)
+    expect(my_list.find_by(:attr_a, 'q')).not_to eq(item)
   end
 
   it 'is comparable' do
-    expect(my_list).to_not be_nil
+    expect(my_list).not_to be_nil
     other_list = MyList.new
     other_list.add item_1
     other_list.add item_2

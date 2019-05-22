@@ -25,7 +25,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, s
     end
 
     it 'must not be an expression' do
-      expect(conditional_formatting_default).to_not be_expression
+      expect(conditional_formatting_default).not_to be_expression
     end
 
     it '#combine with conditional_formatting will produce correct options' do

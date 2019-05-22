@@ -76,8 +76,8 @@ class PipelinesController < ApplicationController
 
   def finish
     ActiveRecord::Base.transaction { @batch.complete!(current_user) }
-  rescue ActiveRecord::RecordInvalid => exception
-    flash[:error] = exception.record.errors.full_messages
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:error] = e.record.errors.full_messages
     redirect_to(url_for(controller: 'batches', action: 'show', id: @batch.id))
   end
 
@@ -124,7 +124,7 @@ class PipelinesController < ApplicationController
       request.update_priority
       render plain: '', layout: false
     end
-  rescue ActiveRecord::RecordInvalid => _exception
+  rescue ActiveRecord::RecordInvalid => e
     render plain: '', layout: false, status: :unprocessable_entity
   end
 

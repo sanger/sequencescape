@@ -64,7 +64,7 @@ class Request::ChangeDecision
         perform_decision_change_request_state! if state_change?
         perform_decision_change_asset_qc_state! unless asset_qc_state_absent?
       end
-    rescue ActiveRecord::RecordInvalid => exception
+    rescue ActiveRecord::RecordInvalid => e
       reload_objects
       raise InvalidDecision, self
     end

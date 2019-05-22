@@ -1,6 +1,7 @@
-##
-# A lot type governs the behaviour of a lot
+# frozen_string_literal: true
 
+# A {LotType} governs the behaviour of a {Lot}
+# It is selected when generating a Lot in Gatekeeper
 class LotType < ApplicationRecord
   include Uuid::Uuidable
 

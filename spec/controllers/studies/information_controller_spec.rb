@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe Studies::InformationController do
-  it_behaves_like 'it requires login', 'show', parent: :study
-
-  let(:user) { create(:user) }
   let(:study) { create :study }
+  let(:user) { create(:user) }
+
+  it_behaves_like 'it requires login', 'show', parent: :study
 
   setup do
     session[:user] = user.id
@@ -18,8 +18,8 @@ RSpec.describe Studies::InformationController do
     end
 
     it 'renders a successful show template', :aggregate_failures do
-      is_expected.to respond_with :success
-      is_expected.to render_template :show
+      expect(subject).to respond_with :success
+      expect(subject).to render_template :show
     end
   end
 

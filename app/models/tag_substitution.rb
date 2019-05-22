@@ -58,9 +58,9 @@ class TagSubstitution
     end
     rebroadcast_flowcells
     true
-  rescue ActiveRecord::RecordNotUnique => exception
+  rescue ActiveRecord::RecordNotUnique => e
     # We'll specifically handle tag clashes here so that we can produce more informative messages
-    raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
+    raise e unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(e.message)
 
     errors.add(:base, 'A tag clash was detected while performing the substitutions. No changes have been made.')
     false

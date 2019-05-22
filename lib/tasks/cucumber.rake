@@ -55,7 +55,7 @@ unless ARGV.any? { |a| a =~ /^gems/ } # Don't load anything when running the gem
     task default: :cucumber
 
     task features: :cucumber do
-      STDERR.puts "*** The 'features' task is deprecated. See rake -T cucumber ***"
+      warn "*** The 'features' task is deprecated. See rake -T cucumber ***"
     end
 
     # In case we don't have the generic Rails test:prepare hook, append a no-op task that we can depend upon.

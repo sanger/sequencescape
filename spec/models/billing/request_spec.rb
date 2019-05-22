@@ -5,7 +5,7 @@ describe Request, billing: true do
     request = create(:sequencing_request_with_assets, request_type: create(:sequencing_request_type), billing_product: (create :billing_product))
     request.start!
     request.pass!
-    expect(request.billing_items).to_not be_empty
+    expect(request.billing_items).not_to be_empty
   end
 
   it 'does not create a billing item if the request is not in the right state' do

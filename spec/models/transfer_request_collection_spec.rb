@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe TransferRequestCollection, type: :model, transfer_request_collection: true do
+  subject { described_class.new(creation_attributes) }
+
   let(:user) { create :user }
   let(:asset) { create :tagged_well }
   let(:target_asset) { create :empty_library_tube }
-
-  subject { described_class.new(creation_attributes) }
 
   context 'with a single transfer' do
     let(:creation_attributes) do

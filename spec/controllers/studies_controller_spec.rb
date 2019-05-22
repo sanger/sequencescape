@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe StudiesController do
-  it_behaves_like 'it requires login'
-
-  let(:user) { create(:owner) }
-  let(:program) { create(:program) }
-  let(:study) { create :study }
-  let(:reference_genome) { create :reference_genome }
   let(:data_release_study_type) { create :data_release_study_type, name: 'genomic sequencing' }
+  let(:reference_genome) { create :reference_genome }
+  let(:study) { create :study }
+  let(:program) { create(:program) }
+  let(:user) { create(:owner) }
+
+  it_behaves_like 'it requires login'
 
   setup do
     session[:user] = user.id
@@ -18,8 +18,8 @@ RSpec.describe StudiesController do
   describe '#new' do
     setup { get :new }
     it 'works', :aggregate_failures do
-      is_expected.to respond_with :success
-      is_expected.to render_template :new
+      expect(subject).to respond_with :success
+      expect(subject).to render_template :new
     end
   end
 
@@ -47,9 +47,10 @@ RSpec.describe StudiesController do
           }
         } }
       end
+
       it 'works', :aggregate_failures do
-        is_expected.to set_flash.to('Your study has been created')
-        is_expected.to redirect_to('study path') { study_path(Study.last) }
+        expect(subject).to set_flash.to('Your study has been created')
+        expect(subject).to redirect_to('study path') { study_path(Study.last) }
       end
       it 'changes Study.count by 1' do
         assert_equal 1, Study.count - @study_count
@@ -87,8 +88,8 @@ RSpec.describe StudiesController do
     end
 
     it 'works', :aggregate_failures do
-      is_expected.to respond_with :ok
-      is_expected.to set_flash.now.to('Role added')
+      expect(subject).to respond_with :ok
+      expect(subject).to set_flash.now.to('Role added')
     end
   end
 end

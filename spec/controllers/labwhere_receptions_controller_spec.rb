@@ -38,11 +38,13 @@ describe LabwhereReceptionsController do
     describe '#create' do
       context 'with multiple assets' do
         let(:location_barcode) { 'labwhere_location' }
+
         it_behaves_like 'a reception'
       end
 
       context 'with no location' do
         let(:location_barcode) { '' }
+
         it_behaves_like 'a reception'
       end
     end

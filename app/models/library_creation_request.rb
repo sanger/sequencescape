@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Used in the old-style (Workflow driven) tube based library creation pipelines
 class LibraryCreationRequest < CustomerRequest
   # NOTE: Do not alter the order here:
   #

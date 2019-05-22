@@ -34,6 +34,7 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
               well_attribute.current_volume  <= volume
             )
           end
+
           it 'returns the list with both colums' do
             expect(mapping.send(:columns_for_table_from_field, :well_attribute, :volume)).to eq(%i[measured_volume current_volume])
           end

@@ -2,10 +2,10 @@
 
 require 'rails_helper'
 
-feature 'Create a new tag group' do
+describe 'Create a new tag group' do
   let(:user) { create :admin }
 
-  scenario 'view tag groups and create a new valid one', js: true do
+  it 'view tag groups and create a new valid one', js: true do
     login_user user
     visit tag_groups_path
     expect(page).to have_content 'Listing Tag Groups'
@@ -20,7 +20,7 @@ feature 'Create a new tag group' do
     expect(page).to have_content 'Create a new tag layout template from this tag group'
   end
 
-  scenario 'view tag groups and attempt to create a new one with invalid oligos', js: true do
+  it 'view tag groups and attempt to create a new one with invalid oligos', js: true do
     login_user user
     visit tag_groups_path
     expect(page).to have_content 'Listing Tag Groups'

@@ -11,21 +11,21 @@ RSpec.describe PrimerPanel, type: :model do
 
   it 'invalidates a primer panel with invalid programs' do
     primer_panel.programs = { 'invalid_label' => {} }
-    expect(primer_panel).to_not be_valid
+    expect(primer_panel).not_to be_valid
     primer_panel.programs = { 'pcr 1' => { 'invalid_argument' => '' } }
-    expect(primer_panel).to_not be_valid
+    expect(primer_panel).not_to be_valid
     primer_panel.programs = { 'pcr 1' => { 'duration' => '2min' } }
-    expect(primer_panel).to_not be_valid
+    expect(primer_panel).not_to be_valid
   end
 
   it 'invalidates a primer panel with non numerical snp_count' do
     primer_panel.snp_count = 'ABC'
-    expect(primer_panel).to_not be_valid
+    expect(primer_panel).not_to be_valid
   end
 
   it 'invalidates a primer panel with wrong minimum snp_count' do
     primer_panel.snp_count = 0
-    expect(primer_panel).to_not be_valid
+    expect(primer_panel).not_to be_valid
   end
 
   it 'validates a primer panel with valid programs' do

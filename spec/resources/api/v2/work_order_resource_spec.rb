@@ -4,6 +4,7 @@ require './app/resources/api/v2/work_order_resource'
 RSpec.describe Api::V2::WorkOrderResource, type: :resource do
   shared_examples_for 'a work order resource' do
     subject { described_class.new(work_order, {}) }
+
     let(:work_order) { create(:work_order, requests: requests).reload }
 
     it { is_expected.to have_attribute :order_type }
@@ -12,8 +13,8 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
     it { is_expected.to have_attribute :options }
     it { is_expected.to have_attribute :quantity }
 
-    it { is_expected.to_not have_updatable_field(:uuid) }
-    it { is_expected.to_not have_updatable_field(:order_type) }
+    it { is_expected.not_to have_updatable_field(:uuid) }
+    it { is_expected.not_to have_updatable_field(:order_type) }
 
     it { is_expected.to have_updatable_field(:state) }
     it { is_expected.to have_updatable_field(:at_risk) }
@@ -40,6 +41,7 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
     let(:number_of_requests) { 1 }
     let(:requests) { create_list(:customer_request, number_of_requests) }
     let(:expected_metadata) { { 'read_length' => 76 } }
+
     it_behaves_like 'a work order resource'
   end
 
@@ -47,6 +49,7 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
     let(:number_of_requests) { 3 }
     let(:requests) { create_list(:customer_request, number_of_requests) }
     let(:expected_metadata) { { 'read_length' => 76 } }
+
     it_behaves_like 'a work order resource'
   end
 
@@ -54,6 +57,7 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
     let(:number_of_requests) { 1 }
     let(:requests) { [create(:sequencing_request)] }
     let(:expected_metadata) { { 'fragment_size_required_to' => '21', 'fragment_size_required_from' => '1', 'read_length' => 76 } }
+
     it_behaves_like 'a work order resource'
   end
 end

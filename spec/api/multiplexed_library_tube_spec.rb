@@ -13,7 +13,7 @@ describe '/api/1/multiplexed-library-tube-uuid' do
   let(:tube) { create :multiplexed_library_tube, purpose: purpose, volume: 8.76000000 }
   let(:collection) { create(:custom_metadatum_collection, asset: tube) }
 
-  before(:each) do
+  before do
     tube
     collection
   end

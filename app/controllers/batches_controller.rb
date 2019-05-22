@@ -96,10 +96,10 @@ class BatchesController < ApplicationController
       # This is the standard create action
       standard_create(requests)
     end
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid => e
     respond_to do |format|
       format.html do
-        flash[:error] = exception.record.errors.full_messages
+        flash[:error] = e.record.errors.full_messages
         redirect_to(pipeline_path(@pipeline))
       end
       format.xml { render xml: @batch.errors.to_xml }
@@ -488,13 +488,13 @@ class BatchesController < ApplicationController
       ActiveRecord::Base.transaction do
         @batch = @pipeline.batches.create!(requests: requests, user: current_user)
       end
-    rescue ActiveRecord::RecordNotUnique => exception
+    rescue ActiveRecord::RecordNotUnique => e
       # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end usually
       # ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.
       # Fortunately we can detect the corresponding exception, and generate a friendly error message.
 
       # If this isn't the exception we're expecting, re-raise it.
-      raise exception unless /request_id/.match?(exception.message)
+      raise e unless /request_id/.match?(e.message)
 
       # Find the requests which casued the clash.
       batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)

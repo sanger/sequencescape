@@ -8,12 +8,14 @@ describe IlluminaHtp::Requests::GbsRequest do
   describe '#request_metadata' do
     describe '#primer_panel' do
       subject { request.request_metadata.primer_panel }
+
       it { is_expected.to be_a PrimerPanel }
     end
   end
 
   describe '#update_pool_information' do
     let(:mutated_hash) { {} }
+
     it 'adds primer panel' do
       subject.update_pool_information(mutated_hash)
       expect(mutated_hash.keys).to include(:primer_panel)

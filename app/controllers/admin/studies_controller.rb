@@ -72,8 +72,8 @@ class Admin::StudiesController < ApplicationController
       flash[:notice] = 'Your study has been updated'
       redirect_to controller: 'admin/studies', action: 'update', id: @study.id
     end
-  rescue ActiveRecord::RecordInvalid => exception
-    logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
+  rescue ActiveRecord::RecordInvalid => e
+    logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}}"
     flash[:error] = 'Failed to update attributes for study!'
     render action: :show, id: @study.id and return
   end

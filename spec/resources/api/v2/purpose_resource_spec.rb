@@ -4,15 +4,16 @@ require 'rails_helper'
 require './app/resources/api/v2/purpose_resource'
 
 RSpec.describe Api::V2::PurposeResource, type: :resource do
-  let(:resource_model) { create :purpose }
   subject { described_class.new(resource_model, {}) }
+
+  let(:resource_model) { create :purpose }
 
   # Test attributes
   it 'works', :aggregate_failures do
-    is_expected.to have_attribute :uuid
-    is_expected.to have_attribute :name
-    is_expected.to_not have_updatable_field(:id)
-    is_expected.to_not have_updatable_field(:uuid)
+    expect(subject).to have_attribute :uuid
+    expect(subject).to have_attribute :name
+    expect(subject).not_to have_updatable_field(:id)
+    expect(subject).not_to have_updatable_field(:uuid)
   end
 
   # Updatable fields

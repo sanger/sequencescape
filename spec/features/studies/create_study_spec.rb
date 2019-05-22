@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'Create a study' do
+describe 'Create a study' do
   let(:user) { create :admin }
 
   setup do
@@ -10,7 +10,7 @@ feature 'Create a study' do
     create :data_release_study_type, name: 'genomic sequencing'
   end
 
-  scenario 'create managed study', js: true do
+  it 'create managed study', js: true do
     login_user user
     visit root_path
     click_link 'Create Study'
@@ -21,7 +21,7 @@ feature 'Create a study' do
     expect(page).not_to have_content "Study metadata hmdmc approval number can't be blank"
   end
 
-  scenario 'create open study', js: true do
+  it 'create open study', js: true do
     login_user user
     visit new_study_path
     expect(page).to have_content('Study Create')

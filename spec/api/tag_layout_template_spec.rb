@@ -61,6 +61,7 @@ describe '/api/1/tag_layout_templates' do
 
   describe '/api/1/template-uuid' do
     subject { "/api/1/#{example_template.uuid}" }
+
     let(:example_template) do
       create :entire_plate_tag_layout_template, name: 'Test Example', tags: %w[AAA TTT]
     end

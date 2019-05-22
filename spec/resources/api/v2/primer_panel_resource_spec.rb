@@ -4,16 +4,17 @@ require 'rails_helper'
 require './app/resources/api/v2/primer_panel_resource'
 
 RSpec.describe Api::V2::PrimerPanelResource, type: :resource do
-  let(:resource_model) { create :primer_panel }
   subject { described_class.new(resource_model, {}) }
+
+  let(:resource_model) { create :primer_panel }
 
   # Test attributes
   it 'works', :aggregate_failures do
-    is_expected.to have_attribute :name
-    is_expected.to have_attribute :programs
-    is_expected.to_not have_updatable_field(:id)
-    is_expected.to_not have_updatable_field(:name)
-    is_expected.to_not have_updatable_field(:programs)
+    expect(subject).to have_attribute :name
+    expect(subject).to have_attribute :programs
+    expect(subject).not_to have_updatable_field(:id)
+    expect(subject).not_to have_updatable_field(:name)
+    expect(subject).not_to have_updatable_field(:programs)
   end
 
   # Updatable fields

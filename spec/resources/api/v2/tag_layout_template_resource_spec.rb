@@ -4,14 +4,15 @@ require 'rails_helper'
 require './app/resources/api/v2/tag_layout_template_resource'
 
 RSpec.describe Api::V2::TagLayoutTemplateResource, type: :resource do
-  let(:resource_model) { create :tag_layout_template }
   subject { described_class.new(resource_model, {}) }
+
+  let(:resource_model) { create :tag_layout_template }
 
   # Test attributes
   it 'works', :aggregate_failures do
-    is_expected.to have_attribute :uuid
-    is_expected.to_not have_updatable_field(:id)
-    is_expected.to_not have_updatable_field(:uuid)
+    expect(subject).to have_attribute :uuid
+    expect(subject).not_to have_updatable_field(:id)
+    expect(subject).not_to have_updatable_field(:uuid)
   end
 
   # Updatable fields

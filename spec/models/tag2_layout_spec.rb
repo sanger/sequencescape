@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Tag2Layout, type: :model do
+  subject { create :tag2_layout, plate: plate, tag: tag }
+
   let(:plate) { create :plate_with_untagged_wells, :with_submissions, sample_count: 2 }
   let(:tag) { create :tag }
   let!(:tag2_layout_template) { create :tag2_layout_template, tag: tag }
-
-  subject { create :tag2_layout, plate: plate, tag: tag }
 
   it 'applies its tag to every well of the plate' do
     expect(subject.plate.wells).to be_present

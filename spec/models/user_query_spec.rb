@@ -11,11 +11,11 @@ describe UserQuery do
       what_happened: 'it did not work',
       what_expected: 'it to work' }
   }
-  let(:user_query) { UserQuery.new(user_query_attributes) }
-  let(:user_query_with_no_email_provided) { UserQuery.new(user_query_attributes.except(:user_email)) }
+  let(:user_query) { described_class.new(user_query_attributes) }
+  let(:user_query_with_no_email_provided) { described_class.new(user_query_attributes.except(:user_email)) }
 
-  it 'should have a user and a user email' do
-    invalid_user_query = UserQuery.new
+  it 'has a user and a user email' do
+    invalid_user_query = described_class.new
     expect(invalid_user_query.valid?).to be false
     expect(invalid_user_query.errors.messages.length).to eq 2
     expect(user_query.valid?).to be true
@@ -24,7 +24,7 @@ describe UserQuery do
     expect(user_query_with_no_email_provided.user_email).to eq 'login@example.com'
   end
 
-  it 'should know the details of the query, i.e. from, to, date' do
+  it 'knows the details of the query, i.e. from, to, date' do
     new_time = Time.local(2017, 2, 6, 12, 0, 0)
     Timecop.freeze(new_time)
     expect(user_query.from).to eq 'another_email@example.com'

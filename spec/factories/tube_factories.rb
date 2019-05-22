@@ -176,6 +176,7 @@ FactoryBot.define do
       tag = create(:tag, map_id: 888, oligo: 'G')
       tube.aliquots << build(:aliquot, sample: SpikedBuffer.phix_sample, library: tube, tag: tag)
     end
+
     volume { 50 }
   end
 end
