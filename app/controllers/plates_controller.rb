@@ -2,7 +2,7 @@ class PlatesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :login_required, except: [:upload_pico_results, :fluidigm_file]
+  before_action :login_required, except: [:fluidigm_file]
 
   def new
     @plate_creators   = Plate::Creator.order(:name)

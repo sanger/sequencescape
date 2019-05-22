@@ -113,7 +113,6 @@ class Asset < ApplicationRecord
     event_constructor(:create_sequenom_stamp!,         Event::PlateCreationEvent,     :create_sequenom_stamp_for_asset!)
     event_constructor(:create_sequenom_plate!,         Event::PlateCreationEvent,     :create_sequenom_plate_for_asset!)
     event_constructor(:create_gel_qc!,                 Event::SampleLogisticsQcEvent, :create_gel_qc_for_asset!)
-    event_constructor(:create_pico!,                   Event::SampleLogisticsQcEvent, :create_pico_result_for_asset!)
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
     event_constructor(:updated_fluidigm_plate!, Event::SequenomLoading, :updated_fluidigm_plate!)

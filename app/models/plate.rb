@@ -159,16 +159,6 @@ class Plate < Asset
     waiting_submissions.presence || in_progress_submissions
   end
 
-  def barcode_dilution_factor_created_at_hash
-    return {} if primary_barcode.blank?
-
-    {
-      barcode: ean13_barcode.to_s,
-      dilution_factor: dilution_factor.to_s,
-      created_at: created_at
-    }
-  end
-
   def iteration
     iter = siblings # assets sharing the same parent
            .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type

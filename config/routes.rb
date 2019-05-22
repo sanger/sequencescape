@@ -488,7 +488,6 @@ Sequencescape::Application.routes.draw do
 
   resources :plates do
     collection do
-      post :upload_pico_results
       post :create
       get :to_sample_tubes
       post :create_sample_tubes
@@ -499,8 +498,6 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :pico_set_results, only: :create
-
   resources :receptions, only: [:index] do
     collection do
       post :confirm_reception
@@ -510,7 +507,6 @@ Sequencescape::Application.routes.draw do
   end
 
   resources :sequenom_qc_plates
-  resources :pico_dilutions
   resources :study_reports
 
   resources :tag_substitutions, only: :create

@@ -13,7 +13,14 @@ end
 
 Given /^plate "([^"]*)" has had pico analysis results uploaded$/ do |barcode|
   plate = Asset.find_from_barcode(barcode)
-  plate.events.create_pico!('passed')
+  # We have old data that the users may want to report on, but have remove the
+  # means of creating it. THis emulates the old route.
+  Event::SampleLogisticsQcEvent.create!(
+    eventful: plate,
+    message: "Pico result for plate #{barcode} with passed",
+    content: Time.zone.today.to_s,
+    family: 'pico_analysed'
+  )
 end
 
 Given /^plate "([^"]*)" has gel analysis results$/ do |barcode|
