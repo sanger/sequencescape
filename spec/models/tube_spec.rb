@@ -56,6 +56,7 @@ describe Tube, type: :model do
         create :comment, commentable: request, description: 'Comment on request'
         tube.reload
       end
+
       it 'exposes its comments and those of the request' do
         expect(tube.comments.count).to eq(2)
         expect(tube.comments.map(&:description)).to include('Comment on tube')
@@ -73,6 +74,7 @@ describe Tube, type: :model do
         create :comment, commentable: tube, description: 'Duplicate comment'
         tube.reload
       end
+
       it 'de-duplicates repeat comments' do
         expect(tube.comments.count).to eq(2)
         expect(tube.comments.map(&:description)).to include('Comment on tube')
@@ -86,6 +88,7 @@ describe Tube, type: :model do
 
     describe '#update_from_qc' do
       let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
+
       setup { tube.update_from_qc(qc_result) }
       context 'key: molarity with nM' do
         let(:key) { 'molarity' }
@@ -93,6 +96,7 @@ describe Tube, type: :model do
 
         context 'units: nM' do
           let(:units) { 'nM' }
+
           it 'works', :aggregate_failures do
             expect(tube.concentration).to eq(100)
           end
@@ -103,12 +107,15 @@ describe Tube, type: :model do
         let(:key) { 'volume' }
         let(:units) { 'ul' }
         let(:value) { 100 }
+
         it { expect(tube.volume).to eq(100) }
       end
+
       context 'key: volume, units: ml' do
         let(:key) { 'volume' }
         let(:units) { 'ml' }
         let(:value) { 1 }
+
         it { expect(tube.volume).to eq(1000) }
       end
     end

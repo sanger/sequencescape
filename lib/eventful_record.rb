@@ -1,6 +1,6 @@
 module EventfulRecord
   def has_many_events(&block)
-    has_many(:events, ->() { order('created_at') }, as: :eventful, dependent: :destroy) do
+    has_many(:events, ->() { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy) do
       def self.event_constructor(name, event_class, event_class_method)
         line = __LINE__ + 1
         class_eval("

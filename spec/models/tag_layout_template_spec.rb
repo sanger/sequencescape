@@ -14,8 +14,10 @@ describe TagLayoutTemplate do
   end
 
   describe '#create!' do
-    let(:user) { build :user }
     subject { template.create!(plate: plate, user: user) }
+
+    let(:user) { build :user }
+
     let(:plate) { create :plate }
     let(:tag2_group) { nil }
     let(:enforce_uniqueness) { nil }
@@ -24,6 +26,7 @@ describe TagLayoutTemplate do
       let(:direction_algorithm) { 'TagLayout::InColumns' }
       let(:walking_algorithm) { 'TagLayout::WalkWellsOfPlate' }
       let(:plate) { create :plate, :with_submissions, well_count: 1 }
+
       it { is_expected.to be_a TagLayout }
 
       it 'passes in the correct properties' do
@@ -46,9 +49,10 @@ describe TagLayoutTemplate do
       end
 
       context 'with a tag2 group' do
-        it { is_expected.to be_a TagLayout }
-        let(:tag2_group) { create :tag_group_with_tags }
         let(:enforce_uniqueness) { true }
+        let(:tag2_group) { create :tag_group_with_tags }
+
+        it { is_expected.to be_a TagLayout }
 
         it 'passes in the correct properties' do
           expect(subject.plate).to eq(plate)
@@ -71,6 +75,7 @@ describe TagLayoutTemplate do
     context 'by pool in rows' do
       let(:direction_algorithm) { 'TagLayout::InRows' }
       let(:walking_algorithm) { 'TagLayout::WalkWellsByPools' }
+
       it { is_expected.to be_a TagLayout }
 
       it 'passes in the correct properties' do

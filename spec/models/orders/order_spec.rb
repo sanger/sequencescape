@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Order, type: :model do
   attr_reader :study, :asset, :project
 
-  before(:each) do
+  before do
     @study = create :study, state: 'pending'
     @project = create :project
     @asset = create :empty_sample_tube
@@ -74,7 +74,7 @@ RSpec.describe Order, type: :model do
 
   it 'order should not be valid if study is not active' do
     order = build :order, study: study, assets: [asset], project: project
-    expect(order).to_not be_valid
+    expect(order).not_to be_valid
   end
 
   it 'order should be valid if study is active on create' do
@@ -87,7 +87,7 @@ RSpec.describe Order, type: :model do
     assert order.valid?
   end
 
-  it 'should know if it has samples that can not be included in submission' do
+  it 'knows if it has samples that can not be included in submission' do
     sample_manifest = create :tube_sample_manifest_with_samples
     order = create :order, assets: sample_manifest.labware
     expect(order.not_ready_samples.count).to eq 5
@@ -97,7 +97,7 @@ RSpec.describe Order, type: :model do
 
     no_manifest_sample = create :sample, assets: [asset]
     order = create :order, assets: no_manifest_sample.assets
-    expect(order.all_samples).to_not be_empty
+    expect(order.all_samples).not_to be_empty
     expect(order.not_ready_samples).to be_empty
   end
 end

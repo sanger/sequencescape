@@ -14,7 +14,7 @@ describe PsdFormatter do
 
   setup do
     Rails.logger = Logger.new(log)
-    Rails.logger.formatter = PsdFormatter.new(deployment_info)
+    Rails.logger.formatter = described_class.new(deployment_info)
   end
 
   # These two context handle the temporary need to deploy in two environments

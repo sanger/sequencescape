@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'Generate a bulk submission spreadsheet', js: true, bulk_submission_excel: true do
+describe 'Generate a bulk submission spreadsheet', js: true, bulk_submission_excel: true do
   let!(:user) { create :user }
   let!(:plate) { create(:plate_with_untagged_wells, well_count: 30) }
   let!(:partial_plate) { create(:plate_with_untagged_wells, well_count: 30) }
@@ -10,14 +10,14 @@ feature 'Generate a bulk submission spreadsheet', js: true, bulk_submission_exce
   let(:date) { Time.current.strftime('%Y%m%d') }
   let(:filename) { "#{plate.human_barcode}_#{partial_plate.human_barcode}_#{date}.xlsx" }
 
-  background do
+  before do
     BulkSubmissionExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'bulk_submission_excel')
       config.load!
     end
   end
 
-  scenario 'Generate a basic spreadsheet' do
+  it 'Generate a basic spreadsheet' do
     login_user user
     visit bulk_submissions_path
     fill_in 'Labware barcodes (and wells)', with: "#{plate.human_barcode} #{partial_plate.human_barcode}:A1,A2"

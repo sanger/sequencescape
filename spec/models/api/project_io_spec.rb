@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe Api::ProjectIO, type: :model do
   context 'with minimal details' do
     subject { create :project, approved: true }
+
     let(:metadata) { subject.project_metadata }
 
     let(:expected_json) do
@@ -40,6 +41,7 @@ RSpec.describe Api::ProjectIO, type: :model do
                project_manager: project_manager
              }
     end
+
     let(:project_manager) { create(:project_manager) }
     let!(:manager) { create :manager, authorizable: subject }
 

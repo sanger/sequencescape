@@ -34,13 +34,13 @@ RSpec.describe SampleManifestExcel::ManifestTypeList, type: :model, sample_manif
   it '#by_asset_type returns a list of manifest types by their asset type' do
     expect(manifest_type_list.by_asset_type('plate').count).to eq(2)
     expect(manifest_type_list.by_asset_type('tube').count).to eq(1)
-    expect(manifest_type_list.by_asset_type('dodgy asset type').any?).to be_falsey
+    expect(manifest_type_list.by_asset_type('dodgy asset type')).not_to be_any
     expect(manifest_type_list.by_asset_type(nil).count).to eq(manifest_type_list.count)
   end
 
-  it 'should be comparable' do
+  it 'is comparable' do
     expect(manifest_type_list).to eq(SampleManifestExcel::ManifestTypeList.new(yaml))
     yaml.shift
-    expect(manifest_type_list).to_not eq(SampleManifestExcel::ManifestTypeList.new(yaml))
+    expect(manifest_type_list).not_to eq(SampleManifestExcel::ManifestTypeList.new(yaml))
   end
 end

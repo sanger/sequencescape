@@ -30,6 +30,7 @@ RSpec.describe Api::V2::StudiesController, type: :request, aker: true do
       create(:role, users: [user_1], name: 'follower', authorizable_type: 'Study', authorizable_id: s.id)
     end
   end
+
   it 'study scope returns correct studies' do
     studies = Study.by_state('active').by_user(user_1.login)
     expect(studies.count).to eq(3)
@@ -40,7 +41,7 @@ RSpec.describe Api::V2::StudiesController, type: :request, aker: true do
 
   it 'api request returns the correct studies' do
     get api_v2_studies_path, params: { "filter[state]": 'active', "filter[user]": user_1.login }
-    expect(response).to be_success
+    expect(response).to be_successful
     json = ActiveSupport::JSON.decode(response.body)
     expect(json['data'].length).to eq(3)
     study = json['data'].first['attributes']

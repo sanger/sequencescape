@@ -42,7 +42,7 @@ class TagSubstitutionsController < ApplicationController
   def prepare_form
     @suggested_reasons = SUGGESTED_REASONS
     @complete_tags = Tag.includes(:tag_group)
-                        .pluck('CONCAT(map_id, " - ", oligo)', :id, 'tag_groups.name')
+                        .pluck(Arel.sql('CONCAT(map_id, " - ", oligo)'), :id, 'tag_groups.name')
                         .index_by(&:second)
   end
 

@@ -1,3 +1,5 @@
+# Generates warehouse messages describing a PacBio run.
+# PacBio runs are approximated by {Batch batches}
 class Api::Messages::PacBioRunIO < Api::Base
   renders_model(::Batch)
 

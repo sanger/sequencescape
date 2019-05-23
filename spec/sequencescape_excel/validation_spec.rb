@@ -7,12 +7,12 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
   let(:range) { build(:range) }
 
   it 'is not valid without options' do
-    expect(SequencescapeExcel::Validation.new).to_not be_valid
+    expect(SequencescapeExcel::Validation.new).not_to be_valid
   end
 
   it 'is comparable' do
     expect(SequencescapeExcel::Validation.new(options: options)).to eq(SequencescapeExcel::Validation.new(options: options))
-    expect(SequencescapeExcel::Validation.new(options: options.except(:formula1))).to_not eq(SequencescapeExcel::Validation.new(options: options))
+    expect(SequencescapeExcel::Validation.new(options: options.except(:formula1))).not_to eq(SequencescapeExcel::Validation.new(options: options))
   end
 
   context 'without range name' do
@@ -28,7 +28,7 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
 
     it 'does not add a range' do
       validation.update(range: range)
-      expect(validation.formula1).to_not eq(range.absolute_reference)
+      expect(validation.formula1).not_to eq(range.absolute_reference)
     end
   end
 
@@ -47,8 +47,8 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
     it 'will be duplicated correctly' do
       dupped = validation.dup
       validation.update(range: range)
-      expect(dupped.options).to_not eq(validation.options)
-      expect(dupped).to_not be_saved
+      expect(dupped.options).not_to eq(validation.options)
+      expect(dupped).not_to be_saved
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
 
       other_validation = SequencescapeExcel::Validation.new(options: options.merge(option3: 'value3'))
       other_validation.update(reference: range.reference, worksheet: worksheet)
-      expect(other_validation).to_not eq(validation)
+      expect(other_validation).not_to eq(validation)
     end
   end
 end

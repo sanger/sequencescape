@@ -7,7 +7,7 @@ describe WorkCompletion do
   describe '::create' do
     context 'with a cross-submission tube' do
       before do
-        WorkCompletion.create!(
+        described_class.create!(
           user: create(:user),
           target: target_tube
         )
@@ -82,7 +82,7 @@ describe WorkCompletion do
       let(:requests_per_well) { 2 }
 
       before do
-        WorkCompletion.create!(
+        described_class.create!(
           user: create(:user),
           target: target_plate,
           submissions: [target_submission]
@@ -111,7 +111,7 @@ describe WorkCompletion do
         # Note: We explicitly pass in submission. Not only will this allow partial passing of plates,
         # but will also reduce coupling with transfer requests, and help push business logic out into
         # the client applications.
-        WorkCompletion.create!(
+        described_class.create!(
           user: create(:user),
           target: target_plate,
           submissions: [target_submission]
@@ -155,9 +155,9 @@ describe WorkCompletion do
     end
 
     context 'when wells are failed' do
-      before(:each) do
+      before do
         library_requests.first.fail!
-        WorkCompletion.create!(
+        described_class.create!(
           user: create(:user),
           target: target_plate,
           submissions: [target_submission]
@@ -170,8 +170,8 @@ describe WorkCompletion do
     end
 
     context 'when no submission is included' do
-      before(:each) do
-        WorkCompletion.create!(
+      before do
+        described_class.create!(
           user: create(:user),
           target: target_plate,
           submissions: []

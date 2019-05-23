@@ -1,3 +1,6 @@
+require 'singleton'
+require 'rest-client'
+
 class FakeAccessionService
   include Singleton
 

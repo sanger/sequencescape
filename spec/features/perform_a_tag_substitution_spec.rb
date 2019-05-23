@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'Perform a tag substitution', js: true do
+describe 'Perform a tag substitution', js: true do
   let(:sample_a) { create :sample }
   let(:sample_b) { create :sample }
   let(:library_tube_a) { create :library_tube }
@@ -20,7 +20,7 @@ feature 'Perform a tag substitution', js: true do
 
   let(:user) { create :user }
 
-  background do
+  before do
     create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: library_tube_a
     create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: library_tube_b
     create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: mx_library_tube
@@ -29,7 +29,7 @@ feature 'Perform a tag substitution', js: true do
     create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: lane
   end
 
-  scenario 'Performing a tag swap' do
+  it 'Performing a tag swap' do
     login_user user
     visit asset_path(lane)
     click_link 'perform tag substitution'
@@ -50,15 +50,16 @@ feature 'Perform a tag substitution', js: true do
     find('td', text: sample_b.name).sibling('td', text: "(#{sample_a_orig_tag.oligo})")
     find('td', text: sample_b.name).sibling('td', text: "(#{sample_b_orig_tag2.oligo})")
     click_link '1 comment'
-    expect(page).to have_content(
-      "Tag substitution performed.
-       Referenced ticket no: 12345
-       Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_b_orig_tag.oligo};
-       Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_a_orig_tag.oligo};"
-    )
+    expect(page).to have_content(<<~COMMENT
+      Tag substitution performed.
+      Referenced ticket no: 12345
+      Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_b_orig_tag.oligo};
+      Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_a_orig_tag.oligo};
+    COMMENT
+                                )
   end
 
-  scenario 'Performing an invalid tag swap' do
+  it 'Performing an invalid tag swap' do
     login_user user
     visit asset_path(lane)
     click_link 'perform tag substitution'

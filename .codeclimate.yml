@@ -23,4 +23,4 @@ plugins:
   bundler-audit:
     enabled: true
   flog:
-    enabled: true
+    enabled: false # Currently errors as doesn't support ruby >=2.3

@@ -6,7 +6,7 @@ module Commentable
 
   included do
     has_many :comments, as: :commentable, dependent: :destroy, inverse_of: :commentable
-    scope :with_comments, -> { joins(:comments).where("commentable_type = '#{base.name}'") } do
+    scope :with_comments, -> { joins(:comments) } do
       def group(ids)
         conditions = {}
         conditions[:id] = ids if ids

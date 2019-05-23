@@ -7,30 +7,28 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       @user = FactoryBot.create :user
       @controller = SubmissionsController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @plate_purpose = PlatePurpose.find_by(name: 'Stock plate')
+      @plate_purpose = create :stock_plate_purpose
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
       @project = FactoryBot.create :project
       @study = FactoryBot.create :study
-      @asset1 = FactoryBot.create :sample_tube
-      @asset2 = FactoryBot.create :sample_tube
-      @asset3 = FactoryBot.create :sample_tube
-      @asset4 = FactoryBot.create :sample_tube
+      @asset_count = 4
       @asset_group = FactoryBot.create :asset_group
-      @asset_group.assets << @asset1 << @asset2 << @asset3 << @asset4
-      @sequencing_pipeline = Pipeline.find_by(name: 'Cluster formation SE')
+      @asset_group.assets = create_list :sample_tube, @asset_count
+      @sequencing_pipeline = create :sequencing_pipeline
     end
 
     context 'which is single plexed' do
       setup do
+        @lc = create :library_creation_request_type, target_asset_type: nil
+        seq = create :sequencing_request_type
         # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
         # However, as this seems to relate to the multiplier, it may be related to out problem.
         submission_template_hash = { name: 'Singleplexed-template',
                                      submission_class_name: 'LinearSubmission',
                                      product_catalogue: 'Generic',
                                      submission_parameters: { info_differential: 5,
-                                                              request_types: %w[illumina_c_library_creation
-                                                                                illumina_c_single_ended_sequencing] } }
+                                                              request_types: [@lc.key, seq.key] } }
 
         @submission_template = SubmissionSerializer.construct!(submission_template_hash)
 
@@ -42,9 +40,8 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
                  order_params: {
                    'read_length' => '37',
                    'fragment_size_required_to' => '400',
-                   'bait_library_name' => 'Human all exon 50MB',
                    'fragment_size_required_from' => '100',
-                   'library_type' => 'Agilent Pulldown'
+                   'library_type' => @lc.library_types.first.name
                  },
                  asset_group_id: @asset_group.id,
                  study_id: @study.id,
@@ -60,11 +57,12 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         Submission.last.build_batch
       end
 
+      # This is all a bit convoluted, and depends of some very specific options.
       context 'and I batch up the library creation requests seperately' do
         setup do
           @requests_group_a = LibraryCreationRequest.all[0..1]
           @requests_group_b = LibraryCreationRequest.all[2..3]
-          @pipeline = LibraryCreationRequest.first.request_type.pipelines.first
+          @pipeline = create :library_creation_pipeline, request_types: [@lc], asset_type: 'LibraryTube'
           @batch_a = Batch.create!(requests: @requests_group_a, pipeline: @pipeline)
           @batch_a.start!(user: @user)
           @batch_a.complete!(@user)
@@ -72,7 +70,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         end
 
         should 'before failing any sequencing requests' do
-          assert_equal LibraryCreationRequest.first.id + 4, LibraryCreationRequest.first.next_requests.first.id
+          assert_equal LibraryCreationRequest.first.id + @asset_count, LibraryCreationRequest.first.next_requests.first.id
           assert_equal LibraryCreationRequest.all[2].id + 12, LibraryCreationRequest.all[2].next_requests.first.id
         end
       end
@@ -80,6 +78,8 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
 
     context 'which is multiplexed' do
       setup do
+        lc = create :multiplexed_library_creation_request_type
+        seq = create :sequencing_request_type
         # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
         # However, as this seems to relate to the multiplier, it may be related to out problem.
         # @asset_group.assets.each_with_index {|a,i| tag=FactoryBot.create :tag; a.aliquots.first.update!(:tag=>tag)}
@@ -87,11 +87,9 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
                                      submission_class_name: 'LinearSubmission',
                                      product_catalogue: 'Generic',
                                      submission_parameters: { info_differential: 5,
-                                                              request_types: %w[illumina_c_multiplexed_library_creation
-                                                                                illumina_c_single_ended_sequencing] } }
+                                                              request_types: [lc.key, seq.key] } }
 
         @submission_template = SubmissionSerializer.construct!(submission_template_hash)
-        @library_pipeline = Pipeline.find_by!(name: 'Illumina-B MX Library Preparation')
 
         post(:create, params: { submission: {
                is_a_sequencing_order: 'true',

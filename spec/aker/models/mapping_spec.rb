@@ -40,6 +40,7 @@ RSpec.describe Aker::Mapping, aker: true do
             bubidibu         =>  blublublu
           )
         end
+
         before do
           allow(mapping).to receive(:model_for_table).and_return(nil)
           Aker::Mapping.config = my_config
@@ -55,6 +56,7 @@ RSpec.describe Aker::Mapping, aker: true do
         end
       end
     end
+
     context '#update' do
       it 'updates an attribute translating to the right column of the model' do
         allow(some_model).to receive(:update).with(measured_volume: 44).and_return(true)
@@ -73,6 +75,7 @@ RSpec.describe Aker::Mapping, aker: true do
             bubidibu        <=  blublublu
           )
         end
+
         before do
           allow(mapping).to receive(:model_for_table).and_return(nil)
           Aker::Mapping.config = my_config
@@ -87,6 +90,7 @@ RSpec.describe Aker::Mapping, aker: true do
         end
       end
     end
+
     context '#update!' do
       it 'updates an attribute translating to the right column of the model' do
         allow(some_model).to receive(:update).with(measured_volume: 44).and_return(true)

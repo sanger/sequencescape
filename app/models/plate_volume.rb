@@ -78,8 +78,8 @@ class PlateVolume < ApplicationRecord
       ActiveRecord::Base.transaction do
         find_for_filename(sanitized_filename(file)).call(filename, file)
       end
-    rescue => exception
-      Rails.logger.warn("Error processing volume file #{filename}: #{exception.message}")
+    rescue => e
+      Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
     end
     private :handle_volume
 

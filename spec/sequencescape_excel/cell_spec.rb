@@ -23,6 +23,6 @@ RSpec.describe SequencescapeExcel::Cell, type: :model, sample_manifest_excel: tr
 
   it 'is comparable' do
     expect(SequencescapeExcel::Cell.new(1, 1)).to eq(SequencescapeExcel::Cell.new(1, 1))
-    expect(SequencescapeExcel::Cell.new(1, 1)).to_not eq(SequencescapeExcel::Cell.new(2, 1))
+    expect(SequencescapeExcel::Cell.new(1, 1)).not_to eq(SequencescapeExcel::Cell.new(2, 1))
   end
 end

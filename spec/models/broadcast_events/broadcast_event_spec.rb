@@ -13,6 +13,10 @@ class TestSeed
     :id
   end
 
+  def self.polymorphic_name
+    'test_seed'
+  end
+
   def attributes
     {
       'uuid' => @uuid,
@@ -81,7 +85,7 @@ end
 
 RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
   it 'is not directly instantiated' do
-    expect { BroadcastEvent.new }.to raise_error(StandardError)
+    expect(BroadcastEvent.new).not_to be_valid
   end
 
   context 'ExampleEvent' do

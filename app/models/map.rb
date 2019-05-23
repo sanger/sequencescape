@@ -1,7 +1,18 @@
+# Map identifies a {Well wells} position on a {Plate}. It is not related to
+# the ruby #map method.
 class Map < ApplicationRecord
   validates_presence_of :description, :asset_size, :location_id, :row_order, :column_order, :asset_shape
   validates_numericality_of :asset_size, :row_order, :column_order
 
+  # @!attribute description
+  #   @return [String] the name of the well. In most cases this will be in the
+  #                    along the lines of A1 or H12
+  # @!attribute asset_size
+  #   @return [Integer] the plate size for which the {Map} corresponds
+  # @!attribute row_order
+  #   @return [Integer] zero indexed order of the well when sorted by row
+  # @!attribute column_order
+  #   @return [Integer] zero indexed order of the well when sorted by column
   module Coordinate
     # TODO: These methods are only valid for standard plates. Moved them here to make that more explicit
     # (even if its not strictly appropriate) They could do with refactoring/removing.

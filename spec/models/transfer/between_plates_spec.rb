@@ -8,7 +8,7 @@ describe Transfer::BetweenPlates do
   let(:destination) { create :plate, well_count: 5, well_factory: :empty_well }
 
   before do
-    Transfer::BetweenPlates.create!(
+    described_class.create!(
       source: source,
       destination: destination,
       user: user,

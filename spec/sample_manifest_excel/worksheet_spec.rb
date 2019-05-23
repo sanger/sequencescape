@@ -21,13 +21,21 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
   end
 
-  before(:each) do
+  before do
     barcode = double('barcode')
     allow(barcode).to receive(:barcode).and_return(23)
     allow(PlateBarcode).to receive(:create).and_return(barcode)
 
     @sample_manifest = create :sample_manifest, rapid_generation: true
     sample_manifest.generate
+  end
+
+  after(:all) do
+    SampleManifestExcel.reset!
+  end
+
+  after do
+    File.delete(test_file) if File.exist?(test_file)
   end
 
   context 'type' do
@@ -69,7 +77,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
                                                         password: '1111')
     end
 
-    before(:each) do
+    before do
       save_file
     end
 
@@ -117,7 +125,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
 
     it 'updates all of the columns' do
-      expect(worksheet.columns.values.all?(&:updated?)).to be_truthy
+      expect(worksheet.columns.values).to be_all(&:updated?)
     end
 
     it 'panes should be frozen correctly' do
@@ -170,7 +178,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     context 'in a valid state' do
       let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes) }
 
-      before(:each) do
+      before do
         save_file
       end
 
@@ -223,7 +231,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     context 'in a valid state with sequence tags' do
       let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_library_with_tag_sequences')) }
 
-      before(:each) do
+      before do
         save_file
       end
 
@@ -238,7 +246,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     context 'in a valid state with tag groups and indexes' do
       let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup)) }
 
-      before(:each) do
+      before do
         save_file
       end
 
@@ -267,28 +275,28 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('1dtube')
-        expect(worksheet.assets.all? { |asset| asset.type == 'sample_tube' }).to be_truthy
+        expect(worksheet.assets).to be_all { |asset| asset.type == 'sample_tube' }
       end
 
       it 'creates library tubes for library with tag sequences' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_library_with_tag_sequences'))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('library')
-        expect(worksheet.assets.all? { |asset| asset.type == 'library_tube' }).to be_truthy
+        expect(worksheet.assets).to be_all { |asset| asset.type == 'library_tube' }
       end
 
       it 'creates a multiplexed library tube for multiplexed_library with tag sequences' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library_with_tag_sequences'))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
-        expect(worksheet.assets.all? { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }).to be_truthy
+        expect(worksheet.assets).to be_all { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }
       end
 
       it 'creates a multiplexed library tube for multiplexed_library with tag group and index' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
-        expect(worksheet.assets.all? { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }).to be_truthy
+        expect(worksheet.assets).to be_all { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }
       end
     end
 
@@ -346,7 +354,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     context 'in a valid state' do
       let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes) }
 
-      before(:each) do
+      before do
         save_file
       end
 
@@ -408,7 +416,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('plate')
-        expect(worksheet.assets.all? { |asset| asset.type == 'plate' }).to be_truthy
+        expect(worksheet.assets).to be_all { |asset| asset.type == 'plate' }
       end
     end
 
@@ -420,13 +428,5 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         expect(sample.sample_manifest).to be_nil
       end
     end
-  end
-
-  after(:each) do
-    File.delete(test_file) if File.exist?(test_file)
-  end
-
-  after(:all) do
-    SampleManifestExcel.reset!
   end
 end

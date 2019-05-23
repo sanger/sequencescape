@@ -90,12 +90,30 @@ FactoryBot.define do
     externally_managed { false }
     min_size { 1 }
 
-    association(:workflow, factory: :lab_workflow_for_pipeline, item_limit: 3000)
+    after(:build) do |pipeline|
+      pipeline.workflow = build :cherrypick_pipeline_workflow, pipeline: pipeline unless pipeline.workflow
+      pipeline.request_types << build(:cherrypick_request_type)
+      pipeline.add_control_request_type
+    end
+  end
+
+  factory :fluidigm_pipeline, class: CherrypickPipeline do
+    name                    { generate :pipeline_name }
+    active                  { true }
+    group_by_parent         { true }
+    asset_type              { 'Well' }
+    max_size                { 192 }
+    sorter                  { 11 }
+    paginate                { false }
+    summary                 { false }
+    externally_managed      { false }
+    control_request_type_id { 0 }
+    min_size                { 1 }
+
+    association(:workflow, factory: :fluidigm_pipeline_workflow)
 
     after(:build) do |pipeline|
       pipeline.request_types << build(:well_request_type)
-      pipeline.add_control_request_type
-      pipeline.build_workflow(name: pipeline.name, item_limit: 3000, locale: 'Internal', pipeline: pipeline) if pipeline.workflow.nil?
     end
   end
 
@@ -146,6 +164,19 @@ FactoryBot.define do
     active                { true }
     next_pipeline_id      { nil }
     previous_pipeline_id  { nil }
+
+    after(:build) do |pipeline|
+      pipeline.request_types << create(:request_type)
+      pipeline.add_control_request_type
+      pipeline.build_workflow(name: pipeline.name, locale: 'Internal', pipeline: pipeline)
+    end
+  end
+
+  factory :multiplexed_library_creation_pipeline do
+    name { |_a| FactoryBot.generate :pipeline_name }
+    asset_type { 'LibraryTube' }
+    automated             { false }
+    active                { true }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -211,9 +242,43 @@ FactoryBot.define do
   end
 
   factory :lab_workflow_for_pipeline, class: Workflow do
-    name                  { |_a| FactoryBot.generate :lab_workflow_name }
+    name                  { generate :lab_workflow_name }
     item_limit            { 2 }
     locale                { 'Internal' }
+
+    after(:build) do |workflow|
+      workflow.pipeline = build(:pipeline, workflow: workflow) unless workflow.pipeline
+    end
+  end
+
+  factory :fluidigm_pipeline_workflow, class: Workflow do
+    name { generate :lab_workflow_name }
+
+    after(:build) do |workflow|
+      workflow.pipeline = build(:fluidigm_pipeline, workflow: workflow) unless workflow.pipeline
+    end
+
+    tasks do
+      [
+        build(:fluidigm_template_task, workflow: nil),
+        build(:cherrypick_task, workflow: nil)
+      ]
+    end
+  end
+
+  factory :cherrypick_pipeline_workflow, class: Workflow do
+    name { generate :lab_workflow_name }
+
+    after(:build) do |workflow|
+      workflow.pipeline = build(:cherrypick_pipeline, workflow: workflow) unless workflow.pipeline
+    end
+
+    tasks do
+      [
+        build(:plate_template_task, workflow: nil),
+        build(:cherrypick_task, workflow: nil)
+      ]
+    end
   end
 
   factory :batch_request do
@@ -341,37 +406,6 @@ FactoryBot.define do
         oligos_count { 5 }
       end
     end
-  end
-
-  factory :assign_tags_task do
-  end
-
-  factory :assign_tubes_to_multiplexed_wells_task do
-  end
-
-  factory :multiplexed_cherrypicking_task do
-  end
-
-  factory :attach_infinium_barcode_task do
-  end
-
-  factory :tag_groups_task do
-  end
-
-  factory :strip_tube_creation_task do
-  end
-
-  factory :plate_transfer_task do
-    purpose_id { create(:plate_purpose).id }
-  end
-
-  factory :cherrypick_task do |_t|
-    name { 'New task' }
-    pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
-    sorted                { nil }
-    location              { '' }
-    batched               { nil }
-    interactive           { nil }
   end
 
   factory :barcode_prefix do

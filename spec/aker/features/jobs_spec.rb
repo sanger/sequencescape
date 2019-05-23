@@ -13,18 +13,18 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
     File.read(File.join('spec', 'data', 'aker', 'job.json'))
   end
 
-  scenario 'view all jobs' do
+  it 'view all jobs' do
     visit aker_jobs_path
     expect(find('.jobs')).to have_css('.job', count: 5)
   end
 
   context 'existing job' do
     context 'active' do
-      before(:each) do
+      before do
         allow(RestClient::Request).to receive(:execute).with(verify_ssl: false, method: :get, url: get_url, headers: { content_type: :json }, proxy: nil).and_return(RestClient::Response.create(job_json, Net::HTTPResponse.new('1.1', 200, ''), request))
       end
 
-      scenario 'view a job' do
+      it 'view a job' do
         visit aker_job_path(job.job_uuid)
         expect(page).to have_content('Jobs')
         json = JSON.parse(job_json)['job']

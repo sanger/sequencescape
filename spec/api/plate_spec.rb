@@ -14,6 +14,7 @@ describe '/api/1/plate-uuid' do
   before do
     custom_metadata_collection
   end
+
   let(:custom_metadata_collection) do
     create(:custom_metadatum_collection, asset: plate)
   end

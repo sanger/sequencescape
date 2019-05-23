@@ -58,7 +58,7 @@ class ProjectsController < ApplicationController
       format.xml  { render xml: @project, status: :created, location: @project }
       format.json { render json: @project, status: :created, location: @project }
     end
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Problems creating your new project'
     respond_to do |format|
       format.html {

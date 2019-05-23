@@ -16,14 +16,14 @@ module LabelPrinter
       begin
         attributes = build_attributes
         LabelPrinter::PmbClient.print(attributes)
-      rescue LabelPrinter::PmbException => exception
-        errors.add(:printmybarcode, exception)
+      rescue LabelPrinter::PmbException => e
+        errors.add(:printmybarcode, e)
         return false
-      rescue BarcodePrinter::BarcodePrinterException => exception
-        errors.add(:printer, exception)
+      rescue BarcodePrinter::BarcodePrinterException => e
+        errors.add(:printer, e)
         return false
-      rescue SampleManifest::MultiplexedLibraryBehaviour::Core::MxLibraryTubeException => exception
-        errors.add(:mx_tube, exception)
+      rescue SampleManifest::MultiplexedLibraryBehaviour::Core::MxLibraryTubeException => e
+        errors.add(:mx_tube, e)
         return false
       end
 

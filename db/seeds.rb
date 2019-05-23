@@ -19,6 +19,20 @@ unless [:development, :test, :seeding, :cucumber].include?(Rails.env.to_sym)
   END_OF_MESSAGE
 end
 
+if Rails.env.test?
+  Rails.logger.warn(<<~END_OF_MESSAGE
+    **********************************************************************************************************
+    ******************************************* NO LONGER NECESSARY ******************************************
+
+    The Minitest and RSpec tests have been updated, and no longer need to be seeded. Cukes still need seeds.
+
+    **********************************************************************************************************
+    **********************************************************************************************************
+  END_OF_MESSAGE
+                   )
+  exit 0
+end
+
 ActiveRecord::Base.transaction do
   # Here is a proc that will do the seeding.
   handler = lambda do |seed_data_file|

@@ -1,0 +1,11 @@
+<%= page_title 'PhiX', 'Create stocks and tubes' %>
+
+<p class="lead">Generate tubes of tagged PhiX for sequencing.</p>
+<div class="card-deck">
+  <%= panel do %>
+    <%= render partial: 'stock', locals: { stock: @stock, tag_option_names: @tag_option_names } %>
+  <% end %>
+  <%= panel do %>
+    <%= render partial: 'spiked_buffer', locals: { spiked_buffer: @spiked_buffer } %>
+  <% end %>
+</div>
