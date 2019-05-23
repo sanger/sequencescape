@@ -82,6 +82,8 @@ RSpec.configure do |config|
   Capybara.add_selector(:data_behavior) do
     xpath { |name| XPath.css("[data-behavior='#{name}']") }
   end
+
+  Capybara.server = :puma, { Silent: true }
 end
 
 Shoulda::Matchers.configure do |config|
