@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181119105427) do
+ActiveRecord::Schema.define(version: 20190522154457) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -114,6 +114,12 @@ ActiveRecord::Schema.define(version: 20181119105427) do
     t.string "type", null: false
   end
 
+  create_table "asset_descriptors_backup", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "asset_id"
+    t.text "descriptor_fields"
+    t.text "descriptors"
+  end
+
   create_table "asset_group_assets", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "asset_id"
     t.integer "asset_group_id"
@@ -154,8 +160,6 @@ ActiveRecord::Schema.define(version: 20181119105427) do
   create_table "assets", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name"
     t.string "value"
-    t.text "descriptors"
-    t.text "descriptor_fields"
     t.string "sti_type", limit: 50
     t.string "barcode_bkp"
     t.string "qc_state", limit: 20
@@ -175,8 +179,10 @@ ActiveRecord::Schema.define(version: 20181119105427) do
     t.decimal "concentration", precision: 18, scale: 8
     t.integer "legacy_sample_id"
     t.integer "legacy_tag_id"
+    t.integer "labware_type_id"
     t.index ["barcode_bkp"], name: "index_assets_on_barcode_bkp"
     t.index ["barcode_prefix_id_bkp"], name: "index_assets_on_barcode_prefix_id_bkp"
+    t.index ["labware_type_id"], name: "fk_rails_512943c031"
     t.index ["sti_type", "plate_purpose_id"], name: "index_assets_on_plate_purpose_id_sti_type"
     t.index ["sti_type", "updated_at"], name: "index_assets_on_sti_type_and_updated_at"
     t.index ["sti_type"], name: "index_assets_on_sti_type"
@@ -1954,6 +1960,7 @@ ActiveRecord::Schema.define(version: 20181119105427) do
 
   add_foreign_key "aliquots", "primer_panels"
   add_foreign_key "aliquots", "requests"
+  add_foreign_key "assets", "plate_types", column: "labware_type_id"
   add_foreign_key "barcodes", "assets"
   add_foreign_key "billing_items", "requests"
   add_foreign_key "billing_products", "billing_product_catalogues"

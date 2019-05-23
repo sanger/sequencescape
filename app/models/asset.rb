@@ -22,14 +22,12 @@ require 'external_properties'
 # Some of the above are further subclasses to handle specific behaviours.
 class Asset < ApplicationRecord
   include StudyReport::AssetDetails
-  include ModelExtensions::Asset
   include AssetLink::Associations
   include SharedBehaviour::Named
   include Api::Messages::QcResultIO::AssetExtensions
 
   # Key/value stores and attributes
   include ExternalProperties
-  include ActsAsDescriptable
   include Uuid::Uuidable
 
   # Links to other databases
@@ -98,6 +96,7 @@ class Asset < ApplicationRecord
   has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
 
   belongs_to :map
+  belongs_to :labware_type, class_name: 'PlateType', optional: true
 
   has_many :sample_manifest_assets
   has_many :sample_manifests, through: :sample_manifest_assets

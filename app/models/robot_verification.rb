@@ -51,7 +51,8 @@ class RobotVerification
       next if plate_barcode.blank? || plate_type.blank?
 
       plate = Plate.with_barcode(plate_barcode).first or raise "Unable to locate plate #{plate_barcode.inspect} for robot verification"
-      plate.set_plate_type(plate_type)
+      plate.plate_type = plate_type
+      plate.save
     end
   end
 

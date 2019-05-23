@@ -87,6 +87,10 @@ class Plate < Asset
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
 
+  def labware_type
+    super || PlateType.plate_default_type
+  end
+
   def state
     plate_purpose.state_of(self)
   end
@@ -339,13 +343,12 @@ class Plate < Asset
     (1..width)
   end
 
-  def set_plate_type(result)
-    add_descriptor(Descriptor.new(name: 'Plate Type', value: result))
-    save
+  def plate_type
+    labware_type.name
   end
 
-  def plate_type
-    plate_type_descriptor.presence || PlateType.first.name
+  def plate_type=(plate_type)
+    self.labware_type = PlateType.find_by(name: plate_type)
   end
 
   def details
@@ -569,10 +572,6 @@ class Plate < Asset
   def add_well(well, row = nil, col = nil)
     add_well_holder(well)
     well.map = find_map_by_rowcol(row, col) if row
-  end
-
-  def plate_type_descriptor
-    descriptor_value('Plate Type')
   end
 
   def obtain_storage_location
