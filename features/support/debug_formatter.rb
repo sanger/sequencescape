@@ -1,15 +1,27 @@
 require 'cucumber/formatter/progress'
 class DebugFormatter < Cucumber::Formatter::Progress
-  def initialize(runtime, io, options)
+  def initialize(config)
     super
     @start_time = time
     @runtime = runtime
-    @io = io
-    @options = options
+    @io = config.out_stream
+
+    config.on_event :test_case_started do |event|
+      if @feature != event.test_case.feature
+        after_feature(@feature) if @feature
+        @feature = event.test_case.feature
+        before_feature(event.test_case.feature)
+      end
+      before_feature_element(event.test_case)
+    end
+
+    config.on_event :test_case_finished do |event|
+      after_feature_element(event)
+    end
   end
 
   def before_feature(feature)
-    @io.puts "#{feature.short_name} (Start@#{time - @start_time})"
+    @io.puts "#{feature.name} (Start@#{time - @start_time})"
     @feature_start = time
   end
 
@@ -18,13 +30,10 @@ class DebugFormatter < Cucumber::Formatter::Progress
     @element_start = time
   end
 
-  def after_feature_element(scenario)
-    char = case scenario.status
-           when :passed then '✓'
-           when :failed then '❌'
-           else '?'
-           end
-    @io.puts " Took #{time - @element_start} #{char}"
+  def after_feature_element(event)
+    # Event results seem to have a duration built in, but it appears
+    # to be significantly shorter than actual execution time.
+    @io.puts " Took #{time - @element_start} #{event.result}"
   end
 
   def after_feature(_feature)

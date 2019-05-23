@@ -34,7 +34,7 @@ class Parsers::DilutionParser
   #
   # Yield each well and the scaled attributes for each
   #
-  # @yields [String, Hash] Well name and a hash of attributes and their values
+  # @yield [String, Hash] Well name and a hash of attributes and their values
   def each_well_and_parameters
     original_parser.each_well_and_parameters do |well, parameters|
       adjusted_parameters = parameters.slice(*UNSCALED)

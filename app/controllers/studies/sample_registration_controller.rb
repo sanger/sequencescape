@@ -21,13 +21,13 @@ class Studies::SampleRegistrationController < ApplicationController
       format.json { render(json: flash.to_json) }
       format.xml  { render(xml: flash.to_xml) }
     end
-  rescue SampleRegistrar::NoSamplesError => exception
+  rescue SampleRegistrar::NoSamplesError => e
     flash.now[:error] = 'You do not appear to have specified any samples'
     @sample_registrars = [SampleRegistrar.new]
     render(action: 'new')
-  rescue SampleRegistrar::RegistrationError => exception
+  rescue SampleRegistrar::RegistrationError => e
     flash.now[:error] = 'Your samples have not been registered'
-    @sample_registrars = exception.sample_registrars
+    @sample_registrars = e.sample_registrars
     render(action: 'new')
   end
 
@@ -40,9 +40,9 @@ class Studies::SampleRegistrationController < ApplicationController
     @sample_registrars = SampleRegistrar.from_spreadsheet(params['file'], @study, current_user)
     flash.now[:notice] = 'Your file has been processed'
     render :new
-  rescue SampleRegistrar::SpreadsheetError => exception
+  rescue SampleRegistrar::SpreadsheetError => e
     flash[:notice] = 'Your file has been processed'
-    flash[:error] = exception.message
+    flash[:error] = e.message
     redirect_to upload_study_sample_registration_index_path
   end
 

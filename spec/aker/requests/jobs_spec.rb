@@ -7,7 +7,7 @@ RSpec.describe Aker::JobsController, type: :request, aker: true do
   let(:url) { job.aker_job_url }
   let(:request) { RestClient::Request.new(method: :put, url: url) }
 
-  scenario 'start a job' do
+  it 'start a job' do
     allow(RestClient::Request).to receive(:execute).with(
       verify_ssl: false,
       method: :put,
@@ -24,7 +24,7 @@ RSpec.describe Aker::JobsController, type: :request, aker: true do
     expect(response).to have_http_status :ok
   end
 
-  scenario 'complete a job' do
+  it 'complete a job' do
     allow(RestClient::Request).to receive(:execute).with(
       verify_ssl: false,
       method: :put,
@@ -46,7 +46,7 @@ RSpec.describe Aker::JobsController, type: :request, aker: true do
     expect(response).to have_http_status :ok
   end
 
-  scenario 'cancel a job' do
+  it 'cancel a job' do
     allow(RestClient::Request).to receive(:execute).with(
       verify_ssl: false,
       method: :put,

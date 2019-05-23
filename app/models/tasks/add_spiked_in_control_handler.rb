@@ -1,3 +1,5 @@
+# Handles the behaviour of {AddSpikedInControlTask} and included in {WorkflowsController}
+# {include:AddSpikedInControlTask}
 module Tasks::AddSpikedInControlHandler
   def do_add_spiked_in_control_task(task, params)
     batch = @batch || Batch.find(params[:batch_id])

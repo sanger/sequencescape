@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'Sample manifest with tag sequences' do
+describe 'Sample manifest with tag sequences' do
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -11,12 +11,21 @@ feature 'Sample manifest with tag sequences' do
     end
   end
 
+  after do
+    File.delete(test_file) if File.exist?(test_file)
+    Delayed::Worker.delay_jobs = true
+  end
+
+  after(:all) do
+    SampleManifestExcel.reset!
+  end
+
   context 'library tube sample manifest with tag sequences' do
     let!(:user)     { create :admin }
     let(:columns)   { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
 
-    before(:each) do
+    before do
       download.save(test_file)
       Delayed::Worker.delay_jobs = false
     end
@@ -25,7 +34,7 @@ feature 'Sample manifest with tag sequences' do
       context 'standard' do
         let(:download) { build(:test_download_tubes, columns: columns) }
 
-        scenario 'upload' do
+        it 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', Rails.root.join(test_file))
@@ -35,7 +44,7 @@ feature 'Sample manifest with tag sequences' do
           expect(page.driver.response.headers['Content-Disposition']).to eq("attachment; filename=\"#{test_file}\"")
         end
 
-        scenario 'reupload and override' do
+        it 'reupload and override' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -71,7 +80,7 @@ feature 'Sample manifest with tag sequences' do
       context 'cgap foreign barcodes' do
         let(:download) { build(:test_download_tubes_cgap, columns: columns) }
 
-        scenario 'upload' do
+        it 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -85,7 +94,7 @@ feature 'Sample manifest with tag sequences' do
       context 'upload' do
         let(:download) { build(:test_download_tubes, columns: columns, validation_errors: [:library_type]) }
 
-        scenario 'validation errors' do
+        it 'validation errors' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -93,7 +102,7 @@ feature 'Sample manifest with tag sequences' do
           expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
         end
 
-        scenario 'no file' do
+        it 'no file' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           click_button('Upload manifest')
@@ -104,7 +113,7 @@ feature 'Sample manifest with tag sequences' do
       context 'cgap foreign barcodes' do
         let(:download) { build(:test_download_tubes_cgap, columns: columns, validation_errors: [:library_type]) }
 
-        scenario 'validation errors' do
+        it 'validation errors' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -116,7 +125,7 @@ feature 'Sample manifest with tag sequences' do
       context 'duplicate cgap foreign barcodes' do
         let(:download) { build(:test_download_tubes_cgap, columns: columns, validation_errors: [:sample_tube_id_duplicates]) }
 
-        scenario 'validation errors' do
+        it 'validation errors' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -132,7 +141,7 @@ feature 'Sample manifest with tag sequences' do
     let(:columns)   { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
 
-    before(:each) do
+    before do
       download.save(test_file)
       Delayed::Worker.delay_jobs = false
     end
@@ -141,7 +150,7 @@ feature 'Sample manifest with tag sequences' do
       context 'upload and reupload' do
         let(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences') }
 
-        scenario 'with override' do
+        it 'with override' do
           # upload
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 0
           login_user(user)
@@ -161,7 +170,7 @@ feature 'Sample manifest with tag sequences' do
 
           # reupload
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots.all? { |a| a.library_type == 'My personal library type' }).to be_truthy
+          expect(download.worksheet.multiplexed_library_tube.aliquots).to be_all { |a| a.library_type == 'My personal library type' }
 
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
@@ -178,7 +187,7 @@ feature 'Sample manifest with tag sequences' do
       context 'cgap foreign barcodes' do
         let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences') }
 
-        scenario 'upload' do
+        it 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -192,7 +201,7 @@ feature 'Sample manifest with tag sequences' do
       context 'upload' do
         let(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: %i[library_type tags]) }
 
-        scenario 'validation errors' do
+        it 'validation errors' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -201,7 +210,7 @@ feature 'Sample manifest with tag sequences' do
           expect(page).to have_content('Same tags AA, TT are used on rows 10, 15.')
         end
 
-        scenario 'no file' do
+        it 'no file' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           click_button('Upload manifest')
@@ -212,7 +221,7 @@ feature 'Sample manifest with tag sequences' do
       context 'with cgap barcodes' do
         let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:library_type]) }
 
-        scenario 'validation errors' do
+        it 'validation errors' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -224,7 +233,7 @@ feature 'Sample manifest with tag sequences' do
       context 'with cgap barcodes' do
         let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:sample_tube_id_duplicates]) }
 
-        scenario 'duplicates' do
+        it 'duplicates' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -240,7 +249,7 @@ feature 'Sample manifest with tag sequences' do
     let(:columns)   { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
     let(:test_file) { 'test_file.xlsx' }
 
-    before(:each) do
+    before do
       download.save(test_file)
       Delayed::Worker.delay_jobs = false
     end
@@ -249,7 +258,7 @@ feature 'Sample manifest with tag sequences' do
       context 'upload and reupload' do
         let(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library') }
 
-        scenario 'with override' do
+        it 'with override' do
           # upload
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 0
           login_user(user)
@@ -269,7 +278,7 @@ feature 'Sample manifest with tag sequences' do
 
           # reupload
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots.all? { |a| a.library_type == 'My personal library type' }).to be_truthy
+          expect(download.worksheet.multiplexed_library_tube.aliquots).to be_all { |a| a.library_type == 'My personal library type' }
 
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
@@ -286,7 +295,7 @@ feature 'Sample manifest with tag sequences' do
       context 'cgap foreign barcodes' do
         let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library') }
 
-        scenario 'upload' do
+        it 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -300,7 +309,7 @@ feature 'Sample manifest with tag sequences' do
       context 'upload' do
         let(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library', validation_errors: %i[library_type tags]) }
 
-        scenario 'validation errors' do
+        it 'validation errors' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -310,7 +319,7 @@ feature 'Sample manifest with tag sequences' do
           expect(page.text).to match(/Tags clash Same tags [A-Z]+, [A-Z]+ are used on rows 10, 15./)
         end
 
-        scenario 'no file' do
+        it 'no file' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           click_button('Upload manifest')
@@ -321,7 +330,7 @@ feature 'Sample manifest with tag sequences' do
       context 'with cgap barcodes' do
         let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library', validation_errors: [:library_type]) }
 
-        scenario 'validation errors' do
+        it 'validation errors' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -333,7 +342,7 @@ feature 'Sample manifest with tag sequences' do
       context 'with cgap barcodes' do
         let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library', validation_errors: [:sample_tube_id_duplicates]) }
 
-        scenario 'duplicates' do
+        it 'duplicates' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -349,7 +358,7 @@ feature 'Sample manifest with tag sequences' do
     let(:columns)   { SampleManifestExcel.configuration.columns.plate_default.dup }
     let(:test_file) { 'test_file.xlsx' }
 
-    before(:each) do
+    before do
       download.save(test_file)
       Delayed::Worker.delay_jobs = false
     end
@@ -358,7 +367,7 @@ feature 'Sample manifest with tag sequences' do
       context 'standard' do
         let(:download) { build(:test_download_plates, columns: columns) }
 
-        scenario 'upload' do
+        it 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -370,7 +379,7 @@ feature 'Sample manifest with tag sequences' do
       context 'partial' do
         let(:download) { build(:test_download_plates_partial, columns: columns) }
 
-        scenario 'upload' do
+        it 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -382,7 +391,7 @@ feature 'Sample manifest with tag sequences' do
       context 'cgap foreign barcodes' do
         let(:download) { build(:test_download_plates_cgap, columns: columns) }
 
-        scenario 'upload' do
+        it 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -394,7 +403,7 @@ feature 'Sample manifest with tag sequences' do
       context 'cgap foreign barcodes partial' do
         let(:download) { build(:test_download_plates_partial_cgap, columns: columns) }
 
-        scenario 'upload' do
+        it 'upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -408,7 +417,7 @@ feature 'Sample manifest with tag sequences' do
       context 'no file' do
         let(:download) { build(:test_download_plates, columns: columns) }
 
-        scenario 'no file' do
+        it 'no file' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           click_button('Upload manifest')
@@ -419,7 +428,7 @@ feature 'Sample manifest with tag sequences' do
       context 'unrecognised cgap foreign barcodes' do
         let(:download) { build(:test_download_plates_cgap, columns: columns, validation_errors: [:sample_plate_id_unrecognised_foreign]) }
 
-        scenario 'validation errors' do
+        it 'validation errors' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -431,7 +440,7 @@ feature 'Sample manifest with tag sequences' do
       context 'duplicate cgap foreign barcodes' do
         let(:download) { build(:test_download_plates_cgap, columns: columns, validation_errors: [:sample_plate_id_duplicates]) }
 
-        scenario 'validation errors' do
+        it 'validation errors' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -440,22 +449,5 @@ feature 'Sample manifest with tag sequences' do
         end
       end
     end
-  end
-
-  after(:all) do
-    SampleManifestExcel.reset!
-  end
-
-  after(:each) do
-    File.delete(test_file) if File.exist?(test_file)
-    Delayed::Worker.delay_jobs = true
-  end
-
-  def login_user(user)
-    visit login_path
-    fill_in 'Username', with: user.login
-    fill_in 'Password', with: 'password'
-    click_button 'Login'
-    true
   end
 end

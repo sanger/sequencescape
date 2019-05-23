@@ -3,8 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe AutomatedOrder, type: :model do
-  let(:tube) { create :multiplexed_library_tube, aliquots: aliquots }
   subject { build :automated_order, assets: [tube] }
+
+  let(:tube) { create :multiplexed_library_tube, aliquots: aliquots }
 
   context 'with a cross study/project tube' do
     let(:aliquots) { create_list :tagged_aliquot, 2 }
@@ -36,9 +37,11 @@ RSpec.describe AutomatedOrder, type: :model do
     end
 
     context 'with two single study/project assets in different studies' do
+      subject { build :automated_order, assets: [tube, other_tube] }
+
       let(:other_tube) { create :multiplexed_library_tube, aliquots: other_aliquots }
       let(:other_aliquots) { create_list :tagged_aliquot, 1 }
-      subject { build :automated_order, assets: [tube, other_tube] }
+
       it { is_expected.not_to be_valid }
     end
   end

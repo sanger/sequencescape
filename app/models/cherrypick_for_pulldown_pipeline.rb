@@ -1,3 +1,8 @@
+# No longer used directly the CherrypickForPulldownPipeline was previously an
+# automated {CherrypickingPipeline} which attempted to automatically lay out
+# target plates. However it proved tricky to model all the variations in the layout
+# the users expected, and they stopped using the pipeline.
+# However the {FlexibleCherrypickPipeline} is still active, and is sub-classed from this.
 class CherrypickForPulldownPipeline < CherrypickingPipeline
   include Pipeline::InboxGroupedBySubmission
 

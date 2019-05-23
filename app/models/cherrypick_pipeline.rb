@@ -1,3 +1,18 @@
+# Processes {CherrypickRequest}
+# Allows material from {Well wells} on one or more source {Plate plates} to be
+# laid out onto either a NEW plate of a specified {PlatePurpose} or onto a plate
+# created as part of an earlier cherrypick.
+#
+# WARNING! {CherrypickRequest Cherrypick requests} create their target wells upfront
+# and are laid out onto otherwise well-less plates. This results in odd behaviour:
+#  - You cannot cherrypick onto plates with all their wells, even if those wells are empty
+#  - Prior to processing, wells attached to {CherrypickRequest cherrypick requests} will not
+#    be assigned to a plate.
+#  - Occasionally it is possible to pick two wells to the same location. This does not result in
+#    pooling or a tag clash, but rather two wells with the same location on the same plate.
+#
+# @note Cherrypicking is typically processed by an SSR, and the batch worksheet is passed over to the lab.
+#       Actual lab work is tracked via {RobotVerification} through the {RobotVerificationsController}
 class CherrypickPipeline < CherrypickingPipeline
   include Pipeline::InboxGroupedBySubmission
 

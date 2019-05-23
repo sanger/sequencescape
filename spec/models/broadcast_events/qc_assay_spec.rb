@@ -35,7 +35,7 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
 
     describe '#to_json' do
       it 'generates json' do
-        expect(json).to_not be_nil
+        expect(json).not_to be_nil
       end
 
       it 'sets the event type based on the qc_assay' do
@@ -79,7 +79,7 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
 
     describe '#to_json' do
       it 'generates json' do
-        expect(json).to_not be_nil
+        expect(json).not_to be_nil
       end
 
       it 'sets the event type based on the qc_assay' do

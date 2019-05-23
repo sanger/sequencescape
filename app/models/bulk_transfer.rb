@@ -1,3 +1,31 @@
+# Allows the creation of multiple {Transfer::BetweenPlates} for a given array
+# of individual transfers. Designed for use via the API
+#
+# @example Example usage
+# BultTransfer.create!({
+#   well_transfers: [
+#     {
+#       source_uuid: source_plate1.uuid, source_location: 'A1',
+#       destination_uuid: destination_plate1.uuid, destination_location: 'A1'
+#     },
+#     {
+#       source_uuid: source_plate1.uuid, source_location: 'B1',
+#       destination_uuid: destination_plate2.uuid, destination_location: 'A1'
+#     },
+#     {
+#       source_uuid: source_plate2.uuid, source_location: 'A1',
+#       destination_uuid: destination_plate1.uuid, destination_location: 'B1'
+#     },
+#     {
+#       source_uuid: source_plate2.uuid, source_location: 'B1',
+#       destination_uuid: destination_plate2.uuid, destination_location: 'B1'
+#     }
+#   ],
+#   user: User.last
+# })
+#
+# @deprecated Use TransferRequestCollection instead, which is more explicit and allows transfers between
+# plates and tubes
 class BulkTransfer < ApplicationRecord
   include Uuid::Uuidable
 

@@ -14,9 +14,11 @@ RSpec.describe WorkingDilutionPlate, type: :model do
     let(:plate) { create :working_dilution_plate, well_count: 3, well_factory: :empty_well, parents: [parent], dilution_factor: 10 }
     let(:parent) { create :plate, well_count: 3 }
     let(:parser) { MockParser.new(readings) }
+
     before do
       plate.update_qc_values_with_parser(parser)
     end
+
     it 'updates its well concentrations' do
       wells = plate.wells.includes(:map, :well_attribute).index_by(&:map_description)
       expect(wells['B1'].get_concentration).to eq 2

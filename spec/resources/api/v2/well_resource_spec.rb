@@ -2,8 +2,9 @@ require 'rails_helper'
 require './app/resources/api/v2/well_resource'
 
 RSpec.describe Api::V2::WellResource, type: :resource do
-  let(:resource_model) { create :well, plate: plate, map: position }
   subject(:resource) { described_class.new(resource_model, {}) }
+
+  let(:resource_model) { create :well, plate: plate, map: position }
 
   shared_examples 'a well resource' do
     # Test attributes
@@ -13,10 +14,10 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     it { is_expected.to have_attribute(:position) }
 
     # Read only attributes (almost certainly id, uuid)
-    it { is_expected.to_not have_updatable_field(:id) }
-    it { is_expected.to_not have_updatable_field(:uuid) }
-    it { is_expected.to_not have_updatable_field(:name) }
-    it { is_expected.to_not have_updatable_field(:position) }
+    it { is_expected.not_to have_updatable_field(:id) }
+    it { is_expected.not_to have_updatable_field(:uuid) }
+    it { is_expected.not_to have_updatable_field(:name) }
+    it { is_expected.not_to have_updatable_field(:position) }
 
     # Updatable fields
     # eg. it { is_expected.to have_updatable_field(:state) }
@@ -39,6 +40,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
 
     describe '#position' do
       subject { resource.position }
+
       it { is_expected.to eq(expected_position) }
     end
   end
@@ -48,6 +50,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     let(:position) { create :map, description: 'A1' }
     let(:expected_barcode_hash) { { 'ean13_barcode' => '1220000011748', 'human_barcode' => 'DN11J' } }
     let(:expected_position) { { 'name' => 'A1' } }
+
     it_behaves_like 'a well resource'
   end
 
@@ -56,6 +59,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     let(:position) { nil }
     let(:expected_barcode_hash) { { 'ean13_barcode' => nil, 'human_barcode' => nil } }
     let(:expected_position) { { 'name' => nil } }
+
     it_behaves_like 'a well resource'
   end
 end

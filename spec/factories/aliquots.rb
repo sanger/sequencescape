@@ -34,5 +34,18 @@ FactoryBot.define do
       insert_size_from { 100 }
       insert_size_to   { 200 }
     end
+
+    factory :phi_x_aliquot do
+      transient do
+        tag_option { 'Single' } # The PhiX Tag option to use
+      end
+
+      sample { PhiX.sample }
+      library { build :library_tube }
+      tag { PhiX.find_tag(tag_option, :i7_oligo) }
+      tag2 { PhiX.find_tag(tag_option, :i5_oligo) }
+      study { nil }
+      project { nil }
+    end
   end
 end

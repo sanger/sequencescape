@@ -85,7 +85,7 @@ RSpec.describe LocationReport, type: :model do
         let(:name) { 'Test_report' }
 
         it 'the report is not valid' do
-          expect(location_report).to_not be_valid
+          expect(location_report).not_to be_valid
         end
       end
 
@@ -94,7 +94,7 @@ RSpec.describe LocationReport, type: :model do
         let(:report_type) { 'type_selection' }
 
         it 'the report is not valid' do
-          expect(location_report).to_not be_valid
+          expect(location_report).not_to be_valid
         end
       end
 
@@ -105,7 +105,7 @@ RSpec.describe LocationReport, type: :model do
         let(:end_date) { '2015-07-01 00:00:00' }
 
         it 'the report is not valid' do
-          expect(location_report).to_not be_valid
+          expect(location_report).not_to be_valid
         end
       end
 
@@ -115,18 +115,18 @@ RSpec.describe LocationReport, type: :model do
 
         it 'is not valid if there is an end date but no start date' do
           location_report.end_date = '2016-07-01 00:00:00'
-          expect(location_report).to_not be_valid
+          expect(location_report).not_to be_valid
         end
 
         it 'is not valid if there is a start date but no end date' do
           location_report.start_date = '2016-06-01 00:00:00'
-          expect(location_report).to_not be_valid
+          expect(location_report).not_to be_valid
         end
 
         it 'is not valid if the start date is after the end date' do
           location_report.start_date = '2016-08-01 00:00:00'
           location_report.end_date = '2016-07-01 00:00:00'
-          expect(location_report).to_not be_valid
+          expect(location_report).not_to be_valid
         end
 
         it 'is valid for the start date to be the same as the end date' do
@@ -139,13 +139,13 @@ RSpec.describe LocationReport, type: :model do
         it 'is not valid if the dates do not find any plates' do
           location_report.start_date = '2016-07-01 00:00:00'
           location_report.end_date = '2016-07-02 00:00:00'
-          expect(location_report).to_not be_valid
+          expect(location_report).not_to be_valid
         end
       end
     end
 
     describe 'report generation' do
-      shared_context 'a successful report' do
+      shared_examples 'a successful report' do
         it 'generates the expected report rows' do
           expect(location_report.save).to be_truthy
 
@@ -167,7 +167,7 @@ RSpec.describe LocationReport, type: :model do
         let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
         let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 3,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
 
-        before(:each) do
+        before do
           [
             [plate_1.machine_barcode.to_s, 'Shelf 1', locn_prefix],
             [plate_2.machine_barcode.to_s, 'Shelf 2', locn_prefix],
@@ -286,7 +286,7 @@ RSpec.describe LocationReport, type: :model do
           let(:plt_4_line) { "#{plate_4.machine_barcode},#{plate_4.human_barcode},Unknown,#{plt_4_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_4_line] }
 
-          before(:each) do
+          before do
             stub_lwclient_labware_find_by_bc(lw_barcode: plate_4.machine_barcode.to_s, lw_locn_name: 'Shelf 1', lw_locn_parentage: locn_prefix)
           end
 
@@ -348,7 +348,7 @@ RSpec.describe LocationReport, type: :model do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:expected_lines) { ['No plates found when attempting to generate the report.'] }
 
-          before(:each) do
+          before do
             stub_lwclient_locn_find_by_bc(locn_barcode: location_barcode, locn_name: 'Shelf 1', locn_parentage: locn_prefix)
             stub_lwclient_locn_children(location_barcode, [])
             stub_lwclient_locn_labwares(location_barcode, [])
@@ -362,7 +362,7 @@ RSpec.describe LocationReport, type: :model do
           let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_1_line] }
 
-          before(:each) do
+          before do
             # set up Shelf 1 with no labwares or sub-locations
             p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Shelf 1', lw_locn_parentage: locn_prefix }
             stub_lwclient_locn_find_by_bc(locn_barcode: location_barcode, locn_name: 'Shelf 1', locn_parentage: locn_prefix)
@@ -381,7 +381,7 @@ RSpec.describe LocationReport, type: :model do
           let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
 
-          before(:each) do
+          before do
             # set up Shelf 1 with no labwares and 1 sub-location
             stub_lwclient_locn_find_by_bc(locn_barcode: location_barcode, locn_name: 'Shelf 1', locn_parentage: locn_prefix)
             stub_lwclient_locn_children(location_barcode, [
@@ -413,7 +413,7 @@ RSpec.describe LocationReport, type: :model do
           let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
 
-          before(:each) do
+          before do
             # set up Shelf 1 with no labwares and two sub-locations
             locn_lvl2_b1 = { locn_barcode: 'locn-1a-at-lvl-2', locn_name: 'Box 1', locn_parentage: locn_prefix + ' - Shelf 1' }
             locn_lvl2_b2 = { locn_barcode: 'locn-1b-at-lvl-2', locn_name: 'Box 2', locn_parentage: locn_prefix + ' - Shelf 1' }
@@ -447,7 +447,7 @@ RSpec.describe LocationReport, type: :model do
           let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, plt_3_line] }
 
-          before(:each) do
+          before do
             # set up Shelf 1 with 1 labware and 1 sub-location
             locn_lvl2_t1 = { locn_barcode: 'locn-1-at-lvl-2', locn_name: 'Tray 1', locn_parentage: locn_prefix + ' - Shelf 1' }
             p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Shelf 1', lw_locn_parentage: locn_prefix }

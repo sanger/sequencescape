@@ -1,8 +1,14 @@
+# A comment can be assigned to any commentable record.
 class Comment < ApplicationRecord
   # include Uuid::Uuidable
   belongs_to :commentable, polymorphic: true, optional: false
   has_many :comments, as: :commentable
   belongs_to :user
+
+  # @!attribute title
+  #   @return [String] A short string, best used to identify the comment source.
+  # @!attribute key
+  #   @return [String] Longer text containing the main body of the comment
 
   after_create :trigger_commentable_callback
 
@@ -11,6 +17,10 @@ class Comment < ApplicationRecord
   # Caution, only works for a single class
   def self.counts_for(commentables)
     where(commentable: commentables).group(:commentable_id).count
+  end
+
+  def can_be_deleted_by?(deleting_user)
+    user == deleting_user || user.administrator?
   end
 
   private

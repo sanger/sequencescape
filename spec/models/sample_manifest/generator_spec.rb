@@ -10,7 +10,7 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
     end
   end
 
-  before(:each) do
+  before do
     barcode = double('barcode')
     allow(barcode).to receive(:barcode).and_return(23)
     allow(PlateBarcode).to receive(:create).and_return(barcode)
@@ -27,33 +27,37 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
       "count": '4' }.with_indifferent_access
   end
 
+  after(:all) do
+    SampleManifestExcel.reset!
+  end
+
   it 'model name is sample manifest' do
     expect(SampleManifest::Generator.model_name).to eq('SampleManifest')
   end
 
   it 'is not valid without a user' do
-    expect(SampleManifest::Generator.new(attributes, nil, configuration)).to_not be_valid
+    expect(SampleManifest::Generator.new(attributes, nil, configuration)).not_to be_valid
   end
 
   it 'is not be unless all of the attributes are present' do
     SampleManifest::Generator::REQUIRED_ATTRIBUTES.each do |attribute|
-      expect(SampleManifest::Generator.new(attributes.except(attribute), user, configuration)).to_not be_valid
+      expect(SampleManifest::Generator.new(attributes.except(attribute), user, configuration)).not_to be_valid
     end
   end
 
   it 'is not valid without configuration' do
-    expect(SampleManifest::Generator.new(attributes, user, nil)).to_not be_valid
+    expect(SampleManifest::Generator.new(attributes, user, nil)).not_to be_valid
   end
 
   it 'is not valid without columns' do
-    expect(SampleManifest::Generator.new(attributes.merge(template: 'dodgy_template'), user, configuration)).to_not be_valid
+    expect(SampleManifest::Generator.new(attributes.merge(template: 'dodgy_template'), user, configuration)).not_to be_valid
   end
 
   it 'will create a sample manifest' do
     generator = SampleManifest::Generator.new(attributes, user, configuration)
     generator.execute
     expect(generator.sample_manifest.study_id).to eq(study.id)
-    expect(generator.sample_manifest).to_not be_new_record
+    expect(generator.sample_manifest).not_to be_new_record
   end
 
   it 'raises an error if sample manifest is not valid' do
@@ -63,7 +67,7 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
   it 'generates sample manifest to create details_array' do
     generator = SampleManifest::Generator.new(attributes, user, configuration)
     generator.execute
-    expect(generator.sample_manifest.details_array).to_not be_empty
+    expect(generator.sample_manifest.details_array).not_to be_empty
   end
 
   it 'xlsx file is generated and saved' do
@@ -93,7 +97,7 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
     allow(RestClient).to receive(:post)
     expect(generator).to be_print_job_required
     generator.execute
-    expect(generator.print_job_message.key?(:notice)).to be_truthy
+    expect(generator.print_job_message).to be_key(:notice)
   end
 
   it 'print job is not valid with invalid printer name' do
@@ -103,14 +107,10 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
                                                                only_first_label: '0'), user, configuration)
     expect(generator).to be_print_job_required
     generator.execute
-    expect(generator.print_job_message.key?(:error)).to be_truthy
+    expect(generator.print_job_message).to be_key(:error)
   end
 
   it 'does not have a print job if printer name has not been provided' do
-    expect(SampleManifest::Generator.new(attributes, user, configuration)).to_not be_print_job_required
-  end
-
-  after(:all) do
-    SampleManifestExcel.reset!
+    expect(SampleManifest::Generator.new(attributes, user, configuration)).not_to be_print_job_required
   end
 end

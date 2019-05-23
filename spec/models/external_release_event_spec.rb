@@ -28,7 +28,7 @@ describe ExternalReleaseEvent do
           .and_call_original
       end
 
-      it { is_expected.to be_a ExternalReleaseEvent }
+      it { is_expected.to be_a described_class }
     end
   end
 end

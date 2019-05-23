@@ -1,0 +1,242 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+defaults: &defaults
+  docker:
+    # specify the version you desire here
+    - image: circleci/ruby:2.4.6-node-browsers
+      environment:
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          BUNDLE_WITHOUT: 'warehouse deployment'
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_DATABASE: circleci
+          DATABASE_URL: 'mysql2://root@127.0.0.1:3306/'
+          TZ: Europe/London
+    - image: circleci/mysql:5.7.24
+      environment:
+        BUNDLE_JOBS: 4
+        BUNDLE_RETRY: 3
+        BUNDLE_PATH: vendor/bundle
+        BUNDLE_WITHOUT: 'warehouse deployment'
+        MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        MYSQL_ROOT_PASSWORD: ''
+        MYSQL_DATABASE: circleci
+        DATABASE_URL: 'mysql2://root@127.0.0.1:3306/'
+  working_directory: ~/repo
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "Gemfile.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run:
+          name: remove mysql2 temporary
+          command: |
+            bundle exec gem uninstall mysql2
+
+      - run:
+          name: reinstall mysql2 temporary
+          command: |
+            bundle install --jobs=3 --retry=3 --path vendor/bundle
+      - run:
+         name:  Download cc-test-reporter
+         command: |
+           mkdir -p tmp/
+           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
+           chmod +x ./tmp/cc-test-reporter
+
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v2-dependencies-{{ checksum "Gemfile.lock" }}
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - tmp/cc-test-reporter
+            - vendor/bundle
+
+  run-specs:
+    <<: *defaults
+    parallelism: 1
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: cp ./.circleci/database.yml ./config/database.yml
+      - run:
+          name: Wait for DB
+          # preinstalled in circleci/* docker image
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+      - run: echo $DATABASE_URL
+      - run: RAILS_ENV=test bundle exec bin/setup
+
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            bundle exec rspec \
+              --format documentation \
+              --format RspecJunitFormatter \
+              --out /tmp/test-results/rspec.xml
+      - run:
+          name: Build coverage
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.specs.json coverage/.resultset.json
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - tmp/codeclimate.specs.json
+  run-tests:
+    <<: *defaults
+    parallelism: 1
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: cp ./.circleci/database.yml ./config/database.yml
+      - run:
+          name: Wait for DB
+          # preinstalled in circleci/* docker image
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+      - run: RAILS_ENV=test bundle exec bin/setup
+
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            bundle exec rake test
+      # collect reports
+      - run:
+          name: Build coverage
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.tests.json coverage/.resultset.json
+
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - tmp/codeclimate.tests.json
+  run-cukes:
+    <<: *defaults
+    environment:
+      RAILS_ENV: cucumber
+      CUCUMBER_FORMAT: DebugFormatter
+    parallelism: 3
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: cp ./.circleci/database.yml ./config/database.yml
+      - run:
+          name: Wait for DB
+          # preinstalled in circleci/* docker image
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+      - run: RAILS_ENV=cucumber bundle exec bin/setup
+
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            bundle exec rake knapsack:cucumber
+      - run:
+          name: Build coverage
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.cukes.json coverage/.resultset.json
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - tmp/codeclimate.cukes.json
+  run-rubocop:
+    <<: *defaults
+    environment:
+      RAILS_ENV: cucumber
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            bundle exec rubocop
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+  upload-coverage:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Upload coverage results to Code Climate
+          command: |
+            ls ./tmp
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json -p 3 -o tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.total.json
+
+workflows:
+  version: 2
+
+  commit:
+    jobs:
+      - build
+      - run-specs:
+          requires:
+            - build
+      - run-tests:
+          requires:
+            - build
+      - run-cukes:
+          requires:
+            - build
+      - run-rubocop:
+          requires:
+            - build
+      - upload-coverage:
+          requires:
+            - run-specs
+            - run-tests
+            - run-cukes

@@ -120,8 +120,8 @@ module SampleManifest::InputBehaviour
     spreadsheet_offset.upto(csv.size - 1) do |row|
       yield(Hash[headers.each_with_index.map { |header, column| [header, csv[row][column]] }])
     end
-  rescue CSV::MalformedCSVError => exception
-    raise InvalidManifest, "Invalid CSV file, did you upload an Excel file by accident? - #{exception.message}"
+  rescue CSV::MalformedCSVError => e
+    raise InvalidManifest, "Invalid CSV file, did you upload an Excel file by accident? - #{e.message}"
   end
   private :each_csv_row
 
@@ -200,10 +200,10 @@ module SampleManifest::InputBehaviour
 
     self.last_errors = nil
     finished!
-  rescue ActiveRecord::RecordInvalid => exception
-    errors.add(:base, exception.message)
+  rescue ActiveRecord::RecordInvalid => e
+    errors.add(:base, e.message)
     fail_with_errors!(errors.full_messages)
-  rescue ActiveRecord::StatementInvalid => exception
+  rescue ActiveRecord::StatementInvalid => e
     # This tends to get raised in cases of character encoding issues. If we don't
     # handle it here, then the delayed job tires to handle it, but just ends up
     # generating its own invalid SQL. This results in the delayed job dying,
@@ -211,10 +211,10 @@ module SampleManifest::InputBehaviour
     # for the delayed job worker death, and not the underlying issue.
     # https://github.com/collectiveidea/delayed_job/issues/774
     # It is possible to monkey patch with the solution suggested by philister
-    scrubbed_message = exception.message.encode('ISO-8859-1', invalid: :replace)
+    scrubbed_message = e.message.encode('ISO-8859-1', invalid: :replace)
     fail_with_errors!(["Failed to update information in database: #{scrubbed_message}"])
-  rescue InvalidManifest => exception
-    fail_with_errors!(Array(exception.message).flatten)
+  rescue InvalidManifest => e
+    fail_with_errors!(Array(e.message).flatten)
   end
 
   def fail_with_errors!(errors)

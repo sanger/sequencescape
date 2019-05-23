@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
-require 'pathname'
 require 'fileutils'
 include FileUtils
 
 # path to your application root.
-APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
+APP_ROOT = File.expand_path('..', __dir__)
 
 def system!(*args)
   system(*args) || abort("\n== Command #{args} failed ==")
@@ -19,12 +18,14 @@ chdir APP_ROOT do
   system('bundle check') || system!('bundle install')
 
   # Install JavaScript dependencies if using Yarn
-  # system('bin/yarn')
+  system('bin/yarn')
 
-  # puts "\n== Copying sample files =="
-  # unless File.exist?('config/database.yml')
-  #   cp 'config/database.yml.sample', 'config/database.yml'
-  # end
+  puts "\n== Copying example files =="
+  [
+    'config/aker.yml',
+  ].each do |base|
+    cp "#{base}.example", base unless File.exist?(base)
+  end
 
   puts "\n== Preparing database =="
   system! 'bin/rails db:setup'

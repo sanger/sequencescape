@@ -1,3 +1,25 @@
+# AssetLink is powered by acts-as-dag
+# @see https://github.com/resgraph/acts-as-dag
+#
+# Briefly, acts-as-dag attempts to implement a directed-acyclic-graph in a
+# relational database. In order to optimize for retrieval it inserts an AssetLink
+# record for EACH ancestor-descendant link. As a result, it is possible to retrieve
+# ALL ancestors for a given plate in a single query.
+# On the flip side, this makes insert operations more expensive as the graph grows.
+#
+# As a result, try and avoid adding wells in to asset links, and link between Labware only.
+#
+# @example Example methods
+#   plate.children # => [<Plate: child of plate>,<Plate: child of plate>]
+#   plate.parents # => [<Plate: parent of plate>]
+#   plate.descendants # => [<Plate: child of plate>,<Plate: child of plate>,<Plate: grandchild of plate>]
+#   plate.ancestors # => [<Plate: parent of plate>,<Plate: grandparent of plate>]
+#
+# The {.children},{.parents},{.ancestors},{.descendants} methods are all Rails associations, and so can
+# have further scopes applied to them
+#
+# @example Retrieve all ancestors of a particular purpose
+#   plate.ancestors.where(purpose_id: 4)
 class AssetLink < ApplicationRecord
   include Api::AssetLinkIO::Extensions
   include Uuid::Uuidable

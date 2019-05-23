@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Labwhere reception', js: true do
+describe 'Labwhere reception', js: true do
   let(:user) { create :user, email: 'login@example.com' }
   let(:plate) { create :plate }
 
-  scenario 'user can pool from different tubes to stock and standard mx tubes' do
+  it 'user can pool from different tubes to stock and standard mx tubes' do
     login_user user
     visit labwhere_receptions_path
     expect(page).to have_content 'Labwhere Reception'

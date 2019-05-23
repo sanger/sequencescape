@@ -1,6 +1,25 @@
 require 'eventful_record'
 require 'external_properties'
 
+# Asset is a very busy class which combines what should probably be two separate concepts:
+# Labware: A physical item which can move round the lab, such as a {Plate} or {Tube}
+#
+# Key subclasses
+# --------------
+# - {Receptacle}: Something which can contain aliquots, such as a {Well} or {Tube}
+#   Currently those these all share a table, and exhibit single table inheritance.
+# - {Plate}: A piece of labware containing multiple receptacles known as {Well wells}.
+#   Plates can be a variety of shapes and sizes, although the marority are 12*8 (96) or
+#   24*16 (384) wells in size.
+# - {Well}: A receptacle on a plate. Wells themselves do not exist independently of plates in reality,
+#   although may occasionally be modelled as such.
+# - {Tube}: A piece of labware with a single {Receptacle}. These behaviours are currently coupled together.
+# - {Lane}: Forms part of a sequencing Flowcell. The flowcell itself is not currently modelled but can be
+#   approximated by a {Batch}
+# - {Fragment}: Represents an isolated segment of DNA on a Gel. Historical.
+# - {Receptacle}: Abstract class inherited by any asset which can contain stuff directly
+#
+# Some of the above are further subclasses to handle specific behaviours.
 class Asset < ApplicationRecord
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
@@ -40,12 +59,14 @@ class Asset < ApplicationRecord
   end
 
   class_attribute :stock_message_template, instance_writer: false
+  class_attribute :library_prep, instance_writer: false
 
   class VolumeError < StandardError
   end
 
   self.per_page = 500
   self.inheritance_column = 'sti_type'
+  self.library_prep = false
 
   has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
   has_many :asset_groups, through: :asset_group_assets
@@ -315,10 +336,6 @@ class Asset < ApplicationRecord
     self
   end
 
-  def library_prep?
-    false
-  end
-
   def display_name
     name.presence || "#{sti_type} #{id}"
   end
@@ -397,19 +414,6 @@ class Asset < ApplicationRecord
 
   def requests_status(request_type)
     requests.order('id ASC').where(request_type: request_type).pluck(:state)
-  end
-
-  def transfer(max_transfer_volume)
-    transfer_volume = [max_transfer_volume.to_f, volume || 0.0].min
-    raise VolumeError, 'not enough volume left' if transfer_volume <= 0
-
-    self.class.create!(name: name) do |new_asset|
-      new_asset.aliquots = aliquots.map(&:dup)
-      new_asset.volume   = transfer_volume
-      update!(volume: volume - transfer_volume) #  Update ourselves
-    end.tap do |new_asset|
-      new_asset.add_parent(self)
-    end
   end
 
   def spiked_in_buffer

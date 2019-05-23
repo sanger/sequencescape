@@ -23,43 +23,43 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     expect(SequencescapeExcel::Column.new(options).name).to eq(options[:name])
   end
 
-  it 'should not be valid without a name' do
-    expect(SequencescapeExcel::Column.new(options.except(:name))).to_not be_valid
+  it 'is not valid without a name' do
+    expect(SequencescapeExcel::Column.new(options.except(:name))).not_to be_valid
   end
 
-  it 'should have a type' do
+  it 'has a type' do
     expect(SequencescapeExcel::Column.new(options).type).to eq(options[:type])
   end
 
-  it 'should have a value' do
+  it 'has a value' do
     expect(SequencescapeExcel::Column.new(options).value).to eq(options[:value])
     expect(SequencescapeExcel::Column.new(options.except(:value)).value).to be_nil
   end
 
-  it 'should be comparable' do
+  it 'is comparable' do
     expect(SequencescapeExcel::Column.new(options)).to eq(SequencescapeExcel::Column.new(options))
-    expect(SequencescapeExcel::Column.new(options.merge(heading: 'SOME OTHER NAME'))).to_not eq(SequencescapeExcel::Column.new(options))
+    expect(SequencescapeExcel::Column.new(options.merge(heading: 'SOME OTHER NAME'))).not_to eq(SequencescapeExcel::Column.new(options))
   end
 
-  it 'should have an attribute value' do
+  it 'has an attribute value' do
     detail = { barcode: 'barcode', sanger_id: 'sanger_id', position: 'position' }
     expect(SequencescapeExcel::Column.new(options).attribute_value(detail)).to eq(detail[:barcode])
     expect(SequencescapeExcel::Column.new(options.except(:attribute)).attribute_value(detail)).to eq(options[:value])
     expect(SequencescapeExcel::Column.new(options.except(:value, :attribute)).attribute_value(detail)).to be_nil
   end
 
-  it 'should have a number' do
+  it 'has a number' do
     expect(SequencescapeExcel::Column.new(options).number).to eq(options[:number])
   end
 
   it 'can indicate whether the column is related to sample metadata' do
-    expect(SequencescapeExcel::Column.new(options)).to_not be_metadata_field
+    expect(SequencescapeExcel::Column.new(options)).not_to be_metadata_field
     expect(SequencescapeExcel::Column.new(options.merge(heading: 'DONOR ID', name: :donor_id))).to be_metadata_field
   end
 
   it 'can indicate whether the column is a specialised field and returns the constant' do
     column = SequencescapeExcel::Column.new(options)
-    expect(column).to_not be_specialised_field
+    expect(column).not_to be_specialised_field
 
     column = SequencescapeExcel::Column.new(options.merge(heading: 'INSERT SIZE FROM', name: :insert_size_from))
     expect(column).to be_specialised_field
@@ -106,7 +106,7 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     let(:column) { SequencescapeExcel::Column.new(options) }
     let(:range) { SequencescapeExcel::Range.new(first_column: column.number, first_row: 27, last_row: 150) }
 
-    before(:each) do
+    before do
       column.update(27, 150, range_list, worksheet)
     end
 
@@ -120,7 +120,7 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
 
     it 'modifies the validation' do
       expect(column.validation.formula1).to eq(range_list.find_by(column.range_name).absolute_reference)
-      expect(worksheet.data_validation_rules.all? { |rule| rule.sqref == column.range.reference }).to be_truthy
+      expect(worksheet.data_validation_rules).to be_all { |rule| rule.sqref == column.range.reference }
       expect(column.validation).to be_saved
     end
 
@@ -133,9 +133,9 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
       column = SequencescapeExcel::Column.new(options)
       dupped = column.dup
       column.update(27, 150, range_list, worksheet)
-      expect(dupped.range).to_not eq(range)
-      expect(dupped.validation).to_not be_saved
-      expect(dupped.conditional_formattings).to_not be_saved
+      expect(dupped.range).not_to eq(range)
+      expect(dupped.validation).not_to be_saved
+      expect(dupped.conditional_formattings).not_to be_saved
     end
   end
 

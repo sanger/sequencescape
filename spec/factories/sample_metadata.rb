@@ -47,6 +47,7 @@ FactoryBot.define do
       time_point { 'time_point' }
       disease { 'disease' }
       subject { 'subject' }
+
       treatment { 'treatment' }
     end
   end

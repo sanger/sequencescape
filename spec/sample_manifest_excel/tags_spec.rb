@@ -11,7 +11,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
       expect(tags.length).to eq(5)
       expect(tags[0]).to have_key(:i7)
       expect(tags[0]).to have_key(:i5)
-      expect(tags[tags.keys.first]).to_not eq(tags[tags.keys.last])
+      expect(tags[tags.keys.first]).not_to eq(tags[tags.keys.last])
     end
 
     it 'can produce a list of sequence tags with a duplicate' do
@@ -26,7 +26,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
       expect(tags[0]).to have_key(:tag_index)
       expect(tags[0]).to have_key(:tag2_group)
       expect(tags[0]).to have_key(:tag2_index)
-      expect(tags[tags.keys.first]).to_not eq(tags[tags.keys.last])
+      expect(tags[tags.keys.first]).not_to eq(tags[tags.keys.last])
     end
 
     it 'can produce a list of tag groups and indexes with a duplicate' do
@@ -57,6 +57,14 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
     let(:test_file_name) { 'test.xlsx' }
     let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
 
+    after(:all) do
+      SampleManifestExcel.reset!
+    end
+
+    after do
+      File.delete(test_file_name) if File.exist?(test_file_name)
+    end
+
     context 'tag sequences' do
       let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
 
@@ -64,7 +72,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
         download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:tags])
         download.save(test_file_name)
         upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, start_row: 9)
-        expect(TestTagChecker.new(upload)).to_not be_valid
+        expect(TestTagChecker.new(upload)).not_to be_valid
       end
     end
 
@@ -75,16 +83,8 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
         download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, manifest_type: 'tube_multiplexed_library', validation_errors: [:tags])
         download.save(test_file_name)
         upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, start_row: 9)
-        expect(TestTagChecker.new(upload)).to_not be_valid
+        expect(TestTagChecker.new(upload)).not_to be_valid
       end
-    end
-
-    after(:each) do
-      File.delete(test_file_name) if File.exist?(test_file_name)
-    end
-
-    after(:all) do
-      SampleManifestExcel.reset!
     end
   end
 

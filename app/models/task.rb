@@ -1,3 +1,16 @@
+# A Task forms part of a {Workflow} which in turn describes the steps that form a
+# {Pipeline}. Most tasks are a subclass of Task
+#
+# @deprecated Task form a large number of legacy pipelines in Sequencescape, however most
+# more recent pipelines exist outside of Sequencescape itself.
+#
+# Tasks have three key methods
+# {Task#render_task}: Which handles rendering the form displayed to the user
+# {Task#do_task}: Which takes the parameters from the form, and performs the task in question
+# {Task#partial}: Inicates which partial to render when displaying the form.
+#
+# @note A large number of tasks delegate a large portion of their behaviour back to the
+# {WorkflowsController}. This behaviour is mostly defined in modules under {Task}.
 class Task < ApplicationRecord
   belongs_to :workflow, class_name: 'Workflow', foreign_key: :pipeline_workflow_id
   has_many :families

@@ -1,7 +1,11 @@
-# require './app/api/core/service'
+# {include:file:static_docs/api_v1.md}
 module Api
+  # Sinatra application which provides routing for the V1 API
+  # Automatically generates routes from the files listed under `app/api/endpoints`
+  # This particular class handles the actual root response, other endpoints are
+  # handled by {Api::EndpointHandler}
   class RootService < ::Core::Service
-    # NOTE: This is partly a hack but it suffices to keep the dynamic ability to write endpoints.
+    # @note This is partly a hack but it suffices to keep the dynamic ability to write endpoints.
     ALL_SERVICES_AVAILABLE = Hash[Dir.glob(File.join(Rails.root, %w{app api endpoints ** *.rb})).map do |file|
       handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
       [handler.root.tr('/', '_'), handler]

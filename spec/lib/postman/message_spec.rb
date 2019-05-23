@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Postman::Message do
+  subject { described_class.new(postman, delivery_info, metadata, payload) }
+
   let(:postman) do
     instance_double('Postman', main_exchange: main_exchange)
   end
@@ -9,7 +11,6 @@ RSpec.describe Postman::Message do
   let(:metadata) { instance_double('Bunny::MessageProperties', headers: headers) }
   let(:headers) { retry_attempts.zero? ? nil : { 'attempts' => retry_attempts } }
   let(:retry_attempts) { 0 }
-  subject { described_class.new(postman, delivery_info, metadata, payload) }
 
   describe '#process' do
     context 'a valid payload' do

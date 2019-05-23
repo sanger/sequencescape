@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-feature 'Edit a study' do
+describe 'Edit a study' do
   let(:user) { create :admin }
   let!(:study) { create :study }
 
-  scenario 'edit open study', js: true do
+  it 'edit open study', js: true do
     study.study_metadata.bam = false
     study.save
     login_user(user)
@@ -22,7 +22,7 @@ feature 'Edit a study' do
     expect(page).to have_content('Alignments in BAM: true')
   end
 
-  scenario 'add external customer information', js: true do
+  it 'add external customer information', js: true do
     login_user(user)
     visit study_path(study)
     click_link 'Edit'

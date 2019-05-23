@@ -3,5 +3,6 @@
 # At a later date a migration will be written to update the
 # StiType of all existing CherrypickForPulldownRequests to CherrypickRequest
 # As well as updating request_class on request_types.
+# @deprecated Use {CherrypickRequest} instead
 class CherrypickForPulldownRequest < CherrypickRequest
 end

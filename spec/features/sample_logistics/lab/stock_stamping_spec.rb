@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pry'
 
-feature 'stamping of stock', js: true do
+describe 'stamping of stock', js: true do
   let(:user) { create :admin, barcode: 'ID41440E', swipecard_code: '1234567' }
   let(:plate) { create :plate_with_3_wells, barcode: '1' }
   let!(:barcode_printer) { create :barcode_printer }
@@ -13,7 +13,7 @@ feature 'stamping of stock', js: true do
     create :plate_type, name: 'ABgene_0765', maximum_volume: 800
   end
 
-  scenario 'stamping of stock' do
+  it 'stamping of stock' do
     plate.wells.first.set_current_volume(1000)
     login_user(user)
     visit lab_sample_logistics_path

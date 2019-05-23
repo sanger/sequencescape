@@ -9,7 +9,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList, type: :mode
   let(:rules) { load_file(folder, 'conditional_formattings') }
   let(:defaults) { SequencescapeExcel::ConditionalFormattingDefaultList.new(rules) }
 
-  it 'should have the correct number of defaults' do
+  it 'has the correct number of defaults' do
     expect(defaults.count).to eq(rules.length)
   end
 
@@ -24,9 +24,9 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList, type: :mode
     end
   end
 
-  it 'should be comparable' do
+  it 'is comparable' do
     expect(SequencescapeExcel::ConditionalFormattingDefaultList.new(rules)).to eq(defaults)
     rules.shift
-    expect(SequencescapeExcel::ConditionalFormattingDefaultList.new(rules)).to_not eq(defaults)
+    expect(SequencescapeExcel::ConditionalFormattingDefaultList.new(rules)).not_to eq(defaults)
   end
 end

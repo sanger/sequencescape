@@ -28,6 +28,7 @@ shared_examples 'it requires login' do |*actions|
           expect(@response.code).not_to be_in(300..307)
         end
       end
+
       context 'when not logged in' do
         setup do
           session[:user] = nil

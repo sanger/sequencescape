@@ -36,14 +36,14 @@ RSpec.describe SampleManifest, type: :model do
           let(:count) { count }
 
           it "create #{count} plate(s), #{count * 96} wells" do
-            expect { manifest.generate }.to change { Plate.count }.by(count)
-                                                                  .and change { Well.count }.by(count * 96)
+            expect { manifest.generate }.to change(Plate, :count).by(count)
+                                                                  .and change(Well, :count).by(count * 96)
             expect(manifest.labware.count).to eq(count)
             expect(manifest.labware.first).to be_a(Plate)
           end
 
           it 'create sample manifest assets' do
-            expect { manifest.generate }.to change { SampleManifestAsset.count }.by(count * 96)
+            expect { manifest.generate }.to change(SampleManifestAsset, :count).by(count * 96)
             wells = Plate.includes(:wells).with_barcode(manifest.barcodes).flat_map(&:wells)
             expect(manifest.assets).to eq(wells)
           end
@@ -63,13 +63,13 @@ RSpec.describe SampleManifest, type: :model do
 
             it 'create sample and aliquots' do
               sma1 = manifest.sample_manifest_assets.first
-              expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change { Sample.count }.by(1)
+              expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count).by(1)
                                                                                               .and change { study.samples.count }.by(1)
-                                                                                              .and change { Messenger.count }.by(1)
+                                                                                              .and change(Messenger, :count).by(1)
               sma2 = manifest.sample_manifest_assets.last
-              expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change { Sample.count }.by(1)
+              expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(Sample, :count).by(1)
                                                                                               .and change { study.samples.count }.by(1)
-                                                                                              .and change { Messenger.count }.by(1)
+                                                                                              .and change(Messenger, :count).by(1)
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
             end
@@ -93,6 +93,7 @@ RSpec.describe SampleManifest, type: :model do
     context 'created broadcast event' do
       context 'no rapid generation' do
         let(:manifest) { create :sample_manifest, study: study }
+
         it 'adds created broadcast event when sample manifest is created' do
           expect { manifest.generate }.to change { BroadcastEvent::SampleManifestCreated.count }.by(1)
           broadcast_event = BroadcastEvent::SampleManifestCreated.last
@@ -104,19 +105,20 @@ RSpec.describe SampleManifest, type: :model do
 
     context 'for a multiplexed library' do
       let(:asset_type) { 'multiplexed_library' }
+
       [2, 3].each do |count|
         context "#{count} libraries(s)" do
           let(:count) { count }
 
           it 'create 1 MX tube' do
-            expect { manifest.generate }.to  change { LibraryTube.count }.by(count)
-                                        .and change { MultiplexedLibraryTube.count }.by(1)
-                                        .and change { BroadcastEvent.count }.by(1)
+            expect { manifest.generate }.to  change(LibraryTube, :count).by(count)
+                                        .and change(MultiplexedLibraryTube, :count).by(1)
+                                        .and change(BroadcastEvent, :count).by(1)
           end
 
           it 'create sample manifest asset' do
-            expect { manifest.generate }.to  change { SampleManifestAsset.count }.by(count)
-            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
+            expect { manifest.generate }.to  change(SampleManifestAsset, :count).by(count)
+            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes).sort_by(&:human_barcode))
           end
 
           context 'after generation' do
@@ -133,7 +135,7 @@ RSpec.describe SampleManifest, type: :model do
 
             it 'create sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
-              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change { Sample.count }.by(1)
+              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count).by(1)
                                                                                             .and change { study.samples.count }.by(1)
               expect(LibraryTube.last.aliquots.first.library).to eq(manifest.assets.last)
               manifest.samples.reset
@@ -142,6 +144,7 @@ RSpec.describe SampleManifest, type: :model do
 
             describe '#labware' do
               subject { manifest.labware }
+
               it 'has one element' do
                 expect(subject.count).to eq(1)
               end
@@ -157,14 +160,15 @@ RSpec.describe SampleManifest, type: :model do
     context 'for a library' do
       let(:asset_type) { 'library' }
       let(:count) { 1 }
+
       context 'library tubes' do
         it 'create 1 tube' do
           # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-          expect { manifest.generate }.to change { LibraryTube.count }.by(count)
-                                      .and change { MultiplexedLibraryTube.count }.by(0)
-                                      .and change { SampleTube.count }.by(0)
-                                      .and change { SampleManifestAsset.count }.by(count)
-                                      .and change { BroadcastEvent.count }.by(1)
+          expect { manifest.generate }.to change(LibraryTube, :count).by(count)
+                                      .and change(MultiplexedLibraryTube, :count).by(0)
+                                      .and change(SampleTube, :count).by(0)
+                                      .and change(SampleManifestAsset, :count).by(count)
+                                      .and change(BroadcastEvent, :count).by(1)
         end
 
         context 'once generated' do
@@ -186,7 +190,7 @@ RSpec.describe SampleManifest, type: :model do
 
           it 'create sample and aliquots' do
             sma = manifest.sample_manifest_assets.last
-            expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change { Sample.count }.by(1)
+            expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count).by(1)
               .and change { study.samples.count }.by(count)
             expect(LibraryTube.last.aliquots.first.library).to eq(manifest.assets.last)
             manifest.samples.reset
@@ -195,6 +199,7 @@ RSpec.describe SampleManifest, type: :model do
 
           describe '#labware' do
             subject { manifest.labware }
+
             it 'has one element' do
               expect(subject.count).to eq(1)
             end
@@ -208,13 +213,14 @@ RSpec.describe SampleManifest, type: :model do
 
     context 'for a sample tube' do
       let(:asset_type) { '1dtube' }
+      let(:purpose) { Tube::Purpose.standard_sample_tube }
 
       [1, 2].each do |count|
         context "#{count} tubes(s)" do
           let(:count) { count }
 
           it "create #{count} tubes(s)" do
-            expect { manifest.generate }.to change { SampleTube.count }.by(count)
+            expect { manifest.generate }.to change(SampleTube, :count).by(count)
                                         .and change { manifest.assets.count }.by(count)
             expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes))
           end
@@ -225,9 +231,9 @@ RSpec.describe SampleManifest, type: :model do
             it 'create sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
               expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }
-                .to change { Sample.count }.by(1)
+                .to change(Sample, :count).by(1)
                 .and change { study.samples.count }.by(1)
-                .and change { Messenger.count }.by(1)
+                .and change(Messenger, :count).by(1)
               expect(SampleTube.last.aliquots.first.library).to be_nil
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
@@ -272,13 +278,14 @@ RSpec.describe SampleManifest, type: :model do
         end.not_to raise_error
       end
     end
+
     context 'where a well has a plate' do
       it 'adds an event to the plate' do
         SampleManifest::PlateBehaviour::Core.new(SampleManifest.new)
                                             .updated_by!(user,
                                                          [well_with_sample_and_plate.primary_aliquot.sample])
         expect(Event.last).to eq(well_with_sample_and_plate.plate.events.last)
-        expect(well_with_sample_and_plate.plate.events.last).to_not be_nil
+        expect(well_with_sample_and_plate.plate.events.last).not_to be_nil
       end
     end
   end
@@ -295,13 +302,13 @@ RSpec.describe SampleManifest, type: :model do
       manifest.generate
     end
 
-    it 'should have one job per plate' do
+    it 'has one job per plate' do
       expect(Delayed::Job.count).to eq(manifest.count)
     end
 
     context 'delayed jobs' do
       it 'broadcast one event with two subjects' do
-        expect { Delayed::Job.first.invoke_job }.to change { BroadcastEvent.count }.by 1
+        expect { Delayed::Job.first.invoke_job }.to change(BroadcastEvent, :count).by 1
         expect(BroadcastEvent.last.subjects.count).to eq(2)
       end
     end

@@ -1,5 +1,8 @@
-# require './app/api/core/service'
+# {include:file:static_docs/api_v1.md}
 module Api
+  # Sinatra application which provides routing for the V1 API
+  # Automatically generates routes from the files listed under `app/api/endpoints`
+  # used in {Api::RootService} which in turn gets mounted in `config/routes.rb`
   class EndpointHandler < ::Core::Service
     class << self
       def registered_mimetypes
@@ -136,8 +139,8 @@ module Api
 
     def lookup_for_class(model)
       ::Core::Io::Registry.instance.lookup_for_class(model)
-    rescue ::Core::Registry::UnregisteredError => exception
-      yield(exception)
+    rescue ::Core::Registry::UnregisteredError => e
+      yield(e)
     end
     private :lookup_for_class
 

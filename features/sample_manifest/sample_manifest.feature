@@ -10,6 +10,7 @@ Feature: Sample manifest
   Background:
     Given I am an "External" user logged in as "john"
     And the configuration exists for creating sample manifest Excel spreadsheets
+    And the Saphyr tube purpose exists
     And the "1D Tube" barcode printer "xyz1d" exists
     And the plate barcode webservice returns "1234567"
     Given a supplier called "Test supplier name" exists
@@ -27,6 +28,7 @@ Feature: Sample manifest
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
     And I select "Default Tube" from "Template"
+    And I select "Standard sample" from "purpose"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz1d" from "Barcode printer"
     And I fill in the field labeled "Tubes required" with "2"
@@ -41,6 +43,7 @@ Feature: Sample manifest
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
     And I select "Default Tube" from "Template"
+    And I select "Standard sample" from "purpose"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz1d" from "Barcode printer"
     And I fill in the field labeled "Tubes required" with "2"

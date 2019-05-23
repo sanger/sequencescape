@@ -21,11 +21,11 @@ module Parsers
     encodings = ENCODINGS.dup
     begin
       CSV.parse(content)
-    rescue ArgumentError => exception
+    rescue ArgumentError => e
       # Fetch the next fallback encoding
       encoding = encodings.shift
       # Re-raise the exception if we've run out
-      raise exception if encoding.nil?
+      raise e if encoding.nil?
 
       # Force the new encoding
       content.force_encoding(encoding)

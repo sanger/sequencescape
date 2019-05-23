@@ -39,7 +39,7 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
   end
 
   it 'has a uuid' do
-    expect(json['event']['uuid']).to_not be_empty
+    expect(json['event']['uuid']).not_to be_empty
   end
 
   it 'has a date' do

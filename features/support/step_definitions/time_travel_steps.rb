@@ -4,13 +4,17 @@ end
 
 Given /^I freeze time at "([^\"]*)"$/ do |freeze_point|
   freeze_time = Time.parse(freeze_point)
-  Timecop.freeze(freeze_time)
+  travel_to freeze_time
+end
+
+After do
+  travel_back
 end
 
 Given /^I travel through time to "([^\"]*)"$/ do |destination_time|
-  Timecop.travel Time.parse(destination_time)
+  travel_to Time.parse(destination_time)
 end
 
 Given /^today's date is "([^"]*)"$/ do |target_date|
-  Timecop.travel Date.parse(target_date)
+  travel_to Date.parse(target_date)
 end
