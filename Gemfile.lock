@@ -1,14 +1,4 @@
 GIT
-  remote: git://github.com/rails/activeresource.git
-  revision: 3fbbef15c210b44d5b31e4ae9bab12de7e9510c3
-  branch: master
-  specs:
-    activeresource (5.1.0)
-      activemodel (>= 5.0, < 7)
-      activemodel-serializers-xml (~> 1.0)
-      activesupport (>= 5.0, < 7)
-
-GIT
   remote: git://github.com/resgraph/acts-as-dag.git
   revision: 5e185dddff6563ee9ee92611555cd9d9a519d280
   branch: 5e185dddff6563ee9ee92611555cd9d9a519d280
@@ -94,6 +84,10 @@ GEM
       activerecord (~> 5.1.0)
       arel (~> 8.0)
       ruby-plsql (>= 0.6.0)
+    activeresource (5.1.0)
+      activemodel (>= 5.0, < 7)
+      activemodel-serializers-xml (~> 1.0)
+      activesupport (>= 5.0, < 7)
     activesupport (5.1.7)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
@@ -498,7 +492,7 @@ DEPENDENCIES
   activerecord-import
   activerecord-nulldb-adapter
   activerecord-oracle_enhanced-adapter
-  activeresource!
+  activeresource
   acts-as-dag!
   autoprefixer-rails (< 9.0.0)
   axlsx!
