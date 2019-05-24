@@ -339,19 +339,15 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
         @plate1 = create(:plate, barcode: 11111, size: 96, name: 'Plate 1', infinium_barcode: 'WG0012345-DNA')
 
-        @well1 = create(:well).tap { |well| well.aliquots.create!(sample: @sample1) }
-        @well2 = create(:well).tap { |well| well.aliquots.create!(sample: @sample2) }
-        @well3 = create(:well).tap { |well| well.aliquots.create!(sample: @sample3) }
+        @well1 = create(:untagged_well, sample: @sample1, plate: @plate1, map: @plate1.maps.detect { |m| m.description == 'A1' })
+        @well2 = create(:untagged_well, sample: @sample2, plate: @plate1, map: @plate1.maps.detect { |m| m.description == 'A2' })
+        @well3 = create(:untagged_well, sample: @sample3, plate: @plate1, map: @plate1.maps.detect { |m| m.description == 'B1' })
 
         [@well1, @well2, @well3].each do |well|
           well.set_requested_volume(15)
           well.set_concentration(50)
           well.save
         end
-
-        @plate1.add_and_save_well(@well1, 0, 0)
-        @plate1.add_and_save_well(@well2, 0, 1)
-        @plate1.add_and_save_well(@well3, 1, 0)
 
         @pipeline = create(:pipeline)
         @batch = @pipeline.batches.create!
@@ -382,19 +378,15 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           @sample4 = create :sample, name: 'Sample4', sanger_sample_id: 'STUDY_1_4'
           @study1.samples << @sample4
 
-          @well4 = create(:well).tap { |well| well.aliquots.create!(sample: @sample4) }
-          @well5 = create(:well).tap { |well| well.aliquots.create!(sample: @sample4) }
-          @well6 = create(:well).tap { |well| well.aliquots.create!(sample: @sample4) }
+          @well4 = create(:untagged_well, sample: @sample4, plate: @plate2, map: @plate2.maps.detect { |m| m.description == 'A1' })
+          @well5 = create(:untagged_well, sample: @sample4, plate: @plate2, map: @plate2.maps.detect { |m| m.description == 'A2' })
+          @well6 = create(:untagged_well, sample: @sample4, plate: @plate2, map: @plate2.maps.detect { |m| m.description == 'B1' })
 
           [@well4, @well5, @well6].each do |well|
             well.set_requested_volume(15)
             well.set_concentration(50)
             well.save
           end
-
-          @plate2.add_and_save_well(@well4, 0, 0)
-          @plate2.add_and_save_well(@well5, 0, 1)
-          @plate2.add_and_save_well(@well6, 1, 0)
 
           @batch.requests.concat([
             @pipeline.request_types.last.create!(study: @study1, asset: @well4),

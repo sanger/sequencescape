@@ -311,22 +311,6 @@ class Plate < Asset
     find_well_by_name(map_description)
   end
 
-  def add_well_holder(well)
-    children << well
-    wells << well
-  end
-
-  def add_well_by_map_description(well, map_description)
-    add_well_holder(well)
-    well.map = Map.find_by(description: map_description, asset_size: size)
-    well.save!
-  end
-
-  def add_and_save_well(well, row = nil, col = nil)
-    add_well(well, row, col)
-    well.save!
-  end
-
   def find_well_by_name(well_name)
     if wells.loaded?
       wells.indexed_by_location[well_name]
@@ -565,11 +549,6 @@ class Plate < Asset
   end
 
   private
-
-  def add_well(well, row = nil, col = nil)
-    add_well_holder(well)
-    well.map = find_map_by_rowcol(row, col) if row
-  end
 
   def obtain_storage_location
     if labwhere_location.present?

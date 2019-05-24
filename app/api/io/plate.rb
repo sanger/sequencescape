@@ -11,7 +11,6 @@ class Io::Plate < Io::Asset
                                           state  => state
                                       iteration  => iteration
                                           pools  => pools
-                                  pre_cap_groups => pre_cap_groups
                                             role => label.prefix
                                     purpose.name => label.text
                                         priority => priority

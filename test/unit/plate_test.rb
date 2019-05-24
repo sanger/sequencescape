@@ -51,9 +51,8 @@ class PlateTest < ActiveSupport::TestCase
 
   context '#plate_ids_from_requests' do
     setup do
-      @well1 = Well.new
-      @plate1 = create :plate
-      @plate1.add_and_save_well(@well1)
+      @plate1 = create :plate, :with_wells, well_count: 1
+      @well1 = @plate1.wells.first
       @request1 = create :well_request, asset: @well1
     end
 
@@ -68,7 +67,7 @@ class PlateTest < ActiveSupport::TestCase
     context 'with 2 requests on the same plate' do
       setup do
         @well2 = Well.new
-        @plate1.add_and_save_well(@well2)
+        @plate1.wells << @well2
         @request2 = create :well_request, asset: @well2
       end
       context 'with a valid well assets' do
@@ -82,11 +81,11 @@ class PlateTest < ActiveSupport::TestCase
     context 'with multiple requests on different plates' do
       setup do
         @well2 = Well.new
-        @plate2 = create :plate
-        @plate2.add_and_save_well(@well2)
+        @plate2 = create :plate, :with_wells, well_count: 1
+        @well2 = @plate2.wells.first
         @request2 = create :well_request, asset: @well2
         @well3 = Well.new
-        @plate1.add_and_save_well(@well3)
+        @plate1.wells << @well3
         @request3 = create :well_request, asset: @well3
       end
       context 'with a valid well assets' do
@@ -221,8 +220,7 @@ class PlateTest < ActiveSupport::TestCase
 
   context 'tubes are created from plate' do
     should 'send print request' do
-      plate = create :plate
-      10.times { plate.add_and_save_well(create :well_with_sample_and_without_plate) }
+      plate = create :plate, :with_wells, well_count: 2
       barcode_printer = create :barcode_printer
       LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
 
