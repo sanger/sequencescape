@@ -19,7 +19,7 @@
   <tr>
     <td><%= h(asset.display_name) %></td>
     <% family.descriptors.each do |descriptor| -%>
-    <td><%= asset.descriptor_value descriptor.name %></td>
+    <td><%= asset.metadata.try(:fetch, descriptor.name) %></td>
     <% end -%>
   </tr>
   <% end -%>

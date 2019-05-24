@@ -126,7 +126,7 @@ class Asset < ApplicationRecord
   has_one_event_with_family 'scanned_into_lab'
   has_one_event_with_family 'moved_to_2d_tube'
 
-  delegate :metadata, to: :custom_metadatum_collection
+  delegate :metadata, to: :custom_metadatum_collection, allow_nil: true
 
   delegate :last_qc_result_for, to: :qc_results
 
@@ -448,6 +448,16 @@ class Asset < ApplicationRecord
   def get_qc_result_value_for(key)
     last_qc_result_for(key).pluck(:value).first
   end
+
+  # Deprecated method to support any legacy addition of descriptors to assets.
+  # Main location appears to be dealing with fragments.
+  # Think this is no longer required, mq1 agrees, awaiting response from eh9
+  # no one else uses affected pipelines.
+  def add_descriptor(descriptor, user: User.sequencescape)
+    build_custom_metadatum_collection(user: user, asset: self) if custom_metadatum_collection.blank?
+    custom_metadatum_collection.custom_metadata.build(key: descriptor.name, value: descriptor.value)
+  end
+  deprecate add_descriptor: 'Use custom metadata directly instead'
 
   private
 

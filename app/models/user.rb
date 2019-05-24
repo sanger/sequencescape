@@ -62,6 +62,10 @@ class User < ApplicationRecord
     Digest::SHA1.hexdigest("--#{salt}--#{password}--")
   end
 
+  def self.sequencescape
+    find_or_create_by!(login: configatron.sequencescape_email, email: configatron.sequencescape_email)
+  end
+
   def study_roles
     user_roles('Study')
   end

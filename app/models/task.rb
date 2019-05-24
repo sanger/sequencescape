@@ -165,8 +165,8 @@ class Task < ApplicationRecord
 
   def generate_events_from_descriptors(asset)
     event = LabEvent.new(description: asset.sti_type)
-    asset.descriptors.each do |descriptor|
-      event.add_descriptor(descriptor) if descriptor.name != 'family_id'
+    asset.metadata.each do |key, value|
+      event.add_descriptor(Descriptor.new(name: key, value: value)) if key != 'family_id'
     end
     event
   end
