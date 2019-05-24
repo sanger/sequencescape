@@ -515,7 +515,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :sequenom_qc_plates
+  resources :sequenom_qc_plates, only: :index
   resources :study_reports
 
   resources :tag_substitutions, only: :create

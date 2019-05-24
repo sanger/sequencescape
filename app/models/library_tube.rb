@@ -5,10 +5,7 @@ class LibraryTube < Tube
   include ModelExtensions::LibraryTube
 
   self.library_prep = true
-
-  def sequenceable?
-    true
-  end
+  self.sequenceable = true
 
   scope :include_tag, -> { includes(aliquots: { tag: [:uuid_object, { tag_group: :uuid_object }] }) }
 

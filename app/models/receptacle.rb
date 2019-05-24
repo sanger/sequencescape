@@ -145,6 +145,16 @@ class Receptacle < Asset
     transfer_requests_as_target.find_by(submission_id: submission_id).try(:outer_request)
   end
 
+  def attach_tag(tag, tag2 = nil)
+    tags = { tag: tag, tag2: tag2 }.compact
+    return if tags.empty?
+    raise StandardError, 'Cannot tag an empty asset'   if aliquots.empty?
+    raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
+
+    aliquots.first.update!(tags)
+  end
+  alias attach_tags attach_tag
+
   # Contained samples also works on eg. plate
   alias_attribute :contained_samples, :samples
 end

@@ -22,12 +22,13 @@ class Plate < Asset
 
   extend QcFile::Associations
 
-  DEFAULT_SIZE = 96
+  class_attribute :default_plate_size
 
   # Shouldn't actually be falling back to this, but its here just in case
   self.default_prefix = 'DN'
   self.sample_partial = 'assets/samples_partials/plate_samples'
   self.per_page = 50
+  self.default_plate_size = 96
 
   attr_reader :storage_location_service
 
@@ -446,10 +447,6 @@ class Plate < Asset
 
   def number_of_blank_samples
     wells.with_blank_samples.count
-  end
-
-  def default_plate_size
-    DEFAULT_SIZE
   end
 
   def scored?

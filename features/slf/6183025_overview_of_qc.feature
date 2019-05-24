@@ -107,20 +107,13 @@ Feature: display an overview of all plates going through QC in SLF
      Then I create a "Gel Dilution Plates" from plate "6251234567836"
      Given I am on the sample logistics homepage
      When I follow "Sample Management Lab View"
-     And I follow "Print Sequenom plate barcode"
-     When I fill in "Plate 1" with "6251234567836"
-     And I fill in "User barcode" with "2470000100730"
-     And I fill in "Number of Plates" with "1"
-     And select "QC" from "Plate Type"
-     And select "xyz" from "Barcode Printer"
-     And I press "Create new Plate"
      Given I am on the sample logistics homepage
      Given plate "1221234567841" has gel analysis results
      Given plate "1221234567841" has had pico analysis results uploaded
      When I follow "QC overview"
      Then the overview of the plates should look like:
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
-     | Test Study | DN1234567T | 2011-02-14        | 2011-02-14    | 2011-02-14   | 2011-02-14     |
+     | Test Study | DN1234567T | 2011-02-14        | 2011-02-14    | 2011-02-14 | |
 
      Given I am on the Qc reports homepage
       When I select "Test Study" from "Study"
@@ -130,7 +123,7 @@ Feature: display an overview of all plates going through QC in SLF
       When I follow "Download report for Test Study"
      Then I should see the report for "Test Study":
        | Well | QC started date | Seq stamp date |
-       | A1   | 2011-02-14      | 2011-02-14     |
+       | A1   | 2011-02-14      |                |
 
 
   @new-api @asset_audit @single-sign-on

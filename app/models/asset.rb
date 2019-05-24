@@ -60,6 +60,8 @@ class Asset < ApplicationRecord
   class_attribute :automatic_move, instance_writer: false
   # Set to true on the products of library creation. Controls name generation.
   class_attribute :library_prep, instance_writer: false
+  # Determines if the user is presented with the request additional sequencing link
+  class_attribute :sequenceable, instance_writer: false
 
   class VolumeError < StandardError
   end
@@ -69,6 +71,7 @@ class Asset < ApplicationRecord
   self.sample_partial = 'assets/samples_partials/blank'
   self.automatic_move = false
   self.library_prep = false
+  self.sequenceable = false
 
   has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
   has_many :asset_groups, through: :asset_group_assets
@@ -112,12 +115,10 @@ class Asset < ApplicationRecord
     event_constructor(:create_scanned_into_lab!,       Event::ScannedIntoLabEvent,    :create_for_asset!)
     event_constructor(:create_plate!,                  Event::PlateCreationEvent,     :create_for_asset!)
     event_constructor(:create_plate_with_date!,        Event::PlateCreationEvent,     :create_for_asset_with_date!)
-    event_constructor(:create_sequenom_stamp!,         Event::PlateCreationEvent,     :create_sequenom_stamp_for_asset!)
-    event_constructor(:create_sequenom_plate!,         Event::PlateCreationEvent,     :create_sequenom_plate_for_asset!)
     event_constructor(:create_gel_qc!,                 Event::SampleLogisticsQcEvent, :create_gel_qc_for_asset!)
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
-    event_constructor(:updated_fluidigm_plate!, Event::SequenomLoading, :updated_fluidigm_plate!)
+    event_constructor(:updated_fluidigm_plate!,        Event::SequenomLoading,        :updated_fluidigm_plate!)
     event_constructor(:update_gender_markers!,         Event::SequenomLoading,        :created_update_gender_makers!)
     event_constructor(:update_sequenom_count!,         Event::SequenomLoading,        :created_update_sequenom_count!)
   end
@@ -210,11 +211,6 @@ class Asset < ApplicationRecord
     }
   end
 
-  # to override in subclass
-  def location
-    nil
-  end
-
   # Assets usually have studies through aliquots, which is only relevant to
   # Receptacles. This method just ensures all assets respond to studies
   def studies
@@ -233,10 +229,6 @@ class Asset < ApplicationRecord
   # Returns the request options used to create this asset.  By default assumed to be empty.
   def created_with_request_options
     {}
-  end
-
-  def sequenceable?
-    false
   end
 
   # Returns the type of asset that can be considered appropriate for request types.
@@ -369,16 +361,6 @@ class Asset < ApplicationRecord
   def original_stock_plates
     ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
   end
-
-  def attach_tag(tag, tag2 = nil)
-    tags = { tag: tag, tag2: tag2 }.compact
-    return if tags.empty?
-    raise StandardError, 'Cannot tag an empty asset'   if aliquots.empty?
-    raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
-
-    aliquots.first.update!(tags)
-  end
-  alias attach_tags attach_tag
 
   def spiked_in_buffer
     nil
