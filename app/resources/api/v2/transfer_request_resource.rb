@@ -20,8 +20,8 @@ module Api
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :state
-      # attribute :volume
+      attribute :state, readonly: true
+      attribute :volume, readonly: true
 
       # Filters
 

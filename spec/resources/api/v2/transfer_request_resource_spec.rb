@@ -12,19 +12,18 @@ RSpec.describe Api::V2::TransferRequestResource, type: :resource do
     # Test attributes
     expect(transfer_request).to have_attribute :uuid
     expect(transfer_request).to have_attribute :state
+    expect(transfer_request).to have_attribute :volume
   end
 
   it 'exposes non-updateable fields', :aggregate_failures do
     # Read only attributes
     expect(transfer_request).not_to have_updatable_field(:id)
     expect(transfer_request).not_to have_updatable_field(:uuid)
+    expect(transfer_request).not_to have_updatable_field(:state)
+    expect(transfer_request).not_to have_updatable_field(:volume)
   end
 
-  it 'exposes updateable fields', :aggregate_failures do
-    # Updatable fields
-    expect(transfer_request).to have_updatable_field(:state)
-    # expect(transfer_request).to have_updatable_field(:volume)
-  end
+  # Updatable fields
 
   # Filters
   # eg. expect(transfer_request).to filter(:order_type)
