@@ -151,24 +151,8 @@ class Task < ApplicationRecord
     raise NotImplementedError, "Please Implement a do_task for #{self.class.name}"
   end
 
-  def subassets_for_asset(asset)
-    return [] unless asset
-
-    sub_assets = []
-    family_map = families.index_by(&:name)
-    asset.children.select { |a| family_map[a.sti_type] }
-  end
-
   def sub_events_for(_event)
     []
-  end
-
-  def generate_events_from_descriptors(asset)
-    event = LabEvent.new(description: asset.sti_type)
-    asset.metadata.each do |key, value|
-      event.add_descriptor(Descriptor.new(name: key, value: value)) if key != 'family_id'
-    end
-    event
   end
 
   def find_batch(batch_id)

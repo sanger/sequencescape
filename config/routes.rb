@@ -397,8 +397,6 @@ Rails.application.routes.draw do
 
   resources :machine_barcodes, only: [:show]
 
-  match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'
-
   resources :pipelines, except: [:delete] do
     collection do
       post :update_priority

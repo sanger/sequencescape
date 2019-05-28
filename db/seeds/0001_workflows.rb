@@ -85,7 +85,6 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
 
     [
       { class: SetDescriptorsTask, name: 'Initial QC',       sorted: 1, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Gel',              sorted: 2, interactive: false, per_item: false, families: [fragment_family], lab_activity: true },
       { class: SetDescriptorsTask, name: 'Characterisation', sorted: 3, batched: true, interactive: false, per_item: false, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
@@ -137,7 +136,6 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparat
       { class: TagGroupsTask,      name: 'Tag Groups',       sorted: 1, lab_activity: true },
       { class: AssignTagsTask,     name: 'Assign Tags',      sorted: 2, lab_activity: true },
       { class: SetDescriptorsTask, name: 'Initial QC',       sorted: 3, batched: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Gel',              sorted: 4, batched: false, lab_activity: true },
       { class: SetDescriptorsTask, name: 'Characterisation', sorted: 5, batched: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
@@ -177,7 +175,6 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparat
       TagGroupsTask => { name: 'Tag Groups', sorted: 1, lab_activity: true },
       AssignTagsTask => { name: 'Assign Tags', sorted: 2, lab_activity: true },
       SetDescriptorsTask => { name: 'Initial QC',       sorted: 3, batched: false, lab_activity: true },
-      SetDescriptorsTask => { name: 'Gel',              sorted: 4, batched: false, lab_activity: true },
       SetDescriptorsTask => { name: 'Characterisation', sorted: 5, batched: true, lab_activity: true }
     }.each do |klass, details|
       klass.create!(details.merge(workflow: workflow))
