@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181119105427) do
+ActiveRecord::Schema.define(version: 20190415133129) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -1791,6 +1791,7 @@ ActiveRecord::Schema.define(version: 20181119105427) do
     t.integer "target_asset_id"
     t.integer "submission_id"
     t.integer "order_id"
+    t.float "volume", limit: 24
     t.index ["asset_id"], name: "index_requests_on_asset_id"
     t.index ["submission_id"], name: "index_requests_on_submission_id"
     t.index ["target_asset_id"], name: "index_requests_on_target_asset_id"
