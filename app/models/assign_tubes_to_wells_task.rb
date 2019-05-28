@@ -1,7 +1,7 @@
 # An unused {Task}
 # Assigns tagged tube into single plexed wells on the target plate.
 #
-# @deprecate Unused in production. Should be safe to delete. May need to clean up tests though.
+# @deprecated Unused in production. Should be safe to delete. May need to clean up tests though.
 #
 # @see Tasks::AssignTubesToWellsHandler for behaviour included in the {WorkflowsController}
 class AssignTubesToWellsTask < Task

@@ -6,73 +6,6 @@ Feature: Creating Spiked phiX
     Given I have a phiX tube called "Stock of phiX"
       And the "volume" of the asset called "Stock of phiX" is "200.0"
 
-  Scenario: A member of the library creation team creates a "batch" of indexed phiX.
-    Given I am on the asset creation page
-    When I select "Library Tube" from "Type"
-    And I fill in "Parent Asset" with "Stock of phiX"
-    And I fill in "Name" with "indexed phiX"
-    And I fill in "Concentration" with "17"
-    And I fill in "Volume" with "100"
-    And I fill in "vol." with "100"
-    When I press "Create"
-    Then I should see "Below are the assets which have been created"
-    And I should see "indexed phiX"
-    And I should see "print"
-    And the "concentration" of the asset called "indexed phiX" should be "17.0"
-    And the "volume" of the asset called "indexed phiX" should be "100.0"
-
-    When I am on the show page for asset "indexed phiX"
-    And I should see "LibraryTube"
-
-  #Scenario: A member of the cluster formation team will create a new "batch" of Hybridization buffer spiked with phiX.
-    #Given I am logged in as "me"
-    #And I have a library tube of stuff called "indexed phiX"
-    #And the "volume" of the asset called "indexed phiX" is "100"
-
-    Given I am on the asset creation page
-    When I select "Hybridization Buffer Spiked" from "Type"
-    And I fill in "Name" with "hbs"
-    And I fill in "Parent Asset" with "indexed phiX"
-    And I fill in "vol." with "40"
-    And I fill in "Volume" with "240"
-    When I press "Create"
-    Then I should see "hbs"
-    Then I should see "print"
-
-    When I am on the show page for asset "hbs"
-    And I should see "SpikedBuffer"
-
-    # Checking new volumes
-    Then the "volume" of the asset called "indexed phiX" should be "60.0"
-    Then the "volume" of the asset called "hbs" should be "240.0"
-    Then the "volume" of the parent asset of the asset called "hbs" should be "40.0"
-
-
-    #Scenario: A member of the cluster formation team will create a number of aliquots from the spiked Hybridization buffer
-    Given I am on the asset creation page
-    When I select "Hybridization Buffer Spiked" from "Type"
-    And I fill in "Name" with "Aliquot"
-    And I fill in "Parent Asset" with "hbs"
-    And I fill in "vol." with "24"
-    And I fill in "Count" with "5"
-
-    When I press "Create"
-    Then I should see "print"
-    And I should see "Aliquot #1"
-    And I should see "Aliquot #2"
-    And I should see "Aliquot #3"
-    And I should see "Aliquot #4"
-    And I should see "Aliquot #5"
-
-    # Checking that stuff which shouldn't change are still the same
-    Then the "volume" of the asset called "indexed phiX" should be "60.0"
-
-    # Checking that stuff wich should have had.
-    Then the "volume" of the asset called "hbs" should be "120.0"
-    Then the "volume" of the parent asset of the asset called "hbs" should be "20.0"
-    Then the "volume" of the asset called "Aliquot #1" should be "24.0"
-    Then the "volume" of the index asset of the asset called "Aliquot #5" should be "4.0"
-
   Scenario: The cluster formation team member create a batch that will use spiked in controls.
     Given I have a batch with 8 requests for the "Cluster formation PE (spiked in controls)" pipeline
     And  I have a hybridization spiked buffer called "Aliquot #1"
@@ -96,49 +29,7 @@ Feature: Creating Spiked phiX
   # TODO: use factories for controls and batch
   @npg @xml
   Scenario: Create a batch and check the xml
-    # create control
-    Given I am on the asset creation page
-    When I select "Library Tube" from "Type"
-    And I fill in "Name" with "indexed phiX"
-    And I fill in "Concentration" with "17"
-    And I fill in "Volume" with "100"
-    And I fill in "Parent Asset" with "Stock of phiX"
-    And I fill in "vol." with "100"
-    When I press "Create"
-    Then I should see "Below are the assets which have been created"
-    And I should see "indexed phiX"
-    And I should see "print"
-
-    And the "concentration" of the asset called "indexed phiX" should be "17.0"
-    And the "volume" of the asset called "indexed phiX" should be "100.0"
-
-    When I am on the show page for asset "indexed phiX"
-    And I should see "LibraryTube"
-
-#create Hybridization Buffer Spiked (Stock)
-    Given I am on the asset creation page
-    When I select "Hybridization Buffer Spiked" from "Type"
-    And I fill in "Name" with "hbs"
-    And I fill in "Parent Asset" with "indexed phiX "
-    And I fill in "vol." with "40"
-    And I fill in "Volume" with "240"
-    When I press "Create"
-    Then I should see "hbs"
-    Then I should see "print"
-
-    #create the aliquots
-
-    Given I am on the asset creation page
-    When I select "Hybridization Buffer Spiked" from "Type"
-    And I fill in "Name" with "Aliquot"
-    And I fill in "Parent Asset" with "hbs"
-    And I fill in "vol." with "24"
-    And I fill in "Count" with "2"
-    When I press "Create"
-    Then I should see "print"
-    And I should see "Aliquot #1"
-    And I should see "Aliquot #2"
-
+    And  I have a hybridization spiked buffer called "Aliquot #1"
     And the barcode for the asset "Aliquot #1" is "NT1O"
 
     Given I have a batch with 8 requests for the "Cluster formation PE (spiked in controls)" pipeline

@@ -24,7 +24,7 @@ Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, n
   FactoryBot.create(:"#{ tube_type }_tube", name: name)
 end
 
-Then /^the name of (the .+) should be "([^\"]+)"$/ do |asset, name|
+Then 'the name of {uuid} should be {string}' do |asset, name|
   assert_equal(name, asset.name)
 end
 

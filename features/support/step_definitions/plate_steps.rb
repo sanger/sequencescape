@@ -127,14 +127,26 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ d
   AssetLink.create!(ancestor: parent, descendant: plate_purpose.create!(name: plate_name))
 end
 
-Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
+Given 'all wells on {plate_name} have unique samples' do |plate|
   plate.wells.each do |well|
     FactoryBot.create :untagged_aliquot, receptacle: well
   end
 end
 
-Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number, plate|
-  plate.wells.in_column_major_order[0, number.to_i].each do |well|
+# Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number, plate|
+#   plate.wells.in_column_major_order[0, number.to_i].each do |well|
+#     FactoryBot.create :untagged_aliquot, receptacle: well
+#   end
+# end
+
+Given '{int} wells on {plate_name} have unique samples' do |number, plate|
+  plate.wells.in_column_major_order[0, number].each do |well|
+    FactoryBot.create :untagged_aliquot, receptacle: well
+  end
+end
+
+Given '{int} wells on {plate_id} have unique samples' do |number, plate|
+  plate.wells.in_column_major_order[0, number].each do |well|
     FactoryBot.create :untagged_aliquot, receptacle: well
   end
 end

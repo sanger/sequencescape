@@ -73,6 +73,7 @@ RSpec.configure do |config|
   # This include make sit available to us. Including it globally causes
   # issues eleswhere
   config.include ActionDispatch::TestProcess, with: :uploader
+  config.include ActiveSupport::Testing::TimeHelpers
 
   config.include Rails.application.routes.url_helpers
 
@@ -81,6 +82,8 @@ RSpec.configure do |config|
   Capybara.add_selector(:data_behavior) do
     xpath { |name| XPath.css("[data-behavior='#{name}']") }
   end
+
+  Capybara.server = :puma, { Silent: true }
 end
 
 Shoulda::Matchers.configure do |config|

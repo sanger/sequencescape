@@ -131,6 +131,15 @@ h3.card-header-custom {
 .text-started { @extend .text-primary; }
 .text-cancelled { @extend .text-warning; }
 
+.errorExplanation {
+  @extend .alert;
+  @extend .alert-danger;
+  h2 {
+    @extend .h5;
+    @extend .alert-heading;
+  }
+}
+
 div.quota {
   @extend .card;
   @extend .bg-info;
@@ -160,6 +169,29 @@ div.quota {
     }
   }
 }
+
+.phi-x-form {
+  @extend .form-group;
+  @extend .row;
+  label {
+    @extend .col-sm-4;
+    @extend .col-form-label;
+  }
+  div.field {
+    @extend .col-sm-8;
+    input { @extend .form-control; }
+    select { @extend .custom-select; }
+    .form-help {
+      @extend .text-muted;
+    }
+  }
+  .field_with_errors {
+    @extend .col-sm-4;
+    @extend .p-0;
+  }
+}
+
+.field_with_errors { input { @extend .is-invalid; } }
 
 #barcode_list li {
   width: 20em;
@@ -871,9 +903,9 @@ background-color: #BBBBBB;
 }
 
 td.comment {
-    padding: 5px;
+  padding: 5px;
   margin: 5px;
-border-top: 1px solid #cdd;
+  border-top: 1px solid #cdd;
   background-color: #eee;
 }
 

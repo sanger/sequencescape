@@ -154,7 +154,6 @@ module ModelExtensions::Order
   def merge_in_structured_request_options
     self.request_options ||= {}
     self.request_options = self.request_options.deep_merge(@request_options_structured || {})
-    true
   end
   private :merge_in_structured_request_options
 

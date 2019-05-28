@@ -50,12 +50,13 @@ describe 'Perform a tag substitution', js: true do
     find('td', text: sample_b.name).sibling('td', text: "(#{sample_a_orig_tag.oligo})")
     find('td', text: sample_b.name).sibling('td', text: "(#{sample_b_orig_tag2.oligo})")
     click_link '1 comment'
-    expect(page).to have_content(
-      "Tag substitution performed.
-       Referenced ticket no: 12345
-       Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_b_orig_tag.oligo};
-       Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_a_orig_tag.oligo};"
-    )
+    expect(page).to have_content(<<~COMMENT
+      Tag substitution performed.
+      Referenced ticket no: 12345
+      Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_b_orig_tag.oligo};
+      Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_a_orig_tag.oligo};
+    COMMENT
+                                )
   end
 
   it 'Performing an invalid tag swap' do

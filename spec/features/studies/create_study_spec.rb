@@ -8,6 +8,8 @@ describe 'Create a study' do
   setup do
     create :faculty_sponsor, name: 'Jack Sponsor'
     create :data_release_study_type, name: 'genomic sequencing'
+    create :study_type
+    create :program
   end
 
   it 'create managed study', js: true do

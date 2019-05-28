@@ -1,5 +1,6 @@
 Given /^I have a hybridization spiked buffer called "([^\"]+)"$/ do |name|
-  FactoryBot.create(:spiked_buffer, name: name)
+  buffer = FactoryBot.create(:spiked_buffer, name: name)
+  buffer.parents << FactoryBot.create(:phi_x_stock_tube, name: 'indexed phiX')
 end
 
 Then /^the "([^\"]+)" of the asset "([^\"]+)" should be "([^\"]+)"$/ do |field, id, value|

@@ -29,6 +29,10 @@ Rails.application.configure do
   config.action_controller.allow_forgery_protection = false
   config.action_mailer.perform_caching = false
 
+  # Rails 5.2 Option
+  # Store uploaded files on the local file system in a temporary directory
+  # config.active_storage.service = :test
+
   # Tell Action Mailer not to deliver emails to the real world.
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
@@ -36,8 +40,6 @@ Rails.application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :raise
-
-  config.ets_enabled = true
 
   config.disable_animations = true
   # Raises error for missing translations

@@ -1,0 +1,10 @@
+<%= page_title 'PhiX Stock', 'new' %>
+<%= alert(:danger) do %>
+  <strong>Sorry, we couldn't do that</strong>
+  <ul>
+    <% @stock.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
+<%= render partial: 'phi_xes/stock', locals: { stock: @stock, tag_option_names: @tag_option_names } %>
