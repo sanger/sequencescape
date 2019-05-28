@@ -2,6 +2,11 @@ class Receptacle < Asset
   include Transfer::State
   include Aliquot::Remover
 
+  QC_STATE_ALIASES = {
+    'passed' => 'pass',
+    'failed' => 'fail'
+  }.freeze
+
   self.sample_partial = 'assets/samples_partials/asset_samples'.freeze
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
@@ -39,13 +44,6 @@ class Receptacle < Asset
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
-  # DEPRECATED ASSOCIATIONS
-  # TODO: Remove these at some point in the future as they're kind of wrong!
-  has_one :sample, through: :primary_aliquot
-  deprecate sample: 'receptacles may contain multiple samples. This method just returns the first.'
-  has_one :get_tag, through: :primary_aliquot, source: :tag
-  deprecate get_tag: 'receptacles can contain multiple tags.'
-
   # Named scopes for the future
   scope :include_aliquots, ->() { includes(aliquots: %i(sample tag bait_library)) }
   scope :include_aliquots_for_api, ->() { includes(aliquots: Io::Aliquot::PRELOADS) }
@@ -66,21 +64,10 @@ class Receptacle < Asset
   # Scope for caching the samples of the receptacle
   scope :including_samples, -> { includes(samples: :studies) }
 
-  def sample=(sample)
-    aliquots.clear
-    aliquots << Aliquot.new(sample: sample)
-  end
-  deprecate :sample=
-
   def update_aliquot_quality(suboptimal_quality)
     aliquots.each { |a| a.update_quality(suboptimal_quality) }
     true
   end
-
-  def tag
-    get_tag.try(:map_id) || ''
-  end
-  deprecate :tag
 
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
 
@@ -102,6 +89,20 @@ class Receptacle < Asset
 
   def default_state
     nil
+  end
+
+  def compatible_qc_state
+    QC_STATE_ALIASES.fetch(qc_state, qc_state) || ''
+  end
+
+  def set_qc_state(state)
+    self.qc_state = QC_STATE_ALIASES.key(state) || state
+    save
+    set_external_release(qc_state)
+  end
+
+  def been_through_qc?
+    qc_state.present?
   end
 
   def primary_aliquot_if_unique

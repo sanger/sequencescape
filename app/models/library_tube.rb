@@ -9,10 +9,6 @@ class LibraryTube < Tube
 
   scope :include_tag, -> { includes(aliquots: { tag: [:uuid_object, { tag_group: :uuid_object }] }) }
 
-  def sorted_tags_for_select
-    get_tag.tag_group.tags.order(:map_id).pluck(:name, :id)
-  end
-
   def self.stock_asset_type
     StockLibraryTube
   end

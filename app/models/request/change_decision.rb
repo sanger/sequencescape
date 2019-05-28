@@ -22,7 +22,7 @@ class Request::ChangeDecision
 
   attr_accessor :asset_qc_state
   validates_each(:asset_qc_state, unless: :asset_qc_state_absent?) do |record, _attr, value|
-    if not record.request.target_asset.has_been_through_qc?
+    if not record.request.target_asset.been_through_qc?
       record.errors.add(:asset, 'has not been through QC')
     elsif value == record.request.target_asset.qc_state
       record.errors.add(:asset_qc_state, 'cannot be same as current state')

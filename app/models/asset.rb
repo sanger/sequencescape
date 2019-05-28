@@ -35,23 +35,6 @@ class Asset < ApplicationRecord
   include Commentable
   include Event::PlateEvents
 
-  QC_STATES = [
-    %w[passed pass],
-    %w[failed fail],
-    %w[pending pending],
-    [nil, '']
-  ]
-
-  QC_STATES.reject { |k, _v| k.nil? }.each do |state, qc_state|
-    line = __LINE__ + 1
-    class_eval("
-      def qc_#{qc_state}
-        self.qc_state = #{state.inspect}
-        self.save!
-      end
-    ", __FILE__, line)
-  end
-
   class_attribute :stock_message_template, instance_writer: false
   # The partial used to render the list of assets on the asset show page
   class_attribute :sample_partial, instance_writer: false
@@ -291,11 +274,6 @@ class Asset < ApplicationRecord
     children.last
   end
 
-  # Labware reflects the physical piece of plastic corresponding to an asset
-  def labware
-    self
-  end
-
   def display_name
     name.presence || "#{sti_type} #{id}"
   end
@@ -306,20 +284,6 @@ class Asset < ApplicationRecord
 
   def details
     nil
-  end
-
-  def compatible_qc_state
-    QC_STATES.assoc(qc_state).try(:last) || qc_state
-  end
-
-  def set_qc_state(state)
-    self.qc_state = QC_STATES.rassoc(state).try(:first) || state
-    save
-    set_external_release(qc_state)
-  end
-
-  def has_been_through_qc?
-    qc_state.present?
   end
 
   def set_external_release(state)

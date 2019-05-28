@@ -155,6 +155,7 @@ class Submission < ApplicationRecord
     orders.first.request_types.map(&:to_i)
   end
   deprecate request_type_ids: 'Orders may now have different request_types'
+  # Logged calls from: app/models/pre_capture_pool.rb:74
 
   def order_request_type_ids
     orders.flat_map(&:request_types).uniq.compact

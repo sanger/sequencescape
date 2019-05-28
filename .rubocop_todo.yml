@@ -292,6 +292,7 @@ Naming/AccessorMethodName:
     - 'app/api/core/io/base/json_formatting_behaviour/input.rb'
     - 'app/controllers/studies/documents_controller.rb'
     - 'app/models/asset.rb'
+    - 'app/models/receptacle.rb'
     - 'app/models/asset/ownership.rb'
     - 'app/models/broadcast_event.rb'
     - 'app/models/lib_pool_norm_tube_generator.rb'

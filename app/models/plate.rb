@@ -20,6 +20,8 @@ class Plate < Asset
   include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
 
+  include AssetRefactor::Labware::Methods
+
   extend QcFile::Associations
 
   class_attribute :default_plate_size
@@ -29,8 +31,6 @@ class Plate < Asset
   self.sample_partial = 'assets/samples_partials/plate_samples'
   self.per_page = 50
   self.default_plate_size = 96
-
-  attr_reader :storage_location_service
 
   has_qc_files
 
@@ -150,11 +150,11 @@ class Plate < Asset
   has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
 
   def submission_ids
-    @submission_ids ||= in_progress_submissions.pluck(:submission_id)
+    @submission_ids ||= in_progress_submissions.ids
   end
 
   def submission_ids_as_source
-    @submission_ids_as_source ||= waiting_submissions.pluck(:submission_id)
+    @submission_ids_as_source ||= waiting_submissions.ids
   end
 
   # Prioritised the submissions that have been made from the plate
@@ -186,24 +186,10 @@ class Plate < Asset
   end
 
   def priority
-    Submission.joins([
-      'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-      'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-    ])
-              .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
-      Submission.joins([
-        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-      ])
-                .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
+    waiting_submissions.maximum(:priority) ||
+      in_progress_submissions.maximum(:priority) ||
       0
   end
-
-  # Plates can easily belong to multiple studies, so this method is just misleading.
-  def study
-    wells.first.try(:study)
-  end
-  deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
 
   before_create :set_plate_name_and_size
 
@@ -342,10 +328,6 @@ class Plate < Asset
 
   def stock_role
     well_requests_as_source.first&.role
-  end
-
-  def storage_location
-    @storage_location ||= obtain_storage_location
   end
 
   def self.plate_ids_from_requests(requests)
@@ -528,10 +510,6 @@ class Plate < Asset
     'plate'
   end
 
-  def labwhere_location
-    @labwhere_location ||= lookup_labwhere_location
-  end
-
   # Plates use a different counter to tubes, and prior to the foreign barcodes update
   # this method would have fallen back to Barcodable#generate tubes, and potentially generated
   # an invalid plate barcode. In the future we probably want to scrap this approach entirely,
@@ -549,29 +527,6 @@ class Plate < Asset
   end
 
   private
-
-  def obtain_storage_location
-    if labwhere_location.present?
-      @storage_location_service = 'LabWhere'
-      labwhere_location
-    else
-      @storage_location_service = 'None'
-      'LabWhere location not set. Could this be in ETS?'
-    end
-  end
-
-  def lookup_labwhere_location
-    lookup_labwhere(machine_barcode) || lookup_labwhere(human_barcode)
-  end
-
-  def lookup_labwhere(barcode)
-    begin
-      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(barcode)
-    rescue LabWhereClient::LabwhereException => e
-      return "Not found (#{e.message})"
-    end
-    return info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
-  end
 
   def lookup_stock_plate
     spp = PlatePurpose.considered_stock_plate.pluck(:id)

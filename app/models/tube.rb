@@ -7,6 +7,8 @@ class Tube < Receptacle
   include Transfer::State::TubeState
   include Api::Messages::QcResultIO::TubeExtensions
 
+  include AssetRefactor::Labware::Methods
+
   extend QcFile::Associations
 
   # Fallback for tubes without a purpose
