@@ -15,7 +15,7 @@ module Api
 
       # Associations:
       has_one :target_asset, foreign_key: :target_asset_id, class_name: 'Receptacle'
-      has_one :source_asset, foreign_key: :asset_id, class_name: 'Receptacle'
+      has_one :source_asset, relation_name: 'asset' , foreign_key: :asset_id, class_name: 'Receptacle'
       has_one :submission, foreign_key: :submission_id, class_name: 'Submission'
 
       # Attributes

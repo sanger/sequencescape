@@ -9,7 +9,7 @@ FactoryBot.define do
       association(:submission, factory: :submission)
 
       factory :transfer_request_with_volume do
-        volume { rand(10..40) }
+        volume { 10 }
       end
     end
   end
