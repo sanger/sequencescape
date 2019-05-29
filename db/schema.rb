@@ -1797,6 +1797,7 @@ ActiveRecord::Schema.define(version: 20190522154457) do
     t.integer "target_asset_id"
     t.integer "submission_id"
     t.integer "order_id"
+    t.float "volume", limit: 24
     t.index ["asset_id"], name: "index_requests_on_asset_id"
     t.index ["submission_id"], name: "index_requests_on_submission_id"
     t.index ["target_asset_id"], name: "index_requests_on_target_asset_id"

@@ -26,6 +26,22 @@ RSpec.describe TransferRequest, type: :model do
              state: library_state
     end
 
+    context 'with volume' do
+      subject do
+        create :transfer_request,
+               asset: source,
+               target_asset: destination,
+               submission: library_request.submission,
+               volume: 4.5
+      end
+
+      let(:library_state) { 'pending' }
+
+      it 'records the volume' do
+        expect(subject.volume).to eq(4.5)
+      end
+    end
+
     context 'with a pending library request' do
       let(:library_state) { 'pending' }
 
