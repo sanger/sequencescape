@@ -49,12 +49,4 @@ class AssetGroup < ApplicationRecord
   def asset_types
     assets.map(&:sti_type).uniq
   end
-
-  def duplicate(project)
-    # TODO: Implement me
-  end
-
-  def move(assets)
-    # TODO: Implement me
-  end
 end

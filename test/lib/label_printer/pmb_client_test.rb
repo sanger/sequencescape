@@ -68,7 +68,19 @@ class PmbClientTest < ActiveSupport::TestCase
     RestClient.expects(:get)
               .with('http://localhost:9292/v1/label_templates?filter[name]=test_template',
                     content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
-              .returns('{"data":[{"id":"1","type":"label_templates","attributes":{"name":"test_template"},"relationships":{"label_type":{"data":{"id":"1","type":"label_types"}},"labels":{"data":[{"id":"1","type":"labels"},{"id":"2","type":"labels"},{"id":"3","type":"labels"}]}}}]}')
+              .returns(
+                { data: [
+                  {
+                    id: '1',
+                    type: 'label_templates',
+                    attributes: { name: 'test_template' },
+                    relationships: {
+                      label_type: { data: { id: '1', type: 'label_types' } },
+                      labels: { data: [{ id: '1', type: 'labels' }, { id: '2', type: 'labels' }, { id: '3', type: 'labels' }] }
+                    }
+                  }
+                ] }.to_json
+              )
 
     assert_equal 'test_template', LabelPrinter::PmbClient.get_label_template_by_name('test_template')['data'][0]['attributes']['name']
   end
@@ -88,7 +100,7 @@ class PmbClientTest < ActiveSupport::TestCase
     RestClient.expects(:get)
               .with('http://localhost:9292/v1/printers?filter[name]=test_printer',
                     content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
-              .returns('{"data":[{"id":"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
+              .returns('{"data":[{id:"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
     assert_not LabelPrinter::PmbClient.register_printer('test_printer')
   end
 

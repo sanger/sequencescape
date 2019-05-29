@@ -83,16 +83,33 @@ namespace :pmb do
                 'labels_attributes' => [
                   { 'name' => 'main_label',
                     'bitmaps_attributes' => [
-                      { 'x_origin' => '0030', 'y_origin' => '0035', 'field_name' => 'top_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0030', 'y_origin' => '0065', 'field_name' => 'bottom_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0500', 'y_origin' => '0035', 'field_name' => 'top_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0500', 'y_origin' => '0065', 'field_name' => 'bottom_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0750', 'y_origin' => '0035', 'field_name' => 'top_far_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0750', 'y_origin' => '0065', 'field_name' => 'bottom_far_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0890', 'y_origin' => '0065', 'field_name' => 'label_counter_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '33' }
+                      { 'x_origin' => '0030', 'y_origin' => '0035', 'field_name' => 'top_left',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0030', 'y_origin' => '0065', 'field_name' => 'bottom_left',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0500', 'y_origin' => '0035', 'field_name' => 'top_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0500', 'y_origin' => '0065', 'field_name' => 'bottom_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0750', 'y_origin' => '0035', 'field_name' => 'top_far_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0750', 'y_origin' => '0065', 'field_name' => 'bottom_far_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0890', 'y_origin' => '0065', 'field_name' => 'label_counter_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '33' }
                     ],
                     'barcodes_attributes' => [
-                      { 'x_origin' => '0200', 'y_origin' => '0000', 'field_name' => 'barcode', 'barcode_type' => '5', 'one_module_width' => '02', 'height' => '0070', 'rotational_angle' => nil, 'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil, 'no_of_columns' => nil }
+                      { 'x_origin' => '0200', 'y_origin' => '0000', 'field_name' => 'barcode', 'barcode_type' => '5',
+                        'one_module_width' => '02', 'height' => '0070', 'rotational_angle' => nil,
+                        'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil,
+                        'no_of_columns' => nil }
                     ] }
                 ] } } }
         end
@@ -106,13 +123,27 @@ namespace :pmb do
                 'labels_attributes' => [
                   { 'name' => 'main_label',
                     'bitmaps_attributes' => [
-                      { 'x_origin' => '0030', 'y_origin' => '0035', 'field_name' => 'top_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0030', 'y_origin' => '0065', 'field_name' => 'bottom_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0570', 'y_origin' => '0035', 'field_name' => 'top_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0570', 'y_origin' => '0065', 'field_name' => 'bottom_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0750', 'y_origin' => '0035', 'field_name' => 'top_far_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0750', 'y_origin' => '0065', 'field_name' => 'bottom_far_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0890', 'y_origin' => '0065', 'field_name' => 'label_counter_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '33' }
+                      { 'x_origin' => '0030', 'y_origin' => '0035', 'field_name' => 'top_left',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0030', 'y_origin' => '0065', 'field_name' => 'bottom_left',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0570', 'y_origin' => '0035', 'field_name' => 'top_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0570', 'y_origin' => '0065', 'field_name' => 'bottom_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0750', 'y_origin' => '0035', 'field_name' => 'top_far_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0750', 'y_origin' => '0065', 'field_name' => 'bottom_far_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0890', 'y_origin' => '0065', 'field_name' => 'label_counter_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '33' }
                     ],
                     'barcodes_attributes' => [
                       { 'x_origin' => '0200', 'y_origin' => '0000', 'field_name' => 'barcode', 'barcode_type' => 'B', 'one_module_width' => '02',
@@ -132,13 +163,24 @@ namespace :pmb do
                 'labels_attributes' => [
                   { 'name' => 'main_label',
                     'bitmaps_attributes' => [
-                      { 'x_origin' =>  '0140', 'y_origin' =>  '0035', 'field_name' =>  'top_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '03', 'rotational_angles' => '00' },
-                      { 'x_origin' =>  '0140', 'y_origin' =>  '0070', 'field_name' =>  'bottom_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '03', 'rotational_angles' => '00' },
-                      { 'x_origin' =>  '0610', 'y_origin' =>  '0035', 'field_name' =>  'top_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' =>  '0610', 'y_origin' =>  '0070', 'field_name' =>  'bottom_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' }
+                      { 'x_origin' => '0140', 'y_origin' =>  '0035', 'field_name' =>  'top_left',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '03', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0140', 'y_origin' =>  '0070', 'field_name' =>  'bottom_left',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '03', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0610', 'y_origin' =>  '0035', 'field_name' =>  'top_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0610', 'y_origin' =>  '0070', 'field_name' =>  'bottom_right',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' }
                     ],
                     'barcodes_attributes' => [
-                      { 'x_origin' =>  '0330', 'y_origin' =>  '0010', 'field_name' =>  'barcode', 'barcode_type' => '5', 'one_module_width' => '02', 'height' => '0070', 'rotational_angle' => nil, 'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil, 'no_of_columns' => nil }
+                      { 'x_origin' => '0330', 'y_origin' =>  '0010', 'field_name' => 'barcode', 'barcode_type' => '5',
+                        'one_module_width' => '02', 'height' => '0070', 'rotational_angle' => nil,
+                        'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil,
+                        'no_of_columns' => nil }
                     ] }
                 ] } } }
         end
@@ -152,14 +194,34 @@ namespace :pmb do
                 'labels_attributes' => [
                   { 'name' => 'main_label',
                     'bitmaps_attributes' => [
-                      { 'x_origin' => '0038', 'y_origin' => '0210', 'field_name' => 'bottom_line', 'horizontal_magnification' => '05', 'vertical_magnification' => '05', 'font' => 'H', 'space_adjustment' => '03', 'rotational_angles' => '11' },
-                      { 'x_origin' => '0070', 'y_origin' => '0210', 'field_name' => 'middle_line', 'horizontal_magnification' => '05', 'vertical_magnification' => '05', 'font' => 'H', 'space_adjustment' => '02', 'rotational_angles' => '11' },
-                      { 'x_origin' => '0120', 'y_origin' => '0210', 'field_name' => 'top_line', 'horizontal_magnification' => '05', 'vertical_magnification' => '05', 'font' => 'H', 'space_adjustment' => '02', 'rotational_angles' => '11' },
-                      { 'x_origin' => '0240', 'y_origin' => '0165', 'field_name' => 'round_label_top_line', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0220', 'y_origin' => '0193', 'field_name' => 'round_label_bottom_line', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' }
+                      { 'x_origin' => '0038', 'y_origin' => '0210', 'field_name' => 'bottom_line',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '05', 'font' => 'H',
+                        'space_adjustment' => '03', 'rotational_angles' => '11' },
+                      { 'x_origin' => '0070', 'y_origin' => '0210', 'field_name' => 'middle_line',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '05', 'font' => 'H',
+                        'space_adjustment' => '02', 'rotational_angles' => '11' },
+                      { 'x_origin' => '0120', 'y_origin' => '0210', 'field_name' => 'top_line',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '05', 'font' => 'H',
+                        'space_adjustment' => '02', 'rotational_angles' => '11' },
+                      { 'x_origin' => '0240', 'y_origin' => '0165', 'field_name' => 'round_label_top_line',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' },
+                      { 'x_origin' => '0220', 'y_origin' => '0193', 'field_name' => 'round_label_bottom_line',
+                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
+                        'space_adjustment' => '00', 'rotational_angles' => '00' }
                     ],
                     'barcodes_attributes' => [
-                      { 'x_origin' => '0043', 'y_origin' => '0100', 'field_name' => 'barcode', 'barcode_type' => '5', 'one_module_width' => '01', 'height' => '0100', 'rotational_angle' => nil, 'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil, 'no_of_columns' => nil }
+                      {
+                        'x_origin' => '0043',
+                        'y_origin' => '0100',
+                        'field_name' => 'barcode',
+                        'barcode_type' => '5',
+                        'one_module_width' => '01', 'height' => '0100', 'rotational_angle' => nil,
+                        'one_cell_width' => nil,
+                        'type_of_check_digit' => '2',
+                        'bar_height' => nil,
+                        'no_of_columns' => nil
+                      }
                     ] }
                 ] } } }
         end

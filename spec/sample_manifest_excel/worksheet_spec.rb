@@ -71,10 +71,13 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
   context 'data worksheet' do
     let!(:worksheet) do
-      SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook,
-                                                        columns: SampleManifestExcel.configuration.columns.plate_full.dup,
-                                                        sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup,
-                                                        password: '1111')
+      SampleManifestExcel::Worksheet::DataWorksheet.new(
+        workbook: workbook,
+        columns: SampleManifestExcel.configuration.columns.plate_full.dup,
+        sample_manifest: sample_manifest,
+        ranges: SampleManifestExcel.configuration.ranges.dup,
+        password: '1111'
+      )
     end
 
     before do
@@ -308,7 +311,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'with duplicate tag sequences' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, validation_errors: [:tags]))
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup,
+                                                                                       validation_errors: [:tags]))
         save_file
         expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :i7).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :i7).number))
         expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :i5).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :i5).number))
