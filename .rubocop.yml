@@ -11,6 +11,10 @@ RSpec/AggregateFailures:
 RSpec/DescribeClass:
   Exclude:
     - 'spec/requests/**/*.rb'
+    - 'spec/api/**/*.rb'
+    - 'spec/features/**/*.rb'
+    - 'spec/lib/warren/*.rb'
+    - 'spec/models/billing/*.rb'
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:
