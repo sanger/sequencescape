@@ -100,7 +100,7 @@ class PmbClientTest < ActiveSupport::TestCase
     RestClient.expects(:get)
               .with('http://localhost:9292/v1/printers?filter[name]=test_printer',
                     content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
-              .returns('{"data":[{id:"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
+              .returns('{"data":[{"id":"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
     assert_not LabelPrinter::PmbClient.register_printer('test_printer')
   end
 

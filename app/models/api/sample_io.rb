@@ -1,3 +1,5 @@
+# Despite name controls rendering of warehouse messages for Sample
+# Historically used to be v0.5 API
 class Api::SampleIO < Api::Base
   module Extensions
     module ClassMethods

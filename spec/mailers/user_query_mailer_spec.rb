@@ -20,12 +20,14 @@ describe UserQueryMailer, type: :mailer do
     let(:expected_body) do
       <<~HEREDOC
         Dear developer,
-           <p>This request was sent on September 1st, 2008 12:00, from www.example.com/some_page.</p>
+
+          <p>This request was sent on September 1st, 2008 12:00, from www.example.com/some_page.</p>
           <p>User was logged in as user_abc.</p>
           <p>What user was trying to do: create.</p>
           <p>What has happened: it did not work.</p>
           <p>What user expected to happen: it to work.</p>
-         Please, respond asap
+
+        Please, respond asap
       HEREDOC
     end
 

@@ -1,3 +1,5 @@
+# Despite name controls rendering of warehouse messages for Order
+# Historically used to be v0.5 API
 class Api::OrderIO < Api::Base
   renders_model(::Order)
 
