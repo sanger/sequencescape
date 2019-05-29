@@ -1,3 +1,4 @@
+# Controls API V1 IO for Plate
 class Io::Plate < Io::Asset
   set_model_for_input(::Plate)
   set_json_root(:plate)

@@ -1,3 +1,4 @@
+# Controls API V1 IO for Sample
 class Io::Sample < Core::Io::Base
   set_model_for_input(::Sample)
   set_json_root(:sample)

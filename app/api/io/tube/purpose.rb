@@ -1,5 +1,6 @@
 require_dependency 'tube/purpose'
 
+# Controls API V1 IO for Tube
 class Io::Tube::Purpose < Core::Io::Base
   set_model_for_input(::Tube::Purpose)
   set_json_root(:tube_purpose)
