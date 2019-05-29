@@ -39,7 +39,6 @@ jobs:
     name: Rubocop
   - if: type != cron
     env:
-    - RAILS_ENV=test
     - RUBYOPT='-W0'
     before_script:
     - bundle exec rake db:setup
@@ -47,7 +46,6 @@ jobs:
     name: Rake Test
   - if: type != cron
     env:
-    - RAILS_ENV=test
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup

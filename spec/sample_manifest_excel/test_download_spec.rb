@@ -21,19 +21,19 @@ RSpec.describe SampleManifestExcel::TestDownload, type: :model, sample_manifest_
     end
   end
 
-  it 'should create a file' do
-    expect(File.file?(test_file))
+  after(:all) do
+    SampleManifestExcel.reset!
   end
 
-  it 'should create a worksheet with some data' do
-    expect(download.worksheet.columns.count).to eq(SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.count)
-  end
-
-  after(:each) do
+  after do
     File.delete(test_file) if File.exist?(test_file)
   end
 
-  after(:all) do
-    SampleManifestExcel.reset!
+  it 'creates a file' do
+    expect(File.file?(test_file))
+  end
+
+  it 'creates a worksheet with some data' do
+    expect(download.worksheet.columns.count).to eq(SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.count)
   end
 end

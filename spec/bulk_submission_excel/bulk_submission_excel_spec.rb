@@ -3,11 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe BulkSubmissionExcel, type: :model, bulk_submission_excel: true do
-  before(:each) do
+  before do
     BulkSubmissionExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'bulk_submission_excel')
       config.load!
     end
+  end
+
+  after do
+    BulkSubmissionExcel.reset!
   end
 
   it 'loads the configuration' do
@@ -23,10 +27,6 @@ RSpec.describe BulkSubmissionExcel, type: :model, bulk_submission_excel: true do
 
   it '#reset should unload the configuration' do
     BulkSubmissionExcel.reset!
-    expect(BulkSubmissionExcel.configuration).to_not be_loaded
-  end
-
-  after(:each) do
-    BulkSubmissionExcel.reset!
+    expect(BulkSubmissionExcel.configuration).not_to be_loaded
   end
 end

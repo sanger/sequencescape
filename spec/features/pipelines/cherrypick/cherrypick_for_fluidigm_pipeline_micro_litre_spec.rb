@@ -3,12 +3,12 @@
 require 'rails_helper'
 require 'pry'
 
-feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
+describe 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let(:user) { create :admin }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
-  let(:pipeline_name) { 'Cherrypick for Fluidigm' }
-  let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
+  let(:pipeline_name) { pipeline.name }
+  let(:pipeline) { create :fluidigm_pipeline }
   let(:submission) { create :submission }
   let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
   let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
@@ -19,7 +19,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let!(:plate_template) { create :plate_template }
   let(:request_types) { pipeline.request_types.map(&:key) }
 
-  before(:each) do
+  before do
     assets = plates.each_with_object([]) do |plate, assets|
       assets.concat(plate.wells)
       plate.wells.each_with_index do |well, index|
@@ -44,7 +44,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
     robot.robot_properties.create(key: 'DEST1', value: '20')
   end
 
-  scenario 'required volume is 13' do
+  it 'required volume is 13' do
     login_user(user)
     visit pipeline_path(pipeline)
     first(:button, 'Select all').click
@@ -53,7 +53,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
     end
     first(:button, 'Deselect all').click
     find_all(:checkbox).each do |checkbox|
-      expect(checkbox).to_not be_checked
+      expect(checkbox).not_to be_checked
     end
     check('Select DN1S for batch')
     check('Select DN10I for batch')

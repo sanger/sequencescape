@@ -12,6 +12,8 @@ describe TagSubstitution do
   # Note: The tag swap scenario used here is important, as a naive approach results in a temporary tag clash. If you make
   # changes to this suite, please ensure this scenario is still tested.
 
+  subject { described_class.new({ substitutions: instructions }.merge(additional_parameters)) }
+
   let(:sample_a) { create :sample }
   let(:sample_b) { create :sample }
   let(:library_tube_a) { create :library_tube }
@@ -19,8 +21,6 @@ describe TagSubstitution do
   let(:mx_library_tube) { create :multiplexed_library_tube }
   let(:library_type) { create :library_type }
   let(:additional_parameters) { {} }
-
-  subject { TagSubstitution.new({ substitutions: instructions }.merge(additional_parameters)) }
 
   shared_examples 'tag substitution' do
     before { assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}" }
@@ -160,7 +160,7 @@ describe TagSubstitution do
       it_behaves_like 'tag substitution'
 
       describe 'TagSubstitution.new(template_asset: asset)' do
-        subject { TagSubstitution.new(template_asset: mx_library_tube) }
+        subject { described_class.new(template_asset: mx_library_tube) }
 
         it 'populates the basics' do
           expect(subject.substitutions.length).to eq mx_library_tube.aliquots.count

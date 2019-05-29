@@ -364,3 +364,17 @@ test:
     - :sample_taxon_id
     - :sibling
     - :donor_id
+saphyr:
+  heading: "Saphyr"
+  asset_type: "1dtube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :volume
+    - :concentration
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_ebi_accession_number
+    - :donor_id

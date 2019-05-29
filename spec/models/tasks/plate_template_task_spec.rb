@@ -7,7 +7,7 @@ require 'rails_helper'
 RSpec.describe PlateTemplateTask, type: :model do
   subject(:task) { create :plate_template_task }
 
-  let(:pipeline) { create :cherrypick_pipeline }
+  let(:pipeline) { task.workflow.pipeline }
   let(:requests) do
     requests = []
     plate_a.wells.each do |well|
@@ -68,6 +68,7 @@ RSpec.describe PlateTemplateTask, type: :model do
     end
     let(:request) { instance_double(ActionDispatch::Request, parameters: params) }
     let(:params) { ActionController::Parameters.new(workflow_id: workflow.id) }
+
     it 'does stuff' do
       task.render_task(workflow_controller, params)
     end
@@ -75,6 +76,7 @@ RSpec.describe PlateTemplateTask, type: :model do
 
   describe '#do_task' do
     let(:params) { ActionController::Parameters.new(workflow_id: workflow.id, file: file, plate_purpose_id: create(:plate_purpose).id) }
+
     it 'does stuff' do
       expect(workflow_controller).to receive(:spreadsheet_layout=).with(spreadsheet_layout)
       task.do_task(workflow_controller, params)
@@ -83,6 +85,8 @@ RSpec.describe PlateTemplateTask, type: :model do
 
   describe Tasks::PlateTemplateHandler do
     describe '::generate_spreadsheet' do
+      subject { Tasks::PlateTemplateHandler.generate_spreadsheet(batch) }
+
       let(:output) do
         CSV.generate(row_sep: "\r\n") do |csv|
           csv << ['Request ID', 'Sample Name', 'Source Plate', 'Source Well', 'Plate', 'Destination Well']
@@ -96,7 +100,7 @@ RSpec.describe PlateTemplateTask, type: :model do
           csv << [requests[7].id, requests[7].asset.samples.first.name, 'DN2T', 'D1', '', '']
         end
       end
-      subject { Tasks::PlateTemplateHandler.generate_spreadsheet(batch) }
+
       it { is_expected.to eq(output) }
     end
   end

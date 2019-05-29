@@ -22,12 +22,6 @@ describe 'Comments API', with: :api_v2 do
   context 'with a Comment' do
     let(:resource_model) { create :comment }
 
-    it 'sends an individual Comment' do
-      api_get "/api/v2/comments/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('comments')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -38,6 +32,12 @@ describe 'Comments API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual Comment' do
+      api_get "/api/v2/comments/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('comments')
     end
 
     # Remove if immutable

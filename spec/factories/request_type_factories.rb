@@ -25,6 +25,7 @@ FactoryBot.define do
     factory :cherrypick_request_type do
       request_class { CherrypickRequest }
       asset_type { 'Well' }
+      target_asset_type { 'Well' }
     end
 
     factory :well_request_type do
@@ -50,11 +51,15 @@ FactoryBot.define do
     end
 
     factory :library_creation_request_type do
+      transient do
+        library_type { build :library_type }
+      end
+
       target_asset_type { 'LibraryTube' }
       request_class { LibraryCreationRequest }
 
-      after(:build) do |request_type|
-        request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
+      after(:build) do |request_type, evaluator|
+        request_type.library_types_request_types << create(:library_types_request_type, library_type: evaluator.library_type, request_type: request_type)
         request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
       end
 

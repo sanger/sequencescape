@@ -5,6 +5,8 @@ class MultiplexedLibraryTube < Tube
   include Api::MultiplexedLibraryTubeIO::Extensions
   include Transfer::Associations
 
+  self.library_prep = true
+
   has_many :order_roles, ->() { distinct }, through: :requests_as_target
 
   # Transfer requests into a tube are direct requests where the tube is the target.
@@ -14,10 +16,6 @@ class MultiplexedLibraryTube < Tube
 
   # You can do sequencing with this asset type, even though the request types suggest otherwise!
   def sequenceable?
-    true
-  end
-
-  def library_prep?
     true
   end
 

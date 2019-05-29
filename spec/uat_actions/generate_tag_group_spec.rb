@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe UatActions::GenerateTagGroup do
-  context 'valid options' do
+  context 'with valid options' do
     let(:parameters) { { name: 'Test group', size: '3' } }
     let(:uat_action) { described_class.new(parameters) }
     let(:report) do

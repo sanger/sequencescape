@@ -28,7 +28,7 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
   let(:user) { create :user }
 
   it 'generates json' do
-    expect(json).to_not be_nil
+    expect(json).not_to be_nil
   end
 
   it 'sets the event type based on the lab event' do
@@ -41,6 +41,7 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
 
   context 'from a sequencing batch' do
     let(:eventful) { batch.reload }
+
     it 'includes the expected subjects' do
       expect(json.dig('event', 'subjects')).to match_unordered_json([
         { 'role_type' => 'flowcell', 'subject_type' => 'flowcell', 'uuid' => batch.uuid, 'friendly_name' => batch.id },
@@ -53,6 +54,7 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
 
   context 'from a sequencing request' do
     let(:eventful) { request }
+
     it 'includes the expected subjects' do
       expect(json.dig('event', 'subjects')).to match_unordered_json([
         { 'role_type' => 'flowcell', 'subject_type' => 'flowcell', 'uuid' => batch.uuid, 'friendly_name' => batch.id },
@@ -65,6 +67,7 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
 
   context 'from a non-sequencing batch' do
     let(:eventful) { create :batch }
+
     it 'includes the expected subjects' do
       expect(json.dig('event', 'subjects')).to match_unordered_json([])
     end

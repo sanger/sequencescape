@@ -11,8 +11,6 @@ RSpec.describe Aker::Material, type: :model, aker: true do
     Aker::Material.config = my_config
   end
 
-  it_behaves_like 'a mapping between an Aker model and Sequencescape'
-
   let(:my_config) do
     %(
     sample_metadata.gender              <=   gender
@@ -23,6 +21,8 @@ RSpec.describe Aker::Material, type: :model, aker: true do
     well_attribute.concentration        <=>  concentration
     )
   end
+
+  it_behaves_like 'a mapping between an Aker model and Sequencescape'
 
   context 'with a custom config' do
     context '#attributes' do
@@ -58,6 +58,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
           @vol_a = create :qc_result, key: 'volume', value: 0.33, asset: asset
           @vol_b = create :qc_result, key: 'volume', value: 0.44, asset: asset
         end
+
         it 'returns the concentration from it' do
           expect(mapping.attributes[:concentration]).to eq(@conc_b.value)
         end
@@ -69,10 +70,12 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         end
       end
     end
+
     context '#update' do
       before do
         sample.sample_metadata.update(gender: 'Male')
       end
+
       it 'updates an attribute' do
         expect(sample.sample_metadata.gender).to eq('Male')
         mapping.update(gender: 'Female')
@@ -96,6 +99,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
                 amount                               =>  amount
               )
         end
+
         it 'updates both values' do
           mapping.update(supplier_name: 'test1')
           expect(sample.name).to eq('test1')
@@ -107,6 +111,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
     # TODO
     # Private methods should not be tested, but through using public methods.
     # Maybe this method should be public.
+
     context 'with private methods' do
       context '#model_for_table' do
         it 'gives back a model object from a table name' do
@@ -116,23 +121,29 @@ RSpec.describe Aker::Material, type: :model, aker: true do
           let(:plate) { create :full_stock_plate }
           let(:well) { plate.wells.first }
           let(:container) { create :container, asset: well }
+
           before do
             allow(sample).to receive(:container).and_return(container)
           end
+
           it 'returns the model for the well_attribute' do
             expect(mapping.send(:model_for_table, :well_attribute)).to eq(well.well_attribute)
           end
         end
+
         context 'when the asset is a tube' do
           let(:tube) { create :tube }
           let(:container) { create :container, asset: tube }
+
           before do
             allow(sample).to receive(:container).and_return(container)
           end
+
           it 'returns the model for the well_attribute' do
             expect(mapping.send(:model_for_table, :well_attribute)).to eq(tube)
           end
         end
+
         it 'returns nil if there is no model object for the table name' do
           expect(mapping.send(:model_for_table, :bubidibu)).to eq(nil)
         end

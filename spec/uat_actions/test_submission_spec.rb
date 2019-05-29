@@ -7,6 +7,7 @@ describe UatActions::TestSubmission do
     before do
       expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 2))
     end
+
     let(:submission_template) { create :limber_wgs_submission_template }
     let(:parameters) { { submission_template_name: submission_template.name } }
     let(:uat_action) { described_class.new(parameters) }

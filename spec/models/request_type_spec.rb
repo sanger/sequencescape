@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe RequestType do
-  context RequestType do
+  context described_class do
     context '#for_multiplexing?' do
       context 'when it is for multiplexing' do
         let(:request_type) { create :multiplexed_library_creation_request_type }
@@ -60,7 +60,7 @@ describe RequestType do
                billing_product_catalogue: billing_product_catalogue
       end
 
-      it 'should assign the right product to request' do
+      it 'assigns the right product to request' do
         request = request_type.create!(
           request_metadata_attributes: {
             read_length: 250,
@@ -71,7 +71,7 @@ describe RequestType do
         expect(request.billing_product).to eq billing_product
       end
 
-      it 'should assign the right product to request when assigning attributes from a block' do
+      it 'assigns the right product to request when assigning attributes from a block' do
         request = request_type.create! do |req|
           req.request_metadata_attributes = {
             read_length: 250,

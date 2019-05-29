@@ -6,7 +6,7 @@ class ::Core::Io::Registry < ::Core::Registry
     return in_current_registry unless in_current_registry.nil?
 
     register(model_class, "::Io::#{model_class.name}".constantize)
-  rescue NameError => exception
+  rescue NameError => e
     nil
   end
   private :lookup_target_class_in_registry

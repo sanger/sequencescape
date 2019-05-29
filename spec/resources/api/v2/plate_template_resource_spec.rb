@@ -4,14 +4,15 @@ require 'rails_helper'
 require './app/resources/api/v2/plate_template_resource'
 
 RSpec.describe Api::V2::PlateTemplateResource, type: :resource do
+  subject(:resource) { described_class.new(resource_model, {}) }
+
   let(:resource_model) { create :plate_template }
-  subject { described_class.new(resource_model, {}) }
 
   # Test attributes
   it 'works', :aggregate_failures do
-    is_expected.to have_attribute :uuid
-    is_expected.to_not have_updatable_field(:id)
-    is_expected.to_not have_updatable_field(:uuid)
+    expect(resource).to have_attribute :uuid
+    expect(resource).not_to have_updatable_field(:id)
+    expect(resource).not_to have_updatable_field(:uuid)
   end
 
   # Updatable fields

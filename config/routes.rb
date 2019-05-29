@@ -1,7 +1,16 @@
-Sequencescape::Application.routes.draw do
+Rails.application.routes.draw do
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
   root to: 'homes#show'
   resource :health, only: [:show]
   resource :home, only: [:show]
+
+  resource :phi_x, only: [:show] do
+    scope module: :phi_x do
+      resources :stocks
+      resources :spiked_buffers
+    end
+  end
 
   mount Api::RootService.new => '/api/1'
 
@@ -200,7 +209,7 @@ Sequencescape::Application.routes.draw do
       get :accession_all_samples
     end
 
-    resources :assets, except: :destroy
+    resources :assets, except: [:destroy]
 
     resources :sample_registration, only: [:index, :new, :create], controller: 'studies/sample_registration' do
       collection do
@@ -459,7 +468,7 @@ Sequencescape::Application.routes.draw do
 
   resources :tag_layout_templates, only: [:index, :new, :create, :show]
 
-  resources :assets do
+  resources :assets, except: [:create, :new] do
     collection do
       get :snp_register
       get :reception

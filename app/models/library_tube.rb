@@ -4,11 +4,9 @@ class LibraryTube < Tube
   include Api::LibraryTubeIO::Extensions
   include ModelExtensions::LibraryTube
 
-  def sequenceable?
-    true
-  end
+  self.library_prep = true
 
-  def library_prep?
+  def sequenceable?
     true
   end
 

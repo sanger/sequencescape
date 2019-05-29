@@ -32,12 +32,12 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     submission.built!
   rescue AASM::InvalidTransition
     submission.errors.add(:base, 'Submissions can not be edited once they are submitted for building.')
-  rescue ActiveRecord::RecordInvalid => exception
-    exception.record.errors.full_messages.each do |message|
+  rescue ActiveRecord::RecordInvalid => e
+    e.record.errors.full_messages.each do |message|
       submission.errors.add(:base, message)
     end
-  rescue Submission::ProjectValidation::Error => exception
-    submission.errors.add(:base, exception.message)
+  rescue Submission::ProjectValidation::Error => e
+    submission.errors.add(:base, e.message)
   end
 
   def per_order_settings
@@ -105,12 +105,12 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
         new_order.save!
         @order = new_order
       end
-    rescue Submission::ProjectValidation::Error => project_exception
-      order.errors.add(:base, project_exception.message)
-    rescue SubmissionsCreaterError, Asset::Finder::InvalidInputException => input_exception
-      order.errors.add(:base, input_exception.message)
-    rescue ActiveRecord::RecordInvalid => exception
-      exception.record.errors.full_messages.each do |message|
+    rescue Submission::ProjectValidation::Error => e
+      order.errors.add(:base, e.message)
+    rescue SubmissionsCreaterError, Asset::Finder::InvalidInputException => e
+      order.errors.add(:base, e.message)
+    rescue ActiveRecord::RecordInvalid => e
+      e.record.errors.full_messages.each do |message|
         order.errors.add(:base, message)
       end
     end

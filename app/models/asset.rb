@@ -59,12 +59,14 @@ class Asset < ApplicationRecord
   end
 
   class_attribute :stock_message_template, instance_writer: false
+  class_attribute :library_prep, instance_writer: false
 
   class VolumeError < StandardError
   end
 
   self.per_page = 500
   self.inheritance_column = 'sti_type'
+  self.library_prep = false
 
   has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
   has_many :asset_groups, through: :asset_group_assets
@@ -334,10 +336,6 @@ class Asset < ApplicationRecord
     self
   end
 
-  def library_prep?
-    false
-  end
-
   def display_name
     name.presence || "#{sti_type} #{id}"
   end
@@ -416,19 +414,6 @@ class Asset < ApplicationRecord
 
   def requests_status(request_type)
     requests.order('id ASC').where(request_type: request_type).pluck(:state)
-  end
-
-  def transfer(max_transfer_volume)
-    transfer_volume = [max_transfer_volume.to_f, volume || 0.0].min
-    raise VolumeError, 'not enough volume left' if transfer_volume <= 0
-
-    self.class.create!(name: name) do |new_asset|
-      new_asset.aliquots = aliquots.map(&:dup)
-      new_asset.volume   = transfer_volume
-      update!(volume: volume - transfer_volume) #  Update ourselves
-    end.tap do |new_asset|
-      new_asset.add_parent(self)
-    end
   end
 
   def spiked_in_buffer

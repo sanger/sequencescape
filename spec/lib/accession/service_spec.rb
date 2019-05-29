@@ -11,13 +11,13 @@ RSpec.describe Accession::Service, type: :model, accession: true do
     expect(service).to be_ega
   end
 
-  it 'should not be valid without a provider' do
+  it 'is not valid without a provider' do
     service = Accession::Service.new('closed')
     expect(service.provider).to be_nil
-    expect(service).to_not be_valid
+    expect(service).not_to be_valid
   end
 
-  it 'should have a uri if the service is valid' do
+  it 'has a uri if the service is valid' do
     service = Accession::Service.new('open')
     expect(service.url).to be_present
 
@@ -28,7 +28,7 @@ RSpec.describe Accession::Service, type: :model, accession: true do
     expect(service.url).to be_nil
   end
 
-  it 'should have visibility' do
+  it 'has visibility' do
     service = Accession::Service.new('open')
     expect(service.visibility).to eq('HOLD')
 
@@ -38,7 +38,7 @@ RSpec.describe Accession::Service, type: :model, accession: true do
 
   it 'can have a broker' do
     service = Accession::Service.new('open')
-    expect(service.broker).to_not be_present
+    expect(service.broker).not_to be_present
 
     service = Accession::Service.new('managed')
     expect(service.broker).to eq('EGA')

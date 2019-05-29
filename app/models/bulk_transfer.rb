@@ -24,7 +24,7 @@
 #   user: User.last
 # })
 #
-# @deprecate Use TransferRequestCollection instead, which is more explicit and allows transfers between
+# @deprecated Use TransferRequestCollection instead, which is more explicit and allows transfers between
 # plates and tubes
 class BulkTransfer < ApplicationRecord
   include Uuid::Uuidable

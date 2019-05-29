@@ -28,18 +28,21 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
      9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
   end
 
+  after(:all) do
+    SampleManifestExcel.reset!
+  end
 
   it 'is not valid without row number' do
-    expect(SampleManifestExcel::Upload::Row.new(number: 'one', data: data, columns: columns)).to_not be_valid
-    expect(SampleManifestExcel::Upload::Row.new(data: data, columns: columns)).to_not be_valid
+    expect(SampleManifestExcel::Upload::Row.new(number: 'one', data: data, columns: columns)).not_to be_valid
+    expect(SampleManifestExcel::Upload::Row.new(data: data, columns: columns)).not_to be_valid
   end
 
   it 'is not valid without some data' do
-    expect(SampleManifestExcel::Upload::Row.new(number: 1, columns: columns)).to_not be_valid
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, columns: columns)).not_to be_valid
   end
 
   it 'is not valid without some columns' do
-    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data)).to_not be_valid
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data)).not_to be_valid
   end
 
   it '#value returns value for specified key' do
@@ -78,27 +81,27 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
   it 'is not valid without a primary receptacle or sample' do
     data[1] = 2
-    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).not_to be_valid
     data[1] = 999999
     row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
-    expect(row).to_not be_valid
+    expect(row).not_to be_valid
     expect(row.errors.full_messages).to include('Row 1 - Sample can\'t be blank.')
   end
 
   it 'is not valid unless all specialised fields are valid' do
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to be_valid
     data[5] = 'Dodgy library type'
-    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).not_to be_valid
     data[5] = 'My New Library Type'
     data[6] = 'one'
-    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).not_to be_valid
   end
 
   it 'is not valid unless metadata is valid' do
     SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to be_valid
     data[16] = 'Cell-line'
-    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).not_to be_valid
   end
 
   it 'updates the aliquot with the specialised fields' do
@@ -156,7 +159,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     let!(:mx_library_tube) { create(:multiplexed_library_tube) }
     let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
 
-    before(:each) do
+    before do
       @rows = []
       library_tubes.each_with_index do |tube, i|
         create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
@@ -174,8 +177,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         row.update_sample(tag_group, false)
         row.transfer_aliquot
       end
-      expect(rows.all?(&:aliquot_transferred?)).to be_truthy
-      expect(rows.all?(&:reuploaded?)).to be_falsey
+      expect(rows).to be_all(&:aliquot_transferred?)
+      expect(rows).not_to be_all(&:reuploaded?)
       mx_library_tube.samples.each_with_index do |sample, i|
         expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:i7])
         expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:i5])
@@ -193,7 +196,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     let!(:mx_library_tube) { create(:multiplexed_library_tube) }
     let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
 
-    before(:each) do
+    before do
       @rows = []
       library_tubes.each_with_index do |tube, i|
         rq = create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
@@ -212,8 +215,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         row.update_sample(tag_group, false)
         row.transfer_aliquot
       end
-      expect(rows.all?(&:aliquot_transferred?)).to be_truthy
-      expect(rows.all?(&:reuploaded?)).to be_truthy
+      expect(rows).to be_all(&:aliquot_transferred?)
+      expect(rows).to be_all(&:reuploaded?)
       mx_library_tube.samples.each_with_index do |sample, i|
         expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:i7])
         expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:i5])
@@ -222,9 +225,5 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         end
       end
     end
-  end
-
-  after(:all) do
-    SampleManifestExcel.reset!
   end
 end

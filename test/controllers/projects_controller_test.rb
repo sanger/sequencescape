@@ -35,7 +35,7 @@ class ProjectsControllerTest < ActionController::TestCase
         @request_type_1 = FactoryBot.create :request_type
       end
 
-      context 'successfullyFactoryBot.create a new project' do
+      context 'successfully create a new project' do
         setup do
           @project_counter = Project.count
           post :create, params: { 'project' => {

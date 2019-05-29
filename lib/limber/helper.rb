@@ -149,7 +149,7 @@ module Limber::Helper
     # The {RequestType#key} of the {RequestType request types} that forms the sequencing
     # part of the generated {SubmissionTemplate submission templates}.
     #
-    # If {#sequencing_keys} is not specified, defaults to 'limber_' followed by {#prefix}
+    # If {#sequencing_keys= sequencing_keys} is not specified, defaults to 'limber_' followed by {#prefix}
     #
     # @return [Array] All Sequencing RequestTypes for which a SubmissionTemplate will be generated
     def sequencing_request_types

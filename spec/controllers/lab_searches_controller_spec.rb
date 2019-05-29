@@ -42,6 +42,7 @@ RSpec.describe LabSearchesController do
 
       context 'With an ean13 barcode' do
         let(:query) { asset.ean13_barcode }
+
         it 'finds the asset' do
           expect(assigns(:assets)).to include(asset)
         end
@@ -52,6 +53,7 @@ RSpec.describe LabSearchesController do
 
       context 'With an human barcode' do
         let(:query) { asset.human_barcode }
+
         it 'finds the asset' do
           expect(assigns(:assets)).to include(asset)
         end

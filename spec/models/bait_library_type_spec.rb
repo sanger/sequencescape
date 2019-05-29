@@ -9,12 +9,12 @@ describe BaitLibraryType do
     end
 
     it 'has a category' do
-      standard_bait_library_type = BaitLibraryType.new(name: 'Standard - test')
+      standard_bait_library_type = described_class.new(name: 'Standard - test')
       expect(standard_bait_library_type.valid?).to be false
       standard_bait_library_type.category = 'standard'
       expect(standard_bait_library_type.valid?).to be true
       expect(standard_bait_library_type.category).to eq 'standard'
-      custom_bait_library_type = BaitLibraryType.new(name: 'Custom', category: 'custom')
+      custom_bait_library_type = described_class.new(name: 'Custom', category: 'custom')
       expect(custom_bait_library_type.category).to eq 'custom'
       expect { custom_bait_library_type.category = 'some_category' }.to raise_error ArgumentError
     end

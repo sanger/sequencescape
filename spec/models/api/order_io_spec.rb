@@ -3,9 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::OrderIO, type: :model do
-  let(:user) { create :user }
-  let(:study) { create :study }
-  let(:project) { create :project }
   subject do
     create :order, user: user, template_name: 'Cool template', study: study, project: project, comments: 'Good', request_options: {
       read_length: '200',
@@ -17,6 +14,10 @@ RSpec.describe Api::OrderIO, type: :model do
       insert_size: 12
     }
   end
+
+  let(:user) { create :user }
+  let(:study) { create :study }
+  let(:project) { create :project }
 
   let(:expected_json) do
     {

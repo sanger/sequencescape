@@ -22,12 +22,6 @@ describe 'TagLayoutTemplates API', with: :api_v2 do
   context 'with a TagLayoutTemplate' do
     let(:resource_model) { create :tag_layout_template }
 
-    it 'sends an individual TagLayoutTemplate' do
-      api_get "/api/v2/tag_layout_templates/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('tag_layout_templates')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -38,6 +32,12 @@ describe 'TagLayoutTemplates API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual TagLayoutTemplate' do
+      api_get "/api/v2/tag_layout_templates/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('tag_layout_templates')
     end
 
     # Remove if immutable

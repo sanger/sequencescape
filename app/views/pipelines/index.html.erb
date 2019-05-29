@@ -4,9 +4,7 @@
 <% if current_user.slf_manager? || current_user.slf_gel?|| current_user.manager_or_administrator? %>
   <% add :menu, "Sample Management" => sample_logistics_path -%>
 <% end %>
-<% if current_user.lab_manager? %>
-  <% add :menu, "Create controls" => new_asset_path -%>
-<% end %>
+<% add :menu, "Create PhiX controls" => phi_x_path -%>
 
 <%= page_title "Pipelines", "Available pipelines" %>
 

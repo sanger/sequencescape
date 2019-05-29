@@ -30,12 +30,12 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
     create :plate, name: "Stock plate #{barcode}",
                    well_count: 1,
                    well_factory: :untagged_well,
-                   purpose: Purpose.find_by(name: 'Stock Plate'),
+                   purpose: PlatePurpose.stock_plate_purpose,
                    barcode: barcode
   end
 
   def create_plate_with_fluidigm(_barcode, fluidigm_barcode, stock_plate)
-    fgp = create(:plate_purpose, asset_shape: AssetShape.find_by(name: 'Fluidigm96'))
+    fgp = create :fluidigm_96_purpose
     plate_target = create :plate,
                           size: 96,
                           purpose: fgp,
@@ -45,17 +45,20 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
 
     well_target = plate_target.wells.first
 
-    RequestType.find_by!(key: 'pick_to_fluidigm').create!(state: 'passed',
-                                                          asset: stock_plate.wells.first,
-                                                          target_asset: well_target,
-                                                          request_metadata_attributes: {
-                                                            target_purpose_id: fgp.id
-                                                          })
+    create :final_cherrypick_for_fluidigm_request, state: 'passed',
+                                                   asset: stock_plate.wells.first,
+                                                   target_asset: well_target,
+                                                   request_metadata_attributes: {
+                                                     target_purpose_id: fgp.id
+                                                   },
+                                                   request_type: @fluidigm_request_type
+
     plate_target
   end
 
   context 'With a fluidigm file' do
     setup do
+      @fluidigm_request_type = create :request_type, key: 'pick_to_fluidigm'
       @fluidigm_file = create_fluidigm_file
       @stock_plate = create_stock_plate('8765432')
       @plate1 = create_plate_with_fluidigm('1234567', '1381832088', @stock_plate)
@@ -65,8 +68,8 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
     context 'before uploading the fluidigm file to a corresponding plate' do
       should 'we get this plate inside the requiring_fluidigm_data scope' do
         @plates_requiring_fluidigm = Plate.requiring_fluidigm_data
-        assert_equal true, @plates_requiring_fluidigm.include?(@plate1)
-        assert_equal true, @plates_requiring_fluidigm.include?(@plate2)
+        assert_includes @plates_requiring_fluidigm, @plate1
+        assert_includes @plates_requiring_fluidigm, @plate2
       end
     end
     context 'after uploading the fluidigm file' do

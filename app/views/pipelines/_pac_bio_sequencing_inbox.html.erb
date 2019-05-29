@@ -33,19 +33,18 @@
         <% @grouped_requests.each_with_index do |(submission_id, requests), index| %>
           <tr class="request_group">
             <% request = requests.first %>
-            <% request_item = request %>
 
             <td class="request" width='2%'><!-- Checkboxes -->
               <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
               <% if request.ready? %>
-                <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+                <input type="checkbox" name="selectAll" onclick="select_requests_by_group('<%=  index %>',<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
               <% else %>
                 <%= icon('fas', 'exclamation-circle', class: 'text-danger', title: I18n.t("requests.status.not_ready")) %>
               <% end %>
             </td>
 
             <td class="request" width='2%'><!-- Notify -->
-              <a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= icon('fas', 'info-circle', class: 'text-info') %></a>
+              <a href="javascript:void(0)" onclick="showElement('<%=  index %>',<%= requests.size %>); return false;"><%= icon('fas', 'info-circle', class: 'text-info') %></a>
             </td>
             <td class="request">&nbsp; <!-- Request ID--></td>
             <td class='request'><!-- Name --><%= h(request.asset.display_name) %></td>
@@ -57,7 +56,7 @@
             <td class='request'><%= request.submission.study_names %></td>
           </tr>
 
-          <tr class="nested" id="<%= request_item.item_id %>_0" style="display:none">
+          <tr class="nested" id="<%= index  %>_0" style="display:none">
             <td>&nbsp;<!-- Checkboxes --></td>
             <td>&nbsp;<!-- notify --></td>
             <td>&nbsp;<!-- request_id --></td>
@@ -69,7 +68,7 @@
 
             <% request_tag = request_asset.aliquots.map {|a| a.tag.present? ? "#{a.tag.tag_group.name}:#{a.tag.map_id}" : "Untagged" }.join(',') -%>
             <% progr = indice + 1 %>
-            <tr class="nested request<%= indice %>" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
+            <tr class="nested request<%= indice %>" id="<%= index %>_<%= progr.to_s %>" style="display:none">
               <td class="request">&nbsp;<!-- Checkboxes (grp) --></td>
               <td> <!-- Notify/ Checkboxes (ind) -->
                 <%= label(:request, request.id, "Select Request #{indice}", style: 'display:none') %>

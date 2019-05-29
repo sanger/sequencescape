@@ -22,12 +22,6 @@ describe 'Lots API', with: :api_v2 do
   context 'with a Lot' do
     let(:resource_model) { create :lot }
 
-    it 'sends an individual Lot' do
-      api_get "/api/v2/lots/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('lots')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -38,6 +32,12 @@ describe 'Lots API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual Lot' do
+      api_get "/api/v2/lots/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('lots')
     end
 
     # Remove if immutable

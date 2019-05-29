@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'Pooling', js: true do
+describe 'Pooling', js: true do
   let(:user) { create :user, email: 'login@example.com' }
 
-  feature 'from page directly' do
+  describe 'from page directly' do
     let!(:empty_lb_tube1) { create :empty_library_tube, barcode: 1 }
     let!(:empty_lb_tube2) { create :empty_library_tube, barcode: 2 }
     let!(:untagged_lb_tube1) { create :library_tube, barcode: 3 }
@@ -11,7 +11,7 @@ feature 'Pooling', js: true do
     let!(:tagged_lb_tube1) { create :tagged_library_tube, barcode: 5 }
     let!(:tagged_lb_tube2) { create :tagged_library_tube, barcode: 6 }
 
-    scenario 'user can pool from different tubes to stock and standard mx tubes' do
+    it 'user can pool from different tubes to stock and standard mx tubes' do
       login_user user
       visit new_pooling_path
       expect(page).to have_content 'Scan tube'
@@ -40,16 +40,16 @@ feature 'Pooling', js: true do
     end
   end
 
-  feature 'from sample manifest page' do
+  describe 'from sample manifest page' do
     let!(:sample_manifest) { create :tube_sample_manifest_with_sample_tubes, asset_type: 'library' }
 
-    background do
+    before do
       aliquot = Tube.last.aliquots.first
       aliquot.tag = create :tag
       aliquot.save
     end
 
-    scenario 'user can pool from different tubes to stock and standard mx tubes' do
+    it 'user can pool from different tubes to stock and standard mx tubes' do
       login_user user
       visit sample_manifest_path(sample_manifest.id)
       click_on 'Pool'

@@ -189,7 +189,7 @@ end
 
 Given /^the sample manifest with ID (\d+) is for (\d+) sample tube$/ do |id, count|
   manifest = SampleManifest.find(id)
-  manifest.update!(asset_type: '1dtube', count: count.to_i)
+  manifest.update!(asset_type: '1dtube', count: count.to_i, purpose: Tube::Purpose.standard_sample_tube)
 end
 
 Given /^the sample manifest with ID (\d+) is for (\d+) plates?$/ do |id, count|
@@ -229,4 +229,8 @@ Given(/^the configuration exists for creating sample manifest Excel spreadsheets
     config.folder = File.join('spec', 'data', 'sample_manifest_excel')
     config.load!
   end
+end
+
+Given(/^the Saphyr tube purpose exists$/) do
+  FactoryBot.create(:saphyr_tube_purpose)
 end

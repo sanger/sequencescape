@@ -5,10 +5,10 @@ require 'rails_helper'
 RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: true do
   let(:options) { %w[option1 option2 option3] }
 
-  it 'should be comparable' do
+  it 'is comparable' do
     attributes = { options: options, first_column: 4, first_row: 5, last_column: 8, last_row: 10, worksheet_name: 'Sheet1' }
     expect(SequencescapeExcel::Range.new(attributes)).to eq(SequencescapeExcel::Range.new(attributes))
-    expect(SequencescapeExcel::Range.new(attributes.except(:last_row))).to_not eq(SequencescapeExcel::Range.new(attributes))
+    expect(SequencescapeExcel::Range.new(attributes.except(:last_row))).not_to eq(SequencescapeExcel::Range.new(attributes))
   end
 
   context 'with static options' do
@@ -58,8 +58,8 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     it 'is static, not dynamic' do
-      expect(range.static?).to be_truthy
-      expect(range.dynamic?).to be_falsey
+      expect(range).to be_static
+      expect(range).not_to be_dynamic
     end
   end
 
@@ -116,7 +116,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     it 'knows it is dynamic' do
-      expect(range).to_not be_static
+      expect(range).not_to be_static
       expect(range).to be_dynamic
     end
 
@@ -132,7 +132,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     let(:range) { SequencescapeExcel::Range.new(options: options) }
 
     it 'is be valid' do
-      expect(range).to_not be_valid
+      expect(range).not_to be_valid
     end
 
     it 'does not have a first cell' do

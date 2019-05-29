@@ -26,6 +26,22 @@ RSpec.describe TransferRequest, type: :model do
              state: library_state
     end
 
+    context 'with volume' do
+      subject do
+        create :transfer_request,
+               asset: source,
+               target_asset: destination,
+               submission: library_request.submission,
+               volume: 4.5
+      end
+
+      let(:library_state) { 'pending' }
+
+      it 'records the volume' do
+        expect(subject.volume).to eq(4.5)
+      end
+    end
+
     context 'with a pending library request' do
       let(:library_state) { 'pending' }
 
@@ -81,16 +97,16 @@ RSpec.describe TransferRequest, type: :model do
   end
 
   context 'with multiple library requests' do
-    before do
-      library_request
-      dummy_library_request
-    end
-
     subject do
       create :transfer_request,
              asset: source,
              target_asset: destination,
              outer_request: library_request
+    end
+
+    before do
+      library_request
+      dummy_library_request
     end
 
     let(:library_request) do
@@ -147,13 +163,13 @@ RSpec.describe TransferRequest, type: :model do
     context 'when using the constuctor' do
       let!(:transfer_request) { TransferRequest.create!(asset: source, target_asset: destination) }
 
-      it 'should duplicate the aliquots' do
+      it 'duplicates the aliquots' do
         expected_aliquots = source.aliquots.map { |a| [a.sample_id, a.tag_id] }
         target_aliquots   = destination.aliquots.map { |a| [a.sample_id, a.tag_id] }
         expect(target_aliquots).to eq expected_aliquots
       end
 
-      it 'should have the correct attributes' do
+      it 'has the correct attributes' do
         expect(transfer_request.state).to eq 'pending'
         expect(transfer_request.asset_id).to eq source.id
         expect(transfer_request.target_asset_id).to eq destination.id
@@ -161,20 +177,22 @@ RSpec.describe TransferRequest, type: :model do
 
       context 'when the source has stock wells' do
         let(:source) { create :well_with_sample_and_without_plate, stock_wells: create_list(:well, 2) }
-        it 'should set the stock wells' do
+
+        it 'sets the stock wells' do
           expect(destination.stock_wells).to eq(source.stock_wells)
         end
       end
 
       context 'when the source is a stock well' do
         let(:source) { create :well_with_sample_and_without_plate, plate: create(:stock_plate) }
-        it 'should set the stock wells' do
+
+        it 'sets the stock wells' do
           expect(destination.stock_wells).to eq([source])
         end
       end
     end
 
-    it 'should not permit transfers to the same asset' do
+    it 'does not permit transfers to the same asset' do
       asset = create(:sample_tube)
       expect { TransferRequest.create!(asset: asset, target_asset: asset) }.to raise_error(ActiveRecord::RecordInvalid)
     end
@@ -186,7 +204,7 @@ RSpec.describe TransferRequest, type: :model do
       let!(:aliquot_2) { create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well) }
       let!(:target_asset) { create :well, aliquots: [aliquot_1] }
 
-      it 'should raise an exception' do
+      it 'raises an exception' do
         expect do
           TransferRequest.create!(asset: aliquot_2.receptacle.reload, target_asset: target_asset)
         end.to raise_error(Aliquot::TagClash)
@@ -213,7 +231,7 @@ RSpec.describe TransferRequest, type: :model do
       (%i[pending started passed failed qc_complete cancelled] - transitions.keys).each do |state|
         it "does not allow #{state} requests to #{event}" do
           tf = build :transfer_request, state: state
-          expect(tf).to_not allow_event(event)
+          expect(tf).not_to allow_event(event)
         end
       end
     end
@@ -247,19 +265,23 @@ RSpec.describe TransferRequest, type: :model do
       context 'from a stock asset' do
         let(:source_asset) { last_well }
         let(:stock_asset) { source_asset }
+
         it { is_expected.to eq library_request }
       end
 
       context 'from a well downstream of a stock asset' do
         let(:source_asset) { last_well }
         let(:stock_asset) { create :well_with_sample_and_without_plate }
+
         it { is_expected.to eq library_request }
       end
 
       context 'from a tube made from the last well' do
         let(:stock_asset) { create :well_with_sample_and_without_plate }
         let(:source_asset) { create :tube }
+
         before { create :transfer_request, asset: last_well, target_asset: source_asset, submission: library_request.submission }
+
         it { is_expected.to eq library_request }
       end
     end

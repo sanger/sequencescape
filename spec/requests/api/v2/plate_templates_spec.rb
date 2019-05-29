@@ -22,12 +22,6 @@ describe 'PlateTemplates API', with: :api_v2 do
   context 'with a PlateTemplate' do
     let(:resource_model) { create :plate_template }
 
-    it 'sends an individual PlateTemplate' do
-      api_get "/api/v2/plate_templates/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('plate_templates')
-    end
-
     let(:payload) do
       {
         'data' => {
@@ -38,6 +32,12 @@ describe 'PlateTemplates API', with: :api_v2 do
           }
         }
       }
+    end
+
+    it 'sends an individual PlateTemplate' do
+      api_get "/api/v2/plate_templates/#{resource_model.id}"
+      expect(response).to have_http_status(:success)
+      expect(json.dig('data', 'type')).to eq('plate_templates')
     end
 
     # Remove if immutable

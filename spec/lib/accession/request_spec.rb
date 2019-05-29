@@ -5,15 +5,15 @@ RSpec.describe Accession::Request, type: :model, accession: true do
 
   let(:submission) { build(:accession_submission) }
 
-  it 'should not be valid without a submission' do
-    expect(Accession::Request.new(nil)).to_not be_valid
+  it 'is not valid without a submission' do
+    expect(Accession::Request.new(nil)).not_to be_valid
   end
 
-  it 'should have a resource' do
-    expect(Accession::Request.new(submission).resource).to_not be_nil
+  it 'has a resource' do
+    expect(Accession::Request.new(submission).resource).not_to be_nil
   end
 
-  it 'should set the header and proxy' do
+  it 'sets the header and proxy' do
     proxy = configatron.disable_web_proxy
     configatron.proxy = 'mockproxy'
 
@@ -24,28 +24,28 @@ RSpec.describe Accession::Request, type: :model, accession: true do
 
     configatron.disable_web_proxy = true
     request = Accession::Request.new(submission)
-    expect(RestClient.proxy).to_not be_present
-    expect(request.resource.options.key?(:headers)).to be_falsey
+    expect(RestClient.proxy).not_to be_present
+    expect(request.resource.options).not_to be_key(:headers)
 
     configatron.disable_web_proxy = proxy
     configatron.proxy = nil
   end
 
   context '#post' do
-    it 'should return nothing if the submission is not valid' do
+    it 'returns nothing if the submission is not valid' do
       expect(Accession::Request.new(nil).post).to be_nil
     end
 
-    it 'should return nothing if an error is raised' do
+    it 'returns nothing if an error is raised' do
       request = Accession::Request.new(submission)
       allow(request.resource).to receive(:post)
         .with(submission.payload.files)
         .and_raise(StandardError)
 
-      expect(request.post).to_not be_accessioned
+      expect(request.post).not_to be_accessioned
     end
 
-    it 'should return a successful response if accessioning is successful' do
+    it 'returns a successful response if accessioning is successful' do
       request = Accession::Request.new(submission)
       allow(request.resource).to receive(:post)
         .with(submission.payload.files)
@@ -54,13 +54,13 @@ RSpec.describe Accession::Request, type: :model, accession: true do
       expect(request.post).to be_accessioned
     end
 
-    it 'should return a failure response if accessioning fails' do
+    it 'returns a failure response if accessioning fails' do
       request = Accession::Request.new(submission)
       allow(request.resource).to receive(:post)
         .with(submission.payload.files)
         .and_return(failed_accession_response)
 
-      expect(request.post).to_not be_accessioned
+      expect(request.post).not_to be_accessioned
     end
   end
 end
