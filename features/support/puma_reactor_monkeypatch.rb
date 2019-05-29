@@ -16,7 +16,7 @@ module CoreExtensions
         if @timeouts.empty?
           @sleep_for = ::Puma::Reactor::DefaultSleepFor
         else
-          diff = @timeouts.first.timeout_at.to_f - Time.now.to_f
+          diff = @timeouts.first.timeout_at.to_f - ::Time.now.to_f
 
           @sleep_for = if diff < 0.0
                          0

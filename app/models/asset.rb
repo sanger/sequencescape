@@ -1,5 +1,4 @@
 require 'eventful_record'
-require 'external_properties'
 
 # Asset is a very busy class which combines what should probably be two separate concepts:
 # Labware: A physical item which can move round the lab, such as a {Plate} or {Tube}
@@ -21,19 +20,11 @@ require 'external_properties'
 #
 # Some of the above are further subclasses to handle specific behaviours.
 class Asset < ApplicationRecord
-  include StudyReport::AssetDetails
-  include AssetLink::Associations
-  include SharedBehaviour::Named
   include Api::Messages::QcResultIO::AssetExtensions
-
-  # Key/value stores and attributes
-  include ExternalProperties
   include Uuid::Uuidable
-
-  # Links to other databases
-  include Identifiable
   include Commentable
   include Event::PlateEvents
+  include AssetLink::Associations
 
   class_attribute :stock_message_template, instance_writer: false
   # The partial used to render the list of assets on the asset show page

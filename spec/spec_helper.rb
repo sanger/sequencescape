@@ -27,6 +27,7 @@ require 'support/user_login'
 require 'jsonapi/resources/matchers'
 require 'aasm/rspec'
 require 'rspec/collection_matchers'
+require './features/support/puma_reactor_monkeypatch'
 
 require './lib/plate_map_generation'
 

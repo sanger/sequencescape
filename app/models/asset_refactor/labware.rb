@@ -6,6 +6,12 @@ module AssetRefactor
   module Labware
     # Labware specific methods
     module Methods
+      extend ActiveSupport::Concern
+
+      included do
+        include SharedBehaviour::Named
+      end
+
       attr_reader :storage_location_service
 
       def labwhere_location

@@ -2,6 +2,12 @@ class Lane < Receptacle
   include Api::LaneIO::Extensions
   include AliquotIndexer::Indexable
 
+  # Not entirely sure this is correct, as really flowcells are the labware,
+  # but we do rely on asset link to Lane. Currently aware of:
+  # - Linking in {SpikedBuffer}, although this could be replaced with an actual transfer
+  # - Finding lanes for a given plate on eg. the {PlateSummariesController plate summary}
+  include AssetRefactor::Labware::Methods
+
   LIST_REASONS_NEGATIVE = [
     'Failed on yield but sufficient data for experiment',
     'Failed on quality but sufficient data for experiment',

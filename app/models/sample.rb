@@ -37,8 +37,6 @@ class Sample < ApplicationRecord
 
   include ModelExtensions::Sample
   include Api::SampleIO::Extensions
-  include ExternalProperties
-  include Identifiable
   include Uuid::Uuidable
   include StandardNamedScopes
   include SharedBehaviour::Named
@@ -231,6 +229,13 @@ class Sample < ApplicationRecord
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
 
+  # @see ExternalProperties
+  # Was just used for the genotyping_done key which hasn't been updated since 2012
+  # It is exposed in the {StudyReport old style study report} but given the data hasn't
+  # been populated for 7 years its usefulness is questionable.
+  # Confirming with SSRs.
+  has_many :external_properties, as: :propertied, dependent: :destroy
+
   belongs_to :sample_manifest, inverse_of: :samples
 
   has_many_lab_events
@@ -396,9 +401,15 @@ class Sample < ApplicationRecord
     UnsuitableAccessionService.new(services[highest_priority])
   end
 
-  # at the moment return a string which is a comma separated list of snp plate id
+  # Retrieves information from a cache of the old SNP database.
+  # Hasn't been updated since 2012.
   def genotyping_done
-    get_external_value('genotyping_done')
+    # that will load all the properties , which is faster if we access more than one property
+    # and if we pre-load them with eager loaging
+    external_properties.each do |property|
+      return property.value if property.key == 'genotyping_done'
+    end
+    nil
   end
 
   def genotyping_snp_plate_id

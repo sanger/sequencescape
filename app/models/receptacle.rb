@@ -1,6 +1,7 @@
 class Receptacle < Asset
   include Transfer::State
   include Aliquot::Remover
+  include StudyReport::AssetDetails
 
   QC_STATE_ALIASES = {
     'passed' => 'pass',
