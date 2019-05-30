@@ -181,7 +181,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - tmp/codeclimate.cukes.json
+            - tmp/codeclimate.cukes*.json
   run-rubocop:
     <<: *defaults
     environment:
