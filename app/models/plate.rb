@@ -194,11 +194,16 @@ class Plate < Asset
   before_create :set_plate_name_and_size
 
   scope :qc_started_plates, -> {
-    select('DISTINCT assets.*')
-      .joins('LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id')
-      .where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id])
-      .order('assets.id DESC')
-      .includes(:events, :asset_audits)
+    includes(:events, :asset_audits)
+      .references(:events, :asset_audits)
+      .where(events: { family: 'create_dilution_plate_purpose' })
+      .or(
+        includes(:events, :asset_audits)
+          .references(:events, :asset_audits)
+          .where(asset_audits: { key: 'slf_receive_plates' })
+      )
+      .where(plate_purpose: PlatePurpose.stock_plate_purpose)
+      .order(id: :desc)
   }
 
   scope :with_sample, ->(sample) { includes(:contained_samples).where(samples: { id: sample }) }
