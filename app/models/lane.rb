@@ -39,6 +39,10 @@ class Lane < Receptacle
 
   scope :for_rebroadcast, -> { includes(requests_as_target: :batch) }
 
+  def labwhere_location
+    nil
+  end
+
   def subject_type
     'lane'
   end

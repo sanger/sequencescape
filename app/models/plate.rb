@@ -208,16 +208,6 @@ class Plate < Asset
       .where(batches: { id: batch })
   }
 
-  scope :include_wells, -> { includes(:wells) } do
-    def to_include
-      [:wells]
-    end
-
-    def with(subinclude)
-      scoped(include: { wells: subinclude })
-    end
-  end
-
   scope :with_wells, ->(wells) {
     select('DISTINCT assets.*')
       .joins(:container_associations)
@@ -524,6 +514,10 @@ class Plate < Asset
 
   def after_comment_addition(comment)
     comments.add_comment_to_submissions(comment)
+  end
+
+  def related_studies
+    studies
   end
 
   private

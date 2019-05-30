@@ -36,7 +36,11 @@ class Receptacle < Asset
   has_many :samples, through: :aliquots
   has_many :studies, ->() { distinct }, through: :aliquots
   has_many :projects, ->() { distinct }, through: :aliquots
-  has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
+  has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot'
+
+  has_many :submitted_assets, foreign_key: :asset_id # Created to associate an asset with an order
+  has_many :orders, through: :submitted_assets
+  has_many :ordered_studies, through: :orders, source: :study
 
   has_many :tags, through: :aliquots
 
@@ -44,6 +48,8 @@ class Receptacle < Asset
 
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
+
+  has_many :external_library_creation_requests, foreign_key: :asset_id
 
   # Named scopes for the future
   scope :include_aliquots, ->() { includes(aliquots: %i(sample tag bait_library)) }
@@ -145,6 +151,11 @@ class Receptacle < Asset
 
   def outer_request(submission_id)
     transfer_requests_as_target.find_by(submission_id: submission_id).try(:outer_request)
+  end
+
+  # All studies related to this asset
+  def related_studies
+    (ordered_studies + studies).compact.uniq
   end
 
   def attach_tag(tag, tag2 = nil)

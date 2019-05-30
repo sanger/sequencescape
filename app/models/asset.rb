@@ -47,36 +47,35 @@ class Asset < ApplicationRecord
   self.library_prep = false
   self.sequenceable = false
 
-  has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
-  has_many :asset_groups, through: :asset_group_assets
+  # @note Splitting out these associations now can cause issues with a number of issues with eager loading
+  #       so organizing things first while we establish a migration route.
+
+  # Labware based associations
+  has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
   has_many :asset_audits
   has_many :volume_updates, foreign_key: :target_id
-  has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
-  has_many :qc_results, dependent: :destroy
+  has_many :state_changes, foreign_key: :target_id
+  has_one :custom_metadatum_collection
+  belongs_to :labware_type, class_name: 'PlateType', optional: true
 
+  # Receptacle based associations
+  has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
+  has_many :asset_groups, through: :asset_group_assets
+  has_many :qc_results, dependent: :destroy
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   # :requests should go before :events_on_requests, through: :requests
+  belongs_to :map
   has_many :requests
-  has_many :external_library_creation_requests
   has_many :events_on_requests, through: :requests, source: :events, validate: false
   has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
-  has_many :state_changes, foreign_key: :target_id
-
-  # Orders
-  has_many :submitted_assets
-  has_many :orders, through: :submitted_assets
-  has_many :ordered_studies, through: :orders, source: :study
-  has_many :messengers, as: :target, inverse_of: :target
-  has_one :custom_metadatum_collection
   has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
-
-  belongs_to :map
-  belongs_to :labware_type, class_name: 'PlateType', optional: true
-
   has_many :sample_manifest_assets
   has_many :sample_manifests, through: :sample_manifest_assets
+
+  # Polymorphic associations
+  has_many :messengers, as: :target, inverse_of: :target
 
   delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
 
@@ -185,26 +184,6 @@ class Asset < ApplicationRecord
     }
   end
 
-  # Assets usually have studies through aliquots, which is only relevant to
-  # Receptacles. This method just ensures all assets respond to studies
-  def studies
-    Study.none
-  end
-
-  def study_ids
-    []
-  end
-
-  # All studies related to this asset
-  def related_studies
-    (ordered_studies + studies).compact.uniq
-  end
-
-  # Returns the request options used to create this asset.  By default assumed to be empty.
-  def created_with_request_options
-    {}
-  end
-
   # Returns the type of asset that can be considered appropriate for request types.
   def asset_type_for_request_types
     self.class
@@ -212,14 +191,6 @@ class Asset < ApplicationRecord
 
   def tube_name
     (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
-  end
-
-  def study
-    studies.first
-  end
-
-  def study_id
-    study.try(:id)
   end
 
   def ancestor_of_purpose(_ancestor_purpose_id)

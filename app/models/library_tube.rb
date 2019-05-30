@@ -17,17 +17,8 @@ class LibraryTube < Tube
     Tube::Purpose.stock_library_tube
   end
 
-  def specialized_from_manifest=(attributes)
-    # library_id is assigned on aliquot creation in `tube_sample_creation` method
-    # in sample_manifest `library` and `multiplexed library` behaviours
-    # library_id should be removed from here at some point (20/04/2017)
-    aliquots.first.update!(attributes.merge(library_id: id)) if first_update?
+  def specialized_from_manifest=(_attributes)
     external_library_creation_requests.each(&:manifest_processed!)
-  end
-
-  def first_update?
-    external_library_creation_request = requests.find_by(sti_type: 'ExternalLibraryCreationRequest')
-    external_library_creation_request && external_library_creation_request.allow_library_update?
   end
 
   def library_information
