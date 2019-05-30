@@ -28,7 +28,7 @@ class MultiplexedLibraryTube < Tube
   end
 
   def team
-    creation_requests.first&.request_type&.product_line&.name
+    creation_requests.first&.product_line
   end
 
   def library_source_plates

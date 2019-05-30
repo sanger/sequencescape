@@ -10,6 +10,13 @@ module AssetRefactor
 
       included do
         include SharedBehaviour::Named
+        has_many :asset_audits, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
+        has_many :volume_updates, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
+        has_many :state_changes, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
+        has_one :custom_metadatum_collection, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
+        belongs_to :labware_type, class_name: 'PlateType', optional: true
+
+        delegate :metadata, to: :custom_metadatum_collection, allow_nil: true
       end
 
       attr_reader :storage_location_service

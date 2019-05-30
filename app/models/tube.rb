@@ -68,10 +68,6 @@ class Tube < Receptacle
   delegate_to_purpose(:transition_to, :stock_plate)
   delegate :barcode_type, to: :purpose
 
-  def name_for_label
-    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
-  end
-
   def name_for_child_tube
     name
   end

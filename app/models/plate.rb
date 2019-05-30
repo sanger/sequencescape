@@ -272,13 +272,6 @@ class Plate < Asset
     asset_shape.location_from_row_and_column(row, col + 1, size)
   end
 
-  def find_well_by_rowcol(row, col)
-    map_description = map_description(row, col)
-    return nil if map_description.nil?
-
-    find_well_by_name(map_description)
-  end
-
   def find_well_by_name(well_name)
     if wells.loaded?
       wells.indexed_by_location[well_name]
@@ -314,43 +307,6 @@ class Plate < Asset
 
   def self.plate_ids_from_requests(requests)
     with_requests(requests).pluck(:id)
-  end
-
-  # Should return true if any samples on the plate contains gender information
-  def contains_gendered_samples?
-    contained_samples.with_gender.any?
-  end
-
-  def create_sample_tubes
-    wells.map(&:create_child_sample_tube)
-  end
-
-  def create_sample_tubes_and_print_barcodes(barcode_printer)
-    sample_tubes = create_sample_tubes
-    print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                           LabelPrinter::Label::PlateToTubes,
-                                           sample_tubes: sample_tubes)
-    print_job.execute
-
-    sample_tubes
-  end
-
-  def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
-    return nil if plates.empty?
-
-    plate_barcodes = plates.map(&:barcode_number)
-    asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.current.to_formatted_s(:sortable)} ", study)
-    plates.each do |plate|
-      next if plate.wells.empty?
-
-      asset_group.assets << plate.create_sample_tubes_and_print_barcodes(barcode_printer)
-    end
-
-    return nil if asset_group.assets.empty?
-
-    asset_group.save!
-
-    asset_group
   end
 
   def stock_plate?

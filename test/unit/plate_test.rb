@@ -217,16 +217,4 @@ class PlateTest < ActiveSupport::TestCase
       assert_not_includes plates, @child_plate
     end
   end
-
-  context 'tubes are created from plate' do
-    should 'send print request' do
-      plate = create :plate, :with_wells, well_count: 2
-      barcode_printer = create :barcode_printer
-      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
-
-      RestClient.expects(:post)
-
-      plate.create_sample_tubes_and_print_barcodes(barcode_printer)
-    end
-  end
 end

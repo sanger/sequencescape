@@ -37,6 +37,7 @@ class Receptacle < Asset
   has_many :studies, ->() { distinct }, through: :aliquots
   has_many :projects, ->() { distinct }, through: :aliquots
   has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot'
+  has_one :primary_sample, through: :aliquot, source: :sample
 
   has_many :submitted_assets, foreign_key: :asset_id # Created to associate an asset with an order
   has_many :orders, through: :submitted_assets
@@ -170,4 +171,29 @@ class Receptacle < Asset
 
   # Contained samples also works on eg. plate
   alias_attribute :contained_samples, :samples
+
+  def name_for_label
+    primary_sample&.sanger_sample_id.blank? ? name : primary_sample.shorten_sanger_sample_id
+  end
+
+  private
+
+  def set_external_release(state)
+    update_external_release do
+      if state == 'failed'  then self.external_release = false
+      elsif state == 'passed'  then self.external_release = true
+      elsif state == 'pending' then self # Do nothing
+      elsif state.nil?         then self # TODO: Ignore for the moment, correct later
+      elsif ['scanned_into_lab'].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
+      else raise StandardError, "Invalid external release state #{state.inspect}"
+      end
+    end
+  end
+
+  def update_external_release
+    external_release_nil_before = external_release.nil?
+    yield
+    save!
+    events.create_external_release!(!external_release_nil_before) unless external_release.nil?
+  end
 end

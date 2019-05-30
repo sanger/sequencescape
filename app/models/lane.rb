@@ -58,4 +58,10 @@ class Lane < Receptacle
   def rebroadcast
     requests_as_target.each { |r| r.batch.try(:rebroadcast) }
   end
+
+  def external_release_text
+    return 'Unknown' if external_release.nil?
+
+    external_release? ? 'Yes' : 'No'
+  end
 end

@@ -80,7 +80,7 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
-      assert_equal request.target_asset.tube_name, tube_label.top_line(tube)
+      assert_equal request.target_asset.name_for_label, tube_label.top_line(tube)
     end
 
     should 'when pacbio should return the right top, middle and bottom lines' do

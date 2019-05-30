@@ -37,9 +37,6 @@ class Asset < ApplicationRecord
   # Determines if the user is presented with the request additional sequencing link
   class_attribute :sequenceable, instance_writer: false
 
-  class VolumeError < StandardError
-  end
-
   self.per_page = 500
   self.inheritance_column = 'sti_type'
   self.sample_partial = 'assets/samples_partials/blank'
@@ -52,11 +49,11 @@ class Asset < ApplicationRecord
 
   # Labware based associations
   has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
-  has_many :asset_audits
-  has_many :volume_updates, foreign_key: :target_id
-  has_many :state_changes, foreign_key: :target_id
-  has_one :custom_metadatum_collection
-  belongs_to :labware_type, class_name: 'PlateType', optional: true
+  # has_many :asset_audits
+  # has_many :volume_updates, foreign_key: :target_id
+  # has_many :state_changes, foreign_key: :target_id
+  # has_one :custom_metadatum_collection
+  # belongs_to :labware_type, class_name: 'PlateType', optional: true
 
   # Receptacle based associations
   has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
@@ -82,12 +79,9 @@ class Asset < ApplicationRecord
   extend EventfulRecord
   has_many_events do
     event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)
-    event_constructor(:create_pass!,                   Event::AssetSetQcStateEvent,   :create_updated!)
-    event_constructor(:create_fail!,                   Event::AssetSetQcStateEvent,   :create_updated!)
     event_constructor(:create_state_update!,           Event::AssetSetQcStateEvent,   :create_updated!)
     event_constructor(:create_scanned_into_lab!,       Event::ScannedIntoLabEvent,    :create_for_asset!)
     event_constructor(:create_plate!,                  Event::PlateCreationEvent,     :create_for_asset!)
-    event_constructor(:create_plate_with_date!,        Event::PlateCreationEvent,     :create_for_asset_with_date!)
     event_constructor(:create_gel_qc!,                 Event::SampleLogisticsQcEvent, :create_gel_qc_for_asset!)
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
@@ -99,8 +93,6 @@ class Asset < ApplicationRecord
 
   has_one_event_with_family 'scanned_into_lab'
   has_one_event_with_family 'moved_to_2d_tube'
-
-  delegate :metadata, to: :custom_metadatum_collection, allow_nil: true
 
   delegate :last_qc_result_for, to: :qc_results
 
@@ -189,10 +181,6 @@ class Asset < ApplicationRecord
     self.class
   end
 
-  def tube_name
-    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
-  end
-
   def ancestor_of_purpose(_ancestor_purpose_id)
     # If it's not a tube or a plate, defaults to stock_plate
     stock_plate
@@ -248,31 +236,12 @@ class Asset < ApplicationRecord
     nil
   end
 
-  def set_external_release(state)
-    update_external_release do
-      case
-      when state == 'failed'  then self.external_release = false
-      when state == 'passed'  then self.external_release = true
-      when state == 'pending' then self # Do nothing
-      when state.nil?         then self # TODO: Ignore for the moment, correct later
-      when ['scanned_into_lab'].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
-      else raise StandardError, "Invalid external release state #{state.inspect}"
-      end
-    end
-  end
-
   def assign_relationships(parents, child)
     parents.each do |parent|
       parent.children.delete(child)
       AssetLink.create_edge(parent, self)
     end
     AssetLink.create_edge(self, child)
-  end
-
-  def external_release_text
-    return 'Unknown' if external_release.nil?
-
-    external_release? ? 'Yes' : 'No'
   end
 
   def add_parent(parent)
@@ -344,7 +313,8 @@ class Asset < ApplicationRecord
   # tables. Raises an exception if no template is configured for a give
   # asset. In most cases this is because the asset is not a stock
   def register_stock!
-    raise StandardError, "No stock template configured for #{self.class.name}. If #{self.class.name} is a stock, set stock_template on the class." if stock_message_template.nil?
+    class_name = self.class.name
+    raise StandardError, "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class." if stock_message_template.nil?
 
     Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
   end
@@ -358,13 +328,6 @@ class Asset < ApplicationRecord
   end
 
   private
-
-  def update_external_release
-    external_release_nil_before = external_release.nil?
-    yield
-    save!
-    events.create_external_release!(!external_release_nil_before) unless external_release.nil?
-  end
 
   def name_needs_to_be_generated?
     instance_variable_defined?(:@name_needs_to_be_generated) && @name_needs_to_be_generated

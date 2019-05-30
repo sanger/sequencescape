@@ -50,6 +50,7 @@ class Request < ApplicationRecord
   belongs_to :source_well, class_name: 'Well', foreign_key: :asset_id, optional: true
 
   has_one :order_role, through: :order
+  has_one :_product_line, through: :request_type, source: :product_line
 
   has_many :failures, as: :failable
   has_many :samples, through: :asset, source: :samples
@@ -572,7 +573,7 @@ class Request < ApplicationRecord
   end
 
   def product_line
-    request_type.product_line&.name
+    _product_line&.name
   end
 
   def manifest_processed!; end
