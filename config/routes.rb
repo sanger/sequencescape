@@ -521,7 +521,6 @@ Rails.application.routes.draw do
   resources :sample_logistics do
     collection do
       get :lab
-      get :qc_overview
     end
   end
 

@@ -193,19 +193,6 @@ class Plate < Asset
 
   before_create :set_plate_name_and_size
 
-  scope :qc_started_plates, -> {
-    includes(:events, :asset_audits)
-      .references(:events, :asset_audits)
-      .where(events: { family: 'create_dilution_plate_purpose' })
-      .or(
-        includes(:events, :asset_audits)
-          .references(:events, :asset_audits)
-          .where(asset_audits: { key: 'slf_receive_plates' })
-      )
-      .where(plate_purpose: PlatePurpose.stock_plate_purpose)
-      .order(id: :desc)
-  }
-
   scope :with_sample, ->(sample) { includes(:contained_samples).where(samples: { id: sample }) }
   scope :with_requests, ->(requests) { includes(wells: :requests).where(requests: { id: requests }).distinct }
   scope :output_by_batch, ->(batch) {
