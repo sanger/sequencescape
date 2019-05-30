@@ -6,7 +6,7 @@ class PrintJobTest < ActiveSupport::TestCase
   def setup
     @barcode_printer = create :barcode_printer
     LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
-    @plates = create_list :child_plate, 1
+    @plates = create_list :plate, 1, well_count: 1, well_factory: :untagged_well
     @plate = plates[0]
     @plate_purpose = plate.plate_purpose
     @attributes = { printer_name: barcode_printer.name,
@@ -15,7 +15,7 @@ class PrintJobTest < ActiveSupport::TestCase
                     { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
                       bottom_left: plate.human_barcode.to_s,
                       top_right: plate_purpose.name.to_s,
-                      bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
+                      bottom_right: 'user WTCCC',
                       top_far_right: plate.parent.try(:barcode_number).to_s,
                       barcode: plate.machine_barcode } }] },
                     label_template_id: 15, }

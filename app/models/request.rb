@@ -313,11 +313,7 @@ class Request < ApplicationRecord
   delegate :name, to: :request_metadata
 
   delegate :date_for_state, to: :request_events
-
-  delegate :study, :study_id, to: :asset, allow_nil: true
-
   delegate :validator_for, to: :request_type
-
   delegate :role, to: :order_role, allow_nil: true
 
   def self.delegate_validator

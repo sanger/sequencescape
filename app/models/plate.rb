@@ -375,10 +375,6 @@ class Plate < Asset
     ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id)
   end
 
-  def find_study_abbreviation_from_parent
-    parent.try(:wells).try(:first).try(:study).try(:abbreviation)
-  end
-
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     attributes[:sanger_barcode] = safe_sanger_barcode(attributes[:sanger_barcode] || {})

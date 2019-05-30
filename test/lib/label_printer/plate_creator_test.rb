@@ -8,12 +8,14 @@ class PlateCreatorTest < ActiveSupport::TestCase
 
   def setup
     @parent_barcode = '1234'
-    parent = create :source_plate, barcode: parent_barcode
+    @studies = create_list :study, 1
+    parent = create :source_plate, barcode: parent_barcode, studies: @studies
     well = create :well_with_sample_and_plate, plate: parent
     @barcode1 = '1111'
     @purpose_name = 'test purpose'
     plate_purpose = create :plate_purpose, name: purpose_name
-    @plate1 = create :child_plate, parent: parent, barcode: barcode1, plate_purpose: plate_purpose
+    @plate1 = create :child_plate, parent: parent, barcode: barcode1, plate_purpose: plate_purpose,
+                                   well_count: 1, well_factory: :untagged_well, studies: @studies
     @plates = [plate1]
     @user = 'user'
     @study_abbreviation = 'WTCCC'
