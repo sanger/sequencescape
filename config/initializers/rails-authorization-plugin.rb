@@ -1,7 +1,8 @@
 require 'rails-authorization-plugin/lib/authorization'
 
 ActionController::Base.send(:include, Authorization::Base)
-ActionView::Base.send(:include, Authorization::Base::ControllerInstanceMethods)
+# Disabled as I don't think we use them
+# ActionView::Base.send(:include, Authorization::Base::ControllerInstanceMethods)
 
 # Can be 'object roles' or 'hardwired'
 AUTHORIZATION_MIXIN = 'object roles'
