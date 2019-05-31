@@ -106,8 +106,6 @@ class Asset < ApplicationRecord
   scope :sorted, ->() { order('map_id ASC') }
   scope :for_summary, -> { includes(:map, :barcodes) }
 
-  scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
-
   scope :recent_first, -> { order(id: :desc) }
 
   scope :include_for_show, -> { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }

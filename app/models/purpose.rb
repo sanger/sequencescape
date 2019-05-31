@@ -23,8 +23,6 @@ class Purpose < ApplicationRecord
 
   delegate :prefix, to: :barcode_prefix, allow_nil: true
 
-  scope :where_is_a?, ->(clazz) { where(type: [clazz, *clazz.descendants].map(&:name)) }
-
   def source_plate(asset)
     source_purpose_id.present? ? asset.ancestor_of_purpose(source_purpose_id) : asset.stock_plate
   end
