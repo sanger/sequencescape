@@ -9,7 +9,7 @@ Feature: Show/update samples
      And I am on the show page for sample "sample_test"
     Then I should see "Manifest_1"
     When I follow "Manifest_1"
-    Then I should see "Download Blank Manifest"
+    Then I should see "Manifest 1"
 
   Scenario: A sample doesnt have a sample manifest
     Given I have a sample called "sample_test" with metadata
