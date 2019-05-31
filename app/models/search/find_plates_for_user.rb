@@ -7,7 +7,7 @@ class Search::FindPlatesForUser < Search
     # External calls will probably use uuids not ids
     criteria['plate_purpose_ids'] = Uuid.where(resource_type: 'Purpose', external_id: criteria['plate_purpose_uuids']).pluck(:id) if criteria['plate_purpose_uuids']
 
-    Plate.with_plate_purpose(criteria['plate_purpose_ids'])
+    Plate.with_purpose(criteria['plate_purpose_ids'])
          .for_user(Uuid.lookup_single_uuid(criteria['user_uuid']).resource)
          .include_plates_with_children(criteria['include_used'])
          .page(criteria['page']).limit(criteria['limit']).order('plate_owners.id DESC')

@@ -139,7 +139,6 @@ class Plate < Asset
       ]
     )
   }
-  scope :with_plate_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
 
   # Submissions on requests out of the plate
   # May not have been started yet
@@ -253,7 +252,7 @@ class Plate < Asset
   scope :with_study_id, ->(study_id) { joins(:studies).where(studies: { id: study_id }) if study_id.present? }
 
   scope :with_plate_purpose_ids, ->(plate_purpose_ids) {
-    joins(:plate_purpose).where(plate_purposes: { id: plate_purpose_ids }) if plate_purpose_ids.present?
+    where(plate_purpose_id: plate_purpose_ids) if plate_purpose_ids.present?
   }
 
   scope :created_on_or_after, ->(date) { where('assets.created_at >= ?', date.midnight) if date.present? }

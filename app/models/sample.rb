@@ -240,11 +240,6 @@ class Sample < ApplicationRecord
   before_destroy :safe_to_destroy
   after_save :accession
 
-  # These don't really belong here, but exist due to the close coupling between sample
-  # and its initial aliquot in the sample manifest.
-  delegate :specialized_from_manifest=, to: :primary_receptacle
-  delegate :library_information=, to: :primary_receptacle
-
   # Note: Samples don't tend to get released through Sequencescape
   # so in reality these methods are usually misleading.
   delegate :released?, :release, to: :sample_metadata

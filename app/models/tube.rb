@@ -26,9 +26,6 @@ class Tube < Receptacle
     save!
   end
 
-  scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
-  scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes) }
-
   delegate :source_purpose, to: :purpose, allow_nil: true
 
   def comments

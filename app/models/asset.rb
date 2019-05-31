@@ -32,8 +32,6 @@ class Asset < ApplicationRecord
   # When set to true, allows assets of this type to be automatically moved
   # from the asset_group show page
   class_attribute :automatic_move, instance_writer: false
-  # Set to true on the products of library creation. Controls name generation.
-  class_attribute :library_prep, instance_writer: false
   # Determines if the user is presented with the request additional sequencing link
   class_attribute :sequenceable, instance_writer: false
 
@@ -41,7 +39,6 @@ class Asset < ApplicationRecord
   self.inheritance_column = 'sti_type'
   self.sample_partial = 'assets/samples_partials/blank'
   self.automatic_move = false
-  self.library_prep = false
   self.sequenceable = false
 
   # @note Splitting out these associations now can cause issues with a number of issues with eager loading
@@ -49,11 +46,6 @@ class Asset < ApplicationRecord
 
   # Labware based associations
   has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
-  # has_many :asset_audits
-  # has_many :volume_updates, foreign_key: :target_id
-  # has_many :state_changes, foreign_key: :target_id
-  # has_one :custom_metadatum_collection
-  # belongs_to :labware_type, class_name: 'PlateType', optional: true
 
   # Receptacle based associations
   has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
@@ -92,13 +84,10 @@ class Asset < ApplicationRecord
   has_many_lab_events
 
   has_one_event_with_family 'scanned_into_lab'
-  has_one_event_with_family 'moved_to_2d_tube'
 
   delegate :last_qc_result_for, to: :qc_results
 
   broadcast_via_warren
-
-  after_create :generate_name_with_id, if: :name_needs_to_be_generated?
 
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
@@ -151,6 +140,7 @@ class Asset < ApplicationRecord
     end
   }
 
+  # Very much a Labware method
   class << self
     def find_from_any_barcode(source_barcode)
       if source_barcode.blank?
@@ -158,7 +148,7 @@ class Asset < ApplicationRecord
       elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
         joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode).first # rubocop:disable Rails/FindBy
       else
-        find_from_barcode(source_barcode)
+        find_by_barcode(source_barcode)
       end
     end
 
@@ -196,21 +186,15 @@ class Asset < ApplicationRecord
     RequestType.where(asset_type: label)
   end
 
-  def scanned_in_date
-    scanned_into_lab_event.try(:content) || ''
-  end
-
   def role
     stock_plate&.stock_role
   end
 
-  def generate_name_with_id
-    update!(name: "#{name} #{id}")
-  end
-
+  # Assigns name
+  # @note Overridden on subclasses to append the asset id to the name
+  #       via on_create callbacks
   def generate_name(new_name)
     self.name = new_name
-    @name_needs_to_be_generated = library_prep?
   end
 
   # TODO: unify with parent/children
@@ -281,16 +265,6 @@ class Asset < ApplicationRecord
     nil
   end
 
-  # Returns nil because assets really don't have barcodes!
-  def barcode_type
-    nil
-  end
-
-  # We only support wells for the time being
-  def latest_stock_metrics(_product, *_args)
-    []
-  end
-
   def contained_samples
     Sample.none
   end
@@ -323,11 +297,5 @@ class Asset < ApplicationRecord
 
   def get_qc_result_value_for(key)
     last_qc_result_for(key).pluck(:value).first
-  end
-
-  private
-
-  def name_needs_to_be_generated?
-    instance_variable_defined?(:@name_needs_to_be_generated) && @name_needs_to_be_generated
   end
 end

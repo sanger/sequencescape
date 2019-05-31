@@ -121,11 +121,7 @@ class Receptacle < Asset
     self.class.name.underscore
   end
 
-  def specialized_from_manifest=(*args); end
-
   def library_information; end
-
-  def library_information=(*args); end
 
   def assign_tag2(tag)
     aliquots.each do |aliquot|
@@ -174,6 +170,11 @@ class Receptacle < Asset
 
   def name_for_label
     primary_sample&.shorten_sanger_sample_id.presence || name
+  end
+
+  # We only support wells for the time being
+  def latest_stock_metrics(_product, *_args)
+    []
   end
 
   private

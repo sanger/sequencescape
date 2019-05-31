@@ -4,9 +4,7 @@ class MultiplexedLibraryTube < Tube
   include ModelExtensions::MultiplexedLibraryTube
   include Api::MultiplexedLibraryTubeIO::Extensions
   include Transfer::Associations
-
-  self.library_prep = true
-  self.sequenceable = true
+  include Asset::SharedLibraryTubeBehaviour
 
   has_many :order_roles, ->() { distinct }, through: :requests_as_target
 
@@ -29,10 +27,6 @@ class MultiplexedLibraryTube < Tube
 
   def team
     creation_requests.first&.product_line
-  end
-
-  def library_source_plates
-    purpose.library_source_plates(self)
   end
 
   def role

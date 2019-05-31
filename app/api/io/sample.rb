@@ -73,8 +73,5 @@ class Io::Sample < Core::Io::Base
                       sample_metadata.treatment <=> data_release.managed.treatment
                         sample_metadata.subject <=> data_release.managed.subject
                         sample_metadata.disease <=> data_release.managed.disease
-
-                            library_information <=  library_information
-
   ")
 end

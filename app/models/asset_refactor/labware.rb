@@ -17,6 +17,9 @@ module AssetRefactor
         belongs_to :labware_type, class_name: 'PlateType', optional: true
 
         delegate :metadata, to: :custom_metadatum_collection, allow_nil: true
+
+        scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
+        scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
       end
 
       attr_reader :storage_location_service
@@ -32,6 +35,10 @@ module AssetRefactor
 
       def storage_location
         @storage_location ||= obtain_storage_location
+      end
+
+      def scanned_in_date
+        scanned_into_lab_event.try(:content) || ''
       end
 
       private
