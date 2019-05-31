@@ -37,7 +37,7 @@ class Receptacle < Asset
   has_many :studies, ->() { distinct }, through: :aliquots
   has_many :projects, ->() { distinct }, through: :aliquots
   has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot'
-  has_one :primary_sample, through: :aliquot, source: :sample
+  has_one :primary_sample, through: :primary_aliquot, source: :sample
 
   has_many :submitted_assets, foreign_key: :asset_id # Created to associate an asset with an order
   has_many :orders, through: :submitted_assets
