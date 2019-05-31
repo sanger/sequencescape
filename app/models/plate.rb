@@ -98,9 +98,7 @@ class Plate < Asset
 
   def update_volume(volume_change)
     ActiveRecord::Base.transaction do
-      wells.each do |w|
-        w.update_volume(volume_change)
-      end
+      wells.each { |well| well.update_volume(volume_change) }
     end
   end
 
@@ -262,15 +260,6 @@ class Plate < Asset
     Map.where_plate_size(size).where_plate_shape(asset_shape)
   end
 
-  def find_map_by_rowcol(row, col)
-    # Count from 0
-    maps.find_by(description: map_description(row, col))
-  end
-
-  def map_description(row, col)
-    asset_shape.location_from_row_and_column(row, col + 1, size)
-  end
-
   def find_well_by_name(well_name)
     if wells.loaded?
       wells.indexed_by_location[well_name]
@@ -419,14 +408,6 @@ class Plate < Asset
       end
     end
     true
-  end
-
-  def samples_in_order(order_id)
-    Sample.for_plate_and_order(id, order_id)
-  end
-
-  def samples_in_order_by_target(order_id)
-    Sample.for_plate_and_order_as_target(id, order_id)
   end
 
   def team
