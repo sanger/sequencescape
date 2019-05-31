@@ -149,18 +149,7 @@ class Sample < ApplicationRecord
   require_tag(:phenotype, :EGA)
   require_tag(:donor_id, :EGA)
 
-  # This needs to appear after the metadata has been defined to ensure that the Metadata class
-  # is present.
-  include SampleManifest::InputBehaviour::SampleUpdating
-
   class Metadata
-    attr_reader :reference_genome_set_by_name
-
-    # If we set a reference genome via its name, we want to validate that we found it.
-    # We can't just raise and exception when we don't find it, as this cases the sample manifest
-    # delayed job to fail completely.
-    validate :reference_genome_found, if: :reference_genome_set_by_name
-
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
     # and the values can be easily remapped
@@ -177,22 +166,6 @@ class Sample < ApplicationRecord
       sample_common_name
     end
 
-    def reference_genome_name=(reference_genome_name)
-      return unless reference_genome_name.present?
-
-      @reference_genome_set_by_name = reference_genome_name
-      self.reference_genome = ReferenceGenome.find_by(name: reference_genome_name)
-    end
-
-    def reference_genome_found
-      # A reference genome of nil automatically get converted to the reference genome named "", so
-      # we need to explicitly check the name has been set as expected.
-      return true if reference_genome.name == reference_genome_set_by_name
-
-      errors.add(:base, "Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
-      false
-    end
-
     # This is misleading, as samples are rarely released through
     # Sequencescape, so our flag gets out of sync with the ENA/EGA
     def released?
@@ -207,11 +180,7 @@ class Sample < ApplicationRecord
   end
 
   # this method should be before has_many through assets
-  receptacle_alias(:assets) do
-    def first_of_type(asset_class)
-      detect { |asset| asset.is_a?(asset_class) }
-    end
-  end
+  receptacle_alias(:assets)
   receptacle_alias(:wells,        class_name: 'Well')
   receptacle_alias(:sample_tubes, class_name: 'SampleTube')
 
@@ -324,26 +293,18 @@ class Sample < ApplicationRecord
     joins(:sample_metadata).where(sample_metadata: { sample_ebi_accession_number: [nil, ''] })
   }
 
-  def self.by_name(sample_id)
-    find_by(name: sample_id)
-  end
-
-  def self.submissions_by_assets(study_id, asset_group_id)
-    return [] if asset_group_id == '0'
-
-    study = Study.find(study_id)
-    asset_group_assets = AssetGroupAsset.where(asset_group_id: asset_group_id)
-    study.submissions.that_submitted_asset_id(asset_group_assets.first.asset_id).all
-  end
-
-  def select_study(sample_id)
-    sample = find(sample_id)
-    sample.studies
-  end
-
+  # Truncates the sanger_sample_id for display on labels
+  # - Returns the sanger_sample_id AS IS if it is nil or less than 10 characters
+  # - Tries to truncate it to the last 7 digits, and returns that
+  # - If it cannot extract 7 digits, the full sanger_sample_id is returned
+  # @note This appears to be set up to handle legacy data. All currently generated
+  #       Sanger sample ids will be meet criteria 1 or 2.
+  # Earlier implementations were supposed to fall back to the name in the absence
+  # of a sanger_smaple_id, but the feature was incorrectly implemented, and would
+  # have thrown an exception.
   def shorten_sanger_sample_id
     case sanger_sample_id
-    when blank? then name
+    when nil then sanger_sample_id
     when sanger_sample_id.size < 10 then sanger_sample_id
     when /([\d]{7})$/ then $1
     else
@@ -356,27 +317,11 @@ class Sample < ApplicationRecord
   end
 
   def accession_number?
-    not ebi_accession_number.blank?
-  end
-
-  # If there is no existing ebi_accession_number and we have a taxon id
-  # and we have a common name for the sample return true else false
-  def accession_could_be_generated?
-    return false unless sample_metadata.sample_ebi_accession_number.blank?
-
-    required_tags.each do |tag|
-      return false if sample_metadata.send(tag).blank?
-    end
-    # We have everything needed to generate an accession so...
-    true
+    ebi_accession_number.present?
   end
 
   def error
     'Default error message'
-  end
-
-  def sample_external_name
-    name
   end
 
   def sample_empty?(supplier_sample_name = name)
@@ -431,15 +376,8 @@ class Sample < ApplicationRecord
     end
   end
 
-  #
-  # Checks to see if the sample or its metadata has been changed since it was last loaded.
-  # Used to detect samples which have been updated by sample manifests.
-  # Excludes samples which have only been flagged to indicate they have no supplier name.
-  #
-  # @return [Boolean] True if the sample has been updated
-  #
-  def changed_by_manifest?
-    (previous_changes.present? || sample_metadata.previous_changes.present?) && !generate_no_update_event?
+  def handle_update_event(user)
+    events.updated_using_sample_manifest!(user)
   end
 
   def ena_study

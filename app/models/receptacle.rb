@@ -173,7 +173,7 @@ class Receptacle < Asset
   alias_attribute :contained_samples, :samples
 
   def name_for_label
-    primary_sample&.sanger_sample_id.blank? ? name : primary_sample.shorten_sanger_sample_id
+    primary_sample&.shorten_sanger_sample_id.presence || name
   end
 
   private
