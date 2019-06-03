@@ -15,6 +15,14 @@ describe Barcode, type: :model do
 
       it { is_expected.to eq machine_barcode }
     end
+
+    describe 'valid?' do
+      before { create(:barcode, barcode: barcode_value, format: barcode_format) }
+
+      it 'is invalid if it is duplicated' do
+        expect(barcode).not_to be_valid
+      end
+    end
   end
 
   shared_examples 'a composable barcode' do

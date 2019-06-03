@@ -20,6 +20,7 @@ class Barcode < ApplicationRecord
   FOREIGN_BARCODE_FORMATS = %i[cgap].freeze
 
   validate :barcode_valid?
+  validates :barcode, uniqueness: { scope: :format }
 
   scope(:sanger_barcode, lambda do |prefix, number|
     human_barcode = SBCF::SangerBarcode.from_prefix_and_number(prefix, number).human_barcode
