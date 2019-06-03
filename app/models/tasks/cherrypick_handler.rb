@@ -146,7 +146,7 @@ module Tasks::CherrypickHandler
 
         # Set the plate type, regardless of what it was.  This may change the standard plate.
         plate.plate_type = plate_type unless plate_type.nil?
-        plate.save
+        plate.save!
 
         plate_params.each do |row, row_params|
           row = row.to_i
