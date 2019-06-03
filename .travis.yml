@@ -6,10 +6,10 @@ services:
   - mysql
   - xvfb
 addons:
+  chrome: stable
   apt:
     packages:
     - haveged
-    - google-chrome-stable
     - chromium-chromedriver
 cache:
   bundler: true
