@@ -52,7 +52,7 @@ class RobotVerification
 
       plate = Plate.with_barcode(plate_barcode).first or raise "Unable to locate plate #{plate_barcode.inspect} for robot verification"
       plate.plate_type = plate_type
-      plate.save
+      plate.save!
     end
   end
 
