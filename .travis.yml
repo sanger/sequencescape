@@ -21,7 +21,6 @@ env:
   - PATH=$PATH:/usr/lib/chromium-browser/
 before_install:
 - mv config/aker.yml.example config/aker.yml
-- chromedriver-update 73.0.3683.68
 jobs:
   include:
   - stage: test
@@ -48,6 +47,7 @@ jobs:
   - if: type != cron
     env:
     before_script:
+    - chromedriver-update 73.0.3683.68
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     script: xvfb-run -a bundle exec rspec
@@ -58,6 +58,7 @@ jobs:
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=0
     before_script:
+    - chromedriver-update 73.0.3683.68
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     name: Cucumber Test 1
@@ -68,6 +69,7 @@ jobs:
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=1
     before_script:
+    - chromedriver-update 73.0.3683.68
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     name: Cucumber Test 2
