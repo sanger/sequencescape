@@ -106,3 +106,10 @@ Performance/UnfreezeString:
 Layout/SpaceBeforeBlockBraces:
   EnforcedStyle: space
   EnforcedStyleForEmptyBraces: space
+Rails/UnknownEnv:
+  Environments:
+    - production
+    - development
+    - test
+    - cucumber
+    - profile
