@@ -2,9 +2,9 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of TagLayoutTemplate
+    # Provides a JSON API representation of PlateTemplate
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
-    class TagLayoutTemplateResource < BaseResource
+    class PlateTemplateResource < BaseResource
       # Constants...
 
       # immutable # uncomment to make the resource immutable
@@ -14,13 +14,9 @@ module Api
       default_includes :uuid_object
 
       # Associations:
-      has_one :tag_group
-      has_one :tag2_group
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :direction, readonly: true
-      attribute :walking_by, readonly: true
 
       # Filters
 
