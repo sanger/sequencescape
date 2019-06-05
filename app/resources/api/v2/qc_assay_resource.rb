@@ -2,8 +2,9 @@
 
 module Api
   module V2
-    # QCAssayResource
-    class QcAssayResource < JSONAPI::Resource
+    # Provides a JSON API representation of QC Assay
+    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
+    class QcAssayResource < BaseResource
       attribute :lot_number
       attribute :qc_results
 

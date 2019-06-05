@@ -7,7 +7,7 @@ RSpec/AggregateFailures:
   Enabled: true
   Include:
     - 'spec/**/*.rb'
-# Exclude api requests as they are not named by class
+# Added exclude because api and feature specs do not have a specific class.
 RSpec/DescribeClass:
   Exclude:
     - 'spec/requests/**/*.rb'

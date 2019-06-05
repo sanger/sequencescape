@@ -30,6 +30,9 @@ module Api
       has_many :upstream_plates, readonly: true
       has_many :upstream_tubes, readonly: true
 
+      has_many :transfer_requests_as_source, readonly: true
+      has_many :transfer_requests_as_target, readonly: true
+
       # Attributes
       attribute :uuid, readonly: true
       attribute :name, delegate: :display_name, readonly: true
