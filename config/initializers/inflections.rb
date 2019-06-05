@@ -11,7 +11,7 @@
 # end
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
-  inflect.uncountable %w(health sample_metadata)
+  inflect.uncountable %w(health sample_metadata labware)
 end
 
 # These inflection rules are supported but not enabled by default:
