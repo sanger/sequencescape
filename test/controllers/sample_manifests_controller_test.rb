@@ -37,9 +37,13 @@ class SampleManifestsControllerTest < ActionController::TestCase
 
     context '#create' do
       should 'send print request' do
-        barcode = mock('barcode')
-        barcode.stubs(:barcode).returns(23)
-        PlateBarcode.stubs(:create).returns(barcode)
+        PlateBarcode.stubs(:create).returns(
+          stub(barcode: 23),
+          stub(barcode: 24),
+          stub(barcode: 25),
+          stub(barcode: 26),
+          stub(barcode: 27)
+        )
         study = create :study
         supplier = Supplier.new(name: 'test')
         supplier.save
@@ -51,7 +55,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
         post :create, params: { sample_manifest: { template: 'plate_default',
                                                    study_id: study.id,
                                                    supplier_id: supplier.id,
-                                                   count: '3',
+                                                   count: '2',
                                                    barcode_printer: barcode_printer.name,
                                                    only_first_label: '0',
                                                    asset_type: '' } }
@@ -59,7 +63,8 @@ class SampleManifestsControllerTest < ActionController::TestCase
         post :create, params: { sample_manifest: { template: 'tube_default',
                                                    study_id: study.id,
                                                    supplier_id: supplier.id,
-                                                   count: '3',
+                                                   purpose_id: Tube::Purpose.standard_sample_tube.id,
+                                                   count: '2',
                                                    barcode_printer: barcode_printer.name,
                                                    only_first_label: '0',
                                                    asset_type: '' } }

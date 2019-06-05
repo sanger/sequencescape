@@ -11,9 +11,12 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
   end
 
   before do
-    barcode = double('barcode')
-    allow(barcode).to receive(:barcode).and_return(23)
-    allow(PlateBarcode).to receive(:create).and_return(barcode)
+    allow(PlateBarcode).to receive(:create).and_return(
+      double('barcode', barcode: 23),
+      double('barcode', barcode: 24),
+      double('barcode', barcode: 25),
+      double('barcode', barcode: 26)
+    )
   end
 
   let!(:user)             { create(:user) }
