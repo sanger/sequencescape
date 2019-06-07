@@ -120,6 +120,9 @@ group :default do
 
   # Adds easy conversions between units
   gem 'ruby-units'
+
+  # Easy colour coding of console output.
+  gem 'rainbow'
 end
 
 group :warehouse do

@@ -547,6 +547,7 @@ DEPENDENCIES
   rails (~> 5.1.7)
   rails-controller-testing
   rails-perftest
+  rainbow
   rest-client
   roo
   rspec-collection_matchers
