@@ -2,8 +2,9 @@
 
 module Api
   module V2
-    # QCResultResource
-    class QcResultResource < JSONAPI::Resource
+    # Provides a JSON API representation of QC Result
+    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
+    class QcResultResource < BaseResource
       attributes :key, :value, :units, :cv, :assay_type, :assay_version
 
       # We expose created at to allow us to find the most recent
