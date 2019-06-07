@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rainbow'
+
 # # Asset Refactor
 # AssetRefactor provides a namespace for the refactor of {Asset} into Labware
 # and Receptacle. It is intended to provide a route to help ease the transition

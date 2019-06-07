@@ -260,8 +260,20 @@ class Order < ApplicationRecord
 
   private
 
-  def asset_applicable_to_type?(request_type, asset)
-    request_type.asset_type == asset.asset_type_for_request_types.name
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def asset_applicable_to_type?(request_type, asset)
+      request_type.asset_type == asset.asset_type_for_request_types.name
+    end
+  end
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    def asset_applicable_to_type?(request_type, asset)
+      request_type.asset_type == asset.asset_type_for_request_types.name
+    end
   end
 
   def no_consent_withdrawl
@@ -274,7 +286,7 @@ class Order < ApplicationRecord
 
   def assets_are_appropriate
     all_assets.each do |asset|
-      errors.add(:asset, "'#{asset.name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless asset_applicable_to_type?(first_request_type, asset)
+      errors.add(:asset, "'#{asset.display_name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless asset_applicable_to_type?(first_request_type, asset)
     end
     return true if errors.empty?
 

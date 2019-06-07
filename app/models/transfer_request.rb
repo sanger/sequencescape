@@ -86,6 +86,8 @@ class TransferRequest < ApplicationRecord
     end
   end
 
+  convert_labware_to_receptacle_for :asset, :target_asset
+
   # validation method
   def source_and_target_assets_are_different
     return true unless asset_id.present? && asset_id == target_asset_id

@@ -38,10 +38,18 @@ FactoryBot.define do
     study
     project
     user
-    item_options          {}
-    request_options       {}
-    assets                { create_list(:sample_tube, 1) }
-    request_types         { [create(:request_type).id] }
+    request_options {}
+    # This block is enabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happen in future
+    AssetRefactor.when_refactored do
+      assets  { create_list(:sample_tube, 1).map(&:receptacle) }
+    end
+    # This block is disabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happens now
+    AssetRefactor.when_not_refactored do
+      assets  { create_list(:sample_tube, 1) }
+    end
+    request_types { [create(:request_type).id] }
 
     factory :order_with_submission do
       after(:build) { |o| o.create_submission(user_id: o.user_id) }
@@ -53,8 +61,17 @@ FactoryBot.define do
     project
     user
     submission
-    assets                { create_list(:sample_tube, 1) }
-    request_types         { [create(:request_type).id] }
+    # This block is enabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happen in future
+    AssetRefactor.when_refactored do
+      assets  { create_list(:sample_tube, 1).map(&:receptacle) }
+    end
+    # This block is disabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happens now
+    AssetRefactor.when_not_refactored do
+      assets  { create_list(:sample_tube, 1) }
+    end
+    request_types { [create(:request_type).id] }
 
     factory :library_order do
       assets { create_list :untagged_well, 1 }
@@ -68,14 +85,32 @@ FactoryBot.define do
     project
     user
     submission
-    assets                { create_list(:sample_tube, 1) }
-    request_types         { [create(:request_type).id] }
+    # This block is enabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happen in future
+    AssetRefactor.when_refactored do
+      assets  { create_list(:sample_tube, 1).map(&:receptacle) }
+    end
+    # This block is disabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happens now
+    AssetRefactor.when_not_refactored do
+      assets  { create_list(:sample_tube, 1) }
+    end
+    request_types { [create(:request_type).id] }
   end
 
   factory :automated_order do
     user
     request_types { create_list(:sequencing_request_type, 1).map(&:id) }
-    assets { create_list :library_tube, 1 }
+    # This block is enabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happen in future
+    AssetRefactor.when_refactored do
+      assets  { create_list(:library_tube, 1).map(&:receptacle) }
+    end
+    # This block is disabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happens now
+    AssetRefactor.when_not_refactored do
+      assets  { create_list(:library_tube, 1) }
+    end
   end
 
   # Builds a submission on the provided assets suitable for processing through

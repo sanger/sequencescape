@@ -1,4 +1,16 @@
-class Receptacle < Asset
+AssetRefactor.when_not_refactored do
+  class Receptacle < Labware; end
+end
+
+AssetRefactor.when_refactored do
+  class Receptacle < Asset
+    include Uuid::Uuidable
+    include Commentable
+    belongs_to :labware
+  end
+end
+
+class Receptacle
   include Transfer::State
   include Aliquot::Remover
   include StudyReport::AssetDetails
@@ -7,8 +19,14 @@ class Receptacle < Asset
     'passed' => 'pass',
     'failed' => 'fail'
   }.freeze
-
   self.sample_partial = 'assets/samples_partials/asset_samples'.freeze
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    include Asset::ReceptacleAssociations
+    has_many :messengers, as: :target, inverse_of: :target
+  end
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
@@ -78,6 +96,13 @@ class Receptacle < Asset
   end
 
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    delegate :human_barcode, :machine_bracode, to: :labware
+    delegate :asset_type_for_request_types, to: :labware
+  end
 
   # Returns the map_id of the first and last tag in an asset
   # eg 1-96.
@@ -175,6 +200,16 @@ class Receptacle < Asset
   # We only support wells for the time being
   def latest_stock_metrics(_product, *_args)
     []
+  end
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    def display_name
+      labware_name = labware.present? ? labware.try(:human_barcode) : '(not on a labware)'
+      labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
+      labware_name
+    end
   end
 
   private

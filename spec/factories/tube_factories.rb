@@ -30,7 +30,6 @@ FactoryBot.define do
 
   factory :empty_sample_tube, class: SampleTube, traits: [:tube_barcode] do
     name                { generate :asset_name }
-    value               { '' }
     qc_state            { '' }
     association(:purpose, factory: :sample_tube_purpose) # { Tube::Purpose.standard_sample_tube }
   end
@@ -113,8 +112,8 @@ FactoryBot.define do
 
     factory(:library_tube_with_barcode) do
       sequence(:barcode) { |i| i }
-      after(:create) do |library_tube|
-        library_tube.aliquots.create!(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard', library_id: library_tube.id)
+      after(:build) do |library_tube|
+        library_tube.aliquots.build(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard', library: library_tube)
       end
     end
   end
@@ -151,17 +150,6 @@ FactoryBot.define do
   factory(:full_library_tube, parent: :library_tube) do
     after(:create) { |tube| create(:library_creation_request, target_asset: tube) }
   end
-
-  # A Multiplexed library tube comes from several library tubes, which are themselves created through a
-  # number of multiplexed library creation requests.  But the binding to these tubes comes from the parent-child
-  # relationships.
-  factory :full_multiplexed_library_tube, parent: :multiplexed_library_tube do
-    after(:create) do |tube|
-      tube.parents << Array.new(5) { create(:multiplexed_library_creation_request, target_asset: tube).asset }
-    end
-  end
-
-  factory :broken_multiplexed_library_tube, parent: :multiplexed_library_tube
 
   factory :stock_library_tube do
     name     { |_a| generate :asset_name }
