@@ -37,6 +37,9 @@ module AssetRefactor
   def self.setup
     @refactor_env = ActiveRecord::Base.connection.tables.include?('labware')
     warning if @refactor_env
+  rescue ActiveRecord::NoDatabaseError => _e
+    warn 'No database detected'
+    @refactor_env = false
   end
 
   def self.warning
