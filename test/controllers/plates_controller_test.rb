@@ -14,9 +14,15 @@ class PlatesControllerTest < ActionController::TestCase
       @dilution_plates_creator = FactoryBot.create :plate_creator, plate_purposes: @working_dilution
 
       @barcode_printer = create :barcode_printer
-      @plate_barcode = mock('plate barcode')
-      @plate_barcode.stubs(:barcode).returns('1234567')
-      PlateBarcode.stubs(:create).returns(@plate_barcode)
+
+      PlateBarcode.stubs(:create).returns(
+        stub(barcode: 1234567),
+        stub(barcode: 1234568),
+        stub(barcode: 1234569),
+        stub(barcode: 1234570),
+        stub(barcode: 1234571),
+        stub(barcode: 1234572)
+      )
       LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
       LabelPrinter::PmbClient.stubs(:print).returns(200)
     end
