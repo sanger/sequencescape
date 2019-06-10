@@ -80,9 +80,8 @@ RSpec.describe Submission, type: :model do
     samples = sample_manifest.samples[1..-1]
     order1 = create :order, assets: sample_manifest.labware
 
-    asset = create :empty_sample_tube
-    no_manifest_sample = create :sample, assets: [asset]
-    order2 = create :order, assets: no_manifest_sample.assets
+    asset = create :sample_tube
+    order2 = create :order, assets: [asset.receptacle]
 
     submission = Submission.new(user: create(:user), orders: [order1, order2])
 

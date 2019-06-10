@@ -166,7 +166,7 @@ FactoryBot.define do
     volume { 50 }
 
     after(:build) do |tube, evaluator|
-      tube.aliquots << build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option)
+      tube.receptacle.aliquots << build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option)
     end
   end
 

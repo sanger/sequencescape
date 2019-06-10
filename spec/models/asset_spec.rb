@@ -73,19 +73,19 @@ RSpec.describe Asset, type: :model do
       let(:plate_fluidigm_2) { fluidigm_plates_list[1] }
 
       it 'correctly finds a single ean13 barcode' do
-        expect(Asset.with_barcode(plate_ean13_1.machine_barcode)).to match_array([plate_ean13_1])
+        expect(Labware.with_barcode(plate_ean13_1.machine_barcode)).to match_array([plate_ean13_1])
       end
 
       it 'does not find anything when sent a non-valid ean13 barcode' do
-        expect(Asset.with_barcode('1234567890123')).to match_array([])
+        expect(Labware.with_barcode('1234567890123')).to match_array([])
       end
 
       it 'correctly finds a plate with a single fluidigm barcode' do
-        expect(Asset.with_barcode(plate_fluidigm_1.fluidigm_barcode)).to match_array([plate_fluidigm_1])
+        expect(Labware.with_barcode(plate_fluidigm_1.fluidigm_barcode)).to match_array([plate_fluidigm_1])
       end
 
       it 'does not find anything when sent any other string' do
-        expect(Asset.with_barcode('INVALID123ABC')).to match_array([])
+        expect(Labware.with_barcode('INVALID123ABC')).to match_array([])
       end
 
       it 'finds plates when sent a mixture of valid barcodes' do
@@ -101,7 +101,7 @@ RSpec.describe Asset, type: :model do
           plate_ean13_2,
           plate_fluidigm_2
         ]
-        expect(Asset.with_barcode(bcs)).to match_array(expected_result)
+        expect(Labware.with_barcode(bcs)).to match_array(expected_result)
       end
 
       it 'finds plates when sent a mixture of valid and invalid barcodes' do
@@ -119,7 +119,7 @@ RSpec.describe Asset, type: :model do
           plate_ean13_2,
           plate_fluidigm_2
         ]
-        expect(Asset.with_barcode(bcs)).to match_array(expected_result)
+        expect(Labware.with_barcode(bcs)).to match_array(expected_result)
       end
     end
   end
@@ -136,19 +136,19 @@ RSpec.describe Asset, type: :model do
       #  let(:plate_fluidigm_2) { fluidigm_plates_list[1] }
 
       it 'correctly finds a single ean13 barcode' do
-        expect(Asset.with_barcode(plate_ean13_1.machine_barcode)).to match_array([plate_ean13_1])
+        expect(Labware.with_barcode(plate_ean13_1.machine_barcode)).to match_array([plate_ean13_1])
       end
 
       it 'does not find anything when sent a non-valid ean13 barcode' do
-        expect(Asset.with_barcode('1234567890123')).to match_array([])
+        expect(Labware.with_barcode('1234567890123')).to match_array([])
       end
 
       it 'correctly finds a plate with a single fluidigm barcode' do
-        #    expect(Asset.with_barcode(plate_fluidigm_1.fluidigm_barcode)).to match_array([plate_fluidigm_1])
+        #    expect(Labware.with_barcode(plate_fluidigm_1.fluidigm_barcode)).to match_array([plate_fluidigm_1])
       end
 
       it 'does not find anything when sent any other string' do
-        expect(Asset.with_barcode('INVALID123ABC')).to match_array([])
+        expect(Labware.with_barcode('INVALID123ABC')).to match_array([])
       end
 
       it 'finds plates when sent a mixture of valid barcodes' do
@@ -160,7 +160,7 @@ RSpec.describe Asset, type: :model do
           plate_ean13_1,
           plate_ean13_2
         ]
-        expect(Asset.with_barcode(bcs)).to match_array(expected_result)
+        expect(Labware.with_barcode(bcs)).to match_array(expected_result)
       end
 
       it 'finds plates when sent a mixture of valid and invalid barcodes' do
@@ -178,7 +178,7 @@ RSpec.describe Asset, type: :model do
           plate_ean13_2
           # plate_fluidigm_2
         ]
-        expect(Asset.with_barcode(bcs)).to match_array(expected_result)
+        expect(Labware.with_barcode(bcs)).to match_array(expected_result)
       end
     end
   end

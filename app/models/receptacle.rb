@@ -26,6 +26,7 @@ class Receptacle
   AssetRefactor.when_refactored do
     include Asset::ReceptacleAssociations
     has_many :messengers, as: :target, inverse_of: :target
+    delegate :scanned_in_date, to: :labware
   end
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
@@ -205,10 +206,18 @@ class Receptacle
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
-    def display_name
+    def name
       labware_name = labware.present? ? labware.try(:human_barcode) : '(not on a labware)'
       labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
       labware_name
+    end
+
+    def display_name
+      name
+    end
+
+    def external_identifier
+      name
     end
   end
 

@@ -28,7 +28,11 @@ class Api::Messages::PacBioRunIO < Api::Base
         with_association(:asset) do
           map_attribute_to_json_attribute(:external_identifier, 'pac_bio_library_tube_id_lims')
           map_attribute_to_json_attribute(:uuid, 'pac_bio_library_tube_uuid')
-          map_attribute_to_json_attribute(:name, 'pac_bio_library_tube_name')
+
+          with_association(:labware) do
+            map_attribute_to_json_attribute(:name, 'pac_bio_library_tube_name')
+          end
+
           map_attribute_to_json_attribute(:id, 'pac_bio_library_tube_legacy_id')
 
           with_association(:primary_aliquot) do

@@ -3,7 +3,7 @@ module Aker
   class Container < ApplicationRecord
     has_many :samples, dependent: :destroy
 
-    belongs_to :asset
+    belongs_to :asset, class_name: 'Receptacle'
 
     validates :barcode, presence: true, uniqueness: { scope: :address }
     validate :not_change_barcode

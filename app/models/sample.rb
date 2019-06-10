@@ -179,10 +179,8 @@ class Sample < ApplicationRecord
     end
   end
 
-  # this method should be before has_many through assets
-  receptacle_alias(:assets)
-  receptacle_alias(:wells,        class_name: 'Well')
-  receptacle_alias(:sample_tubes, class_name: 'SampleTube')
+  has_many :assets, ->() { distinct }, through: :aliquots, source: :receptacle
+  has_many :wells, ->() { distinct }, through: :aliquots, source: :receptacle, class_name: 'Well'
 
   has_many_events do
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
