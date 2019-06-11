@@ -1,5 +1,5 @@
 # Generates warehouse messages describing a flowcell. While flowcells are not
-# modeled directly in sequencescape they can be approximated by a sequencing
+# modeled directly in Sequencescape they can be approximated by a sequencing
 # {Batch}
 class Api::Messages::FlowcellIO < Api::Base
   MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }
