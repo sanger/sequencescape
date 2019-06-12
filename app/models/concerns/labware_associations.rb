@@ -51,4 +51,12 @@ module LabwareAssociations
     end
     alias_method :find_from_barcode, :find_by_barcode
   end
+
+  def parent
+    parents.first
+  end
+
+  def child
+    children.last
+  end
 end

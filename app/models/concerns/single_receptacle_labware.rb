@@ -10,6 +10,7 @@ module SingleReceptacleLabware
     AssetRefactor.when_refactored do
       has_one :receptacle, foreign_key: :labware_id, inverse_of: :labware, dependent: :destroy
       has_one :primary_aliquot, through: :receptacle
+      has_one :source_request, through: :receptacle
 
       # Using a has_many through here complicates attempts to build aliquots
       # through the association, as it results in a
@@ -29,6 +30,8 @@ module SingleReceptacleLabware
                 :primary_aliquot_if_unique,
                 :source_request,
                 to: :receptacle
+
+      scope :include_aliquots_for_api, ->() { includes(receptacle: { aliquots: Io::Aliquot::PRELOADS }) }
     end
   end
 

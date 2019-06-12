@@ -1,5 +1,8 @@
 require 'aasm'
 
+# A Request represents work which needs to be done, either to fulfil a customers
+# needs {CustomerRequest} or for internal reasons {SystemRequest}.
+# The progress of a request is tracked through its {Request::Statemachine state machine}.
 class Request < ApplicationRecord
   # Include
   include ModelExtensions::Request
@@ -86,6 +89,13 @@ class Request < ApplicationRecord
   # Only actively used by poolable requests, but here to help with eager loading
   has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
   has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    has_one :target_labware, through: :target_asset, source: :labware
+    has_one :source_labware, through: :asset, source: :labware
+  end
 
   convert_labware_to_receptacle_for :asset, :target_asset
 
@@ -442,11 +452,27 @@ class Request < ApplicationRecord
     self.initial_project_id = project_id
   end
 
-  def submission_plate_count
-    submission.requests
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    def submission_plate_count
+      submission.requests
+              .where(request_type_id: request_type_id)
+              .joins(:source_labware)
+              .distinct
+              .count('labware.id')
+    end
+  end
+
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def submission_plate_count
+      submission.requests
               .where(request_type_id: request_type_id)
               .joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id')
               .count('DISTINCT(spca.container_id)')
+    end
   end
 
   def update_responsibilities!

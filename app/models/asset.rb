@@ -140,15 +140,6 @@ class Asset < ApplicationRecord
     self.name = new_name
   end
 
-  # TODO: unify with parent/children
-  def parent
-    parents.first
-  end
-
-  def child
-    children.last
-  end
-
   def display_name
     name.presence || "#{sti_type} #{id}"
   end

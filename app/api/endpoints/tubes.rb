@@ -4,7 +4,7 @@ class ::Endpoints::Tubes < ::Core::Endpoint::Base
   end
 
   instance do
-    has_many(:requests, json: 'requests', to: 'requests')
+    has_many(:requests_as_source, json: 'requests', to: 'requests')
     belongs_to(:purpose, json: 'purpose')
     belongs_to(:custom_metadatum_collection, json: 'custom_metadatum_collection', to: 'custom_metadatum_collection')
 

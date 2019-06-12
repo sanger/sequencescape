@@ -121,10 +121,6 @@ class Receptacle
     end
   end
 
-  def default_state
-    nil
-  end
-
   def compatible_qc_state
     QC_STATE_ALIASES.fetch(qc_state, qc_state) || ''
   end

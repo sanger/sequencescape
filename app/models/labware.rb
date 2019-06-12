@@ -17,5 +17,9 @@ class Labware < Asset
     has_many :receptacles, dependent: :restrict_with_exception
     has_many :messengers, as: :target, inverse_of: :target, dependent: :destroy
     has_many :samples, through: :receptacles
+    has_many :studies, ->() { distinct }, through: :receptacles
+    has_many :projects, ->() { distinct }, through: :receptacles
+    has_many :requests_as_source, through: :receptacles
+    has_many :requests_as_target, through: :receptacles
   end
 end

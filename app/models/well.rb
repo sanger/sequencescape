@@ -224,8 +224,12 @@ class Well < Receptacle
     outer_requests.order(id: :desc).find_by(submission_id: submission_id)
   end
 
-  def labware
-    plate
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def labware
+      plate
+    end
   end
 
   def qc_results_by_key
