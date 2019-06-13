@@ -32,6 +32,11 @@ class SequencingRequest < CustomerRequest
     validates_numericality_of :fragment_size_required_to, integer_only: true, greater_than: 0, allow_nil: true
   end
 
+  def on_started
+    super
+    transfer_aliquots
+  end
+
   def order=(_)
     # Do nothing
   end

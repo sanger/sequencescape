@@ -45,7 +45,10 @@ module Limber::Helper
         rt.acceptable_plate_purposes = Purpose.where(name: @default_purposes)
       end
 
-      @library_types.each { |name| rt.library_types.find_or_create_by!(name: name) }
+      rt_lts = rt.library_types.pluck(:name)
+      @library_types.each do |name|
+        rt.library_types << LibraryType.find_or_create_by!(name: name) unless rt_lts.include?(name)
+      end
 
       return true if rt.request_type_validators.where(request_option: 'library_type').exists?
 
