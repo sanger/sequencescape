@@ -111,7 +111,6 @@ FactoryBot.define do
     end
 
     factory(:library_tube_with_barcode) do
-      sequence(:barcode) { |i| i }
       after(:build) do |library_tube|
         library_tube.aliquots.build(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard', library: library_tube)
       end

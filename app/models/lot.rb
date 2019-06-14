@@ -17,6 +17,7 @@ class Lot < ApplicationRecord
   belongs_to :lot_type
   belongs_to :user
   belongs_to :template, polymorphic: true
+  belongs_to :tag_layout_template, ->(lot) { lot.template_type == 'TagLayoutTemplate' ? all : none }, foreign_key: :template_id, inverse_of: false
 
   has_many :qcables, inverse_of: :lot
 
