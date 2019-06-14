@@ -4,6 +4,7 @@ module Aker
     has_many :samples, dependent: :destroy
 
     belongs_to :asset, class_name: 'Receptacle'
+    convert_labware_to_receptacle_for :asset, :target_asset
 
     validates :barcode, presence: true, uniqueness: { scope: :address }
     validate :not_change_barcode

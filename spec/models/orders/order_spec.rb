@@ -95,8 +95,8 @@ RSpec.describe Order, type: :model do
     sample.sample_metadata.update(supplier_name: 'new_name')
     expect(order.reload.not_ready_samples.count).to eq 4
 
-    no_manifest_sample = create :sample, assets: [asset]
-    order = create :order, assets: no_manifest_sample.assets
+    sample_tube_without_manifest = create_list :sample_tube, 1
+    order = create :order, assets: sample_tube_without_manifest
     expect(order.all_samples).not_to be_empty
     expect(order.not_ready_samples).to be_empty
   end

@@ -69,6 +69,10 @@ module SampleManifest::LibraryBehaviour
     def acceptable_purposes
       Purpose.none
     end
+
+    def default_purpose
+      Tube::Purpose.standard_library_tube
+    end
   end
 
   RapidCore = Core

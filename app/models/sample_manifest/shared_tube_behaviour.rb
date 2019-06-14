@@ -7,9 +7,9 @@ module SampleManifest::SharedTubeBehaviour
     count.times do
       tube = purpose.create!
       sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
-      SampleManifestAsset.create(sanger_sample_id: sanger_sample_id,
-                                 asset: tube,
-                                 sample_manifest: self)
+      SampleManifestAsset.create!(sanger_sample_id: sanger_sample_id,
+                                  asset: tube.receptacle,
+                                  sample_manifest: self)
       tubes << tube
     end
 

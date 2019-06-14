@@ -457,10 +457,10 @@ class Request < ApplicationRecord
   AssetRefactor.when_refactored do
     def submission_plate_count
       submission.requests
-              .where(request_type_id: request_type_id)
-              .joins(:source_labware)
-              .distinct
-              .count('labware.id')
+                .where(request_type_id: request_type_id)
+                .joins(:source_labware)
+                .distinct
+                .count('labware.id')
     end
   end
 
@@ -469,9 +469,9 @@ class Request < ApplicationRecord
   AssetRefactor.when_not_refactored do
     def submission_plate_count
       submission.requests
-              .where(request_type_id: request_type_id)
-              .joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id')
-              .count('DISTINCT(spca.container_id)')
+                .where(request_type_id: request_type_id)
+                .joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id')
+                .count('DISTINCT(spca.container_id)')
     end
   end
 

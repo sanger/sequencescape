@@ -39,7 +39,7 @@ RSpec.describe StockAssetsController do
 
       context 'with stock tube already existing' do
         before do
-          batch.reload.requests.each { |r| r.target_asset.parents << create(:stock_library_tube) }
+          batch.reload.requests.each { |r| r.target_asset.labware.parents << create(:stock_library_tube) }
         end
 
         let(:warning) { 'Stock tubes have already been created' }

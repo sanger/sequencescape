@@ -140,7 +140,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
           end
 
           it 'returns the model for the well_attribute' do
-            expect(mapping.send(:model_for_table, :well_attribute)).to eq(tube)
+            expect(mapping.send(:model_for_table, :well_attribute)).to eq(tube.receptacle)
           end
         end
 

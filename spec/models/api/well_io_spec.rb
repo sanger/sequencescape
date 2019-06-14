@@ -13,7 +13,6 @@ RSpec.describe Api::WellIO, type: :model do
       {
         'uuid' => subject.uuid,
         'internal_id' => subject.id,
-        'name' => nil,
         'display_name' => 'DN1S:A1',
         'gel_pass' => nil,
         'concentration' => 23.2,
@@ -53,7 +52,6 @@ RSpec.describe Api::WellIO, type: :model do
       {
         'uuid' => subject.uuid,
         'internal_id' => subject.id,
-        'name' => nil,
         'display_name' => 'DN1S:A1',
         'gel_pass' => nil,
         'concentration' => 23.2,

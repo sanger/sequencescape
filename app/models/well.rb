@@ -42,6 +42,8 @@ class Well < Receptacle
   has_many :customer_requests, class_name: 'CustomerRequest', foreign_key: :asset_id
   has_many :outer_requests, through: :stock_wells, source: :customer_requests
   has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
+  has_many :qc_reports, through: :qc_metrics
+  has_many :reported_criteria, through: :qc_reports, source: :product_criteria
   # has_many due to eager loading requirement and can't have a has one through a has_many
   has_many :latest_child_well, ->() { limit(1).order('asset_links.descendant_id DESC').where(assets: { sti_type: 'Well' }) }, class_name: 'Well', through: :links_as_parent, source: :descendant
   has_many :target_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
@@ -101,23 +103,32 @@ class Well < Receptacle
   }
   scope :include_map, -> { includes(:map) }
   scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
-  scope :on_plate_purpose, ->(purposes) {
-    joins(:plate)
-      .where(plates_assets: { plate_purpose_id: purposes })
-  }
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    scope :on_plate_purpose, ->(purposes) { joins(:plate).where(plates_assets: { plate_purpose_id: purposes }) }
+  end
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
+  end
   scope :for_study_through_aliquot, ->(study) {
     joins(:aliquots)
       .where(aliquots: { study_id: study })
   }
-  scope :without_report, ->(product_criteria) {
-    joins([
-      'LEFT OUTER JOIN qc_metrics AS wr_qcm ON wr_qcm.asset_id = assets.id',
-      'LEFT OUTER JOIN qc_reports AS wr_qcr ON wr_qcr.id = wr_qcm.qc_report_id',
-      'LEFT OUTER JOIN product_criteria AS wr_pc ON wr_pc.id = wr_qcr.product_criteria_id'
-    ])
-      .group('assets.id')
-      .having('NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)', product_criteria.product_id, product_criteria.stage)
+
+  scope :with_report, ->(product_criteria) {
+    joins(:reported_criteria).where(product_criteria: {
+                                      product_id: product_criteria.product_id,
+                                      stage: product_criteria.stage
+                                    })
   }
+
+  scope :without_report, ->(product_criteria) {
+    where.not(id: Well.with_report(product_criteria))
+  }
+
   scope :stock_wells_for, ->(wells) {
     joins(:target_well_links)
       .where(well_links: { target_well_id: [wells].flatten.map(&:id) })
@@ -333,12 +344,6 @@ class Well < Receptacle
 
   # def map_description
   delegate :description, to: :map, prefix: true, allow_nil: true
-
-  def create_child_sample_tube
-    Tube::Purpose.standard_sample_tube.create!(map: map, aliquots: aliquots.map(&:dup)).tap do |sample_tube|
-      AssetLink.create_edge(self, sample_tube)
-    end
-  end
 
   def qc_data
     { pico: get_pico_pass,

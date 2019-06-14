@@ -42,6 +42,7 @@ class ExtractionAttribute < ApplicationRecord
 
   def find_resources(attr_well, attr_well_uuid_key)
     return unless attr_well
+
     Uuid.find_by(external_id: attr_well[attr_well_uuid_key]).resource if attr_well[attr_well_uuid_key]
   end
 

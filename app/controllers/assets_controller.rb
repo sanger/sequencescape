@@ -240,13 +240,14 @@ class AssetsController < ApplicationController
       redirect_to action: 'find_by_barcode'
       return
     else
-      @asset = Asset.find_from_barcode(barcode)
+      @asset = Labware.find_from_barcode(barcode)
       redirect_to action: 'find_by_barcode', error: "Unable to find anything with this barcode: #{barcode}" if @asset.nil?
     end
   end
 
   private
 
+  # Receptacle, as we're about to request some stuff
   def prepare_asset
     @asset = Receptacle.find(params[:id])
   end

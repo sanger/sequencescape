@@ -1,13 +1,14 @@
 require 'active_support'
 
 def create_submission_of_assets(template, assets, request_options = {})
-  template.create_with_submission!(
+  submission = template.create_with_submission!(
     user: FactoryBot.create(:user),
     study: FactoryBot.create(:study),
     project: FactoryBot.create(:project),
     assets: assets,
     request_options: request_options
-  ).submission.built!
+  ).submission
+  submission.built!
   step 'all pending delayed jobs are processed'
 end
 
@@ -79,7 +80,7 @@ def work_pipeline_for(submissions, name, template = nil)
   final_plate_type = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find #{name.inspect} plate type"
   template       ||= TransferTemplate.find_by(name: 'Pool wells based on submission') or raise StandardError, 'Cannot find pooling transfer template'
 
-  source_plates = submissions.map { |submission| submission.requests.first.asset.plate }.uniq
+  source_plates = submissions.map { |submission| submission.requests.first!.asset.plate }.uniq
   raise StandardError, "Submissions appear to come from non-unique plates: #{source_plates.inspect}" unless source_plates.size == 1
 
   source_plate = source_plates.first

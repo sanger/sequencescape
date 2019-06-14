@@ -70,7 +70,7 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
       tube.aker_barcode = params[:barcode]
       tube.save!
       container = Aker::Factories::Container.create(params)
-      expect(container.asset).to eq(tube)
+      expect(container.asset).to eq(tube.receptacle)
     end
   end
 

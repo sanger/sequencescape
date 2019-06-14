@@ -93,14 +93,6 @@ class Asset < ApplicationRecord
   scope :without_children, -> { where.not(id: AssetLink.where(direct: true).select(:ancestor_id)) }
   scope :include_plates_with_children, ->(filter) { filter ? all : without_children }
 
-  # Named scope for search by query string behaviour
-  scope :for_search_query, ->(query) {
-    where.not(sti_type: 'Well').where('assets.name LIKE :name', name: "%#{query}%").includes(:barcodes)
-         .or(where.not(sti_type: 'Well').with_safe_id(query).includes(:barcodes))
-  }
-
-  scope :for_lab_searches_display, -> { includes(:barcodes, requests: [:pipeline, :batch]).order('requests.pipeline_id ASC') }
-
   def summary_hash
     {
       asset_id: id

@@ -51,7 +51,14 @@ module ModelExtensions::Order
       scope :include_assets, -> { includes(assets: [:uuid_object, { aliquots: Io::Aliquot::PRELOADS }]) }
 
       has_many :submitted_assets, -> { joins(:asset) }, inverse_of: :order
-      has_many :assets, through: :submitted_assets, before_add: :validate_new_record
+      has_many :assets, through: :submitted_assets, before_add: :validate_new_record do
+        def <<(associated)
+          return super(associated) if associated.is_a?(Receptacle)
+
+          Rails.logger.warn("#{associated.class.name} passed to order.assets")
+          super(associated&.receptacle)
+        end
+      end
 
       scope :that_submitted_asset_id, ->(asset_id) {
         where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets)

@@ -71,7 +71,7 @@ class Pooling
   def find_source_assets
     @assets_not_in_sqsc = []
     barcodes.map do |barcode|
-      asset = Asset.find_from_any_barcode(barcode)
+      asset = Labware.find_from_any_barcode(barcode)
       @assets_not_in_sqsc << barcode unless asset.present?
       asset
     end.compact.uniq

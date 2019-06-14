@@ -18,6 +18,8 @@ class QcResult < ApplicationRecord
   belongs_to :asset, optional: false, class_name: 'Receptacle'
   belongs_to :qc_assay, optional: true
 
+  convert_labware_to_receptacle_for :asset, :target_asset
+
   has_many :samples, through: :asset, source: :samples
   has_many :studies, through: :asset
 

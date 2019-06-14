@@ -58,8 +58,8 @@ RSpec.describe SearchesController do
           expect(assigns(:samples)).to include(sample_with_accession_number)
         end
 
-        it 'finds assets by name' do
-          expect(assigns(:assets)).to include(asset)
+        it 'finds labware by name' do
+          expect(assigns(:labware)).to include(asset)
         end
 
         it 'finds asset groups by name' do

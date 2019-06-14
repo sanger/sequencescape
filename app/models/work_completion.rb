@@ -23,7 +23,7 @@ class WorkCompletion < ApplicationRecord
   # The user who performed the state change
   belongs_to :user, optional: false
   # The plate on which requests were completed
-  belongs_to :target, class_name: 'Asset', optional: false
+  belongs_to :target, class_name: 'Labware', optional: false
   # The submissions which were passed. Mainly kept for auditing
   # purposes
   has_many :work_completions_submissions, dependent: :destroy

@@ -103,6 +103,8 @@ class Receptacle
   AssetRefactor.when_refactored do
     delegate :human_barcode, :machine_bracode, to: :labware
     delegate :asset_type_for_request_types, to: :labware
+    delegate :has_stock_asset?, to: :labware
+    delegate :children, to: :labware
   end
 
   # Returns the map_id of the first and last tag in an asset
@@ -190,10 +192,6 @@ class Receptacle
   # Contained samples also works on eg. plate
   alias_attribute :contained_samples, :samples
 
-  def name_for_label
-    primary_sample&.shorten_sanger_sample_id.presence || name
-  end
-
   # We only support wells for the time being
   def latest_stock_metrics(_product, *_args)
     []
@@ -214,6 +212,10 @@ class Receptacle
 
     def external_identifier
       name
+    end
+
+    def update_from_qc(qc_result)
+      Tube::AttributeUpdater.update(self, qc_result)
     end
   end
 

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe ExternalReleaseEvent do
   describe '::create_for_asset!' do
-    subject { described_class.create_for_asset!(asset, sendmail) }
+    subject { described_class.create_for_asset!(asset.receptacle, sendmail) }
 
     let(:asset) { build :lane, aliquots: aliquots, external_release: true }
     let(:aliquots) { [study_a, study_a, study_b].map { |s| build :aliquot, study: s } }
@@ -24,7 +24,7 @@ describe ExternalReleaseEvent do
 
       before do
         expect(EventfulMailer).to receive(:confirm_external_release_event)
-          .with(expected_recipients, asset, expected_message, nil, 'No Milestone')
+          .with(expected_recipients, asset.receptacle, expected_message, nil, 'No Milestone')
           .and_call_original
       end
 

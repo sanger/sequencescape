@@ -18,7 +18,7 @@ class Asset::Finder
 
   def resolve
     barcodes_wells.flat_map do |labware_barcode, well_locations|
-      labware = Asset.find_by_barcode(labware_barcode)
+      labware = Labware.find_by_barcode(labware_barcode)
       raise InvalidInputException, "No labware found for barcode #{labware_barcode}." if labware.nil?
 
       well_array = (well_locations || '').split(',').reject(&:blank?).map(&:strip)

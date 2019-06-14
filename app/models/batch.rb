@@ -60,8 +60,6 @@ class Batch < ApplicationRecord
     end
   }
 
-  scope :for_lab_searches_display, -> {}
-
   scope :includes_for_ui,    -> { limit(5).includes(:user, :assignee, :pipeline) }
   scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
   scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }

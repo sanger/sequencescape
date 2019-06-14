@@ -45,6 +45,10 @@ module SampleManifest::SampleTubeBehaviour
       [Tube::Purpose.standard_sample_tube, Tube::Purpose.find_by(name: 'saphyr')]
     end
 
+    def default_purpose
+      Tube::Purpose.standard_sample_tube
+    end
+
     def updated_by!(user, samples)
       # Does nothing at the moment
     end

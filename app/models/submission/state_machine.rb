@@ -1,5 +1,18 @@
 require 'aasm'
 
+#
+# Included in submission to add its state-machine
+#
+# Uses the following states:
+# building - Initial state. Indicates the user is preparing the submissions
+# pending - The submission has been finalized by the user and is awaiting processing.
+#           Entry into this state queues the submission for processing by the {SubmissionBuilderJob}
+# processing - The delayed job has picked up the submission and is currently building it
+# ready - The submission has been processed and is ready for work
+# failed - The {SubmissionBuilderJob} failed and the submission has not been processed
+# cancelled - The submission was made in error or is no longer needed. Entry into this
+#             state will cancel all requests in the submission.
+#
 module Submission::StateMachine
   def self.extended(base)
     base.class_eval do
