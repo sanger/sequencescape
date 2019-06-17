@@ -41,8 +41,8 @@ module StudyReport::StudyDetails
       'Status', 'Study', 'Supplier', 'Sanger Sample Name', 'Supplier Sample Name', 'Plate', 'Well', 'Supplier Volume',
       'Supplier Gender', 'Concentration', 'Initial Volume', 'Current Volume', 'Total Micrograms', 'Sequenome Count',
       'Sequenome Gender', 'Pico', 'Gel', 'Qc Status', 'QC started date', 'Pico date', 'Gel QC date', 'Seq stamp date',
-      'Genotyping Status', 'Genotyping Chip', 'Genotyping Infinium Barcode', 'Genotyping Barcode', 'Genotyping Well',
-      'Cohort', 'Country of Origin', 'Geographical Region', 'Ethnicity', 'DNA Source', 'Is Resubmitted', 'Control', 'Is in Fluidigm'
+      'Cohort', 'Country of Origin', 'Geographical Region',
+      'Ethnicity', 'DNA Source', 'Is Resubmitted', 'Control', 'Is in Fluidigm'
     ]
   end
 
@@ -67,7 +67,6 @@ module StudyReport::StudyDetails
           asset_progress_data[:supplier_gender],
           asset_progress_data[:concentration],
           asset_progress_data[:initial_volume],
-          # asset_progress_data[:measured_volume],
           asset_progress_data[:current_volume],
           asset_progress_data[:quantity],
           asset_progress_data[:sequenom_count],
@@ -79,11 +78,6 @@ module StudyReport::StudyDetails
           asset_progress_data[:pico_date],
           asset_progress_data[:gel_qc_date],
           asset_progress_data[:sequenom_stamp_date],
-          asset_progress_data[:genotyping_status],
-          asset_progress_data[:genotyping_plate_purpose],
-          asset_progress_data[:genotyping_infinium_barcode],
-          asset_progress_data[:genotyping_barcode],
-          asset_progress_data[:genotyping_well],
           asset_progress_data[:cohort],
           asset_progress_data[:country_of_origin],
           asset_progress_data[:geographical_region],

@@ -33,7 +33,7 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
 
   def build_asset_links
     destinations.each do |destination|
-      AssetLink.create_edge!(source, destination)
+      AssetLink.create_edge(source, destination)
     end
   end
 end

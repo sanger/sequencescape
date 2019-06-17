@@ -5,10 +5,13 @@
 # but for multiplexed requests it usually helps define which assets will get
 # pooled together at multiplexing. There are two Order subclasses which are important
 # when it comes to submissions:
-# LinearSubmission => Most orders fall in this category. If the submission is multiplexed
+#
+# {LinearSubmission}: Most orders fall in this category. If the submission is multiplexed
 #                     results in a single pool for the whole submissions.
-# FlexibleSubmission => Allows request types to specify their own pooling rules, which are
+#
+# {FlexibleSubmission}: Allows request types to specify their own pooling rules, which are
 #                       used to define pools at the submission level.
+#
 # While orders are mostly in charge of building their own requests, Submissions trigger this
 # behaviour, and handle multiplexing between orders.
 class Submission < ApplicationRecord

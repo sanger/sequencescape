@@ -1,6 +1,7 @@
 require 'active_support'
 
 def create_submission_of_assets(template, assets, request_options = {})
+  Delayed::Worker.delay_jobs = false
   submission = template.create_with_submission!(
     user: FactoryBot.create(:user),
     study: FactoryBot.create(:study),
@@ -9,7 +10,7 @@ def create_submission_of_assets(template, assets, request_options = {})
     request_options: request_options
   ).submission
   submission.built!
-  step 'all pending delayed jobs are processed'
+  Delayed::Worker.delay_jobs = true
 end
 
 Given '{well_range} of {plate_uuid} have been {submitted_to}' do |range, plate, template|

@@ -26,7 +26,6 @@
       <td class="item">Created at:</td>
       <td><strong><%=h @sample.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
     </tr>
-     <%= render partial: "shared/external_properties", locals: {item: @sample } %>
   </table>
   <div id="template_form_body">
       <%= render(partial: 'shared/metadata/show/sample', locals: { sample: @sample }) %>

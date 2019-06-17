@@ -44,8 +44,6 @@ class Well < Receptacle
   has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
   has_many :qc_reports, through: :qc_metrics
   has_many :reported_criteria, through: :qc_reports, source: :product_criteria
-  # has_many due to eager loading requirement and can't have a has one through a has_many
-  has_many :latest_child_well, ->() { limit(1).order('asset_links.descendant_id DESC').where(assets: { sti_type: 'Well' }) }, class_name: 'Well', through: :links_as_parent, source: :descendant
   has_many :target_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
   has_many :target_wells, through: :target_well_links, source: :target_well
 
@@ -354,11 +352,6 @@ class Well < Receptacle
 
   def buffer_required?
     get_buffer_volume > 0.0
-  end
-
-  # If we eager load, things fair badly, and we end up returning all children.
-  def find_latest_child_well
-    latest_child_well.max_by(&:id)
   end
 
   def display_name

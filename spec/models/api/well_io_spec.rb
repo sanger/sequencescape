@@ -30,9 +30,7 @@ RSpec.describe Api::WellIO, type: :model do
         'plate_barcode_prefix' => 'DN',
         'sample_uuid' => sample.uuid,
         'sample_internal_id' => sample.id,
-        'sample_name' => sample.name,
-        'genotyping_status' => nil,
-        'genotyping_snp_plate_id' => ''
+        'sample_name' => sample.name
       }
     }
 

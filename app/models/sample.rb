@@ -196,13 +196,6 @@ class Sample < ApplicationRecord
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
 
-  # @see ExternalProperties
-  # Was just used for the genotyping_done key which hasn't been updated since 2012
-  # It is exposed in the {StudyReport old style study report} but given the data hasn't
-  # been populated for 7 years its usefulness is questionable.
-  # Confirming with SSRs.
-  has_many :external_properties, as: :propertied, dependent: :destroy
-
   belongs_to :sample_manifest, inverse_of: :samples
 
   has_many_lab_events
@@ -258,8 +251,6 @@ class Sample < ApplicationRecord
     # of numbers seems to massively increase the query length.
     where('name LIKE :wild OR id IN (:sm_ids) OR id = :qid', wild: "%#{query}%", sm_ids: md, query: query, qid: query.to_i)
   }
-
-  scope :non_genotyped, -> { where("samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )") }
 
   scope :for_plate_and_order, ->(plate_id, order_id) {
     joins([
@@ -337,26 +328,6 @@ class Sample < ApplicationRecord
     return suitable_study.accession_service if suitable_study
 
     UnsuitableAccessionService.new(services[highest_priority])
-  end
-
-  # Retrieves information from a cache of the old SNP database.
-  # Hasn't been updated since 2012.
-  def genotyping_done
-    # that will load all the properties , which is faster if we access more than one property
-    # and if we pre-load them with eager loaging
-    external_properties.each do |property|
-      return property.value if property.key == 'genotyping_done'
-    end
-    nil
-  end
-
-  def genotyping_snp_plate_id
-    s = genotyping_done
-    if s && s =~ /:/
-      s.split(':').second.to_i # take the firt integer
-    else # old value
-      ''
-    end
   end
 
   def accession
