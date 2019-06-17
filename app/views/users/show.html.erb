@@ -25,7 +25,7 @@
  ]
 end %>
 
-<% logged_in_user? do -%>
+<% logged_in_user?(@user) do -%>
   <%= panel(:info, title:'API access') do %>
     <dl>
       <dt>API Key</dt>
