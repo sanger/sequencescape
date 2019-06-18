@@ -28,7 +28,7 @@ class TransferRequestCollection < ApplicationRecord
   # The api is terrible at handling nested has_many relationships
   # This caches all out uuids in one query, and extracts the ids
   def transfer_requests_io=(parameters)
-    uuids = parameters.reduce([]) { |collection, transfer| collection.concat(transfer.values) }
+    uuids = parameters.flat_map(&:values).select { |v| Uuid::ValidRegexp.match? v }
     uuid_cache = Uuid.where(external_id: uuids).pluck(:external_id, :resource_type, :resource_id).each_with_object({}) do |uuid_item, store|
       store[uuid_item[0, 2]] = uuid_item[-1]
     end
