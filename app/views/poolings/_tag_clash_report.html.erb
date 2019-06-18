@@ -1,0 +1,27 @@
+
+<% if report.tag_clash? %>
+  <%= panel(:error_report) do %>
+    <h2>Tag clash report</h2>
+    <dl>
+      <% report.clashes.each do |clash| %>
+        <dt>i7 <%= clash.i7_oligo %> i5 <%= clash.i5_oligo %></dt>
+        <dd class="clash-description">
+          <ul>
+            <% clash.clashes.each do |clash_aliquot| %>
+              <li>
+                <dl>
+                  <dt>Sample</dt>
+                  <dd><%= link_to clash_aliquot.sample.friendly_name, clash_aliquot.sample %></dd>
+                  <dt>Library</dt>
+                  <dd><%= link_to(clash_aliquot.library.external_identifier, asset_path(clash_aliquot.library)) if clash_aliquot.library %></dd>
+                  <dt>Scanned Tube</dt>
+                  <dd><%= link_to(clash_aliquot.asset.human_barcode, asset_path(clash_aliquot.asset)) %></dd>
+                </dl>
+              </li>
+            <% end %>
+          </ul>
+        </dd>
+      <% end %>
+    </dl>
+  <% end %>
+<% end %>

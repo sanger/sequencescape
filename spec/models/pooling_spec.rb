@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Pooling, type: :model do
+describe Pooling, type: :model, poolings: true do
   let(:empty_lb_tube) { create :empty_library_tube, barcode: 1 }
   let(:untagged_lb_tube1) { create :library_tube, barcode: 2 }
   let(:untagged_lb_tube2) { create :library_tube, barcode: 3 }
@@ -16,7 +16,7 @@ describe Pooling, type: :model do
 
     it 'is not valid without source_assets' do
       expect(pooling).not_to be_valid
-      expect(pooling.errors.full_messages).to include 'Source assets were not scanned or were not found in sequencescape'
+      expect(pooling.errors.full_messages).to include 'Source assets were not scanned or were not found in Sequencescape'
     end
   end
 
@@ -26,9 +26,9 @@ describe Pooling, type: :model do
     it 'is not valid if tubes are not in sqsc, if tubes do not have at least one aliquot or if there is a tag clash' do
       expect(pooling).not_to be_valid
       expect(pooling.errors.messages.count).to eq 2
-      expect(pooling.errors.full_messages).to include 'Source assets with barcode(s) -1, -2 were not found in sequencescape'
+      expect(pooling.errors.full_messages).to include 'Source assets with barcode(s) -1, -2 were not found in Sequencescape'
       expect(pooling.errors.full_messages).to include "Source assets with barcode(s) #{empty_lb_tube.ean13_barcode} do not have any aliquots"
-      expect(pooling.errors.full_messages).to include 'Tags combinations Same tags  are used on rows 2, 3.'
+      expect(pooling.errors.full_messages).to include 'Tags combinations are not compatible and result in a tag clash'
     end
   end
 
