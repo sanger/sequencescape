@@ -5724,7 +5724,7 @@ Style/ZeroLengthPredicate:
     - 'features/support/step_definitions/samples_steps.rb'
     - 'test/shoulda_macros/sanger_macros/resource_test.rb'
 
-# Offense count: 10565
+# Offense count: 10620
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
