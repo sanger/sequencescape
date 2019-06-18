@@ -14,7 +14,6 @@ class Event < ApplicationRecord
 
   private
 
-  include Event::AssetDescriptorUpdateEvent
   include Event::RequestDescriptorUpdateEvent
 
   def update_request

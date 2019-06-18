@@ -1,3 +1,4 @@
+# Controls API V1 IO for Plate
 class Io::Plate < Io::Asset
   set_model_for_input(::Plate)
   set_json_root(:plate)
@@ -11,7 +12,6 @@ class Io::Plate < Io::Asset
                                           state  => state
                                       iteration  => iteration
                                           pools  => pools
-                                  pre_cap_groups => pre_cap_groups
                                             role => label.prefix
                                     purpose.name => label.text
                                         priority => priority

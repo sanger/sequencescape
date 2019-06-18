@@ -67,18 +67,6 @@ module Tasks::SetDescriptorsHandler
               current_user.lab_events << event
               request.lab_events << event
 
-              if params[:asset]
-                params[:asset].each do |_key, descriptors|
-                  asset = Asset.new
-                  asset.sti_type = Family.find(descriptors[:family_id]).name
-                  descriptors.each_pair do |field, value|
-                    asset.add_descriptor Descriptor.new(name: field, value: value)
-                  end
-                  asset.save
-                  asset.parents << request.asset
-                end
-              end
-
               unless request.asset.try(:resource)
                 EventSender.send_request_update(request.id, 'update', "Passed: #{@task.name}")
               end

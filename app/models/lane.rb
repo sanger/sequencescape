@@ -2,6 +2,12 @@ class Lane < Receptacle
   include Api::LaneIO::Extensions
   include AliquotIndexer::Indexable
 
+  # Not entirely sure this is correct, as really flowcells are the labware,
+  # but we do rely on asset link to Lane. Currently aware of:
+  # - Linking in {SpikedBuffer}, although this could be replaced with an actual transfer
+  # - Finding lanes for a given plate on eg. the {PlateSummariesController plate summary}
+  include AssetRefactor::Labware::Methods
+
   LIST_REASONS_NEGATIVE = [
     'Failed on yield but sufficient data for experiment',
     'Failed on quality but sufficient data for experiment',
@@ -18,7 +24,7 @@ class Lane < Receptacle
 
   LIST_REASONS = [''] + LIST_REASONS_NEGATIVE + LIST_REASONS_POSITIVE
 
-  SAMPLE_PARTIAL = 'assets/samples_partials/lane_samples'
+  self.sample_partial = 'assets/samples_partials/lane_samples'
 
   extend Metadata
 
@@ -32,6 +38,10 @@ class Lane < Receptacle
   has_many :aliquot_indicies, inverse_of: :lane, class_name: 'AliquotIndex'
 
   scope :for_rebroadcast, -> { includes(requests_as_target: :batch) }
+
+  def labwhere_location
+    nil
+  end
 
   def subject_type
     'lane'
@@ -47,5 +57,11 @@ class Lane < Receptacle
 
   def rebroadcast
     requests_as_target.each { |r| r.batch.try(:rebroadcast) }
+  end
+
+  def external_release_text
+    return 'Unknown' if external_release.nil?
+
+    external_release? ? 'Yes' : 'No'
   end
 end

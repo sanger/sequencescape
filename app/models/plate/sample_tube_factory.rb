@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+# Extracted from {Plate} Used to convert a plate to {SampleTubes}
+class Plate::SampleTubeFactory < SimpleDelegator
+  def create_sample_tubes
+    wells.map(&:create_child_sample_tube)
+  end
+
+  def create_sample_tubes_and_print_barcodes(barcode_printer)
+    sample_tubes = create_sample_tubes
+    print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
+                                           LabelPrinter::Label::PlateToTubes,
+                                           sample_tubes: sample_tubes)
+    print_job.execute
+
+    sample_tubes
+  end
+
+  def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
+    return nil if plates.empty?
+
+    plate_barcodes = plates.map(&:barcode_number)
+    asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.current.to_formatted_s(:sortable)} ", study)
+    plates.each do |plate|
+      factory = Plate::SampleTubeFactory.new(plate)
+      next if factory.wells.empty?
+
+      asset_group.assets << factory.create_sample_tubes_and_print_barcodes(barcode_printer)
+    end
+
+    return nil if asset_group.assets.empty?
+
+    asset_group.save!
+
+    asset_group
+  end
+end

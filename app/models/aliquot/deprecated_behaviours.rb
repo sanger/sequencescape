@@ -5,6 +5,7 @@ module Aliquot::DeprecatedBehaviours
       tag.try(:map_id) || ''
     end
     deprecate :tag_number
+    # Logged calls from: app/controllers/batches_controller.rb:259, _app_views_batches_print_labels_html_erb
 
     # tags and tag have been moved to the appropriate assets.
     # I don't think that they are used anywhere else apart
@@ -15,15 +16,11 @@ module Aliquot::DeprecatedBehaviours
       target_asset.primary_aliquot.try(:tag)
     end
     deprecate :tag
+    # Logged calls from: app/models/aliquot/deprecated_behaviours.rb
 
     delegate :tags, to: :asset
     deprecate :tags
     # ---
-
-    def sample_name?
-      samples.present?
-    end
-    deprecate :sample_name?
 
     def sample_name(default = nil)
       # return the name of the underlying samples
@@ -38,5 +35,6 @@ module Aliquot::DeprecatedBehaviours
       end
     end
     deprecate :sample_name
+    # Logged calls from: _app_views_workflows__set_characterisation_descriptors_html_erb
   end
 end

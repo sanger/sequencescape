@@ -123,7 +123,8 @@ ActiveRecord::Base.transaction do
   end
 
   [
-    { pulldown_requests: ['Illumina-A Shared Library Creation', 'Illumina-A ISC'], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500, 'pre_capture_plex_level' => '8' }, name: 'HTP ISC', label: 'ILA ISC' }
+    { pulldown_requests: ['Illumina-A Shared Library Creation', 'Illumina-A ISC'], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500, 'pre_capture_plex_level' => '8' }, name: 'HTP ISC',
+      label: 'ILA ISC' }
   ].each do |request_type_options|
     defaults = request_type_options[:defaults]
     pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|

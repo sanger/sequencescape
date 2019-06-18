@@ -161,10 +161,6 @@ class Aliquot < ApplicationRecord
     save!
   end
 
-  def clone
-    raise StandardError, 'The Behaviour of clone has changed in Rails 3. Please use dup instead!'
-  end
-
   def matches?(object)
     # Note: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot

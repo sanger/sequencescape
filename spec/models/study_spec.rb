@@ -370,7 +370,8 @@ RSpec.describe Study, type: :model do
       end
 
       it 'not include studies that do not have the correct data release timings' do
-        expect(study_7.study_metadata.update!(data_release_timing: Study::DATA_RELEASE_TIMING_NEVER, data_release_prevention_reason: 'data validity', data_release_prevention_approval: 'Yes', data_release_prevention_reason_comment: 'blah, blah, blah')).to be_truthy
+        expect(study_7.study_metadata.update!(data_release_timing: Study::DATA_RELEASE_TIMING_NEVER, data_release_prevention_reason: 'data validity', data_release_prevention_approval: 'Yes',
+                                              data_release_prevention_reason_comment: 'blah, blah, blah')).to be_truthy
         expect(Study.for_sample_accessioning.count).to eq(4)
       end
 

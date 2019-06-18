@@ -22,7 +22,7 @@ plate_purposes = <<~EOS
     prefix: PD
     target_type: PicoDilutionPlate
   - name: Pico Assay A
-    target_type: PicoAssayPlate
+    target_type: Plate
     prefix: PA
   - name: Infinium_610K
     cherrypickable_target: true
@@ -44,7 +44,7 @@ plate_purposes = <<~EOS
     type: DilutionPlatePurpose
   - name: Pico Assay Plates
   - name: Pico Assay B
-    target_type: PicoAssayPlate
+    target_type: Plate
     prefix: PB
   - name: Gel Dilution Plates
   - name: Pulldown Aliquot

@@ -133,7 +133,9 @@ class ManifestGenerator
     csv_obj << ['Institute Name:', 'WTSI', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
     csv_obj << ['Date:', "#{now.year}-#{now.month}-#{now.day}"]
     csv_obj << ['Comments:', (study.abbreviation).to_s]
-    csv_obj << ['Row', 'Institute Plate Label', 'Well', 'Is Control', 'Institute Sample Label', 'Species', 'Sex', 'Comments', 'Volume (ul)', 'Conc (ng/ul)', 'Extraction Method', 'WGA Method (if Applicable)', 'Mass of DNA used in WGA', 'Parent 1', 'Parent 2', 'Replicate(s)', 'Tissue Source']
+    csv_obj << ['Row', 'Institute Plate Label', 'Well', 'Is Control', 'Institute Sample Label', 'Species', 'Sex',
+                'Comments', 'Volume (ul)', 'Conc (ng/ul)', 'Extraction Method', 'WGA Method (if Applicable)',
+                'Mass of DNA used in WGA', 'Parent 1', 'Parent 2', 'Replicate(s)', 'Tissue Source']
   end
 
   def self.remove_empty_quotes(csv_string)

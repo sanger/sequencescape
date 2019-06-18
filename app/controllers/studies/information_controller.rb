@@ -46,7 +46,7 @@ class Studies::InformationController < ApplicationController
         @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
         @asset_type = Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Receptacle
         @asset_type_name = params.fetch(:asset_type, 'All Assets').underscore.humanize
-        @page_elements = @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
+        @page_elements = @study.assets_through_aliquots.where_is_a?(@asset_type).paginate(page_params)
         render partial: 'asset_progress'
       when 'summary'
         @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)

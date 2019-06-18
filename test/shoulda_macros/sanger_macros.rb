@@ -8,7 +8,7 @@ module Sanger
           dt = described_type
           should "have instance methods #{methods.join(',')}" do
             methods.each do |method|
-              assert dt.instance_methods.include?(method), "Missing instance methods #{method}"
+              assert dt.new.respond_to?(method), "Missing instance methods #{method} on #{dt}"
             end
           end
         end

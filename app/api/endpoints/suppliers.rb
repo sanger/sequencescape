@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for Suppliers
 class ::Endpoints::Suppliers < ::Core::Endpoint::Base
   model do
   end

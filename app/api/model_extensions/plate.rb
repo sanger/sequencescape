@@ -54,6 +54,8 @@ module ModelExtensions::Plate
   end
 
   # Adds pre-capture pooling information, we need to delegate this to the stock plate, as we need all the wells
+  # Currently used in {Transfer::BetweenPlates} to set submission id, we should switch to doing this
+  # directly via Limber with transfer request collections
   def pre_cap_groups
     Request.include_request_metadata.for_pre_cap_grouping_of(self).each_with_object({}) do |request, groups|
       groups[request.group_id] = { wells: request.group_into.split(',') }.tap do |pool_information|

@@ -90,10 +90,6 @@ class Well < Receptacle
     joins(:plate)
       .where(plates_assets: { plate_purpose_id: purposes })
   }
-  scope :for_study_through_sample, ->(study) {
-    joins(aliquots: { sample: :study_samples })
-      .where(study_samples: { study_id: study })
-  }
   scope :for_study_through_aliquot, ->(study) {
     joins(:aliquots)
       .where(aliquots: { study_id: study })

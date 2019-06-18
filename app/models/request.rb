@@ -43,8 +43,14 @@ class Request < ApplicationRecord
   # same as project with study
   belongs_to :initial_study, class_name: 'Study'
   belongs_to :work_order, optional: true
+  # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
+  # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
+  belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :requests_as_target, optional: true
+  belongs_to :asset, class_name: 'Receptacle', inverse_of: :requests, optional: true
+  belongs_to :source_well, class_name: 'Well', foreign_key: :asset_id, optional: true
 
   has_one :order_role, through: :order
+  has_one :_product_line, through: :request_type, source: :product_line
 
   has_many :failures, as: :failable
   has_many :samples, through: :asset, source: :samples
@@ -191,8 +197,6 @@ class Request < ApplicationRecord
     where(request_type_id: request_type)
   }
 
-  scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
-  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
   scope :full_inbox, -> { where(state: %w[pending hold]) }
@@ -284,13 +288,7 @@ class Request < ApplicationRecord
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query) { where(['id=?', query]) }
-
-  scope :find_all_target_asset, ->(target_asset_id) {
-    where(['target_asset_id = ?', target_asset_id.to_s])
-  }
-  scope :for_studies, ->(*studies) {
-    where(initial_study_id: studies)
-  }
+  scope :for_studies, ->(*studies) { where(initial_study_id: studies) }
 
   scope :with_assets_for_starting_requests, -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
@@ -314,11 +312,7 @@ class Request < ApplicationRecord
   delegate :name, to: :request_metadata
 
   delegate :date_for_state, to: :request_events
-
-  delegate :study, :study_id, to: :asset, allow_nil: true
-
   delegate :validator_for, to: :request_type
-
   delegate :role, to: :order_role, allow_nil: true
 
   def self.delegate_validator
@@ -577,7 +571,7 @@ class Request < ApplicationRecord
   end
 
   def product_line
-    request_type.product_line&.name
+    _product_line&.name
   end
 
   def manifest_processed!; end

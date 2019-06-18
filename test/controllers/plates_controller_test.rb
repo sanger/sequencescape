@@ -285,7 +285,8 @@ class PlatesControllerTest < ActionController::TestCase
               @parent_raw_barcode  = @parent_plate.machine_barcode
               @parent_raw_barcode2 = @parent_plate2.machine_barcode
               @parent_raw_barcode3 = @parent_plate3.machine_barcode
-              post :create, params: { plates: { creator_id: @pico_assay_plate_creator.id, barcode_printer: @barcode_printer.id, source_plates: "#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", user_barcode: '2470000100730' } }
+              post :create, params: { plates: { creator_id: @pico_assay_plate_creator.id, barcode_printer: @barcode_printer.id, source_plates: "#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}",
+                                                user_barcode: '2470000100730' } }
             end
 
             should 'change PicoAssayPlate.count by 6' do

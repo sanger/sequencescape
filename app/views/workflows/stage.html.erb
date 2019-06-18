@@ -45,7 +45,6 @@
     <div class="content">
       <div class="info">Required fields are marked with a <%= required_marker %></div>
       <div id="sample"><%= render partial: "descriptors" %></div>
-      <% unless @task.families.empty? -%><%= render partial: "assets" %><% end %>
     </div>
 
     <%= hidden_field_tag "next_stage", "true" %>

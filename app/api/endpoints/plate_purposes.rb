@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for PlatePurposes
 class ::Endpoints::PlatePurposes < ::Core::Endpoint::Base
   model do
     action(:create, to: :standard_create!)

@@ -54,7 +54,7 @@ class ExtractionAttribute < ApplicationRecord
   end
 
   def location_wells
-    target.wells.includes(:map, :sample).index_by(&:map_description)
+    target.wells.includes(:map, :samples, :aliquots).index_by(&:map_description)
   end
 
   def disallow_wells_with_multiple_samples!(destination_well, samples)

@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for Searches
 class ::Endpoints::Searches < ::Core::Endpoint::Base
   module SearchActions
     def search_action(name)

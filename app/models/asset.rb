@@ -1,5 +1,4 @@
 require 'eventful_record'
-require 'external_properties'
 
 # Asset is a very busy class which combines what should probably be two separate concepts:
 # Labware: A physical item which can move round the lab, such as a {Plate} or {Tube}
@@ -21,133 +20,80 @@ require 'external_properties'
 #
 # Some of the above are further subclasses to handle specific behaviours.
 class Asset < ApplicationRecord
-  include StudyReport::AssetDetails
-  include ModelExtensions::Asset
-  include AssetLink::Associations
-  include SharedBehaviour::Named
   include Api::Messages::QcResultIO::AssetExtensions
-
-  # Key/value stores and attributes
-  include ExternalProperties
-  include ActsAsDescriptable
-
   include Uuid::Uuidable
-
-  # Links to other databases
-  include Identifiable
-
   include Commentable
   include Event::PlateEvents
-
-  SAMPLE_PARTIAL = 'assets/samples_partials/blank'
-
-  QC_STATES = [
-    %w[passed pass],
-    %w[failed fail],
-    %w[pending pending],
-    [nil, '']
-  ]
-
-  QC_STATES.reject { |k, _v| k.nil? }.each do |state, qc_state|
-    line = __LINE__ + 1
-    class_eval("
-      def qc_#{qc_state}
-        self.qc_state = #{state.inspect}
-        self.save!
-      end
-    ", __FILE__, line)
-  end
+  include AssetLink::Associations
 
   class_attribute :stock_message_template, instance_writer: false
-  class_attribute :library_prep, instance_writer: false
-
-  class VolumeError < StandardError
-  end
+  # The partial used to render the list of assets on the asset show page
+  class_attribute :sample_partial, instance_writer: false
+  # When set to true, allows assets of this type to be automatically moved
+  # from the asset_group show page
+  class_attribute :automatic_move, instance_writer: false
+  # Determines if the user is presented with the request additional sequencing link
+  class_attribute :sequenceable, instance_writer: false
 
   self.per_page = 500
   self.inheritance_column = 'sti_type'
-  self.library_prep = false
+  self.sample_partial = 'assets/samples_partials/blank'
+  self.automatic_move = false
+  self.sequenceable = false
 
+  # @note Splitting out these associations now can cause issues with a number of issues with eager loading
+  #       so organizing things first while we establish a migration route.
+
+  # Labware based associations
+  has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
+
+  # Receptacle based associations
   has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
   has_many :asset_groups, through: :asset_group_assets
-  has_many :asset_audits
-  has_many :volume_updates, foreign_key: :target_id
-  has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
   has_many :qc_results, dependent: :destroy
-
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   # :requests should go before :events_on_requests, through: :requests
+  belongs_to :map
   has_many :requests
-  has_many :external_library_creation_requests
   has_many :events_on_requests, through: :requests, source: :events, validate: false
   has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
-  has_many :state_changes, foreign_key: :target_id
-
-  # Orders
-  has_many :submitted_assets
-  has_many :orders, through: :submitted_assets
-  has_many :ordered_studies, through: :orders, source: :study
-  has_many :messengers, as: :target, inverse_of: :target
-  has_one :custom_metadatum_collection
   has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
-
-  belongs_to :map
-
   has_many :sample_manifest_assets
   has_many :sample_manifests, through: :sample_manifest_assets
+
+  # Polymorphic associations
+  has_many :messengers, as: :target, inverse_of: :target
 
   delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
 
   extend EventfulRecord
   has_many_events do
     event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)
-    event_constructor(:create_pass!,                   Event::AssetSetQcStateEvent,   :create_updated!)
-    event_constructor(:create_fail!,                   Event::AssetSetQcStateEvent,   :create_updated!)
     event_constructor(:create_state_update!,           Event::AssetSetQcStateEvent,   :create_updated!)
     event_constructor(:create_scanned_into_lab!,       Event::ScannedIntoLabEvent,    :create_for_asset!)
     event_constructor(:create_plate!,                  Event::PlateCreationEvent,     :create_for_asset!)
-    event_constructor(:create_plate_with_date!,        Event::PlateCreationEvent,     :create_for_asset_with_date!)
-    event_constructor(:create_sequenom_stamp!,         Event::PlateCreationEvent,     :create_sequenom_stamp_for_asset!)
-    event_constructor(:create_sequenom_plate!,         Event::PlateCreationEvent,     :create_sequenom_plate_for_asset!)
     event_constructor(:create_gel_qc!,                 Event::SampleLogisticsQcEvent, :create_gel_qc_for_asset!)
-    event_constructor(:create_pico!,                   Event::SampleLogisticsQcEvent, :create_pico_result_for_asset!)
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
-    event_constructor(:updated_fluidigm_plate!, Event::SequenomLoading, :updated_fluidigm_plate!)
+    event_constructor(:updated_fluidigm_plate!,        Event::SequenomLoading,        :updated_fluidigm_plate!)
     event_constructor(:update_gender_markers!,         Event::SequenomLoading,        :created_update_gender_makers!)
     event_constructor(:update_sequenom_count!,         Event::SequenomLoading,        :created_update_sequenom_count!)
   end
   has_many_lab_events
 
   has_one_event_with_family 'scanned_into_lab'
-  has_one_event_with_family 'moved_to_2d_tube'
-
-  delegate :metadata, to: :custom_metadatum_collection
 
   delegate :last_qc_result_for, to: :qc_results
 
   broadcast_via_warren
 
-  after_create :generate_name_with_id, if: :name_needs_to_be_generated?
-
-  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
-
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
 
-  scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
-  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
-
   scope :sorted, ->() { order('map_id ASC') }
-
-  scope :position_name, ->(description, size) {
-    joins(:map).where(description: description, asset_size: size)
-  }
   scope :for_summary, -> { includes(:map, :barcodes) }
-
-  scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
 
   scope :recent_first, -> { order(id: :desc) }
 
@@ -166,8 +112,6 @@ class Asset < ApplicationRecord
   }
 
   scope :for_lab_searches_display, -> { includes(:barcodes, requests: [:pipeline, :batch]).order('requests.pipeline_id ASC') }
-
-  scope :barcode_compatible, -> { includes(:barcodes).references(:barcodes).distinct }
 
   # We accept not only an individual barcode but also an array of them.
   scope :with_barcode, ->(*barcodes) {
@@ -196,6 +140,7 @@ class Asset < ApplicationRecord
     end
   }
 
+  # Very much a Labware method
   class << self
     def find_from_any_barcode(source_barcode)
       if source_barcode.blank?
@@ -203,7 +148,7 @@ class Asset < ApplicationRecord
       elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
         joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode).first # rubocop:disable Rails/FindBy
       else
-        find_from_barcode(source_barcode)
+        find_by_barcode(source_barcode)
       end
     end
 
@@ -219,54 +164,9 @@ class Asset < ApplicationRecord
     }
   end
 
-  def sample_partial
-    self.class::SAMPLE_PARTIAL
-  end
-
-  # to override in subclass
-  def location
-    nil
-  end
-
-  # Assets usually have studies through aliquots, which is only relevant to
-  # Receptacles. This method just ensures all assets respond to studies
-  def studies
-    Study.none
-  end
-
-  def study_ids
-    []
-  end
-
-  # All studies related to this asset
-  def related_studies
-    (ordered_studies + studies).compact.uniq
-  end
-
-  # Returns the request options used to create this asset.  By default assumed to be empty.
-  def created_with_request_options
-    {}
-  end
-
-  def sequenceable?
-    false
-  end
-
   # Returns the type of asset that can be considered appropriate for request types.
   def asset_type_for_request_types
     self.class
-  end
-
-  def tube_name
-    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
-  end
-
-  def study
-    studies.first
-  end
-
-  def study_id
-    study.try(:id)
   end
 
   def ancestor_of_purpose(_ancestor_purpose_id)
@@ -286,40 +186,15 @@ class Asset < ApplicationRecord
     RequestType.where(asset_type: label)
   end
 
-  def scanned_in_date
-    scanned_into_lab_event.try(:content) || ''
-  end
-
-  def create_asset_group_wells(user, params)
-    asset_group = AssetGroup.create(params)
-    asset_group.user = user
-    asset_group.assets = wells
-    asset_group.save!
-
-    # associate sample to study
-    if asset_group.study
-      wells.each do |well|
-        next unless well.sample
-
-        well.sample.studies << asset_group.study
-        well.sample.save!
-      end
-    end
-
-    asset_group
-  end
-
   def role
     stock_plate&.stock_role
   end
 
-  def generate_name_with_id
-    update!(name: "#{name} #{id}")
-  end
-
+  # Assigns name
+  # @note Overridden on subclasses to append the asset id to the name
+  #       via on_create callbacks
   def generate_name(new_name)
     self.name = new_name
-    @name_needs_to_be_generated = library_prep?
   end
 
   # TODO: unify with parent/children
@@ -329,11 +204,6 @@ class Asset < ApplicationRecord
 
   def child
     children.last
-  end
-
-  # Labware reflects the physical piece of plastic corresponding to an asset
-  def labware
-    self
   end
 
   def display_name
@@ -348,45 +218,12 @@ class Asset < ApplicationRecord
     nil
   end
 
-  def compatible_qc_state
-    QC_STATES.assoc(qc_state).try(:last) || qc_state
-  end
-
-  def set_qc_state(state)
-    self.qc_state = QC_STATES.rassoc(state).try(:first) || state
-    save
-    set_external_release(qc_state)
-  end
-
-  def has_been_through_qc?
-    qc_state.present?
-  end
-
-  def set_external_release(state)
-    update_external_release do
-      case
-      when state == 'failed'  then self.external_release = false
-      when state == 'passed'  then self.external_release = true
-      when state == 'pending' then self # Do nothing
-      when state.nil?         then self # TODO: Ignore for the moment, correct later
-      when ['scanned_into_lab'].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
-      else raise StandardError, "Invalid external release state #{state.inspect}"
-      end
-    end
-  end
-
   def assign_relationships(parents, child)
     parents.each do |parent|
       parent.children.delete(child)
       AssetLink.create_edge(parent, self)
     end
     AssetLink.create_edge(self, child)
-  end
-
-  def external_release_text
-    return 'Unknown' if external_release.nil?
-
-    external_release? ? 'Yes' : 'No'
   end
 
   def add_parent(parent)
@@ -402,30 +239,12 @@ class Asset < ApplicationRecord
     ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
   end
 
-  def attach_tag(tag, tag2 = nil)
-    tags = { tag: tag, tag2: tag2 }.compact
-    return if tags.empty?
-    raise StandardError, 'Cannot tag an empty asset'   if aliquots.empty?
-    raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
-
-    aliquots.first.update!(tags)
-  end
-  alias attach_tags attach_tag
-
-  def requests_status(request_type)
-    requests.order('id ASC').where(request_type: request_type).pluck(:state)
-  end
-
   def spiked_in_buffer
     nil
   end
 
   def has_stock_asset?
     false
-  end
-
-  def has_many_requests?
-    Request.find_all_target_asset(id).size > 1
   end
 
   def compatible_purposes
@@ -444,20 +263,6 @@ class Asset < ApplicationRecord
   # By default only barcodeable assets generate barcodes
   def generate_barcode
     nil
-  end
-
-  # Returns nil because assets really don't have barcodes!
-  def barcode_type
-    nil
-  end
-
-  def automatic_move?
-    false
-  end
-
-  # We only support wells for the time being
-  def latest_stock_metrics(_product, *_args)
-    []
   end
 
   def contained_samples
@@ -480,7 +285,8 @@ class Asset < ApplicationRecord
   # tables. Raises an exception if no template is configured for a give
   # asset. In most cases this is because the asset is not a stock
   def register_stock!
-    raise StandardError, "No stock template configured for #{self.class.name}. If #{self.class.name} is a stock, set stock_template on the class." if stock_message_template.nil?
+    class_name = self.class.name
+    raise StandardError, "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class." if stock_message_template.nil?
 
     Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
   end
@@ -491,18 +297,5 @@ class Asset < ApplicationRecord
 
   def get_qc_result_value_for(key)
     last_qc_result_for(key).pluck(:value).first
-  end
-
-  private
-
-  def update_external_release
-    external_release_nil_before = external_release.nil?
-    yield
-    save!
-    events.create_external_release!(!external_release_nil_before) unless external_release.nil?
-  end
-
-  def name_needs_to_be_generated?
-    instance_variable_defined?(:@name_needs_to_be_generated) && @name_needs_to_be_generated
   end
 end

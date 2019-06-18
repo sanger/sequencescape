@@ -31,8 +31,6 @@ FactoryBot.define do
   factory :empty_sample_tube, class: SampleTube, traits: [:tube_barcode] do
     name                { generate :asset_name }
     value               { '' }
-    descriptors         { [] }
-    descriptor_fields   { [] }
     qc_state            { '' }
     association(:purpose, factory: :sample_tube_purpose) # { Tube::Purpose.standard_sample_tube }
   end

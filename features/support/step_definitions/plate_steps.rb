@@ -32,8 +32,8 @@ end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   plate = Plate.find_from_barcode('DN' + plate_barcode)
-  well  = FactoryBot.create(:empty_well).tap { |well| well.aliquots.create!(sample: FactoryBot.create(:sample, name: 'Sample1')) }
-  plate.add_and_save_well(well, 0, 0)
+  map = plate.maps.first
+  FactoryBot.create(:untagged_well, plate: plate, map: map)
 end
 
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|

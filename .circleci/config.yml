@@ -171,7 +171,7 @@ jobs:
             bundle exec rake knapsack:cucumber
       - run:
           name: Build coverage
-          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.cukes.json coverage/.resultset.json
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.cukes$CIRCLE_NODE_INDEX.json coverage/.resultset.json
       # collect reports
       - store_test_results:
           path: /tmp/test-results
@@ -181,7 +181,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - tmp/codeclimate.cukes.json
+            - tmp/codeclimate.cukes*.json
   run-rubocop:
     <<: *defaults
     environment:
@@ -214,7 +214,7 @@ jobs:
           name: Upload coverage results to Code Climate
           command: |
             ls ./tmp
-            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json -p 3 -o tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json -p 5 -o tmp/codeclimate.total.json
             ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.total.json
 
 workflows:

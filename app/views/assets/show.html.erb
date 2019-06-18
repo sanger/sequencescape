@@ -44,5 +44,5 @@
 <%= render partial: @asset.sample_partial, locals: {asset: @asset} %>
 <%= render partial: 'relations', locals: { asset: @asset } %>
 <%= render partial: 'requests', locals: { asset: @asset } %>
-<%= render partial: 'metadata', locals: {asset: @asset} %>
+<%= render partial: 'metadata', locals: {asset: @asset} if @asset.respond_to?(:custom_metadatum_collection) %>
 <%= render partial: 'qc_files', locals: {asset: @asset} %>
