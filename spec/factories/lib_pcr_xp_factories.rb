@@ -24,7 +24,6 @@ FactoryBot.define do
       plate.wells = Map.where_description(%w[A1 B1 C1])
                        .where_plate_size(plate.size)
                        .where_plate_shape(AssetShape.default).map do |map|
-
         tube = create(:lib_pool_tube)
         plate.children << tube
         build(:tagged_well, map: map).tap do |well|
