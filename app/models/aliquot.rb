@@ -41,7 +41,7 @@ class Aliquot < ApplicationRecord
   UNASSIGNED_TAG = -1
 
   # An aliquot is held within a receptacle
-  belongs_to :receptacle, class_name: 'Asset'
+  belongs_to :receptacle
 
   belongs_to :tag
   belongs_to :tag2, class_name: 'Tag'
@@ -65,6 +65,8 @@ class Aliquot < ApplicationRecord
   composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
 
   has_one :aliquot_index, dependent: :destroy
+
+  convert_labware_to_receptacle_for :library, :receptacle
 
   before_validation { |record| record.tag_id ||= UNASSIGNED_TAG unless tag }
   before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG unless tag2 }

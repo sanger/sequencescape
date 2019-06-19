@@ -16,21 +16,6 @@ FactoryBot.define do
     end
   end
 
-  factory :lib_pcr_xp_plate, parent: :plate do
-    size { 96 }
-    plate_purpose { |_| PlatePurpose.find_by(name: 'Lib PCR-XP') }
-
-    after(:create) do |plate|
-      plate.wells = Map.where_description(%w[A1 B1 C1])
-                       .where_plate_size(plate.size)
-                       .where_plate_shape(AssetShape.default).map do |map|
-        reqs = create(:lib_pcr_xp_request)
-        plate.children << reqs.target_asset
-        build(:tagged_well, map: map, requests: [reqs])
-      end
-    end
-  end
-
   factory :lib_pcr_xp_plate_with_tubes, parent: :plate do
     size { 96 }
     plate_purpose
@@ -45,17 +30,6 @@ FactoryBot.define do
           create(:lib_pcr_xp_request, asset: well, target_asset: tube)
         end
       end
-    end
-  end
-
-  factory :lib_pcr_xp_child_plate, parent: :plate do
-    transient do
-      parent { create(:lib_pcr_xp_plate) }
-    end
-
-    after(:create) do |child_plate, evaluator|
-      child_plate.parents << evaluator.parent
-      child_plate.purpose.source_purpose = evaluator.parent.purpose
     end
   end
 
@@ -78,10 +52,5 @@ FactoryBot.define do
     name { generate :asset_name }
     association(:purpose, factory: :illumina_htp_mx_tube_purpose)
     after(:create) { |tube, factory| create(:transfer_request, asset: factory.parent_tube, target_asset: tube) }
-  end
-
-  factory :lib_pcr_xp_well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do
-    map
-    plate { |plate| plate.association(:lib_pcr_xp_child_plate) }
   end
 end
