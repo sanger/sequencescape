@@ -4,28 +4,6 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   LIMIT_ERROR_LENGTH = 10000
 
-  # Upload the manifest and store it for later processing
-  def upload
-    if (params[:sample_manifest].blank?) || (params[:sample_manifest] && params[:sample_manifest][:uploaded].blank?)
-      flash[:error] = 'No CSV file uploaded'
-      return
-    end
-
-    @sample_manifest = SampleManifest.find_sample_manifest_from_uploaded_spreadsheet(params[:sample_manifest][:uploaded])
-    if @sample_manifest.nil?
-      flash[:error] = 'Cannot find details about the sample manifest'
-      return
-    end
-
-    @sample_manifest.update(params[:sample_manifest])
-    @sample_manifest.process(current_user, params[:sample_manifest][:override] == '1')
-    flash[:notice] = 'Manifest being processed'
-  rescue CSV::MalformedCSVError
-    flash[:error] = 'Invalid CSV file'
-  ensure
-    redirect_to (@sample_manifest.present? ? sample_manifests_study_path(@sample_manifest.study) : sample_manifests_path)
-  end
-
   def export
     @manifest = SampleManifest.find(params[:id])
     send_data(@manifest.generated_document.current_data,

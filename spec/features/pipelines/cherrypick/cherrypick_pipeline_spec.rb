@@ -83,7 +83,7 @@ describe 'cherrypick pipeline', js: true do
 
   it 'Pick by ng/µl: 65, conc default' do
     create :plate_type, name: 'ABgene_0765', maximum_volume: 800
-    plate_type_list = PlateType.all.pluck(:name).join(' ')
+
     login_user(user)
     visit pipeline_path(pipeline)
     check('Select DN1S for batch')
@@ -92,6 +92,7 @@ describe 'cherrypick pipeline', js: true do
     first(:select, 'action_on_requests').select('Create Batch')
     first(:button, 'Submit').click
     click_link 'Select Plate Template'
+
     select(plate_template.name, from: 'Plate Template')
     select(target_purpose.name, from: 'Output plate purpose')
     choose('Pick by ng/µl')
@@ -115,6 +116,7 @@ describe 'cherrypick pipeline', js: true do
     click_button 'Check'
     expect(page).to have_content('Scan Robot Beds And Plates')
 
+    plate_type_list = PlateType.all.pluck(:name).join(' ')
     table = [['Bed', 'Scanned robot beds', 'Plate ID', 'Scanned plates', 'Plate type'],
              ['SCRC 1', '', 'DN1S', '', plate_type_list],
              ['SCRC 2', '', 'DN10I', '', plate_type_list],
@@ -201,7 +203,7 @@ describe 'cherrypick pipeline', js: true do
   end
 
   it 'Pick by ng' do
-    create :plate_type, name: 'ABgene_0765', maximum_volume: 800
+    create :plate_type, name: 'ABgene_0800', maximum_volume: 800
     login_user(user)
     visit pipeline_path(pipeline)
     check('Select DN1S for batch')
@@ -241,22 +243,22 @@ describe 'cherrypick pipeline', js: true do
       C;
       C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100
       C;
-      A;DN1S;;ABgene 0765;1;;30.0
+      A;DN1S;;ABgene 0800;1;;30.0
       D;DN99999F;;ABgene 0800;1;;30.0
       W;
-      A;DN1S;;ABgene 0765;2;;31.0
+      A;DN1S;;ABgene 0800;2;;31.0
       D;DN99999F;;ABgene 0800;2;;31.0
       W;
-      A;DN10I;;ABgene 0765;1;;30.0
+      A;DN10I;;ABgene 0800;1;;30.0
       D;DN99999F;;ABgene 0800;3;;30.0
       W;
-      A;DN10I;;ABgene 0765;2;;31.0
+      A;DN10I;;ABgene 0800;2;;31.0
       D;DN99999F;;ABgene 0800;4;;31.0
       W;
-      A;DN5W;;ABgene 0765;1;;30.0
+      A;DN5W;;ABgene 0800;1;;30.0
       D;DN99999F;;ABgene 0800;5;;30.0
       W;
-      A;DN5W;;ABgene 0765;2;;31.0
+      A;DN5W;;ABgene 0800;2;;31.0
       D;DN99999F;;ABgene 0800;6;;31.0
       W;
       C;
@@ -274,7 +276,7 @@ describe 'cherrypick pipeline', js: true do
     expect(generated_lines.length).to eq(expected_file_lines.length)
 
     expected_file_lines.each_with_index do |expected_line, index|
-      expect(expected_line).to eq(generated_lines[index])
+      expect(generated_lines[index]).to eq(expected_line)
     end
 
     within('#output_assets') do

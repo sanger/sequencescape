@@ -6,9 +6,9 @@ class StockStamper
 
   validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage
 
-  validates :plate, presence: { message: 'is not registered in sequencescape' }, if: :destination_plate_barcode?
-  validates :plate_type, presence: { message: 'is not registered in sequencescape' }, if: :destination_plate_type_name?
-  validates :user, presence: { message: 'is not registered in sequencescape' }, if: :user_barcode?
+  validates :plate, presence: { message: 'is not registered in Sequencescape' }, if: :destination_plate_barcode?
+  validates :plate_type, presence: { message: 'is not registered in Sequencescape' }, if: :destination_plate_type_name?
+  validates :user, presence: { message: 'is not registered in Sequencescape' }, if: :user_barcode?
   validate :plates_barcodes_should_be_identical
 
   def initialize(attributes = { overage: 1.2 })

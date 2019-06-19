@@ -1,3 +1,4 @@
+# Controls API V1 IO for QcDecision
 class Io::QcDecision < Core::Io::Base
   set_model_for_input(::QcDecision)
   set_json_root(:qc_decision)

@@ -4,6 +4,30 @@ require 'rails_helper'
 require 'timecop'
 
 describe Tube, type: :model do
+  describe '#scanned_in_date' do
+    let(:scanned_in_asset) { create(:tube) }
+    let(:unscanned_in_asset) { create(:tube) }
+
+    setup do
+      create(
+        :event,
+        content: Time.zone.today.to_s,
+        message: 'scanned in',
+        family: 'scanned_into_lab',
+        eventful_type: 'Asset',
+        eventful_id: scanned_in_asset.id
+      )
+    end
+
+    it 'returns a date if it has been scanned in' do
+      expect(scanned_in_asset.scanned_in_date).to eq(Time.zone.today.to_s)
+    end
+
+    it "returns nothing if it hasn't been scanned in" do
+      expect(unscanned_in_asset.scanned_in_date).to be_blank
+    end
+  end
+
   describe '#comments' do
     let(:tube) { create :tube }
 

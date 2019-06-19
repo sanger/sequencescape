@@ -14,7 +14,7 @@ module LabelPrinter
       end
 
       def bottom_right(plate)
-        "#{user_login} #{plate.find_study_abbreviation_from_parent}"
+        "#{user_login} #{plate.studies.first&.abbreviation}"
       end
 
       def top_far_right(plate)

@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for Tube
 class ::Endpoints::Tube::Purposes < ::Core::Endpoint::Base
   model do
     action(:create, to: :standard_create!)

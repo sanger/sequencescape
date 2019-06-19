@@ -8,7 +8,7 @@ module LabelPrinter
       end
 
       def top_line(tube)
-        tube.tube_name
+        tube.name_for_label
       end
     end
   end

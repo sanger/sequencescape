@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for PlateTemplates
 class ::Endpoints::PlateTemplates < ::Core::Endpoint::Base
   model do
   end

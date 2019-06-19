@@ -36,7 +36,7 @@ module LabelPrinter
       raise PmbException.new(e), ': something went wrong'
     rescue RestClient::ServiceUnavailable => e
       raise PmbException.new(e), 'is too busy. Please try again later'
-    rescue Errno::ECONNREFUSED => e
+    rescue Errno::ECONNREFUSED, Errno::EADDRNOTAVAIL, RestClient::BadGateway => e
       raise PmbException.new(e), 'service is down'
     end
 
@@ -48,7 +48,7 @@ module LabelPrinter
       raise PmbException.new(e), 'something went wrong'
     rescue RestClient::ServiceUnavailable => e
       raise PmbException.new(e), 'is too busy. Please try again later'
-    rescue Errno::ECONNREFUSED, Errno::EADDRNOTAVAIL => e
+    rescue Errno::ECONNREFUSED, Errno::EADDRNOTAVAIL, RestClient::BadGateway => e
       raise PmbException.new(e), 'service is down'
     end
 

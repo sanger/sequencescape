@@ -39,10 +39,6 @@ module Batch::PipelineBehaviour
     pipeline.workflow.tasks.order(:sorted).where(id: completed_task_ids).last unless complete_events.empty?
   end
 
-  def task_for_event(event)
-    tasks.detect { |task| task.name == event.description }
-  end
-
   private
 
   def complete_events

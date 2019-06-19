@@ -399,8 +399,6 @@ Rails.application.routes.draw do
 
   resources :machine_barcodes, only: [:show]
 
-  match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'
-
   resources :pipelines, except: [:delete] do
     collection do
       post :update_priority
@@ -499,7 +497,6 @@ Rails.application.routes.draw do
 
   resources :plates do
     collection do
-      post :upload_pico_results
       post :create
       get :to_sample_tubes
       post :create_sample_tubes
@@ -510,8 +507,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :pico_set_results, only: :create
-
   resources :receptions, only: [:index] do
     collection do
       post :confirm_reception
@@ -520,8 +515,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :sequenom_qc_plates
-  resources :pico_dilutions
+  resources :sequenom_qc_plates, only: :index
   resources :study_reports
 
   resources :tag_substitutions, only: :create
@@ -529,15 +523,11 @@ Rails.application.routes.draw do
   resources :sample_logistics do
     collection do
       get :lab
-      get :qc_overview
     end
   end
 
   scope '/sdb', module: 'sdb' do
     resources :sample_manifests do
-      collection do
-        post :upload
-      end
       member do
         get :export
         get :uploaded_spreadsheet

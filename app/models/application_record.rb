@@ -12,6 +12,7 @@ class ApplicationRecord < ActiveRecord::Base
   # In a few places (particularly searches) we allow users to find by both barcode and id,
   # with barcodes falling outside of this rage.
   scope :with_safe_id, ->(query) { (-2147483648...2147483648).cover?(query.to_i) ? where(id: query.to_i) : none }
+  scope :where_is_a?, ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
 
   # Moved here from BulkSubmission where it modified ActiveRecord::Base
   # At time of move only used on Study, Project and AssetGroup

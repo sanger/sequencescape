@@ -10,7 +10,6 @@ namespace :devour do
                     .reject { |resource_key| resource_key == :BaseResource }
                     .sort
                     .map do |resource_key|
-
       resource = Api::V2.const_get(resource_key)
 
       attributes = {}

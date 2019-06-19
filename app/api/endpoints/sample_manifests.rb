@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for SampleManifests
 class ::Endpoints::SampleManifests < ::Core::Endpoint::Base
   model do
     # TODO: For the moment we have to disable the read functionality as it consumes too much memory.
@@ -11,13 +12,6 @@ class ::Endpoints::SampleManifests < ::Core::Endpoint::Base
     belongs_to(:study, json: 'study')
     belongs_to(:supplier, json: 'supplier')
 
-    # action(:update) do |request, _response|
-    #   ActiveRecord::Base.transaction do
-    #     request.target.tap do |manifest|
-    #       manifest.update!(request.attributes(request.target), request.user)
-    #     end
-    #   end
-    # end
     deprecate :update
   end
 end

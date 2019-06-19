@@ -2,7 +2,7 @@
 
 class Search::FindOutstandingIlluminaBPrePcrPlates < Search
   def scope(_criteria)
-    Plate.include_plate_metadata.include_plate_purpose.with_plate_purpose(pre_pcr_plate_purpose).in_state(%w[pending started])
+    Plate.include_plate_metadata.include_plate_purpose.with_purpose(pre_pcr_plate_purpose).in_state(%w[pending started])
   end
 
   def self.pre_pcr_plate_purpose

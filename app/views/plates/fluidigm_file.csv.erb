@@ -2,7 +2,7 @@
 File Format,BioMark Sample Format V1.0,,,,,,,
 Sample Plate Name,<%= @parents.map(&:human_barcode).join('/')%>,,,,,,,
 Barcode ID,<%= @plate.fluidigm_barcode %>,,,,,,,
-Description,<%= @parents.map(&:human_barcode) %>,,,,,,,
+Description,<%= @parents.map(&:human_barcode).join('.') %>,,,,,,,
 Plate Type,<%= @plate.size == 192 ? 'SBS384' : 'SBS96' %>,,,,,,,
 ,,,,,,,,
 Well Location,Sample Name,Sample Concentration,Sample Type,,,,,

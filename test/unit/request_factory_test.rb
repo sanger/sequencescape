@@ -57,7 +57,7 @@ class RequestcreateTest < ActiveSupport::TestCase
     end
 
     should 'have the study on all requests' do
-      assert_equal [@study.id], RequestType.find_by(key: 'create_asset').requests.map(&:study_id).uniq
+      assert_equal [@study.id], RequestType.find_by(key: 'create_asset').requests.map(&:initial_study_id).uniq
     end
 
     should 'have the asset IDs' do

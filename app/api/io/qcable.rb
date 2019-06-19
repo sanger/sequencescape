@@ -1,3 +1,4 @@
+# Controls API V1 IO for Qcable
 class Io::Qcable < Core::Io::Base
   set_model_for_input(::Qcable)
   set_json_root(:qcable)

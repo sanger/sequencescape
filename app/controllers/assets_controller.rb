@@ -248,7 +248,7 @@ class AssetsController < ApplicationController
   private
 
   def prepare_asset
-    @asset = Asset.find(params[:id])
+    @asset = Receptacle.find(params[:id])
   end
 
   def new_request_for_current_asset

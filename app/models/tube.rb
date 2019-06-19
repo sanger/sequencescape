@@ -7,16 +7,15 @@ class Tube < Receptacle
   include Transfer::State::TubeState
   include Api::Messages::QcResultIO::TubeExtensions
 
+  include AssetRefactor::Labware::Methods
+
   extend QcFile::Associations
 
   # Fallback for tubes without a purpose
   self.default_prefix = 'NT'
+  self.automatic_move = true
 
   has_qc_files
-
-  def automatic_move?
-    true
-  end
 
   def subject_type
     'tube'
@@ -26,9 +25,6 @@ class Tube < Receptacle
     self.sanger_barcode = { number: AssetBarcode.new_barcode, prefix: default_prefix } unless barcode_number
     save!
   end
-
-  scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
-  scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes) }
 
   delegate :source_purpose, to: :purpose, allow_nil: true
 
@@ -68,10 +64,6 @@ class Tube < Receptacle
   belongs_to :purpose, class_name: 'Tube::Purpose', foreign_key: :plate_purpose_id
   delegate_to_purpose(:transition_to, :stock_plate)
   delegate :barcode_type, to: :purpose
-
-  def name_for_label
-    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
-  end
 
   def name_for_child_tube
     name

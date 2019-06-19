@@ -1,3 +1,4 @@
+# Controls API V1 IO for Asset
 class Io::Asset < Core::Io::Base
   set_model_for_input(::Asset)
   set_json_root(:asset)

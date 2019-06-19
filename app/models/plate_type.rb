@@ -2,6 +2,11 @@ class PlateType < ApplicationRecord
   validates_presence_of :name, :maximum_volume
 
   class << self
+    def plate_default_type
+      create_with(maximum_volume: Sequencescape::Application.config.plate_default_max_volume)
+        .find_or_create_by!(name: Sequencescape::Application.config.plate_default_type)
+    end
+
     def cherrypickable_default_type
       Sequencescape::Application.config.cherrypickable_default_type
     end

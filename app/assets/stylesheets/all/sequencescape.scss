@@ -193,23 +193,29 @@ div.quota {
 
 .field_with_errors { input { @extend .is-invalid; } }
 
-#barcode_list li {
-  width: 20em;
-  border: 1px solid black;
-  border-radius: 3px;
-  padding: 0.2em;
-  margin: 0.2em;
-  list-style-type: decimal;
-}
+.barcode_list {
+  @extend .list-group;
+  li {
+    @extend .list-group-item;
+    @extend .d-flex;
+    @extend .justify-content-between;
 
-#barcode_list li a {
-  float: right;
-}
+    &:before {
+      @extend .fas;
+      padding-right: 0.5em;
+      font-size: 30px;
+      float: left;
+      content: fa-content($fa-var-barcode);
+    }
 
-#barcode_list {
-    list-style: none;
+    a {
+      @extend .btn;
+      @extend .btn-danger;
+      @extend .btn-sm;
+      @extend .text-white;
+    }
+  }
 }
-
 
 #search {
   float: right;

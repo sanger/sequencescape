@@ -1,3 +1,4 @@
+# Controls API V1 IO for Purpose
 class Io::Purpose < Core::Io::Base
   set_model_for_input(::Purpose)
   set_json_root(:purpose)

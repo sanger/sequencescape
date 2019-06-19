@@ -1,3 +1,4 @@
+# Controls API V1 IO for Robot
 class Io::Robot < ::Core::Io::Base
   set_model_for_input(::Robot)
   set_json_root(:robot)

@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for QcDecisions
 class ::Endpoints::QcDecisions < ::Core::Endpoint::Base
   model do
     action(:create) do |request, _|

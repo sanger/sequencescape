@@ -20,16 +20,17 @@ class Plate < Asset
   include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
 
+  include AssetRefactor::Labware::Methods
+
   extend QcFile::Associations
 
-  SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
-  DEFAULT_SIZE = 96
+  class_attribute :default_plate_size
 
   # Shouldn't actually be falling back to this, but its here just in case
   self.default_prefix = 'DN'
+  self.sample_partial = 'assets/samples_partials/plate_samples'
   self.per_page = 50
-
-  attr_reader :storage_location_service
+  self.default_plate_size = 96
 
   has_qc_files
 
@@ -87,15 +88,17 @@ class Plate < Asset
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
 
+  def labware_type
+    super || PlateType.plate_default_type
+  end
+
   def state
     plate_purpose.state_of(self)
   end
 
   def update_volume(volume_change)
     ActiveRecord::Base.transaction do
-      wells.each do |w|
-        w.update_volume(volume_change)
-      end
+      wells.each { |well| well.update_volume(volume_change) }
     end
   end
 
@@ -134,7 +137,6 @@ class Plate < Asset
       ]
     )
   }
-  scope :with_plate_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
 
   # Submissions on requests out of the plate
   # May not have been started yet
@@ -145,11 +147,11 @@ class Plate < Asset
   has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
 
   def submission_ids
-    @submission_ids ||= in_progress_submissions.pluck(:submission_id)
+    @submission_ids ||= in_progress_submissions.ids
   end
 
   def submission_ids_as_source
-    @submission_ids_as_source ||= waiting_submissions.pluck(:submission_id)
+    @submission_ids_as_source ||= waiting_submissions.ids
   end
 
   # Prioritised the submissions that have been made from the plate
@@ -160,16 +162,6 @@ class Plate < Asset
 
   def submissions
     waiting_submissions.presence || in_progress_submissions
-  end
-
-  def barcode_dilution_factor_created_at_hash
-    return {} if primary_barcode.blank?
-
-    {
-      barcode: ean13_barcode.to_s,
-      dilution_factor: dilution_factor.to_s,
-      created_at: created_at
-    }
   end
 
   def iteration
@@ -191,34 +183,12 @@ class Plate < Asset
   end
 
   def priority
-    Submission.joins([
-      'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-      'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-    ])
-              .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
-      Submission.joins([
-        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-      ])
-                .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
+    waiting_submissions.maximum(:priority) ||
+      in_progress_submissions.maximum(:priority) ||
       0
   end
 
-  # Plates can easily belong to multiple studies, so this method is just misleading.
-  def study
-    wells.first.try(:study)
-  end
-  deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
-
   before_create :set_plate_name_and_size
-
-  scope :qc_started_plates, -> {
-    select('DISTINCT assets.*')
-      .joins('LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id')
-      .where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id])
-      .order('assets.id DESC')
-      .includes(:events, :asset_audits)
-  }
 
   scope :with_sample, ->(sample) { includes(:contained_samples).where(samples: { id: sample }) }
   scope :with_requests, ->(requests) { includes(wells: :requests).where(requests: { id: requests }).distinct }
@@ -226,16 +196,6 @@ class Plate < Asset
     joins(wells: { requests_as_target: :batch })
       .where(batches: { id: batch })
   }
-
-  scope :include_wells, -> { includes(:wells) } do
-    def to_include
-      [:wells]
-    end
-
-    def with(subinclude)
-      scoped(include: { wells: subinclude })
-    end
-  end
 
   scope :with_wells, ->(wells) {
     select('DISTINCT assets.*')
@@ -290,7 +250,7 @@ class Plate < Asset
   scope :with_study_id, ->(study_id) { joins(:studies).where(studies: { id: study_id }) if study_id.present? }
 
   scope :with_plate_purpose_ids, ->(plate_purpose_ids) {
-    joins(:plate_purpose).where(plate_purposes: { id: plate_purpose_ids }) if plate_purpose_ids.present?
+    where(plate_purpose_id: plate_purpose_ids) if plate_purpose_ids.present?
   }
 
   scope :created_on_or_after, ->(date) { where('assets.created_at >= ?', date.midnight) if date.present? }
@@ -298,38 +258,6 @@ class Plate < Asset
 
   def maps
     Map.where_plate_size(size).where_plate_shape(asset_shape)
-  end
-
-  def find_map_by_rowcol(row, col)
-    # Count from 0
-    maps.find_by(description: map_description(row, col))
-  end
-
-  def map_description(row, col)
-    asset_shape.location_from_row_and_column(row, col + 1, size)
-  end
-
-  def find_well_by_rowcol(row, col)
-    map_description = map_description(row, col)
-    return nil if map_description.nil?
-
-    find_well_by_name(map_description)
-  end
-
-  def add_well_holder(well)
-    children << well
-    wells << well
-  end
-
-  def add_well_by_map_description(well, map_description)
-    add_well_holder(well)
-    well.map = Map.find_by(description: map_description, asset_size: size)
-    well.save!
-  end
-
-  def add_and_save_well(well, row = nil, col = nil)
-    add_well(well, row, col)
-    well.save!
   end
 
   def find_well_by_name(well_name)
@@ -349,13 +277,12 @@ class Plate < Asset
     (1..width)
   end
 
-  def set_plate_type(result)
-    add_descriptor(Descriptor.new(name: 'Plate Type', value: result))
-    save
+  def plate_type
+    labware_type.name
   end
 
-  def plate_type
-    plate_type_descriptor.presence || PlateType.first.name
+  def plate_type=(plate_type)
+    self.labware_type = PlateType.find_by(name: plate_type)
   end
 
   def details
@@ -366,49 +293,8 @@ class Plate < Asset
     well_requests_as_source.first&.role
   end
 
-  def storage_location
-    @storage_location ||= obtain_storage_location
-  end
-
   def self.plate_ids_from_requests(requests)
     with_requests(requests).pluck(:id)
-  end
-
-  # Should return true if any samples on the plate contains gender information
-  def contains_gendered_samples?
-    contained_samples.with_gender.any?
-  end
-
-  def create_sample_tubes
-    wells.map(&:create_child_sample_tube)
-  end
-
-  def create_sample_tubes_and_print_barcodes(barcode_printer)
-    sample_tubes = create_sample_tubes
-    print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                           LabelPrinter::Label::PlateToTubes,
-                                           sample_tubes: sample_tubes)
-    print_job.execute
-
-    sample_tubes
-  end
-
-  def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
-    return nil if plates.empty?
-
-    plate_barcodes = plates.map(&:barcode_number)
-    asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.current.to_formatted_s(:sortable)} ", study)
-    plates.each do |plate|
-      next if plate.wells.empty?
-
-      asset_group.assets << plate.create_sample_tubes_and_print_barcodes(barcode_printer)
-    end
-
-    return nil if asset_group.assets.empty?
-
-    asset_group.save!
-
-    asset_group
   end
 
   def stock_plate?
@@ -433,10 +319,6 @@ class Plate < Asset
     ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id)
   end
 
-  def find_study_abbreviation_from_parent
-    parent.try(:wells).try(:first).try(:study).try(:abbreviation)
-  end
-
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     attributes[:sanger_barcode] = safe_sanger_barcode(attributes[:sanger_barcode] || {})
@@ -453,10 +335,6 @@ class Plate < Asset
 
   def number_of_blank_samples
     wells.with_blank_samples.count
-  end
-
-  def default_plate_size
-    DEFAULT_SIZE
   end
 
   def scored?
@@ -532,14 +410,6 @@ class Plate < Asset
     true
   end
 
-  def samples_in_order(order_id)
-    Sample.for_plate_and_order(id, order_id)
-  end
-
-  def samples_in_order_by_target(order_id)
-    Sample.for_plate_and_order_as_target(id, order_id)
-  end
-
   def team
     ProductLine.joins([
       'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
@@ -552,10 +422,6 @@ class Plate < Asset
   alias friendly_name human_barcode
   def subject_type
     'plate'
-  end
-
-  def labwhere_location
-    @labwhere_location ||= lookup_labwhere_location
   end
 
   # Plates use a different counter to tubes, and prior to the foreign barcodes update
@@ -574,39 +440,11 @@ class Plate < Asset
     comments.add_comment_to_submissions(comment)
   end
 
+  def related_studies
+    studies
+  end
+
   private
-
-  def add_well(well, row = nil, col = nil)
-    add_well_holder(well)
-    well.map = find_map_by_rowcol(row, col) if row
-  end
-
-  def plate_type_descriptor
-    descriptor_value('Plate Type')
-  end
-
-  def obtain_storage_location
-    if labwhere_location.present?
-      @storage_location_service = 'LabWhere'
-      labwhere_location
-    else
-      @storage_location_service = 'None'
-      'LabWhere location not set. Could this be in ETS?'
-    end
-  end
-
-  def lookup_labwhere_location
-    lookup_labwhere(machine_barcode) || lookup_labwhere(human_barcode)
-  end
-
-  def lookup_labwhere(barcode)
-    begin
-      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(barcode)
-    rescue LabWhereClient::LabwhereException => e
-      return "Not found (#{e.message})"
-    end
-    return info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
-  end
 
   def lookup_stock_plate
     spp = PlatePurpose.considered_stock_plate.pluck(:id)

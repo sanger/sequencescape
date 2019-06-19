@@ -2,7 +2,7 @@ class PlatesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :login_required, except: [:upload_pico_results, :fluidigm_file]
+  before_action :login_required, except: [:fluidigm_file]
 
   def new
     @plate_creators   = Plate::Creator.order(:name)
@@ -60,7 +60,7 @@ class PlatesController < ApplicationController
     study = Study.find(params[:plates][:study])
 
     respond_to do |format|
-      if asset_group = Plate.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
+      if asset_group = Plate::SampleTubeFactory.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
         flash[:notice] = 'Created tubes and printed barcodes'
         # makes request properties partial show
         format.html { redirect_to(new_submission_path(study_id: asset_group.study.id)) }
@@ -77,7 +77,7 @@ class PlatesController < ApplicationController
 
   def fluidigm_file
     if logged_in?
-      @plate = Plate.find(params[:id])
+      @plate = Plate.includes(wells: [{ samples: :sample_metadata }, :map]).find(params[:id])
       @parents = @plate.parents
       respond_to do |format|
         format.csv { render csv: @plate, content_type: 'text/csv' }

@@ -87,8 +87,8 @@ describe StockStamper do
       invalid_stock_stamper = described_class.new(@attributes.merge(source_plate_barcode: '123', destination_plate_barcode: '234', user_barcode: '345'))
       expect(invalid_stock_stamper.valid?).to be false
       expect(invalid_stock_stamper.errors.messages.length).to eq 3
-      expect(invalid_stock_stamper.errors.full_messages).to include 'User is not registered in sequencescape'
-      expect(invalid_stock_stamper.errors.full_messages).to include 'Plate is not registered in sequencescape'
+      expect(invalid_stock_stamper.errors.full_messages).to include 'User is not registered in Sequencescape'
+      expect(invalid_stock_stamper.errors.full_messages).to include 'Plate is not registered in Sequencescape'
       expect(invalid_stock_stamper.errors.full_messages).to include 'Plates barcodes are not identical'
     end
 

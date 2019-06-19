@@ -19,7 +19,7 @@ module LabelPrinter
         elsif tube.is_a? PacBioLibraryTube
           source_plate_barcode(tube)
         else
-          tube.tube_name
+          tube.name_for_label
         end
       end
 

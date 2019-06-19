@@ -1,12 +1,4 @@
 module SampleManifest::PlateBehaviour
-  module ClassMethods
-    def create_for_plate!(attributes, *args, &block)
-      create!(attributes.merge(asset_type: 'plate'), *args, &block).tap do |manifest|
-        manifest.generate
-      end
-    end
-  end
-
   class Base
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
@@ -37,14 +29,6 @@ module SampleManifest::PlateBehaviour
       end
     end
     private :generate_wells_for_plates
-
-    def validate_sample_container(sample, row)
-      manifest_barcode, manifest_location = row['SANGER PLATE ID'], row['WELL']
-      primary_barcode, primary_location   = sample.primary_receptacle.plate.human_barcode, sample.primary_receptacle.map.description
-      return if primary_barcode == manifest_barcode and primary_location == manifest_location
-
-      yield("You can not move samples between wells or modify barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode} #{primary_location}' but the manifest is trying to put it in '#{manifest_barcode} #{manifest_location}'")
-    end
   end
 
   #--
@@ -154,8 +138,6 @@ module SampleManifest::PlateBehaviour
 
   def self.included(base)
     base.class_eval do
-      extend ClassMethods
-
       delegate :stock_plate_purpose, to: 'PlatePurpose'
     end
   end
