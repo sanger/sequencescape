@@ -15,16 +15,6 @@ Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
   BarcodePrinter.create!(name: name, barcode_printer_type: printer_type, active: true)
 end
 
-# Given /^(the .+) has a barcode of "([^\"]+)"$/ do |barcoded, barcode|
-#   # Annoyingly this is used for batches, as well as labware
-#   if barcoded.respond_to?(:primary_barcode)
-#     bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
-#     barcoded.primary_barcode.update(barcode: bc)
-#   else
-#     barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
-#   end
-# end
-
 Given '{asset_id} has a barcode of {string}' do |barcoded, barcode|
   bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
   barcoded.primary_barcode.update(barcode: bc)
@@ -39,16 +29,6 @@ Given '{batch} has a barcode of {string}' do |barcoded, barcode|
   barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
 end
 
-# Given "{plate_name} has a barcode of {string}" do |barcoded, barcode|
-#   # Annoyingly this is used for batches, as well as labware
-#   if barcoded.respond_to?(:primary_barcode)
-#     bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
-#     barcoded.primary_barcode.update(barcode: bc)
-#   else
-#     barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
-#   end
-# end
-
 Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
   bc = SBCF::SangerBarcode.new(prefix: 'NT', number: barcode).human_barcode
   tube = SampleTube.last or raise StandardError, 'There appear to be no sample tubes'
@@ -56,19 +36,17 @@ Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
 end
 
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|
-  counter = initial.to_i
-  SampleTube.order(:id).each do |asset|
-    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: counter).human_barcode
+  SampleTube.order(:id).each_with_index do |asset, index|
+    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: index + initial).human_barcode
+    Barcode.find_by(barcode: bc)&.update(barcode: "XX#{index + initial}")
     asset.primary_barcode.update!(barcode: bc)
-    counter += 1
   end
 end
 
 Given /^library tubes are barcoded sequentially from (\d+)$/ do |initial|
-  counter = initial.to_i
-  LibraryTube.order(:id).each do |asset|
-    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: counter).human_barcode
+  LibraryTube.order(:id).each_with_index do |asset, index|
+    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: index + initial).human_barcode
+    Barcode.find_by(barcode: bc)&.update(barcode: "XX#{index + initial}")
     asset.primary_barcode.update!(barcode: bc)
-    counter += 1
   end
 end
