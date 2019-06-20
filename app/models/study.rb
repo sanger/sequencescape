@@ -13,7 +13,6 @@ class Study < ApplicationRecord
   include AASM
   include DataRelease
   include Commentable
-  include Identifiable
   include SharedBehaviour::Named
   include ReferenceGenome::Associations
   include SampleManifest::Associations

@@ -1,3 +1,5 @@
+# Despite name controls rendering of warehouse messages for StudySample
+# Historically used to be v0.5 API
 class Api::StudySampleIO < Api::Base
   module Extensions
     module ClassMethods

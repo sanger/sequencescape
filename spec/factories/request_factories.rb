@@ -140,8 +140,6 @@ FactoryBot.define do
     transient do
       user_login { 'abc123' }
     end
-
-    item
     project
     state { 'pending' }
     study

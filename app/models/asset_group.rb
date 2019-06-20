@@ -11,7 +11,7 @@ class AssetGroup < ApplicationRecord
 
   has_many :asset_group_assets
   has_many :assets, through: :asset_group_assets
-  has_many :samples, through: :assets, source: :sample
+  has_many :samples, through: :assets, source: :samples
 
   validates :name, presence: true, uniqueness: true
   validates :study, presence: true
@@ -48,13 +48,5 @@ class AssetGroup < ApplicationRecord
 
   def asset_types
     assets.map(&:sti_type).uniq
-  end
-
-  def duplicate(project)
-    # TODO: Implement me
-  end
-
-  def move(assets)
-    # TODO: Implement me
   end
 end

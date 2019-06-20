@@ -8,7 +8,7 @@ module SampleManifest::CoreBehaviour
 
   def self.included(base)
     base.class_eval do
-      delegate :details, :details_array, :validate_sample_container, :validate_specialized_fields, :specialized_fields, to: :core_behaviour
+      delegate :details, :details_array, :validate_specialized_fields, :specialized_fields, to: :core_behaviour
 
       attr_accessor :rapid_generation
       alias_method(:rapid_generation?, :rapid_generation)

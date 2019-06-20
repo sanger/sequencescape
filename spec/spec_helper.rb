@@ -27,6 +27,7 @@ require 'support/user_login'
 require 'jsonapi/resources/matchers'
 require 'aasm/rspec'
 require 'rspec/collection_matchers'
+require './features/support/puma_reactor_monkeypatch'
 
 require './lib/plate_map_generation'
 
@@ -145,7 +146,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, js: true) do
-    page.driver.browser.manage.window.resize_to(1024, 800)
+    page.driver.browser.manage.window.resize_to(1024, 1024)
   end
 
   # Seed global randomization in this process using the `--seed` CLI option.

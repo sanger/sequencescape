@@ -4,14 +4,6 @@
 #   (2)this module does not creat multiplexed library tube and respective requests
 # Probably it should be cleaned at some point (20/04/2017)
 module SampleManifest::LibraryBehaviour
-  module ClassMethods
-    def create_for_library!(attributes, *args, &block)
-      create!(attributes.merge(asset_type: 'library'), *args, &block).tap do |manifest|
-        manifest.generate
-      end
-    end
-  end
-
   class Core
     attr_reader :tubes
 
@@ -80,12 +72,6 @@ module SampleManifest::LibraryBehaviour
   end
 
   RapidCore = Core
-
-  def self.included(base)
-    base.class_eval do
-      extend ClassMethods
-    end
-  end
 
   def generate_library
     generate_tubes(Tube::Purpose.standard_library_tube)

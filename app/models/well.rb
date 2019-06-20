@@ -47,12 +47,27 @@ class Well < Receptacle
   has_many :target_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
   has_many :target_wells, through: :target_well_links, source: :target_well
 
-  has_one :container_association, -> { joins(:plate) }, foreign_key: :content_id, inverse_of: :well
-  has_one :plate, through: :container_association, inverse_of: :wells
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    has_one :container_association, -> { joins(:plate) }, foreign_key: :content_id, inverse_of: :well
+    has_one :plate, through: :container_association, inverse_of: :wells
+  end
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    belongs_to :plate, foreign_key: :labware_id
+  end
+
   has_one :well_attribute, inverse_of: :well
 
-  validate(on: :save) do |record|
-    record.errors.add(:name, 'cannot be specified for a well') unless record.name.blank?
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    validate(on: :save) do |record|
+      record.errors.add(:name, 'cannot be specified for a well') unless record.name.blank?
+    end
   end
 
   accepts_nested_attributes_for :well_attribute
@@ -90,10 +105,6 @@ class Well < Receptacle
     joins(:plate)
       .where(plates_assets: { plate_purpose_id: purposes })
   }
-  scope :for_study_through_sample, ->(study) {
-    joins(aliquots: { sample: :study_samples })
-      .where(study_samples: { study_id: study })
-  }
   scope :for_study_through_aliquot, ->(study) {
     joins(:aliquots)
       .where(aliquots: { study_id: study })
@@ -118,20 +129,44 @@ class Well < Receptacle
                                       })
   }
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
-  scope :pooled_as_target_by_transfer, ->() {
-    joins('LEFT JOIN transfer_requests patb ON assets.id=patb.target_asset_id')
-      .select('assets.*, patb.submission_id AS pool_id').distinct
-  }
-  scope :pooled_as_source_by, ->(type) {
-    joins('LEFT JOIN requests pasb ON assets.id=pasb.asset_id')
-      .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
-      .select('assets.*, pasb.submission_id AS pool_id').distinct
-  }
+
+  scope :select_table, ->() { select("#{table_name}.*") }
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    scope :pooled_as_target_by_transfer, ->() {
+      joins('LEFT JOIN transfer_requests patb ON assets.id=patb.target_asset_id')
+        .select_table
+        .select('patb.submission_id AS pool_id').distinct
+    }
+    scope :pooled_as_source_by, ->(type) {
+      joins('LEFT JOIN requests pasb ON assets.id=pasb.asset_id')
+        .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
+        .select_table
+        .select('pasb.submission_id AS pool_id').distinct
+    }
+  end
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    scope :pooled_as_target_by_transfer, ->() {
+      joins('LEFT JOIN transfer_requests patb ON receptacles.id=patb.target_asset_id')
+        .select_table
+        .select('patb.submission_id AS pool_id').distinct
+    }
+    scope :pooled_as_source_by, ->(type) {
+      joins('LEFT JOIN requests pasb ON receptacles.id=pasb.asset_id')
+        .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
+        .select_table
+        .select('pasb.submission_id AS pool_id').distinct
+    }
+  end
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
-  scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select('assets.*, column_order') }
-  scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select('assets.*, row_order') }
-  scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC').select('assets.*, column_order') }
-  scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select('assets.*, row_order') }
+  scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
+  scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
+  scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC').select_table.select('column_order') }
+  scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select_table.select('row_order') }
   scope :in_plate_column, ->(col, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size), asset_size: size }) }
   scope :in_plate_row,    ->(row, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size), asset_size: size }) }
   scope :with_blank_samples, -> {
@@ -336,6 +371,10 @@ class Well < Receptacle
     metric_wells.map do |stock_well|
       stock_well.qc_metrics.for_product(product).most_recent_first.first
     end.compact.uniq
+  end
+
+  def asset_type_for_request_types
+    self.class
   end
 
   def source_plate

@@ -1,31 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Asset, type: :model do
-  context 'An asset' do
-    context '#scanned_in_date' do
-      let(:scanned_in_asset) { create(:asset) }
-      let(:unscanned_in_asset) { create(:asset) }
-      let!(:scanned_in_event) do
-        create(
-          :event,
-          content: Time.zone.today.to_s,
-          message: 'scanned in',
-          family: 'scanned_into_lab',
-          eventful_type: 'Asset',
-          eventful_id: scanned_in_asset.id
-        )
-      end
-
-      it 'returns a date if it has been scanned in' do
-        expect(scanned_in_asset.scanned_in_date).to eq(Time.zone.today.to_s)
-      end
-
-      it "returns nothing if it hasn't been scanned in" do
-        expect(unscanned_in_asset.scanned_in_date).to be_blank
-      end
-    end
-  end
-
   context '#assign_relationships' do
     context 'with the correct arguments' do
       let(:asset) { create(:asset) }

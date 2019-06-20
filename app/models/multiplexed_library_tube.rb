@@ -4,8 +4,7 @@ class MultiplexedLibraryTube < Tube
   include ModelExtensions::MultiplexedLibraryTube
   include Api::MultiplexedLibraryTubeIO::Extensions
   include Transfer::Associations
-
-  self.library_prep = true
+  include Asset::SharedLibraryTubeBehaviour
 
   has_many :order_roles, ->() { distinct }, through: :requests_as_target
 
@@ -14,29 +13,13 @@ class MultiplexedLibraryTube < Tube
     transfer_requests_as_target
   end
 
-  # You can do sequencing with this asset type, even though the request types suggest otherwise!
-  def sequenceable?
-    true
-  end
-
   # Returns the type of asset that can be considered appropriate for request types.
   def asset_type_for_request_types
     LibraryTube
   end
 
-  def creation_requests
-    direct = requests_as_target.where_is_a?(Request::LibraryCreation)
-    return direct unless direct.empty?
-
-    parents.includes(:creation_request).map(&:creation_request)
-  end
-
   def team
-    creation_requests.first&.request_type&.product_line&.name
-  end
-
-  def library_source_plates
-    purpose.library_source_plates(self)
+    creation_requests.first&.product_line
   end
 
   def role
@@ -52,4 +35,13 @@ class MultiplexedLibraryTube < Tube
   end
 
   extend Asset::Stock::CanCreateStockAsset
+
+  private
+
+  def creation_requests
+    direct = requests_as_target.where_is_a?(Request::LibraryCreation)
+    return direct unless direct.empty?
+
+    parents.includes(:requests_as_target).first.requests_as_target
+  end
 end

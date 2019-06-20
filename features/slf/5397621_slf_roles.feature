@@ -88,5 +88,4 @@ Feature: Set roles for SLF functionality
     And I should see "Gel"
     And I should not see "Sample Registration"
     And I should not see "Suppliers"
-    And I should not see "Pico Green"
     And I should not see "Cherrypicking plate templates"

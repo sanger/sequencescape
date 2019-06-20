@@ -37,8 +37,8 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           well = FactoryBot.create :well, map_id: Map.for_position_on_plate(count, 96, source_plate.asset_shape).first.id
           target_well = FactoryBot.create :well, map_id: Map.for_position_on_plate(count, 96, source_plate.asset_shape).first.id
           target_well.well_attribute = FactoryBot.create :well_attribute
-          source_plate.add_and_save_well(well)
-          @plate.add_and_save_well(target_well)
+          well.plate = source_plate
+          target_well.plate = @plate
           well_request = FactoryBot.create :request, state: 'passed'
           well_request.asset = well
           well_request.target_asset = target_well
@@ -256,13 +256,10 @@ class RobotVerificationsControllerTest < ActionController::TestCase
 
     context '#submission' do
       setup do
-        @well = FactoryBot.create :well
+        @well = FactoryBot.create :well, plate: @plate
         @well_request = FactoryBot.create :request, state: 'passed'
-
-        @target_well = FactoryBot.create :well
-        @plate.add_and_save_well(@well)
         @source_plate = FactoryBot.create :plate, barcode: '1234'
-        @source_plate.add_and_save_well(@target_well)
+        @target_well = FactoryBot.create :well, plate: @source_plate
         @well_request.asset = @well
         @well_request.target_asset = @target_well
         @well_request.save

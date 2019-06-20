@@ -234,7 +234,7 @@ describe Well do
   context 'with a plate' do
     setup do
       @plate = create :plate
-      @plate.add_and_save_well well
+      well.plate = @plate
     end
     it 'have a parent plate' do
       parent = well.plate

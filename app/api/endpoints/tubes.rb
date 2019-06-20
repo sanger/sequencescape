@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for Tubes
 class ::Endpoints::Tubes < ::Core::Endpoint::Base
   model do
   end

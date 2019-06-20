@@ -13,7 +13,8 @@ class Event::ScannedIntoLabEvent < Event
   end
 
   def set_qc_state_pending
-    asset.qc_pending
+    asset.qc_state = 'pending'
+    asset.save!
   end
 
   def test?

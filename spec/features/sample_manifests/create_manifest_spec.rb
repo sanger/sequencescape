@@ -35,6 +35,10 @@ describe 'SampleManifest controller' do
       click_button('Create manifest and print labels')
       expect(page).to have_text('Upload a sample manifest')
       expect(created_plate.purpose).to eq(created_purpose)
+      click_on 'Download Blank Manifest'
+      expect(page.driver.response.headers['Content-Type']).to(
+        eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      )
     end
   end
 

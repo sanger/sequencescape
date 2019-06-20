@@ -18,7 +18,7 @@ module SampleManifestExcel
         combinations_with_indexes.select { |_key, value| value.length > 1 }
       end
 
-      # This methos takes a hash of not unique tags combinations with indexes, i.e
+      # This method takes a hash of not unique tags combinations with indexes, i.e
       # {['AA', 'TT'] => [0, 3], ['CC', 'GG'] => [1, 5]}
       # and returns a message, in this example:
       # 'Same tags 'AA', 'TT' are used on rows 1, 4. <br> Same tags 'CC', 'GG' are used on rows 2, 6.''

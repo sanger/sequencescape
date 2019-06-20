@@ -1,7 +1,7 @@
 # Performs a change of volume on a resource
-#
-#--
-#++
+# Primarily created on plates via Assets Audits application to indicate reduced
+# volume on, eg. working dilution creation.
+# No records exist on 29/05/2019 due to no volumes configured for processes
 class VolumeUpdate < ApplicationRecord
   include Uuid::Uuidable
 

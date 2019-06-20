@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for LibraryTubes
 class ::Endpoints::LibraryTubes < ::Endpoints::Tubes
   instance do
     belongs_to(:custom_metadatum_collection, json: 'custom_metadatum_collection', to: 'custom_metadatum_collection')

@@ -4,5 +4,13 @@ FactoryBot.define do
   factory :transfer_request do
     association(:asset, factory: :well)
     association(:target_asset, factory: :well)
+
+    factory :transfer_request_with_submission do
+      association(:submission, factory: :submission)
+
+      factory :transfer_request_with_volume do
+        volume { 10 }
+      end
+    end
   end
 end
