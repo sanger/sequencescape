@@ -28,6 +28,7 @@ And I have a "full" authorised user with the key "cucumber"
     Given a "Cherrypicked" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
       And 4 wells on the plate "Testing the API" have unique samples
+      And I have a WGS submission template
 
 @authorised
   Scenario: Dealing with the MX library tube at the end of the pipeline
