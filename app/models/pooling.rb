@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
+# Used by {PoolingsController} to take multiple scanned {Tube} barcodes containing
+# one or more {Aliquot aliquots} and use them to generate a new {MultiplexedLibraryTube}
 class Pooling
   include ActiveModel::Model
-  include SampleManifestExcel::Tags::ClashesFinder
 
-  attr_accessor :barcodes, :source_assets, :stock_mx_tube_required, :stock_mx_tube, :standard_mx_tube, :barcode_printer, :count
+  attr_writer :barcodes, :source_assets
+  attr_accessor :stock_mx_tube_required, :stock_mx_tube, :standard_mx_tube, :barcode_printer, :count
 
-  validates_presence_of :source_assets, message: 'were not scanned or were not found in sequencescape'
+  validates :source_assets, presence: { message: 'were not scanned or were not found in Sequencescape' }
   validate :all_source_assets_are_in_sqsc, if: :source_assets?
   validate :source_assets_can_be_pooled, if: :source_assets?
   validate :expected_numbers_found, if: :source_assets?
@@ -58,10 +62,14 @@ class Pooling
     @message ||= {}
   end
 
+  def tag_clash_report
+    @tag_clash_report ||= Pooling::TagClashReport.new(self)
+  end
+
   private
 
-  def tags_combinations
-    @tags_combinations || []
+  def tag_clash?
+    tag_clash_report.tag_clash?
   end
 
   def source_assets?
@@ -69,20 +77,24 @@ class Pooling
   end
 
   def find_source_assets
-    @assets_not_in_sqsc = []
-    barcodes.map do |barcode|
-      asset = Labware.find_from_any_barcode(barcode)
-      @assets_not_in_sqsc << barcode unless asset.present?
-      asset
-    end.compact.uniq
+    Labware.includes(aliquots: %i[tag tag2 library]).with_barcode(barcodes)
   end
 
+  # Returns a list of scanned barcodes which could not be found in Sequencescape
+  # This allows ANY asset barcode to match, either via human or machine readable formats
+  # =~ is a fuzzy matcher
   def assets_not_in_sqsc
-    @assets_not_in_sqsc || []
+    @assets_not_in_sqsc ||= barcodes.reject do |barcode|
+      found_barcodes.detect { |found_barcode| found_barcode =~ barcode }
+    end
+  end
+
+  def found_barcodes
+    source_assets.flat_map(&:barcodes)
   end
 
   def all_source_assets_are_in_sqsc
-    errors.add(:source_assets, "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in sequencescape") if assets_not_in_sqsc.present?
+    errors.add(:source_assets, "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in Sequencescape") if assets_not_in_sqsc.present?
   end
 
   def expected_numbers_found
@@ -91,34 +103,20 @@ class Pooling
 
   def source_assets_can_be_pooled
     assets_with_no_aliquot = []
-    @tags_combinations = []
     source_assets.each do |asset|
-      if asset.aliquots.empty?
-        assets_with_no_aliquot << asset.ean13_barcode
-        @tags_combinations << []
-      else
-        asset.aliquots.each { |aliquot| @tags_combinations << aliquot.tags_combination }
-      end
+      assets_with_no_aliquot << asset.machine_barcode if asset.aliquots.empty?
     end
     errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") if assets_with_no_aliquot.present?
-    errors.add(:tags_combinations, tags_clash_message) if duplicates.present?
-  end
-
-  def duplicates
-    @duplicates ||= find_tags_clash(tags_combinations)
-  end
-
-  def tags_clash_message
-    create_tags_clashes_message(duplicates.except([]))
+    errors.add(:tags_combinations, 'are not compatible and result in a tag clash') if tag_clash?
   end
 
   def execute_print_job
-    if print_job_required?
-      if print_job.execute
-        message[:notice] = (message[:notice] || '') + print_job.success
-      else
-        message[:error] = (message[:error] || '') + print_job.errors.full_messages.join('; ')
-      end
+    return unless print_job_required?
+
+    if print_job.execute
+      message[:notice] = (message[:notice] || '') + print_job.success
+    else
+      message[:error] = (message[:error] || '') + print_job.errors.full_messages.join('; ')
     end
   end
 

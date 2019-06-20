@@ -50,10 +50,10 @@ table.table-dense-information tbody {
   @extend .bg-light;
 }
 
-
 // Apply basic button formatting to all buttons
 input[type=submit] {
   @extend .btn;
+  @extend .btn-primary;
 }
 
 .link-panel {
@@ -91,6 +91,30 @@ section.info-panel {
     caption {
       @extend .card-body;
     }
+  }
+}
+
+.card-style-error_report {
+  @extend .bg-danger;
+  @extend .text-white;
+
+  h1, h2, h3, h4, h5, h6 { @extend .card-title; }
+  a {
+    @extend .card-link;
+    @extend .text-light;
+  }
+  ul {
+    @extend .list-unstyled;
+
+    dl {
+      @extend .list-inline;
+      margin-bottom: 0;
+
+      dt, dd { @extend .list-inline-item }
+    }
+  }
+  .clash-description {
+    margin-left: 2em;
   }
 }
 

@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# ALlows the creation of new {MultiplexedLibraryTubes} from one or more arbitrary {Tube tubes}
 class PoolingsController < ApplicationController
   def new
     @pooling = Pooling.new(pooling_params)
