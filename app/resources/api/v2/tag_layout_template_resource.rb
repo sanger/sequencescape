@@ -14,9 +14,13 @@ module Api
       default_includes :uuid_object
 
       # Associations:
+      has_one :tag_group
+      has_one :tag2_group
 
       # Attributes
       attribute :uuid, readonly: true
+      attribute :direction, readonly: true
+      attribute :walking_by, readonly: true
 
       # Filters
 

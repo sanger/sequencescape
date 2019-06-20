@@ -24,7 +24,17 @@ class AssetLink < ApplicationRecord
   include Api::AssetLinkIO::Extensions
   include Uuid::Uuidable
 
-  acts_as_dag_links node_class_name: 'Asset'
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    acts_as_dag_links node_class_name: 'Asset'
+  end
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    acts_as_dag_links node_class_name: 'Labware'
+  end
   broadcast_via_warren
 
   self.per_page = 500

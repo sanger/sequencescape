@@ -9,7 +9,7 @@ require 'lab_where_client'
 #   - {Well}: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
 #   - {PlateType}: Identifies the plates form factor, typically provided by robots to ensure tips are positioned correctly.
 #
-class Plate < Asset
+class Plate < Labware
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
   include Transfer::Associations
@@ -37,31 +37,59 @@ class Plate < Asset
   belongs_to :plate_purpose, foreign_key: :plate_purpose_id, inverse_of: :plates
   belongs_to :purpose, foreign_key: :plate_purpose_id
 
-  has_many :container_associations, -> { joins(:well) }, foreign_key: :container_id, inverse_of: :plate, dependent: :destroy
-  has_many :wells, through: :container_associations, inverse_of: :plate do
-    # Build empty wells for the plate.
-    def construct!
-      plate = proxy_association.owner
-      plate.maps.in_row_major_order.ids.map do |location_id|
-        Well.create!(map_id: location_id)
-      end.tap do |wells|
-        ContainerAssociation.import(wells.map { |well| { content_id: well.id, container_id: plate.id } })
-        # We've modified the association indirectly, so need to ensure we discard any already loaded wells
-        # as otherwise rails will continue to believe the plate has no wells.
-        proxy_association.reset
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    has_many :container_associations, -> { joins(:well) }, foreign_key: :container_id, inverse_of: :plate, dependent: :destroy
+    has_many :wells, through: :container_associations, inverse_of: :plate do
+      # Build empty wells for the plate.
+      def construct!
+        plate = proxy_association.owner
+        plate.maps.in_row_major_order.ids.map do |location_id|
+          Well.create!(map_id: location_id)
+        end.tap do |wells|
+          ContainerAssociation.import(wells.map { |well| { content_id: well.id, container_id: plate.id } })
+          # We've modified the association indirectly, so need to ensure we discard any already loaded wells
+          # as otherwise rails will continue to believe the plate has no wells.
+          proxy_association.reset
+        end
       end
-    end
 
-    # Returns the wells with their pool identifier included
-    def with_pool_id
-      proxy_association.owner.plate_purpose.pool_wells(self)
-    end
+      # Returns the wells with their pool identifier included
+      def with_pool_id
+        proxy_association.owner.plate_purpose.pool_wells(self)
+      end
 
-    def indexed_by_location
-      @index_well_cache ||= index_by(&:map_description)
+      def indexed_by_location
+        @index_well_cache ||= index_by(&:map_description)
+      end
     end
   end
 
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    has_many :wells, inverse_of: :plate, foreign_key: :labware_id do
+      # Build empty wells for the plate.
+      def construct!
+        plate = proxy_association.owner
+        plate.maps.in_row_major_order.ids.map do |location_id|
+          { map_id: location_id }
+        end.tap do |wells|
+          plate.wells.create!(wells)
+        end
+      end
+
+      # Returns the wells with their pool identifier included
+      def with_pool_id
+        proxy_association.owner.plate_purpose.pool_wells(self)
+      end
+
+      def indexed_by_location
+        @index_well_cache ||= index_by(&:map_description)
+      end
+    end
+  end
   # Contained associations all look up through wells (Wells in turn delegate to aliquots)
   has_many :contained_samples, through: :wells, source: :samples
   has_many :conatined_aliquots, through: :wells, source: :aliquots
@@ -197,11 +225,26 @@ class Plate < Asset
       .where(batches: { id: batch })
   }
 
-  scope :with_wells, ->(wells) {
-    select('DISTINCT assets.*')
-      .joins(:container_associations)
-      .where(container_associations: { content_id: wells.map(&:id) })
-  }
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    scope :with_wells, ->(wells) {
+      select('DISTINCT assets.*')
+        .joins(:container_associations)
+        .where(container_associations: { content_id: wells.map(&:id) })
+    }
+  end
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    scope :with_wells, ->(wells) {
+      select('DISTINCT assets.*')
+        .joins(:wells)
+        .where(receptacles: { id: wells.map(&:id) })
+    }
+  end
+
   has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :descendant_lanes,  class_name: 'Lane', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :tag_layouts, dependent: :destroy

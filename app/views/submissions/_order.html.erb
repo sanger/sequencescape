@@ -46,7 +46,7 @@
           <div class="col">
             <%= form.label :plate_purpose_id, 'Type of Plate' %>
             <%= form.collection_select :plate_purpose_id,
-              PlatePurpose.for_submissions.all, :id, :name,
+              PlatePurpose.all, :id, :name,
               { selected: PlatePurpose.stock_plate_purpose.id },
               class: 'submission_plate_purpose_id select-2'
             %>

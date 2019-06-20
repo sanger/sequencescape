@@ -34,6 +34,8 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     it { is_expected.to have_many(:requests_as_target).with_class_name('Request') }
     it { is_expected.to have_many(:aliquots).with_class_name('Aliquot') }
     it { is_expected.to have_many(:downstream_assets) }
+    it { is_expected.to have_many(:transfer_requests_as_source).with_class_name('TransferRequest') }
+    it { is_expected.to have_many(:transfer_requests_as_target).with_class_name('TransferRequest') }
 
     # Custom method tests
     # Add tests for any custom methods you've added.

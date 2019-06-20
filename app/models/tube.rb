@@ -1,4 +1,13 @@
-class Tube < Receptacle
+AssetRefactor.when_refactored do
+  class Tube < Labware; end
+end
+
+AssetRefactor.when_not_refactored do
+  class Tube < Receptacle; end
+end
+
+# A Tube is a piece of {Labware}
+class Tube
   include Barcode::Barcodeable
   include ModelExtensions::Tube
   include Tag::Associations
@@ -6,6 +15,7 @@ class Tube < Receptacle
   include Transfer::Associations
   include Transfer::State::TubeState
   include Api::Messages::QcResultIO::TubeExtensions
+  include SingleReceptacleLabware
 
   include AssetRefactor::Labware::Methods
 
@@ -94,8 +104,20 @@ class Tube < Receptacle
     create!(attributes.merge(sanger_barcode: primary_barcode), &block)
   end
 
-  def update_from_qc(qc_result)
-    Tube::AttributeUpdater.update(self, qc_result)
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def update_from_qc(qc_result)
+      Tube::AttributeUpdater.update(self, qc_result)
+    end
+  end
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    def update_from_qc(qc_result)
+      Tube::AttributeUpdater.update(receptacle, qc_result)
+    end
   end
 end
 

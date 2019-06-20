@@ -25,6 +25,7 @@ class Qcable < ApplicationRecord
   before_validation :create_asset!, on: :create
 
   delegate :bed, :order, to: :stamp_qcable, allow_nil: true
+  delegate :ean13_barcode, :machine_barcode, :human_barcode, to: :primary_barcode, allow_nil: true
 
   scope :include_for_json, -> { includes([:asset, :lot, :stamp, :stamp_qcable]) }
 
@@ -64,5 +65,9 @@ class Qcable < ApplicationRecord
                    else
                      asset_purpose.create!
                    end
+  end
+
+  def primary_barcode
+    barcodes.first
   end
 end

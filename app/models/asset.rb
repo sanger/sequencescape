@@ -21,10 +21,12 @@ require 'eventful_record'
 # Some of the above are further subclasses to handle specific behaviours.
 class Asset < ApplicationRecord
   include Api::Messages::QcResultIO::AssetExtensions
-  include Uuid::Uuidable
-  include Commentable
   include Event::PlateEvents
-  include AssetLink::Associations
+  extend EventfulRecord
+
+  AssetRefactor.when_refactored do
+    self.abstract_class = true
+  end
 
   class_attribute :stock_message_template, instance_writer: false
   # The partial used to render the list of assets on the asset show page
@@ -41,34 +43,20 @@ class Asset < ApplicationRecord
   self.automatic_move = false
   self.sequenceable = false
 
-  # @note Splitting out these associations now can cause issues with a number of issues with eager loading
-  #       so organizing things first while we establish a migration route.
-
-  # Labware based associations
-  has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
-
   # Receptacle based associations
-  has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
-  has_many :asset_groups, through: :asset_group_assets
-  has_many :qc_results, dependent: :destroy
-  # TODO: Remove 'requests' and 'source_request' as they are abiguous
-  # :requests should go before :events_on_requests, through: :requests
-  belongs_to :map
-  has_many :requests
-  has_many :events_on_requests, through: :requests, source: :events, validate: false
-  has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
-  has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
-  has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
-  has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
-  has_many :sample_manifest_assets
-  has_many :sample_manifests, through: :sample_manifest_assets
-
-  # Polymorphic associations
-  has_many :messengers, as: :target, inverse_of: :target
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    include ReceptacleAssociations
+    include LabwareAssociations
+    include Uuid::Uuidable
+    include AssetLink::Associations
+    include Commentable
+    has_many :messengers, as: :target, inverse_of: :target
+  end
 
   delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
 
-  extend EventfulRecord
   has_many_events do
     event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)
     event_constructor(:create_state_update!,           Event::AssetSetQcStateEvent,   :create_updated!)

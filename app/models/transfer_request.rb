@@ -12,7 +12,7 @@ class TransferRequest < ApplicationRecord
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
   # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, optional: false
-  belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, optional: false
+  belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_target, optional: false
 
   has_many :associated_requests, through: :asset, source: :requests_as_source
   has_many :transfer_request_collection_transfer_requests, dependent: :destroy
@@ -85,6 +85,8 @@ class TransferRequest < ApplicationRecord
       transitions to: :qc_complete, from: [:passed]
     end
   end
+
+  convert_labware_to_receptacle_for :asset, :target_asset
 
   # validation method
   def source_and_target_assets_are_different

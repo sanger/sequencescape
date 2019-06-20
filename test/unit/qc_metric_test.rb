@@ -39,7 +39,6 @@ class QcMetricTest < ActiveSupport::TestCase
       ['manually_failed', true,  true],
       ['unprocessable',   false, true],
     ].each do |qc_state, proceedable, set_suboptimal|
-
       should "#{proceedable ? '' : 'not '}allow the proceed flag to be set to Y when #{qc_state}" do
         qc = create :qc_metric, qc_decision: qc_state
         qc.human_proceed = 'Y'
