@@ -22,7 +22,7 @@ class NoAccessionService < AccessionService
   def submit_dac_for_user(_study, _user)
     raise AccessionService::NumberNotRequired, I18n.t(:not_applicable_study_for_dac, scope: 'accession_service.not_required')
   end
- 
+
   def submit_policy_for_user(_user, _study)
     raise AccessionService::NumberNotRequired, I18n.t(:not_applicable_study_for_dac, scope: 'accession_service.not_required')
   end
