@@ -6,7 +6,7 @@ Feature: Submission templates should set order roles
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
+    And I have a "full" authorised user with the key "cucumber"
 
     Given I have an "active" study called "Study A"
     And the UUID for the study "Study A" is "22222222-3333-4444-5555-000000000000"
@@ -19,10 +19,11 @@ And I have a "full" authorised user with the key "cucumber"
     And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
     And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
 
-  Scenario Outline: Creating a submission with multiple orders
-    And all <asset_type> have sequential UUIDs based on "33333333-4444-5555-6666"
-    Given the UUID for the order template "<template_name>" is "00000000-1111-2222-3333-444444444444"
-    Given I have an order created with the following details based on the template "<template_name>":
+  Scenario: Creating a submission with multiple orders
+    Given I have a WGS submission template
+    And all wells have sequential UUIDs based on "33333333-4444-5555-6666"
+    Given the UUID for the order template "Illumina-B - Pooled PATH - Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
+    Given I have an order created with the following details based on the template "Illumina-B - Pooled PATH - Paired end sequencing":
       | study           | 22222222-3333-4444-5555-000000000000                                                                       |
       | project         | 22222222-3333-4444-5555-000000000001                                                                       |
       | assets          | 33333333-4444-5555-6666-000000000001, 33333333-4444-5555-6666-000000000002                                 |
@@ -49,9 +50,6 @@ And I have a "full" authorised user with the key "cucumber"
       }
       """
     Given all pending delayed jobs are processed
-    Then the plate with the barcode "12345" should have a label of "<label>"
-    Examples:
-       | template_name                                               | asset_type   | label    |
-       | Illumina-B - Pooled PATH - Paired end sequencing | wells        | ILB PATH |
-       | Illumina-B - Pooled HWGS - Paired end sequencing | wells        | ILB HWGS |
+    Then the plate with the barcode "12345" should have a label of " ILB HWGS"
+
 
