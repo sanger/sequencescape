@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for Pipelines
 class ::Endpoints::Pipelines < ::Core::Endpoint::Base
   model do
   end

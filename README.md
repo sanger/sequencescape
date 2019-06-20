@@ -89,12 +89,6 @@ in Sanger your required to use a webservice for supplying numbers
 for plates with a simple service.
 
 
-Pico green
-----------
-
-To analyse Pico green plats you need for the pico green application.
-
-
 Data warehousing
 ----------------
 

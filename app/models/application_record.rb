@@ -12,6 +12,7 @@ class ApplicationRecord < ActiveRecord::Base
   # In a few places (particularly searches) we allow users to find by both barcode and id,
   # with barcodes falling outside of this rage.
   scope :with_safe_id, ->(query) { (-2147483648...2147483648).cover?(query.to_i) ? where(id: query.to_i) : none }
+  scope :where_is_a?, ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
 
   # Moved here from BulkSubmission where it modified ActiveRecord::Base
   # At time of move only used on Study, Project and AssetGroup
@@ -25,6 +26,27 @@ class ApplicationRecord < ActiveRecord::Base
       raise StandardError, 'Must specify at least ID or name' if name.blank?
 
       find_by(name: name)
+    end
+
+    # Temporary compatibility layer while AssetRefactor progresses
+    # will allow labware to get passed into associations expecting
+    # receptacles where there is no ambiguity. (e.g. tubes)
+    # @example
+    #   convert_labware_to_receptacle_for :library
+    #   def library=(library)
+    #     return super if library.is_a?(Receptacle)
+    #     Rails.logger.warn("#{library.class.name} passed to library")
+    #     super(library.receptacle)
+    #   end
+    def convert_labware_to_receptacle_for(*associations)
+      associations.each do |assn|
+        define_method("#{assn}=") do |associated|
+          return super(associated) if associated.is_a?(Receptacle)
+
+          Rails.logger.warn("#{associated.class.name} passed to #{assn}")
+          super(associated&.receptacle)
+        end
+      end
     end
   end
 end

@@ -18,15 +18,6 @@ class WellAttribute < ApplicationRecord
     state :Pass
     state :Repeat
     state :Fail
-
-    event :pass_pico_test do
-      transitions to: :Pass, from: [:ungraded, :Repeat, :Fail, :Pass]
-    end
-
-    event :fail_pico_test do
-      transitions to: :Fail, from: [:Repeat, :Fail, :Pass]
-      transitions to: :Repeat, from: [:ungraded]
-    end
   end
   # TODO: Remvoe 'Too Low To Normalise' from the pico_pass column
   # The state of 'Too Low To Normalise' exists in the database (from SNP?)

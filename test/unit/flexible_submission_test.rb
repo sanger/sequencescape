@@ -257,7 +257,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                                                            user: @user,
                                                            assets: @assets,
                                                            request_types: @request_type_ids,
-                                                           request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '2', @mx_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
+                                                           request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '2', @mx_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150',
+                                                                              'fragment_size_required_to' => '200' },
                                                            comments: '').submission
         @mx_submission_with_multiplication_factor.built!
       end

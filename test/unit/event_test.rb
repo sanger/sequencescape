@@ -40,9 +40,8 @@ class EventTest < ActiveSupport::TestCase
 
     context 'when related to a Request' do
       setup do
-        @item = create :item
         @study = create :study
-        @request = create :request, study: @study, item: @item
+        @request = create :request, study: @study
         @settings = { eventful_id: @request.id,
                       eventful_type: 'Request',
                       family: 'QC Analysis',
@@ -68,9 +67,8 @@ class EventTest < ActiveSupport::TestCase
 
     context '#update_request' do
       setup do
-        @item = create :item
         @study = create :study
-        @request = create :request, study: @study, item: @item, state: 'started'
+        @request = create :request, study: @study, state: 'started'
         @settings = { eventful_id: @request.id,
                       eventful_type: 'Request',
                       identifier: 'ID',

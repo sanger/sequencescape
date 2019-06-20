@@ -9,7 +9,7 @@ FactoryBot.define do
 
   factory :messenger do
     root { 'barcode' }
-    association(:target, factory: :asset)
+    association(:target, factory: :sample)
     template { 'Barcode' }
   end
 end

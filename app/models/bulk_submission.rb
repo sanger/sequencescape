@@ -220,7 +220,6 @@ class BulkSubmission
       order = rows.group_by do |details|
         details['asset group name']
       end.map do |_group_name, rows|
-
         Hash[shared_options!(rows)].tap do |details|
           details['rows']          = rows.comma_separate_field_list_for_display('row')
           details['asset ids']     = rows.field_list('asset id', 'asset ids')

@@ -36,8 +36,6 @@
     <%= link_to "Gel", gels_path %>
       <% end %>
       <% if current_user.slf_manager? || current_user.manager_or_administrator? %>
-    <%= link_to "QC overview", qc_overview_sample_logistics_path %>
-    <%= link_to "Pico Green", "#{configatron.pico_green_url}" %>
     <%= link_to "Cherrypicking plate templates", plate_templates_path %>
     <%= link_to "Convert Plates to Tubes", to_sample_tubes_plates_path  %>
       <% end %>

@@ -19,7 +19,7 @@ FactoryBot.define do
   end
 
   factory :uuid do
-    association(:resource, factory: :asset)
+    association(:resource, factory: :labware)
     external_id { SecureRandom.uuid }
   end
 

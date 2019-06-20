@@ -1,6 +1,5 @@
 
 <%= render partial: "side_links" %>
-<% add :menu, "Download Blank Manifest" => export_sample_manifest_path(@sample_manifest) %>
 
 <%= page_title @sample_manifest.name, @sample_manifest.study.name %>
 
@@ -9,9 +8,16 @@
 <% end %>
 
 <%= panel do %>
-  <%= link_to "Download Blank Manifest", export_sample_manifest_path(@sample_manifest), class: 'btn btn-lg btn-primary' %>
+  <% if @sample_manifest.generated_document %>
+    <%= link_to "Download Blank Manifest", export_sample_manifest_path(@sample_manifest), class: 'btn btn-lg btn-primary' %>
+  <% else %>
+    <span class="btn btn-lg btn-secondary disabled">No Spreadsheet available</span>
+    <small>Spreadsheets may be missing for manifests created via the API</small>
+  <% end %>
   <% if @sample_manifest.uploaded_document %>
     <%= link_to 'Download Completed Manifest', uploaded_spreadsheet_sample_manifest_path(@sample_manifest), class: 'btn btn-lg btn-secondary' %>
+  <% else %>
+    <span class="btn btn-lg btn-secondary disabled">No Manifest Uploaded</span>
   <% end %>
 <% end %>
 

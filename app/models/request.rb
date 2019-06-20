@@ -43,8 +43,14 @@ class Request < ApplicationRecord
   # same as project with study
   belongs_to :initial_study, class_name: 'Study'
   belongs_to :work_order, optional: true
+  # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
+  # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
+  belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :requests_as_target, optional: true
+  belongs_to :asset, class_name: 'Receptacle', inverse_of: :requests, optional: true
+  belongs_to :source_well, class_name: 'Well', foreign_key: :asset_id, optional: true
 
   has_one :order_role, through: :order
+  has_one :_product_line, through: :request_type, source: :product_line
 
   has_many :failures, as: :failable
   has_many :samples, through: :asset, source: :samples
@@ -81,6 +87,8 @@ class Request < ApplicationRecord
   has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
   has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
 
+  convert_labware_to_receptacle_for :asset, :target_asset
+
   # A request_purpose is a simple means of distinguishing WHY a request was made.
   # cf. RequestType which defines how it will be fulfilled.
   # Both RequestType and Request have a purpose, with the former acting as the default for
@@ -106,65 +114,128 @@ class Request < ApplicationRecord
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
-  scope :for_pooling_of, ->(plate) {
-    submission_ids = plate.all_submission_ids
-    add_joins =
-      if plate.stock_plate?
-        ['INNER JOIN assets AS pw ON requests.asset_id=pw.id']
-      else
-        [
-          'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-          'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
-        ]
-      end
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    scope :for_pooling_of, ->(plate) {
+      submission_ids = plate.all_submission_ids
+      add_joins =
+        if plate.stock_plate?
+          ['INNER JOIN receptacles AS pw ON requests.asset_id=pw.id']
+        else
+          [
+            'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
+            'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+          ]
+        end
 
-    select(%{uuids.external_id AS pool_id,
-              GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into,
-              SUM(requests.state = 'passed') > 0 AS pool_complete,
-              MIN(requests.id) AS id,
-              MIN(requests.sti_type) AS sti_type,
-              MIN(requests.target_asset_id) AS target_asset_id,
-              MIN(requests.submission_id) AS submission_id,
-              MIN(requests.request_type_id) AS request_type_id})
-      .joins(add_joins + [
-        'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
-        'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-        'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
-      ])
-      .group('uuids.external_id')
-      .where(
-        container_associations: { container_id: plate.id },
-        requests: { submission_id: submission_ids }
-      ).where.not(
-        requests: { state: 'cancelled' }
-      )
-  }
+      select(%{uuids.external_id AS pool_id,
+                GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into,
+                SUM(requests.state = 'passed') > 0 AS pool_complete,
+                MIN(requests.id) AS id,
+                MIN(requests.sti_type) AS sti_type,
+                MIN(requests.target_asset_id) AS target_asset_id,
+                MIN(requests.submission_id) AS submission_id,
+                MIN(requests.request_type_id) AS request_type_id})
+        .joins(add_joins + [
+          'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
+          'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
+        ])
+        .group('uuids.external_id')
+        .where(
+          pw: { labware_id: plate.id },
+          requests: { submission_id: submission_ids }
+        ).where.not(
+          requests: { state: 'cancelled' }
+        )
+    }
 
-  scope :for_pre_cap_grouping_of, ->(plate) {
-    add_joins =
-      if plate.stock_plate?
-        ['INNER JOIN assets AS pw ON requests.asset_id=pw.id']
-      else
-        [
-          'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-          'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
-        ]
-      end
+    scope :for_pre_cap_grouping_of, ->(plate) {
+      add_joins =
+        if plate.stock_plate?
+          ['INNER JOIN labware AS pw ON requests.asset_id=pw.id']
+        else
+          [
+            'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
+            'INNER JOIN labware AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+          ]
+        end
 
-    select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
-      .joins(add_joins + [
-        'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
-        'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-        'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-        'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
-      ])
-      .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
-      .where(state: %w[started pending])
-      .where([
-        'container_associations.container_id=?',
-        plate.id
-      ])
-  }
+      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+        .joins(add_joins + [
+          'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+          'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
+          'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+        ])
+        .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
+        .where(state: %w[started pending])
+        .where(pw: { labware_id: plate })
+    }
+  end
+
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    scope :for_pooling_of, ->(plate) {
+      submission_ids = plate.all_submission_ids
+      add_joins =
+        if plate.stock_plate?
+          ['INNER JOIN assets AS pw ON requests.asset_id=pw.id']
+        else
+          [
+            'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
+            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+          ]
+        end
+
+      select(%{uuids.external_id AS pool_id,
+                GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into,
+                SUM(requests.state = 'passed') > 0 AS pool_complete,
+                MIN(requests.id) AS id,
+                MIN(requests.sti_type) AS sti_type,
+                MIN(requests.target_asset_id) AS target_asset_id,
+                MIN(requests.submission_id) AS submission_id,
+                MIN(requests.request_type_id) AS request_type_id})
+        .joins(add_joins + [
+          'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
+          'INNER JOIN container_associations ON container_associations.content_id=pw.id',
+          'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
+        ])
+        .group('uuids.external_id')
+        .where(
+          container_associations: { container_id: plate.id },
+          requests: { submission_id: submission_ids }
+        ).where.not(
+          requests: { state: 'cancelled' }
+        )
+    }
+
+    scope :for_pre_cap_grouping_of, ->(plate) {
+      add_joins =
+        if plate.stock_plate?
+          ['INNER JOIN assets AS pw ON requests.asset_id=pw.id']
+        else
+          [
+            'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
+            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+          ]
+        end
+
+      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+        .joins(add_joins + [
+          'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+          'INNER JOIN container_associations ON container_associations.content_id=pw.id',
+          'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
+          'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+        ])
+        .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
+        .where(state: %w[started pending])
+        .where([
+          'container_associations.container_id=?',
+          plate.id
+        ])
+    }
+  end
 
   scope :in_order, ->(order) { where(order_id: order) }
 
@@ -191,8 +262,6 @@ class Request < ApplicationRecord
     where(request_type_id: request_type)
   }
 
-  scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
-  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
   scope :full_inbox, -> { where(state: %w[pending hold]) }
@@ -284,13 +353,7 @@ class Request < ApplicationRecord
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query) { where(['id=?', query]) }
-
-  scope :find_all_target_asset, ->(target_asset_id) {
-    where(['target_asset_id = ?', target_asset_id.to_s])
-  }
-  scope :for_studies, ->(*studies) {
-    where(initial_study_id: studies)
-  }
+  scope :for_studies, ->(*studies) { where(initial_study_id: studies) }
 
   scope :with_assets_for_starting_requests, -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
@@ -314,11 +377,7 @@ class Request < ApplicationRecord
   delegate :name, to: :request_metadata
 
   delegate :date_for_state, to: :request_events
-
-  delegate :study, :study_id, to: :asset, allow_nil: true
-
   delegate :validator_for, to: :request_type
-
   delegate :role, to: :order_role, allow_nil: true
 
   def self.delegate_validator
@@ -577,7 +636,7 @@ class Request < ApplicationRecord
   end
 
   def product_line
-    request_type.product_line&.name
+    _product_line&.name
   end
 
   def manifest_processed!; end

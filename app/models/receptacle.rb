@@ -1,8 +1,32 @@
-class Receptacle < Asset
+AssetRefactor.when_not_refactored do
+  class Receptacle < Labware; end
+end
+
+AssetRefactor.when_refactored do
+  class Receptacle < Asset
+    include Uuid::Uuidable
+    include Commentable
+    belongs_to :labware
+  end
+end
+
+class Receptacle
   include Transfer::State
   include Aliquot::Remover
+  include StudyReport::AssetDetails
 
-  SAMPLE_PARTIAL = 'assets/samples_partials/asset_samples'.freeze
+  QC_STATE_ALIASES = {
+    'passed' => 'pass',
+    'failed' => 'fail'
+  }.freeze
+  self.sample_partial = 'assets/samples_partials/asset_samples'.freeze
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    include Asset::ReceptacleAssociations
+    has_many :messengers, as: :target, inverse_of: :target
+  end
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
@@ -30,7 +54,12 @@ class Receptacle < Asset
   has_many :samples, through: :aliquots
   has_many :studies, ->() { distinct }, through: :aliquots
   has_many :projects, ->() { distinct }, through: :aliquots
-  has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
+  has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot'
+  has_one :primary_sample, through: :primary_aliquot, source: :sample
+
+  has_many :submitted_assets, foreign_key: :asset_id # Created to associate an asset with an order
+  has_many :orders, through: :submitted_assets
+  has_many :ordered_studies, through: :orders, source: :study
 
   has_many :tags, through: :aliquots
 
@@ -39,12 +68,7 @@ class Receptacle < Asset
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
-  # DEPRECATED ASSOCIATIONS
-  # TODO: Remove these at some point in the future as they're kind of wrong!
-  has_one :sample, through: :primary_aliquot
-  deprecate sample: 'receptacles may contain multiple samples. This method just returns the first.'
-  has_one :get_tag, through: :primary_aliquot, source: :tag
-  deprecate get_tag: 'receptacles can contain multiple tags.'
+  has_many :external_library_creation_requests, foreign_key: :asset_id
 
   # Named scopes for the future
   scope :include_aliquots, ->() { includes(aliquots: %i(sample tag bait_library)) }
@@ -66,23 +90,19 @@ class Receptacle < Asset
   # Scope for caching the samples of the receptacle
   scope :including_samples, -> { includes(samples: :studies) }
 
-  def sample=(sample)
-    aliquots.clear
-    aliquots << Aliquot.new(sample: sample)
-  end
-  deprecate :sample=
-
   def update_aliquot_quality(suboptimal_quality)
     aliquots.each { |a| a.update_quality(suboptimal_quality) }
     true
   end
 
-  def tag
-    get_tag.try(:map_id) || ''
-  end
-  deprecate :tag
-
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    delegate :human_barcode, :machine_bracode, to: :labware
+    delegate :asset_type_for_request_types, to: :labware
+  end
 
   # Returns the map_id of the first and last tag in an asset
   # eg 1-96.
@@ -104,6 +124,20 @@ class Receptacle < Asset
     nil
   end
 
+  def compatible_qc_state
+    QC_STATE_ALIASES.fetch(qc_state, qc_state) || ''
+  end
+
+  def set_qc_state(state)
+    self.qc_state = QC_STATE_ALIASES.key(state) || state
+    save
+    set_external_release(qc_state)
+  end
+
+  def been_through_qc?
+    qc_state.present?
+  end
+
   def primary_aliquot_if_unique
     primary_aliquot if aliquots.count == 1
   end
@@ -112,11 +146,7 @@ class Receptacle < Asset
     self.class.name.underscore
   end
 
-  def specialized_from_manifest=(*args); end
-
   def library_information; end
-
-  def library_information=(*args); end
 
   def assign_tag2(tag)
     aliquots.each do |aliquot|
@@ -145,6 +175,61 @@ class Receptacle < Asset
     transfer_requests_as_target.find_by(submission_id: submission_id).try(:outer_request)
   end
 
+  # All studies related to this asset
+  def related_studies
+    (ordered_studies + studies).compact.uniq
+  end
+
+  def attach_tag(tag, tag2 = nil)
+    tags = { tag: tag, tag2: tag2 }.compact
+    return if tags.empty?
+    raise StandardError, 'Cannot tag an empty asset'   if aliquots.empty?
+    raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
+
+    aliquots.first.update!(tags)
+  end
+  alias attach_tags attach_tag
+
   # Contained samples also works on eg. plate
   alias_attribute :contained_samples, :samples
+
+  def name_for_label
+    primary_sample&.shorten_sanger_sample_id.presence || name
+  end
+
+  # We only support wells for the time being
+  def latest_stock_metrics(_product, *_args)
+    []
+  end
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    def display_name
+      labware_name = labware.present? ? labware.try(:human_barcode) : '(not on a labware)'
+      labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
+      labware_name
+    end
+  end
+
+  private
+
+  def set_external_release(state)
+    update_external_release do
+      if state == 'failed'  then self.external_release = false
+      elsif state == 'passed'  then self.external_release = true
+      elsif state == 'pending' then self # Do nothing
+      elsif state.nil?         then self # TODO: Ignore for the moment, correct later
+      elsif ['scanned_into_lab'].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
+      else raise StandardError, "Invalid external release state #{state.inspect}"
+      end
+    end
+  end
+
+  def update_external_release
+    external_release_nil_before = external_release.nil?
+    yield
+    save!
+    events.create_external_release!(!external_release_nil_before) unless external_release.nil?
+  end
 end

@@ -2,11 +2,20 @@ inherit_from: .rubocop_todo.yml
 require:
  - 'test_prof/rubocop'
  - 'rubocop-performance'
+ - rubocop-rails
  - rubocop-rspec
 RSpec/AggregateFailures:
   Enabled: true
   Include:
     - 'spec/**/*.rb'
+# Added exclude because api and feature specs do not have a specific class.
+RSpec/DescribeClass:
+  Exclude:
+    - 'spec/requests/**/*.rb'
+    - 'spec/api/**/*.rb'
+    - 'spec/features/**/*.rb'
+    - 'spec/lib/warren/*.rb'
+    - 'spec/models/billing/*.rb'
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:

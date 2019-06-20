@@ -1,3 +1,4 @@
+# Controls API V1 {::Core::Endpoint::Base endpoints} for Batches
 class ::Endpoints::Batches < ::Core::Endpoint::Base
   model do
   end

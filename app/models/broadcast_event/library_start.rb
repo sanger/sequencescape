@@ -13,7 +13,7 @@ class BroadcastEvent::LibraryStart < BroadcastEvent
   has_subject(:library_source_labware, :source_plate)
 
   has_subjects(:stock_plate, :original_stock_plates)
-  has_subjects(:sample) { |plate, e| plate.samples_in_order(e.properties[:order_id]) }
+  has_subjects(:sample) { |plate, e| Sample.for_plate_and_order(plate.id, e.properties[:order_id]) }
 
   def order
     @order ||= Order.includes(:study, :project, :submission).find(properties[:order_id])

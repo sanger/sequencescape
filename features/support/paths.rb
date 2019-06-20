@@ -168,8 +168,6 @@ module NavigationHelpers
     when /the plate purpose homepage/
       admin_plate_purposes_path
 
-    when /the pico dilution index page/
-      "#{pico_dilutions_path}.xml"
     when /the sequenom qc home page/
       sequenom_qc_plates_path
     when /the plate template homepage/

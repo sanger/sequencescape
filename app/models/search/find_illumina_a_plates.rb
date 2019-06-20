@@ -5,7 +5,7 @@ class Search::FindIlluminaAPlates < Search
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked
     # for transfer) the destination plate becomes the end of the chain.
     Plate.include_plate_purpose
-         .with_plate_purpose(illumina_a_plate_purposes)
+         .with_purpose(illumina_a_plate_purposes)
          .with_no_outgoing_transfers.in_state(criteria['state'])
   end
 
