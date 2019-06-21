@@ -19,15 +19,16 @@ And I have a "full" authorised user with the key "cucumber"
 
     # Setup the plates so that they flow appropriately.  This is a bit of a cheat in that it's only
     # a direct link and that we're faking out the pipeline work but it suffices.
+    Given I have an ISC submission template
     Given a "SC stock DNA" plate called "Testing bait libraries" exists
       And all wells on the plate "Testing bait libraries" have unique samples
       And the UUID for the plate "Testing bait libraries" is "00000000-1111-2222-3333-000000000001"
 
-    Given "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Pulldown SC - HiSeq Paired end sequencing" with the following request options:
+    Given "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Pulldown ISC - HiSeq Paired end sequencing" with the following request options:
       | read_length       | 100                 |
       | bait_library_name | Human all exon 50MB |
 
-    Given "A7-H12" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Pulldown SC - HiSeq Paired end sequencing" with the following request options:
+    Given "A7-H12" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Pulldown ISC - HiSeq Paired end sequencing" with the following request options:
       | read_length       | 100            |
       | bait_library_name | Mouse all exon |
 
