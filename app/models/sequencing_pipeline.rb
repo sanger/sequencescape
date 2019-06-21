@@ -8,10 +8,6 @@ class SequencingPipeline < Pipeline
     [:remove]
   end
 
-  def inbox_partial
-    group_by_parent? ? 'group_by_parent' : super
-  end
-
   def is_read_length_consistent_for_batch?(batch)
     if (batch.requests.size == 0) || (batch.requests.first.request_metadata.nil?)
       # No requests selected or the pipeline doesn't contain metadata to check

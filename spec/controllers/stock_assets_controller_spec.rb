@@ -23,7 +23,7 @@ RSpec.describe StockAssetsController do
 
     context 'with a single plex batch' do
       let(:batch) { create :batch, request_count: 2 }
-      let(:library_tube_ids) { batch.reload.requests.map(&:target_asset_id) }
+      let(:library_tube_ids) { batch.reload.requests.map { |r| r.target_asset.labware.id } }
 
       context 'without a stock tube' do
         it 'renders the form' do

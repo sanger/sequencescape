@@ -46,20 +46,6 @@ class Lane
     custom_attribute(:release_reason, in: LIST_REASONS)
   end
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    has_one :spiked_in_buffer_links, ->() { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct }, class_name: 'AssetLink', foreign_key: :descendant_id
-  end
-
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    has_one :spiked_in_buffer_links, ->() { joins(:ancestor).where(assets: { sti_type: 'SpikedBuffer' }).direct }, class_name: 'AssetLink', foreign_key: :descendant_id
-  end
-
-  has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
-
   has_many :aliquot_indicies, inverse_of: :lane, class_name: 'AliquotIndex'
 
   scope :for_rebroadcast, -> { includes(requests_as_target: :batch) }

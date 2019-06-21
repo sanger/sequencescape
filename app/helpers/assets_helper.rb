@@ -27,10 +27,10 @@ module AssetsHelper
   end
 
   # Returns an appropriate path given the current parameters
-  def new_request_asset_path_in_context(asset)
+  def new_request_receptacle_path_in_context(asset)
     path_options = {}
     path_options[:study_id] = params[:study_id] if params.key?(:study_id)
-    new_request_asset_path(path_options.merge(id: asset.id))
+    new_request_receptacle_path(path_options.merge(id: asset.receptacle.id))
   end
 
   # Given the core name of an instance variable or ID parameter this method yields the name of the ID

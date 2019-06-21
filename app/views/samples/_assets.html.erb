@@ -1,5 +1,5 @@
 <%= panel do %>
-  <h3>Assets <span class='badge badge-primary'><%= @sample.assets.length %></span></h3>
+  <h3>Receptacles <span class='badge badge-primary'><%= @sample.receptacles.length %></span></h3>
 
   <table width='100%'>
     <thead>
@@ -8,9 +8,9 @@
       </tr>
     </thead>
     <tbody>
-      <% @sample.assets.each do |asset| %>
+      <% @sample.receptacles.each do |receptacle| %>
         <tr>
-          <td><%= link_to asset.display_name, asset_path(asset) %> <%= asset.details %></td>
+          <td><%= link_to receptacle.display_name, receptacle_path(receptacle) %> <%= receptacle.details %></td>
         </tr>
       <% end %>
     </tbody>

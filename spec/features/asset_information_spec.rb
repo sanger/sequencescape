@@ -8,54 +8,42 @@ RSpec.configure do |c|
 end
 
 describe 'Viewing an asset' do
+  # We'll keep the old controller around for a little while to ensure any
+  # bookmarks continue to work.
+
   let(:user) { create :user }
 
-  shared_examples 'an asset' do
-    it 'can be viewed on its show page' do
-      login_user user
-      visit asset_path(asset)
-      expect(find('h1')).to have_content("Asset #{asset.name}")
+  setup do
+    expect(Labware).to receive(:find_by).with(id: '1').and_return(labware)
+    expect(Receptacle).to receive(:find_by).with(id: '1').and_return(receptacle)
+    login_user user
+    visit asset_path(id: 1)
+  end
+
+  context 'when the id is unambiguous' do
+    let(:labware) { create :sample_tube }
+    let(:receptacle) { nil }
+
+    it 'redirects to the Labware' do
+      expect(find('h1')).to have_content("Labware #{labware.name}")
     end
   end
 
-  context 'a sample tube' do
-    let(:asset) { create :sample_tube }
+  context 'when the receptacle maps to the labware' do
+    let(:labware) { create :sample_tube }
+    let(:receptacle) { labware.receptacle }
 
-    it_behaves_like 'an asset'
-  end
-
-  context 'a library_tube' do
-    let(:asset) { create :library_tube }
-
-    it_behaves_like 'an asset'
-  end
-
-  context 'a lane' do
-    let(:asset) { create :lane }
-
-    it_behaves_like 'an asset'
-  end
-
-  context 'a well' do
-    let(:asset) { create :well }
-
-    it_behaves_like 'an asset'
-  end
-
-  context 'a plate' do
-    let(:asset) { create :plate, well_count: 2 }
-
-    context 'in labwhere' do
-      setup { stub_lwclient_labware_find_by_bc(lw_barcode: asset.machine_barcode, lw_locn_name: 'location', lw_locn_parentage: 'place > location') }
-      it_behaves_like 'an asset'
+    it 'redirects to the Labware' do
+      expect(find('h1')).to have_content("Labware #{labware.name}")
     end
+  end
 
-    context 'Not in labwhere' do
-      setup do
-        stub_lwclient_labware_find_by_bc(lw_barcode: asset.human_barcode)
-        stub_lwclient_labware_find_by_bc(lw_barcode: asset.machine_barcode)
-      end
-      it_behaves_like 'an asset'
+  context 'when there is some ambiguity' do
+    let(:labware) { create :sample_tube }
+    let(:receptacle) { create(:sample_tube).receptacle }
+
+    it 'redirects to the Labware' do
+      expect(find('h1')).to have_content('Which Did You Mean?')
     end
   end
 end

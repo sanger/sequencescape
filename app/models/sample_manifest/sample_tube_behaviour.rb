@@ -67,7 +67,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def labware_from_samples
-      samples.map { |sample| sample.assets.first }
+      samples.map(&:primary_receptacle)
     end
 
     def labware=(labware)

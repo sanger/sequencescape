@@ -4,7 +4,7 @@
 module ReceptacleAssociations
   extend ActiveSupport::Concern
   included do
-    has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
+    has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset, foreign_key: :asset_id
     has_many :asset_groups, through: :asset_group_assets
     has_many :qc_results, dependent: :destroy, foreign_key: :asset_id, inverse_of: :asset
     # TODO: Remove 'requests' and 'source_request' as they are abiguous

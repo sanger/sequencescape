@@ -25,8 +25,8 @@
           <td class="request center" width='5%'>
             <%= label_tag(line.request_group_id, "Select #{ line.parent.human_barcode } for batch", style: 'display:none') %>
             <%= label_tag(line.request_group_id, "Include request #{line.index+1}", style: 'display:none') %>
-            <%= check_box(:request_group, line.group_id, id: line.request_group_id, class: 'grouped_checkbox', :'data-count' => line.wells) %>
-            <%= hidden_field_tag("#{line.request_group_id}_size", "",  value: line.wells)  %>
+            <%= check_box(:request_group, line.group_id, id: line.request_group_id, class: 'grouped_checkbox', :'data-count' => line.well_count) %>
+            <%= hidden_field_tag("#{line.request_group_id}_size", "",  value: line.well_count)  %>
           </td>
           <td  style='text-align: center'>
             <!-- TODO: Restore priority toggle for grouped submissions -->

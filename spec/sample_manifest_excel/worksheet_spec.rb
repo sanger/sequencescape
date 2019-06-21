@@ -222,7 +222,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
           sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number).to_i)
           expect(sample).to be_present
           expect(sample.sample_manifest).to be_present
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_tube_id).number)).to eq(sample.assets.first.human_barcode)
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_tube_id).number)).to eq(sample.primary_receptacle.human_barcode)
         end
       end
 
@@ -399,8 +399,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
           sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number))
           expect(sample).to be_present
           expect(sample.sample_manifest).to be_present
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_plate_id).number)).to eq(sample.assets.first.plate.human_barcode)
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :well).number)).to eq(sample.assets.first.map_description)
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_plate_id).number)).to eq(sample.primary_receptacle.plate.human_barcode)
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :well).number)).to eq(sample.primary_receptacle.map_description)
         end
       end
     end

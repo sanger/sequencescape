@@ -58,7 +58,7 @@ module SampleManifest::LibraryBehaviour
     end
 
     def labware_from_samples
-      samples.map { |sample| sample.assets.first }
+      samples.map { |sample| sample.receptacles.first }
     end
 
     def labware

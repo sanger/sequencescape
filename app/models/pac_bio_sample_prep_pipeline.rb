@@ -1,7 +1,7 @@
 class PacBioSamplePrepPipeline < Pipeline
   ALWAYS_SHOW_RELEASE_ACTIONS = true
+  include Pipeline::GroupByParent
 
-  self.inbox_partial = 'group_by_parent'
   self.requires_position = false
   self.inbox_eager_loading = :loaded_for_pacbio_inbox_display
 

@@ -223,24 +223,16 @@ class Batch < ApplicationRecord
     requests.with_assets_for_starting_requests.not_failed.map(&:start!)
   end
 
-  def input_group
-    pipeline.group_requests requests
+  def input_labware
+    pipeline.input_labware requests
+  end
+
+  def output_labware
+    pipeline.output_labware requests.with_target
   end
 
   def input_plate_group
     source_assets.group_by(&:plate)
-  end
-
-  def input_group_sorted_by_map_id
-    source_assets.sort_by(&:map_id).group_by(&:parent)
-  end
-
-  def output_group
-    pipeline.group_requests requests.with_target, by_target: true
-  end
-
-  def output_group_by_holder
-    pipeline.group_requests requests.with_target, by_target: true, group_by_holder_only: true
   end
 
   # This looks odd. Why would a request have the same asset as target asset? Why are we filtering them out here?

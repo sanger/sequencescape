@@ -52,11 +52,11 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         before do
           Aker::Material.config = my_config
           allow(sample).to receive(:container).and_return(container)
-          @conc_a = create :qc_result, key: 'concentration', value: 33, asset: asset
-          @conc_b = create :qc_result, key: 'concentration', value: 44, asset: asset
+          @conc_a = create :qc_result_concentration, value: 33, asset: asset
+          @conc_b = create :qc_result_concentration, value: 44, asset: asset
 
-          @vol_a = create :qc_result, key: 'volume', value: 0.33, asset: asset
-          @vol_b = create :qc_result, key: 'volume', value: 0.44, asset: asset
+          @vol_a = create :qc_result_volume, value: 0.33, asset: asset
+          @vol_b = create :qc_result_volume, value: 0.44, asset: asset
         end
 
         it 'returns the concentration from it' do

@@ -180,6 +180,9 @@ class Sample < ApplicationRecord
   end
 
   has_many :assets, ->() { distinct }, through: :aliquots, source: :receptacle
+  deprecate assets: 'use receptacles instead, or labware if needed'
+
+  has_many :receptacles, ->() { distinct }, through: :aliquots
   has_many :wells, ->() { distinct }, through: :aliquots, source: :receptacle, class_name: 'Well'
 
   has_many_events do
@@ -192,7 +195,7 @@ class Sample < ApplicationRecord
 
   has_many :roles, as: :authorizable
   has_many :comments, as: :commentable
-  has_many :asset_groups, through: :assets
+  has_many :asset_groups, through: :receptacles
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
 
@@ -377,7 +380,7 @@ class Sample < ApplicationRecord
   end
 
   def withdraw_consent
-    update_attribute(:consent_withdrawn, true)
+    update!(consent_withdrawn: true)
   end
 
   def subject_type

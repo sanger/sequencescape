@@ -164,7 +164,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       library_tubes.each_with_index do |tube, i|
         create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
         row_data = data.dup
-        row_data[0] = tube.samples.first.assets.first.human_barcode
+        row_data[0] = tube.samples.first.primary_receptacle.human_barcode
         row_data[1] = tube.samples.first.sanger_sample_id
         row_data[2] = tags[i][:i7]
         row_data[3] = tags[i][:i5]
@@ -202,7 +202,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         rq = create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
         rq.manifest_processed!
         row_data = data.dup
-        row_data[0] = tube.samples.first.assets.first.human_barcode
+        row_data[0] = tube.samples.first.primary_receptacle.human_barcode
         row_data[1] = tube.samples.first.sanger_sample_id
         row_data[2] = tags[i][:i7]
         row_data[3] = tags[i][:i5]

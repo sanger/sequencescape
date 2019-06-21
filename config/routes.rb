@@ -455,11 +455,12 @@ Rails.application.routes.draw do
   end
 
   get 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
-  get 'assets/receive_barcode' => 'assets#receive_barcode'
-  get 'assets/import_from_snp' => 'assets#import_from_snp'
-  get 'assets/find_by_barcode' => 'assets#find_by_barcode'
-  get 'lab_view' => 'assets#lab_view', :as => :lab_view
-  post 'assets/lab_view'
+
+  get 'assets/find_by_barcode', to: redirect('labware/find_by_barcode')
+  get 'labware/find_by_barcode' => 'labware#find_by_barcode'
+
+  get 'lab_view' => 'labware#lab_view', :as => :lab_view
+  post 'labware/lab_view'
 
   resources :tag_groups, except: [:destroy] do
     resources :tags, except: [:destroy, :index, :create, :new, :edit]
@@ -469,7 +470,51 @@ Rails.application.routes.draw do
 
   resources :assets, except: [:create, :new] do
     collection do
-      get :snp_register
+      get :reception
+      post :print_labels
+    end
+
+    member do
+      get :parent_assets
+      get :child_assets
+      get :show_plate
+      get :new_request
+      post :create_request
+      get :summary
+      get :close
+      get :print
+      get :history
+      post :move
+      post :print_assets
+    end
+
+    resources :qc_files
+  end
+
+  resources :labware, except: [:create, :new] do
+    collection do
+      get :reception
+      post :print_labels
+    end
+
+    member do
+      get :parent_assets
+      get :child_assets
+      get :show_plate
+      get :summary
+      get :close
+      get :print
+      get :history
+      post :move
+      post :print_assets
+    end
+
+    resources :qc_files
+    resources :comments, controller: 'labware/comments'
+  end
+
+  resources :receptacles, except: [:create, :new] do
+    collection do
       get :reception
       post :print_labels
     end
@@ -491,8 +536,7 @@ Rails.application.routes.draw do
       post :print_assets
     end
 
-    resources :qc_files
-    resources :comments, controller: 'assets/comments'
+    resources :comments, controller: 'receptacles/comments'
   end
 
   resources :plates do

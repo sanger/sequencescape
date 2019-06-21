@@ -18,8 +18,8 @@ ProductLine.create(name: 'Illumina-HTP')
 def set_pipeline_flow_to(sequence)
   sequence.each do |current_name, next_name|
     current_pipeline, next_pipeline = [current_name, next_name].map { |name| Pipeline.find_by(name: name) or raise "Cannot find pipeline '#{name}'" }
-    current_pipeline.update_attribute(:next_pipeline_id, next_pipeline.id)
-    next_pipeline.update_attribute(:previous_pipeline_id, current_pipeline.id)
+    current_pipeline.update!(next_pipeline_id: next_pipeline.id)
+    next_pipeline.update!(previous_pipeline_id: current_pipeline.id)
   end
 end
 
@@ -193,37 +193,6 @@ end.tap do |pipeline|
     pipeline: pipeline,
     request_information_type: RequestInformationType.find_by(label: 'Concentration')
   )
-end
-
-PulldownLibraryCreationPipeline.create!(name: 'Pulldown library preparation') do |pipeline|
-  pipeline.asset_type = 'LibraryTube'
-  pipeline.sorter     = 12
-  pipeline.automated  = false
-  pipeline.active     = true
-
-  pipeline.request_types << RequestType.create!(key: 'pulldown_library_creation', name: 'Pulldown library creation') do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'SampleTube'
-    request_type.order             = 1
-    request_type.multiples_allowed = false
-    request_type.request_class = LibraryCreationRequest
-  end
-
-  pipeline.workflow = Workflow.create!(name: 'Pulldown library preparation') do |workflow|
-    workflow.locale = 'External'
-  end.tap do |workflow|
-    [
-      { class: SetDescriptorsTask, name: 'Shearing',               sorted: 1, batched: false, interactive: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Library preparation',    sorted: 2, batched: false, interactive: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Pre-hybridisation PCR',  sorted: 3, batched: false, interactive: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Hybridisation',          sorted: 4, batched: false, interactive: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Post-hybridisation PCR', sorted: 5, batched: false, interactive: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'qPCR',                   sorted: 6, batched: false, interactive: true, lab_activity: true }
-    ].each do |details|
-      details.delete(:class).create!(details.merge(workflow: workflow))
-    end
-  end
 end
 
 cluster_formation_se_request_type = %w[a b c].map do |pl|
@@ -752,33 +721,6 @@ GenotypingPipeline.create!(name: 'Genotyping') do |pipeline|
   end
 end
 
-PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Library Preparation') do |pipeline|
-  pipeline.asset_type           = 'Well'
-  pipeline.sorter               = 14
-  pipeline.automated            = false
-  pipeline.active               = true
-  pipeline.group_by_parent      = true
-  pipeline.max_size             = 96
-
-  pipeline.request_types << RequestType.create!(key: 'pulldown_multiplexing', name: 'Pulldown Multiplex Library Preparation') do |request_type|
-    request_type.billable          = true
-    request_type.asset_type        = 'Well'
-    request_type.target_asset_type = 'PulldownMultiplexedLibraryTube'
-    request_type.order             = 1
-    request_type.request_class     = PulldownMultiplexedLibraryCreationRequest
-    request_type.multiples_allowed = false
-    request_type.for_multiplexing  = true
-  end
-
-  pipeline.workflow = Workflow.create!(name: 'Pulldown Multiplex Library Preparation').tap do |workflow|
-    [
-      { class: TagGroupsTask, name: 'Tag Groups', sorted: 1 }
-    ].each do |details|
-      details.delete(:class).create!(details.merge(workflow: workflow))
-    end
-  end
-end
-
 PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.sorter               = 14
   pipeline.automated            = false
@@ -1076,16 +1018,6 @@ end << RequestType.create!(key: 'bespoke_hiseq_x_paired_end_sequencing',
                            billable: true,
                            product_line: ProductLine.find_by(name: 'Illumina-C'))
 
-st_x10 = [RequestType.create!(key: 'hiseq_x_paired_end_sequencing',
-                              name: 'HiSeq X Paired end sequencing',
-
-                              asset_type: 'Well',
-                              order: 2,
-                              initial_state: 'pending',
-                              request_class_name: 'HiSeqSequencingRequest',
-                              billable: true,
-                              product_line: ProductLine.find_by(name: 'Illumina-B'))]
-
 ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq v4 PE #{type}",
@@ -1187,38 +1119,6 @@ end
       end
     end
     pipeline.request_types = x10_requests_types
-  end
-end
-['(spiked in controls) from strip-tubes'].each do |type|
-  UnrepeatableSequencingPipeline.create!(
-    name: "HiSeq X PE #{type}",
-    automated: false,
-    active: true,
-    group_by_parent: true,
-    asset_type: 'Lane',
-    sorter: 9,
-    paginate: false,
-    max_size: 8,
-    min_size: 8,
-    summary: true,
-    group_name: 'Sequencing',
-    control_request_type_id: 0
-  ) do |pipeline|
-    pipeline.workflow = Workflow.create!(name: pipeline.name) do |workflow|
-      workflow.locale     = 'Internal'
-      workflow.item_limit = 8
-    end.tap do |workflow|
-      [
-        { class: SetDescriptorsTask, name: 'Specify Dilution Volume', sorted: 1, batched: true },
-        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
-      ].each do |details|
-        details.delete(:class).create!(details.merge(workflow: workflow))
-      end
-    end
-    pipeline.request_types = st_x10
   end
 end
 

@@ -14,6 +14,6 @@ describe 'Lab view', js: true do
     fill_in('Volume (µL)', with: 20)
     fill_in('Concentration (nM)', with: 30)
     click_on 'Update'
-    expect(page).to have_text 'Asset was successfully updated'
+    expect(page).to have_text 'Labware was successfully updated'
   end
 end

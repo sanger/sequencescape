@@ -1,5 +1,5 @@
 <%= page_title "Lab View", Date.today %>
-<%= form_for(@asset, as: :asset, url: { controller: "assets", action: "update", id: @asset.id, lab_view: true }, html: { method: :put }) do |f| %>
+<%= form_for(@asset, as: :labware, url: { controller: 'labware', action: "update", id: @asset.id, lab_view: true }, html: { method: :put }) do |f| %>
   <%= panel do %>
     <table class="table">
       <tr><th>Name</th><td><%= h(@asset.display_name) %></td></tr>
@@ -18,8 +18,12 @@
         <li><%= link_to "#{study.id} - #{study.name}", study %></li>
       <% end %>
       </ul></td></tr>
-      <tr><th><%= f.label :volume, 'Volume (µL)' %></th><td><%= f.text_field :volume %></td></tr>
-      <tr><th><%= f.label :concentration, 'Concentration (nM)' %></th><td><%= f.text_field :concentration %></td></tr>
+      <% if @asset.respond_to?(:volume) %>
+        <tr><th><%= f.label :volume, 'Volume (µL)' %></th><td><%= f.text_field :volume %></td></tr>
+      <% end %>
+      <% if @asset.respond_to?(:concentration) %>
+        <tr><th><%= f.label :concentration, 'Concentration (nM)' %></th><td><%= f.text_field :concentration %></td></tr>
+      <% end %>
       <tr><td></td><td><%= submit_tag 'Update' %></td></tr>
     </table>
   <% end %>

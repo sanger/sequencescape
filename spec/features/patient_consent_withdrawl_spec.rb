@@ -61,7 +61,7 @@ describe 'Sample#consent_withdrawn', js: false do
       # and optimization
       let(:submission_template) { create :submission_template, request_type_ids_list: [[create(:request_type).id]] }
       let(:sample_tube) { create :sample_tube, sample: sample }
-      let(:asset_group) { create :asset_group, assets: [sample_tube] }
+      let(:asset_group) { create :asset_group, assets: [sample_tube.receptacle] }
 
       context 'defined by asset group' do
         let(:order) do

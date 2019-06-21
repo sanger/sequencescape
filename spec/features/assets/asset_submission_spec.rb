@@ -10,7 +10,7 @@ describe 'Asset submission', js: true do
   let(:request_types) { create_list(:sequencing_request_type, 2) }
   let(:original_request_type) { request_types.first }
   let(:selected_request_type) { original_request_type }
-  let(:selected_read_length) { 76 }
+  let(:selected_read_length) { '76' }
   let!(:original_request) do
     create(request_factory,
            study: study,
@@ -32,8 +32,8 @@ describe 'Asset submission', js: true do
       select(selected_read_length, from: 'Read length')
       click_button 'Create'
       expect(page).to have_content 'Created request'
-      expect(page).to have_current_path(asset_path(asset))
-      expect { Delayed::Worker.new.work_off }.to change { asset.requests.where(request_type_id: selected_request_type).count }.by 1
+      expect(page).to have_current_path(receptacle_path(asset.receptacle))
+      expect { Delayed::Worker.new.work_off }.to change { asset.requests_as_source.where(request_type_id: selected_request_type).count }.by 1
     end
   end
 
@@ -48,8 +48,8 @@ describe 'Asset submission', js: true do
       select(selected_read_length.to_s, from: 'Read length')
       click_button 'Create'
       expect(page).to have_content 'Created request'
-      expect(page).to have_current_path(asset_path(asset))
-      expect { Delayed::Worker.new.work_off }.to change { asset.requests.where(request_type_id: selected_request_type).count }.by 1
+      expect(page).to have_current_path(receptacle_path(asset.receptacle))
+      expect { Delayed::Worker.new.work_off }.to change { asset.requests_as_source.where(request_type_id: selected_request_type).count }.by 1
     end
 
     it 'request additional sequencing with override study' do
@@ -66,8 +66,8 @@ describe 'Asset submission', js: true do
       select(selected_read_length, from: 'Read length')
       click_button 'Create'
       expect(page).to have_content 'Created request'
-      expect(page).to have_current_path(asset_path(asset))
-      expect { Delayed::Worker.new.work_off }.to change { asset.requests.where(request_type_id: selected_request_type).count }.by 1
+      expect(page).to have_current_path(receptacle_path(asset.receptacle))
+      expect { Delayed::Worker.new.work_off }.to change { asset.requests_as_source.where(request_type_id: selected_request_type).count }.by 1
     end
   end
 

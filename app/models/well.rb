@@ -140,37 +140,20 @@ class Well < Receptacle
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
   scope :select_table, ->() { select("#{table_name}.*") }
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    scope :pooled_as_target_by_transfer, ->() {
-      joins('LEFT JOIN transfer_requests patb ON assets.id=patb.target_asset_id')
-        .select_table
-        .select('patb.submission_id AS pool_id').distinct
-    }
-    scope :pooled_as_source_by, ->(type) {
-      joins('LEFT JOIN requests pasb ON assets.id=pasb.asset_id')
-        .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
-        .select_table
-        .select('pasb.submission_id AS pool_id').distinct
-    }
-  end
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    scope :pooled_as_target_by_transfer, ->() {
-      joins('LEFT JOIN transfer_requests patb ON receptacles.id=patb.target_asset_id')
-        .select_table
-        .select('patb.submission_id AS pool_id').distinct
-    }
-    scope :pooled_as_source_by, ->(type) {
-      joins('LEFT JOIN requests pasb ON receptacles.id=pasb.asset_id')
-        .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
-        .select_table
-        .select('pasb.submission_id AS pool_id').distinct
-    }
-  end
+  scope :pooled_as_target_by_transfer, ->() {
+    joins("LEFT JOIN transfer_requests patb ON #{table_name}.id=patb.target_asset_id")
+      .select_table
+      .select('patb.submission_id AS pool_id').distinct
+  }
+
+  scope :pooled_as_source_by, ->(type) {
+    joins("LEFT JOIN requests pasb ON #{table_name}.id=pasb.asset_id")
+      .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
+      .select_table
+      .select('pasb.submission_id AS pool_id').distinct
+  }
+
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
   scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
   scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
@@ -191,7 +174,7 @@ class Well < Receptacle
   }
   scope :with_contents, -> { joins(:aliquots) }
 
-  delegate :location, :location_id, :location_id=, :printable_target, to: :plate, allow_nil: true
+  delegate :location, :location_id, :location_id=, :printable_target, :source_plate, to: :plate, allow_nil: true
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
@@ -377,10 +360,6 @@ class Well < Receptacle
 
   def asset_type_for_request_types
     self.class
-  end
-
-  def source_plate
-    plate && plate.source_plate
   end
 
   def update_from_qc(qc_result)

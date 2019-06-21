@@ -10,6 +10,11 @@ AssetRefactor.when_refactored do
   end
 end
 
+# A receptacle is a container for {Aliquot aliquots}, they are associated with
+# {Labware}, which represents the physical object which moves round the lab.
+# A {Labware} may have a single {Receptacle}, such as in the case of a {Tube}
+# or multiple, in the case of a {Plate}.
+# Work can be {Request requested} on a particular receptacle.
 class Receptacle
   include Transfer::State
   include Aliquot::Remover
@@ -27,6 +32,7 @@ class Receptacle
     include Asset::ReceptacleAssociations
     has_many :messengers, as: :target, inverse_of: :target
     delegate :scanned_in_date, to: :labware
+    has_one :spiked_in_buffer, through: :labware
   end
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
@@ -98,13 +104,25 @@ class Receptacle
 
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
 
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def total_comment_count
+      comments.size
+    end
+  end
+
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
-    delegate :human_barcode, :machine_bracode, to: :labware
-    delegate :asset_type_for_request_types, to: :labware
-    delegate :has_stock_asset?, to: :labware
-    delegate :children, to: :labware
+    delegate :human_barcode, :machine_bracode, to: :labware, allow_nil: true
+    delegate :asset_type_for_request_types, to: :labware, allow_nil: true
+    delegate :has_stock_asset?, to: :labware, allow_nil: true
+    delegate :children, to: :labware, allow_nil: true
+
+    def total_comment_count
+      comments.size + labware.comments.size
+    end
   end
 
   # Returns the map_id of the first and last tag in an asset

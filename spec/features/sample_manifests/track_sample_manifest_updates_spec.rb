@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'timecop'
 
 describe 'track SampleManifest updates' do
   include FetchTable
@@ -31,10 +32,6 @@ describe 'track SampleManifest updates' do
     load_manifest_spec
     visit(study_path(study))
     click_link('Sample Manifests')
-  end
-
-  after do
-    Timecop.return
   end
 
   it 'Some samples get updated by a manifest and events get created' do

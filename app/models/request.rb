@@ -284,25 +284,48 @@ class Request < ApplicationRecord
   scope :with_asset_location, -> { includes(asset: :map) }
   scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
 
-  # Use container location
-  scope :holder_located, ->() {
-    joins('INNER JOIN container_associations hl ON hl.content_id = asset_id')
-      .where('hl.id is not null')
-      .readonly(false)
-  }
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    scope :asset_on_labware, ->() {
+                               joins(:asset)
+                                 .select('requests.*')
+                                 .select('receptacles.labware_id AS labware_id')
+                                 .where.not(receptacles: { labware_id: nil })
+                             }
+    scope :target_asset_on_labware, ->() {
+                                      joins(:target_asset)
+                                        .select('requests.*')
+                                        .select('receptacles.labware_id AS labware_id')
+                                        .where.not(receptacles: { labware_id: nil })
+                                    }
+  end
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    # Use container location
+    scope :asset_on_labware, ->() {
+      joins('INNER JOIN container_associations hl ON hl.content_id = asset_id')
+        .where('hl.id is not null')
+        .select('requests.*')
+        .select('hl.container_id AS labware_id')
+        .readonly(false)
+    }
+    scope :target_asset_on_labware, ->() {
+      joins('INNER JOIN container_associations hl ON hl.content_id = target_asset_id')
+        .where('hl.id is not null')
+        .select('requests.*')
+        .select('hl.container_id AS labware_id')
+        .readonly(false)
+    }
+  end
 
-  scope :holder_not_control, -> {
-    joins(['INNER JOIN container_associations hncca ON hncca.content_id = asset_id', 'INNER JOIN assets AS hncc ON hncc.id = hncca.container_id'])
-      .where(['hncc.sti_type != ?', 'ControlPlate'])
-      .readonly(false)
-  }
   scope :without_asset, -> { where('asset_id is null') }
   scope :without_target, -> { where('target_asset_id is null') }
   scope :excluding_states, ->(states) {
     where.not(state: states)
   }
   scope :ordered, -> { order('id ASC') }
-  scope :full_inbox, -> { where(state: %w[pending hold]) }
   scope :hold, -> { where(state: 'hold') }
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
@@ -315,10 +338,6 @@ class Request < ApplicationRecord
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
   scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
 
-  scope :group_conditions, ->(conditions, variables) {
-    where([conditions.join(' OR '), *variables])
-  }
-
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids, ->(ids) {
@@ -327,36 +346,6 @@ class Request < ApplicationRecord
                         }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
-
-  # Because of our group we need to explicitly declare what we are selecting for 5.7
-  # We add :request_type_id to the group by as this allows us to select it without an aggregate operation
-  # Now, in practice it hardly matters, as there should be only one request_type_id anyway
-  # However, in the event this changes, an aggregate would hide this, so we should probably ensure that
-  # its explicit.
-  # We select MIN submission_id, this isn't ideal, but struggling to think of an alternative without
-  # complete restructuring.
-  # Yuck. We also need to select asset_id and target asset_id explicity in Rails 4.
-  # Need to completely re-think this.
-  scope :for_group_by, ->(attributes) {
-    # SELECT and GROUP BY do NOT scrub their input. While there shouldn't be any user provided input
-    # comming in here, lets be cautious!
-    scrubbed_atts = attributes.map { |k, v| "#{k.to_s.gsub(/[^\w\.]/, '')}.#{v.to_s.gsub(/[^\w\.]/, '')}" }
-    scrubbed_atts << 'requests.request_type_id'
-
-    group(scrubbed_atts)
-      .select([
-        'MIN(requests.sti_type) AS sti_type',
-        'MIN(requests.id) AS id',
-        'MIN(requests.submission_id) AS submission_id',
-        'MAX(requests.priority) AS max_priority',
-        'MIN(requests.order_id) AS order_id',
-        'hl.container_id AS container_id',
-        'count(DISTINCT requests.id) AS request_count',
-        'MIN(requests.asset_id) AS asset_id',
-        'MIN(requests.target_asset_id) AS target_asset_id'
-      ])
-      .select(scrubbed_atts)
-  }
 
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
@@ -392,16 +381,6 @@ class Request < ApplicationRecord
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
-  end
-
-  def self.group_requests(options = {})
-    target = options[:by_target] ? 'target_asset_id' : 'asset_id'
-    groupings = options.delete(:group) || {}
-
-    select('requests.*, tca.container_id AS container_id, tca.content_id AS content_id')
-      .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
-      .readonly(false)
-      .group(groupings)
   end
 
   def self.for_study(study)

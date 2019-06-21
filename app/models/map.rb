@@ -218,36 +218,12 @@ class Map < ApplicationRecord
     "#{('A'.getbyte(0) + row).chr}#{column}"
   end
 
-  def self.next_map_position(current_map_id)
-    Map.find(current_map_id).next_map_position
-  end
-
-  def next_map_position
-    Map.find_by(
-      asset_size: asset_size,
-      asset_shape_id: asset_shape_id,
-      row_order: row_order + 1
-    )
-  end
-
   def self.horizontal_to_vertical(well_position, plate_size, _plate_shape = nil)
     Map::Coordinate.horizontal_to_vertical(well_position, plate_size)
   end
 
   def self.vertical_to_horizontal(well_position, plate_size, _plate_shape = nil)
     Map::Coordinate.vertical_to_horizontal(well_position, plate_size)
-  end
-
-  def self.next_vertical_map_position(current_map_id)
-    Map.find(current_map_id).next_vertical_map_position
-  end
-
-  def next_vertical_map_position
-    Map.find_by(
-      asset_size: asset_size,
-      asset_shape_id: asset_shape_id,
-      column_order: column_order + 1
-    )
   end
 
   def self.map_96wells
@@ -258,26 +234,8 @@ class Map < ApplicationRecord
     Map.where(asset_size: 384)
   end
 
-  def self.snp_map_id_to_pipelines_map_id(snp_map_id, plate_size)
-    # We're only going to be getting standard plates in through SNP
-    Map.where(
-      asset_size: plate_size,
-      row_order: snp_map_id.to_i + 1,
-      asset_shape: AssetShape.default_id
-    ).pluck(:id).first
-  end
-
-  def self.pipelines_map_id_to_snp_map_id(pipelines_map_id)
-    # We're only going to be getting standard plates in through SNP
-    Map.find(pipelines_map_id).snp_id
-  end
-
   def self.split_well_description(well_description)
     { row: well_description.getbyte(0) - 65, col: well_description[1, well_description.size].to_i }
-  end
-
-  def self.find_for_cell_location(cell_location, asset_size)
-    find_by(description: strip_description(cell_location), asset_size: asset_size)
   end
 
   # Stip any leading zeros from the well name

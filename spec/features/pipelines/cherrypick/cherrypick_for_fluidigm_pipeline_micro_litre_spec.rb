@@ -55,6 +55,7 @@ describe 'cherrypick for fluidigm pipeline - micro litre', js: true do
     find_all(:checkbox).each do |checkbox|
       expect(checkbox).not_to be_checked
     end
+
     check('Select DN1S for batch')
     check('Select DN10I for batch')
     check('Select DN5W for batch')

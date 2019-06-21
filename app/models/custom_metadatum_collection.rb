@@ -2,7 +2,7 @@ class CustomMetadatumCollection < ApplicationRecord
   include Uuid::Uuidable
 
   belongs_to :user
-  belongs_to :asset # Labware (Used on plates and allowed on tubes but not used)
+  belongs_to :asset, class_name: 'Labware' # Labware (Used on plates and allowed on tubes but not used)
   has_many :custom_metadata, dependent: :destroy
 
   validates_presence_of :asset_id, :user_id
