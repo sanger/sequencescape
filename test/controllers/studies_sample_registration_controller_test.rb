@@ -200,7 +200,7 @@ module Studies
               end
 
               should 'have the 2D barcode on the asset' do
-                assert_equal 'SI0000012345', @sample.assets.first.two_dimensional_barcode
+                assert_equal 'SI0000012345', @sample.primary_receptacle.two_dimensional_barcode
               end
             end
 
@@ -210,7 +210,7 @@ module Studies
               end
 
               should 'have the 2D barcode on the asset' do
-                assert_equal 'SI0000098765', @sample.assets.first.two_dimensional_barcode
+                assert_equal 'SI0000098765', @sample.primary_receptacle.two_dimensional_barcode
               end
             end
           end

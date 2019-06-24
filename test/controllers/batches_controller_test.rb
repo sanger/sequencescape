@@ -253,20 +253,6 @@ class BatchesControllerTest < ActionController::TestCase
             end
           end
 
-          context 'redirect to action #control' do
-            setup do
-              @cn = FactoryBot.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
-              @pipeline.controls << @cn
-              post :create, params: { id: @pipeline.id, request: { @request_three.id => '0', @request_four.id => '1' } }
-            end
-
-            should 'if pipeline has controls' do
-              assert_equal @old_count + 1, Batch.count
-              assert_equal 'Batch created - now add a control', flash[:notice]
-              assert_redirected_to controller: 'batches', action: 'control', id: Batch.last.id
-            end
-          end
-
           context 'create batch and assign requests' do
             setup do
               @old_count = Batch.count
