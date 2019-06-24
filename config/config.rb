@@ -27,7 +27,6 @@ configatron.api_documentation_url = 'http://localhost:3000/documentation'
 configatron.api_url = 'http://localhost:3000'
 
 configatron.authentication = ENV.fetch('AUTH', 'local')
-configatron.barcode_service_url = 'http://localhost:9998/barcode_service.wsdl'
 
 configatron.pmb_api = 'http://localhost:9292/v1'
 configatron.register_printers_automatically = true
@@ -43,7 +42,6 @@ configatron.pac_bio_instrument_api = 'http://example.com'
 configatron.pac_bio_smrt_portal_api = 'http://example.com'
 configatron.phix_tag.tag_group_name = 'Control Tag Group 888'
 configatron.phix_tag.tag_map_id = 888
-configatron.pico_green_url = 'http://localhost:3003'
 configatron.r_and_d_division = 'RandD'
 configatron.sanger_auth_service = 'http://localhost:9999/cgi-bin/prodsoft/SSO/isAuth.pl'
 configatron.site_url = 'localhost:3000'
