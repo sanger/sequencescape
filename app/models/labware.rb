@@ -9,6 +9,9 @@ class Labware < Asset
     self.table_name = 'assets'
   end
 
+  class_attribute :receptacle_class
+  self.receptacle_class = 'Receptacle'
+
   AssetRefactor.when_refactored do
     include LabwareAssociations
     include Commentable

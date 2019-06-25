@@ -80,11 +80,11 @@ module AssetsHelper
     Study.managed_by(current_user)
   end
 
-  def asset_types
-    ['All', *Receptacle.descendants.map(&:name)]
+  def labware_types
+    ['All', *Labware.descendants.map(&:name)]
   end
 
-  def asset_types_for_select
-    asset_types.map { |at| [at.underscore.humanize, at] }
+  def labware_types_for_select
+    labware_types.map { |at| [at.underscore.humanize, at] }
   end
 end

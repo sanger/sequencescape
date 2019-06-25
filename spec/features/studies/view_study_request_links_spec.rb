@@ -23,20 +23,20 @@ describe 'View study properties' do
 
   it 'No links to absent requests', js: true do
     click_link sequencing_request_type.name
-    expect(page).not_to have_link(title: "#{library_tube.name} started")
+    expect(page).not_to have_link(title: "#{library_tube.human_barcode} started")
   end
 
   it 'Single requests link directly to the request', js: true do
     click_link sequencing_request_type.name
-    expect(page).to have_link('1', title: "#{library_tube.name} passed")
-    click_link('1', title: "#{library_tube.name} passed")
+    expect(page).to have_link('1', title: "#{library_tube.human_barcode} passed")
+    click_link('1', title: "#{library_tube.human_barcode} passed")
     expect(page).to have_text("This request for #{sequencing_request_type.name.downcase} is PASSED")
   end
 
   it 'Multiple requests link to the summary', js: true do
     click_link sequencing_request_type.name
-    expect(page).to have_link('2', title: "#{library_tube.name} failed")
-    click_link('2', title: "#{library_tube.name} failed")
+    expect(page).to have_link('2', title: "#{library_tube.human_barcode} failed")
+    click_link('2', title: "#{library_tube.human_barcode} failed")
     expect(page).to have_text("#{sequencing_request_type.name} Study 3871492")
   end
 

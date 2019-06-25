@@ -410,8 +410,6 @@ Rails.application.routes.draw do
       get :show_comments
       get :batches
       get :summary
-      get :setup_inbox
-      get :set_inbox
     end
 
     resources :batches, only: [:index] do

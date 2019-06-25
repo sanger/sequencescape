@@ -24,7 +24,6 @@ class WorkflowsController < ApplicationController
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler
-  include Tasks::StripTubeCreationHandler
 
   def index
     @workflows = Workflow.all

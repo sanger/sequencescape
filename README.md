@@ -44,20 +44,6 @@ manage the Ruby version you are using.
     # Login as admin/admin
 ```
 
-
-Data model
-----------
-
-```
- +--------+
- | Sample |                     +-------+
- +--------+                   _ | Study |
-     |                      /   +-------+
- +-------+     +---------+ /    +---------+
- | Asset | --- | Request | -----| Project |
- +-------+     +---------+      +---------+
-```
-
 Delayed job
 -----------
 

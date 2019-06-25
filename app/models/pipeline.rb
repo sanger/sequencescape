@@ -12,7 +12,8 @@ class Pipeline < ApplicationRecord
   class_attribute :batch_worksheet, :requires_position,
                   :inbox_partial, :library_creation, :pulldown, :prints_a_worksheet_per_task,
                   :genotyping, :sequencing, :purpose_information, :can_create_stock_assets,
-                  :inbox_eager_loading, :group_by_submission, :group_by_parent
+                  :inbox_eager_loading, :group_by_submission, :group_by_parent,
+                  :generate_target_assets_on_batch_create
 
   # Pipeline defaults
   self.batch_worksheet = 'detailed_worksheet'
@@ -28,6 +29,7 @@ class Pipeline < ApplicationRecord
   self.inbox_eager_loading = :loaded_for_inbox_display
   self.group_by_submission = false
   self.group_by_parent = false
+  self.generate_target_assets_on_batch_create = false
 
   delegate :item_limit, :batch_limit?, to: :workflow
 
@@ -145,10 +147,6 @@ class Pipeline < ApplicationRecord
 
   def robot_verified!(batch)
     # Do nothing!
-  end
-
-  def need_target_assets_on_requests?
-    asset_type.present? && request_types.needing_target_asset.exists?
   end
 
   private

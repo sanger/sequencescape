@@ -4,6 +4,7 @@ class PacBioSamplePrepPipeline < Pipeline
 
   self.requires_position = false
   self.inbox_eager_loading = :loaded_for_pacbio_inbox_display
+  self.generate_target_assets_on_batch_create = true
 
   def allow_tag_collision_on_tagging_task?
     false

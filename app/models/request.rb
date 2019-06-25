@@ -387,11 +387,11 @@ class Request < ApplicationRecord
     Request.for_study_id(study.id)
   end
 
-  # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
-  def self.get_target_plate_ids(request_ids)
-    ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
-                        .where(['requests.id IN  (?)', request_ids]).uniq.pluck(:container_id)
-  end
+  # # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
+  # def self.get_target_plate_ids(request_ids)
+  #   ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
+  #                       .where(['requests.id IN  (?)', request_ids]).uniq.pluck(:container_id)
+  # end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
     Request.where(submission_id: submission_id, request_type_id: request_type_id)

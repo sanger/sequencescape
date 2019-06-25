@@ -67,7 +67,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def labware_from_samples
-      samples.map(&:primary_receptacle)
+      samples.map { |s| s.primary_receptacle.labware }
     end
 
     def labware=(labware)
@@ -75,7 +75,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def labware
-      tubes | labware_from_samples | @manifest.assets
+      tubes | labware_from_samples | @manifest.assets.map(&:labware)
     end
     alias printables labware
 

@@ -31,6 +31,7 @@ class Plate < Labware
   self.sample_partial = 'assets/samples_partials/plate_samples'
   self.per_page = 50
   self.default_plate_size = 96
+  self.receptacle_class = 'Well'
 
   has_qc_files
 

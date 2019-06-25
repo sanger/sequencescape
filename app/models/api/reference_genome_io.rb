@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for ReferenceGenome
+# Despite name controls rendering of warehouse messages for {ReferenceGenome}
 # Historically used to be v0.5 API
 class Api::ReferenceGenomeIO < Api::Base
   module Extensions

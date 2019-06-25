@@ -6,7 +6,11 @@ AssetRefactor.when_refactored do
   class Receptacle < Asset
     include Uuid::Uuidable
     include Commentable
+    include Asset::ReceptacleAssociations
     belongs_to :labware
+    has_many :barcodes, through: :labware
+
+    self.stock_message_template = 'ReceptacleStockResourceIO'
   end
 end
 
@@ -29,7 +33,6 @@ class Receptacle
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
-    include Asset::ReceptacleAssociations
     has_many :messengers, as: :target, inverse_of: :target
     delegate :scanned_in_date, to: :labware
     has_one :spiked_in_buffer, through: :labware
@@ -48,10 +51,13 @@ class Receptacle
   has_many :upstream_tubes, through: :transfer_requests_as_target, source: :asset, class_name: 'Tube'
   has_many :upstream_plates, through: :upstream_wells, source: :plate
 
-  has_many :requests, inverse_of: :asset, foreign_key: :asset_id
-  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
-  has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
-  has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
+  has_many :requests, inverse_of: :asset, foreign_key: :asset_id, dependent: :restrict_with_exception
+  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request',
+                                                                  foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
+  has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request',
+                                                                      foreign_key: :asset_id, dependent: :restrict_with_exception, inverse_of: :asset
+  has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request',
+                                                                      foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
   has_many :source_batches, class_name: 'Batch', through: :requests_as_source, source: :batch
 
@@ -76,6 +82,7 @@ class Receptacle
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
   has_many :external_library_creation_requests, foreign_key: :asset_id
+  has_many :events_on_requests, through: :requests_as_source, source: :events, validate: false
 
   # Named scopes for the future
   scope :include_aliquots, ->() { includes(aliquots: %i(sample tag bait_library)) }
@@ -110,6 +117,8 @@ class Receptacle
     def total_comment_count
       comments.size
     end
+
+    scope :on_a, ->(klass) { where_is_a?(klass) }
   end
 
   # This block is enabled when we have the labware table present as part of the AssetRefactor
@@ -121,8 +130,14 @@ class Receptacle
     delegate :children, to: :labware, allow_nil: true
 
     def total_comment_count
-      comments.size + labware.comments.size
+      comments.size + labware_comment_count
     end
+
+    def labware_comment_count
+      labware&.comments&.size || 0
+    end
+
+    scope :on_a, ->(klass) { joins(:labware).where(labware: { sti_type: [klass.name, *klass.descendants.map(&:name)] }) }
   end
 
   # Returns the map_id of the first and last tag in an asset
@@ -225,7 +240,7 @@ class Receptacle
     end
 
     def display_name
-      name
+      labware&.display_name
     end
 
     def external_identifier

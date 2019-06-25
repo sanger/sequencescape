@@ -15,7 +15,7 @@ module SampleManifest::SharedTubeBehaviour
 
     self.barcodes = tubes.map(&:human_barcode)
 
-    delayed_generate_asset_requests(tubes.map(&:id), study.id)
+    delayed_generate_asset_requests(tubes.map { |tube| tube.receptacle.id }, study.id)
     save!
     tubes
   end
@@ -24,8 +24,8 @@ module SampleManifest::SharedTubeBehaviour
     tube_sample_creation(sanger_sample_id, tube)
   end
 
-  def delayed_generate_asset_requests(asset_id, study_id)
-    Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new([asset_id], study_id)
+  def delayed_generate_asset_requests(asset_ids, study_id)
+    Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new(asset_ids, study_id)
   end
 
   private

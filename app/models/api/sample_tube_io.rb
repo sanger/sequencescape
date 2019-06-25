@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for SampleTube
+# Despite name controls rendering of warehouse messages for {SampleTube}
 # Historically used to be v0.5 API
 class Api::SampleTubeIO < Api::Base
   module Extensions

@@ -54,7 +54,7 @@ module SingleReceptacleLabware
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
     def receptacle
-      super || build_receptacle
+      super || build_receptacle(sti_type: receptacle_class)
     end
   end
 end

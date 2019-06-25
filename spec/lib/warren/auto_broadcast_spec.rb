@@ -96,8 +96,14 @@ RSpec.describe 'Warren::BroadcastMessages', warren: true do
     it_behaves_like 'a self broadcast resource'
   end
 
-  context 'asset' do
-    subject { build :asset }
+  context 'labware' do
+    subject { build :labware }
+
+    it_behaves_like 'a self broadcast resource'
+  end
+
+  context 'receptacle' do
+    subject { build :receptacle }
 
     it_behaves_like 'a self broadcast resource'
   end

@@ -38,6 +38,7 @@ class Batch < ApplicationRecord
   has_many :projects, -> { distinct }, through: :orders
   has_many :aliquots, -> { distinct }, through: :source_assets
   has_many :samples, -> { distinct }, through: :source_assets, source: :samples
+  has_many :output_labware, through: :assets, source: :labware
 
   has_many_events
   has_many_lab_events
@@ -47,7 +48,7 @@ class Batch < ApplicationRecord
 
   validate :requests_have_same_read_length, :batch_meets_minimum_size, :all_requests_are_ready?, on: :create, if: :pipeline
 
-  after_create :generate_target_assets_for_requests, if: :need_target_assets_on_requests?
+  after_create :generate_target_assets_for_requests, if: :generate_target_assets_on_batch_create?
   after_commit :rebroadcast
 
   # Named scope for search by query string behavior
@@ -81,7 +82,7 @@ class Batch < ApplicationRecord
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
   delegate :size, to: :requests
-  delegate :sequencing?, to: :pipeline
+  delegate :sequencing?, :generate_target_assets_on_batch_create?, to: :pipeline
 
   alias friendly_name id
 
@@ -223,11 +224,11 @@ class Batch < ApplicationRecord
     requests.with_assets_for_starting_requests.not_failed.map(&:start!)
   end
 
-  def input_labware
+  def input_labware_group
     pipeline.input_labware requests
   end
 
-  def output_labware
+  def output_labware_group
     pipeline.output_labware requests.with_target
   end
 
@@ -240,9 +241,22 @@ class Batch < ApplicationRecord
     requests.select { |r| r.target_asset != r.asset }.map(&:target_asset).select(&:present?).group_by(&:plate)
   end
 
-  def output_plates
-    holder_ids = Request.get_target_plate_ids(request_ids)
-    Plate.find(holder_ids)
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    def output_plates
+      output_labware
+    end
+  end
+
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def output_plates
+      holder_ids = ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
+                                       .where(['requests.id IN  (?)', requests.map(&:id)]).uniq.pluck(:container_id)
+      Plate.find(holder_ids)
+    end
   end
 
   def first_output_plate
@@ -424,25 +438,6 @@ class Batch < ApplicationRecord
     [item_limit - batch_requests.count, 0].max
   end
 
-  def add_control(control_name, control_count)
-    asset = Asset.find_by(name: control_name, resource: true)
-
-    control_count = space_left if control_count == 0
-
-    first_control = [3, (item_limit - control_count)].min
-
-    ActiveRecord::Base.transaction do
-      shift_item_positions(first_control + 1, control_count)
-      (1..control_count).each do |index|
-        batch_requests.create!(
-          request: pipeline.control_request_type.create_control!(asset: asset, study_id: 198),
-          position: first_control + index
-        )
-      end
-    end
-    control_count
-  end
-
   def total_volume_to_cherrypick
     request = requests.first
     return DEFAULT_VOLUME unless request.asset.is_a?(Well)
@@ -553,9 +548,5 @@ class Batch < ApplicationRecord
     requests_to_update.each do |request_details|
       Request.find(request_details.first).update!(asset_id: request_details.last)
     end
-  end
-
-  def need_target_assets_on_requests?
-    pipeline.need_target_assets_on_requests?
   end
 end

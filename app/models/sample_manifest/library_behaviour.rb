@@ -58,11 +58,11 @@ module SampleManifest::LibraryBehaviour
     end
 
     def labware_from_samples
-      samples.map { |sample| sample.receptacles.first }
+      samples.map { |sample| sample.primary_receptacle.labware }
     end
 
     def labware
-      tubes | labware_from_samples | @manifest.assets
+      tubes | labware_from_samples | @manifest.assets.map(&:labware)
     end
     alias printables labware
 

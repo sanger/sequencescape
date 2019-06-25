@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for Request
+# Despite name controls rendering of warehouse messages for {Request}
 # Historically used to be v0.5 API
 class Api::RequestIO < Api::Base
   module Extensions
