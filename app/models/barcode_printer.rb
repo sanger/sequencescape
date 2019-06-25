@@ -30,7 +30,8 @@ class BarcodePrinter < ApplicationRecord
   delegate :register_printers_automatically, to: :configatron
 
   def service_url
-    configatron.barcode_service_url
+    # configatron.barcode_service_url
+    'DEPRECATED'
   end
 
   def service

@@ -33,7 +33,7 @@ And I have a "full" authorised user with the key "cucumber"
           "name": "<printer_type> printer",
           "active": true,
           "service": {
-            "url": "http://localhost:9998/barcode_service.wsdl"
+            "url": "DEPRECATED"
           },
           "type": {
             "name": "<printer_type>",
