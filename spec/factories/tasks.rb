@@ -29,9 +29,6 @@ FactoryBot.define do
   factory :tag_groups_task do
   end
 
-  factory :strip_tube_creation_task do
-  end
-
   factory :plate_transfer_task do
     purpose_id { create(:plate_purpose).id }
   end

@@ -65,6 +65,8 @@ class Plate < Labware
         @index_well_cache ||= index_by(&:map_description)
       end
     end
+    has_many :requests_as_source, through: :wells
+    has_many :requests_as_target, through: :wells
   end
 
   # This block is enabled when we have the labware table present as part of the AssetRefactor

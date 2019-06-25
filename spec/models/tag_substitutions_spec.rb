@@ -71,9 +71,9 @@ describe TagSubstitution do
 
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_new_tag.id },
-          { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_new_tag.id },
-          { sample_id: mx_aliquot_c.sample_id, library_id: library_tube_b.id, original_tag_id: mx_aliquot_c.tag_id, substitute_tag_id: mx_aliquot_c.tag_id }
+          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_new_tag.id },
+          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_new_tag.id },
+          { sample_id: mx_aliquot_c.sample_id, library_id: library_tube_b.receptacle.id, original_tag_id: mx_aliquot_c.tag_id, substitute_tag_id: mx_aliquot_c.tag_id }
         ]
       end
 
@@ -109,8 +109,8 @@ describe TagSubstitution do
 
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_new_tag.id, original_tag2_id: -1, substitute_tag2_id: -1 },
-          { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_new_tag.id, original_tag2_id: -1, substitute_tag2_id: -1 }
+          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_new_tag.id, original_tag2_id: -1, substitute_tag2_id: -1 },
+          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_new_tag.id, original_tag2_id: -1, substitute_tag2_id: -1 }
         ]
       end
 
@@ -152,8 +152,8 @@ describe TagSubstitution do
 
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, original_tag2_id: sample_a_orig_tag2.id, substitute_tag2_id: sample_a_new_tag2.id },
-          { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, original_tag2_id: sample_b_orig_tag2.id, substitute_tag2_id: sample_b_new_tag2.id }
+          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, original_tag2_id: sample_a_orig_tag2.id, substitute_tag2_id: sample_a_new_tag2.id },
+          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, original_tag2_id: sample_b_orig_tag2.id, substitute_tag2_id: sample_b_new_tag2.id }
         ]
       end
 
@@ -184,8 +184,8 @@ describe TagSubstitution do
     context 'when details don\'t match' do
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, original_tag2_id: sample_a_orig_tag2.id, substitute_tag2_id: sample_b_orig_tag2.id },
-          { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, original_tag2_id: sample_b_orig_tag2.id, substitute_tag2_id: sample_a_orig_tag2.id }
+          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, original_tag2_id: sample_a_orig_tag2.id, substitute_tag2_id: sample_b_orig_tag2.id },
+          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, original_tag2_id: sample_b_orig_tag2.id, substitute_tag2_id: sample_a_orig_tag2.id }
         ]
       end
 
@@ -198,8 +198,8 @@ describe TagSubstitution do
     context 'when other attributes are updated' do
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, library_type: library_type.name, insert_size_from: 20, insert_size_to: 400 },
-          { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, library_type: library_type.name, insert_size_from: 20, insert_size_to: 400 }
+          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, library_type: library_type.name, insert_size_from: 20, insert_size_to: 400 },
+          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, library_type: library_type.name, insert_size_from: 20, insert_size_to: 400 }
         ]
       end
 
@@ -245,9 +245,9 @@ describe TagSubstitution do
 
     let(:instructions) do
       [
-        { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag_a.id, substitute_tag_id: sample_b_orig_tag_a.id },
-        { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag_b.id, substitute_tag_id: other_tag.id },
-        { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_b_orig_tag_a.id, substitute_tag_id: sample_a_orig_tag_a.id }
+        { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag_a.id, substitute_tag_id: sample_b_orig_tag_a.id },
+        { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag_b.id, substitute_tag_id: other_tag.id },
+        { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag_a.id, substitute_tag_id: sample_a_orig_tag_a.id }
       ]
     end
 

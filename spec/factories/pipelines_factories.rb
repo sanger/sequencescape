@@ -129,6 +129,7 @@ FactoryBot.define do
     name                  { generate :pipeline_name }
     automated             { false }
     active                { true }
+    asset_type            { 'Lane' }
 
     workflow { build :lab_workflow_for_pipeline }
 

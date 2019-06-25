@@ -697,30 +697,6 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   end
 end
 
-GenotypingPipeline.create!(name: 'Genotyping') do |pipeline|
-  pipeline.sorter = 11
-  pipeline.automated = false
-  pipeline.active = true
-  pipeline.group_by_parent = true
-
-  pipeline.request_types << RequestType.create!(key: 'genotyping', name: 'Genotyping') do |request_type|
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'Well'
-    request_type.order             = 3
-    request_type.request_class     = GenotypingRequest
-    request_type.multiples_allowed = false
-  end
-
-  pipeline.workflow = Workflow.create!(name: 'Genotyping').tap do |workflow|
-    [
-      { class: AttachInfiniumBarcodeTask, name: 'Attach Infinium Barcode', sorted: 1, batched: true },
-      { class: GenerateManifestsTask,     name: 'Generate Manifests',      sorted: 2, batched: true }
-    ].each do |details|
-      details.delete(:class).create!(details.merge(workflow: workflow))
-    end
-  end
-end
-
 PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.sorter               = 14
   pipeline.automated            = false

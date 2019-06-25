@@ -526,6 +526,8 @@ class Batch < ApplicationRecord
 
     asset_type = pipeline.asset_type.constantize
     requests.reload.each do |request|
+      next if request.target_asset.present?
+
       # we need to call downstream request before setting the target_asset
       # otherwise, the request use the target asset to find the next request
       target_asset = asset_type.create! do |asset|
