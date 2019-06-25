@@ -10,10 +10,8 @@ class WorkflowsController < ApplicationController
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
-  include Tasks::AttachInfiniumBarcodeHandler
   include Tasks::BindingKitBarcodeHandler
   include Tasks::CherrypickHandler
-  include Tasks::GenerateManifestHandler
   include Tasks::MovieLengthHandler
   include Tasks::PlateTemplateHandler
   include Tasks::PlateTransferHandler

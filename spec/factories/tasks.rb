@@ -26,9 +26,6 @@ FactoryBot.define do
   factory :multiplexed_cherrypicking_task do
   end
 
-  factory :attach_infinium_barcode_task do
-  end
-
   factory :tag_groups_task do
   end
 
