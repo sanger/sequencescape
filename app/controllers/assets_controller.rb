@@ -241,7 +241,7 @@ class AssetsController < ApplicationController
       return
     else
       @asset = Asset.find_from_barcode(barcode)
-      redirect_to action: 'find_by_barcode', error: "Unable to find anything with this barcode: #{barcode}" if @asset.nil?
+      redirect_to action: 'find_by_barcode', alert: "Unable to find anything with this barcode: #{barcode}" if @asset.nil?
     end
   end
 
