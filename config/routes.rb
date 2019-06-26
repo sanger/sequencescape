@@ -145,8 +145,6 @@ Rails.application.routes.draw do
       post :verify_tube_layout
       get :previous_qc_state
       get :released
-      get :control
-      get :add_control
       get :sample_prep_worksheet
       get :new_stock_assets
     end

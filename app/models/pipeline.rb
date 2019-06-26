@@ -84,7 +84,6 @@ class Pipeline < ApplicationRecord
   end
 
   def update_detached_request(_batch, request)
-    request.remove_unused_assets
   end
 
   # Overridden in group-by parent pipelines to display input plates

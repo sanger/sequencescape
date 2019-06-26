@@ -53,6 +53,11 @@ class Asset < ApplicationRecord
     include AssetLink::Associations
     include Commentable
     has_many :messengers, as: :target, inverse_of: :target
+
+    has_many :requests, inverse_of: :asset, foreign_key: :asset_id
+    has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
+    has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
+    has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   end
 
   delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
