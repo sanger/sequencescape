@@ -175,18 +175,6 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_one.reload
         end
 
-        context '#edit' do
-          context 'with control' do
-            setup do
-              @cn = FactoryBot.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
-              @pipeline.controls << @cn
-            end
-            should '#add control' do
-              get :add_control, params: { id: @batch_one, control: { id: @cn.id } }
-            end
-          end
-        end
-
         should '#update' do
           @pipeline_user = create :pipeline_admin, login: 'ur1', first_name: 'Ursula', last_name: 'Robinson'
           put :update, params: { id: @batch_one.id, batch: { assignee_id: @pipeline_user.id } }
