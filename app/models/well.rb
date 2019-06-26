@@ -132,14 +132,12 @@ class Well < Receptacle
       .where(well_links: { target_well_id: [wells].flatten.map(&:id) })
   }
   scope :target_wells_for, ->(wells) {
-    select('assets.*, well_links.source_well_id AS stock_well_id')
-      .joins(:stock_well_links).where(well_links: {
-                                        source_well_id: wells
-                                      })
+    select_table.select('well_links.source_well_id AS stock_well_id')
+                .joins(:stock_well_links).where(well_links: {
+                                                  source_well_id: wells
+                                                })
   }
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
-
-  scope :select_table, ->() { select("#{table_name}.*") }
 
   scope :pooled_as_target_by_transfer, ->() {
     joins("LEFT JOIN transfer_requests patb ON #{table_name}.id=patb.target_asset_id")

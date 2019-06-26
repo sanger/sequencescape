@@ -12,7 +12,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     include SequencescapeExcel::SpecialisedField::ValueRequired
   end
 
-  let(:map) { create :map }
+  let(:map) { create(:map) }
   let!(:sample) { create(:untagged_well, map: map).samples.first }
   let!(:library_type) { create(:library_type) }
   let!(:reference_genome) { create(:reference_genome, name: 'new one') }
@@ -162,6 +162,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         field = SequencescapeExcel::SpecialisedField::SangerTubeId.new(value: 'CGAP-ABC022', sample: sample_1)
         expect(field).to be_valid
         field.update(aliquot: sample_1_tube.aliquots.first)
+        sample_1_tube.reload
         expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
         expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
       end

@@ -72,8 +72,7 @@ describe WorkCompletion do
 
       it 'joins up the library requests' do
         library_requests.each do |request|
-          expect(request.target_asset).not_to be_nil
-          expect(request.target_asset).to eq(target_tube)
+          expect(request.target_asset).to eq(target_tube.receptacle)
         end
       end
     end

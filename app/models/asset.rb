@@ -207,6 +207,10 @@ class Asset < ApplicationRecord
     nil
   end
 
+  def type
+    self.class.name.underscore
+  end
+
   # Generates a message to broadcast the tube to the stock warehouse
   # tables. Raises an exception if no template is configured for a give
   # asset. In most cases this is because the asset is not a stock

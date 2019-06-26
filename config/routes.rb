@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       jsonapi_resources :qc_results
       jsonapi_resources :assets
       jsonapi_resources :qc_assays
+      jsonapi_resources :labware
 
       namespace :aker do
         resources :jobs, only: [:create]

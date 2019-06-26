@@ -12,7 +12,7 @@ module SingleReceptacleLabware
       has_one :primary_aliquot, through: :receptacle
       has_one :primary_sample, through: :receptacle
       has_one :source_request, through: :receptacle
-
+      has_many :sample_manifest_assets, through: :receptacle
       # Ensure we generate the receptacle automatically when the labware is created
       before_validation :receptacle, on: :create
 

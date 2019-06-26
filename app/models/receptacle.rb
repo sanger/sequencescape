@@ -174,10 +174,6 @@ class Receptacle
     primary_aliquot if aliquots.count == 1
   end
 
-  def type
-    self.class.name.underscore
-  end
-
   def library_information; end
 
   def assign_tag2(tag)

@@ -165,18 +165,21 @@ describe TagSubstitution do
         it 'populates the basics' do
           expect(subject.substitutions.length).to eq mx_library_tube.aliquots.count
           indexed = subject.substitutions.index_by(&:sample_id)
-          a = indexed[sample_a.id]
-          expect(a.library_id).to eq library_tube_a.id
-          expect(a.original_tag_id).to eq sample_a_orig_tag.id
-          expect(a.substitute_tag_id).to eq sample_a_orig_tag.id
-          expect(a.original_tag2_id).to eq sample_a_orig_tag2.id
-          expect(a.substitute_tag2_id).to eq sample_a_orig_tag2.id
-          expect(a.library_id).to eq library_tube_a.id
-          b = indexed[sample_b.id]
-          expect(b.original_tag_id).to eq sample_b_orig_tag.id
-          expect(b.substitute_tag_id).to eq sample_b_orig_tag.id
-          expect(b.original_tag2_id).to eq sample_b_orig_tag2.id
-          expect(b.substitute_tag2_id).to eq sample_b_orig_tag2.id
+
+          expect(indexed[sample_a.id]).to have_attributes(
+            library_id: library_tube_a.receptacle.id,
+            original_tag_id: sample_a_orig_tag.id,
+            substitute_tag_id: sample_a_orig_tag.id,
+            original_tag2_id: sample_a_orig_tag2.id,
+            substitute_tag2_id: sample_a_orig_tag2.id
+          )
+
+          expect(indexed[sample_b.id]).to have_attributes(
+            original_tag_id: sample_b_orig_tag.id,
+            substitute_tag_id: sample_b_orig_tag.id,
+            original_tag2_id: sample_b_orig_tag2.id,
+            substitute_tag2_id: sample_b_orig_tag2.id
+          )
         end
       end
     end
