@@ -13,6 +13,9 @@ class UatActions::GenerateTagPlates < UatActions
   form_field :lot_type_name, :select, label: 'Lot Type', help: 'The lot type to use.', select_options: -> { LotType.where(template_class: 'TagLayoutTemplate').pluck(:name) }
   form_field :plate_count, :number_field, label: 'Plate Count', help: 'The number of plates to generate', options: { minimum: 1, maximum: 20 }
 
+  validates :tag_layout_template, presence: { message: 'could not be found' }
+  validates :lot_type, presence: { message: 'could not be found' }
+
   def self.default
     new(plate_count: 4)
   end
@@ -34,17 +37,17 @@ class UatActions::GenerateTagPlates < UatActions
   def lot
     @lot ||= lot_type.lots.create!(
       lot_number: "UAT#{Time.current.to_i}",
-      template: template,
+      template: tag_layout_template,
       user: user,
       received_at: Time.current
     )
   end
 
   def lot_type
-    LotType.find_by!(name: lot_type_name)
+    @lot_type ||= LotType.find_by(name: lot_type_name)
   end
 
-  def template
-    TagLayoutTemplate.find_by!(name: tag_layout_template_name)
+  def tag_layout_template
+    @tag_layout_template ||= TagLayoutTemplate.find_by(name: tag_layout_template_name)
   end
 end
