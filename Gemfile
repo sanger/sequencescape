@@ -213,7 +213,7 @@ end
 
 group :deployment do
   gem 'exception_notification'
-  gem 'slack-notifier'
   gem 'gmetric', '~>0.1.3'
+  gem 'slack-notifier'
   gem 'whenever', require: false
 end
