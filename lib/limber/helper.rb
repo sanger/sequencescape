@@ -258,4 +258,26 @@ module Limber::Helper
       ids << [library_request_type.id]
     end
   end
+
+  #
+  # Class LibraryAndMultiplexingTemplateConstructor provides a template
+  # constructor which build the library portion of the submission
+  # template with the multiplexing request. No sequencing requests are added.
+  #
+  class LibraryAndMultiplexingTemplateConstructor < TemplateConstructor
+    def name_for(cherrypick, _sequencing_request_type)
+      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - Pool"
+    end
+
+    def sequencing_request_types
+      [nil]
+    end
+
+    def request_type_ids(cherrypick, _sequencing)
+      ids = []
+      ids << [cherrypick_request_type.id] if cherrypick
+      ids << [library_request_type.id]
+      ids << [multiplexing_request_type.id] unless library_request_type.for_multiplexing?
+    end
+  end
 end

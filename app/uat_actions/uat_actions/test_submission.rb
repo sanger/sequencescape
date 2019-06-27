@@ -21,6 +21,8 @@ class UatActions::TestSubmission < UatActions
                    'Leave blank to automatically generate compatible labware. '\
                    'This page does not currently support cross-plate submissions.'
 
+  validates :submission_template, presence: { message: 'could not be found' }
+
   #
   # Returns a default copy of the UatAction which will be used to fill in the form
   #
