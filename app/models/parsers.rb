@@ -2,7 +2,7 @@ require 'csv'
 require 'linefeed_fix'
 
 module Parsers
-  ENCODINGS = ['Windows-1252', 'iso-8859-1', 'utf-8', 'utf-16'].freeze
+  ENCODINGS = %w[Windows-1252 iso-8859-1 utf-8 utf-16].freeze
   PARSERS = [QuantParser, BioanalysisCsvParser, PlateReaderParser].freeze
 
   def self.parser_for(filename, content_type, content)
