@@ -17,7 +17,6 @@ class Study < ApplicationRecord
   include ReferenceGenome::Associations
   include SampleManifest::Associations
   include Role::Authorized
-  include StudyRelation::Associations
 
   extend EventfulRecord
   extend Metadata
