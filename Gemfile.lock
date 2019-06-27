@@ -294,7 +294,8 @@ GEM
     pry-stack_explorer (0.4.9.3)
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
-    puma (3.12.1)
+    puma (4.0.0)
+      nio4r (~> 2.0)
     pusher-client (0.6.2)
       json
       websocket (~> 1.0)
@@ -426,6 +427,7 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.5)
       tilt (~> 2.0)
+    slack-notifier (2.3.2)
     spreadsheet (1.2.4)
       ruby-ole (>= 1.0)
     sprockets (3.7.2)
@@ -572,6 +574,7 @@ DEPENDENCIES
   shoulda-matchers
   simplecov
   sinatra
+  slack-notifier
   spreadsheet
   test-prof
   therubyracer

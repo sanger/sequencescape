@@ -212,6 +212,7 @@ group :cucumber do
 end
 
 group :deployment do
+  gem 'slack-notifier'
   gem 'exception_notification'
   gem 'gmetric', '~>0.1.3'
   gem 'whenever', require: false
