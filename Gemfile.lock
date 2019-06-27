@@ -109,7 +109,7 @@ GEM
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
     builder (3.2.3)
-    bullet (6.0.0)
+    bullet (6.0.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bunny (2.14.2)
