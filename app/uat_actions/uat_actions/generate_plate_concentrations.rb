@@ -31,8 +31,7 @@ class UatActions::GeneratePlateConcentrations < UatActions
 
   def perform
     qc_assay_results = construct_qc_assay
-    report['QC results written successfully:'] = qc_assay_results[:qc_assay_success] ? 'Yes' : 'No'
-    report['Number of QC results written:'] = qc_assay_results[:num_wells_written]
+    report['number_well_concentrations_written'] = qc_assay_results[:num_wells_written]
     qc_assay_results[:qc_assay_success]
   end
 
