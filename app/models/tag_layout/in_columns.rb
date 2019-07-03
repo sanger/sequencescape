@@ -19,4 +19,12 @@ module TagLayout::InColumns
   def self.quad_tag2_index(row, column, scale, height, width)
     quad_tag_index(row, column, scale, height, width)
   end
+
+  def self.comb_tag_index(_row, column, _scale, _height, _width)
+    column
+  end
+
+  def self.comb_tag2_index(row, _column, _scale, _height, _width)
+    row
+  end
 end
