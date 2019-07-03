@@ -14,12 +14,12 @@ class UatActions::GeneratePlateConcentrations < UatActions
                    'NB. only well containing aliquots will have concentrations set.'
   form_field :minimum_concentration,
              :number_field,
-             label: 'Minimum concentration (µg/µl)',
+             label: 'Minimum concentration (ng/µl)',
              help: 'The minimum concentration the wells should have.',
              options: { minimum: 0 }
   form_field :maximum_concentration,
              :number_field,
-             label: 'Maximum concentration (µg/µl)',
+             label: 'Maximum concentration (ng/µl)',
              help: 'The maximum concentration the wells should have.',
              options: { minimum: 0 }
 
