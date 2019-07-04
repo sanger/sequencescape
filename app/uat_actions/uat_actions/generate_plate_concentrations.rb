@@ -2,8 +2,6 @@
 
 # Will generate concentrations for a given plate
 class UatActions::GeneratePlateConcentrations < UatActions
-  require 'bigdecimal'
-
   self.title = 'Generate Concentrations for a Plate'
   self.description = 'Generate a set of randomised concentrations for a plate.'
 
@@ -23,10 +21,18 @@ class UatActions::GeneratePlateConcentrations < UatActions
              help: 'The maximum concentration the wells should have.',
              options: { minimum: 0 }
 
+  #
+  # Returns a default copy of the UatAction which will be used to fill in the form, with values
+  # for the min and max concentrations.
+  #
+  # @return [UatActions::GeneratePlateConcentrations] A default object for rendering a form
   def self.default
     new(minimum_concentration: 0, maximum_concentration: 1000)
   end
 
+  validates :plate_barcode, presence: { message: 'could not be found' }
+  validates :minimum_concentration, numericality: { only_integer: false }
+  validates :maximum_concentration, numericality: { greater_than: 0, only_integer: false }
   validate :maximum_greater_than_minimum
 
   def perform
@@ -49,11 +55,11 @@ class UatActions::GeneratePlateConcentrations < UatActions
   end
 
   def min_conc
-    @min_conc ||= BigDecimal(minimum_concentration, 3)
+    @min_conc ||= minimum_concentration.to_f
   end
 
   def max_conc
-    @max_conc ||= BigDecimal(maximum_concentration, 3)
+    @max_conc ||= maximum_concentration.to_f
   end
 
   def create_random_concentration
