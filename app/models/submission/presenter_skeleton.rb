@@ -65,6 +65,6 @@ class Submission::PresenterSkeleton
   end
 
   def lanes_from_request_counting
-    submission.requests.where_is_a?(SequencingRequest).count
+    submission.requests.where_is_a(SequencingRequest).count
   end
 end

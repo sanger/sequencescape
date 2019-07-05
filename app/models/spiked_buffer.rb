@@ -5,8 +5,8 @@ class SpikedBuffer < LibraryTube
   # This appears in batch.xml, which gets used by NPG.
   has_one :index_links, lambda {
     joins(:ancestor)
-      .where(assets: { sti_type: 'LibraryTube' })
-      .order('assets.id DESC')
+      .where("#{LibraryTube.table_name}": { sti_type: 'LibraryTube' })
+      .order("#{LibraryTube.table_name}.id DESC")
       .direct
   }, class_name: 'AssetLink', foreign_key: :descendant_id
   has_one :index, through: :index_links, source: :ancestor

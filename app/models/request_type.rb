@@ -152,13 +152,9 @@ class RequestType < ApplicationRecord
     (target_asset_type == 'Lane') or (name =~ /\ssequencing$/)
   end
 
-  def needs_target_asset?
-    target_purpose.nil? && target_asset_type.blank?
-  end
-
   def create_target_asset!(&block)
     case
-    when target_purpose.present?  then target_purpose.create!(&block)
+    when target_purpose.present?  then target_purpose.create!(&block).receptacle
     when target_asset_type.blank? then nil
     else                               target_asset_type.constantize.create!(&block)
     end

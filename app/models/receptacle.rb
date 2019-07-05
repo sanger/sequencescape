@@ -9,6 +9,20 @@ AssetRefactor.when_refactored do
     include Asset::ReceptacleAssociations
     belongs_to :labware
     has_many :barcodes, through: :labware
+    has_many :parents, through: :labware
+    has_many :ancestors, through: :labware
+    has_many :descendants, through: :labware
+
+    scope :named, ->(name) { joins(:labware).where(labware: { name: name }) }
+    # We accept not only an individual barcode but also an array of them.
+    scope :with_barcode, lambda { |*barcodes|
+      db_barcodes = Barcode.extract_barcodes(barcodes)
+      joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+    }
+
+    def any_barcode_matching?(other_barcode)
+      barcodes.any? { |barcode| barcode =~ other_barcode }
+    end
 
     self.stock_message_template = 'ReceptacleStockResourceIO'
   end
@@ -102,7 +116,7 @@ class Receptacle
   scope :with_sample,    ->(sample) { where(aliquots: { sample_id: Array(sample) }).joins(:aliquots) }
 
   # Scope for caching the samples of the receptacle
-  scope :including_samples, -> { includes(samples: :studies) }
+  scope :for_bulk_submission, -> { includes(samples: :studies) }
 
   def update_aliquot_quality(suboptimal_quality)
     aliquots.each { |a| a.update_quality(suboptimal_quality) }
@@ -118,7 +132,7 @@ class Receptacle
       comments.size
     end
 
-    scope :on_a, ->(klass) { where_is_a?(klass) }
+    scope :on_a, ->(klass) { where_is_a(klass) }
   end
 
   # This block is enabled when we have the labware table present as part of the AssetRefactor
@@ -230,7 +244,7 @@ class Receptacle
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
     def name
-      labware_name = labware.present? ? labware.try(:human_barcode) : '(not on a labware)'
+      labware_name = labware.present? ? labware.try(:name) : '(not on a labware)'
       labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
       labware_name
     end
@@ -246,6 +260,13 @@ class Receptacle
     def update_from_qc(qc_result)
       Tube::AttributeUpdater.update(self, qc_result)
     end
+  end
+
+  delegate :name, to: :labware, prefix: true
+
+  # Compatibility for v1 API maintains legacy 'type' for assets
+  def api_asset_type
+    labware.sti_type.tableize
   end
 
   private

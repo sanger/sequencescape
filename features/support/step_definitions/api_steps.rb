@@ -218,7 +218,7 @@ Then /^the JSON should be:$/ do |serialised_json|
   )
 end
 
-Then /^the HTTP response should be "([^\"]+)"$/ do |status|
+Then 'the HTTP response should be {string}' do |status|
   match = /^(\d+).*/.match(status) or raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
   begin
     assert_equal(match[1].to_i, page.driver.status_code)

@@ -624,7 +624,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
 
     # Check that the assets are only in the original asset group
-    Then the sample tube "sampletube-1" should only be in asset group "Existing asset group"
+    Then the sample tube "sampletube-1" should only be in the asset group "Existing asset group"
 
     Examples:
       | field            | value                                |
@@ -662,7 +662,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
 
     # Check that the asset group really has been created!
-    Then the asset group "<asset group name to check>" should only contain sample tube "sampletube-1"
+    Then the asset group "<asset group name to check>" should only contain the sample tube "sampletube-1"
 
     # NOTE: The UUID used here comes from the order now, rather than the submission.
     Examples:

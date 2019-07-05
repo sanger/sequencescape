@@ -7,7 +7,7 @@ Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*
     asset_group = FactoryBot.create(:asset_group, name: asset_group_name, study: study)
   end
 
-  asset_group.assets << sample_tube
+  asset_group.assets << sample_tube.receptacle
   asset_group.save!
 end
 
@@ -56,7 +56,7 @@ end
 Given /^Well "([^\"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|
   well = Plate.find_from_barcode(plate_barcode).wells.located_at(well).first
   request = Request.find_by(asset_id: well.id)
-  tube = request.target_asset
+  tube = request.target_asset.labware
   tube.update!(name: well.display_name)
   tube.primary_barcode.update!(barcode: library_tube_barcode)
 end
@@ -134,7 +134,7 @@ Given /^the UUID for well "([^"]*)" on plate "([^"]*)" is "([^"]*)"$/ do |well_p
 end
 
 Given /^the UUID for Library "([^"]*)" is "([^"]*)"$/ do |barcode, uuid|
-  step(%Q{the UUID for the asset with ID #{Asset.find_from_barcode(barcode).id} is "#{uuid}"})
+  step(%Q{the UUID for the asset with ID #{Labware.find_by_barcode(barcode).id} is "#{uuid}"})
 end
 
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|
@@ -171,7 +171,7 @@ Then /^the PacBio manifest should be:$/ do |expected_results_table|
 end
 
 Then /^I fill in the field for "(.*?)" with "(.*?)"$/ do |asset_name, content|
-  request_id = Asset.find_by!(name: asset_name).requests.first.id
+  request_id = Labware.find_by!(name: asset_name).requests_as_source.ids.first
   step(%Q{I fill in the hidden field "locations_for_#{request_id}" with "#{content}"})
 end
 

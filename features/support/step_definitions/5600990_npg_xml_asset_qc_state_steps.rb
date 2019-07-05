@@ -1,8 +1,7 @@
 Given /^sequencescape is setup for 5600990$/ do
   lane = FactoryBot.create :lane, name: 'NPG_Action_Lane_Test', qc_state: 'passed', external_release: 1
-  library_tube = FactoryBot.create :empty_library_tube
 
-  request = FactoryBot.create :request_with_sequencing_request_type, asset: library_tube, target_asset: lane, state: 'started'
+  request = FactoryBot.create :request_with_sequencing_request_type, target_asset: lane, state: 'started'
 
   batch = FactoryBot.create :batch, state: 'started', qc_state: 'qc_manual'
   batch.pipeline.request_types << request.request_type
@@ -10,13 +9,12 @@ Given /^sequencescape is setup for 5600990$/ do
 end
 
 Given /^a second request$/ do
-  lane = Lane.find_by(name: 'NPG_Action_Lane_Test')
-  library_tube = FactoryBot.create :empty_library_tube
-  request = FactoryBot.create :request_with_sequencing_request_type, asset: library_tube, target_asset: lane
+  lane = Labware.find_by!(name: 'NPG_Action_Lane_Test').receptacle
+  FactoryBot.create :request_with_sequencing_request_type, target_asset: lane
 end
 
 Given /^a pass event for the request$/ do
-  lane = Lane.find_by(name: 'NPG_Action_Lane_Test')
+  lane = Labware.find_by!(name: 'NPG_Action_Lane_Test').receptacle
   request = lane.source_request
   FactoryBot.create :event, eventful: request, created_by: 'npg', family: 'pass'
 end

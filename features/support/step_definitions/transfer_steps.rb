@@ -84,7 +84,7 @@ def change_request_state(state, targets, direction, request_class)
 end
 
 Then 'the state of all the {request_class} requests {direction} {uuid} should be {string}' do |request_class, direction, target, state|
-  request_holder = target.respond_to?(:wells) ? target.wells : target
+  request_holder = target.try(:receptacles) || target
   assert_request_state(state, request_holder, direction, request_class)
 end
 

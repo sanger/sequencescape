@@ -13,8 +13,7 @@ shared = {
   stock_plate: false,
   default_state: 'pending',
   cherrypickable_target: false,
-  cherrypick_direction: 'column',
-  barcode_for_tecan: 'ean13_barcode'
+  cherrypick_direction: 'column'
 }
 
 ActiveRecord::Base.transaction do

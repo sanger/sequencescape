@@ -36,9 +36,10 @@ FactoryBot.define do
 
   factory :sample_tube, parent: :empty_sample_tube do
     transient do
-      sample { create(:sample) }
+      sample { create(:sample, sample_attributes) }
       study { create(:study) }
       project { create(:project) }
+      sample_attributes { {} }
     end
 
     after(:create) do |sample_tube, evaluator|

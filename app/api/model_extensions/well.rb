@@ -13,4 +13,9 @@ module ModelExtensions::Well
       }
     end
   end
+
+  # Compatibility for v1 API maintains legacy 'type' for assets
+  def api_asset_type
+    sti_type.tableize
+  end
 end

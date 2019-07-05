@@ -62,7 +62,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         setup do
           @requests_group_a = LibraryCreationRequest.all[0..1]
           @requests_group_b = LibraryCreationRequest.all[2..3]
-          @pipeline = create :library_creation_pipeline, request_types: [@lc], asset_type: 'LibraryTube'
+          @pipeline = create :library_creation_pipeline, request_types: [@lc]
           @batch_a = Batch.create!(requests: @requests_group_a, pipeline: @pipeline)
           @batch_a.start!(user: @user)
           @batch_a.complete!(@user)

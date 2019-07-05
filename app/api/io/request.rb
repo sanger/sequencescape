@@ -18,12 +18,12 @@ class Io::Request < ::Core::Io::Base
                                  submission.uuid  => submission.uuid
 
                                            asset <=  source_asset
-                         asset.sti_type.tableize  => source_asset.type
+                            asset.api_asset_type  => source_asset.type
                                       asset.name  => source_asset.name
                                   asset.aliquots  => source_asset.aliquots
 
                                     target_asset <=  target_asset
-                  target_asset.sti_type.tableize  => target_asset.type
+                     target_asset.api_asset_type  => target_asset.type
                                target_asset.name  => target_asset.name
                            target_asset.aliquots  => target_asset.aliquots
   ")

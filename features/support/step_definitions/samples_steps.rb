@@ -125,7 +125,7 @@ end
 
 Given /^the sample "([^\"]+)" is in the (sample tube|well) "([^\"]+)"$/ do |sample_name, _asset_type, asset_name|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  asset = Asset.find_by(name: asset_name) or raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
+  asset = Labware.find_by(name: asset_name).receptacle or raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
   asset.aliquots.clear
   asset.aliquots.create!(sample: sample)
 end

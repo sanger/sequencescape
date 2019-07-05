@@ -55,7 +55,6 @@ end
 ##################################################################################################################
 
 LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipeline|
-  pipeline.asset_type = 'LibraryTube'
   pipeline.sorter     = 0
   pipeline.automated  = false
   pipeline.active     = true
@@ -95,7 +94,6 @@ end.tap do |pipeline|
 end
 
 MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparation') do |pipeline|
-  pipeline.asset_type          = 'LibraryTube'
   pipeline.sorter              = 0
   pipeline.automated           = false
   pipeline.active              = true
@@ -147,7 +145,6 @@ end.tap do |pipeline|
 end
 
 MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparation') do |pipeline|
-  pipeline.asset_type  = 'LibraryTube'
   pipeline.sorter      = 0
   pipeline.automated   = false
   pipeline.active      = true
@@ -222,7 +219,6 @@ end << RequestType.create!(
        end
 
 SequencingPipeline.create!(name: 'Cluster formation SE (spiked in controls)', request_types: cluster_formation_se_request_type) do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -250,7 +246,6 @@ end.tap do |pipeline|
 end
 
 SequencingPipeline.create!(name: 'Cluster formation SE', request_types: cluster_formation_se_request_type) do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -276,7 +271,6 @@ end.tap do |pipeline|
 end
 
 SequencingPipeline.create!(name: 'Cluster formation SE (no controls)', request_types: cluster_formation_se_request_type) do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -324,7 +318,6 @@ end << RequestType.create!(
        end
 
 SequencingPipeline.create!(name: 'Cluster formation SE HiSeq', request_types: single_ended_hi_seq_sequencing) do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -350,7 +343,6 @@ end.tap do |pipeline|
 end
 
 SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (no controls)', request_types: single_ended_hi_seq_sequencing) do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -426,7 +418,6 @@ hiseq_2500_se_request_types = %w[a b c].map do |pl|
 end
 
 SequencingPipeline.create!(name: 'Cluster formation PE', request_types: cluster_formation_pe_request_types) do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 3
   pipeline.automated  = false
   pipeline.active     = true
@@ -452,11 +443,9 @@ end.tap do |pipeline|
 end
 
 SequencingPipeline.create!(name: 'Cluster formation PE (no controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
-  pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
   pipeline.active          = true
-  pipeline.group_by_parent = false
 
   pipeline.workflow = Workflow.create!(name: 'Cluster formation PE (no controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -478,11 +467,9 @@ end.tap do |pipeline|
 end
 
 SequencingPipeline.create!(name: 'Cluster formation PE (spiked in controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
-  pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
   pipeline.active          = true
-  pipeline.group_by_parent = false
 
   pipeline.workflow = Workflow.create!(name: 'Cluster formation PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -506,11 +493,9 @@ end.tap do |pipeline|
 end
 
 SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (spiked in controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
-  pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 9
   pipeline.automated       = false
   pipeline.active          = true
-  pipeline.group_by_parent = false
 
   pipeline.workflow = Workflow.create!(name: 'HiSeq Cluster formation PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -534,12 +519,10 @@ end.tap do |pipeline|
 end
 
 SequencingPipeline.create!(name: 'HiSeq 2500 PE (spiked in controls)', request_types: hiseq_2500_request_types) do |pipeline|
-  pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 9
   pipeline.max_size        = 2
   pipeline.automated       = false
   pipeline.active          = true
-  pipeline.group_by_parent = false
 
   pipeline.workflow = Workflow.create!(name: 'HiSeq 2500 PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -562,12 +545,10 @@ end.tap do |pipeline|
 end
 
 SequencingPipeline.create!(name: 'HiSeq 2500 SE (spiked in controls)', request_types: hiseq_2500_se_request_types) do |pipeline|
-  pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 9
   pipeline.max_size        = 2
   pipeline.automated       = false
   pipeline.active          = true
-  pipeline.group_by_parent = false
 
   pipeline.workflow = Workflow.create!(name: 'HiSeq 2500 SE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -589,11 +570,9 @@ end.tap do |pipeline|
 end
 
 SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (spiked in controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
-  pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
   pipeline.active          = true
-  pipeline.group_by_parent = false
 
   pipeline.workflow = Workflow.create!(name: 'Cluster formation SE HiSeq (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -617,11 +596,9 @@ end
 
 # TODO: This pipeline has been cloned from the 'Cluster formation PE (no controls)'.  Needs checking
 SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do |pipeline|
-  pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
   pipeline.active          = true
-  pipeline.group_by_parent = false
 
   %w[a b c].each do |pl|
     pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
@@ -731,8 +708,6 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
   pipeline.active               = true
   pipeline.max_size             = 96
 
-  pipeline.group_by_parent = false
-
   pipeline.request_types << RequestType.create!(key: 'pacbio_sequencing', name: 'PacBio Sequencing') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'PacBioLibraryTube'
@@ -805,7 +780,6 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 end
 
 SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -1198,7 +1172,6 @@ end
 
 SequencingPipeline.create!(
   name: 'HiSeq 4000 PE (spiked in controls)',
-  asset_type: 'Lane',
   automated: false,
   active: true,
   sorter: 10,
@@ -1216,7 +1189,6 @@ end
 
 SequencingPipeline.create!(
   name: 'HiSeq 4000 SE (spiked in controls)',
-  asset_type: 'Lane',
   automated: false,
   active: true,
   sorter: 10,

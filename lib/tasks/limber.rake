@@ -59,8 +59,7 @@ namespace :limber do
         cherrypickable_target: true,
         cherrypick_direction: 'column',
         size: size,
-        asset_shape: AssetShape.default,
-        barcode_for_tecan: 'ean13_barcode'
+        asset_shape: AssetShape.default
       )
     end
 
@@ -72,8 +71,7 @@ namespace :limber do
         barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
         cherrypickable_target: false,
         size: 96,
-        asset_shape: AssetShape.find_by(name: 'Standard'),
-        barcode_for_tecan: 'ean13_barcode'
+        asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
 
@@ -89,7 +87,6 @@ namespace :limber do
         cherrypickable_target: true,
         cherrypick_direction: 'column',
         size: 96,
-        barcode_for_tecan: 'ean13_barcode',
         barcode_prefix: BarcodePrefix.find_by(prefix: 'NT')
       )
     end

@@ -103,7 +103,7 @@ describe 'Asset submission', js: true do
                asset: asset,
                request_type: original_request_type)
       end
-      let(:selected_read_length) { 108 }
+      let(:selected_read_length) { '108' }
 
       it_behaves_like 'it allows cross study sequencing'
     end

@@ -12,6 +12,21 @@ class Labware < Asset
   class_attribute :receptacle_class
   self.receptacle_class = 'Receptacle'
 
+  def human_barcode
+    'UNKNOWN'
+  end
+
+  # Assigns name
+  # @note Overridden on subclasses to append the asset id to the name
+  #       via on_create callbacks
+  def generate_name(new_name)
+    self.name = new_name
+  end
+
+  def display_name
+    name.presence || "#{sti_type} #{id}"
+  end
+
   AssetRefactor.when_refactored do
     include LabwareAssociations
     include Commentable
@@ -55,4 +70,6 @@ class Labware < Asset
   end
 
   has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
+
+  scope :named, ->(name) { where(name: name) }
 end
