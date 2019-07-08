@@ -61,7 +61,7 @@ class RequestcreateTest < ActiveSupport::TestCase
     end
 
     should 'have the asset IDs' do
-      assert_equal @assets.map(&:id).sort, RequestType.find_by(key: 'create_asset').requests.map(&:asset_id).sort
+      assert_equal @assets.map { |a| a.receptacle.id }.sort, RequestType.find_by(key: 'create_asset').requests.map(&:asset_id).sort
     end
   end
 end

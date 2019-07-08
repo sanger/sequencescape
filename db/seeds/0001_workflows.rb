@@ -648,11 +648,9 @@ end
 ##################################################################################################################
 
 CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
-  pipeline.asset_type          = 'Well'
   pipeline.sorter              = 10
   pipeline.automated           = false
   pipeline.active              = true
-  pipeline.group_by_parent     = true
 
   pipeline.request_types << RequestType.create!(key: 'cherrypick', name: 'Cherrypick') do |request_type|
     request_type.initial_state     = 'pending'
@@ -678,8 +676,6 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.sorter               = 14
   pipeline.automated            = false
   pipeline.active               = true
-  pipeline.asset_type           = 'PacBioLibraryTube'
-  pipeline.group_by_parent      = true
 
   pipeline.request_types << RequestType.create!(key: 'pacbio_sample_prep', name: 'PacBio Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
@@ -759,7 +755,6 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
       pipeline.sorter             = Pipeline.maximum(:sorter) + 1
       pipeline.automated          = false
       pipeline.active             = true
-      pipeline.asset_type         = 'LibraryTube'
       pipeline.externally_managed = true
 
       pipeline.request_types << RequestType.create!(name: pipeline_name) do |request_type|
@@ -842,8 +837,6 @@ CherrypickPipeline.create!(
   name: 'Illumina-C Cherrypick',
   active: true,
   automated: false,
-  group_by_parent: true,
-  asset_type: 'Well',
   group_name: 'Illumina-C Library creation',
   max_size: 3000,
   sorter: 10,
@@ -911,8 +904,6 @@ CherrypickTask.create!(
 CherrypickPipeline.create!(
   name: 'Cherrypick for Fluidigm',
   active: true,
-  group_by_parent: true,
-  asset_type: 'Well',
   sorter: 11,
   paginate: false,
   summary: true,
@@ -973,8 +964,6 @@ end << RequestType.create!(key: 'bespoke_hiseq_x_paired_end_sequencing',
     name: "HiSeq v4 PE #{type}",
     automated: false,
     active: true,
-    group_by_parent: false,
-    asset_type: 'Lane',
     sorter: 9,
     paginate: false,
     max_size: 8,
@@ -1007,8 +996,6 @@ end << RequestType.create!(key: 'bespoke_hiseq_x_paired_end_sequencing',
     name: "HiSeq v4 SE #{type}",
     automated: false,
     active: true,
-    group_by_parent: false,
-    asset_type: 'Lane',
     sorter: 9,
     paginate: false,
     max_size: 8,
@@ -1042,8 +1029,6 @@ end
     name: "HiSeq X PE #{type}",
     automated: false,
     active: true,
-    group_by_parent: false,
-    asset_type: 'Lane',
     sorter: 9,
     paginate: false,
     max_size: 8,

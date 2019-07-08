@@ -14,7 +14,7 @@ module LabelPrinter
         if stock.present?
           tube.name
         elsif batch.multiplexed?
-          tag_range = tube.tag_range
+          tag_range = tube.receptacle.tag_range
           tag_range.nil? ? tube.name : "(#{tag_range}) #{tube.id}"
         elsif tube.is_a? PacBioLibraryTube
           source_plate_barcode(tube)

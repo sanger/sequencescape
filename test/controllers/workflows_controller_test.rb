@@ -37,10 +37,10 @@ class WorkflowsControllerTest < ActionController::TestCase
         @task4 = FactoryBot.create :task, name: 'Submit batch', location: 'http://someurl', workflow: @ws2, sorted: 1, sti_type: 'SetDescriptorsTask'
         @library1 = FactoryBot.create :library_tube
         @lane1 = FactoryBot.create :lane
-        @lane1.parents << @library1
+        @lane1.labware.parents << @library1
         @library2 = FactoryBot.create :library_tube
         @lane2 = FactoryBot.create :lane
-        @lane2.parents << @library2
+        @lane2.labware.parents << @library2
 
         @item1 = @pipeline.request_types.last.create!(asset: @library1, target_asset: @lane1)
         @batch.batch_requests.create!(request: @item1, position: 1)

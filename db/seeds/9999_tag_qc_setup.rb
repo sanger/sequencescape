@@ -23,7 +23,6 @@ ActiveRecord::Base.transaction do
 end
 
 SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true

@@ -14,13 +14,13 @@ describe '/api/1/labware-uuid' do
   describe '#get' do
     subject(:url) { '/api/1/' + uuid }
 
+    # We use asset for compatibility reasons.
     let(:response_body) do
       %({
-        "labware": {
+        "asset": {
           "actions": {
             "read": "http://www.example.com/api/1/#{uuid}"
           },
-          "aliquots": [],
           "uuid": "#{uuid}"
         }
       })

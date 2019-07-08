@@ -31,7 +31,7 @@ describe 'Viewing a receptacle' do
   end
 
   context 'with a lane' do
-    let(:receptacle) { create(:lane).receptacle }
+    let(:receptacle) { create(:lane) }
 
     it_behaves_like 'a receptacle'
   end

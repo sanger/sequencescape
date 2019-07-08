@@ -184,8 +184,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @study    = create :study
         @project  = create :project
         @user     = create :user
-
-        @library_creation_request_type = create :well_request_type, for_multiplexing: true, target_asset_type: 'MultiplexedLibraryTube', pooling_method: @pooling
+        mx_purpose = create :mx_tube_purpose
+        @library_creation_request_type = create :well_request_type, for_multiplexing: true, target_purpose: mx_purpose, pooling_method: @pooling
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]

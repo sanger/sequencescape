@@ -38,7 +38,7 @@ class Lane < Receptacle
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
-    delegate :friendly_name, :name, :name=, to: :labware
+    delegate :name, :name=, to: :labware
 
     def labware
       super || build_labware(sti_type: 'Lane::Labware', receptacle: self)
@@ -51,6 +51,10 @@ class Lane < Receptacle
     def labware
       self
     end
+  end
+
+  def friendly_name
+    name.presence || id # TODO: Maybe add location?
   end
 
   def subject_type

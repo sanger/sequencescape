@@ -53,7 +53,7 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'expose the library information correctly' do
-          assert_select "sample[library_id='#{@library.id}'][library_name='#{@library.name}'][library_type='Standard']"
+          assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
         end
       end
     end

@@ -1,5 +1,13 @@
 AssetRefactor.when_not_refactored do
-  class Receptacle < Labware; end
+  class Receptacle < Labware
+    def labware
+      self
+    end
+
+    def receptacle
+      self
+    end
+  end
 end
 
 AssetRefactor.when_refactored do
@@ -13,12 +21,27 @@ AssetRefactor.when_refactored do
     has_many :ancestors, through: :labware
     has_many :descendants, through: :labware
 
+    delegate :human_barcode, :machine_barcode, to: :labware, allow_nil: true
+    delegate :asset_type_for_request_types, to: :labware, allow_nil: true
+    delegate :has_stock_asset?, to: :labware, allow_nil: true
+    delegate :children, to: :labware, allow_nil: true
+    # Keeps event behaviour consistent
+    delegate :subject_type, to: :labware
+    delegate :description, to: :map, prefix: true, allow_nil: true
+
+    # This really doesn't make sense any more. Should probably migrate legacy data
+    # to a barcode type and retire this
+    delegate :two_dimensional_barcode, :two_dimensional_barcode=, to: :labware
+
     scope :named, ->(name) { joins(:labware).where(labware: { name: name }) }
     # We accept not only an individual barcode but also an array of them.
     scope :with_barcode, lambda { |*barcodes|
       db_barcodes = Barcode.extract_barcodes(barcodes)
       joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
     }
+    scope :include_map, -> { includes(:map) }
+    scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
+    scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
     def any_barcode_matching?(other_barcode)
       barcodes.any? { |barcode| barcode =~ other_barcode }
@@ -138,11 +161,6 @@ class Receptacle
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
-    delegate :human_barcode, :machine_bracode, to: :labware, allow_nil: true
-    delegate :asset_type_for_request_types, to: :labware, allow_nil: true
-    delegate :has_stock_asset?, to: :labware, allow_nil: true
-    delegate :children, to: :labware, allow_nil: true
-
     def total_comment_count
       comments.size + labware_comment_count
     end

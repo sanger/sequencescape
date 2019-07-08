@@ -59,7 +59,7 @@ RSpec.describe Request do
       @submission = FactoryHelp.submission(request_types: [@cherrypick_request_type, @genotyping_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
 
       @genotype_pipeline = create :pipeline, name: 'genotyping pipeline', request_types: [@genotyping_request_type]
-      @cherrypick_pipeline = create :pipeline, name: 'cherrypick pipeline', request_types: [@cherrypick_request_type], next_pipeline_id: @genotype_pipeline.id, asset_type: 'LibraryTube'
+      @cherrypick_pipeline = create :pipeline, name: 'cherrypick pipeline', request_types: [@cherrypick_request_type], next_pipeline_id: @genotype_pipeline.id
 
       @request1 = create(
         :request_without_assets,

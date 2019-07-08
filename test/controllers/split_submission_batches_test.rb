@@ -14,7 +14,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       @study = FactoryBot.create :study
       @asset_count = 4
       @asset_group = FactoryBot.create :asset_group
-      @asset_group.assets = create_list :sample_tube, @asset_count
+      @asset_group.assets = create_list(:sample_tube, @asset_count).map(&:receptacle)
       @sequencing_pipeline = create :sequencing_pipeline
     end
 

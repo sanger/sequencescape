@@ -5,7 +5,7 @@ require 'support/barcode_helper'
 
 describe '/api/1/receptacle-uuid' do
   let(:authorised_app) { create :api_application }
-  let(:uuid) { labware.uuid }
+  let(:uuid) { receptacle.uuid }
   let(:custom_metadata_uuid) { collection.uuid }
   let(:purpose_uuid) { '00000000-1111-2222-3333-666666666666' }
 
@@ -14,9 +14,10 @@ describe '/api/1/receptacle-uuid' do
   describe '#get' do
     subject(:url) { '/api/1/' + uuid }
 
+    # Asset for legacy reasons
     let(:response_body) do
       %({
-        "receptacle": {
+        "asset": {
           "actions": {
             "read": "http://www.example.com/api/1/#{uuid}"
           },

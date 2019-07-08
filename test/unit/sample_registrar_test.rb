@@ -32,7 +32,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
 
       should 'register newly created sample tube' do
         assert_equal 1, Messenger.count - @messenger_count
-        assert_equal SampleTube.last, Messenger.last.target
+        assert_equal SampleTube.last.receptacle, Messenger.last.target
       end
 
       should 'not change AssetGroup.count' do
@@ -88,7 +88,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         end
 
         should 'put the sample tube into the asset groups' do
-          assert_contains(AssetGroup.last.assets, SampleTube.last)
+          assert_contains(AssetGroup.last.assets, SampleTube.last.receptacle)
         end
       end
 
@@ -260,12 +260,12 @@ class SampleRegistrarTest < ActiveSupport::TestCase
 
         should 'put samples 1 and 3 into asset group 1' do
           group = AssetGroup.find_by(name: 'asset_group_1')
-          assert_contains(group.assets, SampleTube.find_by(name: 'valid_sample_1'))
-          assert_contains(group.assets, SampleTube.find_by(name: 'valid_sample_3'))
+          assert_contains(group.assets, SampleTube.find_by(name: 'valid_sample_1').receptacle)
+          assert_contains(group.assets, SampleTube.find_by(name: 'valid_sample_3').receptacle)
         end
 
         should 'put sample 2 into asset group 2' do
-          assert_contains(AssetGroup.find_by(name: 'asset_group_2').assets, SampleTube.find_by(name: 'valid_sample_2'))
+          assert_contains(AssetGroup.find_by(name: 'asset_group_2').assets, SampleTube.find_by(name: 'valid_sample_2').receptacle)
         end
 
         should 'not have created sample 3' do
