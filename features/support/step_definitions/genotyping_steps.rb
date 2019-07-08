@@ -1,9 +1,3 @@
-Then(/^I should see dna qc table:$/) do |expected_results_table|
-  actual_table = table(fetch_table('table#sortable_batches'))
-  actual_table.map_column!('Qc') { |_text| '' }
-  expected_results_table.diff!(actual_table)
-end
-
 Given(/^a plate template exists$/) do
   FactoryBot.create :plate_template
 end

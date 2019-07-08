@@ -27,7 +27,6 @@ AssetRefactor.when_refactored do
     delegate :children, to: :labware, allow_nil: true
     # Keeps event behaviour consistent
     delegate :subject_type, to: :labware
-    delegate :description, to: :map, prefix: true, allow_nil: true
 
     # This really doesn't make sense any more. Should probably migrate legacy data
     # to a barcode type and retire this
@@ -284,7 +283,12 @@ class Receptacle
 
   # Compatibility for v1 API maintains legacy 'type' for assets
   def api_asset_type
-    labware.sti_type.tableize
+    legacy_asset_type.tableize
+  end
+
+  # Compatibility for v1 API maintains legacy 'type' for assets
+  def legacy_asset_type
+    labware.sti_type
   end
 
   private

@@ -32,7 +32,7 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
     request = FactoryBot.create :request, request_type: RequestType.find_by(key: 'illumina_b_multiplexed_library_creation'), submission_id: submission.id, asset: source, target_asset: destination
 
     batch.requests << request
-    asset_group.assets << source
+    asset_group.assets << source.receptacle
   end
 
   pipeline = Pipeline.find_by(name: 'Cluster formation PE') or raise StandardError, "Cannot find pipeline '#{name}'"

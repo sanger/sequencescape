@@ -109,7 +109,7 @@ end
 
 Then /^(\d+) PacBioSequencingRequests for "([^"]*)" should be "([^"]*)"$/ do |number_of_requests, asset_barcode, state|
   library_tube = PacBioLibraryTube.find_from_barcode(asset_barcode)
-  assert_equal number_of_requests.to_i, PacBioSequencingRequest.where(asset_id: library_tube.id, state: state).count
+  assert_equal number_of_requests.to_i, PacBioSequencingRequest.where(asset_id: library_tube.receptacle.id, state: state).count
 end
 
 Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asset_barcode, state|
@@ -134,7 +134,7 @@ Given /^the UUID for well "([^"]*)" on plate "([^"]*)" is "([^"]*)"$/ do |well_p
 end
 
 Given /^the UUID for Library "([^"]*)" is "([^"]*)"$/ do |barcode, uuid|
-  step(%Q{the UUID for the asset with ID #{Labware.find_by_barcode(barcode).id} is "#{uuid}"})
+  step(%Q{the UUID for the receptacle with ID #{Labware.find_by_barcode(barcode).receptacle.id} is "#{uuid}"})
 end
 
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|

@@ -43,6 +43,7 @@ class Labware < Asset
     has_many :transfer_requests_as_source, through: :receptacles
     has_many :transfer_requests_as_target, through: :receptacles
     has_many :submissions, through: :receptacles
+    has_many :asset_groups, through: :receptacles
 
     has_one :spiked_in_buffer_links, -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
             class_name: 'AssetLink', foreign_key: :descendant_id, inverse_of: :descendant

@@ -7,7 +7,7 @@ Given '{asset_name} is in {asset_group}' do |tube, asset_group|
 end
 
 Then '{asset_group} should only contain {asset_name}' do |asset_group, sample_tube|
-  assert_equal([sample_tube], asset_group.assets, 'Sample tube is not in the asset group')
+  assert_equal([sample_tube.receptacle], asset_group.assets, 'Sample tube is not in the asset group')
 end
 
 Then '{asset_name} should only be in {asset_group}' do |sample_tube, asset_group|

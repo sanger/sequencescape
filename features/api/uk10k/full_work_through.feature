@@ -23,7 +23,7 @@ And I have a "full" authorised user with the key "cucumber"
   @full-workflow @create @update @submit @read
   Scenario: Create submission, attach assets, and then submit it
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
-    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+    And all sample tubes have receptacles with sequential UUIDs based on "33333333-4444-5555-6666"
 
     # Retrieving the order template ...
     When I GET the API path "/00000000-1111-2222-3333-444444444444"

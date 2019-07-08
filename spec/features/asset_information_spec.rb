@@ -33,8 +33,8 @@ describe 'Viewing an asset' do
     let(:labware) { create :sample_tube }
     let(:receptacle) { labware.receptacle }
 
-    it 'redirects to the Labware' do
-      expect(find('h1')).to have_content("Labware #{labware.name}")
+    it 'redirects to the Receptacle' do
+      expect(find('h1')).to have_content("Receptacle #{labware.name}")
     end
   end
 

@@ -79,6 +79,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
 
       should "we only get the plates that haven't been updated yet" do
         @plates_requiring_fluidigm = Plate.requiring_fluidigm_data
+
         assert_equal false, @plates_requiring_fluidigm.include?(@plate1)
         assert_equal true, @plates_requiring_fluidigm.include?(@plate2)
       end

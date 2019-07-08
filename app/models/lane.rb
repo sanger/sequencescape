@@ -74,4 +74,9 @@ class Lane < Receptacle
 
     external_release? ? 'Yes' : 'No'
   end
+
+  # Compatibility for v1 API maintains legacy 'type' for assets
+  def legacy_asset_type
+    sti_type
+  end
 end

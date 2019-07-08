@@ -10,7 +10,7 @@ module Plate::FluidigmBehaviour
           :well_requests_as_target,
           %(LEFT OUTER JOIN events
             ON eventful_id = #{Plate.table_name}.id
-            AND eventful_type = "#{Plate.superclass.name}"
+            AND eventful_type = "#{Plate.base_class.name}"
             AND family = "update_fluidigm_plate"
             AND content = "FLUIDIGM_DATA")
         ])

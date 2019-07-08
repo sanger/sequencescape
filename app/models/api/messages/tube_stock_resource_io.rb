@@ -14,6 +14,7 @@ AssetRefactor.when_not_refactored do
 
     map_attribute_to_json_attribute(:ean13_barcode, 'machine_barcode')
     map_attribute_to_json_attribute(:human_barcode, 'human_barcode')
+    map_attribute_to_json_attribute(:map_description, 'labware_coordinate')
 
     with_nested_has_many_association(:aliquots, as: 'samples') do
       with_association(:sample) { map_attribute_to_json_attribute(:uuid, 'sample_uuid') }
