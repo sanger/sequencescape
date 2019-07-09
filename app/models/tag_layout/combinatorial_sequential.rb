@@ -17,7 +17,7 @@ class TagLayout::CombinatorialSequential < TagLayout::Walker
   self.walking_by = 'combinatorial sequential'
 
   def walk_wells
-    wells_in_walking_order.includes(:map).each do |well|
+    wells_in_walking_order.includes(:map).find_each do |well|
       row = well.map.row
       col = well.map.column
       index = direction_helper.comb_tag_index(row, col, PLATE_SCALE, height, width)
