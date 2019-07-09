@@ -1,6 +1,20 @@
-class Lane < Receptacle
+AssetRefactor.when_refactored do
+  class Lane < Labware; end
+end
+
+AssetRefactor.when_not_refactored do
+  class Lane < Receptacle; end
+end
+
+# A Lane is a section of a Flowcell which is capable of containing one or more
+# {Sample samples} for sequencing. Samples are represented by {Aliquot aliquots}
+# which are distinguished by their distinct {Tag tags}.
+# Currently flowcells can be approximated in Sequencescape by the {Batch} created
+# at the end of the {SequencingPipeline}
+class Lane
   include Api::LaneIO::Extensions
   include AliquotIndexer::Indexable
+  include SingleReceptacleLabware
 
   # Not entirely sure this is correct, as really flowcells are the labware,
   # but we do rely on asset link to Lane. Currently aware of:

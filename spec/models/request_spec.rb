@@ -57,14 +57,12 @@ RSpec.describe Request do
       @genotyping_request_type = create :request_type, name: 'genotyping'
       @cherrypick_request_type = create :request_type, name: 'cherrypick', target_asset_type: nil
       @submission = FactoryHelp.submission(request_types: [@cherrypick_request_type, @genotyping_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
-      @item = create :item, submission: @submission
 
       @genotype_pipeline = create :pipeline, name: 'genotyping pipeline', request_types: [@genotyping_request_type]
       @cherrypick_pipeline = create :pipeline, name: 'cherrypick pipeline', request_types: [@cherrypick_request_type], next_pipeline_id: @genotype_pipeline.id, asset_type: 'LibraryTube'
 
       @request1 = create(
         :request_without_assets,
-        item: @item,
         asset: create(:sample_tube),
         target_asset: nil,
         submission: @submission,
@@ -74,7 +72,7 @@ RSpec.describe Request do
     end
     context 'with valid input' do
       setup do
-        @request2 = create :request, item: @item, submission: @submission, request_type: @genotyping_request_type
+        @request2 = create :request, submission: @submission, request_type: @genotyping_request_type
       end
       it 'return the correct next request' do
         assert_equal [@request2], @request1.next_requests
@@ -83,7 +81,7 @@ RSpec.describe Request do
 
     context 'where asset hasnt been created for second request' do
       setup do
-        @request2 = create :request, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type
+        @request2 = create :request, asset: nil, submission: @submission, request_type: @genotyping_request_type
       end
       it 'return the correct next request' do
         assert_equal [@request2], @request1.next_requests
@@ -92,8 +90,8 @@ RSpec.describe Request do
 
     describe '#associate_pending_requests_for_downstream_pipeline' do
       setup do
-        @request2 = create :request_without_assets, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type
-        @request3 = create :request_without_assets, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type
+        @request2 = create :request_without_assets, asset: nil, submission: @submission, request_type: @genotyping_request_type
+        @request3 = create :request_without_assets, asset: nil, submission: @submission, request_type: @genotyping_request_type
 
         @batch = @cherrypick_pipeline.batches.create!(requests: [@request1])
 
@@ -232,8 +230,7 @@ RSpec.describe Request do
   describe '#copy' do
     setup do
       @request_type = create :request_type
-      @item         = create :item
-      @request = create :request, request_type: @request_type, study: study, item: @item, state: 'failed'
+      @request = create :request, request_type: @request_type, study: study, state: 'failed'
       @new_request = @request.copy
     end
 
@@ -275,8 +272,7 @@ RSpec.describe Request do
 
   describe '#state' do
     setup do
-      @item = create :item
-      @request = create :request_suitable_for_starting, study: study, item: @item
+      @request = create :request_suitable_for_starting, study: study
       @user = create :admin
       @user.has_role 'owner', study
     end

@@ -367,9 +367,8 @@ And I have a "full" authorised user with the key "cucumber"
       | Library Creation - Paired end sequencing | "library_type": "One with books"            | library_type": ["is 'One with books' should be No PCR, High complexity and double size selected, Illumina cDNA protocol, Agilent Pulldown, Custom, High complexity, ChiP-seq, NlaIII gene expression, Standard, Long range, Small RNA, Double size selected, DpnII gene expression, TraDIS, qPCR only, Pre-quality controlled, DSN_RNAseq or RNA-seq dUTP"]    |
 
     Scenarios: Where the read length does not match the list for the particular sequencing request
-      | template name                                  | invalid options    | errors                                               |
+      | template name                                  | invalid options    | errors                                                 |
       | Library Creation - Paired end sequencing       | "read_length": 100 | read_length": ["is '100' should be 37, 54, 76 or 108"] |
-      | Library Creation - HiSeq Paired end sequencing | "read_length": 76  | read_length": ["is '76' should be 50, 75 or 100"]      |
 
   @submit @error @project
   Scenario: Attempting to create an order that has a project that is not active

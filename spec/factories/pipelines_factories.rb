@@ -10,10 +10,18 @@ FactoryBot.define do
     "Plate Creator #{n}"
   end
 
-  factory :asset do
-    name                { generate :asset_name }
-    value               { '' }
-    qc_state            { '' }
+  # Assets don't really make sense in the context off our current tests
+  # as they never actually get created in reality. So this would be a candidate for
+  # early removal
+  AssetRefactor.when_not_refactored do
+    factory :asset do
+      name                { generate :asset_name }
+      qc_state            { '' }
+    end
+  end
+
+  factory :labware do
+    name { generate :asset_name }
   end
 
   factory :plate_creator_purpose, class: Plate::Creator::PurposeRelationship do |_t|
@@ -337,15 +345,14 @@ FactoryBot.define do
 
   factory :plate_template do
     name      { 'testtemplate' }
-    value     { 96 }
     size      { 96 }
   end
 
   factory :asset_link do
     # Asset links get annoyed if created between nodes which have
     # not been persisted.
-    association(:ancestor, factory: :asset, strategy: :create)
-    association(:descendant, factory: :asset, strategy: :create)
+    association(:ancestor, factory: :labware, strategy: :create)
+    association(:descendant, factory: :labware, strategy: :create)
     direct { true }
   end
 

@@ -176,11 +176,12 @@ Feature: Manage a list of bait libraries
 
   @javascript
   Scenario: I should not be able to select inactive libraries
+    Given I have an ISC submission template
     Given I am an "administrator" user logged in as "admin"
       And I have a bait library called "Delete This"
       And the last bait library is hidden
       And I am on the Submissions Inbox page
     When I follow "new Submission"
-     And I select "Pulldown ISC - Single ended sequencing" from "submission_template_id"
+     And I select "Pulldown ISC - HiSeq Paired end sequencing" from "submission_template_id"
      Then I should see the select field "Bait library" with the option "Human all exon 50MB"
      And I should see the select field "Bait library" without the option "Delete This"

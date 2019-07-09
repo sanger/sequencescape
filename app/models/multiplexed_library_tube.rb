@@ -18,13 +18,6 @@ class MultiplexedLibraryTube < Tube
     LibraryTube
   end
 
-  def creation_requests
-    direct = requests_as_target.where_is_a?(Request::LibraryCreation)
-    return direct unless direct.empty?
-
-    parents.includes(:creation_request).map(&:creation_request)
-  end
-
   def team
     creation_requests.first&.product_line
   end
@@ -42,4 +35,13 @@ class MultiplexedLibraryTube < Tube
   end
 
   extend Asset::Stock::CanCreateStockAsset
+
+  private
+
+  def creation_requests
+    direct = requests_as_target.where_is_a?(Request::LibraryCreation)
+    return direct unless direct.empty?
+
+    parents.includes(:requests_as_target).first.requests_as_target
+  end
 end

@@ -27,5 +27,26 @@ class ApplicationRecord < ActiveRecord::Base
 
       find_by(name: name)
     end
+
+    # Temporary compatibility layer while AssetRefactor progresses
+    # will allow labware to get passed into associations expecting
+    # receptacles where there is no ambiguity. (e.g. tubes)
+    # @example
+    #   convert_labware_to_receptacle_for :library
+    #   def library=(library)
+    #     return super if library.is_a?(Receptacle)
+    #     Rails.logger.warn("#{library.class.name} passed to library")
+    #     super(library.receptacle)
+    #   end
+    def convert_labware_to_receptacle_for(*associations)
+      associations.each do |assn|
+        define_method("#{assn}=") do |associated|
+          return super(associated) if associated.is_a?(Receptacle)
+
+          Rails.logger.warn("#{associated.class.name} passed to #{assn}")
+          super(associated&.receptacle)
+        end
+      end
+    end
   end
 end
