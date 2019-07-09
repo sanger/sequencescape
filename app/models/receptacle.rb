@@ -47,6 +47,7 @@ class Receptacle
   has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
   has_many :source_batches, class_name: 'Batch', through: :requests_as_source, source: :batch
+  has_many :source_receptacles, through: :requests_as_target, source: :asset
 
   # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
   # one aliquot.

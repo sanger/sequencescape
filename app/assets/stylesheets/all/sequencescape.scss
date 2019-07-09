@@ -193,6 +193,11 @@ div.quota {
 
 .field_with_errors { input { @extend .is-invalid; } }
 
+.receptacle-list {
+  @extend .list-group;
+  a { @extend .list-group-item; }
+}
+
 .barcode_list {
   @extend .list-group;
   li {

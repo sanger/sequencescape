@@ -1,0 +1,11 @@
+<%= page_title 'Parents', @child.display_name %>
+
+<% if @parents.empty? %>
+  <p class='lead'>Could not find parents for <%= @child.display_name %>.</p>
+  <%= link_to "Back to #{@child.display_name}", receptacle_path(@child) %>
+<% else %>
+ <p class='lead'>Multiple parents for <%= @child.display_name %>.</p>
+  <div class="receptacle-list">
+    <%= render partial: 'parent', collection: @parents %>
+  </div>
+<% end %>
