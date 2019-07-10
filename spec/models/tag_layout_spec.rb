@@ -132,7 +132,7 @@ describe TagLayout do
         let(:walking_by) { 'combinatorial sequential' }
 
         context 'with row directions' do
-          let(:direction) { 'row' }
+          let(:direction) { 'combinatorial in rows' }
 
           context 'with a 384 well plate' do
             let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
@@ -176,67 +176,6 @@ describe TagLayout do
                 'N1' => [1], 'N2' => [2], 'N3' => [3], 'N4' => [4],
                 'O1' => [1], 'O2' => [2], 'O3' => [3], 'O4' => [4],
                 'P1' => [1], 'P2' => [2], 'P3' => [3], 'P4' => [4]
-              }
-            end
-            let(:expected_tag2s) do
-              expected_tag2_layout.transform_values do |map_ids|
-                map_ids.map { |id| tag2_group.tags.detect { |tag| tag.map_id == id } }
-              end
-            end
-
-            it_behaves_like 'a tag layout'
-
-            it 'applies the expected tag2 layout' do
-              expect(generate_tag_layout(plate, :tag2)).to eq expected_tag2s
-            end
-          end
-        end
-
-        context 'with column directions' do
-          let(:direction) { 'column' }
-
-          context 'with a 384 well plate' do
-            let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
-            let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: tag_count }
-            let(:expected_tag_layout) do
-              {
-                'A1' => [1], 'A2' => [2], 'A3' => [3], 'A4' => [4],
-                'B1' => [1], 'B2' => [2], 'B3' => [3], 'B4' => [4],
-                'C1' => [1], 'C2' => [2], 'C3' => [3], 'C4' => [4],
-                'D1' => [1], 'D2' => [2], 'D3' => [3], 'D4' => [4],
-                'E1' => [1], 'E2' => [2], 'E3' => [3], 'E4' => [4],
-                'F1' => [1], 'F2' => [2], 'F3' => [3], 'F4' => [4],
-                'G1' => [1], 'G2' => [2], 'G3' => [3], 'G4' => [4],
-                'H1' => [1], 'H2' => [2], 'H3' => [3], 'H4' => [4],
-                'I1' => [1], 'I2' => [2], 'I3' => [3], 'I4' => [4],
-                'J1' => [1], 'J2' => [2], 'J3' => [3], 'J4' => [4],
-                'K1' => [1], 'K2' => [2], 'K3' => [3], 'K4' => [4],
-                'L1' => [1], 'L2' => [2], 'L3' => [3], 'L4' => [4],
-                'M1' => [1], 'M2' => [2], 'M3' => [3], 'M4' => [4],
-                'N1' => [1], 'N2' => [2], 'N3' => [3], 'N4' => [4],
-                'O1' => [1], 'O2' => [2], 'O3' => [3], 'O4' => [4],
-                'P1' => [1], 'P2' => [2], 'P3' => [3], 'P4' => [4]
-              }
-            end
-            let(:expected_tag2_layout) do
-              {
-                'A1' => [1],  'A2' => [1],  'A3' => [1],  'A4' => [1],
-                'B1' => [2],  'B2' => [2],  'B3' => [2],  'B4' => [2],
-                'C1' => [3],  'C2' => [3],  'C3' => [3],  'C4' => [3],
-                'D1' => [4],  'D2' => [4],  'D3' => [4],  'D4' => [4],
-                'E1' => [5],  'E2' => [5],  'E3' => [5],  'E4' => [5],
-                'F1' => [6],  'F2' => [6],  'F3' => [6],  'F4' => [6],
-                'G1' => [7],  'G2' => [7],  'G3' => [7],  'G4' => [7],
-                'H1' => [8],  'H2' => [8],  'H3' => [8],  'H4' => [8],
-                'I1' => [9],  'I2' => [9],  'I3' => [9],  'I4' => [9],
-                'J1' => [10], 'J2' => [10], 'J3' => [10], 'J4' => [10],
-                'K1' => [11], 'K2' => [11], 'K3' => [11], 'K4' => [11],
-                'L1' => [12], 'L2' => [12], 'L3' => [12], 'L4' => [12],
-                'M1' => [13], 'M2' => [13], 'M3' => [13], 'M4' => [13],
-                'N1' => [14], 'N2' => [14], 'N3' => [14], 'N4' => [14],
-                'O1' => [15], 'O2' => [15], 'O3' => [15], 'O4' => [15],
-                'P1' => [16], 'P2' => [16], 'P3' => [16], 'P4' => [16]
               }
             end
             let(:expected_tag2s) do
