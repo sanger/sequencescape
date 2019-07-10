@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Lays out the tags so that they are row ordered.
 module TagLayout::CombInRows
   def self.direction

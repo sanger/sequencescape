@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+# Abstract class for handling dual indexed layouts
 class TagLayout::DualIndexWalker < TagLayout::Walker
   # Each row and column is essentially duplicated. So our scale
   # is 2 (not four)
   PLATE_SCALE = 2
 
   def walk_wells
-    wells_in_walking_order.includes(:map).each do |well|
+    wells_in_walking_order.includes(:map).find_each do |well|
       row = well.map.row
       col = well.map.column
       index = direction_helper.tag_index(row, col, PLATE_SCALE, height, width)
