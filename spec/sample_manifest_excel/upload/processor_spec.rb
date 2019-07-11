@@ -44,30 +44,31 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         download.save(test_file_name)
       end
 
-      context 'Library Tubes' do
-        before do
-          @upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: library_with_tag_seq_cols, start_row: 9)
-        end
+      describe 'SampleManifestExcel::Upload::Processor::OneDTube' do
+        let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: library_with_tag_seq_cols, start_row: 9) }
+        let(:processor) { SampleManifestExcel::Upload::Processor::OneDTube.new(upload) }
 
         context 'valid' do
           let!(:download) { build(:test_download_tubes, columns: library_with_tag_seq_cols, manifest_type: 'tube_library_with_tag_sequences') }
 
+          it 'will not generate samples prior to processing' do
+            pending 'Ensuring sample creation doesn\'t happen until processing'
+            expect { upload }.not_to change(Sample, :count)
+          end
+
           it 'will update the samples' do
-            processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
             processor.run(tag_group)
             expect(processor).to be_samples_updated
             expect(upload.rows).to be_all(&:sample_updated?)
           end
 
           it 'will update the sample manifest' do
-            processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
             processor.run(tag_group)
             expect(processor).to be_sample_manifest_updated
             expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
           it 'will be processed' do
-            processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
             processor.run(tag_group)
             expect(processor).to be_processed
           end
@@ -115,37 +116,37 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
       end
 
-      context 'Multiplexed Library Tubes with Tag Sequences' do
-        before do
-          @upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9)
-        end
+      describe 'SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube' do
+        let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9) }
+        let(:processor) { SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload) }
 
         context 'valid' do
           let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
 
+          it 'will not generate samples prior to processing' do
+            pending 'Ensuring sample creation doesn\'t happen until processing'
+            expect { upload }.not_to change(Sample, :count)
+          end
+
           it 'will update the samples' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(tag_group)
             expect(processor).to be_samples_updated
             expect(upload.rows).to be_all(&:sample_updated?)
           end
 
           it 'will update the sample manifest' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(tag_group)
             expect(processor).to be_sample_manifest_updated
             expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
           it 'will transfer the aliquots to the multiplexed library tube' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(tag_group)
             expect(processor).to be_aliquots_transferred
             expect(upload.rows).to be_all(&:aliquot_transferred?)
           end
 
           it 'will be processed' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(tag_group)
             expect(processor).to be_processed
           end
@@ -155,7 +156,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           let!(:download) { build(:test_download_tubes_partial, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
 
           it 'will process partial upload and cancel unprocessed requests' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 6
             processor.update_samples_and_aliquots(tag_group)
             expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 2
@@ -238,36 +238,31 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
       end
 
       context 'Multiplexed Library Tubes with Tag Groups and Indexes' do
-        before do
-          @upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9)
-        end
+        let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9) }
 
         context 'valid' do
           let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
+          let(:processor) { SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload) }
 
           it 'will update the samples' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(nil)
             expect(processor).to be_samples_updated
             expect(upload.rows).to be_all(&:sample_updated?)
           end
 
           it 'will update the sample manifest' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(nil)
             expect(processor).to be_sample_manifest_updated
             expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
           it 'will transfer the aliquots to the multiplexed library tube' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(nil)
             expect(processor).to be_aliquots_transferred
             expect(upload.rows).to be_all(&:aliquot_transferred?)
           end
 
           it 'will be processed' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
             processor.run(nil)
             expect(processor).to be_processed
           end
@@ -352,8 +347,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
       end
     end
 
-    context 'Plates' do
+    describe 'SampleManifestExcel::Upload::Processor::Plate' do
       let(:plate_columns) { SampleManifestExcel.configuration.columns.plate_default.dup }
+      let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: plate_columns, start_row: 9) }
+      let(:processor) { SampleManifestExcel::Upload::Processor::Plate.new(upload) }
 
       before do
         barcode = double('barcode')
@@ -362,28 +359,29 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
         download.worksheet.sample_manifest.generate
         download.save(test_file_name)
-        @upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: plate_columns, start_row: 9)
       end
 
-      context 'valid' do
-        let!(:download)     { build(:test_download_plates, columns: plate_columns) }
+      context 'when valid' do
+        let!(:download) { build(:test_download_plates, columns: plate_columns) }
+
+        it 'will not generate samples prior to processing' do
+          pending 'Ensuring sample creation doesn\'t happen until processing'
+          expect { processor }.not_to change(Sample, :count)
+        end
 
         it 'will update the samples' do
-          processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
           processor.run(nil)
           expect(processor).to be_samples_updated
           expect(upload.rows).to be_all(&:sample_updated?)
         end
 
         it 'will update the sample manifest' do
-          processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
           processor.run(nil)
           expect(processor).to be_sample_manifest_updated
           expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
         end
 
         it 'will be processed' do
-          processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
           processor.run(nil)
           expect(processor).to be_processed
         end
@@ -392,15 +390,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           let!(:download) { build(:test_download_plates_partial, columns: plate_columns) }
 
           it 'will process a partial upload' do
-            processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
-            expect(upload.sample_manifest.samples.map do |sample|
-              sample.reload
-              sample.sample_metadata.concentration.nil?
-            end.count).to eq(4)
             processor.update_samples(nil)
             expect(upload.sample_manifest.samples.map do |sample|
               sample.reload
-              sample.sample_metadata.concentration.nil?
+              sample.sample_metadata.concentration.present?
             end.count(true)).to eq(2)
             processor.update_sample_manifest
             expect(processor).to be_processed
@@ -411,21 +404,18 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           let!(:download)     { build(:test_download_plates_cgap, columns: plate_columns) }
 
           it 'will update the samples' do
-            processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
             processor.run(nil)
             expect(processor).to be_samples_updated
             expect(upload.rows).to be_all(&:sample_updated?)
           end
 
           it 'will update the sample manifest' do
-            processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
             processor.run(nil)
             expect(processor).to be_sample_manifest_updated
             expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
           it 'will be processed' do
-            processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
             processor.run(nil)
             expect(processor).to be_processed
           end
@@ -434,15 +424,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             let!(:download) { build(:test_download_plates_partial_cgap, columns: plate_columns) }
 
             it 'will process a partial upload' do
-              processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
-              expect(upload.sample_manifest.samples.map do |sample|
-                sample.reload
-                sample.sample_metadata.concentration.nil?
-              end.count).to eq(4)
               processor.update_samples(nil)
               expect(upload.sample_manifest.samples.map do |sample|
                 sample.reload
-                sample.sample_metadata.concentration.nil?
+                sample.sample_metadata.concentration.present?
               end.count(true)).to eq(2)
               processor.update_sample_manifest
               expect(processor).to be_processed
@@ -497,7 +482,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           let!(:download)     { build(:test_download_plates_cgap, columns: plate_columns, validation_errors: [:sample_plate_id_duplicates]) }
 
           it 'duplicates will not be valid' do
-            processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
             expect(processor).not_to be_valid
           end
         end

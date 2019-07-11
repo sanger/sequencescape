@@ -217,12 +217,13 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         end
       end
 
-      it 'creates the samples and tubes' do
+      it 'creates the sample_manifest_assets and tubes' do
         ((worksheet.first_row + 1)..worksheet.last_row).each do |i|
-          sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number).to_i)
-          expect(sample).to be_present
-          expect(sample.sample_manifest).to be_present
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_tube_id).number)).to eq(sample.assets.first.human_barcode)
+          ss_id = spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number)
+          sample_manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: ss_id)
+          expect(sample_manifest_asset).to be_present
+          expect(sample_manifest_asset.sample_manifest).to be_present
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_tube_id).number)).to eq(sample_manifest_asset.asset.human_barcode)
         end
       end
 
@@ -247,7 +248,14 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
 
     context 'in a valid state with tag groups and indexes' do
-      let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup)) }
+      let!(:worksheet) do
+        SampleManifestExcel::Worksheet::TestWorksheet.new(
+          attributes.merge(
+            manifest_type: 'tube_multiplexed_library',
+            columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup
+          )
+        )
+      end
 
       before do
         save_file
@@ -334,8 +342,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       it 'without a sample manifest' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:sample_manifest]))
         save_file
-        sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(worksheet.first_row + 1, worksheet.columns.find_by(:name, :sanger_sample_id).number).to_i)
-        expect(sample.sample_manifest).to be_nil
+        missing_ss_id = spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :sanger_sample_id).number)
+        expect(SampleManifestAsset.find_by(sanger_sample_id: missing_ss_id)).to be_nil
       end
     end
   end
@@ -357,6 +365,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
     context 'in a valid state' do
       let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes) }
+      let(:first_sheet) { spreadsheet.sheet(0) }
 
       before do
         save_file
@@ -371,36 +380,37 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'adds title and description' do
-        expect(spreadsheet.sheet(0).cell(1, 1)).to eq('DNA Collections Form')
-        expect(spreadsheet.sheet(0).cell(5, 1)).to eq('Study:')
-        expect(spreadsheet.sheet(0).cell(5, 2)).to eq(sample_manifest.study.abbreviation)
-        expect(spreadsheet.sheet(0).cell(6, 1)).to eq('Supplier:')
-        expect(spreadsheet.sheet(0).cell(6, 2)).to eq(sample_manifest.supplier.name)
-        expect(spreadsheet.sheet(0).cell(7, 1)).to eq('No. Plates Sent:')
-        expect(spreadsheet.sheet(0).cell(7, 2)).to eq(sample_manifest.count.to_s)
+        expect(first_sheet.cell(1, 1)).to eq('DNA Collections Form')
+        expect(first_sheet.cell(5, 1)).to eq('Study:')
+        expect(first_sheet.cell(5, 2)).to eq(sample_manifest.study.abbreviation)
+        expect(first_sheet.cell(6, 1)).to eq('Supplier:')
+        expect(first_sheet.cell(6, 2)).to eq(sample_manifest.supplier.name)
+        expect(first_sheet.cell(7, 1)).to eq('No. Plates Sent:')
+        expect(first_sheet.cell(7, 2)).to eq(sample_manifest.count.to_s)
       end
 
       it 'adds standard headings to worksheet' do
         worksheet.columns.headings.each_with_index do |heading, i|
-          expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading)
+          expect(first_sheet.cell(9, i + 1)).to eq(heading)
         end
       end
 
       it 'adds the data' do
         data.each do |heading, value|
           worksheet.columns.find_by(:name, heading).number
-          expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, heading).number)).to eq(value.to_s)
-          expect(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, heading).number)).to eq(value.to_s)
+          expect(first_sheet.cell(worksheet.first_row, worksheet.columns.find_by(:name, heading).number)).to eq(value.to_s)
+          expect(first_sheet.cell(worksheet.last_row, worksheet.columns.find_by(:name, heading).number)).to eq(value.to_s)
         end
       end
 
-      it 'creates the samples, plates and wells' do
-        ((worksheet.first_row)..worksheet.last_row).each do |i|
-          sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number))
-          expect(sample).to be_present
-          expect(sample.sample_manifest).to be_present
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_plate_id).number)).to eq(sample.assets.first.plate.human_barcode)
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :well).number)).to eq(sample.assets.first.map_description)
+      it 'creates the samples manifest assets, plates and wells' do
+        (worksheet.first_row..worksheet.last_row).each do |i|
+          ss_id = first_sheet.cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number)
+          sample_manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: ss_id)
+          expect(sample_manifest_asset).to be_present
+          expect(sample_manifest_asset.sample_manifest).to be_present
+          expect(first_sheet.cell(i, worksheet.columns.find_by(:name, :sanger_plate_id).number)).to eq(sample_manifest_asset.asset.plate.human_barcode)
+          expect(first_sheet.cell(i, worksheet.columns.find_by(:name, :well).number)).to eq(sample_manifest_asset.asset.map_description)
         end
       end
     end
@@ -428,8 +438,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       it 'without a sample manifest' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:sample_manifest]))
         save_file
-        sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :sanger_sample_id).number))
-        expect(sample.sample_manifest).to be_nil
+        missing_ss_id = spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :sanger_sample_id).number)
+        expect(SampleManifestAsset.find_by(sanger_sample_id: missing_ss_id)).to be_nil
       end
     end
   end
