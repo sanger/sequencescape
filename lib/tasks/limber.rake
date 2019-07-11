@@ -111,7 +111,7 @@ namespace :limber do
       Limber::Helper::RequestTypeConstructor.new(
         'ISC',
         request_class: 'Pulldown::Requests::IscLibraryRequest',
-        library_types: ['Agilent Pulldown']
+        library_types: ['Agilent Pulldown','Twist Pulldown']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -149,7 +149,7 @@ namespace :limber do
       Limber::Helper::RequestTypeConstructor.new(
         'ReISC',
         request_class: 'Pulldown::Requests::ReIscLibraryRequest',
-        library_types: ['Agilent Pulldown'],
+        library_types: ['Agilent Pulldown','Twist Pulldown'],
         default_purposes: ['LB Lib PCR-XP']
       ).build!
 
