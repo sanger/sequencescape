@@ -20,16 +20,16 @@ class TagSubstitutionsController < ApplicationController
   before_action :prepare_form, only: :new
 
   def new
-    @asset_id = params[:asset_id]
-    @tag_substitution = TagSubstitution.new(template_asset: Asset.find(params[:asset_id]))
+    @receptacle_id = params[:receptacle_id]
+    @tag_substitution = TagSubstitution.new(template_asset: Receptacle.find(params[:receptacle_id]))
   end
 
   def create
-    @asset_id = params[:asset_id]
+    @receptacle_id = params[:receptacle_id]
     @tag_substitution = TagSubstitution.new(tag_substitution_params)
 
     if @tag_substitution.save
-      redirect_to asset_path(params[:asset_id]), notice: 'Your substitution was performed.'
+      redirect_to receptacle_path(params[:receptacle_id]), notice: 'Your substitution was performed.'
     else
       prepare_form
       flash.now[:error] = 'Your tag substitution could not be performed.'

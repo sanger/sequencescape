@@ -1,5 +1,8 @@
 require 'aasm'
 
+# A Request represents work which needs to be done, either to fulfil a customers
+# needs {CustomerRequest} or for internal reasons {SystemRequest}.
+# The progress of a request is tracked through its {Request::Statemachine state machine}.
 class Request < ApplicationRecord
   # Include
   include ModelExtensions::Request
@@ -86,6 +89,13 @@ class Request < ApplicationRecord
   # Only actively used by poolable requests, but here to help with eager loading
   has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
   has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    has_one :target_labware, through: :target_asset, source: :labware
+    has_one :source_labware, through: :asset, source: :labware
+  end
 
   convert_labware_to_receptacle_for :asset, :target_asset
 
@@ -274,25 +284,48 @@ class Request < ApplicationRecord
   scope :with_asset_location, -> { includes(asset: :map) }
   scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
 
-  # Use container location
-  scope :holder_located, ->() {
-    joins('INNER JOIN container_associations hl ON hl.content_id = asset_id')
-      .where('hl.id is not null')
-      .readonly(false)
-  }
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    scope :asset_on_labware, ->() {
+                               joins(:asset)
+                                 .select('requests.*')
+                                 .select('receptacles.labware_id AS labware_id')
+                                 .where.not(receptacles: { labware_id: nil })
+                             }
+    scope :target_asset_on_labware, ->() {
+                                      joins(:target_asset)
+                                        .select('requests.*')
+                                        .select('receptacles.labware_id AS labware_id')
+                                        .where.not(receptacles: { labware_id: nil })
+                                    }
+  end
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    # Use container location
+    scope :asset_on_labware, ->() {
+      joins('INNER JOIN container_associations hl ON hl.content_id = asset_id')
+        .where('hl.id is not null')
+        .select('requests.*')
+        .select('hl.container_id AS labware_id')
+        .readonly(false)
+    }
+    scope :target_asset_on_labware, ->() {
+      joins('INNER JOIN container_associations hl ON hl.content_id = target_asset_id')
+        .where('hl.id is not null')
+        .select('requests.*')
+        .select('hl.container_id AS labware_id')
+        .readonly(false)
+    }
+  end
 
-  scope :holder_not_control, -> {
-    joins(['INNER JOIN container_associations hncca ON hncca.content_id = asset_id', 'INNER JOIN assets AS hncc ON hncc.id = hncca.container_id'])
-      .where(['hncc.sti_type != ?', 'ControlPlate'])
-      .readonly(false)
-  }
   scope :without_asset, -> { where('asset_id is null') }
   scope :without_target, -> { where('target_asset_id is null') }
   scope :excluding_states, ->(states) {
     where.not(state: states)
   }
   scope :ordered, -> { order('id ASC') }
-  scope :full_inbox, -> { where(state: %w[pending hold]) }
   scope :hold, -> { where(state: 'hold') }
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
@@ -305,10 +338,6 @@ class Request < ApplicationRecord
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
   scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
 
-  scope :group_conditions, ->(conditions, variables) {
-    where([conditions.join(' OR '), *variables])
-  }
-
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids, ->(ids) {
@@ -317,36 +346,6 @@ class Request < ApplicationRecord
                         }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
-
-  # Because of our group we need to explicitly declare what we are selecting for 5.7
-  # We add :request_type_id to the group by as this allows us to select it without an aggregate operation
-  # Now, in practice it hardly matters, as there should be only one request_type_id anyway
-  # However, in the event this changes, an aggregate would hide this, so we should probably ensure that
-  # its explicit.
-  # We select MIN submission_id, this isn't ideal, but struggling to think of an alternative without
-  # complete restructuring.
-  # Yuck. We also need to select asset_id and target asset_id explicity in Rails 4.
-  # Need to completely re-think this.
-  scope :for_group_by, ->(attributes) {
-    # SELECT and GROUP BY do NOT scrub their input. While there shouldn't be any user provided input
-    # comming in here, lets be cautious!
-    scrubbed_atts = attributes.map { |k, v| "#{k.to_s.gsub(/[^\w\.]/, '')}.#{v.to_s.gsub(/[^\w\.]/, '')}" }
-    scrubbed_atts << 'requests.request_type_id'
-
-    group(scrubbed_atts)
-      .select([
-        'MIN(requests.sti_type) AS sti_type',
-        'MIN(requests.id) AS id',
-        'MIN(requests.submission_id) AS submission_id',
-        'MAX(requests.priority) AS max_priority',
-        'MIN(requests.order_id) AS order_id',
-        'hl.container_id AS container_id',
-        'count(DISTINCT requests.id) AS request_count',
-        'MIN(requests.asset_id) AS asset_id',
-        'MIN(requests.target_asset_id) AS target_asset_id'
-      ])
-      .select(scrubbed_atts)
-  }
 
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
@@ -384,24 +383,8 @@ class Request < ApplicationRecord
     DelegateValidation::AlwaysValidValidator
   end
 
-  def self.group_requests(options = {})
-    target = options[:by_target] ? 'target_asset_id' : 'asset_id'
-    groupings = options.delete(:group) || {}
-
-    select('requests.*, tca.container_id AS container_id, tca.content_id AS content_id')
-      .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
-      .readonly(false)
-      .group(groupings)
-  end
-
   def self.for_study(study)
     Request.for_study_id(study.id)
-  end
-
-  # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
-  def self.get_target_plate_ids(request_ids)
-    ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
-                        .where(['requests.id IN  (?)', request_ids]).uniq.pluck(:container_id)
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
@@ -442,11 +425,27 @@ class Request < ApplicationRecord
     self.initial_project_id = project_id
   end
 
-  def submission_plate_count
-    submission.requests
-              .where(request_type_id: request_type_id)
-              .joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id')
-              .count('DISTINCT(spca.container_id)')
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    def submission_plate_count
+      submission.requests
+                .where(request_type_id: request_type_id)
+                .joins(:source_labware)
+                .distinct
+                .count('labware.id')
+    end
+  end
+
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def submission_plate_count
+      submission.requests
+                .where(request_type_id: request_type_id)
+                .joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id')
+                .count('DISTINCT(spca.container_id)')
+    end
   end
 
   def update_responsibilities!
@@ -561,18 +560,6 @@ class Request < ApplicationRecord
 
   def return_pending_to_inbox!
     raise StandardError, "Can only return pending requests, request is #{state}" unless pending?
-
-    remove_unused_assets
-  end
-
-  def remove_unused_assets
-    ActiveRecord::Base.transaction do
-      return if target_asset.nil?
-
-      target_asset.ancestors.clear
-      target_asset.destroy
-      save!
-    end
   end
 
   def format_qc_information

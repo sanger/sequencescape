@@ -62,7 +62,9 @@ module SequencingQcBatch
   def self.state_transition_helper(name)
     # TODO[xxx]: Really we should restrict the state transitions
     define_method(:"qc_#{ name }") do
-      update_attribute(:qc_state, qc_next_state) unless qc_next_state.nil?
+      # Maintaining legacy behaviour here as not sure if it was intentional.
+      # Allows QC decisions to be made on invalid assets.
+      update_attribute(:qc_state, qc_next_state) unless qc_next_state.nil? # rubocop:disable Rails/SkipsModelValidations
     end
   end
 
@@ -75,18 +77,6 @@ module SequencingQcBatch
     %w[qc_manual_in_progress qc_manual].include?(qc_state)
   end
 
-  def qc_pipeline_workflow_id
-    pipeline = Pipeline.find_by!(name: 'quality control', automated: true)
-    pipeline.workflow.id
-  end
-
-  def qc_ready_for_manual
-    ActiveRecord::Base.transaction do
-      p = Pipeline.find(qc_pipeline_id)
-      update!(qc_pipeline_id: p.next_pipeline_id, qc_state: 'qc_manual')
-    end
-  end
-
   def qc_manual_in_progress
     self.qc_state = 'qc_manual_in_progress'
     save
@@ -97,20 +87,5 @@ module SequencingQcBatch
   def qc_pipeline_update
     self.qc_pipeline = Pipeline.find_by(name: 'quality control', automated: true)
     self.qc_state    = 'qc_pending'
-  end
-
-  def assets_qc_tasks_results
-    auto_qc_pipeline = Pipeline.find_by!(name: 'quality control', automated: true)
-    qc_workflow = Workflow.find_by pipeline_id: auto_qc_pipeline.id
-    qc_tasks = qc_workflow.tasks
-    results = []
-    qc_tasks.each do |task|
-      requests.each do |request|
-        if request.asset && request.asset.resource.nil?
-          results << request.has_passed(self, task)
-        end
-      end
-    end
-    results
   end
 end

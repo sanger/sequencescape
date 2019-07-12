@@ -82,9 +82,9 @@ class QcResultFactory
       return if uuid_object.blank?
 
       @uuid = if uuid_object.resource_type == 'Sample'
-                Sample.find(uuid_object.resource_id).primary_receptacle
+                uuid_object.resource.primary_receptacle
               else
-                Asset.find(uuid_object.resource_id)
+                uuid_object.resource
               end
     end
 
@@ -92,7 +92,7 @@ class QcResultFactory
       return if barcode.nil?
 
       @asset_identifier = barcode
-      @barcode = Asset.find_by_barcode(barcode)
+      @barcode = Labware.find_by_barcode(barcode)
     end
 
     # This is where the complexity is.

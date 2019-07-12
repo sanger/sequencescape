@@ -64,32 +64,6 @@ class MapTest < ActiveSupport::TestCase
     end
   end
 
-  context '#next_map_position' do
-    [['A1', 'A2', 96], ['A12', 'B1', 96], ['G9', 'G10', 96], ['H11', 'H12', 96], ['A1', 'A2', 384], ['A24', 'B1', 384], ['P23', 'P24', 384]].each do |current_map, expected_output, plate_size|
-      should "return the correct next map position of #{current_map} to #{expected_output} for plate size #{plate_size}" do
-        returned_map = Map.next_map_position(Map.find_by(description: current_map, asset_size: plate_size).id)
-        assert_equal expected_output, returned_map.description
-      end
-    end
-
-    [['H12', 96], ['P24', 384]].each do |current_map, plate_size|
-      should "return nil for end of plate for #{current_map}" do
-        returned_map = Map.next_map_position(Map.find_by(description: current_map, asset_size: plate_size).id)
-        assert_nil returned_map
-      end
-    end
-  end
-
-  context '#find_for_cell_location' do
-    should 'remove leading zero from cell location' do
-      assert_equal Map.find_by(description: 'A1', asset_size: 96), Map.find_for_cell_location('A01', 96)
-    end
-
-    should 'not remove any non-leading zeroes' do
-      assert_equal Map.find_by(description: 'A10', asset_size: 96), Map.find_for_cell_location('A10', 96)
-    end
-  end
-
   context 'The despcription for rows/colums' do
     should 'return the expected wells for 96 well plates' do
       assert_equal(%w(G1 G2 G3 G4 G5 G6 G7 G8 G9 G10 G11 G12), Map::Coordinate.descriptions_for_row('G', 96))

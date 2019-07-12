@@ -2,7 +2,7 @@
 class ::Endpoints::MultiplexedLibraryTubes < ::Endpoints::LibraryTubes
   instance do
     belongs_to(:custom_metadatum_collection, json: 'custom_metadatum_collection', to: 'custom_metadatum_collection')
-    has_many(:requests, json: 'requests', to: 'requests')
+    has_many(:requests_as_source, json: 'requests', to: 'requests')
     has_many(:studies, json: 'studies', to: 'studies')
     belongs_to(:purpose, json: 'purpose')
     has_many(:qc_files, json: 'qc_files', to: 'qc_files', include: []) do

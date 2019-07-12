@@ -175,18 +175,6 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_one.reload
         end
 
-        context '#edit' do
-          context 'with control' do
-            setup do
-              @cn = FactoryBot.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
-              @pipeline.controls << @cn
-            end
-            should '#add control' do
-              get :add_control, params: { id: @batch_one, control: { id: @cn.id } }
-            end
-          end
-        end
-
         should '#update' do
           @pipeline_user = create :pipeline_admin, login: 'ur1', first_name: 'Ursula', last_name: 'Robinson'
           put :update, params: { id: @batch_one.id, batch: { assignee_id: @pipeline_user.id } }
@@ -250,20 +238,6 @@ class BatchesControllerTest < ActionController::TestCase
               assert_equal 'Requests cancelled', flash[:notice]
               assert_not @request_three.reload.cancelled?
               assert @request_four.reload.cancelled?
-            end
-          end
-
-          context 'redirect to action #control' do
-            setup do
-              @cn = FactoryBot.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
-              @pipeline.controls << @cn
-              post :create, params: { id: @pipeline.id, request: { @request_three.id => '0', @request_four.id => '1' } }
-            end
-
-            should 'if pipeline has controls' do
-              assert_equal @old_count + 1, Batch.count
-              assert_equal 'Batch created - now add a control', flash[:notice]
-              assert_redirected_to controller: 'batches', action: 'control', id: Batch.last.id
             end
           end
 

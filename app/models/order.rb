@@ -96,6 +96,14 @@ class Order < ApplicationRecord
     end
   end
 
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    def assets=(assets_to_add)
+      super(assets_to_add.map { |a| a.is_a?(Receptacle) ? a : a.receptacle })
+    end
+  end
+
   # We can't destroy orders once the submission has been finalized for building
   def building_submission?
     throw :abort unless submission.building?

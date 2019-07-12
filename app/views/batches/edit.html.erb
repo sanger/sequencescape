@@ -18,11 +18,6 @@
   <%= render partial: "shared/batch", locals: { requests: @requests, edit: true, stage: false  } %>
 <%- end -%>
 
-<% if !@batch.has_control? && @batch.pipeline.has_controls? -%>
-  <h2>Controls</h1>
-  <%= render partial: "controls" %>
-<% end -%>
-
 <h2>Assign Batch to User</h2>
 <div class="content">
   <div class="info">

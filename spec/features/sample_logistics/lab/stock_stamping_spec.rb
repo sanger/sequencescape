@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'pry'
 
 describe 'stamping of stock', js: true do
   let(:user) { create :admin, barcode: 'ID41440E', swipecard_code: '1234567' }
@@ -41,7 +40,7 @@ describe 'stamping of stock', js: true do
     click_button 'Print label'
     expect(page).to have_content('Printmybarcode service is down')
 
-    visit history_asset_path(plate)
+    visit history_labware_path(plate)
     expect(page).to have_content('Activity Logging')
     expect(page).to have_content("Process 'Stamping of stock' performed")
   end

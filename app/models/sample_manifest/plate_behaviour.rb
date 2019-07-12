@@ -13,6 +13,10 @@ module SampleManifest::PlateBehaviour
       PlatePurpose.for_submissions
     end
 
+    def default_purpose
+      PlatePurpose.stock_plate_purpose
+    end
+
     delegate :generate_plates, to: :@manifest
     alias_method(:generate, :generate_plates)
 
@@ -138,7 +142,7 @@ module SampleManifest::PlateBehaviour
 
   def self.included(base)
     base.class_eval do
-      delegate :stock_plate_purpose, to: 'PlatePurpose'
+      delegate :default_purpose, to: :core_behaviour
     end
   end
 
@@ -148,7 +152,7 @@ module SampleManifest::PlateBehaviour
 
   # Fall back to stock plate by default
   def purpose
-    super || stock_plate_purpose
+    super || default_purpose
   end
 
   def purpose_id

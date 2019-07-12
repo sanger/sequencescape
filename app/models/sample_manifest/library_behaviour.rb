@@ -58,16 +58,20 @@ module SampleManifest::LibraryBehaviour
     end
 
     def labware_from_samples
-      samples.map { |sample| sample.assets.first }
+      samples.map { |sample| sample.primary_receptacle.labware }
     end
 
     def labware
-      tubes | labware_from_samples | @manifest.assets
+      tubes | labware_from_samples | @manifest.assets.map(&:labware)
     end
     alias printables labware
 
     def acceptable_purposes
       Purpose.none
+    end
+
+    def default_purpose
+      Tube::Purpose.standard_library_tube
     end
   end
 

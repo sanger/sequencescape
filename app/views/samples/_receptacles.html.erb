@@ -1,0 +1,18 @@
+<%= panel do %>
+  <h3>Assets <span class='badge badge-primary'><%= @sample.receptacles.length %></span></h3>
+
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sample.receptacles.each do |receptacle| %>
+        <tr>
+          <td><%= link_to receptacle.display_name, receptacle_path(receptacle) %> <%= receptacle.details %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

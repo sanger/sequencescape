@@ -31,6 +31,7 @@ class Plate < Labware
   self.sample_partial = 'assets/samples_partials/plate_samples'
   self.per_page = 50
   self.default_plate_size = 96
+  self.receptacle_class = 'Well'
 
   has_qc_files
 
@@ -64,6 +65,8 @@ class Plate < Labware
         @index_well_cache ||= index_by(&:map_description)
       end
     end
+    has_many :requests_as_source, through: :wells
+    has_many :requests_as_target, through: :wells
   end
 
   # This block is enabled when we have the labware table present as part of the AssetRefactor
@@ -109,8 +112,13 @@ class Plate < Labware
   has_many :siblings, through: :parents, source: :children
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
-  has_many :transfer_requests_as_source, through: :wells
-  has_many :transfer_requests_as_target, through: :wells
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    # Defined on Labware post refactor
+    has_many :transfer_requests_as_source, through: :wells
+    has_many :transfer_requests_as_target, through: :wells
+  end
   has_many :transfer_request_collections, -> { distinct }, through: :transfer_requests_as_source
 
   # The default state for a plate comes from the plate purpose
@@ -195,8 +203,8 @@ class Plate < Labware
   def iteration
     iter = siblings # assets sharing the same parent
            .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type
-           .where('assets.created_at <= ?', created_at) # created before or at the same time
-           .count('assets.id') # count the siblings.
+           .where("#{self.class.table_name}.created_at <= ?", created_at) # created before or at the same time
+           .count(:id) # count the siblings.
 
     iter.zero? ? nil : iter # Maintains compatibility with legacy version
   end
@@ -277,9 +285,8 @@ class Plate < Labware
     with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
       .with_study_id(params[:study_id] || nil)
       .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
-      .created_on_or_after(params[:start_date] || nil)
-      .created_on_or_before(params[:end_date] || nil)
-      .filter_by_barcode(params[:barcodes] || nil) #  .where.not(barcode: nil)
+      .created_between(params[:start_date], params[:end_date])
+      .filter_by_barcode(params[:barcodes] || nil)
       .distinct
   end
 
@@ -296,8 +303,10 @@ class Plate < Labware
     where(plate_purpose_id: plate_purpose_ids) if plate_purpose_ids.present?
   }
 
-  scope :created_on_or_after, ->(date) { where('assets.created_at >= ?', date.midnight) if date.present? }
-  scope :created_on_or_before, ->(date) { where('assets.created_at <= ?', date.end_of_day) if date.present? }
+  # TODO: When on Ruby 2.6 try using endless ranges
+  scope :created_between, ->(start_date, end_date) {
+    where(created_at: (start_date.midnight..(end_date || Time.current).end_of_day)) if start_date.present?
+  }
 
   def maps
     Map.where_plate_size(size).where_plate_shape(asset_shape)

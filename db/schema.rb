@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190522154457) do
+ActiveRecord::Schema.define(version: 20190620094528) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -793,16 +793,13 @@ ActiveRecord::Schema.define(version: 20190522154457) do
     t.datetime "updated_at"
     t.integer "next_pipeline_id"
     t.integer "previous_pipeline_id"
-    t.boolean "group_by_parent"
     t.string "asset_type", limit: 50
-    t.boolean "group_by_submission_to_delete"
     t.boolean "multiplexed"
     t.string "sti_type", limit: 50
     t.integer "sorter"
     t.boolean "paginate", default: false
     t.integer "max_size"
     t.boolean "summary", default: true
-    t.boolean "group_by_study_to_delete", default: true
     t.boolean "externally_managed", default: false
     t.string "group_name"
     t.integer "control_request_type_id", null: false

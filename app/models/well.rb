@@ -42,8 +42,8 @@ class Well < Receptacle
   has_many :customer_requests, class_name: 'CustomerRequest', foreign_key: :asset_id
   has_many :outer_requests, through: :stock_wells, source: :customer_requests
   has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
-  # has_many due to eager loading requirement and can't have a has one through a has_many
-  has_many :latest_child_well, ->() { limit(1).order('asset_links.descendant_id DESC').where(assets: { sti_type: 'Well' }) }, class_name: 'Well', through: :links_as_parent, source: :descendant
+  has_many :qc_reports, through: :qc_metrics
+  has_many :reported_criteria, through: :qc_reports, source: :product_criteria
   has_many :target_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
   has_many :target_wells, through: :target_well_links, source: :target_well
 
@@ -101,67 +101,57 @@ class Well < Receptacle
   }
   scope :include_map, -> { includes(:map) }
   scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
-  scope :on_plate_purpose, ->(purposes) {
-    joins(:plate)
-      .where(plates_assets: { plate_purpose_id: purposes })
-  }
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    scope :on_plate_purpose, ->(purposes) { joins(:plate).where(plates_assets: { plate_purpose_id: purposes }) }
+  end
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
+  end
   scope :for_study_through_aliquot, ->(study) {
     joins(:aliquots)
       .where(aliquots: { study_id: study })
   }
-  scope :without_report, ->(product_criteria) {
-    joins([
-      'LEFT OUTER JOIN qc_metrics AS wr_qcm ON wr_qcm.asset_id = assets.id',
-      'LEFT OUTER JOIN qc_reports AS wr_qcr ON wr_qcr.id = wr_qcm.qc_report_id',
-      'LEFT OUTER JOIN product_criteria AS wr_pc ON wr_pc.id = wr_qcr.product_criteria_id'
-    ])
-      .group('assets.id')
-      .having('NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)', product_criteria.product_id, product_criteria.stage)
+
+  scope :with_report, ->(product_criteria) {
+    joins(:reported_criteria).where(product_criteria: {
+                                      product_id: product_criteria.product_id,
+                                      stage: product_criteria.stage
+                                    })
   }
+
+  scope :without_report, ->(product_criteria) {
+    where.not(id: Well.with_report(product_criteria))
+  }
+
   scope :stock_wells_for, ->(wells) {
     joins(:target_well_links)
       .where(well_links: { target_well_id: [wells].flatten.map(&:id) })
   }
   scope :target_wells_for, ->(wells) {
-    select('assets.*, well_links.source_well_id AS stock_well_id')
-      .joins(:stock_well_links).where(well_links: {
-                                        source_well_id: wells
-                                      })
+    select_table.select('well_links.source_well_id AS stock_well_id')
+                .joins(:stock_well_links).where(well_links: {
+                                                  source_well_id: wells
+                                                })
   }
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
-  scope :select_table, ->() { select("#{table_name}.*") }
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    scope :pooled_as_target_by_transfer, ->() {
-      joins('LEFT JOIN transfer_requests patb ON assets.id=patb.target_asset_id')
-        .select_table
-        .select('patb.submission_id AS pool_id').distinct
-    }
-    scope :pooled_as_source_by, ->(type) {
-      joins('LEFT JOIN requests pasb ON assets.id=pasb.asset_id')
-        .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
-        .select_table
-        .select('pasb.submission_id AS pool_id').distinct
-    }
-  end
+  scope :pooled_as_target_by_transfer, ->() {
+    joins("LEFT JOIN transfer_requests patb ON #{table_name}.id=patb.target_asset_id")
+      .select_table
+      .select('patb.submission_id AS pool_id').distinct
+  }
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    scope :pooled_as_target_by_transfer, ->() {
-      joins('LEFT JOIN transfer_requests patb ON receptacles.id=patb.target_asset_id')
-        .select_table
-        .select('patb.submission_id AS pool_id').distinct
-    }
-    scope :pooled_as_source_by, ->(type) {
-      joins('LEFT JOIN requests pasb ON receptacles.id=pasb.asset_id')
-        .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
-        .select_table
-        .select('pasb.submission_id AS pool_id').distinct
-    }
-  end
+  scope :pooled_as_source_by, ->(type) {
+    joins("LEFT JOIN requests pasb ON #{table_name}.id=pasb.asset_id")
+      .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
+      .select_table
+      .select('pasb.submission_id AS pool_id').distinct
+  }
+
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
   scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
   scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
@@ -182,7 +172,7 @@ class Well < Receptacle
   }
   scope :with_contents, -> { joins(:aliquots) }
 
-  delegate :location, :location_id, :location_id=, :printable_target, to: :plate, allow_nil: true
+  delegate :location, :location_id, :location_id=, :printable_target, :source_plate, to: :plate, allow_nil: true
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
@@ -224,8 +214,12 @@ class Well < Receptacle
     outer_requests.order(id: :desc).find_by(submission_id: submission_id)
   end
 
-  def labware
-    plate
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def labware
+      plate
+    end
   end
 
   def qc_results_by_key
@@ -330,12 +324,6 @@ class Well < Receptacle
   # def map_description
   delegate :description, to: :map, prefix: true, allow_nil: true
 
-  def create_child_sample_tube
-    Tube::Purpose.standard_sample_tube.create!(map: map, aliquots: aliquots.map(&:dup)).tap do |sample_tube|
-      AssetLink.create_edge(self, sample_tube)
-    end
-  end
-
   def qc_data
     { pico: get_pico_pass,
       gel: get_gel_pass,
@@ -345,11 +333,6 @@ class Well < Receptacle
 
   def buffer_required?
     get_buffer_volume > 0.0
-  end
-
-  # If we eager load, things fair badly, and we end up returning all children.
-  def find_latest_child_well
-    latest_child_well.max_by(&:id)
   end
 
   def display_name
@@ -375,10 +358,6 @@ class Well < Receptacle
 
   def asset_type_for_request_types
     self.class
-  end
-
-  def source_plate
-    plate && plate.source_plate
   end
 
   def update_from_qc(qc_result)

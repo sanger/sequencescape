@@ -39,10 +39,6 @@ module Presenters
       !@current_user.is_owner? || @current_user.is_manager?
     end
 
-    def is_pulldown_pipeline?
-      @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
-    end
-
     def is_multiplexed?
       @batch.multiplexed?
     end

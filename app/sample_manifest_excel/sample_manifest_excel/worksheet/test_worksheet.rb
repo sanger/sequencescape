@@ -106,14 +106,15 @@ module SampleManifestExcel
           dynamic_attributes[sheet_row][:sanger_sample_id] = cur_sm_sample_asset.sanger_sample_id
 
           # set the plate barcode
+          plate_id = cur_sm_sample_asset.asset.plate.id
           # Validation errors here indicates problems we WANT not problems we HAVE
           dynamic_attributes[sheet_row][:sanger_plate_id] = if cgap
                                                               if validation_errors.include?(:sample_plate_id_duplicates)
                                                                 'CGAP-99999'
                                                               elsif validation_errors.include?(:sample_plate_id_unrecognised_foreign)
-                                                                "INVALID-#{cur_sm_sample_asset.asset.plate.id.to_s.upcase}#{(cur_sm_sample_asset.asset.plate.id % 10).to_s.upcase}"
+                                                                "INVALID-#{plate_id.to_s.upcase}#{(plate_id % 10).to_s.upcase}"
                                                               else
-                                                                "CGAP-#{cur_sm_sample_asset.asset.plate.id.to_s(16).upcase}#{(cur_sm_sample_asset.asset.plate.id % 16).to_s(16).upcase}"
+                                                                "CGAP-#{plate_id.to_s(16).upcase}#{(plate_id % 16).to_s(16).upcase}"
                                                               end
                                                             else
                                                               cur_sm_sample_asset.asset.plate.human_barcode

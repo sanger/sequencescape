@@ -50,7 +50,7 @@ Feature: Access plates through the API
 
   Scenario: Creating a custom_metadatum_collection
 
-    Given the asset and the user exist and have UUID
+    Given the labware and the user exist and have UUID
     When I make an authorised POST with the following JSON to the API path "/custom_metadatum_collections":
       """
       {

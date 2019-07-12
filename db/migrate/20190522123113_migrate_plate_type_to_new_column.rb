@@ -33,8 +33,6 @@ class MigratePlateTypeToNewColumn < ActiveRecord::Migration[5.1]
   end
 
   def down
-    # rubocop:disable Rails/SkipsModelValidations
     MigratingAsset.where('descriptors like "%Plate Type%"').update_all(labware_type_id: nil)
-    # rubocop:enable Rails/SkipsModelValidations
   end
 end

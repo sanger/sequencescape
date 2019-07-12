@@ -28,14 +28,16 @@ describe '/api/1/extraction_attributes' do
     context '#racking' do
       let(:sample_tube) { create :sample_tube }
       let(:sample_tube2) { create :sample_tube }
+      let(:source_tube1_uuid) { sample_tube.uuid }
+      let(:source_tube2_uuid) { sample_tube2.uuid }
 
       let(:payload) do
         %{{
           "extraction_attribute":{
             "created_by": "#{user.login}",
             "attributes_update": [
-              {"sample_tube_uuid": "#{sample_tube.uuid}", "location": "A1"},
-              {"sample_tube_uuid": "#{sample_tube2.uuid}", "location": "B1"}
+              {"sample_tube_uuid": "#{source_tube1_uuid}", "location": "A1"},
+              {"sample_tube_uuid": "#{source_tube2_uuid}", "location": "B1"}
             ]
           }
         }}
@@ -48,10 +50,14 @@ describe '/api/1/extraction_attributes' do
           expect(target_plate.wells.located_at('A1').first.samples).to eq(sample_tube.samples)
           expect(target_plate.wells.located_at('B1').first.samples).to eq(sample_tube2.samples)
         end
-        it 'does not rack a tube into a well if the tube does not exist' do
-          sample_tube2.destroy
-          authorized_api_request :post, subject, payload
-          expect(target_plate.wells.located_at('B1').first.samples.count).not_to eq(1)
+
+        context 'if a tube does not exist' do
+          let(:source_tube2_uuid) { SecureRandom.uuid }
+
+          it 'does not rack a tube into a well if the tube does not exist' do
+            authorized_api_request :post, subject, payload
+            expect(target_plate.wells.located_at('B1').first.samples.count).not_to eq(1)
+          end
         end
       end
 
@@ -59,19 +65,25 @@ describe '/api/1/extraction_attributes' do
         subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
 
         let(:target_plate) { create :plate_with_tagged_wells }
+        let(:taget_well_a1) { target_plate.wells.located_at('A1').first }
+        let(:taget_well_b1) { target_plate.wells.located_at('B1').first }
 
         it 'does not rack with error a tube into a well that already has a sample in it' do
           authorized_api_request :post, subject, payload
-          expect(target_plate.wells.located_at('A1').first.samples.count).to eq(1)
-          expect(target_plate.wells.located_at('A1').first.samples.include?(sample_tube.samples.first)).to eq(false)
+          expect(taget_well_a1.samples.count).to eq(1)
+          expect(taget_well_a1.samples.include?(sample_tube.samples.first)).to eq(false)
         end
-        it 'does not rack without error a tube in the well if the well already contains the sample for this tube' do
-          sample_tube.update(samples: target_plate.wells.located_at('A1').first.samples)
-          sample_tube2.update(samples: target_plate.wells.located_at('B1').first.samples)
-          authorized_api_request :post, subject, payload
-          expect(status).to eq(response_code)
-          expect(target_plate.wells.located_at('A1').first.samples.count).to eq(1)
-          expect(target_plate.wells.located_at('A1').first.samples.include?(sample_tube.samples.first)).to eq(true)
+
+        context 'when tubes contain the same samples as the wells' do
+          let(:sample_tube) { create :sample_tube, sample: taget_well_a1.samples.first }
+          let(:sample_tube2) { create :sample_tube, sample: taget_well_b1.samples.first }
+
+          it 'does not rack without error a tube in the well if the well already contains the sample for this tube' do
+            authorized_api_request :post, subject, payload
+            expect(status).to eq(response_code)
+            expect(taget_well_a1.samples.count).to eq(1)
+            expect(taget_well_a1.samples.include?(sample_tube.samples.first)).to eq(true)
+          end
         end
       end
     end
@@ -140,22 +152,16 @@ describe '/api/1/extraction_attributes' do
         end
 
         setup do
-          @well1 = target_plate.wells.located_at('A1').first
-          @well2 = target_plate.wells.located_at('B1').first
-          @well3 = target_plate.wells.located_at('C1').first
+          @well1 = target_plate.wells.located_at('A1').first!
+          @well2 = target_plate.wells.located_at('B1').first!
+          @well3 = target_plate.wells.located_at('C1').first!
 
           authorized_api_request :post, subject, payload
 
           [@well1, @well2, @well3].each(&:reload)
 
-          @well4 = target_plate.wells.located_at('A1').first
-          @well5 = target_plate.wells.located_at('B1').first
-          @well6 = target_plate.wells.located_at('C1').first
-        end
-
-        it 'extracts from the rack the well that is not in any parent rack anymore' do
-          expect(status).to eq(response_code)
-          expect(@well3.parent).to eq(nil)
+          @well5 = target_plate.wells.located_at('B1').first!
+          @well6 = target_plate.wells.located_at('C1').first!
         end
 
         it 'performs reracks of wells' do
@@ -233,6 +239,7 @@ describe '/api/1/extraction_attributes' do
           samples_from_first_plate = previous_plate.wells.located_at('A1').first.samples
           samples_from_second_plate = previous_plate2.wells.located_at('A1').first.samples
           authorized_api_request :post, subject, payload
+
           expect(status).to eq(response_code)
           expect(target_plate.wells.located_at('A1').first.samples).to eq(sample_tube.samples)
           expect(target_plate.wells.located_at('B1').first.samples).to eq(samples_from_first_plate)

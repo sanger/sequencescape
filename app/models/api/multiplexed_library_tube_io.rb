@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for MultiplexedLibraryTube
+# Despite name controls rendering of warehouse messages for {MultiplexedLibraryTube}
 # Historically used to be v0.5 API
 class Api::MultiplexedLibraryTubeIO < Api::Base
   module Extensions

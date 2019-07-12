@@ -26,7 +26,7 @@ module SequencescapeExcel
             attributes[:aliquot].sample.sample_manifest.update_barcodes if attributes[:aliquot].sample.sample_manifest.present?
           end
         else
-          attributes[:aliquot].receptacle.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
+          attributes[:aliquot].receptacle.labware.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
           attributes[:aliquot].sample.sample_manifest.update_barcodes if attributes[:aliquot].sample.sample_manifest.present?
         end
       end

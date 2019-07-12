@@ -11,6 +11,7 @@ module SearchBehaviour
     perform_search(params[:q].strip) unless params[:q].blank? || query_invalid?
     @search_took = Time.now - t
     @render_start = Time.now
+
     respond_to do |format|
       format.html
       format.js { render partial: 'search', layout: false }

@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for Well
+# Despite name controls rendering of warehouse messages for {Well}
 # Historically used to be v0.5 API
 class Api::WellIO < Api::Base
   module Extensions
@@ -20,18 +20,9 @@ class Api::WellIO < Api::Base
 
   map_attribute_to_json_attribute(:uuid)
   map_attribute_to_json_attribute(:id, 'internal_id')
-  map_attribute_to_json_attribute(:name)
   map_attribute_to_json_attribute(:display_name)
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
-
-  extra_json_attributes do |object, json_attributes|
-    sample = object.primary_aliquot_if_unique.try(:sample)
-    if sample.present?
-      json_attributes['genotyping_status']       = object.genotyping_status
-      json_attributes['genotyping_snp_plate_id'] = sample.genotyping_snp_plate_id
-    end
-  end
 
   with_association(:well_attribute) do
     map_attribute_to_json_attribute(:gel_pass, 'gel_pass')

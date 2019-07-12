@@ -31,7 +31,7 @@ describe '/api/1/transfer_request_collection', transfer_request_collection: true
           "actions": {},
           "transfer_requests": [{
               "source_asset": { "uuid": "#{asset.uuid}"},
-              "target_asset": { "uuid": "#{target_asset.uuid}" },
+              "target_asset": { "uuid": "#{target_asset.receptacle.uuid}" },
               "submission": { "uuid": "#{submission.uuid}" }
           }],
           "target_tubes": [{

@@ -14,17 +14,19 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       config.load!
     end
   end
+
   let(:columns)          { configuration.columns.tube_library_with_tag_sequences.dup }
   let(:sample_manifest)  { create(:tube_sample_manifest_with_tubes_and_manifest_assets) }
+  let(:tube)             { sample_manifest.labware.first }
   let(:tag_group)        { create(:tag_group) }
   let(:data) do
-    [sample_manifest.labware.first.human_barcode, sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+    [tube.human_barcode, sample_manifest.sample_manifest_assets.first.sanger_sample_id,
      'AA', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
      'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
      9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
   end
   let(:data_with_spaces) do
-    [sample_manifest.labware.first.human_barcode, sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+    [tube.human_barcode, sample_manifest.sample_manifest_assets.first.sanger_sample_id,
      ' ATTACTCG ', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
      'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
      9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
@@ -206,7 +208,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         rq = create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
         rq.manifest_processed!
         row_data = data.dup
-        row_data[0] = tube.samples.first.assets.first.human_barcode
+        row_data[0] = tube.samples.first.primary_receptacle.human_barcode
         row_data[1] = tube.samples.first.sanger_sample_id
         row_data[2] = tags[i][:i7]
         row_data[3] = tags[i][:i5]

@@ -6,7 +6,7 @@
       <th><%= header %></th>
     <% end %>
   </tr>
-  <% indexed_wells = plate.wells.includes(:map, :samples, :parents, :requests).indexed_by_location %>
+  <% indexed_wells = plate.wells.includes(:map, :samples, :requests, upstream_wells: :map).indexed_by_location %>
   <% plate.plate_rows.each_with_index do |row, row_index| %>
     <tr>
     <td id='border' width='2%'><%= row %></td>
@@ -19,9 +19,7 @@
                 <%= link_to sample.name, sample_path(sample) %><br/>
               <% end %>
               <%= link_to "#{row}#{column}", asset_path(well) %><br/>
-              <% if p = well.parents.detect { |p| p.is_a?(Well) } %>
-                Parent: <%= p.map.description %>
-              <% end %>
+              Parent: <%= well.upstream_wells.map(&:map_description).join(',') %>
               <%= pluralize well.requests.size, 'request' %>
             <% else %>
               [ Empty ]

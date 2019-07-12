@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for Request
+# Despite name controls rendering of warehouse messages for {Request}
 # Historically used to be v0.5 API
 class Api::RequestIO < Api::Base
   module Extensions
@@ -41,6 +41,19 @@ class Api::RequestIO < Api::Base
     end
   end
 
+  # Maintains the pre-existing identifiers
+  class WarehouseAsset
+    attr_reader :asset
+    def initialize(asset)
+      @asset = asset.is_a?(Well) ? asset : asset.labware
+    end
+
+    def two_dimensional_barcode
+      @asset.two_dimensional_barcode if @asset.respond_to?(:two_dimensional_barcode)
+    end
+    delegate_missing_to :asset
+  end
+
   renders_model(::Request)
 
   map_attribute_to_json_attribute(:uuid)
@@ -78,7 +91,7 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:name, 'project_name')
   end
 
-  with_association(:asset) do
+  with_association(:asset, decorator: WarehouseAsset) do
     map_attribute_to_json_attribute(:uuid, 'source_asset_uuid')
     map_attribute_to_json_attribute(:id, 'source_asset_internal_id')
     map_attribute_to_json_attribute(:name, 'source_asset_name')
@@ -101,7 +114,7 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:prefix, 'source_asset_barcode_prefix')
   end
 
-  with_association(:target_asset) do
+  with_association(:target_asset, decorator: WarehouseAsset) do
     map_attribute_to_json_attribute(:uuid, 'target_asset_uuid')
     map_attribute_to_json_attribute(:id, 'target_asset_internal_id')
     map_attribute_to_json_attribute(:name, 'target_asset_name')

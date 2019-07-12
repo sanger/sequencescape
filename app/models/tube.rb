@@ -62,6 +62,10 @@ class Tube
     ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
+  def name_for_label
+    primary_sample&.shorten_sanger_sample_id.presence || name
+  end
+
   alias_method :friendly_name, :human_barcode
 
   def self.delegate_to_purpose(*methods)
@@ -109,14 +113,6 @@ class Tube
   AssetRefactor.when_not_refactored do
     def update_from_qc(qc_result)
       Tube::AttributeUpdater.update(self, qc_result)
-    end
-  end
-
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    def update_from_qc(qc_result)
-      Tube::AttributeUpdater.update(receptacle, qc_result)
     end
   end
 end

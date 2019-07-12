@@ -63,7 +63,7 @@ def build_batch_for(name, count)
     FactoryBot.create(submission_details[:asset_type], :scanned_into_lab, asset_attributes)
   end
 
-  rts = pipeline.request_types.reject(&:deprecated?).map(&:id)
+  rt_id = pipeline.request_types.active.first!.id
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
   FactoryBot.create(:linear_submission,
@@ -73,7 +73,7 @@ def build_batch_for(name, count)
 
                     # Setup the assets so that they have samples and they are scanned into the correct lab.
                     assets: assets,
-                    request_types: [rts.first],
+                    request_types: [rt_id],
 
                     # Request parameter options
                     request_options: submission_details[:request_options]).submission.built!
@@ -140,9 +140,7 @@ LIBRARY_CREATION_PIPELINES = [
   'Illumina-B Library preparation',
   'Illumina-A Library preparation',
   'MX Library creation',
-  'MX Library Preparation [NEW]',
-  'Illumina-B MX Library Preparation',
-  'Pulldown library preparation'
+  'Illumina-B MX Library Preparation'
 ].map(&Regexp.method(:escape)).join('|')
 
 Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/ do |count, name|

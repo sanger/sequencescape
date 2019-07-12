@@ -25,7 +25,11 @@ class Api::Messages::FlowcellIO < Api::Base
           target_asset.aliquots
         end
 
-        delegate :spiked_in_buffer, :external_release, to: :target_asset, allow_nil: true
+        def lane
+          target_asset.labware
+        end
+
+        delegate :spiked_in_buffer, :external_release, to: :lane, allow_nil: true
 
         def controls
           spiked_in_buffer.present? ? spiked_in_buffer.aliquots : []

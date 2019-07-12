@@ -27,10 +27,10 @@ module AssetsHelper
   end
 
   # Returns an appropriate path given the current parameters
-  def new_request_asset_path_in_context(asset)
+  def new_request_receptacle_path_in_context(asset)
     path_options = {}
     path_options[:study_id] = params[:study_id] if params.key?(:study_id)
-    new_request_asset_path(path_options.merge(id: asset.id))
+    new_request_receptacle_path(path_options.merge(id: asset.receptacle.id))
   end
 
   # Given the core name of an instance variable or ID parameter this method yields the name of the ID
@@ -80,11 +80,11 @@ module AssetsHelper
     Study.managed_by(current_user)
   end
 
-  def asset_types
-    ['All', *Receptacle.descendants.map(&:name)]
+  def labware_types
+    ['All', *Labware.descendants.map(&:name)]
   end
 
-  def asset_types_for_select
-    asset_types.map { |at| [at.underscore.humanize, at] }
+  def labware_types_for_select
+    labware_types.map { |at| [at.underscore.humanize, at] }
   end
 end

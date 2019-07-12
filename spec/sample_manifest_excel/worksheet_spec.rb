@@ -286,28 +286,28 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('1dtube')
-        expect(worksheet.assets).to be_all { |asset| asset.type == 'sample_tube' }
+        expect(worksheet.assets).to be_all { |asset| asset.labware.type == 'sample_tube' }
       end
 
       it 'creates library tubes for library with tag sequences' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_library_with_tag_sequences'))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('library')
-        expect(worksheet.assets).to be_all { |asset| asset.type == 'library_tube' }
+        expect(worksheet.assets).to be_all { |asset| asset.labware.type == 'library_tube' }
       end
 
       it 'creates a multiplexed library tube for multiplexed_library with tag sequences' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library_with_tag_sequences'))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
-        expect(worksheet.assets).to be_all { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }
+        expect(worksheet.assets).to be_all { |asset| asset.requests_as_source.first.target_asset.labware == worksheet.multiplexed_library_tube }
       end
 
       it 'creates a multiplexed library tube for multiplexed_library with tag group and index' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
-        expect(worksheet.assets).to be_all { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }
+        expect(worksheet.assets).to be_all { |asset| asset.requests_as_source.first.target_asset.labware == worksheet.multiplexed_library_tube }
       end
     end
 

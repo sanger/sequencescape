@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for Study
+# Despite name controls rendering of warehouse messages for {Study}
 # Historically used to be v0.5 API
 class Api::StudyIO < Api::Base
   module Extensions

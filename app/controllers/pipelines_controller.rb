@@ -2,7 +2,7 @@ class PipelinesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_pipeline_by_id, only: [:show, :setup_inbox, :set_inbox, :activate, :deactivate, :destroy, :batches]
+  before_action :find_pipeline_by_id, only: [:show, :activate, :deactivate, :destroy, :batches]
   before_action :lab_manager_login_required, only: [:update_priority, :deactivate, :activate]
   before_action :prepare_batch_and_pipeline, only: [:summary, :finish]
 
@@ -32,20 +32,22 @@ class PipelinesController < ApplicationController
     @batches = @last5_batches = @pipeline.batches.latest_first.includes_for_ui
 
     @information_types = @pipeline.request_information_types.shown_in_inbox
-    @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
 
     if @pipeline.group_by_parent?
       # We use the inbox presenter
       @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
+      @requests_waiting  = @inbox_presenter.requests_waiting
     elsif @pipeline.group_by_submission?
       # Convert to an array now as otherwise the comments counter attempts to be too clever
       # and treats the requests like a scope. Not only does this result in a more complicated
       # query, but also an invalid one
+      @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
       requests = @pipeline.requests.inbox(@show_held_requests, @current_page).to_a
       @grouped_requests = requests.group_by(&:submission_id)
       @requests_comment_count = Comment.counts_for(requests)
       @assets_comment_count = Comment.counts_for(requests.map(&:asset))
     else
+      @requests_waiting = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
       @requests = @pipeline.requests.inbox(@show_held_requests, @current_page).to_a
       # We convert to an array here as otherwise tails tries to be smart
       # and use the scope. Not only does it fail, but we may as well cache
@@ -53,22 +55,6 @@ class PipelinesController < ApplicationController
       @requests_comment_count = Comment.counts_for(@requests)
       @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
       @requests_samples_count = Request.where(id: @requests).joins(:samples).group(:id).count
-    end
-  end
-
-  def setup_inbox
-    @controls = []
-  end
-
-  def set_inbox
-    add_controls(@pipeline, params[:controls]) if params[:controls].present?
-
-    if @pipeline.save
-      flash[:notice] = 'Updated pipeline controls'
-      redirect_to pipeline_url(@pipeline)
-    else
-      flash[:notice] = 'Failed to set pipeline controls'
-      render action: 'setup_inbox', id: @pipeline.id
     end
   end
 
@@ -137,14 +123,5 @@ class PipelinesController < ApplicationController
 
   def find_pipeline_by_id
     @pipeline = Pipeline.find(params['id'])
-  end
-
-  def add_controls(pipeline, controls)
-    controls.each do |control|
-      values = control.split(',')
-      unless Control.exists?(item_id: values.last, pipeline_id: pipeline.id)
-        pipeline.controls.create(name: values.first, item_id: values.last, pipeline_id: pipeline.id)
-      end
-    end
   end
 end

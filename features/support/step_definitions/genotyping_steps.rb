@@ -75,23 +75,6 @@ Given(/^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([
   Delayed::Worker.new.work_off # Build the asset links to clear the delayed job queue
 end
 
-Given(/^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/) do |well_description, plate_barcode, genotyping_status|
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
-  well = plate.find_well_by_name(well_description)
-  well.primary_aliquot.sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
-end
-
-Given(/^well "([^"]*)" has a genotyping status of "([^"]*)"$/) do |uuid, genotyping_status|
-  well = Uuid.find_by(external_id: uuid).resource
-
-  sample = FactoryBot.create(:sample, name: 'Testing_the_JSON_API')
-  sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
-  sample.external_properties.create!(key: 'genotyping_snp_plate_id')
-
-  well.aliquots.clear
-  well.aliquots.create!(sample: sample)
-end
-
 Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/) do |submission_template_name, plate_barcode, project_name, study_name|
   plate = Plate.find_from_barcode(plate_barcode)
   project = Project.find_by(name: project_name)

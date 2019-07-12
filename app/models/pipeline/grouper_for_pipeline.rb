@@ -1,41 +1,48 @@
+# Some {Pipeline pipelines} group requests together in the inbox, such that all requests
+# in a submission or plate MUST be selected together
+# This takes the selected checkboxes and splits the information back out to the
+# individual requests.
 class Pipeline::GrouperForPipeline
   delegate :requests, :group_by_parent?, :group_by_submission?, to: :@pipeline
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    LABWARE_ID_COLUMN = 'receptacles.labware_id'.freeze
+  end
+
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    LABWARE_ID_COLUMN = 'hl.container_id'.freeze
+  end
 
   def initialize(pipeline)
     @pipeline = pipeline
   end
 
+  def base_scope
+    requests.order(:id)
+            .ready_in_storage
+            .full_inbox
+            .select('requests.*')
+  end
+
   def all(selected_groups)
-    conditions, variables = [], []
-    selected_groups.each_key { |group| extract_conditions(conditions, variables, group) }
-    requests.order(:id).inputs(true).group_conditions(conditions, variables).group_requests.all
+    selected_groups.map { |group| extract_conditions(group) }
+                   .reduce { |scope, query| scope.or(query) }
   end
 
   private
 
   # This extracts the container/submission values from the group
-  # and uses them to populate the conditionas and variables arrays.
-  # WARNING: This method mutates the conditions and variables arrays.
-  # We can improve this drastically after the rails 5 update, as we can use
-  # or, rather than building our own or through group_conditions
-  def extract_conditions(conditions, variables, group)
-    condition = []
-    keys = group.split(', ')
-    if group_by_parent?
-      condition << 'tca.container_id=?'
-      variables << keys.first.to_i
+  # and uses them to generate a query.
+  def extract_conditions(group)
+    condition = {}.tap do |building_condition|
+      keys = group.split(', ')
+      building_condition[LABWARE_ID_COLUMN] = keys.first.to_i if group_by_parent?
+      building_condition[:submission_id] = keys.last.to_i if group_by_submission?
     end
-    if group_by_submission?
-      condition << 'requests.submission_id=?'
-      variables << keys.last.to_i
-    end
-    conditions << "(#{condition.join(" AND ")})"
-  end
-
-  def grouping
-    grouping = []
-    grouping << 'tca.container_id' if group_by_parent?
-    grouping << 'requests.submission_id' if group_by_submission?
-    grouping.join(',')
+    base_scope.where(condition)
   end
 end

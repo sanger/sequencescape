@@ -8,6 +8,34 @@
 class TransferRequestCollection < ApplicationRecord
   include Uuid::Uuidable
 
+  # Extracts all the uuids from the query and caches the associated information
+  # Greatly improves performance.
+  class UuidCache
+    def initialize(parameters)
+      uuids = parameters.flat_map(&:values).select { |v| Uuid::ValidRegexp.match? v }
+      @cache = Uuid.where(external_id: uuids).pluck(:external_id, :resource_type, :resource_id).each_with_object({}) do |uuid_item, store|
+        store[uuid_item[0, 2]] = uuid_item[-1]
+      end
+      AssetRefactor.when_refactored { extract_receptacles_from_labware }
+    end
+
+    def find(klass, uuid)
+      @cache[[uuid, klass.base_class.name]]
+    end
+
+    private
+
+    # To maintain API compatibility we allow for labware to be supplied, this allows
+    # a receptacle to be looked up via its labware with just one additional query for transfer collection
+    def extract_receptacles_from_labware
+      labware_entries = @cache.select { |uuid_class, _| uuid_class.last == 'Labware' }
+      labware_receptacles = Hash[Receptacle.where(labware_id: labware_entries.values).pluck(:labware_id, :id)]
+      labware_entries.each do |uuid_klass, labware_id|
+        @cache[[uuid_klass.first, 'Receptacle']] = labware_receptacles[labware_id]
+      end
+    end
+  end
+
   has_many :transfer_request_collection_transfer_requests, dependent: :destroy
   has_many :transfer_requests,
            through: :transfer_request_collection_transfer_requests,
@@ -20,26 +48,34 @@ class TransferRequestCollection < ApplicationRecord
   # a nested has_many association. This makes the handling of
   # class specific attributes, such as barcodes, a bit cumbersome,
   # especially when we are trying to eager load that information.
-  has_many :target_tubes, -> { distinct }, through: :transfer_requests, source: :target_asset, class_name: 'Tube'
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    has_many :target_tubes, -> { distinct }, through: :transfer_requests, source: :target_labware, class_name: 'Tube'
+  end
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    has_many :target_tubes, -> { distinct }, through: :transfer_requests, source: :target_asset, class_name: 'Tube'
+  end
 
   belongs_to :user, optional: false
   accepts_nested_attributes_for :transfer_requests
 
   # The api is terrible at handling nested has_many relationships
-  # This caches all out uuids in one query, and extracts the ids
+  # This caches all our UUIDs in one query, and extracts the ids
   def transfer_requests_io=(parameters)
-    uuids = parameters.flat_map(&:values).select { |v| Uuid::ValidRegexp.match? v }
-    uuid_cache = Uuid.where(external_id: uuids).pluck(:external_id, :resource_type, :resource_id).each_with_object({}) do |uuid_item, store|
-      store[uuid_item[0, 2]] = uuid_item[-1]
-    end
+    uuid_cache = UuidCache.new(parameters)
+
     updated_attributes = parameters.map do |parameter|
-      parameter['asset_id'] = uuid_cache[[parameter.delete('source_asset'), 'Asset']] if parameter['source_asset'].is_a?(String)
+      parameter['asset_id'] = uuid_cache.find(Receptacle, parameter.delete('source_asset')) if parameter['source_asset'].is_a?(String)
       parameter['asset'] = parameter.delete('source_asset') if parameter['source_asset'].present?
-      parameter['target_asset_id'] = uuid_cache[[parameter.delete('target_asset'), 'Asset']] if parameter['target_asset'].is_a?(String)
-      parameter['submission_id'] = uuid_cache[[parameter.delete('submission'), 'Submission']] if parameter['submission'].is_a?(String)
-      parameter['outer_request_id'] = uuid_cache[[parameter.delete('outer_request'), 'Request']] if parameter['outer_request'].is_a?(String)
+      parameter['target_asset_id'] = uuid_cache.find(Receptacle, parameter.delete('target_asset')) if parameter['target_asset'].is_a?(String)
+      parameter['submission_id'] = uuid_cache.find(Submission, parameter.delete('submission')) if parameter['submission'].is_a?(String)
+      parameter['outer_request_id'] = uuid_cache.find(Request, parameter.delete('outer_request')) if parameter['outer_request'].is_a?(String)
       parameter
     end
+
     self.transfer_requests_attributes = updated_attributes
   end
 
@@ -50,7 +86,7 @@ class TransferRequestCollection < ApplicationRecord
   # and associated records, and pass them to the transfer requests directly.
   def transfer_requests_attributes=(args)
     asset_ids = extract_asset_ids(args)
-    asset_cache = Asset.includes(:aliquots, :transfer_requests_as_target).find(asset_ids).index_by(&:id)
+    asset_cache = Receptacle.includes(:aliquots, :transfer_requests_as_target).find(asset_ids).index_by(&:id)
     optimized_parameters = args.map do |param|
       param['asset'] ||= asset_cache[param.delete('asset_id')]
       param['target_asset'] ||= asset_cache[param.delete('target_asset_id')]

@@ -72,10 +72,10 @@ Feature: create a report on the current state of a study going through QC
       | Study B | 2010-07-12 | user       | Download | Rerun |
     Then I follow "Download report for Study B"
     Then I should see the report for "Study B":
-    | Study   |  Plate   |  Concentration | Sequenome Count | Sequenome Gender | Pico | Gel  | Genotyping Status                               | Genotyping Barcode | Supplier Sample Name | Well | Total Micrograms | Initial Volume |
-    | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | DNAlab completed: 13                            | 13                 | Sample_1234567_1     | A1   | 0.5      | 500.0          |
-    | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Imported to Illumina: 123                       | 123                | Sample_1234567_2     | A2   | 0.5      | 500.0          |
-    | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Imported to Illumina: 51\| DNAlab completed: 17 | 51                 | Sample_1234567_3     | A3   | 0.5      | 500.0          |
+    | Study   |  Plate   |  Concentration | Sequenome Count | Sequenome Gender | Pico | Gel  | Supplier Sample Name | Well | Total Micrograms | Initial Volume |
+    | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Sample_1234567_1     | A1   | 0.5              | 500.0          |
+    | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Sample_1234567_2     | A2   | 0.5              | 500.0          |
+    | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Sample_1234567_3     | A3   | 0.5              | 500.0          |
 
   @delayed_job @admin
   Scenario: Create a study report and check it appears in on the list
@@ -92,42 +92,9 @@ Feature: create a report on the current state of a study going through QC
     When I am on the delayed jobs admin page # refreshing
     Then I should not see "generate study report"
 
-  Scenario: The wells have child sample tubes and wells on child plates
-    Given study "Study B" has a plate "1234567"
-    Given each well in "Study B" has a child sample tube
-    Given each well in "Study B" has a child well on a plate
-    Given a study report is generated for study "Study B"
-    Then the last report for "Study B" should be:
-    | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well |
-    | 1234567 | Pulldown        | 44444              | A1   | A1              |
-    | 1234567 | Pulldown        | 44444              | A2   | A2              |
-    | 1234567 | Pulldown        | 44444              | A3   | A3              |
-
-
-  Scenario: The wells have child wells and sample tubes (reversed)
-    Given study "Study B" has a plate "1234567"
-    Given each well in "Study B" has a child well on a plate
-    Given each well in "Study B" has a child sample tube
-    Given a study report is generated for study "Study B"
-    Then the last report for "Study B" should be:
-     | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well |
-     | 1234567 | Pulldown        | 44444              | A1   | A1              |
-     | 1234567 | Pulldown        | 44444              | A2   | A2              |
-     | 1234567 | Pulldown        | 44444              | A3   | A3              |
-
-
   Scenario: The wells have child sample tubes
     Given study "Study B" has a plate "1234567"
     Given each well in "Study B" has a child sample tube
-    Given a study report is generated for study "Study B"
-    Then the last report for "Study B" should be:
-      | Study   | Plate   | Well |
-      | Study B | 1234567 | A1   |
-      | Study B | 1234567 | A2   |
-      | Study B | 1234567 | A3   |
-
-  Scenario: The wells have qc status but havent been cherrypicked
-    Given study "Study B" has a plate "1234567"
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
       | Study   | Plate   | Well |

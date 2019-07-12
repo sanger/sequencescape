@@ -20,8 +20,12 @@ module Submission::DelayedJobBehaviour
     # retry later. Therefore the DelayedJob should fail
     raise e
   rescue ActiveRecord::RecordInvalid, Submission::ProjectValidation::Error => e
+    Rails.logger.error(e.message)
+    Rails.logger.error(e.backtrace)
     fail_set_message_and_save(e.message)
   rescue => e
+    Rails.logger.error(e.message)
+    Rails.logger.error(e.backtrace)
     fail_set_message_and_save("#{e.message}\n#{e.backtrace.join("\n")}")
   end
 
@@ -32,7 +36,6 @@ module Submission::DelayedJobBehaviour
 
   def fail_set_message_and_save(message)
     fail!
-    Rails.logger.error(message)
     self.message = message[0..254]
     save(validate: false) # Just in case the cause is it being invalid!
   end

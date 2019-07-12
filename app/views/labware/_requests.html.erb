@@ -1,0 +1,128 @@
+<section id="requests-table-container" class='info-panel'>
+  <header>
+    <a href='#requests-table-collapser' role="button" data-toggle='collapse'>
+    <h3>Requests
+      <span class='badge badge-primary'><%= asset.requests_as_source.length %> </span>
+      <small class='show-hide'>Click to toggle</small>
+    </h3>
+    </a>
+  </header>
+  <div id="requests-table-collapser" class="collapse in show">
+    <table id="source-requests-table" class="sortable">
+      <caption>Requests out of this asset</caption>
+      <thead>
+        <tr>
+          <th>Request ID</th>
+          <th>Request type</th>
+          <th>Submission name </th>
+          <th>State</th>
+          <th>Batches</th>
+          <th>Target</th>
+          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+            <th>Copy</th>
+            <th>Cancel</th>
+          <% end %>
+          <th>Created at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @asset.requests_as_source.each do |request| %>
+        <tr>
+          <td><%= link_to(request.id, request_url(request), title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
+          <td><%= request.request_type&.name %></td>
+          <td>
+            <% if request.submission %>
+              <%= link_to(request.submission.name, submission_path(request.submission) ) %>
+            <% elsif @asset.studies.present? %>
+              <% first_study = @asset.studies.first %>
+              Study: <%= link_to(first_study.name, study_path(first_study)) %>
+            <% else %>
+              NA
+            <% end %>
+          </td>
+          <td><%= request_status(request) %></td>
+          <td>
+          <% request.with_batch_id do |batch_id| %>
+            <%= link_to batch_id, batch_url(batch_id) %>
+          <% end %>
+          </td>
+          <% if request.target_asset %>
+            <td><%= link_to(h(request.target_asset.display_name), asset_url(request.target_asset)) %></td>
+          <% else %>
+            <td></td>
+          <% end %>
+          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+            <td><%= link_to 'Copy', copy_request_url(request)   %></td>
+            <td>
+              <% if request.try(:may_cancel_before_started?) %>
+                <%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %>
+              <% else %>
+                Uncancelable
+              <% end %>
+            </td>
+          <% end %>
+          <td><%=h request.created_at.to_formatted_s(:long) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <table id="target-requests-table" class="sortable">
+      <caption>Requests into this asset</caption>
+      <thead>
+        <tr>
+          <th>Request ID</th>
+          <th>Request type</th>
+          <th>Submission name </th>
+          <th>State</th>
+          <th>Batches</th>
+          <th>Source</th>
+          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+            <th>Copy</th>
+            <th>Cancel</th>
+          <% end %>
+          <th>Created at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @asset.requests_as_target.each do |request| %>
+        <tr>
+          <td><%= link_to(request.id, request_url(request), title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
+          <td><%= request.request_type and request.request_type.name %></td>
+          <td>
+            <% if request.submission %>
+              <%= link_to(request.submission.name, submission_path(request.submission) ) %>
+            <% elsif @asset.studies.present? %>
+              <% first_study = @asset.studies.first %>
+              Study: <%= link_to(first_study.name, study_path(first_study)) %>
+            <% else %>
+              NA
+            <% end %>
+          </td>
+          <td><%= request_status(request) %></td>
+          <td>
+          <% request.with_batch_id do |batch_id| %>
+            <%= link_to batch_id, batch_url(batch_id) %>
+          <% end %>
+          </td>
+          <% if request.asset %>
+            <td><%= link_to(h(request.asset.display_name), asset_url(request.asset)) %></td>
+          <% else %>
+            <td></td>
+          <% end %>
+          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+            <td><%= link_to 'Copy', copy_request_url(request)   %></td>
+            <td>
+              <% if request.try(:may_cancel_before_started?) %>
+                <%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %>
+              <% else %>
+                Uncancelable
+              <% end %>
+            </td>
+          <% end %>
+          <td><%=h request.created_at.to_formatted_s(:long) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>

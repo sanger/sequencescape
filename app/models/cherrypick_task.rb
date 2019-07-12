@@ -194,14 +194,31 @@ class CherrypickTask < Task
 
   private
 
-  def build_plate_wells_from_requests(requests)
-    Request.joins([
-      'INNER JOIN assets wells ON requests.asset_id=wells.id',
-      'INNER JOIN container_associations ON container_associations.content_id=wells.id',
-      'INNER JOIN barcodes ON barcodes.asset_id = container_associations.container_id',
-      'INNER JOIN maps ON wells.map_id=maps.id'
-    ]).order('container_associations.container_id ASC, maps.column_order ASC')
-           .where(requests: { id: requests })
-           .pluck('requests.id', 'barcodes.barcode', 'maps.description').uniq
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    # @note This reproduces the original behaviour. However I think this is the source of our
+    #       duplicate plate bug when we have custom barcodes.
+    def build_plate_wells_from_requests(requests)
+      Request.joins(asset: %i[barcodes map])
+             .order('receptacles.labware_id ASC', 'maps.column_order ASC')
+             .where(requests: { id: requests })
+             .pluck('requests.id', 'barcodes.barcode', 'maps.description').uniq
+    end
+  end
+
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def build_plate_wells_from_requests(requests)
+      Request.joins([
+        'INNER JOIN assets wells ON requests.asset_id=wells.id',
+        'INNER JOIN container_associations ON container_associations.content_id=wells.id',
+        'INNER JOIN barcodes ON barcodes.asset_id = container_associations.container_id',
+        'INNER JOIN maps ON wells.map_id=maps.id'
+      ]).order('container_associations.container_id ASC, maps.column_order ASC')
+             .where(requests: { id: requests })
+             .pluck('requests.id', 'barcodes.barcode', 'maps.description').uniq
+    end
   end
 end

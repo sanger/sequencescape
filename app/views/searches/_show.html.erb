@@ -15,10 +15,10 @@
     </ul>
   <% end %>
 
-  <% if @assets.present? %>
-    <h4><%= pluralize @assets.size, "assets" %></h4>
+  <% if @labware.present? %>
+    <h4><%= pluralize @labware.size, "assets" %></h4>
     <ul>
-      <%= render partial: "searches/show/asset", collection: @assets %>
+      <%= render partial: "searches/show/asset", collection: @labware %>
     </ul>
   <% end %>
 

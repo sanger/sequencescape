@@ -17,7 +17,7 @@ RSpec/DescribeClass:
     - 'spec/lib/warren/*.rb'
     - 'spec/models/billing/*.rb'
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.4
   Exclude:
     - db/schema.rb
     - db/views_schema.rb
@@ -27,6 +27,11 @@ AllCops:
     - vendor/**/*
     - bin/*
     - sbin/*
+
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'db/migrate/*.rb'
+    - 'features/support/step_definitions/*.rb'
 
 # The cop is meant to enforce conventions regarding variables containing numbers
 # However in 0.43.0 it is bugged. Both changed on master and disabled by default

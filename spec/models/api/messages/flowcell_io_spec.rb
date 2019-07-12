@@ -36,7 +36,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
       end
     end
 
-    let(:phix) { create :spiked_buffer, tag_option: 'Dual' }
+    let(:phix) { create :spiked_buffer, :tube_barcode, tag_option: 'Dual' }
 
     let(:tags) { lane1.aliquots.map(&:tag) }
     let(:tag2s) { lane1.aliquots.map(&:tag2) }
@@ -48,8 +48,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
         content: Time.zone.today.to_s,
         message: 'scanned in',
         family: 'scanned_into_lab',
-        eventful_type: 'Asset',
-        eventful_id: mx_tube1.id
+        eventful: mx_tube1
       )
     end
 
@@ -77,7 +76,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
             'priority' => 0,
             'id_pool_lims' => mx_tube1.human_barcode,
             'external_release' => nil,
-            'entity_id_lims' => lane1.id,
+            'entity_id_lims' => lane1.receptacle.id,
             'team' => team.name,
             'purpose' => 'standard',
             'spiked_phix_barcode' => phix.human_barcode,
@@ -118,7 +117,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
               'tag2_set_name' => 'Control Tag Group 888',
               'sample_uuid' => phix.aliquots[0].sample.uuid,
               'id_library_lims' => phix.human_barcode,
-              'legacy_library_id' => phix.id,
+              'legacy_library_id' => phix.receptacle.id,
               'entity_type' => 'library_indexed_spike'
             }]
           }]
@@ -150,7 +149,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
             'priority' => 0,
             'id_pool_lims' => mx_tube1.human_barcode,
             'external_release' => nil,
-            'entity_id_lims' => lane1.id,
+            'entity_id_lims' => lane1.receptacle.id,
             'team' => team.name,
             'purpose' => 'standard',
             'spiked_phix_barcode' => phix.human_barcode,
@@ -185,7 +184,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
               'tag_set_name' => phix.aliquots[0].tag.tag_group.name,
               'sample_uuid' => phix.aliquots[0].sample.uuid,
               'id_library_lims' => phix.human_barcode,
-              'legacy_library_id' => phix.id,
+              'legacy_library_id' => phix.receptacle.id,
               'entity_type' => 'library_indexed_spike'
             }]
           }]

@@ -18,6 +18,4 @@ Feature: Change the side links in a batch depending on the pipeline
       | Cluster formation PE              | should not see | should not see | should not see  |
       | Cluster formation SE              | should not see | should not see | should not see  |
       | Illumina-C Library preparation    | should see     | should see     | should see      |
-      | Genotyping                        | should not see | should not see | should see      |
-      | Illumina-B MX Library Preparation | should not see | should see     | should see      |
       | Cherrypick                        | should not see | should not see | should see      |

@@ -73,13 +73,13 @@ RSpec.describe Order, type: :model do
   end
 
   it 'order should not be valid if study is not active' do
-    order = build :order, study: study, assets: [asset], project: project
+    order = build :order, study: study, assets: [asset.receptacle], project: project
     expect(order).not_to be_valid
   end
 
   it 'order should be valid if study is active on create' do
     study.activate!
-    order = create :order, study: study, assets: [asset], project: project
+    order = create :order, study: study, assets: [asset.receptacle], project: project
     assert order.valid?
     study.deactivate!
     new_asset = create :empty_sample_tube
@@ -95,8 +95,8 @@ RSpec.describe Order, type: :model do
     sample.sample_metadata.update(supplier_name: 'new_name')
     expect(order.reload.not_ready_samples.count).to eq 4
 
-    no_manifest_sample = create :sample, assets: [asset]
-    order = create :order, assets: no_manifest_sample.assets
+    sample_tube_without_manifest = create_list :sample_tube, 1
+    order = create :order, assets: sample_tube_without_manifest
     expect(order.all_samples).not_to be_empty
     expect(order.not_ready_samples).to be_empty
   end

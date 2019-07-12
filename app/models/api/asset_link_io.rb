@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for AssetLink
+# Despite name controls rendering of warehouse messages for {AssetLink}
 # Historically used to be v0.5 API
 class Api::AssetLinkIO < Api::Base
   module Extensions

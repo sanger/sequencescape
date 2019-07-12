@@ -26,7 +26,7 @@ FactoryBot.define do
           sample_manifest.labware.each do |tube|
             create(:sample_manifest_asset,
                    sanger_sample_id: generate(:sanger_sample_id),
-                   asset: tube,
+                   asset: tube.receptacle,
                    sample_manifest: sample_manifest)
           end
           sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)
