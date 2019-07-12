@@ -26,7 +26,9 @@ class UatActions::TestSubmission < UatActions
              help: 'Select the plate purpose to use when creating the plate. '\
                    'Leave blank to automatically use the most appropriate purpose. '\
                    'Not used if plate barcode is supplied.',
-             select_options: -> { [''].concat(PlatePurpose.alphabetical.pluck(:name)) }
+             select_options: -> { PlatePurpose.alphabetical.pluck(:name) },
+             options: { include_blank: 'Using default purpose...' }
+
 
   validates :submission_template, presence: { message: 'could not be found' }
 
