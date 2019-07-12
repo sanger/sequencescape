@@ -29,7 +29,6 @@ class UatActions::TestSubmission < UatActions
              select_options: -> { PlatePurpose.alphabetical.pluck(:name) },
              options: { include_blank: 'Using default purpose...' }
 
-
   validates :submission_template, presence: { message: 'could not be found' }
 
   #
