@@ -203,9 +203,6 @@ Rails.application.routes.draw do
       get :state
       post :grant_role
       post :remove_role
-      get :related_studies
-      post :relate_study
-      post :unrelate_study
       get :accession_all_samples
     end
 

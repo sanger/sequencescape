@@ -20,13 +20,6 @@
   )
 ) %>
 
-<% unless creation %>
-  <div class="row">
-    <div class="item col"><%= form.label("Related studies:") %></div>
-    <div class="item col"><%= link_to "edit", related_studies_study_path(study)%></div>
-  </div>
-<% end %>
-
 <h3>Properties</h3>
 <%= render partial: 'shared/metadata/edit/study', locals: { study: study } %>
 
