@@ -52,24 +52,22 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           let!(:download) { build(:test_download_tubes, columns: library_with_tag_seq_cols, manifest_type: 'tube_library_with_tag_sequences') }
 
           it 'will not generate samples prior to processing' do
-            pending 'Ensuring sample creation doesn\'t happen until processing'
             expect { upload }.not_to change(Sample, :count)
           end
 
-          it 'will update the samples' do
+          it 'will process', :aggregate_failures do
             processor.run(tag_group)
-            expect(processor).to be_samples_updated
-            expect(upload.rows).to be_all(&:sample_updated?)
-          end
 
-          it 'will update the sample manifest' do
-            processor.run(tag_group)
-            expect(processor).to be_sample_manifest_updated
-            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
-          end
+            aggregate_failures 'update samples' do
+              expect(processor).to be_samples_updated
+              expect(upload.rows).to be_all(&:sample_updated?)
+            end
 
-          it 'will be processed' do
-            processor.run(tag_group)
+            aggregate_failures 'update sample manifest' do
+              expect(processor).to be_sample_manifest_updated
+              expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
+            end
+
             expect(processor).to be_processed
           end
         end
@@ -124,20 +122,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
 
           it 'will not generate samples prior to processing' do
-            pending 'Ensuring sample creation doesn\'t happen until processing'
             expect { upload }.not_to change(Sample, :count)
-          end
-
-          it 'will update the samples' do
-            processor.run(tag_group)
-            expect(processor).to be_samples_updated
-            expect(upload.rows).to be_all(&:sample_updated?)
-          end
-
-          it 'will update the sample manifest' do
-            processor.run(tag_group)
-            expect(processor).to be_sample_manifest_updated
-            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
           it 'will transfer the aliquots to the multiplexed library tube' do
@@ -146,8 +131,19 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             expect(upload.rows).to be_all(&:aliquot_transferred?)
           end
 
-          it 'will be processed' do
+          it 'will process', :aggregate_failures do
             processor.run(tag_group)
+
+            aggregate_failures 'update samples' do
+              expect(processor).to be_samples_updated
+              expect(upload.rows).to be_all(&:sample_updated?)
+            end
+
+            aggregate_failures 'update sample manifest' do
+              expect(processor).to be_sample_manifest_updated
+              expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
+            end
+
             expect(processor).to be_processed
           end
         end
@@ -244,27 +240,26 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
           let(:processor) { SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload) }
 
-          it 'will update the samples' do
+          it 'will process', :aggregate_failures do
             processor.run(nil)
-            expect(processor).to be_samples_updated
-            expect(upload.rows).to be_all(&:sample_updated?)
-          end
 
-          it 'will update the sample manifest' do
-            processor.run(nil)
-            expect(processor).to be_sample_manifest_updated
-            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
+            aggregate_failures 'update samples' do
+              expect(processor).to be_samples_updated
+              expect(upload.rows).to be_all(&:sample_updated?)
+            end
+
+            aggregate_failures 'update sample manifest' do
+              expect(processor).to be_sample_manifest_updated
+              expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
+            end
+
+            expect(processor).to be_processed
           end
 
           it 'will transfer the aliquots to the multiplexed library tube' do
             processor.run(nil)
             expect(processor).to be_aliquots_transferred
             expect(upload.rows).to be_all(&:aliquot_transferred?)
-          end
-
-          it 'will be processed' do
-            processor.run(nil)
-            expect(processor).to be_processed
           end
         end
 
@@ -365,24 +360,22 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         let!(:download) { build(:test_download_plates, columns: plate_columns) }
 
         it 'will not generate samples prior to processing' do
-          pending 'Ensuring sample creation doesn\'t happen until processing'
           expect { processor }.not_to change(Sample, :count)
         end
 
-        it 'will update the samples' do
+        it 'will process', :aggregate_failures do
           processor.run(nil)
-          expect(processor).to be_samples_updated
-          expect(upload.rows).to be_all(&:sample_updated?)
-        end
 
-        it 'will update the sample manifest' do
-          processor.run(nil)
-          expect(processor).to be_sample_manifest_updated
-          expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
-        end
+          aggregate_failures 'update samples' do
+            expect(processor).to be_samples_updated
+            expect(upload.rows).to be_all(&:sample_updated?)
+          end
 
-        it 'will be processed' do
-          processor.run(nil)
+          aggregate_failures 'update sample manifest' do
+            expect(processor).to be_sample_manifest_updated
+            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
+          end
+
           expect(processor).to be_processed
         end
 
@@ -401,22 +394,21 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'when using foreign barcodes' do
-          let!(:download)     { build(:test_download_plates_cgap, columns: plate_columns) }
+          let!(:download) { build(:test_download_plates_cgap, columns: plate_columns) }
 
-          it 'will update the samples' do
+          it 'will process', :aggregate_failures do
             processor.run(nil)
-            expect(processor).to be_samples_updated
-            expect(upload.rows).to be_all(&:sample_updated?)
-          end
 
-          it 'will update the sample manifest' do
-            processor.run(nil)
-            expect(processor).to be_sample_manifest_updated
-            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
-          end
+            aggregate_failures 'update samples' do
+              expect(processor).to be_samples_updated
+              expect(upload.rows).to be_all(&:sample_updated?)
+            end
 
-          it 'will be processed' do
-            processor.run(nil)
+            aggregate_failures 'update sample manifest' do
+              expect(processor).to be_sample_manifest_updated
+              expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
+            end
+
             expect(processor).to be_processed
           end
 

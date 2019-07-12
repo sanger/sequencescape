@@ -52,19 +52,18 @@ class Barcode < ApplicationRecord
     end.compact.uniq
   end
 
-  # check if a given barcode string matches any foreign barcode format
-  def self.matches_any_foreign_barcode_format?(possible_barcode)
-    FOREIGN_BARCODE_FORMATS.each do |cur_format|
+  # Returns the barcode format matching the supplied barcode
+  def self.matching_barcode_format(possible_barcode)
+    FOREIGN_BARCODE_FORMATS.detect do |cur_format|
       bc = Barcode.new(format: cur_format, barcode: possible_barcode)
-      return cur_format if bc.handler.valid?
+      bc.handler.valid?
     end
-    nil
   end
 
-  def self.unique_for_format?(barcode_format, search_barcode)
-    return unless barcode_format.present? && search_barcode.present?
+  def self.exists_for_format?(barcode_format, search_barcode)
+    return true unless barcode_format.present? && search_barcode.present?
 
-    Barcode.find_by(format: barcode_format, barcode: search_barcode)
+    Barcode.exists?(format: barcode_format, barcode: search_barcode)
   end
 
   def self.extract_barcodes(barcodes)

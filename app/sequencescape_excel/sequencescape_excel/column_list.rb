@@ -98,6 +98,10 @@ module SequencescapeExcel
       select(&:metadata_field?)
     end
 
+    def inspect
+      "<#{self.class}: @columns:#{columns.map(&:name).inspect}...>"
+    end
+
     private
 
     # You can add a hash of columns, a hash of attributes or an array of columns.

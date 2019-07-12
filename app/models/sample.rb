@@ -206,6 +206,7 @@ class Sample < ApplicationRecord
   has_many :external_properties, as: :propertied, dependent: :destroy
 
   belongs_to :sample_manifest, inverse_of: :samples
+  has_one :sample_manifest_asset, foreign_key: :sanger_sample_id, primary_key: :sanger_sample_id
 
   has_many_lab_events
   acts_as_authorizable
