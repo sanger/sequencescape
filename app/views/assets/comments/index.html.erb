@@ -3,9 +3,6 @@
 <% add :back_menu,I18n.t("navigation.menu.back_to_asset") => asset_path(@asset) -%>
 
 <%= page_title("#{@asset.label} #{@asset.display_name}",'Comments') %>
-<div class='subtitle'>
-  Study <%= @asset.id %>
-</div>
 
 <%= render partial: "list", locals: {asset: @asset } %>
 

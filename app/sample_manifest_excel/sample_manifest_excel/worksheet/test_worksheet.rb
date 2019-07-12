@@ -110,15 +110,15 @@ module SampleManifestExcel
                                                               if validation_errors.include?(:sample_plate_id_duplicates)
                                                                 'CGAP-99999'
                                                               elsif validation_errors.include?(:sample_plate_id_unrecognised_foreign)
-                                                                "INVALID-#{cur_sample.assets.first.plate.id.to_s.upcase}#{(cur_sample.assets.first.plate.id % 10).to_s.upcase}"
+                                                                "INVALID-#{cur_sample.primary_receptacle.plate.id.to_s.upcase}#{(cur_sample.primary_receptacle.plate.id % 10).to_s.upcase}"
                                                               else
-                                                                "CGAP-#{cur_sample.assets.first.plate.id.to_s(16).upcase}#{(cur_sample.assets.first.plate.id % 16).to_s(16).upcase}"
+                                                                "CGAP-#{cur_sample.primary_receptacle.plate.id.to_s(16).upcase}#{(cur_sample.primary_receptacle.plate.id % 16).to_s(16).upcase}"
                                                               end
                                                             else
-                                                              cur_sample.assets.first.plate.human_barcode
+                                                              cur_sample.primary_receptacle.plate.human_barcode
                                                             end
           # set the well position
-          dynamic_attributes[sheet_row][:well] = cur_sample.assets.first.map_description
+          dynamic_attributes[sheet_row][:well] = cur_sample.primary_receptacle.map_description
           sample_index += 1
         end
       end

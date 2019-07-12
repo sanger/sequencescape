@@ -205,12 +205,6 @@ DEV_ONLY = [
     superceeded_by_id: -2,
     submission_parameters: { info_differential: 5,
                              request_types: ['illumina_a_hiseq_x_paired_end_sequencing'] } },
-  { name: 'Cherrypicking - Genotyping',
-    submission_class_name: 'LinearSubmission',
-    product_catalogue: 'Generic',
-    submission_parameters: { info_differential: 6,
-                             asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
-                             request_types: %w[cherrypick genotyping] } },
   { name: 'Illumina-C - General PCR - HiSeq v4 sequencing',
     submission_class_name: 'LinearSubmission',
     product_line: 'Illumina-C',
@@ -324,21 +318,7 @@ DEV_ONLY = [
     product_catalogue: 'Generic',
     submission_parameters: { info_differential: 1,
                              request_types: ['illumina_c_pcr_no_pool'],
-                             order_role: 'PCR' } },
-  {
-    name: 'IHTP - PCR Free Auto - HiSeq-X sequencing',
-    submission_class_name: 'FlexibleSubmission',
-    product_line: 'Illumina-HTP',
-    product_catalogue: 'PFHSqX',
-    submission_parameters: {
-      request_types: %w[
-        htp_pcr_free_lib
-        illumina_htp_strip_tube_creation
-        illumina_b_hiseq_x_paired_end_sequencing
-      ],
-      workflow: 'short_read_sequencing'
-    }
-  }
+                             order_role: 'PCR' } }
 ].freeze
 
 LEGACY_CUKES_ONLY.each { |params| SubmissionSerializer.construct!(params) } if Rails.env.cucumber?

@@ -10,6 +10,10 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     def endpoint_details(object)
       object = @throughs.inject(object) { |t, s| t.send(s) }.send(@name) || return
       yield(@options[:json].to_s, endpoint_for_object(object), object)
+    rescue StandardError => _e
+      # We really shouldn't have an exception here, so if we do, its probably
+      # an issue with configuration
+      raise StandardError, "Misconfiguration of endpoint: #{self}"
     end
     private :endpoint_details
 

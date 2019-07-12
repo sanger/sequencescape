@@ -9,7 +9,7 @@ class BatchesController < ApplicationController
   before_action :login_required, except: %i[released qc_criteria]
   before_action :find_batch_by_id, only: %i[
     show edit update qc_information qc_batch save fail
-    fail_batch control add_control print_labels print_plate_labels print_multiplex_labels
+    fail_batch print_labels print_plate_labels print_multiplex_labels
     print verify verify_tube_layout reset_batch previous_qc_state filtered swap
     download_spreadsheet gwl_file pacbio_sample_sheet sample_prep_worksheet
   ]
@@ -38,13 +38,8 @@ class BatchesController < ApplicationController
         @pipeline = @batch.pipeline
         @tasks    = @batch.tasks.sort_by(&:sorted)
         @rits = @pipeline.request_information_types
-        @input_assets = []
-        @output_assets = []
-
-        if @pipeline.group_by_parent
-          @input_assets = @batch.input_group
-          @output_assets = @batch.output_group_by_holder unless @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
-        end
+        @input_labware = @batch.input_labware_group
+        @output_labware = @batch.output_labware_group
       end
       format.xml { render layout: false }
     end
@@ -206,29 +201,6 @@ class BatchesController < ApplicationController
     redirect_to action: :show, id: @batch.id
   end
 
-  def control
-    @rits = @batch.pipeline.request_information_types
-    @controls = @batch.pipeline.controls
-  end
-
-  def add_control
-    @control = Control.find(params[:control][:id])
-    control_count = params[:control][:count].to_i
-
-    if control_count > @batch.space_left
-      flash[:error] = "Can't assign more than #{@batch.space_left} control to this batch"
-      redirect_to action: 'control', id: @batch.id
-      return
-    elsif control_count < 0
-      flash[:error] = 'This batch needs at least one control'
-      redirect_to action: 'control', id: @batch.id
-      return
-    end
-    control_count = @batch.add_control(@control.name, control_count)
-
-    redirect_to batch_path(@batch)
-  end
-
   def print_labels; end
 
   def print_stock_labels
@@ -239,9 +211,9 @@ class BatchesController < ApplicationController
     @pipeline = @batch.pipeline
     @output_barcodes = []
 
-    @output_assets = @batch.plate_group_barcodes || []
+    @output_labware = @batch.plate_group_barcodes || []
 
-    @output_assets.each do |parent, _children|
+    @output_labware.each do |parent, _children|
       next if parent.nil?
 
       plate_barcode = parent.human_barcode
@@ -315,10 +287,7 @@ class BatchesController < ApplicationController
     @pipeline = @batch.pipeline
     @comments = @batch.comments
 
-    # TODO: Re-factor this.
-    if @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
-      @plate = @batch.requests.first.asset.plate
-    elsif @pipeline.is_a?(CherrypickingPipeline)
+    if @pipeline.is_a?(CherrypickingPipeline)
       @plates = if params[:barcode]
                   Plate.with_barcode(params[:barcode])
                 else
@@ -506,15 +475,8 @@ class BatchesController < ApplicationController
     end
 
     respond_to do |format|
-      format.html do
-        if @pipeline.has_controls?
-          flash[:notice] = 'Batch created - now add a control'
-          redirect_to action: :control, id: @batch.id
-        else
-          redirect_to action: :show, id: @batch.id
-        end
-      end
-      format.xml { head :created, location: batch_url(@batch) }
+      format.html { redirect_to action: :show, id: @batch.id }
+      format.xml  { head :created, location: batch_url(@batch) }
     end
   end
 end

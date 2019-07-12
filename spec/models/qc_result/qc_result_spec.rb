@@ -40,10 +40,10 @@ RSpec.describe QcResult, type: :model, qc_result: true do
   end
 
   it '#by_key will return the qc results by key' do
-    create(:qc_result, key: 'Concentration')
-    create(:qc_result, key: 'Molarity')
-    create(:qc_result, key: 'Volume')
-    create(:qc_result, key: 'RIN')
+    create(:qc_result_concentration)
+    create(:qc_result_molarity)
+    create(:qc_result_volume)
+    create(:qc_result_rin)
     results = QcResult.by_key
     expect(results.size).to eq(4)
     expect(results['concentration'].length).to eq(1)

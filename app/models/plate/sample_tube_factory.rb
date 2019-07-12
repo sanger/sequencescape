@@ -3,7 +3,13 @@
 # Extracted from {Plate} Used to convert a plate to {SampleTubes}
 class Plate::SampleTubeFactory < SimpleDelegator
   def create_sample_tubes
-    wells.map(&:create_child_sample_tube)
+    wells.map { |well| create_child_sample_tube(well) }
+  end
+
+  def create_child_sample_tube(well)
+    Tube::Purpose.standard_sample_tube.create!.tap do |sample_tube|
+      sample_tube.receptacle.transfer_requests_as_target.create!(asset: well)
+    end
   end
 
   def create_sample_tubes_and_print_barcodes(barcode_printer)

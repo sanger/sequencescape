@@ -3,7 +3,11 @@
 
 # To enable developers to have their own development setup per repository clone we allow them to stick
 # the suffix they want attached to any database names in the suffix file in the root of the project.
-<% suffix = "_#{File.read(File.join(Rails.root, 'database_suffix'))}".strip rescue nil %>
+<% suffix = if ENV['SUFFIX']
+              "_#{ENV['SUFFIX']}"
+            else
+              "_#{File.read(Rails.root.join('database_suffix'))}".strip rescue nil
+            end %>
 
 mysql: &MYSQL
   adapter: mysql2

@@ -43,13 +43,15 @@ describe 'Perform a tag substitution', js: true do
       .ancestor('tr')
       .select("#{sample_a_orig_tag.map_id} - #{sample_a_orig_tag.oligo}", from: 'tag_substitution[substitutions][][substitute_tag_id]')
     click_button 'Substitute Tags'
-    expect(page).to have_content "Asset #{lane.display_name}"
+    expect(page).to have_content "Receptacle #{lane.display_name}"
     expect(page).to have_content 'Your substitution was performed.'
     find('td', text: sample_a.name).sibling('td', text: "(#{sample_b_orig_tag.oligo})")
     find('td', text: sample_a.name).sibling('td', text: "(#{sample_a_orig_tag2.oligo})")
     find('td', text: sample_b.name).sibling('td', text: "(#{sample_a_orig_tag.oligo})")
     find('td', text: sample_b.name).sibling('td', text: "(#{sample_b_orig_tag2.oligo})")
+
     click_link '1 comment'
+
     expect(page).to have_content(<<~COMMENT
       Tag substitution performed.
       Referenced ticket no: 12345

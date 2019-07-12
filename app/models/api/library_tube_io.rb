@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for LibraryTube
+# Despite name controls rendering of warehouse messages for {LibraryTube}
 # Historically used to be v0.5 API
 class Api::LibraryTubeIO < Api::Base
   module Extensions

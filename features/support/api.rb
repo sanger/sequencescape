@@ -18,8 +18,8 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
 
   instance do
     has_many(
-      :sample_tubes, json: 'sample_tubes', to: 'sample_tubes',
-                     include: [:library_tubes, :requests]
+      :receptacles, json: 'receptacles', to: 'receptacles',
+                    include: [:labware, :requests]
     )
 
     action(:update, to: :standard_update!)

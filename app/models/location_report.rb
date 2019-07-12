@@ -25,46 +25,49 @@ class LocationReport < ApplicationRecord
   # validations
   validates :name, presence: true
   validates :report_type, presence: true
-  validate :check_location_barcode, :check_any_select_field_present, :check_both_dates_present_if_used,
-           :check_end_date_same_or_after_start_date, :check_maxlength_of_barcodes, :check_any_plates_found
+  validate :check_location_barcode, if: :type_labwhere?
+  validate :check_any_select_field_present, :check_both_dates_present_if_used,
+           :check_end_date_same_or_after_start_date, :check_maxlength_of_barcodes, :check_any_plates_found,
+           if: :type_selection?
 
-  def check_any_select_field_present
-    return unless report_type == 'type_selection'
+  def type_selection?
+    report_type == 'type_selection'
+  end
 
-    attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes]
-    errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? { |attr| send(attr).blank? }
+  def type_labwhere?
+    report_type == 'type_labwhere'
   end
 
   def check_location_barcode
-    return unless report_type == 'type_labwhere'
     return if location_barcode.present?
 
     errors.add(:location_barcode, I18n.t('location_reports.errors.no_location_barcode_found'))
   end
 
+  def check_any_select_field_present
+    attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes]
+    errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? { |attr| send(attr).blank? }
+  end
+
   def check_both_dates_present_if_used
-    return unless report_type == 'type_selection'
     return if (start_date.blank? && end_date.blank?) || (start_date.present? && end_date.present?)
 
     errors.add(:start_date, I18n.t('location_reports.errors.both_dates_required'))
   end
 
   def check_end_date_same_or_after_start_date
-    return unless report_type == 'type_selection'
     return if (start_date.blank? || end_date.blank?) || end_date >= start_date
 
     errors.add(:end_date, I18n.t('location_reports.errors.end_date_after_start_date'))
   end
 
   def check_any_plates_found
-    return unless report_type == 'type_selection'
-    return if search_for_plates_by_selection.any?
+    return if plates_list.any?
 
     errors.add(:base, I18n.t('location_reports.errors.no_rows_found'))
   end
 
   def check_maxlength_of_barcodes
-    return unless report_type == 'type_selection'
     return if barcodes.blank? || (barcodes.to_yaml.size <= column_for_attribute(:barcodes).limit)
 
     errors.add(:barcodes_text, I18n.t('location_reports.errors.barcodes_maxlength_exceeded'))
@@ -94,16 +97,14 @@ class LocationReport < ApplicationRecord
   end
 
   def generate_report_rows
-    generate_plates_list
-
-    if @plates_list.empty?
+    if plates_list.empty?
       yield([I18n.t('location_reports.errors.plate_list_empty')])
       return
     end
 
     yield column_headers
 
-    @plates_list.each do |cur_plate|
+    plates_list.each do |cur_plate|
       if cur_plate.studies.present?
         cur_plate.studies.each do |cur_study|
           yield(generate_report_row(cur_plate, cur_study))
@@ -120,14 +121,14 @@ class LocationReport < ApplicationRecord
 
   #######
 
-  def generate_plates_list
-    @plates_list = if type_selection?
-                     search_for_plates_by_selection
-                   elsif type_labwhere?
-                     search_for_plates_by_labwhere_locn_bc
-                   else
-                     []
-                   end
+  def plates_list
+    @plates_list ||= if type_selection?
+                       search_for_plates_by_selection
+                     elsif type_labwhere?
+                       search_for_plates_by_labwhere_locn_bc
+                     else
+                       []
+                     end
   end
 
   def generate_report_row(cur_plate, cur_study)

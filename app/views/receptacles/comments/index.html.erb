@@ -1,0 +1,17 @@
+
+<% add :back_menu,I18n.t("navigation.menu.back_to_asset") => receptacle_path(@receptacle) -%>
+
+<%= page_title("#{@receptacle.label} #{@receptacle.display_name}",'Comments') %>
+<%= render partial: "list", locals: {receptacle: @receptacle } %>
+
+<h2>On the labware</h2>
+<%= render partial: "labware/comments/list", locals: {labware: @receptacle.labware } %>
+
+<div>
+  <%= form_tag(receptacle_comments_path(@receptacle), data: { update: "#asset_annotations_#{@receptacle.id}", remote: true }, class:'remote-form') do %>
+    <label for='comment'>Type your comment</label>
+    <div class="input-group">
+      <%= text_field_tag "comment", '',  class:'form-control' %><span class="input-group-btn"><%= submit_tag 'Add comment', class: 'btn btn-success' %></span>
+    </div>
+  <% end %>
+</div>

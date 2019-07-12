@@ -21,7 +21,7 @@ class QcMetric < ApplicationRecord
   new_state 'manually_failed', passed: false, automatic: false
   new_state 'unprocessable', passed: false, proceedable: false
 
-  belongs_to :asset
+  belongs_to :asset, class_name: 'Receptacle'
   belongs_to :qc_report
   has_one :product_criteria, through: :qc_report
   validates_presence_of :asset, :qc_report

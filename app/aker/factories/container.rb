@@ -51,7 +51,7 @@ module Aker
       end
 
       def find_or_create_asset_by_aker_barcode!
-        labware = Asset.find_from_barcode(barcode)
+        labware = Labware.find_from_barcode(barcode)
         unless labware
           labware = create_asset!
           labware.aker_barcode = barcode

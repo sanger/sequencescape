@@ -1,10 +1,11 @@
 # Controls API V1 IO for Plate
-class Io::Plate < Io::Asset
+class Io::Plate < Core::Io::Base
   set_model_for_input(::Plate)
   set_json_root(:plate)
   set_eager_loading { |model| model.include_plate_purpose }
 
   define_attribute_and_json_mapping("
+                                           name  => name
                                            size <=> size
                              plate_purpose.name  => plate_purpose.name
                          plate_purpose.lifespan  => plate_purpose.lifespan

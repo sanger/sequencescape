@@ -1,0 +1,15 @@
+
+<% add :back_menu,I18n.t("navigation.menu.back_to_asset") => labware_path(@labware) -%>
+
+<%= page_title("#{@labware.label} #{@labware.display_name}",'Comments') %>
+
+<%= render partial: "list", locals: {labware: @labware } %>
+
+<div>
+  <%= form_tag(labware_comments_path(@labware), data: { update: "#asset_annotations_#{@labware.id}", remote: true }, class:'remote-form') do %>
+    <label for='comment'>Type your comment</label>
+    <div class="input-group">
+      <%= text_field_tag "comment", '',  class:'form-control' %><span class="input-group-btn"><%= submit_tag 'Add comment', class: 'btn btn-success' %></span>
+    </div>
+  <% end %>
+</div>

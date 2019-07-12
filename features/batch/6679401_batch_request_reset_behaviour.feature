@@ -22,4 +22,3 @@ Feature: Resetting batches and their requests across the various pipelines
     Scenarios: Genotyping pipelines
       | pipeline               | workflow              | link                  |
       | Cherrypick             | Microarray genotyping | Select Plate Template |
-      | Genotyping             | Microarray genotyping | Generate Manifests    |

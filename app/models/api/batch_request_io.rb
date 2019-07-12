@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for BatchRequest
+# Despite name controls rendering of warehouse messages for {BatchRequest}
 # Historically used to be v0.5 API
 class Api::BatchRequestIO < Api::Base
   module Extensions

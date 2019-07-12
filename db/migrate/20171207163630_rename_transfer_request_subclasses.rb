@@ -18,7 +18,7 @@ class RenameTransferRequestSubclasses < ActiveRecord::Migration[5.1]
   def up
     ActiveRecord::Base.transaction do
       RENAME.each do |old_type, new_type|
-        TransferRequest.where(sti_type: old_type).update_all(sti_type: new_type) # rubocop:disable Rails/SkipsModelValidations
+        TransferRequest.where(sti_type: old_type).update_all(sti_type: new_type)
       end
     end
   end
@@ -26,7 +26,7 @@ class RenameTransferRequestSubclasses < ActiveRecord::Migration[5.1]
   def down
     ActiveRecord::Base.transaction do
       RENAME.each do |old_type, new_type|
-        TransferRequest.where(sti_type: new_type).update_all(sti_type: old_type) # rubocop:disable Rails/SkipsModelValidations
+        TransferRequest.where(sti_type: new_type).update_all(sti_type: old_type)
       end
     end
   end

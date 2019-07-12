@@ -27,11 +27,11 @@ module LabelPrinter
       private
 
       def printable_assets
-        if printables.is_a? Asset
+        if printables.is_a? Labware
           [printables]
         else
           ids = printables.select { |_id, check| check == 'true' }.keys
-          Asset.find(ids)
+          Labware.find(ids)
         end
       end
     end

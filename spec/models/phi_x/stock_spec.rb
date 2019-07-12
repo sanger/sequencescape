@@ -87,7 +87,7 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
 
         it 'generates an aliquot with an i7 tag' do
           phi_x_stock.created_stocks.each do |tube|
-            expect(tube.aliquots).to all have_attributes(tag: expected_tag, tag2: nil, library_id: tube.id)
+            expect(tube.aliquots).to all have_attributes(tag: expected_tag, tag2: nil, library_id: tube.receptacle.id)
           end
         end
       end
@@ -103,7 +103,7 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
 
         it 'generates an aliquot with an i5 and i7 tag' do
           phi_x_stock.created_stocks.each do |tube|
-            expect(tube.aliquots).to all have_attributes(tag: expected_tag, tag2: expected_tag_2, library_id: tube.id)
+            expect(tube.aliquots).to all have_attributes(tag: expected_tag, tag2: expected_tag_2, library_id: tube.receptacle.id)
           end
         end
       end

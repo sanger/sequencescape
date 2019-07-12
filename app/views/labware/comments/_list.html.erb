@@ -1,0 +1,13 @@
+
+<ul id="labware_annotations_<%= labware.id %>" class="list-group">
+  <% if labware.comments.length > 0 %>
+    <% labware.comments.each do |comment| %>
+      <li class="list-group-item">
+        <%= render partial: "shared/comment" ,
+                   locals: { comment: comment, commentable: labware.becomes(Labware), update_target: "labware_annotations_#{labware.id}" }%>
+      </li>
+    <% end %>
+  <% else %>
+    <%= display_user_guide(I18n.t('assets.comments.no_comments')) %>
+  <% end %>
+</ul>

@@ -53,6 +53,11 @@ class Asset < ApplicationRecord
     include AssetLink::Associations
     include Commentable
     has_many :messengers, as: :target, inverse_of: :target
+
+    has_many :requests, inverse_of: :asset, foreign_key: :asset_id
+    has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
+    has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
+    has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   end
 
   delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
@@ -85,66 +90,13 @@ class Asset < ApplicationRecord
 
   scope :recent_first, -> { order(id: :desc) }
 
-  scope :include_for_show, -> { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
+  scope :include_for_show, -> { includes({ requests_as_source: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
 
   # The use of a sub-query here is a performance optimization. If we join onto the asset_links
   # table instead, rails is unable to paginate the results efficiently, as it needs to use DISTINCT
   # when working out offsets. This is substantially slower.
   scope :without_children, -> { where.not(id: AssetLink.where(direct: true).select(:ancestor_id)) }
   scope :include_plates_with_children, ->(filter) { filter ? all : without_children }
-
-  # Named scope for search by query string behaviour
-  scope :for_search_query, ->(query) {
-    where.not(sti_type: 'Well').where('assets.name LIKE :name', name: "%#{query}%").includes(:barcodes)
-         .or(where.not(sti_type: 'Well').with_safe_id(query).includes(:barcodes))
-  }
-
-  scope :for_lab_searches_display, -> { includes(:barcodes, requests: [:pipeline, :batch]).order('requests.pipeline_id ASC') }
-
-  # We accept not only an individual barcode but also an array of them.
-  scope :with_barcode, ->(*barcodes) {
-    db_barcodes = Barcode.extract_barcodes(barcodes)
-    joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
-  }
-
-  # In contrast to with_barocde, filter_by_barcode only filters in the event
-  # a parameter is supplied. eg. an empty string does not filter the data
-  scope :filter_by_barcode, ->(*barcodes) {
-    db_barcodes = Barcode.extract_barcodes(barcodes)
-    db_barcodes.blank? ? includes(:barcodes) : includes(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
-  }
-
-  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
-    destination_asset = find_from_barcode(destination_barcode)
-    if destination_asset
-      source_asset_ids = destination_asset.parents.map(&:id)
-      if source_asset_ids.empty?
-        none
-      else
-        where(id: source_asset_ids)
-      end
-    else
-      none
-    end
-  }
-
-  # Very much a Labware method
-  class << self
-    def find_from_any_barcode(source_barcode)
-      if source_barcode.blank?
-        nil
-      elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
-        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode).first # rubocop:disable Rails/FindBy
-      else
-        find_by_barcode(source_barcode)
-      end
-    end
-
-    def find_by_barcode(source_barcode)
-      with_barcode(source_barcode).first
-    end
-    alias find_from_barcode find_by_barcode
-  end
 
   def summary_hash
     {
@@ -183,15 +135,6 @@ class Asset < ApplicationRecord
   #       via on_create callbacks
   def generate_name(new_name)
     self.name = new_name
-  end
-
-  # TODO: unify with parent/children
-  def parent
-    parents.first
-  end
-
-  def child
-    children.last
   end
 
   def display_name
@@ -267,6 +210,10 @@ class Asset < ApplicationRecord
 
   def printable_target
     nil
+  end
+
+  def type
+    self.class.name.underscore
   end
 
   # Generates a message to broadcast the tube to the stock warehouse

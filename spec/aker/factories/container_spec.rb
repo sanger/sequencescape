@@ -49,19 +49,19 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
 
     it 'creates a plate when the container refers to a well in a plate' do
       Aker::Factories::Container.create(params.merge(address: 'A:1'))
-      asset = Asset.with_barcode(params[:barcode]).first
+      asset = Labware.with_barcode(params[:barcode]).first
       expect(asset.is_a?(Plate)).to eq(true)
     end
 
     it 'creates a tube when the container address is empty' do
       Aker::Factories::Container.create(params)
-      asset = Asset.with_barcode(params[:barcode]).first
+      asset = Labware.with_barcode(params[:barcode]).first
       expect(asset.is_a?(Tube)).to eq(true)
     end
 
     it 'creates a tube when the container address is a number' do
       Aker::Factories::Container.create(params.merge(address: '1'))
-      asset = Asset.with_barcode(params[:barcode]).first
+      asset = Labware.with_barcode(params[:barcode]).first
       expect(asset.is_a?(Tube)).to eq(true)
     end
 
@@ -70,7 +70,7 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
       tube.aker_barcode = params[:barcode]
       tube.save!
       container = Aker::Factories::Container.create(params)
-      expect(container.asset).to eq(tube)
+      expect(container.asset).to eq(tube.receptacle)
     end
   end
 

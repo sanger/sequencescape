@@ -3,13 +3,10 @@ class SequencingPipeline < Pipeline
   self.sequencing = true
   self.purpose_information = false
   self.inbox_eager_loading = :loaded_for_sequencing_inbox_display
+  self.generate_target_assets_on_batch_create = true
 
   def request_actions
     [:remove]
-  end
-
-  def inbox_partial
-    group_by_parent? ? 'group_by_parent' : super
   end
 
   def is_read_length_consistent_for_batch?(batch)

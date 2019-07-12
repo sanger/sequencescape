@@ -222,7 +222,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
           sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number).to_i)
           expect(sample).to be_present
           expect(sample.sample_manifest).to be_present
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_tube_id).number)).to eq(sample.assets.first.human_barcode)
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_tube_id).number)).to eq(sample.primary_receptacle.human_barcode)
         end
       end
 
@@ -278,28 +278,28 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('1dtube')
-        expect(worksheet.assets).to be_all { |asset| asset.type == 'sample_tube' }
+        expect(worksheet.assets).to be_all { |asset| asset.labware.type == 'sample_tube' }
       end
 
       it 'creates library tubes for library with tag sequences' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_library_with_tag_sequences'))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('library')
-        expect(worksheet.assets).to be_all { |asset| asset.type == 'library_tube' }
+        expect(worksheet.assets).to be_all { |asset| asset.labware.type == 'library_tube' }
       end
 
       it 'creates a multiplexed library tube for multiplexed_library with tag sequences' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library_with_tag_sequences'))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
-        expect(worksheet.assets).to be_all { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }
+        expect(worksheet.assets).to be_all { |asset| asset.requests_as_source.first.target_asset.labware == worksheet.multiplexed_library_tube }
       end
 
       it 'creates a multiplexed library tube for multiplexed_library with tag group and index' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
-        expect(worksheet.assets).to be_all { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }
+        expect(worksheet.assets).to be_all { |asset| asset.requests_as_source.first.target_asset.labware == worksheet.multiplexed_library_tube }
       end
     end
 
@@ -399,8 +399,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
           sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number))
           expect(sample).to be_present
           expect(sample.sample_manifest).to be_present
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_plate_id).number)).to eq(sample.assets.first.plate.human_barcode)
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :well).number)).to eq(sample.assets.first.map_description)
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_plate_id).number)).to eq(sample.primary_receptacle.plate.human_barcode)
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :well).number)).to eq(sample.primary_receptacle.map_description)
         end
       end
     end

@@ -21,7 +21,7 @@ Feature: Searching sequencescape
       | Project | project | This Project   |
       | Study   | study   | This Study     |
       | Sample  | sample  | SampleForThis  |
-      | Asset   | asset   | This Asset     |
+      | Asset   | labware | This Asset     |
 
   Scenario: No matching results
     When I fill in "Search for" with "No way this will ever match anything!"
@@ -38,4 +38,4 @@ Feature: Searching sequencescape
       | project | This Project  |
       | study   | This Study    |
       | sample  | SampleForThis |
-      | asset   | This Asset    |
+      | labware | This Asset    |

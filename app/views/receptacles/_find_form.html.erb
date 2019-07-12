@@ -1,0 +1,8 @@
+
+<p class="lead">Enter or scan the barcode</p>
+<div>
+  <%= form_tag '/assets/lab_view', class: 'form-inline' do %>
+    <%= text_field_tag 'barcode', nil, class: 'form-control' %>
+    <%= submit_tag "Find", class: 'btn' %>
+  <% end %>
+</div>

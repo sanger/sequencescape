@@ -1,0 +1,1 @@
+<li><%= labware.label.titleize %>: <%= link_to(h(labware.display_name), asset_path(labware)) -%> (Barcode: <%= labware.try(:human_barcode)||'None' %>)</li>

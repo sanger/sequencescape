@@ -2,7 +2,7 @@ class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :discover_asset, only: [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :history, :holded_assets]
+  before_action :discover_asset, only: [:edit, :update, :summary, :close, :print_assets, :print, :history]
   before_action :prepare_asset, only: [:new_request, :create_request]
 
   def index
@@ -27,11 +27,29 @@ class AssetsController < ApplicationController
   end
 
   def show
-    @source_plate = @asset.source_plate
-    respond_to do |format|
-      format.html
-      format.xml
-      format.json { render json: @asset }
+    # This block is disabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happens now
+    # LEGACY API FOR CGP to allow switch-over
+    AssetRefactor.when_not_refactored do
+      next unless request.format.xml?
+
+      @asset = Asset.include_for_show.find(params[:id])
+      respond_to { |format| format.xml }
+      return
+    end
+
+    @labware = Labware.find_by(id: params[:id])
+    @receptacle = Receptacle.find_by(id: params[:id])
+
+    if @receptacle.nil? && @labware.nil?
+      raise ActiveRecord::RecordNotFound
+    elsif @receptacle.nil? || @labware&.receptacle == @receptacle
+      redirect_to labware_path(@labware)
+    elsif @labware.nil? && @receptacle.present?
+      redirect_to receptacle_path(@receptacle)
+    else
+      # Things are ambiguous, we'll make you select
+      render :show, status: :multiple_choices
     end
   end
 
@@ -69,15 +87,6 @@ class AssetsController < ApplicationController
     permitted << :name if current_user.administrator?
     permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
     params.require(:asset).permit(permitted)
-  end
-
-  def destroy
-    @asset.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(assets_url) }
-      format.xml  { head :ok }
-    end
   end
 
   def summary
@@ -138,76 +147,9 @@ class AssetsController < ApplicationController
     @asset = Plate.find(params[:id])
   end
 
-  def new_request
-    @request_types = RequestType.standard.active.applicable_for_asset(@asset)
-    # In rare cases the user links in to the 'new request' page
-    # with a specific study specified. In even rarer cases this may
-    # conflict with the assets primary study.
-    # ./features/7711055_new_request_links_broken.feature:29
-    # This resolves the issue, but the code could do with a significant
-    # refactor. I'm delaying this currently as we NEED to get SS434 completed.
-    # 1. This should probably be RequestsController::new
-    # 2. We should use Request.new(...) and form helpers
-    # 3. This will allow us to instance_variable_or_id_param helpers.
-    @study = if params[:study_id]
-               Study.find(params[:study_id])
-             else
-               @asset.studies.first
-             end
-    @project = @asset.projects.first || @asset.studies.first && @asset.studies.first.projects.first
-  end
-
-  def create_request
-    @request_type = RequestType.find(params[:request_type_id])
-    @study        = Study.find(params[:study_id]) unless params[:cross_study_request].present?
-    @project      = Project.find(params[:project_id]) unless params[:cross_project_request].present?
-
-    request_options = params.fetch(:request, {}).fetch(:request_metadata_attributes, {})
-    request_options[:multiplier] = { @request_type.id => params[:count].to_i } unless params[:count].blank?
-    submission = Submission.new(priority: params[:priority], name: @study.try(:name), user: current_user)
-    # Despite its name, this is actually an order.
-    resubmission_order = ReRequestSubmission.new(
-      study: @study,
-      project: @project,
-      user: current_user,
-      assets: [@asset],
-      request_types: [@request_type.id],
-      request_options: request_options.to_unsafe_h,
-      submission: submission,
-      comments: params[:comments]
-    )
-    resubmission_order.save!
-    submission.built!
-
-    respond_to do |format|
-      flash[:notice] = 'Created request'
-
-      format.html { redirect_to asset_path(@asset) }
-      format.json { render json: submission.requests, status: :created }
-    end
-  rescue Submission::ProjectValidation::Error => e
-    respond_to do |format|
-      flash[:error] = e.message.truncate(2000, separator: ' ')
-      format.html { redirect_to new_request_for_current_asset }
-      format.json { render json: e.message, status: :unprocessable_entity }
-    end
-  rescue ActiveRecord::RecordNotFound => e
-    respond_to do |format|
-      flash[:error] = e.message.truncate(2000, separator: ' ')
-      format.html { redirect_to new_request_for_current_asset }
-      format.json { render json: e.message, status: :precondition_failed }
-    end
-  rescue ActiveRecord::RecordInvalid => e
-    respond_to do |format|
-      flash[:error] = e.message.truncate(2000, separator: ' ')
-      format.html { redirect_to new_request_for_current_asset }
-      format.json { render json: e.message, status: :precondition_failed }
-    end
-  end
-
   def lookup
     if params[:asset] && params[:asset][:barcode]
-      @assets = Asset.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
+      @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
 
       if @assets.size == 1
         redirect_to @assets.first
@@ -230,23 +172,9 @@ class AssetsController < ApplicationController
     render layout: false
   end
 
-  def find_by_barcode
-  end
-
-  def lab_view
-    barcode = params.fetch(:barcode, '').strip
-
-    if barcode.blank?
-      redirect_to action: 'find_by_barcode'
-      return
-    else
-      @asset = Asset.find_from_barcode(barcode)
-      redirect_to action: 'find_by_barcode', alert: "Unable to find anything with this barcode: #{barcode}" if @asset.nil?
-    end
-  end
-
   private
 
+  # Receptacle, as we're about to request some stuff
   def prepare_asset
     @asset = Receptacle.find(params[:id])
   end

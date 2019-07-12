@@ -13,12 +13,9 @@ Feature: If a batch is released, the section Action/Task shouldn't be shown unle
   Examples:
     | pipeline                               | batch_state | should_or_should_not |
     | Cluster formation PE                   | released    | should not           |
-    | Illumina-B MX Library Preparation      | released    | should not           |
     | Illumina-C Library preparation         | released    | should not           |
     | Cluster formation PE                   | pending     | should               |
-    | Illumina-B MX Library Preparation      | pending     | should               |
     | Illumina-C Library preparation         | pending     | should               |
-    | Genotyping                             | released    | should               |
     | Cherrypick                             | released    | should               |
     | PacBio Library Prep                    | released    | should               |
     | PacBio Sequencing                      | released    | should               |

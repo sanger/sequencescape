@@ -4,7 +4,18 @@ class ExtractionAttribute < ApplicationRecord
   validates_presence_of :created_by
 
   # This is the target asset for which to update the state
-  belongs_to :target, class_name: 'Asset', foreign_key: :target_id
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    belongs_to :target, class_name: 'Asset', foreign_key: :target_id
+  end
+
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    belongs_to :target, class_name: 'Labware', foreign_key: :target_id
+  end
+
   validates_presence_of :target
 
   validates_presence_of :attributes_update
@@ -29,20 +40,20 @@ class ExtractionAttribute < ApplicationRecord
     (well.plate != target) || (well.map_description != well_info['location'])
   end
 
-  def inject_resources(attr_well, attr_well_uuid_key, attr_well_resource_key)
+  def find_resources(attr_well, attr_well_uuid_key)
     return unless attr_well
 
-    if attr_well[attr_well_uuid_key]
-      attr_well[attr_well_resource_key] = Uuid.find_by(external_id: attr_well[attr_well_uuid_key]).resource
-    end
+    Uuid.find_by(external_id: attr_well[attr_well_uuid_key]).resource if attr_well[attr_well_uuid_key]
   end
 
   def attributes_update_with_resources
-    attributes_update.each do |attr_well|
-      inject_resources(attr_well, 'uuid', 'resource')
-      inject_resources(attr_well, 'sample_tube_uuid', 'sample_tube_resource')
+    attributes_update.map do |attr_well|
+      resources = {
+        'resource' => find_resources(attr_well, 'uuid'),
+        'sample_tube_resource' => find_resources(attr_well, 'sample_tube_uuid')
+      }.compact
+      attr_well.merge(resources)
     end
-    attributes_update
   end
 
   def update_performed
@@ -97,15 +108,29 @@ class ExtractionAttribute < ApplicationRecord
     return unless well_data
 
     well = well_data['resource']
-    previous_parent = well.parent
+
     actual_parent = target
     location = well_data['location']
     actual_well_in_same_position_at_rack = target.wells.located_at(location).first
-    actual_map = target.maps.select { |m| m.description == location }.first
+    actual_map = target.maps.detect { |m| m.description == location }
     raise WellNotExists if actual_map.nil?
 
-    actual_well_in_same_position_at_rack&.update(plate: nil)
-    well.update(plate: actual_parent, map: actual_map)
+    actual_well_in_same_position_at_rack&.update!(plate: nil)
+
+    # This block is enabled when we have the labware table present as part of the AssetRefactor
+    # Ie. This is what will happen in future
+    AssetRefactor.when_refactored do
+      # If an earlier well was moved into THIS wells previous location then
+      # it will have been removed from the plate. HOWEVER, because this happens on
+      # a DIFFERENT object, (as it gets found in a separate query) then this particular
+      # instance of well has no way of knowing that this change has been made. This is
+      # particularly problematic post-re-factor, as it results in the plate relationship
+      # not getting flagged as dirty, and so not updating. As a result the update for the
+      # earlier well takes precedence, and the location remains nil.
+      # Container_associations didn't result in the same problem
+      well.labware_id_will_change!
+    end
+    well.update!(plate: actual_parent, map: actual_map)
   end
 
   private :update_performed
