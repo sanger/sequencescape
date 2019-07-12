@@ -110,6 +110,23 @@ namespace :limber do
         barcode_for_tecan: 'ean13_barcode'
       )
     end
+
+    # Added to ensure purpose exists before creating the Limber Bespoke
+    # Chromium request type later.
+    unless Purpose.where(name: 'LBC Cherrypick').exists?
+      PlatePurpose.create!(
+        name: 'LBC Cherrypick',
+        target_type: 'Plate',
+        stock_plate: false,
+        input_plate: false,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard'),
+        barcode_for_tecan: 'ean13_barcode'
+      )
+    end
   end
 
   desc 'Create the limber request types'
