@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rexml/text'
 
 #
@@ -23,16 +25,14 @@ require 'rexml/text'
 # - {Aker::Factories::Material}: Samples imported from Aker
 # - Special samples: Samples such as {PhiX} are generated internally
 class Sample < ApplicationRecord
-  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
-  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
+  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC'].freeze
+  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
   DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
-                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
-  SRA_HOLD_VALUES = %w[Hold Public Protect]
+                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue'].freeze
+  SRA_HOLD_VALUES = %w[Hold Public Protect].freeze
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
-  ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment)
-  EgaFields = %w(subject disease treatment gender phenotype)
   self.per_page = 500
 
   include ModelExtensions::Sample
@@ -109,8 +109,8 @@ class Sample < ApplicationRecord
     custom_attribute(:subject)
     custom_attribute(:disease)
 
-    with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
-      ena_required_fields.validates_presence_of :service_specific_fields
+    with_options(if: :validating_ena_required_fields?) do
+      validates :service_specific_fields, presence: true
     end
 
     # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
@@ -149,6 +149,9 @@ class Sample < ApplicationRecord
   require_tag(:phenotype, :EGA)
   require_tag(:donor_id, :EGA)
 
+  # Reopens the Sample::Metadata class which was defined by has_metadata above
+  # Sample::Metadata tracks sample information, either for use in the lab, or passing to
+  # the EBI
   class Metadata
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
@@ -159,7 +162,7 @@ class Sample < ApplicationRecord
     end
 
     def sex
-      gender && gender.downcase
+      gender&.downcase
     end
 
     def species
@@ -192,8 +195,8 @@ class Sample < ApplicationRecord
   has_many :study_samples, dependent: :destroy, inverse_of: :sample
   has_many :studies, through: :study_samples, inverse_of: :samples
 
-  has_many :roles, as: :authorizable
-  has_many :comments, as: :commentable
+  has_many :roles, as: :authorizable, dependent: :destroy, inverse_of: :authorizable
+  has_many :comments, as: :commentable, dependent: :destroy, inverse_of: :commentable
   has_many :asset_groups, through: :assets
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
@@ -206,7 +209,11 @@ class Sample < ApplicationRecord
   has_many :external_properties, as: :propertied, dependent: :destroy
 
   belongs_to :sample_manifest, inverse_of: :samples
-  has_one :sample_manifest_asset, foreign_key: :sanger_sample_id, primary_key: :sanger_sample_id
+
+  # This is a natural join to sample_manifest_asset based on a shared sanger_sample_id.
+  # In the event that the sample is deleted, we want to leave the sample_manifest_asset unchanged,
+  # so don't want to set a dependent option.
+  has_one :sample_manifest_asset, foreign_key: :sanger_sample_id, primary_key: :sanger_sample_id, inverse_of: :sample
 
   has_many_lab_events
   acts_as_authorizable
@@ -217,10 +224,10 @@ class Sample < ApplicationRecord
   has_many :jobs, class_name: 'Aker::Job', through: :sample_jobs
   belongs_to :container, class_name: 'Aker::Container'
 
-  validates_presence_of :name
-  validates_format_of :name, with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create
-  validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update
-  validates_uniqueness_of :name, on: :create, message: 'already in use', unless: :sample_manifest_id?
+  validates :name, presence: true
+  validates :name, format: { with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create }
+  validates :name, format: { with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update }
+  validates :name, uniqueness: { on: :create, message: 'already in use', unless: :sample_manifest_id? }
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
@@ -247,7 +254,7 @@ class Sample < ApplicationRecord
 
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
-  scope :for_search_query, ->(query) {
+  scope :for_search_query, lambda { |query|
     # Note: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
     # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
@@ -264,7 +271,7 @@ class Sample < ApplicationRecord
 
   scope :non_genotyped, -> { where("samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )") }
 
-  scope :for_plate_and_order, ->(plate_id, order_id) {
+  scope :for_plate_and_order, lambda { |plate_id, order_id|
     joins([
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
@@ -274,7 +281,7 @@ class Sample < ApplicationRecord
       .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
-  scope :for_plate_and_order_as_target, ->(plate_id, order_id) {
+  scope :for_plate_and_order_as_target, lambda { |plate_id, order_id|
     joins([
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
@@ -283,7 +290,7 @@ class Sample < ApplicationRecord
       .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
-  scope :without_accession, ->() {
+  scope :without_accession, lambda {
     # Pick up samples where the accession number is either NULL or blank.
     # MySQL automatically trims '  ' so '  '=''
     joins(:sample_metadata).where(sample_metadata: { sample_ebi_accession_number: [nil, ''] })
@@ -302,7 +309,7 @@ class Sample < ApplicationRecord
     case sanger_sample_id
     when nil then sanger_sample_id
     when sanger_sample_id.size < 10 then sanger_sample_id
-    when /([\d]{7})$/ then $1
+    when /([\d]{7})$/ then Regexp.last_match(1)
     else
       sanger_sample_id
     end
@@ -336,7 +343,7 @@ class Sample < ApplicationRecord
     return UnsuitableAccessionService.new([]) if services.empty?
 
     highest_priority = services.keys.max
-    suitable_study = services[highest_priority].detect { |study| study.send_samples_to_service? }
+    suitable_study = services[highest_priority].detect(&:send_samples_to_service?)
     return suitable_study.accession_service if suitable_study
 
     UnsuitableAccessionService.new(services[highest_priority])
@@ -363,22 +370,18 @@ class Sample < ApplicationRecord
   end
 
   def accession
-    if configatron.accession_samples
-      accessionable = Accession::Sample.new(Accession.configuration.tags, self)
-      if accessionable.valid?
-        # Accessioning jobs are lower priority (higher number) than submissions and reports
-        Delayed::Job.enqueue SampleAccessioningJob.new(accessionable), priority: 200
-      end
-    end
+    return unless configatron.accession_samples
+
+    accessionable = Accession::Sample.new(Accession.configuration.tags, self)
+    # Accessioning jobs are lower priority (higher number) than submissions and reports
+    Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200) if accessionable.valid?
   end
 
   def handle_update_event(user)
     events.updated_using_sample_manifest!(user)
   end
 
-  def ena_study
-    @ena_study
-  end
+  attr_reader :ena_study
 
   def validating_ena_required_fields_with_first_study=(state)
     self.validating_ena_required_fields_without_first_study = state
@@ -389,21 +392,25 @@ class Sample < ApplicationRecord
 
   def validate_ena_required_fields!
     # Do not alter the order of this line, otherwise @ena_study won't be set correctly!
-    @ena_study, self.validating_ena_required_fields = studies.first, true
-    valid? or raise ActiveRecord::RecordInvalid, self
+    @ena_study = studies.first
+    self.validating_ena_required_fields = true
+    valid? || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
-    @ena_study.errors.full_messages.each do |message|
-      errors.add(:base, "#{message} on study")
-    end unless @ena_study.nil?
+    unless @ena_study.nil?
+      @ena_study.errors.full_messages.each do |message|
+        errors.add(:base, "#{message} on study")
+      end
+    end
     raise e
   ensure
     # Do not alter the order of this line, otherwise the @ena_study won't be reset!
-    self.validating_ena_required_fields, @ena_study = false, nil
+    self.validating_ena_required_fields = false
+    @ena_study = nil
   end
 
   def sample_reference_genome
-    return sample_metadata.reference_genome unless sample_metadata.reference_genome.try(:name).blank?
-    return study_reference_genome unless study_reference_genome.try(:name).blank?
+    return sample_metadata.reference_genome if sample_metadata.reference_genome.try(:name).present?
+    return study_reference_genome if study_reference_genome.try(:name).present?
 
     nil
   end

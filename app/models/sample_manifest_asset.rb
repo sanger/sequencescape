@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Keeps track of sanger_sample_ids which have been allocated to a {SampleManifest}
+# and associates them with the corresponding {Receptacle}
 class SampleManifestAsset < ApplicationRecord
   belongs_to :sample_manifest, optional: false
   belongs_to :asset, optional: false

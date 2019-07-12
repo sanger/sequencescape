@@ -108,15 +108,13 @@ module SequencescapeExcel
     # If it is a hash of columns there is an assumption that a copy is being created.
     def create_columns(columns, conditional_formattings)
       columns.each do |k, v|
-        begin
-          add_with_number(if v.is_a?(Hash)
-                            SequencescapeExcel::Column.new(SequencescapeExcel::Column.build_arguments(v, k, conditional_formattings))
-                          else
-                            k.dup
-                          end, self)
-        rescue TypeError => e
-          Rails.logger.error("column can't be created for #{k}: #{e.message}")
-        end
+        add_with_number(if v.is_a?(Hash)
+                          SequencescapeExcel::Column.new(SequencescapeExcel::Column.build_arguments(v, k, conditional_formattings))
+                        else
+                          k.dup
+                        end, self)
+      rescue TypeError => e
+        Rails.logger.error("column can't be created for #{k}: #{e.message}")
       end
     end
 
