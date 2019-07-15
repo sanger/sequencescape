@@ -3,7 +3,7 @@
 # Lays out the tags so that they are row ordered.
 module TagLayout::CombInRows
   def self.direction
-    'combinatorial in rows'
+    'combinatorial in row'
   end
 
   def self.well_order_scope
