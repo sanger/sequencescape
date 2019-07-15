@@ -132,7 +132,7 @@ describe TagLayout do
         let(:walking_by) { 'combinatorial sequential' }
 
         context 'with row directions' do
-          let(:direction) { 'combinatorial in row' }
+          let(:direction) { 'combinatorial by row' }
 
           context 'with a 384 well plate' do
             let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }

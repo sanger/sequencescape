@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 # Lays out the tags so that they are row ordered.
-module TagLayout::CombInRows
+module TagLayout::CombByRows
   def self.direction
-    'combinatorial in row'
+    'combinatorial by row'
   end
 
   def self.well_order_scope

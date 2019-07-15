@@ -20,7 +20,7 @@ class TagLayout < ApplicationRecord
     'inverse column' => 'TagLayout::InInverseColumns',
     'inverse row' => 'TagLayout::InInverseRows',
     'column then row' => 'TagLayout::InColumnsThenRows',
-    'combinatorial in row' => 'TagLayout::CombInRows'
+    'combinatorial by row' => 'TagLayout::CombByRows'
   }.freeze
 
   WALKING_ALGORITHMS = {
