@@ -6,7 +6,7 @@
 # uses.
 module Accessionable
   class Study < Base
-    attr_reader :study_title, :description, :center_study_name, :study_abstract, :existing_study_type, :tags, :related_studies
+    attr_reader :study_title, :description, :center_study_name, :study_abstract, :existing_study_type, :tags
     def initialize(study)
       @study = study
       data = {}
@@ -32,20 +32,10 @@ module Accessionable
       @tags = []
       @tags << Tag.new(label_scope, 'ArrayExpress', nil) if study.for_array_express?
       super(study.study_metadata.study_ebi_accession_number)
-
-      @related_studies = []
-      study.study_relations.each do |r|
-        @related_studies << RelatedStudy.new(r.related_study, r.name)
-      end
-      study.reversed_study_relations.each do |r|
-        rs = RelatedStudy.new(r.study, r.reversed_name)
-        @related_studies << rs if rs.to_send?
-      end
     end
 
     def errors
       error_list = []
-      error_list + @related_studies.map(&:errors)
     end
 
     def xml
@@ -67,12 +57,6 @@ module Accessionable
             else
               xml.STUDY_TYPE(existing_study_type: ::Study::Other_type, new_study_type: study_type)
             end
-
-            xml.RELATED_STUDIES {
-              related_studies.each do |study|
-                study.build(xml)
-              end
-            } unless related_studies.blank?
           }
           xml.STUDY_ATTRIBUTES {
             tags.each do |tag|
@@ -104,43 +88,6 @@ module Accessionable
     def update_array_express_accession_number!(number)
       @study.study_metadata.array_express_accession_number = number
       @study.save!
-    end
-  end
-
-  private
-
-  class RelatedStudy
-    def initialize(study, role, primary = false)
-      @study = study
-      @role = role
-      @primary = primary
-    end
-
-    # return if the Link would need to be send to the accession service
-    def to_send?
-      db_label.present?
-    end
-
-    def errors
-      [].tap do |errs|
-        errs << "Accession number needed for related study #{@study.name}" if @study.ebi_accession_number.blank?
-      end
-    end
-
-    def build(xml)
-      return if db_label.blank?
-
-      xml.RELATED_STUDY {
-        xml.RELATED_LINK {
-          xml.DB db_label
-          xml.ID @study.ebi_accession_number
-        }
-        xml.IS_PRIMARY @primary
-      }
-    end
-
-    def db_label
-      I18n.t("metadata.study.metadata.#{@role}.ebi_db", default: '')
     end
   end
 end

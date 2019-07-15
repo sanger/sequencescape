@@ -203,9 +203,6 @@ Rails.application.routes.draw do
       get :state
       post :grant_role
       post :remove_role
-      get :related_studies
-      post :relate_study
-      post :unrelate_study
       get :accession_all_samples
     end
 
@@ -534,6 +531,14 @@ Rails.application.routes.draw do
     end
 
     resources :comments, controller: 'receptacles/comments'
+  end
+
+  # Merge conflict tip: Specifying controller: :assets here is to
+  # handle the current lack of the receptacles controller. If you're seeing
+  # the more fully specced route alongside this, then it should be enough to
+  # add resource :parent, only: :show to the more fully specced route
+  resources :receptacles, only: [:show], controller: :assets do
+    resource :parent, only: :show
   end
 
   resources :plates do

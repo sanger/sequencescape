@@ -9,7 +9,7 @@ class StudiesController < ApplicationController
 
   before_action :login_required
   before_action :admin_login_required, only: [:settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
-  before_action :manager_login_required, only: [:close, :open, :related_studies, :relate_study, :unrelate_study]
+  before_action :manager_login_required, only: [:close, :open]
 
   around_action :rescue_validation, only: [:close, :open]
 
@@ -146,57 +146,6 @@ class StudiesController < ApplicationController
     @all_roles  = Role.distinct.pluck(:name)
     @roles      = Role.where(authorizable_id: @study.id, authorizable_type: 'Study')
     @users      = User.order(:first_name)
-  end
-
-  def related_studies
-    @study = Study.find(params[:id])
-    @relation_names = StudyRelationType::names
-    @studies = current_user.interesting_studies
-    @studies.reject { |s| s == @study }
-
-    # TODO: create a proper ReversedStudyRelation
-    @relations = @study.study_relations.map { |r| [r.related_study, r.name] } +
-                 @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
-  end
-
-  def update_study_relation
-    @study = Study.find(params[:id])
-    status = 500
-
-    if pr = params[:related_study]
-      relation_type_name = pr[:relation_type]
-      related_study = Study.find_by id: pr[:study_id]
-
-      begin
-        yield(relation_type_name, related_study)
-        redirect_to action: 'related_studies'
-        return
-      rescue ActiveRecord::RecordInvalid, RuntimeError => e
-        status = 403
-        flash.now[:error] = e.to_s
-      end
-
-    else
-      flash.now[:error] = 'A problem occurred while relating the study'
-      status = 500
-    end
-    @study.reload
-    related_studies
-    render action: :related_studies, status: status
-  end
-
-  def relate_study
-    update_study_relation do |relation_type_name, related_study|
-      StudyRelationType::relate_studies_by_name!(relation_type_name, @study, related_study)
-      flash[:notice] = 'Relation added'
-    end
-  end
-
-  def unrelate_study
-    update_study_relation do |relation_type_name, related_study|
-      StudyRelationType::unrelate_studies_by_name!(relation_type_name, @study, related_study)
-      flash[:notice] = 'Relation removed'
-    end
   end
 
   def follow
