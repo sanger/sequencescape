@@ -73,6 +73,10 @@ module SampleManifest::LibraryBehaviour
     def default_purpose
       Tube::Purpose.standard_library_tube
     end
+
+    def included_resources
+      [{ sample: :sample_metadata, asset: %i[barcodes aliquots] }]
+    end
   end
 
   RapidCore = Core

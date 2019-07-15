@@ -420,10 +420,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
             it 'will process a partial upload' do
               processor.update_samples(nil)
-              expect(upload.sample_manifest.samples.map do |sample|
+              expect(upload.sample_manifest.samples.reload.count do |sample|
                 sample.reload
                 sample.sample_metadata.concentration.present?
-              end.count(true)).to eq(2)
+              end).to eq(2)
               processor.update_sample_manifest
               expect(processor).to be_processed
             end

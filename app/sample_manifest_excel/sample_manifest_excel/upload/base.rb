@@ -2,6 +2,21 @@
 
 module SampleManifestExcel
   module Upload
+    class Cache
+      def initialize(base)
+        @base = base
+        @manifest_assets = {}
+      end
+
+      def populate!
+        @manifest_assets = @base.sample_manifest.indexed_manifest_assets
+      end
+
+      def find_by(options)
+        populate! if @manifest_assets.empty? && @base.sample_manifest.present?
+        @manifest_assets[options.fetch(:sanger_sample_id)]
+      end
+    end
     ##
     # An upload will:
     # *Create a Data object based on the file.
@@ -34,7 +49,8 @@ module SampleManifestExcel
         @data = Upload::Data.new(file, start_row)
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
-        @rows = Upload::Rows.new(data, columns)
+        @cache = Cache.new(self)
+        @rows = Upload::Rows.new(data, columns, @cache)
         @sample_manifest = derive_sample_manifest
         @override = override || false
         @processor = create_processor
@@ -52,12 +68,8 @@ module SampleManifestExcel
         return unless start_row.present? && sanger_sample_id_column.present?
 
         sanger_sample_id = data.cell(1, sanger_sample_id_column.number)
-        sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
-        if sample.present?
-          return sample.sample_manifest
-        else
-          return SampleManifestAsset.where(sanger_sample_id: sanger_sample_id).first&.sample_manifest
-        end
+        SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest ||
+          Sample.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest
       end
 
       ##
@@ -67,6 +79,7 @@ module SampleManifestExcel
         ActiveRecord::Base.transaction do
           sample_manifest.last_errors = nil
           sample_manifest.start!
+          @cache.populate!
           processor.run(tag_group)
           return true if processed?
 

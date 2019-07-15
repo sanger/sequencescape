@@ -82,6 +82,10 @@ module SampleManifest::SampleTubeBehaviour
     def assign_library?
       false
     end
+
+    def included_resources
+      [{ sample: :sample_metadata, asset: %i[aliquots barcodes] }]
+    end
   end
 
   # There is no reason for this to need a rapid version as it should be reasonably

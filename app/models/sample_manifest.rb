@@ -156,6 +156,10 @@ class SampleManifest < ApplicationRecord
     end
   end
 
+  def indexed_manifest_assets
+    sample_manifest_assets.includes(*core_behaviour.included_resources).index_by(&:sanger_sample_id)
+  end
+
   private
 
   def generate_sanger_ids(count = 1)

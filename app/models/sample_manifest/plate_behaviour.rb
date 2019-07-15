@@ -33,6 +33,10 @@ module SampleManifest::PlateBehaviour
       end
     end
     private :generate_wells_for_plates
+
+    def included_resources
+      [{ sample: :sample_metadata, asset: { plate: :barcodes } }]
+    end
   end
 
   #--
@@ -111,7 +115,7 @@ module SampleManifest::PlateBehaviour
     end
 
     def details_array
-      sample_manifest_assets.includes(asset: [:map, { plate: :barcodes }]).map do |sample_manifest_asset|
+      sample_manifest_assets.includes(asset: [:map, :aliquots, { plate: :barcodes }]).map do |sample_manifest_asset|
         {
           barcode: sample_manifest_asset.asset.plate.human_barcode,
           position: sample_manifest_asset.asset.map_description,

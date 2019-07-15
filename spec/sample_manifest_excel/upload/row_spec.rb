@@ -107,6 +107,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   it 'updates the aliquot with the specialised fields' do
     sample_count = Sample.count
     row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
+    row.sample
     row.update_specialised_fields(tag_group)
     aliquot = row.aliquot
     expect(Sample.count - sample_count).to eq(1)

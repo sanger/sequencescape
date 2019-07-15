@@ -96,6 +96,10 @@ module SampleManifest::MultiplexedLibraryBehaviour
     def assign_library?
       true
     end
+
+    def included_resources
+      [{ sample: :sample_metadata, asset: [:barcodes, :aliquots, { requests: :target_asset }] }]
+    end
   end
 
   RapidCore = Core
