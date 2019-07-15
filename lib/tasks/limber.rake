@@ -93,6 +93,40 @@ namespace :limber do
         barcode_prefix: BarcodePrefix.find_by(prefix: 'NT')
       )
     end
+
+    # Added to ensure purpose exists before creating the Limber Bespoke
+    # Aggregation request type later.
+    unless Purpose.where(name: 'LBC Stock').exists?
+      PlatePurpose.create!(
+        name: 'LBC Stock',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: true,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard'),
+        barcode_for_tecan: 'ean13_barcode'
+      )
+    end
+
+    # Added to ensure purpose exists before creating the Limber Bespoke
+    # Chromium request type later.
+    unless Purpose.where(name: 'LBC Cherrypick').exists?
+      PlatePurpose.create!(
+        name: 'LBC Cherrypick',
+        target_type: 'Plate',
+        stock_plate: false,
+        input_plate: false,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard'),
+        barcode_for_tecan: 'ean13_barcode'
+      )
+    end
   end
 
   desc 'Create the limber request types'
@@ -197,11 +231,28 @@ namespace :limber do
         default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
       ).build!
 
+      chromium_library_types = [
+        'Chromium genome',
+        'Chromium exome',
+        'Chromium single cell',
+        'Chromium single cell CNV',
+        'Chromium single cell 3 prime v2',
+        'Chromium single cell 3 prime v3',
+        'Chromium single cell 5 prime',
+        'Chromium single cell TCR',
+        'Chromium single cell BCR',
+        'Chromium single cell HTO',
+        'Chromium single cell surface protein'
+      ]
+
       Limber::Helper::RequestTypeConstructor.new(
         'Chromium Bespoke',
-        library_types: ['Chromium genome', 'Chromium exome', 'Chromium single cell', 'Chromium single cell CNV'],
+        library_types: chromium_library_types,
         product_line: 'Bespoke',
-        default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
+        default_purposes: [
+          'LBB Cherrypick',
+          'LBC Cherrypick'
+        ] # It requires default_purpose to accept an array.
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -230,6 +281,26 @@ namespace :limber do
           request_purpose: :standard,
           target_purpose: Purpose.find_by(name: 'LB Lib Pool Norm')
         )
+      end
+
+      unless RequestType.where(key: 'limber_bespoke_aggregation').exists?
+        rt = RequestType.create!(
+          name: 'Limber Bespoke Aggregation',
+          key: 'limber_bespoke_aggregation',
+          request_class_name: 'CustomerRequest',
+          for_multiplexing: false,
+          asset_type: 'Well',
+          order: 0,
+          initial_state: 'pending',
+          billable: false,
+          product_line: ProductLine.find_by(name: 'Bespoke'),
+          request_purpose: :standard
+        )
+
+        # NB. These library types should exist by this point because they were
+        # passed to the Chromium Bespoke request type further up.
+        chromium_library_types.each { |name| rt.library_types << LibraryType.find_or_create_by!(name: name) }
+        rt.acceptable_plate_purposes = Purpose.where(name: 'LBC Stock')
       end
     end
   end
@@ -384,6 +455,18 @@ namespace :limber do
             request_type_ids_list: [RequestType.where(key: 'gbs_miseq_sequencing').pluck(:id)]
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
+          product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
+        )
+      end
+
+      unless SubmissionTemplate.find_by(name: 'Limber-Bespoke - Aggregation')
+        SubmissionTemplate.create!(
+          name: 'Limber-Bespoke - Aggregation',
+          submission_class_name: 'LinearSubmission',
+          submission_parameters: {
+            request_type_ids_list: [RequestType.where(key: 'limber_bespoke_aggregation').pluck(:id)]
+          },
+          product_line: ProductLine.find_by!(name: 'Bespoke'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
         )
       end
