@@ -23,6 +23,10 @@ module Transfer::State
     state_from(transfer_requests_as_target)
   end
 
+  def default_state
+    nil
+  end
+
   def state_from(state_requests)
     unique_states = state_requests.map(&:state).uniq
     return unique_states.first if unique_states.size == 1

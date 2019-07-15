@@ -1,0 +1,49 @@
+<section id="samples-table" class='info-panel'>
+  <header>
+    <a href='#plate-samples-table-collapser' role="button" data-toggle='collapse'>
+    <h3>Samples
+      <span class='badge badge-primary'><%= @asset.contained_samples.count %></span>
+      <small class='show-hide'>Click to toggle</small>
+    </h3>
+    </a>
+  </header>
+  <div id="plate-samples-table-collapser" class="collapse in show">
+    <table id="plate-samples-table" class="sortable">
+      <colgroup>
+        <col class="npg_aliquot_index">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="well_location"><a>Well</a></th>
+          <th><a>Sample Name</a></th>
+          <th><a>Sanger Sample Id</a></th>
+          <th><a>Tag</a></th>
+          <th><a>Tag2</a></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @asset.wells.in_column_major_order.includes(:map, { aliquots: [:tag, :tag2, :sample] }).each do |well| %>
+          <% well.aliquots.each do |aliquot,i| %>
+            <tr>
+              <td><%= link_to well.map.description, asset_url(well) %></td>
+              <td><strong><%= link_to aliquot.sample.name, aliquot.sample -%></strong></td>
+              <td><%= aliquot.sample.sanger_sample_id %></td>
+              <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag } if aliquot.tag.present? %></td>
+              <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag2 } if aliquot.tag2.present? %></td>
+            </tr>
+          <% end %>
+          <% if well.aliquots.empty? %>
+            <tr class="empty-well">
+              <td><%= link_to well.map.description, asset_url(well) %></td>
+              <td>[Empty]</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>
+

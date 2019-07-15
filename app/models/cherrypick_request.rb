@@ -24,10 +24,6 @@ class CherrypickRequest < CustomerRequest
     asset.set_current_volume(new_volume)
   end
 
-  def remove_unused_assets
-    # Don't remove assets for transfer requests as they are made on creation
-  end
-
   private
 
   # The transfer requests handle the actual transfer

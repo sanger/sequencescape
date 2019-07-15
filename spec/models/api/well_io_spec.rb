@@ -13,7 +13,6 @@ RSpec.describe Api::WellIO, type: :model do
       {
         'uuid' => subject.uuid,
         'internal_id' => subject.id,
-        'name' => nil,
         'display_name' => 'DN1S:A1',
         'gel_pass' => nil,
         'concentration' => 23.2,
@@ -31,9 +30,7 @@ RSpec.describe Api::WellIO, type: :model do
         'plate_barcode_prefix' => 'DN',
         'sample_uuid' => sample.uuid,
         'sample_internal_id' => sample.id,
-        'sample_name' => sample.name,
-        'genotyping_status' => nil,
-        'genotyping_snp_plate_id' => ''
+        'sample_name' => sample.name
       }
     }
 
@@ -53,7 +50,6 @@ RSpec.describe Api::WellIO, type: :model do
       {
         'uuid' => subject.uuid,
         'internal_id' => subject.id,
-        'name' => nil,
         'display_name' => 'DN1S:A1',
         'gel_pass' => nil,
         'concentration' => 23.2,

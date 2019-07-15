@@ -1,5 +1,5 @@
 class Event::ScannedIntoLabEvent < Event
-  after_create :set_qc_state_pending, unless: :test?
+  after_create :set_qc_state_pending, if: :test?
   alias_method :asset, :eventful
 
   def self.create_for_asset!(asset, location_barcode, created_by)
@@ -18,6 +18,7 @@ class Event::ScannedIntoLabEvent < Event
   end
 
   def test?
-    (asset.qc_state == 'passed' || asset.qc_state == 'failed')
+    asset.respond_to?(:qc_state) &&
+      !%w[passed failed].include?(asset.qc_state)
   end
 end

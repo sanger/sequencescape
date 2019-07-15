@@ -22,7 +22,7 @@ class QcFile < ApplicationRecord
     end
   end
 
-  belongs_to :asset
+  belongs_to :asset, class_name: 'Labware'
   validates_presence_of :asset
 
   # Handle some of the metadata with this callback

@@ -25,7 +25,7 @@ class CherrypickPipeline < CherrypickingPipeline
   def post_release_batch(batch, _user)
     target_purpose = batch.output_plates.first.purpose.name
     # stock wells
-    batch.requests.select { |r| r.passed? }.each do |request|
+    batch.requests.select(&:passed?).each do |request|
       request.asset.stock_wells.each do |stock|
         EventSender.send_pick_event(stock.id, target_purpose, "Pickup well #{request.asset.id}")
       end

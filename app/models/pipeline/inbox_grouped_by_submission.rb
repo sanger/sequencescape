@@ -5,11 +5,7 @@
 module Pipeline::InboxGroupedBySubmission
   def self.included(base)
     base.has_many :inbox, class_name: 'Request', extend: [Pipeline::RequestsInStorage, Pagination]
-  end
-
-  # Always group by submission
-  def group_by_submission?
-    true
+    base.group_by_submission = true
   end
 
   # This module overrides the behaviour of will_paginate so that the requests for an individual

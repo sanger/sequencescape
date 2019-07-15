@@ -36,7 +36,7 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
         end
 
         it 'sets the expected target_asset' do
-          expect(transfer_request.target_asset).to eq(target_asset)
+          expect(transfer_request.target_asset).to eq(target_asset.receptacle)
         end
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
         end
 
         it 'sets the expected target_asset' do
-          expect(transfer_request.target_asset).to eq(target_asset)
+          expect(transfer_request.target_asset).to eq(target_asset.receptacle)
         end
       end
     end
@@ -98,7 +98,7 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
           end
 
           it 'sets the expected target_asset' do
-            expect(transfer_request.target_asset).to eq(target_asset)
+            expect(transfer_request.target_asset).to eq(target_asset.receptacle)
           end
 
           it 'sets submission id on the transfer request' do
@@ -158,7 +158,7 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
           end
 
           it 'sets the expected target_asset' do
-            expect(transfer_request.target_asset).to eq(target_asset)
+            expect(transfer_request.target_asset).to eq(target_asset.receptacle)
           end
 
           it 'sets submission id on the transfer request' do

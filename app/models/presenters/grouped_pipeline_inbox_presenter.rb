@@ -10,11 +10,14 @@ module Presenters
       end
     end
 
+    ALL_STATES = %w[pending hold].freeze
+    VISIBLE_STATES = 'pending'.freeze
+
     # Register our fields and their respective conditions
     # TODO: Drive some of these directly from the database
     add_field 'Internal ID',    :internal_id
     add_field 'Barcode',        :barcode
-    add_field 'Wells',          :wells,          if: :purpose_important?
+    add_field 'Wells',          :well_count,     if: :purpose_important?
     add_field 'Plate Purpose',  :plate_purpose,  if: :purpose_important?
     add_field 'Pick To',        :pick_to,        if: :purpose_important?
     add_field 'Submission',     :submission_id,  if: :group_by_submission?
@@ -24,11 +27,22 @@ module Presenters
     add_field 'Submitted at',   :submitted_at
 
     attr_reader :pipeline, :user
+    delegate :group_by_parent?, :group_by_submission?, :purpose_information?, to: :pipeline
 
     def initialize(pipeline, user, show_held_requests = false)
       @pipeline = pipeline
       @user = user
       @show_held_requests = show_held_requests
+      # We shouldn't trigger this, as we explicitly detect the group by status
+      raise "Pipeline #{pipeline.name} is incompatible with GroupedPipelineInboxPresenter" unless pipeline.group_by_parent?
+    end
+
+    def requests_waiting
+      @pipeline.requests.unbatched.where(state: ALL_STATES).count
+    end
+
+    def purpose_important?
+      purpose_information?
     end
 
     def each_field_header
@@ -46,7 +60,7 @@ module Presenters
     # Yields a line presenter
     def each_line
       grouped_requests.each_with_index do |request, index|
-        group = [request.container_id, request.submission_id]
+        group = [request.labware_id, request.submission_id]
         yield GroupLinePresenter.new(group, request, index, pipeline, self)
       end
     end
@@ -57,28 +71,38 @@ module Presenters
 
     private
 
+    def states
+      @show_held_requests ? ALL_STATES : VISIBLE_STATES
+    end
+
     def grouped_requests
-      @request_groups ||= @pipeline.grouped_requests(@show_held_requests)
+      @request_groups ||= @pipeline.requests
+                                   .where(state: states)
+                                   .asset_on_labware
+                                   .unbatched
+                                   .send(@pipeline.inbox_eager_loading)
+                                   .select(
+                                     'requests.*',
+                                     'count(DISTINCT requests.id) AS well_count',
+                                     'MAX(requests.priority) AS priority'
+                                   )
+                                   .group(grouping_attributes)
+    end
+
+    def grouping_attributes
+      group_by_submission? ? %w[labware_id submission_id] : 'labware_id'
     end
 
     def valid_fields
       @valid_fields ||= self.class.fields.select { |_n, _m, c| c.nil? || send(c) }
     end
 
-    def purpose_important?
-      pipeline.purpose_information?
-    end
-
     def select_partial_requests?
-      !pipeline.purpose_information?
+      !purpose_information?
     end
 
     def show_stock?
-      !pipeline.purpose_information?
-    end
-
-    def group_by_submission?
-      pipeline.group_by_submission?
+      !purpose_information?
     end
   end
 
@@ -86,6 +110,9 @@ module Presenters
     include PipelinesHelper
 
     attr_reader :group, :request, :index, :pipeline, :inbox
+
+    delegate :submission_id, :submission, :submitted_at, :priority, :well_count, to: :request
+
     def initialize(group, request, index, pipeline, inbox)
       @group, @request, @index, @pipeline, @inbox = group, request, index, pipeline, inbox
     end
@@ -99,27 +126,11 @@ module Presenters
     end
 
     def parent
-      @parent ||= Asset.find(group.first)
-    end
-
-    def submission_id
-      request.submission_id
-    end
-
-    def submission
-      request.submission
-    end
-
-    def submitted_at
-      request.submitted_at
+      @parent ||= Labware.find(group.first)
     end
 
     def submission_name
       submission.name if submission_id.present?
-    end
-
-    def priority
-      request.max_priority
     end
 
     def each_field
@@ -134,10 +145,6 @@ module Presenters
 
     def barcode
       parent.human_barcode
-    end
-
-    def wells
-      request.request_count
     end
 
     def plate_purpose

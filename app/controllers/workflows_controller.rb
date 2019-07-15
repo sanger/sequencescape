@@ -10,10 +10,8 @@ class WorkflowsController < ApplicationController
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
-  include Tasks::AttachInfiniumBarcodeHandler
   include Tasks::BindingKitBarcodeHandler
   include Tasks::CherrypickHandler
-  include Tasks::GenerateManifestHandler
   include Tasks::MovieLengthHandler
   include Tasks::PlateTemplateHandler
   include Tasks::PlateTransferHandler
@@ -24,7 +22,6 @@ class WorkflowsController < ApplicationController
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler
-  include Tasks::StripTubeCreationHandler
 
   def index
     @workflows = Workflow.all

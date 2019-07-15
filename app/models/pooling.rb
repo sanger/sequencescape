@@ -77,13 +77,7 @@ class Pooling
   end
 
   def find_source_assets
-    # @assets_not_in_sqsc = []
-    # barcodes.map do |barcode|
-    #   asset = Asset.find_from_any_barcode(barcode)
-    #   @assets_not_in_sqsc << barcode unless asset.present?
-    #   asset
-    # end.compact.uniq
-    Asset.includes(aliquots: %i[tag tag2 library]).with_barcode(barcodes)
+    Labware.includes(aliquots: %i[tag tag2 library]).with_barcode(barcodes)
   end
 
   # Returns a list of scanned barcodes which could not be found in Sequencescape

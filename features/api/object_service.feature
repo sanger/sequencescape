@@ -263,9 +263,9 @@ Feature: Access objects through the API
             "name": "testing_the_object_service"
           },
 
-          "sample_tubes": {
+          "receptacles": {
             "actions": {
-              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_tubes"
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/receptacles"
             },
             "size": <number of sample tubes>
           }

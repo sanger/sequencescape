@@ -6,16 +6,15 @@ module StudyReport::WellDetails
           :map,
           :well_attribute,
           :events,
-          { plate: [:plate_purpose, :events, :barcodes], primary_aliquot: { sample: [:sample_metadata, { sample_manifest: :supplier }, :external_properties] } },
-          { latest_child_well: [:map, { plate: [:plate_purpose, :plate_metadata] }] }
+          { plate: [:plate_purpose, :events, :barcodes], primary_aliquot: { sample: [:sample_metadata, { sample_manifest: :supplier }] } }
         ])
       }
     end
   end
 
-  def genotyping_status
-    primary_aliquot.present? ? primary_aliquot.sample.genotyping_done : ''
-  end
+  # def genotyping_status
+  #   primary_aliquot.present? ? primary_aliquot.sample.genotyping_done : ''
+  # end
 
   def qc_report
     # well must be from a stock plate
@@ -39,20 +38,6 @@ module StudyReport::WellDetails
                    sequenom_stamp_date: plate.sequenom_stamp_date,
                    quantity: well_attribute.quantity_in_micro_grams.try(:round, 3),
                    initial_volume: well_attribute.initial_volume)
-    qc_data[:genotyping_status] = genotyping_status
-    qc_data[:genotyping_barcode] = primary_aliquot.sample.genotyping_snp_plate_id if primary_aliquot.present?
-
-    latest_child_well = find_latest_child_well
-    if latest_child_well && latest_child_well.respond_to?(:plate)
-      latest_plate = latest_child_well.plate
-      if latest_plate && latest_plate.plate_purpose
-        qc_data[:genotyping_plate_purpose] = latest_plate.plate_purpose.name
-        qc_data[:genotyping_infinium_barcode] = latest_plate.infinium_barcode
-        qc_data[:genotyping_barcode] = latest_plate.barcode_number if latest_plate.barcode_number
-        qc_data[:genotyping_well] = latest_child_well.map_description if latest_plate.barcode_number
-      end
-    end
-
     qc_data
   end
 end

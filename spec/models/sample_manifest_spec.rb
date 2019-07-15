@@ -118,7 +118,7 @@ RSpec.describe SampleManifest, type: :model do
 
           it 'create sample manifest asset' do
             expect { manifest.generate }.to  change(SampleManifestAsset, :count).by(count)
-            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes).sort_by(&:human_barcode))
+            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes).sort_by(&:human_barcode).map(&:receptacle))
           end
 
           context 'after generation' do
@@ -185,7 +185,7 @@ RSpec.describe SampleManifest, type: :model do
 
           it 'create sample manifest asset' do
             expect(manifest.assets.count).to eq(count)
-            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
+            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 
           it 'create sample and aliquots' do
@@ -222,7 +222,7 @@ RSpec.describe SampleManifest, type: :model do
           it "create #{count} tubes(s)" do
             expect { manifest.generate }.to change(SampleTube, :count).by(count)
                                         .and change { manifest.assets.count }.by(count)
-            expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes))
+            expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 
           context 'after generation' do
@@ -242,8 +242,9 @@ RSpec.describe SampleManifest, type: :model do
             it 'create create asset requests when jobs are processed' do
               # Not entirely certain this behaviour is all that useful to us.
               Delayed::Worker.new.work_off
-              expect(SampleTube.last.requests.count).to eq(1)
-              expect(SampleTube.last.requests.first).to be_a(CreateAssetRequest)
+
+              expect(SampleTube.last.requests_as_source.count).to eq(1)
+              expect(SampleTube.last.requests_as_source.first).to be_a(CreateAssetRequest)
             end
 
             describe '#labware' do

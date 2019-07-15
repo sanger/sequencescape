@@ -3,7 +3,7 @@
 # Used in the flexible cherrypick pipeline layout page
 class MachineBarcodesController < ApplicationController
   def show
-    asset = Asset.with_barcode(params[:id]).first
+    asset = Labware.with_barcode(params[:id]).first
     summary = asset.present? ? asset.summary_hash : {}
     status = asset.present? ? 200 : 404
     respond_to do |format|

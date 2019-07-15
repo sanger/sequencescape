@@ -28,11 +28,11 @@ class Role < ApplicationRecord
   broadcasts_associated_via_warren :authorizable
 
   def self.keys
-    Role.all.map { |r| r.name }.uniq
+    distinct.pluck(:name)
   end
 
   def touch_authorizable
-    authorizable.touch unless authorizable.nil?
+    authorizable&.touch # rubocop:disable Rails/SkipsModelValidations
   end
 
   # Include this module into your ActiveRecord model and get has_many roles and some

@@ -20,7 +20,6 @@ class RemoveRedundantPlateClasses < ActiveRecord::Migration[5.1]
     # Can't remove this at the moment as use the class in a controller
     # %w[GelDilutionPlate WorkingDilutionPlate GD]
   ].freeze
-  # rubocop:disable Rails/SkipsModelValidations
   def up
     ActiveRecord::Base.transaction do
       MIGRATIONS.each do |original, new_type, _prefix|
@@ -43,5 +42,4 @@ class RemoveRedundantPlateClasses < ActiveRecord::Migration[5.1]
       end
     end
   end
-  # rubocop:enable Rails/SkipsModelValidations
 end

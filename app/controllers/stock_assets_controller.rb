@@ -22,7 +22,7 @@ class StockAssetsController < ApplicationController
                        end
 
                      else
-                       @batch.target_assets.reject { |a| a.has_stock_asset? }.tap do |batch_assets|
+                       @batch.target_assets.reject(&:has_stock_asset?).tap do |batch_assets|
                          if batch_assets.empty?
                            redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
                          end
@@ -30,14 +30,14 @@ class StockAssetsController < ApplicationController
                      end
 
       @assets = batch_assets.each_with_object({}) do |asset, assets|
-        assets[asset.id] = asset.new_stock_asset
+        assets[asset.labware.id] = asset.labware.new_stock_asset
       end
     end
   end
 
   def create
     params[:assets].each do |id, params|
-      asset = Asset.find(id)
+      asset = Labware.find(id)
       stock_asset = asset.create_stock_asset!(
         name: params[:name],
         volume: params[:volume],

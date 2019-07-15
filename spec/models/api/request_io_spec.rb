@@ -56,7 +56,7 @@ RSpec.describe Api::RequestIO, type: :model do
         'target_asset_type' => 'wells',
         'target_asset_state' => target_asset.qc_state,
         'target_asset_closed' => false,
-        'target_asset_two_dimensional_barcode' => target_asset.two_dimensional_barcode,
+        'target_asset_two_dimensional_barcode' => nil,
         'target_asset_sample_uuid' => target_asset.samples.first.uuid,
         'target_asset_sample_internal_id' => target_asset.samples.first.id,
         'source_asset_uuid' => source_asset.uuid,
@@ -64,7 +64,7 @@ RSpec.describe Api::RequestIO, type: :model do
         'source_asset_type' => 'wells',
         'source_asset_state' => source_asset.qc_state,
         'source_asset_closed' => false,
-        'source_asset_two_dimensional_barcode' => source_asset.two_dimensional_barcode,
+        'source_asset_two_dimensional_barcode' => nil,
         'source_asset_sample_uuid' => source_asset.samples.first.uuid,
         'source_asset_sample_internal_id' => source_asset.samples.first.id
       }

@@ -1,14 +1,5 @@
-class PipelinesRequestType < ApplicationRecord
-  belongs_to :pipeline, inverse_of: :pipelines_request_types
-  belongs_to :request_type, inverse_of: :pipelines_request_types
-
-  validates_uniqueness_of :request_type_id, scope: :pipeline_id
-  validates_presence_of :request_type, :pipeline
-end
-
 class Pipeline < ApplicationRecord
   include Uuid::Uuidable
-  include Pipeline::InboxUngrouped
   include Pipeline::BatchValidation
   include SharedBehaviour::Named
 
@@ -21,7 +12,8 @@ class Pipeline < ApplicationRecord
   class_attribute :batch_worksheet, :requires_position,
                   :inbox_partial, :library_creation, :pulldown, :prints_a_worksheet_per_task,
                   :genotyping, :sequencing, :purpose_information, :can_create_stock_assets,
-                  :inbox_eager_loading
+                  :inbox_eager_loading, :group_by_submission, :group_by_parent,
+                  :generate_target_assets_on_batch_create
 
   # Pipeline defaults
   self.batch_worksheet = 'detailed_worksheet'
@@ -35,6 +27,9 @@ class Pipeline < ApplicationRecord
   self.purpose_information = true
   self.can_create_stock_assets = false
   self.inbox_eager_loading = :loaded_for_inbox_display
+  self.group_by_submission = false
+  self.group_by_parent = false
+  self.generate_target_assets_on_batch_create = false
 
   delegate :item_limit, :batch_limit?, to: :workflow
 
@@ -58,6 +53,7 @@ class Pipeline < ApplicationRecord
       super(attributes)
     end
   end
+  has_many :inbox, class_name: 'Request', extend: Pipeline::RequestsInStorage
 
   validates_presence_of :name, :request_types
   validates_uniqueness_of :name, on: :create, message: 'name already in use'
@@ -76,10 +72,6 @@ class Pipeline < ApplicationRecord
     [control_request_type].compact + request_types
   end
 
-  def custom_inbox_actions
-    []
-  end
-
   def is_read_length_consistent_for_batch?(_batch)
     true
   end
@@ -92,16 +84,16 @@ class Pipeline < ApplicationRecord
   end
 
   def update_detached_request(_batch, request)
-    request.remove_unused_assets
   end
 
-  def grouped_requests(show_held_requests = true)
-    inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)).for_group_by(grouping_attributes)
+  # Overridden in group-by parent pipelines to display input plates
+  def input_labware(_requests)
+    []
   end
 
-  # to overwrite by subpipeline if needed
-  def group_requests(requests, option = {})
-    requests.group_requests(option).all.group_by(&grouping_function(option))
+  # Overridden in group-by parent pipelines to display output
+  def output_labware(_requests)
+    []
   end
 
   def post_finish_batch(batch, user)
@@ -132,9 +124,9 @@ class Pipeline < ApplicationRecord
 
   def extract_requests_from_input_params(params)
     if (request_ids = params['request']).present?
-      requests.inputs(true).order(:id).find(selected_values_from(request_ids).map(&:first))
+      requests.inputs(true).order(:id).find(selected_keys_from(request_ids))
     elsif (selected_groups = params['request_group']).present?
-      grouping_parser.all(selected_values_from(selected_groups))
+      grouping_parser.all(selected_keys_from(selected_groups))
     else
       raise StandardError, 'Unknown manner in which to extract requests!'
     end
@@ -156,39 +148,13 @@ class Pipeline < ApplicationRecord
     # Do nothing!
   end
 
-  def need_target_assets_on_requests?
-    asset_type.present? && request_types.needing_target_asset.exists?
-  end
-
   private
-
-  def inbox_scope_on(inbox_scope)
-    custom_inbox_actions.inject(inbox_scope) { |context, action| context.send(action) }
-  end
-
-  def grouping_function(option = {})
-    return ->(r) { [r.container_id] } if option[:group_by_holder_only]
-
-    lambda do |request|
-      [].tap do |group_key|
-        group_key << request.container_id  if group_by_parent?
-        group_key << request.submission_id if group_by_submission?
-      end
-    end
-  end
-
-  def grouping_attributes
-    {}.tap do |group_key|
-      group_key[:hl] = :container_id if group_by_parent?
-      group_key[:requests] = :submission_id if group_by_submission?
-    end
-  end
 
   def grouping_parser
     GrouperForPipeline.new(self)
   end
 
-  def selected_values_from(browser_options)
-    browser_options.select { |_, v| v == '1' }
+  def selected_keys_from(browser_options)
+    browser_options.select { |_, v| v == '1' }.keys
   end
 end

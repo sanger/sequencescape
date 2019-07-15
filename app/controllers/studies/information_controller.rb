@@ -44,9 +44,9 @@ class Studies::InformationController < ApplicationController
         render partial: 'sample_progress'
       when 'assets-progress'
         @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
-        @asset_type = Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Receptacle
-        @asset_type_name = params.fetch(:asset_type, 'All Assets').underscore.humanize
-        @page_elements = @study.assets_through_aliquots.where_is_a?(@asset_type).paginate(page_params)
+        @labware_type = Labware.descendants.detect { |cls| cls.name == params[:labware_type] } || Labware
+        @labware_type_name = params.fetch(:labware_type, 'All Assets').underscore.humanize
+        @page_elements = @study.assets_through_aliquots.on_a(@labware_type).paginate(page_params)
         render partial: 'asset_progress'
       when 'summary'
         @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)

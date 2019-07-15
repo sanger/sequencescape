@@ -4,6 +4,23 @@ Feature: NPG XML interface
     Given I have a project called "Project testing the NPG XML interface"
     And I have an active study called "Study testing the NPG XML interface"
 
+  # This feature is currently failing, due to the added redirect.
+  # The vast majority of traffic to AssetsController#show.xml is from a single
+  # user in CPG, who appears to have a daily cron job bringing in lane information.
+  # I am currently tracking down the user in question to gain information about:
+  #
+  # 1) What they are using the endpoint for
+  # 2) Where they are extracting the ids from
+  #
+  # While it should be trivial to get the endpoint working for either receptacles or
+  # labware, the source of the id will affect the behaviour.
+  #
+  # It should just be a case of directing them, to probably ReceptacleController#show.xml
+  # or maybe LabwareController#show.xml but we'll need to make a preliminary update to add
+  # these as route aliases first.
+  #
+  # I'll update these tests once we know the correct behaviour.
+
   # The important thing to check is that the 'key' elements exist
   Scenario: Requesting the XML for a library tube that has been involved in paired end sequencing
     Given the library tube named "Tube" exists

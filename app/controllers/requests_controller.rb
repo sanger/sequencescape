@@ -23,7 +23,7 @@ class RequestsController < ApplicationController
                             .where(search_params)
                             .paginate(per_page: 200, page: params[:page])
 
-    @asset        = Asset.find(params[:asset_id]) if params[:asset_id]
+    @asset        = Receptacle.find(params[:asset_id]) if params[:asset_id]
     @request_type = RequestType.find(params[:request_type_id]) if params[:request_type_id]
     @study        = Study.find(params[:study_id]) if params[:study_id]
 

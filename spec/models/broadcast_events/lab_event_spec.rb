@@ -13,7 +13,7 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
   let(:study) { create :study }
   let!(:request) { create :sequencing_request_with_assets, batch: batch, request_type: batch.pipeline.request_types.first, study: study }
   let(:sample) { request.asset.samples.first }
-  let(:stock_asset) { request.asset }
+  let(:stock_asset) { request.asset.labware }
 
   let(:lab_event) do
     create :lab_event,

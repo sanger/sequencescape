@@ -42,13 +42,13 @@ class Api::Base
       attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
         json_attributes[json_attribute] = object.send(attribute)
       end
-      associations.each do |association, helper|
-        value = object.send(association)
+      associations.each do |_association, helper|
+        value = helper.target(object)
         json_attributes.update(helper.to_hash(value))
         helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
       end
-      nested_has_many_associations.each do |association, helper|
-        values = object.send(association)
+      nested_has_many_associations.each do |_association, helper|
+        values = helper.target(object)
         all_targets = values.map do |value|
           helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
           helper.to_hash(value)
@@ -145,11 +145,11 @@ class Api::Base
 
     modified, object_timestamp = false, ((object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp)
     timestamp, modified = object_timestamp, true if object_timestamp > timestamp
-    associations.each do |association, helper|
-      helper.newer_than(object.send(association), timestamp) { |t| timestamp, modified = t, true }
+    associations.each do |_association, helper|
+      helper.newer_than(helper.target(object), timestamp) { |t| timestamp, modified = t, true }
     end
-    nested_has_many_associations.each do |association, helper|
-      object.send(association).each do |child|
+    nested_has_many_associations.each do |_association, helper|
+      helper.target(object).each do |child|
         helper.newer_than(child, timestamp) { |t| timestamp, modified = t, true }
       end
     end
@@ -169,6 +169,7 @@ class Api::Base
       alias_method(:default_object, options[:if_nil_use]) if options.key?(:if_nil_use)
       define_method(:lookup_by) { options[:lookup_by] }
       define_method(:association) { association }
+      define_method(:target) { |parent| options[:decorator] ? options[:decorator].new(parent.send(association)) : parent.send(association) }
     end
     self.associations = Hash.new if associations.empty?
     associations[association.to_sym] = association_helper
@@ -180,6 +181,7 @@ class Api::Base
     association_helper.singleton_class.class_eval do
       define_method(:association) { association }
       define_method(:alias) { options[:as] || association }
+      define_method(:target) { |parent| options[:decorator] ? options[:decorator].new(parent.send(association)) : parent.send(association) }
     end
     self.nested_has_many_associations = Hash.new if nested_has_many_associations.empty?
     nested_has_many_associations[association.to_sym] = association_helper

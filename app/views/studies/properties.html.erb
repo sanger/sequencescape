@@ -33,30 +33,3 @@
   <%= render partial: 'shared/metadata/show/study', locals: { study: @study } %>
 </div>
 
-<h1>Related Studies</h2>
-
-<table width='100%' class='sortable'>
-  <thead>
-    <tr>
-      <th width='30%'>Relationship type</th>
-      <th width='70%'>Study</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @study.study_relations.each do |relation| %>
-      <% rs = relation.related_study %>
-      <tr>
-        <td><%=relation.name %></td>
-        <td><%= link_to "#{(rs.name or "").titleize} #{rs.id}", study_url(rs) %></td>
-      </tr>
-    <% end %>
-    <% @study.reversed_study_relations.each do |relation| %>
-      <% rs = relation.study %>
-      <tr>
-        <td><%=  relation.reversed_name %></td>
-        <td><%= link_to "#{(rs.name or "").titleize} #{rs.id}", study_url(rs) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-

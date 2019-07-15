@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for Project
+# Despite name controls rendering of warehouse messages for {Project}
 # Historically used to be v0.5 API
 class Api::ProjectIO < Api::Base
   module Extensions

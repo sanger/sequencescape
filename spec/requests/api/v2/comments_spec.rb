@@ -64,7 +64,7 @@ describe 'Comments API', with: :api_v2 do
           },
           'relationships' => {
             'commentable' => {
-              'data' => { 'type' => 'assets', 'id' => plate.id.to_s }
+              'data' => { 'type' => 'labware', 'id' => plate.id.to_s }
             }
           }
         }

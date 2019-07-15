@@ -9,8 +9,8 @@ module PlatePurpose::Stock
     ids_of_wells_with_aliquots = plate.wells.with_aliquots.ids
     return UNREADY_STATE if ids_of_wells_with_aliquots.empty?
 
-    # All of the wells with aliquots must have requests for us to be considered passed
-    well_requests = Request::LibraryCreation.where(asset_id: ids_of_wells_with_aliquots)
+    # All of the wells with aliquots must have customer requests for us to consider the plate passed
+    well_requests = CustomerRequest.where(asset_id: ids_of_wells_with_aliquots)
 
     wells_states = well_requests.group_by(&:asset_id).values.map do |requests|
       calculate_state_of_well(requests.map(&:state))

@@ -8,7 +8,7 @@
 
 <%= form_for(@tag_substitution) do |form| %>
   <%# We redirect back to the asset we started from %>
-  <%= hidden_field_tag :asset_id, @asset_id %>
+  <%= hidden_field_tag :receptacle_id, @receptacle_id %>
   <%= form.hidden_field :name %>
   <%= field_set_tag 'Summary' do %>
     <div class="grid-form">

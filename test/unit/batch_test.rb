@@ -14,19 +14,6 @@ class BatchTest < ActiveSupport::TestCase
     end
   end
 
-  context 'Batch#add_control' do
-    setup do
-      @batchrequest_count = BatchRequest.count
-      @control = create :control
-      @batch = create :batch
-      @batch.add_control(@control.name, 2)
-    end
-
-    should 'change BatchRequest.count by 2' do
-      assert_equal 2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by 2'
-    end
-  end
-
   context 'modifying request positions within a batch' do
     setup do
       @pipeline = create :pipeline
@@ -227,7 +214,7 @@ class BatchTest < ActiveSupport::TestCase
 
     setup do
       @pipeline_next = create :pipeline, name: 'Next pipeline'
-      @pipeline      = create :pipeline, name: 'Pipeline for BatchTest', automated: false, next_pipeline_id: @pipeline_next.id, asset_type: 'LibraryTube'
+      @pipeline      = create :library_creation_pipeline, name: 'Pipeline for BatchTest', automated: false, next_pipeline_id: @pipeline_next.id, asset_type: 'LibraryTube'
       @pipeline_qc = create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_next.id
     end
 
@@ -439,6 +426,8 @@ class BatchTest < ActiveSupport::TestCase
       end
 
       should 'return true if self has item_limit' do
+        @pipeline.workflow.update!(item_limit: 4)
+        @batch.reload
         assert @batch.has_limit?
       end
 
@@ -517,10 +506,10 @@ class BatchTest < ActiveSupport::TestCase
             end
 
             should 'remove the requests from the batch but not destroy them' do
-              assert_equal(-2,  BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by -2')
-              assert_equal(-2,  Asset.count - @asset_count, 'Expected Asset.count to change by -2')
-              assert_equal 0,  Request.count - @request_count, 'Expected Request.count to change by 0'
-              assert_equal 0,  Batch.count - @batch_count, 'Expected Batch.count to change by 0'
+              assert_equal(-2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by -2')
+              assert_equal(0, Asset.count - @asset_count, 'Expected Asset.count to not change')
+              assert_equal 0, Request.count - @request_count, 'Expected Request.count to change by 0'
+              assert_equal 0, Batch.count - @batch_count, 'Expected Batch.count to change by 0'
             end
 
             should 'transition to discarded' do
@@ -604,8 +593,8 @@ class BatchTest < ActiveSupport::TestCase
             @lib_prep_request.reload
           end
 
-          should 'remove the target asset from the request and remove the request from the batch' do
-            assert @lib_prep_request.target_asset.nil?
+          should 'leave the target asset from the request but remove the request from the batch' do
+            assert_equal @lib_prep_request.target_asset, @library_tube
             assert @lib_prep_batch.requests.include?(@lib_prep_request)
           end
         end
@@ -616,7 +605,7 @@ class BatchTest < ActiveSupport::TestCase
           end
 
           should 'remove the asset from the request' do
-            assert @pe_seq_request.asset.nil?
+            assert_equal @pe_seq_request.asset, @library_tube
           end
         end
       end

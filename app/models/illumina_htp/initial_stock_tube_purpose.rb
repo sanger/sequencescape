@@ -33,7 +33,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
     sibling_tubes = Tube.joins(:transfer_requests_as_target)
                         .includes(:transfer_requests_as_source) # Outer join, as we don't want these
                         .where(transfer_requests: { submission_id: tube.submission }) # find out tubes via transfer requests
-                        .where(transfer_requests_as_sources_assets: { id: nil }) # Make sure we have no transfers out of the tube
+                        .where("transfer_requests_as_sources_#{Tube.table_name}": { id: nil }) # Make sure we have no transfers out of the tube
                         .where.not(transfer_requests: { state: 'cancelled' }) # Filter out any cancelled tubes
                         .includes(:uuid_object, :barcodes, :aliquots) # Load the stuff we need for the hash
 

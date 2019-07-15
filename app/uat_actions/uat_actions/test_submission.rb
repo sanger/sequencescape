@@ -20,6 +20,16 @@ class UatActions::TestSubmission < UatActions
              help: 'Add the plate which will form part of your submission. '\
                    'Leave blank to automatically generate compatible labware. '\
                    'This page does not currently support cross-plate submissions.'
+  form_field :plate_purpose_name,
+             :select,
+             label: 'Plate Purpose',
+             help: 'Select the plate purpose to use when creating the plate. '\
+                   'Leave blank to automatically use the most appropriate purpose. '\
+                   'Not used if plate barcode is supplied.',
+             select_options: -> { PlatePurpose.alphabetical.pluck(:name) },
+             options: { include_blank: 'Using default purpose...' }
+
+  validates :submission_template, presence: { message: 'could not be found' }
 
   validates :submission_template, presence: { message: 'could not be found' }
 
@@ -77,7 +87,7 @@ class UatActions::TestSubmission < UatActions
 
   def generate_plate
     generator = UatActions::GeneratePlates.default
-    generator.plate_purpose_name = default_purpose_name
+    generator.plate_purpose_name = plate_purpose_name.presence || default_purpose_name
     generator.well_count = 90
     generator.well_layout = 'Random'
     generator.perform

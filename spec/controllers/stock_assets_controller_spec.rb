@@ -23,7 +23,7 @@ RSpec.describe StockAssetsController do
 
     context 'with a single plex batch' do
       let(:batch) { create :batch, request_count: 2 }
-      let(:library_tube_ids) { batch.reload.requests.map(&:target_asset_id) }
+      let(:library_tube_ids) { batch.reload.requests.map { |r| r.target_asset.labware.id } }
 
       context 'without a stock tube' do
         it 'renders the form' do
@@ -39,7 +39,7 @@ RSpec.describe StockAssetsController do
 
       context 'with stock tube already existing' do
         before do
-          batch.reload.requests.each { |r| r.target_asset.parents << create(:stock_library_tube) }
+          batch.reload.requests.each { |r| r.target_asset.labware.parents << create(:stock_library_tube) }
         end
 
         let(:warning) { 'Stock tubes have already been created' }

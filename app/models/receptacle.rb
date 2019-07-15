@@ -6,10 +6,19 @@ AssetRefactor.when_refactored do
   class Receptacle < Asset
     include Uuid::Uuidable
     include Commentable
+    include Asset::ReceptacleAssociations
     belongs_to :labware
+    has_many :barcodes, through: :labware
+
+    self.stock_message_template = 'ReceptacleStockResourceIO'
   end
 end
 
+# A receptacle is a container for {Aliquot aliquots}, they are associated with
+# {Labware}, which represents the physical object which moves round the lab.
+# A {Labware} may have a single {Receptacle}, such as in the case of a {Tube}
+# or multiple, in the case of a {Plate}.
+# Work can be {Request requested} on a particular receptacle.
 class Receptacle
   include Transfer::State
   include Aliquot::Remover
@@ -24,8 +33,9 @@ class Receptacle
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
-    include Asset::ReceptacleAssociations
     has_many :messengers, as: :target, inverse_of: :target
+    delegate :scanned_in_date, to: :labware
+    has_one :spiked_in_buffer, through: :labware
   end
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
@@ -41,12 +51,16 @@ class Receptacle
   has_many :upstream_tubes, through: :transfer_requests_as_target, source: :asset, class_name: 'Tube'
   has_many :upstream_plates, through: :upstream_wells, source: :plate
 
-  has_many :requests, inverse_of: :asset, foreign_key: :asset_id
-  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
-  has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
-  has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
+  has_many :requests, inverse_of: :asset, foreign_key: :asset_id, dependent: :restrict_with_exception
+  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request',
+                                                                  foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
+  has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request',
+                                                                      foreign_key: :asset_id, dependent: :restrict_with_exception, inverse_of: :asset
+  has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request',
+                                                                      foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
   has_many :source_batches, class_name: 'Batch', through: :requests_as_source, source: :batch
+  has_many :source_receptacles, through: :requests_as_target, source: :asset
 
   # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
   # one aliquot.
@@ -69,6 +83,7 @@ class Receptacle
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
   has_many :external_library_creation_requests, foreign_key: :asset_id
+  has_many :events_on_requests, through: :requests_as_source, source: :events, validate: false
 
   # Named scopes for the future
   scope :include_aliquots, ->() { includes(aliquots: %i(sample tag bait_library)) }
@@ -97,11 +112,33 @@ class Receptacle
 
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
 
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def total_comment_count
+      comments.size
+    end
+
+    scope :on_a, ->(klass) { where_is_a?(klass) }
+  end
+
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
-    delegate :human_barcode, :machine_bracode, to: :labware
-    delegate :asset_type_for_request_types, to: :labware
+    delegate :human_barcode, :machine_bracode, to: :labware, allow_nil: true
+    delegate :asset_type_for_request_types, to: :labware, allow_nil: true
+    delegate :has_stock_asset?, to: :labware, allow_nil: true
+    delegate :children, to: :labware, allow_nil: true
+
+    def total_comment_count
+      comments.size + labware_comment_count
+    end
+
+    def labware_comment_count
+      labware&.comments&.size || 0
+    end
+
+    scope :on_a, ->(klass) { joins(:labware).where(labware: { sti_type: [klass.name, *klass.descendants.map(&:name)] }) }
   end
 
   # Returns the map_id of the first and last tag in an asset
@@ -120,10 +157,6 @@ class Receptacle
     end
   end
 
-  def default_state
-    nil
-  end
-
   def compatible_qc_state
     QC_STATE_ALIASES.fetch(qc_state, qc_state) || ''
   end
@@ -140,10 +173,6 @@ class Receptacle
 
   def primary_aliquot_if_unique
     primary_aliquot if aliquots.count == 1
-  end
-
-  def type
-    self.class.name.underscore
   end
 
   def library_information; end
@@ -193,10 +222,6 @@ class Receptacle
   # Contained samples also works on eg. plate
   alias_attribute :contained_samples, :samples
 
-  def name_for_label
-    primary_sample&.shorten_sanger_sample_id.presence || name
-  end
-
   # We only support wells for the time being
   def latest_stock_metrics(_product, *_args)
     []
@@ -205,10 +230,22 @@ class Receptacle
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
-    def display_name
+    def name
       labware_name = labware.present? ? labware.try(:human_barcode) : '(not on a labware)'
       labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
       labware_name
+    end
+
+    def display_name
+      labware&.display_name
+    end
+
+    def external_identifier
+      name
+    end
+
+    def update_from_qc(qc_result)
+      Tube::AttributeUpdater.update(self, qc_result)
     end
   end
 

@@ -10,6 +10,10 @@ module SampleManifest::UnspecifiedBehaviour
       PlatePurpose.for_submissions
     end
 
+    def default_purpose
+      PlatePurpose.stock_plate_purpose
+    end
+
     def generate
       raise StandardError, 'UnspecifiedBehaviour can not be used to build manifests'
     end

@@ -56,6 +56,6 @@ class PopulateExistingPurposesWithPrefixData < ActiveRecord::Migration[5.1]
   end
 
   def down
-    Purpose.update_all(barcode_prefix_id: nil) # rubocop:disable Rails/SkipsModelValidations
+    Purpose.update_all(barcode_prefix_id: nil)
   end
 end

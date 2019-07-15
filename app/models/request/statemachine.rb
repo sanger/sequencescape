@@ -141,12 +141,13 @@ module Request::Statemachine
   # super in any method that you override so that they can be stacked.
   #++
 
-  # On starting a request the aliquots are copied from the source asset to the target
-  # and updated with the project and study information from the request itself.
+  # Default behaviour on started is to do nothing.
   def on_started
-    transfer_aliquots
+    # Some subclasses may call transfer_aliquots below.
   end
 
+  # Aliquots are copied from the source asset to the target and updated with the
+  # project and study information from the request itself.
   def transfer_aliquots
     target_asset.aliquots << asset.aliquots.map do |aliquot|
       aliquot.dup.tap do |clone|

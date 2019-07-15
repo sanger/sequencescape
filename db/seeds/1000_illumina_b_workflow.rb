@@ -204,19 +204,6 @@ ActiveRecord::Base.transaction do
     rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
   end
 
-  RequestType.create!(
-    name: 'Illumina-HTP Strip Tube Creation',
-    key: 'illumina_htp_strip_tube_creation',
-    asset_type: 'Well',
-    order: 2,
-    initial_state: 'pending',
-    multiples_allowed: true,
-    request_class_name: 'StripCreationRequest',
-    for_multiplexing: false,
-    billable: false,
-    product_line: ProductLine.find_by!(name: 'Illumina-B')
-  )
-
   RequestType.find_by!(key: 'illumina_b_hiseq_x_paired_end_sequencing').acceptable_plate_purposes << PlatePurpose.create!(
     name: 'Strip Tube Purpose',
     target_type: 'StripTube',
@@ -228,43 +215,6 @@ ActiveRecord::Base.transaction do
     asset_shape: AssetShape.find_by(name: 'StripTubeColumn'),
     barcode_for_tecan: 'ean13_barcode'
   )
-end
-
-StripTubeCreationPipeline.create!(
-  name: 'Strip Tube Creation',
-  automated: false,
-  active: true,
-  group_by_parent: true,
-  sorter: 8,
-  paginate: false,
-  max_size: 96,
-  min_size: 8,
-  summary: true,
-  externally_managed: false,
-  control_request_type_id: 0,
-  group_name: 'Sequencing'
-) do |pipeline|
-  pipeline.request_types << RequestType.find_by!(key: 'illumina_htp_strip_tube_creation')
-  pipeline.workflow = Workflow.create!(name: 'Strip Tube Creation').tap do |workflow|
-    stct = StripTubeCreationTask.create!(
-      name: 'Strip Tube Creation',
-      workflow: workflow,
-      sorted: 1,
-      interactive: true,
-      lab_activity: true
-    )
-    stct.descriptors.create!(
-      name: 'Strips to create',
-      selection: [1, 2, 4, 6, 12],
-      kind: 'Selection',
-      key: 'strips_to_create'
-    )
-    stct.descriptors.create!(
-      name: 'Strip Tube Purpose',
-      value: 'Strip Tube Purpose',
-      key: 'strip_tube_purpose'
-    )
-  end
 end
 
 # rubocop:enable Metrics/BlockLength

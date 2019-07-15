@@ -1,4 +1,4 @@
-# Despite name controls rendering of warehouse messages for Tag
+# Despite name controls rendering of warehouse messages for {Tag}
 # Historically used to be v0.5 API
 class Api::TagIO < Api::Base
   module Extensions

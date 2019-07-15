@@ -14,8 +14,7 @@ describe Tube, type: :model do
         content: Time.zone.today.to_s,
         message: 'scanned in',
         family: 'scanned_into_lab',
-        eventful_type: 'Asset',
-        eventful_id: scanned_in_asset.id
+        eventful: scanned_in_asset
       )
     end
 
@@ -108,12 +107,14 @@ describe Tube, type: :model do
   end
 
   context 'qc updates' do
+    # This behaviour actually belongs on {Receptacle} post AssetRefactor. Currently this test shouls work
+    # in either context, but should be moved post migration.
     subject(:tube) { create :tube }
 
     describe '#update_from_qc' do
       let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
 
-      setup { tube.update_from_qc(qc_result) }
+      setup { tube.receptacle.update_from_qc(qc_result) }
       context 'key: molarity with nM' do
         let(:key) { 'molarity' }
         let(:value) { 100 }

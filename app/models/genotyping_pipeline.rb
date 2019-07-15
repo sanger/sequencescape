@@ -1,7 +1,7 @@
 class GenotypingPipeline < Pipeline
   include Pipeline::InboxGroupedBySubmission
+  include Pipeline::GroupByParent
 
-  self.inbox_partial = 'group_by_parent'
   self.requires_position = false
   self.genotyping = true
 

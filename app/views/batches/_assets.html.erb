@@ -15,7 +15,7 @@
     <% request_groups.each do |group, requests| -%>
       <% next if group.blank? %>
 
-      <% parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Asset.find(pid) %>
+      <% parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Labware.find(pid) %>
       <% unless parent.nil? %>
         <tr>
           <td><%= link_to parent.id, asset_url(parent) %></td>

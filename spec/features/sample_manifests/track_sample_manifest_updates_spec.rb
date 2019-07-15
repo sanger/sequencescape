@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'timecop'
 
 describe 'track SampleManifest updates' do
   include FetchTable
@@ -31,10 +32,6 @@ describe 'track SampleManifest updates' do
     load_manifest_spec
     visit(study_path(study))
     click_link('Sample Manifests')
-  end
-
-  after do
-    Timecop.return
   end
 
   it 'Some samples get updated by a manifest and events get created' do
@@ -126,8 +123,8 @@ describe 'track SampleManifest updates' do
              ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'jane']]
 
     expect(fetch_table('table#events')).to eq(table)
-    asset = Asset.find_from_barcode('1221234567841')
-    visit(history_asset_path(asset))
+    asset = Labware.find_by_barcode('1221234567841')
+    visit(history_labware_path(asset))
     table = [['Message', 'Content', 'Created at', 'Created by'],
              ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'john'],
              ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'john'],
