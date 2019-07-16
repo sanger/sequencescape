@@ -5690,18 +5690,6 @@ Style/TrivialAccessors:
     - 'features/support/accession_service.rb'
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/UnlessElse:
-  Exclude:
-    - 'app/views/assets/show.xml.builder'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/WhileUntilModifier:
-  Exclude:
-    - 'app/models/asset_barcode.rb'
-
 # Offense count: 13
 # Cop supports --auto-correct.
 Style/ZeroLengthPredicate:
