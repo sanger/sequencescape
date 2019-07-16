@@ -22,7 +22,7 @@ class QcMetricTest < ActiveSupport::TestCase
       ['manually_failed', false, false],
       ['manually_failed', true,  true],
       ['manually_failed', nil,   false],
-      ['manually_passed', nil,   false],
+      ['manually_passed', nil,   false]
     ].each do |qc_state, proceed_state, poor_quality_proceed|
       should "return #{poor_quality_proceed} when the qc_state is #{qc_state} and proceed is #{proceed_state}" do
         qc = create :qc_metric, qc_decision: qc_state, proceed: proceed_state
@@ -37,7 +37,7 @@ class QcMetricTest < ActiveSupport::TestCase
       ['failed',          true,  true],
       ['manually_passed', true,  false],
       ['manually_failed', true,  true],
-      ['unprocessable',   false, true],
+      ['unprocessable',   false, true]
     ].each do |qc_state, proceedable, set_suboptimal|
       should "#{proceedable ? '' : 'not '}allow the proceed flag to be set to Y when #{qc_state}" do
         qc = create :qc_metric, qc_decision: qc_state

@@ -256,7 +256,7 @@ class Study < ApplicationRecord
   scope :in_assets, ->(assets) {
     select('DISTINCT studies.*')
       .joins([
-        'LEFT JOIN aliquots ON aliquots.study_id = studies.id',
+        'LEFT JOIN aliquots ON aliquots.study_id = studies.id'
       ])
       .where(['aliquots.receptacle_id IN (?)', assets.map(&:id)])
   }

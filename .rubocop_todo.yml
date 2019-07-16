@@ -5645,37 +5645,6 @@ Style/TernaryParentheses:
     - 'lib/authenticated_system.rb'
     - 'lib/label_printer/label_printer/label/batch_tube.rb'
 
-# Offense count: 13
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInArrayLiteral:
-  Exclude:
-    - 'app/models/illumina_c/plate_purposes.rb'
-    - 'app/models/illumina_htp/plate_purposes.rb'
-    - 'app/models/request.rb'
-    - 'app/models/study.rb'
-    - 'db/migrate/20160804125227_add_hiseq_4000_submission_templates.rb'
-    - 'db/seeds/0001_workflows.rb'
-    - 'db/seeds/0019_plate_creators.rb'
-    - 'db/seeds/1000_illumina_b_workflow.rb'
-    - 'db/seeds/9999_tag_qc_setup.rb'
-    - 'test/unit/qc_metric_test.rb'
-    - 'test/unit/sample_registrar_test.rb'
-
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInHashLiteral:
-  Exclude:
-    - 'config/initializers/formtastic.rb'
-    - 'test/functional/pre_cap_groups_test.rb'
-    - 'test/lib/label_printer/print_job_test.rb'
-    - 'test/unit/assign_tags_task_test.rb'
-    - 'test/unit/sample_registrar_test.rb'
-    - 'test/unit/tecan_file_generation_test.rb'
-
 # Offense count: 8
 # Cop supports --auto-correct.
 # Configuration parameters: ExactNameMatch, AllowPredicates, AllowDSLWriters, IgnoreClassMethods, Whitelist.

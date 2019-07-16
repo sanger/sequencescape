@@ -6,7 +6,7 @@ purpose_order = [
   { class: QcableLibraryPlatePurpose, name: 'Tag PCR', barcode_printer_type: plate, size: 96, asset_shape: AssetShape.find_by(name: 'Standard') },
   { class: PlatePurpose,    name: 'Tag PCR-XP', barcode_printer_type: plate, size: 96, asset_shape: AssetShape.find_by(name: 'Standard') },
   { class: Tube::StockMx,   name: 'Tag Stock-MX', target_type: 'StockMultiplexedLibraryTube', barcode_printer_type: tube },
-  { class: Tube::StandardMx, name: 'Tag MX', target_type: 'MultiplexedLibraryTube', barcode_printer_type: tube },
+  { class: Tube::StandardMx, name: 'Tag MX', target_type: 'MultiplexedLibraryTube', barcode_printer_type: tube }
 ]
 
 shared = {

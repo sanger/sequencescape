@@ -237,8 +237,8 @@ class SampleRegistrarTest < ActiveSupport::TestCase
             {
               study: @study,
               user: @user,
-              sample_attributes: { name: 'valid_sample_4' },
-            },
+              sample_attributes: { name: 'valid_sample_4' }
+            }
           ])
         end
 

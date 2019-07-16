@@ -38,7 +38,7 @@ class AddHiseq4000SubmissionTemplates < ActiveRecord::Migration
         { request_types: ['illumina_c_pcr'], request_type_name: 'General PCR', product_catalogue: 'GenericPCR', order_role: 'PCR' },
         { request_types: ['illumina_c_library_creation'], request_type_name: 'Library Creation', product_catalogue: 'Generic', order_role: 'ILC' },
         { request_types: ['illumina_c_multiplexed_library_creation'], request_type_name: 'Multiplexed Library Creation', product_catalogue: 'ClassicMultiplexed', order_role: 'ILC' },
-        { request_types: ['illumina_c_multiplexing'], request_type_name: 'Multiplex', product_catalogue: 'Generic', order_role: 'PCR' },
+        { request_types: ['illumina_c_multiplexing'], request_type_name: 'Multiplex', product_catalogue: 'Generic', order_role: 'PCR' }
       ].each do |request_options|
         yield parameters('Illumina-C', 'Illumina-C', sequencing_key, request_options)
       end
