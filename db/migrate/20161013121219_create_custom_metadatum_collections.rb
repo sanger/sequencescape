@@ -1,3 +1,4 @@
+# Rails migration
 class CreateCustomMetadatumCollections < ActiveRecord::Migration
   def change
     create_table :custom_metadatum_collections do |t|

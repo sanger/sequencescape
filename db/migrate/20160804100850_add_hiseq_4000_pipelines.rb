@@ -1,3 +1,5 @@
+# HiSeq 4000 Pipelines
+# @note favour rake tasks over migrations in future
 class AddHiseq4000Pipelines < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do

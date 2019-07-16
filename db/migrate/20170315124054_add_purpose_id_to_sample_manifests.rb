@@ -1,3 +1,4 @@
+# Rails migration
 class AddPurposeIdToSampleManifests < ActiveRecord::Migration
   def change
     add_reference :sample_manifests, :purpose

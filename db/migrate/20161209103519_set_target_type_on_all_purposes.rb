@@ -1,3 +1,4 @@
+# Rails migration
 class SetTargetTypeOnAllPurposes < ActiveRecord::Migration
   def up
     Purpose.where(target_type: nil).update_all(target_type: 'Plate')

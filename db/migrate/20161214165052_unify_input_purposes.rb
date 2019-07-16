@@ -1,3 +1,4 @@
+# Rails migration
 class UnifyInputPurposes < ActiveRecord::Migration
   class Purpose < ApplicationRecord
     self.inheritance_column = nil
