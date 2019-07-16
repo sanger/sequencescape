@@ -19,7 +19,12 @@ describe '/api/1/transfer_request_collection', transfer_request_collection: true
         "transfer_request_collection":{
           "user": "#{user.uuid}",
           "transfer_requests": [
-            {"source_asset":"#{asset.uuid}", "target_asset": "#{target_asset.uuid}", "submission": "#{submission.uuid}"}
+            {
+              "source_asset":"#{asset.uuid}",
+              "target_asset": "#{target_asset.uuid}",
+              "submission": "#{submission.uuid}",
+              "volume": 10
+            }
           ]
         }
       })
