@@ -12,7 +12,7 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
 
   has_subjects(:library_source_labware, :library_source_plates)
 
-  has_subject(:multiplexed_library) { |tube, _e| tube }
+  has_subject(:multiplexed_library) { |tube, _e| tube.receptacle }
 
   has_subjects(:stock_plate, :original_stock_plates)
   has_subjects(:sample) do |tube, e|
