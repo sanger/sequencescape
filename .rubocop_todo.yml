@@ -219,12 +219,6 @@ Lint/UselessAssignment:
     - 'test/unit/cherrypick_task_test.rb'
     - 'test/unit/tasks/plate_transfer_task_test.rb'
 
-# Offense count: 1
-# Configuration parameters: CheckForMethodsWithNoSideEffects.
-Lint/Void:
-  Exclude:
-    - 'app/models/tag_substitution/substitution.rb'
-
 # Offense count: 417
 Metrics/AbcSize:
   Max: 199
