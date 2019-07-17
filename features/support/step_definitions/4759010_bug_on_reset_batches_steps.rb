@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^sequencescape is setup for 4759010$/ do
   # Number of tags here needs to be the same as the number of requests below.
   group = FactoryBot.create(:tag_group, name: 'Tag group for 4759010', tag_count: 10)

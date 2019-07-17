@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^I have five requests for "([^\"]*)"$/ do |pipeline_name|
   pipeline = Pipeline.find_by(name: pipeline_name)
   5.times do |index_i|

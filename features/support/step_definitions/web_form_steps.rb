@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ########################################################################################
 # TODO: Remove these from the features and replace them with the new versions
 ########################################################################################

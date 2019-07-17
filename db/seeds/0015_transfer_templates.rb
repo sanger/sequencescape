@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 COLUMN_RANGES = [
   (1..1),
   (1..2),

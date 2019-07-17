@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def upload_submission_spreadsheet(name, encoding = nil)
   attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', "#{name}.csv"))
   if encoding

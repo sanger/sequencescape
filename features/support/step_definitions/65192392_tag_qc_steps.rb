@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^I have a lot type for testing called "(.*?)"$/ do |name|
   LotType.create!(
     name: name,

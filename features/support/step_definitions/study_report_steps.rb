@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Then /^I should see qc reports table:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#study_list')))
 end

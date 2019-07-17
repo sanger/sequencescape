@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 rt = rt = RequestType.find_by(key: 'qc_miseq_sequencing')
 tube = BarcodePrinterType.find_by(name: '1D Tube')
 plate = BarcodePrinterType.find_by(name: '96 Well PLate')

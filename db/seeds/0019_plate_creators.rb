@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveRecord::Base.transaction do
   excluded = ['Dilution Plates']
   # Build the links between the parent and child plate purposes

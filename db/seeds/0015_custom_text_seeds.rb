@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Adds CustomText instances to be used by Sequencescape...
 
 CustomText.create!(

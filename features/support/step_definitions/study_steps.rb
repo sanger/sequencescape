@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^I have a study called "([^\"]*)"$/ do |study|
   FactoryBot.create :study, name: study, state: 'pending'
 end

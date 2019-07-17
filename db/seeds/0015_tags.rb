@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Create all of the TagGroups first.  These are in the order of the production environment.
 
 tag_group_names = [

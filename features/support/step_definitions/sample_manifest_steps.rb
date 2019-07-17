@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
   Supplier.create!(name: supplier_name)
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './lib/submission_serializer'
 
 Given /^I have an empty submission$/ do
