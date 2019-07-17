@@ -73,6 +73,30 @@ RSpec.describe Api::RequestIO, type: :model do
     it_behaves_like('an IO object')
   end
 
+  context 'with no target asset' do
+    let(:source_asset) { create :untagged_well }
+    let(:target_asset) { nil }
+
+    let(:expected_json) do
+      {
+        'uuid' => subject.uuid,
+        'id' => subject.id,
+        'state' => subject.state,
+        'request_type' => subject.request_type.name,
+        'source_asset_uuid' => source_asset.uuid,
+        'source_asset_name' => source_asset.name,
+        'source_asset_type' => 'wells',
+        'source_asset_state' => source_asset.qc_state,
+        'source_asset_closed' => false,
+        'source_asset_two_dimensional_barcode' => nil,
+        'source_asset_sample_uuid' => source_asset.samples.first.uuid,
+        'source_asset_sample_internal_id' => source_asset.samples.first.id
+      }
+    end
+
+    it_behaves_like('an IO object')
+  end
+
   context 'with metadata' do
     subject { create :library_creation_request }
 
