@@ -5258,20 +5258,6 @@ Style/TernaryParentheses:
     - 'lib/authenticated_system.rb'
     - 'lib/label_printer/label_printer/label/batch_tube.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: ExactNameMatch, AllowPredicates, AllowDSLWriters, IgnoreClassMethods, Whitelist.
-# Whitelist: to_ary, to_a, to_c, to_enum, to_h, to_hash, to_i, to_int, to_io, to_open, to_path, to_proc, to_r, to_regexp, to_str, to_s, to_sym
-Style/TrivialAccessors:
-  Exclude:
-    - 'app/api/core/service.rb'
-    - 'app/models/broadcast_event.rb'
-    - 'app/models/sample.rb'
-    - 'app/models/submission/presenter_skeleton.rb'
-    - 'app/uploaders/polymorphic_uploader.rb'
-    - 'features/support/accession_service.rb'
-    - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
-
 # Offense count: 13
 # Cop supports --auto-correct.
 Style/ZeroLengthPredicate:
