@@ -43,5 +43,10 @@
 </div>
 <%= render partial: 'samples', locals: {asset: @asset} %>
 <%= render partial: 'requests', locals: { asset: @asset } %>
-<%= render partial: 'metadata', locals: {asset: @asset} if @asset.respond_to?(:custom_metadatum_collection) %>
-<%= render partial: 'qc_files', locals: {asset: @asset} %>
+
+<% if @asset.labware.present? %>
+  <h3>Labware information</h3>
+  <%= render partial: 'labware/metadata', locals: {asset: @asset.labware} if @asset.labware.respond_to?(:custom_metadatum_collection) %>
+  <%= render partial: 'labware/relations', locals: { asset: @asset.labware } %>
+  <%= render partial: 'labware/qc_files', locals: {asset: @asset.labware} %>
+<% end %>
