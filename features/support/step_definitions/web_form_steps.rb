@@ -41,7 +41,7 @@ Then /^I should see the following (required )?fields:$/ do |required, table|
 end
 
 def assert_label_exists(label_text, required = false)
-  selector = 'label' << (required ? '.required' : ':not(.required)')
+  selector = "label#{required ? '.required' : ':not(.required)'}"
   assert(page.has_css?(selector, visible: :all, text: label_text), "The #{label_text.inspect} should #{required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
 end
 

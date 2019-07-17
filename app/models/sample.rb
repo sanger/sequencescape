@@ -347,9 +347,7 @@ class Sample < ApplicationRecord
     events.updated_using_sample_manifest!(user)
   end
 
-  def ena_study
-    @ena_study
-  end
+  attr_reader :ena_study
 
   def validating_ena_required_fields_with_first_study=(state)
     self.validating_ena_required_fields_without_first_study = state
