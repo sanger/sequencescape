@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Represents barcode printers containing labels suitable for 96 well plates.
-# Glorified scope.
 class BarcodePrinterType96Plate < BarcodePrinterType
   def self.first
     super || BarcodePrinterType96Plate.create!(
