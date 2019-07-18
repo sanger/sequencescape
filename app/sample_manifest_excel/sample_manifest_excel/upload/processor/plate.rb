@@ -24,8 +24,8 @@ module SampleManifestExcel
           upload.rows.each do |row|
             next if row.columns.blank? || row.data.blank?
 
-            plate_barcode = value_for_column(row, 'sanger_plate_id')
-            sample_id = value_for_column(row, 'sanger_sample_id')
+            plate_barcode = row.value('sanger_plate_id')
+            sample_id = row.value('sanger_sample_id')
             next if plate_barcode.nil? || sample_id.nil?
 
             plate_id_for_sample = find_plate_id_for_sample_id(sample_id)
@@ -42,16 +42,9 @@ module SampleManifestExcel
           false
         end
 
-        def value_for_column(row, col_name)
-          col_num = row.columns.find_column_or_null(:name, col_name).number
-          return nil unless col_num.present? && col_num.positive?
-
-          row.at(col_num)
-        end
-
         def find_plate_id_for_sample_id(sample_id)
-          sample = Sample.find_by(sanger_sample_id: sample_id)
-          sample&.primary_receptacle&.labware&.human_barcode
+          sample_manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: sample_id)
+          sample_manifest_asset.labware&.id
         end
       end
     end
