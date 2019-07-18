@@ -7,9 +7,7 @@ class UpdateViewRequests < ActiveRecord::Migration[5.1]
     ActiveRecord::Base.transaction do
       ViewsSchema.update_view(
         'view_requests',
-        %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-          VIEW `view_requests` AS
-          SELECT
+        %{SELECT
             `u`.`external_id` AS `uuid`,
             `r`.`id` AS `internal_id`,
             `rt`.`name` AS `request_type`,
@@ -84,9 +82,7 @@ class UpdateViewRequests < ActiveRecord::Migration[5.1]
     ActiveRecord::Base.transaction do
       ViewsSchema.update_view(
         'view_requests',
-        %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-          VIEW `view_requests` AS
-          select `u`.`external_id` AS `uuid`,
+        %{select `u`.`external_id` AS `uuid`,
                  `r`.`id` AS `internal_id`,
                  `rt`.`name` AS `request_type`,
                  `rm`.`fragment_size_required_from` AS `fragment_size_from`,
