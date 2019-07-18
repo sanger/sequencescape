@@ -1,3 +1,5 @@
+# Rails migration
+# Clear up an unused tube class
 class RemoveUnusedTubeClass < ActiveRecord::Migration
   class Purpose < ApplicationRecord
     self.table_name = 'plate_purposes'

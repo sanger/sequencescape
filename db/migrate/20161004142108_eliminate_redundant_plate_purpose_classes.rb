@@ -1,3 +1,4 @@
+# Rails migration
 class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
   class Purpose < ApplicationRecord
     self.table_name = 'plate_purposes'

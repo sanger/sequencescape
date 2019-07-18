@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^I release the last completed batch$/ do
   batch = Batch.where(state: 'Completed').last
   visit release_batch_path(batch)

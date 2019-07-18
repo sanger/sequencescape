@@ -1,3 +1,4 @@
+# Sample manifest templates are now held in yml files.
 class DropSampleManifestTemplate < ActiveRecord::Migration
   def up
     drop_table :sample_manifest_templates

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveRecord::Base.transaction do
   excluded = ['Dilution Plates']
   # Build the links between the parent and child plate purposes
@@ -35,7 +37,7 @@ ActiveRecord::Base.transaction do
     [Plate::Creator.find_by!(name: 'Working dilution'), Purpose.find_by!(name: 'Stock plate')],
     [Plate::Creator.find_by!(name: 'Pico dilution'),     Purpose.find_by!(name: 'Working dilution')],
     [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Pico dilution')],
-    [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Working dilution')],
+    [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Working dilution')]
   ]
 
   purposes_config.each do |creator, purpose|

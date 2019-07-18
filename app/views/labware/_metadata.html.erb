@@ -8,7 +8,7 @@
       </a>
     </div>
     <div id="metadata-table-collapser" class="collapse in show">
-    <% if @asset.custom_metadatum_collection.present?%>
+    <% if asset.custom_metadatum_collection.present?%>
       <table id="metadata-table" class="sortable table striped">
         <colgroup>
           <col class="npg_aliquot_index">
@@ -20,7 +20,7 @@
           </tr>
         </thead>
         <tbody>
-          <% @asset.metadata.each do |k, v| %>
+          <% asset.metadata.each do |k, v| %>
             <tr>
               <td><%= k %></td>
               <td><%= v %></td>

@@ -44,7 +44,7 @@
   <% if @asset.labware.respond_to?(:human_barcode) %>
     <tr>
       <th>Human barcode</th>
-      <td><%= @asset.human_barcode %></td>
+      <td><%= @asset.labware.human_barcode %></td>
     </tr>
   <% end %>
   <% if  @source_plate&.human_barcode %>

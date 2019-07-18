@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Used in tests to provide a pool of predicatable uuids
 class UuidStore
   def initialize

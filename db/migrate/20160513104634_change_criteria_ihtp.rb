@@ -1,3 +1,5 @@
+# Rails migration
+# Update criteria for QC reports
 class ChangeCriteriaIhtp < ActiveRecord::Migration
   PRODUCTS_LIST = %w(MWGS PWGS ISC HSqX)
   ADDED_CRITERIA = {

@@ -1,3 +1,5 @@
+# Builds the PCR Free Pipeline
+# @note Creating pipelines through migrations is discouraged
 class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do |_t|

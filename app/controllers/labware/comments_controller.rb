@@ -16,7 +16,7 @@ class Labware::CommentsController < ApplicationController
   def create
     @labware.comments.create(description: params[:comment], user: current_user)
     @comments = @labware.comments
-    render partial: 'list', locals: { commentable: @labware, visible: true }
+    render partial: 'list', locals: { commentable: @labware, visible: true, labware: @labware }
   end
 
   def destroy

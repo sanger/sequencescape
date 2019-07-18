@@ -68,7 +68,7 @@ module ApplicationHelper
 
   def request_count_link(study, asset, state, request_type)
     matching_requests   = asset.requests.select { |request| (request.request_type_id == request_type.id) and request.state == state }
-    html_options, count = { title: "#{asset.human_barcode} #{state}" }, matching_requests.size
+    html_options, count = { title: "#{asset.try(:human_barcode) || asset.id} #{state}" }, matching_requests.size
 
     # 0 requests => no link, just '0'
     # 1 request  => request summary page

@@ -169,7 +169,10 @@ class Api::Base
       alias_method(:default_object, options[:if_nil_use]) if options.key?(:if_nil_use)
       define_method(:lookup_by) { options[:lookup_by] }
       define_method(:association) { association }
-      define_method(:target) { |parent| options[:decorator] ? options[:decorator].new(parent.send(association)) : parent.send(association) }
+      define_method(:target) do |parent|
+        target_object = parent.send(association)
+        options[:decorator] && target_object ? options[:decorator].new(target_object) : target_object
+      end
     end
     self.associations = Hash.new if associations.empty?
     associations[association.to_sym] = association_helper
@@ -181,7 +184,10 @@ class Api::Base
     association_helper.singleton_class.class_eval do
       define_method(:association) { association }
       define_method(:alias) { options[:as] || association }
-      define_method(:target) { |parent| options[:decorator] ? options[:decorator].new(parent.send(association)) : parent.send(association) }
+      define_method(:target) do |parent|
+        target_object = parent.send(association)
+        options[:decorator] && target_object ? options[:decorator].new(target_object) : target_object
+      end
     end
     self.nested_has_many_associations = Hash.new if nested_has_many_associations.empty?
     nested_has_many_associations[association.to_sym] = association_helper

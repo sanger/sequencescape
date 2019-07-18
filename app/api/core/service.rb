@@ -106,9 +106,7 @@ module Core
       after('/*', &block)
     end
 
-    def command
-      @command
-    end
+    attr_reader :command
 
     register Core::Benchmarking
     register Core::Service::ErrorHandling

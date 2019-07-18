@@ -1,3 +1,4 @@
+# Rails migration
 class MigrateRequestState < ActiveRecord::Migration[5.1]
   def change
     ActiveRecord::Base.transaction do

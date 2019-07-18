@@ -25,6 +25,7 @@ class LibraryCreationRequest < CustomerRequest
   def on_started
     ActiveRecord::Base.transaction do
       super
+      transfer_aliquots
       target_asset.aliquots.each do |aliquot|
         aliquot.library      ||= target_asset
         aliquot.library_type ||= library_type

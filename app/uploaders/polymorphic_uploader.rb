@@ -24,9 +24,7 @@ module CarrierWave
         end
 
         # Returns the current path of the file
-        def path
-          @path
-        end
+        attr_reader :path
 
         delegate :size, to: :current_data
 

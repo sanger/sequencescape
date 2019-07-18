@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApiV2Helper
   DEFAULT_HEADERS = {
     'ACCEPT' => 'application/vnd.api+json',

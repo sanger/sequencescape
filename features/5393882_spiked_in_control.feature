@@ -9,11 +9,11 @@ Feature: Creating Spiked phiX
   Scenario: The cluster formation team member create a batch that will use spiked in controls.
     Given I have a batch with 8 requests for the "Cluster formation PE (spiked in controls)" pipeline
     And  I have a hybridization spiked buffer called "Aliquot #1"
-    And the barcode for the asset "Aliquot #1" is "NT1O"
+    And the barcode for the asset "Aliquot #1" is "NP1G"
 
     When I on batch page
     And I follow "Add Spiked in Control"
-    And I fill in "Barcode" with the human barcode "NT1x"
+    And I fill in "Barcode" with the human barcode "NP1G"
     And I check "sample 1 checkbox"
     And I check "sample 2 checkbox"
     And I check "sample 3 checkbox"
@@ -30,12 +30,12 @@ Feature: Creating Spiked phiX
   @npg @xml
   Scenario: Create a batch and check the xml
     And  I have a hybridization spiked buffer called "Aliquot #1"
-    And the barcode for the asset "Aliquot #1" is "NT1O"
+    And the barcode for the asset "Aliquot #1" is "NP1G"
 
     Given I have a batch with 8 requests for the "Cluster formation PE (spiked in controls)" pipeline
     When I on batch page
     And I follow "Add Spiked in Control"
-    And I fill in "Barcode" with the human barcode "NT1x"
+    And I fill in "Barcode" with the human barcode "NP1G"
     And I uncheck "sample 1 checkbox"
     And I check "sample 2 checkbox"
     And I uncheck "sample 3 checkbox"

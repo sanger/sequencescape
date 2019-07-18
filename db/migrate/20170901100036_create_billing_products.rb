@@ -1,3 +1,4 @@
+# Rails migration
 class CreateBillingProducts < ActiveRecord::Migration[4.2]
   def change
     create_table :billing_products do |t|

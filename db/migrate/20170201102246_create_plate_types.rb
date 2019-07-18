@@ -1,3 +1,4 @@
+# Rails migration
 class CreatePlateTypes < ActiveRecord::Migration
   def change
     create_table :plate_types do |t|

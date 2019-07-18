@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Then(/^I should see dna qc table:$/) do |expected_results_table|
   actual_table = table(fetch_table('table#sortable_batches'))
   actual_table.map_column!('Qc') { |_text| '' }

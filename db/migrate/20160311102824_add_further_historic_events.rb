@@ -1,3 +1,4 @@
+# Builds event warehoue events for historical stuff
 class AddFurtherHistoricEvents < ActiveRecord::Migration
   def up
     say 'Adding MX Library complete for ISC'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
 def create_submission_of_assets(template, assets, request_options = {})

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^the barcode for the sample tube "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
   sample_tube = SampleTube.find_by!(name: name)
   sample_tube.primary_barcode.update!(barcode: barcode)

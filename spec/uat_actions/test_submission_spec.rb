@@ -22,6 +22,21 @@ describe UatActions::TestSubmission do
       expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
       expect(uat_action.report['submission_id']).to be_a Integer
     end
+
+    context 'with optional plate purpose supplied' do
+      let(:parameters) do
+        {
+          submission_template_name: submission_template.name,
+          plate_purpose_name: PlatePurpose.stock_plate_purpose.name
+        }
+      end
+
+      it 'can be performed' do
+        expect(uat_action.perform).to eq true
+        expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
+        expect(uat_action.report['submission_id']).to be_a Integer
+      end
+    end
   end
 
   it 'returns a default' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './test/test_helper'
 
 class ReportContractTest < ActiveSupport::TestCase

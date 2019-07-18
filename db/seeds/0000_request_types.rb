@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RequestType.create_asset
 
 RequestType.create!(

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^no order templates exist$/ do
   SubmissionTemplate.destroy_all
 end

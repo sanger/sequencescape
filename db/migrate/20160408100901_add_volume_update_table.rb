@@ -1,3 +1,5 @@
+# Volume updates are performed by external applications to record transmission
+# of liquid from a plate.
 class AddVolumeUpdateTable < ActiveRecord::Migration
   def change
     ActiveRecord::Base.transaction do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
   FakeBarcodeService.instance.barcode(barcode)
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given(/^Pipeline "([^\"]*)" and a setup for submitted at$/) do |name|
   pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline '#{name}'"
   asset_type = pipeline_name_to_asset_type(name)
