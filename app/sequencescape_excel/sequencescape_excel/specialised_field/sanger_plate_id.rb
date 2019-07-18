@@ -35,25 +35,24 @@ module SequencescapeExcel
       private
 
       def check_container
-        primary_receptacle = sample.primary_receptacle
-        return if value == primary_receptacle.labware.human_barcode
+        return if value == sample_manifest_asset.human_barcode
 
         check_for_foreign_barcode
       end
 
       def check_for_foreign_barcode
-        @foreign_barcode_format = Barcode.matches_any_foreign_barcode_format?(value)
+        @foreign_barcode_format = Barcode.matching_barcode_format(value)
         if foreign_barcode_format.present?
           check_foreign_barcode_unique
         else
-          errors.add(:sample, 'barcode has been modified, but it is not a valid foreign barcode format')
+          errors.add(:sanger_plate_id, 'barcode has been modified, but it is not a valid foreign barcode format')
         end
       end
 
       def check_foreign_barcode_unique
-        return if Barcode.unique_for_format?(foreign_barcode_format, value).blank?
+        return unless Barcode.exists_for_format?(foreign_barcode_format, value)
 
-        errors.add(:sample, 'The sample container foreign barcode is already in use.')
+        errors.add(:sanger_plate_id, 'foreign barcode is already in use.')
       end
     end
   end

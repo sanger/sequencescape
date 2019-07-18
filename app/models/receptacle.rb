@@ -1,5 +1,13 @@
 AssetRefactor.when_not_refactored do
-  class Receptacle < Labware; end
+  class Receptacle < Labware
+    def labware
+      self
+    end
+
+    def receptacle
+      self
+    end
+  end
 end
 
 AssetRefactor.when_refactored do

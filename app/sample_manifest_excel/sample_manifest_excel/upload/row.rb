@@ -17,6 +17,7 @@ module SampleManifestExcel
       attr_reader :sanger_sample_id
 
       validates :number, presence: true, numericality: true
+      validate :sanger_sample_id_exists?, if: :sanger_sample_id
       validates_presence_of :data, :columns
       validate :check_sample_present
       validate :sample_can_be_updated
@@ -27,7 +28,7 @@ module SampleManifestExcel
       # Creates the specialised fields for updating the sample based on the passed columns
       def initialize(attributes = {})
         super
-        @sanger_sample_id ||= value(:sanger_sample_id) if columns.present? && data.present?
+        @sanger_sample_id ||= value(:sanger_sample_id).presence if columns.present? && data.present?
         @specialised_fields = create_specialised_fields if sanger_sample_id.present?
         link_tag_groups_and_indexes
       end
@@ -123,7 +124,7 @@ module SampleManifestExcel
       end
 
       def sample
-        @sample ||= find_or_create_sample if sanger_sample_id.present? && !empty?
+        @sample ||= manifest_asset&.find_or_create_sample if sanger_sample_id.present? && !empty?
       end
 
       def sample_updated?
@@ -151,19 +152,14 @@ module SampleManifestExcel
 
       private
 
-      def find_or_create_sample
-        sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
-        sample.presence || create_sample
+      def manifest_asset
+        @manifest_asset ||= SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)
       end
 
-      def create_sample
-        manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)
-        if manifest_asset.present?
-          manifest_asset.sample_manifest.create_sample_and_aliquot(sanger_sample_id, manifest_asset.asset)
-        else
-          errors.add(:base, "#{row_title} Cannot find sample manifest for Sanger ID: #{sanger_sample_id}")
-          nil
-        end
+      def sanger_sample_id_exists?
+        return if manifest_asset.present?
+
+        errors.add(:base, "#{row_title} Cannot find sample manifest for Sanger ID: #{sanger_sample_id}")
       end
 
       def sample_can_be_updated
@@ -203,12 +199,10 @@ module SampleManifestExcel
       end
 
       def create_specialised_fields
-        return unless columns.present? && data.present? && sample.present?
+        return unless columns.present? && data.present? && manifest_asset.present?
 
-        [].tap do |specialised_fields|
-          columns.with_specialised_fields.each do |column|
-            specialised_fields << column.specialised_field.new(value: at(column.number), sample: sample)
-          end
+        columns.with_specialised_fields.map do |column|
+          column.specialised_field.new(value: at(column.number), sample_manifest_asset: manifest_asset)
         end
       end
 
