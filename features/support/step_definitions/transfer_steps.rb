@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 TRANSFER_TYPES = [
   'between plates',
   'from plate to tube'

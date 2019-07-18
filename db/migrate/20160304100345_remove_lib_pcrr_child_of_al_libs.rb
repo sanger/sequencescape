@@ -1,3 +1,4 @@
+# Rails migration
 class RemoveLibPcrrChildOfAlLibs < ActiveRecord::Migration
   def child_to_remove
     Purpose.find_by(name: 'Lib PCRR').id

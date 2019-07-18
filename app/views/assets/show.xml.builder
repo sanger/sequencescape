@@ -24,7 +24,13 @@ xml.asset(api_data) {
       xml.id parent_asset.id
     end
   }
-  unless @exclude_nested_resource
+  if @exclude_nested_resource # just send the ids
+    xml.request_ids {
+      @asset.request_ids.each do |request_id|
+        xml.id request_id
+      end
+    }
+  else
     xml.requests {
       @asset.requests.each do |asset_request|
         xml.request {
@@ -39,12 +45,6 @@ xml.asset(api_data) {
             end
           }
         }
-      end
-    }
-  else # just send the ids
-    xml.request_ids {
-      @asset.request_ids.each do |request_id|
-        xml.id request_id
       end
     }
   end

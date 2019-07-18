@@ -282,7 +282,7 @@ class Batch < ApplicationRecord
   end
 
   def mpx_library_name
-    return '' unless multiplexed? && requests.size > 0
+    return '' unless multiplexed? && requests.any?
 
     mpx_library_tube = requests.first.target_asset.children.first
     mpx_library_tube&.name || ''

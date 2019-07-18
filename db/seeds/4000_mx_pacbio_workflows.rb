@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipeline|
   pipeline.sorter               = 14
   pipeline.automated            = false

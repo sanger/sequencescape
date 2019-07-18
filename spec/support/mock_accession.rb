@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MockAccession
   Response = Struct.new(:code, :body)
 

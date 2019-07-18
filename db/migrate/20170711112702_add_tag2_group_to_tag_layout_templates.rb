@@ -1,3 +1,4 @@
+# Rails migration
 class AddTag2GroupToTagLayoutTemplates < ActiveRecord::Migration[4.2]
   def change
     add_reference :tag_layout_templates, :tag2_group

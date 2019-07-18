@@ -15,9 +15,7 @@ namespace :pmb do
           "#{LabelPrinter::PmbClient.base_url}/label_types"
         end
 
-        def label_types
-          @label_types
-        end
+        attr_reader :label_types
 
         def label_type_params(label_type_name)
           label_params = {

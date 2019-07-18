@@ -45,7 +45,7 @@ class Api::RequestIO < Api::Base
   class WarehouseAsset
     attr_reader :asset
     def initialize(asset)
-      @asset = asset.is_a?(Well) ? asset : asset.labware
+      @asset = asset.is_a?(Well) ? asset : asset.try(:labware)
     end
 
     def two_dimensional_barcode

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Then /^there should be no bait library layouts$/ do
   assert_equal(0, BaitLibraryLayout.count, 'There appear to be some bait library layouts')
 end

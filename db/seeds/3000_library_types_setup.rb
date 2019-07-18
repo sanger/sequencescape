@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SetupLibraryTypes
   def self.existing_associations_for(request_type)
     {

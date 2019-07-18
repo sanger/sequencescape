@@ -17,7 +17,7 @@ class Receptacles::CommentsController < ApplicationController
   def create
     @receptacle.comments.create(description: params[:comment], user: current_user)
     @comments = @receptacle.comments
-    render partial: 'list', locals: { commentable: @receptacle, visible: true }
+    render partial: 'list', locals: { commentable: @receptacle, visible: true, receptacle: @receptacle }
   end
 
   def destroy

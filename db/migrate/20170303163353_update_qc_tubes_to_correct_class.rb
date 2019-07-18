@@ -1,3 +1,4 @@
+# Rails migration
 class UpdateQcTubesToCorrectClass < ActiveRecord::Migration
   PURPOSE_OLD_TARGET = {
     'PF MiSeq Stock' => 'StockMultiplexedLibraryTube',

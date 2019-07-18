@@ -1,3 +1,5 @@
+# Submission workflows have been removed, so we remove the associations
+# that are associated with them.
 class RemoveSubmissionWorkflowColumns < ActiveRecord::Migration[5.1]
   def change
     remove_column :orders, :workflow_id, :integer

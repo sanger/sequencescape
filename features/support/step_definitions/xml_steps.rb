@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def sort_arrays(xml_data)
   if xml_data.is_a?(Hash)
     Hash[xml_data.map { |k, v| [k, sort_arrays(v)] }]

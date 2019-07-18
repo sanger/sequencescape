@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Then /^a "([^\"]*)" number of "([^\"]*)" should be created$/ do |num, records|
   assert_equal num.to_i, records.humanize.constantize.count
 end

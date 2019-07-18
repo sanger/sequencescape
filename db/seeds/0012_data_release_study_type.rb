@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 dr_study_types = [
   ['genomic sequencing',           false, false],
   ['transcriptomics',              false, true],

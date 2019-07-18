@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Initially copied from SNP
 plate_purposes = <<~EOS
   - name: Working Dilution

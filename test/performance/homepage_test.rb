@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # run export JRUBY_OPTS="-Xlaunch.inproc=false --profile.api" before the performance tests
 # use RUBYOPT='-W0' to turn off the warnings
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given 'the UUID for the {relationship} plate of {asset_creation} is {string}' do |plate, plate_creation, uuid_value|
   set_uuid_for(plate_creation.send(plate), uuid_value)
 end

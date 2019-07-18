@@ -3,7 +3,6 @@
 # A transfer request collection provides a means
 # of bulk creating transfer requests between arbitrary
 # sources and destinations.
-
 # Used to provide a means of bulk creating transfer requests via the API
 class TransferRequestCollection < ApplicationRecord
   include Uuid::Uuidable
@@ -12,7 +11,7 @@ class TransferRequestCollection < ApplicationRecord
   # Greatly improves performance.
   class UuidCache
     def initialize(parameters)
-      uuids = parameters.flat_map(&:values).select { |v| Uuid::ValidRegexp.match? v }
+      uuids = parameters.flat_map(&:values).select { |v| v.is_a?(String) && Uuid::ValidRegexp.match?(v) }
       @cache = Uuid.where(external_id: uuids).pluck(:external_id, :resource_type, :resource_id).each_with_object({}) do |uuid_item, store|
         store[uuid_item[0, 2]] = uuid_item[-1]
       end

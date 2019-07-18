@@ -69,8 +69,8 @@ class BroadcastEvent < ApplicationRecord
   end
 
   # @return [String] The value of the event_type key in the generated message
-  def self.event_type
-    @event_type
+  class << self
+    attr_reader :event_type
   end
 end
 

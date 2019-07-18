@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^I have a hybridization spiked buffer called "([^\"]+)"$/ do |name|
   buffer = FactoryBot.create(:spiked_buffer, name: name)
   buffer.parents << FactoryBot.create(:phi_x_stock_tube, name: 'indexed phiX')

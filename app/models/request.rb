@@ -147,7 +147,7 @@ class Request < ApplicationRecord
         else
           [
             'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-            'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+            'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
           ]
         end
 
@@ -179,7 +179,7 @@ class Request < ApplicationRecord
         else
           [
             'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-            'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+            'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
           ]
         end
 
@@ -206,7 +206,7 @@ class Request < ApplicationRecord
         else
           [
             'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
           ]
         end
 
@@ -239,7 +239,7 @@ class Request < ApplicationRecord
         else
           [
             'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
           ]
         end
 

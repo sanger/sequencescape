@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given '{int} pending delayed jobs are processed' do |count|
   Delayed::Worker.new(quiet: ENV['LOUD_DELAYED_JOBS'].nil?).work_off(count)
   errors = Delayed::Job.all.map { |j| j.run_at? && j.last_error }.reject(&:blank?)

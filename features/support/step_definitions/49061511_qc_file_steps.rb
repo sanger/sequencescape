@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^the plate with ID (\d+) has attatched QC data with a UUID of "(.*?)"$/ do |id, uuid|
   filename = File.expand_path(File.join(Rails.root, %w{test data example_file.txt}))
   File.open(filename) do |file|

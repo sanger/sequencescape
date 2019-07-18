@@ -1,3 +1,7 @@
+# Rails migration
+
+# Previously these classes handled some differences in business logic. This
+# complexity has been pushed outwards.
 class EliminateUnnecessaryPlatePurposeClasses < ActiveRecord::Migration
   class Purpose < ApplicationRecord
     self.table_name = 'plate_purposes'

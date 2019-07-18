@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BarcodeHelper
   MockBarcode = Struct.new(:barcode)
 

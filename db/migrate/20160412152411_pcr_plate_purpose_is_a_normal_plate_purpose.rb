@@ -1,3 +1,4 @@
+# We are consolidating plate purpose classes as we push custom behaviour outwards
 class PcrPlatePurposeIsANormalPlatePurpose < ActiveRecord::Migration
   class Purpose < ApplicationRecord
     self.table_name = 'plate_purposes'

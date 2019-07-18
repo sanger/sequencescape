@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class PrintJobTest < ActiveSupport::TestCase
@@ -18,7 +20,7 @@ class PrintJobTest < ActiveSupport::TestCase
                       bottom_right: 'user WTCCC',
                       top_far_right: plate.parent.try(:barcode_number).to_s,
                       barcode: plate.machine_barcode } }] },
-                    label_template_id: 15, }
+                    label_template_id: 15 }
     @print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateCreator, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
   end
 

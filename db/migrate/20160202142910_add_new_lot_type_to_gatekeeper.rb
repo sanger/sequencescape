@@ -1,3 +1,4 @@
+# Pre Stamped stamp plates represent plates that come in ready stamped and pre-quality controlled
 class AddNewLotTypeToGatekeeper < ActiveRecord::Migration
   def change
     ActiveRecord::Base.transaction do

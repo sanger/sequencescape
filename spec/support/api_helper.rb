@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApiHelper
   def api_request(action, path, body = nil)
     headers = {

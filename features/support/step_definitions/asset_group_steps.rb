@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given '{study_name} has an asset group called {string}' do |study, group_name|
   study.asset_groups.create!(name: group_name)
 end

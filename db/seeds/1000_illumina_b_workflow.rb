@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Metrics/BlockLength
 # TODO: This should probably still get refactored, but disabling this here allows us to drastically reduce the
 # maximum block size in the todo yaml.
@@ -50,7 +52,7 @@ ActiveRecord::Base.transaction do
       for_multiplexing: true,
       no_target_asset: false,
       target_purpose: Purpose.find_by!(name: 'Lib Pool SS-XP-Norm')
-    },
+    }
   ].each do |request_type_options|
     RequestType.create!(shared_options_b.merge(request_type_options))
   end

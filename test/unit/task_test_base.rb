@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TaskTestBase < ActiveSupport::TestCase
   class << self
     def expected_partial(name)

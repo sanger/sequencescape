@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given(/^a plate template exists$/) do
   FactoryBot.create :plate_template
 end

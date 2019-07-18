@@ -1,5 +1,6 @@
 require './lib/request_class_deprecator'
 
+# Multiple request classes have been combined into a single request, eliminating complexity
 class UnifyInitialTransferRequests < ActiveRecord::Migration
   include RequestClassDeprecator
 

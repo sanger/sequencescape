@@ -62,8 +62,9 @@
 
 
 <div id="plate_layouts">
+  <% indexed_requests = batch.requests.includes(asset: [:map, { plate: :barcodes }]).index_by(&:target_asset_id) %>
   <% robot_plate_layout[0].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
-      <% plate = Plate.find_from_barcode(barcode) %>
+      <% plate = Plate.includes(wells: [:map, :well_attribute]).find_from_barcode(barcode) %>
       <% if plate.buffer_required? %>
         <h3> Buffer Required </h3>
       <% end %>
@@ -88,7 +89,7 @@
         <% (num_columns).times do |column| -%>
           <% well = plate_wells[row*num_columns+column] -%>
             <% if  well.present? -%>
-              <% request = batch.requests.find_by_target_asset_id(well.id)  %>
+              <% request = indexed_requests[well.id]  %>
               <% source_well = request&.asset %>
               <% if source_well.present? && -%>
                 <% if source_well.plate.is_a?(ControlPlate) %>
