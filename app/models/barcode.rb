@@ -63,8 +63,6 @@ class Barcode < ApplicationRecord
   end
 
   def self.exists_for_format?(barcode_format, search_barcode)
-    return true unless barcode_format.present? && search_barcode.present?
-
     Barcode.exists?(format: barcode_format, barcode: search_barcode)
   end
 
