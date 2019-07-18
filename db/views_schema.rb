@@ -12,7 +12,7 @@ algorithm: 'UNDEFINED', security: 'DEFINER'
 )
 ViewsSchema.create_view(
 'view_lanes',
-%Q{select `a`.`id` AS `internal_id_2`,`a`.`name` AS `name`,`a`.`external_release` AS `external_release`,`a`.`created_at` AS `created`,`u`.`external_id` AS `uuid`,`a`.`qc_state` AS `state` from (`assets` `a` left join `uuids` `u` on(((`u`.`resource_id` = `a`.`id`) and (`u`.`resource_type` = 'Asset')))) where (`a`.`sti_type` = 'Lane')},
+%Q{select `a`.`id` AS `internal_id`,`a`.`name` AS `name`,`a`.`external_release` AS `external_release`,`a`.`created_at` AS `created`,`u`.`external_id` AS `uuid`,`a`.`qc_state` AS `state` from (`assets` `a` left join `uuids` `u` on(((`u`.`resource_id` = `a`.`id`) and (`u`.`resource_type` = 'Asset')))) where (`a`.`sti_type` = 'Lane')},
 algorithm: 'UNDEFINED', security: 'DEFINER'
 )
 ViewsSchema.create_view(
