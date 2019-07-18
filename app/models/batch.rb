@@ -82,7 +82,7 @@ class Batch < ApplicationRecord
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
   delegate :size, to: :requests
-  delegate :sequencing?, :generate_target_assets_on_batch_create?, to: :pipeline
+  delegate :sequencing?, :generate_target_assets_on_batch_create?, :min_size, to: :pipeline
 
   alias friendly_name id
 
@@ -106,8 +106,8 @@ class Batch < ApplicationRecord
   end
 
   def batch_meets_minimum_size
-    if pipeline.min_size && (requests.size < pipeline.min_size)
-      errors.add :base, "You must create batches of at least #{pipeline.min_size} requests in the pipeline #{pipeline.name}"
+    if min_size && (requests.size < min_size)
+      errors.add :base, "You must create batches of at least #{min_size} requests in the pipeline #{pipeline.name}"
     end
   end
 
@@ -282,14 +282,10 @@ class Batch < ApplicationRecord
   end
 
   def mpx_library_name
-    mpx_name = ''
-    if multiplexed? && requests.any?
-      mpx_library_tube = requests.first.target_asset.child
-      if mpx_library_tube.present?
-        mpx_name = mpx_library_tube.name
-      end
-    end
-    mpx_name
+    return '' unless multiplexed? && requests.any?
+
+    mpx_library_tube = requests.first.target_asset.children.first
+    mpx_library_tube&.name || ''
   end
 
   def display_tags?
@@ -397,7 +393,7 @@ class Batch < ApplicationRecord
     return nil if requests.empty?
 
     requests.first.asset.ancestors.joins(
-      'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id'
+      "INNER JOIN plate_purposes ON #{Plate.table_name}.plate_purpose_id = plate_purposes.id"
     )
             .find_by(plate_purposes: { name: name })
   end
@@ -536,19 +532,19 @@ class Batch < ApplicationRecord
       end
 
       downstream_requests_needing_asset(request) do |downstream_requests|
-        requests_to_update.concat(downstream_requests.map { |r| [r.id, target_asset.id] })
+        requests_to_update.concat(downstream_requests.map { |r| [r, target_asset.receptacle] })
       end
 
       request.update!(target_asset: target_asset)
 
       # All links between the two assets as new, so we can bulk create them!
-      asset_links << [request.asset.id, request.target_asset.id]
+      asset_links << [request.asset.labware.id, target_asset.labware.id]
     end
 
     AssetLink::BuilderJob.create(asset_links)
 
-    requests_to_update.each do |request_details|
-      Request.find(request_details.first).update!(asset_id: request_details.last)
+    requests_to_update.each do |request, asset|
+      request.update!(asset: asset)
     end
   end
 end

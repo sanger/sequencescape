@@ -19,6 +19,10 @@ FactoryBot.define do
     factory :sample_with_sanger_sample_id do
       sequence(:sanger_sample_id, &:to_s)
     end
+
+    factory :accessioned_sample do
+      association :sample_metadata, factory: :sample_metadata_with_accession_number
+    end
   end
 
   factory :study_sample do

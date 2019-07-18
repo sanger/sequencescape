@@ -1,4 +1,7 @@
 class PacBioSamplePrepRequest < CustomerRequest
+  delegate :pac_bio_library_tube_metadata, to: :target_tube, allow_nil: true
+  delegate :movie_length, to: :pac_bio_library_tube_metadata, allow_nil: true
+
   has_metadata as: Request do
     custom_attribute(:insert_size)
     custom_attribute(:sequencing_type)
@@ -14,9 +17,12 @@ class PacBioSamplePrepRequest < CustomerRequest
 
   private
 
+  def target_tube
+    target_asset&.labware
+  end
+
   def on_started
-    target_asset.generate_name(asset.display_name.tr(':', '-'))
-    target_asset.save
+    target_asset.labware.update!(name: asset.display_name.tr(':', '-'))
   end
 
   def on_passed

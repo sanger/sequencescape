@@ -38,7 +38,7 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
                                 target_asset: destination
 
     batch.requests << request
-    asset_group.assets << source
+    asset_group.assets << source.receptacle
   end
 
   pipeline = Pipeline.find_by(name: 'Cluster formation PE') or raise StandardError, "Cannot find pipeline '#{name}'"

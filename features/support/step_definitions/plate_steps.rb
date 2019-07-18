@@ -38,11 +38,12 @@ Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   FactoryBot.create(:untagged_well, plate: plate, map: map)
 end
 
-Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
-  bc = SBCF::SangerBarcode.from_machine(machine_barcode)
-  raise 'Currently only supports DN barcodes' unless bc.prefix.human == 'DN'
+Given 'a tube named {string} with barcode {string} exists' do |name, machine_barcode|
+  FactoryBot.create :tube, name: name, sanger_barcode: { machine_barcode: machine_barcode }
+end
 
-  FactoryBot.create :plate, barcode: bc.number
+Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
+  FactoryBot.create :plate, sanger_barcode: { machine_barcode: machine_barcode }
 end
 
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
@@ -78,8 +79,8 @@ Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
 end
 
 Then /^plate "([^"]*)" is the parent of plate "([^"]*)"$/ do |parent_plate_barcode, child_plate_barcode|
-  parent_plate = Asset.find_from_barcode(parent_plate_barcode)
-  child_plate = Asset.find_from_barcode(child_plate_barcode)
+  parent_plate = Plate.find_by_barcode(parent_plate_barcode)
+  child_plate = Plate.find_by_barcode(child_plate_barcode)
   assert parent_plate
   assert child_plate
   parent_plate.children << child_plate

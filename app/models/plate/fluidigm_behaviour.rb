@@ -8,7 +8,11 @@ module Plate::FluidigmBehaviour
 
         joins([
           :well_requests_as_target,
-          'LEFT OUTER JOIN events ON eventful_id = assets.id AND eventful_type = "Asset" AND family = "update_fluidigm_plate" AND content = "FLUIDIGM_DATA" '
+          %(LEFT OUTER JOIN events
+            ON eventful_id = #{Plate.table_name}.id
+            AND eventful_type = "#{Plate.base_class.name}"
+            AND family = "update_fluidigm_plate"
+            AND content = "FLUIDIGM_DATA")
         ])
           .includes(:barcodes)
           .where(

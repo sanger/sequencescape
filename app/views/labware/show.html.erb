@@ -1,14 +1,15 @@
 
-<%- add :about, "This page displays details of a asset" %>
+<%- add :about, "This page displays details of a piece of labware" %>
 <% add :menu, (pluralize @asset.comments.size, "comment") => labware_comments_path(@asset) -%>
 <% if @asset.printable? %>
   <% add :menu, "Print label" => print_asset_path(@asset) -%>
 <% end %>
+
 <% if @asset.is_a?(Plate) %>
   <% add :menu, "QC results" => plate_path(@asset) %>
 <% end %>
 
-<% add :menu, "Event history" => history_asset_path(@asset) -%>
+<% add :menu, "Event history" => history_labware_path(@asset) -%>
 
 <% add(:menu, 'Request additional sequencing' => new_request_receptacle_path_in_context(@asset)) if current_user_can_request_additional_sequencing_on?(@asset) -%>
 <% add(:menu, 'Request a new library' => new_request_receptacle_path_in_context(@asset)) if current_user_can_request_additional_library_on?(@asset) -%>

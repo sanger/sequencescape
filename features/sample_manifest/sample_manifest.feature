@@ -133,7 +133,7 @@ Feature: Sample manifest
     Then I should see "Report being generated"
     Then I should see qc reports table:
       | Study      | Created by | Download   | Rerun |
-      | Test study | john        | Processing |       |
+      | Test study | john       | Processing |       |
     Given 1 pending delayed jobs are processed
     And I am on the Qc reports homepage
     Then I should see qc reports table:

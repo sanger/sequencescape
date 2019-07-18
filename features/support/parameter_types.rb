@@ -9,21 +9,21 @@ ParameterType(
 ParameterType(
   name: 'asset_id',
   regexp: /the (plate|tube|lane) with ID (\d+)/,
-  transformer: ->(_, id) { Asset.find(id) }
+  transformer: ->(_, id) { Labware.find(id) }
 )
 
 ParameterType(
   name: 'plate_name',
   regexp: /the plate "([^\"]+)"/,
   type: Plate,
-  transformer: ->(name) { Plate.find_by(name: name) }
+  transformer: ->(name) { Plate.find_by!(name: name) }
 )
 
 ParameterType(
   name: 'asset_name',
-  regexp: /the (plate|tube|sample tube) "([^\"]+)"/,
+  regexp: /the (plate|tube|sample tube|labware) "([^\"]+)"/,
   type: Asset,
-  transformer: ->(_, name) { Asset.find_by(name: name) }
+  transformer: ->(_, name) { Labware.find_by!(name: name) }
 )
 
 ParameterType(
@@ -128,4 +128,11 @@ ParameterType(
       raise StandardError, "Unknown type #{name}"
     end
   }
+)
+
+ParameterType(
+  name: 'asset_group',
+  regexp: /the asset group "([^\"]+)"/,
+  type: AssetGroup,
+  transformer: ->(name) { AssetGroup.find_by!(name: name) }
 )

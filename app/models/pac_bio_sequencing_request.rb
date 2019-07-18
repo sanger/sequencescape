@@ -1,6 +1,10 @@
 class PacBioSequencingRequest < CustomerRequest
   self.sequencing = true
 
+  delegate :pac_bio_library_tube_metadata, to: :source_tube, allow_nil: true
+  delegate :movie_length, to: :pac_bio_library_tube_metadata, allow_nil: true
+  delegate :insert_size, :sequencing_type, to: :request_metadata
+
   has_metadata as: Request do
     custom_attribute(:insert_size,      validator: true, required: true, integer: true, selection: true)
     custom_attribute(:sequencing_type,  validator: true, required: true, selection: true)
@@ -20,8 +24,12 @@ class PacBioSequencingRequest < CustomerRequest
   def on_started
   end
 
+  def source_tube
+    asset&.labware
+  end
+
   # Returns a list of attributes that must match for any given pool
   def shared_attributes
-    "MovieLength:#{asset.pac_bio_library_tube_metadata.movie_length};InsertSize:#{request_metadata.insert_size};SequencingType:#{request_metadata.sequencing_type};"
+    "MovieLength:#{movie_length};InsertSize:#{insert_size};SequencingType:#{sequencing_type};"
   end
 end

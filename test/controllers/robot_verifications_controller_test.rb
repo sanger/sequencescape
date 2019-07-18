@@ -12,9 +12,9 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
 
-      @batch = FactoryBot.create :batch, barcode: '6262'
-      @robot = FactoryBot.create :robot, barcode: '1'
-      @plate = FactoryBot.create :plate, barcode: '142334'
+      @batch = create :batch, barcode: '6262'
+      @robot = create :robot, barcode: '1'
+      @plate = create :plate, barcode: '142334'
       @destination_plate_scanned_barcode = @plate.machine_barcode
     end
 
@@ -32,21 +32,17 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         @expected_layout[0].each do |_barcode, bed_number|
           @robot.robot_properties.create(key: "DEST#{bed_number}", value: '5')
         end
-        count = 1
-        @expected_layout[1].each do |barcode, bed_number|
+
+        @expected_layout[1].each_with_index do |(barcode, bed_number), index|
           @robot.robot_properties.create(key: "SCRC#{bed_number}", value: bed_number)
-          source_plate = FactoryBot.create :plate, barcode: barcode
-          well = FactoryBot.create :well, map_id: Map.for_position_on_plate(count, 96, source_plate.asset_shape).first.id
-          target_well = FactoryBot.create :well, map_id: Map.for_position_on_plate(count, 96, source_plate.asset_shape).first.id
-          target_well.well_attribute = FactoryBot.create :well_attribute
-          well.plate = source_plate
-          target_well.plate = @plate
-          well_request = FactoryBot.create :request, state: 'passed'
-          well_request.asset = well
-          well_request.target_asset = target_well
-          well_request.save
+          source_plate = create :plate, barcode: barcode
+          position = Map.for_position_on_plate(index + 1, 96, source_plate.asset_shape).first
+
+          well = create :well, map: position, plate: source_plate
+
+          target_well = create :well, map: position, plate: @plate
+          well_request = create :request, state: 'passed', asset: well, target_asset: target_well
           @batch.requests << well_request
-          count = 1 + count
         end
         @robot.save
         @before_event_count = Event.count
