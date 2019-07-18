@@ -1,3 +1,4 @@
+# Rails migration
 class RemoveIlluminaBTubesSearch < ActiveRecord::Migration
   class Search < ApplicationRecord
     self.table_name = 'searches'

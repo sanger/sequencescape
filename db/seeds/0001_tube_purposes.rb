@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveRecord::Base.transaction do
   barcode_printer_type = BarcodePrinterType.find_by(name: '1D Tube') or raise 'Cannot find 1D printer'
 

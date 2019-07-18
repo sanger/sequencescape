@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class TestWorkflowsController < WorkflowsController
@@ -65,7 +67,7 @@ class AssignTagsTaskTest < TaskTestBase
         params = { workflow_id: @workflow, batch_id: @batch.id,
                    tag_group: @tag_group.id.to_s,
                    mx_library_name: 'MX library',
-                   tag: { @mx_request.id.to_s => @tag.id.to_s }, }
+                   tag: { @mx_request.id.to_s => @tag.id.to_s } }
         @task.do_task(@controller, params)
       end
 

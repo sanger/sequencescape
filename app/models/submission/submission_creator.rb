@@ -127,15 +127,15 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     raise InvalidInputException, 'Samples cannot be added from multiple sources at the same time.' unless input_methods.size == 1
 
     case input_methods.first
-    when :asset_group_id    then { asset_group: find_asset_group }
-    when :sample_names_text then
+    when :asset_group_id then { asset_group: find_asset_group }
+    when :sample_names_text
       {
         assets: wells_on_specified_plate_purpose_for(
           plate_purpose,
           find_samples_from_text(sample_names_text)
         )
       }
-    when :barcodes_wells_text then
+    when :barcodes_wells_text
       {
         assets: find_assets_from_text(barcodes_wells_text)
       }

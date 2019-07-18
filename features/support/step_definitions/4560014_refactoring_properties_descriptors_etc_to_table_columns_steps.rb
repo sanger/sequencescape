@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # NOTE: The UUIDs for the requests are generated as sequential numbers from the study UUID
 def create_request(request_type, study, project, asset, target_asset, additional_options = {})
   request = FactoryBot.create(:request_with_submission,

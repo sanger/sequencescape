@@ -1,3 +1,4 @@
+# Back populate asset links
 class AddMissingAssetLinksBetweenPlateAndTubes < ActiveRecord::Migration
   def up
     Transfer::FromPlateToTubeBySubmission.find_each do |transfer|

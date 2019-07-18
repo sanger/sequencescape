@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'singleton'
 require 'rest-client'
 
@@ -60,9 +62,7 @@ class FakeAccessionService
     @sent ||= []
   end
 
-  def last_received
-    @last_received
-  end
+  attr_reader :last_received
 
   def clear
     @bodies = []

@@ -1,3 +1,4 @@
+# Rails migration
 class AddWorkCompletionTable < ActiveRecord::Migration
   def change
     create_table :work_completions do |t|

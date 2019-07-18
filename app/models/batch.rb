@@ -283,7 +283,7 @@ class Batch < ApplicationRecord
 
   def mpx_library_name
     mpx_name = ''
-    if multiplexed? && requests.size > 0
+    if multiplexed? && requests.any?
       mpx_library_tube = requests.first.target_asset.child
       if mpx_library_tube.present?
         mpx_name = mpx_library_tube.name

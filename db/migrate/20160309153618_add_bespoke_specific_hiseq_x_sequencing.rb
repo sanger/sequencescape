@@ -1,3 +1,4 @@
+# Rails migration
 class AddBespokeSpecificHiseqXSequencing < ActiveRecord::Migration
   class SubmissionWorkflow < ApplicationRecord
     self.table_name = 'submission_workflows'

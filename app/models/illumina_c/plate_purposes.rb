@@ -23,7 +23,7 @@ module IlluminaC::PlatePurposes
   BRANCHES = [
     ['ILC Stock', 'ILC AL Libs', 'ILC Lib PCR', 'ILC Lib PCR-XP', 'ILC Lib Pool Norm'],
     ['ILC Stock', 'ILC AL Libs Tagged', 'ILC Lib Pool Norm'],
-    ['ILC Stock', 'ILC Lib Chromium', 'ILC Lib Pool Norm'],
+    ['ILC Stock', 'ILC Lib Chromium', 'ILC Lib Pool Norm']
   ]
 
   STOCK_PLATE_PURPOSE = 'ILC Stock'

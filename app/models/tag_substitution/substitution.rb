@@ -109,7 +109,7 @@ class TagSubstitution::Substitution
     comment << " Tag changed from #{oligo_index[original_tag_id]} to #{oligo_index[substitute_tag_id]};" if substitute_tag?
     comment << " Tag2 changed from #{oligo_index[original_tag2_id]} to #{oligo_index[substitute_tag2_id]};" if substitute_tag2?
     @other_attributes.each do |k, v|
-      " #{k} changed to #{v};"
+      comment << " #{k} changed to #{v};"
     end
     comment
   end

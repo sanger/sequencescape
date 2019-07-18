@@ -1,3 +1,4 @@
+# Rails migration
 class AddChromiumSubmissionTemplates < ActiveRecord::Migration
   SEQUENCING_KEYS = %w(
     illumina_c_hiseq_paired_end_sequencing

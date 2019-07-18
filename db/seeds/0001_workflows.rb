@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'control_request_type_creation'
 
 Pipeline.send(:include, ControlRequestTypeCreation)
@@ -605,7 +607,7 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (spiked in controls
       { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
       { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
       { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
