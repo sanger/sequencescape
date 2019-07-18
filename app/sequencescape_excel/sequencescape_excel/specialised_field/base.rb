@@ -15,9 +15,10 @@ module SequencescapeExcel
         end
       end
 
-      attr_accessor :value, :sample
+      attr_accessor :value, :sample_manifest_asset
 
       delegate :present?, to: :value, prefix: true
+      delegate :asset, :sample, to: :sample_manifest_asset
 
       def update(_attributes = {}); end
     end
