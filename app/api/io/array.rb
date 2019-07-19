@@ -1,3 +1,4 @@
+# Provides tools for paginating Array objects
 class ::Io::Array
   extend Core::Io::Collection
 
