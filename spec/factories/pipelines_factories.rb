@@ -56,14 +56,6 @@ FactoryBot.define do
     end
   end
 
-  factory :family do
-    name                  { 'New Family name' }
-    description           { 'Something goes here' }
-    relates_to            { '' }
-    task
-    association(:workflow, factory: :lab_workflow)
-  end
-
   factory :pipeline do
     name                  { generate :pipeline_name }
     automated             { false }

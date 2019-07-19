@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190704131254) do
+ActiveRecord::Schema.define(version: 20190719130520) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -469,7 +469,6 @@ ActiveRecord::Schema.define(version: 20190704131254) do
     t.string "kind"
     t.boolean "required"
     t.integer "sorter"
-    t.integer "family_id"
     t.string "key", limit: 50
     t.index ["task_id"], name: "index_descriptors_on_task_id"
   end
@@ -569,14 +568,6 @@ ActiveRecord::Schema.define(version: 20190704131254) do
     t.datetime "updated_at"
     t.text "comment"
     t.index ["failable_id"], name: "index_failures_on_failable_id"
-  end
-
-  create_table "families", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "name"
-    t.text "description"
-    t.string "relates_to"
-    t.integer "task_id"
-    t.integer "pipeline_workflow_id"
   end
 
   create_table "identifiers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

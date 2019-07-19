@@ -13,7 +13,6 @@
 # {WorkflowsController}. This behaviour is mostly defined in modules under {Task}.
 class Task < ApplicationRecord
   belongs_to :workflow, class_name: 'Workflow', foreign_key: :pipeline_workflow_id
-  has_many :families
   has_many :descriptors, -> { order('sorter') }, dependent: :destroy
 
   self.inheritance_column = 'sti_type'
