@@ -31,7 +31,7 @@ class Plate::SampleTubeFactory < SimpleDelegator
       factory = Plate::SampleTubeFactory.new(plate)
       next if factory.wells.empty?
 
-      asset_group.assets << factory.create_sample_tubes_and_print_barcodes(barcode_printer)
+      asset_group.assets << factory.create_sample_tubes_and_print_barcodes(barcode_printer).map(&:receptacle)
     end
 
     return nil if asset_group.assets.empty?

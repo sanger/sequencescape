@@ -10,10 +10,13 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     def endpoint_details(object)
       object = @throughs.inject(object) { |t, s| t.send(s) }.send(@name) || return
       yield(@options[:json].to_s, endpoint_for_object(object), object)
-    rescue StandardError => _e
+    rescue StandardError => e
       # We really shouldn't have an exception here, so if we do, its probably
-      # an issue with configuration
-      raise StandardError, "Misconfiguration of endpoint: #{self}"
+      # an issue with configuration. We rescue and re-raise as otherwise the
+      # exception and stack trace are singularly useless.
+      Rails.logger.error(e.message)
+      Rails.logger.error(e.backtrace)
+      raise StandardError, "Misconfiguration of endpoint or association: #{self}"
     end
     private :endpoint_details
 

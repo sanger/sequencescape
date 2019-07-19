@@ -13,6 +13,10 @@ module Barcode::Barcodeable
     end
   end
 
+  def any_barcode_matching?(other_barcode)
+    barcodes.any? { |barcode| barcode =~ other_barcode }
+  end
+
   def generate_barcode
     self.sanger_barcode = { prefix: default_prefix, number: AssetBarcode.new_barcode } unless primary_barcode
   end

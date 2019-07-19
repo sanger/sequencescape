@@ -106,7 +106,7 @@ class SampleRegistrar < ApplicationRecord
     record.sample_tube.name = record.sample.name
   end
   after_create do |record|
-    record.sample_tube.aliquots.create!(sample: record.sample, study: record.study)
+    record.sample_tube.receptacle.aliquots.create!(sample: record.sample, study: record.study)
   end
 
   # SampleTubes are registered within an AssetGroup, unless the AssetGroup is unspecified.
@@ -122,7 +122,7 @@ class SampleRegistrar < ApplicationRecord
   end
 
   after_create do |record|
-    record.asset_group.assets.concat(record.sample_tube) if record.asset_group.present?
+    record.asset_group.assets.concat(record.sample_tube.receptacle) if record.asset_group.present?
   end
 
   def self.create_asset_group_by_name(name, study)

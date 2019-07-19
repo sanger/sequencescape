@@ -1,19 +1,16 @@
 module Submission::AssetSubmissionFinder
   def is_plate?(details)
-    details['barcode'].present? and details['plate well'].present?
+    details['barcode'].present? && details['plate well'].present?
   end
 
   def is_tube?(details)
-    details['barcode'].present? and details['plate well'].blank?
+    details['barcode'].present? && details['plate well'].blank?
   end
 
-  def find_all_assets_by_id_or_name_including_samples!(ids, names)
-    return Receptacle.including_samples.find(*ids) if ids.present?
-    raise StandardError, 'Must specify at least an ID or a name' if names.blank?
-
-    Receptacle.including_samples.where(name: names).tap do |found|
+  def find_all_assets_by_name_including_samples!(names)
+    Receptacle.for_bulk_submission.named(names).tap do |found|
       missing = names - found.map(&:name)
-      raise ActiveRecord::RecordNotFound, "Could not find #{name} with names #{missing.inspect}" if missing.present?
+      raise ActiveRecord::RecordNotFound, "Could not find Labware with names #{missing.inspect}" if missing.present?
     end
   end
 
@@ -25,16 +22,16 @@ module Submission::AssetSubmissionFinder
     raise StandardError, "Cannot find plate with barcode #{barcode} for #{details['rows']}" if plate.nil?
 
     well_locations = well_list.map(&:strip)
-    wells = plate.wells.including_samples.located_at(well_locations)
+    wells = plate.wells.for_bulk_submission.located_at(well_locations)
     raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.length != well_locations.size
 
     wells
   end
 
   def find_tubes_including_samples_for!(details)
-    details['barcode'].map do |barcode|
-      SBCF::HUMAN_BARCODE_FORMAT.match?(barcode) or raise StandardError, 'Tube Barcode should be human readable (e.g. NT2P)'
-      Tube.including_samples.find_from_barcode(barcode) or raise StandardError, "Cannot find tube with barcode #{barcode} for rows #{details['rows']}."
+    Receptacle.on_a(Tube).for_bulk_submission.with_barcode(details['barcode']).tap do |found|
+      missing = details['barcode'].reject { |barcode| found.any? { |tube| tube.any_barcode_matching?(barcode) } }
+      raise ActiveRecord::RecordNotFound, "Could not find Tubes with barcodes #{missing.inspect}" if missing.present?
     end
   end
 end

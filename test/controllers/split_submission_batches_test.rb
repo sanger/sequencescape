@@ -16,7 +16,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       @study = FactoryBot.create :study
       @asset_count = 4
       @asset_group = FactoryBot.create :asset_group
-      @asset_group.assets = create_list :sample_tube, @asset_count
+      @asset_group.assets = create_list(:sample_tube, @asset_count).map(&:receptacle)
       @sequencing_pipeline = create :sequencing_pipeline
     end
 
@@ -64,7 +64,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         setup do
           @requests_group_a = LibraryCreationRequest.all[0..1]
           @requests_group_b = LibraryCreationRequest.all[2..3]
-          @pipeline = create :library_creation_pipeline, request_types: [@lc], asset_type: 'LibraryTube'
+          @pipeline = create :library_creation_pipeline, request_types: [@lc]
           @batch_a = Batch.create!(requests: @requests_group_a, pipeline: @pipeline)
           @batch_a.start!(user: @user)
           @batch_a.complete!(@user)

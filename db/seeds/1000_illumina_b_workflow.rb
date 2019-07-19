@@ -214,8 +214,7 @@ ActiveRecord::Base.transaction do
     barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
     cherrypick_direction: 'column',
     size: 8,
-    asset_shape: AssetShape.find_by(name: 'StripTubeColumn'),
-    barcode_for_tecan: 'ean13_barcode'
+    asset_shape: AssetShape.find_by(name: 'StripTubeColumn')
   )
 end
 

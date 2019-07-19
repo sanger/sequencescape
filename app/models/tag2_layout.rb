@@ -30,7 +30,7 @@ class Tag2Layout < ApplicationRecord
   belongs_to :plate
   validates_presence_of :plate
 
-  belongs_to :source, class_name: 'Asset'
+  belongs_to :source, class_name: 'Labware'
 
   scope :include_tag, ->() { includes(:tag) }
   scope :include_plate, ->() { includes(:plate) }

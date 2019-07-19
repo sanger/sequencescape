@@ -45,7 +45,7 @@ class LibPoolNormTubeGenerator
             pass_and_complete(create_lib_pool_norm_tube(tube))
           end
 
-          @asset_group = AssetGroup.create(assets: destination_tubes, study: study, name: "#{plate.human_barcode}_qc_completed_tubes")
+          @asset_group = AssetGroup.create!(assets: destination_tubes.map(&:receptacle), study: study, name: "#{plate.human_barcode}_qc_completed_tubes")
         end
         true
       rescue => e
@@ -65,8 +65,8 @@ class LibPoolNormTubeGenerator
   end
 
   def pass_and_complete(tube)
-    StateChange.create(user: user, target: tube, target_state: 'passed')
-    StateChange.create(user: user, target: tube, target_state: 'qc_complete')
+    StateChange.create!(user: user, target: tube, target_state: 'passed')
+    StateChange.create!(user: user, target: tube, target_state: 'qc_complete')
   end
 
   def check_state

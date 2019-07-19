@@ -338,7 +338,7 @@ class Well < Receptacle
   def display_name
     plate_name = plate.present? ? plate.human_barcode : '(not on a plate)'
     plate_name ||= plate.display_name # In the even the plate is barcodeless (ie strip tubes) use its name
-    "#{plate_name}:#{map ? map.description : ''}"
+    "#{plate_name}:#{map_description}"
   end
 
   def details

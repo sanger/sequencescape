@@ -38,7 +38,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
           end
           a = create :aliquot, receptacle: @phix, tag: @tags[2]
           @phix.aliquots = [a]
-          @lane.parents << @phix
+          @lane.labware.parents << @phix
           @aliquot_index = [1, 5, 3, 4]
         end
 
@@ -93,7 +93,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
           end
           a = create :aliquot, receptacle: @phix, tag: @tags[2]
           @phix.aliquots = [a]
-          @lane.parents << @phix
+          @lane.labware.parents << @phix
           @aliquot_index = [1, 5, 3, 4]
         end
 
@@ -148,7 +148,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
           end
           a = create :aliquot, receptacle: @phix, tag: @tags[2]
           @phix.aliquots = [a]
-          @lane.parents << @phix
+          @lane.labware.parents << @phix
           @aliquot_index = [1, 5, 3, 4]
         end
 

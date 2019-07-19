@@ -51,14 +51,13 @@ class PacBio::SampleSheet
     # request = requests.first
 
     library_tubes = requests.map(&:asset)
-    library_tubes_metadata = library_tubes.map(&:pac_bio_library_tube_metadata)
-    first_tube_metadata = library_tubes_metadata.first
+    first_tube_metadata = requests.first.pac_bio_library_tube_metadata
     first_request_metadata = requests.first.request_metadata
 
     well = requests.first.target_asset
     [
       Map.pad_description(well.map),
-      concat(library_tubes, :name, '-'),
+      concat(library_tubes, :labware_name, '-'),
       first_tube_metadata.prep_kit_barcode,
       nil,
       first_tube_metadata.binding_kit_barcode,

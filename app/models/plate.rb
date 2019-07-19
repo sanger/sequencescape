@@ -67,6 +67,7 @@ class Plate < Labware
     end
     has_many :requests_as_source, through: :wells
     has_many :requests_as_target, through: :wells
+    has_many :receptacles, through: :container_associations, inverse_of: :plate, source: :well
   end
 
   # This block is enabled when we have the labware table present as part of the AssetRefactor

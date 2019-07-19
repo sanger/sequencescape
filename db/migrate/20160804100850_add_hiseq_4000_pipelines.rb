@@ -5,7 +5,6 @@ class AddHiseq4000Pipelines < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       SequencingPipeline.create!(
         name: 'HiSeq 4000 PE',
-        asset_type: 'Lane',
         automated: false,
         active: true,
         location: cluster_formation_freezer,
@@ -24,7 +23,6 @@ class AddHiseq4000Pipelines < ActiveRecord::Migration
 
       SequencingPipeline.create!(
         name: 'HiSeq 4000 SE',
-        asset_type: 'Lane',
         automated: false,
         active: true,
         location: cluster_formation_freezer,
