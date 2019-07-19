@@ -42,7 +42,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def acceptable_purposes
-      [Tube::Purpose.standard_sample_tube, Tube::Purpose.find_by(name: 'saphyr')]
+      [Tube::Purpose.standard_sample_tube, Tube::Purpose.find_by(name: 'saphyr')].compact
     end
 
     def updated_by!(user, samples)
