@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.
 module Aliquot::Aliquotable
   def self.included(base)
