@@ -91,8 +91,6 @@ FactoryBot.define do
     name            { generate :pipeline_name }
     automated       { false }
     active          { true }
-    group_by_parent { true }
-    asset_type      { 'Well' }
     max_size        { 3000 }
     summary         { true }
     externally_managed { false }
@@ -108,8 +106,6 @@ FactoryBot.define do
   factory :fluidigm_pipeline, class: CherrypickPipeline do
     name                    { generate :pipeline_name }
     active                  { true }
-    group_by_parent         { true }
-    asset_type              { 'Well' }
     max_size                { 192 }
     sorter                  { 11 }
     paginate                { false }
@@ -129,7 +125,6 @@ FactoryBot.define do
     name                  { generate :pipeline_name }
     automated             { false }
     active                { true }
-    asset_type            { 'Lane' }
 
     workflow { build :lab_workflow_for_pipeline }
 
@@ -169,7 +164,6 @@ FactoryBot.define do
 
   factory :multiplexed_library_creation_pipeline do
     name { |_a| FactoryBot.generate :pipeline_name }
-    asset_type { 'LibraryTube' }
     automated             { false }
     active                { true }
 

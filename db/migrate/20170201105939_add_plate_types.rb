@@ -1,3 +1,4 @@
+# Rails migration
 class AddPlateTypes < ActiveRecord::Migration
   def up
     plate_types_with_maximum_volume.each do |name, maximum_volume|

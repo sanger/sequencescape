@@ -1,3 +1,4 @@
+# Rails migration
 class AddTransferRequestCollectionsTable < ActiveRecord::Migration
   def change
     create_table 'transfer_request_collections' do |t|

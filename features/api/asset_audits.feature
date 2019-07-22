@@ -141,7 +141,7 @@ Feature: Access asset audits through the API
       }
       """
     Given I am logged in as "user"
-      And I am on the events page for asset 1
+      And I am on the events page for labware 1
     Then the activity logging table should be:
       | Message    | Key      | Created by | Created at             |
       | My message | some_key | john       | October 23, 2010 23:00 |

@@ -1,3 +1,4 @@
+# Multiple request classes have been combined into a single request, eliminating complexity
 class UnifyInitialDownstreamClasses < ActiveRecord::Migration
   class Request < ApplicationRecord
     self.table_name = 'requests'

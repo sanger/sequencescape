@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^I am using "(.*)" to authenticate$/ do |auth_method|
   configatron.authentication = auth_method
 end

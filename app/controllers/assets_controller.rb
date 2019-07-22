@@ -43,10 +43,10 @@ class AssetsController < ApplicationController
 
     if @receptacle.nil? && @labware.nil?
       raise ActiveRecord::RecordNotFound
-    elsif @receptacle.nil? || @labware&.receptacle == @receptacle
-      redirect_to labware_path(@labware)
-    elsif @labware.nil? && @receptacle.present?
+    elsif @labware.nil? || @labware.try(:receptacle) == (@receptacle || :none)
       redirect_to receptacle_path(@receptacle)
+    elsif @receptacle.nil? && @labware.present?
+      redirect_to labware_path(@labware)
     else
       # Things are ambiguous, we'll make you select
       render :show, status: :multiple_choices

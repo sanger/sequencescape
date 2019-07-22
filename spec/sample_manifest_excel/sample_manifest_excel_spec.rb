@@ -10,9 +10,7 @@ RSpec.describe SampleManifestExcel, type: :model, sample_manifest_excel: true do
     end
   end
 
-  after do
-    SampleManifestExcel.reset!
-  end
+  after { SampleManifestExcel.reset! }
 
   it 'loads the configuration' do
     expect(SampleManifestExcel.configuration).to be_loaded

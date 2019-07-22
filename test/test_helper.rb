@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 
 ENV['RAILS_ENV'] = 'test'

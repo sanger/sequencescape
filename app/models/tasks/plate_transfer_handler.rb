@@ -8,7 +8,7 @@ module Tasks::PlateTransferHandler
   end
 
   def includes_for_plate_creation
-    [{ asset: [:map, { plate: [:plate_purpose, :barcodes] }, :aliquots] }, { target_asset: [:pac_bio_library_tube_metadata] }]
+    [{ asset: [:map, { plate: [:plate_purpose, :barcodes] }, :aliquots] }, { target_asset: [] }]
   end
 
   def find_or_create_target(task)
@@ -16,7 +16,7 @@ module Tasks::PlateTransferHandler
 
     # We only eager load the request stuff if we actually need it.
     batch_requests = @batch.requests.includes(includes_for_plate_creation)
-    source_wells = batch_requests.map { |r| r.asset }
+    source_wells = batch_requests.map(&:asset)
     raise InvalidBatch if unsuitable_wells?(source_wells)
 
     task.purpose.create!.tap do |target|

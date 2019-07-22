@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^I have a lot type for testing called "(.*?)"$/ do |name|
   LotType.create!(
     name: name,
@@ -131,6 +133,6 @@ Given /^the user with UUID "(.*?)" is a 'qa_manager'$/ do |uuid|
   Uuid.find_by(external_id: uuid).resource.roles.create(name: 'qa_manager')
 end
 
-Then /^the plate "(.*?)" has the parent "(.*?)"$/ do |child_name, parent_name|
-  assert_equal parent_name, Plate.find_by(name: child_name).parents.first.try(:name) || 'No plate found'
+Then '{plate_name} has the parent {string}' do |child, parent_name|
+  assert_equal parent_name, child.parents.first.try(:name) || 'No plate found'
 end

@@ -1,5 +1,13 @@
 AssetRefactor.when_not_refactored do
-  class Receptacle < Labware; end
+  class Receptacle < Labware
+    def labware
+      self
+    end
+
+    def receptacle
+      self
+    end
+  end
 end
 
 AssetRefactor.when_refactored do
@@ -9,6 +17,34 @@ AssetRefactor.when_refactored do
     include Asset::ReceptacleAssociations
     belongs_to :labware
     has_many :barcodes, through: :labware
+    has_many :parents, through: :labware
+    has_many :ancestors, through: :labware
+    has_many :descendants, through: :labware
+
+    delegate :human_barcode, :machine_barcode, to: :labware, allow_nil: true
+    delegate :asset_type_for_request_types, to: :labware, allow_nil: true
+    delegate :has_stock_asset?, to: :labware, allow_nil: true
+    delegate :children, to: :labware, allow_nil: true
+    # Keeps event behaviour consistent
+    delegate :subject_type, to: :labware
+
+    # This really doesn't make sense any more. Should probably migrate legacy data
+    # to a barcode type and retire this
+    delegate :two_dimensional_barcode, :two_dimensional_barcode=, to: :labware
+
+    scope :named, ->(name) { joins(:labware).where(labware: { name: name }) }
+    # We accept not only an individual barcode but also an array of them.
+    scope :with_barcode, lambda { |*barcodes|
+      db_barcodes = Barcode.extract_barcodes(barcodes)
+      joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+    }
+    scope :include_map, -> { includes(:map) }
+    scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
+    scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
+
+    def any_barcode_matching?(other_barcode)
+      barcodes.any? { |barcode| barcode =~ other_barcode }
+    end
 
     self.stock_message_template = 'ReceptacleStockResourceIO'
   end
@@ -103,7 +139,7 @@ class Receptacle
   scope :with_sample,    ->(sample) { where(aliquots: { sample_id: Array(sample) }).joins(:aliquots) }
 
   # Scope for caching the samples of the receptacle
-  scope :including_samples, -> { includes(samples: :studies) }
+  scope :for_bulk_submission, -> { includes(samples: :studies) }
 
   def update_aliquot_quality(suboptimal_quality)
     aliquots.each { |a| a.update_quality(suboptimal_quality) }
@@ -119,17 +155,12 @@ class Receptacle
       comments.size
     end
 
-    scope :on_a, ->(klass) { where_is_a?(klass) }
+    scope :on_a, ->(klass) { where_is_a(klass) }
   end
 
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
-    delegate :human_barcode, :machine_bracode, to: :labware, allow_nil: true
-    delegate :asset_type_for_request_types, to: :labware, allow_nil: true
-    delegate :has_stock_asset?, to: :labware, allow_nil: true
-    delegate :children, to: :labware, allow_nil: true
-
     def total_comment_count
       comments.size + labware_comment_count
     end
@@ -231,7 +262,7 @@ class Receptacle
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
     def name
-      labware_name = labware.present? ? labware.try(:human_barcode) : '(not on a labware)'
+      labware_name = labware.present? ? labware.try(:name) : '(not on a labware)'
       labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
       labware_name
     end
@@ -247,6 +278,18 @@ class Receptacle
     def update_from_qc(qc_result)
       Tube::AttributeUpdater.update(self, qc_result)
     end
+  end
+
+  delegate :name, to: :labware, prefix: true
+
+  # Compatibility for v1 API maintains legacy 'type' for assets
+  def api_asset_type
+    legacy_asset_type.tableize
+  end
+
+  # Compatibility for v1 API maintains legacy 'type' for assets
+  def legacy_asset_type
+    labware.sti_type
   end
 
   private

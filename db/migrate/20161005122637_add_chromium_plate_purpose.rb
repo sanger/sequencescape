@@ -1,3 +1,4 @@
+# Rails migration
 class AddChromiumPlatePurpose < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do

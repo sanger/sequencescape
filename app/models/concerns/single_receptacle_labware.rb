@@ -33,6 +33,8 @@ module SingleReceptacleLabware
                 :closed, :closed=,
                 :primary_aliquot_if_unique,
                 :source_request,
+                :resource, :resource=,
+                :register_stock!,
                 to: :receptacle
 
       scope :include_aliquots_for_api, -> { includes(receptacle: { aliquots: Io::Aliquot::PRELOADS }) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^an accessioning webservice exists which returns a (study|sample|dac|policy) accession number "([^"]*)"$/ do |type, accession_number|
   FakeAccessionService.instance.success(type, accession_number)
 end

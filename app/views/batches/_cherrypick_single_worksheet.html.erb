@@ -23,12 +23,12 @@
        <% robot_plate_layout[1].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
          <% plate = Plate.find_from_barcode(barcode) %>
          <% source_plate_colour["#{barcode}"] = "colour#{index%12}" %>
-       <tr>
-         <td>SCRC<%= index %></td>
-         <td><%= plate.barcode_number %></td>
-         <td><strong><%= barcode %></strong></td>
-         <td ><%= plate.storage_location %></td>
-       </tr>
+         <tr>
+           <td>SCRC<%= index %></td>
+           <td><%= plate.barcode_number %></td>
+           <td><strong><%= barcode %></strong></td>
+           <td ><%= plate.storage_location %></td>
+         </tr>
        <% end -%>
      </tbody>
    </table>
@@ -62,8 +62,9 @@
 
 
 <div id="plate_layouts">
+  <% indexed_requests = batch.requests.includes(asset: [:map, { plate: :barcodes }]).index_by(&:target_asset_id) %>
   <% robot_plate_layout[0].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
-      <% plate = Plate.find_from_barcode(barcode) %>
+      <% plate = Plate.includes(wells: [:map, :well_attribute]).find_from_barcode(barcode) %>
       <% if plate.buffer_required? %>
         <h3> Buffer Required </h3>
       <% end %>
@@ -80,18 +81,17 @@
       </tr>
     </thead>
     <tbody>
-    <% plate_wells = Hash[plate.wells.map{|w| [w.map.row_order,w]}]%>
+    <% plate_wells = plate.wells.index_by {|w| w.map.row_order } %>
     <% num_rows.times do |row| -%>
       <tr>
         <% rowchar = (65+row).chr %>
         <td><strong><%= rowchar %></strong></td>
         <% (num_columns).times do |column| -%>
-            <% well = plate_wells[row*num_columns+column] -%>
-
+          <% well = plate_wells[row*num_columns+column] -%>
             <% if  well.present? -%>
-            <% request = batch.requests.find_by_target_asset_id(well.id)  %>
-              <% if well.parent.present?  &&  request.present?-%>
-                <% source_well = request.asset %>
+              <% request = indexed_requests[well.id]  %>
+              <% source_well = request&.asset %>
+              <% if source_well.present? && -%>
                 <% if source_well.plate.is_a?(ControlPlate) %>
                   <td class="control">
                 <% elsif source_well.is_a?(Well) %>
@@ -99,11 +99,11 @@
                 <% else %>
                   <td>
                 <% end -%>
-                <%= source_well.map.description %>
+                <%= source_well.map_description %>
                 <%= source_well.plate.barcode_number %>
                 v<%= "%.#{configatron.tecan_precision}f" % well.get_picked_volume %> b<%= "%.#{configatron.tecan_precision}f" % well.get_buffer_volume %>
               <% else %>
-              <td>
+                <td>
               <% end -%>
             <% else %>
             <td>

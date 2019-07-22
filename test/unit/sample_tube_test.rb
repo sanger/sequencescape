@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'timecop'
 
@@ -19,7 +21,7 @@ class SampleTubeTest < ActiveSupport::TestCase
         @study = create :study
         @sample = create :sample
         @aliquot = create :aliquot, study: @study, sample: @sample, receptacle: @sample_tube
-        @messenger = Messenger.new(target: @sample_tube, template: 'TubeStockResourceIO', root: 'stock_resource')
+        @messenger = @sample_tube.register_stock!
       end
     end
 
@@ -33,22 +35,14 @@ class SampleTubeTest < ActiveSupport::TestCase
                          'sample_uuid' => @sample.uuid,
                          'study_uuid' => @study.uuid
                        ],
-                       'stock_resource_id' => @sample_tube.id,
-                       'stock_resource_uuid' => @sample_tube.uuid,
+                       'stock_resource_id' => @sample_tube.receptacle.id,
+                       'stock_resource_uuid' => @sample_tube.receptacle.uuid,
                        'machine_barcode' => '3980012345764',
                        'human_barcode' => 'NT12345L',
-                       'labware_type' => 'tube'
+                       'labware_type' => 'tube',
+                       'labware_coordinate' => nil
                      }
                    }, JSON.parse(@messenger.to_json))
-    end
-
-    should 'allow registration of messengers' do
-      @messenger_count = Messenger.count
-      @sample_tube.register_stock!
-      assert_equal 1, Messenger.count - @messenger_count
-      assert_equal 'stock_resource', Messenger.last.root
-      assert_equal 'TubeStockResourceIO', Messenger.last.template
-      assert_equal @sample_tube, Messenger.last.target
     end
   end
 end

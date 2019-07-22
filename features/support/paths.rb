@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NavigationHelpers
   # Finds the specified page for the given model with the specified name.
   def page_for_model(model, page, name)
@@ -96,12 +98,17 @@ module NavigationHelpers
     when /the show page for library tube "([^\"]+)"/
       tube_name = $1
       library_tube = LibraryTube.find_by!(name: tube_name)
-      asset_path(library_tube)
+      labware_path(library_tube)
 
-    when /^the show page for asset "([^\"]+)"$/
+    when /^the show page for labware "([^\"]+)"$/
       asset_name = $1
-      asset = Asset.find_by!(name: asset_name)
-      asset_path(asset)
+      asset = Labware.find_by!(name: asset_name)
+      labware_path(asset)
+
+    when /^the show page for receptacle "([^\"]+)"$/
+      asset_name = $1
+      asset = Labware.find_by!(name: asset_name).receptacle
+      receptacle_path(asset)
 
     when /^the show page for asset "([^\"]+)" within "([^\"]+)"$/
       asset_name, study_name = $1, $2
@@ -212,8 +219,8 @@ module NavigationHelpers
       request_path(request)
 
     when /the events page for asset with barcode "(\d+)"/
-      asset = Asset.find_from_barcode($1)
-      history_asset_path(asset)
+      asset = Labware.find_from_barcode($1)
+      history_labware_path(asset)
 
     when /the event history page for sample with sanger_sample_id "([^"]+)"/
       sample = Sample.find_by(sanger_sample_id: $1)
@@ -239,12 +246,9 @@ module NavigationHelpers
     when /the tag changing page/
       change_tags_path
 
-    when /the events page for asset (\d+)/
-      asset = Asset.find($1)
-      history_asset_path(asset)
-    when /the events page for asset "([^\"]+)"/
-      asset = Asset.find_by(name: $1)
-      history_asset_path(asset)
+    when /the events page for labware (\d+)/
+      asset = Labware.find($1)
+      history_labware_path(asset)
 
     when /the XML show page for request (\d+)/
       request = Request.find($1)

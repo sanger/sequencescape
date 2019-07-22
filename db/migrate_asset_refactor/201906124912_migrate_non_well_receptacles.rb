@@ -12,7 +12,8 @@ class MigrateNonWellReceptacles < ActiveRecord::Migration[5.1]
       UPDATE receptacles
       SET receptacles.sti_type = 'Receptacle'
       WHERE receptacles.sti_type != 'Well'
-        AND receptacles.sti_type != 'QcTube';
+        AND receptacles.sti_type != 'Receptacle::Qc'
+        AND receptacles.sti_type != 'Lane';
     ")
   end
 end

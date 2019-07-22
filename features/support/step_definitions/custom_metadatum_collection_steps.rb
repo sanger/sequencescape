@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^a custom metadatum collection exists with ID (\d+)$/ do |id|
   metadata = [FactoryBot.build(:custom_metadatum, key: 'Key1', value: 'Value1'),
               FactoryBot.build(:custom_metadatum, key: 'Key2', value: 'Value2')]

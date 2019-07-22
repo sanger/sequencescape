@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^sequencescape is setup for 4759010$/ do
   # Number of tags here needs to be the same as the number of requests below.
   group = FactoryBot.create(:tag_group, name: 'Tag group for 4759010', tag_count: 10)
@@ -36,7 +38,7 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
                                 target_asset: destination
 
     batch.requests << request
-    asset_group.assets << source
+    asset_group.assets << source.receptacle
   end
 
   pipeline = Pipeline.find_by(name: 'Cluster formation PE') or raise StandardError, "Cannot find pipeline '#{name}'"

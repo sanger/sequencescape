@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LabelPrinterTests
   module SharedTubeTests
     def self.included(base)

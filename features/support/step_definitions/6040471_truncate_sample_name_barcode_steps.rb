@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 When /^I print the following labels in the asset group$/ do |table|
   label_bitmaps = {}
   table.hashes.each do |h|
@@ -24,15 +26,15 @@ Given /^I have an asset group "([^"]*)" which is part of "([^"]*)"$/ do |asset_g
   AssetGroup.create!(name: asset_group_name, study: Study.find_by(name: study_name))
 end
 
-Given /^asset group "([^\"]*)" contains a "([^\"]*)" called "([^\"]*)"$/ do |asset_group_name, asset_type, asset_name|
-  asset = eval(asset_type).create!(name: asset_name, sanger_barcode: { number: '17', prefix: 'NT' })
+Given /^asset group "([^\"]*)" contains a sample tube called "([^\"]*)"$/ do |asset_group_name, asset_name|
+  asset = SampleTube.create!(name: asset_name, sanger_barcode: { number: '17', prefix: 'NT' })
   asset_group = AssetGroup.find_by(name: asset_group_name)
-  asset_group.assets << asset
+  asset_group.assets << asset.receptacle
   asset_group.save!
 end
 
 Given /^the asset "([^\"]*)" has a sanger_sample_id of "([^\"]*)"$/ do |asset_id, sanger_sample_id|
-  asset = Asset.find(asset_id)
+  asset = Labware.find(asset_id)
   asset.aliquots.clear
   asset.aliquots.create!(sample: Sample.create!(name: 'Sample_123456', sanger_sample_id: sanger_sample_id))
 end

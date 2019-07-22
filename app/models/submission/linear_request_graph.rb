@@ -3,9 +3,9 @@
 module Submission::LinearRequestGraph
   # Source data is used to pass information down the request graph
   # asset
-  # @param asset             [Asset, nil]   The asset from which the request will be build.
-  #                                        nil indicates no upstream asset in cases where target assets
-  #                                        are generated later.
+  # @param asset             [Receptacle, nil]   The asset from which the request will be build.
+  #                                              nil indicates no upstream asset in cases where target assets
+  #                                              are generated later.
   # @param qc_metric         [QcMetric]     The Qc Metric associated with this asset for this request type
   # @param previous_requests [Array<Request>, nil] Used to pass requests down the chain when building the
   #                                        request graph. Used to. eg. pass down libraries

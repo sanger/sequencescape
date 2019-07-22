@@ -1,3 +1,4 @@
+# Rails migration
 class AddExtractionAttributes < ActiveRecord::Migration
   def change
     ActiveRecord::Base.transaction do
