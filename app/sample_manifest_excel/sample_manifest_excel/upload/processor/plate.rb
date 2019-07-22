@@ -34,6 +34,7 @@ module SampleManifestExcel
 
             plate_id_for_sample = find_plate_id_for_sample_id(sample_id)
             next if plate_id_for_sample.nil?
+
             # Check that a barcode is used for only one plate
             if unique_bcs.key?(plate_barcode)
               err_msg = 'Barcode is used in multiple plates'
@@ -49,7 +50,7 @@ module SampleManifestExcel
               unique_plates[plate_id_for_sample] = plate_barcode
             end
           end
-          return nil, nil
+          [nil, nil]
         end
 
         def find_plate_id_for_sample_id(sample_id)
