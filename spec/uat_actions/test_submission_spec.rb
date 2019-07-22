@@ -37,6 +37,22 @@ describe UatActions::TestSubmission do
         expect(uat_action.report['submission_id']).to be_a Integer
       end
     end
+
+    context 'with optional library type supplied' do
+      let(:parameters) do
+        {
+          submission_template_name: submission_template.name,
+          library_type_name: 'Standard'
+        }
+      end
+
+      it 'can be performed' do
+        expect(uat_action.perform).to eq true
+        expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
+        expect(uat_action.report['submission_id']).to be_a Integer
+        expect(uat_action.report['library_type']).to eq 'Standard'
+      end
+    end
   end
 
   it 'returns a default' do
