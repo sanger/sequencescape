@@ -1,90 +1,75 @@
 # frozen_string_literal: true
 
+# This is pretty convoluted, and pushes some of our cops metric up massively
+# We disable them here, rather than relying on todo as these metric work on a
+# worst case basis, and we really don't want things getting as convoluted as this
+# elsewhere.
 # rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/ParameterLists
 module Sanger
   module Testing
     module Controller
       module Macros
         RESTFUL_ACTIONS = %w(index new create show update destroy edit).freeze
 
-        def resource_test(resource_name, params = {})
-          params.symbolize_keys!
+        def resource_test(
+          resource_name,
+          ignore_actions: [],
+          actions: (RESTFUL_ACTIONS - ignore_actions),
+          with_prefix: '',
+          other_actions: [],
+          formats: %w[html xml json],
+          defaults: {},
+          protect_on_update: [],
+          extra_on_update: {},
+          parent: nil,
+          setup_with: nil,
+          teardown_with: nil,
+          user: :user
+        )
+
           resource_name = resource_name.to_sym
 
-          ignore_actions   = params[:ignore_actions] || []
-          actions          = params[:actions] || (RESTFUL_ACTIONS - ignore_actions)
           untested_actions = (RESTFUL_ACTIONS - ignore_actions) - actions
-          path_prefix      = params[:with_prefix] || ''
 
-          raise Exception.new, ':actions need to be an Array' unless actions.instance_of?(Array)
-
-          other_actions   = params[:other_actions] || []
-          formats         = params[:formats] || %w[html xml json]
+          raise ':actions need to be an Array' unless actions.instance_of?(Array)
 
           context 'should be a resource' do
             setup do
-              @factory_options = params[:defaults] || {}
-              @create_options  = params[:defaults] || {}
-              @update_options  = (params[:defaults] || {}).reject do |k, _v|
-                params.fetch(:protect_on_update, []).include?(k)
-              end.deep_merge!(params.fetch(:extra_on_update, {}))
+              @factory_options = defaults
+              @create_options  = defaults
+              @update_options  = defaults.reject do |k, _v|
+                protect_on_update.include?(k)
+              end.deep_merge(extra_on_update)
               @input_params = {}
             end
 
-            show_url              = "#{path_prefix}#{resource_name}_path(@object)"
-            index_url             = "#{path_prefix}#{resource_name.to_s.pluralize}_path"
-            grand_parent_resource = params[:grand_parent]
-            parent_resource       = params[:parent]
+            show_url              = "#{with_prefix}#{resource_name}_path(@object)"
+            index_url             = "#{with_prefix}#{resource_name.to_s.pluralize}_path"
+            parent_resource       = parent
 
-            if grand_parent_resource && parent_resource
-              show_url  = "#{grand_parent_resource}_#{parent_resource}_#{resource_name}_path(@#{grand_parent_resource}, @#{parent_resource}, @object)"
-              index_url = "#{grand_parent_resource}_#{parent_resource}_#{resource_name.to_s.pluralize}_path(@#{grand_parent_resource}, @#{parent_resource})"
-
-              setup do
-                grand_parent = create grand_parent_resource
-                parent       = create parent_resource
-
-                @factory_options[grand_parent_resource.to_sym] = grand_parent
-                @factory_options[parent_resource.to_sym] = parent
-
-                @input_params.merge!(
-                  "#{grand_parent_resource}_id" => grand_parent.id,
-                  "#{parent_resource}_id" => parent.id
-                )
-              end
-            elsif parent_resource
+            if parent_resource
               show_url  = "#{parent_resource}_#{resource_name}_path(@#{parent_resource}, @object)"
               index_url = "#{parent_resource}_#{resource_name.to_s.pluralize}_path(@#{parent_resource})"
 
               setup do
                 parent = create parent_resource
-
                 @factory_options[parent_resource.to_sym] = parent
-
-                @input_params.merge!(
-                  "#{parent_resource}_id" => parent.id
-                )
+                @input_params["#{parent_resource}_id"] = parent.id
               end
             end
 
-            setup    { params[:setup].call    } if params.key?(:setup)
-            teardown { params[:teardown].call } if params.key?(:teardown)
+            setup    { setup_with.call    } if setup_with
+            teardown { teardown_with.call } if teardown_with
 
             context 'when logged in' do
               setup do
-                # Determine what to do with the :user parameter passed.  If it's a Symbol then it's a factory; if it's nil we
-                # default to the :user factory; if it's a proc then we can call it; otherwise we should explode in the face of
-                # the developer who is potentially creating ActiveRecord objects outside the test transaction!
-                user_details = params[:user] || :user
-                @user = case
-                        when user_details.is_a?(Symbol) then create(user_details)
-                        when user_details.is_a?(Proc) then user_details.call
-                        else raise StandardError, "You are potentially creating objects outside of a transaction: #{user_details.inspect}"
-                        end
-
+                # Create the user using the factory specified by the :user parameter
+                # or fall back to the default :user factory
+                @user = create(user)
                 # All our things need a user to be logged in
                 session[:user] = @user.id
-                @controller.stubs(:logged_in?).returns(@user)
               end
               if actions.include?('index')
                 context 'should get index' do
@@ -111,7 +96,6 @@ module Sanger
                     @input_params[resource_name] = @create_options
                     post :create, params: @input_params
                   end
-                  # assert eval "@object".valid?
                   should redirect_to('show page') { eval(show_url) }
                 end
               end
@@ -254,3 +238,5 @@ module Sanger
   end
 end
 # rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/ParameterLists
