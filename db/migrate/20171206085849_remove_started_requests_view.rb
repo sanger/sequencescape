@@ -10,9 +10,7 @@ class RemoveStartedRequestsView < ActiveRecord::Migration[5.1]
   def down
     ViewsSchema.update_view(
       'view_started_requests',
-      %{
-        CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_started_requests`
-AS SELECT
+      %{SELECT
  distinct `rt`.`name` AS `request_type`,
  `r`.`state` AS `status`,
  `p`.`name` AS `project_name`,
