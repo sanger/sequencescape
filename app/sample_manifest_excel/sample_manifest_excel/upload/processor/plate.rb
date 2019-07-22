@@ -12,15 +12,19 @@ module SampleManifestExcel
         # plate, and different for each plate.
         # Uniqueness of foreign barcodes in the database is checked in the specialised field sanger_plate_id.
         def check_for_barcodes_unique
-          return unless any_duplicate_barcodes?
+          duplicated_barcode_row, err_msg = duplicate_barcodes
+          return if duplicated_barcode_row.nil?
 
-          errors.add(:base, 'Duplicate barcodes detected, the barcode must be unique for each plate.')
+          errors.add(:base, "Barcode mismatch at row: #{duplicated_barcode_row.number}")
+          errors.add(:base, err_msg)
         end
 
-        def any_duplicate_barcodes?
-          return false unless upload.respond_to?('rows')
+        # Return the row of the first encountered barcode mismatch
+        def duplicate_barcodes
+          return nil, nil unless upload.respond_to?('rows')
 
           unique_bcs = {}
+          unique_plates = {}
           upload.rows.each do |row|
             next if row.columns.blank? || row.data.blank?
 
@@ -30,16 +34,22 @@ module SampleManifestExcel
 
             plate_id_for_sample = find_plate_id_for_sample_id(sample_id)
             next if plate_id_for_sample.nil?
-
+            # Check that a barcode is used for only one plate
             if unique_bcs.key?(plate_barcode)
-              # check if duplicate
-              return true unless unique_bcs[plate_barcode] == plate_id_for_sample
+              err_msg = 'Barcode is used in multiple plates'
+              return row, err_msg unless unique_bcs[plate_barcode] == plate_id_for_sample
             else
-              # new plate not seen before
               unique_bcs[plate_barcode] = plate_id_for_sample
             end
+            # Check that a plate has only one barcode
+            if unique_plates.key?(plate_id_for_sample)
+              err_msg = 'Plate has multiple barcodes'
+              return row, err_msg unless unique_plates[plate_id_for_sample] == plate_barcode
+            else
+              unique_plates[plate_id_for_sample] = plate_barcode
+            end
           end
-          false
+          return nil, nil
         end
 
         def find_plate_id_for_sample_id(sample_id)

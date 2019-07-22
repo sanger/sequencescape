@@ -474,9 +474,37 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
       context 'invalid' do
         context 'when using foreign barcodes' do
-          let(:download) { build(:test_download_plates_cgap, columns: plate_columns, validation_errors: [:sample_plate_id_duplicates]) }
+          let(:download) { build(:test_download_plates_cgap, columns: plate_columns) }
+          let(:new_test_file_name) { 'new_test_file.xlsx' }
+          let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
-          it 'duplicates will not be valid' do
+          before do
+            upload.process(nil)
+            upload.complete
+          end
+
+          after do
+            File.delete(new_test_file_name) if File.exist?(new_test_file_name)
+          end
+
+          it 'the same barcode cannot be used for multiple plates' do
+            download.worksheet.axlsx_worksheet.rows[9].cells[0].value = 'CGAP-00000'
+            download.worksheet.axlsx_worksheet.rows[10].cells[0].value = 'CGAP-00000'
+            download.worksheet.axlsx_worksheet.rows[11].cells[0].value = 'CGAP-00000'
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: plate_columns, start_row: 9)
+            processor = SampleManifestExcel::Upload::Processor::Plate.new(reupload)
+            processor.update_samples(nil)
+            expect(processor).not_to be_valid
+          end
+
+          it 'the same plate cannot have two different barcodes' do
+            download.worksheet.axlsx_worksheet.rows[9].cells[0].value = 'CGAP-00000'
+            download.worksheet.axlsx_worksheet.rows[10].cells[0].value = 'CGAP-11111'
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: plate_columns, start_row: 9)
+            processor = SampleManifestExcel::Upload::Processor::Plate.new(reupload)
+            processor.update_samples(nil)
             expect(processor).not_to be_valid
           end
         end
