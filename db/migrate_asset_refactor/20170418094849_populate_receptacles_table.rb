@@ -14,7 +14,7 @@ class PopulateReceptaclesTable < ActiveRecord::Migration[4.2]
       SELECT assets.id AS id, assets.sti_type, assets.qc_state, assets.resource, assets.map_id, assets.closed,
              assets.external_release, assets.volume, assets.concentration,
              IF(assets.sti_type='Well',labware.id,assets.id) AS labware_id,
-             assets.created_at, assets.updated_at
+             IFNULL(assets.created_at, assets.updated_at) AS created_at, assets.updated_at
       FROM assets AS assets
       LEFT OUTER JOIN container_associations ca ON (ca.content_id = assets.id)
       LEFT OUTER JOIN labware ON (ca.container_id = labware.id)

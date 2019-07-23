@@ -12,7 +12,8 @@ class PopulateLabwareTable < ActiveRecord::Migration[4.2]
              name, sti_type, size, public_name, two_dimensional_barcode,
              plate_purpose_id, labware_type_id, created_at, updated_at)
       SELECT name, sti_type, size, public_name, two_dimensional_barcode,
-             plate_purpose_id, labware_type_id, created_at, updated_at
+             plate_purpose_id, labware_type_id,
+             IFNULL(created_at,updated_at) AS created_at, updated_at
       FROM assets
       WHERE sti_type != "Well"
     SQLQUERY
