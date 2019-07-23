@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Ensure events point at the appropriate class
-class UpdateIdentifiersIdentifiableTypes < ActiveRecord::Migration[5.1]
+# Ensure Lots point at the appropriate class
+class UpdateLotTemplateType < ActiveRecord::Migration[5.1]
   def up
     Lot.where(template_type: 'Asset').update_all(template_type: 'Labware')
   end
