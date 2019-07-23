@@ -203,7 +203,6 @@ class CherrypickTask < Task
       sorted_requests = loaded_requests.sort_by do |request|
         [request.asset.plate.id, request.asset.map.column_order]
       end
-
       sorted_requests.map do |request|
         [request.id, request.asset.plate.human_barcode, request.asset.map_description]
       end
@@ -219,7 +218,6 @@ class CherrypickTask < Task
       sorted_requests = loaded_requests.sort_by do |request|
         [request.asset.plate.id, request.asset.map.column_order]
       end
-
       sorted_requests.map do |request|
         [request.id, request.asset.plate.human_barcode, request.asset.map_description]
       end

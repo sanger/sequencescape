@@ -195,6 +195,15 @@ class CherrypickTaskTest < ActiveSupport::TestCase
             [request.id, request.asset.plate.human_barcode, request.asset.map.description]
           end
         end
+
+        should 'load only the most recent plate barcode' do
+          fluidx_barcode = 'FB11111111'
+          Barcode.create(asset: @requests.first.asset.plate, barcode: fluidx_barcode, format: 'fluidx_barcode')
+          @expected = @requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          @expected.each do |id, barcode, description|
+            assert_equal(barcode, fluidx_barcode, "Wrong barcode for request: #{id}, in well: #{description}")
+          end
+        end
       end
 
       should 'error when the robot has no beds' do
