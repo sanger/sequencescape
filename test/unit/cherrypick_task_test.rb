@@ -111,7 +111,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
             end
           end
 
-          plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
           assert_equal([expected], plates, 'Incorrect partial plate representation')
         end
 
@@ -125,7 +125,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
             end
           end
 
-          plates, source_plates = @task.pick_onto_partial_plate(@requests.slice(0, 4), @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate(@requests.slice(0, 4), @template, @robot, @partial)
           assert_equal([expected], plates, 'Incorrect partial plate representation')
         end
       end
@@ -145,7 +145,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           expected.concat([CherrypickTask::EMPTY_WELL] * 6) # Columns 2-11
           expected.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 12
 
-          plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
           assert_equal([expected], plates, 'Incorrect partial plate representation')
         end
 
@@ -163,7 +163,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           expected_second = requests.slice(6, 6).map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] }
           pad_expected_plate_with_empty_wells(@template, expected_second)
 
-          plates, source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
           assert_equal([expected_partial, expected_second], plates, 'Incorrect partial plate representation')
         end
       end
@@ -179,7 +179,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         teardown do
-          plates, source_plates = @task.pick_new_plate(@requests, @template, @robot, @target_purpose)
+          plates, _source_plates = @task.pick_new_plate(@requests, @template, @robot, @target_purpose)
           assert_equal([@expected], plates, 'Incorrect plate pick')
         end
 

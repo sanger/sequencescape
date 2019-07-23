@@ -198,7 +198,7 @@ class CherrypickTask < Task
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
     def build_plate_wells_from_requests(requests)
-      requests.includes(asset: [{ plate: :barcodes }, :map]).map do |request|
+      Request.where(requests: { id: requests }).includes(asset: [{ plate: :barcodes }, :map]).map do |request|
         [request.id, request.asset.plate.human_barcode, request.asset.map_description]
       end
     end
@@ -208,7 +208,7 @@ class CherrypickTask < Task
   # Ie. This is what will happens now
   AssetRefactor.when_not_refactored do
     def build_plate_wells_from_requests(requests)
-      requests.includes(asset: [{ plate: :barcodes }, :map]).map do |request|
+      Request.where(requests: { id: requests }).includes(asset: [{ plate: :barcodes }, :map]).map do |request|
         [request.id, request.asset.plate.human_barcode, request.asset.map_description]
       end
     end
