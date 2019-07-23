@@ -33,8 +33,8 @@ class PopulateReceptaclesTable < ActiveRecord::Migration[4.2]
   end
 
   def down
-    raise ActiveRecord::IrreversibleMigration unless ENV['LAST_ASSET'].present
+    raise ActiveRecord::IrreversibleMigration if ENV['LAST_ASSET'].blank?
 
-    Receptacle.where(['id < ?', ENV['LAST_ASSET']]).destroy_all
+    Receptacle.where(['id < ?', ENV['LAST_ASSET']]).delete_all
   end
 end

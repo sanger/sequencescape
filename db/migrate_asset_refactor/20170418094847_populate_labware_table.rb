@@ -9,9 +9,9 @@ class PopulateLabwareTable < ActiveRecord::Migration[4.2]
 
     ActiveRecord::Base.connection.execute(<<~SQLQUERY
       INSERT labware (
-             name, sti_type, size, public_name, two_dimensional_barcode,
+             id, name, sti_type, size, public_name, two_dimensional_barcode,
              plate_purpose_id, labware_type_id, created_at, updated_at)
-      SELECT name, sti_type, size, public_name, two_dimensional_barcode,
+      SELECT id, name, sti_type, size, public_name, two_dimensional_barcode,
              plate_purpose_id, labware_type_id,
              IFNULL(created_at,updated_at) AS created_at, updated_at
       FROM assets
@@ -27,8 +27,8 @@ class PopulateLabwareTable < ActiveRecord::Migration[4.2]
   end
 
   def down
-    raise ActiveRecord::IrreversibleMigration unless ENV['LAST_ASSET'].present
+    raise ActiveRecord::IrreversibleMigration if ENV['LAST_ASSET'].blank?
 
-    Labware.where(['id < ?', ENV['LAST_ASSET']]).destroy_all
+    Labware.where(['id < ?', ENV['LAST_ASSET']]).delete_all
   end
 end
