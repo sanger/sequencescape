@@ -34,11 +34,6 @@ Rails/SkipsModelValidations:
     - 'db/migrate_asset_refactor/*.rb'
     - 'features/support/step_definitions/*.rb'
 
-# The cop is meant to enforce conventions regarding variables containing numbers
-# However in 0.43.0 it is bugged. Both changed on master and disabled by default
-# The exclusions don't even get added to the rubocop_todo properly!
-Naming/VariableNumber:
-  Enabled: false
 Rails:
   Enabled: true
 # Step definitions are defined with Given /regex/ do ...
@@ -63,6 +58,9 @@ Style/NumericLiterals:
 # We should be careful keeping rake tasks here, as large tasks are still an issue.
 # Not sure if we need to split namespaces across several files though.
 Metrics/BlockLength:
+  Exclude:
+    - Gemfile
+    - 'db/seeds/**/*'
   ExcludedMethods:
     - describe
     - context
@@ -87,6 +85,7 @@ Metrics/BlockLength:
     - with_nested_has_many_association
     - with_association
     - it
+    - class_eval
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
@@ -99,23 +98,15 @@ Rails/DynamicFindBy:
     - find_by_id_or_name!
     - find_by_barcode
     - find_by_or_null
+# Method length limits make little sense when you are describing a table schema
+# or a view.
 Metrics/MethodLength:
   Exclude:
     - 'db/migrate/*'
-
+    - 'db/migrate_asset_refactor/*'
 Layout/IndentFirstArrayElement:
   EnforcedStyle: consistent
 Style/ClassAndModuleChildren:
-  Enabled: false
-
-# Rubocop has a few issues with this when generating the ignore files.
-# Also, I'm far from convinced that its correct. It argues in favour of
-# +'' over Sting.new when creating a mutable string due to marginal
-# performance improvements.
-# See: http://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Performance/UnfreezeString
-# That said, I can see potential advantages wrt. encoding
-# Anyway, leaving this off for now.
-Performance/UnfreezeString:
   Enabled: false
 # This should be the rubocop defaults, not sure why its kicking up a fuss.
 Layout/SpaceBeforeBlockBraces:
