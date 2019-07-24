@@ -5,7 +5,6 @@
       <th>Name</th>
       <th>Date Created</th>
       <th>Type</th>
-      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -18,11 +17,6 @@
         <% end %>
       </td>
       <td><%= asset.sti_type %></td>
-      <td>
-        <% if current_user_can_make_additional_requests_on?(asset, study) %>
-          <%= link_to "New request &rarr;", new_request_asset_path(asset, study_id: study.id) -%>
-        <% end %>
-      </td>
     </tr>
 <% end -%>
   </tbody>

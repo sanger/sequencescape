@@ -18,7 +18,7 @@
               <% well.samples.each do |sample| %>
                 <%= link_to sample.name, sample_path(sample) %><br/>
               <% end %>
-              <%= link_to "#{row}#{column}", asset_path(well) %><br/>
+              <%= link_to "#{row}#{column}", receptacle_path(well) %><br/>
               Parent: <%= well.upstream_wells.map(&:map_description).join(',') %>
               <%= pluralize well.requests.size, 'request' %>
             <% else %>

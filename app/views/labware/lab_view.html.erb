@@ -44,7 +44,7 @@
                 <% if parent.respond_to?(:human_barcode) %>
                   <%= link_to "#{(parent.label or "").humanize} #{parent.id}", action: :lab_view, barcode: parent.human_barcode %>
                  <% else %>
-                  <%= link_to "#{(parent.label or "").humanize} #{parent.id}", asset_path(parent) %>
+                  <%= link_to "#{(parent.label or "").humanize} #{parent.id}", labware_path(parent) %>
                 <% end %>
               </td>
             </tr>
@@ -69,7 +69,7 @@
                 <% if child.respond_to?(:human_barcode) %>
                   <%= link_to "#{(child.label or "").humanize} #{child.id}", action: :lab_view, barcode: child.human_barcode %>
                 <% else %>
-                  <%= link_to "#{(child.label or "").humanize} #{child.id}", asset_path(child) %>
+                  <%= link_to "#{(child.label or "").humanize} #{child.id}", labware_path(child) %>
                 <% end %>
                 </td>
             </tr>

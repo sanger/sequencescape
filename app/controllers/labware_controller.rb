@@ -84,7 +84,7 @@ class LabwareController < ApplicationController
       @direct_printing = (@asset.printable_target == @asset)
     else
       flash[:error] = "#{@asset.display_name} does not have a barcode so a label can not be printed."
-      redirect_to asset_path(@asset)
+      redirect_to labware_path(@asset)
     end
   end
 

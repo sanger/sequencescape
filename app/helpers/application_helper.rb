@@ -92,8 +92,10 @@ module ApplicationHelper
     options[:state] = status unless status.nil?
     options[:request_type_id] = request_type.id unless request_type.nil?
 
-    if object.instance_of?(Asset)
-      asset_path(object, options)
+    if object.instance_of?(Receptacle)
+      receptacle_path(object, options)
+    elsif object.instance_of?(Labware)
+      labware_path(object, options)
     elsif object.instance_of?(Study)
       study_requests_path(object, options)
     end
