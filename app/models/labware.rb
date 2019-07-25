@@ -28,6 +28,8 @@ class Labware < Asset
   end
 
   AssetRefactor.when_refactored do
+    self.sample_partial = 'assets/samples_partials/asset_samples'
+
     include LabwareAssociations
     include Commentable
     include Uuid::Uuidable
