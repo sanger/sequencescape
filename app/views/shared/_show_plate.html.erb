@@ -19,7 +19,7 @@
                 <%= link_to sample.name, sample_path(sample) %><br/>
               <% end %>
               <%= link_to "#{row}#{column}", receptacle_path(well) %><br/>
-              Parent: <%= well.upstream_wells.map(&:map_description).join(',') %>
+              Parent: <%= well.upstream_wells.map(&:map_description).join(',').presence || 'None' %>
               <%= pluralize well.requests.size, 'request' %>
             <% else %>
               [ Empty ]

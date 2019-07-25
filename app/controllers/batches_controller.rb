@@ -371,23 +371,6 @@ class BatchesController < ApplicationController
     @batch = Batch.find(params[:batch_id])
   end
 
-  def edit_volume_and_concentration
-    @batch = Batch.find(params[:id])
-  end
-
-  def update_volume_and_concentration
-    @batch = Batch.find(params[:batch_id])
-
-    params[:assets].each do |id, values|
-      asset = Asset.find(id)
-      asset.volume = values[:volume]
-      asset.concentration = values[:concentration]
-      asset.save
-    end
-
-    redirect_to batch_path(@batch)
-  end
-
   def pacbio_sample_sheet
     csv_string = PacBio::SampleSheet.new.create_csv_from_batch(@batch)
     send_data csv_string, type: 'text/plain',

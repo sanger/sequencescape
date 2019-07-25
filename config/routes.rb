@@ -133,8 +133,6 @@ Rails.application.routes.draw do
       post :fail_items
       post :reset_batch
       get :download_spreadsheet
-      get :edit_volume_and_concentration
-      put :update_volume_and_concentration
       get :fail
       get :pacbio_sample_sheet
       get :print

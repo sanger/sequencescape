@@ -95,7 +95,6 @@ module Presenters
 
       # Other options are enabled only for managers
       if is_manager?
-        add_submenu_option "Vol' & Conc'", :edit_volume_and_concentration if not_sequencing?
         add_submenu_option 'Create stock tubes', new_batch_stock_asset_path(@batch) if can_create_stock_assets?
         add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet if pacbio_sample_pipeline?
 
