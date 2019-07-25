@@ -68,20 +68,6 @@ group :default do
   # Bunny is a RabbitMQ client.
   gem 'bunny'
 
-  gem 'bootstrap'
-  gem 'coffee-rails'
-  gem 'font-awesome-sass'
-  gem 'jquery-rails'
-  gem 'jquery-tablesorter'
-  gem 'jquery-ui-rails'
-  gem 'sass-rails'
-  gem 'select2-rails'
-
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', platforms: :mri
-  # Pat of the JS assets pipleine
-  gem 'uglifier', '>= 1.0.3'
-
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
   # which have not yet been merged into a proper release. (Latest release 2.0.1 at time of writing)
@@ -141,6 +127,20 @@ group :development do
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
   gem 'travis'
+
+  # Asset compilation
+  gem 'bootstrap'
+  gem 'font-awesome-sass'
+  gem 'jquery-rails'
+  gem 'jquery-tablesorter'
+  gem 'jquery-ui-rails'
+  gem 'sass-rails'
+  gem 'select2-rails'
+
+  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  gem 'mini_racer'
+  # Pat of the JS assets pipleine
+  gem 'uglifier', '>= 1.0.3'
 end
 
 group :development, :test, :cucumber do
