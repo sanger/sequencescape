@@ -6,12 +6,6 @@ group :default do
   gem 'bootsnap'
   gem 'rails', '~> 5.1.7'
 
-  # Used by bootstrap, not used directly. Added here to allow us to pin the version.
-  # Can be removed once we're no longer compiling assets on the servers.
-  # We're currently pinning to keep ruby-racer support. THe suggested alternative
-  # mini-racer doesn't compile on the old machines.
-  gem 'autoprefixer-rails', '< 9.0.0'
-
   # State machine
   gem 'aasm'
   gem 'configatron'
@@ -74,18 +68,14 @@ group :default do
   # Bunny is a RabbitMQ client.
   gem 'bunny'
 
-  gem 'bootstrap', '< 4.2.1' # Pinned to 4.2.1 while we are dependent on older GCCs.
+  gem 'bootstrap'
   gem 'coffee-rails'
+  gem 'font-awesome-sass'
   gem 'jquery-rails'
   gem 'jquery-tablesorter'
   gem 'jquery-ui-rails'
   gem 'sass-rails'
   gem 'select2-rails'
-  # Temporarily pin to earlier version
-  # Newer versions on font-awesome switch to sassc which will not
-  # compile on our older servers due to gcc version. We can update this
-  # as soon as we're migrated off the metal.
-  gem 'font-awesome-sass', '< 5.0.13'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :mri
