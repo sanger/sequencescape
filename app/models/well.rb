@@ -363,4 +363,8 @@ class Well < Receptacle
   def update_from_qc(qc_result)
     Well::AttributeUpdater.update(self, qc_result)
   end
+
+  def name
+    nil
+  end
 end
