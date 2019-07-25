@@ -72,13 +72,7 @@ section.info-panel {
   header {
     @extend .card-header;
 
-    h3 {
-      @extend .card-title;
-    }
-
-    .counter {
-      @extend .badge;
-    }
+    .counter { @extend .badge; }
 
     .show-hide { float: right; }
   }

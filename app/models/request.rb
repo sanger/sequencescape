@@ -347,6 +347,7 @@ class Request < ApplicationRecord
     scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies, { labware: :barcodes }] }]) }
     scope :loaded_for_sequencing_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) }, { request_type: :product_line }]) }
     scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: { labware: :barcodes } }, :target_asset]) }
+    scope :loaded_for_pacbio_inbox_display, -> { preload(:submission) }
   end
   # This block is disabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happens now
@@ -356,6 +357,7 @@ class Request < ApplicationRecord
     scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(scanned_into_lab_event studies) }]) }
     scope :loaded_for_sequencing_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) }, { request_type: :product_line }]) }
     scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: :barcodes }, :target_asset]) }
+    scope :loaded_for_pacbio_inbox_display, -> { preload([{ submission: :orders }, :request_type, :target_asset]) }
   end
 
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
