@@ -47,10 +47,48 @@ module ApplicationHelper
     end
   end
 
-  def display_status(status)
+  def request_badge(status)
+    badge(status, type: 'request-state')
+  end
+
+  #
+  # Renders a badge containing the supplied text, with appropriate styling.
+  # By default the 'badge-#{status}' class is supplied. These states are mapped to
+  # bootstrap colours in components.scss (grep '// State-colour extensions')
+  #
+  # If you can't map the text directly to a style, such as if you are displaying a
+  # number that you want to change its colours at certain thresholds, then you can
+  # override the applied style with the style: argument.
+  #
+  # If the string passed in is empty, no badge will be rendered
+  #
+  # @example Render a request state badge.
+  #   badge(request.state, type: 'request')
+  # @example Render the size of a batch, which is red if too large.
+  #   status = batch.size > MAX_SIZE ? 'danger' : 'success'
+  #   badge(batch.size, type: 'batch-size', style: status )
+  #
+  # @param status [String] The text to display in the badge. Will also be used to set the style if not otherwise specified
+  # @param type: 'generic' [String] Optional: Additional css-class applied to the badge (generic-badge by default)
+  # @param style: status [String] Optional: Override the badge-* class otherwise set directly from the status.
+  #
+  # @return [type] HTML to render a badge
+  def badge(status, type: 'generic-badge', style: status)
     return if status.blank?
 
-    content_tag(:span, status, class: "request-state badge badge-#{status}")
+    content_tag(:span, status, class: "#{type} badge badge-#{style}")
+  end
+
+  #
+  # Used to add a counter to headers or links. Renders a blue badge containing the supplied number
+  # Only supply a suffix if it can't be worked out from the context what is being counted.
+  #
+  # @param counter [Integer] The value to show in the badge
+  # @param suffix [Integer, String] Optional: The type of thing being counted.
+  # @return [String] HTML to render a badge
+  def counter_badge(counter, suffix = '')
+    status = suffix.present? ? pluralize(counter, suffix) : counter
+    badge(status, type: 'counter-badge', style: 'primary')
   end
 
   def dynamic_link_to(summary_item)

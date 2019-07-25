@@ -5,7 +5,7 @@
   <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@requests.first.study) -%>
 <% end %>
 
-<%= page_title @request_type&.name || 'Requests', @subtitle %><%= display_status(params[:state]) %>
+<%= page_title @request_type&.name || 'Requests', @subtitle %><%= request_badge(params[:state]) %>
 <% if params[:attempt] %>
   <%= pluralize params[:attempt], 'attempt' %>
 <% end %>
@@ -48,7 +48,7 @@
           <td><%= request.user.login unless request.user.blank? %></td>
           <td><%= link_to(request.initial_study.name, study_path(request.initial_study)) if request.initial_study %></td>
           <td><%= request.created_at.to_formatted_s(:sortable) %></td>
-          <td><%= display_status(request.state) %></td>
+          <td><%= request_badge(request.state) %></td>
         </tr>
       <% end -%>
     </tbody>

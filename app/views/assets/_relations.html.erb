@@ -2,8 +2,8 @@
   <header>
     <a href='#relations-table-collapser' role="button" data-toggle='collapse'>
     <h3>Relations
-      <span class='badge badge-primary'><%= asset.parents.size %> parents </span>
-      <span class='badge badge-primary'><%= asset.children.size %> children</span>
+      <%= counter_badge(asset.parents.size, 'parents') %>
+      <%= counter_badge(asset.children.size, 'children') %>
       <small class='show-hide'>Click to toggle</small>
     </h3>
     </a>
