@@ -1,3 +1,5 @@
+# Stores the uuids of all out records, associated via a polymorphic association
+# Allows the {file:static_docs/api_v1 V1 API} to find any record from just a uuid
 class Uuid < ApplicationRecord
   # Allows tests to dictate the next UUID generted for a given class
   class_attribute :store_for_tests
