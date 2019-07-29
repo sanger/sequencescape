@@ -261,18 +261,17 @@ class Receptacle
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
+    delegate :external_identifier, to: :labware
+    delegate :display_name, to: :labware, allow_nil: true
+
     def name
       labware_name = labware.present? ? labware.try(:name) : '(not on a labware)'
       labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
       labware_name
     end
 
-    def display_name
-      labware&.display_name
-    end
-
-    def external_identifier
-      name
+    def update_from_qc(qc_result)
+      Tube::AttributeUpdater.update(self, qc_result)
     end
 
     def update_from_qc(qc_result)
