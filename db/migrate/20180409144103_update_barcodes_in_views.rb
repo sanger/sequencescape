@@ -8,9 +8,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     # some modifications have been made without our knowledge.
     ViewsSchema.update_view(
       'view_wells',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_wells`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `w`.`id` AS `internal_id`,
            `w`.`name` AS `name`,
@@ -46,9 +44,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_library_tubes',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_library_tubes`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `lt`.`id` AS `internal_id`,
            `lt`.`name` AS `name`,
@@ -89,9 +85,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_requests_new',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_requests_new`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `r`.`id` AS `internal_id`,
            `rt`.`name` AS `request_type`,
@@ -148,9 +142,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_sample_tubes',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_sample_tubes`
-        AS SELECT
+      %{SELECT
           `u`.`external_id` AS `uuid`,
          `st`.`id` AS `internal_id`,
          `st`.`name` AS `name`,
@@ -175,9 +167,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_plates',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_plates`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `p`.`id` AS `internal_id`,
            `p`.`name` AS `name`,
@@ -199,9 +189,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_requests',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_requests`
-        AS SELECT
+      %{SELECT
             `u`.`external_id` AS `uuid`,
             `r`.`id` AS `internal_id`,
             `rt`.`name` AS `request_type`,
@@ -276,9 +264,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     # some modifications have been made without our knowledge.
     ViewsSchema.update_view(
       'view_wells',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_wells`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `w`.`id` AS `internal_id`,
            `w`.`name` AS `name`,
@@ -314,9 +300,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_library_tubes',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_library_tubes`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `lt`.`id` AS `internal_id`,
            `lt`.`name` AS `name`,
@@ -357,9 +341,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_requests_new',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_requests_new`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `r`.`id` AS `internal_id`,
            `rt`.`name` AS `request_type`,
@@ -416,9 +398,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_sample_tubes',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_sample_tubes`
-        AS SELECT
+      %{SELECT
           `u`.`external_id` AS `uuid`,
          `st`.`id` AS `internal_id`,
          `st`.`name` AS `name`,
@@ -443,9 +423,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_plates',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_plates`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `p`.`id` AS `internal_id`,
            `p`.`name` AS `name`,
@@ -467,9 +445,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     )
     ViewsSchema.update_view(
       'view_requests',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_requests`
-        AS SELECT
+      %{SELECT
             `u`.`external_id` AS `uuid`,
             `r`.`id` AS `internal_id`,
             `rt`.`name` AS `request_type`,
