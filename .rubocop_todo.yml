@@ -208,11 +208,11 @@ Lint/UselessAssignment:
     - 'test/unit/cherrypick_task_test.rb'
     - 'test/unit/tasks/plate_transfer_task_test.rb'
 
-# Offense count: 404
+# Offense count: 405
 Metrics/AbcSize:
   Max: 116
 
-# Offense count: 86
+# Offense count: 63
 # Configuration parameters: CountComments, ExcludedMethods.
 # ExcludedMethods: refine
 Metrics/BlockLength:
@@ -232,7 +232,7 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Max: 86
 
-# Offense count: 393
+# Offense count: 390
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/MethodLength:
   Max: 73
@@ -381,6 +381,29 @@ Naming/VariableName:
     - 'app/models/pac_bio/sample_sheet.rb'
     - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'test/unit/import_fluidigm_data_test.rb'
+
+# Offense count: 43
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: snake_case, normalcase, non_integer
+Naming/VariableNumber:
+  Exclude:
+    - 'features/support/step_definitions/9314145_pacbio_submission_steps.rb'
+    - 'spec/features/sample_manifests/track_sample_manifest_updates_spec.rb'
+    - 'spec/models/study_spec.rb'
+    - 'spec/models/well_spec.rb'
+    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
+    - 'test/controllers/projects_controller_test.rb'
+    - 'test/performance/work_completion_tubes_test.rb'
+    - 'test/unit/batch_test.rb'
+    - 'test/unit/product_criteria_test.rb'
+    - 'test/unit/tag_qc/stamp_test.rb'
+
+# Offense count: 7
+Performance/UnfreezeString:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+    - 'app/helpers/bootstrap_helper.rb'
+    - 'app/models/qc_result_factory.rb'
 
 # Offense count: 3
 RSpec/AnyInstance:
@@ -2481,7 +2504,6 @@ Style/Documentation:
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
     - 'lib/tecan_file_generation.rb'
     - 'lib/validateable.rb'
-    - 'lib/views_schema.rb'
     - 'lib/warren/broadcast.rb'
     - 'lib/warren/broadcast_messages.rb'
     - 'lib/warren/log.rb'

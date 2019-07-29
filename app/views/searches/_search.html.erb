@@ -9,7 +9,7 @@
   <% end %>
 </div>
 
-<% unless @studies.present? || @samples.present? || @assets.present? || @requests.present? -%>
+<% unless @studies.present? || @samples.present? || @assets.present? || @requests.present? || @barcodes.present? -%>
   <%= alert(:warning) do %>
     <h3>No results</h3>
   <% end %>
