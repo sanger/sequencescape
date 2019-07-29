@@ -367,4 +367,8 @@ class Well < Receptacle
   def name
     nil
   end
+
+  def library_name
+    nil
+  end
 end
