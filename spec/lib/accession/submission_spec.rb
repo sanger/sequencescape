@@ -7,19 +7,19 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
   let!(:sample)   { build(:accession_sample) }
 
   it 'is not valid without a user' do
-    expect(Accession::Submission.new(user, nil)).not_to be_valid
+    expect(described_class.new(user, nil)).not_to be_valid
   end
 
   it 'is not valid without an accession sample' do
-    expect(Accession::Submission.new(nil, sample)).not_to be_valid
+    expect(described_class.new(nil, sample)).not_to be_valid
   end
 
   it 'is not valid unless sample is valid' do
-    expect(Accession::Submission.new(user, build(:invalid_accession_sample))).not_to be_valid
+    expect(described_class.new(user, build(:invalid_accession_sample))).not_to be_valid
   end
 
   it 'creates some xml with valid attributes' do
-    submission = Accession::Submission.new(user, sample)
+    submission = described_class.new(user, sample)
     xml = Nokogiri::XML::Document.parse(submission.to_xml)
 
     submission_xml = xml.at('SUBMISSION')
@@ -43,14 +43,14 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
   end
 
   it 'creates a payload' do
-    payload = Accession::Submission.new(user, sample).payload
+    payload = described_class.new(user, sample).payload
     expect(payload.count).to eq(2)
     expect(payload).to be_all { |_, file| File.file?(file) }
     expect(payload).to be_all { |key, _| key.match(/\p{Lower}/).nil? }
   end
 
   it 'posts the submission and return an appropriate response' do
-    submission = Accession::Submission.new(user, sample)
+    submission = described_class.new(user, sample)
 
     allow(Accession::Request).to receive(:post).with(submission).and_return(build(:successful_accession_response))
     submission.post
@@ -62,7 +62,7 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
   end
 
   it 'updates the accession number if the submission is successfully posted' do
-    submission = Accession::Submission.new(user, sample)
+    submission = described_class.new(user, sample)
     submission.update_accession_number
     expect(submission.sample).not_to be_accessioned
 
