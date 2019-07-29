@@ -621,6 +621,8 @@ Rails.application.routes.draw do
   get 'authentication/open'
   get 'authentication/restricted'
 
+  resources :messengers, only: :show
+
   # We removed workflows, which broke study links. Some customers may have their own studies bookmarked
   get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')
 end
