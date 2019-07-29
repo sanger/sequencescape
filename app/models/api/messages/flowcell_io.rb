@@ -7,8 +7,6 @@ class Api::Messages::FlowcellIO < Api::Base
   module LaneExtensions # Included in SequencingRequest
     def self.included(base)
       base.class_eval do
-        delegate :position, to: :batch_request
-
         def mx_library
           asset.external_identifier
         end
@@ -91,8 +89,6 @@ class Api::Messages::FlowcellIO < Api::Base
   module ControlLaneExtensions
     def self.included(base)
       base.class_eval do
-        delegate :position, to: :batch_request
-
         def mx_library
           asset.external_identifier || 'UNKNOWN'
         end
@@ -111,6 +107,18 @@ class Api::Messages::FlowcellIO < Api::Base
 
         def spiked_in_buffer
           false
+        end
+
+        def spiked_phix_barcode
+          nil
+        end
+
+        def spiked_phix_percentage
+          nil
+        end
+
+        def loading_concentration
+          nil
         end
 
         def external_release
