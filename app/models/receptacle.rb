@@ -282,6 +282,10 @@ class Receptacle
 
   delegate :name, to: :labware, prefix: true
 
+  def library_name
+    labware.name
+  end
+
   # Compatibility for v1 API maintains legacy 'type' for assets
   def api_asset_type
     legacy_asset_type.tableize

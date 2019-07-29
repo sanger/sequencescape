@@ -31,7 +31,7 @@ xml.batch do
           if request.asset.resource?
             xml.control(
               "id" => request.asset.id,
-              "name" => request.asset.labware_name,
+              "name" => request.asset.library_name,
               "request_id" => request.id
             ) {
               request.asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
@@ -53,7 +53,7 @@ xml.batch do
             # Any lane where every aliquot is tagged is considered to be a pool
             xml.pool(
               "id" => request.asset.id, # TODO: remove
-              "name" => request.asset.labware_name, # TODO: remove
+              "name" => request.asset.library_name, # TODO: remove
               "request_id" => request.id,
               "qc_state" => request.target_asset.compatible_qc_state
             ) {
@@ -65,7 +65,7 @@ xml.batch do
             # This is a lane that is not multiplexed.
             xml.library(
               "id" => request.target_asset.primary_aliquot.library_id, # TODO: remove
-              "name" => request.asset.labware_name, # TODO: remove
+              "name" => request.asset.library_name, # TODO: remove
               "request_id" => request.id,
               "qc_state" => request.target_asset.compatible_qc_state
             ) {

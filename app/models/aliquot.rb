@@ -83,7 +83,7 @@ class Aliquot < ApplicationRecord
   scope :untagged, -> { where(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
   scope :any_tags, -> { where.not(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
 
-  delegate :name, to: :library, prefix: true, allow_nil: true
+  delegate :library_name, to: :library, allow_nil: true
 
   # returns a hash, where keys are cost_codes and values are number of aliquots related to particular cost code
   # {'cost_code_1' => 20, 'cost_code_2' => 3, 'cost_code_3' => 8 }
