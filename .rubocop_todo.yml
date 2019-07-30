@@ -210,7 +210,7 @@ Lint/UselessAssignment:
 
 # Offense count: 405
 Metrics/AbcSize:
-  Max: 199
+  Max: 116
 
 # Offense count: 63
 # Configuration parameters: CountComments, ExcludedMethods.
@@ -1801,7 +1801,7 @@ Style/ConditionalAssignment:
     - 'app/models/tasks/set_descriptors_handler.rb'
     - 'lib/authenticated_system.rb'
 
-# Offense count: 924
+# Offense count: 925
 Style/Documentation:
   Exclude:
     - 'spec/**/*'
@@ -2535,7 +2535,7 @@ Style/EmptyBlockParameter:
   Exclude:
     - 'features/support/step_definitions/batch_steps.rb'
 
-# Offense count: 7
+# Offense count: 6
 # Cop supports --auto-correct.
 Style/EmptyCaseCondition:
   Exclude:
@@ -2545,7 +2545,6 @@ Style/EmptyCaseCondition:
     - 'app/models/aliquot/deprecated_behaviours.rb'
     - 'app/models/request/change_decision.rb'
     - 'app/models/request_type.rb'
-    - 'test/shoulda_macros/sanger_macros/resource_test.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -4935,7 +4934,7 @@ Style/ZeroLengthPredicate:
     - 'features/support/step_definitions/samples_steps.rb'
     - 'test/shoulda_macros/sanger_macros/resource_test.rb'
 
-# Offense count: 10278
+# Offense count: 10248
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
