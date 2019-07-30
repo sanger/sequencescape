@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe LinearSubmission do
-  MX_ASSET_COUNT = 5
-  SX_ASSET_COUNT = 4
+  let(:mx_asset_count) { 5 }
+  let(:sx_asset_count) { 5 }
 
   let(:study) { create :study }
   let(:project) { create :project }
@@ -56,7 +56,7 @@ RSpec.describe LinearSubmission do
       end
 
       context 'with basic behaviour' do
-        let(:mpx_assets) { create_list(:sample_tube, MX_ASSET_COUNT) }
+        let(:mpx_assets) { create_list(:sample_tube, mx_asset_count) }
         let(:library_creation_request_type) { create :multiplexed_library_creation_request_type, target_purpose: purpose }
         let(:mpx_submission) do
           create(:linear_submission,
@@ -77,7 +77,7 @@ RSpec.describe LinearSubmission do
             let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type.id] }
 
             it 'create requests but not comments' do
-              expect { mpx_submission.process! }.to change(Request, :count).by(MX_ASSET_COUNT + 1)
+              expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 1)
                                                                            .and change(Comment, :count).by(0)
             end
 
@@ -95,7 +95,7 @@ RSpec.describe LinearSubmission do
             let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type_2.id, sequencing_request_type.id] }
 
             it 'create requests but not comments' do
-              expect { mpx_submission.process! }.to change(Request, :count).by(MX_ASSET_COUNT + 2)
+              expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 2)
                                                                            .and change(Comment, :count).by(0)
             end
           end
@@ -132,7 +132,7 @@ RSpec.describe LinearSubmission do
     end
 
     context 'when a single-plex submission' do
-      let(:assets) { (1..SX_ASSET_COUNT).map { |i| create(:sample_tube, name: "Asset#{i}") } }
+      let(:assets) { (1..sx_asset_count).map { |i| create(:sample_tube, name: "Asset#{i}") } }
       let(:library_creation_request_type) { create :library_creation_request_type }
       let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type.id] }
       let(:submission) do
@@ -163,8 +163,8 @@ RSpec.describe LinearSubmission do
 
       describe '#process!' do
         it 'create requests but not comments' do
-          expect { submission.process! }.to change(Request, :count).by(SX_ASSET_COUNT * 2)
-                                                                   .and change(Comment, :count).by(SX_ASSET_COUNT * 2)
+          expect { submission.process! }.to change(Request, :count).by(sx_asset_count * 2)
+                                                                   .and change(Comment, :count).by(sx_asset_count * 2)
         end
 
         context 'when it has been run' do

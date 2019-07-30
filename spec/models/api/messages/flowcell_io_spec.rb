@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::Messages::FlowcellIO, type: :model do
-  subject { Api::Messages::FlowcellIO.to_hash(sequencing_batch.reload) }
+  subject { described_class.to_hash(sequencing_batch.reload) }
 
   context 'with a batch' do
     let(:sequencing_pipeline) { create :sequencing_pipeline }

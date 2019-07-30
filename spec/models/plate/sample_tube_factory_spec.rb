@@ -10,6 +10,6 @@ RSpec.describe Plate::SampleTubeFactory, type: :model do
 
     expect(RestClient).to receive(:post)
 
-    Plate::SampleTubeFactory.new(plate).create_sample_tubes_and_print_barcodes(barcode_printer)
+    described_class.new(plate).create_sample_tubes_and_print_barcodes(barcode_printer)
   end
 end

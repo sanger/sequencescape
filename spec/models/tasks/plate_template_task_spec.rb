@@ -85,7 +85,7 @@ RSpec.describe PlateTemplateTask, type: :model do
 
   describe Tasks::PlateTemplateHandler do
     describe '::generate_spreadsheet' do
-      subject { Tasks::PlateTemplateHandler.generate_spreadsheet(batch) }
+      subject { described_class.generate_spreadsheet(batch) }
 
       let(:output) do
         CSV.generate(row_sep: "\r\n") do |csv|

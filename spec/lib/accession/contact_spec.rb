@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Contact, type: :model, accession: true do
-  subject { Accession::Contact.new(user) }
+  subject { described_class.new(user) }
 
   before(:all) do
     @email = configatron.default_email_domain

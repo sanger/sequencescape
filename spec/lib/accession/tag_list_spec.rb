@@ -7,7 +7,7 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
 
   let(:folder)      { File.join('spec', 'data', 'accession') }
   let(:yaml)        { load_file(folder, 'tags') }
-  let(:tag_list)    { Accession::TagList.new(yaml) }
+  let(:tag_list)    { described_class.new(yaml) }
 
   it 'has the correct number of tags' do
     expect(tag_list.count).to eq(yaml.count)
@@ -66,7 +66,7 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
 
   it 'is able to create a list of tags from a hash of tags' do
     tags = build_list(:accession_tag, 5).index_by(&:name)
-    tag_list = Accession::TagList.new(tags)
+    tag_list = described_class.new(tags)
     expect(tag_list.count).to eq(tags.count)
   end
 end
