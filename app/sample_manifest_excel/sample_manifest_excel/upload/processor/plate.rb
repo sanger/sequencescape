@@ -15,8 +15,7 @@ module SampleManifestExcel
           duplicated_barcode_row, err_msg = duplicate_barcodes
           return if duplicated_barcode_row.nil?
 
-          errors.add(:base, "Barcode mismatch at row: #{duplicated_barcode_row.number}")
-          errors.add(:base, err_msg)
+          errors.add(:base, "Barcode duplicated at row: #{duplicated_barcode_row.number}. #{err_msg}")
         end
 
         # Return the row of the first encountered barcode mismatch
@@ -37,14 +36,14 @@ module SampleManifestExcel
 
             # Check that a barcode is used for only one plate
             if unique_bcs.key?(plate_barcode)
-              err_msg = 'Barcode is used in multiple plates'
+              err_msg = 'Barcode is used in multiple plates.'
               return row, err_msg unless unique_bcs[plate_barcode] == plate_id_for_sample
             else
               unique_bcs[plate_barcode] = plate_id_for_sample
             end
             # Check that a plate has only one barcode
             if unique_plates.key?(plate_id_for_sample)
-              err_msg = 'Plate has multiple barcodes'
+              err_msg = 'Plate has multiple barcodes.'
               return row, err_msg unless unique_plates[plate_id_for_sample] == plate_barcode
             else
               unique_plates[plate_id_for_sample] = plate_barcode
