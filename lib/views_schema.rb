@@ -54,8 +54,8 @@ module ViewsSchema
   # Creates a new view. Will fail if the view already exists.
   # @param name [String] The name of the view to create
   # @param statement [String,ActiveRecord::Relation] SQL select statement or equivalent rails relation object
-  # @param algorithm: [String] View algorithm to use, either UNDEFINED MERGE TEMPTABLE (default UNDEFINED)
-  # @param security: [String] View security to use, either DEFINER INVOKER (default DEFINER)
+  # @param algorithm [String] View algorithm to use, either UNDEFINED MERGE TEMPTABLE (default UNDEFINED)
+  # @param security [String] View security to use, either DEFINER INVOKER (default DEFINER)
   #
   # @return [Void]
   def self.create_view(name, statement, algorithm: ALGORITHMS.first, security: SECURITIES.first)
@@ -101,11 +101,11 @@ module ViewsSchema
   # @note Use create_view or update_view
   #
   # @param args [Hash] The options for the new view
-  # @option args [String] name: The name of the view to create
-  # @option args [String] action: Whether to create or update, can be 'CREATE' or 'CREATE OR REPLACE'
-  # @option args [String,ActiveRecord::Relation] statement: SQL select statement or equivalent rails relation object
-  # @option args [String] algorithm:  View algorithm to use, either UNDEFINED MERGE TEMPTABLE (default UNDEFINED)
-  # @option args [String] security: View security to use, either DEFINER INVOKER (default DEFINER)
+  # @option args [String] name The name of the view to create
+  # @option args [String] action Whether to create or update, can be 'CREATE' or 'CREATE OR REPLACE'
+  # @option args [String,ActiveRecord::Relation] statement SQL select statement or equivalent rails relation object
+  # @option args [String] algorithm  View algorithm to use, either UNDEFINED MERGE TEMPTABLE (default UNDEFINED)
+  # @option args [String] security View security to use, either DEFINER INVOKER (default DEFINER)
   def self.execute(args)
     raise "Invalid name: `#{args[:name]}`" unless /^[a-z0-9_]*$/.match?(args[:name])
 
