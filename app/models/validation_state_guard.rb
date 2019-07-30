@@ -12,6 +12,8 @@
 #     validation_guarded_by(:method_that_needs_guard_enabled, :guard_name)
 #
 # This will set the guard_name to true before the method is called and return it to false afterwards.
+#
+# JG: This pattern has been pretty much eliminated. It seems to just be used to control {Sample} renaming
 module ValidationStateGuard
   def validation_guard(guard)
     guard = guard.to_sym

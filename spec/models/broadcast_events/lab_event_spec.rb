@@ -5,7 +5,7 @@
 require 'rails_helper'
 
 RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
-  subject { BroadcastEvent::LabEvent.create!(seed: lab_event, user: user, created_at: Time.zone.parse('2018-01-12T13:37:03+00:00')) }
+  subject { described_class.create!(seed: lab_event, user: user, created_at: Time.zone.parse('2018-01-12T13:37:03+00:00')) }
 
   let(:json) { JSON.parse(subject.to_json) }
   let(:eventful) { request }

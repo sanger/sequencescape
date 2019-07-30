@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe BulkSubmissionExcel::Configuration, type: :model, bulk_submission_excel: true do
-  let(:configuration) { BulkSubmissionExcel::Configuration.new }
+  let(:configuration) { described_class.new }
 
   it 'is comparable' do
-    expect(configuration).to eq(BulkSubmissionExcel::Configuration.new)
+    expect(configuration).to eq(described_class.new)
   end
 
   it 'is able to add a new file' do

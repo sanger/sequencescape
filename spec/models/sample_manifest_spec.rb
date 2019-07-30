@@ -120,7 +120,7 @@ RSpec.describe SampleManifest, type: :model do
 
           it 'create sample manifest asset' do
             expect { manifest.generate }.to  change(SampleManifestAsset, :count).by(count)
-            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes).sort_by(&:human_barcode).map(&:receptacle))
+            expect(manifest.assets).to contain_exactly(*LibraryTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 
           context 'after generation' do
@@ -272,7 +272,7 @@ RSpec.describe SampleManifest, type: :model do
     context 'where a well has no plate' do
       it 'not try to add an event to a plate' do
         expect do
-          SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(
+          SampleManifest::PlateBehaviour::Core.new(described_class.new).updated_by!(
             user, [
               well_with_sample_and_plate.primary_aliquot.sample,
               well_with_sample_and_without_plate.primary_aliquot.sample
@@ -284,7 +284,7 @@ RSpec.describe SampleManifest, type: :model do
 
     context 'where a well has a plate' do
       it 'adds an event to the plate' do
-        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new)
+        SampleManifest::PlateBehaviour::Core.new(described_class.new)
                                             .updated_by!(user,
                                                          [well_with_sample_and_plate.primary_aliquot.sample])
         expect(Event.last).to eq(well_with_sample_and_plate.plate.events.last)

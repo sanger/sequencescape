@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # JSONAPI controller for {ProjectsResource}
+    # JSONAPI controller for {ProjectResource}
     class ProjectsController < JSONAPI::ResourceController
     end
   end
