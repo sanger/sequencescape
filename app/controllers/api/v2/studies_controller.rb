@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # JSONAPI controller for {StudiesResource}
+    # JSONAPI controller for {StudyResource}
     class StudiesController < JSONAPI::ResourceController
     end
   end

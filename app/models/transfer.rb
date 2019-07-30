@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# A transfer handles the transfer of material from one piece of labware to another.
+# Different classes are used to determine exactly how the transfers are performed.
+# @note {TransferRequestCollection} is preferred, as it allows the client applications to control
+#       the transfer behaviour.
 class Transfer < ApplicationRecord
   include Uuid::Uuidable
 

@@ -4,7 +4,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
   context '#tokenizer' do
     it 'returns the extracted information in an object' do
       expect(
-        Aker::ConfigParser.new.tokenizer('sample_metadata.sample_common_name  <=>   common_name')
+        described_class.new.tokenizer('sample_metadata.sample_common_name  <=>   common_name')
       ).to eq(
         ss: 'sample_metadata.sample_common_name', ss_name: :sample_common_name,
         ss_model: :sample_metadata, aker_name: :common_name,
@@ -13,14 +13,14 @@ RSpec.describe Aker::ConfigParser, aker: true do
     end
     it 'is able to read the direction of the arrow to understand the type of update' do
       expect(
-        Aker::ConfigParser.new.tokenizer('volume  <=   volume')
+        described_class.new.tokenizer('volume  <=   volume')
       ).to eq(
         ss: 'volume', ss_name: :volume,
         ss_model: :self, aker_name: :volume,
         ss_to_aker: false, aker_to_ss: true
       )
       expect(
-        Aker::ConfigParser.new.tokenizer('volume  =>   volume')
+        described_class.new.tokenizer('volume  =>   volume')
       ).to eq(
         ss: 'volume', ss_name: :volume,
         ss_model: :self, aker_name: :volume,
@@ -29,7 +29,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
     end
 
     it 'gets self if there is no model defined in Sequencescape' do
-      t = Aker::ConfigParser.new.tokenizer('volume  =>   volume')
+      t = described_class.new.tokenizer('volume  =>   volume')
       expect(t[:ss_model]).to eq(:self)
     end
   end
@@ -44,7 +44,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
       end
 
       it 'returns the list with both columns' do
-        expect(Aker::ConfigParser.new.parse(my_config)).to eq(
+        expect(described_class.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: { t1: { measured_volume: [:volume], current_volume: [:volume] } },
           updatable_attrs_from_aker_into_ss: [:volume],
           updatable_columns_from_ss_into_aker: {}
@@ -61,7 +61,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
       end
 
       it 'returns the list with both columns' do
-        expect(Aker::ConfigParser.new.parse(my_config)).to eq(
+        expect(described_class.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: { t1: { measured_volume: [:volume], current_volume: [:volume] } },
           updatable_attrs_from_aker_into_ss: [],
           updatable_columns_from_ss_into_aker: { t1: [:measured_volume, :current_volume] }
@@ -78,7 +78,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
       end
 
       it 'returns the list with both columns' do
-        expect(Aker::ConfigParser.new.parse(my_config)).to eq(
+        expect(described_class.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: { t1: { measured_volume: [:volume, :other_volume] } },
           updatable_attrs_from_aker_into_ss: [:volume, :other_volume],
           updatable_columns_from_ss_into_aker: {}
@@ -100,7 +100,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
       end
 
       it 'returns the right config object content' do
-        expect(Aker::ConfigParser.new.parse(my_config)).to eq(
+        expect(described_class.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: {
             sample_metadata: {
               gender: [:gender], donor_id: [:donor_id], phenotype: [:phenotype],

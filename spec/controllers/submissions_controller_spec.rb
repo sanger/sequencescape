@@ -12,7 +12,7 @@ RSpec.describe SubmissionsController, type: :controller do
   context 'Submissions controller' do
     setup do
       @user       = create :user
-      @controller = SubmissionsController.new
+      @controller = described_class.new
       @request    = ActionController::TestRequest.create(@controller)
 
       session[:user] = @user
