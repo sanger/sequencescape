@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Extracted from {Plate} Used to convert a plate to {SampleTubes}
+# Extracted from {Plate} Used to convert a plate to {SampleTube}
 class Plate::SampleTubeFactory < SimpleDelegator
   def create_sample_tubes
     wells.map { |well| create_child_sample_tube(well) }

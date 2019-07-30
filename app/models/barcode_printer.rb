@@ -7,6 +7,9 @@
 class BarcodePrinter < ApplicationRecord
   include Uuid::Uuidable
 
+  # @!attribute name
+  #   @return [String] The hostname of the printer, eg. d304bc
+
   belongs_to :barcode_printer_type
   validates_presence_of :barcode_printer_type
   scope :include_barcode_printer_type, -> { includes(:barcode_printer_type) }
