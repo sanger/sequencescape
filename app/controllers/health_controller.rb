@@ -1,6 +1,6 @@
 # Provides a simple endpoint for monitoring server status
 class HealthController < ApplicationController
-  before_action :login_required, except: [:index]
+  before_action :login_required, except: [:show]
 
   def show
     @monitor = Health.new

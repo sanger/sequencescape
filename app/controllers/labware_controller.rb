@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Handles viewing {Labware} information
-# @see {Labware}
+# @see Labware
 class LabwareController < ApplicationController
   before_action :discover_asset, only: %i[show edit update summary print_assets print history]
 
