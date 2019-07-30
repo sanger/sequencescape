@@ -121,6 +121,10 @@ class Api::Messages::FlowcellIO < Api::Base
           nil
         end
 
+        def workflow
+          nil
+        end
+
         def external_release
           false
         end
