@@ -1,3 +1,4 @@
+# Handles input from the 'Help' button and used to generate an email.
 class UserQuery
   include ActiveModel::Model
 

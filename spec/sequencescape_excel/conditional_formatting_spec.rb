@@ -7,21 +7,21 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
   let(:rule) { { name: :rule1, style: { bg_color: '82CAFA', type: :dxf }, options: { option1: 'some_value', option2: 'another_value' } }.with_indifferent_access }
 
   it 'is comparable' do
-    expect(SequencescapeExcel::ConditionalFormatting.new(rule)).to eq(SequencescapeExcel::ConditionalFormatting.new(rule))
-    expect(SequencescapeExcel::ConditionalFormatting.new(rule)).not_to eq(SequencescapeExcel::ConditionalFormatting.new(rule.merge(options: { option1: 'another_value' })))
+    expect(described_class.new(rule)).to eq(described_class.new(rule))
+    expect(described_class.new(rule)).not_to eq(described_class.new(rule.merge(options: { option1: 'another_value' })))
   end
 
   it 'is not valid without a name' do
-    expect(SequencescapeExcel::ConditionalFormatting.new(rule)).to be_valid
-    expect(SequencescapeExcel::ConditionalFormatting.new(rule.except(:name))).not_to be_valid
+    expect(described_class.new(rule)).to be_valid
+    expect(described_class.new(rule.except(:name))).not_to be_valid
   end
 
   it 'is not valid without a name' do
-    expect(SequencescapeExcel::ConditionalFormatting.new(rule.except(:options))).not_to be_valid
+    expect(described_class.new(rule.except(:options))).not_to be_valid
   end
 
   context 'without formula' do
-    let(:conditional_formatting) { SequencescapeExcel::ConditionalFormatting.new(rule) }
+    let(:conditional_formatting) { described_class.new(rule) }
 
     it 'has some options' do
       expect(conditional_formatting.options).to eq(rule[:options])
@@ -54,7 +54,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
   context 'with formula' do
     let(:references) { build(:range).references }
     let(:formula) { { type: :len, operator: '<', operand: 333 } }
-    let(:conditional_formatting) { SequencescapeExcel::ConditionalFormatting.new(rule.merge(formula: formula)) }
+    let(:conditional_formatting) { described_class.new(rule.merge(formula: formula)) }
 
     it 'has a formula' do
       expect(conditional_formatting.formula).to eq(SequencescapeExcel::Formula.new(formula))

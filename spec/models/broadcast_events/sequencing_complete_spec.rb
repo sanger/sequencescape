@@ -27,10 +27,10 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
            })
   end
   let(:event) do
-    BroadcastEvent::SequencingComplete.create!(seed: lane,
-                                               user: user,
-                                               properties: { result: :passed },
-                                               created_at: Time.zone.parse('2018-01-12T13:37:03+00:00'))
+    described_class.create!(seed: lane,
+                            user: user,
+                            properties: { result: :passed },
+                            created_at: Time.zone.parse('2018-01-12T13:37:03+00:00'))
   end
   let(:json)  { JSON.parse(event.to_json) }
 

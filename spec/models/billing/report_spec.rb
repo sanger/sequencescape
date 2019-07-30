@@ -19,7 +19,7 @@ describe Billing::Report, billing: true do
     @request2.start!
     @request2.pass!
     fields = Billing.configuration.fields
-    @report = Billing::Report.new(file_name: 'test_file', start_date: '06/04/2017', end_date: '08/04/2017', fields: fields)
+    @report = described_class.new(file_name: 'test_file', start_date: '06/04/2017', end_date: '08/04/2017', fields: fields)
   end
 
   after do
@@ -27,7 +27,7 @@ describe Billing::Report, billing: true do
   end
 
   it 'is not valid without fields, start and end dates' do
-    report = Billing::Report.new
+    report = described_class.new
     expect(report.valid?).to be false
     expect(report.errors.full_messages.count).to eq 3
   end

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe BulkSubmission, with: :uploader do
   subject do
-    BulkSubmission.new(spreadsheet: submission_file, encoding: encoding)
+    described_class.new(spreadsheet: submission_file, encoding: encoding)
   end
 
   let(:encoding) { 'Windows-1252' }
