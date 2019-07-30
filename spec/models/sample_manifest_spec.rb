@@ -120,7 +120,7 @@ RSpec.describe SampleManifest, type: :model do
 
           it 'create sample manifest asset' do
             expect { manifest.generate }.to  change(SampleManifestAsset, :count).by(count)
-            expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes).sort_by(&:human_barcode).map(&:receptacle))
+            expect(manifest.assets).to contain_exactly(*LibraryTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 
           context 'after generation' do
