@@ -165,11 +165,11 @@ class Api::Messages::FlowcellIO < Api::Base
         extend ClassMethods
 
         def flowcell_barcode
-          requests.first.flowcell_barcode
+          requests.first&.flowcell_barcode
         end
 
         def read_length
-          requests.first.request_metadata.read_length
+          requests.first&.request_metadata&.read_length
         end
         # We alias is as the json generator assumes each method is called only once.
         alias :reverse_read_length :read_length
