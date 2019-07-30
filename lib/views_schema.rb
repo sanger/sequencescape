@@ -72,8 +72,8 @@ module ViewsSchema
   # Updates an existing view, or creates a new view if it doesn't exist already.
   # @param name [String] The name of the view to create
   # @param statement [String,ActiveRecord::Relation] SQL select statement or equivalent rails relation object
-  # @param algorithm: [String] View algorithm to use, either UNDEFINED MERGE TEMPTABLE (default UNDEFINED)
-  # @param security: [String] View security to use, either DEFINER INVOKER (default DEFINER)
+  # @param algorithm [String] View algorithm to use, either UNDEFINED MERGE TEMPTABLE (default UNDEFINED)
+  # @param security [String] View security to use, either DEFINER INVOKER (default DEFINER)
   #
   # @return [Void]
   def self.update_view(name, statement, algorithm: ALGORITHMS.first, security: SECURITIES.first)
