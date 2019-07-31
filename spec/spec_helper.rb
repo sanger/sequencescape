@@ -21,6 +21,9 @@
 
 require 'simplecov'
 
+require 'webdrivers/chromedriver'
+Webdrivers::Chromedriver.update
+
 require 'factory_bot'
 require 'capybara/rspec'
 require 'selenium/webdriver'
