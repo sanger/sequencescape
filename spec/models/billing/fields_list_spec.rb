@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Billing::FieldsList, billing: true do
   let!(:fields_attributes) { YAML.load_file(Rails.root.join('spec', 'data', 'billing', 'fields.yml')).with_indifferent_access }
-  let(:fields_list) { Billing::FieldsList.new(fields_attributes) }
+  let(:fields_list) { described_class.new(fields_attributes) }
 
   it 'creates correct fields' do
     expect(fields_list.count).to eq 18

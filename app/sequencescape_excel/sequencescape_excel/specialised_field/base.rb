@@ -15,15 +15,10 @@ module SequencescapeExcel
         end
       end
 
-      # attr_writer :sample
       attr_accessor :value, :sample_manifest_asset
 
-      def sample
-        @sample || sample_manifest_asset.sample
-      end
-
       delegate :present?, to: :value, prefix: true
-      delegate :asset, to: :sample_manifest_asset
+      delegate :asset, :sample, to: :sample_manifest_asset
 
       def update(_attributes = {}); end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^sequencescape is setup for 10071597$/ do
   project = FactoryBot.create :project_with_order, name: 'Test project 10071597'
   lane = FactoryBot.create :lane, name: 'NPG_Action_Lane_Test', qc_state: 'passed'

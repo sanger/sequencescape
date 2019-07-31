@@ -1,4 +1,5 @@
-When /^I retrieve the XML for the asset "([^\"]+)"$/ do |id|
-  asset = Asset.find(id)
-  page.driver.get(asset_path(id: asset, format: :xml), 'Accepts' => 'application/xml')
+# frozen_string_literal: true
+
+When 'I retrieve the XML for the receptacle in {asset_name}' do |tube|
+  page.driver.get(receptacle_path(id: tube.receptacle, format: :xml), 'Accepts' => 'application/xml')
 end

@@ -15,7 +15,7 @@ module Api
 
       # Associations:
       has_one :lot
-      has_one :asset
+      has_one :asset, polymorphic: true
 
       # Attributes
       attribute :uuid, readonly: true

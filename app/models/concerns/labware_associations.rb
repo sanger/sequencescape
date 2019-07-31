@@ -21,7 +21,7 @@ module LabwareAssociations
     }
 
     scope :source_assets_from_machine_barcode, lambda { |destination_barcode|
-      destination_asset = find_from_barcode(destination_barcode)
+      destination_asset = find_by_barcode(destination_barcode)
       if destination_asset
         source_asset_ids = destination_asset.parents.map(&:id)
         if source_asset_ids.empty?

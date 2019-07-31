@@ -1,3 +1,4 @@
 -
 LICENSE
-static_docs/*
+--asset docs/images:images
+docs/*.md

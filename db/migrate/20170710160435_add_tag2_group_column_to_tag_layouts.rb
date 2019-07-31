@@ -1,3 +1,4 @@
+# Rails migration
 class AddTag2GroupColumnToTagLayouts < ActiveRecord::Migration[4.2]
   def change
     add_reference :tag_layouts, :tag2_group

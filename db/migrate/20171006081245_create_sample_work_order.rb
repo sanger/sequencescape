@@ -1,3 +1,4 @@
+# Rails migration
 class CreateSampleWorkOrder < ActiveRecord::Migration[5.1]
   def change
     create_table :sample_work_orders do |t|

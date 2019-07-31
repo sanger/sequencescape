@@ -14,7 +14,7 @@ module LabelPrinter
         if stock.present?
           tube.name
         elsif batch.multiplexed?
-          tag_range = tube.tag_range
+          tag_range = tube.receptacle.tag_range
           tag_range.nil? ? tube.name : "(#{tag_range}) #{tube.id}"
         elsif tube.is_a? PacBioLibraryTube
           source_plate_barcode(tube)
@@ -39,14 +39,14 @@ module LabelPrinter
         @tubes ||=  if stock.present?
                       if batch.multiplexed?
                         # all info on a label including barcode is about target_asset first child
-                        requests.map { |request| request.target_asset.children.first }
+                        requests.map { |request| request.target_labware.children.first }
                       else
                         # all info on a label including barcode is about target_asset stock asset
-                        requests.map { |request| request.target_asset.stock_asset }
+                        requests.map { |request| request.target_labware.stock_asset }
                       end
                     else
                       # all info on a label including barcode is about target_asset
-                      requests.map { |request| request.target_asset }
+                      requests.map { |request| request.target_labware }
                     end
       end
 

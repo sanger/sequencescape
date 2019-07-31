@@ -99,7 +99,7 @@ Feature: Sample manifest
     Given a manifest has been created for "Test study"
     When I fill in "File to upload" with the file "test/data/manifests/mismatched_plate.csv"
     And I press "Upload manifest"
-    Then I should see "Sample barcode has been modified, but it is not a valid foreign barcode format"
+    Then I should see "Sanger plate barcode has been modified, but it is not a valid foreign barcode format"
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload          | Errors | State                 | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest |        |  No manifest uploaded | john       |
@@ -133,7 +133,7 @@ Feature: Sample manifest
     Then I should see "Report being generated"
     Then I should see qc reports table:
       | Study      | Created by | Download   | Rerun |
-      | Test study | john        | Processing |       |
+      | Test study | john       | Processing |       |
     Given 1 pending delayed jobs are processed
     And I am on the Qc reports homepage
     Then I should see qc reports table:

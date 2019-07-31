@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'tecan_file_generation'
 
@@ -13,7 +15,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
       'source' => {
         '95020' => {
           'name' => 'ABgene 0765',
-          'plate_size' => 96,
+          'plate_size' => 96
         }
       },
       'destination' => {
@@ -68,15 +70,15 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
       'source' => {
         '122289' => {
           'name' => 'ABgene 0765',
-          'plate_size' => 96,
+          'plate_size' => 96
         },
         '80785' => {
           'name' => 'ABgene 0765',
-          'plate_size' => 96,
+          'plate_size' => 96
         },
         '122290' => {
           'name' => 'ABgene 0765',
-          'plate_size' => 96,
+          'plate_size' => 96
         }
       },
       'destination' => {

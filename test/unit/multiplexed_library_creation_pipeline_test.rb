@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
@@ -9,7 +11,7 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
   context 'batch interaction' do
     setup do
       @batch = create(:batch, pipeline: @pipeline)
-      @batch.requests = create_list(:request_suitable_for_starting, 5, request_type: @batch.pipeline.request_types.last)
+      @batch.requests = create_list(:multiplexed_library_creation_request, 5, request_type: @batch.pipeline.request_types.last)
     end
 
     context 'for completion' do
@@ -22,8 +24,6 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
       end
 
       should 'add errors if there are untagged target asset aliquots' do
-        @batch.requests.map(&:target_asset).map(&:untag!)
-
         assert_raise(ActiveRecord::RecordInvalid) do
           @batch.complete!(@user)
         end

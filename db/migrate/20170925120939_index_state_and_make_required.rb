@@ -1,3 +1,4 @@
+# Rails migration
 class IndexStateAndMakeRequired < ActiveRecord::Migration[5.1]
   def change
     change_column_null(:work_orders, :state, false)

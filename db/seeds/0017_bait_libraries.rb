@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Generate a few bait libraries.
 
 { 'Standard' => 'standard', 'Custom - Pipeline' => 'custom', 'Custom - Customer' => 'custom' }.each do |name, category|

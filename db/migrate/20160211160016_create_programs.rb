@@ -1,3 +1,4 @@
+# Programs group studies together in broader areas
 class CreatePrograms < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do

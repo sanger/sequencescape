@@ -7,10 +7,12 @@ module Batch::TecanBehaviour
       'destination' => {}
     }
 
-    requests.includes([{ asset: :plate }, { target_asset: :plate }]).where(state: 'passed').find_each do |request|
+    requests.includes([{ asset: %i[plate map] }, { target_asset: [:map, :well_attribute, { plate: :barcodes }] }])
+            .where(state: 'passed')
+            .find_each do |request|
       target_plate = request.target_asset.plate
 
-      next unless target_plate.barcodes.any? { |plate_barcode| plate_barcode =~ target_barcode }
+      next unless target_plate.any_barcode_matching?(target_barcode)
 
       full_source_barcode = request.asset.plate.machine_barcode
       full_destination_barcode = request.target_asset.plate.machine_barcode

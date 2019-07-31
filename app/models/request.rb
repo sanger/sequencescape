@@ -97,6 +97,18 @@ class Request < ApplicationRecord
     has_one :source_labware, through: :asset, source: :labware
   end
 
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def target_labware
+      target_asset.labware
+    end
+
+    def source_labware
+      asset.labware
+    end
+  end
+
   convert_labware_to_receptacle_for :asset, :target_asset
 
   # A request_purpose is a simple means of distinguishing WHY a request was made.
@@ -135,7 +147,7 @@ class Request < ApplicationRecord
         else
           [
             'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-            'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+            'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
           ]
         end
 
@@ -163,11 +175,11 @@ class Request < ApplicationRecord
     scope :for_pre_cap_grouping_of, ->(plate) {
       add_joins =
         if plate.stock_plate?
-          ['INNER JOIN labware AS pw ON requests.asset_id=pw.id']
+          ['INNER JOIN receptacles AS pw ON requests.asset_id=pw.id']
         else
           [
             'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-            'INNER JOIN labware AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+            'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
           ]
         end
 
@@ -194,7 +206,7 @@ class Request < ApplicationRecord
         else
           [
             'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
           ]
         end
 
@@ -227,7 +239,7 @@ class Request < ApplicationRecord
         else
           [
             'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+            'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
           ]
         end
 
@@ -278,7 +290,7 @@ class Request < ApplicationRecord
 
   scope :with_asset, -> { where.not(asset_id: nil) }
   # Ensures the actual record is present
-  scope :with_present_asset, -> { includes(:asset).where.not(assets: { id: nil }) }
+  scope :with_present_asset, -> { joins(:asset).where.not(Receptacle.table_name => { id: nil }) }
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
   scope :join_asset, -> { joins(:asset) }
   scope :with_asset_location, -> { includes(asset: :map) }

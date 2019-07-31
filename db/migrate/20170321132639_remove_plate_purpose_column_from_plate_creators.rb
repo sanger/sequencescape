@@ -1,3 +1,4 @@
+# Rails migration
 class RemovePlatePurposeColumnFromPlateCreators < ActiveRecord::Migration
   class PlateCreators < ApplicationRecord
     self.table_name = 'plate_creators'

@@ -1,5 +1,9 @@
 require 'aasm'
 
+# Contains qc information regarding a well, in addition to volume information to
+# assist with Cherrypicking
+# @note Try and use {QcResult} for any future readings, it will automatically
+#       update this table for you.
 class WellAttribute < ApplicationRecord
   include AASM
 

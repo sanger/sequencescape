@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipeline|
   pipeline.sorter               = 14
   pipeline.automated            = false
   pipeline.active               = true
-  pipeline.asset_type           = 'PacBioLibraryTube'
-  pipeline.group_by_parent      = true
 
   pipeline.request_types << RequestType.create!(key: 'pacbio_tagged_library_prep', name: 'PacBio Tagged Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
@@ -53,8 +53,7 @@ pbs = PlatePurpose.create!(
   barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
   cherrypickable_target: false,
   size: 96,
-  asset_shape: AssetShape.find_by(name: 'Standard'),
-  barcode_for_tecan: 'ean13_barcode'
+  asset_shape: AssetShape.find_by(name: 'Standard')
 )
 AssignTubesToMultiplexedWellsTask.all.each { |task| task.update!(purpose: pbs) }
 

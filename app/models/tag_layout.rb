@@ -19,7 +19,8 @@ class TagLayout < ApplicationRecord
     'row' => 'TagLayout::InRows',
     'inverse column' => 'TagLayout::InInverseColumns',
     'inverse row' => 'TagLayout::InInverseRows',
-    'column then row' => 'TagLayout::InColumnsThenRows'
+    'column then row' => 'TagLayout::InColumnsThenRows',
+    'combinatorial by row' => 'TagLayout::CombByRows'
   }.freeze
 
   WALKING_ALGORITHMS = {
@@ -29,7 +30,8 @@ class TagLayout < ApplicationRecord
     'as group by plate' => 'TagLayout::AsGroupByPlate',
     'manual by plate' => 'TagLayout::WalkManualWellsOfPlate',
     'quadrants' => 'TagLayout::Quadrants',
-    'as fixed group by plate' => 'TagLayout::AsFixedGroupByPlate'
+    'as fixed group by plate' => 'TagLayout::AsFixedGroupByPlate',
+    'combinatorial sequential' => 'TagLayout::CombinatorialSequential'
   }.freeze
 
   self.inheritance_column = 'sti_type'

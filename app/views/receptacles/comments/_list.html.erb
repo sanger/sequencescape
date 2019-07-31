@@ -1,7 +1,7 @@
 
 <ul id="asset_annotations_<%= receptacle.id %>" class="list-group">
   <% if receptacle.comments.length > 0 %>
-    <% @comments.each do |comment| %>
+    <% receptacle.comments.each do |comment| %>
       <li class="list-group-item">
         <%= render partial: "shared/comment" ,
                    locals: { comment: comment, commentable: receptacle.becomes(Receptacle), update_target: "asset_annotations_#{receptacle.id}" }%>

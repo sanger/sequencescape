@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Then /^the bait library index page should look like:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#bait_library_list')))
 end
@@ -50,14 +52,4 @@ end
 
 Given /^the last bait library is hidden$/ do
   BaitLibrary.last.update(visible: false)
-end
-
-Then /^the submission with UUID "([^\"]*)" should not be ready$/ do |uuid|
-  submission = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
-  assert(!submission.ready?, "Submission is ready (#{submission.state.inspect})")
-end
-
-Then /^the submission with UUID "([^\"]*)" should have the error "([^\"]*)"$/ do |uuid, error|
-  submission = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
-  assert submission.message.include?(error)
 end

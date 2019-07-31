@@ -5,10 +5,10 @@ require_relative '../shared/a_mapping_between_an_aker_model_and_sequencescape'
 
 RSpec.describe Aker::Material, type: :model, aker: true do
   let(:sample) { create :sample, name: 'test1' }
-  let(:mapping) { Aker::Material.new(sample) }
+  let(:mapping) { described_class.new(sample) }
 
   before do
-    Aker::Material.config = my_config
+    described_class.config = my_config
   end
 
   let(:my_config) do
@@ -50,7 +50,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         let(:container) { create :container, asset: asset }
 
         before do
-          Aker::Material.config = my_config
+          described_class.config = my_config
           allow(sample).to receive(:container).and_return(container)
           @conc_a = create :qc_result_concentration, value: 33, asset: asset
           @conc_b = create :qc_result_concentration, value: 44, asset: asset
@@ -85,7 +85,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
 
       context 'when the same value goes to two different models' do
         before do
-          Aker::Material.config =
+          described_class.config =
             %(
                 sample.name                         <=   supplier_name
                 sample_metadata.sample_public_name  <=   supplier_name

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'studies/sample_registration_controller'
 
@@ -168,7 +170,7 @@ module Studies
           context 'when a 2D barcode is passed in' do
             setup do
               @sscount = @study.samples.count
-              @asset_count = Asset.count
+              @asset_count = Labware.count
               post :create, params: { study_id: @study,
                                       sample_registrars: {
                                         '1' => {
@@ -190,8 +192,8 @@ module Studies
               assert_equal 2,  @study.samples.count - @sscount, 'Expected @study.samples.count to change by 2'
             end
 
-            should 'change Asset.count by 2' do
-              assert_equal 2,  Asset.count - @asset_count, 'Expected Asset.count to change by 2'
+            should 'change Labware.count by 2' do
+              assert_equal 2,  Labware.count - @asset_count, 'Expected Labware.count to change by 2'
             end
 
             context 'sample 1' do

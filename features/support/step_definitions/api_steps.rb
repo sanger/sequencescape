@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
 def recursive_diff(h1, h2)
@@ -218,7 +220,7 @@ Then /^the JSON should be:$/ do |serialised_json|
   )
 end
 
-Then /^the HTTP response should be "([^\"]+)"$/ do |status|
+Then 'the HTTP response should be {string}' do |status|
   match = /^(\d+).*/.match(status) or raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
   begin
     assert_equal(match[1].to_i, page.driver.status_code)

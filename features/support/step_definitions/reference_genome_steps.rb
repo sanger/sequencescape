@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^a reference genome table$/ do
   FactoryBot.create(:reference_genome, name: 'Danio_rerio (zv9)')
   FactoryBot.create(:reference_genome, name: 'Mus_musculus (NCBIm37)')

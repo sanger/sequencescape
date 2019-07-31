@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Used by {BarcodePrinter barcode printers} to identify which label type is loaded
 # in them
 class BarcodePrinterType < ApplicationRecord

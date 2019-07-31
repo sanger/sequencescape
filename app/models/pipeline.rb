@@ -13,7 +13,8 @@ class Pipeline < ApplicationRecord
                   :inbox_partial, :library_creation, :pulldown, :prints_a_worksheet_per_task,
                   :genotyping, :sequencing, :purpose_information, :can_create_stock_assets,
                   :inbox_eager_loading, :group_by_submission, :group_by_parent,
-                  :generate_target_assets_on_batch_create
+                  :generate_target_assets_on_batch_create,
+                  :asset_type, instance_writer: false
 
   # Pipeline defaults
   self.batch_worksheet = 'detailed_worksheet'

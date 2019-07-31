@@ -1,3 +1,4 @@
+# Used for samples/studies which are neither open or managed.
 class UnsuitableAccessionService < AccessionService
   self.no_study_accession_needed = true
 

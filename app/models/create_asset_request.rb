@@ -1,3 +1,5 @@
+# Used to track the creation of stock receptacles within the system
+# Part of a drive to get Sequencescape to be primarily {Request} driven
 class CreateAssetRequest < SystemRequest
   before_save :initialize_aliquots
 

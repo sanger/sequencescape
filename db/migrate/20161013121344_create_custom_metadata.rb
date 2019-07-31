@@ -1,3 +1,4 @@
+# Rails migration
 class CreateCustomMetadata < ActiveRecord::Migration
   def change
     create_table :custom_metadata do |t|

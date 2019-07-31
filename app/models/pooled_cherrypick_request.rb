@@ -5,6 +5,10 @@ class PooledCherrypickRequest < CustomerRequest
     ''
   end
 
+  def on_started
+    transfer_aliquots
+  end
+
   def transfer_aliquots
     target_asset.aliquots << aliquots_for_transfer
   end

@@ -1,3 +1,4 @@
+# Rails migration
 class RemovePlateTypesFromPlatePurposes < ActiveRecord::Migration
   def up
     %w(ABgene_0765 ABgene_0800 FluidX075 FluidX03).each do |name|

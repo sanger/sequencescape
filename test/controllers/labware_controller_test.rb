@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
-class AssetsControllerTest < ActionController::TestCase
+class LabwareControllerTest < ActionController::TestCase
   setup do
-    @controller = AssetsController.new
+    @controller = LabwareController.new
     @request    = ActionController::TestRequest.create(@controller)
     @user = create :admin, api_key: 'abc'
     session[:user] = @user.id
