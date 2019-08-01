@@ -93,9 +93,12 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       end
     end
 
-    xcontext 'when asset_type: library_plate' do
+    context 'when asset_type: library_plate' do
       let(:asset_type) { 'library_plate' }
       let(:count) { 1 }
+
+      setup { Delayed::Worker.delay_jobs = false }
+      teardown { Delayed::Worker.delay_jobs = true }
 
       it 'create 1 plate(s), 96 wells' do
         expect { manifest.generate }.to change(Plate, :count).by(count)
@@ -127,11 +130,9 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           sma1 = manifest.sample_manifest_assets.first
           expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count).by(1)
                                                                                           .and change { study.samples.count }.by(1)
-                                                                                          .and change(Messenger, :count).by(1)
           sma2 = manifest.sample_manifest_assets.last
           expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(Sample, :count).by(1)
                                                                                           .and change { study.samples.count }.by(1)
-                                                                                          .and change(Messenger, :count).by(1)
           expect(sma1.sample.primary_aliquot).to have_attributes(
             study_id: study.id,
             library_id: sma1.asset.id

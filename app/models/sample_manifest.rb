@@ -65,6 +65,7 @@ class SampleManifest < ApplicationRecord
   validates_presence_of :supplier
   validates_presence_of :study
   validates_numericality_of :count, only_integer: true, greater_than: 0, allow_blank: false
+  validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }
 
   before_save :default_asset_type
 
@@ -72,7 +73,9 @@ class SampleManifest < ApplicationRecord
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
-  delegate :printables, :acceptable_purposes, :labware, :labware=, :pending_external_library_creation_requests, to: :core_behaviour
+  delegate :printables, :acceptable_purposes, :labware, :labware=,
+           :pending_external_library_creation_requests, :default_purpose,
+           to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
 
   def truncate_errors

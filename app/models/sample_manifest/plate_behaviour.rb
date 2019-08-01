@@ -4,6 +4,12 @@ module SampleManifest::PlateBehaviour
 
     attr_reader :plates
 
+    delegate :generate_plates, to: :@manifest
+    alias_method(:generate, :generate_plates)
+
+    delegate :create_sample, to: :@manifest
+    delegate :samples, :sample_manifest_assets, :barcodes, :study, to: :@manifest
+
     def initialize(manifest)
       @manifest = manifest
       @plates = []
@@ -17,29 +23,10 @@ module SampleManifest::PlateBehaviour
       PlatePurpose.stock_plate_purpose
     end
 
-    delegate :generate_plates, to: :@manifest
-    alias_method(:generate, :generate_plates)
-
-    delegate :generate_sample_and_aliquot, to: :@manifest
-    delegate :samples, :sample_manifest_assets, :barcodes, to: :@manifest
-
-    # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
-    # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
-    # truncate the data.
-    def generate_wells_for_plates(well_data, plates)
-      cloned_well_data = well_data.dup
-      plates.each do |plate|
-        yield(cloned_well_data.slice!(0, plate.size), plate)
-      end
-    end
-    private :generate_wells_for_plates
-
     def included_resources
       [{ sample: :sample_metadata, asset: { plate: :barcodes } }]
     end
-  end
 
-  class Core < Base
     def generate_wells(well_data, plates)
       # Generate the wells, samples & requests asynchronously.
       generate_wells_for_plates(well_data, plates) do |this_plates_well_data, plate|
@@ -111,14 +98,28 @@ module SampleManifest::PlateBehaviour
 
     private
 
+    # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
+    # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
+    # truncate the data.
+    def generate_wells_for_plates(well_data, plates)
+      cloned_well_data = well_data.dup
+      plates.each do |plate|
+        yield(cloned_well_data.slice!(0, plate.size), plate)
+      end
+    end
+
     def labware_from_barcodes
       Labware.with_barcode(barcodes)
     end
   end
 
-  def self.included(base)
-    base.class_eval do
-      delegate :default_purpose, to: :core_behaviour
+  class Core < Base
+    def generate_sample_and_aliquot(sanger_sample_id, well)
+      create_sample(sanger_sample_id).tap do |sample|
+        well.aliquots.create!(sample: sample, study: study)
+        well.register_stock!
+        study.samples << sample
+      end
     end
   end
 
@@ -157,14 +158,6 @@ module SampleManifest::PlateBehaviour
 
     save!
     @plates = plates.sort_by(&:human_barcode)
-  end
-
-  def generate_sample_and_aliquot(sanger_sample_id, well)
-    create_sample(sanger_sample_id).tap do |sample|
-      well.aliquots.create!(sample: sample, study: study)
-      well.register_stock!
-      study.samples << sample
-    end
   end
 
   def generate_wells(wells_for_plate, plate)

@@ -1,4 +1,6 @@
 module SampleManifest::CoreBehaviour
+  BEHAVIOURS = %w[1dtube plate multiplexed_library library library_plate].freeze
+
   # Include in cores which exhibit the default behaviour
   module NoSpecializedValidation
     def validate_specialized_fields(*args); end
@@ -28,6 +30,7 @@ module SampleManifest::CoreBehaviour
     when 'plate'               then 'PlateBehaviour'
     when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'
     when 'library'             then 'LibraryBehaviour'
+    when 'library_plate'       then 'LibraryPlateBehaviour'
     when nil                   then 'UnspecifiedBehaviour'
     else raise StandardError, "Unknown core behaviour (#{asset_type.inspect}) for sample manifest"
     end
