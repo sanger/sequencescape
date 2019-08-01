@@ -10,7 +10,6 @@ addons:
   apt:
     packages:
     - haveged
-    - chromium-chromedriver
 cache:
   bundler: true
 bundler_args: "--without warehouse deployment"
@@ -18,7 +17,6 @@ env:
   global:
   - TZ=Europe/London
   - CUCUMBER_FORMAT=DebugFormatter
-  - PATH=$PATH:/usr/lib/chromium-browser/
 before_install:
 - mv config/aker.yml.example config/aker.yml
 jobs:
@@ -26,8 +24,8 @@ jobs:
   - stage: test
     if: type = cron
     before_script:
-    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-      > ./cc-test-reporter
+    - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
     - chmod +x ./cc-test-reporter
     - "./cc-test-reporter before-build"
     script: "xvfb-run -a ./run_coverage"
@@ -47,6 +45,7 @@ jobs:
   - if: type != cron
     env:
     before_script:
+    - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     script: xvfb-run -a bundle exec rspec
@@ -57,6 +56,7 @@ jobs:
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=0
     before_script:
+    - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     name: Cucumber Test 1
@@ -67,6 +67,7 @@ jobs:
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=1
     before_script:
+    - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     name: Cucumber Test 2
