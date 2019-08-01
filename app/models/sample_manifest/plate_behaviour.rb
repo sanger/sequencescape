@@ -1,18 +1,17 @@
 module SampleManifest::PlateBehaviour
   class Base
+    include SampleManifest::CoreBehaviour::Shared
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
     attr_reader :plates
 
-    delegate :generate_plates, to: :@manifest
-    alias_method(:generate, :generate_plates)
-
-    delegate :create_sample, to: :@manifest
-    delegate :samples, :sample_manifest_assets, :barcodes, :study, to: :@manifest
-
     def initialize(manifest)
       @manifest = manifest
       @plates = []
+    end
+
+    def generate
+      @plates = generate_plates(purpose)
     end
 
     def acceptable_purposes
@@ -30,7 +29,7 @@ module SampleManifest::PlateBehaviour
     def generate_wells(well_data, plates)
       # Generate the wells, samples & requests asynchronously.
       generate_wells_for_plates(well_data, plates) do |this_plates_well_data, plate|
-        @manifest.generate_wells_asynchronously(
+        generate_wells_asynchronously(
           this_plates_well_data.map { |map, sample_id| [map.id, sample_id] },
           plate.id
         )
@@ -72,10 +71,6 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def details(&block)
-      details_array.each(&block)
-    end
-
     def details_array
       @details_array ||= sample_manifest_assets.includes(asset: [:map, :aliquots, { plate: :barcodes }]).map do |sample_manifest_asset|
         {
@@ -96,6 +91,19 @@ module SampleManifest::PlateBehaviour
     end
     alias printables labware
 
+    # Called by {SampleManifest::GenerateWellsJob} and builds the wells
+    def generate_wells_job(wells_for_plate, plate)
+      wells_for_plate.map do |map, sanger_sample_id|
+        plate.wells.create!(map: map) do |well|
+          SampleManifestAsset.create(sanger_sample_id: sanger_sample_id,
+                                     asset: well,
+                                     sample_manifest: @manifest)
+        end
+      end
+      RequestFactory.create_assets_requests(plate.wells, study)
+      plate.events.created_using_sample_manifest!(@manifest.user)
+    end
+
     private
 
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
@@ -111,64 +119,36 @@ module SampleManifest::PlateBehaviour
     def labware_from_barcodes
       Labware.with_barcode(barcodes)
     end
+
+    def generate_wells_asynchronously(map_ids_to_sample_ids, plate_id)
+      Delayed::Job.enqueue SampleManifest::GenerateWellsJob.new(@manifest.id, map_ids_to_sample_ids, plate_id)
+    end
+
+    def generate_plates(purpose)
+      study_abbreviation = study.abbreviation
+
+      well_data = []
+      plates = Array.new(count) { purpose.create!(:without_wells) }.sort_by(&:human_barcode)
+
+      plates.each do |plate|
+        sanger_sample_ids = generate_sanger_ids(plate.size)
+
+        plate.maps.in_column_major_order.each do |well_map|
+          sanger_sample_id           = sanger_sample_ids.shift
+          generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
+
+          well_data << [well_map, generated_sanger_sample_id]
+        end
+      end
+
+      generate_wells(well_data, plates)
+      @manifest.update!(barcodes: plates.map(&:human_barcode))
+
+      plates
+    end
   end
 
   class Core < Base
-    def generate_sample_and_aliquot(sanger_sample_id, well)
-      create_sample(sanger_sample_id).tap do |sample|
-        well.aliquots.create!(sample: sample, study: study)
-        well.register_stock!
-        study.samples << sample
-      end
-    end
-  end
-
-  def generate_wells_asynchronously(map_ids_to_sample_ids, plate_id)
-    Delayed::Job.enqueue SampleManifest::GenerateWellsJob.new(id, map_ids_to_sample_ids, plate_id)
-  end
-
-  # Fall back to stock plate by default
-  def purpose
-    super || default_purpose
-  end
-
-  def purpose_id
-    super || purpose.id
-  end
-
-  def generate_plates
-    study_abbreviation = study.abbreviation
-
-    well_data = []
-    plates = Array.new(count) { purpose.create!(:without_wells) }.sort_by(&:human_barcode)
-
-    plates.each do |plate|
-      sanger_sample_ids = generate_sanger_ids(plate.size)
-
-      Map.walk_plate_in_column_major_order(plate.size) do |map, _|
-        sanger_sample_id           = sanger_sample_ids.shift
-        generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
-
-        well_data << [map, generated_sanger_sample_id]
-      end
-    end
-
-    core_behaviour.generate_wells(well_data, plates)
-    self.barcodes = plates.map(&:human_barcode)
-
-    save!
-    @plates = plates.sort_by(&:human_barcode)
-  end
-
-  def generate_wells(wells_for_plate, plate)
-    wells_for_plate.map do |map, sanger_sample_id|
-      plate.wells.create!(map: map) do |well|
-        SampleManifestAsset.create(sanger_sample_id: sanger_sample_id,
-                                   asset: well,
-                                   sample_manifest: self)
-      end
-    end
-    RequestFactory.create_assets_requests(plate.wells, study)
-    plate.events.created_using_sample_manifest!(user)
+    include SampleManifest::CoreBehaviour::StockAssets
   end
 end

@@ -1,35 +1,43 @@
 module SampleManifest::SharedTubeBehaviour
-  def generate_tubes(purpose)
-    sanger_ids = generate_sanger_ids(count)
-    study_abbreviation = study.abbreviation
+  class Base
+    include SampleManifest::CoreBehaviour::Shared
 
-    tubes = []
-    count.times do
-      tube = purpose.create!
-      sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
-      SampleManifestAsset.create!(sanger_sample_id: sanger_sample_id,
-                                  asset: tube.receptacle,
-                                  sample_manifest: self)
-      tubes << tube
+    def updated_by!(user, samples)
+      # Does nothing at the moment
     end
 
-    self.barcodes = tubes.map(&:human_barcode)
+    def details_array
+      sample_manifest_assets.includes(asset: :barcodes).map do |sample_manifest_asset|
+        {
+          barcode: sample_manifest_asset.human_barcode,
+          sample_id: sample_manifest_asset.sanger_sample_id
+        }
+      end
+    end
 
-    delayed_generate_asset_requests(tubes.map { |tube| tube.receptacle.id }, study.id)
-    save!
-    tubes
-  end
+    private
 
-  def delayed_generate_asset_requests(asset_ids, study_id)
-    Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new(asset_ids, study_id)
-  end
+    def generate_tubes(purpose)
+      sanger_ids = generate_sanger_ids(count)
+      study_abbreviation = study.abbreviation
 
-  def tube_sample_creation(sanger_sample_id, tube)
-    create_sample(sanger_sample_id).tap do |sample|
-      attributes = core_behaviour.assign_library? ? { sample: sample, library_id: tube.id, study: study } : { sample: sample, study: study }
-      tube.aliquots.create!(attributes)
+      tubes = Array.new(count) do
+        tube = purpose.create!
+        sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
+        SampleManifestAsset.create!(sanger_sample_id: sanger_sample_id,
+                                    asset: tube.receptacle,
+                                    sample_manifest: @manifest)
+        tube
+      end
 
-      study.samples << sample
+      @manifest.update!(barcodes: tubes.map(&:human_barcode))
+
+      delayed_generate_asset_requests(tubes.map { |tube| tube.receptacle.id }, study.id)
+      tubes
+    end
+
+    def delayed_generate_asset_requests(asset_ids, study_id)
+      Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new(asset_ids, study_id)
     end
   end
 end

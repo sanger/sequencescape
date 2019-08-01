@@ -1,20 +1,21 @@
+# frozen_string_literal: true
+
 # This module is very similar to SampleManifest::MultiplexedLibraryBehaviour
 # Differences are:
 #   (1)this module does not have methods needed for 'old' upload
 #   (2)this module does not creat multiplexed library tube and respective requests
 # Probably it should be cleaned at some point (20/04/2017)
-module SampleManifest::LibraryBehaviour
-  class Core
+module SampleManifest::LibraryTubeBehaviour
+  # Behaviour for generating a library tube
+  class Core < SampleManifest::SharedTubeBehaviour::Base
+    include SampleManifest::CoreBehaviour::LibraryAssets
+
     attr_reader :tubes
 
     def initialize(manifest)
       @manifest = manifest
       @tubes = []
     end
-
-    delegate :samples, to: :@manifest
-    delegate :generate_library, to: :@manifest
-    delegate :samples, :sample_manifest_assets, to: :@manifest
 
     def io_samples
       samples.map do |sample|
@@ -29,32 +30,7 @@ module SampleManifest::LibraryBehaviour
     end
 
     def generate
-      @tubes = generate_library
-    end
-
-    def generate_sample_and_aliquot(sanger_sample_id, tube)
-      @manifest.tube_sample_creation(sanger_sample_id, tube)
-    end
-
-    def updated_by!(user, samples)
-      # Does nothing at the moment
-    end
-
-    def details(&block)
-      details_array.each(&block)
-    end
-
-    def details_array
-      sample_manifest_assets.includes(asset: :barcodes).map do |sample_manifest_asset|
-        {
-          barcode: sample_manifest_asset.human_barcode,
-          sample_id: sample_manifest_asset.sanger_sample_id
-        }
-      end
-    end
-
-    def assign_library?
-      true
+      @tubes = generate_tubes(Tube::Purpose.standard_library_tube)
     end
 
     def labware_from_samples
@@ -77,9 +53,5 @@ module SampleManifest::LibraryBehaviour
     def included_resources
       [{ sample: :sample_metadata, asset: %i[barcodes aliquots] }]
     end
-  end
-
-  def generate_library
-    generate_tubes(Tube::Purpose.standard_library_tube)
   end
 end
