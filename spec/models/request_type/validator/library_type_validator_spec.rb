@@ -5,7 +5,7 @@ require 'rails_helper'
 describe RequestType::Validator::LibraryTypeValidator, type: :model do
   let(:library_type) { create :library_type, name: 'MyLibraryType' }
   let(:request_type) { create :library_creation_request_type, library_type: library_type }
-  let(:validator) { RequestType::Validator::LibraryTypeValidator.new(request_type.id) }
+  let(:validator) { described_class.new(request_type.id) }
 
   context 'when initialising' do
     it 'keeps an association with the request type' do

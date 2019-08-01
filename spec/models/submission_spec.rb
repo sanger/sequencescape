@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Submission, type: :model do
   context '#priority' do
-    let(:submission) { Submission.new(user: create(:user)) }
+    let(:submission) { described_class.new(user: create(:user)) }
 
     it 'be 0 by default' do
       expect(submission.priority).to eq 0
@@ -85,7 +85,7 @@ RSpec.describe Submission, type: :model do
     asset = create :sample_tube
     order2 = create :order, assets: [asset.receptacle]
 
-    submission = Submission.new(user: create(:user), orders: [order1, order2])
+    submission = described_class.new(user: create(:user), orders: [order1, order2])
 
     expect(submission.not_ready_samples).to eq samples
   end

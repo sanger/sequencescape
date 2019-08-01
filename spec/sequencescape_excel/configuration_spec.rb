@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest_excel: true do
-  let(:configuration) { SampleManifestExcel::Configuration.new }
+  let(:configuration) { described_class.new }
 
   it 'is comparable' do
-    expect(configuration).to eq(SampleManifestExcel::Configuration.new)
+    expect(configuration).to eq(described_class.new)
   end
 
   it 'is able to add a new file' do

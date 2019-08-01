@@ -19,8 +19,7 @@ class PhiX::SpikedBuffer
   attr_accessor :volume
   # @return [Integer] The number of {SpikedBuffer library tubes} to create
   attr_accessor :number
-  # Set the parent directly. If not provided will look up via the parent_barcode
-  # @param parent_tube [Tube] PhiX containing parent tube
+  # @return [Tube] PhiX containing parent tube. If not provided will look up via the parent_barcode
   attr_writer :parent
 
   validates :name, presence: true

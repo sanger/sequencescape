@@ -112,8 +112,6 @@ module Limber::Helper
     # The name or the {OrderRole} associated with the submission template. If {#role} is not specified
     # falls back to {#prefix}
     #
-    # {include:Foo}
-    #
     # @return [String] The name of the order role used for the submission templates
     def role
       @role || prefix

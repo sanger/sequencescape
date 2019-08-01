@@ -6,7 +6,7 @@ require 'rails_helper'
 
 RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
   subject do
-    BroadcastEvent::QcAssay.create!(
+    described_class.create!(
       seed: qc_assay,
       created_at: Time.zone.parse('2018-01-12T13:37:03+00:00'),
       properties: { 'assay_type' => 'Example Assay' }
@@ -59,7 +59,7 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
 
     describe '::generate_events' do
       it 'generates a single event' do
-        events = BroadcastEvent::QcAssay.generate_events(qc_assay)
+        events = described_class.generate_events(qc_assay)
         expect(events.length).to eq(1)
       end
     end
@@ -104,7 +104,7 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
       # In the event we have two different assay types bundled together, we generate two different events, and separate them
       # via the properties.
       it 'generates a two events' do
-        events = BroadcastEvent::QcAssay.generate_events(qc_assay)
+        events = described_class.generate_events(qc_assay)
         expect(events.length).to eq(2)
         expect(events.map(&:properties)).to include(assay_type: 'Example Assay', assay_version: 'v0.0')
         expect(events.map(&:properties)).to include(assay_type: 'Other Assay', assay_version: 'v0.0')

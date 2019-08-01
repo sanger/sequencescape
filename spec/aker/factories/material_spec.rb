@@ -36,7 +36,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   let(:study) { create :study }
 
   it 'is valid with all relevant attributes' do
-    material = Aker::Factories::Material.new(params, container, study)
+    material = described_class.new(params, container, study)
     sample = material.create
 
     expect(sample).to be_valid
@@ -53,42 +53,42 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   end
 
   it 'is not valid without a name' do
-    material = Aker::Factories::Material.new(params.except('_id'), container, study)
+    material = described_class.new(params.except('_id'), container, study)
     expect(material).not_to be_valid
   end
 
   it 'is not valid without a gender' do
-    material = Aker::Factories::Material.new(params.except('gender'), container, study)
+    material = described_class.new(params.except('gender'), container, study)
     expect(material).not_to be_valid
   end
 
   it 'is not valid without a container' do
-    material = Aker::Factories::Material.new(params, nil, study)
+    material = described_class.new(params, nil, study)
     expect(material).not_to be_valid
   end
 
   it 'is not valid unless the container is valid' do
-    material = Aker::Factories::Material.new(params,
-                                             Aker::Factories::Container.new(container_params.merge(address: params[:address]).except(:barcode)),
-                                             study)
+    material = described_class.new(params,
+                                   Aker::Factories::Container.new(container_params.merge(address: params[:address]).except(:barcode)),
+                                   study)
     material.create
 
     expect(material).not_to be_valid
   end
 
   it 'sets the container for the sample' do
-    material = Aker::Factories::Material.new(params, container, study)
+    material = described_class.new(params, container, study)
     material.create
     expect(material.sample.container).to eq(container.model)
   end
 
   it '#create persists the material if it is valid' do
-    material = Aker::Factories::Material.new(params, container, study)
+    material = described_class.new(params, container, study)
     material.create
     expect(material).to be_present
     sample = Sample.include_uuid.find_by(uuids: { external_id: params[:_id] })
     expect(sample).to be_present
     expect(sample.wells.count).to eq(1)
-    expect(Aker::Factories::Material.new(params.except('gender'), container, study).create).to be_nil
+    expect(described_class.new(params.except('gender'), container, study).create).to be_nil
   end
 end

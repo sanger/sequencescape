@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/BlockLength
-# TODO: This should probably still get refactored, but disabling this here allows us to drastically reduce the
-# maximum block size in the todo yaml.
-
 ActiveRecord::Base.transaction do
   pipeline_name = 'Illumina-B STD'
 
@@ -217,5 +213,3 @@ ActiveRecord::Base.transaction do
     asset_shape: AssetShape.find_by(name: 'StripTubeColumn')
   )
 end
-
-# rubocop:enable Metrics/BlockLength

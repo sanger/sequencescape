@@ -11,7 +11,7 @@ describe Pooling, type: :model, poolings: true do
   let(:mx_tube) { create :multiplexed_library_tube, barcode: 6 }
   let(:stock_mx_tube_required) { false }
   let(:barcode_printer_option) { nil }
-  let(:pooling) { Pooling.new(barcodes: barcodes, stock_mx_tube_required: stock_mx_tube_required, barcode_printer: barcode_printer_option) }
+  let(:pooling) { described_class.new(barcodes: barcodes, stock_mx_tube_required: stock_mx_tube_required, barcode_printer: barcode_printer_option) }
 
   context 'without source assets' do
     let(:barcodes) { [] }
