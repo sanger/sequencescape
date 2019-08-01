@@ -126,16 +126,12 @@ class SampleManifest < ApplicationRecord
       self.barcodes = []
       core_behaviour.generate
     end
-    created_broadcast_event if broadcast_event_subjects_ready?
+    created_broadcast_event
     nil
   end
 
   def create_sample_and_aliquot(sanger_sample_id, asset)
     core_behaviour.generate_sample_and_aliquot(sanger_sample_id, asset)
-  end
-
-  def broadcast_event_subjects_ready?
-    labware.present? && study.present?
   end
 
   def create_sample(sanger_sample_id)

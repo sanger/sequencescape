@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'SampleManifest controller' do
+describe 'SampleManifest controller', sample_manifest: true do
   def load_manifest_spec
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')

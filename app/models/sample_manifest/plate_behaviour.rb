@@ -21,7 +21,7 @@ module SampleManifest::PlateBehaviour
     alias_method(:generate, :generate_plates)
 
     delegate :generate_sample_and_aliquot, to: :@manifest
-    delegate :samples, :sample_manifest_assets, to: :@manifest
+    delegate :samples, :sample_manifest_assets, :barcodes, to: :@manifest
 
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
     # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
@@ -39,12 +39,7 @@ module SampleManifest::PlateBehaviour
     end
   end
 
-  #--
-  # This class is only used by the UI version of Sequencescape and so it only supports a subset of
-  # the methods required.  It can be used to generate the Excel file and to print the labels but it
-  # could not be used for the API not for handling the uploaded sample manifest CSV file.
-  #++
-  class RapidCore < Base
+  class Core < Base
     def generate_wells(well_data, plates)
       # Generate the wells, samples & requests asynchronously.
       generate_wells_for_plates(well_data, plates) do |this_plates_well_data, plate|
@@ -56,37 +51,17 @@ module SampleManifest::PlateBehaviour
 
       # Ensure we maintain the information we need for printing labels and generating
       # the CSV file
-      @plates  = plates.sort_by(&:human_barcode)
-      @details = []
-      plates.each do |plate|
-        well_data.slice!(0, plate.size).each do |map, sample_id|
-          @details << {
+      @plates = plates.sort_by(&:human_barcode)
+
+      @details_array = plates.flat_map do |plate|
+        well_data.slice!(0, plate.size).map do |map, sample_id|
+          {
             barcode: plate.human_barcode,
             position: map.description,
             sample_id: sample_id
           }
         end
       end
-    end
-
-    def details(&block)
-      @details.map(&block.method(:call))
-    end
-
-    def details_array
-      @details
-    end
-
-    def labware
-      plates
-    end
-    alias printables labware
-  end
-
-  class Core < Base
-    def generate_wells(well_data, plates)
-      @plates = plates.sort_by(&:human_barcode)
-      generate_wells_for_plates(well_data, plates, &@manifest.method(:generate_wells))
     end
 
     def io_samples
@@ -115,7 +90,7 @@ module SampleManifest::PlateBehaviour
     end
 
     def details_array
-      sample_manifest_assets.includes(asset: [:map, :aliquots, { plate: :barcodes }]).map do |sample_manifest_asset|
+      @details_array ||= sample_manifest_assets.includes(asset: [:map, :aliquots, { plate: :barcodes }]).map do |sample_manifest_asset|
         {
           barcode: sample_manifest_asset.asset.plate.human_barcode,
           position: sample_manifest_asset.asset.map_description,
@@ -124,24 +99,21 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    # This retrieves plates from old sample manifest that don't have records in
-    # SampleManifestAsset
-    def labware_from_samples
-      samples.map { |s| s.primary_receptacle.plate }.uniq
-    end
-
-    def labware_from_manifest_assets
-      @manifest.assets.map(&:plate).uniq
-    end
-
     def labware=(labware)
       @plates = labware
     end
 
+    # We use the barcodes here as we may need to reference the plates before the delayed job has passed
     def labware
-      plates | labware_from_samples | labware_from_manifest_assets
+      plates | labware_from_barcodes
     end
     alias printables labware
+
+    private
+
+    def labware_from_barcodes
+      Labware.with_barcode(barcodes)
+    end
   end
 
   def self.included(base)

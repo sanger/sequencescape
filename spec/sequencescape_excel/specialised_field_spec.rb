@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manifest_excel: true, sample_manifest: true do
   class Thing
     include SequencescapeExcel::SpecialisedField::Base
   end

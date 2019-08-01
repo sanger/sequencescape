@@ -33,7 +33,7 @@ module SampleManifest::LibraryBehaviour
     end
 
     def generate_sample_and_aliquot(sanger_sample_id, tube)
-      @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
+      @manifest.tube_sample_creation(sanger_sample_id, tube)
     end
 
     def updated_by!(user, samples)
@@ -78,8 +78,6 @@ module SampleManifest::LibraryBehaviour
       [{ sample: :sample_metadata, asset: %i[barcodes aliquots] }]
     end
   end
-
-  RapidCore = Core
 
   def generate_library
     generate_tubes(Tube::Purpose.standard_library_tube)

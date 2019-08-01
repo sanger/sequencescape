@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pry'
 
-RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_excel: true, sample_manifest: true do
   attr_reader :sample_manifest, :spreadsheet
 
   let(:xls) { Axlsx::Package.new }
@@ -27,7 +27,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
     allow(barcode).to receive(:barcode).and_return(23)
     allow(PlateBarcode).to receive(:create).and_return(barcode)
 
-    @sample_manifest = create :sample_manifest, rapid_generation: true
+    @sample_manifest = create :sample_manifest
     sample_manifest.generate
   end
 

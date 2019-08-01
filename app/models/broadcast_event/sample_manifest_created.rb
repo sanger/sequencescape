@@ -5,7 +5,6 @@ class BroadcastEvent::SampleManifestCreated < BroadcastEvent
 
   has_subject(:study, :study)
   has_subjects(:labware, :labware)
-  has_subjects(:sample, :samples)
 
   has_metadata(:labware_type, :asset_type)
   has_metadata(:supplier, :supplier_name)

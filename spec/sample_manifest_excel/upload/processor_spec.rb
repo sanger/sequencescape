@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_manifest_excel: true do
+RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_manifest_excel: true, sample_manifest: true do
   include SequencescapeExcel::Helpers
 
   attr_reader :upload

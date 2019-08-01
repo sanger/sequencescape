@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_excel: true do
+RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_excel: true, sample_manifest: true do
   setup do
     create(:library_type, name: 'My New Library Type')
     create(:reference_genome, name: 'My reference genome')

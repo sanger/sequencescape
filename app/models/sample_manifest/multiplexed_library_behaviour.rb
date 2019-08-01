@@ -19,7 +19,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def generate_sample_and_aliquot(sanger_sample_id, tube)
-      @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
+      @manifest.tube_sample_creation(sanger_sample_id, tube)
     end
 
     def io_samples
@@ -101,8 +101,6 @@ module SampleManifest::MultiplexedLibraryBehaviour
       [{ sample: :sample_metadata, asset: [:barcodes, :aliquots, { requests: :target_asset }] }]
     end
   end
-
-  RapidCore = Core
 
   def generate_mx_library
     @library_tubes = generate_tubes(Tube::Purpose.standard_library_tube)

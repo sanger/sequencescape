@@ -20,15 +20,9 @@ module SampleManifest::SharedTubeBehaviour
     tubes
   end
 
-  def build_sample_and_aliquot(sanger_sample_id, tube)
-    tube_sample_creation(sanger_sample_id, tube)
-  end
-
   def delayed_generate_asset_requests(asset_ids, study_id)
     Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new(asset_ids, study_id)
   end
-
-  private
 
   def tube_sample_creation(sanger_sample_id, tube)
     create_sample(sanger_sample_id).tap do |sample|

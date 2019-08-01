@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:options) { { option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth' } }
   let(:range) { build(:range) }
 
