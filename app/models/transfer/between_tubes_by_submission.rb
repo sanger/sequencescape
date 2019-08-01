@@ -10,7 +10,7 @@ class Transfer::BetweenTubesBySubmission < Transfer
   private
 
   def ensure_destination_setup
-    self.destination = source.submission.multiplexed_asset
+    self.destination = source.submission&.multiplexed_labware
     errors.add(:destination, 'could not be found.') if destination.nil?
   end
 

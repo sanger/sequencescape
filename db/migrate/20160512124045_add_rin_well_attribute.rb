@@ -1,3 +1,4 @@
+# Add RIN (RNA Integrity number) to well attributes
 class AddRinWellAttribute < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do

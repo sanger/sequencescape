@@ -14,7 +14,7 @@ module Tasks::AssignTagsHandler
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return false
     end
-    if MultiplexedLibraryTube.where(name: params[:mx_library_name]).size > 0
+    if MultiplexedLibraryTube.where(name: params[:mx_library_name]).exists?
       flash[:warning] = 'Name already in use.'
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return false
@@ -29,13 +29,13 @@ module Tasks::AssignTagsHandler
         tag    = @tag_group.tags.find(tag_id)
         tag.tag!(request.target_asset)
 
-        AssetLink.create_edge(request.target_asset, multiplexed_library)
+        AssetLink.create_edge(request.target_asset.labware, multiplexed_library)
 
         request.next_requests.select(&:pending?).each do |sequencing_request|
           sequencing_request.update!(asset: multiplexed_library)
         end
 
-        TransferRequest.create!(asset: request.target_asset, target_asset: multiplexed_library, state: 'passed')
+        TransferRequest.create!(asset: request.target_asset, target_asset: multiplexed_library.receptacle, state: 'passed')
       end
     end
 

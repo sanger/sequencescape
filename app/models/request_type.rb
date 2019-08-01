@@ -104,10 +104,6 @@ class RequestType < ApplicationRecord
     construct_request(:create!, attributes, ControlRequest, &block)
   end
 
-  def self.genotyping
-    find_by(key: 'genotyping') or raise 'Cannot find genotyping request type'
-  end
-
   def self.create_asset
     create_with(
       name: 'Create Asset',
@@ -148,17 +144,9 @@ class RequestType < ApplicationRecord
     attributes.delete_if { |k, _| not common_attributes.include?(k) }
   end
 
-  def targets_lanes?
-    (target_asset_type == 'Lane') or (name =~ /\ssequencing$/)
-  end
-
-  def needs_target_asset?
-    target_purpose.nil? && target_asset_type.blank?
-  end
-
   def create_target_asset!(&block)
     case
-    when target_purpose.present?  then target_purpose.create!(&block)
+    when target_purpose.present?  then target_purpose.create!(&block).receptacle
     when target_asset_type.blank? then nil
     else                               target_asset_type.constantize.create!(&block)
     end

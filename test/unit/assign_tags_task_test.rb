@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class TestWorkflowsController < WorkflowsController
@@ -57,7 +59,7 @@ class AssignTagsTaskTest < TaskTestBase
 
         submission = Submission.last # probably built in batch ...?
         @mx_request = create :request, request_type_id: 1, submission: submission, asset: @sample_tube, target_asset: @library
-        $stop = true
+
         @cf_request = create :request_without_assets, request_type_id: 2, submission: submission, asset: nil
         @batch.requests << [@mx_request, @cf_request]
         @controller.batch = @batch
@@ -65,7 +67,7 @@ class AssignTagsTaskTest < TaskTestBase
         params = { workflow_id: @workflow, batch_id: @batch.id,
                    tag_group: @tag_group.id.to_s,
                    mx_library_name: 'MX library',
-                   tag: { @mx_request.id.to_s => @tag.id.to_s }, }
+                   tag: { @mx_request.id.to_s => @tag.id.to_s } }
         @task.do_task(@controller, params)
       end
 

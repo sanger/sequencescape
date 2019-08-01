@@ -2,24 +2,21 @@
 <%- add :about, "This page displays details of a asset" %>
 <% add :menu, (pluralize @asset.total_comment_count, "comment") => receptacle_comments_path(@asset) -%>
 <% if @asset.printable? %>
-  <% add :menu, "Print label" => print_asset_path(@asset) -%>
+  <% add :menu, "Print label" => print_labware_path(@asset.labware) -%>
 <% end %>
 <% if @asset.closed? %>
-  <% add :manager_option, { "Open" => close_asset_path(@asset) },  { confirm: "Do you really want to open this #{@asset.label}?" }  -%>
+  <% add :manager_option, { "Open" => close_receptacle_path(@asset) },  { confirm: "Do you really want to open this #{@asset.label}?" }  -%>
 <% else %>
-  <% add :manager_option, {  "Close" => close_asset_path(@asset) }, { confirm: "Do you really want to close this #{@asset.label}?" } -%>
-<% end %>
-<% if @asset.is_a?(Plate) %>
-  <% add :menu, "QC results" => plate_path(@asset) %>
+  <% add :manager_option, {  "Close" => close_receptacle_path(@asset) }, { confirm: "Do you really want to close this #{@asset.label}?" } -%>
 <% end %>
 
-<% add :menu, "Event history" => history_asset_path(@asset) -%>
+<% add :menu, "Event history" => history_receptacle_path(@asset) -%>
 
 <% add(:menu, 'Request additional sequencing' => new_request_receptacle_path_in_context(@asset)) if current_user_can_request_additional_sequencing_on?(@asset) -%>
 <% add(:menu, 'Request a new library' => new_request_receptacle_path_in_context(@asset)) if current_user_can_request_additional_library_on?(@asset) -%>
 
 <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
-  <% add :menu, "Edit" => edit_asset_path(@asset) -%>
+  <% add :menu, "Edit" => edit_receptacle_path(@asset) -%>
 <% end %>
 
 <% @asset.related_studies.each do |study| %>
@@ -34,9 +31,9 @@
     <ul>
       <li><a href="#asset-summary">Summary</a></li>
       <li><a href="#samples-table">Samples</a></li>
-      <li><a href="#relations-table-container">Parents and Children</a></li>
       <li><a href="#requests-table-container">Requests</a></li>
       <li><a href="#metadata-table-container">Metadata</a></li>
+      <li><a href="#relations-table-container">Parents and Children</a></li>
       <li><a href="#qc_files-table-container">QC Files</a></li>
     </ul>
   </nav>

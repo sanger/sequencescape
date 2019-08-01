@@ -1,3 +1,5 @@
+# Rails migration
+# Clean up old unused columns
 class RemoveRedundantSubmissionColumns < ActiveRecord::Migration
   def up
     remove_column :submissions, 'study_id_to_delete'

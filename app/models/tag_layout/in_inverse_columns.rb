@@ -10,14 +10,14 @@ module TagLayout::InInverseColumns
 
   # Returns the tag index for the primary tag
   # That is the one laid out in columns with four copies of each
-  def self.quad_tag_index(row, column, scale, height, width)
+  def self.tag_index(row, column, scale, height, width)
     tag_col = (column / scale)
     tag_row = (row / scale)
     (height / scale) * (width / scale) -
       (tag_row + (height / scale * tag_col)) - 1
   end
 
-  def self.quad_tag2_index(row, column, scale, height, width)
-    quad_tag_index(row, column, scale, height, width)
+  def self.tag2_index(row, column, scale, height, width)
+    tag_index(row, column, scale, height, width)
   end
 end

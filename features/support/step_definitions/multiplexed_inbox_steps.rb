@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given(/^that there is a "([^"]*)" pipeline$/) do |pipeline_name|
   @pipeline = Pipeline.find_by(name: pipeline_name)
 end
@@ -17,7 +19,7 @@ end
 
 Then(/^we see the requests in the inbox$/) do
   with_scope('#pipeline_inbox') do
-    @pipeline.requests.map(&:asset).map(&:name).each do |asset_name|
+    @pipeline.requests.map(&:asset).map(&:labware_name).each do |asset_name|
       assert page.has_content?(asset_name)
     end
   end

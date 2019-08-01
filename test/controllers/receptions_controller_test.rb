@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 class ReceptionsControllerTest < ActionController::TestCase
   context 'Sample Reception' do
@@ -15,13 +17,13 @@ class ReceptionsControllerTest < ActionController::TestCase
     context '#confirm reception' do
       context 'where asset exists' do
         setup do
-          @asset_count = Asset.count
+          @asset_count = Labware.count
           @event_count = Event.count
           post :confirm_reception, params: { asset_id: { '0' => @plate.id } }
         end
 
-        should 'change Asset.count by 0' do
-          assert_equal 0, Asset.count - @asset_count, 'Expected Asset.count to change by 0'
+        should 'change Labware.count by 0' do
+          assert_equal 0, Labware.count - @asset_count, 'Expected Labware.count to change by 0'
         end
 
         should 'change Event.count by 1' do
@@ -37,12 +39,12 @@ class ReceptionsControllerTest < ActionController::TestCase
 
       context 'where asset doesnt exist' do
         setup do
-          @asset_count = Asset.count
+          @asset_count = Labware.count
           post :confirm_reception, params: { asset_id: { '0' => 999999 } }
         end
 
-        should 'change Asset.count by 0' do
-          assert_equal 0, Asset.count - @asset_count, 'Expected Asset.count to change by 0'
+        should 'change Labware.count by 0' do
+          assert_equal 0, Labware.count - @asset_count, 'Expected Labware.count to change by 0'
         end
         should set_flash.to(/not found/)
       end
@@ -50,14 +52,14 @@ class ReceptionsControllerTest < ActionController::TestCase
 
     context '#index' do
       setup do
-        @asset_count = Asset.count
+        @asset_count = Labware.count
         get :index, params: { id: @plate.id }
       end
 
       should respond_with :success
 
-      should 'change Asset.count by 0' do
-        assert_equal 0, Asset.count - @asset_count, 'Expected Asset.count to change by 0'
+      should 'change Labware.count by 0' do
+        assert_equal 0, Labware.count - @asset_count, 'Expected Labware.count to change by 0'
       end
     end
   end

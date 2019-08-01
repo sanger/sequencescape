@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserLogin
   # For use in feature tests. Login as either a new user, or an provided user
   #

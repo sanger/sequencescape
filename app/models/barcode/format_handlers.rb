@@ -188,4 +188,10 @@ module Barcode::FormatHandlers
   class AkerBarcode < BaseRegExBarcode
     self.format = /\AAKER-[0-9]*\z/
   end
+
+  # FluidX barcodes matches a prefix of any two letters and an eight digit
+  # number. No suffix.
+  class FluidxBarcode < BaseRegExBarcode
+    self.format = /\A(?<prefix>[A-Za-z]{2})(?<number>\d{8})\z/
+  end
 end

@@ -319,8 +319,12 @@ class BulkSubmission
       asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
       found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
                        []
+                     elsif asset_names.present?
+                       Array(find_all_assets_by_name_including_samples!(asset_names)).uniq
+                     elsif asset_ids.present?
+                       raise StandardError, 'Specifying assets by id is no longer possible. Please provide a name or barcode.'
                      else
-                       Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
+                       raise StandardError, 'Please specify a barcode or name for each asset.'
                      end
 
       assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size

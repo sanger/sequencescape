@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Comparing aliquots is about comparing their sample & tag, not their ID nor the receptacle they are in.
 def assert_equal_aliquots(expected, received)
   expected_details = expected.map { |aliquot| [aliquot.sample_id, aliquot.tag_id] }.sort

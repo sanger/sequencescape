@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveRecord::Base.transaction do
   # Pulldown
   TagGroup.find_each do |tag_group|

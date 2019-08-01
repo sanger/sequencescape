@@ -1,14 +1,6 @@
 module BatchesHelper
-  def purpose_for_plate(plate)
-    if plate.plate_purpose.nil? || plate.plate_purpose.name.blank?
-      'Unassigned'
-    else
-      plate.plate_purpose.name
-    end
-  end
-
-  def fluidigm_plate(plate)
-    plate.purpose.barcode_for_tecan == 'fluidigm_barcode'
+  def purpose_for_labware(labware)
+    labware.purpose&.name.presence || 'Unassigned'
   end
 
   # Used by both assets/show.xml.builder and batches/show.xml.builder

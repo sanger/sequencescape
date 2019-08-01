@@ -106,7 +106,7 @@ And I have a "full" authorised user with the key "cucumber"
 
     Given the sample tube named "Tube 1" exists
     And the sample tube "Tube 1" is in the asset group "Existing asset group"
-    And the UUID for the sample tube "Tube 1" is "99999999-1111-2222-3333-444444444444"
+    And the UUID for the receptacle in sample tube "Tube 1" is "99999999-1111-2222-3333-444444444444"
 
     When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
       """
@@ -256,7 +256,7 @@ And I have a "full" authorised user with the key "cucumber"
   @update @asset
   Scenario: Attaching assets to an order
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
-    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+    And all sample tubes have receptacles with sequential UUIDs based on "33333333-4444-5555-6666"
 
     Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study   | 22222222-3333-4444-5555-000000000000 |
@@ -297,7 +297,7 @@ And I have a "full" authorised user with the key "cucumber"
   @update @asset
   Scenario Outline: Modifying the assets attached to an order
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
-    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+    And all sample tubes have receptacles with sequential UUIDs based on "33333333-4444-5555-6666"
 
     Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study   | 22222222-3333-4444-5555-000000000000 |
@@ -331,7 +331,7 @@ And I have a "full" authorised user with the key "cucumber"
   @update @error
   Scenario Outline: Trying to update invalid request options
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
-    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+    And all sample tubes have receptacles with sequential UUIDs based on "33333333-4444-5555-6666"
 
     Given I have an order created with the following details based on the template "<template name>":
       | study   | 22222222-3333-4444-5555-000000000000 |
@@ -593,7 +593,7 @@ And I have a "full" authorised user with the key "cucumber"
   @submit @asset_group
   Scenario Outline: Submitting a submission where the order was created with an asset group
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
-    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+    And all sample tubes have receptacles with sequential UUIDs based on "33333333-4444-5555-6666"
 
     Given the study "Testing submission creation" has an asset group called "Existing asset group"
     And the UUID for the asset group "Existing asset group" is "88888888-1111-2222-3333-000000000000"
@@ -624,7 +624,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
 
     # Check that the assets are only in the original asset group
-    Then the sample tube "sampletube-1" should only be in asset group "Existing asset group"
+    Then the sample tube "sampletube-1" should only be in the asset group "Existing asset group"
 
     Examples:
       | field            | value                                |
@@ -634,7 +634,7 @@ And I have a "full" authorised user with the key "cucumber"
   @submit @asset_group
   Scenario Outline: Submitting a submission where the order has an asset group to be created
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
-    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+    And all sample tubes have receptacles with sequential UUIDs based on "33333333-4444-5555-6666"
 
     Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study            | 22222222-3333-4444-5555-000000000000                                                                       |
@@ -662,7 +662,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
 
     # Check that the asset group really has been created!
-    Then the asset group "<asset group name to check>" should only contain sample tube "sampletube-1"
+    Then the asset group "<asset group name to check>" should only contain the sample tube "sampletube-1"
 
     # NOTE: The UUID used here comes from the order now, rather than the submission.
     Examples:

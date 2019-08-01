@@ -1,3 +1,4 @@
+# Bespoke have their own HiSeqX templates, so their templates should use them.
 class UpdateBespokeTemplatesToUseOwnRequestTypes < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do

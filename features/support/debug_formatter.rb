@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cucumber/formatter/progress'
 class DebugFormatter < Cucumber::Formatter::Progress
   def initialize(config)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QcableStatemachineChecks
   class StatemachineHelper
     def initialize(owner, target, &block)

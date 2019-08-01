@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class PreCapGroupsTest < ActiveSupport::TestCase
@@ -60,7 +62,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
         should 'assign requests to the right submissions' do
           transfer_sub = {
             'A1' => { 'A1' => 1, 'B1' => 3 }, 'B1' => { 'A1' => 1 }, 'C1' => { 'A1' => 1 },
-            'D1' => { 'C1' => 2, 'B1' => 3 }, 'E1' => { 'C1' => 2 }, 'F1' => { 'C1' => 2 },
+            'D1' => { 'C1' => 2, 'B1' => 3 }, 'E1' => { 'C1' => 2 }, 'F1' => { 'C1' => 2 }
           }
           assert_equal 8, @target_plate.transfer_requests.count
           @target_plate.transfer_requests.each do |request|

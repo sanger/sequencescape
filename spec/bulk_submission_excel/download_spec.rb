@@ -15,7 +15,7 @@ RSpec.describe BulkSubmissionExcel::Download, type: :model, bulk_submission_exce
   end
 
   let(:download) do
-    BulkSubmissionExcel::Download.new(
+    described_class.new(
       assets: assets,
       column_list: columns,
       range_list: ranges,

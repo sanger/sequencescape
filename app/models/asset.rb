@@ -130,17 +130,6 @@ class Asset < ApplicationRecord
     stock_plate&.stock_role
   end
 
-  # Assigns name
-  # @note Overridden on subclasses to append the asset id to the name
-  #       via on_create callbacks
-  def generate_name(new_name)
-    self.name = new_name
-  end
-
-  def display_name
-    name.presence || "#{sti_type} #{id}"
-  end
-
   def external_identifier
     "#{sti_type}#{id}"
   end

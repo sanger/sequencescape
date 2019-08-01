@@ -1,3 +1,4 @@
+# Create one tube per pool for the provided parent
 class TubeCreation < AssetCreation
   class ChildTube < ApplicationRecord
     self.table_name = ('tube_creation_children')

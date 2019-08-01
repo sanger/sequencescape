@@ -1,5 +1,6 @@
 require './lib/request_class_deprecator'
 
+# Automatically deprecate two request classes by converting them to standard requests
 class DeprecatePostShearToAlLibs < ActiveRecord::Migration
   include RequestClassDeprecator
 

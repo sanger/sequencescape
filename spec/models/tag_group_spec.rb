@@ -41,11 +41,11 @@ RSpec.describe TagGroup, type: :model do
     let!(:tag_group_3) { create(:tag_group_with_tags, name: 'TG3') }
 
     it 'is not selectable by the visible scope' do
-      expect(TagGroup.visible).not_to include(tag_group_2)
+      expect(described_class.visible).not_to include(tag_group_2)
     end
 
     it 'remaining tag groups should be selectable by the visible scope' do
-      expect(TagGroup.visible).to include(tag_group_1, tag_group_3)
+      expect(described_class.visible).to include(tag_group_1, tag_group_3)
     end
   end
 end

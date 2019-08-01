@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require './app/resources/api/v2/work_order_resource'
 

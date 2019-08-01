@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Initially copied from SNP
 plate_purposes = <<~EOS
   - name: Working Dilution
@@ -124,7 +126,6 @@ PlatePurpose.create!(
   barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
   cherrypickable_target: false,
   size: 96,
-  asset_shape_id: AssetShape.default_id,
-  barcode_for_tecan: 'ean13_barcode'
+  asset_shape_id: AssetShape.default_id
 )
 MessengerCreator.create!(purpose: Purpose.find_by(name: 'Stock Plate'), root: 'stock_resource', template: 'WellStockResourceIO', target_finder_class: 'WellFinder')

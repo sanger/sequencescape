@@ -8,7 +8,7 @@ FactoryBot.define do
 
     factory :lane_with_stock_plate do
       after(:create) do |lane|
-        lane.ancestors << create(:plate, plate_purpose: PlatePurpose.stock_plate_purpose)
+        lane.labware.ancestors << create(:plate, plate_purpose: PlatePurpose.stock_plate_purpose)
       end
     end
   end

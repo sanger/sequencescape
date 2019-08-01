@@ -1,3 +1,5 @@
+# Rails migration
+# Update HiseqX Pipleine text
 class MakeUserRequestedChangesToHiseq4000 < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do

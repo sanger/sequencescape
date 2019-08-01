@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 rt = RequestType.create!(
   key: 'qc_miseq_sequencing',
   name: 'MiSeq sequencing QC',

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def upload_submission_spreadsheet(name, encoding = nil)
   attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', "#{name}.csv"))
   if encoding
@@ -9,14 +11,6 @@ end
 def upload_custom_row_submission
   attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', 'template_for_bulk_submission.csv'))
   click_button 'Create Bulk submission'
-end
-
-When /^I have a sample '(.*)'$/ do |sample_name|
-  FactoryBot.create :sample, name: sample_name
-end
-
-When /^I have a study '(.*)'$/ do |study_name|
-  FactoryBot.create :study, name: study_name
 end
 
 When /^I have a plate '(.*)' that has a well in location 'A1' that contains the sample '(.*)'$/ do |asset_name, sample_name|
@@ -69,6 +63,6 @@ Then /^the last submission should contain two assets$/ do
   assert_equal 2, Submission.last.orders.reduce(0) { |total, order| total + order.assets.count }
 end
 
-Then /^the last submission should contain the tube with barcode "(.*?)"$/ do |barcode|
-  assert Submission.last.orders.reduce([]) { |assets, order| assets.concat(order.assets) }.detect { |a| a.barcode_number == barcode }
+Then 'the last submission should contain the tube with barcode {string}' do |barcode|
+  assert Submission.last.orders.flat_map(&:assets).detect { |a| a.human_barcode == barcode }
 end

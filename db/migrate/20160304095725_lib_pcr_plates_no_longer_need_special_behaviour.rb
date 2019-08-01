@@ -1,3 +1,4 @@
+# Rails migration
 class LibPcrPlatesNoLongerNeedSpecialBehaviour < ActiveRecord::Migration
   class PlatePurpose < ApplicationRecord
     self.table_name = 'plate_purposes'

@@ -1,3 +1,6 @@
+# Rails migration
+# Add new search class to allow more flexible searches
+# @note Consider v2 API now
 class AddIlluminaCPlateSearch < ActiveRecord::Migration
   def up
     plate_purposes = Purpose.where(name: ['ILC Stock',
