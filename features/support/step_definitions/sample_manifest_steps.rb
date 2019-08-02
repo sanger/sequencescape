@@ -132,6 +132,7 @@ Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   supplier = Supplier.find_by!(name: 'Test supplier name')
   sample_manifest = FactoryBot.create :sample_manifest, study: study, supplier: supplier, user: User.find_by(first_name: 'john')
   sample_manifest.generate
+  Delayed::Worker.new.work_off
   visit(url_for(sample_manifest))
   step('I reset all of the sanger sample ids to a known number sequence')
 end
