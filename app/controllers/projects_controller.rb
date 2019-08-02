@@ -109,7 +109,7 @@ class ProjectsController < ApplicationController
   end
 
   def follow
-    @project    = Project.find(params[:id])
+    @project = Project.find(params[:id])
     if current_user.has_role? 'follower', @project
       current_user.has_no_role 'follower', @project
       flash[:notice] = "You have stopped following the '#{@project.name}' project."

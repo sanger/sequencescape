@@ -33,9 +33,9 @@ module NavigationHelpers
       admin_path
 
     when /the new (study|project|asset) page/, /the (study|project|asset) creation page/
-      send(:"new_#{ $1 }_path")
+      send(:"new_#{$1}_path")
     when /the (studies|projects) page/
-      send(:"#{ $1 }_path")
+      send(:"#{$1}_path")
 
     when /the custom texts admin page/
       admin_custom_texts_path

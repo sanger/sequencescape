@@ -36,12 +36,12 @@ class PipelinesController < ApplicationController
     if @pipeline.group_by_parent?
       # We use the inbox presenter
       @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
-      @requests_waiting  = @inbox_presenter.requests_waiting
+      @requests_waiting = @inbox_presenter.requests_waiting
     elsif @pipeline.group_by_submission?
       # Convert to an array now as otherwise the comments counter attempts to be too clever
       # and treats the requests like a scope. Not only does this result in a more complicated
       # query, but also an invalid one
-      @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
+      @requests_waiting = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
       requests = @pipeline.requests.inbox(@show_held_requests, @current_page).to_a
       @grouped_requests = requests.group_by(&:submission_id)
       @requests_comment_count = Comment.counts_for(requests)
@@ -105,7 +105,7 @@ class PipelinesController < ApplicationController
 
   # to modify when next_request will be ready
   def update_priority
-    request  = Request.find(params[:request_id])
+    request = Request.find(params[:request_id])
     ActiveRecord::Base.transaction do
       request.update_priority
       render plain: '', layout: false

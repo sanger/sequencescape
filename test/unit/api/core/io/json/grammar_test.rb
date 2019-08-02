@@ -68,7 +68,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
         nested_stream.expects(:attribute).with('created_at', 'now')
         nested_stream.expects(:attribute).with('updated_at', 'tomorrow')
 
-        options  = { handled_by: @handler }
+        options = { handled_by: @handler }
 
         children = Hash[['Child 1', 'Child 2'].map do |name|
           child = mock(name).tap { |child| child.expects(:call).with(@object, options, nested_stream) }
