@@ -34,7 +34,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       @robot = mock('robot')
       @robot.stubs(:max_beds).returns(2)
 
-      @batch    = mock('batch')
+      @batch = mock('batch')
 
       @template = PlateTemplate.new(size: 12)
     end

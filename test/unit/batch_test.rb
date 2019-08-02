@@ -492,7 +492,7 @@ class BatchTest < ActiveSupport::TestCase
           setup do
             @pipeline = create pipeline_type
             @batch = create :batch, pipeline: @pipeline
-            @pending_request   = create request_factory, request_type: @pipeline.request_types.last
+            @pending_request = create request_factory, request_type: @pipeline.request_types.last
             @pending_request_2 = create request_factory, request_type: @pipeline.request_types.last
             @batch.requests << @pending_request << @pending_request_2
           end

@@ -7,7 +7,7 @@ class WellRange
   def initialize(start, finish)
     start_match = WELL_REGEXP.match(start)
     finish_match = WELL_REGEXP.match(finish)
-    @rows    = (start_match[1]..finish_match[1])
+    @rows = (start_match[1]..finish_match[1])
     @columns = (start_match[2].to_i..finish_match[2].to_i)
   end
 
