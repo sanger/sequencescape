@@ -1,4 +1,5 @@
 -
 LICENSE
 --asset docs/images:images
+--output-dir doc
 docs/*.md

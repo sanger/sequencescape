@@ -24,7 +24,7 @@ Given /^(?:I have )?a phiX tube called "([^\"]+)"$/ do |name|
 end
 
 Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, name|
-  FactoryBot.create(:"#{ tube_type }_tube", name: name)
+  FactoryBot.create(:"#{tube_type}_tube", name: name)
 end
 
 Then 'the name of {uuid} should be {string}' do |asset, name|

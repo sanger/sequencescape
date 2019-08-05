@@ -25,9 +25,9 @@ module Cherrypick::VolumeByNanoGrams
     unless source_concentration.zero?
       desired_volume = [(target_ng.to_f / source_concentration), robot_minimum_picking_volume].max
     end
-    requested_volume     = [source_volume, desired_volume].min
-    buffer_volume        = buffer_volume_required(minimum_volume, requested_volume, robot_minimum_picking_volume)
-    requested_volume     = maximum_volume if requested_volume > maximum_volume
+    requested_volume = [source_volume, desired_volume].min
+    buffer_volume = buffer_volume_required(minimum_volume, requested_volume, robot_minimum_picking_volume)
+    requested_volume = maximum_volume if requested_volume > maximum_volume
 
     well_attribute.current_volume   = minimum_volume
     well_attribute.requested_volume = minimum_volume
