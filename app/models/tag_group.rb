@@ -1,4 +1,6 @@
 class TagGroup < ApplicationRecord
+  CHROMIUM_ADAPTER_TYPE = 'Chromium'.freeze
+
   include Uuid::Uuidable
 
   has_many :tags, ->() { order('map_id ASC') }
@@ -7,6 +9,8 @@ class TagGroup < ApplicationRecord
   scope :include_tags, ->() { includes(:tags) }
 
   scope :visible, -> { where(visible: true) }
+
+  scope :chromium, -> { joins(:adapter_type).where(tag_group_adapter_types: { name: CHROMIUM_ADAPTER_TYPE }) }
 
   validates_presence_of :name
   validates_uniqueness_of :name

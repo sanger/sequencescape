@@ -209,15 +209,8 @@ module SampleManifestExcel
 
       # link fields together for tag groups and indexes
       def link_tag_groups_and_indexes(fields)
-        sf_tag_index = fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::TagIndex }
-        return if sf_tag_index.blank?
-
-        sf_tag_index.sf_tag_group = fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::TagGroup }
-
-        sf_tag2_index = fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::Tag2Index }
-        return if sf_tag2_index.blank?
-
-        sf_tag2_index.sf_tag2_group = fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::Tag2Group }
+        indexed_fields = fields.index_by(&:class)
+        fields.each { |field| field.link(indexed_fields) }
       end
     end
   end

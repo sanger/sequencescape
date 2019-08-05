@@ -746,7 +746,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/sample_manifest_excel/tags_spec.rb'
     - 'spec/sample_manifest_excel/upload/processor_spec.rb'
     - 'spec/sequencescape_excel/list_spec.rb'
-    - 'spec/sequencescape_excel/specialised_field_spec.rb'
 
 # Offense count: 41
 RSpec/LetSetup:

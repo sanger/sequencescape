@@ -23,6 +23,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
   end
 
   before do
+    create :tag_group, adapter_type: (create :adapter_type, name: 'chromium')
     barcode = double('barcode')
     allow(barcode).to receive(:barcode).and_return(23)
     allow(PlateBarcode).to receive(:create).and_return(barcode)

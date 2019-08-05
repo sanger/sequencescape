@@ -37,14 +37,14 @@ class Tag < ApplicationRecord
 
   # Allows the application of multiple tags to an aliquot
   def multitag!(asset)
-    raise StandardError, 'Cannot tag an empty asset'   if asset.aliquots.empty?
+    raise StandardError, 'Cannot tag an empty asset' if asset.aliquots.empty?
 
-    asset.aliquots.group_by { |aliquot| aliquot.sample_id }.each do |_sample_id, aliquots|
-      new_aliquot = aliquots.first.no_tag1? ? aliquots.first : aliquots.first.dup
-      # dup automatically unsets receptacle, so we reallocate it here.
-      new_aliquot.receptacle = asset
-      new_aliquot.tag = self
-      new_aliquot.save!
+    asset.aliquots.group_by(&:sample_id).each do |_sample_id, aliquots|
+      if aliquots.first.no_tag1?
+        aliquots.first.update(tag: self)
+      else
+        asset.aliquots << aliquots.first.dup(tag: self, receptacle: asset)
+      end
     end
   end
 
