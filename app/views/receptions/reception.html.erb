@@ -16,6 +16,6 @@
   </ul>
   <p>If the location you are scanning plate into is not barcoded, leave the location box blank.</p>
   <p>If you are unable to use the newer page, please let us know as soon as possible.</p>'.html_safe,
-   replaced_by: labwhere_reception_path) do %>
+   replaced_by: labwhere_receptions_path) do %>
   <%= render partial: "scan_barcodes", locals: { message: 'scan_message', num_text_boxes: @num_text_boxes } %>
 <% end %>
