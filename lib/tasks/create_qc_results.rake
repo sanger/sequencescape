@@ -1,11 +1,14 @@
+# frozen_string_literal: true
+
+# rubocop:disable Style/SymbolArray
+
 namespace :qc_assay do
+  barcodes_values = [
+    ['DN581639U', 100], ['DN575795T', 50], ['DN575798W', 50], ['DN575799A', 50],
+    ['DN575800W', 50], ['DN575801A', 50], ['DN575802B', 50], ['DN575803C', 50]
+  ]
 
-barcodes_values = [
-  ['DN581639U', 100], ['DN575795T', 50], ['DN575798W', 50], ['DN575799A', 50],
-  ['DN575800W', 50], ['DN575801A', 50], ['DN575802B', 50], ['DN575803C', 50]
-]
-
-key = 'volume'
+  key = 'volume'
 
   desc 'Create forged QcResults'
   task create: [:environment] do
@@ -37,10 +40,12 @@ key = 'volume'
         plate.wells.each do |w|
           act_vol = w.get_current_volume
           check = volume == act_vol
-          puts "#{barcode}:#{w.map_description} : #{volume} = #{act_vol} #{check ? '✔' : '✗'*20}"
-          raise "Unexpected volume" unless check
+          puts "#{barcode}:#{w.map_description} : #{volume} = #{act_vol} #{check ? '✔' : '✗' * 20}"
+          raise 'Unexpected volume' unless check
         end
       end
     end
   end
 end
+
+# rubocop:enable Style/SymbolArray
