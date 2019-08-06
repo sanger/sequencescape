@@ -9,10 +9,10 @@ namespace :qc_assay do
   ]
 
   key = 'volume'
+  assay_type = 'RT_666755_reset'
 
   desc 'Create forged QcResults'
   task create: [:environment] do
-    # Update
     ActiveRecord::Base.transaction do
       qc_assay = QcAssay.create!
       barcodes_values.each do |barcode, value|
@@ -22,7 +22,7 @@ namespace :qc_assay do
             asset: w,
             key: key,
             value: value.to_f,
-            assay_type: 'RT_666755_reset',
+            assay_type: assay_type,
             units: 'ul',
             assay_version: 'v0.0'
           )
@@ -33,7 +33,6 @@ namespace :qc_assay do
 
   desc 'Check current volumes'
   task check: [:environment] do
-    # Check
     ActiveRecord::Base.transaction do
       barcodes_values.each do |barcode, volume|
         plate = Plate.includes(wells: [:well_attribute, :map]).with_barcode(barcode).first
