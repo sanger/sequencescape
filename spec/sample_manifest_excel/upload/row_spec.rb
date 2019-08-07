@@ -222,8 +222,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   context 'previously transferred aliquot on multiplex library tubes' do
     attr_reader :rows
 
-    let!(:library_tubes) { create_list(:tagged_library_tube, 5) }
-    let!(:mx_library_tube) { create(:multiplexed_library_tube) }
+    let(:library_tubes) { create_list(:tagged_library_tube, 5) }
+    let(:mx_library_tube) { create(:multiplexed_library_tube) }
     let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
     let(:manifest) { create :sample_manifest }
 
@@ -234,7 +234,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         rq = create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
         rq.manifest_processed!
         row_data = data.dup
-        row_data[0] = tube.samples.first.primary_receptacle.human_barcode
+        row_data[0] = tube.human_barcode
         row_data[1] = tube.samples.first.sanger_sample_id
         row_data[2] = tags[i][:i7]
         row_data[3] = tags[i][:i5]
@@ -249,13 +249,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       end
       expect(rows).to be_all(&:aliquot_transferred?)
       expect(rows).to be_all(&:reuploaded?)
-      mx_library_tube.samples.each_with_index do |sample, i|
-        expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:i7])
-        expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:i5])
-        sample.primary_receptacle.requests.each do |request|
-          expect(request.state).to eq('passed')
-        end
-      end
+      expect(mx_library_tube.requests_as_target).to all be_passed
     end
   end
 end

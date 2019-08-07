@@ -391,7 +391,6 @@ Naming/VariableNumber:
     - 'spec/features/sample_manifests/track_sample_manifest_updates_spec.rb'
     - 'spec/models/study_spec.rb'
     - 'spec/models/well_spec.rb'
-    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
     - 'test/controllers/projects_controller_test.rb'
     - 'test/performance/work_completion_tubes_test.rb'
     - 'test/unit/batch_test.rb'
@@ -516,7 +515,6 @@ RSpec/ContextWording:
     - 'spec/resources/api/v2/work_order_resource_spec.rb'
     - 'spec/sample_manifest_excel/download_spec.rb'
     - 'spec/sample_manifest_excel/tags_spec.rb'
-    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
     - 'spec/sample_manifest_excel/upload/row_spec.rb'
     - 'spec/sample_manifest_excel/upload/upload_spec.rb'
     - 'spec/sample_manifest_excel/worksheet_spec.rb'
@@ -744,7 +742,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/lib/accession/accessionable_spec.rb'
     - 'spec/models/labwhere_reception_spec.rb'
     - 'spec/sample_manifest_excel/tags_spec.rb'
-    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
     - 'spec/sequencescape_excel/list_spec.rb'
 
 # Offense count: 41
@@ -908,7 +905,6 @@ RSpec/VerifiedDoubles:
     - 'spec/models/sample_manifest/generator_spec.rb'
     - 'spec/models/sample_manifest_spec.rb'
     - 'spec/sample_manifest_excel/download_spec.rb'
-    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
     - 'spec/sample_manifest_excel/worksheet_spec.rb'
     - 'spec/sequencescape_excel/worksheet_spec.rb'
 

@@ -77,6 +77,8 @@ module SampleManifestExcel
       def update_sample(tag_group, override)
         return unless valid?
 
+        @reuploaded = sample.updated_by_manifest
+
         if sample.updated_by_manifest && !override
           @sample_skipped = true
         else
@@ -113,7 +115,6 @@ module SampleManifestExcel
         return unless valid?
 
         manifest_asset.asset.external_library_creation_requests.each do |request|
-          @reuploaded ||= request.passed?
           @aliquot_transferred = request.passed? || request.manifest_processed!
         end
       end

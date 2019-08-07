@@ -106,17 +106,15 @@ module SampleManifestExcel
       private
 
       def create_processor
-        if sample_manifest.present?
-          case sample_manifest.asset_type
-          when '1dtube'
-            Upload::Processor::OneDTube.new(self)
-          when 'library'
-            Upload::Processor::LibraryTube.new(self)
-          when 'multiplexed_library'
-            Upload::Processor::MultiplexedLibraryTube.new(self)
-          when 'plate'
-            Upload::Processor::Plate.new(self)
-          end
+        case sample_manifest&.asset_type
+        when '1dtube'
+          Upload::Processor::OneDTube.new(self)
+        when 'library'
+          Upload::Processor::LibraryTube.new(self)
+        when 'multiplexed_library'
+          Upload::Processor::MultiplexedLibraryTube.new(self)
+        when 'plate', 'library_plate'
+          Upload::Processor::Plate.new(self)
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end
