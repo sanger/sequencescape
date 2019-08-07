@@ -9,7 +9,10 @@ module SequencescapeExcel
   class Range
     include Helpers::Attributes
 
-    setup_attributes :options, :identifier, :name, :scope, :first_row, :last_row, :first_column, :last_column, :worksheet_name, defaults: { first_column: 1, options: {} }
+    setup_attributes :options, :identifier, :name, :scope, :first_row,
+                     :last_row, :first_column, :last_column, :worksheet_name,
+                     :scope_on,
+                     defaults: { first_column: 1, options: {} }
 
     attr_reader :first_cell
 
@@ -148,7 +151,7 @@ module SequencescapeExcel
     end
 
     def klass
-      @klass ||= @name.classify.constantize
+      @klass ||= (@scope_on.presence || @name.classify).constantize
     end
 
     def inspect

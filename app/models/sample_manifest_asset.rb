@@ -18,6 +18,10 @@ class SampleManifestAsset < ApplicationRecord
     self.sample ||= create_sample
   end
 
+  def aliquot
+    asset.aliquots.detect { |a| a.sample_id == sample.id }
+  end
+
   private
 
   def create_sample

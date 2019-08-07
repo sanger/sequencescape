@@ -8,7 +8,7 @@ class TagGroup::FormObject
   include ActiveModel::Model
 
   # Attributes
-  attr_accessor :name, :oligos_text
+  attr_accessor :name, :oligos_text, :adapter_type_id
 
   # Access the tag group record after it's saved
   attr_reader :tag_group
@@ -59,7 +59,7 @@ class TagGroup::FormObject
 
   def persist!
     TagGroup.transaction do
-      @tag_group = TagGroup.new(name: name)
+      @tag_group = TagGroup.new(name: name, adapter_type_id: adapter_type_id)
       @tag_group.tags.build(parse_oligos_list.each_with_index.map { |oligo, i| { oligo: oligo.upcase, map_id: i + 1 } })
       return if @tag_group.save
 

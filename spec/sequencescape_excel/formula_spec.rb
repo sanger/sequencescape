@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Download, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::Download, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:references) { build(:range).references }
   let(:options) { { type: :smooth, operator: '>', operand: 30 } }
   let(:formula) { SequencescapeExcel::Formula.new(options) }

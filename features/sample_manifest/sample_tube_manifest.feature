@@ -20,10 +20,10 @@ Feature: Sample manifest
     Given I am visiting study "Test study" homepage
     Then I should see "Test study"
     When I follow "Sample Manifests"
-    Then I should see "Create manifest for 1D tubes"
+    Then I should see "Create manifest for tubes"
 
   Scenario: Create a 1D tube manifest without processing the manifest
-    When I follow "Create manifest for 1D tubes"
+    When I follow "Create manifest for tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
     And I select "Default Tube" from "Template"

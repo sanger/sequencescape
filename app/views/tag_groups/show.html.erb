@@ -3,10 +3,10 @@
 
 <%= page_title('Tag Group', @tag_group.name) %>
 
-<p>
-  <b>Name:</b>
-  <%=h @tag_group.name %>
-</p>
+<dl>
+  <dt>Name</dt><dd><%= @tag_group.name %></dd>
+  <dt>Adapter Type</dt><dd><%= @tag_group.adapter_type_name %></dd>
+</dl>
 
 <%= render partial: "shared/tags_list", locals: { tag_group: @tag_group, tags: @tag_group.tags } %>
 <script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>

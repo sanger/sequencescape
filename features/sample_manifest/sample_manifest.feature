@@ -24,7 +24,7 @@ Feature: Sample manifest
     Then I should see "Create manifest for plates"
 
   Scenario: Create a tube manifest and print just the first barcode when selecting option Only First Label
-    When I follow "Create manifest for 1D tubes"
+    When I follow "Create manifest for tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
     And I select "Default Tube" from "Template"
@@ -39,7 +39,7 @@ Feature: Sample manifest
     And I should see "Your 1 label(s) have been sent to printer xyz1d"
 
   Scenario: Create a tube manifest and print all the barcodes
-    When I follow "Create manifest for 1D tubes"
+    When I follow "Create manifest for tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
     And I select "Default Tube" from "Template"

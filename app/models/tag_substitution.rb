@@ -1,23 +1,58 @@
 # frozen_string_literal: true
 
 # A TagSubstitution may be used to replace tags in the event of
-# accidental mistagging.
-# Currently it supports:
-# - Libraries created through the library manifest
-# - Libraries created through the old-school tube pipelines
+# accidental miss-tagging.
 #
-# Usage:
-# TagSubstitution.new(see_initialize_documentations).save
-# Returns false if things failed
+# @example Populating from an existing asset
+#  mistagged_lane = Lane.find(1234)
+#  TagSubstitution.new(tameplate_asset: mistagged_lane)
+#
+# @example Swapping two tags in response to an RT ticket
+#  TagSubstitution.new(
+#    user: User.find_by(login: 'ab12'),
+#    ticket: 'RT#12345',
+#    comment: 'Accidental tag swap',
+#    substitutions: [
+#      {
+#        sample_id: 100, libary_id: 10,
+#        original_tag_id: 20, substitute_tag_id: 21,
+#        original_tag2_id: 200, substitute_tag2_id: 201
+#      },
+#      {
+#        sample_id: 101, libary_id: 11,
+#        original_tag_id: 21, substitute_tag_id: 20,
+#        original_tag2_id: 201, substitute_tag2_id: 200
+#      }
+#    ]
+#  ).save #=> true
 class TagSubstitution
   include ActiveModel::Model
 
-  attr_accessor :user, :ticket, :comment, :disable_clash_detection
-  attr_reader :substitutions
-  attr_writer :name
+  # The user performing the substitution, gets recorded on the generated comments [optional]
+  # @return [User] the user performing the substitution
+  attr_accessor :user
 
-  # Named arguments:
-  # substitutions: Provide an array of hashes describing your desired substitutions
+  # The ticket number associated with the substitution, eg RT#123454. Gets recorded in
+  # the generated comment [optional]
+  # @return [String] ticket number
+  attr_accessor :ticket
+  # Any additional comments regarding the substitution [optional]
+  # @return [String] free-text comment field
+  attr_accessor :comment
+
+  # Disable tag-clash detection. Useful in cases where the substitutions only affect one of a pair of tags
+  # which is ensuring uniqueness, or where the updated aliquots are not part of a pool.
+  # @return [Boolean] indicates if clash detection is disabled
+  attr_accessor :disable_clash_detection
+
+  # Disable match-detection. Match detection flags a substitution as invalid if it cannot find aliquots
+  # matching the suggested substitution. This can be disabled in cases where this may be expected,
+  # such as in re-upload of library manifests. (As the aliquots in the library tubes themselves will
+  # have been updated by the manifest)
+  # @return [Boolean] indicates if match detection
+  attr_accessor :disable_match_expectation
+
+  # Provide an array of hashes describing your desired substitutions
   #   {
   #     sample_id: The id of the sample to change,
   #     libary_id: The corresponding library id,
@@ -26,9 +61,13 @@ class TagSubstitution
   #     original_tag2_id: The original tag2 id, [Required if original_tag2_id supplied]
   #     substitute_tag2_id: The replacement tag2 id [Optional]
   #   }
-  # user: the user performing the substitution [optional]
-  # ticket: support ticket number [optional]
-  # comment: any additional comment [optional]
+  # @return [Hash] the substitutions to perform
+  attr_reader :substitutions
+
+  # Used by the view to provide feedback to the user about which asset they are about to
+  # perform substitutions on. Set if a template_asset is user. Otherwise is 'Custom'
+  # @return [String] The display name of the template_asset
+  attr_writer :name
 
   validates :substitutions, presence: true
   validate :substitutions_valid?, if: :substitutions
@@ -44,9 +83,11 @@ class TagSubstitution
   end
 
   def substitutions=(substitutions)
-    @substitutions = substitutions.map { |attrs| Substitution.new(attrs.dup) }
+    @substitutions = substitutions.map { |attrs| Substitution.new(attrs.dup, self) }
   end
 
+  # Perform the substitution, add comments to all tubes and lanes and rebroadcast all flowcells
+  # @return [Boolean] returns true if the operation was successful, false otherwise
   def save
     return false unless valid?
 
@@ -71,7 +112,7 @@ class TagSubstitution
   # Will auto populate the fields on substitutions
   # @param asset [Receptacle] The receptacle which you want to base your substitutions on
   #
-  # @return [type] [description]
+  # @return [void]
   def template_asset=(asset)
     @substitutions = asset.aliquots.includes(:sample).map do |aliquot|
       Substitution.new(aliquot: aliquot)

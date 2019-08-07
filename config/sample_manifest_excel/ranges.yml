@@ -48,6 +48,10 @@ library_type:
 reference_genome:
   identifier: :name
   scope: :alphabetical
+chromium_tag_groups:
+  identifier: :name
+  scope: :chromium
+  scope_on: TagGroup
 gc_content:
   options:
     - 'Neutral'
