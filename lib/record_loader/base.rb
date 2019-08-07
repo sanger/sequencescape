@@ -8,7 +8,7 @@ module RecordLoader
   # class attribute.
   class Base
     BASE_CONFIG_PATH = %w[config default_records].freeze
-    EXTENSION = '*.yml'
+    EXTENSION = '.yml'
 
     class_attribute :config_folder
 
@@ -21,7 +21,7 @@ module RecordLoader
     #
     def initialize(files: nil, directory: default_path)
       path = directory.is_a?(Pathname) ? directory : Pathname.new(directory)
-      @files = path.select { |child| yaml?(child) && in_list?(files, child) }
+      @files = path.children.select { |child| yaml?(child) && in_list?(files, child) }
       load_config
     end
 
@@ -43,7 +43,7 @@ module RecordLoader
     end
 
     def in_list?(list, file)
-      (list.nil? || list.include?(file.basename('.yml').to_s))
+      (list.nil? || list.include?(file.basename(EXTENSION).to_s))
     end
 
     #
