@@ -5,7 +5,7 @@ class Accessionable::Base
     @accession_number = accession_number
 
     time_now = Time.now
-    @date       = time_now.strftime('%Y-%m-%dT%H:%M:%SZ')
+    @date = time_now.strftime('%Y-%m-%dT%H:%M:%SZ')
     @date_short = time_now.strftime('%Y-%m-%d')
   end
 

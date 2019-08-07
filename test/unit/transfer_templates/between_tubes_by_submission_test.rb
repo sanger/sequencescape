@@ -5,9 +5,9 @@ require 'test_helper'
 class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
   context 'A transfer between tubes by submission' do
     setup do
-      @user    = create :user
+      @user = create :user
 
-      @tube_a  = create :new_stock_multiplexed_library_tube
+      @tube_a = create :new_stock_multiplexed_library_tube
       @plate_transfer_a = create :transfer_from_plate_to_tube_with_transfers, destination: @tube_a
       @plate_a = @plate_transfer_a.source
       @submission = create :submission_without_order

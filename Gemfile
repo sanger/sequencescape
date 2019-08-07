@@ -200,6 +200,8 @@ group :test, :cucumber do
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
+  # Keep webdriver in sync with chrome to prevent frustrating CI failures
+  gem 'webdrivers', require: false
 end
 
 group :cucumber do
