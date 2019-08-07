@@ -182,19 +182,19 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   context 'aliquot transfer on multiplex library tubes' do
     attr_reader :rows
 
-    let(:library_tubes) { create_list(:library_tube_with_barcode, 5) }
+    let(:library_tubes) { create_list(:empty_library_tube, 5) }
     let(:mx_library_tube) { create(:multiplexed_library_tube) }
     let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
-    let(:manifest) { create :sample_manifest }
+    let(:manifest) { create :sample_manifest, asset_type: 'multiplexed_library' }
 
     before do
       @rows = []
       library_tubes.each_with_index do |tube, i|
-        create(:sample_manifest_asset, sample_manifest: manifest, asset: tube, sanger_sample_id: tube.samples.first.sanger_sample_id)
+        sma = create(:sample_manifest_asset, sample_manifest: manifest, asset: tube)
         create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
         row_data = data.dup
         row_data[0] = tube.human_barcode
-        row_data[1] = tube.samples.first.sanger_sample_id
+        row_data[1] = sma.sanger_sample_id
         row_data[2] = tags[i][:i7]
         row_data[3] = tags[i][:i5]
         rows << described_class.new(number: i + 1, data: row_data, columns: columns)
@@ -225,7 +225,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     let(:library_tubes) { create_list(:tagged_library_tube, 5) }
     let(:mx_library_tube) { create(:multiplexed_library_tube) }
     let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
-    let(:manifest) { create :sample_manifest }
+    let(:manifest) { create :sample_manifest, asset_type: 'library' }
 
     before do
       @rows = []
