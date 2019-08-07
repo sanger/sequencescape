@@ -17,6 +17,7 @@ FactoryBot.define do
     end
 
     factory :sample_with_sanger_sample_id do
+      updated_by_manifest { true }
       sequence(:sanger_sample_id, &:to_s)
     end
 

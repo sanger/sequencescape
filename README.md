@@ -1,4 +1,4 @@
-[logo]: https://github.com/sanger/sequencescape/raw/next_release/app/assets/images/sequencescape.gif
+[logo]: https://github.com/sanger/sequencescape/raw/master/app/assets/images/sequencescape.gif
 
 [logo] Sequencescape
 =============

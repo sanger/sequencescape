@@ -77,6 +77,8 @@ class Project < ApplicationRecord
     joins(:roles).on(roles[:name].eq('manager')).where(roles[:id].eq(nil))
   }
 
+  squishify :name
+
   def owners
     role = roles.detect { |r| r.name == 'owner' }
     if role.nil?
