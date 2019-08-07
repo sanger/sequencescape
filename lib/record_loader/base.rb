@@ -21,11 +21,22 @@ module RecordLoader
     #
     def initialize(files: nil, directory: default_path)
       path = directory.is_a?(Pathname) ? directory : Pathname.new(directory)
-      @files = path.glob(EXTENSION).select { |child| in_list?(files, child) }
+      @files = path.select { |child| yaml?(child) && in_list?(files, child) }
       load_config
     end
 
     private
+
+    #
+    # Returns true if filename is a yaml file.
+    #
+    # @param [Pathname] filename The file to be checked
+    #
+    # @return [Bool] returns true if the file is a yaml file, false otherwise
+    #
+    def yaml?(filename)
+      filename.extname == EXTENSION
+    end
 
     def default_path
       Rails.root.join(*BASE_CONFIG_PATH, config_folder)
