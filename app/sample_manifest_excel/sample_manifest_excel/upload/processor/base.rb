@@ -115,13 +115,15 @@ module SampleManifestExcel
         # For tube manifests barcodes (sanger tube id column) should be different in each row in the upload.
         # Uniqueness of foreign barcodes in the database is checked in the specialised field sanger_tube_id.
         def check_for_barcodes_unique
-          return unless any_duplicate_barcodes?
+          duplicated_barcode_row = duplicate_barcodes
+          return if duplicated_barcode_row.nil?
 
-          errors.add(:base, 'Duplicate barcodes detected, the barcode must be unique for each tube.')
+          errors.add(:base, "Barcode duplicated at row: #{duplicated_barcode_row.number}. The barcode must be unique for each tube.")
         end
 
-        def any_duplicate_barcodes?
-          return false unless upload.respond_to?('rows')
+        # Return the row of the first encountered barcode mismatch
+        def duplicate_barcodes
+          return unless upload.respond_to?('rows')
 
           unique_bcs = []
           upload.rows.each do |row|
@@ -131,11 +133,11 @@ module SampleManifestExcel
             next unless col_num.present? && col_num.positive?
 
             curr_bc = row.at(col_num)
-            return true if unique_bcs.include?(curr_bc)
+            return row if unique_bcs.include?(curr_bc)
 
             unique_bcs << curr_bc
           end
-          false
+          nil
         end
       end
     end

@@ -482,9 +482,37 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
       context 'when invalid' do
         context 'when using foreign barcodes' do
-          let(:download) { build(:test_download_plates_cgap, columns: column_list, validation_errors: [:sample_plate_id_duplicates]) }
+          let(:download) { build(:test_download_plates_cgap, columns: column_list) }
+          let(:new_test_file_name) { 'new_test_file.xlsx' }
+          let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
-          it 'duplicates will not be valid' do
+          before do
+            upload.process(nil)
+            upload.complete
+          end
+
+          after do
+            File.delete(new_test_file_name) if File.exist?(new_test_file_name)
+          end
+
+          it 'the same barcode cannot be used for multiple plates' do
+            cell(9, 0).value = 'CGAP-00000'
+            cell(10, 0).value = 'CGAP-00000'
+            cell(11, 0).value = 'CGAP-00000'
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
+            expect(processor).not_to be_valid
+          end
+
+          it 'the same plate cannot have two different barcodes' do
+            cell(9, 0).value = 'CGAP-00000'
+            cell(10, 0).value = 'CGAP-11111'
+            download.save(new_test_file_name)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
           end
         end
