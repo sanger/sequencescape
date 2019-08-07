@@ -2,7 +2,7 @@
 
 # Provides tools for seeding / updating database records
 module RecordLoader
-  # Inherit from RecordLoader base to automatically one or more yaml files
+  # Inherit from RecordLoader base to automatically load one or more yaml files
   # into a @config hash. Config folders are found in config/default_records
   # and each loader should specify its own subfolder by setting the config_folder
   # class attribute.

@@ -29,7 +29,7 @@ class TagSubstitution::Substitution
   #   substitute_tag2_id: The new tag2_id of the aliquots to update
   #   OR
   #   aliquot: Provide an aliquot to act as a template. Useful for pre-populating forms
-  # @param disable_match_expectation [Boolean] Prevents validation failure if matching aliquots can't be found
+  # @param tag_substituter [TagSubstitution] The parent tag substituter
   def initialize(attributes, tag_substituter = nil)
     super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id, :aliquot))
     @other_attributes = attributes
