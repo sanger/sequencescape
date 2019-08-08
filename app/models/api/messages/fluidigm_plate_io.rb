@@ -1,5 +1,23 @@
 # Generates warehouse messages describing a fluidigm plate.
 class Api::Messages::FluidigmPlateIO < Api::Base
+  self.includes = [
+    :barcodes,
+    :uuid_object,
+    { wells: [
+      :map,
+      :uuid_object,
+      {
+        primary_aliquot: [
+          :project,
+          {
+            sample: :uuid_object,
+            study: :uuid_object
+          }
+        ]
+      }
+    ] }
+  ]
+
   module WellExtensions
     def cost_code
       return nil if primary_aliquot.nil?

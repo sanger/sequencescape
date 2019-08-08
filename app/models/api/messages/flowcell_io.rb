@@ -4,6 +4,27 @@
 class Api::Messages::FlowcellIO < Api::Base
   MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }
 
+  self.includes = {
+    requests: [
+      { target_asset: {
+        aliquots: [
+          :aliquot_index,
+          :library,
+          {
+            tag: :tag_group,
+            tag2: :tag_group,
+            sample: :uuid_object,
+            study: :uuid_object,
+            project: :uuid_object
+          }
+        ]
+      } },
+      :lab_events,
+      :batch_request,
+      :request_metadata
+    ]
+  }
+
   module LaneExtensions # Included in SequencingRequest
     def self.included(base)
       base.class_eval do

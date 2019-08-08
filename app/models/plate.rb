@@ -500,7 +500,7 @@ class Plate < Labware
 
   def wells_in_row_order
     if wells.loaded?
-      wells.sort_by(&:column_order)
+      wells.sort_by(&:row_order)
     else
       wells.in_row_major_order
     end
