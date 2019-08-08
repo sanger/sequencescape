@@ -1,4 +1,6 @@
 class Api::Base
+  class_attribute :includes
+  self.includes = []
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
   #
   # Basically this is in a transition as I move more of the behaviour of the API into these model classes,
