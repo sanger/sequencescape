@@ -173,6 +173,7 @@ class Well < Receptacle
   scope :with_contents, -> { joins(:aliquots) }
 
   delegate :location, :location_id, :location_id=, :printable_target, :source_plate, to: :plate, allow_nil: true
+  delegate :column_order, :row_order, to: :map, allow_nil: true
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
