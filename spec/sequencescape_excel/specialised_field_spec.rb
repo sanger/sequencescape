@@ -141,14 +141,14 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       expect(qc_result_2.qc_assay).to eq(qc_assay)
     end
 
-    it 'will not create QC results for the asset if the value is nil' do
+    it 'will not create QC results for the asset if the value is blank' do
       specialised_field = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
       specialised_field.update
       qc_result = QcResult.find_by(asset: sample_manifest_asset.asset)
       expect(qc_result).to be_nil
     end
 
-    it 'will not create QC assays for the asset if the value is nil' do
+    it 'will not create QC assays for the asset if the value is blank' do
       specialised_field = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
       specialised_field.update
       qc_assay = QcAssay.find_by(lot_number: "sample_manifest_id:#{sample_manifest.id}")
