@@ -64,13 +64,13 @@ module SampleManifestExcel
 
       def create_sample_manifest
         if %w[plate_default plate_full plate_rnachip].include? manifest_type
-          FactoryBot.create(:pending_plate_sample_manifest, num_plates: num_plates, num_samples_per_plate: num_samples_per_plate, rapid_generation: true)
+          FactoryBot.create(:pending_plate_sample_manifest, num_plates: num_plates, num_samples_per_plate: num_samples_per_plate)
         elsif %w[tube_library_with_tag_sequences].include? manifest_type
-          FactoryBot.create(:sample_manifest, asset_type: 'library', rapid_generation: true)
+          FactoryBot.create(:sample_manifest, asset_type: 'library')
         elsif %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
-          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', rapid_generation: true)
+          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library')
         else
-          FactoryBot.create(:sample_manifest, asset_type: '1dtube', rapid_generation: true)
+          FactoryBot.create(:sample_manifest, asset_type: '1dtube')
         end
       end
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module SampleManifestExcel
+  # Handles the processing of uploaded manifests, extraction of information
+  # and the updating of samples and their assets in Sequencescape
   module Upload
     ##
     # An upload will:
@@ -34,7 +36,8 @@ module SampleManifestExcel
         @data = Upload::Data.new(file, start_row)
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
-        @rows = Upload::Rows.new(data, columns)
+        @cache = Cache.new(self)
+        @rows = Upload::Rows.new(data, columns, @cache)
         @sample_manifest = derive_sample_manifest
         @override = override || false
         @processor = create_processor
@@ -52,12 +55,8 @@ module SampleManifestExcel
         return unless start_row.present? && sanger_sample_id_column.present?
 
         sanger_sample_id = data.cell(1, sanger_sample_id_column.number)
-        sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
-        if sample.present?
-          return sample.sample_manifest
-        else
-          return SampleManifestAsset.where(sanger_sample_id: sanger_sample_id).first&.sample_manifest
-        end
+        SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest ||
+          Sample.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest
       end
 
       ##
@@ -67,6 +66,7 @@ module SampleManifestExcel
         ActiveRecord::Base.transaction do
           sample_manifest.last_errors = nil
           sample_manifest.start!
+          @cache.populate!
           processor.run(tag_group)
           return true if processed?
 
@@ -106,17 +106,15 @@ module SampleManifestExcel
       private
 
       def create_processor
-        if sample_manifest.present?
-          case sample_manifest.asset_type
-          when '1dtube'
-            Upload::Processor::OneDTube.new(self)
-          when 'library'
-            Upload::Processor::LibraryTube.new(self)
-          when 'multiplexed_library'
-            Upload::Processor::MultiplexedLibraryTube.new(self)
-          when 'plate'
-            Upload::Processor::Plate.new(self)
-          end
+        case sample_manifest&.asset_type
+        when '1dtube'
+          Upload::Processor::OneDTube.new(self)
+        when 'library'
+          Upload::Processor::LibraryTube.new(self)
+        when 'multiplexed_library'
+          Upload::Processor::MultiplexedLibraryTube.new(self)
+        when 'plate', 'library_plate'
+          Upload::Processor::Plate.new(self)
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end

@@ -9,18 +9,19 @@ class TagSubstitution::Substitution
   include ActiveModel::Model
 
   attr_accessor :sample_id, :library_id
-  attr_reader :tag_substitution, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
+  attr_reader :tag_substitution, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id, :tag_substituter
+  delegate :disable_match_expectation, to: :tag_substituter, allow_nil: true
 
   delegate :friendly_name, to: :sample, prefix: true
   validates :sample_id, :library_id, presence: true
   validates :original_tag_id, presence: { if: :substitute_tag_id }
   validates :original_tag2_id, presence: { if: :substitute_tag2_id }
-  validates :matching_aliquots, presence: { message: 'could not be found' }
+  validates :matching_aliquots, presence: { message: 'could not be found' }, unless: :disable_match_expectation
 
   #
   # Generate a tag substitutes for a single library
   # @param attributes [Hash] Details describing the library and its new state
-  #   sample_id: The ssample_id for the aliquots to update
+  #   sample_id: The sample_id for the aliquots to update
   #   library_id: The library_id for the aliquots to update
   #   original_tag_id: The current tag_id of the aliquots to update
   #   substitute_tag_id: The new tag_id of the aliquots to update
@@ -28,10 +29,11 @@ class TagSubstitution::Substitution
   #   substitute_tag2_id: The new tag2_id of the aliquots to update
   #   OR
   #   aliquot: Provide an aliquot to act as a template. Useful for pre-populating forms
-  #
-  def initialize(attributes)
+  # @param tag_substituter [TagSubstitution] The parent tag substituter
+  def initialize(attributes, tag_substituter = nil)
     super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id, :aliquot))
     @other_attributes = attributes
+    @tag_substituter = tag_substituter
   end
 
   def original_tag_id=(tag_id)

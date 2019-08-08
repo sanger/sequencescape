@@ -41,7 +41,7 @@ class Aliquot < ApplicationRecord
   UNASSIGNED_TAG = -1
 
   # An aliquot is held within a receptacle
-  belongs_to :receptacle
+  belongs_to :receptacle, inverse_of: :aliquots
 
   belongs_to :tag
   belongs_to :tag2, class_name: 'Tag'

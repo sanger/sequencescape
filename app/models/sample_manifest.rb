@@ -1,14 +1,25 @@
+# frozen_string_literal: true
+
+# A SampleManifest is the primary way in which new {Sample samples} enter
+# Sequencescape. When the manifest is generated Sequencescape registers
+# the labware, and reserves a series of {SangerSampleId Sanger sample ids}
+# for the potential samples. It also generates a {SampleManifestExcel}
+# spreadsheet which gets sent to the customer.
+#
+# The labware that gets generate is determined by the {#asset_type} which
+# switches out the {#core_behaviour} module {SampleManifest::CoreBehaviour}.
+# This is concerned with generating {Labware} and {Receptacle receptacles},
+# generating any event specific to the asset type, and setting manifest specific
+# properties on {Aliquot}
+#
+# All {Sample samples} in a given manifest will initially belong to a single
+# {Study}, although it is possible for them to become associated with additional
+# studies over time.
 class SampleManifest < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
-  include SampleManifest::SampleTubeBehaviour
-  include SampleManifest::MultiplexedLibraryBehaviour
-  include SampleManifest::LibraryBehaviour
   include SampleManifest::CoreBehaviour
-  include SampleManifest::PlateBehaviour
-  include SampleManifest::InputBehaviour
-  include SampleManifest::SharedTubeBehaviour
   extend SampleManifest::StateMachine
   extend Document::Associations
 
@@ -65,6 +76,7 @@ class SampleManifest < ApplicationRecord
   validates_presence_of :supplier
   validates_presence_of :study
   validates_numericality_of :count, only_integer: true, greater_than: 0, allow_blank: false
+  validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }
 
   before_save :default_asset_type
 
@@ -72,7 +84,9 @@ class SampleManifest < ApplicationRecord
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
-  delegate :printables, :acceptable_purposes, :labware, :labware=, :pending_external_library_creation_requests, to: :core_behaviour
+  delegate :printables, :acceptable_purposes, :labware, :labware=,
+           :pending_external_library_creation_requests, :default_purpose,
+           to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
 
   def truncate_errors
@@ -126,16 +140,12 @@ class SampleManifest < ApplicationRecord
       self.barcodes = []
       core_behaviour.generate
     end
-    created_broadcast_event if broadcast_event_subjects_ready?
+    created_broadcast_event
     nil
   end
 
   def create_sample_and_aliquot(sanger_sample_id, asset)
     core_behaviour.generate_sample_and_aliquot(sanger_sample_id, asset)
-  end
-
-  def broadcast_event_subjects_ready?
-    labware.present? && study.present?
   end
 
   def create_sample(sanger_sample_id)
@@ -156,9 +166,22 @@ class SampleManifest < ApplicationRecord
     end
   end
 
-  private
+  def indexed_manifest_assets
+    sample_manifest_assets.includes(*core_behaviour.included_resources).index_by(&:sanger_sample_id)
+  end
 
-  def generate_sanger_ids(count = 1)
-    Array.new(count) { SangerSampleId::Factory.instance.next! }
+  # updates the manifest barcode list e.g. after applying a foreign barcode
+  def update_barcodes
+    self.barcodes = labware.map(&:human_barcode)
+    save!
+  end
+
+  # Fall back to stock plate by default
+  def purpose
+    super || default_purpose
+  end
+
+  def purpose_id
+    super || purpose.id
   end
 end

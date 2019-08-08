@@ -1,19 +1,9 @@
 module SampleManifest::SampleTubeBehaviour
-  module ClassMethods
-    def create_for_sample_tube!(attributes, *args, &block)
-      create!(attributes.merge(asset_type: '1dtube'), *args, &block).tap do |manifest|
-        manifest.generate
-      end
-    end
-  end
-
-  class Core
+  class Core < SampleManifest::SharedTubeBehaviour::Base
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
+    include SampleManifest::CoreBehaviour::StockAssets
 
     attr_reader :tubes
-
-    delegate :generate_1dtubes, to: :@manifest
-    delegate :samples, :sample_manifest_assets, to: :@manifest
 
     def initialize(manifest)
       @manifest = manifest
@@ -21,13 +11,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def generate
-      @tubes = generate_1dtubes
-    end
-
-    def generate_sample_and_aliquot(sanger_sample_id, tube)
-      sample = @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
-      tube.register_stock!
-      sample
+      @tubes = generate_tubes(purpose)
     end
 
     def io_samples
@@ -49,23 +33,6 @@ module SampleManifest::SampleTubeBehaviour
       Tube::Purpose.standard_sample_tube
     end
 
-    def updated_by!(user, samples)
-      # Does nothing at the moment
-    end
-
-    def details(&block)
-      details_array.each(&block)
-    end
-
-    def details_array
-      sample_manifest_assets.includes(asset: :barcodes).map do |sample_manifest_asset|
-        {
-          barcode: sample_manifest_asset.human_barcode,
-          sample_id: sample_manifest_asset.sanger_sample_id
-        }
-      end
-    end
-
     def labware_from_samples
       samples.map { |s| s.primary_receptacle.labware }
     end
@@ -79,22 +46,8 @@ module SampleManifest::SampleTubeBehaviour
     end
     alias printables labware
 
-    def assign_library?
-      false
+    def included_resources
+      [{ sample: :sample_metadata, asset: %i[aliquots barcodes] }]
     end
-  end
-
-  # There is no reason for this to need a rapid version as it should be reasonably
-  # efficient in the first place.
-  RapidCore = Core
-
-  def self.included(base)
-    base.class_eval do
-      extend ClassMethods
-    end
-  end
-
-  def generate_1dtubes
-    generate_tubes(purpose)
   end
 end

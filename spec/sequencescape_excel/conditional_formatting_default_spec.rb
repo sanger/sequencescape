@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, sample_manifest_excel: true, sample_manifest: true do
   context 'basic' do
     let(:options) do
       { style: { bg_color: '82CAFA', type: :dxf },
