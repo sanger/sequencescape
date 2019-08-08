@@ -506,6 +506,14 @@ class Plate < Labware
     end
   end
 
+  def wells_in_column_order
+    if wells.loaded?
+      wells.sort_by(&:column_order)
+    else
+      wells.in_column_major_order
+    end
+  end
+
   private
 
   def lookup_stock_plate
