@@ -46,7 +46,7 @@ AssetRefactor.when_refactored do
       barcodes.any? { |barcode| barcode =~ other_barcode }
     end
 
-    self.stock_message_template = 'ReceptacleStockResourceIO'
+    self.stock_message_template = 'TubeStockResourceIO'
   end
 end
 
