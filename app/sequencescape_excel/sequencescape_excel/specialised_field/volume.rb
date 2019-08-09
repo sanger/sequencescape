@@ -2,6 +2,7 @@
 
 module SequencescapeExcel
   module SpecialisedField
+    # Volume
     class Volume
       include Base
 
