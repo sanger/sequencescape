@@ -53,7 +53,7 @@ describe 'Billing::Factories', billing: true do
       request.start!
       request.pass!
       request.update(initial_project: create(:project))
-      Billing::Factory::LibraryCreation.new(request: request)
+      described_class.new(request: request)
     end
 
     it 'can have some units' do
@@ -76,7 +76,7 @@ describe 'Billing::Factories', billing: true do
     it 'is not valid without some aliquots' do
       request.target_asset.aliquots = []
       request.save
-      factory = Billing::Factory::Sequencing.new(request: request)
+      factory = described_class.new(request: request)
       expect(factory).not_to be_valid
     end
 
@@ -86,7 +86,7 @@ describe 'Billing::Factories', billing: true do
       project.project_metadata.project_cost_code = 'another_cost_code'
       project.save
       request.target_asset.aliquots << create_list(:aliquot, 3, project: project)
-      factory = Billing::Factory::Sequencing.new(request: request)
+      factory = described_class.new(request: request)
       factory.create!
       expect(Billing::Item.count).to eq(2)
       expect(Billing::Item.first.units).to eq '25'

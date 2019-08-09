@@ -5,9 +5,7 @@ class RepairInfiniumBarcodeInViews < ActiveRecord::Migration[5.1]
   def up
     ViewsSchema.update_view(
       'view_plates',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_plates`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `p`.`id` AS `internal_id`,
            `p`.`name` AS `name`,
@@ -33,9 +31,7 @@ class RepairInfiniumBarcodeInViews < ActiveRecord::Migration[5.1]
   def down
     ViewsSchema.update_view(
       'view_plates',
-      %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-        VIEW `view_plates`
-        AS SELECT
+      %{SELECT
            `u`.`external_id` AS `uuid`,
            `p`.`id` AS `internal_id`,
            `p`.`name` AS `name`,

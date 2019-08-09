@@ -33,9 +33,9 @@ module NavigationHelpers
       admin_path
 
     when /the new (study|project|asset) page/, /the (study|project|asset) creation page/
-      send(:"new_#{ $1 }_path")
+      send(:"new_#{$1}_path")
     when /the (studies|projects) page/
-      send(:"#{ $1 }_path")
+      send(:"#{$1}_path")
 
     when /the custom texts admin page/
       admin_custom_texts_path
@@ -46,7 +46,7 @@ module NavigationHelpers
     when /the sample db homepage/
       '/sdb/'
     when /the "([^\"]+)" pipeline page/
-      pipeline = Pipeline.find_by(name: $1) or raise StandardError, "Cannot find pipeline '#{$1}'"
+      pipeline = Pipeline.find_by!(name: $1)
       pipeline_path(pipeline)
     when /the last batch show page/
       batch_path(Batch.last)
@@ -69,8 +69,7 @@ module NavigationHelpers
       study_show_accession_path(study)
 
     when /the page for editing the last request/
-      request = Request.last or raise StandardError, 'There are no requests!'
-      edit_request_path(request)
+      edit_request_path(Request.last!)
 
     when /the update page for sample "([^\"]+)"/
       sample_name = $1
@@ -88,44 +87,25 @@ module NavigationHelpers
       study_path(study)
 
     when /the edit page for the last batch/
-      batch = Batch.last!
-      edit_batch_path(batch)
+      edit_batch_path(Batch.last!)
+
     when /the new plate page/
       new_plate_path
-    when /the new Sequenom QC Plate page/
-      new_sequenom_qc_plate_path
 
     when /the show page for library tube "([^\"]+)"/
       tube_name = $1
       library_tube = LibraryTube.find_by!(name: tube_name)
-      asset_path(library_tube)
+      labware_path(library_tube)
 
-    when /^the show page for asset "([^\"]+)"$/
+    when /^the show page for labware "([^\"]+)"$/
       asset_name = $1
-      asset = Asset.find_by!(name: asset_name)
-      asset_path(asset)
+      asset = Labware.find_by!(name: asset_name)
+      labware_path(asset)
 
-    when /^the show page for asset "([^\"]+)" within "([^\"]+)"$/
-      asset_name, study_name = $1, $2
-      asset = Asset.find_by(name: asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
-      study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-      study_asset_path(study, asset)
-
-    when /^the "([^\"]+)" workflow show page for asset "([^\"]+)" within "([^\"]+)"$/
-      workflow_name, asset_name, study_name = $1, $2, $3
-      asset = Asset.find_by(name: asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
-      study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-      study_information_path(study, asset)
-
-    when /^the assets page for the study "([^\"]+)"$/
-      study_name = $1
-      study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-      study_assets_path(study)
-
-    when /^the assets page for the study "([^\"]+)" in the "([^\"]+)" workflow$/
-      study_name, workflow_name = $1, $2
-      study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-      study_information_path(study)
+    when /^the show page for receptacle "([^\"]+)"$/
+      asset_name = $1
+      asset = Labware.find_by!(name: asset_name).receptacle
+      receptacle_path(asset)
 
     # Sample registration has a bit of an awkward flow.  'Sample registration' page is the one where people enter
     # the details of their samples, 'Sample creation' page is the same page, under a different path, and is
@@ -133,17 +113,12 @@ module NavigationHelpers
     when /the page for choosing how to register samples for study "([^\"]+)"$/,
          /the sample error page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
+      study      = Study.find_by!(name: study_name)
       study_sample_registration_index_path(study)
-
-    when /the sample registration page for study "([^\"]+)"/
-      study_name = $1
-      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
-      new_study_sample_registration_path(study)
 
     when /the spreadsheet sample registration page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
+      study      = Study.find_by!(name: study_name)
       spreadsheet_study_sample_registration_index_path(study)
 
     when /the Submissions Inbox page/
@@ -151,27 +126,20 @@ module NavigationHelpers
     when /the create bulk submissions page/
       '/bulk_submissions'
     when /the show page for the last submission/
-      submission = Submission.last or raise StandardError, 'There are no submissions!'
-      order = submission.orders.first
+      submission = Submission.last!
       submission_path(submission)
-
-    when /the submissions page for study "([^\"]+)"/
-      study = Study.find_by(name: $1) or raise StandardError, "No study defined with name #{$1.inspect}"
-      study_information_submissions_path(study)
 
     when /the Qc reports homepage/
       study_reports_path
 
     when /the profile page for "([^"]+)"/
       login = $1
-      user = User.find_by(login: login)
+      user = User.find_by!(login: login)
       profile_path(user)
 
     when /the plate purpose homepage/
       admin_plate_purposes_path
 
-    when /the sequenom qc home page/
-      sequenom_qc_plates_path
     when /the plate template homepage/
       plate_templates_path
     when /the sample logistics homepage/
@@ -180,73 +148,52 @@ module NavigationHelpers
     when /the delayed jobs admin page/
       url_for(controller: 'admin/delayed_jobs', action: :index)
 
-    when /the management page for (study|project) "([^\"]+)"/
-      model, model_name = $1, $2
-      object = model.classify.constantize.find_by(name: model_name) or raise StandardError, "Could not find #{model} #{model_name.inspect}"
-      url_for(controller: "admin/#{model.pluralize}", action: :show, id: object)
-
     when /the details page for (study) "([^"]+)"/
       page, name = $1, $2
       page_for_model(Study, 'properties', name)
 
     when /the asset group "([^"]+)" page for study "([^"]+)"$/
       asset_group_name, study_name = $1, $2
-      study = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
-      asset_group = study.asset_groups.find_by(name: asset_group_name) or raise StandardError, "No asset group defined with name '#{asset_group_name}'"
+      study = Study.find_by!(name: study_name)
+      asset_group = study.asset_groups.find_by!(name: asset_group_name)
       study_asset_group_path(study, asset_group)
-
-    when /the samples page for study "([^"]+)"$/
-      study_name = $1
-      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
-      study_samples_path(study)
 
     when /the show page for pipeline "([^"]+)"/
       pipeline_name = $1
-      pipeline = Pipeline.find_by(name: pipeline_name) or raise StandardError, "No Pipeline defined with name '#{pipeline_name} '"
+      pipeline = Pipeline.find_by!(name: pipeline_name)
       pipeline_path(pipeline)
-
-    when /the show page for batch "(\d+)"/
-      batch_path($1)
 
     # Add more page name => path mappings here
     when /the request page for the last request/
-      request = Request.last or raise StandardError, 'Cannot find the last request'
-      request_path(request)
+      request_path(Request.last!)
 
     when /the events page for asset with barcode "(\d+)"/
-      asset = Asset.find_from_barcode($1)
-      history_asset_path(asset)
-
-    when /the event history page for sample with sanger_sample_id "([^"]+)"/
-      sample = Sample.find_by(sanger_sample_id: $1)
-      history_sample_path(sample)
+      asset = Labware.find_from_barcode($1)
+      history_labware_path(asset)
 
     when /the events page for sample "([^"]+)"/
-      sample = Sample.find_by(name: $1)
+      sample = Sample.find_by!(name: $1)
       history_sample_path(sample)
 
     when /the sample move using spreadsheet page/
       move_spreadsheet_samples_path
 
     when /the event history page for study "([^"]+)"/
-      study = Study.find_by(name: $1)
+      study = Study.find_by!(name: $1)
       study_events_path(study)
     when /the event history page for sample "([^"]+)"/
-      sample = Sample.find_by(name: $1)
+      sample = Sample.find_by!(name: $1)
       history_sample_path(sample)
 
     when /the events page for the last sequenom plate/
-      history_asset_path(SequenomQcPlate.last)
+      history_asset_path(SequenomQcPlate.last!)
 
     when /the tag changing page/
       change_tags_path
 
-    when /the events page for asset (\d+)/
-      asset = Asset.find($1)
-      history_asset_path(asset)
-    when /the events page for asset "([^\"]+)"/
-      asset = Asset.find_by(name: $1)
-      history_asset_path(asset)
+    when /the events page for labware (\d+)/
+      asset = Labware.find($1)
+      history_labware_path(asset)
 
     when /the XML show page for request (\d+)/
       request = Request.find($1)
@@ -257,7 +204,7 @@ module NavigationHelpers
       request_path(request)
 
     when /^the new request page for "([^\"]+)"$/
-      asset = Asset.find_by(name: $1) or raise StandardError, "Cannot find asset #{$1.inspect}"
+      asset = Asset.find_by!(name: $1)
       new_request_asset_path(id: asset)
 
     when /the faculty sponsor homepage/

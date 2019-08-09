@@ -70,22 +70,13 @@ Given /^I have already made a "([^\"]+)" request with ID (\d+) within the study 
   step(%Q{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"})
 end
 
-Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" called "([^\"]+)"$/ do |study_name, count, asset_type, group_name|
-  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
-
-  assets = (1..count.to_i).map do |i|
+Given '{study_name} has an asset group of {int} samples in SampleTubes called {string}' do |study, count, group_name|
+  assets = (1..count).map do |i|
     sample_name = "#{group_name} sample #{i}".gsub(/\s+/, '_').downcase
-    param = asset_type == 'well' ? { id: 90 + i } : { name: "#{group_name}, #{asset_type} #{i}" }
-    FactoryBot.create(asset_type.gsub(/[^a-z0-9_-]+/, '_'), param).tap do |asset|
-      if asset.primary_aliquot.present?
-        asset.primary_aliquot.sample.tap { |s| s.name = sample_name; s.save(validate: false); s.studies << study }
-      else
-        asset.aliquots.create!(sample: FactoryBot.create(:sample, name: sample_name), study: study)
-        asset.aliquots.each { |a| study.samples << a.sample }
-      end
-    end
+    tube_name = "#{group_name}, sample tube #{i}"
+    FactoryBot.create(:sample_tube, name: tube_name, sample_attributes: { name: sample_name })
   end
-  asset_group = FactoryBot.create(:asset_group, name: group_name, study: study, assets: assets)
+  FactoryBot.create(:asset_group, name: group_name, study: study, assets: assets.map(&:receptacle))
 end
 
 Then /^I should see the following request information:$/ do |expected|

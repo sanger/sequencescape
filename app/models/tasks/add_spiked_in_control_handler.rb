@@ -4,7 +4,7 @@ module Tasks::AddSpikedInControlHandler
   def do_add_spiked_in_control_task(task, params)
     batch = @batch || Batch.find(params[:batch_id])
     barcode = params[:barcode].first
-    control = SpikedBuffer.find_from_barcode(barcode)
+    control = SpikedBuffer.find_by_barcode(barcode)
     request_id_set = Set.new
     params[:request].each do |k, v|
       request_id_set << k.to_i if v == 'on'

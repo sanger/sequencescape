@@ -2,13 +2,13 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_excel: true, sample_manifest: true do
   include SequencescapeExcel::Helpers
 
   let(:folder)                  { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
   let(:yaml)                    { load_file(folder, 'columns') }
   let(:conditional_formattings) { SequencescapeExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings')) }
-  let(:column_list)             { SequencescapeExcel::ColumnList.new(yaml, conditional_formattings) }
+  let(:column_list)             { described_class.new(yaml, conditional_formattings) }
   let(:ranges)                  { build(:range_list, ranges_data: load_file(folder, 'ranges')) }
 
   it 'creates a list of columns' do
@@ -17,7 +17,7 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
 
   it 'creates a list of columns when passed a bunch of columns' do
     columns = build_list(:column, 5)
-    column_list = SequencescapeExcel::ColumnList.new(build_list(:column, 5))
+    column_list = described_class.new(build_list(:column, 5))
     expect(column_list.count).to eq(columns.length)
     expect(column_list).to be_all { |column| column_list.find_by(:name, column.name).present? }
   end
@@ -96,8 +96,8 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
   end
 
   it 'must have some columns to be valid' do
-    expect(SequencescapeExcel::ColumnList.new(yaml, conditional_formattings)).to be_valid
-    expect(SequencescapeExcel::ColumnList.new(nil, conditional_formattings)).not_to be_valid
+    expect(described_class.new(yaml, conditional_formattings)).to be_valid
+    expect(described_class.new(nil, conditional_formattings)).not_to be_valid
   end
 
   it '#find_column_or_null returns a null object if none exists for key and value' do

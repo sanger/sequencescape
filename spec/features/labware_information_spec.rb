@@ -31,7 +31,7 @@ describe 'Viewing labware' do
   end
 
   context 'with a lane' do
-    let(:labware) { create :lane }
+    let(:labware) { create(:lane).labware }
 
     it_behaves_like 'labware'
   end

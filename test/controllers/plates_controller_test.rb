@@ -284,7 +284,7 @@ class PlatesControllerTest < ActionController::TestCase
           context 'with 3 source plates' do
             setup do
               @picoassayplate_count = PicoAssayPlate.count
-              @parent_raw_barcode  = @parent_plate.machine_barcode
+              @parent_raw_barcode = @parent_plate.machine_barcode
               @parent_raw_barcode2 = @parent_plate2.machine_barcode
               @parent_raw_barcode3 = @parent_plate3.machine_barcode
               post :create, params: { plates: { creator_id: @pico_assay_plate_creator.id, barcode_printer: @barcode_printer.id, source_plates: "#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}",

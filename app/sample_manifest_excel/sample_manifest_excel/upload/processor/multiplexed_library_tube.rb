@@ -33,22 +33,6 @@ module SampleManifestExcel
           update_downstream_aliquots unless no_substitutions?
         end
 
-        # if manifest is reuploaded, only aliquots, that are in 'fake' library tubes will be updated
-        # actual aliquots in multiplexed library tube and other aliquots downstream are updated by this method
-        # library updates all aliquots in one go, doing it row by row is inefficient and may trigger tag clash
-        def update_downstream_aliquots
-          substituter = TagSubstitution.new(
-            substitutions: substitutions.compact,
-            comment: 'Manifest updated',
-            disable_clash_detection: true
-          )
-          @downstream_aliquots_updated = if substituter.save
-                                           true
-                                         else
-                                           log_error_and_return_false(substituter.errors.full_messages.join('; '))
-                                         end
-        end
-
         # if partial manifest was uploaded, we do not want to give an option to upload the remaining samples
         # the reason is if aliquots were transferred downstream, it is difficult to find all downstream tubes
         # and add the remaining aliquots there
@@ -57,33 +41,19 @@ module SampleManifestExcel
           upload.sample_manifest.pending_external_library_creation_requests.each(&:cancel!)
         end
 
-        def substitutions
-          @substitutions ||= []
+        def processed?
+          samples_updated? &&
+            aliquots_updated? &&
+            sample_manifest_updated? &&
+            aliquots_transferred?
         end
 
         def aliquots_transferred?
-          upload.rows.all?(&:aliquot_transferred?)
+          upload.rows.all?(&:aliquot_transferred?) || log_error_and_return_false('Could not transfer aliquots.')
         end
 
-        def downstream_aliquots_updated?
-          @downstream_aliquots_updated
-        end
-
-        def processed?
-          @processed ||= samples_updated? && aliquots_updated? && sample_manifest_updated?
-        end
-
-        def no_substitutions?
-          substitutions.compact.all?(&:blank?)
-        end
-
-        def aliquots_updated?
-          [
-            downstream_aliquots_updated? ||
-              no_substitutions? ||
-              log_error_and_return_false('Could not update tags in other assets.'),
-            aliquots_transferred? || log_error_and_return_false('Could not transfer aliquots.')
-          ].all?
+        def disable_match_expectation
+          false
         end
       end
     end

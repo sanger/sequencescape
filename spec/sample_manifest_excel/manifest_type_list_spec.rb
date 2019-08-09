@@ -2,12 +2,12 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::ManifestTypeList, type: :model, sample_manifest_excel: true do
+RSpec.describe SampleManifestExcel::ManifestTypeList, type: :model, sample_manifest_excel: true, sample_manifest: true do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
   let(:yaml) { load_file(folder, 'manifest_types') }
-  let(:manifest_type_list) { SampleManifestExcel::ManifestTypeList.new(yaml) }
+  let(:manifest_type_list) { described_class.new(yaml) }
 
   it 'creates a list of manifest types' do
     expect(manifest_type_list.count).to eq(yaml.length)
@@ -39,8 +39,8 @@ RSpec.describe SampleManifestExcel::ManifestTypeList, type: :model, sample_manif
   end
 
   it 'is comparable' do
-    expect(manifest_type_list).to eq(SampleManifestExcel::ManifestTypeList.new(yaml))
+    expect(manifest_type_list).to eq(described_class.new(yaml))
     yaml.shift
-    expect(manifest_type_list).not_to eq(SampleManifestExcel::ManifestTypeList.new(yaml))
+    expect(manifest_type_list).not_to eq(described_class.new(yaml))
   end
 end

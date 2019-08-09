@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, sample_manifest_excel: true, sample_manifest: true do
   context 'basic' do
     let(:options) do
       { style: { bg_color: '82CAFA', type: :dxf },
@@ -10,7 +10,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, s
         type: 'a_type' }.with_indifferent_access
     end
 
-    let(:conditional_formatting_default) { SequencescapeExcel::ConditionalFormattingDefault.new(options) }
+    let(:conditional_formatting_default) { described_class.new(options) }
 
     it 'has a type' do
       expect(conditional_formatting_default.type).to eq(options[:type].to_sym)
@@ -33,7 +33,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, s
     end
 
     it 'be comparable' do
-      expect(conditional_formatting_default).to eq(SequencescapeExcel::ConditionalFormattingDefault.new(options))
+      expect(conditional_formatting_default).to eq(described_class.new(options))
     end
   end
 
@@ -43,7 +43,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, s
         options: { type: :expression, priority: 2 },
         type: :another_type }.with_indifferent_access
     end
-    let(:conditional_formatting_default) { SequencescapeExcel::ConditionalFormattingDefault.new(options) }
+    let(:conditional_formatting_default) { described_class.new(options) }
 
     it 'must be an expression' do
       expect(conditional_formatting_default).to be_expression
@@ -62,7 +62,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, s
         options: { type: :expression, priority: 2 },
         type: :len }.with_indifferent_access
     end
-    let(:conditional_formatting_default) { SequencescapeExcel::ConditionalFormattingDefault.new(options) }
+    let(:conditional_formatting_default) { described_class.new(options) }
 
     it 'must be an expression' do
       expect(conditional_formatting_default).to be_expression

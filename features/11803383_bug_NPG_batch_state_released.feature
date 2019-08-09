@@ -12,7 +12,8 @@ Feature: The XML for the sequencescape API. If all lanes are passed batch state 
       <?xml version="1.0" encoding="UTF-8"?><qc_information><message>NPG change status in failed</message></qc_information>
        """
     Then the HTTP response should be "200"
-    And ignoring "id|name|sample_id|parents" the XML response should be:
+    # Ignoring type because it varies between pre and post refactor
+    And ignoring "id|name|sample_id|parents|type" the XML response should be:
         """
         <?xml version="1.0" encoding="UTF-8"?>
         <asset api_version="0.6">

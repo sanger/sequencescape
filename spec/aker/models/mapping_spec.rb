@@ -5,7 +5,7 @@ require_relative '../shared/a_mapping_between_an_aker_model_and_sequencescape'
 
 RSpec.describe Aker::Mapping, aker: true do
   let(:instance) { double('some model') }
-  let(:mapping) { Aker::Mapping.new }
+  let(:mapping) { described_class.new }
   let(:my_config) do
     %(
     sample_metadata.gender              <=   gender
@@ -18,7 +18,7 @@ RSpec.describe Aker::Mapping, aker: true do
   end
 
   before do
-    Aker::Mapping.config = my_config
+    described_class.config = my_config
   end
 
   it_behaves_like 'a mapping between an Aker model and Sequencescape'
@@ -43,7 +43,7 @@ RSpec.describe Aker::Mapping, aker: true do
 
         before do
           allow(mapping).to receive(:model_for_table).and_return(nil)
-          Aker::Mapping.config = my_config
+          described_class.config = my_config
         end
 
         it 'will try to get its value by calling the get method in the mapping object' do
@@ -78,7 +78,7 @@ RSpec.describe Aker::Mapping, aker: true do
 
         before do
           allow(mapping).to receive(:model_for_table).and_return(nil)
-          Aker::Mapping.config = my_config
+          described_class.config = my_config
         end
 
         it 'will try to update its value by calling the set method in the material object' do

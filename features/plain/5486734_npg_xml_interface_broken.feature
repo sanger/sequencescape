@@ -26,7 +26,7 @@ Feature: NPG XML interface
     Given the library tube named "Tube" exists
     And the library tube "Tube" has been involved in a "Paired end sequencing" request within the study "Study testing the NPG XML interface" for the project "Project testing the NPG XML interface"
 
-    When I retrieve the XML for the asset called "Tube"
+    When I retrieve the XML for the receptacle in the labware "Tube"
     Then ignoring "id|sample" the XML response should be:
       """
       <?xml version="1.0" encoding="UTF-8"?>
@@ -76,7 +76,7 @@ Feature: NPG XML interface
     Given the sample tube named "Tube" exists
     And the sample tube "Tube" has been involved in a "Library creation" request within the study "Study testing the NPG XML interface" for the project "Project testing the NPG XML interface"
 
-    When I retrieve the XML for the asset called "Tube"
+    When I retrieve the XML for the receptacle in the labware "Tube"
     Then ignoring "id|sample_id|sample" the XML response should be:
       """
       <?xml version="1.0" encoding="UTF-8"?>

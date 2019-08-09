@@ -28,7 +28,7 @@ class SampleTest < ActiveSupport::TestCase
       end
 
       should 'have the first tube it was added to as a primary asset' do
-        assert_equal @sample.reload.primary_receptacle, @tube_b
+        assert_equal @sample.reload.primary_receptacle, @tube_b.receptacle
       end
     end
 

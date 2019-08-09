@@ -25,14 +25,16 @@ module SampleManifestExcel
         def run(tag_group)
           return unless valid?
 
-          update_samples(tag_group)
+          update_samples_and_aliquots(tag_group)
           update_sample_manifest
         end
 
-        def update_samples(tag_group)
+        def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
             row.update_sample(tag_group, upload.override)
+            substitutions << row.aliquot.substitution_hash if row.reuploaded?
           end
+          update_downstream_aliquots unless no_substitutions?
         end
 
         def samples_updated?
@@ -40,7 +42,7 @@ module SampleManifestExcel
         end
 
         def processed?
-          @processed ||= samples_updated? && sample_manifest_updated?
+          samples_updated? && sample_manifest_updated? && aliquots_updated?
         end
 
         ##
@@ -57,7 +59,46 @@ module SampleManifestExcel
           self.class.to_s
         end
 
+        def substitutions
+          @substitutions ||= []
+        end
+
+        def downstream_aliquots_updated?
+          @downstream_aliquots_updated
+        end
+
+        def aliquots_updated?
+          downstream_aliquots_updated? ||
+            no_substitutions? ||
+            log_error_and_return_false('Could not update tags in other assets.')
+        end
+
         private
+
+        def disable_match_expectation
+          true
+        end
+
+        # if manifest is reuploaded, only aliquots, that are in 'fake' library tubes will be updated
+        # actual aliquots in multiplexed library tube and other aliquots downstream are updated by this method
+        # library updates all aliquots in one go, doing it row by row is inefficient and may trigger tag clash
+        def update_downstream_aliquots
+          substituter = TagSubstitution.new(
+            substitutions: substitutions.compact,
+            comment: 'Manifest updated',
+            disable_clash_detection: true,
+            disable_match_expectation: disable_match_expectation
+          )
+          @downstream_aliquots_updated = if substituter.save
+                                           true
+                                         else
+                                           log_error_and_return_false(substituter.errors.full_messages.join('; '))
+                                         end
+        end
+
+        def no_substitutions?
+          substitutions.compact.all?(&:blank?)
+        end
 
         # Log post processing checks and fail
         def log_error_and_return_false(message)
@@ -74,13 +115,15 @@ module SampleManifestExcel
         # For tube manifests barcodes (sanger tube id column) should be different in each row in the upload.
         # Uniqueness of foreign barcodes in the database is checked in the specialised field sanger_tube_id.
         def check_for_barcodes_unique
-          return unless any_duplicate_barcodes?
+          duplicated_barcode_row = duplicate_barcodes
+          return if duplicated_barcode_row.nil?
 
-          errors.add(:base, 'Duplicate barcodes detected, the barcode must be unique for each tube.')
+          errors.add(:base, "Barcode duplicated at row: #{duplicated_barcode_row.number}. The barcode must be unique for each tube.")
         end
 
-        def any_duplicate_barcodes?
-          return false unless upload.respond_to?('rows')
+        # Return the row of the first encountered barcode mismatch
+        def duplicate_barcodes
+          return unless upload.respond_to?('rows')
 
           unique_bcs = []
           upload.rows.each do |row|
@@ -90,11 +133,11 @@ module SampleManifestExcel
             next unless col_num.present? && col_num.positive?
 
             curr_bc = row.at(col_num)
-            return true if unique_bcs.include?(curr_bc)
+            return row if unique_bcs.include?(curr_bc)
 
             unique_bcs << curr_bc
           end
-          false
+          nil
         end
       end
     end

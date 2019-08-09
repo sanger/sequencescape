@@ -120,8 +120,9 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
     assert_equal expected_data[:library_type], lt.aliquots.first.library_type, "library_type: #{expected_data[:library_type]} #{lt.aliquots.first.library_type}"
     assert_equal expected_data[:insert_size_from].to_i, lt.aliquots.first.insert_size_from, "insert_size_from: #{expected_data[:insert_size_from]} #{lt.aliquots.first.insert_size_from}"
     assert_equal expected_data[:insert_size_to].to_i, lt.aliquots.first.insert_size_to, "insert_size_to: #{expected_data[:insert_size_to]} #{lt.aliquots.first.insert_size_to}"
-    assert_equal lt.id, lt.aliquots.first.library_id, "Library_id hasn't been set"
-    assert pooled_aliquots.delete([expected_data[:sanger_sample_id], expected_data[:tag_index].to_i, lt.id]), "Couldn't find #{expected_data[:sanger_sample_id]} with #{expected_data[:tag_index]} in MX tube."
+    assert_equal lt.receptacle.id, lt.aliquots.first.library_id, "Library_id hasn't been set"
+    assert pooled_aliquots.delete([expected_data[:sanger_sample_id], expected_data[:tag_index].to_i, lt.receptacle.id]),
+           "Couldn't find #{expected_data[:sanger_sample_id]} with tag #{expected_data[:tag_index]} in MX tube. (#{pooled_aliquots.inspect})"
   end
   assert pooled_aliquots.empty?, "MX tube contains extra samples: #{pooled_aliquots.inspect}"
 end
@@ -131,6 +132,7 @@ Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   supplier = Supplier.find_by!(name: 'Test supplier name')
   sample_manifest = FactoryBot.create :sample_manifest, study: study, supplier: supplier, user: User.find_by(first_name: 'john')
   sample_manifest.generate
+  Delayed::Worker.new.work_off
   visit(url_for(sample_manifest))
   step('I reset all of the sanger sample ids to a known number sequence')
 end

@@ -161,7 +161,7 @@ RSpec.describe TransferRequest, type: :model do
 
   context 'TransferRequest' do
     context 'when using the constuctor' do
-      let!(:transfer_request) { TransferRequest.create!(asset: source, target_asset: destination) }
+      let!(:transfer_request) { described_class.create!(asset: source, target_asset: destination) }
 
       it 'duplicates the aliquots' do
         expected_aliquots = source.aliquots.map { |a| [a.sample_id, a.tag_id] }
@@ -194,7 +194,7 @@ RSpec.describe TransferRequest, type: :model do
 
     it 'does not permit transfers to the same asset' do
       asset = create(:sample_tube)
-      expect { TransferRequest.create!(asset: asset, target_asset: asset) }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { described_class.create!(asset: asset, target_asset: asset) }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     context 'with a tag clash' do
@@ -206,7 +206,7 @@ RSpec.describe TransferRequest, type: :model do
 
       it 'raises an exception' do
         expect do
-          TransferRequest.create!(asset: aliquot_2.receptacle.reload, target_asset: target_asset)
+          described_class.create!(asset: aliquot_2.receptacle.reload, target_asset: target_asset)
         end.to raise_error(Aliquot::TagClash)
       end
     end

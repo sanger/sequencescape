@@ -9,6 +9,11 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :adapter_type_id, 'Adapter Type' %><br/>
+    <%= f.select(:adapter_type_id, TagGroup::AdapterType.pluck(:name, :id), { prompt: 'Unspecified' }, class: 'form-control select2' )%>
+  </div>
+
+  <div class="form-group">
     <%= f.label :oligos_text, 'List of oligos (new line for each)' %><br/>
     <%= f.text_area :oligos_text, {prompt: 'Enter oligos...', size: '50x10', class: 'form-control'} %>
   </div>

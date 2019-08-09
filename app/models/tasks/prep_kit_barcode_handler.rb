@@ -12,7 +12,7 @@ module Tasks::PrepKitBarcodeHandler
     requests = @batch.requests
     ActiveRecord::Base.transaction do
       requests.each do |request|
-        request.target_asset.pac_bio_library_tube_metadata.update!(prep_kit_barcode: barcode)
+        request.target_asset.labware.pac_bio_library_tube_metadata.update!(prep_kit_barcode: barcode)
       end
     end
 

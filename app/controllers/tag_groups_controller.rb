@@ -5,7 +5,7 @@ class TagGroupsController < ApplicationController
   before_action :admin_login_required, only: [:new, :create]
 
   def index
-    @tag_groups = TagGroup.all
+    @tag_groups = TagGroup.includes(:adapter_type)
 
     respond_to do |format|
       format.html
@@ -48,6 +48,6 @@ class TagGroupsController < ApplicationController
   end
 
   def tag_group_form_object_params
-    params.require(:tag_group).permit(:name, :oligos_text)
+    params.require(:tag_group).permit(:name, :oligos_text, :adapter_type_id)
   end
 end

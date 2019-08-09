@@ -12,7 +12,11 @@ module SequencescapeExcel
       validate :check_library_type_exists
 
       def update(attributes = {})
-        attributes[:aliquot].library_type = value if valid? && attributes[:aliquot].present?
+        return unless valid? && attributes[:aliquot].present?
+
+        aliquots.each do |aliquot|
+          aliquot.library_type = value
+        end
       end
 
       private
