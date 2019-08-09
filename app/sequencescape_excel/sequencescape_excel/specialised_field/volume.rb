@@ -19,8 +19,8 @@ module SequencescapeExcel
           qc_assay = QcAssay.find_or_create_by!(
             lot_number: "sample_manifest_id:#{sample_manifest_asset.sample_manifest.id}"
           )
-          qc_assay.qc_results.create!(
-            asset: asset,
+          asset.qc_results.build(
+            qc_assay: qc_assay,
             key: 'volume',
             value: value.to_f,
             assay_type: 'customer_supplied',

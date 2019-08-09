@@ -73,7 +73,7 @@ module SampleManifestExcel
       # *Checking it is ok to update row
       # *Updating all of the specialised fields in the aliquot
       # *Updating the sample metadata
-      # *Saving the aliquot, metadata and sample
+      # *Saving the asset, metadata and sample
       def update_sample(tag_group, override)
         return unless valid?
 
@@ -83,7 +83,7 @@ module SampleManifestExcel
           @sample_skipped = true
         else
           update_specialised_fields(tag_group)
-          aliquot.save!
+          manifest_asset.asset.save!
           metadata.save!
           sample.updated_by_manifest = true
           sample.empty_supplier_sample_name = false

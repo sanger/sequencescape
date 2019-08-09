@@ -122,7 +122,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     it 'will create a QC result for the asset' do
       specialised_field = described_class.new(value: value, sample_manifest_asset: sample_manifest_asset)
       specialised_field.update
-      qc_result = QcResult.find_by(asset: sample_manifest_asset.asset)
+      qc_result = sample_manifest_asset.asset.qc_results.first
       expect(qc_result.value).to eq(value.to_f.to_s)
       expect(qc_result.assay_type).to eq('customer_supplied')
       expect(qc_result.key).to eq('volume')
@@ -135,8 +135,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       specialised_field_2 = described_class.new(value: value_2, sample_manifest_asset: sample_manifest_asset_2)
       specialised_field_2.update
       qc_assay = QcAssay.find_by(lot_number: "sample_manifest_id:#{sample_manifest.id}")
-      qc_result_1 = QcResult.find_by(asset: sample_manifest_asset.asset)
-      qc_result_2 = QcResult.find_by(asset: sample_manifest_asset_2.asset)
+      qc_result_1 = sample_manifest_asset.asset.qc_results.first
+      qc_result_2 = sample_manifest_asset_2.asset.qc_results.first
       expect(qc_result_1.qc_assay).to eq(qc_assay)
       expect(qc_result_2.qc_assay).to eq(qc_assay)
     end
