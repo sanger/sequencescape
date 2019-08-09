@@ -144,7 +144,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     it 'will not create QC results for the asset if the value is blank' do
       specialised_field = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
       specialised_field.update
-      qc_result = QcResult.find_by(asset: sample_manifest_asset.asset)
+      qc_result = sample_manifest_asset.asset.qc_results.first
       expect(qc_result).to be_nil
     end
 
