@@ -187,3 +187,9 @@ dl.order-summary {
     span { @extend .badge; @extend .text-white; }
   }
 }
+
+.external_help:before {
+  @extend .fas;
+  @extend .fa-book;
+  padding-right: 0.5em;
+}

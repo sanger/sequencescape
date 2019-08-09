@@ -7,6 +7,12 @@
   @extend .btn-lg;
   @extend .btn-block;
   @extend .mb-3;
+
+  &:before {
+    @extend .far;
+    @extend .fa-envelope;
+    padding-right: 0.5em;
+  }
 }
 
 .link-list {
