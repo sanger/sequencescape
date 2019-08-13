@@ -83,6 +83,12 @@ When /^(?:|I )select "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value,
   end
 end
 
+When /^(?:|I )choose "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, _selector|
+  within_fieldset(field) do
+    choose(value, allow_label_click: true)
+  end
+end
+
 When /^(?:|I )select "([^"]*)" from the first "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
   with_scope(selector) do
     first(:select, field).select(value)

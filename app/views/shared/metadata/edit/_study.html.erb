@@ -15,13 +15,13 @@
       <%= group.select_by_association(:study_type)%>
       <%= group.text_area(:study_description) %>
       <%= group.text_area(:study_abstract) %>
-      <%= group.select(:study_sra_hold, Study::STUDY_SRA_HOLDS) %>
+      <%= group.radio_select(:study_sra_hold, Study::STUDY_SRA_HOLDS) %>
     <% end %>
 
-    <%= metadata_fields.select(:contains_human_dna, Study::YES_OR_NO) %>
-    <%= metadata_fields.select(:contaminated_human_dna, Study::YES_OR_NO) %>
-    <%= metadata_fields.select(:commercially_available, Study::YES_OR_NO) %>
-    <%= metadata_fields.select(:remove_x_and_autosomes, Study::YES_OR_NO) %>
+    <%= metadata_fields.radio_select(:contains_human_dna, Study::YES_OR_NO) %>
+    <%= metadata_fields.radio_select(:contaminated_human_dna, Study::YES_OR_NO) %>
+    <%= metadata_fields.radio_select(:commercially_available, Study::YES_OR_NO) %>
+    <%= metadata_fields.radio_select(:remove_x_and_autosomes, Study::YES_OR_NO) %>
     <%= metadata_fields.check_box(:separate_y_chromosome_data) %>
 
     <%= metadata_fields.text_field(:study_project_id, grouping: 'SRA') %>
@@ -34,9 +34,9 @@
       <%= metadata_fields.text_field(:data_access_group) %>
       <%= group.select_by_association(:data_release_study_type)%>
       <% strategies = Study::DATA_RELEASE_STRATEGIES.map { |s| [t(s.downcase.gsub(' ','_'),scope:'metadata.study.metadata.data_release_strategy.values'),s ] } %>
-      <%= group.select(:data_release_strategy, strategies) %>
+      <%= group.radio_select(:data_release_strategy, strategies) %>
       <% metadata_fields.related_fields(to: :data_release_strategy, when: Study::DATA_RELEASE_STRATEGY_MANAGED) do %>
-        <%= group.select(:data_release_standard_agreement, Study::YES_OR_NO) %>
+        <%= group.radio_select(:data_release_standard_agreement, Study::YES_OR_NO) %>
         <% metadata_fields.related_fields(to: :data_release_standard_agreement, when: Study::NO) do %>
           <%= group.document_field(:data_release_non_standard_agreement) %>
         <% end %>
@@ -58,7 +58,7 @@
 
       <% metadata_fields.related_fields(to: :data_release_strategy, when: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
         <%= group.select(:data_release_prevention_reason, Study::DATA_RELEASE_PREVENTION_REASONS) %>
-        <%= group.select(:data_release_prevention_approval, Study::YES_OR_NO) %>
+        <%= group.radio_select(:data_release_prevention_approval, Study::YES_OR_NO) %>
         <%= group.text_area(:data_release_prevention_reason_comment) %>
       <% end %>
       <% metadata_fields.related_fields(to: :data_release_strategy, in: Study::DATA_RELEASE_STRATEGIES, not: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
@@ -75,7 +75,7 @@
           <% metadata_fields.related_fields(to: :data_release_delay_reason, when: Study::DATA_RELEASE_DELAY_FOR_OTHER) do %>
             <%= group.text_area(:data_release_delay_other_comment) %>
             <% metadata_fields.related_fields(to: :data_release_delay_period, in: Study::DATA_RELEASE_DELAY_PERIODS) do %>
-              <%= group.select(:data_release_delay_approval, Study::YES_OR_NO) %>
+              <%= group.radio_select(:data_release_delay_approval, Study::YES_OR_NO) %>
               <%= group.text_area(:data_release_delay_reason_comment) %>
             <% end %>
           <% end %>

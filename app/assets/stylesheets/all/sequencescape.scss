@@ -1100,9 +1100,17 @@ ul#orders > li.buttons {
 #asset_input_methods td.separator { vertical-align: middle; }
 
 label.required:after {
-  content: " \00BB"; /* &raquo; */
-  color: #880000;
+  content: fa-content($fa-var-asterisk);
+  padding: 0 0.5em;
+  @extend .text-warning;
+  @extend .fa;
 }
+
+.sqs-form  {
+  legend { @extend .col-form-label;  }
+}
+
+
 .sample_row.disabled, .sample_row.disabled input {
   background-color: #ddd;
 }

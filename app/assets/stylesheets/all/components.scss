@@ -159,6 +159,11 @@ dl.order-summary {
 
 .btn-default { @extend .btn-primary; }
 
+.property_edit_info {
+  @extend .badge;
+  @extend .badge-light;
+}
+
 // Request progress bars
 .request_progress {
   .request_progress_header {
