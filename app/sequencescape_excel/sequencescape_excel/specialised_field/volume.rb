@@ -17,9 +17,7 @@ module SequencescapeExcel
 
       def create_qc_record
         ActiveRecord::Base.transaction do
-          qc_assay = QcAssay.find_or_create_by!(
-            lot_number: "sample_manifest_id:#{sample_manifest_asset.sample_manifest.id}"
-          )
+          qc_assay = sample_manifest_asset.sample_manifest.find_or_create_qc_assay!
           asset.qc_results.build(
             qc_assay: qc_assay,
             key: 'volume',

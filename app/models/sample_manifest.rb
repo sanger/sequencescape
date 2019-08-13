@@ -48,6 +48,7 @@ class SampleManifest < ApplicationRecord
   has_uploaded_document :generated, differentiator: 'generated'
 
   attr_accessor :override, :only_first_label
+  attr_reader :qc_assay
 
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
@@ -183,5 +184,15 @@ class SampleManifest < ApplicationRecord
 
   def purpose_id
     super || purpose.id
+  end
+
+  # Upon upload, sample manifests might generate qc_results for certain
+  # specialised fields. We want to keep one qc_assay per sample manifest.
+  def qc_assay
+    @qc_assay ||= QcAssay.find_by(lot_number: "sample_manifest_id:#{id}")
+  end
+
+  def find_or_create_qc_assay!
+    qc_assay || QcAssay.create!(lot_number: "sample_manifest_id:#{id}")
   end
 end

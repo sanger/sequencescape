@@ -60,6 +60,10 @@ module SampleManifestExcel
         @aliquot ||= manifest_asset.aliquot
       end
 
+      def asset
+        @asset ||= manifest_asset.asset
+      end
+
       def metadata
         @metadata ||= sample.sample_metadata
       end
@@ -83,7 +87,7 @@ module SampleManifestExcel
           @sample_skipped = true
         else
           update_specialised_fields(tag_group)
-          manifest_asset.asset.save!
+          asset.save!
           metadata.save!
           sample.updated_by_manifest = true
           sample.empty_supplier_sample_name = false
@@ -114,7 +118,7 @@ module SampleManifestExcel
       def transfer_aliquot
         return unless valid?
 
-        manifest_asset.asset.external_library_creation_requests.each do |request|
+        asset.external_library_creation_requests.each do |request|
           @aliquot_transferred = request.passed? || request.manifest_processed!
         end
       end
