@@ -191,7 +191,9 @@ class SampleManifest < ApplicationRecord
     @qc_assay ||= QcAssay.find_by(lot_number: "sample_manifest_id:#{id}")
   end
 
+  # rubocop:disable Naming/MemoizedInstanceVariableName
   def find_or_create_qc_assay!
-    qc_assay || QcAssay.create!(lot_number: "sample_manifest_id:#{id}")
+    @qc_assay ||= QcAssay.find_or_create_by!(lot_number: "sample_manifest_id:#{id}")
   end
+  # rubocop:enable Naming/MemoizedInstanceVariableName
 end
