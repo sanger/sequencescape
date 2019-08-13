@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 describe 'Labwhere reception', js: true do
-  let(:user) { create :user, email: 'login@example.com' }
+  let(:user) { create :user, email: 'login@example.com', swipecard_code: 12345 }
   let(:plate) { create :plate }
 
-  it 'user can pool from different tubes to stock and standard mx tubes' do
+  it 'user can scan plates into the reception' do
     login_user user
     visit labwhere_receptions_path
     expect(page).to have_content 'Labwhere Reception'

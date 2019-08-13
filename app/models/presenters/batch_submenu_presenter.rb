@@ -30,7 +30,6 @@ module Presenters
       add_submenu_option pluralize(@batch.comments.size, 'comment'), batch_comments_path(@batch)
       load_pipeline_options
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
-      add_submenu_option 'SybrGreen images', "#{configatron.sybr_green_images_url}#{@batch.id}"
     end
 
     def is_manager?
@@ -95,7 +94,6 @@ module Presenters
 
       # Other options are enabled only for managers
       if is_manager?
-        add_submenu_option "Vol' & Conc'", :edit_volume_and_concentration if not_sequencing?
         add_submenu_option 'Create stock tubes', new_batch_stock_asset_path(@batch) if can_create_stock_assets?
         add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet if pacbio_sample_pipeline?
 

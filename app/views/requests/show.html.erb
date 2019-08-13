@@ -14,7 +14,7 @@
 <% end %>
 
 
-<%- add :back_menu, "Back to asset" => asset_path(@request.asset) if @request.asset %>
+<%- add :back_menu, "Back to asset" => receptacle_path(@request.asset) if @request.asset %>
 
 <h1>
   <% if @request.submission %>

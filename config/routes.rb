@@ -133,8 +133,6 @@ Rails.application.routes.draw do
       post :fail_items
       post :reset_batch
       get :download_spreadsheet
-      get :edit_volume_and_concentration
-      put :update_volume_and_concentration
       get :fail
       get :pacbio_sample_sheet
       get :print
@@ -622,6 +620,8 @@ Rails.application.routes.draw do
   # to be removed?
   get 'authentication/open'
   get 'authentication/restricted'
+
+  resources :messengers, only: :show
 
   # We removed workflows, which broke study links. Some customers may have their own studies bookmarked
   get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')

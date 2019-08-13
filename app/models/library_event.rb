@@ -1,3 +1,4 @@
+# @note This is not namespaced to assist with exposure via the API
 class LibraryEvent < BroadcastEvent
   def event_type
     properties[:event_type]

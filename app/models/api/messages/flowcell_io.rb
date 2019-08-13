@@ -28,8 +28,6 @@ class Api::Messages::FlowcellIO < Api::Base
   module LaneExtensions # Included in SequencingRequest
     def self.included(base)
       base.class_eval do
-        delegate :position, to: :batch_request
-
         def mx_library
           asset.external_identifier
         end
@@ -112,8 +110,6 @@ class Api::Messages::FlowcellIO < Api::Base
   module ControlLaneExtensions
     def self.included(base)
       base.class_eval do
-        delegate :position, to: :batch_request
-
         def mx_library
           asset.external_identifier || 'UNKNOWN'
         end
@@ -132,6 +128,22 @@ class Api::Messages::FlowcellIO < Api::Base
 
         def spiked_in_buffer
           false
+        end
+
+        def spiked_phix_barcode
+          nil
+        end
+
+        def spiked_phix_percentage
+          nil
+        end
+
+        def loading_concentration
+          nil
+        end
+
+        def workflow
+          nil
         end
 
         def external_release
@@ -174,11 +186,11 @@ class Api::Messages::FlowcellIO < Api::Base
         extend ClassMethods
 
         def flowcell_barcode
-          requests.first.flowcell_barcode
+          requests.first&.flowcell_barcode
         end
 
         def read_length
-          requests.first.request_metadata.read_length
+          requests.first&.request_metadata&.read_length
         end
         # We alias is as the json generator assumes each method is called only once.
         alias :reverse_read_length :read_length

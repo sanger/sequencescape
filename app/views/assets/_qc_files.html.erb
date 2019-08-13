@@ -3,7 +3,7 @@
     <header>
       <a href='#qc_files-table-collapser' role="button" data-toggle='collapse'>
       <h3>QC Files
-        <span class='badge badge-primary'><%= asset.qc_files.size %> </span>
+        <%= counter_badge(asset.qc_files.size) %>
         <small class='show-hide'>Click to toggle</small>
       </h3>
       </a>

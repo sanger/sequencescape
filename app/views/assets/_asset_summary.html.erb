@@ -58,7 +58,7 @@
       <th>Plate</th>
       <td>
         <% if asset.plate.present? %>
-          <%= link_to asset.plate.human_barcode, asset_path(asset.plate) %>
+          <%= link_to asset.plate.human_barcode, labware_path(asset.plate) %>
         <% else %>
           No plate
         <% end %>

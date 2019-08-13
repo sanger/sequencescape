@@ -93,7 +93,7 @@ class ReceptaclesController < ApplicationController
       @direct_printing = (@asset.printable_target == @asset)
     else
       flash[:error] = "#{@asset.display_name} does not have a barcode so a label can not be printed."
-      redirect_to asset_path(@asset)
+      redirect_to receptacle_path(@asset)
     end
   end
 
@@ -233,7 +233,7 @@ class ReceptaclesController < ApplicationController
   end
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
+    new_request_receptacle_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
   end
 
   def discover_asset

@@ -40,7 +40,7 @@ module StudiesHelper
 
   def study_link(study, options)
     link_text = content_tag(:strong, study.name) << ' ' <<
-                content_tag(:span, study.state, class: "study-state badge badge-#{study.state}")
+                badge(study.state, type: 'study-state')
     link_to(link_text, study_path(study), options)
   end
 end

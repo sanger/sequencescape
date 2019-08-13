@@ -28,6 +28,8 @@ class Labware < Asset
   end
 
   AssetRefactor.when_refactored do
+    self.sample_partial = 'assets/samples_partials/asset_samples'
+
     include LabwareAssociations
     include Commentable
     include Uuid::Uuidable
@@ -70,6 +72,7 @@ class Labware < Asset
     scope :for_lab_searches_display, -> { includes(:barcodes, requests: %i[pipeline batch]).order('requests.pipeline_id ASC') }
   end
 
+  belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
   has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
 
   scope :named, ->(name) { where(name: name) }
