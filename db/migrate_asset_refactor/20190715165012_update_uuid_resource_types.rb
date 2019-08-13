@@ -5,7 +5,7 @@
 class UpdateUuidResourceTypes < ActiveRecord::Migration[5.1]
   def up
     ActiveRecord::Base.transaction do
-      Uuid.where(resource_type: 'Labware')
+      Uuid.where(resource_type: 'Asset')
           .joins('INNER JOIN receptacles ON receptacles.id = resource_id')
           .update_all(resource_type: 'Receptacle')
       Uuid.where(resource_type: 'Asset')
