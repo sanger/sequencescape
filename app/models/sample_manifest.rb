@@ -48,7 +48,6 @@ class SampleManifest < ApplicationRecord
   has_uploaded_document :generated, differentiator: 'generated'
 
   attr_accessor :override, :only_first_label
-  attr_reader :qc_assay
 
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
