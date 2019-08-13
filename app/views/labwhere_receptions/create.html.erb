@@ -3,12 +3,13 @@
 <% if @labwhere_reception.valid? %>
   <h4>Receipt</h4>
   <p>The following labware has been scanned in.</p>
-  <ul>
+  <ul class="list-group">
     <% @labwhere_reception.assets.each do |asset| %>
-      <li><%= link_to asset.name, labware_path(asset) %> <%= asset.human_barcode %>: <%= asset.purpose&.name %></li>
+      <li class="list-group-item"><%= link_to asset.name, labware_path(asset) %>
+        (<%= asset.human_barcode %>): <%= asset.purpose&.name %></li>
     <% end %>
     <% @labwhere_reception.missing_barcodes.each do |barcode| %>
-      <li class="text-danger">Could not find: <%= barcode %></li>
+      <li class="list-group-item list-group-item-danger">Could not find: <%= barcode %></li>
     <% end %>
   </ul>
 <% end %>
