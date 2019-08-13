@@ -59,7 +59,7 @@ class Pooling
   end
 
   def message
-    @message ||= Hash.new { |h,i| h[i] = +'' }
+    @message ||= Hash.new('')
   end
 
   def tag_clash_report
