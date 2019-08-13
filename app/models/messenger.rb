@@ -1,4 +1,4 @@
-# Messengers handle passing a target ingo a template
+# Messengers handle passing a target into a message template
 # for rendering warehouse messages
 class Messenger < ApplicationRecord
   belongs_to :target, ->(messenger) { includes(messenger.render_class.includes) }, polymorphic: true
