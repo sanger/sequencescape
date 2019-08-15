@@ -24,9 +24,6 @@ class Purpose::Relationship < ApplicationRecord
   belongs_to :parent, class_name: 'Purpose'
   belongs_to :child, class_name: 'Purpose'
 
-  # Temporary hack while we clean up the schema
-  before_save { self.transfer_request_type_id = 1 }
-
   scope :with_parent, ->(plate_purpose) { where(parent_id: plate_purpose) }
   scope :with_child,  ->(plate_purpose) { where(child_id: plate_purpose) }
 end

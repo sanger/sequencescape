@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190802101508) do
+ActiveRecord::Schema.define(version: 20190815092606) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "barcode"
@@ -866,7 +866,6 @@ ActiveRecord::Schema.define(version: 20190802101508) do
   create_table "plate_purpose_relationships", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "parent_id"
     t.integer "child_id"
-    t.integer "transfer_request_type_id", null: false
   end
 
   create_table "plate_purposes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
