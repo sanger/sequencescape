@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190815141401) do
+ActiveRecord::Schema.define(version: 20190815142912) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "barcode"
@@ -1411,7 +1411,7 @@ ActiveRecord::Schema.define(version: 20190815141401) do
     t.integer "asset_group_id"
   end
 
-  create_table "samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string "name"
     t.boolean "new_name_format", default: true
     t.datetime "created_at"
@@ -1484,7 +1484,7 @@ ActiveRecord::Schema.define(version: 20190815141401) do
     t.string "reason"
   end
 
-  create_table "studies", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "studies", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string "name"
     t.datetime "created_at"
     t.datetime "updated_at"
