@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190815110602) do
+ActiveRecord::Schema.define(version: 20190815114947) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "barcode"
@@ -1343,7 +1343,7 @@ ActiveRecord::Schema.define(version: 20190815110602) do
     t.index ["supplier_id"], name: "index_sample_manifests_on_supplier_id"
   end
 
-  create_table "sample_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "sample_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.integer "sample_id"
     t.string "organism"
     t.string "gc_content"
@@ -1365,7 +1365,7 @@ ActiveRecord::Schema.define(version: 20190815110602) do
     t.string "sample_ebi_accession_number"
     t.string "sample_sra_hold"
     t.string "sample_reference_genome_old"
-    t.text "sample_description"
+    t.text "sample_description", limit: 16777215
     t.string "sibling"
     t.boolean "is_resubmitted"
     t.string "date_of_sample_collection"
@@ -1500,13 +1500,13 @@ ActiveRecord::Schema.define(version: 20190815110602) do
     t.index ["updated_at"], name: "index_studies_on_updated_at"
   end
 
-  create_table "study_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "study_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.integer "study_id"
     t.string "old_sac_sponsor"
-    t.text "study_description"
+    t.text "study_description", limit: 16777215
     t.string "contaminated_human_dna"
     t.string "study_project_id"
-    t.text "study_abstract"
+    t.text "study_abstract", limit: 16777215
     t.string "study_study_title"
     t.string "study_ebi_accession_number"
     t.string "study_sra_hold"
@@ -1531,7 +1531,7 @@ ActiveRecord::Schema.define(version: 20190815110602) do
     t.integer "data_release_study_type_id"
     t.integer "reference_genome_id", default: 1
     t.string "array_express_accession_number"
-    t.text "dac_policy"
+    t.text "dac_policy", limit: 16777215
     t.string "ega_policy_accession_number"
     t.string "ega_dac_accession_number"
     t.string "commercially_available", default: "No"
