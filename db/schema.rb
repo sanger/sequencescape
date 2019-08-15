@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190815114947) do
+ActiveRecord::Schema.define(version: 20190815120739) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "barcode"
@@ -370,11 +370,11 @@ ActiveRecord::Schema.define(version: 20190815114947) do
     t.integer "user_id"
   end
 
-  create_table "comments", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "comments", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string "title"
     t.string "commentable_type", limit: 50
     t.integer "user_id"
-    t.text "description"
+    t.text "description", limit: 16777215
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "commentable_id", null: false
