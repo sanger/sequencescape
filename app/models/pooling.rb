@@ -29,7 +29,7 @@ class Pooling
         TransferRequest.create!(asset: source_asset, target_asset: target_asset)
       end
     end
-    message[:notice] = (message[:notice] || '') + success
+    message[:notice] = message[:notice] + success
   end
 
   def source_assets
@@ -59,7 +59,7 @@ class Pooling
   end
 
   def message
-    @message ||= {}
+    @message ||= Hash.new('')
   end
 
   def tag_clash_report
@@ -114,9 +114,9 @@ class Pooling
     return unless print_job_required?
 
     if print_job.execute
-      message[:notice] = (message[:notice] || '') + print_job.success
+      message[:notice] = message[:notice] + print_job.success
     else
-      message[:error] = (message[:error] || '') + print_job.errors.full_messages.join('; ')
+      message[:error] = message[:error] + print_job.errors.full_messages.join('; ')
     end
   end
 

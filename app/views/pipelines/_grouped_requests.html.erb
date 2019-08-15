@@ -77,11 +77,11 @@
           <td style='text-align: center' width='5%'>
             <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: 'related_flag_image', 'data-submission-id' => request.submission_id %>
           </td>
-          <td><%= link_to request.submission_id,submission_path(request.submission_id) %></td>
+          <td><%= link_to request.submission_id, submission_path(request.submission_id) %></td>
           <td><%= link_to request.id, request_path(request) %></td>
-          <td><%= link_to(h(request_asset.display_name), asset_path(request.asset)) %></td>
+          <td><%= link_to(h(request_asset.display_name), receptacle_path(request.asset)) %></td>
           <%= render partial: "request_comments", locals: { request: request, comments_count: request_comments_count } %>
-          <td><%=  link_to "#{request_asset.sti_type} #{request_asset.try(:human_barcode)}", asset_path(request.asset) %></td>
+          <td><%=  link_to "#{request_asset.sti_type} #{request_asset.try(:human_barcode)}", receptacle_path(request.asset) %></td>
           <% unless asset_comments_count.zero? -%>
             <%= render partial: "asset_comments", locals: { request: request, comments_count: asset_comments_count } %>
           <% else -%>

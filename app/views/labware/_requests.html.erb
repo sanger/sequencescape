@@ -1,8 +1,10 @@
+<% may_copy_and_cancel = current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+
 <section id="requests-table-container" class='info-panel'>
   <header>
     <a href='#requests-table-collapser' role="button" data-toggle='collapse'>
     <h3>Requests
-      <span class='badge badge-primary'><%= asset.requests_as_source.length %> </span>
+      <%= counter_badge asset.requests_as_source.length %>
       <small class='show-hide'>Click to toggle</small>
     </h3>
     </a>
@@ -18,7 +20,7 @@
           <th>State</th>
           <th>Batches</th>
           <th>Target</th>
-          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+          <% if may_copy_and_cancel %>
             <th>Copy</th>
             <th>Cancel</th>
           <% end %>
@@ -26,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @asset.requests_as_source.each do |request| %>
+        <% @asset.requests_as_source.includes(:submission, :request_type, :batch, target_asset: :map).each do |request| %>
         <tr>
           <td><%= link_to(request.id, request_url(request), title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
           <td><%= request.request_type&.name %></td>
@@ -51,7 +53,7 @@
           <% else %>
             <td></td>
           <% end %>
-          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+          <% if may_copy_and_cancel %>
             <td><%= link_to 'Copy', copy_request_url(request)   %></td>
             <td>
               <% if request.try(:may_cancel_before_started?) %>
@@ -76,7 +78,7 @@
           <th>State</th>
           <th>Batches</th>
           <th>Source</th>
-          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+          <% if may_copy_and_cancel %>
             <th>Copy</th>
             <th>Cancel</th>
           <% end %>
@@ -84,10 +86,10 @@
         </tr>
       </thead>
       <tbody>
-        <% @asset.requests_as_target.each do |request| %>
+        <% @asset.requests_as_target.includes(:submission, :request_type, :batch, target_asset: :map).each do |request| %>
         <tr>
           <td><%= link_to(request.id, request_url(request), title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
-          <td><%= request.request_type and request.request_type.name %></td>
+          <td><%= request.request_type&.name  %></td>
           <td>
             <% if request.submission %>
               <%= link_to(request.submission.name, submission_path(request.submission) ) %>
@@ -109,7 +111,7 @@
           <% else %>
             <td></td>
           <% end %>
-          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+          <% if may_copy_and_cancel %>
             <td><%= link_to 'Copy', copy_request_url(request)   %></td>
             <td>
               <% if request.try(:may_cancel_before_started?) %>

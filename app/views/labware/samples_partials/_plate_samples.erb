@@ -2,7 +2,7 @@
   <header>
     <a href='#plate-samples-table-collapser' role="button" data-toggle='collapse'>
     <h3>Samples
-      <span class='badge badge-primary'><%= @asset.contained_samples.count %></span>
+      <%= counter_badge @asset.contained_samples.count %>
       <small class='show-hide'>Click to toggle</small>
     </h3>
     </a>
@@ -25,7 +25,7 @@
         <% @asset.wells.in_column_major_order.includes(:map, { aliquots: [:tag, :tag2, :sample] }).each do |well| %>
           <% well.aliquots.each do |aliquot,i| %>
             <tr>
-              <td><%= link_to well.map.description, asset_url(well) %></td>
+              <td><%= link_to well.map.description, receptacle_path(well) %></td>
               <td><strong><%= link_to aliquot.sample.name, aliquot.sample -%></strong></td>
               <td><%= aliquot.sample.sanger_sample_id %></td>
               <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag } if aliquot.tag.present? %></td>
@@ -34,7 +34,7 @@
           <% end %>
           <% if well.aliquots.empty? %>
             <tr class="empty-well">
-              <td><%= link_to well.map.description, asset_url(well) %></td>
+              <td><%= link_to well.map.description, receptacle_path(well) %></td>
               <td>[Empty]</td>
               <td></td>
               <td></td>

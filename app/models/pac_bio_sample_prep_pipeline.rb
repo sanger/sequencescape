@@ -6,6 +6,7 @@ class PacBioSamplePrepPipeline < Pipeline
   self.inbox_eager_loading = :loaded_for_pacbio_inbox_display
   self.generate_target_assets_on_batch_create = true
   self.asset_type = 'PacBioLibraryTube'
+  self.pick_to = false
 
   def allow_tag_collision_on_tagging_task?
     false

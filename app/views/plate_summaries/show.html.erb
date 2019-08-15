@@ -14,7 +14,7 @@
       </tr>
       <tr>
         <th>Plate link</th>
-        <td><%= link_to "Plate page", asset_path(@plate) %></td>
+        <td><%= link_to "Plate page", labware_path(@plate) %></td>
       </tr>
       <tr>
         <th>Sequencing batches</th>
@@ -45,7 +45,7 @@
    <tbody>
       <% @plate.wells.for_summary.each do |well| %>
         <tr>
-          <td><%= link_to well.map_description, asset_path(well) %></td>
+          <td><%= link_to well.map_description, receptacle_path(well) %></td>
           <td><% well.samples.each do |sample| %>
                 <%= link_to sample.name, sample_path(sample) %>
               <% end %>

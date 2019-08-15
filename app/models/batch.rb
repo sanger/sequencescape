@@ -38,7 +38,7 @@ class Batch < ApplicationRecord
   has_many :projects, -> { distinct }, through: :orders
   has_many :aliquots, -> { distinct }, through: :source_assets
   has_many :samples, -> { distinct }, through: :source_assets, source: :samples
-  has_many :output_labware, through: :assets, source: :labware
+  has_many :output_labware, -> { distinct }, through: :assets, source: :labware
 
   has_many_events
   has_many_lab_events

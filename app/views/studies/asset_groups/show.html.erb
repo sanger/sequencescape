@@ -13,12 +13,10 @@
     </thead>
     <% @asset_group.assets.each do |asset| -%>
       <tr>
-        <td><%= link_to(h(asset.display_name), asset_path(asset)) %></td>
+        <td><%= link_to(h(asset.display_name), receptacle_path(asset)) %></td>
         <td>
-          <% if asset.is_a?(Receptacle) and not asset.aliquots.empty? %>
-              <% asset.aliquots.each do |aliquot| %>
-                <%= link_to aliquot.sample.name, sample_path(aliquot.sample) %>
-              <% end %>
+          <% asset.aliquots.each do |aliquot| %>
+            <%= link_to aliquot.sample.name, sample_path(aliquot.sample) %>
           <% end %>
         </td>
         <td><%= asset.label %></td>
@@ -39,7 +37,7 @@
 <hr />
 <% end %>
 <% if @asset_group.automatic_move? %>
-  <%= render partial: "reception_form", locals: { barcodes: @asset_group.assets.map(&:ean13_barcode), receive_barcode: "receive_barcode", type: @asset_group.asset_types.first} %>
+  <%= render partial: "reception_form", locals: { barcodes: @asset_group.assets.map(&:machine_barcode), receive_barcode: "receive_barcode", type: @asset_group.asset_types.first} %>
 <hr />
 <% end %>
 <div class='section'>

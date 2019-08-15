@@ -2,7 +2,7 @@
   <header>
     <a href='#plate-samples-table-collapser' role="button" data-toggle='collapse'>
     <h3>Samples
-      <span class='badge badge-primary'><%= @asset.contained_samples.count %></span>
+      <%= counter_badge @asset.contained_samples.count %>
       <small class='show-hide'>Click to toggle</small>
     </h3>
     </a>

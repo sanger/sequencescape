@@ -46,7 +46,7 @@ AssetRefactor.when_refactored do
       barcodes.any? { |barcode| barcode =~ other_barcode }
     end
 
-    self.stock_message_template = 'ReceptacleStockResourceIO'
+    self.stock_message_template = 'TubeStockResourceIO'
   end
 end
 
@@ -79,12 +79,30 @@ class Receptacle
 
   has_many :downstream_assets, through: :transfer_requests_as_source, source: :target_asset
   has_many :downstream_wells, through: :transfer_requests_as_source, source: :target_asset, class_name: 'Well'
-  has_many :downstream_tubes, through: :transfer_requests_as_source, source: :target_asset, class_name: 'Tube'
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    has_many :downstream_tubes, through: :transfer_requests_as_source, source: :target_labware, class_name: 'Tube'
+  end
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    has_many :downstream_tubes, through: :transfer_requests_as_source, source: :target_asset, class_name: 'Tube'
+  end
   has_many :downstream_plates, through: :downstream_wells, source: :plate
 
   has_many :upstream_assets, through: :transfer_requests_as_target, source: :asset
   has_many :upstream_wells, through: :transfer_requests_as_target, source: :asset, class_name: 'Well'
-  has_many :upstream_tubes, through: :transfer_requests_as_target, source: :asset, class_name: 'Tube'
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    has_many :upstream_tubes, through: :transfer_requests_as_target, source: :source_labware, class_name: 'Tube'
+  end
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    has_many :upstream_tubes, through: :transfer_requests_as_target, source: :asset, class_name: 'Tube'
+  end
   has_many :upstream_plates, through: :upstream_wells, source: :plate
 
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id, dependent: :restrict_with_exception
@@ -261,18 +279,17 @@ class Receptacle
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
+    delegate :external_identifier, to: :labware
+    delegate :display_name, to: :labware, allow_nil: true
+
     def name
       labware_name = labware.present? ? labware.try(:name) : '(not on a labware)'
       labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
       labware_name
     end
 
-    def display_name
-      labware&.display_name
-    end
-
-    def external_identifier
-      name
+    def update_from_qc(qc_result)
+      Tube::AttributeUpdater.update(self, qc_result)
     end
 
     def update_from_qc(qc_result)
@@ -281,6 +298,10 @@ class Receptacle
   end
 
   delegate :name, to: :labware, prefix: true
+
+  def library_name
+    labware.name
+  end
 
   # Compatibility for v1 API maintains legacy 'type' for assets
   def api_asset_type

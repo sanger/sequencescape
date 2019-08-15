@@ -18,6 +18,20 @@ class AssetGroup < ApplicationRecord
 
   scope :for_search_query, ->(query) { where(['name LIKE ?', "%#{query}%"]) }
 
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    has_many :labware, through: :assets
+  end
+
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def labware
+      assets.map(&:labware).uniq
+    end
+  end
+
   def all_samples_have_accession_numbers?
     unaccessioned_samples.empty?
   end

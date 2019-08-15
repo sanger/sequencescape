@@ -6,7 +6,7 @@
         <thead><th>Name</th><th>Barcode</th><th>Type</th></thead>
       <% @assets.each do |asset| %>
       <tr>
-        <td><%= link_to asset.name, asset_path(asset)   %></td>
+        <td><%= link_to asset.name, labware_path(asset)   %></td>
         <td><%= asset.human_barcode %></td>
         <td><%= asset.sti_type %></td>
       </tr>

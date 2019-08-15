@@ -24,7 +24,7 @@
     <td>&nbsp;</td>
   <% end -%>
   <% if request.asset %>
-    <td><%=  link_to "#{request.asset.human_barcode}", asset_path(request.asset) %></td>
+    <td><%=  link_to "#{request.asset.human_barcode}", receptacle_path(request.asset) %></td>
     <% unless asset_comments_count.zero? -%>
       <%= render partial: "asset_comments", locals: { request: request, comments_count: asset_comments_count } %>
     <% else -%>
