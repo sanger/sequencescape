@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190815120739) do
+ActiveRecord::Schema.define(version: 20190815141401) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "barcode"
@@ -66,11 +66,11 @@ ActiveRecord::Schema.define(version: 20190815120739) do
     t.index ["tag_id"], name: "tag_id_idx"
   end
 
-  create_table "api_applications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "api_applications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string "name", null: false
     t.string "key", null: false
     t.string "contact", null: false
-    t.text "description"
+    t.text "description", limit: 16777215
     t.string "privilege", null: false
     t.index ["key"], name: "index_api_applications_on_key"
   end
