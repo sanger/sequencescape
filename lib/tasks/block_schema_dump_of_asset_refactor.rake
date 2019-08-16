@@ -57,13 +57,11 @@ namespace :asset_refactor do
 
   desc 'Copies the migrations to the migrate folder with appropriate timestamps'
   task finalize: :environment do
-    timestamp = Time.now.utc.strftime('%Y%m%d%H%M00').to_i
+    base_time = Time.now.utc
     Dir.glob(Rails.root.join('db', 'migrate_asset_refactor', '*.rb')).sort.each_with_index do |file, index|
       match_data = %r{/([\d]+)_(\w+).rb}.match(file)
       # Ensure our timestamps maintain the original order.
-      # Note: We set seconds to 00 to avoid generating potentially invalid timestamps
-      # I don't think we care at the moment, but who knows what magic may exist in the future.
-      version = timestamp + index
+      version = (base_time + index).strftime('%Y%m%d%H%M%S').to_i
       migration = match_data[2]
       FileUtils.cp(file, Rails.root.join('db', 'migrate', "#{version}_#{migration}.rb"))
     end
