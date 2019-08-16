@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190815142912) do
+ActiveRecord::Schema.define(version: 20190816111843) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "barcode"
@@ -75,14 +75,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.index ["key"], name: "index_api_applications_on_key"
   end
 
-  create_table "archived_properties", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.text "value"
-    t.string "propertied_type"
-    t.integer "user_id"
-    t.string "key", limit: 50
-    t.integer "propertied_id"
-  end
-
   create_table "asset_audits", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "message"
     t.string "key"
@@ -112,12 +104,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "type", null: false
-  end
-
-  create_table "asset_descriptors_backup", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "asset_id"
-    t.text "descriptor_fields"
-    t.text "descriptors"
   end
 
   create_table "asset_group_assets", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -187,25 +173,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.index ["sti_type", "updated_at"], name: "index_assets_on_sti_type_and_updated_at"
     t.index ["sti_type"], name: "index_assets_on_sti_type"
     t.index ["updated_at"], name: "index_assets_on_updated_at"
-  end
-
-  create_table "attachments", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "pipeline_workflow_id"
-    t.integer "attachable_id"
-    t.string "attachable_type", limit: 50
-    t.integer "position"
-  end
-
-  create_table "audits", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "auditable_id"
-    t.string "auditable_type"
-    t.integer "user_id"
-    t.string "user_type"
-    t.string "username"
-    t.string "action"
-    t.text "changes"
-    t.integer "version", default: 0
-    t.datetime "created_at"
   end
 
   create_table "bait_libraries", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -303,19 +270,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.string "barcode"
     t.index ["pipeline_id", "state", "created_at"], name: "index_batches_on_pipeline_id_and_state_and_created_at"
     t.index ["updated_at"], name: "index_batches_on_updated_at"
-  end
-
-  create_table "billing_events", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.string "kind", default: "charge", null: false
-    t.datetime "entry_date", null: false
-    t.string "created_by", null: false
-    t.integer "project_id", null: false
-    t.string "reference", null: false
-    t.string "description", default: "Unspecified"
-    t.float "quantity", limit: 24, default: 1.0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "request_id", null: false
   end
 
   create_table "billing_items", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -453,14 +407,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.string "queue"
   end
 
-  create_table "depricated_attempts", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.string "state", limit: 20, default: "pending"
-    t.integer "request_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "workflow_id"
-  end
-
   create_table "descriptors", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "name"
     t.string "value"
@@ -488,19 +434,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.string "documentable_extended", limit: 50
     t.index ["documentable_id", "documentable_type"], name: "index_documents_on_documentable_id_and_documentable_type"
     t.index ["documentable_type", "documentable_id"], name: "index_documents_on_documentable_type_and_documentable_id"
-  end
-
-  create_table "documents_shadow", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "documentable_id"
-    t.integer "size"
-    t.string "content_type"
-    t.string "filename"
-    t.integer "height"
-    t.integer "width"
-    t.integer "parent_id"
-    t.string "thumbnail"
-    t.integer "db_file_id"
-    t.string "documentable_type", limit: 50
   end
 
   create_table "equipment", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1109,15 +1042,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.index ["lot_id"], name: "index_lot_id"
   end
 
-  create_table "quotas_bkp", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "limit", default: 0
-    t.integer "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "request_type_id"
-    t.integer "preordered_count", default: 0
-  end
-
   create_table "reference_genomes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "name"
     t.datetime "created_at"
@@ -1179,12 +1103,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.string "data_type"
     t.integer "primer_panel_id"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
-  end
-
-  create_table "request_quotas_bkp", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "request_id", null: false
-    t.integer "quota_id", null: false
-    t.index ["request_id"], name: "fk_request_quotas_to_requests"
   end
 
   create_table "request_type_plate_purposes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -1343,7 +1261,7 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.index ["supplier_id"], name: "index_sample_manifests_on_supplier_id"
   end
 
-  create_table "sample_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
+  create_table "sample_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT" do |t|
     t.integer "sample_id"
     t.string "organism"
     t.string "gc_content"
@@ -1411,7 +1329,7 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.integer "asset_group_id"
   end
 
-  create_table "samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
+  create_table "samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT" do |t|
     t.string "name"
     t.boolean "new_name_format", default: true
     t.datetime "created_at"
@@ -1552,17 +1470,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.index ["study_id"], name: "index_study_metadata_on_study_id"
   end
 
-  create_table "study_relation_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.string "name"
-    t.string "reversed_name"
-  end
-
-  create_table "study_relations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "study_id"
-    t.integer "related_study_id"
-    t.integer "study_relation_type_id"
-  end
-
   create_table "study_reports", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "study_id"
     t.datetime "created_at"
@@ -1582,12 +1489,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.index ["sample_id", "study_id"], name: "unique_samples_in_studies_idx", unique: true
     t.index ["sample_id"], name: "index_project_samples_on_sample_id"
     t.index ["study_id"], name: "index_project_samples_on_project_id"
-  end
-
-  create_table "study_samples_backup", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "id", default: 0, null: false
-    t.integer "study_id"
-    t.integer "sample_id"
   end
 
   create_table "study_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -1744,14 +1645,6 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.datetime "updated_at"
     t.index ["map_id"], name: "index_tags_on_map_id"
     t.index ["tag_group_id"], name: "index_tags_on_tag_group_id"
-  end
-
-  create_table "task_request_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "task_id"
-    t.integer "request_type_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "order"
   end
 
   create_table "tasks", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
