@@ -2,17 +2,9 @@
 
 # Update the studies table to utf8mb4
 class UpdateStudiesToUtf8mb4 < ActiveRecord::Migration[5.1]
-  def up
-    ActiveRecord::Base.connection.execute(<<~SQLQUERY
-      ALTER TABLE studies CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
-    SQLQUERY
-                                         )
-  end
+  include MigrationExtensions::EncodingChanges
 
-  def down
-    ActiveRecord::Base.connection.execute(<<~SQLQUERY
-      ALTER TABLE studies CONVERT TO CHARACTER SET latin1 COLLATE latin1_swedish_ci
-    SQLQUERY
-                                         )
+  def change
+    change_encoding('studies', from: 'latin1', to: 'utf8mb4')
   end
 end

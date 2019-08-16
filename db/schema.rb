@@ -66,11 +66,11 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.index ["tag_id"], name: "tag_id_idx"
   end
 
-  create_table "api_applications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "api_applications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.string "name", null: false
     t.string "key", null: false
     t.string "contact", null: false
-    t.text "description", limit: 16777215
+    t.text "description", limit: 4294967295
     t.string "privilege", null: false
     t.index ["key"], name: "index_api_applications_on_key"
   end
@@ -370,11 +370,11 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.integer "user_id"
   end
 
-  create_table "comments", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "comments", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.string "title"
     t.string "commentable_type", limit: 50
     t.integer "user_id"
-    t.text "description", limit: 16777215
+    t.text "description", limit: 4294967295
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "commentable_id", null: false
@@ -1343,7 +1343,7 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.index ["supplier_id"], name: "index_sample_manifests_on_supplier_id"
   end
 
-  create_table "sample_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "sample_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.integer "sample_id"
     t.string "organism"
     t.string "gc_content"
@@ -1365,7 +1365,7 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.string "sample_ebi_accession_number"
     t.string "sample_sra_hold"
     t.string "sample_reference_genome_old"
-    t.text "sample_description", limit: 16777215
+    t.text "sample_description", limit: 4294967295
     t.string "sibling"
     t.boolean "is_resubmitted"
     t.string "date_of_sample_collection"
@@ -1411,7 +1411,7 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.integer "asset_group_id"
   end
 
-  create_table "samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.string "name"
     t.boolean "new_name_format", default: true
     t.datetime "created_at"
@@ -1484,7 +1484,7 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.string "reason"
   end
 
-  create_table "studies", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "studies", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.string "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1500,13 +1500,13 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.index ["updated_at"], name: "index_studies_on_updated_at"
   end
 
-  create_table "study_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "study_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.integer "study_id"
     t.string "old_sac_sponsor"
-    t.text "study_description", limit: 16777215
+    t.text "study_description", limit: 4294967295
     t.string "contaminated_human_dna"
     t.string "study_project_id"
-    t.text "study_abstract", limit: 16777215
+    t.text "study_abstract", limit: 4294967295
     t.string "study_study_title"
     t.string "study_ebi_accession_number"
     t.string "study_sra_hold"
@@ -1531,7 +1531,7 @@ ActiveRecord::Schema.define(version: 20190815142912) do
     t.integer "data_release_study_type_id"
     t.integer "reference_genome_id", default: 1
     t.string "array_express_accession_number"
-    t.text "dac_policy", limit: 16777215
+    t.text "dac_policy", limit: 4294967295
     t.string "ega_policy_accession_number"
     t.string "ega_dac_accession_number"
     t.string "commercially_available", default: "No"
