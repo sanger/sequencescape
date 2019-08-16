@@ -32,8 +32,6 @@ module MigrationExtensions::EncodingChanges
   #
   # @return [void]
   def change_encoding(table, from:, to:)
-    connection = ActiveRecord::Base.connection
-
     from_options = from.is_a?(String) ? { character_set: from } : from
     to_options = to.is_a?(String) ? { character_set: to } : to
 
