@@ -5,11 +5,25 @@ require 'rails_helper'
 RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:map) { create(:map) }
   let(:asset) { create(:untagged_well, map: map) }
-  let(:sample_manifest_asset) { create :sample_manifest_asset, asset: asset, sanger_sample_id: sample.sanger_sample_id }
+  let(:asset2) { create(:untagged_well, map: map) }
+  let(:sample_manifest) { create :sample_manifest }
+  let(:sample_manifest_asset) do
+    create :sample_manifest_asset,
+           asset: asset,
+           sanger_sample_id: sample.sanger_sample_id,
+           sample_manifest: sample_manifest
+  end
+  let(:sample_manifest_asset2) do
+    create :sample_manifest_asset,
+           asset: asset2,
+           sanger_sample_id: sample2.sanger_sample_id,
+           sample_manifest: sample_manifest
+  end
   let!(:library_type) { create(:library_type) }
   let!(:reference_genome) { create(:reference_genome, name: 'new one') }
   let(:aliquot) { sample_manifest_asset.asset.aliquots.first }
   let(:sample) { create :sample_with_sanger_sample_id }
+  let(:sample2) { create :sample_with_sanger_sample_id }
 
   describe SequencescapeExcel::SpecialisedField::Base do
     # We use an anonymous class as classes created in specs have global scope.
@@ -92,6 +106,53 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       specialised_field = described_class.new(value: reference_genome.name, sample_manifest_asset: sample_manifest_asset)
       specialised_field.update
       expect(sample_manifest_asset.sample.sample_metadata.reference_genome).to eq(reference_genome)
+    end
+  end
+
+  describe SequencescapeExcel::SpecialisedField::Volume do
+    let(:value) { '13' }
+    let(:value2) { '8' }
+
+    it 'will update the volume in sample metadata' do
+      specialised_field = described_class.new(value: value, sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update
+      expect(sample_manifest_asset.sample.sample_metadata.volume).to eq(value)
+    end
+
+    it 'will create a QC result for the asset' do
+      specialised_field = described_class.new(value: value, sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update
+      qc_result = sample_manifest_asset.asset.qc_results.first
+      expect(qc_result.value).to eq(value.to_f.to_s)
+      expect(qc_result.assay_type).to eq('customer_supplied')
+      expect(qc_result.key).to eq('volume')
+      expect(qc_result.units).to eq('ul')
+    end
+
+    it 'will create a QC assay for each sample manifest' do
+      specialised_field1 = described_class.new(value: value, sample_manifest_asset: sample_manifest_asset)
+      specialised_field1.update
+      specialised_field2 = described_class.new(value: value2, sample_manifest_asset: sample_manifest_asset2)
+      specialised_field2.update
+      qc_assay = QcAssay.find_by(lot_number: "sample_manifest_id:#{sample_manifest.id}")
+      qc_result1 = sample_manifest_asset.asset.qc_results.first
+      qc_result2 = sample_manifest_asset2.asset.qc_results.first
+      expect(qc_result1.qc_assay).to eq(qc_assay)
+      expect(qc_result2.qc_assay).to eq(qc_assay)
+    end
+
+    it 'will not create QC results for the asset if the value is blank' do
+      specialised_field = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update
+      qc_result = sample_manifest_asset.asset.qc_results.first
+      expect(qc_result).to be_nil
+    end
+
+    it 'will not create QC assays for the asset if the value is blank' do
+      specialised_field = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update
+      qc_assay = QcAssay.find_by(lot_number: "sample_manifest_id:#{sample_manifest.id}")
+      expect(qc_assay).to be_nil
     end
   end
 

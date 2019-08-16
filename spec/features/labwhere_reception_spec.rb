@@ -31,5 +31,6 @@ describe 'Labwhere reception', js: true do
     end
     expect(page).to have_content plate.human_barcode
     expect(page).to have_content plate.purpose.name
+    expect(page).to have_link plate.name, href: labware_path(plate)
   end
 end

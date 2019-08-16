@@ -184,4 +184,16 @@ class SampleManifest < ApplicationRecord
   def purpose_id
     super || purpose.id
   end
+
+  # Upon upload, sample manifests might generate qc_results for certain
+  # specialised fields. We want to keep one qc_assay per sample manifest.
+  def qc_assay
+    @qc_assay ||= QcAssay.find_by(lot_number: "sample_manifest_id:#{id}")
+  end
+
+  # rubocop:disable Naming/MemoizedInstanceVariableName
+  def find_or_create_qc_assay!
+    @qc_assay ||= QcAssay.find_or_create_by!(lot_number: "sample_manifest_id:#{id}")
+  end
+  # rubocop:enable Naming/MemoizedInstanceVariableName
 end
