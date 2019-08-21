@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class DummyWorkflowController < WorkflowsController
@@ -21,8 +23,8 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       @params               = 'UNUSED_PARAMS'
       @batch                = create :batch
       @workflows_controller.batch = @batch
-      @source_plate         = create :plate
-      @source_plate.wells   = %w[A1 B1 C1].map do |loc|
+      @source_plate = create :plate
+      @source_plate.wells = %w[A1 B1 C1].map do |loc|
         create(:well_with_sample_and_without_plate).tap do |w|
           w.map = Map.find_by(description: loc, asset_size: 96)
           request = create :pac_bio_sample_prep_request, asset: w

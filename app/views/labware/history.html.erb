@@ -1,11 +1,11 @@
 
 <% add :about, "This page displays details the event history for an item." -%>
-<% add :menu, "Back to asset" => asset_path(@asset.id) -%>
+<% add :menu, "Back to labware" => labware_path(@asset.id) -%>
 
-<div class="page-header"><h1>Event history</h1></div>
+<%= page_title 'Event History' %>
 
 <div class="help">
-  Complete event history for asset <%= @asset.id %>, in chronological order.
+  Complete event history for labware <%= @asset.id %>, in chronological order.
 </div>
 
 <div class="info">

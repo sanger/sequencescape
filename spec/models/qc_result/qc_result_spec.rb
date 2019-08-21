@@ -35,8 +35,8 @@ RSpec.describe QcResult, type: :model, qc_result: true do
     create(:qc_result, created_at: Date.yesterday)
     create(:qc_result, created_at: Time.zone.today)
     tomorrow = create(:qc_result, created_at: Date.tomorrow)
-    expect(QcResult.order_by_date.count).to eq(3)
-    expect(QcResult.order_by_date.first).to eq(tomorrow)
+    expect(described_class.order_by_date.count).to eq(3)
+    expect(described_class.order_by_date.first).to eq(tomorrow)
   end
 
   it '#by_key will return the qc results by key' do
@@ -44,7 +44,7 @@ RSpec.describe QcResult, type: :model, qc_result: true do
     create(:qc_result_molarity)
     create(:qc_result_volume)
     create(:qc_result_rin)
-    results = QcResult.by_key
+    results = described_class.by_key
     expect(results.size).to eq(4)
     expect(results['concentration'].length).to eq(1)
     expect(results['rin'].length).to eq(1)
@@ -54,7 +54,7 @@ RSpec.describe QcResult, type: :model, qc_result: true do
     let(:asset) { build :receptacle }
 
     it 'can update its asset' do
-      expect(asset).to receive(:update_from_qc).with(an_instance_of(QcResult))
+      expect(asset).to receive(:update_from_qc).with(an_instance_of(described_class))
       create :qc_result, asset: asset
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 rt = rt = RequestType.find_by(key: 'qc_miseq_sequencing')
 tube = BarcodePrinterType.find_by(name: '1D Tube')
 plate = BarcodePrinterType.find_by(name: '96 Well PLate')
@@ -6,15 +8,14 @@ purpose_order = [
   { class: QcableLibraryPlatePurpose, name: 'Tag PCR', barcode_printer_type: plate, size: 96, asset_shape: AssetShape.find_by(name: 'Standard') },
   { class: PlatePurpose,    name: 'Tag PCR-XP', barcode_printer_type: plate, size: 96, asset_shape: AssetShape.find_by(name: 'Standard') },
   { class: Tube::StockMx,   name: 'Tag Stock-MX', target_type: 'StockMultiplexedLibraryTube', barcode_printer_type: tube },
-  { class: Tube::StandardMx, name: 'Tag MX', target_type: 'MultiplexedLibraryTube', barcode_printer_type: tube },
+  { class: Tube::StandardMx, name: 'Tag MX', target_type: 'MultiplexedLibraryTube', barcode_printer_type: tube }
 ]
 
 shared = {
   stock_plate: false,
   default_state: 'pending',
   cherrypickable_target: false,
-  cherrypick_direction: 'column',
-  barcode_for_tecan: 'ean13_barcode'
+  cherrypick_direction: 'column'
 }
 
 ActiveRecord::Base.transaction do
@@ -24,7 +25,6 @@ ActiveRecord::Base.transaction do
 end
 
 SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true

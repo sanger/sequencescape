@@ -16,7 +16,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   # NOTE: This is immediately overridden by the block below so don't move it!
   #++
   def document_field(field, _options = {})
-    fields_for(:"#{ field }_attributes", builder: ActionView::Helpers::FormBuilder) do |fields|
+    fields_for(:"#{field}_attributes", builder: ActionView::Helpers::FormBuilder) do |fields|
       fields.file_field(:uploaded_data)
     end
   end

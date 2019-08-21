@@ -36,5 +36,8 @@ class AssignTagsTask < Task
 
   def do_task(workflow, params)
     workflow.do_assign_tags_task(self, params)
+  rescue Aliquot::TagClash => e
+    workflow.send(:flash)[:error] = e.message
+    raise ActiveRecord::Rollback
   end
 end

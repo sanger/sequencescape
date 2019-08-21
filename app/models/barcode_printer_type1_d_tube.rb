@@ -1,4 +1,5 @@
-#
+# frozen_string_literal: true
+
 # Barcode printer loaded with labels in the correct aspect for labelling tubes
 #
 class BarcodePrinterType1DTube < BarcodePrinterType

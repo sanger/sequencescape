@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
@@ -22,8 +24,6 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
       end
 
       should 'add errors if there are untagged target asset aliquots' do
-        @batch.requests.map(&:target_asset).map(&:untag!)
-
         assert_raise(ActiveRecord::RecordInvalid) do
           @batch.complete!(@user)
         end

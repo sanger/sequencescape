@@ -32,7 +32,7 @@ module IlluminaHtp::PlatePurposes
   TUBE_PURPOSE_FLOWS = [
     [
       'Lib Pool',
-      'Lib Pool Norm',
+      'Lib Pool Norm'
     ],
     [
       'Lib Pool Pippin',

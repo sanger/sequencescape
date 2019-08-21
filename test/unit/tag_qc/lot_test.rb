@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class LotTest < ActiveSupport::TestCase
@@ -23,7 +25,7 @@ class LotTest < ActiveSupport::TestCase
       setup do
         PlateBarcode.stubs(:create).returns(create(:plate_barcode))
         @lot = create :lot
-        @mock_asset = Asset.new
+        @mock_asset = Labware.new
         @mock_asset.stubs(:save!).returns(true)
         @mock_purpose = mock('Purpose')
 

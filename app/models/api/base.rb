@@ -1,4 +1,6 @@
 class Api::Base
+  class_attribute :includes
+  self.includes = []
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
   #
   # Basically this is in a transition as I move more of the behaviour of the API into these model classes,
@@ -240,11 +242,11 @@ class Api::Base
       associations.each do |association, helper|
         if helper.performs_lookup?
           helper.lookup_associated_record_from(json_attributes) do |associated_record|
-            attributes[:"#{ association }_id"] = associated_record.try(:id)
+            attributes[:"#{association}_id"] = associated_record.try(:id)
           end
         else
           association_attributes = helper.convert_json_attributes_to_attributes(json_attributes)
-          attributes[:"#{ association }_attributes"] = association_attributes unless association_attributes.empty?
+          attributes[:"#{association}_attributes"] = association_attributes unless association_attributes.empty?
         end
       end
       attributes

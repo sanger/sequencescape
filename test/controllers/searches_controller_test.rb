@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SearchesControllerTest < ActionController::TestCase
@@ -74,8 +76,8 @@ class SearchesControllerTest < ActionController::TestCase
               assert_link_to sample_path(@sample_with_accession_number)
             end
 
-            should 'contain a link to the asset that was found' do
-              assert_link_to asset_path(@asset)
+            should 'contain a link to the labware that was found' do
+              assert_link_to labware_path(@asset)
             end
 
             should 'contain a link to the asset_group that was found' do
@@ -89,7 +91,7 @@ class SearchesControllerTest < ActionController::TestCase
             get :index, params: { q: 'DN5' }
           end
           should 'contain a link to the asset that was found' do
-            assert_link_to asset_path(@barcode.asset)
+            assert_link_to labware_path(@barcode.asset)
           end
         end
 

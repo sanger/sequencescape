@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This is a holdover from when pipelines were primarily generated via seeds and migrations
 # In turn this resulted in integration testing via cucumber, which tested data and configuration
 # as much as behaviour.

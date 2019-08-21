@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
   context 'A transfer between tubes by submission' do
     setup do
-      @user    = create :user
+      @user = create :user
 
-      @tube_a  = create :new_stock_multiplexed_library_tube
+      @tube_a = create :new_stock_multiplexed_library_tube
       @plate_transfer_a = create :transfer_from_plate_to_tube_with_transfers, destination: @tube_a
       @plate_a = @plate_transfer_a.source
       @submission = create :submission_without_order
@@ -26,7 +28,7 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
       should 'should create transfers to the target tube' do
         @transfer = Transfer::BetweenTubesBySubmission.create!(user: @user, source: @tube_a)
         assert_equal @final_tube, @transfer.destination
-        assert_equal @final_tube, @tube_a.transfer_requests_as_source.first.target_asset
+        assert_equal @final_tube.receptacle, @tube_a.transfer_requests_as_source.first.target_asset
       end
     end
 
@@ -51,11 +53,11 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
       should 'create transfers to the target tube each time' do
         @transfer = Transfer::BetweenTubesBySubmission.create!(user: @user, source: @tube_a)
         assert_equal @final_tube, @transfer.destination
-        assert_equal @final_tube, @tube_a.transfer_requests_as_source.first.target_asset
+        assert_equal @final_tube.receptacle, @tube_a.transfer_requests_as_source.first.target_asset
 
         @transfer_b = Transfer::BetweenTubesBySubmission.create!(user: @user, source: @tube_b)
         assert_equal @final_tube, @transfer_b.destination
-        assert_equal @final_tube, @tube_b.transfer_requests_as_source.first.target_asset
+        assert_equal @final_tube.receptacle, @tube_b.transfer_requests_as_source.first.target_asset
       end
     end
   end

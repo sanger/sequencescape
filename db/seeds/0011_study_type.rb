@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 study_types = [
   ['Not specified', 0, 0],
   ['Synthetic Genomics', 1, 1],

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'samples_controller'
 
@@ -16,7 +18,7 @@ module Admin
           'user', parent: 'role',
                   actions: ['index'],
                   ignore_actions: %w[show create],
-                  user: -> { FactoryBot.create(:admin) },
+                  user: :admin,
                   formats: ['html']
         )
       end

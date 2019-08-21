@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'samples_controller'
 
@@ -26,7 +28,7 @@ class SamplesControllerTest < ActionController::TestCase
                 ignore_actions: %w(show create destroy),
                 protect_on_update: [:name],
                 extra_on_update: { sample_metadata_attributes: { check: { genotype: 'false', phenotype: 'true' } } },
-                user: -> { FactoryBot.create(:admin) }
+                user: :admin
     )
 
     # TODO: Test without admin

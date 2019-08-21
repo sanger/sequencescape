@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class ProjectTest < ActiveSupport::TestCase
@@ -14,6 +16,12 @@ class ProjectTest < ActiveSupport::TestCase
         assert_equal false, @project.valid?, 'Validation not delegating'
         assert_equal false, @project.save, 'Save behaving badly'
         assert @project.errors.full_messages.include?("Project metadata project cost code can't be blank")
+      end
+
+      should 'squishify the name before validation' do
+        @project.name = '  Test  Project  '
+        @project.valid?
+        assert_equal 'Test Project', @project.name
       end
     end
   end

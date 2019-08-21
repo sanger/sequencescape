@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class AssetLinkTest < ActiveSupport::TestCase
   context 'AssetLink::Job' do
     setup do
-      @source_well      = create :well
-      @destination_well = create :well
+      @source_tube      = create :tube
+      @destination_tube = create :tube
       @job_count = Delayed::Job.count
-      AssetLink::Job.create(@source_well, [@destination_well])
+      AssetLink::Job.create(@source_tube, [@destination_tube])
     end
 
     should 'create a job' do
@@ -19,7 +21,7 @@ class AssetLinkTest < ActiveSupport::TestCase
       end
 
       should 'create a link' do
-        assert_includes @destination_well.reload.parents, @source_well
+        assert_includes @destination_tube.reload.parents, @source_tube
       end
 
       should 'remove the job from the queue' do

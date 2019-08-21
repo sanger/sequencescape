@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^all of this is happening at exactly "([^\"]+)"$/ do |time_as_string|
   step(%Q{I freeze time at "#{time_as_string}"})
 end

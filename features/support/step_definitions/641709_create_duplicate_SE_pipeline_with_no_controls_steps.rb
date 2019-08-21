@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^Pipeline "([^"]*)" and a setup for 641709$/ do |name|
   pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline '#{name}'"
   pipeline.workflow.item_limit.times do
@@ -7,6 +9,6 @@ end
 
 When /^I select eight requests$/ do
   Request.limit(8).order(id: :desc).each do |request|
-    step(%Q{I check "Select #{request.asset.sti_type} #{request.asset.human_barcode} for batch"})
+    step(%Q{I check "Select #{request.asset.human_barcode} for batch"})
   end
 end

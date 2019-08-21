@@ -6,8 +6,7 @@ SampleManifest::GenerateWellsJob = Struct.new(:sample_manifest_id, :map_ids_to_s
       maps      = Map.find(map_ids).index_by(&:id)
       well_data = map_ids_to_sample_ids.map { |map_id, sample_id| [maps[map_id], sample_id] }
 
-      sample_manifest.generate_wells(well_data, plate)
-      sample_manifest.created_broadcast_event
+      sample_manifest.core_behaviour.generate_wells_job(well_data, plate)
     end
   end
 

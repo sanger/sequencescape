@@ -12,7 +12,24 @@ class Labware < Asset
   class_attribute :receptacle_class
   self.receptacle_class = 'Receptacle'
 
+  def human_barcode
+    'UNKNOWN'
+  end
+
+  # Assigns name
+  # @note Overridden on subclasses to append the asset id to the name
+  #       via on_create callbacks
+  def generate_name(new_name)
+    self.name = new_name
+  end
+
+  def display_name
+    name.presence || "#{sti_type} #{id}"
+  end
+
   AssetRefactor.when_refactored do
+    self.sample_partial = 'assets/samples_partials/asset_samples'
+
     include LabwareAssociations
     include Commentable
     include Uuid::Uuidable
@@ -28,6 +45,7 @@ class Labware < Asset
     has_many :transfer_requests_as_source, through: :receptacles
     has_many :transfer_requests_as_target, through: :receptacles
     has_many :submissions, through: :receptacles
+    has_many :asset_groups, through: :receptacles
 
     has_one :spiked_in_buffer_links, -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
             class_name: 'AssetLink', foreign_key: :descendant_id, inverse_of: :descendant
@@ -54,5 +72,8 @@ class Labware < Asset
     scope :for_lab_searches_display, -> { includes(:barcodes, requests: %i[pipeline batch]).order('requests.pipeline_id ASC') }
   end
 
+  belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
   has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
+
+  scope :named, ->(name) { where(name: name) }
 end

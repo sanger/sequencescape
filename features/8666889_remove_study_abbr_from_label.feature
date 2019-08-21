@@ -7,7 +7,7 @@ Feature: Print truncated sanger sample id on sample tube barcode
     And I have a "Illumina-C - Library creation - Paired end sequencing" submission with 1 sample tubes as part of "Test study" and "Test project"
     And the "1D Tube" barcode printer "xyz" exists
     Given I am on the show page for pipeline "Illumina-C Library preparation"
-    And I check "Select SampleTube NT1O for batch"
+    And I check "Select NT1O for batch"
     And I press the first "Submit"
     And I follow "Print labels"
     And 1 pending delayed jobs are processed

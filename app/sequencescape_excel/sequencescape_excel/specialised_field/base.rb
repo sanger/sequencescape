@@ -15,11 +15,15 @@ module SequencescapeExcel
         end
       end
 
-      attr_accessor :value, :sample
+      attr_accessor :value, :sample_manifest_asset
 
       delegate :present?, to: :value, prefix: true
+      delegate :asset, :sample, to: :sample_manifest_asset
+      delegate :aliquots, to: :asset
 
       def update(_attributes = {}); end
+
+      def link(_other_fields); end
     end
   end
 end

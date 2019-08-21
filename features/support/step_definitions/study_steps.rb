@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^I have a study called "([^\"]*)"$/ do |study|
   FactoryBot.create :study, name: study, state: 'pending'
 end
@@ -64,7 +66,7 @@ end
 def given_fixed_study_metadata(attribute, value, regexp)
   Given(regexp) do |name|
     study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
-    study.study_metadata.send(:"#{ attribute }=", value)
+    study.study_metadata.send(:"#{attribute}=", value)
     study.save!
   end
 end
@@ -78,7 +80,7 @@ given_fixed_study_metadata(:commercially_available,  Study::NO,  /^the study "([
 def given_study_metadata(attribute, regexp)
   Given(regexp) do |name, value|
     study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
-    study.study_metadata.send(:"#{ attribute }=", value.presence)
+    study.study_metadata.send(:"#{attribute}=", value.presence)
     study.save!
   end
 end
@@ -130,7 +132,7 @@ given_study_metadata(:ega_policy_accession_number, /^the EGA policy accession nu
 Given /^the (abstract|description|title) of study "([^\"]+)" is "([^\"]*)"$/ do |attribute, name, description|
   study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
   attribute = 'study_title' if attribute == 'title' # Got to love consistency
-  study.study_metadata.send(:"study_#{ attribute }=", description)
+  study.study_metadata.send(:"study_#{attribute}=", description)
   study.save!
 end
 
@@ -171,7 +173,7 @@ Given /^study "([^\"]*)" has an accession number$/ do |name|
 end
 
 Given /^a study will appear in the study list "([^\"]+)"$/ do |study_list|
-  FactoryBot.create(:"study_for_study_list_#{ study_list.downcase.gsub(/[^a-z0-9]+/, '_') }", user: User.find_by(login: 'listing_studies_user'))
+  FactoryBot.create(:"study_for_study_list_#{study_list.downcase.gsub(/[^a-z0-9]+/, '_')}", user: User.find_by(login: 'listing_studies_user'))
 end
 
 Then /^I should see the study for study list "([^\"]+)"$/ do |study_list|

@@ -126,9 +126,9 @@ class Submission < ApplicationRecord
   # Attempts to find the multiplexed asset (usually a multiplexed library tube) associated
   # with the submission. Useful when trying to pool requests into a pre-existing tube at the
   # end of the process.
-  def multiplexed_asset
+  def multiplexed_labware
     # All our multiplexed requests end up in a single asset, so we don't care which one we find.
-    requests.joins(:request_type).find_by(request_types: { for_multiplexing: true }).target_asset
+    requests.joins(:request_type).find_by(request_types: { for_multiplexing: true })&.target_labware
   end
 
   def each_submission_warning

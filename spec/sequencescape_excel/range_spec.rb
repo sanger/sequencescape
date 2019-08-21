@@ -2,17 +2,17 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:options) { %w[option1 option2 option3] }
 
   it 'is comparable' do
     attributes = { options: options, first_column: 4, first_row: 5, last_column: 8, last_row: 10, worksheet_name: 'Sheet1' }
-    expect(SequencescapeExcel::Range.new(attributes)).to eq(SequencescapeExcel::Range.new(attributes))
-    expect(SequencescapeExcel::Range.new(attributes.except(:last_row))).not_to eq(SequencescapeExcel::Range.new(attributes))
+    expect(described_class.new(attributes)).to eq(described_class.new(attributes))
+    expect(described_class.new(attributes.except(:last_row))).not_to eq(described_class.new(attributes))
   end
 
   context 'with static options' do
-    let(:range) { SequencescapeExcel::Range.new(options: options, first_row: 4) }
+    let(:range) { described_class.new(options: options, first_row: 4) }
 
     it 'has some options' do
       expect(range.options).to eq(options)
@@ -28,7 +28,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
 
     it 'sets the last column' do
       expect(range.last_column).to eq(3)
-      expect(SequencescapeExcel::Range.new(options: options, first_column: 4, first_row: 4).last_column).to eq(6)
+      expect(described_class.new(options: options, first_column: 4, first_row: 4).last_column).to eq(6)
     end
 
     it 'has a first_cell' do
@@ -68,7 +68,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     let!(:library_type) { create :library_type }
     let!(:original_option_size) { LibraryType.count }
     let(:attributes) { { name: 'library_type', identifier: :name, scope: :alphabetical, first_row: 4 } }
-    let(:range) { SequencescapeExcel::Range.new(attributes) }
+    let(:range) { described_class.new(attributes) }
 
     it 'has identifier, scope, options' do
       assert range.identifier
@@ -86,7 +86,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
 
     it 'sets the last column' do
       assert_equal original_option_size, range.last_column
-      assert_equal 3 + original_option_size, SequencescapeExcel::Range.new(attributes.merge(first_column: 4)).last_column
+      assert_equal 3 + original_option_size, described_class.new(attributes.merge(first_column: 4)).last_column
     end
 
     it 'has a first_cell' do
@@ -129,7 +129,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
   end
 
   context 'without first row' do
-    let(:range) { SequencescapeExcel::Range.new(options: options) }
+    let(:range) { described_class.new(options: options) }
 
     it 'is be valid' do
       expect(range).not_to be_valid
@@ -145,7 +145,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
   end
 
   context 'without options' do
-    let(:range) { SequencescapeExcel::Range.new(first_row: 10, last_row: 15, first_column: 3, last_column: 60) }
+    let(:range) { described_class.new(first_row: 10, last_row: 15, first_column: 3, last_column: 60) }
 
     it 'has some empty options' do
       expect(range.options).to be_empty
@@ -190,7 +190,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     context 'without last row' do
-      let(:range) { SequencescapeExcel::Range.new(first_row: 15, first_column: 5, last_column: 15) }
+      let(:range) { described_class.new(first_row: 15, first_column: 5, last_column: 15) }
 
       it 'set last row to first row' do
         expect(range.last_row).to eq(15)
@@ -198,7 +198,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     context 'without last column' do
-      let(:range) { SequencescapeExcel::Range.new(first_row: 14, last_row: 25, first_column: 33) }
+      let(:range) { described_class.new(first_row: 14, last_row: 25, first_column: 33) }
 
       it 'set last column to first column' do
         expect(range.last_column).to eq(33)
@@ -206,7 +206,7 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     context 'with worksheet name' do
-      let(:range) { SequencescapeExcel::Range.new(first_row: 10, last_row: 15, first_column: 3, last_column: 60, worksheet_name: 'Sheet1') }
+      let(:range) { described_class.new(first_row: 10, last_row: 15, first_column: 3, last_column: 60, worksheet_name: 'Sheet1') }
 
       it 'set worksheet name' do
         expect(range.worksheet_name).to eq('Sheet1')

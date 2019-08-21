@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SampleManifestPlateTest < ActiveSupport::TestCase
@@ -9,7 +11,7 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
 
       @purpose = create :plate_purpose
 
-      @manifest = create :sample_manifest, count: 2, rapid_generation: true, purpose: @purpose
+      @manifest = create :sample_manifest, count: 2, purpose: @purpose
       @manifest.generate
 
       @plates = @manifest.send(:core_behaviour).plates

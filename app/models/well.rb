@@ -173,6 +173,7 @@ class Well < Receptacle
   scope :with_contents, -> { joins(:aliquots) }
 
   delegate :location, :location_id, :location_id=, :printable_target, :source_plate, to: :plate, allow_nil: true
+  delegate :column_order, :row_order, to: :map, allow_nil: true
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
@@ -338,7 +339,7 @@ class Well < Receptacle
   def display_name
     plate_name = plate.present? ? plate.human_barcode : '(not on a plate)'
     plate_name ||= plate.display_name # In the even the plate is barcodeless (ie strip tubes) use its name
-    "#{plate_name}:#{map ? map.description : ''}"
+    "#{plate_name}:#{map_description}"
   end
 
   def details
@@ -362,5 +363,13 @@ class Well < Receptacle
 
   def update_from_qc(qc_result)
     Well::AttributeUpdater.update(self, qc_result)
+  end
+
+  def name
+    nil
+  end
+
+  def library_name
+    nil
   end
 end

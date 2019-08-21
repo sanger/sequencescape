@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^I have a pipeline called "([^\"]*)"$/ do |name|
   request_type = FactoryBot.create :request_type
   pipeline = FactoryBot.create :pipeline, name: name, request_types: [request_type]
@@ -28,8 +30,7 @@ def create_request_for_pipeline(pipeline_name, options = {})
   request_metadata = FactoryBot.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters = options.merge(request_type: pipeline.request_types.last, asset: FactoryBot.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
   FactoryBot.create(:request_with_submission, request_parameters).tap do |request|
-    request.asset.update!(barcode: request.asset.id % 9999999)
-    request.asset.create_scanned_into_lab_event!(content: '2018-01-01')
+    request.asset.labware.create_scanned_into_lab_event!(content: '2018-01-01')
   end
 end
 

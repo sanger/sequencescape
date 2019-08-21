@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class BatchTubeTest < ActiveSupport::TestCase
@@ -43,7 +45,7 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
-      assert_equal request.target_asset.stock_asset.name, tube_label.top_line(tube)
+      assert_equal request.target_asset.labware.stock_asset.name, tube_label.top_line(tube)
     end
   end
 
@@ -66,7 +68,7 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
-      assert_equal "(#{tag_map_id}) #{request.target_asset.id}", tube_label.top_line(tube)
+      assert_equal "(#{tag_map_id}) #{request.target_asset.labware.id}", tube_label.top_line(tube)
     end
 
     should 'when not multiplexed should return the right tubes and top line' do
@@ -80,7 +82,7 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
-      assert_equal request.target_asset.name_for_label, tube_label.top_line(tube)
+      assert_equal request.target_asset.labware.name_for_label, tube_label.top_line(tube)
     end
 
     should 'when pacbio should return the right top, middle and bottom lines' do

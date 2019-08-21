@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'timecop'
 
@@ -35,7 +37,7 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
     end
 
     should 'generate an appropriate csv file' do
-      csv = ''
+      csv = +''
       Presenters::QcReportPresenter.new(@report).to_csv(csv)
       assert_equal EXPECTED_CSV % @asset_ids, csv
     end

@@ -11,5 +11,7 @@ module ReceptacleAssociations
     has_many :qc_results, dependent: :destroy, foreign_key: :asset_id, inverse_of: :asset
     has_many :sample_manifest_assets, dependent: :destroy, foreign_key: :asset_id, inverse_of: :asset
     has_many :sample_manifests, through: :sample_manifest_assets
+
+    delegate :description, to: :map, prefix: true, allow_nil: true
   end
 end

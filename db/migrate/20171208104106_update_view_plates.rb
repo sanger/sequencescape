@@ -4,8 +4,7 @@ class UpdateViewPlates < ActiveRecord::Migration[5.1]
   def self.up
     ActiveRecord::Base.transaction do
       ViewsSchema.update_view('view_plates',
-                              %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-                              VIEW `view_plates` AS select `u`.`external_id` AS
+                              %{select `u`.`external_id` AS
       `uuid`,`p`.`id` AS `internal_id`,`p`.`name` AS `name`,`p`.`barcode` AS
       `barcode`,`bp`.`prefix` AS `barcode_prefix`,`p`.`size` AS
       `plate_size`,`p`.`created_at` AS `created`,`p`.`plate_purpose_id` AS
@@ -34,8 +33,7 @@ class UpdateViewPlates < ActiveRecord::Migration[5.1]
   def self.down
     ActiveRecord::Base.transaction do
       ViewsSchema.update_view('view_plates',
-                              %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
-                              VIEW `view_plates` AS select `u`.`external_id` AS
+                              %{select `u`.`external_id` AS
       `uuid`,`p`.`id` AS `internal_id`,`p`.`name` AS `name`,`p`.`barcode` AS
       `barcode`,`bp`.`prefix` AS `barcode_prefix`,`p`.`size` AS
       `plate_size`,`p`.`created_at` AS `created`,`p`.`plate_purpose_id` AS

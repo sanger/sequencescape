@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Here are a load of searches that can be performed through the API.
 
 Search::FindAssetByBarcode.create!(name: 'Find assets by barcode')

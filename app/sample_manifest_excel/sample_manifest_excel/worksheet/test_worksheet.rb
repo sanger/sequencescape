@@ -64,13 +64,13 @@ module SampleManifestExcel
 
       def create_sample_manifest
         if %w[plate_default plate_full plate_rnachip].include? manifest_type
-          FactoryBot.create(:sample_manifest_with_samples_for_plates, num_plates: num_plates, num_samples_per_plate: num_samples_per_plate, rapid_generation: true)
+          FactoryBot.create(:pending_plate_sample_manifest, num_plates: num_plates, num_samples_per_plate: num_samples_per_plate)
         elsif %w[tube_library_with_tag_sequences].include? manifest_type
-          FactoryBot.create(:sample_manifest, asset_type: 'library', rapid_generation: true)
+          FactoryBot.create(:sample_manifest, asset_type: 'library')
         elsif %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
-          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', rapid_generation: true)
+          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library')
         else
-          FactoryBot.create(:sample_manifest, asset_type: '1dtube', rapid_generation: true)
+          FactoryBot.create(:sample_manifest, asset_type: '1dtube')
         end
       end
 
@@ -90,54 +90,57 @@ module SampleManifestExcel
 
       def create_plate_dynamic_attributes
         @dynamic_attributes = initialize_dynamic_attributes
-        create_plate_samples
+        record_plate_samples
       end
 
-      def create_plate_samples
-        sm_samples = sample_manifest.samples
-        sample_index = 0
-        first_to_last.each do |sheet_row|
-          cur_sample = sm_samples[sample_index]
-          if validation_errors.include?(:sample_manifest)
-            cur_sample.sample_manifest = nil
-            cur_sample.save
-          end
+      def record_plate_samples
+        sm_sample_assets = sample_manifest.sample_manifest_assets.to_a
+
+        first_to_last.each_with_index do |sheet_row, sample_index|
+          cur_sm_sample_asset = sm_sample_assets.fetch(sample_index)
+
+          # Validation errors here indicates problems we WANT not problems we HAVE
+          cur_sm_sample_asset.destroy! if validation_errors.include?(:sample_manifest)
+
           # set the sample id
-          dynamic_attributes[sheet_row][:sanger_sample_id] = cur_sample.sanger_sample_id
+          dynamic_attributes[sheet_row][:sanger_sample_id] = cur_sm_sample_asset.sanger_sample_id
 
           # set the plate barcode
+          plate_id = cur_sm_sample_asset.asset.plate.id
+          # Validation errors here indicates problems we WANT not problems we HAVE
           dynamic_attributes[sheet_row][:sanger_plate_id] = if cgap
                                                               if validation_errors.include?(:sample_plate_id_duplicates)
                                                                 'CGAP-99999'
                                                               elsif validation_errors.include?(:sample_plate_id_unrecognised_foreign)
-                                                                "INVALID-#{cur_sample.primary_receptacle.plate.id.to_s.upcase}#{(cur_sample.primary_receptacle.plate.id % 10).to_s.upcase}"
+                                                                "INVALID-#{plate_id.to_s.upcase}#{(plate_id % 10).to_s.upcase}"
                                                               else
-                                                                "CGAP-#{cur_sample.primary_receptacle.plate.id.to_s(16).upcase}#{(cur_sample.primary_receptacle.plate.id % 16).to_s(16).upcase}"
+                                                                "CGAP-#{plate_id.to_s(16).upcase}#{(plate_id % 16).to_s(16).upcase}"
                                                               end
                                                             else
-                                                              cur_sample.primary_receptacle.plate.human_barcode
+                                                              cur_sm_sample_asset.asset.plate.human_barcode
                                                             end
           # set the well position
-          dynamic_attributes[sheet_row][:well] = cur_sample.primary_receptacle.map_description
-          sample_index += 1
+          dynamic_attributes[sheet_row][:well] = cur_sm_sample_asset.asset.map_description
         end
       end
 
       def create_tube_dynamic_attributes
         @dynamic_attributes = initialize_dynamic_attributes
-        create_tube_samples
+        record_tube_samples
         create_tags
       end
 
-      def create_tube_samples
+      def record_tube_samples
         first_to_last.each do |sheet_row|
-          create_tube_asset do |asset|
-            sample = asset.samples.first
+          build_tube_sample_manifest_asset do |sample_manifest_asset|
+            asset = sample_manifest_asset.asset
+
+            # Validation errors here indicates problems we WANT not problems we HAVE
             unless validation_errors.include?(:sample_manifest)
-              sample.sample_manifest = sample_manifest
-              sample.save
+              sample_manifest_asset.sample_manifest = sample_manifest
+              sample_manifest_asset.save
             end
-            dynamic_attributes[sheet_row][:sanger_sample_id] = sample.sanger_sample_id
+            dynamic_attributes[sheet_row][:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
             dynamic_attributes[sheet_row][:sanger_tube_id] = if cgap
                                                                tube_row_num = (sheet_row - first_row) + 1
                                                                if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
@@ -193,14 +196,15 @@ module SampleManifestExcel
         end
       end
 
-      def create_tube_asset
+      def build_tube_sample_manifest_asset
         asset = if %w[tube_multiplexed_library tube_library_with_tag_sequences tube_multiplexed_library_with_tag_sequences].include? manifest_type
-                  FactoryBot.create(:library_tube_with_barcode)
+                  FactoryBot.create(:empty_library_tube)
                 else
-                  FactoryBot.create(:sample_tube_with_sanger_sample_id)
+                  FactoryBot.create(:empty_sample_tube)
                 end
+        sma = FactoryBot.build(:sample_manifest_asset, asset: asset, sample_manifest: nil)
         assets << asset
-        yield(asset) if block_given?
+        yield(sma) if block_given?
       end
 
       def create_tube_requests

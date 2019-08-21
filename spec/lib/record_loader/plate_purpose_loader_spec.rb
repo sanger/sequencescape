@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'record_loader/plate_purpose_loader'
 
 RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
   subject do
-    RecordLoader::PlatePurposeLoader.new(directory: test_directory, files: selected_files)
+    described_class.new(directory: test_directory, files: selected_files)
   end
 
   let(:test_directory) { Rails.root.join('spec', 'data', 'record_loader', 'plate_purposes') }

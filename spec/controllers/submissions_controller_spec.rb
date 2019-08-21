@@ -12,7 +12,7 @@ RSpec.describe SubmissionsController, type: :controller do
   context 'Submissions controller' do
     setup do
       @user       = create :user
-      @controller = SubmissionsController.new
+      @controller = described_class.new
       @request    = ActionController::TestRequest.create(@controller)
 
       session[:user] = @user
@@ -208,7 +208,7 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'A submission with clashing orders' do
       setup do
         @shared_template = 'shared_template'
-        @sample  = create :sample
+        @sample = create :sample
         @asset_a = create :sample_tube, sample:  @sample
         @asset_b = create :sample_tube, sample:  @sample
         @secondary_submission = create :submission
@@ -248,7 +248,7 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'A submission without warnings' do
       setup do
         @shared_template = 'shared_template'
-        @sample  = create :sample
+        @sample = create :sample
         @asset_a = create :sample_tube, sample: @sample
         @submission = create :submission
         @order = create :order, assets: [@asset_a.receptacle], template_name: @shared_template, submission: @submission

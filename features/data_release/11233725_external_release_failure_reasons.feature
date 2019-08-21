@@ -8,7 +8,7 @@ Feature: Externally releasing a passed or failed lane should display the correct
       Given a lane named "<name_lane>" exists
       Given an <external_release> lane named "<name_lane>"
       Given a state "<status>" to lane named "<name_lane>"
-      And I am on the show page for asset "<name_lane>"
+      And I am on the show page for receptacle "<name_lane>"
       When I follow "Edit"
       When I select "<option>" from "Reason for releasing data"
       Examples:

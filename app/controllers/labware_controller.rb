@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Handles viewing {Labware} information
-# @see {Labware}
+# @see Labware
 class LabwareController < ApplicationController
   before_action :discover_asset, only: %i[show edit update summary print_assets print history]
 
@@ -84,7 +84,7 @@ class LabwareController < ApplicationController
       @direct_printing = (@asset.printable_target == @asset)
     else
       flash[:error] = "#{@asset.display_name} does not have a barcode so a label can not be printed."
-      redirect_to asset_path(@asset)
+      redirect_to labware_path(@asset)
     end
   end
 

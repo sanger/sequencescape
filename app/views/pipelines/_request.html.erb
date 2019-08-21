@@ -4,7 +4,7 @@
 <% request_samples_count = @requests_samples_count.fetch(request.id, 0)-%>
 <tr>
   <td class="request center">
-    <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.sti_type} #{request.asset.human_barcode} for batch") %>
+    <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.human_barcode} for batch") %>
     <%= check_box :request, request.id, value: request.id, class: 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
   </td>
   <td  style='text-align: center'>
@@ -16,7 +16,7 @@
   <td><%= request.request_type.product_line.try(:name) %></td>
   <td><%= link_to request.submission_id, submission_path(request.submission) %></td>
   <td><%= link_to request.id, request_path(request) %></td>
-  <td><%= link_to request.asset.try(:name), asset_path(request.asset) %></td>
+  <td><%= link_to request.asset.try(:name), receptacle_path(request.asset) %></td>
 
   <% unless request_comments_count.zero? -%>
     <%= render partial: "request_comments", locals: { request: request, comments_count: request_comments_count } %>
@@ -24,7 +24,7 @@
     <td>&nbsp;</td>
   <% end -%>
   <% if request.asset %>
-    <td><%=  link_to "#{request.asset.human_barcode}", asset_path(request.asset) %></td>
+    <td><%=  link_to "#{request.asset.human_barcode}", receptacle_path(request.asset) %></td>
     <% unless asset_comments_count.zero? -%>
       <%= render partial: "asset_comments", locals: { request: request, comments_count: asset_comments_count } %>
     <% else -%>

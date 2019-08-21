@@ -18,7 +18,10 @@ class BatchesController < ApplicationController
   def index
     if logged_in?
       @user = current_user
-      @batches = Batch.where(assignee_id: @user).or(Batch.where(user_id: @user)).order(id: :desc).page(params[:page])
+      @batches = Batch.where(assignee_id: @user).or(Batch.where(user_id: @user))
+                      .order(id: :desc)
+                      .includes(:user, :assignee, :pipeline)
+                      .page(params[:page])
     else
       # Can end up here with XML. And it causes pain.
       @batches = Batch.order(id: :asc).page(params[:page]).limit(10)
@@ -369,23 +372,6 @@ class BatchesController < ApplicationController
 
   def find_batch_by_batch_id
     @batch = Batch.find(params[:batch_id])
-  end
-
-  def edit_volume_and_concentration
-    @batch = Batch.find(params[:id])
-  end
-
-  def update_volume_and_concentration
-    @batch = Batch.find(params[:batch_id])
-
-    params[:assets].each do |id, values|
-      asset = Asset.find(id)
-      asset.volume = values[:volume]
-      asset.concentration = values[:concentration]
-      asset.save
-    end
-
-    redirect_to batch_path(@batch)
   end
 
   def pacbio_sample_sheet

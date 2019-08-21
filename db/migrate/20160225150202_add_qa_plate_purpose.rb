@@ -1,3 +1,4 @@
+# Add QA plates
 class AddQaPlatePurpose < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do |_t|

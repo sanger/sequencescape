@@ -6,11 +6,12 @@ module Barcode::Barcodeable
     base.class_eval do
       # Default prefix is the fallback prefix if no purpose is available.
       class_attribute :default_prefix
-
-      # has_one :barcodes, -> { order(id: :desc) }, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy, class_name: 'Barcode'
-
       delegate :ean13_barcode, :machine_barcode, :human_barcode, to: :primary_barcode, allow_nil: true
     end
+  end
+
+  def any_barcode_matching?(other_barcode)
+    barcodes.any? { |barcode| barcode =~ other_barcode }
   end
 
   def generate_barcode

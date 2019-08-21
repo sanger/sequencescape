@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'SampleManifest controller' do
+describe 'SampleManifest controller', sample_manifest: true do
   def load_manifest_spec
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -69,7 +69,7 @@ describe 'SampleManifest controller' do
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
       within('#sample_manifest_template') do
-        expect(page).to have_selector('option', count: 12)
+        expect(page).to have_selector('option', count: 15)
       end
       select(created_purpose.name, from: 'purpose')
       expect(page).to have_text('Used for plate manifests only')

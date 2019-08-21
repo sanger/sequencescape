@@ -136,7 +136,6 @@ FactoryBot.define do
         sample_count { 8 }
         well_factory { :tagged_well }
       end
-      #  sequence(:fluidigm_barcode) { |i| (1000000000 + i).to_s }
       barcodes { build_list :fluidigm, 1 }
       size { 192 }
     end

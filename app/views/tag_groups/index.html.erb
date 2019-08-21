@@ -5,13 +5,15 @@
   <thead>
     <th>Name</th>
     <th>No. of Tags</th>
+    <th>Adapter Type</th>
     <th></th>
   </thead>
   <tbody>
   <% for tag_group in @tag_groups %>
     <tr>
-      <td><%=h tag_group.name %></td>
-      <td><%=h tag_group.tags.count %></td>
+      <td><%= tag_group.name %></td>
+      <td><%= tag_group.tags.count %></td>
+      <td><%= tag_group.adapter_type_name %></td>
       <td><%= link_to 'Show', tag_group %></td>
     </tr>
   <% end %>

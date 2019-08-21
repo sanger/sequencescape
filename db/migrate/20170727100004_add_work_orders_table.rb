@@ -1,3 +1,4 @@
+# Rails migration
 class AddWorkOrdersTable < ActiveRecord::Migration[5.1]
   def change
     create_table :work_orders do |t|

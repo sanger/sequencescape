@@ -1,12 +1,14 @@
 # In contrast to pooling by submission, this method looks at submissions off the current
 # plate. This allows users to use QC feedback to decide how to multiplex their plate.
 class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
+  # Not used since 2018-09-17 08:16:28
+
   after_create :build_asset_links
 
   private
 
   def locate_mx_library_tube_for(well)
-    well.requests_as_source.where_is_a?(Request::Multiplexing).detect { |r| r.target_asset.aliquots.empty? }.try(:target_asset)
+    well.requests_as_source.where_is_a(Request::Multiplexing).detect { |r| r.target_asset.aliquots.empty? }.try(:target_labware)
   end
 
   def well_to_destination

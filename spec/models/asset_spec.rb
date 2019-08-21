@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Asset, type: :model do
@@ -6,6 +8,6 @@ RSpec.describe Asset, type: :model do
   # {Receptacle}: Representing something that can contain samples
   # Please add any tests to the corresponding spec while this migration happens.
   it 'is a placeholder spec to avoid confusion' do
-    expect(Asset).to be Asset
+    expect(described_class).to be described_class
   end
 end
