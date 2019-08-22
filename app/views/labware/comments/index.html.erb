@@ -3,7 +3,7 @@
 
 <%= page_title("#{@labware.label} #{@labware.display_name}",'Comments') %>
 
-<%= render partial: "list", locals: {labware: @labware } %>
+<%= render partial: "list", locals: { labware: @labware } %>
 
 <div>
   <%= form_tag(labware_comments_path(@labware), data: { update: "#asset_annotations_#{@labware.id}", remote: true }, class:'remote-form') do %>
