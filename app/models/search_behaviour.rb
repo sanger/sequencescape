@@ -3,6 +3,7 @@ module SearchBehaviour
 
   def self.included(base)
     base.helper_method :each_non_empty_search_result
+    base.helper_method :no_results?
   end
 
   def search
@@ -38,6 +39,12 @@ module SearchBehaviour
     searchable_classes.each do |clazz|
       results = instance_variable_get("@#{clazz.name.underscore.pluralize}")
       yield(clazz.name.underscore, results) unless results.blank?
+    end
+  end
+
+  def no_results?
+    searchable_classes.all? do |clazz|
+      instance_variable_get("@#{clazz.name.underscore.pluralize}").blank?
     end
   end
 
