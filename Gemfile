@@ -128,15 +128,6 @@ group :development do
   gem 'traceroute'
   gem 'travis'
 
-  # Asset compilation
-  gem 'bootstrap'
-  gem 'font-awesome-sass'
-  gem 'jquery-rails'
-  gem 'jquery-tablesorter'
-  gem 'jquery-ui-rails'
-  gem 'sass-rails'
-  gem 'select2-rails'
-
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'mini_racer'
   # Pat of the JS assets pipleine
@@ -146,6 +137,14 @@ end
 group :development, :test, :cucumber do
   gem 'pry'
   gem 'pry-stack_explorer'
+  # Asset compilation, js and style libraries
+  gem 'bootstrap'
+  gem 'font-awesome-sass'
+  gem 'jquery-rails'
+  gem 'jquery-tablesorter'
+  gem 'jquery-ui-rails'
+  gem 'sass-rails'
+  gem 'select2-rails'
 end
 
 group :profile do
