@@ -17,14 +17,7 @@ class Barcode < ApplicationRecord
   after_commit :broadcast_barcode
 
   # Caution! Do not adjust the index of existing formats.
-  enum format: %i[sanger_ean13
-                  infinium
-                  fluidigm
-                  external
-                  aker_barcode
-                  cgap
-                  sanger_code39
-                  fluidx_barcode]
+  enum format: { sanger_ean13: 0, infinium: 1, fluidigm: 2, external: 3, aker_barcode: 4, cgap: 5, sanger_code39: 6, fluidx_barcode: 7 }
   # Barcode formats which may be submitted via sample manifests
   FOREIGN_BARCODE_FORMATS = %i[cgap fluidx_barcode].freeze
 

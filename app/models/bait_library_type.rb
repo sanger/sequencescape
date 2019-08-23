@@ -5,7 +5,7 @@ class BaitLibraryType < ApplicationRecord
   include SharedBehaviour::Named
 
   # category is used for billing, to differentiate between products with Custom and Standard bait libraries
-  enum category: [:standard, :custom]
+  enum category: { standard: 0, custom: 1 }
 
   has_many :bait_libraries
 
