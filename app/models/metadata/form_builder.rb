@@ -31,8 +31,15 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     select(:"#{association}_id", association_target.for_select_association, options, html_options)
   end
 
+  # Very broken looking combination of textbox and option field. Seems
+  # to allow specifying N/A or the value from the text box. Text box appears to
+  # get rendered twice, which appears to be a bug.
   def checktext_field(field, options = {})
-    render_view(:checktext, field, options)
+    options[:class] ||= []
+    options[:class] << ' form-control'
+    property_field(:field, field) do
+      render_view(:checktext, field, options)
+    end
   end
 
   %i(text_area text_field number_field).each do |field|
@@ -74,7 +81,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   # We wrap each of the following field types (text_field, select, etc) within a special
   # layout for our properties
   #
-  %i[text_area text_field number_field file_field check_box checktext_field].each do |field|
+  %i[text_area text_field number_field file_field check_box].each do |field|
     class_eval do
       define_method field do |method, *args, &block|
         options = args.extract_options!
