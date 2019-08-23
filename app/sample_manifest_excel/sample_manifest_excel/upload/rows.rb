@@ -17,11 +17,10 @@ module SampleManifestExcel
 
       delegate :empty?, :last, to: :items
 
-      def initialize(data, columns)
+      def initialize(data, columns, cache = SampleManifestAsset)
         @data = data || []
         @columns = columns
-
-        @items = create_rows
+        @items = create_rows(cache)
       end
 
       def each(&block)
@@ -36,10 +35,10 @@ module SampleManifestExcel
 
       private
 
-      def create_rows
+      def create_rows(cache)
         [].tap do |rows|
           data.each_with_index do |r, i|
-            row = Row.new(number: i + data.start_row + 1, data: r, columns: columns)
+            row = Row.new(number: i + data.start_row + 1, data: r, columns: columns, cache: cache)
             rows << row unless row.empty?
           end
         end

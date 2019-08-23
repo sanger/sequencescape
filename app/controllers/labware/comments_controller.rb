@@ -23,7 +23,7 @@ class Labware::CommentsController < ApplicationController
     comment = Comment.find(params[:id])
     comment.destroy if comment.present?
     @comments = @labware.comments
-    render partial: 'list', locals: { commentable: @labware, visible: true }
+    render partial: 'list', locals: { commentable: @labware, visible: true, labware: @labware }
   end
 
   private

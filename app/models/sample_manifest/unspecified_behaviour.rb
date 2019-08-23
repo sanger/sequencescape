@@ -22,7 +22,4 @@ module SampleManifest::UnspecifiedBehaviour
       raise StandardError, "UnspecifiedBehaviour can not be used to create Sample: #{sanger_sample_id}, for Asset: #{asset.display_name}."
     end
   end
-
-  class RapidCore < Core
-  end
 end

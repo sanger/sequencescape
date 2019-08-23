@@ -24,7 +24,7 @@
     <dt>Desired date:</dt> <dd><%= aker_job['priority'] %></dd>
   </li>
   <li class="list-group-item">
-    <dt>Status:</dt> <dd><span class="badge badge-secondary"><%= @aker_job['status'] %></span></dd>
+    <dt>Status:</dt> <dd><%= badge(@aker_job['status'], style: 'secondary') %></dd>
   </li>
   <li class="list-group-item">
     <dt>Samples:</dt>

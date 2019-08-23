@@ -24,13 +24,13 @@ module LabWhereClient
 
     def get(instance, target)
       parse_json(RestClient.get(path_to(instance, target)))
-    rescue Errno::ECONNREFUSED => e
+    rescue Errno::ECONNREFUSED, RestClient::NotFound => e
       raise LabwhereException.new(e), 'LabWhere service is down', e.backtrace
     end
 
     def post(instance, target, payload)
       parse_json(RestClient.post(path_to(instance, target), payload))
-    rescue Errno::ECONNREFUSED => e
+    rescue Errno::ECONNREFUSED, RestClient::NotFound => e
       raise LabwhereException.new(e), 'LabWhere service is down', e.backtrace
     rescue RestClient::UnprocessableEntity => e
       return parse_json(e.response)
@@ -38,7 +38,7 @@ module LabWhereClient
 
     def put(instance, target, payload)
       parse_json(RestClient.put(path_to(instance, target), payload))
-    rescue Errno::ECONNREFUSED => e
+    rescue Errno::ECONNREFUSED, RestClient::NotFound => e
       raise LabwhereException.new(e), 'LabWhere service is down', e.backtrace
     end
   end

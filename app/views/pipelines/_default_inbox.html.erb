@@ -6,7 +6,7 @@
   <!-- _default_inbox.html.erb -->
   <% grouped_by_ready = @requests.group_by(&:ready?) %>
   <%= panel 'inbox', id: 'available-requests' do %>
-    <h3>Available requests <span class="badge badge-primary"><%= grouped_by_ready[true]&.length || 0 %></span></h3>
+    <h3>Available requests <%= counter_badge(grouped_by_ready[true]&.length || 0) %></h3>
     <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "requests_to_batch_form") do -%>
       <% if @pipeline.item_limit -%>
         <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
@@ -17,7 +17,7 @@
     <% end -%>
   <% end %>
   <%= panel 'inbox', id: 'pending-requests' do %>
-    <h3>Upcoming requests <span class="badge badge-primary"><%= grouped_by_ready[false]&.length || 0%></span></h3>
+    <h3>Upcoming requests <%= counter_badge(grouped_by_ready[false]&.length || 0) %></h3>
     <p>The following requests are still being processed through the previous pipeline. They'll appear in the section above once they are fully passed and have been scanned in to a reception.</p>
     <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "upcomming-requests") do -%>
       <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]], select_scope: '#available-requests' } %>

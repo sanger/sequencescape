@@ -15,7 +15,7 @@ describe UserQueryMailer, type: :mailer do
 
   describe 'request for help' do
     let!(:user_query) { build :user_query }
-    let(:mail) { UserQueryMailer.request_for_help(user_query) }
+    let(:mail) { described_class.request_for_help(user_query) }
 
     let(:expected_body) do
       <<~HEREDOC

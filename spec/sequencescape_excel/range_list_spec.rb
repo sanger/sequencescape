@@ -2,12 +2,12 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::RangeList, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::RangeList, type: :model, sample_manifest_excel: true, sample_manifest: true do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel') }
   let(:ranges) { load_file(folder, 'ranges') }
-  let(:range_list) { SequencescapeExcel::RangeList.new(ranges) }
+  let(:range_list) { described_class.new(ranges) }
 
   it 'will create a list of ranges' do
     expect(range_list.count).to eq(ranges.count)
@@ -36,6 +36,6 @@ RSpec.describe SequencescapeExcel::RangeList, type: :model, sample_manifest_exce
   end
 
   it 'will be comparable' do
-    expect(SequencescapeExcel::RangeList.new(ranges)).to eq(range_list)
+    expect(described_class.new(ranges)).to eq(range_list)
   end
 end

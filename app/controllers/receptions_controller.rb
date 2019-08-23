@@ -39,7 +39,7 @@ class ReceptionsController < ApplicationController
         next
       end
 
-      asset = Asset.find_from_barcode(barcode)
+      asset = Labware.find_by_barcode(barcode)
 
       if asset.nil?
         @errors << "Asset with barcode #{barcode} not found"
@@ -75,7 +75,7 @@ class ReceptionsController < ApplicationController
       asset_count = 0
 
       assets.each do |_index, asset_id|
-        asset = Asset.find_by(id: asset_id)
+        asset = Labware.find_by(id: asset_id)
         if asset.nil?
           @errors << "Asset not found with asset ID #{asset_id}"
         else

@@ -12,6 +12,5 @@ class MultiplexedLibraryCreationPipeline < LibraryCreationPipeline
     end
 
     batch.errors.add(:base, 'This batch appears to have not been properly tagged')
-    # raise ActiveRecord::RecordInvalid, batch
   end
 end

@@ -15,8 +15,7 @@ shared = {
   stock_plate: false,
   default_state: 'pending',
   cherrypickable_target: false,
-  cherrypick_direction: 'column',
-  barcode_for_tecan: 'ean13_barcode'
+  cherrypick_direction: 'column'
 }
 
 ActiveRecord::Base.transaction do
@@ -26,7 +25,6 @@ ActiveRecord::Base.transaction do
 end
 
 SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
-  pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true

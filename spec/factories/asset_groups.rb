@@ -8,10 +8,11 @@ FactoryBot.define do
     transient do
       asset_type { :untagged_well }
       asset_count { 0 }
+      asset_attributes { {} }
     end
 
     assets do
-      Array.new(asset_count) { create asset_type }
+      create_list asset_type, asset_count, asset_attributes
     end
   end
 

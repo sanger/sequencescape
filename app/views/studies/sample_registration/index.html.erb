@@ -4,8 +4,8 @@
 
 <div class="page-header"><h1>Sample registration</h1></div>
 
-<%= alert(:user_guide) do %>
-  <p>The preferred method of registering samples is sample manifests.</p>
+<%= deprecate_section(
+   message:'<p class="lead">The preferred method of registering samples is sample manifests.</p>
   <ul>
     <li>Sample manifests support both plates and tubes</li>
     <li>Sample manifests let you register pre-tagged libraries</li>
@@ -14,14 +14,12 @@
     in filling out the spreadsheet.</li>
   </ul>
   <p>If there is functionality you need that is not provided by sample manifests
-  then please let us know.</p>
-  <%= link_to 'View and generate manifests', sample_manifests_study_path(@study) %>
+  then please let us know. The intent is to remove this page in future.</p>'.html_safe,
+   replaced_by: sample_manifests_study_path(@study)) do %>
+   <h2><%= link_to "1. Manual entry", new_study_sample_registration_path %></h2>
+   <p>Type your samples in online using the manual entry form.</p>
+
+   <h2><%= link_to "2. Spreadsheet load", upload_study_sample_registration_index_path %></h2>
+   <p>Pre-populate the manual entry form with values from an Excel spreadsheet.</p>
 <% end %>
 
-<p>If sample manifests aren't suitable, sample registration is still available and offers two options:</p>
-
-<h2><%= link_to "1. Manual entry", new_study_sample_registration_path %></h2>
-<p>Type your samples in online using the manual entry form.</p>
-
-<h2><%= link_to "2. Spreadsheet load", upload_study_sample_registration_index_path %></h2>
-<p>Pre-populate the manual entry form with values from an Excel spreadsheet.</p>

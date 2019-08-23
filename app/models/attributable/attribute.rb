@@ -17,7 +17,7 @@ module Attributable
       @owner = owner
       @name = name.to_sym
       @options = options
-      @default  = options.delete(:default)
+      @default = options.delete(:default)
       @required = options.delete(:required).present?
       @validator = options.delete(:validator).present?
     end

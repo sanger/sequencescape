@@ -39,7 +39,7 @@ class MultiplexedLibraryTube < Tube
   private
 
   def creation_requests
-    direct = requests_as_target.where_is_a?(Request::LibraryCreation)
+    direct = requests_as_target.where_is_a(Request::LibraryCreation)
     return direct unless direct.empty?
 
     parents.includes(:requests_as_target).first.requests_as_target

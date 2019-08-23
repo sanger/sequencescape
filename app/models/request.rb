@@ -90,11 +90,25 @@ class Request < ApplicationRecord
   has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
   has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
 
+  delegate :position, to: :batch_request
+
   # This block is enabled when we have the labware table present as part of the AssetRefactor
   # Ie. This is what will happen in future
   AssetRefactor.when_refactored do
     has_one :target_labware, through: :target_asset, source: :labware
     has_one :source_labware, through: :asset, source: :labware
+  end
+
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    def target_labware
+      target_asset.labware
+    end
+
+    def source_labware
+      asset.labware
+    end
   end
 
   convert_labware_to_receptacle_for :asset, :target_asset
@@ -163,11 +177,11 @@ class Request < ApplicationRecord
     scope :for_pre_cap_grouping_of, ->(plate) {
       add_joins =
         if plate.stock_plate?
-          ['INNER JOIN labware AS pw ON requests.asset_id=pw.id']
+          ['INNER JOIN receptacles AS pw ON requests.asset_id=pw.id']
         else
           [
             'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-            'INNER JOIN labware AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
+            'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
           ]
         end
 
@@ -278,7 +292,7 @@ class Request < ApplicationRecord
 
   scope :with_asset, -> { where.not(asset_id: nil) }
   # Ensures the actual record is present
-  scope :with_present_asset, -> { includes(:asset).where.not(assets: { id: nil }) }
+  scope :with_present_asset, -> { joins(:asset).where.not(Receptacle.table_name => { id: nil }) }
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
   scope :join_asset, -> { joins(:asset) }
   scope :with_asset_location, -> { includes(asset: :map) }
@@ -327,13 +341,26 @@ class Request < ApplicationRecord
   }
   scope :ordered, -> { order('id ASC') }
   scope :hold, -> { where(state: 'hold') }
-
-  # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
-  # https://github.com/rails/rails/issues/15185
-  scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(scanned_into_lab_event studies) }]) }
-  scope :loaded_for_sequencing_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) }, { request_type: :product_line }]) }
-  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders }, :target_asset]) }
-  scope :loaded_for_pacbio_inbox_display, -> { preload([{ submission: :orders }, :request_type, :target_asset]) }
+  # This block is enabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happen in future
+  AssetRefactor.when_refactored do
+    # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
+    # https://github.com/rails/rails/issues/15185
+    scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies, { labware: :barcodes }] }]) }
+    scope :loaded_for_sequencing_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) }, { request_type: :product_line }]) }
+    scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: { labware: :barcodes } }, :target_asset]) }
+    scope :loaded_for_pacbio_inbox_display, -> { preload(:submission) }
+  end
+  # This block is disabled when we have the labware table present as part of the AssetRefactor
+  # Ie. This is what will happens now
+  AssetRefactor.when_not_refactored do
+    # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
+    # https://github.com/rails/rails/issues/15185
+    scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(scanned_into_lab_event studies) }]) }
+    scope :loaded_for_sequencing_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) }, { request_type: :product_line }]) }
+    scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: :barcodes }, :target_asset]) }
+    scope :loaded_for_pacbio_inbox_display, -> { preload([{ submission: :orders }, :request_type, :target_asset]) }
+  end
 
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
   scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }

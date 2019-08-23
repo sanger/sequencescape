@@ -18,7 +18,7 @@ class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
   #
   def asset_cache
     @asset_cache ||= Hash.new do |cache, submission_id|
-      cache[submission_id] = Submission.find(submission_id).multiplexed_asset
+      cache[submission_id] = Submission.find(submission_id).multiplexed_labware
     end
   end
 end

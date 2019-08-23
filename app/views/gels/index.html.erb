@@ -22,7 +22,7 @@
   <tbody>
   <% @plates.each do |plate|  %>
     <tr>
-      <td><%= link_to plate.human_barcode, asset_path(plate) %></td>
+      <td><%= link_to plate.human_barcode, labware_path(plate) %></td>
       <td>
       <% plate.studies.each do |study| %>
         <%= link_to study.name, study_path(study) %>

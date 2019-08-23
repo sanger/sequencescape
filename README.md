@@ -1,10 +1,20 @@
-Sequencescape
+![logo](https://github.com/sanger/sequencescape/raw/master/app/assets/images/sequencescape.gif) Sequencescape
 =============
-
 [![Build Status](https://travis-ci.org/sanger/sequencescape.svg?branch=next_release)](https://travis-ci.org/sanger/sequencescape)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/maintainability)](https://codeclimate.com/github/sanger/sequencescape/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/test_coverage)](https://codeclimate.com/github/sanger/sequencescape/test_coverage)
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
+
+Documentation
+-------------
+In addition to the [externally hosted YARD docs](https://www.rubydoc.info/github/sanger/sequencescape), you can also run a local server:
+
+```
+yard server -r --gems -m sequencescape .
+```
+
+You can then access the Sequencescape documentation through: http://localhost:8808/docs/sequencescape
+Yard will also try and document the installed gems: http://localhost:8808/docs
 
 Description
 -----------

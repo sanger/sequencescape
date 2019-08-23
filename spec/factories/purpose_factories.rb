@@ -60,13 +60,11 @@ FactoryBot.define do
 
     factory :fluidigm_96_purpose do
       cherrypick_direction { 'interlaced_column' }
-      barcode_for_tecan { 'fluidigm_barcode' }
       size { 96 }
       association(:asset_shape, factory: :fluidigm_96_shape)
     end
     factory :fluidigm_192_purpose do
       cherrypick_direction { 'interlaced_column' }
-      barcode_for_tecan { 'fluidigm_barcode' }
       size { 192 }
       association(:asset_shape, factory: :fluidigm_192_shape)
     end

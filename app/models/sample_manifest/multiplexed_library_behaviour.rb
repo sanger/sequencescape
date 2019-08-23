@@ -1,5 +1,6 @@
 module SampleManifest::MultiplexedLibraryBehaviour
-  class Core
+  class Core < SampleManifest::SharedTubeBehaviour::Base
+    include SampleManifest::CoreBehaviour::LibraryAssets
     # for #multiplexed_library_tube
     MxLibraryTubeException = Class.new(ActiveRecord::RecordNotFound)
 
@@ -9,17 +10,15 @@ module SampleManifest::MultiplexedLibraryBehaviour
       @manifest = manifest
     end
 
-    delegate :generate_mx_library, to: :@manifest
-    delegate :study, to: :@manifest
-    delegate :samples, to: :@manifest
-    delegate :sample_manifest_assets, to: :@manifest
-
     def generate
+      @library_tubes = generate_tubes(Tube::Purpose.standard_library_tube)
       @mx_tube = generate_mx_library
     end
 
-    def generate_sample_and_aliquot(sanger_sample_id, tube)
-      @manifest.build_sample_and_aliquot(sanger_sample_id, tube)
+    def generate_mx_library
+      Tube::Purpose.standard_mx_tube.create!.tap do |mx_tube|
+        RequestFactory.create_external_multiplexed_library_creation_requests(@library_tubes, mx_tube, study)
+      end
     end
 
     def io_samples
@@ -47,15 +46,11 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def mx_tube
-      @mx_tube ||= (mx_tube_from_sample || mx_tube_from_manifest_asset)
-    end
-
-    def mx_tube_from_sample
-      samples.first&.primary_receptacle&.requests&.first&.target_asset
+      @mx_tube ||= mx_tube_from_manifest_asset
     end
 
     def mx_tube_from_manifest_asset
-      @manifest.assets.first&.requests&.first&.target_asset
+      @manifest.assets.first&.external_library_creation_requests&.first&.target_asset
     end
 
     def pending_external_library_creation_requests
@@ -76,34 +71,8 @@ module SampleManifest::MultiplexedLibraryBehaviour
       multiplexed_library_tube
     end
 
-    def updated_by!(user, samples)
-      # Does nothing at the moment
-    end
-
-    def details(&block)
-      details_array.each(&block)
-    end
-
-    def details_array
-      sample_manifest_assets.includes(asset: :barcodes).map do |sample_manifest_asset|
-        {
-          barcode: sample_manifest_asset.human_barcode,
-          sample_id: sample_manifest_asset.sanger_sample_id
-        }
-      end
-    end
-
-    def assign_library?
-      true
-    end
-  end
-
-  RapidCore = Core
-
-  def generate_mx_library
-    @library_tubes = generate_tubes(Tube::Purpose.standard_library_tube)
-    Tube::Purpose.standard_mx_tube.create!.tap do |mx_tube|
-      RequestFactory.create_external_multiplexed_library_creation_requests(@library_tubes, mx_tube, study)
+    def included_resources
+      [{ sample: :sample_metadata, asset: [:barcodes, :aliquots, { requests: :target_asset }] }]
     end
   end
 end

@@ -2,8 +2,9 @@
 
 require 'lab_where_client'
 
-#
+# [plate_image]: https://github.com/sanger/sequencescape/raw/next_release/docs/images/plate.jpg
 # A plate is a piece of labware made up of a number of {Well wells}. This class represents the physical piece of plastic.
+# [plate_image]
 #
 #   - {PlatePuprose}: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets processed.
 #   - {Well}: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
@@ -67,6 +68,7 @@ class Plate < Labware
     end
     has_many :requests_as_source, through: :wells
     has_many :requests_as_target, through: :wells
+    has_many :receptacles, through: :container_associations, inverse_of: :plate, source: :well
   end
 
   # This block is enabled when we have the labware table present as part of the AssetRefactor
@@ -494,6 +496,22 @@ class Plate < Labware
 
   def related_studies
     studies
+  end
+
+  def wells_in_row_order
+    if wells.loaded?
+      wells.sort_by(&:row_order)
+    else
+      wells.in_row_major_order
+    end
+  end
+
+  def wells_in_column_order
+    if wells.loaded?
+      wells.sort_by(&:column_order)
+    else
+      wells.in_column_major_order
+    end
   end
 
   private

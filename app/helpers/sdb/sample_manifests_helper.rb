@@ -8,7 +8,7 @@ module Sdb::SampleManifestsHelper
     }
   end
 
-  def count_label_for(_asset_type)
-    count_labels.fetch(params[:asset_type], 'Count')
+  def count_label_for(asset_type)
+    count_labels.fetch(asset_type, 'Count')
   end
 end

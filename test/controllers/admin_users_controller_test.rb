@@ -18,10 +18,10 @@ module Admin
                 actions: %w[show edit index],
                 formats: ['html'],
                 defaults: { login: 'abc1234' },
-                user: -> { FactoryBot.create(:admin) },
+                user: :admin,
 
                 # Setup needed because 'edit' assumes presence of at least one Study and Project
-                setup: lambda do
+                setup_with: lambda do
                   FactoryBot.create(:study)
                   FactoryBot.create(:project)
                 end

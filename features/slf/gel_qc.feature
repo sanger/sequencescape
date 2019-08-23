@@ -29,7 +29,7 @@ Feature: Gel QC
     And plate "1220000123724" is the parent of plate "1930000123708"
     Given I am on the gel QC page
     Then I should see "Find gel plate"
-    Then I should see "123"
+    Then I should see "DN123H"
     And I should not see "Rescore"
 
   @gel_index
@@ -55,7 +55,7 @@ Feature: Gel QC
     When I am on the gel QC page
     Then I should see "Rescore"
     Then the plate "1220000123724" and each well should have a 'gel_analysed' event
-    When I follow "123"
+    When I follow "DN123H"
     And I follow "Event history"
     Then the events table should be:
       | Message      | Content    | Created by |

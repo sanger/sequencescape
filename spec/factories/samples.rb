@@ -17,7 +17,12 @@ FactoryBot.define do
     end
 
     factory :sample_with_sanger_sample_id do
+      updated_by_manifest { true }
       sequence(:sanger_sample_id, &:to_s)
+    end
+
+    factory :accessioned_sample do
+      association :sample_metadata, factory: :sample_metadata_with_accession_number
     end
   end
 

@@ -31,7 +31,7 @@ describe 'Perform a tag substitution', js: true do
 
   it 'Performing a tag swap' do
     login_user user
-    visit asset_path(lane)
+    visit receptacle_path(lane)
     click_link 'perform tag substitution'
     expect(page).to have_content(lane.name)
     fill_in('Ticket', with: '12345')
@@ -63,7 +63,7 @@ describe 'Perform a tag substitution', js: true do
 
   it 'Performing an invalid tag swap' do
     login_user user
-    visit asset_path(lane)
+    visit receptacle_path(lane)
     click_link 'perform tag substitution'
     expect(page).to have_content(lane.name)
     fill_in('Ticket', with: '12345')

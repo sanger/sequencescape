@@ -10,6 +10,7 @@ end
 ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'sample',
   'study',
+  'labware',
   'project',
   'sample tube',
   'library tube',
@@ -58,6 +59,13 @@ Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^\"]+)" is
   set_uuid_for(object, uuid_value)
 end
 
+# This may create invalid UUID external_id values but it means that we don't have to conform to the
+# standard in our features.
+Given /^the UUID for the receptacle in (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^\"]+)" is "([^\"]+)"$/ do |model, name, uuid_value|
+  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
+  set_uuid_for(object.receptacle, uuid_value)
+end
+
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with UUID "([^\"]+)"$/ do |model, name, uuid_value|
   set_uuid_for(FactoryBot.create(model.gsub(/\s+/, '_').to_sym, name: name), uuid_value)
 end
@@ -89,13 +97,13 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'sequencing request',
 
   'user',
-  'asset',
   'asset rack',
   'full asset rack',
   'asset rack creation',
   'sample tube',
   'lane',
   'plate',
+  'receptacle',
   'well',
   'pulldown multiplexed library tube',
   'multiplexed library tube',
@@ -161,6 +169,16 @@ Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_R
 
   model.singularize.gsub(/\s+/, '_').camelize.constantize.all.each_with_index do |object, index|
     set_uuid_for(object, core_uuid % (index + 1))
+  end
+end
+
+Given /^all sample tubes have receptacles with sequential UUIDs based on "([^\"]+)"$/ do |core_uuid|
+  core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
+  core_uuid << '-' if core_uuid.length == 23
+  core_uuid << "%0#{36 - core_uuid.length}d"
+
+  SampleTube.all.each_with_index do |object, index|
+    set_uuid_for(object.receptacle, core_uuid % (index + 1))
   end
 end
 

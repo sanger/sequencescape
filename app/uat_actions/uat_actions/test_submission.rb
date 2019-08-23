@@ -28,8 +28,14 @@ class UatActions::TestSubmission < UatActions
                    'Not used if plate barcode is supplied.',
              select_options: -> { PlatePurpose.alphabetical.pluck(:name) },
              options: { include_blank: 'Using default purpose...' }
-
-  validates :submission_template, presence: { message: 'could not be found' }
+  form_field :library_type_name,
+             :select,
+             label: 'Library Type',
+             help: 'Select the library type to use when creating the requests. '\
+                   'Leave blank to automatically use the first library type found. '\
+                   'Useful where the same request type has multiple library types.',
+             select_options: -> { LibraryType.alphabetical.pluck(:name) },
+             options: { include_blank: 'Using default library type...' }
 
   validates :submission_template, presence: { message: 'could not be found' }
 
@@ -59,10 +65,11 @@ class UatActions::TestSubmission < UatActions
       project: project,
       user: user,
       assets: assets,
-      request_options: default_request_options
+      request_options: order_request_options
     )
     report['plate_barcode_0'] = labware.human_barcode
     report['submission_id'] = order.submission.id
+    report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
     order.submission.built!
     true
   end
@@ -94,6 +101,10 @@ class UatActions::TestSubmission < UatActions
     Plate.find_by_barcode(generator.report['plate_0'])
   end
 
+  def order_request_options
+    default_request_options.merge(custom_request_options)
+  end
+
   def default_request_options
     submission_template.input_field_infos.each_with_object({}) do |ifi, options|
       options[ifi.key] = if ifi.default_value.nil?
@@ -102,6 +113,12 @@ class UatActions::TestSubmission < UatActions
                            ifi.default_value
                          end
     end
+  end
+
+  def custom_request_options
+    options = {}
+    options[:library_type] = library_type_name if library_type_name.present?
+    options
   end
 
   def default_purpose_name

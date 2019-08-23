@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190620094528) do
+ActiveRecord::Schema.define(version: 20190802101508) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -793,7 +793,6 @@ ActiveRecord::Schema.define(version: 20190620094528) do
     t.datetime "updated_at"
     t.integer "next_pipeline_id"
     t.integer "previous_pipeline_id"
-    t.string "asset_type", limit: 50
     t.boolean "multiplexed"
     t.string "sti_type", limit: 50
     t.integer "sorter"
@@ -884,7 +883,6 @@ ActiveRecord::Schema.define(version: 20190620094528) do
     t.string "cherrypick_direction", default: "column", null: false
     t.integer "size", default: 96
     t.integer "asset_shape_id", default: 1, null: false
-    t.string "barcode_for_tecan", default: "ean13_barcode", null: false
     t.integer "source_purpose_id"
     t.integer "lifespan"
     t.integer "barcode_prefix_id"
@@ -1691,11 +1689,19 @@ ActiveRecord::Schema.define(version: 20190620094528) do
     t.text "target_well_locations"
   end
 
+  create_table "tag_group_adapter_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tag_groups", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "visible", default: true
+    t.bigint "adapter_type_id"
+    t.index ["adapter_type_id"], name: "index_tag_groups_on_adapter_type_id"
     t.index ["name"], name: "tag_groups_unique_name", unique: true
   end
 
@@ -1814,7 +1820,6 @@ ActiveRecord::Schema.define(version: 20190620094528) do
     t.string "sti_type"
     t.integer "source_id"
     t.integer "destination_id"
-    t.string "destination_type"
     t.text "transfers_hash"
     t.integer "bulk_transfer_id"
     t.integer "user_id"
@@ -1969,6 +1974,7 @@ ActiveRecord::Schema.define(version: 20190620094528) do
   add_foreign_key "requests", "billing_products"
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
+  add_foreign_key "tag_groups", "tag_group_adapter_types", column: "adapter_type_id"
   add_foreign_key "tag_layout_template_submissions", "submissions"
   add_foreign_key "tag_layout_template_submissions", "tag_layout_templates"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"

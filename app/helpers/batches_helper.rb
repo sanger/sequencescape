@@ -1,14 +1,6 @@
 module BatchesHelper
-  def purpose_for_plate(plate)
-    if plate.plate_purpose.nil? || plate.plate_purpose.name.blank?
-      'Unassigned'
-    else
-      plate.plate_purpose.name
-    end
-  end
-
-  def fluidigm_plate(plate)
-    plate.purpose.barcode_for_tecan == 'fluidigm_barcode'
+  def purpose_for_labware(labware)
+    labware.purpose&.name.presence || 'Unassigned'
   end
 
   # Used by both assets/show.xml.builder and batches/show.xml.builder
@@ -16,7 +8,7 @@ module BatchesHelper
     xml.sample(
       sample_id: aliquot.sample_id,
       library_id: aliquot.library_id,
-      library_name: aliquot.library.try(:name),
+      library_name: aliquot.library_name,
       library_type: aliquot.library_type,
       study_id: aliquot.study_id,
       project_id: aliquot.project_id,
@@ -51,7 +43,7 @@ module BatchesHelper
   def batch_link(batch, options)
     link_text = content_tag(:strong, "Batch #{batch.id} ") <<
                 content_tag(:span, batch.pipeline.name, class: 'pipline-name') << ' ' <<
-                content_tag(:span, batch.state, class: "batch-state badge badge-#{batch.state}")
+                badge(batch.state, type: 'batch-state')
     link_to(link_text, batch_path(batch), options)
   end
 end

@@ -133,7 +133,7 @@ end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^\"]+)"$/ do |tube_type, name|
   tube = "#{tube_type}_tube".classify.constantize.find_by(name: name) or raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
-  visit(url_for(controller: 'api/requests', action: 'index', "#{ tube_type }_tube_id": tube.id, format: :json))
+  visit(url_for(controller: 'api/requests', action: 'index', "#{tube_type}_tube_id": tube.id, format: :json))
 end
 
 When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model, name|
@@ -220,7 +220,7 @@ Then /^the JSON should be:$/ do |serialised_json|
   )
 end
 
-Then /^the HTTP response should be "([^\"]+)"$/ do |status|
+Then 'the HTTP response should be {string}' do |status|
   match = /^(\d+).*/.match(status) or raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
   begin
     assert_equal(match[1].to_i, page.driver.status_code)

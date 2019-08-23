@@ -24,7 +24,6 @@ namespace :sequencing do
         unless SequencingPipeline.where(name: 'NovaSeq 6000 PE').exists?
           SequencingPipeline.create!(
             name: 'NovaSeq 6000 PE',
-            asset_type: 'Lane',
             automated: false,
             active: true,
             sorter: 10,

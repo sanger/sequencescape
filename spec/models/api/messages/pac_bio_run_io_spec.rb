@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::Messages::PacBioRunIO, type: :model do
-  subject { Api::Messages::PacBioRunIO.to_hash(pac_bio_batch) }
+  subject { described_class.to_hash(pac_bio_batch) }
 
   let(:plate) { create(:plate_with_tagged_wells, sample_count: 2) }
 

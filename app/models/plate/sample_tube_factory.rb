@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Extracted from {Plate} Used to convert a plate to {SampleTubes}
+# Extracted from {Plate} Used to convert a plate to {SampleTube}
 class Plate::SampleTubeFactory < SimpleDelegator
   def create_sample_tubes
     wells.map { |well| create_child_sample_tube(well) }
@@ -31,7 +31,7 @@ class Plate::SampleTubeFactory < SimpleDelegator
       factory = Plate::SampleTubeFactory.new(plate)
       next if factory.wells.empty?
 
-      asset_group.assets << factory.create_sample_tubes_and_print_barcodes(barcode_printer)
+      asset_group.assets << factory.create_sample_tubes_and_print_barcodes(barcode_printer).map(&:receptacle)
     end
 
     return nil if asset_group.assets.empty?

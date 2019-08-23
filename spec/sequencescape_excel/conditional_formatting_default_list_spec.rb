@@ -2,12 +2,12 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList, type: :model, sample_manifest_excel: true, sample_manifest: true do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
   let(:rules) { load_file(folder, 'conditional_formattings') }
-  let(:defaults) { SequencescapeExcel::ConditionalFormattingDefaultList.new(rules) }
+  let(:defaults) { described_class.new(rules) }
 
   it 'has the correct number of defaults' do
     expect(defaults.count).to eq(rules.length)
@@ -25,8 +25,8 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList, type: :mode
   end
 
   it 'is comparable' do
-    expect(SequencescapeExcel::ConditionalFormattingDefaultList.new(rules)).to eq(defaults)
+    expect(described_class.new(rules)).to eq(defaults)
     rules.shift
-    expect(SequencescapeExcel::ConditionalFormattingDefaultList.new(rules)).not_to eq(defaults)
+    expect(described_class.new(rules)).not_to eq(defaults)
   end
 end
