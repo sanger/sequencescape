@@ -248,7 +248,7 @@ GEM
       railties (>= 4.1)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
-    knapsack (1.17.2)
+    knapsack (1.18.0)
       rake
     launchy (2.4.3)
       addressable (~> 2.3)
