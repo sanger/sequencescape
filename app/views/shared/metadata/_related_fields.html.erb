@@ -26,7 +26,6 @@
         element = document.getElementById('<%= root %>_' + id) ||
                     $("input[name='study[study_metadata_attributes]["+id+"]']:checked")[0] ||
                     document.getElementById('<%= root %>_' + id + '_id');
-        console.log(id,element)
         // Hide all of the DIVs and then show the current value.  We assume that the first identified element
         // is the one we're supposed to be using and that, if there are multiple fields, then they have the
         // same initial value.
