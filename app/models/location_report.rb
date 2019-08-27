@@ -9,7 +9,7 @@ class LocationReport < ApplicationRecord
   serialize :plate_purpose_ids, Array
   serialize :barcodes, Array
   self.per_page = 20
-  enum report_type: %i[type_selection type_labwhere]
+  enum report_type: { type_selection: 0, type_labwhere: 1 }
 
   # relations
   belongs_to :study, optional: true
