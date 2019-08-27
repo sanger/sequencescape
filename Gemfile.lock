@@ -97,17 +97,17 @@ GEM
     amq-protocol (2.3.0)
     arel (8.0.0)
     ast (2.4.0)
-    autoprefixer-rails (8.6.5)
+    autoprefixer-rails (9.6.1)
       execjs
     backports (3.15.0)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     bootsnap (1.4.4)
       msgpack (~> 1.0)
-    bootstrap (4.1.3)
-      autoprefixer-rails (>= 6.0.3)
-      popper_js (>= 1.12.9, < 2)
-      sass (>= 3.5.2)
+    bootstrap (4.3.1)
+      autoprefixer-rails (>= 9.1.0)
+      popper_js (>= 1.14.3, < 2)
+      sassc-rails (>= 2.0.0)
     builder (3.2.3)
     bullet (6.0.2)
       activesupport (>= 3.0.0)
@@ -134,13 +134,6 @@ GEM
       rake (< 13.0)
     chronic (0.10.2)
     coderay (1.1.2)
-    coffee-rails (4.2.2)
-      coffee-script (>= 2.2.0)
-      railties (>= 4.0.0)
-    coffee-script (2.4.1)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.12.2)
     concurrent-ruby (1.1.5)
     configatron (4.5.1)
     connection_pool (2.2.2)
@@ -209,8 +202,8 @@ GEM
       path_expander (~> 1.0)
       ruby_parser (~> 3.1, > 3.1.0)
       sexp_processor (~> 4.8)
-    font-awesome-sass (5.0.9)
-      sass (>= 3.2)
+    font-awesome-sass (5.9.0)
+      sassc (>= 1.11)
     formtastic (3.1.5)
       actionpack (>= 3.2.13)
     gh (0.15.1)
@@ -252,7 +245,7 @@ GEM
       rake
     launchy (2.4.3)
       addressable (~> 2.3)
-    libv8 (3.16.14.19)
+    libv8 (7.3.492.27.1)
     loofah (2.2.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -265,13 +258,15 @@ GEM
     mime-types-data (3.2019.0331)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
+    mini_racer (0.2.6)
+      libv8 (>= 6.9.411)
     minitest (5.10.3)
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
       minitest (>= 5.3.3)
     mocha (1.9.0)
       metaclass (~> 0.0.1)
-    msgpack (1.2.10)
+    msgpack (1.3.1)
     multi_json (1.13.1)
     multi_test (0.1.2)
     multipart-post (2.1.1)
@@ -287,7 +282,7 @@ GEM
     parallel (1.17.0)
     parser (2.6.3.0)
       ast (~> 2.4.0)
-    path_expander (1.0.3)
+    path_expander (1.0.4)
     popper_js (1.14.5)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -340,10 +335,6 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (3.0.0)
     rake (12.3.3)
-    rb-fsevent (0.10.3)
-    rb-inotify (0.10.0)
-      ffi (~> 1.0)
-    ref (2.0.0)
     regexp_parser (1.6.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -355,13 +346,13 @@ GEM
       rubyzip (>= 1.2.1, < 2.0.0)
     rspec-collection_matchers (1.1.3)
       rspec-expectations (>= 2.99.0.beta1)
-    rspec-core (3.8.0)
+    rspec-core (3.8.2)
       rspec-support (~> 3.8.0)
-    rspec-expectations (3.8.3)
+    rspec-expectations (3.8.4)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-json_expectations (2.2.0)
-    rspec-mocks (3.8.0)
+    rspec-mocks (3.8.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-rails (3.8.2)
@@ -372,7 +363,7 @@ GEM
       rspec-expectations (~> 3.8.0)
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
-    rspec-support (3.8.0)
+    rspec-support (3.8.2)
     rspec_junit_formatter (0.4.1)
       rspec-core (>= 2, < 4, != 2.12.0)
     rubocop (0.74.0)
@@ -399,23 +390,23 @@ GEM
       sexp_processor (~> 4.9)
     rubyzip (1.2.3)
     safe_yaml (1.0.5)
-    sass (3.7.4)
-      sass-listen (~> 4.0.0)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (5.0.7)
-      railties (>= 4.0.0, < 6)
-      sass (~> 3.1)
-      sprockets (>= 2.8, < 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
-      tilt (>= 1.1, < 3)
+    sass-rails (6.0.0)
+      sassc-rails (~> 2.1, >= 2.1.1)
+    sassc (2.0.1)
+      ffi (~> 1.9)
+      rake
+    sassc-rails (2.1.2)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     select2-rails (4.0.3)
       thor (~> 0.14)
     selenium-webdriver (3.142.3)
       childprocess (>= 0.5, < 2.0)
       rubyzip (~> 1.2, >= 1.2.2)
-    sexp_processor (4.12.0)
+    sexp_processor (4.12.1)
     shoulda-context (1.2.2)
     shoulda-matchers (4.1.2)
       activesupport (>= 4.2.0)
@@ -440,9 +431,6 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     test-prof (0.10.0)
-    therubyracer (0.12.3)
-      libv8 (~> 3.16.14.15)
-      ref
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.9)
@@ -483,7 +471,7 @@ GEM
     websocket (1.2.8)
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
-    websocket-extensions (0.1.3)
+    websocket-extensions (0.1.4)
     whenever (1.0.0)
       chronic (>= 0.6.3)
     will_paginate (3.1.8)
@@ -505,10 +493,9 @@ DEPENDENCIES
   activerecord-oracle_enhanced-adapter
   activeresource
   acts-as-dag!
-  autoprefixer-rails (< 9.0.0)
   axlsx!
   bootsnap
-  bootstrap (< 4.2.1)
+  bootstrap
   builder
   bullet
   bunny
@@ -516,7 +503,6 @@ DEPENDENCIES
   capybara
   capybara-selenium
   carrierwave
-  coffee-rails
   configatron
   connection_pool
   cucumber
@@ -529,7 +515,7 @@ DEPENDENCIES
   factory_bot_rails
   flay
   flog
-  font-awesome-sass (< 5.0.13)
+  font-awesome-sass
   formtastic
   gmetric (~> 0.1.3)
   irods_reader (>= 0.0.2)!
@@ -542,6 +528,7 @@ DEPENDENCIES
   knapsack
   launchy
   mime-types
+  mini_racer
   minitest (= 5.10.3)
   minitest-profiler
   mocha
@@ -583,7 +570,6 @@ DEPENDENCIES
   slack-notifier
   spreadsheet
   test-prof
-  therubyracer
   timecop
   traceroute
   transactional_capybara
