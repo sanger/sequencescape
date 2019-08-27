@@ -166,7 +166,7 @@ en:
         sample_common_name:
           label: Common Name
           help: Common name of sample that might be used in publication or other communications, or will be relevant and distinct within any study that refers to this sample.
-          edit_info: "NA requirement, Array Expres"
+          edit_info: "ENA requirement, Array Express"
 
         sample_strain_att:
           label: Strain
