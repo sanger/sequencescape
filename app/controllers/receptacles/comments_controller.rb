@@ -24,7 +24,7 @@ class Receptacles::CommentsController < ApplicationController
     comment = Comment.find(params[:id])
     comment.destroy if comment.present?
     @comments = @receptacle.comments
-    render partial: 'list', locals: { commentable: @receptacle, visible: true, receptacle: receptacle }
+    render partial: 'list', locals: { commentable: @receptacle, visible: true, receptacle: @receptacle }
   end
 
   private
