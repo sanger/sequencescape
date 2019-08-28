@@ -153,6 +153,11 @@ dl.order-summary {
 
 .btn-default { @extend .btn-primary; }
 
+.property_edit_info {
+  @extend .badge;
+  @extend .badge-light;
+}
+
 // Request progress bars
 .request_progress {
   .request_progress_header {
@@ -180,4 +185,10 @@ dl.order-summary {
   .key {
     span { @extend .badge; @extend .text-white; }
   }
+}
+
+.external_help:before {
+  @extend .fas;
+  @extend .fa-book;
+  padding-right: 0.5em;
 }

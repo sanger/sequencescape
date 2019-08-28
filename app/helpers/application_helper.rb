@@ -18,7 +18,7 @@ module ApplicationHelper
   end
 
   def required_marker
-    content_tag(:span, '&raquo;'.html_safe, class: 'required')
+    icon('fas', 'asterisk', class: 'text-warning', title: 'required')
   end
 
   def render_flashes

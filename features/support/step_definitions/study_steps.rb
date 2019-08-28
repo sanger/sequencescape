@@ -278,6 +278,10 @@ Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name
   step('I fill in "Data access group" with "some nonsense"')
   step('I fill in "Study description" with "some description"')
   step(%Q{I select "#{faculty_sponsor}" from "Faculty Sponsor"})
+  step('I choose "Yes" from "Do any of the samples in this study contain human DNA?"')
+  step('I choose "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"')
+  step('I choose "Yes" from "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"')
+  step('I choose "Open (ENA)" from "What is the data release strategy for this study?"')
   step('I press "Create"')
 end
 
