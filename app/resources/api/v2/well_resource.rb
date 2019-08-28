@@ -40,6 +40,7 @@ module Api
       attribute :state, readonly: true
 
       # Filters
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
 
       # Custom methods
 
