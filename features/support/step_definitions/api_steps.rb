@@ -325,10 +325,6 @@ Given /^the infinium barcode for plate "([^"]*)" is "([^"]*)"$/ do |plate_name, 
   plate.save!
 end
 
-Given /^no (plate purpose|request type)s exist$/ do |model|
-  model.gsub(/\s+/, '_').camelize.constantize.destroy_all
-end
-
 Given /^the number of results returned by the API per page is (\d+)$/ do |count|
   ::Core::Endpoint::BasicHandler::Paged.results_per_page = count.to_i
 end

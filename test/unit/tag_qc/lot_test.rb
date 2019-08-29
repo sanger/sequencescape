@@ -38,11 +38,6 @@ class LotTest < ActiveSupport::TestCase
         @lot.template = create :tag_layout_template, name: 'lot_test'
         assert !@lot.valid?, 'Lot should be invalid'
       end
-
-      teardown do
-        @lot.lot_type.delete
-        @lot.delete
-      end
     end
   end
 end

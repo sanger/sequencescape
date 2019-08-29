@@ -48,9 +48,6 @@ module CarrierWave
           each_slice(file) do |start, finish|
             @uploader.model.db_files.create!(data: file.slice(start, finish))
           end
-
-          # Old code from attachment_fu: doesn't seem to be needed
-          # #  self.class.update_all ['db_file_id = ?', self.db_file_id = db_file.id], ['id = ?', id]
         end
 
         # Error handling should help if uploader was mounted to a model with no content_type
