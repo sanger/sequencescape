@@ -9,7 +9,7 @@ RSpec.describe ParentsController do
 
   describe '#show' do
     let(:child) { create :lane }
-    let(:parents) { create_list :library_tube, parent_number }
+    let(:parents) { create_list(:library_tube, parent_number).map(&:receptacle) }
 
     setup do
       parents.each { |parent| create :sequencing_request, target_asset: child, asset: parent }

@@ -8,6 +8,5 @@ class Io::Labware < Core::Io::Base
 
   define_attribute_and_json_mapping("
                          name  => name
-                     qc_state  => qc_state
   ")
 end

@@ -157,11 +157,13 @@ class TagSubstitution
   end
 
   def commented_assets
-    @commented_assets ||= (Tube.with_required_aliquots(all_aliquots).pluck(:id) + lane_ids).uniq
+    @commented_assets ||= (
+      Receptacle.on_a(Tube).with_required_aliquots(all_aliquots).pluck(:id) + lane_ids
+    ).uniq
   end
 
   def apply_comments
-    commentable_type = Lane.base_class.name
+    commentable_type = Receptacle.base_class.name
     Comment.import(commented_assets.map do |asset_id|
       {
         commentable_id: asset_id,

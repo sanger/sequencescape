@@ -23,7 +23,7 @@ describe 'Receptacles API', with: :api_v2 do
       it 'identifies the type of receptacle' do
         api_get '/api/v2/receptacles'
         listed = json['data'].map { |data| data['type'] }.sort
-        expect(listed).to eq(%w(receptacles receptacles receptacles wells))
+        expect(listed).to eq(%w(lanes receptacles receptacles wells))
       end
     end
 
