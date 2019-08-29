@@ -568,7 +568,7 @@ ActiveRecord::Schema.define(version: 20190829125652) do
 
   create_table "labware", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string "name"
-    t.string "sti_type", limit: 50, null: false
+    t.string "sti_type", limit: 50, default: "Labware", null: false
     t.integer "size"
     t.string "public_name"
     t.string "two_dimensional_barcode"
@@ -1060,7 +1060,7 @@ ActiveRecord::Schema.define(version: 20190829125652) do
   end
 
   create_table "receptacles", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
-    t.string "sti_type", limit: 50, null: false
+    t.string "sti_type", limit: 50, default: "Receptacle", null: false
     t.string "qc_state", limit: 20
     t.boolean "resource"
     t.integer "map_id"

@@ -4,7 +4,7 @@
 class CreateReceptaclesTable < ActiveRecord::Migration[4.2]
   def change
     create_table 'receptacles' do |t|
-      t.string 'sti_type', limit: 50, null: false
+      t.string 'sti_type', limit: 50, null: false, default: 'Receptacle'
       t.string 'qc_state', limit: 20
       t.boolean 'resource'
       t.integer 'map_id'

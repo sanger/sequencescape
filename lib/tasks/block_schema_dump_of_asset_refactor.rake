@@ -5,9 +5,9 @@ Rake::Task['db:schema:dump'].enhance ['asset_refactor:guard_schema_dump']
 
 namespace :asset_refactor do
   task :guard_schema_dump do
-    AssetRefactor.when_refactored do
+    AssetRefactor.when_not_refactored do
       puts Rainbow(<<~HEREDOC
-        Schema dump is blocked due to presence of Labware table.
+        Schema dump is blocked due to absence of Labware table.
         This is to prevent experimental schema changes from being commited.
         See app/models/asset_refactor.rb for more information.
         This file can be deleted once the refactoring process is complete.

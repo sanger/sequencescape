@@ -6,7 +6,7 @@ class CreateLabwareTable < ActiveRecord::Migration[4.2]
     say "LAST ASSET #{Asset.order(id: :desc).first&.id || 'NONE'}"
     create_table 'labware' do |t|
       t.string 'name'
-      t.string 'sti_type', limit: 50, null: false
+      t.string 'sti_type', limit: 50, null: false, default: 'Labware'
       t.integer 'size'
       t.string 'public_name'
       t.string 'two_dimensional_barcode'
