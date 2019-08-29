@@ -156,7 +156,7 @@ class RequestsController < ApplicationController
     old_request = Request.find(params[:id])
     new_request = old_request.copy
     flash[:notice] = "Created request #{new_request.id}"
-    redirect_to asset_url(new_request.asset)
+    redirect_to receptacle_path(new_request.asset)
   end
 
   def reset_qc_information

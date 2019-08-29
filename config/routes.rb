@@ -473,7 +473,6 @@ Rails.application.routes.draw do
       get :new_request
       post :create_request
       get :summary
-      get :close
       get :print
       get :history
       post :move

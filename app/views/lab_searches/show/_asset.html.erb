@@ -1,6 +1,6 @@
 
 <tr class="<%= cycle("rowodd", "roweven") %>">
-  <td><%= link_to(h(asset.display_name), asset_url(asset), target: "_blank") %></td>
+  <td><%= link_to(h(asset.display_name), labware_path(asset), target: "_blank") %></td>
   <td><%= asset.respond_to?(:human_barcode) ? asset.human_barcode : '' %></td>
   <td colspan="3">
     <% unless asset.requests.empty? %>
