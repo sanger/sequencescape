@@ -28,6 +28,7 @@ AssetRefactor.when_refactored do
     delegate :sequenceable?, to: :labware
     # Keeps event behaviour consistent
     delegate :subject_type, to: :labware
+    delegate :public_name, to: :labware
 
     # This really doesn't make sense any more. Should probably migrate legacy data
     # to a barcode type and retire this
