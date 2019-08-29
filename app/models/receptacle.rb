@@ -25,6 +25,7 @@ AssetRefactor.when_refactored do
     delegate :asset_type_for_request_types, to: :labware, allow_nil: true
     delegate :has_stock_asset?, to: :labware, allow_nil: true
     delegate :children, to: :labware, allow_nil: true
+    delegate :sequenceable?, to: :labware
     # Keeps event behaviour consistent
     delegate :subject_type, to: :labware
 

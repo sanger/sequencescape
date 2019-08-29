@@ -110,7 +110,7 @@ class LabwareController < ApplicationController
     else
       flash[:error] = print_job.errors.full_messages.join('; ')
     end
-    redirect_to asset_url(@asset)
+    redirect_to labware_path(@asset)
   end
 
   def show_plate
