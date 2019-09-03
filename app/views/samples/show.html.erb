@@ -22,17 +22,12 @@
 
 <%= page_title "Sample Specification", @sample.sanger_sample_id %>
 
-<%= alert(:info) do %>
-  <h2 class="alert-heading">Important notice</h2>
-    Sample names need to be unique and can only contain letters, numbers, underscores and hyphens.<br />
-    Spaces are not allowed.<br />
-    For any help editing or creating new samples, please email <%= help_email_link %>
-<% end %>
 <% if @sample.consent_withdrawn? %>
   <%= alert(:danger) do %>
     Patient consent has been withdrawn for this sample.
   <% end %>
 <% end %>
+
 <div class="columnize">
   <%= render partial: 'summary', locals: { sample: @sample } %>
   <%= render partial: 'studies', locals: { sample: @sample, studies: @studies } %>
