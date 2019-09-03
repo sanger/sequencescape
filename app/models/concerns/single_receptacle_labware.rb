@@ -8,7 +8,7 @@ module SingleReceptacleLabware
 
   included do
     AssetRefactor.when_refactored do
-      has_one :receptacle, foreign_key: :labware_id, inverse_of: :labware, dependent: :destroy
+      has_one :receptacle, foreign_key: :labware_id, inverse_of: :labware, dependent: :destroy, autosave: true
       has_one :primary_aliquot, through: :receptacle
       has_one :primary_sample, through: :receptacle
       has_one :source_request, through: :receptacle
