@@ -49,7 +49,7 @@
           <% end %>
           </td>
           <% if request.target_asset %>
-            <td><%= link_to(h(request.target_asset.display_name), asset_url(request.target_asset)) %></td>
+            <td><%= link_to(h(request.target_asset.display_name), receptacle_path(request.target_asset)) %></td>
           <% else %>
             <td></td>
           <% end %>
@@ -107,7 +107,7 @@
           <% end %>
           </td>
           <% if request.asset %>
-            <td><%= link_to(h(request.asset.display_name), asset_url(request.asset)) %></td>
+            <td><%= link_to(h(request.asset.display_name), receptacle_path(request.asset)) %></td>
           <% else %>
             <td></td>
           <% end %>

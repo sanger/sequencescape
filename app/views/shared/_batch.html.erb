@@ -43,10 +43,10 @@
 
           <td><%= link_to request.id, request_url(request) %></td>
           <% if request.asset  %>
-            <td><%= link_to request.asset.sti_type, asset_url(request.asset) %></td>
+            <td><%= link_to request.asset.sti_type, receptacle_path(request.asset) %></td>
             <td><%= request.asset.try(:human_barcode) %></td>
             <% if request.target_asset %>
-              <td><%= link_to request.target_asset.sti_type, asset_url(request.target_asset) %></td>
+              <td><%= link_to request.target_asset.sti_type, receptacle_path(request.target_asset) %></td>
               <td><%= request.target_asset.try(:human_barcode) %></td>
             <% else %>
               <td></td>
