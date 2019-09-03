@@ -23,7 +23,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
   before do
     barcode = double('barcode')
-    allow(barcode).to receive(:barcode).and_return(23)
+    allow(barcode).to receive(:barcode).and_return(generate(:barcode_number))
     allow(PlateBarcode).to receive(:create).and_return(barcode)
 
     @sample_manifest = create :sample_manifest
