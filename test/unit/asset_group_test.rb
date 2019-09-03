@@ -118,6 +118,51 @@ class AssetGroupTest < ActiveSupport::TestCase
 
     context '#all_samples_have_accession_numbers?' do
       setup do
+        @asset_group = build :asset_group
+      end
+      context 'where all samples' do
+        setup do
+          2.times do |_i|
+            asset = create(:sample_tube)
+            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: 'ERS00001' })
+            @asset_group.assets << asset.receptacle
+          end
+        end
+        context 'have accession numbers' do
+          should 'return true' do
+            assert_equal 2, @asset_group.assets.size
+            assert_not @asset_group.assets.first.primary_aliquot.sample.nil?
+            assert @asset_group.all_samples_have_accession_numbers?
+          end
+        end
+        context 'except 1 have accession numbers' do
+          setup do
+            asset = create(:sample_tube)
+            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
+            @asset_group.assets << asset.receptacle
+          end
+          should 'return false' do
+            assert_not @asset_group.all_samples_have_accession_numbers?
+          end
+        end
+      end
+      context 'no samples have accession numbers' do
+        setup do
+          2.times do |_i|
+            asset = create(:sample_tube)
+            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
+            @asset_group.assets << asset.receptacle
+          end
+        end
+        should 'return false' do
+          assert_equal 2, @asset_group.assets.size
+          assert_equal false, @asset_group.all_samples_have_accession_numbers?
+        end
+      end
+    end
+
+    context '#all_samples_have_accession_numbers? On saved asset groups' do
+      setup do
         @asset_group = create :asset_group
       end
       context 'where all samples' do
