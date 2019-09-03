@@ -21,8 +21,6 @@ class Plate < Labware
   include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
 
-  include AssetRefactor::Labware::Methods
-
   extend QcFile::Associations
 
   class_attribute :default_plate_size

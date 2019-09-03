@@ -9,8 +9,6 @@ class Tube < Labware
   include Api::Messages::QcResultIO::TubeExtensions
   include SingleReceptacleLabware
 
-  include AssetRefactor::Labware::Methods
-
   extend QcFile::Associations
 
   # Fallback for tubes without a purpose

@@ -2,13 +2,16 @@
 
 # Labware represents a physical object which moves around the lab.
 # It has one or more receptacles.
-# This class has been created as part of the {AssetRefactor} when not in
-# refactor mode this class is pretty much ignored
 class Labware < Asset
   include LabwareAssociations
   include Commentable
   include Uuid::Uuidable
   include AssetLink::Associations
+  include SharedBehaviour::Named
+
+  attr_reader :storage_location_service
+
+  delegate :metadata, to: :custom_metadatum_collection, allow_nil: true
 
   class_attribute :receptacle_class
   self.receptacle_class = 'Receptacle'
@@ -30,6 +33,11 @@ class Labware < Asset
   has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
   has_one :spiked_in_buffer_links, -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
           class_name: 'AssetLink', foreign_key: :descendant_id, inverse_of: :descendant
+  has_many :asset_audits, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
+  has_many :volume_updates, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
+  has_many :state_changes, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
+  has_one :custom_metadatum_collection, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
+  belongs_to :labware_type, class_name: 'PlateType', optional: true
 
   scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }) }
   scope :for_search_query, lambda { |query|
@@ -39,6 +47,8 @@ class Labware < Asset
   }
   scope :for_lab_searches_display, -> { includes(:barcodes, requests_as_source: %i[pipeline batch]).order('requests.pipeline_id ASC') }
   scope :named, ->(name) { where(name: name) }
+  scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
+  scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
 
   def human_barcode
     'UNKNOWN'
@@ -53,5 +63,47 @@ class Labware < Asset
 
   def display_name
     name.presence || "#{sti_type} #{id}"
+  end
+
+  def labwhere_location
+    @labwhere_location ||= lookup_labwhere_location
+  end
+
+  # Labware reflects the physical piece of plastic corresponding to an asset
+  def labware
+    self
+  end
+
+  def storage_location
+    @storage_location ||= obtain_storage_location
+  end
+
+  def scanned_in_date
+    scanned_into_lab_event.try(:content) || ''
+  end
+
+  private
+
+  def obtain_storage_location
+    if labwhere_location.present?
+      @storage_location_service = 'LabWhere'
+      labwhere_location
+    else
+      @storage_location_service = 'None'
+      'LabWhere location not set. Could this be in ETS?'
+    end
+  end
+
+  def lookup_labwhere_location
+    lookup_labwhere(machine_barcode) || lookup_labwhere(human_barcode)
+  end
+
+  def lookup_labwhere(barcode)
+    begin
+      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(barcode)
+    rescue LabWhereClient::LabwhereException => e
+      return "Not found (#{e.message})"
+    end
+    return info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
   end
 end

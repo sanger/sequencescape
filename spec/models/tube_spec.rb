@@ -105,44 +105,4 @@ describe Tube, type: :model do
       end
     end
   end
-
-  context 'qc updates' do
-    # This behaviour actually belongs on {Receptacle} post AssetRefactor. Currently this test shouls work
-    # in either context, but should be moved post migration.
-    subject(:tube) { create :tube }
-
-    describe '#update_from_qc' do
-      let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
-
-      setup { tube.receptacle.update_from_qc(qc_result) }
-      context 'key: molarity with nM' do
-        let(:key) { 'molarity' }
-        let(:value) { 100 }
-
-        context 'units: nM' do
-          let(:units) { 'nM' }
-
-          it 'works', :aggregate_failures do
-            expect(tube.concentration).to eq(100)
-          end
-        end
-      end
-
-      context 'key: volume' do
-        let(:key) { 'volume' }
-        let(:units) { 'ul' }
-        let(:value) { 100 }
-
-        it { expect(tube.volume).to eq(100) }
-      end
-
-      context 'key: volume, units: ml' do
-        let(:key) { 'volume' }
-        let(:units) { 'ml' }
-        let(:value) { 1 }
-
-        it { expect(tube.volume).to eq(1000) }
-      end
-    end
-  end
 end

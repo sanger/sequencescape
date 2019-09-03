@@ -29,7 +29,7 @@ class ApplicationRecord < ActiveRecord::Base
       find_by(name: name)
     end
 
-    # Temporary compatibility layer while AssetRefactor progresses
+    # Temporary compatibility layer following AssetRefactor:
     # will allow labware to get passed into associations expecting
     # receptacles where there is no ambiguity. (e.g. tubes)
     # @example
