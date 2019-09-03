@@ -61,6 +61,18 @@ RSpec.describe LabSearchesController do
           expect(assigns(:assets)).not_to include(other_asset)
         end
       end
+
+      context 'with a plate barcode' do
+        let(:asset) { create :plate }
+        let(:query) { asset.human_barcode }
+
+        it 'finds the asset' do
+          expect(assigns(:assets)).to include(asset)
+        end
+        it 'does not find other assets' do
+          expect(assigns(:assets)).not_to include(other_asset)
+        end
+      end
     end
   end
 end
