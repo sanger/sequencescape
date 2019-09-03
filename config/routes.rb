@@ -258,7 +258,8 @@ Rails.application.routes.draw do
         get :show_summary
       end
 
-      resources :assets do
+      resources :assets # Legacy path, redirects to receptacles
+      resources :receptacles do
         collection do
           post :print
         end
