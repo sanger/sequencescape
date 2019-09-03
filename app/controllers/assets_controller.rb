@@ -2,22 +2,20 @@ class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :discover_asset, only: [:edit, :update, :summary, :close, :print_assets, :print, :history]
+  before_action :discover_asset, only: [:edit, :update, :summary, :print_assets, :print, :history]
   before_action :prepare_asset, only: [:new_request, :create_request]
 
   def index
     if params[:study_id]
-      @study = Study.find(params[:study_id])
-      @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
+      redirect_to study_information_receptacles_path(params[:study_id])
+      return
     else
       @assets = Asset.page(params[:page])
     end
 
     respond_to do |format|
       format.html
-      if params[:study_id]
-        format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
-      elsif params[:sample_id]
+      if params[:sample_id]
         format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
@@ -92,20 +90,6 @@ class AssetsController < ApplicationController
   def summary
     @summary = UiHelper::Summary.new(per_page: 25, page: params[:page])
     @summary.load_asset(@asset)
-  end
-
-  def close
-    @asset.closed = !@asset.closed
-    @asset.save
-    respond_to do |format|
-      if @asset.closed
-        flash[:notice] = "Asset #{@asset.name} was closed."
-      else
-        flash[:notice] = "Asset #{@asset.name} was opened."
-      end
-      format.html { redirect_to(asset_url(@asset)) }
-      format.xml  { head :ok }
-    end
   end
 
   def print

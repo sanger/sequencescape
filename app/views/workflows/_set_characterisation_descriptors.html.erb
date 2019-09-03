@@ -29,8 +29,8 @@
     <h2>Sample: <%= request.sample_name -%></h2>
         <dl>
           <dt>Request</dt> <dd><%= link_to request.id, request_url(request) %></dd>
-          <dt>Source</dt>  <dd><%= link_to request.asset.sti_type.underscore.humanize + "\s" + request.asset.human_barcode, asset_url(request.asset) %></dd>
-          <dt>Target</dt>  <dd><%= link_to request.target_asset.sti_type.underscore.humanize + "\s" +  request.target_asset.human_barcode, asset_url(request.target_asset) %></dd>
+          <dt>Source</dt>  <dd><%= link_to request.asset.sti_type.underscore.humanize + "\s" + request.asset.human_barcode, receptacle_path(request.asset) %></dd>
+          <dt>Target</dt>  <dd><%= link_to request.target_asset.sti_type.underscore.humanize + "\s" +  request.target_asset.human_barcode, receptacle_path(request.target_asset) %></dd>
           <dt>Comments</dt><dd><%= link_to_comments(request) %></dd>
         </dl>
 

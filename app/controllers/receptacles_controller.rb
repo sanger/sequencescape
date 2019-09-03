@@ -12,7 +12,7 @@ class ReceptaclesController < ApplicationController
   def index
     if params[:study_id]
       @study = Study.find(params[:study_id])
-      @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
+      @assets = @study.assets_through_aliquots.order(created_at: :desc).page(params[:page])
     else
       @assets = Receptacle.page(params[:page])
     end
@@ -82,7 +82,7 @@ class ReceptaclesController < ApplicationController
                        else
                          "Receptacle #{@asset.name} was opened."
                        end
-      format.html { redirect_to(asset_url(@asset)) }
+      format.html { redirect_to(receptacle_path(@asset)) }
       format.xml  { head :ok }
     end
   end
@@ -119,7 +119,7 @@ class ReceptaclesController < ApplicationController
     else
       flash[:error] = print_job.errors.full_messages.join('; ')
     end
-    redirect_to asset_url(@asset)
+    redirect_to receptacle_path(@asset)
   end
 
   def show_plate

@@ -20,7 +20,7 @@
       <tbody>
         <% asset.parents.each do |parent| %>
         <tr>
-          <td><%= link_to "#{(parent.label or "").titleize}: #{parent.display_name}", asset_url(parent) %></td>
+          <td><%= link_to "#{(parent.label or "").titleize}: #{parent.display_name}", labware_path(parent) %></td>
           <td>Parent</td>
           <td>
             <% if parent.is_a?(Well) && parent.map %>
@@ -32,7 +32,7 @@
 
         <% asset.children.each do |child| %>
         <tr>
-          <td><%= link_to "#{child.label&.titleize}: #{child.display_name}", asset_url(child) %></td>
+          <td><%= link_to "#{child.label&.titleize}: #{child.display_name}", labware_path(child) %></td>
           <td>Child</td>
           <td>
           <% if child.is_a?(Well) && child.map %>

@@ -123,8 +123,6 @@ class Study < ApplicationRecord
   has_many :batches
   has_many :asset_groups
   has_many :study_reports
-  # load all the associated requests with attemps and request type
-  has_many :eager_items, ->() { includes(requests: :request_type) }, class_name: 'Item', through: :requests, source: :item
   has_many :aliquots
   has_many :initial_requests, class_name: 'Request', foreign_key: :initial_study_id
   has_many :assets_through_aliquots,  ->() { distinct }, through: :aliquots, source: :receptacle
@@ -140,7 +138,7 @@ class Study < ApplicationRecord
   has_many :suppliers, ->() { distinct }, through: :sample_manifests
 
   # Validations
-  validates :name, uniqueness: { case_sensitive: false }, presence: true
+  validates :name, uniqueness: { case_sensitive: false }, presence: true, latin1: true
   validates_length_of :name, maximum: 200
   validates_format_of :abbreviation, with: /\A[\w_-]+\z/i, allow_blank: false, message: 'cannot contain spaces or be blank'
   validate :validate_ethically_approved
@@ -255,6 +253,14 @@ class Study < ApplicationRecord
     }.each_with_object({}) do |(k, v), h|
       h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
     end
+
+    # These fields are warehoused, so need to match the encoding restrictions there
+    # This excludes supplementary characters, which include emoji and rare kanji
+    validates :study_abstract, :study_study_title, :study_description, :s3_email_list, utf8mb3: true
+    # These fields are restricted further as they aren't expected to ever contain anything more than ASCII
+    validates :study_project_id, :ega_dac_accession_number, :ega_policy_accession_number, :study_ebi_accession_number,
+              :array_express_accession_number, :hmdmc_approval_number,
+              format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII', allow_blank: true }
 
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?
