@@ -40,9 +40,9 @@ describe TagSubstitution do
     end
 
     it 'assigns comments to the lanes and tubes' do
-      expect(library_tube_a.comments.map(&:description)).to eq [comment]
-      expect(library_tube_b.comments.map(&:description)).to eq [comment]
-      expect(mx_library_tube.comments.map(&:description)).to eq [comment]
+      expect(library_tube_a.receptacle.comments.map(&:description)).to eq [comment]
+      expect(library_tube_b.receptacle.comments.map(&:description)).to eq [comment]
+      expect(mx_library_tube.receptacle.comments.map(&:description)).to eq [comment]
       expect(lane.comments.map(&:description)).to eq [comment]
     end
   end

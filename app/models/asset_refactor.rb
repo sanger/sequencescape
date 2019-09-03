@@ -36,7 +36,7 @@ module AssetRefactor
   # - Prevent schema dumping
   def self.setup
     @refactor_env = ActiveRecord::Base.connection.tables.include?('labware')
-    warning if @refactor_env
+    warning unless @refactor_env
   rescue ActiveRecord::NoDatabaseError => _e
     warn 'No database detected'
     @refactor_env = false
@@ -45,7 +45,7 @@ module AssetRefactor
   def self.warning
     Rails.logger.warn Rainbow(<<~HEREDOC
       ⚠️ ⚠️ ⚠️
-      ⚠️ ⚠️ ⚠️ Labware table detected. AssetRefactor mode enabled.
+      ⚠️ ⚠️ ⚠️ Labware table not detected. Legacy mode enabled.
       ⚠️ ⚠️ ⚠️ See app/models/asset_refactor.rb for more information
       ⚠️ ⚠️ ⚠️
     HEREDOC

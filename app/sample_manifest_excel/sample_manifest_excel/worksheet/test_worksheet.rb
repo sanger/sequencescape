@@ -202,7 +202,7 @@ module SampleManifestExcel
                 else
                   FactoryBot.create(:empty_sample_tube)
                 end
-        sma = FactoryBot.build(:sample_manifest_asset, asset: asset, sample_manifest: nil)
+        sma = FactoryBot.build(:sample_manifest_asset, asset: asset.receptacle, sample_manifest: nil)
         assets << asset
         yield(sma) if block_given?
       end

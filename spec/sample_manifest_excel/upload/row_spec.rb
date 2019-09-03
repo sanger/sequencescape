@@ -190,8 +190,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     before do
       @rows = []
       library_tubes.each_with_index do |tube, i|
-        sma = create(:sample_manifest_asset, sample_manifest: manifest, asset: tube)
-        create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
+        sma = create(:sample_manifest_asset, sample_manifest: manifest, asset: tube.receptacle)
+        create(:external_multiplexed_library_tube_creation_request, asset: tube.receptacle, target_asset: mx_library_tube.receptacle)
         row_data = data.dup
         row_data[0] = tube.human_barcode
         row_data[1] = sma.sanger_sample_id

@@ -88,6 +88,7 @@ Metrics/BlockLength:
     - with_association
     - it
     - class_eval
+    - has_metadata
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
