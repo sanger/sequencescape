@@ -7,17 +7,15 @@ class AssetsController < ApplicationController
 
   def index
     if params[:study_id]
-      @study = Study.find(params[:study_id])
-      @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
+      redirect_to study_information_receptacles_path(params[:study_id])
+      return
     else
       @assets = Asset.page(params[:page])
     end
 
     respond_to do |format|
       format.html
-      if params[:study_id]
-        format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
-      elsif params[:sample_id]
+      if params[:sample_id]
         format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])

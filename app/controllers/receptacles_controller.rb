@@ -12,7 +12,7 @@ class ReceptaclesController < ApplicationController
   def index
     if params[:study_id]
       @study = Study.find(params[:study_id])
-      @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
+      @assets = @study.assets_through_aliquots.order(created_at: :desc).page(params[:page])
     else
       @assets = Receptacle.page(params[:page])
     end
