@@ -41,6 +41,7 @@ class Sample < ApplicationRecord
   include StandardNamedScopes
   include SharedBehaviour::Named
   include Aliquot::Aliquotable
+  include Commentable
 
   extend EventfulRecord
   extend ValidationStateGuard
@@ -217,7 +218,6 @@ class Sample < ApplicationRecord
   has_many :studies, through: :study_samples, inverse_of: :samples
 
   has_many :roles, as: :authorizable, dependent: :destroy, inverse_of: :authorizable
-  has_many :comments, as: :commentable, dependent: :destroy, inverse_of: :commentable
   has_many :asset_groups, through: :receptacles
 
   has_many :requests, through: :assets
