@@ -13,14 +13,8 @@ class TransferRequest < ApplicationRecord
   # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, optional: false
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_target, optional: false
-
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    has_one :target_labware, through: :target_asset, source: :labware
-    has_one :source_labware, through: :asset, source: :labware
-  end
-
+  has_one :target_labware, through: :target_asset, source: :labware
+  has_one :source_labware, through: :asset, source: :labware
   has_many :associated_requests, through: :asset, source: :requests_as_source
   has_many :transfer_request_collection_transfer_requests, dependent: :destroy
   has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests, inverse_of: :transfer_requests

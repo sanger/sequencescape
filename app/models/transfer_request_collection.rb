@@ -15,7 +15,7 @@ class TransferRequestCollection < ApplicationRecord
       @cache = Uuid.where(external_id: uuids).pluck(:external_id, :resource_type, :resource_id).each_with_object({}) do |uuid_item, store|
         store[uuid_item[0, 2]] = uuid_item[-1]
       end
-      AssetRefactor.when_refactored { extract_receptacles_from_labware }
+      extract_receptacles_from_labware
     end
 
     def find(klass, uuid)
@@ -47,16 +47,7 @@ class TransferRequestCollection < ApplicationRecord
   # a nested has_many association. This makes the handling of
   # class specific attributes, such as barcodes, a bit cumbersome,
   # especially when we are trying to eager load that information.
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    has_many :target_tubes, -> { distinct }, through: :transfer_requests, source: :target_labware, class_name: 'Tube'
-  end
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    has_many :target_tubes, -> { distinct }, through: :transfer_requests, source: :target_asset, class_name: 'Tube'
-  end
+  has_many :target_tubes, -> { distinct }, through: :transfer_requests, source: :target_labware, class_name: 'Tube'
 
   belongs_to :user, optional: false
   accepts_nested_attributes_for :transfer_requests

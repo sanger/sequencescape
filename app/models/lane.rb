@@ -35,22 +35,10 @@ class Lane < Receptacle
 
   scope :for_rebroadcast, -> { includes(requests_as_target: :batch) }
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    delegate :name, :name=, to: :labware
+  delegate :name, :name=, to: :labware
 
-    def labware
-      super || build_labware(sti_type: 'Lane::Labware', receptacle: self)
-    end
-  end
-
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    def labware
-      self
-    end
+  def labware
+    super || build_labware(sti_type: 'Lane::Labware', receptacle: self)
   end
 
   def friendly_name

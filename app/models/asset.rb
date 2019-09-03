@@ -3,6 +3,8 @@ require 'eventful_record'
 # Asset is a very busy class which combines what should probably be two separate concepts:
 # Labware: A physical item which can move round the lab, such as a {Plate} or {Tube}
 #
+# This class has now been split into two and should be eliminated.
+#
 # Key subclasses
 # --------------
 # - {Receptacle}: Something which can contain aliquots, such as a {Well} or {Tube}
@@ -24,9 +26,7 @@ class Asset < ApplicationRecord
   include Event::PlateEvents
   extend EventfulRecord
 
-  AssetRefactor.when_refactored do
-    self.abstract_class = true
-  end
+  self.abstract_class = true
 
   class_attribute :stock_message_template, instance_writer: false
   # The partial used to render the list of assets on the asset show page
@@ -42,23 +42,6 @@ class Asset < ApplicationRecord
   self.sample_partial = 'assets/samples_partials/blank'
   self.automatic_move = false
   self.sequenceable = false
-
-  # Receptacle based associations
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    include ReceptacleAssociations
-    include LabwareAssociations
-    include Uuid::Uuidable
-    include AssetLink::Associations
-    include Commentable
-    has_many :messengers, as: :target, inverse_of: :target
-
-    has_many :requests, inverse_of: :asset, foreign_key: :asset_id
-    has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
-    has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
-    has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
-  end
 
   delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
 

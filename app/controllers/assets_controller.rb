@@ -25,13 +25,11 @@ class AssetsController < ApplicationController
   end
 
   def show
-    # This block is disabled when we have the labware table present as part of the AssetRefactor
-    # Ie. This is what will happens now
     # LEGACY API FOR CGP to allow switch-over
-    AssetRefactor.when_not_refactored do
-      next unless request.format.xml?
+    # In future they will use the recpetacles/:id/parent
+    if request.format.xml?
 
-      @asset = Asset.include_for_show.find(params[:id])
+      @asset = Receptacle.include_for_show.find(params[:id])
       respond_to { |format| format.xml }
       return
     end

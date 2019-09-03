@@ -30,43 +30,4 @@ require 'rainbow'
 # @author [jg16]
 #
 module AssetRefactor
-  # Call in the initializer to detect if we're currently dealing with the re-factored
-  # assets schema. Will be used to:
-  # - Switch feature flags
-  # - Prevent schema dumping
-  def self.setup
-    @refactor_env = ActiveRecord::Base.connection.tables.include?('labware')
-    warning unless @refactor_env
-  rescue ActiveRecord::NoDatabaseError => _e
-    warn 'No database detected'
-    @refactor_env = false
-  end
-
-  def self.warning
-    Rails.logger.warn Rainbow(<<~HEREDOC
-      ⚠️ ⚠️ ⚠️
-      ⚠️ ⚠️ ⚠️ Labware table not detected. Legacy mode enabled.
-      ⚠️ ⚠️ ⚠️ See app/models/asset_refactor.rb for more information
-      ⚠️ ⚠️ ⚠️
-    HEREDOC
-                             ).bg(:yellow).fg(:black)
-  end
-
-  #
-  # Detects that the new asset tables are in place, and executes the enclosed block.
-  #
-  # @return [type] [description]
-  def self.when_refactored
-    setup unless defined?(@refactor_env)
-    yield if @refactor_env
-  end
-
-  #
-  # Detects that the new asset tables are NOT in place, and executes the enclosed block.
-  #
-  # @return [type] [description]
-  def self.when_not_refactored
-    setup unless defined?(@refactor_env)
-    yield unless @refactor_env
-  end
 end

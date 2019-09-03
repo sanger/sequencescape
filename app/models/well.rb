@@ -47,28 +47,8 @@ class Well < Receptacle
   has_many :target_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
   has_many :target_wells, through: :target_well_links, source: :target_well
 
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    has_one :container_association, -> { joins(:plate) }, foreign_key: :content_id, inverse_of: :well
-    has_one :plate, through: :container_association, inverse_of: :wells
-  end
-
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    belongs_to :plate, foreign_key: :labware_id
-  end
-
+  belongs_to :plate, foreign_key: :labware_id
   has_one :well_attribute, inverse_of: :well
-
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    validate(on: :save) do |record|
-      record.errors.add(:name, 'cannot be specified for a well') unless record.name.blank?
-    end
-  end
 
   accepts_nested_attributes_for :well_attribute
 
@@ -101,16 +81,8 @@ class Well < Receptacle
   }
   scope :include_map, -> { includes(:map) }
   scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    scope :on_plate_purpose, ->(purposes) { joins(:plate).where(plates_assets: { plate_purpose_id: purposes }) }
-  end
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
-  end
+  scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
+
   scope :for_study_through_aliquot, ->(study) {
     joins(:aliquots)
       .where(aliquots: { study_id: study })
@@ -213,14 +185,6 @@ class Well < Receptacle
 
   def outer_request(submission_id)
     outer_requests.order(id: :desc).find_by(submission_id: submission_id)
-  end
-
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    def labware
-      plate
-    end
   end
 
   def qc_results_by_key
