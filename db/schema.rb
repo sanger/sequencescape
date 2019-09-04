@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190904082009) do
+ActiveRecord::Schema.define(version: 20190904090118) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.string "barcode"
@@ -1906,13 +1906,13 @@ ActiveRecord::Schema.define(version: 20190904082009) do
   add_foreign_key "qc_files", "labware", column: "asset_id"
   add_foreign_key "qc_metric_requests", "qc_metrics", name: "fk_qc_metric_requests_to_qc_metrics"
   add_foreign_key "qc_metric_requests", "requests", name: "fk_qc_metric_requests_to_requests"
-  add_foreign_key "qc_metrics", "assets_deprecated", column: "asset_id", name: "fk_qc_metrics_to_assets"
   add_foreign_key "qc_metrics", "qc_reports", name: "fk_qc_metrics_to_qc_reports"
+  add_foreign_key "qc_metrics", "receptacles", column: "asset_id"
   add_foreign_key "qc_reports", "product_criteria", column: "product_criteria_id", name: "fk_qc_reports_to_product_criteria"
   add_foreign_key "qc_reports", "studies", name: "fk_qc_reports_to_studies"
   add_foreign_key "qc_results", "qc_assays"
   add_foreign_key "qcable_creators", "users", name: "fk_qcable_creators_to_users"
-  add_foreign_key "qcables", "assets_deprecated", column: "asset_id", name: "fk_qcables_to_assets"
+  add_foreign_key "qcables", "labware", column: "asset_id"
   add_foreign_key "qcables", "lots", name: "fk_qcables_to_lots"
   add_foreign_key "receptacles", "labware"
   add_foreign_key "request_types", "billing_product_catalogues"
