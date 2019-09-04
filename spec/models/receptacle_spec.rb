@@ -22,7 +22,7 @@ RSpec.describe Receptacle, type: :model do
         let(:units) { 'nM' }
 
         it 'works', :aggregate_failures do
-          expect(tube.concentration).to eq(100)
+          expect(receptacle.concentration).to eq(100)
         end
       end
     end
@@ -32,7 +32,7 @@ RSpec.describe Receptacle, type: :model do
       let(:units) { 'ul' }
       let(:value) { 100 }
 
-      it { expect(tube.volume).to eq(100) }
+      it { expect(receptacle.volume).to eq(100) }
     end
 
     context 'when key: volume, units: ml' do
@@ -40,7 +40,7 @@ RSpec.describe Receptacle, type: :model do
       let(:units) { 'ml' }
       let(:value) { 1 }
 
-      it { expect(tube.volume).to eq(1000) }
+      it { expect(receptacle.volume).to eq(1000) }
     end
   end
 end

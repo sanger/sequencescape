@@ -30,9 +30,9 @@ class Labware < Asset
   has_many :submissions, through: :receptacles
   has_many :asset_groups, through: :receptacles
   belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
-  has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
   has_one :spiked_in_buffer_links, -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
           class_name: 'AssetLink', foreign_key: :descendant_id, inverse_of: :descendant
+  has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
   has_many :asset_audits, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
   has_many :volume_updates, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
   has_many :state_changes, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
