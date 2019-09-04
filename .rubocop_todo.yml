@@ -102,12 +102,6 @@ Lint/ReturnInVoidContext:
     - 'app/models/qc_metric.rb'
     - 'app/models/submission/request_options_behaviour.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Lint/ScriptPermission:
-  Exclude:
-    - 'lib/tasks/sql_filter.rb'
-
 # Offense count: 35
 Lint/ShadowingOuterLocalVariable:
   Exclude:
