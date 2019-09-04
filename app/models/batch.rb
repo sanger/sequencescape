@@ -241,22 +241,8 @@ class Batch < ApplicationRecord
     requests.select { |r| r.target_asset != r.asset }.map(&:target_asset).select(&:present?).group_by(&:plate)
   end
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    def output_plates
-      output_labware
-    end
-  end
-
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    def output_plates
-      holder_ids = ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
-                                       .where(['requests.id IN  (?)', requests.map(&:id)]).uniq.pluck(:container_id)
-      Plate.find(holder_ids)
-    end
+  def output_plates
+    output_labware
   end
 
   def first_output_plate

@@ -19,24 +19,11 @@ describe 'Receptacles API', with: :api_v2 do
       expect(json['data'].length).to eq(4)
     end
 
-    AssetRefactor.when_refactored do
-      it 'identifies the type of receptacle' do
-        api_get '/api/v2/receptacles'
-        listed = json['data'].map { |data| data['type'] }.sort
-        expect(listed).to eq(%w(lanes receptacles receptacles wells))
-      end
+    it 'identifies the type of receptacle' do
+      api_get '/api/v2/receptacles'
+      listed = json['data'].map { |data| data['type'] }.sort
+      expect(listed).to eq(%w(lanes receptacles receptacles wells))
     end
-
-    # This block is disabled when we have the labware table present as part of the AssetRefactor
-    # Ie. This is what will happens now
-    AssetRefactor.when_not_refactored do
-      it 'still identifies the type of receptacle before refactor' do
-        api_get '/api/v2/receptacles'
-        listed = json['data'].map { |data| data['type'] }.sort
-        expect(listed).to eq(%w(lanes tubes tubes wells))
-      end
-    end
-
     # Check filters, ESPECIALLY if they aren't simple attribute filters
   end
 

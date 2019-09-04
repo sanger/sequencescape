@@ -2,15 +2,53 @@
 
 # Labware represents a physical object which moves around the lab.
 # It has one or more receptacles.
-# This class has been created as part of the {AssetRefactor} when not in
-# refactor mode this class is pretty much ignored
 class Labware < Asset
-  AssetRefactor.when_not_refactored do
-    self.table_name = 'assets'
-  end
+  include LabwareAssociations
+  include Commentable
+  include Uuid::Uuidable
+  include AssetLink::Associations
+  include SharedBehaviour::Named
+
+  attr_reader :storage_location_service
+
+  delegate :metadata, to: :custom_metadatum_collection, allow_nil: true
 
   class_attribute :receptacle_class
   self.receptacle_class = 'Receptacle'
+  self.sample_partial = 'assets/samples_partials/asset_samples'
+
+  has_many :receptacles, dependent: :restrict_with_exception
+  has_many :messengers, as: :target, inverse_of: :target, dependent: :destroy
+  has_many :aliquots, through: :receptacles
+  has_many :samples, through: :receptacles
+  has_many :studies, -> { distinct }, through: :receptacles
+  has_many :projects, -> { distinct }, through: :receptacles
+  has_many :requests_as_source, through: :receptacles
+  has_many :requests_as_target, through: :receptacles
+  has_many :transfer_requests_as_source, through: :receptacles
+  has_many :transfer_requests_as_target, through: :receptacles
+  has_many :submissions, through: :receptacles
+  has_many :asset_groups, through: :receptacles
+  belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
+  has_one :spiked_in_buffer_links, -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
+          class_name: 'AssetLink', foreign_key: :descendant_id, inverse_of: :descendant
+  has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
+  has_many :asset_audits, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
+  has_many :volume_updates, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
+  has_many :state_changes, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
+  has_one :custom_metadatum_collection, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
+  belongs_to :labware_type, class_name: 'PlateType', optional: true
+
+  scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }) }
+  scope :for_search_query, lambda { |query|
+    where('labware.name LIKE :name', name: "%#{query}%")
+      .or(with_safe_id(query))
+      .includes(:barcodes)
+  }
+  scope :for_lab_searches_display, -> { includes(:barcodes, requests_as_source: %i[pipeline batch]).order('requests.pipeline_id ASC') }
+  scope :named, ->(name) { where(name: name) }
+  scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
+  scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
 
   def human_barcode
     'UNKNOWN'
@@ -27,53 +65,45 @@ class Labware < Asset
     name.presence || "#{sti_type} #{id}"
   end
 
-  AssetRefactor.when_refactored do
-    self.sample_partial = 'assets/samples_partials/asset_samples'
-
-    include LabwareAssociations
-    include Commentable
-    include Uuid::Uuidable
-    include AssetLink::Associations
-    has_many :receptacles, dependent: :restrict_with_exception
-    has_many :messengers, as: :target, inverse_of: :target, dependent: :destroy
-    has_many :aliquots, through: :receptacles
-    has_many :samples, through: :receptacles
-    has_many :studies, -> { distinct }, through: :receptacles
-    has_many :projects, -> { distinct }, through: :receptacles
-    has_many :requests_as_source, through: :receptacles
-    has_many :requests_as_target, through: :receptacles
-    has_many :transfer_requests_as_source, through: :receptacles
-    has_many :transfer_requests_as_target, through: :receptacles
-    has_many :submissions, through: :receptacles
-    has_many :asset_groups, through: :receptacles
-
-    has_one :spiked_in_buffer_links, -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
-            class_name: 'AssetLink', foreign_key: :descendant_id, inverse_of: :descendant
-
-    scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }) }
-    scope :for_search_query, lambda { |query|
-      where('labware.name LIKE :name', name: "%#{query}%")
-        .or(with_safe_id(query))
-        .includes(:barcodes)
-    }
-    scope :for_lab_searches_display, -> { includes(:barcodes, requests_as_source: %i[pipeline batch]).order('requests.pipeline_id ASC') }
+  def labwhere_location
+    @labwhere_location ||= lookup_labwhere_location
   end
 
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    has_one :spiked_in_buffer_links, -> { joins(:ancestor).where(assets: { sti_type: 'SpikedBuffer' }).direct },
-            class_name: 'AssetLink', foreign_key: :descendant_id, inverse_of: :descendant
-    # Named scope for search by query string behaviour
-    scope :for_search_query, lambda { |query|
-      where.not(sti_type: 'Well').where('assets.name LIKE :name', name: "%#{query}%").includes(:barcodes)
-           .or(where.not(sti_type: 'Well').with_safe_id(query).includes(:barcodes))
-    }
-    scope :for_lab_searches_display, -> { includes(:barcodes, requests: %i[pipeline batch]).order('requests.pipeline_id ASC') }
+  # Labware reflects the physical piece of plastic corresponding to an asset
+  def labware
+    self
   end
 
-  belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
-  has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
+  def storage_location
+    @storage_location ||= obtain_storage_location
+  end
 
-  scope :named, ->(name) { where(name: name) }
+  def scanned_in_date
+    scanned_into_lab_event.try(:content) || ''
+  end
+
+  private
+
+  def obtain_storage_location
+    if labwhere_location.present?
+      @storage_location_service = 'LabWhere'
+      labwhere_location
+    else
+      @storage_location_service = 'None'
+      'LabWhere location not set. Could this be in ETS?'
+    end
+  end
+
+  def lookup_labwhere_location
+    lookup_labwhere(machine_barcode) || lookup_labwhere(human_barcode)
+  end
+
+  def lookup_labwhere(barcode)
+    begin
+      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(barcode)
+    rescue LabWhereClient::LabwhereException => e
+      return "Not found (#{e.message})"
+    end
+    return info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
+  end
 end

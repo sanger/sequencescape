@@ -194,33 +194,14 @@ class CherrypickTask < Task
 
   private
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    def build_plate_wells_from_requests(requests)
-      loaded_requests = Request.where(requests: { id: requests })
-                               .includes(asset: [{ plate: :barcodes }, :map])
-      sorted_requests = loaded_requests.sort_by do |request|
-        [request.asset.plate.id, request.asset.map.column_order]
-      end
-      sorted_requests.map do |request|
-        [request.id, request.asset.plate.human_barcode, request.asset.map_description]
-      end
+  def build_plate_wells_from_requests(requests)
+    loaded_requests = Request.where(requests: { id: requests })
+                             .includes(asset: [{ plate: :barcodes }, :map])
+    sorted_requests = loaded_requests.sort_by do |request|
+      [request.asset.plate.id, request.asset.map.column_order]
     end
-  end
-
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    def build_plate_wells_from_requests(requests)
-      loaded_requests = Request.where(requests: { id: requests })
-                               .includes(asset: [{ plate: :barcodes }, :map])
-      sorted_requests = loaded_requests.sort_by do |request|
-        [request.asset.plate.id, request.asset.map.column_order]
-      end
-      sorted_requests.map do |request|
-        [request.id, request.asset.plate.human_barcode, request.asset.map_description]
-      end
+    sorted_requests.map do |request|
+      [request.id, request.asset.plate.human_barcode, request.asset.map_description]
     end
   end
 end

@@ -5,17 +5,7 @@
 class Pipeline::GrouperForPipeline
   delegate :requests, :group_by_parent?, :group_by_submission?, to: :@pipeline
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    LABWARE_ID_COLUMN = 'receptacles.labware_id'.freeze
-  end
-
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    LABWARE_ID_COLUMN = 'hl.container_id'.freeze
-  end
+  LABWARE_ID_COLUMN = 'receptacles.labware_id'.freeze
 
   def initialize(pipeline)
     @pipeline = pipeline

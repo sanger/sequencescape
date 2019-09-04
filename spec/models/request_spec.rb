@@ -6,51 +6,50 @@ RSpec.describe Request do
   let(:study) { create :study }
   let(:project) { create :project }
   let(:submission) { create :submission }
+  let(:order1) { create :order, study: study, project: project, submission: submission }
+  let(:order2) { create :order, study: study, project: project, submission: submission }
+  let(:order3) { create :order, study: study, project: project, submission: submission }
+  let(:order4) { create :order_with_submission, study: study, project: project }
 
   describe '#for_order_including_submission_based_requests' do
     setup do
-      @order1 = create :order, study: study, project: project, submission: submission
-      @order2 = create :order,  study: study, project: project, submission: submission
-      @order3 = create :order,  study: study, project: project, submission: submission
-      @order4 = create :order_with_submission, study: study, project: project
-
       @sequencing_request = create :request_with_sequencing_request_type, submission: submission
-      @request = create :request, order: @order1, submission: submission, asset: @asset
-      @request2 = create :request, order: @order2, submission: submission
+      @request = create :request, order: order1, submission: submission, asset: @asset
+      @request2 = create :request, order: order2, submission: submission
 
-      @request3 = create :request, order: @order4, submission: @order4.submission
-      @sequencing_request2 = create :request_with_sequencing_request_type, submission: @order4.submission
+      @request3 = create :request, order: order4, submission: order4.submission
+      @sequencing_request2 = create :request_with_sequencing_request_type, submission: order4.submission
     end
     it 'the sequencing requests are included' do
-      assert_equal 1, @order1.requests.length
-      assert_equal 1, @order2.requests.length
-      assert_equal 0, @order3.requests.length
-      assert_equal 3, submission.requests.length
-      assert_equal 2, submission.requests.for_order_including_submission_based_requests(@order1).length
-      assert_equal 2, submission.requests.for_order_including_submission_based_requests(@order2).length
+      expect(order1.requests.length).to eq 1
+      expect(order2.requests.length).to eq 1
+      expect(order3.requests.length).to eq 0
+      expect(submission.requests.length).to eq 3
+      expect(submission.requests.for_order_including_submission_based_requests(order1).length).to eq 2
+      expect(submission.requests.for_order_including_submission_based_requests(order2).length).to eq 2
     end
     it 'an order without requests should at least find the sequencing requests' do
-      assert_equal 1, submission.requests.for_order_including_submission_based_requests(@order3).length
+      expect(submission.requests.for_order_including_submission_based_requests(order3).length).to eq 1
     end
 
     it 'when filtering from submission and scoping with an order of another submission, none of the requests are included' do
-      assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order1).length
-      assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order2).length
-      assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order3).length
-      assert_equal 0, submission.requests.for_order_including_submission_based_requests(@order4).length
+      expect(order4.submission.requests.for_order_including_submission_based_requests(order1).length).to eq 0
+      expect(order4.submission.requests.for_order_including_submission_based_requests(order2).length).to eq 0
+      expect(order4.submission.requests.for_order_including_submission_based_requests(order3).length).to eq 0
+      expect(submission.requests.for_order_including_submission_based_requests(order4).length).to eq 0
     end
 
     it 'requests from other submission behave independently' do
-      assert_equal 1, @order4.requests.length
-      assert_equal 2, @order4.submission.requests.length
-      assert_equal 2, @order4.submission.requests.for_order_including_submission_based_requests(@order4).length
+      expect(order4.requests.length).to eq 1
+      expect(order4.submission.requests.length).to eq 2
+      expect(order4.submission.requests.for_order_including_submission_based_requests(order4).length).to eq 2
     end
 
     it 'can be used as any other request scope' do
-      assert_equal 2, described_class.for_order_including_submission_based_requests(@order1).length
-      assert_equal 2, described_class.for_order_including_submission_based_requests(@order2).length
-      assert_equal 1, described_class.for_order_including_submission_based_requests(@order3).length
-      assert_equal 2, described_class.for_order_including_submission_based_requests(@order4).length
+      expect(described_class.for_order_including_submission_based_requests(order1).length).to eq 2
+      expect(described_class.for_order_including_submission_based_requests(order2).length).to eq 2
+      expect(described_class.for_order_including_submission_based_requests(order3).length).to eq 1
+      expect(described_class.for_order_including_submission_based_requests(order4).length).to eq 2
     end
   end
 
@@ -87,21 +86,6 @@ RSpec.describe Request do
       end
       it 'return the correct next request' do
         assert_equal [@request2], @request1.next_requests
-      end
-    end
-
-    describe '#associate_pending_requests_for_downstream_pipeline' do
-      setup do
-        @request2 = create :request_without_assets, asset: nil, submission: @submission, request_type: @genotyping_request_type
-        @request3 = create :request_without_assets, asset: nil, submission: @submission, request_type: @genotyping_request_type
-
-        @batch = @cherrypick_pipeline.batches.create!(requests: [@request1])
-
-        @request1.reload
-        @request2.reload
-      end
-      it 'set the target asset of request 1 to be the asset of request 2' do
-        assert_equal @request1.target_asset, @request2.asset
       end
     end
   end
@@ -244,12 +228,8 @@ RSpec.describe Request do
       assert_equal original_attributes, copied_attributes
     end
 
-    it 'return same item_id' do
-      assert_equal @request.item_id, @new_request.item_id
-    end
-
     it 'remove target_asset' do
-      assert_nil @new_request.target_asset_id
+      expect(@new_request.target_asset_id).to be_nil
     end
 
     it 'be pending' do
@@ -291,33 +271,31 @@ RSpec.describe Request do
       end
 
       it "return 'Started'" do
-        assert_equal 'started', @request.state
+        expect(@request.state).to eq 'started'
       end
 
       it 'not be pending' do
-        assert_equal false, @request.pending?
+        expect(@request).not_to be_pending
       end
 
       it 'not be passed' do
-        assert_equal false, @request.passed?
+        expect(@request).not_to be_passed
       end
 
       it 'not be failed' do
-        assert_equal false, @request.failed?
+        expect(@request).not_to be_failed
       end
 
       it 'be started' do
-        assert @request.started?
+        expect(@request).to be_started
       end
 
       context 'allow transition' do
         it 'to pass' do
-          @request.state = 'started'
           @request.pass!
         end
 
         it 'to fail' do
-          @request.state = 'started'
           @request.fail!
         end
       end
