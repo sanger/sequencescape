@@ -1042,14 +1042,6 @@ Rails/HelperInstanceVariable:
     - 'app/helpers/tag_substitution_helper.rb'
     - 'app/helpers/workflows_helper.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: spec/**/*, test/**/*
-Rails/HttpPositionalArguments:
-  Exclude:
-    - 'test/shoulda_macros/sanger_macros.rb'
-
 # Offense count: 68
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
