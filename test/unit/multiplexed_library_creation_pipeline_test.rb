@@ -28,7 +28,7 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
           @batch.complete!(@user)
         end
 
-        assert(!@batch.errors.empty?, 'There are no errors on the batch')
+        assert_not(@batch.errors.empty?, 'There are no errors on the batch')
       end
 
       should 'not error if all of the target asset aliquots are tagged' do

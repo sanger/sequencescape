@@ -45,7 +45,7 @@ class ProductTest < ActiveSupport::TestCase
     context '::active' do
       should 'return non-deprecated products only' do
         assert Product.active.include?(@product_b), 'Did not return active products'
-        assert !Product.active.include?(@product_a), 'Returned deprecated products'
+        assert_not Product.active.include?(@product_a), 'Returned deprecated products'
       end
     end
   end
