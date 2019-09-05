@@ -7,11 +7,11 @@ module SearchBehaviour
   end
 
   def search
-    t = Time.now
+    t = Time.zone.now
     @query = params[:q]
     perform_search(params[:q].strip) unless params[:q].blank? || query_invalid?
-    @search_took = Time.now - t
-    @render_start = Time.now
+    @search_took = Time.zone.now - t
+    @render_start = Time.zone.now
 
     respond_to do |format|
       format.html

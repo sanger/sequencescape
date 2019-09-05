@@ -169,7 +169,7 @@ Then /^show me the page$/ do
   # it passes the source through Nokogiri
   # first and passes it out as xml.
   # require 'capybara/util/save_and_open_page'
-  Capybara.save_and_open_page("tmp/#{Time.now.strftime('%Y%m%d%H%M%S')}.htm")
+  Capybara.save_and_open_page("tmp/#{Time.zone.now.strftime('%Y%m%d%H%M%S')}.htm")
 end
 
 Given /^the "([^\"]*)" field is hidden$/ do |field_name|

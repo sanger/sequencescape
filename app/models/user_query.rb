@@ -20,7 +20,7 @@ class UserQuery
   end
 
   def date
-    Time.now.to_formatted_s(:long_ordinal)
+    Time.zone.now.to_formatted_s(:long_ordinal)
   end
 
   def update_user_email

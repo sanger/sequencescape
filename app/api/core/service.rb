@@ -127,7 +127,7 @@ module Core
       attr_reader :identifier, :started_at
 
       def initialize(identifier, *args, &block)
-        @identifier, @started_at = identifier, Time.now
+        @identifier, @started_at = identifier, Time.zone.now
         super(*args, &block)
         @ability = Core::Abilities.create(self)
       end
@@ -224,7 +224,7 @@ module Core
       #++
       def each(&block)
         Rails.logger.info('API[streaming]: starting JSON streaming')
-        start = Time.now
+        start = Time.zone.now
 
         ::Core::Io::Buffer.new(block) do |buffer|
           ::Core::Io::Json::Stream.new(buffer).open do |stream|
@@ -238,14 +238,14 @@ module Core
           end
         end
 
-        Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.now - start}s")
+        Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.zone.now - start}s")
       end
 
       def close
         identifier, started_at = self.identifier, self.started_at # Save for later as next line discards our request!
         discard_all_references
       ensure
-        Rails.logger.info("API[finished]: #{identifier} in #{Time.now - started_at}s")
+        Rails.logger.info("API[finished]: #{identifier} in #{Time.zone.now - started_at}s")
       end
 
       def discard_all_references

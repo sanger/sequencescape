@@ -12,7 +12,7 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
   end
 
   before do
-    allow(Time).to receive(:now).and_return(Time.parse('2016-12-08T13:29:59Z'))
+    allow(Time).to receive(:now).and_return(Time.zone.parse('2016-12-08T13:29:59Z'))
   end
 
   it 'has a date stamped alias' do

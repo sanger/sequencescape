@@ -4,7 +4,7 @@ class Accessionable::Base
   def initialize(accession_number)
     @accession_number = accession_number
 
-    time_now = Time.now
+    time_now = Time.zone.now
     @date = time_now.strftime('%Y-%m-%dT%H:%M:%SZ')
     @date_short = time_now.strftime('%Y-%m-%d')
   end

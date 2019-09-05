@@ -146,11 +146,11 @@ module Api
 
     # Report the performance and status of any request
     def report(handler)
-      start = Time.now
+      start = Time.zone.now
       Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
       yield
     ensure
-      Rails.logger.info("API[handled]: #{handler}: #{request.fullpath} in #{Time.now - start}s")
+      Rails.logger.info("API[handled]: #{handler}: #{request.fullpath} in #{Time.zone.now - start}s")
     end
     private :report
 

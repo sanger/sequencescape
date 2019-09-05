@@ -340,14 +340,14 @@ class Batch < ApplicationRecord
   # the pending queue.
   def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{id} removed at #{Time.now}", current_user) unless current_user.nil?
+      request.add_comment("Used to belong to Batch #{id} removed at #{Time.zone.now}", current_user) unless current_user.nil?
       pipeline.detach_request_from_batch(self, request)
     end
   end
 
   def return_request_to_inbox(request, current_user = nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{id} returned to inbox unstarted at #{Time.now}", current_user) unless current_user.nil?
+      request.add_comment("Used to belong to Batch #{id} returned to inbox unstarted at #{Time.zone.now}", current_user) unless current_user.nil?
       request.return_pending_to_inbox!
     end
   end

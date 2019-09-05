@@ -31,7 +31,7 @@ class StockStamper
     destination_barcode = "#{plate.machine_barcode}_d"
     data_object = {
       'user' => user.login,
-      'time' => Time.now,
+      'time' => Time.zone.now,
       'source' => {
         source_barcode => { 'name' => source_plate_type_name.tr('_', "\s"), 'plate_size' => plate.size }
       },

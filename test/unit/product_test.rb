@@ -16,7 +16,7 @@ class ProductTest < ActiveSupport::TestCase
     end
 
     should 'allow products with the same name if one is deprecated' do
-      @product_a = create :product, deprecated_at: Time.now
+      @product_a = create :product, deprecated_at: Time.zone.now
       @product_b = create :product, name: @product_a.name
       assert @product_b.valid?
     end
@@ -38,7 +38,7 @@ class ProductTest < ActiveSupport::TestCase
 
   context 'Product' do
     setup do
-      @product_a = create :product, deprecated_at: Time.now
+      @product_a = create :product, deprecated_at: Time.zone.now
       @product_b = create :product
     end
 

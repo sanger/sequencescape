@@ -21,7 +21,7 @@ describe StockStamper do
                     destination_plate_type_name: 'ABgene_0800',
                     overage: 1.2 }
     @stock_stamper = described_class.new(@attributes)
-    new_time = Time.local(2008, 9, 1, 12, 0, 0)
+    new_time = Time.zone.local(2008, 9, 1, 12, 0, 0)
     Timecop.freeze(new_time)
     @tecan_data = {
       'user' => user.login,

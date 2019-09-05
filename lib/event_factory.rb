@@ -81,7 +81,7 @@ class EventFactory
   # creates an event and sends an email when samples are register to a study
   def self.study_has_samples_registered(study, samples, user)
     sample_names_string = samples.map { |s| s.name }.join("','")
-    content = "Samples '#{sample_names_string}' registered by user '#{user.login}' on #{Time.now}"
+    content = "Samples '#{sample_names_string}' registered by user '#{user.login}' on #{Time.zone.now}"
 
     study_event = Event.create(
       eventful_id: study.id,
@@ -106,7 +106,7 @@ class EventFactory
 
   # creates an event and sends an email when update(s) to a request fail
   def self.request_update_note_to_manager(request, user, message)
-    content = "#{message}\nwhilst an attempt was made to update request #{request.id}\nby user '#{user.login}' on #{Time.now}"
+    content = "#{message}\nwhilst an attempt was made to update request #{request.id}\nby user '#{user.login}' on #{Time.zone.now}"
 
     request_event = Event.create(
       eventful_id: request.id,

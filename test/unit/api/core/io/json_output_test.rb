@@ -96,7 +96,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           end
 
           should 'handle times' do
-            @value, @expected = Time.parse('2012-10-25 12:39'), 'Thu Oct 25 12:39:00 +0100 2012'
+            @value, @expected = Time.zone.parse('2012-10-25 12:39'), 'Thu Oct 25 12:39:00 +0100 2012'
           end
         end
 

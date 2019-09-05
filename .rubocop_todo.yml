@@ -1122,43 +1122,6 @@ Rails/OutputSafety:
     - 'app/helpers/bootstrap_helper.rb'
     - 'app/helpers/submissions_helper.rb'
 
-# Offense count: 50
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: strict, flexible
-Rails/TimeZone:
-  Exclude:
-    - 'app/api/core/service.rb'
-    - 'app/middleware/api/endpoint_handler.rb'
-    - 'app/models/accessionable/base.rb'
-    - 'app/models/api/base.rb'
-    - 'app/models/batch.rb'
-    - 'app/models/batch/tecan_behaviour.rb'
-    - 'app/models/pac_bio/sample_sheet.rb'
-    - 'app/models/request_factory.rb'
-    - 'app/models/search_behaviour.rb'
-    - 'app/models/stock_stamper.rb'
-    - 'app/models/submission_template.rb'
-    - 'app/models/user.rb'
-    - 'app/models/user_query.rb'
-    - 'features/support/step_definitions/aliquot_steps.rb'
-    - 'features/support/step_definitions/study_steps.rb'
-    - 'features/support/step_definitions/time_travel_steps.rb'
-    - 'features/support/step_definitions/web_steps.rb'
-    - 'lib/event_factory.rb'
-    - 'lib/eventful_mailer.rb'
-    - 'lib/tasks/benchmark_plate_creation.rake'
-    - 'lib/tasks/benchmark_plate_transfer.rake'
-    - 'spec/lib/accession/accessionable_spec.rb'
-    - 'spec/mailers/user_query_mailer_spec.rb'
-    - 'spec/models/stock_stamper_spec.rb'
-    - 'spec/models/user_query_spec.rb'
-    - 'test/unit/api/core/io/json/stream_test.rb'
-    - 'test/unit/api/core/io/json_output_test.rb'
-    - 'test/unit/product_criteria_test.rb'
-    - 'test/unit/product_test.rb'
-    - 'test/unit/project_test.rb'
-
 # Offense count: 176
 # Cop supports --auto-correct.
 # Configuration parameters: Include.

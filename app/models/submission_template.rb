@@ -45,7 +45,7 @@ class SubmissionTemplate < ApplicationRecord
         yield(cloned) if block_given?
         name, cloned.name = cloned.name, "Superceding #{cloned.name}"
         cloned.save!
-        update!(superceded_by_id: cloned.id, superceded_at: Time.now)
+        update!(superceded_by_id: cloned.id, superceded_at: Time.zone.now)
         cloned.update!(name: name)
       end
     end
