@@ -1163,13 +1163,6 @@ Rails/Present:
     - 'lib/event_factory.rb'
     - 'lib/tecan_file_generation.rb'
 
-# Offense count: 12
-# Cop supports --auto-correct.
-Rails/RedundantReceiverInWithOptions:
-  Exclude:
-    - 'app/models/study.rb'
-    - 'app/models/study/metadata.rb'
-
 # Offense count: 50
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

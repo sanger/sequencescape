@@ -207,9 +207,9 @@ class Study < ApplicationRecord
     custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
     custom_attribute(:bam, default: true)
 
-    with_options(required: true, if: :delayed_for_other_reasons?) do |required|
-      required.custom_attribute(:data_release_delay_other_comment)
-      required.custom_attribute(:data_release_delay_reason_comment)
+    with_options(required: true, if: :delayed_for_other_reasons?) do
+      custom_attribute(:data_release_delay_other_comment)
+      custom_attribute(:data_release_delay_reason_comment)
     end
 
     custom_attribute(:dac_policy, default: configatron.default_policy_text, if: :managed?)
@@ -218,14 +218,14 @@ class Study < ApplicationRecord
     custom_attribute(:ega_policy_accession_number)
     custom_attribute(:array_express_accession_number)
 
-    with_options(if: :delayed_for_long_time?, required: true) do |required|
-      required.custom_attribute(:data_release_delay_approval, in: YES_OR_NO, default: NO)
+    with_options(if: :delayed_for_long_time?, required: true) do
+      custom_attribute(:data_release_delay_approval, in: YES_OR_NO, default: NO)
     end
 
-    with_options(if: :never_release?, required: true) do |required|
-      required.custom_attribute(:data_release_prevention_reason, in: DATA_RELEASE_PREVENTION_REASONS)
-      required.custom_attribute(:data_release_prevention_approval, in: YES_OR_NO)
-      required.custom_attribute(:data_release_prevention_reason_comment)
+    with_options(if: :never_release?, required: true) do
+      custom_attribute(:data_release_prevention_reason, in: DATA_RELEASE_PREVENTION_REASONS)
+      custom_attribute(:data_release_prevention_approval, in: YES_OR_NO)
+      custom_attribute(:data_release_prevention_reason_comment)
     end
 
     # Note: Additional validation in Study::Metadata Class to validate_presence_of :data_access_group, if: :managed

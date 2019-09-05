@@ -87,13 +87,13 @@ class Study
       end
     end
 
-    with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
-      ena_required_fields.validates_presence_of :data_release_strategy
-      ena_required_fields.validates_presence_of :data_release_timing
-      ena_required_fields.validates_presence_of :study_description
-      ena_required_fields.validates_presence_of :study_abstract
-      ena_required_fields.validates_presence_of :study_study_title
-      ena_required_fields.validate :study_type_valid?
+    with_options(if: :validating_ena_required_fields?) do
+      validates :data_release_strategy, presence: true
+      validates :data_release_timing, presence: true
+      validates :study_description, presence: true
+      validates :study_abstract, presence: true
+      validates :study_study_title, presence: true
+      validate :study_type_valid?
     end
 
     def snp_parent_study
