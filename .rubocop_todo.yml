@@ -69,11 +69,6 @@ Lint/IneffectiveAccessModifier:
     - 'app/models/plate_purpose/broadcast_library_complete.rb'
     - 'lib/authenticated_system.rb'
 
-# Offense count: 4
-Lint/InterpolationCheck:
-  Exclude:
-    - 'lib/tasks/code_quality_tests.rake'
-
 # Offense count: 10
 Lint/NestedMethodDefinition:
   Exclude:
@@ -969,16 +964,6 @@ Rails/FilePath:
     - 'test/unit/fluidigm_file_test.rb'
     - 'test/unit/import_fluidigm_data_test.rb'
     - 'test/unit/qc_report_file_test.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/FindEach:
-  Exclude:
-    - 'app/models/flexible_cherrypick_pipeline.rb'
-    - 'app/models/plate_purpose/request_attachment.rb'
-    - 'app/models/plate_purpose/works_on_library_requests.rb'
 
 # Offense count: 117
 # Configuration parameters: Include.

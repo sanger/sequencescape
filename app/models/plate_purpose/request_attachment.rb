@@ -10,7 +10,7 @@ module PlatePurpose::RequestAttachment
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
-    wells.include_stock_wells.include_requests_as_target.includes(:transfer_requests_as_target).each do |target_well|
+    wells.include_stock_wells.include_requests_as_target.includes(:transfer_requests_as_target).find_each do |target_well|
       source_wells = target_well.stock_wells
       submission_ids = target_well.transfer_requests_as_target.map(&:submission_id)
 
