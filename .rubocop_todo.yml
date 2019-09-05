@@ -1122,47 +1122,6 @@ Rails/OutputSafety:
     - 'app/helpers/bootstrap_helper.rb'
     - 'app/helpers/submissions_helper.rb'
 
-# Offense count: 54
-# Cop supports --auto-correct.
-# Configuration parameters: NotNilAndNotEmpty, NotBlank, UnlessBlank.
-Rails/Present:
-  Exclude:
-    - 'app/api/core/abilities.rb'
-    - 'app/api/core/service/content_filtering.rb'
-    - 'app/api/model_extensions/order.rb'
-    - 'app/controllers/admin/projects_controller.rb'
-    - 'app/controllers/admin/studies_controller.rb'
-    - 'app/controllers/batches/comments_controller.rb'
-    - 'app/controllers/requests/comments_controller.rb'
-    - 'app/controllers/requests_controller.rb'
-    - 'app/controllers/samples/comments_controller.rb'
-    - 'app/controllers/samples_controller.rb'
-    - 'app/controllers/studies/comments_controller.rb'
-    - 'app/controllers/studies_controller.rb'
-    - 'app/models/accession_service.rb'
-    - 'app/models/accessionable/sample.rb'
-    - 'app/models/accessionable/study.rb'
-    - 'app/models/api/order_io.rb'
-    - 'app/models/batch.rb'
-    - 'app/models/bulk_submission.rb'
-    - 'app/models/cherrypick/task/pick_helpers.rb'
-    - 'app/models/event/request_descriptor_update_event.rb'
-    - 'app/models/metadata/builder_base.rb'
-    - 'app/models/multiplexed_cherrypicking_task.rb'
-    - 'app/models/plate_purpose.rb'
-    - 'app/models/plate_purpose/request_attachment.rb'
-    - 'app/models/search_behaviour.rb'
-    - 'app/models/study.rb'
-    - 'app/models/submission/asset_group_behaviour.rb'
-    - 'app/models/well.rb'
-    - 'app/views/requests/show.xml.builder'
-    - 'features/support/step_definitions/49061511_qc_file_steps.rb'
-    - 'features/support/step_definitions/api_steps.rb'
-    - 'features/support/step_definitions/study_steps.rb'
-    - 'lib/authenticated_system.rb'
-    - 'lib/event_factory.rb'
-    - 'lib/tecan_file_generation.rb'
-
 # Offense count: 50
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
