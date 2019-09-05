@@ -24,7 +24,7 @@ module Sanger
                 setup do
                   session[:user] = create(:user)
                   begin
-                    get action, params
+                    get action, params: params
                   rescue AbstractController::ActionNotFound
                     flunk "Testing for an unknown action: #{action}"
                   rescue ActiveRecord::RecordNotFound
