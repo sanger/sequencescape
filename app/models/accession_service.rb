@@ -231,7 +231,7 @@ class AccessionService
 
     if configatron.disable_web_proxy == true
       RestClient.proxy = ''
-    elsif not configatron.proxy.blank?
+    elsif configatron.proxy.present?
       RestClient.proxy = configatron.proxy
       # UA required to get through Sanger proxy
       # Although currently this UA is actually being set elsewhere in the

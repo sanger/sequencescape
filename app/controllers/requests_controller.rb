@@ -88,7 +88,7 @@ class RequestsController < ApplicationController
 
   def show
     @request = Request.find(params[:id])
-    unless @request.user_id.blank?
+    if @request.user_id.present?
       @user = User.find(@request.user_id)
     end
 

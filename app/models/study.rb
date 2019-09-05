@@ -392,7 +392,7 @@ class Study < ApplicationRecord
   end
 
   def text_comments
-    comments.each_with_object([]) { |c, array| array << c.description unless c.description.blank? }.join(', ')
+    comments.each_with_object([]) { |c, array| array << c.description if c.description.present? }.join(', ')
   end
 
   def completed
@@ -416,7 +416,7 @@ class Study < ApplicationRecord
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.
   def asset_progress(assets = nil)
     wheres = {}
-    wheres = { asset_id: assets.map(&:id) } unless assets.blank?
+    wheres = { asset_id: assets.map(&:id) } if assets.present?
     yield(initial_requests.asset_statistics(wheres))
   end
 

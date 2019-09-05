@@ -228,7 +228,7 @@ Then /^the help text for "([^\"]*)" should contain:$/ do |label_name, expected_t
 end
 
 Then /^I should exactly see "([^"]*)"$/ do |text|
-  assert !find(:xpath, "//label[text()='#{text}']").text.blank?
+  assert find(:xpath, "//label[text()='#{text}']").text.present?
 end
 
 When /^I generate an? (dac|policy|array express) accession number for study "([^\"]+)"$/ do |type, study_name|

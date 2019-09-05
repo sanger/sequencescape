@@ -61,7 +61,7 @@ class Admin::ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     redirect_if_not_owner_or_admin(@project)
 
-    unless params[:project][:uploaded_data].blank?
+    if params[:project][:uploaded_data].present?
       document_settings = {}
       document_settings[:uploaded_data] = params[:project][:uploaded_data]
       doc = Document.create(document_settings)

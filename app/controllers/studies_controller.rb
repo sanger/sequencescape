@@ -59,7 +59,7 @@ class StudiesController < ApplicationController
       @study = Study.new(params['study'].merge(user: current_user))
       @study.save!
       current_user.has_role('manager', @study)
-      User.find(params[:study_owner_id]).has_role('owner', @study) unless params[:study_owner_id].blank?
+      User.find(params[:study_owner_id]).has_role('owner', @study) if params[:study_owner_id].present?
     end
 
     flash[:notice] = 'Your study has been created'
@@ -100,7 +100,7 @@ class StudiesController < ApplicationController
 
     ActiveRecord::Base.transaction do
       @study.update!(params[:study])
-      unless params[:study_owner_id].blank?
+      if params[:study_owner_id].present?
         owner = User.find(params[:study_owner_id])
         unless owner.is_owner?(@study)
           @study.owners.first.has_no_role('owner', @study) if @study.owners.size == 1

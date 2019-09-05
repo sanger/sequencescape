@@ -8,7 +8,7 @@ module PlatePurpose::RequestAttachment
     return unless state == connect_on
 
     wells = plate.wells
-    wells = wells.located_at(contents) unless contents.blank?
+    wells = wells.located_at(contents) if contents.present?
 
     wells.include_stock_wells.include_requests_as_target.includes(:transfer_requests_as_target).find_each do |target_well|
       source_wells = target_well.stock_wells

@@ -12,7 +12,7 @@ module Accessionable
 
       sampname = sample.sample_metadata.sample_public_name
       @name = sampname.presence || sample.name
-      @name = @name.gsub(/[^a-z\d]/i, '_') unless @name.blank?
+      @name = @name.gsub(/[^a-z\d]/i, '_') if @name.present?
 
       @common_name = sample.sample_metadata.sample_common_name
       @taxon_id    = sample.sample_metadata.sample_taxon_id
@@ -57,7 +57,7 @@ module Accessionable
         alias: self.alias,
         accession: accession_number
       }.tap do |obj|
-        obj.delete(:alias) unless accession_number.blank?
+        obj.delete(:alias) if accession_number.present?
       end
     end
 
@@ -77,9 +77,9 @@ module Accessionable
                 tag.build(xml)
               }
             end
-          } unless tags.blank?
+          } if tags.present?
 
-          xml.SAMPLE_LINKS {} unless links.blank?
+          xml.SAMPLE_LINKS {} if links.present?
         }
       }
       xml.target!

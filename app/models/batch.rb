@@ -487,7 +487,7 @@ class Batch < ApplicationRecord
 
   def downstream_requests_needing_asset(request)
     next_requests_needing_asset = request.next_requests.select { |r| r.asset_id.blank? }
-    yield(next_requests_needing_asset) unless next_requests_needing_asset.blank?
+    yield(next_requests_needing_asset) if next_requests_needing_asset.present?
   end
 
   def rebroadcast
