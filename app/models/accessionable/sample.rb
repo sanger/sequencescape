@@ -29,7 +29,7 @@ module Accessionable
       unless sample.accession_service.private?
         ARRAY_EXPRESS_FIELDS.each do |datum|
           value = sample.sample_metadata.send(datum)
-          next unless value.present?
+          next if value.blank?
 
           @tags << ArrayExpressTag.new(label_scope, datum, value)
         end

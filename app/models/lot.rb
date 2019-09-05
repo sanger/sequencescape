@@ -48,7 +48,7 @@ class Lot < ApplicationRecord
   private
 
   def valid_template?
-    return false unless lot_type.present?
+    return false if lot_type.blank?
     return true if template.is_a?(valid_template_class)
 
     errors.add(:template, "is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")

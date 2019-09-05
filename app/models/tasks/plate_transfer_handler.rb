@@ -42,7 +42,7 @@ module Tasks::PlateTransferHandler
     transfer = TransferRequest.for_request(@batch.requests.first)
                               .where(submission_id: @batch.requests.first.submission_id)
                               .includes(target_asset: :plate).first
-    return nil unless transfer.present?
+    return nil if transfer.blank?
 
     transfer.target_asset.plate
   end

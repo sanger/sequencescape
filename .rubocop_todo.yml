@@ -909,32 +909,6 @@ RSpec/VoidExpect:
     - 'spec/sample_manifest_excel/test_download_spec.rb'
     - 'spec/sequencescape_excel/column_spec.rb'
 
-# Offense count: 23
-# Cop supports --auto-correct.
-# Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
-Rails/Blank:
-  Exclude:
-    - 'app/api/core/endpoint/basic_handler/associations/has_file.rb'
-    - 'app/controllers/qc_reports_controller.rb'
-    - 'app/helpers/application_helper.rb'
-    - 'app/helpers/assets_helper.rb'
-    - 'app/models/accessionable/sample.rb'
-    - 'app/models/aliquot_indexer.rb'
-    - 'app/models/billing/factory/base.rb'
-    - 'app/models/billing/factory/sequencing.rb'
-    - 'app/models/billing/item.rb'
-    - 'app/models/illumina_htp/initial_downstream_plate_purpose.rb'
-    - 'app/models/illumina_htp/initial_stock_tube_purpose.rb'
-    - 'app/models/lot.rb'
-    - 'app/models/pulldown/initial_downstream_plate_purpose.rb'
-    - 'app/models/request/auto_multiplexing.rb'
-    - 'app/models/request_type/pooling_method/plate_row.rb'
-    - 'app/models/tasks/plate_transfer_handler.rb'
-    - 'features/support/step_definitions/pulldown_steps.rb'
-    - 'features/support/step_definitions/request_steps.rb'
-    - 'lib/label_printer/label_printer/label/asset_redirect.rb'
-    - 'lib/tasks/billing_setup.rake'
-
 # Offense count: 2
 # Configuration parameters: Include.
 # Include: db/migrate/*.rb

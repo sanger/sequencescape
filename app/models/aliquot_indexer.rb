@@ -27,7 +27,7 @@ class AliquotIndexer
       # Skip indexing if already present. Makes the call idempotent and also
       # reduces the downtime required for the initial migration. Race conditions
       # are unlikely, and will be pretty harmless if they do occur.
-      AliquotIndexer.index(self) unless aliquot_indicies.present?
+      AliquotIndexer.index(self) if aliquot_indicies.blank?
     end
   end
 
@@ -50,7 +50,7 @@ class AliquotIndexer
   # tube is associated with the Lane as a parent asset.
   # @return [Integer] map_id of the PhiX in the lane.
   def phix_map_id
-    return nil unless lane.spiked_in_buffer.present?
+    return nil if lane.spiked_in_buffer.blank?
 
     @phix_map_id ||= lane.spiked_in_buffer.primary_aliquot.tag.try(:map_id)
   end
