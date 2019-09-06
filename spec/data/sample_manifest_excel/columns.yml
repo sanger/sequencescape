@@ -702,11 +702,6 @@ rnai:
   unlocked: true
   conditional_formattings:
     empty_cell:
-rnai2:
-  heading: RNAi
-  unlocked: true
-  conditional_formattings:
-    empty_cell:
 organism_part:
   heading: Organism part
   unlocked: true
