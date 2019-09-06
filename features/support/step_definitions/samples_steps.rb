@@ -140,12 +140,12 @@ end
 
 When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
   step %Q{I am on the show page for sample "#{sample_name}"}
-  action_str = (action_type == 'create') ? 'Generate Accession Number' : 'Update EBI Sample data'
+  action_str = action_type == 'create' ? 'Generate Accession Number' : 'Update EBI Sample data'
   step(%Q{I follow "#{action_str}"})
 end
 
 Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, _dest|
-  xml = (type_action == 'sent') ? FakeAccessionService.instance.sent.last['SAMPLE'] : FakeAccessionService.instance.last_received
+  xml = type_action == 'sent' ? FakeAccessionService.instance.sent.last['SAMPLE'] : FakeAccessionService.instance.last_received
   assert_equal (state_action == 'should'), Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).present?, "XML was: #{xml}"
 end
 

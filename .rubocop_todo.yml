@@ -4751,22 +4751,6 @@ Style/SymbolProc:
     - 'test/unit/qc_report_file_test.rb'
     - 'test/unit/tag_qc/qc_decision_test.rb'
 
-# Offense count: 13
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, AllowSafeAssignment.
-# SupportedStyles: require_parentheses, require_no_parentheses, require_parentheses_when_complex
-Style/TernaryParentheses:
-  Exclude:
-    - 'app/api/core/endpoint/basic_handler/paged.rb'
-    - 'app/api/core/io/base/json_formatting_behaviour.rb'
-    - 'app/helpers/application_helper.rb'
-    - 'app/models/pipeline/inbox_extensions.rb'
-    - 'features/support/step_definitions/samples_steps.rb'
-    - 'features/support/step_definitions/transfer_steps.rb'
-    - 'features/support/step_definitions/web_steps.rb'
-    - 'lib/authenticated_system.rb'
-    - 'lib/label_printer/label_printer/label/batch_tube.rb'
-
 # Offense count: 11
 # Cop supports --auto-correct.
 Style/ZeroLengthPredicate:

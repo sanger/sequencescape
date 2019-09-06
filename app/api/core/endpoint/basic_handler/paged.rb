@@ -35,7 +35,7 @@ module Core::Endpoint::BasicHandler::Paged
   private :pages_to_actions
 
   def handler_for(segment)
-    (segment.to_s =~ /^\d+$/) ? self : super
+    /^\d+$/.match?(segment.to_s) ? self : super
   end
   private :handler_for
 

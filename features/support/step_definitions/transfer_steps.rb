@@ -72,7 +72,7 @@ Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "(
 end
 
 def assert_request_state(state, targets, direction, request_class)
-  association = (direction == 'to') ? :target_asset_id : :asset_id
+  association = direction == 'to' ? :target_asset_id : :asset_id
   assert_equal(
     [state],
     request_class.where(association => targets).pluck(:state).uniq,
@@ -81,7 +81,7 @@ def assert_request_state(state, targets, direction, request_class)
 end
 
 def change_request_state(state, targets, direction, request_class)
-  association = (direction == 'to') ? :requests_as_target : :requests_as_source
+  association = direction == 'to' ? :requests_as_target : :requests_as_source
   Request.where(id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id)).update_all(state: state)
 end
 

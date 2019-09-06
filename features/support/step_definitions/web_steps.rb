@@ -142,7 +142,7 @@ end
 Then /^the "([^"]*)" field(?: within "([^"]*)")? should contain "([^"]*)"$/ do |field, selector, value|
   with_scope(selector) do
     field = find_field(field)
-    field_value = (field.tag_name == 'textarea') ? field.text : field.value
+    field_value = field.tag_name == 'textarea' ? field.text : field.value
     assert_match(/#{value}/, field_value)
   end
 end
