@@ -30,15 +30,15 @@ class Project < ApplicationRecord
     state :inactive
 
     event :reset do
-      transitions to: :pending, from: [:inactive, :active]
+      transitions to: :pending, from: %i[inactive active]
     end
 
     event :activate do
-      transitions to: :active, from: [:pending, :inactive]
+      transitions to: :active, from: %i[pending inactive]
     end
 
     event :deactivate do
-      transitions to: :inactive, from: [:pending, :active]
+      transitions to: :inactive, from: %i[pending active]
     end
   end
 

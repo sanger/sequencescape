@@ -183,7 +183,7 @@ class BatchesController < ApplicationController
 
   def fail_items
     ActiveRecord::Base.transaction do
-      fail_params = params.permit(:id, requested_fail: {}, requested_remove: {}, failure: [:reason, :comment, :fail_but_charge])
+      fail_params = params.permit(:id, requested_fail: {}, requested_remove: {}, failure: %i[reason comment fail_but_charge])
       fail_and_remover = Batch::RequestFailAndRemover.new(fail_params)
       if fail_and_remover.save
         flash[:notice] = fail_and_remover.notice

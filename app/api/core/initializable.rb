@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Core::Initializable
   class Initializer
     def initialize(owner)

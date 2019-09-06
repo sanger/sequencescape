@@ -6,7 +6,7 @@ module StudyReport::WellDetails
           :map,
           :well_attribute,
           :events,
-          { plate: [:plate_purpose, :events, :barcodes], primary_aliquot: { sample: [:sample_metadata, { sample_manifest: :supplier }] } }
+          { plate: %i[plate_purpose events barcodes], primary_aliquot: { sample: [:sample_metadata, { sample_manifest: :supplier }] } }
         ])
       }
     end

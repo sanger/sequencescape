@@ -15,7 +15,7 @@ class Api::StudyIO < Api::Base
         scope :including_associations_for_json, -> {
           includes([
             :uuid_object, {
-              study_metadata: [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type],
+              study_metadata: %i[faculty_sponsor reference_genome study_type data_release_study_type],
               roles: :users
             }
           ])

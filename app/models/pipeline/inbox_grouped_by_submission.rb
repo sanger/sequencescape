@@ -18,7 +18,7 @@ module Pipeline::InboxGroupedBySubmission
 
     def paginated_by_submission(*args)
       options                      = args.extract_options!
-      options_for_submission_query = Hash[[:limit, :offset].map { |k| [k, options.delete(k)] if options.key?(k) }.compact]
+      options_for_submission_query = Hash[%i[limit offset].map { |k| [k, options.delete(k)] if options.key?(k) }.compact]
       all(options.deep_merge(conditions: { submission_id: submissions(:all, options_for_submission_query).map(&:submission_id) }))
     end
 

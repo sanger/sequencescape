@@ -3,7 +3,7 @@ class SamplesController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :admin_login_required, only: [:administer, :destroy]
+  before_action :admin_login_required, only: %i[administer destroy]
 
   def index
     @samples = Sample.order(created_at: :desc).page(params[:page])
@@ -180,15 +180,15 @@ class SamplesController < ApplicationController
   private
 
   def default_permitted_metadata_fields
-    { sample_metadata_attributes: [
-      :organism, :gc_content, :cohort, :gender, :country_of_origin, :geographical_region, :ethnicity, :dna_source,
-      :volume, :supplier_plate_id, :mother, :father, :replicate, :sample_public_name, :sample_common_name,
-      :sample_strain_att, :sample_taxon_id, :sample_ebi_accession_number, :sample_sra_hold,
-      :sample_description, :sibling, :is_resubmitted, :date_of_sample_collection, :date_of_sample_extraction,
-      :sample_extraction_method, :sample_purified, :purification_method, :concentration, :concentration_determined_by,
-      :sample_type, :sample_storage_conditions, :supplier_name, :reference_genome_id, :genotype, :phenotype, :age,
-      :developmental_stage, :cell_type, :disease_state, :compound, :dose, :immunoprecipitate, :growth_condition,
-      :rnai, :organism_part, :time_point, :disease, :subject, :treatment, :donor_id
+    { sample_metadata_attributes: %i[
+      organism gc_content cohort gender country_of_origin geographical_region ethnicity dna_source
+      volume supplier_plate_id mother father replicate sample_public_name sample_common_name
+      sample_strain_att sample_taxon_id sample_ebi_accession_number sample_sra_hold
+      sample_description sibling is_resubmitted date_of_sample_collection date_of_sample_extraction
+      sample_extraction_method sample_purified purification_method concentration concentration_determined_by
+      sample_type sample_storage_conditions supplier_name reference_genome_id genotype phenotype age
+      developmental_stage cell_type disease_state compound dose immunoprecipitate growth_condition
+      rnai organism_part time_point disease subject treatment donor_id
     ] }
   end
 

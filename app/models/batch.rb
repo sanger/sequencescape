@@ -73,8 +73,8 @@ class Batch < ApplicationRecord
     includes(requests: [
       :uuid_object, :request_metadata, :request_type,
       { submission: :uuid_object },
-      { asset: [:uuid_object, { aliquots: [:sample, :tag] }] },
-      { target_asset: [:uuid_object, { aliquots: [:sample, :tag] }] }
+      { asset: [:uuid_object, { aliquots: %i[sample tag] }] },
+      { target_asset: [:uuid_object, { aliquots: %i[sample tag] }] }
     ])
   }
 

@@ -61,15 +61,15 @@ class TransferRequest < ApplicationRecord
     event :pass do
       # Jumping straight to passed moves through an implied started state.
       transitions to: :passed, from: :pending, after: :on_started
-      transitions to: :passed, from: [:started, :failed, :processed_2]
+      transitions to: :passed, from: %i[started failed processed_2]
     end
 
     event :fail do
-      transitions to: :failed, from: [:pending, :started, :processed_1, :processed_2, :passed]
+      transitions to: :failed, from: %i[pending started processed_1 processed_2 passed]
     end
 
     event :cancel do
-      transitions to: :cancelled, from: [:started, :processed_1, :processed_2, :passed, :qc_complete]
+      transitions to: :cancelled, from: %i[started processed_1 processed_2 passed qc_complete]
     end
 
     event :cancel_before_started do

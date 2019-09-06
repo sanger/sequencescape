@@ -15,7 +15,7 @@
 
 module SubmissionSerializer
   STRAIGHT_CLONE = %w[name submission_class_name]
-  SP_STRAIGHT_CLONE = [:info_differential, :asset_input_methods, :request_options]
+  SP_STRAIGHT_CLONE = %i[info_differential asset_input_methods request_options]
 
   def self.serialize(st)
     attributes = st.attributes

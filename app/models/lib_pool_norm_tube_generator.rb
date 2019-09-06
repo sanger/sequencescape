@@ -24,7 +24,7 @@ class LibPoolNormTubeGenerator
   end
 
   def set_plate(barcode)
-    Plate.with_barcode(barcode).includes(wells: { requests: [:request_type, :target_asset] }).first
+    Plate.with_barcode(barcode).includes(wells: { requests: %i[request_type target_asset] }).first
   end
 
   def lib_pool_tubes

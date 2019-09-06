@@ -36,7 +36,7 @@ module Accession
     end
 
     def attributes
-      [:folder, :tags]
+      %i[folder tags]
     end
   end
 end

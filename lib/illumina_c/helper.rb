@@ -43,7 +43,7 @@ module IlluminaC::Helper
     end
 
     def validate!
-      [:name, :type, :role, :catalogue].each do |value|
+      %i[name type role catalogue].each do |value|
         raise "Must provide a #{value}" if send(value).nil?
       end
       raise "Request Type should be #{ACCEPTABLE_REQUEST_TYPES.join(', ')}" unless ACCEPTABLE_REQUEST_TYPES.include?(type)

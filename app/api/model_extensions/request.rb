@@ -7,7 +7,7 @@ module ModelExtensions::Request
             :uuid_object,
             :barcodes,
             :scanned_into_lab_event,
-            { aliquots: [:sample, :tag] }
+            { aliquots: %i[sample tag] }
           ]
         )
       }
@@ -16,7 +16,7 @@ module ModelExtensions::Request
           target_asset: [
             :uuid_object,
             :barcodes,
-            { aliquots: [:sample, :tag] }
+            { aliquots: %i[sample tag] }
           ]
         )
       }

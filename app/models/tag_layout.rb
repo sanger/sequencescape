@@ -71,7 +71,7 @@ class TagLayout < ApplicationRecord
   def wells_in_walking_order
     @wiwo ||= plate.wells
                    .send(direction_algorithm_module.well_order_scope)
-                   .includes(aliquots: [:tag, :tag2])
+                   .includes(aliquots: %i[tag tag2])
   end
 
   def direction_algorithm_module

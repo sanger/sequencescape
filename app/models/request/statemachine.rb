@@ -54,7 +54,7 @@ module Request::Statemachine
 
         # State Machine events
         event :start do
-          transitions to: :started, from: [:pending, :hold]
+          transitions to: :started, from: %i[pending hold]
         end
 
         event :pass do
@@ -90,15 +90,15 @@ module Request::Statemachine
         end
 
         event :cancel do
-          transitions to: :cancelled, from: [:started, :hold]
+          transitions to: :cancelled, from: %i[started hold]
         end
 
         event :return do
-          transitions to: :pending, from: [:failed, :passed]
+          transitions to: :pending, from: %i[failed passed]
         end
 
         event :cancel_completed do
-          transitions to: :cancelled, from: [:failed, :passed]
+          transitions to: :cancelled, from: %i[failed passed]
         end
 
         event :cancel_from_upstream, manual_only?: true do
@@ -106,11 +106,11 @@ module Request::Statemachine
         end
 
         event :cancel_before_started do
-          transitions to: :cancelled, from: [:pending, :hold]
+          transitions to: :cancelled, from: %i[pending hold]
         end
 
         event :submission_cancelled, manual_only?: true do
-          transitions to: :cancelled, from: [:pending, :cancelled]
+          transitions to: :cancelled, from: %i[pending cancelled]
         end
 
         event :fail_from_upstream, manual_only?: true do

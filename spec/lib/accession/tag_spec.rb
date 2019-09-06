@@ -14,7 +14,7 @@ RSpec.describe Accession::Tag, type: :model, accession: true do
     expect(tag).to be_required_for(build(:ena_service))
     expect(tag).not_to be_required_for(build(:ega_service))
 
-    tag = described_class.new(services: [:ENA, :EGA])
+    tag = described_class.new(services: %i[ENA EGA])
     expect(tag).to be_required_for(build(:ena_service))
     expect(tag).to be_required_for(build(:ega_service))
 

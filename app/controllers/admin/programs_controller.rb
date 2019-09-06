@@ -1,6 +1,6 @@
 class Admin::ProgramsController < ApplicationController
   before_action :admin_login_required
-  before_action :discover_program, only: [:show, :edit, :update, :destroy]
+  before_action :discover_program, only: %i[show edit update destroy]
 
   def index
     @programs = Program.all

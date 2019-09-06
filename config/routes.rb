@@ -83,10 +83,10 @@ Rails.application.routes.draw do
     end
   end
 
-  match '/login' => 'sessions#login', :as => :login, :via => [:get, :post]
-  match '/logout' => 'sessions#logout', :as => :logout, :via => [:get, :post]
+  match '/login' => 'sessions#login', :as => :login, :via => %i[get post]
+  match '/logout' => 'sessions#logout', :as => :logout, :via => %i[get post]
 
-  resources :plate_summaries, only: [:index, :show] do
+  resources :plate_summaries, only: %i[index show] do
     collection do
       get :search
     end
@@ -104,7 +104,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :stock_stampers, only: [:new, :create] do
+  resources :stock_stampers, only: %i[new create] do
     collection do
       post :generate_tecan_file
       post :print_label
@@ -121,7 +121,7 @@ Rails.application.routes.draw do
   resources :batches do
     resources :requests, controller: 'batches/requests'
     resources :comments, controller: 'batches/comments'
-    resources :stock_assets, only: [:new, :create]
+    resources :stock_assets, only: %i[new create]
 
     member do
       get :print_labels
@@ -206,7 +206,7 @@ Rails.application.routes.draw do
 
     resources :assets, except: [:destroy]
 
-    resources :sample_registration, only: [:index, :new, :create], controller: 'studies/sample_registration' do
+    resources :sample_registration, only: %i[index new create], controller: 'studies/sample_registration' do
       collection do
         post :spreadsheet
         # get :new
@@ -249,7 +249,7 @@ Rails.application.routes.draw do
         post :remove_wells
       end
 
-      resources :wells, expect: [:destroy, :edit]
+      resources :wells, expect: %i[destroy edit]
     end
 
     resource :information, controller: 'studies/information' do
@@ -266,11 +266,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :documents, controller: 'studies/documents', only: [:show, :destroy]
+    resources :documents, controller: 'studies/documents', only: %i[show destroy]
   end
 
-  resources :bulk_submissions, only: [:index, :new, :create]
-  resources :bulk_submission_excel_downloads, only: [:create, :new], controller: 'bulk_submission_excel/downloads'
+  resources :bulk_submissions, only: %i[index new create]
+  resources :bulk_submission_excel_downloads, only: %i[create new], controller: 'bulk_submission_excel/downloads'
 
   resources :submissions do
     collection do
@@ -350,7 +350,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :roles, only: [:index, :show, :new, :create] do
+    resources :roles, only: %i[index show new create] do
       resources :users, controller: 'roles/users'
     end
 
@@ -422,7 +422,7 @@ Rails.application.routes.draw do
   resources :lab_searches
   resources :events
 
-  resources :workflows, only: [:index, :show] do
+  resources :workflows, only: %i[index show] do
     member do
       # Yes, this is every bit as horrible as it looks.
       # HTTP Verbs! Gotta catch em all!
@@ -441,7 +441,7 @@ Rails.application.routes.draw do
 
   resources :asset_audits
 
-  resources :qc_reports, except: [:delete, :update] do
+  resources :qc_reports, except: %i[delete update] do
     collection do
       post :qc_file
     end
@@ -456,12 +456,12 @@ Rails.application.routes.draw do
   post 'labware/lab_view'
 
   resources :tag_groups, except: [:destroy] do
-    resources :tags, except: [:destroy, :index, :create, :new, :edit]
+    resources :tags, except: %i[destroy index create new edit]
   end
 
-  resources :tag_layout_templates, only: [:index, :new, :create, :show]
+  resources :tag_layout_templates, only: %i[index new create show]
 
-  resources :assets, except: [:create, :new] do
+  resources :assets, except: %i[create new] do
     collection do
       get :reception
       post :print_labels
@@ -483,7 +483,7 @@ Rails.application.routes.draw do
     resources :qc_files
   end
 
-  resources :labware, except: [:create, :new] do
+  resources :labware, except: %i[create new] do
     collection do
       get :reception
       post :print_labels
@@ -505,7 +505,7 @@ Rails.application.routes.draw do
     resources :comments, controller: 'labware/comments'
   end
 
-  resources :receptacles, except: [:create, :new] do
+  resources :receptacles, except: %i[create new] do
     collection do
       get :reception
       post :print_labels
@@ -589,19 +589,19 @@ Rails.application.routes.draw do
     get '/' => 'home#index'
   end
 
-  resources :labwhere_receptions, only: [:index, :create]
+  resources :labwhere_receptions, only: %i[index create]
 
-  resources :qc_files, only: [:show, :create]
+  resources :qc_files, only: %i[show create]
 
-  resources :user_queries, only: [:new, :create]
+  resources :user_queries, only: %i[new create]
 
-  resources :poolings, only: [:new, :create]
+  resources :poolings, only: %i[new create]
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
-  resources :sample_manifest_upload_with_tag_sequences, only: [:new, :create]
+  resources :sample_manifest_upload_with_tag_sequences, only: %i[new create]
 
   namespace :aker do
-    resources :jobs, only: [:index, :show] do
+    resources :jobs, only: %i[index show] do
       member do
         put 'start'
         put 'complete'
@@ -612,9 +612,9 @@ Rails.application.routes.draw do
 
   resources :uat_actions
 
-  resources :billing_reports, only: [:new, :create]
+  resources :billing_reports, only: %i[new create]
 
-  resources :location_reports, only: [:index, :show, :create]
+  resources :location_reports, only: %i[index show create]
 
   # this is for test only test/functional/authentication_controller_test.rb
   # to be removed?

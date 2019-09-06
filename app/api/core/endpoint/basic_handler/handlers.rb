@@ -1,7 +1,7 @@
 module Core::Endpoint::BasicHandler::Handlers
   # Handler that behaves like it never deals with any URLs
   NullHandler = Object.new.tap do |handler|
-    [:create, :read, :update, :delete].each do |action|
+    %i[create read update delete].each do |action|
       handler.define_singleton_method(action) do |*_args|
         raise ::Core::Service::UnsupportedAction
       end

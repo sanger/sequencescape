@@ -42,7 +42,7 @@ class AssetsController < ApplicationController
 
     def good_well_at?(row, column)
       well = well_at(row, column)
-      [:request, :asset].all? { |field| not well[field].nil? }
+      %i[request asset].all? { |field| not well[field].nil? }
     end
 
     def bad_well_at?(row, column)

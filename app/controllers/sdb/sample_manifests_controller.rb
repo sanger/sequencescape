@@ -1,6 +1,6 @@
 class Sdb::SampleManifestsController < Sdb::BaseController
-  before_action :set_sample_manifest_id, only: [:show, :generated, :print_labels]
-  before_action :validate_type, only: [:new, :create]
+  before_action :set_sample_manifest_id, only: %i[show generated print_labels]
+  before_action :validate_type, only: %i[new create]
 
   LIMIT_ERROR_LENGTH = 10000
 

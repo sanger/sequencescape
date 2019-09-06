@@ -12,7 +12,7 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :barcodes, :scanned_into_lab_event]) }
+        scope :including_associations_for_json, -> { includes(%i[uuid_object barcodes scanned_into_lab_event]) }
       end
     end
 

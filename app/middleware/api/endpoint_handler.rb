@@ -176,8 +176,8 @@ module Api
     def handle_request(handler, http_request, action, parts)
       endpoint_lookup, io_lookup =
         case handler
-        when :instance then [:endpoint_for_object, :lookup_for_object]
-        when :model    then [:endpoint_for_class,  :lookup_for_class]
+        when :instance then %i[endpoint_for_object lookup_for_object]
+        when :model    then %i[endpoint_for_class lookup_for_class]
         else raise StandardError, "Unexpected handler #{handler.inspect}"
         end
 

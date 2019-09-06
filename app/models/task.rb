@@ -132,11 +132,11 @@ class Task < ApplicationRecord
   end
 
   def included_for_do_task
-    [:requests, :pipeline, :lab_events]
+    %i[requests pipeline lab_events]
   end
 
   def included_for_render_task
-    [:requests, :pipeline, :lab_events]
+    %i[requests pipeline lab_events]
   end
 
   def render_task(controller, params)

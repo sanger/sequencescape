@@ -8,10 +8,10 @@ class StudiesController < ApplicationController
   include Informatics::Globals
 
   before_action :login_required
-  before_action :admin_login_required, only: [:settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
-  before_action :manager_login_required, only: [:close, :open]
+  before_action :admin_login_required, only: %i[settings administer manage managed_update grant_role remove_role]
+  before_action :manager_login_required, only: %i[close open]
 
-  around_action :rescue_validation, only: [:close, :open]
+  around_action :rescue_validation, only: %i[close open]
 
   def setup_studies_from_scope(exclude_nested_resource = false)
     if logged_in? and not exclude_nested_resource

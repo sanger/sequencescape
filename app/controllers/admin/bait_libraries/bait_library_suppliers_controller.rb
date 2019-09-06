@@ -1,6 +1,6 @@
 class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationController
   before_action :admin_login_required
-  before_action :discover_bait_library_supplier, only: [:edit, :update, :destroy]
+  before_action :discover_bait_library_supplier, only: %i[edit update destroy]
 
   def new
     @bait_library_supplier = BaitLibrary::Supplier.new

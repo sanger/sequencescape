@@ -55,7 +55,7 @@ module Accession
     end
 
     def attributes
-      [:services, :value, :name, :groups, :ebi_name]
+      %i[services value name groups ebi_name]
     end
   end
 end
