@@ -843,10 +843,8 @@ CherrypickPipeline.create!(
   max_size: 3000,
   sorter: 10,
   request_types: [cprt],
-  workflow: liw
-) do |pipeline|
-  pipeline.add_control_request_type
-end
+  workflow: liw, &:add_control_request_type
+)
 
 ## Fluidigm Stuff
 

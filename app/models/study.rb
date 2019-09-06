@@ -381,13 +381,13 @@ class Study < ApplicationRecord
 
   def mark_deactive
     unless inactive?
-      logger.warn "Study deactivation failed! #{errors.map { |e| e.to_s }}"
+      logger.warn "Study deactivation failed! #{errors.map(&:to_s)}"
     end
   end
 
   def mark_active
     unless active?
-      logger.warn "Study activation failed! #{errors.map { |e| e.to_s }}"
+      logger.warn "Study activation failed! #{errors.map(&:to_s)}"
     end
   end
 
@@ -478,9 +478,7 @@ class Study < ApplicationRecord
 
   def accession_all_samples
     if accession_number?
-      samples.find_each do |sample|
-        sample.accession
-      end
+      samples.find_each(&:accession)
     end
   end
 

@@ -80,9 +80,7 @@ module Submission::FlexibleRequestGraph
 
     def self.build!(request_type, multiplier, source_assets_qc_metrics, chain)
       link_class = request_type.for_multiplexing? ? MultiplexedLink : UnplexedLink
-      link_class.new(request_type, multiplier, source_assets_qc_metrics, chain).tap do |link|
-        link.build!
-      end
+      link_class.new(request_type, multiplier, source_assets_qc_metrics, chain).tap(&:build!)
     end
 
     def initialize(request_type, multiplier, source_assets_qc_metrics, chain)
@@ -175,7 +173,7 @@ module Submission::FlexibleRequestGraph
     def generate_target_assets
       @target_assets_qc_metrics ||= chain.multiplexing_assets do
         # We yield only if we don't have any multiplexing assets
-        all_qc_metrics = source_assets_qc_metrics.map { |doublet| doublet.qc_metric }.flatten.uniq
+        all_qc_metrics = source_assets_qc_metrics.map(&:qc_metric).flatten.uniq
         Array.new(request_type.pool_count) { Doublet.new(create_target_asset, all_qc_metrics) }
       end
     end

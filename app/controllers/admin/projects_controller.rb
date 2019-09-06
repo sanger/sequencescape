@@ -80,18 +80,18 @@ class Admin::ProjectsController < ApplicationController
       flash[:notice] = 'Your project has been updated'
       redirect_to controller: 'admin/projects', action: 'update', id: @project.id
     else
-      logger.warn "Failed to update attributes: #{@project.errors.map { |e| e.to_s }}"
+      logger.warn "Failed to update attributes: #{@project.errors.map(&:to_s)}"
       flash[:error] = 'Failed to update attributes for project!'
       render action: :show, id: @project.id and return
     end
   end
 
   def sort
-    @projects = Project.all.sort_by { |project| project.name }
+    @projects = Project.all.sort_by(&:name)
     if params[:sort] == 'date'
-      @projects = @projects.sort_by { |project| project.created_at }
+      @projects = @projects.sort_by(&:created_at)
     elsif params[:sort] == 'owner'
-      @projects = @projects.sort_by { |project| project.user_id }
+      @projects = @projects.sort_by(&:user_id)
     end
     render partial: 'projects'
   end

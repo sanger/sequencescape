@@ -7,7 +7,7 @@ end
 Then /^the following samples should be in the sample registration fields:$/ do |table|
   number = table.rows.count
   approved_heads = table.headers
-  heads = find('table#samples_to_register').find_all('thead th').map { |th| th.text }
+  heads = find('table#samples_to_register').find_all('thead th').map(&:text)
   rows = find('table#samples_to_register').find_all("tbody tr:nth-child(-n+#{number})")
 
   hashes = rows.map do |tr|

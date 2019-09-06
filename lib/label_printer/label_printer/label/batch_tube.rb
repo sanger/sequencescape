@@ -46,7 +46,7 @@ module LabelPrinter
                       end
                     else
                       # all info on a label including barcode is about target_asset
-                      requests.map { |request| request.target_labware }
+                      requests.map(&:target_labware)
                     end
       end
 

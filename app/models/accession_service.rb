@@ -106,7 +106,7 @@ class AccessionService
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
         end
       ensure
-        files.each { |f| f.close } # not really necessary but recommended
+        files.each(&:close) # not really necessary but recommended
       end
 
       return accessionables.map(&:accession_number)

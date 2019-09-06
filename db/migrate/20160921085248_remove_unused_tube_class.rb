@@ -12,7 +12,7 @@ class RemoveUnusedTubeClass < ActiveRecord::Migration
     candidates_for_removal.each do |purpose|
       raise StandardError, "#{purpose.id}: #{purpose.name} is used!" if purpose.assets.present?
     end
-    ActiveRecord::Base.transaction { candidates_for_removal.each { |c| c.destroy } }
+    ActiveRecord::Base.transaction { candidates_for_removal.each(&:destroy) }
   end
 
   def down

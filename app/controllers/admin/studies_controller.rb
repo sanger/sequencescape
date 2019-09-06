@@ -45,15 +45,15 @@ class Admin::StudiesController < ApplicationController
 
     unless params[:filter].nil?
       if params[:filter][:by] == 'unallocated manager'
-        @studies = Study.all.select { |p| p.name.include?(params[:q]) && !(p.roles.map { |r| r.name }.include?('manager')) }
+        @studies = Study.all.select { |p| p.name.include?(params[:q]) && !(p.roles.map(&:name).include?('manager')) }
       end
     end
 
     case params[:filter][:status]
     when 'open'
-      @studies = @studies.select { |p| p.active? }
+      @studies = @studies.select(&:active?)
     when 'closed'
-      @studies = @studies.reject { |p| p.active? }
+      @studies = @studies.reject(&:active?)
     end
     @request_types = RequestType.order(:name)
     render partial: 'filtered_studies'
@@ -79,11 +79,11 @@ class Admin::StudiesController < ApplicationController
   end
 
   def sort
-    @studies = Study.all.sort_by { |study| study.name }
+    @studies = Study.all.sort_by(&:name)
     if params[:sort] == 'date'
-      @studies = @studies.sort_by { |study| study.created_at }
+      @studies = @studies.sort_by(&:created_at)
     elsif params[:sort] == 'owner'
-      @studies = @studies.sort_by { |study| study.user_id }
+      @studies = @studies.sort_by(&:user_id)
     end
     render partial: 'studies'
   end

@@ -70,9 +70,7 @@ module CarrierWave
 
         # Destroys the file. Called in the after_destroy callback
         def destroy_file
-          @uploader.model.db_files.each do |db_file|
-            db_file.delete
-          end
+          @uploader.model.db_files.each(&:delete)
         end
 
         # Yields the partitions for the file with the max_part_size boundary

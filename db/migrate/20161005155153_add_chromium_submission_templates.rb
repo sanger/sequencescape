@@ -26,7 +26,7 @@ class AddChromiumSubmissionTemplates < ActiveRecord::Migration
 
   def down
     ActiveRecord::Base.transaction do
-      IlluminaC::Helper::TemplateConstructor.find_for('Chromium Library Creation', SEQUENCING_KEYS).each { |st| st.destroy }
+      IlluminaC::Helper::TemplateConstructor.find_for('Chromium Library Creation', SEQUENCING_KEYS).each(&:destroy)
     end
   end
 

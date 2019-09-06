@@ -3,7 +3,7 @@ class Pulldown::InitialDownstreamPlatePurpose < IlluminaHtp::InitialDownstreamPl
   # created for to exactly the same state.
 
   def stock_wells(plate, contents)
-    return plate.parents.map { |parent| parent.wells }.flatten if contents.blank?
+    return plate.parents.map(&:wells).flatten if contents.blank?
 
     Well.joins(:requests).where(requests: { target_asset_id: plate.wells.located_at(contents).pluck(:id) })
   end

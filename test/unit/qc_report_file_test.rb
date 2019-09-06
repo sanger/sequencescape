@@ -85,7 +85,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @qcr_file.process
         @report.reload
         assert_equal 'complete', @report.state
-        assert @report.qc_metrics.all? { |met| met.proceed }, 'Not all metrics are proceed'
+        assert @report.qc_metrics.all?(&:proceed), 'Not all metrics are proceed'
       end
 
       should 'not adjust the qc_decision flag' do

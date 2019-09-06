@@ -90,9 +90,7 @@ module Accession
       end
 
       def close!
-        files.values.each do |file|
-          file.close!
-        end
+        files.values.each(&:close!)
       end
     end
 

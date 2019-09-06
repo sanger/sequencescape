@@ -9,7 +9,7 @@ describe 'Batches controller', js: true do
   let(:user)  { create :admin  }
 
   it 'reordering requests' do
-    requests_ids = batch.batch_requests.map { |br| br.request_id }
+    requests_ids = batch.batch_requests.map(&:request_id)
     login_user user
     visit batch_path(batch)
     click_link('Edit batch')

@@ -113,7 +113,7 @@ class StudiesController < ApplicationController
       redirect_to study_path(@study)
     end
   rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
+    Rails.logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}"
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: 'edit', id: @study.id
   end
@@ -338,7 +338,7 @@ class StudiesController < ApplicationController
     begin
       yield
     rescue ActiveRecord::RecordInvalid
-      Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
+      Rails.logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}"
       flash[:error] = 'Failed to update attributes for study!'
       render action: 'edit', id: @study.id
     end
