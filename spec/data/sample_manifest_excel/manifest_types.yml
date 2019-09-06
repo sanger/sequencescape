@@ -78,7 +78,6 @@ plate_full:
     - :immunoprecipitate
     - :growth_condition
     - :rnai
-    - :rnai2
     - :organism_part
     - :time_point
     - :treatment
@@ -163,7 +162,6 @@ plate_chromium_library:
     - :immunoprecipitate
     - :growth_condition
     - :rnai
-    - :rnai2
     - :organism_part
     - :time_point
     - :treatment
@@ -249,7 +247,6 @@ tube_full:
     - :immunoprecipitate
     - :growth_condition
     - :rnai
-    - :rnai2
     - :organism_part
     - :time_point
     - :treatment
