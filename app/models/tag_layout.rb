@@ -49,8 +49,8 @@ class TagLayout < ApplicationRecord
   validates :direction, inclusion: { in: DIRECTIONS.keys }
   validates :walking_by, inclusion: { in: WALKING_ALGORITHMS.keys }
 
-  validates_presence_of :direction_algorithm
-  validates_presence_of :walking_algorithm
+  validates :direction_algorithm, presence: true
+  validates :walking_algorithm, presence: true
 
   # After creating the instance we can layout the tags into the wells.
   after_create :layout_tags_into_wells, if: :valid?

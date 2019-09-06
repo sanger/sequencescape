@@ -73,9 +73,9 @@ class SampleManifest < ApplicationRecord
   serialize :last_errors
   serialize :barcodes
 
-  validates_presence_of :supplier
-  validates_presence_of :study
-  validates_numericality_of :count, only_integer: true, greater_than: 0, allow_blank: false
+  validates :supplier, presence: true
+  validates :study, presence: true
+  validates :count, numericality: { only_integer: true, greater_than: 0, allow_blank: false }
   validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }
 
   before_save :default_asset_type

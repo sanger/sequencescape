@@ -28,15 +28,15 @@ class Request::ChangeDecision
       record.errors.add(:asset_qc_state, 'cannot be same as current state')
     end
   end
-  validates_presence_of :asset_qc_state, unless: :asset_qc_state_absent?
+  validates :asset_qc_state, presence: { unless: :asset_qc_state_absent? }
 
   attr_accessor :comment
-  validates_presence_of :comment
+  validates :comment, presence: true
 
   attr_accessor :request
 
   attr_accessor :user
-  validates_presence_of(:request)
+  validates(:request, presence: true)
 
   def initialize(attributes)
     attributes.each { |k, v| send(:"#{k}=", v) }

@@ -11,8 +11,6 @@ describe 'Create a study' do
     create :study_type
     create :program
   end
-
-  # rubocop:disable RSpec/MultipleExpectations
   it 'displays the expected fields' do
     login_user user
     visit root_path
@@ -56,7 +54,6 @@ describe 'Create a study' do
     expect(page).to have_content "Name can't be blank"
     expect(page).to have_content "Study description can't be blank"
   end
-  # rubocop:enable RSpec/MultipleExpectations
 
   it 'create managed study', js: true do
     login_user user

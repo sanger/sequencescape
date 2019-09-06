@@ -6,7 +6,7 @@ module Submission::AssetGroupBehaviour
       before_create :pull_assets_from_asset_group, if: :asset_group?
 
       # Required once out of the building state ...
-      validates_presence_of :assets, if: :assets_need_validating?
+      validates :assets, presence: { if: :assets_need_validating? }
     end
   end
 

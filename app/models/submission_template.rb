@@ -5,8 +5,8 @@
 class SubmissionTemplate < ApplicationRecord
   include Uuid::Uuidable
 
-  validates_presence_of :name
-  validates_presence_of :submission_class_name
+  validates :name, presence: true
+  validates :submission_class_name, presence: true
 
   serialize :submission_parameters
 
@@ -18,7 +18,7 @@ class SubmissionTemplate < ApplicationRecord
 
   belongs_to :product_catalogue, inverse_of: :submission_templates
   delegate :product_for, to: :product_catalogue
-  validates_presence_of :product_catalogue
+  validates :product_catalogue, presence: true
 
   LATEST_VERSION = -1
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2

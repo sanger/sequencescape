@@ -1,5 +1,5 @@
 class PlateType < ApplicationRecord
-  validates_presence_of :name, :maximum_volume
+  validates :name, :maximum_volume, presence: true
 
   class << self
     def plate_default_type

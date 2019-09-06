@@ -8,11 +8,11 @@ class TransferTemplate < ApplicationRecord
   include Uuid::Uuidable
 
   # A name is a useful way to identify templates!
-  validates_presence_of :name
-  validates_uniqueness_of :name
+  validates :name, presence: true
+  validates :name, uniqueness: true
 
   # A template creates a particular Transfer subclass.
-  validates_presence_of :transfer_class_name
+  validates :transfer_class_name, presence: true
 
   # A set of transfers that should be made.
   serialize :transfers

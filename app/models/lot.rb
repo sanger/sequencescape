@@ -24,7 +24,7 @@ class Lot < ApplicationRecord
   has_many :stamps, inverse_of: :lot
 
   validates :lot_number, :lot_type, :user, :template, :received_at, presence: true
-  validates_uniqueness_of :lot_number
+  validates :lot_number, uniqueness: true
 
   validate :valid_template?
 

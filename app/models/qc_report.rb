@@ -122,9 +122,9 @@ class QcReport < ApplicationRecord
       .joins(:product_criteria)
   }
 
-  validates_presence_of :product_criteria, :study, :state
+  validates :product_criteria, :study, :state, presence: true
 
-  validates_inclusion_of :exclude_existing, in: [true, false], message: 'should be true or false.'
+  validates :exclude_existing, inclusion: { in: [true, false], message: 'should be true or false.' }
 
   # Reports are handled asynchronously
   def schedule_report

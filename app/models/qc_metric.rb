@@ -24,8 +24,8 @@ class QcMetric < ApplicationRecord
   belongs_to :asset, class_name: 'Receptacle'
   belongs_to :qc_report
   has_one :product_criteria, through: :qc_report
-  validates_presence_of :asset, :qc_report
-  validates_inclusion_of :qc_decision, in: QcMetric.valid_states
+  validates :asset, :qc_report, presence: true
+  validates :qc_decision, inclusion: { in: QcMetric.valid_states }
 
   serialize :metrics
 

@@ -34,7 +34,7 @@ class BulkSubmission
   attr_accessor :spreadsheet, :encoding
   define_attribute_methods [:spreadsheet]
 
-  validates_presence_of :spreadsheet
+  validates :spreadsheet, presence: true
   validate :process_file
 
   def persisted?; false; end

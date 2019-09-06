@@ -11,9 +11,9 @@ class ProductCriteria < ApplicationRecord
   has_behaviour Basic, behaviour_name: 'Basic'
 
   belongs_to :product
-  validates_presence_of :product, :stage, :behaviour
+  validates :product, :stage, :behaviour, presence: true
 
-  validates_uniqueness_of :stage, scope: %i[product_id deprecated_at]
+  validates :stage, uniqueness: { scope: %i[product_id deprecated_at] }
   validates :behaviour, inclusion: { in: registered_behaviours }
 
   serialize :configuration

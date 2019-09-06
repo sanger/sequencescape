@@ -6,8 +6,8 @@
 # from SNP.
 # The table remains for reference purposes but shouldn't be involved in any active behaviour
 class Identifier < ApplicationRecord
-  validates_presence_of :resource_name, :identifiable_id
-  validates_uniqueness_of :external_id, scope: %i[identifiable_id resource_name] # only one external per asset per resource
+  validates :resource_name, :identifiable_id, presence: true
+  validates :external_id, uniqueness: { scope: %i[identifiable_id resource_name] } # only one external per asset per resource
 
   belongs_to :identifiable, polymorphic: true
   belongs_to :external, polymorphic: true

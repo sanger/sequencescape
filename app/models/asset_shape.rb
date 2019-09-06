@@ -10,8 +10,8 @@
 class AssetShape < ApplicationRecord
   include SharedBehaviour::Named
 
-  validates_presence_of :name, :horizontal_ratio, :vertical_ratio, :description_strategy
-  validates_numericality_of :horizontal_ratio, :vertical_ratio
+  validates :name, :horizontal_ratio, :vertical_ratio, :description_strategy, presence: true
+  validates :horizontal_ratio, :vertical_ratio, numericality: true
 
   def self.default_id
     @default_id ||= default.id

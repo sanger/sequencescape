@@ -139,8 +139,8 @@ class Study < ApplicationRecord
 
   # Validations
   validates :name, uniqueness: { case_sensitive: false }, presence: true, latin1: true
-  validates_length_of :name, maximum: 200
-  validates_format_of :abbreviation, with: /\A[\w_-]+\z/i, allow_blank: false, message: 'cannot contain spaces or be blank'
+  validates :name, length: { maximum: 200 }
+  validates :abbreviation, format: { with: /\A[\w_-]+\z/i, allow_blank: false, message: 'cannot contain spaces or be blank' }
   validate :validate_ethically_approved
 
   # Callbacks

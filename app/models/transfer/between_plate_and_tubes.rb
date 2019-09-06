@@ -10,12 +10,12 @@ class Transfer::BetweenPlateAndTubes < Transfer
     self.table_name = ('well_to_tube_transfers')
 
     belongs_to :transfer, class_name: 'Transfer::BetweenPlateAndTubes'
-    validates_presence_of :transfer
+    validates :transfer, presence: true
 
     belongs_to :destination, class_name: 'Tube'
-    validates_presence_of :destination
+    validates :destination, presence: true
 
-    validates_presence_of :source
+    validates :source, presence: true
 
     scope :include_destination, -> { includes(Transfer::BetweenPlateAndTubes::DESTINATION_INCLUDES) }
   end

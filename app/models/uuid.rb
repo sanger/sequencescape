@@ -59,7 +59,7 @@ class Uuid < ApplicationRecord
   end
 
   ValidRegexp = /\A[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}\z/
-  validates_format_of :external_id, with: ValidRegexp
+  validates :external_id, format: { with: ValidRegexp }
 
   # It is more efficient to check the individual parts of the resource association than it is to check the
   # association itself as the latter causes the record to be reloaded

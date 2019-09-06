@@ -1,13 +1,13 @@
 class ExtractionAttribute < ApplicationRecord
   include Uuid::Uuidable
 
-  validates_presence_of :created_by
+  validates :created_by, presence: true
 
   belongs_to :target, class_name: 'Labware', foreign_key: :target_id
 
-  validates_presence_of :target
+  validates :target, presence: true
 
-  validates_presence_of :attributes_update
+  validates :attributes_update, presence: true
 
   serialize :attributes_update
 
