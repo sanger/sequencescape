@@ -8,7 +8,7 @@ module Tasks::PlateTransferHandler
   end
 
   def includes_for_plate_creation
-    [{ asset: [:map, { plate: [:plate_purpose, :barcodes] }, :aliquots] }, { target_asset: [] }]
+    [{ asset: [:map, { plate: %i[plate_purpose barcodes] }, :aliquots] }, { target_asset: [] }]
   end
 
   def find_or_create_target(task)
@@ -42,7 +42,7 @@ module Tasks::PlateTransferHandler
     transfer = TransferRequest.for_request(@batch.requests.first)
                               .where(submission_id: @batch.requests.first.submission_id)
                               .includes(target_asset: :plate).first
-    return nil unless transfer.present?
+    return nil if transfer.blank?
 
     transfer.target_asset.plate
   end

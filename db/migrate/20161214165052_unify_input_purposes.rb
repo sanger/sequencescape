@@ -5,7 +5,7 @@ class UnifyInputPurposes < ActiveRecord::Migration
     self.table_name = 'plate_purposes'
   end
 
-  UNIFIED_PURPOSE = 'PlatePurpose::Input'
+  UNIFIED_PURPOSE = 'PlatePurpose::Input'.freeze
   NAME_OLD_PURPOSE = [
     ['ILB_STD_INPUT', 'IlluminaHtp::StockPlatePurpose'],
     ['Cherrypicked', 'IlluminaHtp::StockPlatePurpose'],
@@ -13,7 +13,7 @@ class UnifyInputPurposes < ActiveRecord::Migration
     ['WGS stock DNA', 'Pulldown::StockPlatePurpose'],
     ['SC stock DNA', 'Pulldown::StockPlatePurpose'],
     ['ISC stock DNA', 'Pulldown::StockPlatePurpose']
-  ]
+  ].freeze
 
   def up
     ActiveRecord::Base.transaction do

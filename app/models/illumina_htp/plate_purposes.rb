@@ -27,7 +27,7 @@ module IlluminaHtp::PlatePurposes
       'PF EM Pool',
       'PF Lib Norm'
     ]
-  ]
+  ].freeze
 
   TUBE_PURPOSE_FLOWS = [
     [
@@ -44,7 +44,7 @@ module IlluminaHtp::PlatePurposes
     [
       'Cap Lib Pool Norm'
     ]
-  ]
+  ].freeze
 
   QC_TUBE_PURPOSE_FLOWS = [
     [
@@ -52,7 +52,7 @@ module IlluminaHtp::PlatePurposes
       'PF MiSeq QC'
     ],
     ['PF MiSeq QCR']
-  ]
+  ].freeze
 
   BRANCHES = [
     ['PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
@@ -65,19 +65,19 @@ module IlluminaHtp::PlatePurposes
     ['Lib PCR-XP', 'Lib Norm', 'Lib Norm 2', 'Lib Norm 2 Pool'],
     ['Lib PCRR-XP', 'ISC lib pool'],
     ['Post Shear', 'Post Shear XP', 'AL Libs']
-  ]
+  ].freeze
 
-  STOCK_PLATE_PURPOSE = 'Cherrypicked'
+  STOCK_PLATE_PURPOSE = 'Cherrypicked'.freeze
 
-  OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP', 'Lib PCRR-XP']
+  OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP', 'Lib PCRR-XP'].freeze
 
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
     'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP', 'Lib Norm', 'PF EM Pool'
-  ]
+  ].freeze
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
     'Cherrypicked' => 'illumina_b_shared'
-  }
+  }.freeze
 
   PLATE_PURPOSE_TYPE = {
     'PF Cherrypicked' => PlatePurpose::Input,
@@ -122,7 +122,7 @@ module IlluminaHtp::PlatePurposes
 
     'Cap Lib Pool Norm' => IlluminaHtp::MxTubeNoQcPurpose
 
-  }
+  }.freeze
 
   def self.request_type_prefix
     'Illumina'

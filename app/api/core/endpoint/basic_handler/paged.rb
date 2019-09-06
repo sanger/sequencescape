@@ -11,7 +11,7 @@ module Core::Endpoint::BasicHandler::Paged
     page_accessor(:previous, :previous_page),
     page_accessor(:next, :next_page),
     page_accessor(:read, :current_page, 1)
-  ]
+  ].freeze
 
   def actions(object, options)
     super.tap do |actions|
@@ -35,7 +35,7 @@ module Core::Endpoint::BasicHandler::Paged
   private :pages_to_actions
 
   def handler_for(segment)
-    (segment.to_s =~ /^\d+$/) ? self : super
+    /^\d+$/.match?(segment.to_s) ? self : super
   end
   private :handler_for
 

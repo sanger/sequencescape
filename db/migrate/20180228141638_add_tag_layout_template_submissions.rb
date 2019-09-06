@@ -15,7 +15,7 @@ class AddTagLayoutTemplateSubmissions < ActiveRecord::Migration[5.1]
       # This helps avoid race conditions where users try and create two plates
       # with the same template at the same time.
       # When I asked JL how often this would happen, his response was 'pretty much all the time'
-      t.index [:submission_id, :tag_layout_template_id, :enforce_uniqueness], name: 'tag_layout_uniqueness', unique: true
+      t.index %i[submission_id tag_layout_template_id enforce_uniqueness], name: 'tag_layout_uniqueness', unique: true
     end
   end
 end

@@ -4,7 +4,7 @@ class UpdateQcTubesToCorrectClass < ActiveRecord::Migration
     'PF MiSeq Stock' => 'StockMultiplexedLibraryTube',
     'PF MiSeq QC' => 'MultiplexedLibraryTube',
     'PF MiSeq QCR' => 'MultiplexedLibraryTube'
-  }
+  }.freeze
 
   def up
     ActiveRecord::Base.transaction do

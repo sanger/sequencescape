@@ -9,7 +9,7 @@ class LotType < ApplicationRecord
   belongs_to :target_purpose, class_name: 'Purpose'
 
   validates :name, :template_class, presence: true
-  validates_uniqueness_of :name
+  validates :name, uniqueness: true
 
   def valid_template_class
     template_class.constantize

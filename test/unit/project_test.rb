@@ -8,7 +8,7 @@ class ProjectTest < ActiveSupport::TestCase
 
     context '#metadata' do
       setup do
-        @project = Project.new name: "Project : #{Time.now}"
+        @project = Project.new name: "Project : #{Time.zone.now}"
       end
 
       should 'require cost-code and project funding model' do

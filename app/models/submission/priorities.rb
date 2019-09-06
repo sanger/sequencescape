@@ -11,8 +11,8 @@ module Submission::Priorities
 
   def self.included(base)
     base.class_eval do
-      validates_presence_of :priority
-      validates_numericality_of :priority, only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 3
+      validates :priority, presence: true
+      validates :priority, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 3 }
     end
   end
 end

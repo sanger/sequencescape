@@ -4,7 +4,7 @@ class RequestsController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :admin_login_required, only: [:describe, :undescribe, :destroy]
+  before_action :admin_login_required, only: %i[describe undescribe destroy]
   before_action :set_permitted_params, only: [:update]
 
   def set_permitted_params
@@ -88,7 +88,7 @@ class RequestsController < ApplicationController
 
   def show
     @request = Request.find(params[:id])
-    unless @request.user_id.blank?
+    if @request.user_id.present?
       @user = User.find(@request.user_id)
     end
 
@@ -168,7 +168,7 @@ class RequestsController < ApplicationController
     redirect_to request_path(@request)
   end
 
-  before_action :find_request, only: [:filter_change_decision, :change_decision]
+  before_action :find_request, only: %i[filter_change_decision change_decision]
 
   def find_request
     @request = Request.find(params[:id])

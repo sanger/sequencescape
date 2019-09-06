@@ -7,7 +7,7 @@ namespace :limber do
   namespace :dev do
     namespace :setup do
       desc 'Create all limber pre-requisite plates'
-      task all: [:standard, :scrna, :rna, :gbs]
+      task all: %i[standard scrna rna gbs]
 
       desc 'Create 4 LB Cherrypick plates'
       task standard: ['limber:setup'] do

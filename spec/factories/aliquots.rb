@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :aliquot, aliases: [:tagged_aliquot, :dual_tagged_aliquot] do
+  factory :aliquot, aliases: %i[tagged_aliquot dual_tagged_aliquot] do
     sample
     study
     project

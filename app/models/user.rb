@@ -30,10 +30,10 @@ class User < ApplicationRecord
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
 
-  validates_presence_of :login
-  validates_uniqueness_of :login
+  validates :login, presence: true
+  validates :login, uniqueness: true
 
-  validates_confirmation_of :password, if: :password_required?
+  validates :password, confirmation: { if: :password_required? }
 
   scope :with_login, ->(*logins) { where(login: logins.flatten) }
   scope :all_administrators, -> { joins(:roles).where(roles: { name: 'administrator' }) }
@@ -203,7 +203,7 @@ class User < ApplicationRecord
 
   def new_api_key(length = 32)
     u = Digest::SHA1.hexdigest(login)[0..12]
-    k = Digest::SHA1.hexdigest(Time.now.to_s + rand(12341234).to_s)[1..length]
+    k = Digest::SHA1.hexdigest(Time.zone.now.to_s + rand(12341234).to_s)[1..length]
     self.api_key = "#{u}-#{k}"
   end
 
@@ -240,7 +240,7 @@ class User < ApplicationRecord
   def encrypt_password
     return if password.blank?
 
-    self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.zone.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end
 

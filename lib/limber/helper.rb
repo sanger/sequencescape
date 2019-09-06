@@ -2,11 +2,11 @@
 
 module Limber::Helper
   PIPELINE = 'Limber-Htp'
-  PIPELINE_REGEX = /Illumina-[A-z]+ /
+  PIPELINE_REGEX = /Illumina-[A-z]+ /.freeze
   PRODUCTLINE = 'Illumina-Htp'
   DEFAULT_REQUEST_CLASS = 'IlluminaHtp::Requests::StdLibraryRequest'
-  DEFAULT_LIBRARY_TYPES = ['Standard']
-  DEFAULT_PURPOSES = ['LB Cherrypick']
+  DEFAULT_LIBRARY_TYPES = ['Standard'].freeze
+  DEFAULT_PURPOSES = ['LB Cherrypick'].freeze
 
   # Build a Limber library creation request type
   class RequestTypeConstructor

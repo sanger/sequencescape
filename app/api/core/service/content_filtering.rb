@@ -22,7 +22,7 @@ module Core::Service::ContentFiltering
 
     def process_request_body
       content = request.body.read
-      raise Core::Service::ContentFiltering::InvalidBodyContentType if not content.blank? and !acceptable_types.include?(request.content_type)
+      raise Core::Service::ContentFiltering::InvalidBodyContentType if content.present? and !acceptable_types.include?(request.content_type)
 
       @json = content.blank? ? {} : MultiJson.load(content) if request.content_type == 'application/json' || content.blank?
     ensure
@@ -38,15 +38,18 @@ module Core::Service::ContentFiltering
       headers('Content-Type' => 'application/json')
     end
 
-    ACCEPTABLE_TYPES = ['application/json']
-    ACCEPTABLE_TYPES << '*/*' if Rails.env.development?
+    ACCEPTABLE_TYPES = if Rails.env.development?
+                         ['application/json', '*/*'].freeze
+                       else
+                         ['application/json'].freeze
+                       end
 
     def acceptable_types
       ACCEPTABLE_TYPES + ::Api::EndpointHandler.registered_mimetypes
     end
 
     def check_acceptable_content_type_requested!
-      accepts_json_or_star = !request.acceptable_media_types.prioritize(*acceptable_types).blank?
+      accepts_json_or_star = request.acceptable_media_types.prioritize(*acceptable_types).present?
       raise Core::Service::ContentFiltering::InvalidRequestedContentType unless accepts_json_or_star
     end
 

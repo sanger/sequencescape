@@ -10,8 +10,8 @@ class BaitLibraryType < ApplicationRecord
   has_many :bait_libraries
 
   # Types have names, need to be unique
-  validates_presence_of :name, :category
-  validates_uniqueness_of :name
+  validates :name, :category, presence: true
+  validates :name, uniqueness: true
 
   scope :visible, -> { where(visible: true) }
 

@@ -96,7 +96,7 @@ end
 class FactoryHelp
   def self.submission(options)
     submission_options = {}
-    [:message, :state].each do |option|
+    %i[message state].each do |option|
       value = options.delete(option)
       submission_options[option] = value if value
     end

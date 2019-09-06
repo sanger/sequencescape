@@ -7,10 +7,10 @@ class RequestType < ApplicationRecord
     self.table_name = ('request_type_plate_purposes')
 
     belongs_to :request_type
-    validates_presence_of :request_type
+    validates :request_type, presence: true
     belongs_to :plate_purpose
-    validates_presence_of :plate_purpose
-    validates_uniqueness_of :plate_purpose_id, scope: :request_type_id
+    validates :plate_purpose, presence: true
+    validates :plate_purpose_id, uniqueness: { scope: :request_type_id }
   end
 
   include Uuid::Uuidable
@@ -21,7 +21,7 @@ class RequestType < ApplicationRecord
     CONVERGENT = 1, # many-to-one
     DIVERGENT = 2 # one-to-many
     # we don't do many-to-many so far
-  ]
+  ].freeze
 
   # @!attribute key
   #   @return [String] A simple text identifier for the request type designed for programmatic use
@@ -60,10 +60,10 @@ class RequestType < ApplicationRecord
 
   belongs_to :billing_product_catalogue, class_name: 'Billing::ProductCatalogue'
 
-  validates_presence_of :request_purpose
-  validates_presence_of :order
-  validates_numericality_of :order, integer_only: true
-  validates_numericality_of :morphology, in: MORPHOLOGIES
+  validates :request_purpose, presence: true
+  validates :order, presence: true
+  validates :order, numericality: { integer_only: true }
+  validates :morphology, numericality: { in: MORPHOLOGIES }
   validates :request_class, presence: true, inclusion: { in: ->(_) { [Request, *Request.descendants] } }
 
   serialize :request_parameters

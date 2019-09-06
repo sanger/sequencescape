@@ -57,8 +57,8 @@ module Accession
 
   String.send(:include, CoreExtensions::String)
 
-  CENTER_NAME = 'SC'
-  XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }
+  CENTER_NAME = 'SC'.freeze
+  XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze
 
   class << self
     attr_writer :configuration

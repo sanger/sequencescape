@@ -9,7 +9,7 @@ describe Pulldown::Requests do
                                      category: 'standard'))
   end
 
-  [:wgs, :sc, :isc].each do |request_type|
+  %i[wgs sc isc].each do |request_type|
     context request_type.to_s.upcase do
       setup do
         # I moved it here from minitest unit tests

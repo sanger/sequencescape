@@ -33,7 +33,7 @@ class Aliquot < ApplicationRecord
     alias_method :to,   :last
   end
 
-  TAG_COUNT_NAMES = %w[Untagged Single Dual]
+  TAG_COUNT_NAMES = %w[Untagged Single Dual].freeze
   # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
   # To ensure that there can only be one untagged aliquot present in a receptacle we use a special value for tag_id,
   # rather than NULL which does not work in MySQL.  It also works because the unassigned tag ID never gets matched
@@ -181,9 +181,9 @@ class Aliquot < ApplicationRecord
   # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
   # only id, timestamps and receptacles are excluded
   def equivalent?(other)
-    [
-      :sample_id, :tag_id, :tag2_id, :library_id, :bait_library_id,
-      :insert_size_from, :insert_size_to, :library_type, :project_id, :study_id
+    %i[
+      sample_id tag_id tag2_id library_id bait_library_id
+      insert_size_from insert_size_to library_type project_id study_id
     ].all? do |attrib|
       send(attrib) == other.send(attrib)
     end

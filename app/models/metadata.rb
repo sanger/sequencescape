@@ -8,7 +8,7 @@ module Metadata
     build_association(as_class, options)
   end
 
-  SECTION_FIELDS = [:edit_info, :help, :label, :unspecified]
+  SECTION_FIELDS = %i[edit_info help label unspecified].freeze
   Section = Struct.new(*SECTION_FIELDS, :label_options)
 
   private
@@ -175,7 +175,7 @@ module Metadata
             I18n.t(
               section,
               scope: [:metadata, metadata_attribute_path(field)].flatten,
-              default: I18n.t(section, scope: [:metadata, :defaults])
+              default: I18n.t(section, scope: %i[metadata defaults])
             )
           end << {})
         )

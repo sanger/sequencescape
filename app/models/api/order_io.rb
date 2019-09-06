@@ -32,6 +32,6 @@ class Api::OrderIO < Api::Base
   end
 
   extra_json_attributes do |object, json_attributes|
-    json_attributes['request_options'] = object.request_options_structured unless object.request_options_structured.blank?
+    json_attributes['request_options'] = object.request_options_structured if object.request_options_structured.present?
   end
 end

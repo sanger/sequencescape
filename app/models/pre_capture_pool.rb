@@ -18,10 +18,10 @@ class PreCapturePool < ApplicationRecord
   # Joins requests to pools
   class PooledRequest < ApplicationRecord
     belongs_to :request
-    validates_presence_of :request
-    validates_uniqueness_of :request_id
+    validates :request, presence: true
+    validates :request_id, uniqueness: true
     belongs_to :pre_capture_pool, inverse_of: :pooled_requests
-    validates_presence_of :pre_capture_pool
+    validates :pre_capture_pool, presence: true
   end
 
   include Uuid::Uuidable

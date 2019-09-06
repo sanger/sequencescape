@@ -39,7 +39,7 @@ class Api::Base
       return {} if object.nil?
 
       json_attributes = {}
-      json_attributes['deleted_at'] = Time.now if object.destroyed?
+      json_attributes['deleted_at'] = Time.zone.now if object.destroyed?
 
       attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
         json_attributes[json_attribute] = object.send(attribute)

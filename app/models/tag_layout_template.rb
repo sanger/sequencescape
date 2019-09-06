@@ -9,11 +9,11 @@ class TagLayoutTemplate < ApplicationRecord
   belongs_to :tag_group, optional: false
   belongs_to :tag2_group, class_name: 'TagGroup'
 
-  validates_presence_of :name
-  validates_uniqueness_of :name
+  validates :name, presence: true
+  validates :name, uniqueness: true
 
-  validates_presence_of :direction_algorithm
-  validates_presence_of :walking_algorithm
+  validates :direction_algorithm, presence: true
+  validates :walking_algorithm, presence: true
 
   delegate :direction, to: :direction_algorithm_class
   delegate :walking_by, to: :walking_algorithm_class

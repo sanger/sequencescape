@@ -9,10 +9,10 @@ module Authorization
       LOGIN_REQUIRED_REDIRECTION = {
         controller: 'session',
         action: 'new'
-      }
+      }.freeze
     end
     unless Object.constants.include? 'PERMISSION_DENIED_REDIRECTION'
-      PERMISSION_DENIED_REDIRECTION = ''
+      PERMISSION_DENIED_REDIRECTION = ''.freeze
     end
     unless Object.constants.include? 'STORE_LOCATION_METHOD'
       STORE_LOCATION_METHOD = :store_location
@@ -29,7 +29,7 @@ module Authorization
       # Allow class-level authorization check.
       # permit is used in a before_action fashion and passes arguments to the before_action.
       def permit(authorization_expression, *args)
-        filter_keys = [:only, :except]
+        filter_keys = %i[only except]
         filter_args, eval_args = {}, {}
         if args.last.is_a? Hash
           filter_args.merge!(args.last.reject { |k, _v| not filter_keys.include? k })

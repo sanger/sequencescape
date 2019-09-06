@@ -74,7 +74,7 @@ def api_request(action, path, body)
   headers = {}
   headers['HTTP_ACCEPT'] = 'application/json'
   headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
-  headers['HTTP_COOKIE'] = @cookies.map { |k, v| "#{k}=#{v}" }.join(';') unless @cookies.blank?
+  headers['HTTP_COOKIE'] = @cookies.map { |k, v| "#{k}=#{v}" }.join(';') if @cookies.present?
   yield(headers) if block_given?
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
 end

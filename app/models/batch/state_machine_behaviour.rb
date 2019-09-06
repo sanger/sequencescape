@@ -16,11 +16,11 @@ module Batch::StateMachineBehaviour
         end
 
         event :complete do
-          transitions to: :completed, from: [:started, :pending, :completed]
+          transitions to: :completed, from: %i[started pending completed]
         end
 
         event :release do
-          transitions to: :released, from: [:completed, :started, :pending, :released]
+          transitions to: :released, from: %i[completed started pending released]
         end
 
         event :discard do

@@ -4,10 +4,10 @@ class Tag2LayoutTemplate < ApplicationRecord
   include Lot::Template
 
   belongs_to :tag
-  validates_presence_of :tag
+  validates :tag, presence: true
 
-  validates_presence_of :name
-  validates_uniqueness_of :name
+  validates :name, presence: true
+  validates :name, uniqueness: true
 
   scope :include_tag, ->() { includes(:tag) }
 

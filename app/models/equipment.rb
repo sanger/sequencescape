@@ -1,5 +1,5 @@
 class Equipment < ApplicationRecord
-  validates_presence_of :name, :equipment_type
+  validates :name, :equipment_type, presence: true
   before_validation :set_defaults
   after_create :update_barcode
 

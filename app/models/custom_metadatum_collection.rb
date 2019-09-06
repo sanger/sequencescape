@@ -5,7 +5,7 @@ class CustomMetadatumCollection < ApplicationRecord
   belongs_to :asset, class_name: 'Labware' # Labware (Used on plates and allowed on tubes but not used)
   has_many :custom_metadata, dependent: :destroy
 
-  validates_presence_of :asset_id, :user_id
+  validates :asset_id, :user_id, presence: true
 
   def metadata
     custom_metadata.collect(&:to_h).inject(:merge!) || {}

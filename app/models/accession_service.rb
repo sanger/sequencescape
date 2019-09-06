@@ -106,7 +106,7 @@ class AccessionService
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
         end
       ensure
-        files.each { |f| f.close } # not really necessary but recommended
+        files.each(&:close) # not really necessary but recommended
       end
 
       return accessionables.map(&:accession_number)
@@ -231,7 +231,7 @@ class AccessionService
 
     if configatron.disable_web_proxy == true
       RestClient.proxy = ''
-    elsif not configatron.proxy.blank?
+    elsif configatron.proxy.present?
       RestClient.proxy = configatron.proxy
       # UA required to get through Sanger proxy
       # Although currently this UA is actually being set elsewhere in the

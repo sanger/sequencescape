@@ -3,11 +3,11 @@
 class ProductCriteria::Advanced < ProductCriteria::Basic
   attr_reader :qc_decision
 
-  STATE_ORDER = %w[failed unprocessable]
+  STATE_ORDER = %w[failed unprocessable].freeze
 
-  TARGET_PLATE_PURPOSES = 'target_plate_purposes'
+  TARGET_PLATE_PURPOSES = 'target_plate_purposes'.freeze
 
-  CONFIG_KEYS = [TARGET_PLATE_PURPOSES]
+  CONFIG_KEYS = [TARGET_PLATE_PURPOSES].freeze
 
   class << self
     def headers(configuration)

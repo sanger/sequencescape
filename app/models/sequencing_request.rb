@@ -28,8 +28,8 @@ class SequencingRequest < CustomerRequest
 
   class RequestOptionsValidator < DelegateValidation::Validator
     delegate :fragment_size_required_from, :fragment_size_required_to, to: :target
-    validates_numericality_of :fragment_size_required_from, integer_only: true, greater_than: 0, allow_nil: true
-    validates_numericality_of :fragment_size_required_to, integer_only: true, greater_than: 0, allow_nil: true
+    validates :fragment_size_required_from, numericality: { integer_only: true, greater_than: 0, allow_nil: true }
+    validates :fragment_size_required_to, numericality: { integer_only: true, greater_than: 0, allow_nil: true }
   end
 
   def on_started

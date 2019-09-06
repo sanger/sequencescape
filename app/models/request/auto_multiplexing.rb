@@ -16,7 +16,7 @@ class Request::AutoMultiplexing < Request::Multiplexing
   # will be triggered as part of the standard workflow.
   def register_transfer_callback
     # We go via order as we need to get a particular instance of submission
-    return unless asset.present?
+    return if asset.blank?
 
     order.submission.register_callback(:once) do
       Transfer::FromPlateToTubeByMultiplex.create!(

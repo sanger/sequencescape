@@ -7,13 +7,13 @@ module ModelExtensions::Plate
 
   PLATE_INCLUDES = [
     :plate_metadata, {
-      wells: [
-        :map,
-        :transfer_requests_as_target,
-        :uuid_object
+      wells: %i[
+        map
+        transfer_requests_as_target
+        uuid_object
       ]
     }
-  ]
+  ].freeze
 
   def self.included(base)
     base.class_eval do

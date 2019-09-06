@@ -8,10 +8,10 @@ class StudiesController < ApplicationController
   include Informatics::Globals
 
   before_action :login_required
-  before_action :admin_login_required, only: [:settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
-  before_action :manager_login_required, only: [:close, :open]
+  before_action :admin_login_required, only: %i[settings administer manage managed_update grant_role remove_role]
+  before_action :manager_login_required, only: %i[close open]
 
-  around_action :rescue_validation, only: [:close, :open]
+  around_action :rescue_validation, only: %i[close open]
 
   def setup_studies_from_scope(exclude_nested_resource = false)
     if logged_in? and not exclude_nested_resource
@@ -59,7 +59,7 @@ class StudiesController < ApplicationController
       @study = Study.new(params['study'].merge(user: current_user))
       @study.save!
       current_user.has_role('manager', @study)
-      User.find(params[:study_owner_id]).has_role('owner', @study) unless params[:study_owner_id].blank?
+      User.find(params[:study_owner_id]).has_role('owner', @study) if params[:study_owner_id].present?
     end
 
     flash[:notice] = 'Your study has been created'
@@ -100,7 +100,7 @@ class StudiesController < ApplicationController
 
     ActiveRecord::Base.transaction do
       @study.update!(params[:study])
-      unless params[:study_owner_id].blank?
+      if params[:study_owner_id].present?
         owner = User.find(params[:study_owner_id])
         unless owner.is_owner?(@study)
           @study.owners.first.has_no_role('owner', @study) if @study.owners.size == 1
@@ -113,7 +113,7 @@ class StudiesController < ApplicationController
       redirect_to study_path(@study)
     end
   rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
+    Rails.logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}"
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: 'edit', id: @study.id
   end
@@ -338,7 +338,7 @@ class StudiesController < ApplicationController
     begin
       yield
     rescue ActiveRecord::RecordInvalid
-      Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
+      Rails.logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}"
       flash[:error] = 'Failed to update attributes for study!'
       render action: 'edit', id: @study.id
     end

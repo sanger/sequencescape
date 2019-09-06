@@ -3,7 +3,7 @@ class Admin::UsersController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :admin_login_required
-  before_action :setup_user, only: [:edit, :show, :grant_user_role, :remove_user_role]
+  before_action :setup_user, only: %i[edit show grant_user_role remove_user_role]
 
   def index
     @users = User.order(:login)

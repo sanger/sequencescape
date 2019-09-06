@@ -84,7 +84,7 @@ Then /^the samples table should look like:$/ do |table|
 
     expected_data.each do |k, v|
       next if v.blank?
-      next if [:sanger_sample_id, :empty_supplier_sample_name, :sample_absent, :supplier_name, :sample_taxon_id].include?(:"#{k}")
+      next if %i[sanger_sample_id empty_supplier_sample_name sample_absent supplier_name sample_taxon_id].include?(:"#{k}")
 
       assert_equal(v, sample.sample_metadata.send(k), "Sample #{k} does not match the expected value for #{sanger_sample_id}")
     end

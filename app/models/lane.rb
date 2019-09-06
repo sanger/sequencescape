@@ -11,7 +11,7 @@ class Lane < Receptacle
     'Failed on yield but sufficient data for experiment',
     'Failed on quality but sufficient data for experiment',
     'Failed on adapter contamination but data sufficient for experiment'
-  ]
+  ].freeze
 
   LIST_REASONS_POSITIVE = [
     "Data doesn't contain any of the expected organism",
@@ -19,7 +19,7 @@ class Lane < Receptacle
     'GC bias in data set',
     'Multiplex tag problems in data set',
     'Unsure data source'
-  ]
+  ].freeze
 
   LIST_REASONS = [''] + LIST_REASONS_NEGATIVE + LIST_REASONS_POSITIVE
 
