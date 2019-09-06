@@ -1,11 +1,11 @@
 class ProductCriteria::Basic
-  SUPPORTED_WELL_ATTRIBUTES = %i[gel_pass concentration rin current_volume pico_pass gender_markers measured_volume initial_volume molarity sequenom_count]
-  SUPPORTED_SAMPLE = [:sanger_sample_id]
-  SUPPORTED_SAMPLE_METADATA = %i[gender sample_ebi_accession_number supplier_name]
-  EXTENDED_ATTRIBUTES = %i[total_micrograms conflicting_gender_markers sample_gender well_location plate_barcode concentration_from_normalization]
+  SUPPORTED_WELL_ATTRIBUTES = %i[gel_pass concentration rin current_volume pico_pass gender_markers measured_volume initial_volume molarity sequenom_count].freeze
+  SUPPORTED_SAMPLE = [:sanger_sample_id].freeze
+  SUPPORTED_SAMPLE_METADATA = %i[gender sample_ebi_accession_number supplier_name].freeze
+  EXTENDED_ATTRIBUTES = %i[total_micrograms conflicting_gender_markers sample_gender well_location plate_barcode concentration_from_normalization].freeze
 
-  PASSSED_STATE = 'passed'
-  FAILED_STATE = 'failed'
+  PASSSED_STATE = 'passed'.freeze
+  FAILED_STATE = 'failed'.freeze
 
   UnknownSpecification = Class.new(StandardError)
 
@@ -21,12 +21,12 @@ class ProductCriteria::Basic
     at_most: Comparison.new(:<=, '%s too high'),
     equals: Comparison.new(:==,   '%s not suitable'),
     not_equal: Comparison.new(:'!=', '%s not suitable')
-  }
+  }.freeze
 
   GENDER_MARKER_MAPS = {
     'male' => 'M',
     'female' => 'F'
-  }
+  }.freeze
 
   class << self
     # Returns a list of possible criteria to either display or validate

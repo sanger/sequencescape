@@ -58,7 +58,7 @@ class Uuid < ApplicationRecord
     end
   end
 
-  ValidRegexp = /\A[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}\z/
+  ValidRegexp = /\A[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}\z/.freeze
   validates :external_id, format: { with: ValidRegexp }
 
   # It is more efficient to check the individual parts of the resource association than it is to check the

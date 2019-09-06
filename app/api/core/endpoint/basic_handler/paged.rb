@@ -11,7 +11,7 @@ module Core::Endpoint::BasicHandler::Paged
     page_accessor(:previous, :previous_page),
     page_accessor(:next, :next_page),
     page_accessor(:read, :current_page, 1)
-  ]
+  ].freeze
 
   def actions(object, options)
     super.tap do |actions|

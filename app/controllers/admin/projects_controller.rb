@@ -13,8 +13,7 @@ class Admin::ProjectsController < ApplicationController
     'not approved' => :unapproved,
     'unallocated division' => :with_unallocated_budget_division,
     'unallocated manager' => :with_unallocated_manager
-  }
-  BY_SCOPES.default = :scoped
+  }.freeze
 
   def index
     @projects = Project.alphabetical
@@ -44,7 +43,7 @@ class Admin::ProjectsController < ApplicationController
   def filter
     filters = params[:filter] || {}
 
-    by_scope = BY_SCOPES[filters[:by]]
+    by_scope = BY_SCOPES.fetch(filters[:by], :scoped)
 
     base_scope = Project.send(by_scope).in_state(filters[:status]).alphabetical
 

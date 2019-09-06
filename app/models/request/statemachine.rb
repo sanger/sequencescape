@@ -3,11 +3,11 @@
 require 'aasm'
 
 module Request::Statemachine
-  COMPLETED_STATE = %w[passed failed]
-  OPENED_STATE    = %w[pending blocked started]
-  ACTIVE = %w(passed pending blocked started)
-  INACTIVE = %w[failed cancelled]
-  SORT_ORDER = %w[pending blocked hold started passed failed cancelled]
+  COMPLETED_STATE = %w[passed failed].freeze
+  OPENED_STATE    = %w[pending blocked started].freeze
+  ACTIVE = %w(passed pending blocked started).freeze
+  INACTIVE = %w[failed cancelled].freeze
+  SORT_ORDER = %w[pending blocked hold started passed failed cancelled].freeze
 
   module ClassMethods
     def redefine_aasm(options = {}, &block)

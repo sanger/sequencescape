@@ -9,8 +9,8 @@ class DataReleaseStudyType < ApplicationRecord
   scope :assay_types, -> { where(is_assay_type: true) }
   scope :non_assay_types, -> { where(is_assay_type: false) }
 
-  DATA_RELEASE_TYPES_SAMPLES = ['genotyping or cytogenetics']
-  DATA_RELEASE_TYPES_STUDIES = []
+  DATA_RELEASE_TYPES_SAMPLES = ['genotyping or cytogenetics'].freeze
+  DATA_RELEASE_TYPES_STUDIES = [].freeze
 
   def is_not_specified?
     false

@@ -10,7 +10,7 @@ module Pulldown::PlatePurposes
     'ISCH cap lib PCR',
     'ISCH cap lib PCR-XP',
     'ISCH cap lib pool'
-  ]]
+  ]].freeze
 
   PLATE_PURPOSE_FLOWS = [
     [
@@ -50,7 +50,7 @@ module Pulldown::PlatePurposes
       'ISC cap lib PCR-XP',
       'ISC cap lib pool'
     ], ISCH_PURPOSE_FLOWS.first
-  ]
+  ].freeze
 
   PLATE_PURPOSE_TYPE = {
     'ISCH lib pool' => Pulldown::InitialDownstreamPlatePurpose,
@@ -59,7 +59,7 @@ module Pulldown::PlatePurposes
     'ISCH cap lib PCR' => IlluminaHtp::DownstreamPlatePurpose,
     'ISCH cap lib PCR-XP' => IlluminaHtp::DownstreamPlatePurpose,
     'ISCH cap lib pool' => IlluminaHtp::DownstreamPlatePurpose
-  }
+  }.freeze
 
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
     'WGS post-Cov',
@@ -75,9 +75,9 @@ module Pulldown::PlatePurposes
     'ISC post-Cov-XP',
     'ISC lib PCR-XP',
     'ISC cap lib PCR-XP'
-  ]
+  ].freeze
 
-  STOCK_PLATE_PURPOSES = ['WGS stock DNA', 'SC stock DNA', 'ISC stock DNA']
+  STOCK_PLATE_PURPOSES = ['WGS stock DNA', 'SC stock DNA', 'ISC stock DNA'].freeze
 
   class << self
     def create_purposes(branch)

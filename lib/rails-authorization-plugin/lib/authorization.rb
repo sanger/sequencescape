@@ -9,10 +9,10 @@ module Authorization
       LOGIN_REQUIRED_REDIRECTION = {
         controller: 'session',
         action: 'new'
-      }
+      }.freeze
     end
     unless Object.constants.include? 'PERMISSION_DENIED_REDIRECTION'
-      PERMISSION_DENIED_REDIRECTION = ''
+      PERMISSION_DENIED_REDIRECTION = ''.freeze
     end
     unless Object.constants.include? 'STORE_LOCATION_METHOD'
       STORE_LOCATION_METHOD = :store_location

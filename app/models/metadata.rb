@@ -8,7 +8,7 @@ module Metadata
     build_association(as_class, options)
   end
 
-  SECTION_FIELDS = %i[edit_info help label unspecified]
+  SECTION_FIELDS = %i[edit_info help label unspecified].freeze
   Section = Struct.new(*SECTION_FIELDS, :label_options)
 
   private

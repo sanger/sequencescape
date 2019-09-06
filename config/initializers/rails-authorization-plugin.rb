@@ -5,7 +5,7 @@ ActionController::Base.send(:include, Authorization::Base)
 # ActionView::Base.send(:include, Authorization::Base::ControllerInstanceMethods)
 
 # Can be 'object roles' or 'hardwired'
-AUTHORIZATION_MIXIN = 'object roles'
+AUTHORIZATION_MIXIN = 'object roles'.freeze
 
 # NOTE : If you use modular controllers like '/admin/products' be sure
 # to redirect to something like '/sessions' controller (with a leading slash)
@@ -13,8 +13,8 @@ AUTHORIZATION_MIXIN = 'object roles'
 #
 # This can be set to a hash or to an explicit path like '/login'
 #
-LOGIN_REQUIRED_REDIRECTION = { controller: '/sessions', action: 'login' }
-PERMISSION_DENIED_REDIRECTION = { controller: '/home', action: 'index' }
+LOGIN_REQUIRED_REDIRECTION = { controller: '/sessions', action: 'login' }.freeze
+PERMISSION_DENIED_REDIRECTION = { controller: '/home', action: 'index' }.freeze
 
 # The method your auth scheme uses to store the location to redirect back to
 STORE_LOCATION_METHOD = :store_location

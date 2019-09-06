@@ -38,8 +38,11 @@ module Core::Service::ContentFiltering
       headers('Content-Type' => 'application/json')
     end
 
-    ACCEPTABLE_TYPES = ['application/json']
-    ACCEPTABLE_TYPES << '*/*' if Rails.env.development?
+    ACCEPTABLE_TYPES = if Rails.env.development?
+                         ['application/json', '*/*'].freeze
+                       else
+                         ['application/json'].freeze
+                       end
 
     def acceptable_types
       ACCEPTABLE_TYPES + ::Api::EndpointHandler.registered_mimetypes

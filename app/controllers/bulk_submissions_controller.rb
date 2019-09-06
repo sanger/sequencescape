@@ -9,7 +9,7 @@ class BulkSubmissionsController < ApplicationController
 
   before_action :find_submission_template_groups, only: %i[new create]
 
-  DEFAULT_SUBMISSION_TEMPLATE_GROUP = 'General'
+  DEFAULT_SUBMISSION_TEMPLATE_GROUP = 'General'.freeze
 
   def index
     redirect_to action: 'new'

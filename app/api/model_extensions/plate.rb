@@ -13,7 +13,7 @@ module ModelExtensions::Plate
         uuid_object
       ]
     }
-  ]
+  ].freeze
 
   def self.included(base)
     base.class_eval do

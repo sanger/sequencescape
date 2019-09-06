@@ -21,7 +21,7 @@ class RequestType < ApplicationRecord
     CONVERGENT = 1, # many-to-one
     DIVERGENT = 2 # one-to-many
     # we don't do many-to-many so far
-  ]
+  ].freeze
 
   # @!attribute key
   #   @return [String] A simple text identifier for the request type designed for programmatic use

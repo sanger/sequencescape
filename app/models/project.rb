@@ -18,7 +18,7 @@ class Project < ApplicationRecord
     Project.aasm.states.map(&:name)
   end
 
-  ACTIVE_STATE = 'active'
+  ACTIVE_STATE = 'active'.freeze
   has_many_events
   has_many_lab_events
 
@@ -130,7 +130,7 @@ class Project < ApplicationRecord
     'Internal',
     'External',
     'External - own machine'
-  ]
+  ].freeze
 
   extend Metadata
   # @!parse class Project::Metadata < Metadata::Base; end

@@ -1,7 +1,7 @@
 module Authorization
   module Base
-    VALID_PREPOSITIONS = %w(of for in on to at by)
-    BOOLEAN_OPS = %w[not or and]
+    VALID_PREPOSITIONS = %w(of for in on to at by).freeze
+    BOOLEAN_OPS = %w[not or and].freeze
     VALID_PREPOSITIONS_PATTERN = VALID_PREPOSITIONS.join('|')
 
     module EvalParser
@@ -107,13 +107,13 @@ module Authorization
     # It also won't handle some types of expressions (A or B) and C, which has to be rewritten as
     # C and (A or B) so the parenthetical expressions are in the tail.
     module RecursiveDescentParser
-      OPT_PARENTHESES_PATTERN = '(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()])*\))*\))*\))*\))*\))*)'
+      OPT_PARENTHESES_PATTERN = '(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()])*\))*\))*\))*\))*\))*)'.freeze
       PARENTHESES_PATTERN = '\(' + OPT_PARENTHESES_PATTERN + '\)'
       NOT_PATTERN = '^\s*not\s+' + OPT_PARENTHESES_PATTERN + '$'
       AND_PATTERN = '^\s*' + OPT_PARENTHESES_PATTERN + '\s+and\s+' + OPT_PARENTHESES_PATTERN + '\s*$'
       OR_PATTERN = '^\s*' + OPT_PARENTHESES_PATTERN + '\s+or\s+' + OPT_PARENTHESES_PATTERN + '\s*$'
-      ROLE_PATTERN = '(\'\s*(.+)\s*\'|(\w+))'
-      MODEL_PATTERN = '(:*\w+)'
+      ROLE_PATTERN = '(\'\s*(.+)\s*\'|(\w+))'.freeze
+      MODEL_PATTERN = '(:*\w+)'.freeze
 
       PARENTHESES_REGEX = Regexp.new('^\s*' + PARENTHESES_PATTERN + '\s*$')
       NOT_REGEX = Regexp.new(NOT_PATTERN)

@@ -8,12 +8,12 @@ class QcMetric < ApplicationRecord
     'manually_passed' => 'manually_passed',
     'failed' => 'manually_failed',
     'manually_failed' => 'manually_failed'
-  }
+  }.freeze
 
   PROCEED_TRANSLATION = {
     true => 'Y',
     false => 'N'
-  }
+  }.freeze
 
   new_state 'passed'
   new_state 'failed', passed: false

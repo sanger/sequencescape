@@ -1,5 +1,5 @@
 class ProductCriteria < ApplicationRecord
-  STAGE_STOCK = 'stock'
+  STAGE_STOCK = 'stock'.freeze
 
   # By default rails will try and name the table 'product_criterias'
   # We don't use the singular 'ProductCriterion' as the class name

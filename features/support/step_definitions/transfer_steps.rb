@@ -3,7 +3,7 @@
 TRANSFER_TYPES = [
   'between plates',
   'from plate to tube'
-]
+].freeze
 
 TRANSFER_TYPES_REGEXP = TRANSFER_TYPES.join('|')
 

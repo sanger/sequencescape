@@ -4,7 +4,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
       uuid_object
       barcodes
     ]
-  }
+  }.freeze
 
   class WellToTube < ApplicationRecord
     self.table_name = ('well_to_tube_transfers')

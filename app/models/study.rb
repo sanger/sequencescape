@@ -53,46 +53,46 @@ class Study < ApplicationRecord
   extend Metadata
 
   # Constants
-  STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate']
-  YES = 'Yes'
-  NO  = 'No'
-  YES_OR_NO = [YES, NO]
-  Other_type = 'Other'
+  STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate'].freeze
+  YES = 'Yes'.freeze
+  NO  = 'No'.freeze
+  YES_OR_NO = [YES, NO].freeze
+  Other_type = 'Other'.freeze
 
-  STUDY_SRA_HOLDS = %w[Hold Public]
+  STUDY_SRA_HOLDS = %w[Hold Public].freeze
 
-  DATA_RELEASE_STRATEGY_OPEN = 'open'
-  DATA_RELEASE_STRATEGY_MANAGED = 'managed'
-  DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'
-  DATA_RELEASE_STRATEGIES = [DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED, DATA_RELEASE_STRATEGY_NOT_APPLICABLE]
+  DATA_RELEASE_STRATEGY_OPEN = 'open'.freeze
+  DATA_RELEASE_STRATEGY_MANAGED = 'managed'.freeze
+  DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'.freeze
+  DATA_RELEASE_STRATEGIES = [DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED, DATA_RELEASE_STRATEGY_NOT_APPLICABLE].freeze
 
-  DATA_RELEASE_TIMING_STANDARD = 'standard'
-  DATA_RELEASE_TIMING_NEVER    = 'never'
-  DATA_RELEASE_TIMING_DELAYED  = 'delayed'
+  DATA_RELEASE_TIMING_STANDARD = 'standard'.freeze
+  DATA_RELEASE_TIMING_NEVER    = 'never'.freeze
+  DATA_RELEASE_TIMING_DELAYED  = 'delayed'.freeze
   DATA_RELEASE_TIMINGS = [
     DATA_RELEASE_TIMING_STANDARD,
     'immediate',
     DATA_RELEASE_TIMING_DELAYED
-  ]
+  ].freeze
   DATA_RELEASE_PREVENTION_REASONS = [
     'data validity',
     'legal',
     'replication of data subset'
-  ]
+  ].freeze
 
-  DATA_RELEASE_DELAY_FOR_OTHER = 'other'
+  DATA_RELEASE_DELAY_FOR_OTHER = 'other'.freeze
   DATA_RELEASE_DELAY_REASONS_STANDARD = [
     'phd study',
     DATA_RELEASE_DELAY_FOR_OTHER
-  ]
+  ].freeze
   DATA_RELEASE_DELAY_REASONS_ASSAY = [
     'phd study',
     'assay of no other use',
     DATA_RELEASE_DELAY_FOR_OTHER
-  ]
+  ].freeze
 
-  DATA_RELEASE_DELAY_LONG  = ['6 months', '9 months', '12 months', '18 months']
-  DATA_RELEASE_DELAY_SHORT = ['3 months']
+  DATA_RELEASE_DELAY_LONG  = ['6 months', '9 months', '12 months', '18 months'].freeze
+  DATA_RELEASE_DELAY_SHORT = ['3 months'].freeze
   DATA_RELEASE_DELAY_PERIODS = DATA_RELEASE_DELAY_SHORT + DATA_RELEASE_DELAY_LONG
 
   # Class variables

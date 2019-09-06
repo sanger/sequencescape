@@ -9,8 +9,8 @@
 # @see PlateTransferTask for previous step
 # @see Tasks::CherrypickHandler for behaviour included in the {WorkflowsController}
 class CherrypickTask < Task
-  EMPTY_WELL          = [0, 'Empty', '']
-  TEMPLATE_EMPTY_WELL = [0, '---', '']
+  EMPTY_WELL          = [0, 'Empty', ''].freeze
+  TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
 
   def create_render_element(request)
   end

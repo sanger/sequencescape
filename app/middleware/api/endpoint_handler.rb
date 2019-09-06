@@ -217,7 +217,7 @@ module Api
       read: :get,
       update: :put,
       delete: :delete
-    }
+    }.freeze
 
     ACTIONS_TO_HTTP_VERBS.each do |action, verb|
       instance_action(action, verb)

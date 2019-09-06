@@ -22,7 +22,7 @@ class BulkSubmission
   # Activates the ArrayWithFieldList refinements for this class
   using ArrayWithFieldList
   # This is the default output from excel
-  DEFAULT_ENCODING = 'Windows-1252'
+  DEFAULT_ENCODING = 'Windows-1252'.freeze
 
   include ActiveModel::AttributeMethods
   include ActiveModel::Validations
@@ -186,12 +186,12 @@ class BulkSubmission
     'pre-capture group',
     'gigabases expected',
     'priority'
-  ]
+  ].freeze
 
   ALIAS_FIELDS = {
     'plate barcode' => 'barcode',
     'tube barcode' => 'barcode'
-  }
+  }.freeze
 
   def translate(header)
     ALIAS_FIELDS[header] || header
