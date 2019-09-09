@@ -1,5 +1,5 @@
 
-<%- add :about, "This page displays details of requests" %>
+<% add :about, "This page displays details of requests" %>
 <% add :menu, "View event history" => history_request_path(@request) -%>
 <% add :menu, (pluralize @request.comments.size, "comment") => request_comments_path(@request) -%>
 
@@ -13,32 +13,25 @@
   <% add :menu, "Change decision" => filter_change_decision_request_path(@request) -%>
 <% end %>
 
-
 <%- add :back_menu, "Back to asset" => receptacle_path(@request.asset) if @request.asset %>
 
-<h1>
-  <% if @request.submission %>
-    <%= link_to @request.submission.name, submission_path(@request.submission) %> :
-  <% end %>
-  Request: <%= @request.id %>
-  <% if @request.request_type %>
-    (<%= @request.request_type.name %>)
-  <% end %>
-</h1>
-<h2><% @request.submission.try(:study_names) %></h2>
+<%= page_title @request.request_type_name, @request.id, badges: [@request.state] %>
 
-<% if @request.request_type %>
-<div class="info">
-  This request for <strong><%= @request.request_type.name.downcase %></strong> is <%= request_status(@request) %>
-</div>
+<p class="lead">
+  <% if @request.submission %>
+    Submitted in <%= link_to @request.submission.name, submission_path(@request.submission) %>
+    for <%= @request.submission.try(:study_names) || 'unknown studies' %>.
+  <% else %>
+    Not associated with a submission.
+  <% end %>
+</p>
+
+<%= panel do %>
+  <%= render partial: 'shared/metadata/show/request', locals: { request: @request } %>
 <% end %>
 
-<div class="info">
-  <%= render partial: 'shared/metadata/show/request', locals: { request: @request } %>
-</div>
-
-<div class="info">
-<h3>Assets</h3>
+<%= panel do %>
+<h3 class="card-title">Assets</h3>
 <table class='table sortable'>
   <thead>
     <tr>
@@ -67,19 +60,18 @@
     <% end %>
   </tbody>
  </table>
-</div>
+<% end %>
 
-<div class="info">
-<h3>Batch</h3>
+<%= panel do %>
+  <h3 class="card-title">Batch</h3>
   <% @request.with_batch_id do |batch_id| %>
     <%= link_to batch_id, batch_path(batch_id) %>
   <% end %>
-</div>
+<% end %>
 
-
-<div class="info">
-  <h3>QC information</h3>
-  <% if @request.format_qc_information.size > 0  %>
+<%= panel do %>
+  <h3  class="card-title">QC information</h3>
+  <% if @request.format_qc_information.present? %>
     <table cellpadding="4" cellspacing="0" width="100%">
       <thead>
         <tr>
@@ -93,7 +85,7 @@
     </tbody>
   </table>
   <% else %>
-    <%= display_empty_table("There is no qc information at the moment") %>
+    <p>There is no qc information at the moment</p>
   <% end %>
-</div>
+<% end %>
 

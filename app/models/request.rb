@@ -284,6 +284,7 @@ class Request < ApplicationRecord
   delegate :date_for_state, to: :request_events
   delegate :validator_for, to: :request_type
   delegate :role, to: :order_role, allow_nil: true
+  delegate :name, to: :request_type, prefix: true
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
