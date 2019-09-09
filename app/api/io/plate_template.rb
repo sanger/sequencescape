@@ -1,5 +1,5 @@
 # Controls API V1 IO for PlateTemplate
-class Io::PlateTemplate < Io::Asset
+class Io::PlateTemplate < Core::Io::Base
   set_model_for_input(::PlateTemplate)
   set_json_root(:plate_template)
 
