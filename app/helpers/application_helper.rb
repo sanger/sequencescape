@@ -242,10 +242,6 @@ module ApplicationHelper
     requests = requests + sorted_requests
   end
 
-  def display_hash_value(hash, key, sub_key)
-    hash.fetch(key, {}).fetch(sub_key, '')
-  end
-
   # Creates a label that is hidden from the view so that testing is easier
   def hidden_label_tag_for_testing(name, text = nil, options = {})
     label_tag(name, text, options.merge(style: 'display:none;'))
