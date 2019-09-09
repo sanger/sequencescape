@@ -35,7 +35,7 @@ class Request < ApplicationRecord
 
   has_one :pipeline, through: :batch
   belongs_to :item
-  belongs_to :request_type, inverse_of: :requests
+  belongs_to :request_type, inverse_of: :requests, optional: false
   belongs_to :user
   belongs_to :order, inverse_of: :requests
   belongs_to :submission, inverse_of: :requests

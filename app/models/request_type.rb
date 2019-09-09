@@ -1,3 +1,18 @@
+# {Order orders} use RequestTypes as a factory to construct {Request requests}.
+# The list of request types to use is provided by Order#request_types and usually
+# gets populated by the SubmissionTemplate.
+# Once the request it buit, request type identifies the type of {Request} and
+# associates it with a particular {Pipeline}.
+# In the case of external pipelines, such as Limber, other properties of {Request}
+# such as its {LibraryType} may also be considered.
+# Request types have associated {RequestType::Validator validators} which will be used
+# to ensure that the associated requests have compatible {Request::Metadata}. In the case
+# of library types, this uses the library_types association on the request type to provide
+# the list of compatible library types.
+# Currently the request type is also the means of associating the request with a particular
+# {ProductLine team (product line)} however this may belong better on request itself, and
+# could be set either on the basis of the submission template used, or by a new 'team' option
+# on the submission itself.
 class RequestType < ApplicationRecord
   include RequestType::Validation
 

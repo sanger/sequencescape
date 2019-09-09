@@ -1,5 +1,5 @@
-# Groups a set of {Asset assets} together
-# Primarily used to group together assets as part of an {Order order}.
+# Groups a set of {Receptacle receptacles} together
+# Primarily used to group together receptacles as part of an {Order order}.
 class AssetGroup < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::AssetGroup
