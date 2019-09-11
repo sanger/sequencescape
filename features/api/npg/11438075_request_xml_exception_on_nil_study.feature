@@ -26,25 +26,3 @@ Feature: A request with no study should not raise an exception when viewing the 
       <user>abc123</user>
     </request>
     """
-
-  Scenario: A request without a request type
-    Given I have a request 123 without a request type
-      And I am on the XML show page for request 123
-    Then ignoring "sample_id|read_length|asset_id|properties|target_asset_id" the XML response should be:
-    """
-    <?xml version="1.0" encoding="UTF-8"?>
-    <request api_version="0.6">
-      <id>123</id>
-      <created_at>2011-02-14 22:00:00 +0000</created_at>
-      <updated_at>2011-02-14 22:00:00 +0000</updated_at>
-
-      <read_length>76</read_length>
-      <asset_id>9</asset_id>
-      <target_asset_id>1</target_asset_id>
-
-      <state>pending</state>
-      <properties>
-      </properties>
-      <user>abc123</user>
-    </request>
-    """
