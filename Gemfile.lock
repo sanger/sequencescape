@@ -276,7 +276,7 @@ GEM
     net-http-pipeline (1.0.1)
     net-ldap (0.16.1)
     netrc (0.11.0)
-    nio4r (2.4.0)
+    nio4r (2.5.1)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     parallel (1.17.0)
@@ -290,7 +290,7 @@ GEM
     pry-stack_explorer (0.4.9.3)
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
-    puma (4.1.0)
+    puma (4.1.1)
       nio4r (~> 2.0)
     pusher-client (0.6.2)
       json
