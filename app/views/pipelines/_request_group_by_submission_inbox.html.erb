@@ -5,7 +5,6 @@
 <% if @requests_waiting == 0 -%>
   There are no outstanding requests for this pipeline.
 <% else -%>
-  <%= render partial: 'pipeline_paginate' %>
   <!-- _request_group_by_submission_inbox.html.erb -->
   <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "requests_to_batch_form") do -%>
     <% if @pipeline.item_limit -%>
@@ -15,8 +14,6 @@
     <%= render partial: "grouped_requests", locals: {grouped_requests: @grouped_requests } %>
     <%= render partial: 'inbox_submission_button' %>
   <% end -%>
-
- <%= render partial: 'pipeline_paginate' %>
 <% end -%>
 
 <%= render partial: 'show_held_requests' %>

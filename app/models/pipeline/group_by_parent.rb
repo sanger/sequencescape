@@ -19,6 +19,12 @@ module Pipeline::GroupByParent
     requests.target_asset_on_labware.group_by { |request| [request.labware_id] }
   end
 
+  def requests_in_inbox(_show_held_requests = true)
+    # @note This has been added while I refactor the pipeline inboxes. Ideally we'll
+    #       eventually unify their interfaces
+    raise StandardError, 'Use the Presenters::GroupedPipelineInboxPresenter'
+  end
+
   private
 
   def grouping_function
