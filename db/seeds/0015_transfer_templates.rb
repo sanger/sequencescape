@@ -7,7 +7,7 @@ COLUMN_RANGES = [
   (1..4),
   (1..6),
   (1..12)
-]
+].freeze
 
 def locations_for(row_range, column_range)
   row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten

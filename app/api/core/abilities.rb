@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The classes within this namespace are responsible for defining the abilities of the user and the application
 # that are accessing the API.
 #
@@ -176,7 +178,7 @@ module Core::Abilities
       single_sign_on_cookie = @request.authentication_code
       if single_sign_on_cookie.blank? and cannot?(:authenticate, :nil)
         Core::Service::Authentication::UnauthenticatedError.no_cookie!
-      elsif not single_sign_on_cookie.blank?
+      elsif single_sign_on_cookie.present?
         user = ::User.find_by(api_key: single_sign_on_cookie) or Core::Service::Authentication::UnauthenticatedError.unauthenticated!
         @request.service.instance_variable_set(:@user, user)
       end

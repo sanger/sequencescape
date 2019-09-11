@@ -52,7 +52,7 @@ FactoryBot.define do
     sanger_barcode { { prefix: prefix, number: barcode } }
   end
 
-  factory :plate, traits: [:plate_barcode, :with_wells] do
+  factory :plate, traits: %i[plate_barcode with_wells] do
     plate_purpose
     size { 96 }
 
@@ -141,7 +141,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:full_plate, class: Plate, traits: [:plate_barcode, :with_wells]) do
+  factory(:full_plate, class: Plate, traits: %i[plate_barcode with_wells]) do
     size { 96 }
     plate_purpose
 
@@ -203,34 +203,34 @@ FactoryBot.define do
     end
   end
 
-  factory :control_plate, traits: [:plate_barcode, :with_wells] do
+  factory :control_plate, traits: %i[plate_barcode with_wells] do
     plate_purpose
     name { 'Control Plate name' }
   end
 
-  factory :pico_assay_plate, traits: [:plate_barcode, :with_wells] do
+  factory :pico_assay_plate, traits: %i[plate_barcode with_wells] do
     plate_purpose
     size { 96 }
 
-    factory :pico_assay_a_plate, traits: [:plate_barcode, :with_wells] do
+    factory :pico_assay_a_plate, traits: %i[plate_barcode with_wells] do
       plate_purpose
       size { 96 }
     end
-    factory :pico_assay_b_plate, traits: [:plate_barcode, :with_wells] do
+    factory :pico_assay_b_plate, traits: %i[plate_barcode with_wells] do
       plate_purpose
       size { 96 }
     end
   end
-  factory :pico_dilution_plate, traits: [:plate_barcode, :with_wells] do
+  factory :pico_dilution_plate, traits: %i[plate_barcode with_wells] do
     plate_purpose
     size { 96 }
   end
-  factory :sequenom_qc_plate, traits: [:plate_barcode, :with_wells] do
+  factory :sequenom_qc_plate, traits: %i[plate_barcode with_wells] do
     sequence(:name) { |i| "Sequenom #{i}" }
     plate_purpose
     size { 96 }
   end
-  factory :working_dilution_plate, traits: [:plate_barcode, :with_wells] do
+  factory :working_dilution_plate, traits: %i[plate_barcode with_wells] do
     plate_purpose
     size { 96 }
   end

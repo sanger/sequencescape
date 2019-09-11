@@ -1,5 +1,5 @@
 class Search::FindModelByName < Search
-  validates_presence_of :target_model_name
+  validates :target_model_name, presence: true
 
   def model
     target_model_name.constantize

@@ -5,7 +5,7 @@ xml.request(api_data) {
   xml.updated_at @request.updated_at
   xml.sample_id @request.samples.first.id if @request.samples.size == 1
   xml.template @request.request_type.name, id: @request.request_type.id if @request.request_type
-  xml.read_length(@request.request_metadata.read_length) unless @request.request_metadata.read_length.blank?
+  xml.read_length(@request.request_metadata.read_length) if @request.request_metadata.read_length.present?
   xml.asset_id @request.asset_id if @request.asset
   xml.target_asset_id @request.target_asset_id if @request.target_asset
   xml.state @request.state

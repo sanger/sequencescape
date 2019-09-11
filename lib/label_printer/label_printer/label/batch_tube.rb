@@ -24,15 +24,15 @@ module LabelPrinter
       end
 
       def middle_line(tube)
-        (tube.is_a? PacBioLibraryTube) ? source_well_position(tube) : super
+        tube.is_a?(PacBioLibraryTube) ? source_well_position(tube) : super
       end
 
       def round_label_top_line(tube)
-        (tube.is_a? PacBioLibraryTube) ? source_well_position(tube) : super
+        tube.is_a?(PacBioLibraryTube) ? source_well_position(tube) : super
       end
 
       def round_label_bottom_line(tube)
-        (tube.is_a? PacBioLibraryTube) ? source_plate_barcode(tube).split(//).last(4).join : super
+        tube.is_a?(PacBioLibraryTube) ? source_plate_barcode(tube).split(//).last(4).join : super
       end
 
       def tubes
@@ -46,7 +46,7 @@ module LabelPrinter
                       end
                     else
                       # all info on a label including barcode is about target_asset
-                      requests.map { |request| request.target_labware }
+                      requests.map(&:target_labware)
                     end
       end
 

@@ -42,7 +42,7 @@ def file_send(path, file)
   headers['HTTP_ACCEPT'] = 'application/json'
   headers['CONTENT_TYPE'] = 'sequencescape/qc_file'
   headers['HTTP_CONTENT_DISPOSITION'] = 'form-data; filename="example_file.txt"'
-  headers['HTTP_COOKIE'] = @cookies.map { |k, v| "#{k}=#{v}" }.join(';') unless @cookies.blank?
+  headers['HTTP_COOKIE'] = @cookies.map { |k, v| "#{k}=#{v}" }.join(';') if @cookies.present?
   yield(headers) if block_given?
   page.driver.post("#{@api_path}#{path}", file.read, headers)
 end

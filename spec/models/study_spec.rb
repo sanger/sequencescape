@@ -270,7 +270,7 @@ RSpec.describe Study, type: :model do
       end
 
       it 'not cancel any associated requests' do
-        expect(study.requests).to be_all { |request| request.passed? }
+        expect(study.requests).to be_all(&:passed?)
       end
     end
 

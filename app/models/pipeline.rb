@@ -57,8 +57,8 @@ class Pipeline < ApplicationRecord
   end
   has_many :inbox, class_name: 'Request', extend: Pipeline::RequestsInStorage
 
-  validates_presence_of :name, :request_types
-  validates_uniqueness_of :name, on: :create, message: 'name already in use'
+  validates :name, :request_types, presence: true
+  validates :name, uniqueness: { on: :create, message: 'name already in use' }
 
   scope :externally_managed, -> { where(externally_managed: true) }
   scope :internally_managed, -> { where(externally_managed: false) }

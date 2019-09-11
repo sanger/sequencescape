@@ -48,8 +48,8 @@ class TagSubstitutionsController < ApplicationController
 
   def tag_substitution_params
     params.require(:tag_substitution).permit(
-      :reason, :ticket, :name, substitutions: [
-        :sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
+      :reason, :ticket, :name, substitutions: %i[
+        sample_id library_id original_tag_id substitute_tag_id original_tag2_id substitute_tag2_id
       ]
     ).merge(user: current_user)
   end

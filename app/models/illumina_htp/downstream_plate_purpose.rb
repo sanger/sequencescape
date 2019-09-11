@@ -4,7 +4,7 @@ class IlluminaHtp::DownstreamPlatePurpose < PlatePurpose
   end
 
   def library_source_plates(plate)
-    super.map { |s| s.source_plates }.flatten.uniq
+    super.map(&:source_plates).flatten.uniq
   end
 
   def library_source_plate(plate)

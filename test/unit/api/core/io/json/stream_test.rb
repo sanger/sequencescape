@@ -104,7 +104,11 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
       end
 
       should 'time' do
-        @value, @expected = Time.parse('2012-10-26 09:35'), '"Fri Oct 26 09:35:00 +0100 2012"'
+        @value, @expected = Time.parse('2012-10-26 09:35'), '"Fri Oct 26 09:35:00 +0100 2012"' # rubocop:disable Rails/TimeZone
+      end
+
+      should 'ActiveSupport::TimeWithZone' do
+        @value, @expected = Time.zone.parse('2012-10-26 09:35'), '"2012-10-26 09:35:00 +0100"'
       end
 
       should 'hash' do

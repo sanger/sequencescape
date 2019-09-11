@@ -1,8 +1,8 @@
 # Map identifies a {Well wells} position on a {Plate}. It is not related to
 # the ruby #map method.
 class Map < ApplicationRecord
-  validates_presence_of :description, :asset_size, :location_id, :row_order, :column_order, :asset_shape
-  validates_numericality_of :asset_size, :row_order, :column_order
+  validates :description, :asset_size, :location_id, :row_order, :column_order, :asset_shape, presence: true
+  validates :asset_size, :row_order, :column_order, numericality: true
 
   # @!attribute description
   #   @return [String] the name of the well. In most cases this will be in the

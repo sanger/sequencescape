@@ -23,7 +23,7 @@ module Core::Endpoint::BasicHandler::Actions
 
     create_from_file: 201,
     update_from_file: 200
-  }
+  }.freeze
 
   ACTIONS_WITH_SUCCESS_CODES.each do |action, status_code|
     line = __LINE__ + 1

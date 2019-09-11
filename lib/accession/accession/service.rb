@@ -4,7 +4,7 @@ module Accession
   class Service
     include ActiveModel::Validations
 
-    PROVIDERS = { 'managed' => :EGA, 'open' => :ENA }
+    PROVIDERS = { 'managed' => :EGA, 'open' => :ENA }.freeze
 
     attr_reader :provider
 

@@ -9,8 +9,8 @@ class BudgetDivision < ApplicationRecord
 
   has_many :projects
 
-  validates_presence_of :name
-  validates_uniqueness_of :name, message: 'of budget division already present in database'
+  validates :name, presence: true
+  validates :name, uniqueness: { message: 'of budget division already present in database' }
 
   module Associations
     def self.included(base)

@@ -23,7 +23,7 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
   end
 
   def stock_wells(plate, contents)
-    return plate.parent.wells unless contents.present?
+    return plate.parent.wells if contents.blank?
 
     plate.parent.wells.located_at(contents)
   end

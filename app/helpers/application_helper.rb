@@ -223,11 +223,11 @@ module ApplicationHelper
 
   def display_request_information(request, rit, batch = nil)
     r = request.value_for(rit.name, batch)
-    (!r || r.empty?) ? 'NA' : r
+    r.presence || 'NA'
   end
 
   def display_boolean_results(result)
-    return 'NA' if (!result || result.empty?)
+    return 'NA' if result.blank?
     if result == 'pass' || result == '1' || result == 'true'
       return icon('far', 'check-circle', title: result)
     else

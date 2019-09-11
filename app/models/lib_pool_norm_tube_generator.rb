@@ -4,8 +4,8 @@ class LibPoolNormTubeGenerator
   attr_accessor :plate
   attr_reader :user, :asset_group, :study
 
-  validates_presence_of :plate, message: 'Barcode does not relate to any existing plate'
-  validates_presence_of :user, :study
+  validates :plate, presence: { message: 'Barcode does not relate to any existing plate' }
+  validates :user, :study, presence: true
 
   validate :check_state, :check_plate_purpose, if: Proc.new { |g| g.plate.present? }
 
@@ -24,7 +24,7 @@ class LibPoolNormTubeGenerator
   end
 
   def set_plate(barcode)
-    Plate.with_barcode(barcode).includes(wells: { requests: [:request_type, :target_asset] }).first
+    Plate.with_barcode(barcode).includes(wells: { requests: %i[request_type target_asset] }).first
   end
 
   def lib_pool_tubes

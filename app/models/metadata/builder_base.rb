@@ -42,7 +42,7 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
       group: nil,
       value: @object.send(field)
     )
-    locals[:group] = options[:grouping].downcase.gsub(/[^a-z0-9]+/, '_') unless options[:grouping].blank?
+    locals[:group] = options[:grouping].downcase.gsub(/[^a-z0-9]+/, '_') if options[:grouping].present?
     locals = yield(locals) if block_given?
     render(view.merge(locals: locals))
   end

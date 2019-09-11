@@ -109,7 +109,7 @@ class Request < ApplicationRecord
   }
   # Validations
   # On create we perform a full and complete validation.
-  validates_presence_of :request_purpose
+  validates :request_purpose, presence: true
 
   broadcast_via_warren
 

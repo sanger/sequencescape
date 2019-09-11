@@ -4,11 +4,11 @@
 class ApiApplication < ApplicationRecord
   include SharedBehaviour::Named
 
-  validates_presence_of :name, :key, :contact, :privilege
+  validates :name, :key, :contact, :privilege, presence: true
 
-  validates_inclusion_of :privilege, in: %w[full tag_plates]
+  validates :privilege, inclusion: { in: %w[full tag_plates] }
 
-  validates_length_of :key, minimum: 20
+  validates :key, length: { minimum: 20 }
 
   before_validation :generate_new_api_key, unless: :key?
 

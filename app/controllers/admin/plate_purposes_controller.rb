@@ -3,7 +3,7 @@ class Admin::PlatePurposesController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :admin_login_required
-  before_action :discover_plate_purpose, only: [:show, :edit, :update, :destroy]
+  before_action :discover_plate_purpose, only: %i[show edit update destroy]
 
   def index
     plate_purposes = PlatePurpose.all

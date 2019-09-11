@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Aker
   ##
   # Factories act as wrappers for data coming from Aker.

@@ -11,7 +11,7 @@ class QcDecision < ApplicationRecord
     validates :qc_decision, presence: true
     validates :decision, presence: true
 
-    validates_inclusion_of :decision, in: Qcable.aasm.state_machine.events.map { |i, _j| i.to_s }
+    validates :decision, inclusion: { in: Qcable.aasm.state_machine.events.map { |i, _j| i.to_s } }
 
     after_create :make_decision
 
@@ -28,7 +28,7 @@ class QcDecision < ApplicationRecord
   has_many :qc_decision_qcables, class_name: 'QcDecision::QcDecisionQcable', inverse_of: :qc_decision
   has_many :qcables, through: :qc_decision_qcables
 
-  validates_presence_of :user
+  validates :user, presence: true
   validate :user_has_permission, if: :user
 
   def decisions=(decisions)

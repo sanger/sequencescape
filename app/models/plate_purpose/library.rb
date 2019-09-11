@@ -9,7 +9,7 @@ module PlatePurpose::Library
     end
   end
 
-  STATES_TO_ASSIGN_LIBRARY_INFORMATION = %w[started passed]
+  STATES_TO_ASSIGN_LIBRARY_INFORMATION = %w[started passed].freeze
 
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super

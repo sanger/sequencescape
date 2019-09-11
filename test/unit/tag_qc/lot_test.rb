@@ -36,7 +36,7 @@ class LotTest < ActiveSupport::TestCase
 
       should 'validate the template type' do
         @lot.template = create :tag_layout_template, name: 'lot_test'
-        assert !@lot.valid?, 'Lot should be invalid'
+        assert_not @lot.valid?, 'Lot should be invalid'
       end
     end
   end

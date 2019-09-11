@@ -2,10 +2,10 @@
 
 ActiveRecord::Base.transaction do
   # And here is pulldown
-  purpose_flows = Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.clone
+  purpose_flows = Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.dup
   purpose_flows.pop
   purpose_flows.each do |flow_o|
-    flow = flow_o.clone
+    flow = flow_o.dup
     # We're using a different plate purpose for each pipeline, which means we need to attach that plate purpose to the request
     # type for it.  Then in the cherrypicking they'll only be able to pick the correct type from the list.
     stock_plate_purpose = PlatePurpose::Input.create!(

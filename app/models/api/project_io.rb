@@ -15,7 +15,7 @@ class Api::ProjectIO < Api::Base
         scope :including_associations_for_json, -> {
           includes([
             :uuid_object, {
-              project_metadata: [:project_manager, :budget_division],
+              project_metadata: %i[project_manager budget_division],
               roles: :users
             }
           ])

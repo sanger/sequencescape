@@ -25,7 +25,7 @@ class MessengerCreator < ApplicationRecord
   end
 
   belongs_to :purpose
-  validates_presence_of :purpose, :root, :template
+  validates :purpose, :root, :template, presence: true
 
   validate :template_exists?
 
