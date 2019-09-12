@@ -6,8 +6,8 @@ class ReceptaclesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :discover_asset, only: %i[show edit update summary close print_assets print history]
-  before_action :prepare_asset, only: %i[new_request create_request]
+  before_action :find_receptacle_with_includes, only: %i[show edit update summary close print_assets print history]
+  before_action :find_receptacle_only, only: %i[new_request create_request]
 
   def index
     if params[:study_id]
@@ -214,7 +214,7 @@ class ReceptaclesController < ApplicationController
   end
 
   # Receptacle, as we're about to request some stuff
-  def prepare_asset
+  def find_receptacle_only
     @asset = Receptacle.find(params[:id])
   end
 
@@ -227,7 +227,7 @@ class ReceptaclesController < ApplicationController
     )
   end
 
-  def discover_asset
+  def find_receptacle_with_includes
     @asset = Receptacle.include_for_show.find(params[:id])
   end
 end
