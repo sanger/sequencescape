@@ -5,6 +5,7 @@ module DownloadHelpers
   PATH = Capybara.save_path
 
   def self.downloads
+    create_directory unless PATH.exist?
     PATH.children
   end
 
@@ -37,5 +38,10 @@ module DownloadHelpers
 
   def self.remove_downloads
     FileUtils.rm_r(downloads, force: true)
+  end
+
+  def self.create_directory
+    PATH.parent.mkdir unless PATH.parent.exist?
+    PATH.mkdir
   end
 end
