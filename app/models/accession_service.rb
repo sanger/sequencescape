@@ -237,6 +237,8 @@ class AccessionService
       # Although currently this UA is actually being set elsewhere in the
       # code as RestClient doesn't pass this header to the proxy.
       rc.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
+    elsif ENV['http_proxy'].present?
+      RestClient.proxy = ENV['http_proxy']
     end
 
     payload = file_params.each_with_object({}) do |param, hash|

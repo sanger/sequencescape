@@ -53,6 +53,8 @@ module Accession
       elsif configatron.fetch(:proxy).present?
         RestClient.proxy = configatron.proxy
         resource.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
+      elsif ENV['http_proxy'].present?
+        RestClient.proxy = ENV['http_proxy']
       end
     end
   end

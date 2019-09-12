@@ -166,6 +166,8 @@ class SamplesController < ApplicationController
     elsif configatron.fetch(:proxy).present?
       RestClient.proxy = configatron.proxy
       rc.headers['User-Agent'] = 'Internet Explorer 5.0'
+    elsif ENV['http_proxy'].present?
+      RestClient.proxy = ENV['http_proxy']
     end
     # rc.verbose = true
     body = rc.get.body
