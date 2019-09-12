@@ -49,8 +49,8 @@ module Accession
     # Set the proxy to ensure you don't get a bad request error.
     def set_proxy
       if configatron.disable_web_proxy == true
-        RestClient.proxy = ''
-      elsif configatron.proxy.present?
+        RestClient.proxy = nil
+      elsif configatron.fetch(:proxy).present?
         RestClient.proxy = configatron.proxy
         resource.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
       end

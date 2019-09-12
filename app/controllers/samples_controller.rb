@@ -162,8 +162,8 @@ class SamplesController < ApplicationController
 
     rc = RestClient::Resource.new(URI.parse(url).to_s)
     if configatron.disable_web_proxy == true
-      RestClient.proxy = ''
-    elsif configatron.proxy.present?
+      RestClient.proxy = nil
+    elsif configatron.fetch(:proxy).present?
       RestClient.proxy = configatron.proxy
       rc.headers['User-Agent'] = 'Internet Explorer 5.0'
     end

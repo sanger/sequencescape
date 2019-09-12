@@ -230,8 +230,8 @@ class AccessionService
     rc = rest_client_resource
 
     if configatron.disable_web_proxy == true
-      RestClient.proxy = ''
-    elsif configatron.proxy.present?
+      RestClient.proxy = nil
+    elsif configatron.fetch(:proxy).present?
       RestClient.proxy = configatron.proxy
       # UA required to get through Sanger proxy
       # Although currently this UA is actually being set elsewhere in the
