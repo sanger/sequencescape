@@ -23,9 +23,6 @@ class ReceptaclesController < ApplicationController
         format.xml { render xml: @study.assets_through_requests.to_xml }
       elsif params[:sample_id]
         format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
-      elsif params[:asset_id]
-        @asset = Receptacle.find(params[:asset_id])
-        format.xml { render xml: ['relations' => { 'parents' => @asset.parents, 'children' => @asset.children }].to_xml }
       end
     end
   end
@@ -198,10 +195,6 @@ class ReceptaclesController < ApplicationController
         format.xml  { render xml: @assets.to_xml }
       end
     end
-  end
-
-  def reset_values_for_move
-    render layout: false
   end
 
   private

@@ -157,10 +157,6 @@ class LabwareController < ApplicationController
     end
   end
 
-  def reset_values_for_move
-    render layout: false
-  end
-
   def find_by_barcode; end
 
   def lab_view

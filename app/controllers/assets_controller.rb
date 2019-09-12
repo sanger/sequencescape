@@ -150,10 +150,6 @@ class AssetsController < ApplicationController
     end
   end
 
-  def reset_values_for_move
-    render layout: false
-  end
-
   private
 
   # Receptacle, as we're about to request some stuff
