@@ -20,7 +20,7 @@ class ReceptaclesController < ApplicationController
     respond_to do |format|
       format.html
       if params[:study_id]
-        format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
+        format.xml { render xml: @study.assets_through_requests.to_xml }
       elsif params[:sample_id]
         format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
@@ -46,8 +46,6 @@ class ReceptaclesController < ApplicationController
   def history
     respond_to do |format|
       format.html
-      format.xml  { @request.events.to_xml }
-      format.json { @request.events.to_json }
     end
   end
 
@@ -173,23 +171,11 @@ class ReceptaclesController < ApplicationController
       format.html { redirect_to receptacle_path(@asset) }
       format.json { render json: submission.requests, status: :created }
     end
-  rescue Submission::ProjectValidation::Error => e
+  rescue Submission::ProjectValidation::Error, ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid => e
     respond_to do |format|
       flash[:error] = e.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
       format.json { render json: e.message, status: :unprocessable_entity }
-    end
-  rescue ActiveRecord::RecordNotFound => e
-    respond_to do |format|
-      flash[:error] = e.message.truncate(2000, separator: ' ')
-      format.html { redirect_to new_request_for_current_asset }
-      format.json { render json: e.message, status: :precondition_failed }
-    end
-  rescue ActiveRecord::RecordInvalid => e
-    respond_to do |format|
-      flash[:error] = e.message.truncate(2000, separator: ' ')
-      format.html { redirect_to new_request_for_current_asset }
-      format.json { render json: e.message, status: :precondition_failed }
     end
   end
 
@@ -233,34 +219,15 @@ class ReceptaclesController < ApplicationController
   end
 
   def new_request_for_current_asset
-    new_request_receptacle_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
+    new_request_receptacle_path(
+      @asset,
+      study_id: params[:study_id],
+      project_id: params[:project_id],
+      request_type_id: params[:request_type_id]
+    )
   end
 
   def discover_asset
     @asset = Receptacle.include_for_show.find(params[:id])
-  end
-
-  def check_valid_values(params = nil)
-    if (params[:study_id_to] == '0') || (params[:study_id_from] == '0')
-      flash[:error] = "You have to select 'Study From' and 'Study To'"
-      return false
-    else
-      study_from = Study.find(params[:study_id_from])
-      study_to = Study.find(params[:study_id_to])
-      if study_to.name.eql?(study_from.name)
-        flash[:error] = "You can't select the same Study."
-        return false
-      elsif params[:asset_group_id] == '0' && params[:new_assets_name].empty?
-        flash[:error] = "You must indicate an 'Asset Group'."
-        return false
-      elsif params[:asset_group_id] != '0' && !params[:new_assets_name].empty?
-        flash[:error] = 'You can select only an Asset Group!'
-        return false
-      elsif AssetGroup.find_by(name: params[:new_assets_name])
-        flash[:error] = 'The name of Asset Group exists!'
-        return false
-      end
-    end
-    true
   end
 end
