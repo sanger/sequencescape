@@ -26,7 +26,7 @@ group :default do
   gem 'spreadsheet'
   gem 'will_paginate'
   # Will paginate clashes awkwardly with bootstrap
-  gem 'carrierwave'
+  gem 'carrierwave', '~> 1.3.1'
   gem 'net-ldap'
   gem 'will_paginate-bootstrap'
 
