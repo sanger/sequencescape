@@ -36,6 +36,7 @@ module Accession
         begin
           Accession::Response.new(resource.post(submission.payload.open))
         rescue StandardError => e
+          Rails.logger.error(e.message)
           Accession::NullResponse.new
         ensure
           submission.payload.close!
