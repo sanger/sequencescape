@@ -47,10 +47,6 @@ module ApplicationHelper
     end
   end
 
-  def request_badge(status)
-    badge(status, type: 'request-state')
-  end
-
   #
   # Renders a badge containing the supplied text, with appropriate styling.
   # By default the 'badge-#{status}' class is supplied. These states are mapped to
@@ -144,22 +140,6 @@ module ApplicationHelper
       'Unfollow ' + msg
     else
       'Follow ' + msg
-    end
-  end
-
-  def study_state(state)
-    if state == 'active'
-      "<span style='color:green;'>#{state}</span>".html_safe
-    else
-      "<span style='color:red;'>#{state}</span>".html_safe
-    end
-  end
-
-  def display_empty_table(display_text, link = nil)
-    if link.nil?
-      content_tag(:div, display_text, class: 'empty_table', id: 'empty_table')
-    else
-      content_tag(:div, link_to(display_text, link), class: 'empty_table', id: 'empty_table')
     end
   end
 
@@ -260,10 +240,6 @@ module ApplicationHelper
     new_requests = requests - sorted_requests
     new_requests.sort_by(&:pipeline_id)
     requests = requests + sorted_requests
-  end
-
-  def display_hash_value(hash, key, sub_key)
-    hash.fetch(key, {}).fetch(sub_key, '')
   end
 
   # Creates a label that is hidden from the view so that testing is easier

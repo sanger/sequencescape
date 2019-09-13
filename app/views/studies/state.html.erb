@@ -1,42 +1,41 @@
 
 <% add :about, "This page details the current state of a study." -%>
 
-<div class="page-header"><h1><%= link_to @study.name, study_path(@study) %></h1></div>
-<div class='subtitle'>
-  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %>
-</div>
-
+<div class="page-header">
+  <h1><%= link_to @study.name, study_path(@study) %></h1></div>
+  <div class='subtitle'>
+    Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %>
+  </div>
 <div>
 
-  <h2>This study is <%= study_state(@study.state) %></h2>
+  <h2>This study is <%= badge(@study.state) %></h2>
 
   <% if @study.active? -%>
-  <div class='help' style="text-align:center">
-    <h2>Important notice</h2>
-      <strong>Deactivating</strong> this study means no orders for this study can be created.<br/>
-      Are you sure you want to continue?
-  </div>
+    <div class='help' style="text-align:center">
+      <h2>Important notice</h2>
+        <strong>Deactivating</strong> this study means no orders for this study can be created.<br/>
+        Are you sure you want to continue?
+    </div>
   <% end %>
 
+  <% if current_user.privileged?() -%>
+    <% if @study.active? -%>
 
-    <% if current_user.privileged?() -%>
-      <% if @study.active? -%>
+      <%= form_for :study, url: close_study_path(@study), html: { class: "form-inline form-group" } do %>
+        <%= label_tag(:comment, "Reason for deactivation:", class: "col-sm-2 control-label") %>
+        <%= text_field_tag(:comment, nil, class: "form-control") %>
+        <%= submit_tag("Deactivate", class: "btn btn-danger") %>
+      <% end %>
 
-        <%= form_for :study, url: close_study_path(@study), html: { class: "form-inline form-group" } do %>
-          <%= label_tag(:comment, "Reason for deactivation:", class: "col-sm-2 control-label") %>
-          <%= text_field_tag(:comment, nil, class: "form-control") %>
-          <%= submit_tag("Deactivate", class: "btn btn-danger") %>
-        <% end %>
+    <% else -%>
+      <%unless @study.text_comments.blank?%>
+        <h5>Comments: <%=@study.text_comments %></h5>
+      <%end%>
+      <%= form_for :study, url: open_study_path(@study) do %>
+        <%= submit_tag("Activate", class: "btn btn-success") %>
+      <% end %>
 
-      <% else -%>
-        <%unless @study.text_comments.blank?%>
-          <h5>Comments: <%=@study.text_comments %></h5>
-        <%end%>
-        <%= form_for :study, url: open_study_path(@study) do %>
-          <%= submit_tag("Activate", class: "btn btn-success") %>
-        <% end %>
-
-      <% end -%>
     <% end -%>
+  <% end -%>
 
 </div>

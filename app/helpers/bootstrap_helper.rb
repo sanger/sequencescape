@@ -59,7 +59,7 @@ module BootstrapHelper
   # <div class="page-header">
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
-  def page_title(title, subtitle = nil, titlecase: true)
+  def page_title(title, subtitle = nil, titlecase: true, badges: [])
     content_tag(:div, class: 'page-header') do
       title_class = title.length > 25 ? 'title-long' : 'title-short'
       content_tag(:h1, class: title_class) do
@@ -70,6 +70,10 @@ module BootstrapHelper
         end
         concat ' '
         concat content_tag(:span, subtitle, class: 'subtitle') if subtitle.present?
+        badges.each do |badge_text|
+          concat ' '
+          concat badge(badge_text, type: 'title-badge')
+        end
       end
     end
   end

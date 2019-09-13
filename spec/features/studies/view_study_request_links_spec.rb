@@ -30,7 +30,8 @@ describe 'View study properties' do
     click_link sequencing_request_type.name
     expect(page).to have_link('1', title: "#{library_tube.human_barcode} passed")
     click_link('1', title: "#{library_tube.human_barcode} passed")
-    expect(page).to have_text("This request for #{sequencing_request_type.name.downcase} is PASSED")
+    expect(page).to have_text('passed')
+    expect(page).to have_text(sequencing_request_type.name)
   end
 
   it 'Multiple requests link to the summary', js: true do

@@ -35,7 +35,7 @@ class Request < ApplicationRecord
 
   has_one :pipeline, through: :batch
   belongs_to :item
-  belongs_to :request_type, inverse_of: :requests
+  belongs_to :request_type, inverse_of: :requests, optional: false
   belongs_to :user
   belongs_to :order, inverse_of: :requests
   belongs_to :submission, inverse_of: :requests
@@ -279,6 +279,7 @@ class Request < ApplicationRecord
   delegate :date_for_state, to: :request_events
   delegate :validator_for, to: :request_type
   delegate :role, to: :order_role, allow_nil: true
+  delegate :name, to: :request_type, prefix: true
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator

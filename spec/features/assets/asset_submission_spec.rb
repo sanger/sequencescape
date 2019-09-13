@@ -22,7 +22,7 @@ describe 'Asset submission', js: true do
   shared_examples 'it allows additional sequencing' do
     it 'request additional sequencing' do
       login_user user
-      visit asset_path(asset)
+      visit labware_path(asset)
       click_link 'Request additional sequencing'
       select(selected_request_type.name, from: 'Request type')
       select(study.name, from: 'Study')
@@ -40,7 +40,7 @@ describe 'Asset submission', js: true do
   shared_examples 'it allows cross study sequencing' do
     it 'request additional sequencing without study' do
       login_user user
-      visit asset_path(asset)
+      visit labware_path(asset)
       click_link 'Request additional sequencing'
       select(selected_request_type.name, from: 'Request type')
       fill_in 'Fragment size required (from)', with: '100'
@@ -54,7 +54,7 @@ describe 'Asset submission', js: true do
 
     it 'request additional sequencing with override study' do
       login_user user
-      visit asset_path(asset)
+      visit labware_path(asset)
       click_link 'Request additional sequencing'
       select(selected_request_type.name, from: 'Request type')
       fill_in 'Fragment size required (from)', with: '100'
@@ -74,7 +74,7 @@ describe 'Asset submission', js: true do
   shared_examples 'it forbids additional sequencing' do
     it 'the link is not visible' do
       login_user user
-      visit asset_path(asset)
+      visit labware_path(asset)
       expect(page).not_to have_text('Request additional sequencing')
     end
   end

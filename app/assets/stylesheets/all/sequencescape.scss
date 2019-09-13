@@ -18,6 +18,7 @@ li a:visited { color: #444488; }
 .page-header {
   h1 { @extend .display-4;
     .subtitle { @extend .text-muted; @extend .font-weight-light; font-size: 50%; }
+    .title-badge { font-size: 50%; }
   }
   h1.title-long {
     font-size: 2rem
