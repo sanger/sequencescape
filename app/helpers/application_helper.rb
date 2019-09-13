@@ -197,30 +197,6 @@ module ApplicationHelper
     end
   end
 
-  def display_complex_content(hash_content)
-    hash_content.each do |key, value|
-      case key
-      when 'criterion'
-        output = ''
-        value.each do |v|
-          output = output + content_tag(:span, "<strong>#{v.inspect}</strong>")
-          output = output + content_tag(:br)
-        end
-        return output
-      when 'link'
-        return link_to(value['label'], value['href'])
-      end
-    end
-  end
-
-  def display_ready_for_manual_qc(v)
-    if v
-      icon('far', 'check-circle')
-    else
-      icon('fas', 'exclamation-circle', class: 'text-danger')
-    end
-  end
-
   def display_request_information(request, rit, batch = nil)
     r = request.value_for(rit.name, batch)
     r.presence || 'NA'
