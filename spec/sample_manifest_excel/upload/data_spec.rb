@@ -53,4 +53,12 @@ RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_
     expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1)).not_to be nil
     expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1)).to eq(spreadsheet.cell(spreadsheet.last_row, spreadsheet.last_column - 1))
   end
+
+  context 'when the file is invalid' do
+    let(:test_file) { File.open('./tmp/nonsense.xlsx', 'w+') { |f| f << 'INVALID FILE CONTENT' } }
+
+    it 'is invalid' do
+      expect(described_class.new(test_file, 3)).not_to be_valid
+    end
+  end
 end
