@@ -123,8 +123,6 @@ module Request::Statemachine
       scope :for_state, ->(state) { where(state: state) }
 
       scope :completed,        -> { where(state: COMPLETED_STATE) }
-
-      scope :pipeline_pending, -> { where(state: 'pending') } #  we don't want the blocked one here }
       scope :pending,          -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
 
       scope :started,          -> { where(state: 'started') }

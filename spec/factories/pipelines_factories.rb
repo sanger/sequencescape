@@ -98,7 +98,6 @@ FactoryBot.define do
     active                  { true }
     max_size                { 192 }
     sorter                  { 11 }
-    paginate                { false }
     summary                 { false }
     externally_managed      { false }
     control_request_type_id { 0 }

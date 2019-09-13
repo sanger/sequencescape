@@ -205,7 +205,7 @@ class Request < ApplicationRecord
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
   scope :full_inbox, -> { where(state: %w[pending hold]) }
-
+  scope :pipeline_pending, ->(include_held = false) { include_held ? where(state: %w[pending hold]) : where(state: 'pending') }
   scope :with_asset, -> { where.not(asset_id: nil) }
   # Ensures the actual record is present
   scope :with_present_asset, -> { joins(:asset).where.not(Receptacle.table_name => { id: nil }) }
@@ -228,9 +228,7 @@ class Request < ApplicationRecord
 
   scope :without_asset, -> { where('asset_id is null') }
   scope :without_target, -> { where('target_asset_id is null') }
-  scope :excluding_states, ->(states) {
-    where.not(state: states)
-  }
+  scope :excluding_states, ->(states) { where.not(state: states) }
   scope :ordered, -> { order('id ASC') }
   scope :hold, -> { where(state: 'hold') }
 
@@ -240,9 +238,6 @@ class Request < ApplicationRecord
   scope :loaded_for_sequencing_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) }, { request_type: :product_line }]) }
   scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: { labware: :barcodes } }, :target_asset]) }
   scope :loaded_for_pacbio_inbox_display, -> { preload(:submission) }
-
-  scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
-  scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }

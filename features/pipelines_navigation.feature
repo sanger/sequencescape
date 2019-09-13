@@ -13,7 +13,7 @@ Feature: Pipeline navigation
   Scenario: Creating a batch removes the request from the inbox
     Given I have a request for "Illumina-C Library preparation"
     Given I am on the show page for pipeline "Illumina-C Library preparation"
-    When I check request "1" for pipeline "Illumina-C Library preparation"
+    When I check request 1
     When I press the first "Submit"
 
     When I am on the show page for pipeline "Illumina-C Library preparation"
@@ -26,7 +26,7 @@ Feature: Pipeline navigation
     Then I should see "Submission ID"
     Then I should see "Last 5"
     Then I should see "View batch"
-    When I check request "1" for pipeline "Illumina-C Library preparation"
+    When I check request 1
     When I press the first "Submit"
     Then I should see "Edit batch"
     Then I should see "Initial QC"

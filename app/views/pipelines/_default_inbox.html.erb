@@ -2,7 +2,6 @@
 <%= render partial: "batch_statuses" %>
 <%= render partial: 'pipeline_limit', locals: { requests_waiting: @requests_waiting } %>
 <% unless @requests_waiting == 0  -%>
-  <%= render partial: 'pipeline_paginate' %>
   <!-- _default_inbox.html.erb -->
   <% grouped_by_ready = @requests.group_by(&:ready?) %>
   <%= panel 'inbox', id: 'available-requests' do %>
@@ -25,8 +24,6 @@
       <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
     <% end -%>
   <% end if grouped_by_ready[false].present? %>
-
- <%= render partial: 'pipeline_paginate' %>
 <% else -%>
   There are no outstanding requests for this pipeline.
 <% end -%>

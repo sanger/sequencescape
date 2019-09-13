@@ -21,7 +21,6 @@ class PipelinesController < ApplicationController
   def show
     expires_now
     @show_held_requests = (params[:view] == 'all')
-    @current_page       = params[:page]
 
     @pending_batches     = @pipeline.batches.pending_for_ui.includes_for_ui
     @batches_in_progress = @pipeline.batches.in_progress_for_ui.includes_for_ui
@@ -41,14 +40,14 @@ class PipelinesController < ApplicationController
       # Convert to an array now as otherwise the comments counter attempts to be too clever
       # and treats the requests like a scope. Not only does this result in a more complicated
       # query, but also an invalid one
-      @requests_waiting = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
-      requests = @pipeline.requests.inbox(@show_held_requests, @current_page).to_a
+      @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
+      requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
       @grouped_requests = requests.group_by(&:submission_id)
       @requests_comment_count = Comment.counts_for(requests)
       @assets_comment_count = Comment.counts_for(requests.map(&:asset))
     else
-      @requests_waiting = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
-      @requests = @pipeline.requests.inbox(@show_held_requests, @current_page).to_a
+      @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
+      @requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
       # We convert to an array here as otherwise tails tries to be smart
       # and use the scope. Not only does it fail, but we may as well cache
       # the result now anyway.
