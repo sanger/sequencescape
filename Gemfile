@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'rails', '~> 5.1.7'
+  gem 'rails', '~> 5.2.3'
 
   # State machine
   gem 'aasm'
@@ -26,7 +26,7 @@ group :default do
   gem 'spreadsheet'
   gem 'will_paginate'
   # Will paginate clashes awkwardly with bootstrap
-  gem 'carrierwave'
+  gem 'carrierwave', '~> 1.3.1'
   gem 'net-ldap'
   gem 'will_paginate-bootstrap'
 
