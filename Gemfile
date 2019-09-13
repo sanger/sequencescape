@@ -25,9 +25,14 @@ group :default do
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
   gem 'will_paginate'
-  # Will paginate clashes awkwardly with bootstrap
-  gem 'carrierwave'
+
+  # CarrierWave 2.0.0-2.0.1 causes test/controllers/qc_files_controller_test.rb
+  # to fail due to mime-type detection failing due to the newly introduces
+  # mime-magic. Pinning to 1.3.1 for the time being.
+  # https://github.com/sanger/sequencescape/issues/2349
+  gem 'carrierwave', '~>1.3.1'
   gem 'net-ldap'
+  # Will paginate clashes awkwardly with bootstrap
   gem 'will_paginate-bootstrap'
 
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
