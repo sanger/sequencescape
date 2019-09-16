@@ -40,13 +40,13 @@ class PlateSummariesControllerTest < ActionController::TestCase
         should 'find expected plates' do
           plates = {
             @source_plate_a => [@source_plate_a.human_barcode,
-                                @source_plate_a.ean13_barcode,
+                                @source_plate_a.machine_barcode,
                                 @child_plate_a.human_barcode,
-                                @child_plate_a.ean13_barcode],
+                                @child_plate_a.machine_barcode],
             @source_plate_b => [@source_plate_b.human_barcode,
-                                @source_plate_b.ean13_barcode,
+                                @source_plate_b.machine_barcode,
                                 @child_plate_b.human_barcode,
-                                @child_plate_b.ean13_barcode]
+                                @child_plate_b.machine_barcode]
           }
           plates.each do |plate, barcodes|
             barcodes.each do |barcode|

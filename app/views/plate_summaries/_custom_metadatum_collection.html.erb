@@ -1,16 +1,10 @@
-
-<div class="col-md-6">
-  <div class="card card-default">
-    <h3 class="card-header">Metadata</h3>
-    <table class='table table-summary'>
-      <% @custom_metadatum_collection.metadata.each do |k,v| %>
-        <tr>
-          <th><%= k %></th>
-          <td>
-            <%= v %>
-          </td>
-        </tr>
-      <%end%>
-    </table>
-  </div>
-</div>
+<%= bs_custom_panel(:info, :table, {class: 'table table-summary'}, {title: 'Metadata' }) do %>
+  <% @custom_metadatum_collection.metadata.each do |k,v| %>
+    <tr>
+      <th><%= k %></th>
+      <td>
+        <%= v %>
+      </td>
+    </tr>
+  <%end%>
+<% end %>

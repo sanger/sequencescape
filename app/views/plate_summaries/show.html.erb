@@ -1,39 +1,37 @@
 <%= page_title("plate summary", @plate.human_barcode) %>
 
-<div class="col-md-6">
-  <div class="card card-default">
-    <h3 class="card-header">Summary</h3>
-    <table class='table table-summary'>
-      <tr>
-        <th>Submissions</th>
-        <td>
-           <% @plate.submissions.each do |submission|%>
-             <%= link_to submission.name, submission_path(submission) %>
-           <% end %>
-        </td>
-      </tr>
-      <tr>
-        <th>Plate link</th>
-        <td><%= link_to "Plate page", labware_path(@plate) %></td>
-      </tr>
-      <tr>
-        <th>Sequencing batches</th>
-        <td><ul><% @sequencing_batches.each do |batch| %>
-               <li>
-                 <%= link_to "Batch #{batch.id}", batch_path(batch) %>
-                 (<%= link_to "Show in NPG", "#{configatron.run_data_by_batch_id_url}#{batch.id}" %>)
-               </li>
-               <% end %>
-             </ul>
-         </td>
-      </tr>
-    </table>
-  </div>
+<div class='columnize'>
+  <%= bs_custom_panel(:info, :table, {class: 'table table-summary'}, {title: 'Summary' }) do %>
+        <tr>
+          <th>Submissions</th>
+          <td>
+            <ul>
+             <% @plate.submissions.each do |submission|%>
+               <li><%= link_to submission.name, submission_path(submission) %></li>
+             <% end %>
+           </ul>
+          </td>
+        </tr>
+        <tr>
+          <th>Plate link</th>
+          <td><%= link_to "Plate page", labware_path(@plate) %></td>
+        </tr>
+        <tr>
+          <th>Sequencing batches</th>
+          <td><ul><%- @sequencing_batches.each do |batch| %>
+            <li>
+              <%= link_to "Batch #{batch.id}", batch_path(batch) %>
+              (<%= link_to "Show in NPG", "#{configatron.run_data_by_batch_id_url}#{batch.id}" %>)
+            </li>
+            <% end %>
+          </ul></td>
+        </tr>
+  <% end %>
+
+  <%= render partial: "custom_metadatum_collection" %>
 </div>
 
-<%= render partial: "custom_metadatum_collection" %>
-
- <table class="sortable table table-striped" id="plate-content-summary">
+<%= bs_custom_panel(:info, :table, {class: 'sortable table table-striped'}, {title: 'Samples' }) do %>
    <thead>
      <tr>
        <th>Well</th>
@@ -61,10 +59,14 @@
         </tr>
       <% end %>
    </tbody>
- </table>
+<% end %>
 
- <% @plate.descendant_plates.each do |descendant| %>
+<div class='columnize'>
+  <% @plate.descendant_plates.each do |descendant| %>
     <%= render partial: "descendant", locals: {descendant: descendant} %>
- <% end %>
-
+  <% end %>
+  <% @plate.descendant_tubes.each do |descendant| %>
+    <%= render partial: "descendant", locals: {descendant: descendant} %>
+  <% end %>
+</div>
 
