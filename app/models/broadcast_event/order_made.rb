@@ -17,7 +17,7 @@ class BroadcastEvent::OrderMade < BroadcastEvent
     event.plates
   end
 
-  has_subjects(:order_source_tubes) { |order, _event| order.assets.select { |a| a.is_a?(Tube) } }
+  has_subjects(:order_source_tubes) { |order, _event| order.assets.select { |a| a.labware.is_a?(Tube) } }
 
   has_subjects(:stock_plate) { |_order, event| event.plates.map(&:original_stock_plates).flatten.uniq }
 

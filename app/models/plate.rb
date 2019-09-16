@@ -190,9 +190,9 @@ class Plate < Labware
       .where(batches: { id: batch })
   }
   scope :with_wells, ->(wells) {
-    select('DISTINCT assets.*')
-      .joins(:wells)
+    joins(:wells)
       .where(receptacles: { id: wells.map(&:id) })
+      .distinct
   }
 
   has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
