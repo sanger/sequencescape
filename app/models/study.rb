@@ -91,9 +91,7 @@ class Study < ApplicationRecord
     DATA_RELEASE_DELAY_FOR_OTHER
   ].freeze
 
-  DATA_RELEASE_DELAY_LONG  = ['6 months', '9 months', '12 months', '18 months'].freeze
-  DATA_RELEASE_DELAY_SHORT = ['3 months'].freeze
-  DATA_RELEASE_DELAY_PERIODS = DATA_RELEASE_DELAY_SHORT + DATA_RELEASE_DELAY_LONG
+  DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
   # Class variables
   self.per_page = 500

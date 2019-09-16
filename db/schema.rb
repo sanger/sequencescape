@@ -33,8 +33,8 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
     t.integer "aliquot_index", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["aliquot_id"], name: "index_aliquot_indices_on_aliquot_id", unique: true
     t.index ["lane_id", "aliquot_index"], name: "index_aliquot_indices_on_lane_id_and_aliquot_index", unique: true
   end
@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
   end
 
-  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", comment: "AL" do |t|
+  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
   end
 
   create_table "asset_creation_parents", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.datetime "updated_at"
   end
 
-  create_table "assets_deprecated", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "assets_deprecated", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "name"
     t.string "value"
     t.string "sti_type", limit: 50
@@ -308,8 +308,8 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.integer "seed_id"
     t.integer "user_id"
     t.text "properties", limit: 16777215
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "budget_divisions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
@@ -335,7 +335,7 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
   end
 
-  create_table "container_associations_deprecated", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "container_associations_deprecated", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "container_id", null: false
     t.integer "content_id", null: false
     t.index ["container_id"], name: "index_container_associations_deprecated_on_container_id"
@@ -354,16 +354,16 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.string "key"
     t.string "value"
     t.integer "custom_metadatum_collection_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["custom_metadatum_collection_id"], name: "index_custom_metadata_on_custom_metadatum_collection_id"
   end
 
   create_table "custom_metadatum_collections", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.integer "user_id"
     t.integer "asset_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["asset_id"], name: "index_custom_metadatum_collections_on_asset_id"
   end
 
@@ -773,8 +773,8 @@ ActiveRecord::Schema.define(version: 20190910103357) do
   create_table "plate_creator_parent_purposes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.integer "plate_creator_id", null: false
     t.integer "plate_purpose_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "plate_creator_purposes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
@@ -815,7 +815,6 @@ ActiveRecord::Schema.define(version: 20190910103357) do
   create_table "plate_purpose_relationships", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.integer "parent_id"
     t.integer "child_id"
-    t.integer "transfer_request_class_name", default: 0, null: false
   end
 
   create_table "plate_purposes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
@@ -1045,6 +1044,7 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["user_id"], name: "fk_qcable_creators_to_users"
   end
 
   create_table "qcables", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
@@ -1205,7 +1205,7 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.string "sti_type"
     t.integer "order_id"
     t.integer "request_purpose"
-    t.bigint "work_order_id"
+    t.integer "work_order_id"
     t.integer "billing_product_id"
     t.index ["asset_id"], name: "index_requests_on_asset_id"
     t.index ["billing_product_id"], name: "index_requests_on_billing_product_id"
@@ -1233,7 +1233,6 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "barcode"
-    t.float "minimum_volume", limit: 24
   end
 
   create_table "roles", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
@@ -1261,8 +1260,6 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.bigint "job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "aker_material_uuid"
-    t.index ["aker_material_uuid"], name: "index_sample_jobs_on_aker_material_uuid", unique: true
     t.index ["job_id"], name: "index_sample_jobs_on_job_id"
     t.index ["sample_id"], name: "index_sample_jobs_on_sample_id"
   end
@@ -1569,7 +1566,6 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.text "request_options", limit: 16777215
     t.string "name"
     t.integer "priority", limit: 1, default: 0, null: false
-    t.integer "submission_template_id"
     t.index ["name"], name: "index_submissions_on_name"
     t.index ["state"], name: "index_submissions_on_state"
   end
@@ -1599,8 +1595,8 @@ ActiveRecord::Schema.define(version: 20190910103357) do
   create_table "tag2_layout_template_submissions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.integer "submission_id", null: false
     t.integer "tag2_layout_template_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["submission_id", "tag2_layout_template_id"], name: "tag2_layouts_used_once_per_submission", unique: true
     t.index ["tag2_layout_template_id"], name: "fk_tag2_layout_template_submissions_to_tag2_layout_templates"
   end
@@ -1608,8 +1604,8 @@ ActiveRecord::Schema.define(version: 20190910103357) do
   create_table "tag2_layout_templates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.string "name", null: false
     t.integer "tag_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tag2_layouts", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
@@ -1781,7 +1777,7 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.index ["pipeline_administrator"], name: "index_users_on_pipeline_administrator"
   end
 
-  create_table "uuids", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "uuids", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "resource_type", limit: 128, null: false
     t.integer "resource_id", null: false
     t.string "external_id", limit: 36, null: false
@@ -1849,20 +1845,19 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.index ["work_completion_id"], name: "fk_rails_5ea64f1af2"
   end
 
-  create_table "work_order_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
+  create_table "work_order_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_work_order_types_on_name", unique: true
   end
 
-  create_table "work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
-    t.bigint "work_order_type_id", null: false
+  create_table "work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
+    t.integer "work_order_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", null: false
     t.index ["work_order_type_id", "state"], name: "index_work_orders_on_work_order_type_id_and_state"
-    t.index ["work_order_type_id"], name: "fk_rails_80841fcb4c"
   end
 
   create_table "workflow_samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
@@ -1886,6 +1881,8 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.index ["pipeline_id"], name: "index_workflows_on_pipeline_id"
   end
 
+  add_foreign_key "aliquot_indices", "aliquots", name: "fk_aliquot_indices_to_aliquots"
+  add_foreign_key "aliquot_indices", "receptacles", column: "lane_id"
   add_foreign_key "aliquots", "primer_panels"
   add_foreign_key "aliquots", "requests"
   add_foreign_key "assets_deprecated", "plate_types", column: "labware_type_id"
@@ -1894,14 +1891,45 @@ ActiveRecord::Schema.define(version: 20190910103357) do
   add_foreign_key "billing_products", "billing_product_catalogues"
   add_foreign_key "labware", "plate_purposes"
   add_foreign_key "labware", "plate_types", column: "labware_type_id"
+  add_foreign_key "library_types_request_types", "library_types", name: "fk_library_types_request_types_to_library_types"
+  add_foreign_key "library_types_request_types", "request_types", name: "fk_library_types_request_types_to_request_types"
+  add_foreign_key "lot_types", "plate_purposes", column: "target_purpose_id", name: "fk_lot_types_to_plate_purposes"
+  add_foreign_key "lots", "lot_types", name: "fk_lots_to_lot_types"
+  add_foreign_key "messenger_creators", "plate_purposes", column: "purpose_id", name: "fk_messenger_creators_to_plate_purposes"
+  add_foreign_key "pipelines_request_types", "pipelines", name: "pipelines_request_types_ibfk_1"
+  add_foreign_key "pipelines_request_types", "request_types", name: "pipelines_request_types_ibfk_2"
   add_foreign_key "plate_purposes", "barcode_prefixes"
+  add_foreign_key "product_criteria", "products", name: "fk_product_criteria_to_products"
+  add_foreign_key "product_product_catalogues", "product_catalogues", name: "fk_product_product_catalogues_to_product_catalogues"
+  add_foreign_key "product_product_catalogues", "products", name: "fk_product_product_catalogues_to_products"
   add_foreign_key "qc_files", "labware", column: "asset_id"
+  add_foreign_key "qc_metric_requests", "qc_metrics", name: "fk_qc_metric_requests_to_qc_metrics"
+  add_foreign_key "qc_metric_requests", "requests", name: "fk_qc_metric_requests_to_requests"
+  add_foreign_key "qc_metrics", "qc_reports", name: "fk_qc_metrics_to_qc_reports"
+  add_foreign_key "qc_metrics", "receptacles", column: "asset_id"
+  add_foreign_key "qc_reports", "product_criteria", column: "product_criteria_id", name: "fk_qc_reports_to_product_criteria"
+  add_foreign_key "qc_reports", "studies", name: "fk_qc_reports_to_studies"
   add_foreign_key "qc_results", "qc_assays"
+  add_foreign_key "qcable_creators", "users", name: "fk_qcable_creators_to_users"
+  add_foreign_key "qcables", "labware", column: "asset_id"
+  add_foreign_key "qcables", "lots", name: "fk_qcables_to_lots"
   add_foreign_key "receptacles", "labware"
   add_foreign_key "request_types", "billing_product_catalogues"
+  add_foreign_key "request_types_extended_validators", "extended_validators", name: "fk_request_types_extended_validators_to_extended_validators"
+  add_foreign_key "request_types_extended_validators", "request_types", name: "fk_request_types_extended_validators_to_request_types"
   add_foreign_key "requests", "billing_products"
   add_foreign_key "requests", "work_orders"
+  add_foreign_key "roles_users", "roles", name: "fk_roles_users_to_roles"
+  add_foreign_key "roles_users", "users", name: "fk_roles_users_to_users"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
+  add_foreign_key "stamp_qcables", "qcables", name: "fk_stamp_qcables_to_qcables"
+  add_foreign_key "stamp_qcables", "stamps", name: "fk_stamp_qcables_to_stamps"
+  add_foreign_key "stamps", "lots", name: "fk_stamps_to_lots"
+  add_foreign_key "stamps", "robots", name: "fk_stamps_to_robots"
+  add_foreign_key "stamps", "users", name: "fk_stamps_to_users"
+  add_foreign_key "submission_templates", "product_catalogues", name: "fk_submission_templates_to_product_catalogues"
+  add_foreign_key "tag2_layout_template_submissions", "submissions", name: "fk_tag2_layout_template_submissions_to_submissions"
+  add_foreign_key "tag2_layout_template_submissions", "tag2_layout_templates", name: "fk_tag2_layout_template_submissions_to_tag2_layout_templates"
   add_foreign_key "tag_groups", "tag_group_adapter_types", column: "adapter_type_id"
   add_foreign_key "tag_layout_template_submissions", "submissions"
   add_foreign_key "tag_layout_template_submissions", "tag_layout_templates"
