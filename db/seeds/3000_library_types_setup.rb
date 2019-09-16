@@ -121,7 +121,7 @@ library_types = LibraryType.create!([
   'Nextera dual index pre quality controlled', 'Bisulphate pre quality controlled'
 ].map { |name| { name: name } })
 
-[:illumina_c_multiplexed_library_creation, :illumina_c_library_creation].each do |request_class_symbol|
+%i[illumina_c_multiplexed_library_creation illumina_c_library_creation].each do |request_class_symbol|
   request_type = RequestType.find_by(key: request_class_symbol.to_s)
   library_types.each do |library_type|
     LibraryTypesRequestType.create!(request_type: request_type, library_type: library_type, is_default: false)
@@ -133,7 +133,7 @@ libs_ribozero = ['Ribozero RNA-seq (Bacterial)', 'Ribozero RNA-seq (HMR)'].map d
 end
 
 libs_ribozero.each do |lib|
-  [:illumina_c_pcr, :illumina_c_pcr_no_pool].each do |request_class_symbol|
+  %i[illumina_c_pcr illumina_c_pcr_no_pool].each do |request_class_symbol|
     request_type = RequestType.find_by(key: request_class_symbol.to_s)
     LibraryTypesRequestType.create!(request_type: request_type, library_type: lib, is_default: false)
   end

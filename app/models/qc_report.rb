@@ -37,7 +37,7 @@ class QcReport < ApplicationRecord
           # Triggered automatically on after_create. This event is handled via
           # schedule_report, which creates a delayed job. It can be called manually.
           event :generate do
-            transitions from: [:queued, :requeued], to: :generating
+            transitions from: %i[queued requeued], to: :generating
           end
 
           # Called on report failure. Generally the delayed job will cycle it through a few times
@@ -53,7 +53,7 @@ class QcReport < ApplicationRecord
 
           # A QC report might be uploaded multiple times
           event :proceed_decision do
-            transitions from: [:complete, :awaiting_proceed], to: :complete
+            transitions from: %i[complete awaiting_proceed], to: :complete
           end
         end
 
@@ -122,9 +122,9 @@ class QcReport < ApplicationRecord
       .joins(:product_criteria)
   }
 
-  validates_presence_of :product_criteria, :study, :state
+  validates :product_criteria, :study, :state, presence: true
 
-  validates_inclusion_of :exclude_existing, in: [true, false], message: 'should be true or false.'
+  validates :exclude_existing, inclusion: { in: [true, false], message: 'should be true or false.' }
 
   # Reports are handled asynchronously
   def schedule_report

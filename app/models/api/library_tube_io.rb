@@ -16,7 +16,7 @@ class Api::LibraryTubeIO < Api::Base
           includes([
             :uuid_object,
             :barcodes, {
-              source_request: [:uuid_object, :request_metadata],
+              source_request: %i[uuid_object request_metadata],
               primary_aliquot: { sample: :uuid_object, tag: [:uuid_object, { tag_group: :uuid_object }] }
             },
             :scanned_into_lab_event

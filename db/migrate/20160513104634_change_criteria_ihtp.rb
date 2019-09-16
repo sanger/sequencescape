@@ -1,13 +1,13 @@
 # Rails migration
 # Update criteria for QC reports
 class ChangeCriteriaIhtp < ActiveRecord::Migration
-  PRODUCTS_LIST = %w(MWGS PWGS ISC HSqX)
+  PRODUCTS_LIST = %w(MWGS PWGS ISC HSqX).freeze
   ADDED_CRITERIA = {
     concentration: { less_than: 1 },
     concentration_from_normalization: { less_than: 1 },
     rin: { less_than: 6 },
     gender_markers: {}
-  }
+  }.freeze
 
   def up
     PRODUCTS_LIST.each do |product_name|

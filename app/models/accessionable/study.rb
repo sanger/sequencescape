@@ -24,10 +24,10 @@ module Accessionable
       @study_id = pid.presence || '0'
 
       study_abstract = study.study_metadata.study_abstract
-      @study_abstract = study_abstract unless study_abstract.blank?
+      @study_abstract = study_abstract if study_abstract.present?
 
       study_desc = study.study_metadata.study_description
-      @description = study_desc unless study_desc.blank?
+      @description = study_desc if study_desc.present?
 
       @tags = []
       @tags << Tag.new(label_scope, 'ArrayExpress', nil) if study.for_array_express?
@@ -64,7 +64,7 @@ module Accessionable
                 tag.build(xml)
               }
             end
-          } unless tags.blank?
+          } if tags.present?
         }
       }
       xml.target!

@@ -11,7 +11,7 @@ module Billing
       end
 
       def aliquots=(request)
-        return unless request.present?
+        return if request.blank?
 
         @aliquots = request.target_asset.try(:aliquots)
       end

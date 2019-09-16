@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190904090118) do
+ActiveRecord::Schema.define(version: 20190910103357) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
     t.string "barcode"
@@ -746,7 +746,6 @@ ActiveRecord::Schema.define(version: 20190904090118) do
     t.boolean "multiplexed"
     t.string "sti_type", limit: 50
     t.integer "sorter"
-    t.boolean "paginate", default: false
     t.integer "max_size"
     t.boolean "summary", default: true
     t.boolean "externally_managed", default: false

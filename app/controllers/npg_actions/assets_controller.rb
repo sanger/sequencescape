@@ -7,11 +7,11 @@ class NpgActions::AssetsController < ApplicationController
   # Raised if an action is performed which contradicts a previous one
   NPGActionInvalid = Class.new(StandardError)
 
-  before_action :login_required, except: [:pass, :fail]
-  before_action :find_asset, only: [:pass, :fail]
-  before_action :find_request, only: [:pass, :fail]
-  before_action :find_last_event, only: [:pass, :fail]
-  before_action :qc_information, only: [:pass, :fail]
+  before_action :login_required, except: %i[pass fail]
+  before_action :find_asset, only: %i[pass fail]
+  before_action :find_request, only: %i[pass fail]
+  before_action :find_last_event, only: %i[pass fail]
+  before_action :qc_information, only: %i[pass fail]
 
   rescue_from(ActiveRecord::RecordNotFound, with: :rescue_error)
   rescue_from(NPGActionInvalid, ActionController::ParameterMissing, with: :rescue_error_bad_request)

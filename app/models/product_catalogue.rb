@@ -22,8 +22,8 @@ class ProductCatalogue < ApplicationRecord
   has_many :product_product_catalogues, inverse_of: :product_catalogue, dependent: :destroy
   has_many :products, through: :product_product_catalogues
 
-  validates_presence_of :name
-  validates_presence_of :selection_behaviour
+  validates :name, presence: true
+  validates :selection_behaviour, presence: true
   validates :selection_behaviour, inclusion: { in: registered_behaviours }
 
   class << self

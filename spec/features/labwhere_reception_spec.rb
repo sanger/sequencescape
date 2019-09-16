@@ -17,10 +17,10 @@ describe 'Labwhere reception', js: true do
       fill_in('asset_scan', with: plate.ean13_barcode).send_keys(:return)
       expect(find('.barcode_list')).to have_content plate.ean13_barcode
       expect(page).to have_content 'Scanned: 1'
-      fill_in('asset_scan', with: 222).send_keys(:return)
-      fill_in('asset_scan', with: 333).send_keys(:return)
-      fill_in('asset_scan', with: 222).send_keys(:return)
-      expect(page).to have_content(222, count: 1)
+      fill_in('asset_scan', with: 'TEST222').send_keys(:return)
+      fill_in('asset_scan', with: 'TEST333').send_keys(:return)
+      fill_in('asset_scan', with: 'TEST222').send_keys(:return)
+      expect(page).to have_content('TEST222', count: 1)
       expect(page).to have_content 'Scanned: 3'
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click

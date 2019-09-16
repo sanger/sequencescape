@@ -24,7 +24,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     end
 
     should 'allow products with the same name if one is deprecated' do
-      @criteria_a.deprecated_at = Time.now
+      @criteria_a.deprecated_at = Time.zone.now
       @criteria_a.save
       @criteria_2 = create :product_criteria, product: @product_a
       assert @criteria_2.valid?
@@ -32,7 +32,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     should 'automatically version criteria' do
       assert_equal 1, @criteria_a.version
-      @criteria_a.deprecated_at = Time.now
+      @criteria_a.deprecated_at = Time.zone.now
       @criteria_a.save
       @criteria_b = create :product_criteria, product: @product_a
       assert_equal 2, @criteria_b.version

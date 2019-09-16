@@ -70,7 +70,7 @@ class QcReportsController < ApplicationController
   private
 
   def check_required
-    return fail('No report options were provided') unless params[:qc_report].present?
+    return fail('No report options were provided') if params[:qc_report].blank?
     return fail('You must select a product') if params[:qc_report][:product_id].nil?
 
     @product = Product.find_by(id: params[:qc_report][:product_id])

@@ -7,7 +7,6 @@ class Lane::Labware < Labware
   # but we do rely on asset link to Lane. Currently aware of:
   # - Linking in {SpikedBuffer}, although this could be replaced with an actual transfer
   # - Finding lanes for a given plate on eg. the {PlateSummariesController plate summary}
-  include AssetRefactor::Labware::Methods
 
   self.receptacle_class = 'Lane'
 

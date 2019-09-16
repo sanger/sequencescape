@@ -3,11 +3,11 @@
 require 'aasm'
 
 module Request::Statemachine
-  COMPLETED_STATE = %w[passed failed]
-  OPENED_STATE    = %w[pending blocked started]
-  ACTIVE = %w(passed pending blocked started)
-  INACTIVE = %w[failed cancelled]
-  SORT_ORDER = %w[pending blocked hold started passed failed cancelled]
+  COMPLETED_STATE = %w[passed failed].freeze
+  OPENED_STATE    = %w[pending blocked started].freeze
+  ACTIVE = %w(passed pending blocked started).freeze
+  INACTIVE = %w[failed cancelled].freeze
+  SORT_ORDER = %w[pending blocked hold started passed failed cancelled].freeze
 
   module ClassMethods
     def redefine_aasm(options = {}, &block)
@@ -54,7 +54,7 @@ module Request::Statemachine
 
         # State Machine events
         event :start do
-          transitions to: :started, from: [:pending, :hold]
+          transitions to: :started, from: %i[pending hold]
         end
 
         event :pass do
@@ -90,15 +90,15 @@ module Request::Statemachine
         end
 
         event :cancel do
-          transitions to: :cancelled, from: [:started, :hold]
+          transitions to: :cancelled, from: %i[started hold]
         end
 
         event :return do
-          transitions to: :pending, from: [:failed, :passed]
+          transitions to: :pending, from: %i[failed passed]
         end
 
         event :cancel_completed do
-          transitions to: :cancelled, from: [:failed, :passed]
+          transitions to: :cancelled, from: %i[failed passed]
         end
 
         event :cancel_from_upstream, manual_only?: true do
@@ -106,11 +106,11 @@ module Request::Statemachine
         end
 
         event :cancel_before_started do
-          transitions to: :cancelled, from: [:pending, :hold]
+          transitions to: :cancelled, from: %i[pending hold]
         end
 
         event :submission_cancelled, manual_only?: true do
-          transitions to: :cancelled, from: [:pending, :cancelled]
+          transitions to: :cancelled, from: %i[pending cancelled]
         end
 
         event :fail_from_upstream, manual_only?: true do
@@ -123,8 +123,6 @@ module Request::Statemachine
       scope :for_state, ->(state) { where(state: state) }
 
       scope :completed,        -> { where(state: COMPLETED_STATE) }
-
-      scope :pipeline_pending, -> { where(state: 'pending') } #  we don't want the blocked one here }
       scope :pending,          -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
 
       scope :started,          -> { where(state: 'started') }

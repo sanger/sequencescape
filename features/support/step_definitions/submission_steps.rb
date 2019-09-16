@@ -79,10 +79,10 @@ SENSIBLE_DEFAULTS_STANDARD = {
   'Fragment size required (to)' => 200,
   'Library type' => ->(step, field) { step.select('Standard', from: field) },
   'Read length' => 76
-}
+}.freeze
 SENSIBLE_DEFAULTS_FOR_SEQUENCING = {
   'Read length' => ->(step, field) { step.select('76', from: field) }
-}
+}.freeze
 SENSIBLE_DEFAULTS_HISEQ = SENSIBLE_DEFAULTS_FOR_SEQUENCING.merge(
   'Read length' => ->(step, field) { step.select('100', from: field) }
 )
@@ -108,7 +108,7 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
 
   # PacBio defaults
   'PacBio Library Prep' => {}
-}
+}.freeze
 
 def with_request_type_scope(name, &block)
   request_type = RequestType.find_by(name: name) or raise StandardError, "Cannot find request type #{name.inspect}"

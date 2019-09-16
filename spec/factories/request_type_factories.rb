@@ -82,6 +82,11 @@ FactoryBot.define do
       end
     end
 
+    factory :pac_bio_sample_prep_request_type do
+      asset_type { 'Well' }
+      request_class { PacBioSamplePrepRequest }
+    end
+
     factory :sequencing_request_type do
       transient do
         read_lengths { [37, 54, 76, 108] }

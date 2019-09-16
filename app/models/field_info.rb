@@ -18,7 +18,7 @@ class FieldInfo
   BOOLEAN   = 'Boolean'
   NUMERIC   = 'Numeric'
   # Sorted in order of least restrictiveness
-  KIND      = [TEXT, NUMERIC, SELECTION, BOOLEAN]
+  KIND      = [TEXT, NUMERIC, SELECTION, BOOLEAN].freeze
 
   attr_accessor :display_name, :key, :kind, :default_value, :required, :step, :min, :max, :selection
 

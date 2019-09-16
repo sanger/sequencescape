@@ -412,7 +412,7 @@ namespace :pmb do
     end
 
     def add_printers
-      sqsc_printers_names = BarcodePrinter.all.map { |p| p.name }
+      sqsc_printers_names = BarcodePrinter.all.map(&:name)
       unregistered_printers = sqsc_printers_names - get_pmb_printers_names
       unless unregistered_printers.empty?
         unregistered_printers.each { |name| register_printer(name) }

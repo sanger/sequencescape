@@ -2,7 +2,7 @@
 # This class is the controller for Tag Groups, which are basically used to record the grouping
 # of a set of Sequencing Tags. It allows you to create and view Tag Groups.
 class TagGroupsController < ApplicationController
-  before_action :admin_login_required, only: [:new, :create]
+  before_action :admin_login_required, only: %i[new create]
 
   def index
     @tag_groups = TagGroup.includes(:adapter_type)

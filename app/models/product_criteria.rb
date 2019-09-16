@@ -1,5 +1,5 @@
 class ProductCriteria < ApplicationRecord
-  STAGE_STOCK = 'stock'
+  STAGE_STOCK = 'stock'.freeze
 
   # By default rails will try and name the table 'product_criterias'
   # We don't use the singular 'ProductCriterion' as the class name
@@ -11,9 +11,9 @@ class ProductCriteria < ApplicationRecord
   has_behaviour Basic, behaviour_name: 'Basic'
 
   belongs_to :product
-  validates_presence_of :product, :stage, :behaviour
+  validates :product, :stage, :behaviour, presence: true
 
-  validates_uniqueness_of :stage, scope: [:product_id, :deprecated_at]
+  validates :stage, uniqueness: { scope: %i[product_id deprecated_at] }
   validates :behaviour, inclusion: { in: registered_behaviours }
 
   serialize :configuration

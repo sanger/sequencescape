@@ -2,7 +2,7 @@ module SampleManifest::BarcodePrinterBehaviour
   ASSET_TYPE_TO_PRINTER_TYPE = {
     '1dtube' => [BarcodePrinterType1DTube],
     'plate' => [BarcodePrinterType96Plate, BarcodePrinterType384DoublePlate]
-  }
+  }.freeze
 
   def applicable_barcode_printers
     printer_type_classes = ASSET_TYPE_TO_PRINTER_TYPE[asset_type]

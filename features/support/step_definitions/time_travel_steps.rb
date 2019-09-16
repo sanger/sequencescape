@@ -5,7 +5,7 @@ Given /^all of this is happening at exactly "([^\"]+)"$/ do |time_as_string|
 end
 
 Given /^I freeze time at "([^\"]*)"$/ do |freeze_point|
-  freeze_time = Time.parse(freeze_point)
+  freeze_time = Time.zone.parse(freeze_point)
   travel_to freeze_time
 end
 
@@ -14,7 +14,7 @@ After do
 end
 
 Given /^I travel through time to "([^\"]*)"$/ do |destination_time|
-  travel_to Time.parse(destination_time)
+  travel_to Time.zone.parse(destination_time)
 end
 
 Given /^today's date is "([^"]*)"$/ do |target_date|

@@ -47,10 +47,6 @@ module ApplicationHelper
     end
   end
 
-  def request_badge(status)
-    badge(status, type: 'request-state')
-  end
-
   #
   # Renders a badge containing the supplied text, with appropriate styling.
   # By default the 'badge-#{status}' class is supplied. These states are mapped to
@@ -147,22 +143,6 @@ module ApplicationHelper
     end
   end
 
-  def study_state(state)
-    if state == 'active'
-      "<span style='color:green;'>#{state}</span>".html_safe
-    else
-      "<span style='color:red;'>#{state}</span>".html_safe
-    end
-  end
-
-  def display_empty_table(display_text, link = nil)
-    if link.nil?
-      content_tag(:div, display_text, class: 'empty_table', id: 'empty_table')
-    else
-      content_tag(:div, link_to(display_text, link), class: 'empty_table', id: 'empty_table')
-    end
-  end
-
   ## From Pipelines
 
   def about(title = '')
@@ -217,37 +197,13 @@ module ApplicationHelper
     end
   end
 
-  def display_complex_content(hash_content)
-    hash_content.each do |key, value|
-      case key
-      when 'criterion'
-        output = ''
-        value.each do |v|
-          output = output + content_tag(:span, "<strong>#{v.inspect}</strong>")
-          output = output + content_tag(:br)
-        end
-        return output
-      when 'link'
-        return link_to(value['label'], value['href'])
-      end
-    end
-  end
-
-  def display_ready_for_manual_qc(v)
-    if v
-      icon('far', 'check-circle')
-    else
-      icon('fas', 'exclamation-circle', class: 'text-danger')
-    end
-  end
-
   def display_request_information(request, rit, batch = nil)
     r = request.value_for(rit.name, batch)
-    (!r || r.empty?) ? 'NA' : r
+    r.presence || 'NA'
   end
 
   def display_boolean_results(result)
-    return 'NA' if (!result || result.empty?)
+    return 'NA' if result.blank?
     if result == 'pass' || result == '1' || result == 'true'
       return icon('far', 'check-circle', title: result)
     else
@@ -260,10 +216,6 @@ module ApplicationHelper
     new_requests = requests - sorted_requests
     new_requests.sort_by(&:pipeline_id)
     requests = requests + sorted_requests
-  end
-
-  def display_hash_value(hash, key, sub_key)
-    hash.fetch(key, {}).fetch(sub_key, '')
   end
 
   # Creates a label that is hidden from the view so that testing is easier

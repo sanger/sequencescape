@@ -8,7 +8,7 @@ module BroadcastEvent::SubjectHelpers
     end
 
     def json_fields
-      [:friendly_name, :uuid, :subject_type, :role_type]
+      %i[friendly_name uuid subject_type role_type]
     end
 
     def as_json(*_args)

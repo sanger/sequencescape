@@ -45,9 +45,7 @@ module CarrierWave
 
         # Stores the file in the DbFiles model - split across many rows if size > 200KB
         def store(file)
-          each_slice(file) do |start, finish|
-            @uploader.model.db_files.create!(data: file.slice(start, finish))
-          end
+          @uploader.model.db_files.create!(data: file)
         end
 
         # Error handling should help if uploader was mounted to a model with no content_type
@@ -64,28 +62,15 @@ module CarrierWave
         private
 
         # Gets the current data from the database
+        # Data used to be chunked into 200kb size fragments. This is no longer the
+        # case, but the older files have not been updated.
         def current_data
-          @uploader.model.db_files.map(&:data).join
+          @uploader.model.db_files.pluck(:data).join
         end
 
         # Destroys the file. Called in the after_destroy callback
         def destroy_file
-          @uploader.model.db_files.each do |db_file|
-            db_file.delete
-          end
-        end
-
-        # Yields the partitions for the file with the max_part_size boundary
-        def each_slice(data)
-          max_part_size = 200.kilobytes
-          beginning = 0;
-          left = data.size
-          while left > 0
-            part_size = [left, max_part_size].min
-            yield beginning, part_size
-            beginning += part_size
-            left -= part_size
-          end
+          @uploader.model.db_files.each(&:delete)
         end
       end
     end # Database
@@ -101,6 +86,7 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
   end
 
   storage CarrierWave::Storage::DirectDatabase
+  cache_storage CarrierWave::Storage::File
 
   # This is where files are stored on upload. We are using callbacks to empty it after upload
   def self.cache_dir

@@ -111,6 +111,7 @@ FactoryBot.define do
   factory :cherrypick_request do
     association :asset, factory: :well
     association :target_asset, factory: :well
+    association(:request_type, factory: :cherrypick_request_type)
     request_purpose { :standard }
 
     # Adds the associations needed for processing down a pipeline
@@ -126,6 +127,7 @@ FactoryBot.define do
     end
     association :asset, factory: :well
     association :target_asset, factory: :well
+    association(:request_type, factory: :cherrypick_request_type)
     request_purpose { :standard }
     request_metadata_attributes do
       { target_purpose: target_purpose }
@@ -189,6 +191,7 @@ FactoryBot.define do
   factory :pooled_cherrypick_request do
     asset { |asset| asset.association(:well_with_sample_and_without_plate) }
     request_purpose { :standard }
+    association(:request_type, factory: :well_request_type)
   end
 
   factory :lib_pcr_xp_request, parent: :request_without_assets do
@@ -237,6 +240,7 @@ FactoryBot.define do
     target_asset    { |ta| ta.association(:pac_bio_library_tube) }
     asset           { |a|   a.association(:well) }
     submission      { |s|   s.association(:submission) }
+    association(:request_type, factory: :pac_bio_sample_prep_request_type)
     request_purpose { :standard }
   end
 

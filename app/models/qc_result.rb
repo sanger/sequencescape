@@ -24,7 +24,7 @@ class QcResult < ApplicationRecord
   has_many :studies, through: :asset
 
   after_create :update_asset, unless: :suppress_updates
-  after_commit :broadcast_qc_result, on: [:create, :update]
+  after_commit :broadcast_qc_result, on: %i[create update]
 
   validates :key, :value, :units, presence: true
 

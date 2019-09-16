@@ -3,7 +3,7 @@ module Accession
     include Accession::Helpers
     include Accession::Equality
 
-    FILES = [:tags]
+    FILES = [:tags].freeze
 
     attr_accessor :folder, *FILES
     attr_reader :loaded, :files
@@ -36,7 +36,7 @@ module Accession
     end
 
     def attributes
-      [:folder, :tags]
+      %i[folder tags]
     end
   end
 end

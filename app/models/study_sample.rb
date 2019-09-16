@@ -10,7 +10,7 @@ class StudySample < ApplicationRecord
   belongs_to :study
   belongs_to :sample
 
-  validates_uniqueness_of :sample_id, scope: [:study_id], message: 'cannot be added to the same study more than once'
+  validates :sample_id, uniqueness: { scope: [:study_id], message: 'cannot be added to the same study more than once' }
 
   broadcast_via_warren
 end

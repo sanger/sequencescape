@@ -19,7 +19,7 @@ module Request::Statistics
       %w[pending blocked].map(&method(:[])).sum
     end
 
-    [:started, :passed, :failed, :cancelled].each do |direct_type|
+    %i[started passed failed cancelled].each do |direct_type|
       define_method(direct_type) { @statistics[direct_type.to_s] }
     end
 
@@ -68,7 +68,7 @@ module Request::Statistics
       ", __FILE__, line)
     end
 
-    [:started, :passed, :failed, :cancelled, :completed, :pending].each do |name|
+    %i[started passed failed cancelled completed pending].each do |name|
       summary_counter(name)
     end
   end

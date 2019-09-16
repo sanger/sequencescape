@@ -10,16 +10,6 @@ FactoryBot.define do
     "Plate Creator #{n}"
   end
 
-  # Assets don't really make sense in the context off our current tests
-  # as they never actually get created in reality. So this would be a candidate for
-  # early removal
-  AssetRefactor.when_not_refactored do
-    factory :asset do
-      name                { generate :asset_name }
-      qc_state            { '' }
-    end
-  end
-
   factory :labware do
     name { generate :asset_name }
   end
@@ -108,7 +98,6 @@ FactoryBot.define do
     active                  { true }
     max_size                { 192 }
     sorter                  { 11 }
-    paginate                { false }
     summary                 { false }
     externally_managed      { false }
     control_request_type_id { 0 }

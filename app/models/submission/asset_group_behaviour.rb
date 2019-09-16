@@ -6,14 +6,14 @@ module Submission::AssetGroupBehaviour
       before_create :pull_assets_from_asset_group, if: :asset_group?
 
       # Required once out of the building state ...
-      validates_presence_of :assets, if: :assets_need_validating?
+      validates :assets, presence: { if: :assets_need_validating? }
     end
   end
 
   # Assets need validating if we are putting this order into a submission and the asset group has not been
   # specified in some form.
   def assets_need_validating?
-    not building? and not (asset_group? or not asset_group_name.blank?)
+    not building? and not (asset_group? or asset_group_name.present?)
   end
   private :assets_need_validating?
 
@@ -50,7 +50,7 @@ module Submission::AssetGroupBehaviour
   private :create_our_asset_group
 
   def find_asset_group
-    self.asset_group = study.asset_groups.find_by(name: asset_group_name) unless asset_group_name.blank?
+    self.asset_group = study.asset_groups.find_by(name: asset_group_name) if asset_group_name.present?
     true
   end
   private :find_asset_group

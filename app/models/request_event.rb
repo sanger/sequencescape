@@ -3,7 +3,7 @@ class RequestEvent < ApplicationRecord
 
   validates :request, :to_state, :current_from, :event_name, presence: true
 
-  validates_inclusion_of :event_name, in: %w[created state_changed destroyed]
+  validates :event_name, inclusion: { in: %w[created state_changed destroyed] }
 
   scope :current, -> { where(current_to: nil) }
 

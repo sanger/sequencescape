@@ -63,7 +63,7 @@ module Api
       body(result)
     end
 
-    [:post, :put, :delete].each do |action|
+    %i[post put delete].each do |action|
       send(action, %r{/?}) do
         raise MethodNotAllowed, [:get]
       end

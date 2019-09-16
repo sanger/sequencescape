@@ -1,5 +1,5 @@
 class Implement < ApplicationRecord
-  validates_presence_of :name
+  validates :name, presence: true
   validates :barcode, presence: true, on: :update
   @@barcode_prefix = 'LE'
 

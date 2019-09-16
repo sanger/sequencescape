@@ -16,7 +16,7 @@ class Batches::CommentsController < ApplicationController
 
   def destroy
     comment = Comment.find(params[:id])
-    unless comment.blank?
+    if comment.present?
       comment.destroy
     end
     @comments = @batch.comments

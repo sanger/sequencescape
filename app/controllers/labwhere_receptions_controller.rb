@@ -1,5 +1,5 @@
 class LabwhereReceptionsController < ApplicationController
-  before_action :login_required, except: [:index, :create]
+  before_action :login_required, except: %i[index create]
 
   def index
     @labwhere_reception = LabwhereReception.new(params[:user_code], params[:location_barcode], [])

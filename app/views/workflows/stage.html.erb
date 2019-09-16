@@ -36,7 +36,7 @@
 <h2><% if @batch.failed? %><span style="color: red">(failed)</span><% end %></h2>
 <% if @task.partial.present? %>
   <%= render partial: @task.partial, locals: { requests: @batch.requests } %>
-<% elsif not @batch.processing_in_manual_qc? %>
+<% else %>
   <%= form_for :workflow, url: { action: "stage", id: @stage }, html: { id: "stage_form"} do |form| %>
     <%= render partial: "shared/batch", locals: { requests: @batch.ordered_requests, edit: false, stage: true } %>
 
@@ -53,6 +53,4 @@
 
     <%= render(partial: 'next_stage_submit', locals: { check_selection: true }) %>
   <% end %>
-<% else %>
-  <%= render partial: "manual_qc_batches", locals: { requests: @batch.ordered_requests } %>
 <% end %>

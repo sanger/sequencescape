@@ -59,7 +59,7 @@ module Core::Io::Base::JsonFormattingBehaviour
     end
   end
 
-  VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
+  VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/.freeze
 
   def parse_mapping_rules(mapping)
     attribute_to_json, json_to_attribute = [], []
@@ -68,7 +68,7 @@ module Core::Io::Base::JsonFormattingBehaviour
 
       match = VALID_LINE_REGEXP.match(line) or raise StandardError, "Invalid line: #{line.inspect}"
       attribute_to_json.push([match[1], match[3]]) if (match[2] =~ /<?=>/)
-      json_to_attribute.push([match[3], (match[2] =~ /<=>?/) ? match[1] : nil])
+      json_to_attribute.push([match[3], /<=>?/.match?(match[2]) ? match[1] : nil])
     end
     yield(attribute_to_json, json_to_attribute)
   end

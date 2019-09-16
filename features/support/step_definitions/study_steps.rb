@@ -42,7 +42,7 @@ Given /^user "([^\"]*)" is an? "([^\"]*)" of study "([^\"]*)"$/ do |login, role_
   role = Role.find_by(name: role_name, authorizable_type: 'Study', authorizable_id: proj.id)
   if role.nil?
     role = FactoryBot.create :role, name: role_name, authorizable_type: 'Study',
-                                    authorizable_id: proj.id, created_at: Time.now, updated_at: Time.now
+                                    authorizable_id: proj.id, created_at: Time.zone.now, updated_at: Time.zone.now
   end
   usr = User.find_by(login: login)
   usr.roles << role
@@ -228,7 +228,7 @@ Then /^the help text for "([^\"]*)" should contain:$/ do |label_name, expected_t
 end
 
 Then /^I should exactly see "([^"]*)"$/ do |text|
-  assert !find(:xpath, "//label[text()='#{text}']").text.blank?
+  assert find(:xpath, "//label[text()='#{text}']").text.present?
 end
 
 When /^I generate an? (dac|policy|array express) accession number for study "([^\"]+)"$/ do |type, study_name|

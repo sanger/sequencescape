@@ -2,7 +2,7 @@
 # modeled directly in Sequencescape they can be approximated by a sequencing
 # {Batch}
 class Api::Messages::FlowcellIO < Api::Base
-  MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }
+  MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }.freeze
 
   self.includes = {
     requests: [

@@ -2,8 +2,8 @@ class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :discover_asset, only: [:edit, :update, :summary, :print_assets, :print, :history]
-  before_action :prepare_asset, only: [:new_request, :create_request]
+  before_action :discover_asset, only: %i[edit update summary print_assets print history]
+  before_action :prepare_asset, only: %i[new_request create_request]
 
   def index
     if params[:study_id]
@@ -25,13 +25,11 @@ class AssetsController < ApplicationController
   end
 
   def show
-    # This block is disabled when we have the labware table present as part of the AssetRefactor
-    # Ie. This is what will happens now
     # LEGACY API FOR CGP to allow switch-over
-    AssetRefactor.when_not_refactored do
-      next unless request.format.xml?
+    # In future they will use the recpetacles/:id/parent
+    if request.format.xml?
 
-      @asset = Asset.include_for_show.find(params[:id])
+      @asset = Receptacle.include_for_show.find(params[:id])
       respond_to { |format| format.xml }
       return
     end
@@ -81,7 +79,7 @@ class AssetsController < ApplicationController
   end
 
   private def asset_params
-    permitted = [:volume, :concentration]
+    permitted = %i[volume concentration]
     permitted << :name if current_user.administrator?
     permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
     params.require(:asset).permit(permitted)

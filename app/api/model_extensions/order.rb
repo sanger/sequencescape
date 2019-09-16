@@ -15,7 +15,7 @@ module ModelExtensions::Order
     # request options have been specified.  Once they are specified they are always checked, unless they are
     # completely blanked.
     def validate_request_options?
-      not building? or not request_options.blank?
+      not building? or request_options.present?
     end
     private :validate_request_options?
 
@@ -121,7 +121,7 @@ module ModelExtensions::Order
   end
 
   def request_type_multiplier
-    yield(request_types.last.to_s.to_sym) unless request_types.blank?
+    yield(request_types.last.to_s.to_sym) if request_types.present?
   end
 
   def request_options_structured

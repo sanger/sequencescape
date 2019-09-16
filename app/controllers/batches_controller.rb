@@ -8,7 +8,7 @@ class BatchesController < ApplicationController
 
   before_action :login_required, except: %i[released qc_criteria]
   before_action :find_batch_by_id, only: %i[
-    show edit update qc_information qc_batch save fail
+    show edit update qc_information save fail
     fail_batch print_labels print_plate_labels print_multiplex_labels
     print verify verify_tube_layout reset_batch previous_qc_state filtered swap
     download_spreadsheet gwl_file pacbio_sample_sheet sample_prep_worksheet
@@ -109,30 +109,6 @@ class BatchesController < ApplicationController
     @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
   end
 
-  # Deals with QC failures leaving batches and items statuses intact
-  def qc_batch
-    @batch.qc_complete
-
-    @batch.batch_requests.each do |br|
-      next unless br && params[br.request_id.to_s]
-
-      qc_state = params[br.request_id.to_s]['qc_state']
-      target = br.request.target_asset
-      if qc_state == 'fail'
-        target.set_qc_state('failed')
-        EventSender.send_fail_event(br.request_id, '', 'Failed manual QC', @batch.id)
-      elsif qc_state == 'pass'
-        target.set_qc_state('passed')
-        EventSender.send_pass_event(br.request_id, '', 'Passed manual QC', @batch.id)
-      end
-      target.save
-    end
-
-    @batch.release_without_user!
-
-    redirect_to controller: :pipelines, action: :show, id: @batch.qc_pipeline_id
-  end
-
   def pending
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
@@ -183,7 +159,7 @@ class BatchesController < ApplicationController
 
   def fail_items
     ActiveRecord::Base.transaction do
-      fail_params = params.permit(:id, requested_fail: {}, requested_remove: {}, failure: [:reason, :comment, :fail_but_charge])
+      fail_params = params.permit(:id, requested_fail: {}, requested_remove: {}, failure: %i[reason comment fail_but_charge])
       fail_and_remover = Batch::RequestFailAndRemover.new(fail_params)
       if fail_and_remover.save
         flash[:notice] = fail_and_remover.notice

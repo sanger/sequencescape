@@ -12,11 +12,11 @@ class StateChange < ApplicationRecord
   include Asset::Ownership::ChangesOwner
 
   belongs_to :user
-  validates_presence_of :user
+  validates :user, presence: true
 
   # This is the target asset for which to update the state
   belongs_to :target, class_name: 'Labware'
-  validates_presence_of :target
+  validates :target, presence: true
 
   # If the state change is a known failure state then a reason must be included
   validates :reason, presence: true, if: :targetted_for_failure?
@@ -37,7 +37,7 @@ class StateChange < ApplicationRecord
   # These track the state of the target.  The target_state is what we want it to end up in and the previous_state
   # records the state that it was in before the update.  The previous_state is not assigned by the creator but
   # by the action of making the transition.
-  validates_presence_of :target_state
+  validates :target_state, presence: true
   validates_unassigned(:previous_state)
 
   # Before creating an instance we record the current state of the target.

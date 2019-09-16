@@ -18,7 +18,7 @@ module SampleManifest::StateMachine
 
       # State Machine events
       event :start do
-        transitions to: :processing, from: [:pending, :failed, :completed, :processing]
+        transitions to: :processing, from: %i[pending failed completed processing]
       end
 
       event :finished do

@@ -11,7 +11,7 @@ module RequestType::PoolingMethod::PlateRow
 
   def pool_index_for_asset(source_asset)
     # This isn't ideal. We can't get the pool index until we have a source asset.
-    return 0 unless source_asset.present?
+    return 0 if source_asset.blank?
 
     source_asset.map.row
   end

@@ -19,7 +19,7 @@ class Parsers::QuantParser
   # (45.2) => 45.2
   # sausages => nil
   # 34 ng/ul => 35
-  VALUE_REGEX = /\A\({0,1}(?<decimal>\d+\.{0,1}\d*)/
+  VALUE_REGEX = /\A\({0,1}(?<decimal>\d+\.{0,1}\d*)/.freeze
 
   class_attribute :assay_type, :assay_version
 
