@@ -190,13 +190,14 @@ class Plate < Labware
       .where(batches: { id: batch })
   }
   scope :with_wells, ->(wells) {
-    select('DISTINCT assets.*')
-      .joins(:wells)
+    joins(:wells)
       .where(receptacles: { id: wells.map(&:id) })
+      .distinct
   }
 
   has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
-  has_many :descendant_lanes,  class_name: 'Lane', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
+  has_many :descendant_tubes, class_name: 'Tube', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
+  has_many :descendant_lanes, class_name: 'Lane::Labware', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :tag_layouts, dependent: :destroy
 
   scope :with_descendants_owned_by, ->(user) {

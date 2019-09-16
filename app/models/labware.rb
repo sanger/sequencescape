@@ -29,6 +29,8 @@ class Labware < Asset
   has_many :transfer_requests_as_target, through: :receptacles
   has_many :submissions, through: :receptacles
   has_many :asset_groups, through: :receptacles
+  has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
+
   belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
   has_one :spiked_in_buffer_links, -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
           class_name: 'AssetLink', foreign_key: :descendant_id, inverse_of: :descendant
@@ -49,6 +51,7 @@ class Labware < Asset
   scope :named, ->(name) { where(name: name) }
   scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
+  scope :include_creation_batches, -> { includes(:creation_batches) }
 
   def human_barcode
     'UNKNOWN'
