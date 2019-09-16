@@ -12,8 +12,6 @@ group :default do
   gem 'formtastic'
   gem 'rest-client' # curb substitute.
 
-  # Caching, primarily of batch.xml Can be removed once our xml interfaces are retired.
-  gem 'actionpack-page_caching'
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
 
