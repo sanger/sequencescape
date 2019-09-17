@@ -8,6 +8,6 @@ class GenotypingPipeline < Pipeline
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
   def request_actions
-    [:fail, :remove]
+    %i[fail remove]
   end
 end

@@ -53,6 +53,8 @@ FactoryBot.define do
         plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_samples_per_plate }
       end
 
+      barcodes { plates.map(&:human_barcode) }
+
       # set sanger_sample_id on samples
       after(:build) do |sample_manifest, evaluator|
         evaluator.plates.flat_map(&:wells).each do |well|

@@ -8,7 +8,7 @@ class SpecificTubeCreation < TubeCreation
   has_many :creation_child_purposes, class_name: 'SpecificTubeCreation::ChildPurpose'
   has_many :child_purposes, through: :creation_child_purposes, source: :tube_purpose
 
-  validates_presence_of :child_purposes
+  validates :child_purposes, presence: true
 
   # [Array<Hash>] An optional array of hashes which get passed in to the create! action
   #               on tube_purpose.

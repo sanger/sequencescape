@@ -5,7 +5,7 @@ require 'timecop'
 
 describe UserQueryMailer, type: :mailer do
   before do
-    new_time = Time.local(2008, 9, 1, 12, 0, 0)
+    new_time = Time.zone.local(2008, 9, 1, 12, 0, 0)
     Timecop.freeze(new_time)
   end
 

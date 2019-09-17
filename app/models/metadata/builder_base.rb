@@ -3,7 +3,7 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
 
   def initialize(*args, &block)
     super
-    @views, @locals, @root, @filter = {}, {}, nil, ->(_) { true }
+    @views, @locals, @root = {}, {}, nil
   end
 
   def view_for(type, partial_name = nil, &block)
@@ -13,10 +13,6 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
       else
         { partial: partial_name }
       end
-  end
-
-  def filter(&block)
-    @filter = block
   end
 
   private
@@ -37,9 +33,7 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
   end
 
   def render_view(type, field, options = {})
-    return nil unless @filter.call(@object.class.metadata_attribute_path(field))
-
-    view = @views[type.to_sym] or raise StandardError, "View not registered for '#{type}'"
+    view = @views.fetch(type.to_sym)
 
     locals = @locals.merge(
       sections: localised_sections(field),
@@ -48,9 +42,8 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
       group: nil,
       value: @object.send(field)
     )
-    locals[:group] = options[:grouping].downcase.gsub(/[^a-z0-9]+/, '_') unless options[:grouping].blank?
+    locals[:group] = options[:grouping].downcase.gsub(/[^a-z0-9]+/, '_') if options[:grouping].present?
     locals = yield(locals) if block_given?
-
     render(view.merge(locals: locals))
   end
 end

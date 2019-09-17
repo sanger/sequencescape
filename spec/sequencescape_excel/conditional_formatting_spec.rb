@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
   let(:rule) { { name: :rule1, style: { bg_color: '82CAFA', type: :dxf }, options: { option1: 'some_value', option2: 'another_value' } }.with_indifferent_access }
 

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:range_list)  { build(:range_list, ranges_data: { FactoryBot.attributes_for(:validation)[:range_name] => FactoryBot.attributes_for(:range) }) }
   let(:worksheet)   { Axlsx::Workbook.new.add_worksheet }
   let(:options)     do

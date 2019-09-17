@@ -9,7 +9,7 @@ module SequencingQcBatch
     qc_manual
     qc_manual_in_progress
     qc_completed
-  )
+  ).freeze
 
   def self.included(base)
     base.instance_eval do

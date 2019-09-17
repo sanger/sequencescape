@@ -1,8 +1,8 @@
 class Robot < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::Robot
-  validates_presence_of :name
-  validates_presence_of :location
+  validates :name, presence: true
+  validates :location, presence: true
   has_many :robot_properties
   has_one :max_plates_property, ->() { where(key: 'max_plates') }, class_name: 'RobotProperty'
 

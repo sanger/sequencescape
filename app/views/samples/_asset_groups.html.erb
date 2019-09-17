@@ -1,5 +1,5 @@
 <%= panel do %>
-  <h3>Asset Groups <span class='badge badge-primary'><%= @sample.asset_groups.length %></span></h3>
+  <h3>Asset Groups <%= counter_badge @sample.asset_groups.length %></h3>
   <table width='100%'>
     <thead>
       <tr>

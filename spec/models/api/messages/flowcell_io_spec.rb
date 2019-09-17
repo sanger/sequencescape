@@ -31,7 +31,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
 
     let(:lane1) do
       create(:lane, aliquots: mx_tube1.aliquots.map(&:dup)).tap do |lane|
-        lane.parents << phix
+        lane.labware.parents << phix
         lane.index_aliquots
       end
     end
@@ -76,7 +76,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
             'priority' => 0,
             'id_pool_lims' => mx_tube1.human_barcode,
             'external_release' => nil,
-            'entity_id_lims' => lane1.receptacle.id,
+            'entity_id_lims' => lane1.id,
             'team' => team.name,
             'purpose' => 'standard',
             'spiked_phix_barcode' => phix.human_barcode,
@@ -149,7 +149,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
             'priority' => 0,
             'id_pool_lims' => mx_tube1.human_barcode,
             'external_release' => nil,
-            'entity_id_lims' => lane1.receptacle.id,
+            'entity_id_lims' => lane1.id,
             'team' => team.name,
             'purpose' => 'standard',
             'spiked_phix_barcode' => phix.human_barcode,

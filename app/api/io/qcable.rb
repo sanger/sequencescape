@@ -3,7 +3,7 @@ class Io::Qcable < Core::Io::Base
   set_model_for_input(::Qcable)
   set_json_root(:qcable)
 
-  set_eager_loading { |model| model.include_for_json }
+  set_eager_loading(&:include_for_json)
 
   define_attribute_and_json_mapping("
                       state  => state

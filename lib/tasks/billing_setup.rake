@@ -88,7 +88,7 @@ namespace :billing do
 
     product_catalogues_attributes.each do |product_catalogue_attributes|
       product_catalogue = Billing::ProductCatalogue.find_by(name: product_catalogue_attributes[:name])
-      unless product_catalogue.present?
+      if product_catalogue.blank?
         Billing::ProductCatalogue.create!(product_catalogue_attributes)
         puts "Product catalogue #{product_catalogue_attributes[:name]} was created"
       end

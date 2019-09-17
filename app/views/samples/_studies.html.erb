@@ -1,5 +1,5 @@
 <%= panel do %>
-  <h3>Studies <span class='badge badge-primary'><%= @sample.studies.length %></span></h3>
+  <h3>Studies <%= counter_badge @sample.studies.length %></h3>
   <%= form_for :sample, url: url_for({controller: "samples", id: @sample.id, action: :add_to_study}), html: {method: :put} do |form| -%>
     <table class="table">
       <thead>

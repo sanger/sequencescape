@@ -1,5 +1,5 @@
 module SharedBehaviour::Immutable
-  MUTABLE = %w[deprecated_at updated_at]
+  MUTABLE = %w[deprecated_at updated_at].freeze
 
   def self.included(base)
     base.class_eval do

@@ -2,7 +2,7 @@
 
 class Admin::PrimerPanelsController < ApplicationController
   before_action :admin_login_required
-  before_action :discover_primer_panel, only: [:edit, :update]
+  before_action :discover_primer_panel, only: %i[edit update]
 
   def index
     @primer_panels = PrimerPanel.all
@@ -52,7 +52,7 @@ class Admin::PrimerPanelsController < ApplicationController
   end
 
   def primer_panel_params
-    params.require(:primer_panel).permit(:name, :snp_count, programs: ['pcr 1': [:name, :duration],
-                                                                       'pcr 2': [:name, :duration]])
+    params.require(:primer_panel).permit(:name, :snp_count, programs: ['pcr 1': %i[name duration],
+                                                                       'pcr 2': %i[name duration]])
   end
 end

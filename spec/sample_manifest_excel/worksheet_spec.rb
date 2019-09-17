@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_excel: true do
+RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_excel: true, sample_manifest: true do
   attr_reader :sample_manifest, :spreadsheet
 
   let(:xls) { Axlsx::Package.new }
@@ -23,10 +23,10 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
   before do
     barcode = double('barcode')
-    allow(barcode).to receive(:barcode).and_return(23)
+    allow(barcode).to receive(:barcode).and_return(generate(:barcode_number))
     allow(PlateBarcode).to receive(:create).and_return(barcode)
 
-    @sample_manifest = create :sample_manifest, rapid_generation: true
+    @sample_manifest = create :sample_manifest
     sample_manifest.generate
   end
 
@@ -148,8 +148,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     it 'must have the multiplexed library tube barcode' do
       sample_manifest = create(:tube_sample_manifest_with_tubes_and_manifest_assets,
                                tube_factory: :multiplexed_library_tube,
-                               asset_type: 'multiplexed_library',
-                               rapid_generation: true)
+                               asset_type: 'multiplexed_library')
       SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook,
                                                         columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup,
                                                         sample_manifest: sample_manifest,

@@ -1,7 +1,7 @@
 
 <%= page_title('Asset',"Edit #{@asset.display_name}") %>
 
-<%= form_for(@asset,url: asset_path(@asset),as:'asset') do |f| %>
+<%= form_for(@asset,url: receptacle_path(@asset),as:'asset') do |f| %>
   <%= alert do %>
     <%= f.error_messages %>
   <% end %>

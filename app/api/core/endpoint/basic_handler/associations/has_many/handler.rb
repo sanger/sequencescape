@@ -6,7 +6,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
     @association, @options = association, options
   end
 
-  [:create, :update, :delete].each do |action|
+  %i[create update delete].each do |action|
     line = __LINE__ + 1
     class_eval("
       def #{action}(request, path)

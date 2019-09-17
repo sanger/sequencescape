@@ -4,7 +4,7 @@
       Machine barcode
     </th>
     <td>
-      <%= descendant.ean13_barcode %>
+      <%= link_to descendant.machine_barcode, labware_path(descendant) %>
     </td>
   </tr>
   <tr>
@@ -12,7 +12,7 @@
       Created
     </th>
     <td>
-      <% descendant.plate_creations.each do |plate_creation| %>
+      <% descendant.try(:plate_creations)&.each do |plate_creation| %>
         <%= plate_creation.created_at %>
         <%= plate_creation.user.try(:name) %>
       <% end %>
@@ -29,7 +29,7 @@
       </td>
     </tr>
   <% end %>
-  <% descendant.tag_layouts.each do |tag_layout| %>
+  <% descendant.try(:tag_layouts)&.each do |tag_layout| %>
     <tr>
       <th>
         Tagged with <%= tag_layout.tag_group.name %>

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :plate_barcode do
-    sequence(:barcode) { |i| i }
+    barcode { generate :barcode_number }
     skip_create
   end
 

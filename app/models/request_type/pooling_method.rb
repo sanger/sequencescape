@@ -1,6 +1,6 @@
 class RequestType::PoolingMethod < ApplicationRecord
   has_many :request_types
-  validates_presence_of :pooling_behaviour
+  validates :pooling_behaviour, presence: true
   serialize :pooling_options
 
   self.table_name = ('pooling_methods')

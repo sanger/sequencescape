@@ -52,7 +52,7 @@ module Sequencescape
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
-    config.filter_parameters += [:password, :credential_1, :uploaded_data]
+    config.filter_parameters += %i[password credential_1 uploaded_data]
 
     config.assets.prefix = '/public'
 
@@ -116,7 +116,7 @@ module Sequencescape
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '*', headers: :any, methods: [:get, :post, :options, :patch], credentials: false
+        resource '*', headers: :any, methods: %i[get post options patch], credentials: false
       end
     end
   end

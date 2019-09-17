@@ -42,14 +42,8 @@ Given /^I on batch page$/ do
   visit "/batches/#{Batch.last.id}"
 end
 
-When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
-  # TODO: find the request checkboxes in the current page (by name "request_... ") so we don't need
-  # do give the pipelin name
-  request_number = request_number.to_i
-  pipeline = Pipeline.find_by(name: pipeline_name)
-
-  request = pipeline.requests.inbox[request_number - 1]
-  check("request_#{request.id}")
+When 'I check request {int}' do |request_number|
+  find_all('td.request .request_checkbox')[request_number - 1].check
 end
 
 Then /^the requests from "([^\"]+)" batches should not be in the inbox$/ do |name|

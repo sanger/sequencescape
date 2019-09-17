@@ -5,13 +5,13 @@ namespace :benchmark do
       PlatePurpose.find_by(name: 'Stock Plate').create!
     end
 
-    start = Time.now
+    start = Time.zone.now
     $stdout.puts "Starting #{start}"
     30.times do
       PlatePurpose.find_by(name: 'Stock Plate').create!
       $stdout.print '.'
     end
     $stdout.puts
-    $stdout.puts "Took #{Time.now - start}"
+    $stdout.puts "Took #{Time.zone.now - start}"
   end
 end

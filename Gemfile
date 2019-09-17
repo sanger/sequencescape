@@ -4,13 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'rails', '~> 5.1.7'
-
-  # Used by bootstrap, not used directly. Added here to allow us to pin the version.
-  # Can be removed once we're no longer compiling assets on the servers.
-  # We're currently pinning to keep ruby-racer support. THe suggested alternative
-  # mini-racer doesn't compile on the old machines.
-  gem 'autoprefixer-rails', '< 9.0.0'
+  gem 'rails', '~> 5.2.3'
 
   # State machine
   gem 'aasm'
@@ -31,9 +25,14 @@ group :default do
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
   gem 'will_paginate'
-  # Will paginate clashes awkwardly with bootstrap
-  gem 'carrierwave'
+
+  # CarrierWave 2.0.0-2.0.1 causes test/controllers/qc_files_controller_test.rb
+  # to fail due to mime-type detection failing due to the newly introduces
+  # mime-magic. Pinning to 1.3.1 for the time being.
+  # https://github.com/sanger/sequencescape/issues/2349
+  gem 'carrierwave', '~>1.3.1'
   gem 'net-ldap'
+  # Will paginate clashes awkwardly with bootstrap
   gem 'will_paginate-bootstrap'
 
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
@@ -73,24 +72,6 @@ group :default do
 
   # Bunny is a RabbitMQ client.
   gem 'bunny'
-
-  gem 'bootstrap', '< 4.2.1' # Pinned to 4.2.1 while we are dependent on older GCCs.
-  gem 'coffee-rails'
-  gem 'jquery-rails'
-  gem 'jquery-tablesorter'
-  gem 'jquery-ui-rails'
-  gem 'sass-rails'
-  gem 'select2-rails'
-  # Temporarily pin to earlier version
-  # Newer versions on font-awesome switch to sassc which will not
-  # compile on our older servers due to gcc version. We can update this
-  # as soon as we're migrated off the metal.
-  gem 'font-awesome-sass', '< 5.0.13'
-
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', platforms: :mri
-  # Pat of the JS assets pipleine
-  gem 'uglifier', '>= 1.0.3'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
@@ -151,11 +132,24 @@ group :development do
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
   gem 'travis'
+
+  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  gem 'mini_racer'
+  # Pat of the JS assets pipleine
+  gem 'uglifier', '>= 1.0.3'
 end
 
 group :development, :test, :cucumber do
   gem 'pry'
   gem 'pry-stack_explorer'
+  # Asset compilation, js and style libraries
+  gem 'bootstrap'
+  gem 'font-awesome-sass'
+  gem 'jquery-rails'
+  gem 'jquery-tablesorter'
+  gem 'jquery-ui-rails'
+  gem 'sass-rails'
+  gem 'select2-rails'
 end
 
 group :profile do
@@ -216,5 +210,6 @@ end
 group :deployment do
   gem 'exception_notification'
   gem 'gmetric', '~>0.1.3'
+  gem 'slack-notifier'
   gem 'whenever', require: false
 end

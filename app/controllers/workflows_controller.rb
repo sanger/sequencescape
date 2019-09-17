@@ -2,7 +2,7 @@ class WorkflowsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_workflow_by_id, only: [:show, :batches]
+  before_action :find_workflow_by_id, only: %i[show batches]
 
   attr_accessor :plate_purpose_options, :spreadsheet_layout, :batch
 
@@ -42,7 +42,7 @@ class WorkflowsController < ApplicationController
   def batches
     @workflow = Workflow.find(params[:id])
     # TODO: association broken here - something to do with the attachables polymorph?
-    @batches = Batch.where(workflow_id: @workflow.id).sort_by { |batch| batch.id }.reverse
+    @batches = Batch.where(workflow_id: @workflow.id).sort_by(&:id).reverse
   end
 
   def sort
@@ -115,7 +115,7 @@ class WorkflowsController < ApplicationController
 
   def ordered_fields(fields)
     response = Array.new
-    fields.keys.sort_by { |key| key.to_i }.each do |key|
+    fields.keys.sort_by(&:to_i).each do |key|
       response.push fields[key]
     end
     response

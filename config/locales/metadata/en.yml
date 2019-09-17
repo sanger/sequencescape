@@ -119,7 +119,7 @@ en:
       metadata:
         organism:
           label: Organism
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
 
         gc_content:
           label: GC content
@@ -129,7 +129,7 @@ en:
 
         gender:
           label: Gender
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
 
         country_of_origin:
           label: Country of origin
@@ -161,36 +161,36 @@ en:
         sample_public_name:
           label: Public Name
           help: Submission name of the sample (will be used instead of the sample name if provided).
-          edit_info: "[ ENA (see help) ]"
+          edit_info: "ENA (see help)"
 
         sample_common_name:
           label: Common Name
           help: Common name of sample that might be used in publication or other communications, or will be relevant and distinct within any study that refers to this sample.
-          edit_info: "[ENA requirement, Array Express]"
+          edit_info: "ENA requirement, Array Express"
 
         sample_strain_att:
           label: Strain
-          edit_info: "[ ENA tag, Array Express ]"
+          edit_info: "ENA tag, Array Express"
 
         sample_taxon_id:
           label: TAXON ID
           help: NCBI Taxonomy Identifier. This is appropriate for individual organisms and some environmental samples.
-          edit_info: "[ ENA requirement ]"
+          edit_info: "ENA requirement"
 
         sample_ebi_accession_number:
           label: ENA Sample Accession Number
           help: Data Release accession Number. Will be filled automatically during submission process. Provide ONLY if the sample has already been submitted to EBI.
-          edit_info: "[ ENA (see help) ]"
+          edit_info: "ENA (see help)"
 
         sample_sra_hold:
           label: Sample Visibility
           help: Make this ENA sample public immediately.
-          edit_info: "[ ENA requirement ]"
+          edit_info: "ENA requirement"
 
         sample_description:
           label: Sample Description
           help: Optional description which will be released publically with the sample
-          edit_info: "[ ENA tag ]"
+          edit_info: "ENA tag"
 
         reference_genome_id:
           label: Reference Genome
@@ -237,71 +237,71 @@ en:
         donor_id:
           label:  Donor Id
           ena_label: subject_id
-          edit_info: "[ EGA (As subject id) ]"
+          edit_info: "EGA (As subject id)"
 
         subject_id:
           label:  subject_id
-          edit_info: "[ EGA (Formerly Donor id) ]"
+          edit_info: "EGA (Formerly Donor id)"
 
         genotype:
           label: Genotype
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         phenotype:
           label: Phenotype
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         strain_or_line:
           label: Strain or Line
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         age:
           label: Age
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
           help: valid units are  second, minute, hour, day, month year.
         developmental_stage:
           label: Developmental Stage
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         sex:
           label: Sex
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         cell_type:
           label: Cell Type
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         disease_state:
           label: Disease State
-          edit_info: "[ Array Express, EGA ]"
+          edit_info: "Array Express, EGA"
         compound:
           label: Compound
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         dose:
           label: Dose
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         immunoprecipitate:
           label: Immunoprecipitate
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         growth_condition:
           label: Growth Condition
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         rnai:
           label: RNAi
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         organism_part:
           label: Organism Part
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         species:
           label: Species
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         time_point:
           label: Time Point
-          edit_info: "[ Array Express ]"
+          edit_info: "Array Express"
         subject:
           label: Subject
-          edit_info: "[ EGA ]"
+          edit_info: "EGA"
         disease:
           label : Disease
           help: MeSH Id.
-          edit_info: "[ EGA ]"
+          edit_info: "EGA"
         treatment:
           label: Treatment
-          edit_info: "[ EGA ]"
+          edit_info: "EGA"
 
     study:
       metadata:
@@ -325,7 +325,7 @@ en:
 
         study_description:
           label: Study description
-          edit_info: '[ ENA requirement ]'
+          edit_info: 'ENA requirement'
           help: Please choose one of the following 2 standard statements to be included with your data submissions (one or the other, depending on the study). <b>If you use the second statement, replace [doi or ref] by a reference or doi for your publication:</b><br /><br />This data is part of a pre-publication release. For information on the proper use of pre-publication data shared by the Wellcome Trust Sanger Institute (including details of any publication moratoria), please see http://www.sanger.ac.uk/datasharing/<br /><br />OR<br /><br />This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/<br/><p>If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-releated research only'</p>
 
         contaminated_human_dna:
@@ -342,31 +342,31 @@ en:
 
         study_project_id:
           label: ENA Project ID
-          edit_info: '[ ENA (see help) ]'
+          edit_info: 'ENA (see help)'
           help: The required PROJECT_ID accession is generated by the Genome Project database at NCBI and will be valid also at the other archival institutions. Enter 0 if the project id is unknown or not assigned.
 
         study_abstract:
           label: Abstract
-          edit_info: '[ ENA requirement ]'
+          edit_info: 'ENA requirement'
           help: Briefly describes the goals, purpose, and scope of the Study. This need not be listed if it can be inherited from a referenced publication. For managed access studies, please bear in mind it’s this text in the Abstract section that will be publicly visible on the EGA website.
 
         study_study_title:
           label: Title
-          edit_info: '[ ENA requirement ]'
+          edit_info: 'ENA requirement'
           help: Title of the study as would be used in a publication.
 
         study_type_id:
           label: Study Type
-          edit_info: '[ ENA requirement ]'
+          edit_info: 'ENA requirement'
 
         study_ebi_accession_number:
           label: ENA Study Accession Number
-          edit_info: '[ (see help) ]'
+          edit_info: 'see help'
           help: Data Release accession Number. Will be filled automatically during submission process. Provide ONLY if the project has already been submitted to EBI.
 
         study_sra_hold:
           label: Study Visibility
-          edit_info: '[ ENA requirement ]'
+          edit_info: 'ENA requirement'
           help: Make this ENA project public immediately.
 
         prelim_id:

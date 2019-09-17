@@ -20,10 +20,10 @@
       <% parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Labware.find(pid) %>
       <% unless parent.nil? %>
         <tr>
-          <td><%= link_to parent.id, asset_url(parent) %></td>
+          <td><%= link_to parent.id, labware_path(parent) %></td>
           <td><%= parent.human_barcode %></td>
           <td><%= requests.size %></td>
-          <td><%= link_to 'Show plate', show_plate_asset_url(parent)%></td>
+          <td><%= link_to 'Show plate', show_plate_labware_path(parent)%></td>
           <% if output_plate %>
             <td><%= purpose_for_labware(parent) %></td>
             <td><%= link_to 'Print worksheet',

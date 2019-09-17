@@ -3,7 +3,7 @@
 xml.instruct!
 xml.asset(api_data) do
   xml.id          @asset.id
-  xml.type        @asset.sti_type
+  xml.type        @asset.legacy_asset_type
   xml.name        @asset.name
   xml.public_name @asset.public_name
   xml.qc_state    @asset.qc_state

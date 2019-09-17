@@ -7,7 +7,7 @@ module Batch::PipelineBehaviour
       delegate :tasks, to: :workflow
 
       # The validations that the pipeline & batch are correct
-      validates_presence_of :pipeline
+      validates :pipeline, presence: true
 
       # Validation of some of the batch information is left to the pipeline that it belongs to
       validate do |record|

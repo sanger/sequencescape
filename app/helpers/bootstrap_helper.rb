@@ -59,7 +59,7 @@ module BootstrapHelper
   # <div class="page-header">
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
-  def page_title(title, subtitle = nil, titlecase: true)
+  def page_title(title, subtitle = nil, titlecase: true, badges: [])
     content_tag(:div, class: 'page-header') do
       title_class = title.length > 25 ? 'title-long' : 'title-short'
       content_tag(:h1, class: title_class) do
@@ -70,6 +70,10 @@ module BootstrapHelper
         end
         concat ' '
         concat content_tag(:span, subtitle, class: 'subtitle') if subtitle.present?
+        badges.each do |badge_text|
+          concat ' '
+          concat badge(badge_text, type: 'title-badge')
+        end
       end
     end
   end
@@ -78,9 +82,9 @@ module BootstrapHelper
     will_paginate collection, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'
   end
 
-  # <div class="col-md-size form-group"></div>
+  # <div class="col-md-size form-group sqs-form"></div>
   def form_group(&block)
-    content_tag(:div, class: 'form-group row', &block)
+    content_tag(:div, class: 'form-group row sqs-form', &block)
   end
 
   def bs_column(size = 6, screen = 'md', &block)
@@ -119,6 +123,14 @@ module BootstrapHelper
             content_tag(:span, sections.edit_info, class: 'property_edit_info')
     help = sections.help
     form_collection(label, field, help)
+  end
+
+  def render_radio_section(_form, _field_name, sections, field)
+    label = content_tag(:label, sections.label, sections.label_options) <<
+            content_tag(:span, sections.edit_info, class: 'property_edit_info')
+    help = sections.help
+    content_tag(:legend, sections.label, class: 'sr-only') <<
+      form_collection(label, field, help)
   end
 
   def form_collection(label, field, help = nil)

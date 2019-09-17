@@ -10,16 +10,6 @@ FactoryBot.define do
     "Plate Creator #{n}"
   end
 
-  # Assets don't really make sense in the context off our current tests
-  # as they never actually get created in reality. So this would be a candidate for
-  # early removal
-  AssetRefactor.when_not_refactored do
-    factory :asset do
-      name                { generate :asset_name }
-      qc_state            { '' }
-    end
-  end
-
   factory :labware do
     name { generate :asset_name }
   end
@@ -108,7 +98,6 @@ FactoryBot.define do
     active                  { true }
     max_size                { 192 }
     sorter                  { 11 }
-    paginate                { false }
     summary                 { false }
     externally_managed      { false }
     control_request_type_id { 0 }
@@ -321,65 +310,6 @@ FactoryBot.define do
     association(:ancestor, factory: :labware, strategy: :create)
     association(:descendant, factory: :labware, strategy: :create)
     direct { true }
-  end
-
-  # Converts i to base 4, then substitutes in ATCG to
-  # generate unique tags in sequence
-  sequence :oligo do |i|
-    i.to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
-  end
-
-  factory :tag, aliases: [:tag2] do
-    tag_group
-    oligo
-    map_id { 1 }
-  end
-
-  factory :tag_group do
-    sequence(:name) { |n| "Tag Group #{n}" }
-
-    transient do
-      tag_count { 0 }
-    end
-
-    after(:build) do |tag_group, evaluator|
-      evaluator.tag_count.times do |i|
-        tag_group.tags << create(:tag, map_id: i + 1, tag_group: tag_group)
-      end
-    end
-
-    factory :tag_group_with_tags do
-      transient do
-        tag_count { 5 }
-      end
-    end
-  end
-
-  factory(:tag_group_form_object, class: TagGroup::FormObject) do
-    skip_create
-
-    sequence(:name) { |n| "Tag Group #{n}" }
-
-    transient do
-      oligos_count { 0 }
-    end
-
-    after(:build) do |tag_group_form_object, evaluator|
-      if evaluator.oligos_count > 0
-        o_list = []
-        evaluator.oligos_count.times do |i|
-          # generates a series of 8-character oligos
-          o_list << (16384 + i).to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
-        end
-        tag_group_form_object.oligos_text = o_list.join(' ')
-      end
-    end
-
-    factory :tag_group_form_object_with_oligos do
-      transient do
-        oligos_count { 5 }
-      end
-    end
   end
 
   factory :barcode_prefix do

@@ -80,7 +80,7 @@ class FluidigmFile
     end
 
     def gender_markers
-      marker_array.select { |m| m.gender_marker? }.map(&:gender)
+      marker_array.select(&:gender_marker?).map(&:gender)
     end
 
     def add_assay(assay, marker)
@@ -88,7 +88,7 @@ class FluidigmFile
     end
 
     def count
-      marker_array.select { |m| m.pass? }.count
+      marker_array.select(&:pass?).count
     end
 
     private

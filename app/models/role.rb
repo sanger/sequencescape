@@ -20,7 +20,7 @@ class Role < ApplicationRecord
 
   belongs_to :authorizable, polymorphic: true
 
-  validates_presence_of :name
+  validates :name, presence: true
   scope :general_roles, -> { where('authorizable_type IS NULL') }
 
   after_destroy :touch_authorizable

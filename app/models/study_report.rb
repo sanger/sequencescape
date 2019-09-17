@@ -14,7 +14,7 @@ class StudyReport < ApplicationRecord
 
   belongs_to :study
   belongs_to :user
-  validates_presence_of :study
+  validates :study, presence: true
 
   def headers
     [

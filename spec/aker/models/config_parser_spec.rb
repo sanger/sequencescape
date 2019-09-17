@@ -64,7 +64,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
         expect(described_class.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: { t1: { measured_volume: [:volume], current_volume: [:volume] } },
           updatable_attrs_from_aker_into_ss: [],
-          updatable_columns_from_ss_into_aker: { t1: [:measured_volume, :current_volume] }
+          updatable_columns_from_ss_into_aker: { t1: %i[measured_volume current_volume] }
         )
       end
     end
@@ -79,8 +79,8 @@ RSpec.describe Aker::ConfigParser, aker: true do
 
       it 'returns the list with both columns' do
         expect(described_class.new.parse(my_config)).to eq(
-          map_ss_columns_with_aker: { t1: { measured_volume: [:volume, :other_volume] } },
-          updatable_attrs_from_aker_into_ss: [:volume, :other_volume],
+          map_ss_columns_with_aker: { t1: { measured_volume: %i[volume other_volume] } },
+          updatable_attrs_from_aker_into_ss: %i[volume other_volume],
           updatable_columns_from_ss_into_aker: {}
         )
       end
@@ -112,8 +112,8 @@ RSpec.describe Aker::ConfigParser, aker: true do
               amount: [:amount]
             }
           },
-          updatable_attrs_from_aker_into_ss: [:gender, :donor_id, :phenotype, :common_name],
-          updatable_columns_from_ss_into_aker: { self: [:volume, :concentration, :amount] }
+          updatable_attrs_from_aker_into_ss: %i[gender donor_id phenotype common_name],
+          updatable_columns_from_ss_into_aker: { self: %i[volume concentration amount] }
         )
       end
     end

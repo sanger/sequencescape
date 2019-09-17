@@ -1,5 +1,5 @@
-# Groups a set of {Asset assets} together
-# Primarily used to group together assets as part of an {Order order}.
+# Groups a set of {Receptacle receptacles} together
+# Primarily used to group together receptacles as part of an {Order order}.
 class AssetGroup < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::AssetGroup
@@ -18,6 +18,8 @@ class AssetGroup < ApplicationRecord
 
   scope :for_search_query, ->(query) { where(['name LIKE ?', "%#{query}%"]) }
 
+  has_many :labware, through: :assets
+
   def all_samples_have_accession_numbers?
     unaccessioned_samples.empty?
   end
@@ -27,7 +29,8 @@ class AssetGroup < ApplicationRecord
   # asset groups during the submission process. Here we switch between to scopes.
   def unaccessioned_samples
     if new_record?
-      Sample.contained_in(assets).without_accession
+      # We map id here to stop rails being too clever and passib in the unsaved scope
+      Sample.contained_in(assets.map(&:id)).without_accession
     else
       samples.without_accession
     end

@@ -5,7 +5,7 @@
   <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@requests.first.study) -%>
 <% end %>
 
-<%= page_title @request_type&.name || 'Requests', @subtitle %><%= display_status(params[:state]) %>
+<%= page_title @request_type&.name || 'Requests', @subtitle %><%= badge(params[:state]) %>
 <% if params[:attempt] %>
   <%= pluralize params[:attempt], 'attempt' %>
 <% end %>
@@ -33,7 +33,7 @@
         <tr>
           <td>
             <% if request.asset %>
-              <%= link_to "#{request.asset.label} #{request.asset.try(:human_barcode)||request.asset.id}", asset_url(request.asset) %>
+              <%= link_to "#{request.asset.label} #{request.asset.try(:human_barcode)||request.asset.id}", receptacle_path(request.asset) %>
             <% end %>
           </td>
 
@@ -48,7 +48,7 @@
           <td><%= request.user.login unless request.user.blank? %></td>
           <td><%= link_to(request.initial_study.name, study_path(request.initial_study)) if request.initial_study %></td>
           <td><%= request.created_at.to_formatted_s(:sortable) %></td>
-          <td><%= display_status(request.state) %></td>
+          <td><%= badge(request.state) %></td>
         </tr>
       <% end -%>
     </tbody>

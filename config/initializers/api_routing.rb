@@ -12,7 +12,7 @@ module ApiRouting
   def model(*entities, &block)
     options   = entities.extract_options!
     read_only = !options.key?(:read_only) || options.delete(:read_only)
-    exposed_actions = read_only ? [:index, :show] : [:index, :show, :create, :update]
+    exposed_actions = read_only ? %i[index show] : %i[index show create update]
     entities.push({ only: exposed_actions, name_prefix: 'api_' }.merge(options))
 
     original_block = block

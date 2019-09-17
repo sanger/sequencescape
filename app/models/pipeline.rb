@@ -1,3 +1,10 @@
+# A Pipeline acts to associate {Request requests} with a {Workflow}.
+# Visiting a pipeline's page will display an inbox of pending {Batch unbatched}
+# requests, and a summary list of ongoing {Batch batches} for that particular
+# pipeline. The users are able to generate new batches from the available requests
+# and to from there progress a {Batch} through the associated workflow.
+# @note Generally speaking we are trying to migrate pipelines out of the Sequencescape
+#       core.
 class Pipeline < ApplicationRecord
   include Uuid::Uuidable
   include Pipeline::BatchValidation
@@ -13,8 +20,8 @@ class Pipeline < ApplicationRecord
                   :inbox_partial, :library_creation, :pulldown, :prints_a_worksheet_per_task,
                   :genotyping, :sequencing, :purpose_information, :can_create_stock_assets,
                   :inbox_eager_loading, :group_by_submission, :group_by_parent,
-                  :generate_target_assets_on_batch_create,
-                  :asset_type, instance_writer: false
+                  :generate_target_assets_on_batch_create, :pick_to,
+                  :asset_type, :request_sort_order, instance_writer: false
 
   # Pipeline defaults
   self.batch_worksheet = 'detailed_worksheet'
@@ -26,11 +33,13 @@ class Pipeline < ApplicationRecord
   self.genotyping = false
   self.sequencing = false
   self.purpose_information = true
+  self.pick_to = true
   self.can_create_stock_assets = false
   self.inbox_eager_loading = :loaded_for_inbox_display
   self.group_by_submission = false
   self.group_by_parent = false
   self.generate_target_assets_on_batch_create = false
+  self.request_sort_order = { id: :desc }.freeze
 
   delegate :item_limit, :batch_limit?, to: :workflow
 
@@ -56,8 +65,8 @@ class Pipeline < ApplicationRecord
   end
   has_many :inbox, class_name: 'Request', extend: Pipeline::RequestsInStorage
 
-  validates_presence_of :name, :request_types
-  validates_uniqueness_of :name, on: :create, message: 'name already in use'
+  validates :name, :request_types, presence: true
+  validates :name, uniqueness: { on: :create, message: 'name already in use' }
 
   scope :externally_managed, -> { where(externally_managed: true) }
   scope :internally_managed, -> { where(externally_managed: false) }
@@ -149,7 +158,28 @@ class Pipeline < ApplicationRecord
     # Do nothing!
   end
 
+  def requests_in_inbox(show_held_requests = true)
+    apply_includes(
+      requests.unbatched
+              .pipeline_pending(show_held_requests)
+              .with_present_asset
+              .order(request_sort_order)
+              .send(inbox_eager_loading)
+    )
+  end
+
+  def request_count_in_inbox(show_held_requests)
+    requests.unbatched
+            .pipeline_pending(show_held_requests)
+            .with_present_asset
+            .count
+  end
+
   private
+
+  def apply_includes(scope)
+    request_information_types.exists? ? scope.include_request_metadata : scope
+  end
 
   def grouping_parser
     GrouperForPipeline.new(self)

@@ -1,5 +1,5 @@
 module IlluminaC::Helper
-  ACCEPTABLE_REQUEST_TYPES = %w(illumina_c_pcr illumina_c_nopcr illumina_c_multiplexing illumina_c_chromium_library)
+  ACCEPTABLE_REQUEST_TYPES = %w(illumina_c_pcr illumina_c_nopcr illumina_c_multiplexing illumina_c_chromium_library).freeze
   ACCEPTABLE_SEQUENCING_REQUESTS = %w(
     illumina_c_single_ended_sequencing
     illumina_c_paired_end_sequencing
@@ -12,9 +12,9 @@ module IlluminaC::Helper
     illumina_c_hiseq_2500_single_end_sequencing
     illumina_c_hiseq_4000_paired_end_sequencing
     illumina_c_hiseq_4000_single_end_sequencing
-  )
+  ).freeze
 
-  PIPELINE = 'Illumina-C'
+  PIPELINE = 'Illumina-C'.freeze
   class TemplateConstructor
     # Construct submission templates for the generic pipeline
     # opts is a hash
@@ -43,7 +43,7 @@ module IlluminaC::Helper
     end
 
     def validate!
-      [:name, :type, :role, :catalogue].each do |value|
+      %i[name type role catalogue].each do |value|
         raise "Must provide a #{value}" if send(value).nil?
       end
       raise "Request Type should be #{ACCEPTABLE_REQUEST_TYPES.join(', ')}" unless ACCEPTABLE_REQUEST_TYPES.include?(type)

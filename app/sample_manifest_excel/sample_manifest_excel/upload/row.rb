@@ -13,7 +13,7 @@ module SampleManifestExcel
       include ActiveModel::Model
       include Converters
 
-      attr_accessor :number, :data, :columns
+      attr_accessor :number, :data, :columns, :cache
       attr_reader :sanger_sample_id
 
       validates :number, presence: true, numericality: true
@@ -28,9 +28,8 @@ module SampleManifestExcel
       # Creates the specialised fields for updating the sample based on the passed columns
       def initialize(attributes = {})
         super
+        @cache ||= SampleManifestAsset
         @sanger_sample_id ||= value(:sanger_sample_id).presence if columns.present? && data.present?
-        @specialised_fields = create_specialised_fields if sanger_sample_id.present?
-        link_tag_groups_and_indexes
       end
 
       ##
@@ -58,7 +57,11 @@ module SampleManifestExcel
       end
 
       def aliquot
-        @aliquot ||= sample.aliquots.first
+        @aliquot ||= manifest_asset.aliquot
+      end
+
+      def asset
+        @asset ||= manifest_asset.asset
       end
 
       def metadata
@@ -66,7 +69,7 @@ module SampleManifestExcel
       end
 
       def specialised_fields
-        @specialised_fields ||= []
+        @specialised_fields ||= create_specialised_fields
       end
 
       ##
@@ -74,15 +77,17 @@ module SampleManifestExcel
       # *Checking it is ok to update row
       # *Updating all of the specialised fields in the aliquot
       # *Updating the sample metadata
-      # *Saving the aliquot, metadata and sample
+      # *Saving the asset, metadata and sample
       def update_sample(tag_group, override)
         return unless valid?
+
+        @reuploaded = sample.updated_by_manifest
 
         if sample.updated_by_manifest && !override
           @sample_skipped = true
         else
           update_specialised_fields(tag_group)
-          aliquot.save!
+          asset.save!
           metadata.save!
           sample.updated_by_manifest = true
           sample.empty_supplier_sample_name = false
@@ -113,8 +118,7 @@ module SampleManifestExcel
       def transfer_aliquot
         return unless valid?
 
-        sample.primary_receptacle.external_library_creation_requests.each do |request|
-          @reuploaded ||= request.passed?
+        asset.external_library_creation_requests.each do |request|
           @aliquot_transferred = request.passed? || request.manifest_processed!
         end
       end
@@ -153,7 +157,7 @@ module SampleManifestExcel
       private
 
       def manifest_asset
-        @manifest_asset ||= SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)
+        @manifest_asset ||= cache.find_by(sanger_sample_id: sanger_sample_id)
       end
 
       def sanger_sample_id_exists?
@@ -199,24 +203,19 @@ module SampleManifestExcel
       end
 
       def create_specialised_fields
-        return unless columns.present? && data.present? && manifest_asset.present?
+        return [] unless columns.present? && data.present? && sanger_sample_id.present?
 
-        columns.with_specialised_fields.map do |column|
+        specialised_fields = columns.with_specialised_fields.map do |column|
           column.specialised_field.new(value: at(column.number), sample_manifest_asset: manifest_asset)
         end
+
+        specialised_fields.tap { |fields| link_tag_groups_and_indexes(fields) }
       end
 
       # link fields together for tag groups and indexes
-      def link_tag_groups_and_indexes
-        sf_tag_index = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::TagIndex }
-        return if sf_tag_index.blank?
-
-        sf_tag_index.sf_tag_group = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::TagGroup }
-
-        sf_tag2_index = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::Tag2Index }
-        return if sf_tag2_index.blank?
-
-        sf_tag2_index.sf_tag2_group = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::Tag2Group }
+      def link_tag_groups_and_indexes(fields)
+        indexed_fields = fields.index_by(&:class)
+        fields.each { |field| field.link(indexed_fields) }
       end
     end
   end

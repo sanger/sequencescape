@@ -16,9 +16,9 @@
   <% end %>
 
   <% if @labware.present? %>
-    <h4><%= pluralize @labware.size, "assets" %></h4>
+    <h4><%= pluralize @labware.size, "labware" %></h4>
     <ul>
-      <%= render partial: "searches/show/asset", collection: @labware %>
+      <%= render partial: "searches/show/labware", collection: @labware %>
     </ul>
   <% end %>
 
@@ -37,7 +37,7 @@
   <% end %>
 
 </div>
-<% unless @studies.present? || @samples.present? || @assets.present? || @requests.present? -%>
+<% unless @studies.present? || @samples.present? || @labware.present? || @requests.present? -%>
   <div class="info">
     <h3>No results</h3>
   </div>

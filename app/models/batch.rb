@@ -38,7 +38,7 @@ class Batch < ApplicationRecord
   has_many :projects, -> { distinct }, through: :orders
   has_many :aliquots, -> { distinct }, through: :source_assets
   has_many :samples, -> { distinct }, through: :source_assets, source: :samples
-  has_many :output_labware, through: :assets, source: :labware
+  has_many :output_labware, -> { distinct }, through: :assets, source: :labware
 
   has_many_events
   has_many_lab_events
@@ -73,8 +73,8 @@ class Batch < ApplicationRecord
     includes(requests: [
       :uuid_object, :request_metadata, :request_type,
       { submission: :uuid_object },
-      { asset: [:uuid_object, { aliquots: [:sample, :tag] }] },
-      { target_asset: [:uuid_object, { aliquots: [:sample, :tag] }] }
+      { asset: [:uuid_object, { aliquots: %i[sample tag] }] },
+      { target_asset: [:uuid_object, { aliquots: %i[sample tag] }] }
     ])
   }
 
@@ -241,22 +241,8 @@ class Batch < ApplicationRecord
     requests.select { |r| r.target_asset != r.asset }.map(&:target_asset).select(&:present?).group_by(&:plate)
   end
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    def output_plates
-      output_labware
-    end
-  end
-
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    def output_plates
-      holder_ids = ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
-                                       .where(['requests.id IN  (?)', requests.map(&:id)]).uniq.pluck(:container_id)
-      Plate.find(holder_ids)
-    end
+  def output_plates
+    output_labware
   end
 
   def first_output_plate
@@ -354,14 +340,14 @@ class Batch < ApplicationRecord
   # the pending queue.
   def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{id} removed at #{Time.now}", current_user) unless current_user.nil?
+      request.add_comment("Used to belong to Batch #{id} removed at #{Time.zone.now}", current_user) unless current_user.nil?
       pipeline.detach_request_from_batch(self, request)
     end
   end
 
   def return_request_to_inbox(request, current_user = nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{id} returned to inbox unstarted at #{Time.now}", current_user) unless current_user.nil?
+      request.add_comment("Used to belong to Batch #{id} returned to inbox unstarted at #{Time.zone.now}", current_user) unless current_user.nil?
       request.return_pending_to_inbox!
     end
   end
@@ -501,7 +487,7 @@ class Batch < ApplicationRecord
 
   def downstream_requests_needing_asset(request)
     next_requests_needing_asset = request.next_requests.select { |r| r.asset_id.blank? }
-    yield(next_requests_needing_asset) unless next_requests_needing_asset.blank?
+    yield(next_requests_needing_asset) if next_requests_needing_asset.present?
   end
 
   def rebroadcast

@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'timecop'
 
-describe 'track SampleManifest updates' do
+describe 'track SampleManifest updates', sample_manifest: true do
   include FetchTable
 
   def load_manifest_spec
@@ -43,6 +43,8 @@ describe 'track SampleManifest updates' do
     sample_manifest.generate
 
     expect(BroadcastEvent.count).to eq broadcast_events_count + 1
+
+    Delayed::Worker.new.work_off
 
     samples = sample_manifest.sample_manifest_assets.each_with_index do |sample_manifest_asset, index|
       sample_manifest_asset.update(sanger_sample_id: "sample_#{index}")

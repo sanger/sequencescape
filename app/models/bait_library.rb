@@ -20,8 +20,8 @@ class BaitLibrary < ApplicationRecord
     self.table_name = ('bait_library_suppliers')
 
     # The names of suppliers needs to be unique
-    validates_presence_of :name
-    validates_uniqueness_of :name
+    validates :name, presence: true
+    validates :name, uniqueness: true
 
     scope :visible, -> { where(visible: true) }
 
@@ -36,19 +36,19 @@ class BaitLibrary < ApplicationRecord
 
   # All bait libraries belong to a supplier
   belongs_to :bait_library_supplier, class_name: 'BaitLibrary::Supplier'
-  validates_presence_of :bait_library_supplier
+  validates :bait_library_supplier, presence: true
 
   # Within a supplier we have a unique identifier for each bait library.  Custom bait libraries
   # do not have this identifier, so nil is permitted.
-  validates_uniqueness_of :supplier_identifier, scope: :bait_library_supplier_id, allow_nil: true
+  validates :supplier_identifier, uniqueness: { scope: :bait_library_supplier_id, allow_nil: true }
   before_validation :blank_as_nil
 
   # The names of the bait library are considered unique within the supplier
-  validates_presence_of :name
-  validates_uniqueness_of :name, scope: :bait_library_supplier_id
+  validates :name, presence: true
+  validates :name, uniqueness: { scope: :bait_library_supplier_id }
 
   # All bait libraries target a specific species and cannot be mixed
-  validates_presence_of :target_species
+  validates :target_species, presence: true
 
   # All bait libraries have a bait library type
   belongs_to :bait_library_type

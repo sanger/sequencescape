@@ -4,7 +4,7 @@
     (function(undefined) {
       var hide = function(elements) {
         elements.each(function(index) {
-          $(this).hide().find('input').attr('disabled','disabled');;
+          $(this).hide().find('input').attr('disabled','disabled');
         });
       };
       var show = function(elements) {
@@ -14,6 +14,7 @@
       };
 
       var valueFrom = function(element) {
+        if (element === null) { return null }
         var value = element.value.toLowerCase().replace(/[^a-z0-9]+/, '_');
         return (value.length == 0) ? 'blank' : value;
       };
@@ -22,8 +23,9 @@
         var selectRelatedFor, element;
 
         selectRelatedFor = function(value) { return jQuery('.related_to.' + id + '.' + value); };
-        element = document.getElementById('<%= root %>_' + id) || document.getElementById('<%= root %>_' + id + '_id');
-
+        element = document.getElementById('<%= root %>_' + id) ||
+                    $("input[name='study[study_metadata_attributes]["+id+"]']:checked")[0] ||
+                    document.getElementById('<%= root %>_' + id + '_id');
         // Hide all of the DIVs and then show the current value.  We assume that the first identified element
         // is the one we're supposed to be using and that, if there are multiple fields, then they have the
         // same initial value.
@@ -32,7 +34,7 @@
 
         // Now we can delegate handling of the click to the body element of the document.  This enables us to
         // handle multiple different fields with the same identifier as though they were one, hopefully.
-        selector = '[id=<%= root %>_' + id + '],[id=<%= root %>_' + id + '_id]';
+        selector = '[id=<%= root %>_' + id + '],[id=<%= root %>_' + id + '_id],[name=\'study[study_metadata_attributes]['+id+']\']';
         jQuery('body').delegate(selector, 'change', function() {
           hide(jQuery('.related_to.' + id));
           show(selectRelatedFor(valueFrom(this)));

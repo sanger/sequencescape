@@ -1,24 +1,13 @@
 class ExtractionAttribute < ApplicationRecord
   include Uuid::Uuidable
 
-  validates_presence_of :created_by
+  validates :created_by, presence: true
 
-  # This is the target asset for which to update the state
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    belongs_to :target, class_name: 'Asset', foreign_key: :target_id
-  end
+  belongs_to :target, class_name: 'Labware', foreign_key: :target_id
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    belongs_to :target, class_name: 'Labware', foreign_key: :target_id
-  end
+  validates :target, presence: true
 
-  validates_presence_of :target
-
-  validates_presence_of :attributes_update
+  validates :attributes_update, presence: true
 
   serialize :attributes_update
 
@@ -117,19 +106,16 @@ class ExtractionAttribute < ApplicationRecord
 
     actual_well_in_same_position_at_rack&.update!(plate: nil)
 
-    # This block is enabled when we have the labware table present as part of the AssetRefactor
-    # Ie. This is what will happen in future
-    AssetRefactor.when_refactored do
-      # If an earlier well was moved into THIS wells previous location then
-      # it will have been removed from the plate. HOWEVER, because this happens on
-      # a DIFFERENT object, (as it gets found in a separate query) then this particular
-      # instance of well has no way of knowing that this change has been made. This is
-      # particularly problematic post-re-factor, as it results in the plate relationship
-      # not getting flagged as dirty, and so not updating. As a result the update for the
-      # earlier well takes precedence, and the location remains nil.
-      # Container_associations didn't result in the same problem
-      well.labware_id_will_change!
-    end
+    # If an earlier well was moved into THIS wells previous location then
+    # it will have been removed from the plate. HOWEVER, because this happens on
+    # a DIFFERENT object, (as it gets found in a separate query) then this particular
+    # instance of well has no way of knowing that this change has been made. This is
+    # particularly problematic post-re-factor, as it results in the plate relationship
+    # not getting flagged as dirty, and so not updating. As a result the update for the
+    # earlier well takes precedence, and the location remains nil.
+    # Container_associations didn't result in the same problem
+    well.labware_id_will_change!
+
     well.update!(plate: actual_parent, map: actual_map)
   end
 

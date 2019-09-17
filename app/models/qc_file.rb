@@ -23,7 +23,7 @@ class QcFile < ApplicationRecord
   end
 
   belongs_to :asset, class_name: 'Labware'
-  validates_presence_of :asset
+  validates :asset, presence: true
 
   # Handle some of the metadata with this callback
   before_save :update_document_attributes

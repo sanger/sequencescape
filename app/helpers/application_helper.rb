@@ -18,7 +18,7 @@ module ApplicationHelper
   end
 
   def required_marker
-    content_tag(:span, '&raquo;'.html_safe, class: 'required')
+    icon('fas', 'asterisk', class: 'text-warning', title: 'required')
   end
 
   def render_flashes
@@ -47,18 +47,54 @@ module ApplicationHelper
     end
   end
 
-  def display_status(status)
+  #
+  # Renders a badge containing the supplied text, with appropriate styling.
+  # By default the 'badge-#{status}' class is supplied. These states are mapped to
+  # bootstrap colours in components.scss (grep '// State-colour extensions')
+  #
+  # If you can't map the text directly to a style, such as if you are displaying a
+  # number that you want to change its colours at certain thresholds, then you can
+  # override the applied style with the style: argument.
+  #
+  # If the string passed in is empty, no badge will be rendered
+  #
+  # @example Render a request state badge.
+  #   badge(request.state, type: 'request')
+  # @example Render the size of a batch, which is red if too large.
+  #   status = batch.size > MAX_SIZE ? 'danger' : 'success'
+  #   badge(batch.size, type: 'batch-size', style: status )
+  #
+  # @param status [String] The text to display in the badge. Will also be used to set the style if not otherwise specified
+  # @param type: 'generic' [String] Optional: Additional css-class applied to the badge (generic-badge by default)
+  # @param style: status [String] Optional: Override the badge-* class otherwise set directly from the status.
+  #
+  # @return [type] HTML to render a badge
+  def badge(status, type: 'generic-badge', style: status)
     return if status.blank?
 
-    content_tag(:span, status, class: "request-state badge badge-#{status}")
+    content_tag(:span, status, class: "#{type} badge badge-#{style}")
+  end
+
+  #
+  # Used to add a counter to headers or links. Renders a blue badge containing the supplied number
+  # Only supply a suffix if it can't be worked out from the context what is being counted.
+  #
+  # @param counter [Integer] The value to show in the badge
+  # @param suffix [Integer, String] Optional: The type of thing being counted.
+  # @return [String] HTML to render a badge
+  def counter_badge(counter, suffix = '')
+    status = suffix.present? ? pluralize(counter, suffix) : counter
+    badge(status, type: 'counter-badge', style: 'primary')
   end
 
   def dynamic_link_to(summary_item)
     object = summary_item.object
     if object.instance_of?(Submission)
       return link_to("Submission #{object.id}", study_information_submission_path(object.study, object))
-    elsif object.instance_of?(Asset)
-      return link_to("#{object.label.capitalize} #{object.name}", asset_path(object))
+    elsif object.instance_of?(Receptacle)
+      return link_to("#{object.label.capitalize} #{object.name}", receptacle_path(object))
+    elsif object.instance_of?(Labware)
+      return link_to("#{object.label.capitalize} #{object.name}", labware_path(object))
     elsif object.instance_of?(Request)
       return link_to("Request #{object.id}", request_path(object))
     else
@@ -90,8 +126,10 @@ module ApplicationHelper
     options[:state] = status unless status.nil?
     options[:request_type_id] = request_type.id unless request_type.nil?
 
-    if object.instance_of?(Asset)
-      asset_path(object, options)
+    if object.instance_of?(Receptacle)
+      receptacle_path(object, options)
+    elsif object.instance_of?(Labware)
+      labware_path(object, options)
     elsif object.instance_of?(Study)
       study_requests_path(object, options)
     end
@@ -102,22 +140,6 @@ module ApplicationHelper
       'Unfollow ' + msg
     else
       'Follow ' + msg
-    end
-  end
-
-  def study_state(state)
-    if state == 'active'
-      "<span style='color:green;'>#{state}</span>".html_safe
-    else
-      "<span style='color:red;'>#{state}</span>".html_safe
-    end
-  end
-
-  def display_empty_table(display_text, link = nil)
-    if link.nil?
-      content_tag(:div, display_text, class: 'empty_table', id: 'empty_table')
-    else
-      content_tag(:div, link_to(display_text, link), class: 'empty_table', id: 'empty_table')
     end
   end
 
@@ -175,37 +197,13 @@ module ApplicationHelper
     end
   end
 
-  def display_complex_content(hash_content)
-    hash_content.each do |key, value|
-      case key
-      when 'criterion'
-        output = ''
-        value.each do |v|
-          output = output + content_tag(:span, "<strong>#{v.inspect}</strong>")
-          output = output + content_tag(:br)
-        end
-        return output
-      when 'link'
-        return link_to(value['label'], value['href'])
-      end
-    end
-  end
-
-  def display_ready_for_manual_qc(v)
-    if v
-      icon('far', 'check-circle')
-    else
-      icon('fas', 'exclamation-circle', class: 'text-danger')
-    end
-  end
-
   def display_request_information(request, rit, batch = nil)
     r = request.value_for(rit.name, batch)
-    (!r || r.empty?) ? 'NA' : r
+    r.presence || 'NA'
   end
 
   def display_boolean_results(result)
-    return 'NA' if (!result || result.empty?)
+    return 'NA' if result.blank?
     if result == 'pass' || result == '1' || result == 'true'
       return icon('far', 'check-circle', title: result)
     else
@@ -218,10 +216,6 @@ module ApplicationHelper
     new_requests = requests - sorted_requests
     new_requests.sort_by(&:pipeline_id)
     requests = requests + sorted_requests
-  end
-
-  def display_hash_value(hash, key, sub_key)
-    hash.fetch(key, {}).fetch(sub_key, '')
   end
 
   # Creates a label that is hidden from the view so that testing is easier

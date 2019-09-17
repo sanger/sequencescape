@@ -13,9 +13,15 @@ class SampleManifestAsset < ApplicationRecord
   delegate :labware, to: :asset
   delegate :human_barcode, to: :labware, allow_nil: true
 
+  convert_labware_to_receptacle_for :asset
+
   # Returns the existing sample, or generates a new one if it doesn't exist
   def find_or_create_sample
     self.sample ||= create_sample
+  end
+
+  def aliquot
+    asset.aliquots.detect { |a| a.sample_id == sample.id }
   end
 
   private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Core::Logging
   def self.logging_helper(name)
     module_eval <<-END_OF_HELPER
@@ -7,7 +9,7 @@ module Core::Logging
     END_OF_HELPER
   end
 
-  [:debug, :info, :error].each do |level|
+  %i[debug info error].each do |level|
     logging_helper(level)
   end
 

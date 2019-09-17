@@ -3,14 +3,15 @@ module SearchBehaviour
 
   def self.included(base)
     base.helper_method :each_non_empty_search_result
+    base.helper_method :no_results?
   end
 
   def search
-    t = Time.now
+    t = Time.zone.now
     @query = params[:q]
     perform_search(params[:q].strip) unless params[:q].blank? || query_invalid?
-    @search_took = Time.now - t
-    @render_start = Time.now
+    @search_took = Time.zone.now - t
+    @render_start = Time.zone.now
 
     respond_to do |format|
       format.html
@@ -37,7 +38,13 @@ module SearchBehaviour
   def each_non_empty_search_result
     searchable_classes.each do |clazz|
       results = instance_variable_get("@#{clazz.name.underscore.pluralize}")
-      yield(clazz.name.underscore, results) unless results.blank?
+      yield(clazz.name.underscore, results) if results.present?
+    end
+  end
+
+  def no_results?
+    searchable_classes.all? do |clazz|
+      instance_variable_get("@#{clazz.name.underscore.pluralize}").blank?
     end
   end
 

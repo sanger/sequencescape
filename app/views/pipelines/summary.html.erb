@@ -5,7 +5,7 @@
 <% end -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) -%>
 
-<div class="page-header"><h1>BATCH SUMMARY</h1></div>
+<%= page_title 'Batch', 'Summary' %>
 <div class="content">
   <div class="info">
   Summary of stored information for Batch <%= @batch.id %>.

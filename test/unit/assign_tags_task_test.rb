@@ -58,9 +58,9 @@ class AssignTagsTaskTest < TaskTestBase
         @sample_tube.children << @library
 
         submission = Submission.last # probably built in batch ...?
-        @mx_request = create :request, request_type_id: 1, submission: submission, asset: @sample_tube, target_asset: @library
+        @mx_request = create :request, submission: submission, asset: @sample_tube, target_asset: @library
 
-        @cf_request = create :request_without_assets, request_type_id: 2, submission: submission, asset: nil
+        @cf_request = create :request_without_assets, submission: submission, asset: nil
         @batch.requests << [@mx_request, @cf_request]
         @controller.batch = @batch
 
