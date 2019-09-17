@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # JSONAPI controller for {SamplesResource}
+    # JSONAPI controller for {SampleMetadataResource}
     class SampleMetadataController < JSONAPI::ResourceController
     end
   end
