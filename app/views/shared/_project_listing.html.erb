@@ -1,7 +1,6 @@
 
 <% add :manager_option, "New Project" => new_project_path -%>
 
-<%= pagination @projects %>
 <table class="sortable table table-striped" id="summary">
   <thead>
     <tr>
@@ -10,14 +9,13 @@
     </tr>
   </thead>
 <tbody>
-<% for project in @projects %>
+<% @projects.pluck(:id,:name,:state).each do |id, name, state| %>
   <tr>
-    <td><%= link_to  "#{project.name}", project%></td>
-    <td><%= project.state %></td>
+    <td><%= link_to name, project_path(id)%></td>
+    <td><%= state %></td>
   </tr>
 <% end %>
 </tbody>
 
 </table>
-<%= pagination @projects %>
 <br />

@@ -1,5 +1,7 @@
 <% table_class ||= '' %>
-<table class="sortable table table-striped table-dense-information <%= table_class %>" id="pipeline_inbox">
+<table class="sortable table table-striped table-dense-information <%= table_class %>"
+       data-page-length="100"
+       id="pipeline_inbox">
   <thead>
     <%= render partial: 'requests_header' %>
   </thead>
@@ -7,6 +9,5 @@
     <%= render partial: 'request', collection: requests -%>
   </tbody>
 </table>
-
 
 <%= javascript_include_tag 'pipeline.js' %>

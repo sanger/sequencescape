@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   # TODO: before_action :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
 
   def index
-    @projects = Project.alphabetical.page(params[:page])
+    @projects = Project.alphabetical
 
     respond_to do |format|
       format.html

@@ -16,7 +16,7 @@
       <script type="text/javascript">
       (function($, undefined){
         $("#everything").load('<%= study_list_studies_path(scope: scope)%>', function() {
-          $(document.body).trigger("ajaxDomUpdate");
+          $(document.body).trigger("ajaxDomUpdate", $("#everything"));
         });
       })(jQuery);
       </script>

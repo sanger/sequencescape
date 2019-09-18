@@ -7,15 +7,11 @@
 .table-summary th:after {
   content: ":";
 }
-/*table.sortable { table-layout:fixed; }*/
-
-table.sortable th:focus {
-  outline: none;
-}
 
 /* Dense Information tables use smaller fonts */
-table.table-dense-information tbody {
+table.table-dense-information {
   font-size: smaller;
+  @extend .table-sm;
 }
 
 /* main-row encomasses the bulk of the application */
