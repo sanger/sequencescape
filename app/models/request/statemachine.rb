@@ -21,7 +21,8 @@ module Request::Statemachine
       if old_machine
         old_machine.events.keys.each do |event|
           undef_method(event);
-          undef_method(:"#{event}!");
+          undef_method(:"#{event}!")
+          undef_method(:"#{event}_without_validation!")
           undef_method(:"may_#{event}?")
         end
         old_machine.states.each do |state|

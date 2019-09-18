@@ -5,6 +5,7 @@ module Api
     # SampleMetadataResource
     class SampleMetadataResource < BaseResource
       attribute :sample_common_name
+      attribute :supplier_name
       model_name 'Sample::Metadata', add_model_hint: false
     end
   end

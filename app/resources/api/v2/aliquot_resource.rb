@@ -14,6 +14,7 @@ module Api
       # model_name / model_hint if required
 
       # Associations:
+      has_one :study
       has_one :sample
       has_one :request
 
