@@ -9,6 +9,7 @@ class PhiX::StocksController < ApplicationController
       @stocks = @stock.created_stocks
       render :show
     else
+      @stocks = []
       @tag_option_names = PhiX.tag_option_names
       render :new
     end

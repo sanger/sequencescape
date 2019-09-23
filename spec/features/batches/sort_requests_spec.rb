@@ -22,7 +22,7 @@ describe 'Batches controller', js: true do
     # Suspect this is due to the quite specific locations at which the rows can be dropped.
     third_request.drag_to first_request
     expect(request_list.all('tr').first).to eq(third_request)
-    wait_for_ajax
+
     post_drag = [requests_ids[2], requests_ids[0], requests_ids[1]]
     click_link('Finish editing')
     request_list

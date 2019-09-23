@@ -39,7 +39,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           click_button('Upload manifest')
           expect(page).to have_content('Sample manifest successfully uploaded.')
           click_link 'Completed manifest'
-          expect(page.driver.response.headers['Content-Disposition']).to eq("attachment; filename=\"#{test_file}\"")
+          expect(page.driver.response.headers['Content-Disposition']).to include("attachment; filename=\"#{test_file}\"")
         end
 
         it 'reupload and override' do
