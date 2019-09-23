@@ -52,8 +52,6 @@ GEM
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    actionpack-page_caching (1.1.1)
-      actionpack (>= 4.0.0, < 6)
     actionpack-xml_parser (2.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
@@ -499,7 +497,6 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
-  actionpack-page_caching
   actionpack-xml_parser
   activerecord-import
   activerecord-nulldb-adapter
