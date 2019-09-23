@@ -1,7 +1,8 @@
-# this module is used to create a substitution hash to be used in TagSubstitution library
+# frozen_string_literal: true
+
+# This module is used to create a substitution hash to be used in TagSubstitution library
 # after an aliquot is updated (saved), it uses aliquot.saved_changes to create substitution hash
 # substitution hash is then used by TagSubstitution to find similar aliquots and update them
-
 module Aliquot::DataForSubstitution
   def substitution_hash
     return if id_previously_changed?

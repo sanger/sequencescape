@@ -81,9 +81,6 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
   pipeline.workflow = Workflow.create!(name: 'Library preparation') do |workflow|
     workflow.locale = 'External'
   end.tap do |workflow|
-    fragment_family = Family.create!(name: 'Fragment', description: 'Archived fragment')
-    Descriptor.create!(name: 'start', family_id: fragment_family.id)
-
     [
       { class: SetDescriptorsTask, name: 'Initial QC',       sorted: 1, lab_activity: true },
       { class: SetDescriptorsTask, name: 'Characterisation', sorted: 3, batched: true, interactive: false, per_item: false, lab_activity: true }
