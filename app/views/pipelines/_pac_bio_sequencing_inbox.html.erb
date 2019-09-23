@@ -18,13 +18,13 @@
           <th style='text-align: left' width='2%'>&nbsp;<!-- Checkboxes --></th>
           <th style='text-align: left' width='2%'>&nbsp; <!-- Notify --></th>
           <th>Request ID</th>
-          <th><%= link_to "Name", "javascript:void(0);" %></th>
-          <th><%= link_to "Asset", "javascript:void(0);" %></th>
-          <th><%= link_to "Tag", "javascript:void(0);" %></th>
+          <th>Nam</th>
+          <th>Asse</th>
+          <th>Ta</th>
           <% @information_types.each do |information_type| %>
-            <th style='text-align: left'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
+            <th style='text-align: left'><%= information_type.label %></th>
           <% end %>
-          <th width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
+          <th>Study</th>
         </tr>
       </thead>
       <tbody>

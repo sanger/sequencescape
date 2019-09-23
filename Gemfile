@@ -104,6 +104,9 @@ group :default do
 
   # Easy colour coding of console output.
   gem 'rainbow'
+
+  # Compile js
+  gem 'webpacker'
 end
 
 group :warehouse do
@@ -146,7 +149,6 @@ group :development, :test, :cucumber do
   gem 'bootstrap'
   gem 'font-awesome-sass'
   gem 'jquery-rails'
-  gem 'jquery-tablesorter'
   gem 'jquery-ui-rails'
   gem 'sass-rails'
   gem 'select2-rails'

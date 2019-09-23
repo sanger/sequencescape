@@ -16,33 +16,12 @@ window.submit = function(ident) {
   $(ident).submit();
 }
 
-window.swap_tab = function(ident, related, tab_no) {
-  // DEPRECATED hopefully
-  $('a.tab' + tab_no).each ( function(pos, item) {
-    item.className = "tab" + tab_no;
-  });
-
-  $(ident).className = "selected tab" + tab_no;
-
-  $('div.tab_content' + tab_no).each ( function(pos, item) {
-      item.style.display = "none";
-  });
-
-  $(related).style.display = "block";
-}
-
 window.show_update_loader = function() {
   $('update_loader').style.display = 'inline';
 }
 
 window.hide_update_loader = function () {
   $('update_loader').style.display = 'none';
-}
-
-// Pipelines code
-window.reload_batch = function(){
-  window.location.reload();
-  new Effect.Highlight('requests_list');
 }
 
 window.select_all = function(){

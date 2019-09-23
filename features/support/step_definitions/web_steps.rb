@@ -217,3 +217,7 @@ Then /^Pmb is up and running$/ do
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_return(status: 200, headers: LabelPrinter::PmbClient.headers)
 end
+
+When 'I click the header {string}' do |text|
+  find('th', text: text).click
+end

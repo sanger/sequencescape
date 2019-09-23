@@ -1,23 +1,23 @@
 <tr>
   <th class='{sorter: false}'>&nbsp;</th>
-  <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", size: "16x16"), "javascript:void(0);" %></th>
+  <th id="priority_flag"  style='text-align: center'><%= image_tag("icon_0_flag.png", size: "16x16") %></th>
   <% if current_user.lab_manager? %>
-    <th><%= link_to "Previous requests", "javascript:void(0);" %></th>
+    <th>Previous requests</th>
   <% end %>
-  <th><%= link_to 'Product Line', 'javascript:void(0);' %></th>
-  <th><%= link_to "Submission ID", "javascript:void(0);" %></th>
-  <th><%= link_to "Request ID", "javascript:void(0);" %></th>
-  <th><%= link_to "Name", "javascript:void(0);" %></th>
-  <th><%= link_to "Request comments", "javascript:void(0);" %></th>
-  <th><%= link_to "Asset", "javascript:void(0);" %></th>
-  <th><%= link_to "Asset comments", "javascript:void(0);" %></th>
-  <th><%= link_to "Num. Samples", "javascript:void(0);" %></th>
-  <th><%= link_to "Conc", "javascript:void(0);" %></th>
-  <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
-  <th><%= link_to "Submitted at (Y-M-D)", "javascript:void(0);" %></th>
-  <th><%= link_to "Dual Index?", "javascript:void(0);" %></th>
+  <th>Product Line</th>
+  <th>Submission ID</th>
+  <th>Request ID</th>
+  <th>Name</th>
+  <th>Request comments</th>
+  <th>Asset</th>
+  <th>Asset comments</th>
+  <th>Num. Samples</th>
+  <th>Conc</th>
+  <th>Scanned in (Y-M-D)</th>
+  <th>Submitted at (Y-M-D)</th>
+  <th>Dual Index?</th>
   <% @information_types.each do |information_type| %>
-    <th><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
+    <th><%= information_type.label %></th>
   <% end %>
-  <th><%= link_to "Study", "javascript:void(0);" %></th>
+  <th>Study</th>
 </tr>

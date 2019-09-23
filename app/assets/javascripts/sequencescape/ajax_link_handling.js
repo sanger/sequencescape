@@ -16,7 +16,7 @@
     .bind("ajax:success", function(xhr, data, status) {
       var target = this.dataset.success ||  this.dataset.update;
       $(target).html(data);
-      $(document.body).trigger("ajaxDomUpdate");
+      $(document.body).trigger("ajaxDomUpdate", target);
     }).bind('ajax:error', function(xhr, data, status) {
       var target = this.dataset.failure ||  this.dataset.update;
       $(target).html(data);

@@ -11,7 +11,7 @@
 <div class="info">
   <%- unless @asset.events.empty? %>
     <h3><%= pluralize @asset.events.size, "event" %></h3>
-    <table width="100%" cellspacing="0" cellpadding="4" class="sortable" id="events">
+    <table  class="sortable" id="events">
       <tr>
         <th>Message</th>
         <th>Content</th>
@@ -28,7 +28,7 @@
 <div class="info">
   <%- if @asset.try(:asset_audits).present? %>
     <h3>Activity Logging</h3>
-    <table width="100%" cellspacing="0" cellpadding="4" class="sortable" id="asset_audits">
+    <table class="sortable" id="asset_audits">
       <tr>
         <th>Message</th>
         <th>Key</th>
