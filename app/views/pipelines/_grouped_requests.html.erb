@@ -4,21 +4,21 @@
     <tr>
       <th>&nbsp;</th>
       <th>&nbsp;</th>
-      <th id="priority_flag"><%= link_to image_tag("icon_0_flag.png", size: "16x16"), "javascript:void(0);" %></th>
-      <th><a>Submission</a></th>
+      <th id="priority_flag"><%= image_tag("icon_0_flag.png", size: "16x16") %></th>
+      <th>Submission</th>
       <th>Request ID</th>
-      <th><%= link_to "Name", "javascript:void(0);" %></th>
-      <th><%= link_to "Request comments", "javascript:void(0);" %></th>
-      <th><%= link_to "Asset", "javascript:void(0);" %></th>
-      <th><%= link_to "Asset comments", "javascript:void(0);" %></th>
+      <th>Name</th>
+      <th>Request comments</th>
+      <th>Asset</th>
+      <th>Asset comments</th>
       <% if @pipeline.multiplexed? %>
-        <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
+        <th>Scanned in (Y-M-D)</th>
       <% end %>
       <% @information_types.each do |information_type| %>
-        <th style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
+        <th style='text-align: left'><%= information_type.label %></th>
       <% end %>
-      <th><%= link_to "Concentration", "javascript:void(0);" %></th>
-      <th><%= link_to "Study", "javascript:void(0);" %></th>
+      <th>Concentration</th>
+      <th>Study</th>
     </tr>
   </thead>
   <tbody>

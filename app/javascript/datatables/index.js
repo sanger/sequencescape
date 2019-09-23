@@ -16,6 +16,10 @@ import 'datatables.net-rowgroup-bs4'
 // https://datatables.net/forums/discussion/32542/datatables-and-webpack
 import 'datatables.net-bs4/css/dataTables.bootstrap4.css'
 
+$.extend( $.fn.dataTable.defaults, {
+    paging: false
+} );
+
 $(document).ready(function() {
   $('table.sortable').DataTable()
 

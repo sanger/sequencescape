@@ -1,11 +1,11 @@
 
 <div class="info">
-<table width="100%" cellpadding="5" cellspacing="0" class="sortable">
+<table class="sortable">
   <thead>
-    <th width="15%"><%= link_to 'Event type', "javascript:void(0);" %></th>
-    <th width="15%"><%= link_to 'Event description', "javascript:void(0);" %></th>
-    <th width="15%"><%= link_to 'Created at', "javascript:void(0);" %></th>
-    <th width="15%"><%= link_to 'User', "javascript:void(0);" %></th>
+    <th>Event type</th>
+    <th>Event description</th>
+    <th>Created at</th>
+    <th>User</th>
   </thead>
   <tbody>
     <% if events.empty? -%>
@@ -16,7 +16,7 @@
       <% events.each do |event| -%>
       <% unless event.description.nil? -%>
       <tr>
-        <td width="15%"><div class='<%= event.description.downcase %> label'><%= event.description.capitalize %></td>
+        <td><div class='<%= event.description.downcase %> label'><%= event.description.capitalize %></td>
         <% if event.descriptors.size != 0 -%>
         <td><%= event.descriptor_value "task" %></td>
         <% else -%>
