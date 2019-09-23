@@ -28,14 +28,14 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
 
   context 'data worksheet' do
     let!(:worksheet) do
-      BulkSubmissionExcel::Worksheet::DataWorksheet.new(workbook: workbook,
-                                                        columns: configuration.columns.all.dup,
-                                                        assets: assets,
-                                                        ranges: configuration.ranges.dup,
-                                                        defaults: {
-                                                          user_login: user_login,
-                                                          template_name: template_name
-                                                        })
+      described_class.new(workbook: workbook,
+                          columns: configuration.columns.all.dup,
+                          assets: assets,
+                          ranges: configuration.ranges.dup,
+                          defaults: {
+                            user_login: user_login,
+                            template_name: template_name
+                          })
     end
 
     before do

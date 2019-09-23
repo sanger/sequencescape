@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 describe 'Labwhere reception', js: true do
-  let(:user) { create :user, email: 'login@example.com' }
+  let(:user) { create :user, email: 'login@example.com', swipecard_code: 12345 }
   let(:plate) { create :plate }
 
-  it 'user can pool from different tubes to stock and standard mx tubes' do
+  it 'user can scan plates into the reception' do
     login_user user
     visit labwhere_receptions_path
     expect(page).to have_content 'Labwhere Reception'
@@ -17,10 +17,10 @@ describe 'Labwhere reception', js: true do
       fill_in('asset_scan', with: plate.ean13_barcode).send_keys(:return)
       expect(find('.barcode_list')).to have_content plate.ean13_barcode
       expect(page).to have_content 'Scanned: 1'
-      fill_in('asset_scan', with: 222).send_keys(:return)
-      fill_in('asset_scan', with: 333).send_keys(:return)
-      fill_in('asset_scan', with: 222).send_keys(:return)
-      expect(page).to have_content(222, count: 1)
+      fill_in('asset_scan', with: 'TEST222').send_keys(:return)
+      fill_in('asset_scan', with: 'TEST333').send_keys(:return)
+      fill_in('asset_scan', with: 'TEST222').send_keys(:return)
+      expect(page).to have_content('TEST222', count: 1)
       expect(page).to have_content 'Scanned: 3'
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
@@ -31,5 +31,6 @@ describe 'Labwhere reception', js: true do
     end
     expect(page).to have_content plate.human_barcode
     expect(page).to have_content plate.purpose.name
+    expect(page).to have_link plate.name, href: labware_path(plate)
   end
 end

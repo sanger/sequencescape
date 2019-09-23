@@ -9,7 +9,7 @@ module SequencingQcBatch
     qc_manual
     qc_manual_in_progress
     qc_completed
-  )
+  ).freeze
 
   def self.included(base)
     base.instance_eval do
@@ -46,7 +46,7 @@ module SequencingQcBatch
   end
 
   def self.adjacent_state_helper(direction, offset, delimiter)
-    define_method(:"qc_#{ direction }_state") do
+    define_method(:"qc_#{direction}_state") do
       raise StandardError, "Current QC state appears to be invalid: '#{qc_state}'" unless qc_states.include?(qc_state.to_s)
       return nil if qc_state.to_s == qc_states.send(delimiter)
 
@@ -61,7 +61,7 @@ module SequencingQcBatch
 
   def self.state_transition_helper(name)
     # TODO[xxx]: Really we should restrict the state transitions
-    define_method(:"qc_#{ name }") do
+    define_method(:"qc_#{name}") do
       # Maintaining legacy behaviour here as not sure if it was intentional.
       # Allows QC decisions to be made on invalid assets.
       update_attribute(:qc_state, qc_next_state) unless qc_next_state.nil? # rubocop:disable Rails/SkipsModelValidations

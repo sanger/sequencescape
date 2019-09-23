@@ -14,8 +14,8 @@ module Request::LibraryManufacture
 
     base.const_set(:RequestOptionsValidator, Class.new(DelegateValidation::Validator) do
       delegate_attribute :fragment_size_required_from, :fragment_size_required_to, to: :target, type_cast: :to_i
-      validates_numericality_of :fragment_size_required_from, integer_only: true, greater_than: 0
-      validates_numericality_of :fragment_size_required_to,   integer_only: true, greater_than: 0
+      validates :fragment_size_required_from, numericality: { integer_only: true, greater_than: 0 }
+      validates :fragment_size_required_to,   numericality: { integer_only: true, greater_than: 0 }
     end)
   end
 

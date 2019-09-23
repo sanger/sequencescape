@@ -2,13 +2,32 @@
 # modeled directly in Sequencescape they can be approximated by a sequencing
 # {Batch}
 class Api::Messages::FlowcellIO < Api::Base
-  MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }
+  MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }.freeze
+
+  self.includes = {
+    requests: [
+      { target_asset: {
+        aliquots: [
+          :aliquot_index,
+          :library,
+          {
+            tag: :tag_group,
+            tag2: :tag_group,
+            sample: :uuid_object,
+            study: :uuid_object,
+            project: :uuid_object
+          }
+        ]
+      } },
+      :lab_events,
+      :batch_request,
+      :request_metadata
+    ]
+  }
 
   module LaneExtensions # Included in SequencingRequest
     def self.included(base)
       base.class_eval do
-        delegate :position, to: :batch_request
-
         def mx_library
           asset.external_identifier
         end
@@ -91,8 +110,6 @@ class Api::Messages::FlowcellIO < Api::Base
   module ControlLaneExtensions
     def self.included(base)
       base.class_eval do
-        delegate :position, to: :batch_request
-
         def mx_library
           asset.external_identifier || 'UNKNOWN'
         end
@@ -111,6 +128,22 @@ class Api::Messages::FlowcellIO < Api::Base
 
         def spiked_in_buffer
           false
+        end
+
+        def spiked_phix_barcode
+          nil
+        end
+
+        def spiked_phix_percentage
+          nil
+        end
+
+        def loading_concentration
+          nil
+        end
+
+        def workflow
+          nil
         end
 
         def external_release
@@ -153,11 +186,11 @@ class Api::Messages::FlowcellIO < Api::Base
         extend ClassMethods
 
         def flowcell_barcode
-          requests.first.flowcell_barcode
+          requests.first&.flowcell_barcode
         end
 
         def read_length
-          requests.first.request_metadata.read_length
+          requests.first&.request_metadata&.read_length
         end
         # We alias is as the json generator assumes each method is called only once.
         alias :reverse_read_length :read_length

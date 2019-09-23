@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ::Core::Registry
   include ::Singleton
   include ::Core::Logging

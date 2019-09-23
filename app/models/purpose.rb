@@ -12,6 +12,7 @@ class Purpose < ApplicationRecord
   belongs_to :barcode_prefix, optional: false
   # Things that are created are often in a default location!
   has_many :messenger_creators, inverse_of: :purpose
+  has_many :labware, inverse_of: :purpose
 
   before_validation :set_default_barcode_prefix
 

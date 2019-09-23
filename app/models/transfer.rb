@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# A transfer handles the transfer of material from one piece of labware to another.
+# Different classes are used to determine exactly how the transfers are performed.
+# @note {TransferRequestCollection} is preferred, as it allows the client applications to control
+#       the transfer behaviour.
 class Transfer < ApplicationRecord
   include Uuid::Uuidable
 
@@ -7,12 +11,12 @@ class Transfer < ApplicationRecord
 
   # So we can track who is requesting the transfer
   belongs_to :user
-  validates_presence_of :user
+  validates :user, presence: true
 
   # The source plate and the destination asset (which varies between different types of transfers)
   # You can only transfer from one plate to another once, anything else is an error.
   belongs_to :source, class_name: 'Plate'
-  validates_presence_of :source
+  validates :source, presence: true
   scope :include_source, -> { includes(source: ModelExtensions::Plate::PLATE_INCLUDES) }
 
   belongs_to :destination, class_name: 'Labware'

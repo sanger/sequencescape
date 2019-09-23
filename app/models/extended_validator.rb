@@ -12,8 +12,8 @@ class ExtendedValidator < ApplicationRecord
 
     belongs_to :extended_validator
     belongs_to :request_type
-    validates_presence_of :extended_validator
-    validates_presence_of :request_type
+    validates :extended_validator, presence: true
+    validates :request_type, presence: true
   end
 
   after_initialize :import_behaviour
@@ -30,7 +30,7 @@ class ExtendedValidator < ApplicationRecord
   has_many :request_type_extened_validators, dependent: :destroy, class_name: 'ExtendedValidator::RequestTypeExtendedValidator'
   has_many :request_types, through: :request_type_extened_validators
 
-  validates_presence_of :behaviour
+  validates :behaviour, presence: true
   serialize :options
 
   scope :for_submission, ->(submission) {

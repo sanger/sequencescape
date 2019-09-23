@@ -12,7 +12,7 @@ class ReceptaclesController < ApplicationController
   def index
     if params[:study_id]
       @study = Study.find(params[:study_id])
-      @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
+      @assets = @study.assets_through_aliquots.order(created_at: :desc).page(params[:page])
     else
       @assets = Receptacle.page(params[:page])
     end
@@ -82,7 +82,7 @@ class ReceptaclesController < ApplicationController
                        else
                          "Receptacle #{@asset.name} was opened."
                        end
-      format.html { redirect_to(asset_url(@asset)) }
+      format.html { redirect_to(receptacle_path(@asset)) }
       format.xml  { head :ok }
     end
   end
@@ -93,7 +93,7 @@ class ReceptaclesController < ApplicationController
       @direct_printing = (@asset.printable_target == @asset)
     else
       flash[:error] = "#{@asset.display_name} does not have a barcode so a label can not be printed."
-      redirect_to asset_path(@asset)
+      redirect_to receptacle_path(@asset)
     end
   end
 
@@ -119,7 +119,7 @@ class ReceptaclesController < ApplicationController
     else
       flash[:error] = print_job.errors.full_messages.join('; ')
     end
-    redirect_to asset_url(@asset)
+    redirect_to receptacle_path(@asset)
   end
 
   def show_plate
@@ -233,7 +233,7 @@ class ReceptaclesController < ApplicationController
   end
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
+    new_request_receptacle_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
   end
 
   def discover_asset

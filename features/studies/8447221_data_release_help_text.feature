@@ -20,7 +20,7 @@ Feature: Update the data release fields for creating a study
       """
 
   Scenario Outline: Add help text opposite delay drop down (4044305)
-    When I select "<release strategy>" from "What is the data release strategy for this study?"
+    When I choose "<release strategy>" from "What is the data release strategy for this study?"
     When I select "delayed" from "How is the data release to be timed?"
     Then the help text for "Reason for delaying release" should contain:
       """
@@ -41,7 +41,7 @@ Feature: Update the data release fields for creating a study
       | Open (ENA)       |
 
   Scenario: Add help text to has this been approved for never release (4044343)
-    When I select "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
+    When I choose "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
     When I select "never" from "How is the data release to be timed?"
     Then the help text for "Has this been approved?" should contain:
       """
@@ -62,9 +62,10 @@ Feature: Update the data release fields for creating a study
   	    | Please explain the reason for delaying release     | some comment    |
   	    | Comment regarding data release timing and approval | another comment |
   	And I select "Jack Sponsor" from "Faculty Sponsor"
-    And I select "Yes" from "Do any of the samples in this study contain human DNA?"
-    And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
-    And I select "Open (ENA)" from "What is the data release strategy for this study?"
+    And I choose "Yes" from "Do any of the samples in this study contain human DNA?"
+    And I choose "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
+    And I choose "Yes" from "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"
+    And I choose "Open (ENA)" from "What is the data release strategy for this study?"
     When I press "Create"
     Then I should be on the study information page for "new study"
 

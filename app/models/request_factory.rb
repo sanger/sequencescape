@@ -5,7 +5,7 @@ class RequestFactory
         request_copy.target_asset_id = nil
         request_copy.state           = 'pending'
         request_copy.request_metadata_attributes = request.request_metadata.attributes
-        request_copy.created_at = Time.now
+        request_copy.created_at = Time.zone.now
       end
     end
   end

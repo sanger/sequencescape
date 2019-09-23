@@ -27,7 +27,7 @@ describe UserQuery do
   end
 
   it 'knows the details of the query, i.e. from, to, date' do
-    new_time = Time.local(2017, 2, 6, 12, 0, 0)
+    new_time = Time.zone.local(2017, 2, 6, 12, 0, 0)
     Timecop.freeze(new_time)
     expect(user_query.from).to eq 'another_email@example.com'
     expect(user_query.to).to eq 'admin@test.com'

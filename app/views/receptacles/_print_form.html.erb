@@ -1,7 +1,7 @@
 
 <h3>Print labels for <%= asset.label %> "<%= asset.name %>"</h3>
 <p>Choose your label printer</p>
-<%= form_tag print_assets_asset_path(asset), method: :post, class: "form-horizontal" do %>
+<%= form_tag print_assets_receptacle_path(asset), method: :post, class: "form-horizontal" do %>
   <div class="form-group">
     <label for="printable[<%= asset.id %>]" class="col-sm-2"><%= asset.label %></label>
     <div class="col-sm-10">
@@ -20,7 +20,7 @@
       <input type="hidden" name="printable[<%= asset.id %>]" />
     </div>
     <div class="com-sm-10">
-      <input type="submit" value="Print labels" class="btn btn-success"/> or <%= link_to "cancel", asset_path(asset) %>
+      <input type="submit" value="Print labels" class="btn btn-success"/> or <%= link_to "cancel", receptacle_path(asset) %>
     </div>
   </div>
 <% end %>

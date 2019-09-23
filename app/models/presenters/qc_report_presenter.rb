@@ -1,6 +1,6 @@
 class Presenters::QcReportPresenter
-  REPORT_IDENTITY = 'Sequencescape QC Report'
-  VERSION = '1.0.0'
+  REPORT_IDENTITY = 'Sequencescape QC Report'.freeze
+  VERSION = '1.0.0'.freeze
   HEADER_FIELDS = {
     'Study' => :study_name,
     'Product' => :product_name,
@@ -8,7 +8,7 @@ class Presenters::QcReportPresenter
     'Report Identifier' => :report_identifier,
     'Generated on' => :created_date,
     'Contents' => :new_or_all
-  }
+  }.freeze
 
   attr_reader :qc_report, :queue_count
 

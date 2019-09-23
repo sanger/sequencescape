@@ -104,7 +104,7 @@ module Submission::StateMachine
   end
   private :configure_state_machine
 
-  UnprocessedStates = %w[building pending processing]
+  UnprocessedStates = %w[building pending processing].freeze
   def configure_named_scopes
     scope :unprocessed, -> { where(state: UnprocessedStates) }
     scope :processed, -> { where(state: %w[ready failed]) }

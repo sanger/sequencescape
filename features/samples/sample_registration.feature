@@ -100,7 +100,7 @@ Feature: Registering samples
     And I press "Upload spreadsheet"
     Then I should be on the spreadsheet sample registration page for study "Testing registering samples"
     And the following samples should be in the sample registration fields:
-      |»Sample name Help     |Cohort|Country of origin|Geographical region|[ Array Express ] Gender|Volume (µl)| Ethnicity | DNA source | [ EGA (As subject id) ] Donor Id |
+      |Sample name Help     |Cohort|Country of origin|Geographical region|Array Express Gender|Volume (µl)| Ethnicity | DNA source | EGA (As subject id) Donor Id |
       |cn_dev_96_inc_blank_01|ro    |uk               |europe             |Male  |100        | Caucasian | Blood      | 12345    |
       |cn_dev_96_inc_blank_02|ro    |uk               |europe             |Female|100        | Caucasian | Blood      | 12345    |
       |cn_dev_96_inc_blank_03|ro    |uk               |europe             |Male  |100        | Caucasian | Blood      | 12345    |

@@ -62,7 +62,7 @@ module Tasks::AssignTubesToWellsHandler
   def find_incompatible_wells(params)
     invalid_wells = []
     @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well, requests|
-      next if requests.map { |r| r.shared_attributes }.uniq.count <= 1
+      next if requests.map(&:shared_attributes).uniq.count <= 1
 
       invalid_wells << well
     end

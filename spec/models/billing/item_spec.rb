@@ -8,7 +8,7 @@ describe Billing::Item, billing: true do
   let!(:billing_item) { create :billing_item }
 
   it 'has required attributes' do
-    expect(Billing::Item.count).to eq 1
+    expect(described_class.count).to eq 1
     expect(billing_item.request.class).to eq Request
     expect(billing_item.project_cost_code).to eq 'cost_code'
     expect(billing_item.units).to eq '30'

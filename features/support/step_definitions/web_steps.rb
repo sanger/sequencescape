@@ -83,6 +83,12 @@ When /^(?:|I )select "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value,
   end
 end
 
+When /^(?:|I )choose "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, _selector|
+  within_fieldset(field) do
+    choose(value, allow_label_click: true)
+  end
+end
+
 When /^(?:|I )select "([^"]*)" from the first "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
   with_scope(selector) do
     first(:select, field).select(value)
@@ -136,7 +142,7 @@ end
 Then /^the "([^"]*)" field(?: within "([^"]*)")? should contain "([^"]*)"$/ do |field, selector, value|
   with_scope(selector) do
     field = find_field(field)
-    field_value = (field.tag_name == 'textarea') ? field.text : field.value
+    field_value = field.tag_name == 'textarea' ? field.text : field.value
     assert_match(/#{value}/, field_value)
   end
 end
@@ -163,7 +169,7 @@ Then /^show me the page$/ do
   # it passes the source through Nokogiri
   # first and passes it out as xml.
   # require 'capybara/util/save_and_open_page'
-  Capybara.save_and_open_page("tmp/#{Time.now.strftime('%Y%m%d%H%M%S')}.htm")
+  Capybara.save_and_open_page("tmp/#{Time.zone.now.strftime('%Y%m%d%H%M%S')}.htm")
 end
 
 Given /^the "([^\"]*)" field is hidden$/ do |field_name|

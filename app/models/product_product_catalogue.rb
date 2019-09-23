@@ -6,6 +6,6 @@ class ProductProductCatalogue < ApplicationRecord
   belongs_to :product
   belongs_to :product_catalogue
 
-  validates_presence_of :product
-  validates_presence_of :product_catalogue
+  validates :product, presence: true
+  validates :product_catalogue, presence: true
 end

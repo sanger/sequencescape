@@ -4,7 +4,7 @@ class StockStamper
   attr_accessor :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :overage, :file_content
   attr_reader :destination_plate_type_name, :user_barcode, :user, :plate_type, :plate
 
-  validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage
+  validates :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage, presence: true
 
   validates :plate, presence: { message: 'is not registered in Sequencescape' }, if: :destination_plate_barcode?
   validates :plate_type, presence: { message: 'is not registered in Sequencescape' }, if: :destination_plate_type_name?
@@ -31,7 +31,7 @@ class StockStamper
     destination_barcode = "#{plate.machine_barcode}_d"
     data_object = {
       'user' => user.login,
-      'time' => Time.now,
+      'time' => Time.zone.now,
       'source' => {
         source_barcode => { 'name' => source_plate_type_name.tr('_', "\s"), 'plate_size' => plate.size }
       },

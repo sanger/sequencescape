@@ -5,7 +5,7 @@ class SubmissionsController < ApplicationController
 
   before_action :lab_manager_login_required, only: [:change_priority]
 
-  after_action :set_cache_disabled!, only: [:new, :index]
+  after_action :set_cache_disabled!, only: %i[new index]
 
   # The main landing page for creating a new submission. Lots of ajax action!
   def new

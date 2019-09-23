@@ -41,6 +41,7 @@ class Sample < ApplicationRecord
   include StandardNamedScopes
   include SharedBehaviour::Named
   include Aliquot::Aliquotable
+  include Commentable
 
   extend EventfulRecord
   extend ValidationStateGuard
@@ -50,7 +51,6 @@ class Sample < ApplicationRecord
     include ReferenceGenome::Associations
     association(:reference_genome, :name, required: true)
 
-    custom_attribute(:organism)
     custom_attribute(:organism)
     custom_attribute(:cohort)
     custom_attribute(:country_of_origin)
@@ -109,6 +109,18 @@ class Sample < ApplicationRecord
     custom_attribute(:subject)
     custom_attribute(:disease)
 
+    # These fields are warehoused, so need to match the encoding restrictions there
+    # This excludes supplementary characters, which include emoji and rare kanji
+    # @note phenotype isn't currently broadcast but has a field waiting in the warehouse
+    validates :organism, :cohort, :country_of_origin, :geographical_region,
+              :ethnicity, :supplier_plate_id, :mother, :father, :replicate, :donor_id,
+              :sample_public_name, :sample_common_name, :sample_strain_att,
+              :sample_description, :developmental_stage, :phenotype,
+              utf8mb3: true
+    # These fields are restricted further as they aren't expected to ever contain anything more than ASCII
+    validates :sample_ebi_accession_number,
+              format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII', allow_blank: true }
+
     with_options(if: :validating_ena_required_fields?) do
       validates :service_specific_fields, presence: true
     end
@@ -153,6 +165,15 @@ class Sample < ApplicationRecord
   # Sample::Metadata tracks sample information, either for use in the lab, or passing to
   # the EBI
   class Metadata
+    # This constraint doesn't match that described in the manifest, and is more permissive
+    # It was added on conversion of out database to utf8 to address concerns that this would
+    # lead to an increase in characters that their pipeline cannot process. Only a handful
+    # of current samples violate this constraint.
+    # We need to:
+    # 1) Understand what the actual constraints are for supplier_name
+    # 2) Apply appropriate constraints
+    # 3) Ensure the help text in sample manifest matches
+    validates :supplier_name, format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII' }, if: :supplier_name_changed?
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
     # and the values can be easily remapped
@@ -197,7 +218,6 @@ class Sample < ApplicationRecord
   has_many :studies, through: :study_samples, inverse_of: :samples
 
   has_many :roles, as: :authorizable, dependent: :destroy, inverse_of: :authorizable
-  has_many :comments, as: :commentable, dependent: :destroy, inverse_of: :commentable
   has_many :asset_groups, through: :receptacles
 
   has_many :requests, through: :assets
@@ -267,20 +287,20 @@ class Sample < ApplicationRecord
   scope :for_plate_and_order, lambda { |plate_id, order_id|
     joins([
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
-      'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
+      'INNER JOIN receptacles AS rc ON rc.id = aliquots.receptacle_id',
       'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
       'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
     ])
-      .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
+      .where(['rc.labware_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
   scope :for_plate_and_order_as_target, lambda { |plate_id, order_id|
     joins([
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
-      'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
+      'INNER JOIN receptacles AS rc ON rc.id = aliquots.receptacle_id',
       'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
     ])
-      .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
+      .where(['rc.labware_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
   scope :without_accession, lambda {

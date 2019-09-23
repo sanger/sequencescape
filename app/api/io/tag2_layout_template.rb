@@ -2,7 +2,7 @@
 class ::Io::Tag2LayoutTemplate < ::Core::Io::Base
   set_model_for_input(::Tag2LayoutTemplate)
   set_json_root(:tag2_layout_template)
-  set_eager_loading { |model| model.include_tag } # TODO: uncomment and add any named_scopes that do includes you need
+  set_eager_loading(&:include_tag) # TODO: uncomment and add any named_scopes that do includes you need
 
   define_attribute_and_json_mapping("
                  name  => name

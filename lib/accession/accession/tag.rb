@@ -11,7 +11,7 @@ module Accession
 
     validates_presence_of :name, :groups
 
-    DEFAULT_ATTRIBUTES = { services: [] }
+    DEFAULT_ATTRIBUTES = { services: [] }.freeze
 
     def initialize(attributes = {})
       super(DEFAULT_ATTRIBUTES.merge(attributes))
@@ -55,7 +55,7 @@ module Accession
     end
 
     def attributes
-      [:services, :value, :name, :groups, :ebi_name]
+      %i[services value name groups ebi_name]
     end
   end
 end

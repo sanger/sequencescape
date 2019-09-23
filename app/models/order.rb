@@ -96,12 +96,8 @@ class Order < ApplicationRecord
     end
   end
 
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    def assets=(assets_to_add)
-      super(assets_to_add.map { |a| a.is_a?(Receptacle) ? a : a.receptacle })
-    end
+  def assets=(assets_to_add)
+    super(assets_to_add.map { |a| a.is_a?(Receptacle) ? a : a.receptacle })
   end
 
   # We can't destroy orders once the submission has been finalized for building
@@ -268,20 +264,8 @@ class Order < ApplicationRecord
 
   private
 
-  # This block is disabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happens now
-  AssetRefactor.when_not_refactored do
-    def asset_applicable_to_type?(request_type, asset)
-      request_type.asset_type == asset.asset_type_for_request_types.name
-    end
-  end
-
-  # This block is enabled when we have the labware table present as part of the AssetRefactor
-  # Ie. This is what will happen in future
-  AssetRefactor.when_refactored do
-    def asset_applicable_to_type?(request_type, asset)
-      request_type.asset_type == asset.asset_type_for_request_types.name
-    end
+  def asset_applicable_to_type?(request_type, asset)
+    request_type.asset_type == asset.asset_type_for_request_types.name
   end
 
   def no_consent_withdrawl

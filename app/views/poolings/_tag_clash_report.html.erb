@@ -13,9 +13,9 @@
                   <dt>Sample</dt>
                   <dd><%= link_to clash_aliquot.sample.friendly_name, clash_aliquot.sample %></dd>
                   <dt>Library</dt>
-                  <dd><%= link_to(clash_aliquot.library.external_identifier, asset_path(clash_aliquot.library)) if clash_aliquot.library %></dd>
+                  <dd><%= link_to(clash_aliquot.library.external_identifier, receptacle_path(clash_aliquot.library)) if clash_aliquot.library %></dd>
                   <dt>Scanned Tube</dt>
-                  <dd><%= link_to(clash_aliquot.asset.human_barcode, asset_path(clash_aliquot.asset)) %></dd>
+                  <dd><%= link_to(clash_aliquot.asset.human_barcode, receptacle_path(clash_aliquot.asset)) %></dd>
                 </dl>
               </li>
             <% end %>

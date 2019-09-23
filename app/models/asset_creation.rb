@@ -7,9 +7,9 @@ class AssetCreation < ApplicationRecord
   extend ModelExtensions::Plate::NamedScopeHelpers
 
   belongs_to :user
-  validates_presence_of :user
+  validates :user, presence: true
 
-  validates_presence_of :parent
+  validates :parent, presence: true
 
   delegate :nil?, to: :parent, prefix: true
   private :parent_nil?

@@ -1,5 +1,9 @@
 xml.instruct!
 xml.asset(api_data) {
+  xml.comment! <<~COMMENT
+    WARNING: This endpoint is maintained to allow legacy systems to transition away from it.
+    Asset has been deprecated. This page shows the receptacle #{@asset.id}.
+  COMMENT
   xml.id          @asset.id
   xml.type        @asset.legacy_asset_type
   xml.name        @asset.name

@@ -41,7 +41,7 @@ class MultiplexedCherrypickingTask < Task
   end
 
   def target_plate(barcode, plate_purpose_id)
-    return Plate.with_barcode(barcode).first unless barcode.blank?
+    return Plate.with_barcode(barcode).first if barcode.present?
 
     PlatePurpose.find(plate_purpose_id).create!
   end

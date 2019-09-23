@@ -20,7 +20,7 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
 }
 
   context 'A QcReportPresenter' do
-    STATE_ARRAY = %w[passed failed]
+    STATE_ARRAY = %w[passed failed].freeze
 
     setup do
       @product = create :product, name: 'Demo Product'

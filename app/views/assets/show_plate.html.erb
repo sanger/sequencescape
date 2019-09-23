@@ -1,7 +1,4 @@
-
-<p>
-Plate <%= h(@asset.display_name) %> Barcode <%= @asset.human_barcode  %>
-</p>
+<%= page_title @asset.display_name, @asset.human_barcode %>
 
 <%= render partial: "shared/show_plate", locals: {plate: @asset} %>
 <br />

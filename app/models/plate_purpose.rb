@@ -63,7 +63,7 @@ class PlatePurpose < Purpose
   # relate to all wells of the plate, otherwise only the selected ones are updated.
   def transition_to(plate, state, _user, contents = nil, customer_accepts_responsibility = false)
     wells = plate.wells
-    wells = wells.located_at(contents) unless contents.blank?
+    wells = wells.located_at(contents) if contents.present?
 
     transition_state_requests(wells, state)
     fail_stock_well_requests(wells, customer_accepts_responsibility) if state == 'failed'

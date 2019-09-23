@@ -17,9 +17,9 @@ class Item < ApplicationRecord
   has_many :requests, dependent: :destroy
   has_many :comments, as: :commentable
 
-  validates_presence_of :version
-  validates_presence_of :name
-  validates_uniqueness_of :name, scope: [:version], on: :create, message: 'already in use (item)'
+  validates :version, presence: true
+  validates :name, presence: true
+  validates :name, uniqueness: { scope: [:version], on: :create, message: 'already in use (item)' }
 
   scope :for_search_query, ->(query) {
                              where(['name LIKE ? OR id=?', "%#{query}%", query])

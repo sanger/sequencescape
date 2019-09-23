@@ -11,7 +11,7 @@ module Sanger
             source_barcode_index = source_barcode_to_plate_index(data_object['destination'])
             buffer_data = buffers(data_object, total_volume)
             output_file_contents = [header(data_object)]
-            unless buffer_data.blank?
+            if buffer_data.present?
               output_file_contents << buffer_data
               output_file_contents << buffer_seperator
             end

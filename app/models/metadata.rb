@@ -8,7 +8,7 @@ module Metadata
     build_association(as_class, options)
   end
 
-  SECTION_FIELDS = [:edit_info, :help, :label, :unspecified]
+  SECTION_FIELDS = %i[edit_info help label unspecified].freeze
   Section = Struct.new(*SECTION_FIELDS, :label_options)
 
   private
@@ -23,7 +23,7 @@ module Metadata
     has_one association_name, default_options.merge(options)
     accepts_nested_attributes_for(association_name, update_only: true)
 
-    scope :"include_#{ association_name }", -> { includes(association_name) } unless respond_to?(:"include_#{ association_name }")
+    scope :"include_#{association_name}", -> { includes(association_name) } unless respond_to?(:"include_#{association_name}")
 
     # We now ensure that, if the metadata is not already created, that a blank instance is built.  We cannot
     # do this through the initialization of our model because we use the ActiveRecord::Base#becomes method in
@@ -175,7 +175,7 @@ module Metadata
             I18n.t(
               section,
               scope: [:metadata, metadata_attribute_path(field)].flatten,
-              default: I18n.t(section, scope: [:metadata, :defaults])
+              default: I18n.t(section, scope: %i[metadata defaults])
             )
           end << {})
         )

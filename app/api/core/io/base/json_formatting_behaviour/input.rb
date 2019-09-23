@@ -50,7 +50,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
           if model.nil?
             [nil, step]
           elsif association = model.reflections[step]
-            raise StandardError, 'Nested attributes only works with belongs_to or has_one' unless [:belongs_to, :has_one].include?(association.macro.to_sym)
+            raise StandardError, 'Nested attributes only works with belongs_to or has_one' unless %i[belongs_to has_one].include?(association.macro.to_sym)
 
             [association.klass, :"#{step}_attributes"]
           else

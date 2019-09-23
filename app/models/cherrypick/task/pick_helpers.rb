@@ -8,7 +8,7 @@ module Cherrypick::Task::PickHelpers
   end
 
   def valid_float_param?(input_value)
-    !input_value.blank? && (input_value.to_f > 0.0)
+    input_value.present? && (input_value.to_f > 0.0)
   end
   private :valid_float_param?
 end

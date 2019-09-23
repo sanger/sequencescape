@@ -1,4 +1,4 @@
-# {include:file:static_docs/api_v1.md}
+# {include:file:docs/api_v1.md}
 module Api
   # Sinatra application which provides routing for the V1 API
   # Automatically generates routes from the files listed under `app/api/endpoints`
@@ -146,11 +146,11 @@ module Api
 
     # Report the performance and status of any request
     def report(handler)
-      start = Time.now
+      start = Time.zone.now
       Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
       yield
     ensure
-      Rails.logger.info("API[handled]: #{handler}: #{request.fullpath} in #{Time.now - start}s")
+      Rails.logger.info("API[handled]: #{handler}: #{request.fullpath} in #{Time.zone.now - start}s")
     end
     private :report
 
@@ -176,8 +176,8 @@ module Api
     def handle_request(handler, http_request, action, parts)
       endpoint_lookup, io_lookup =
         case handler
-        when :instance then [:endpoint_for_object, :lookup_for_object]
-        when :model    then [:endpoint_for_class,  :lookup_for_class]
+        when :instance then %i[endpoint_for_object lookup_for_object]
+        when :model    then %i[endpoint_for_class lookup_for_class]
         else raise StandardError, "Unexpected handler #{handler.inspect}"
         end
 
@@ -217,7 +217,7 @@ module Api
       read: :get,
       update: :put,
       delete: :delete
-    }
+    }.freeze
 
     ACTIONS_TO_HTTP_VERBS.each do |action, verb|
       instance_action(action, verb)

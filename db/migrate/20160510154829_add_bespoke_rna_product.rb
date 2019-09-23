@@ -2,7 +2,7 @@
 class AddBespokeRnaProduct < ActiveRecord::Migration
   DNA_LIBRARIES = [
     # No DNA libraries
-  ]
+  ].freeze
   RNA_LIBRARIES = [
     'RNA-seq dUTP',
     'RNA-seq dUTP eukaryotic',
@@ -13,14 +13,14 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
     'Small RNA',
     'TruSeq mRNA (RNA Seq)',
     'DAFT-seq'
-  ]
+  ].freeze
 
   RNA_CONFIG = {
     concentration: { less_than: 1 },
     concentration_from_normalization: { less_than: 1 },
     rin: { less_than: 6 },
     gender_markers: {}
-  }
+  }.freeze
 
   def product_catalogue
     @product_catalogue ||= ProductCatalogue.find_by!(name: 'GenericPCR')

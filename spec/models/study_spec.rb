@@ -111,7 +111,7 @@ RSpec.describe Study, type: :model do
         end
 
         it 'be in the awaiting ethical approval list' do
-          expect(Study.awaiting_ethical_approval).to include(study)
+          expect(described_class.awaiting_ethical_approval).to include(study)
         end
       end
 
@@ -123,7 +123,7 @@ RSpec.describe Study, type: :model do
         end
 
         it 'not appear in the awaiting ethical approval list' do
-          expect(Study.awaiting_ethical_approval).not_to include(study)
+          expect(described_class.awaiting_ethical_approval).not_to include(study)
         end
       end
     end
@@ -188,8 +188,8 @@ RSpec.describe Study, type: :model do
       end
 
       it 'show in the filters' do
-        expect(Study.with_remove_x_and_autosomes).to include(study_remove)
-        expect(Study.with_remove_x_and_autosomes).not_to include(study_keep)
+        expect(described_class.with_remove_x_and_autosomes).to include(study_remove)
+        expect(described_class.with_remove_x_and_autosomes).not_to include(study_keep)
       end
     end
 
@@ -270,7 +270,7 @@ RSpec.describe Study, type: :model do
       end
 
       it 'not cancel any associated requests' do
-        expect(study.requests).to be_all { |request| request.passed? }
+        expect(study.requests).to be_all(&:passed?)
       end
     end
 
@@ -362,11 +362,11 @@ RSpec.describe Study, type: :model do
       let!(:study_8) { create(:not_app_study) }
 
       it 'include studies that adhere to accessioning guidelines' do
-        expect(Study.for_sample_accessioning.count).to eq(5)
+        expect(described_class.for_sample_accessioning.count).to eq(5)
       end
 
       it 'not include studies that do not have accession numbers' do
-        studies = Study.for_sample_accessioning
+        studies = described_class.for_sample_accessioning
         expect(studies).not_to include(study_1)
         expect(studies).not_to include(study_4)
       end
@@ -374,11 +374,11 @@ RSpec.describe Study, type: :model do
       it 'not include studies that do not have the correct data release timings' do
         expect(study_7.study_metadata.update!(data_release_timing: Study::DATA_RELEASE_TIMING_NEVER, data_release_prevention_reason: 'data validity', data_release_prevention_approval: 'Yes',
                                               data_release_prevention_reason_comment: 'blah, blah, blah')).to be_truthy
-        expect(Study.for_sample_accessioning.count).to eq(4)
+        expect(described_class.for_sample_accessioning.count).to eq(4)
       end
 
       it 'not include studies that do not have the correct data release strategies' do
-        studies = Study.for_sample_accessioning
+        studies = described_class.for_sample_accessioning
         expect(studies).not_to include(study_8)
       end
     end

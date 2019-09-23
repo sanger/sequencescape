@@ -12,7 +12,7 @@ class Api::Messages::PacBioRunIO < Api::Base
     map_attribute_to_json_attribute(:human_barcode, 'plate_barcode')
     map_attribute_to_json_attribute(:uuid, 'plate_uuid_lims')
 
-    with_nested_has_many_association(:wells) do
+    with_nested_has_many_association(:wells_in_column_order, as: 'wells') do
       map_attribute_to_json_attribute(:map_description, 'well_label')
       map_attribute_to_json_attribute(:uuid, 'well_uuid_lims')
 

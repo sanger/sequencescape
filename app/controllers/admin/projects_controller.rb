@@ -13,8 +13,7 @@ class Admin::ProjectsController < ApplicationController
     'not approved' => :unapproved,
     'unallocated division' => :with_unallocated_budget_division,
     'unallocated manager' => :with_unallocated_manager
-  }
-  BY_SCOPES.default = :scoped
+  }.freeze
 
   def index
     @projects = Project.alphabetical
@@ -44,7 +43,7 @@ class Admin::ProjectsController < ApplicationController
   def filter
     filters = params[:filter] || {}
 
-    by_scope = BY_SCOPES[filters[:by]]
+    by_scope = BY_SCOPES.fetch(filters[:by], :scoped)
 
     base_scope = Project.send(by_scope).in_state(filters[:status]).alphabetical
 
@@ -61,7 +60,7 @@ class Admin::ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     redirect_if_not_owner_or_admin(@project)
 
-    unless params[:project][:uploaded_data].blank?
+    if params[:project][:uploaded_data].present?
       document_settings = {}
       document_settings[:uploaded_data] = params[:project][:uploaded_data]
       doc = Document.create(document_settings)
@@ -80,18 +79,18 @@ class Admin::ProjectsController < ApplicationController
       flash[:notice] = 'Your project has been updated'
       redirect_to controller: 'admin/projects', action: 'update', id: @project.id
     else
-      logger.warn "Failed to update attributes: #{@project.errors.map { |e| e.to_s }}"
+      logger.warn "Failed to update attributes: #{@project.errors.map(&:to_s)}"
       flash[:error] = 'Failed to update attributes for project!'
       render action: :show, id: @project.id and return
     end
   end
 
   def sort
-    @projects = Project.all.sort_by { |project| project.name }
+    @projects = Project.all.sort_by(&:name)
     if params[:sort] == 'date'
-      @projects = @projects.sort_by { |project| project.created_at }
+      @projects = @projects.sort_by(&:created_at)
     elsif params[:sort] == 'owner'
-      @projects = @projects.sort_by { |project| project.user_id }
+      @projects = @projects.sort_by(&:user_id)
     end
     render partial: 'projects'
   end

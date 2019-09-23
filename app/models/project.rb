@@ -18,7 +18,7 @@ class Project < ApplicationRecord
     Project.aasm.states.map(&:name)
   end
 
-  ACTIVE_STATE = 'active'
+  ACTIVE_STATE = 'active'.freeze
   has_many_events
   has_many_lab_events
 
@@ -30,15 +30,15 @@ class Project < ApplicationRecord
     state :inactive
 
     event :reset do
-      transitions to: :pending, from: [:inactive, :active]
+      transitions to: :pending, from: %i[inactive active]
     end
 
     event :activate do
-      transitions to: :active, from: [:pending, :inactive]
+      transitions to: :active, from: %i[pending inactive]
     end
 
     event :deactivate do
-      transitions to: :inactive, from: [:pending, :active]
+      transitions to: :inactive, from: %i[pending active]
     end
   end
 
@@ -54,8 +54,8 @@ class Project < ApplicationRecord
   has_many :sample_manifests
   has_many :aliquots
 
-  validates_presence_of :name, :state
-  validates_uniqueness_of :name, on: :create, message: "already in use (#{name})"
+  validates :name, :state, presence: true
+  validates :name, uniqueness: { on: :create, message: "already in use (#{name})" }
 
   scope :for_search_query, ->(query) {
     where(['name LIKE ? OR id=?', "%#{query}%", query])
@@ -76,6 +76,8 @@ class Project < ApplicationRecord
     roles = Role.arel_table
     joins(:roles).on(roles[:name].eq('manager')).where(roles[:id].eq(nil))
   }
+
+  squishify :name
 
   def owners
     role = roles.detect { |r| r.name == 'owner' }
@@ -128,7 +130,7 @@ class Project < ApplicationRecord
     'Internal',
     'External',
     'External - own machine'
-  ]
+  ].freeze
 
   extend Metadata
   # @!parse class Project::Metadata < Metadata::Base; end

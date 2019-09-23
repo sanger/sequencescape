@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Core::Benchmarking
   def self.registered(app)
     app.helpers self

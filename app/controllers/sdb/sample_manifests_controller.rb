@@ -1,6 +1,6 @@
 class Sdb::SampleManifestsController < Sdb::BaseController
-  before_action :set_sample_manifest_id, only: [:show, :generated, :print_labels]
-  before_action :validate_type, only: [:new, :create]
+  before_action :set_sample_manifest_id, only: %i[show generated print_labels]
+  before_action :validate_type, only: %i[new create]
 
   LIMIT_ERROR_LENGTH = 10000
 
@@ -20,11 +20,11 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def new
     params[:only_first_label] ||= false
-    @sample_manifest  = SampleManifest.new(new_manifest_params)
-    @study_id         = params[:study_id] || ''
-    @studies          = Study.alphabetical.pluck(:name, :id)
-    @suppliers        = Supplier.alphabetical.pluck(:name, :id)
-    @purposes         = @sample_manifest.acceptable_purposes.pluck(:name, :id)
+    @sample_manifest = SampleManifest.new(new_manifest_params)
+    @study_id = params[:study_id] || ''
+    @studies = Study.alphabetical.pluck(:name, :id)
+    @suppliers = Supplier.alphabetical.pluck(:name, :id)
+    @purposes = @sample_manifest.acceptable_purposes.pluck(:name, :id)
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
   end

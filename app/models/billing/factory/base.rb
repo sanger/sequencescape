@@ -20,7 +20,7 @@ module Billing
       end
 
       def passed_date=(request)
-        return unless request.present?
+        return if request.blank?
 
         @passed_date = request.date_for_state('passed')
       end
@@ -32,7 +32,7 @@ module Billing
       end
 
       def billing_product=(request)
-        return unless request.present?
+        return if request.blank?
 
         @billing_product = request.billing_product
       end

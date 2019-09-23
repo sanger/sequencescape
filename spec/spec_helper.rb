@@ -21,6 +21,9 @@
 
 require 'simplecov'
 
+require 'webdrivers/chromedriver'
+Webdrivers::Chromedriver.update
+
 require 'factory_bot'
 require 'capybara/rspec'
 require 'selenium/webdriver'
@@ -36,19 +39,13 @@ require 'pry'
 
 Capybara.register_driver :headless_chrome do |app|
   enable_chrome_headless_downloads(
-    Capybara.drivers[:selenium_chrome_headless].call(app),
-    DownloadHelpers::PATH.to_s
+    Capybara.drivers[:selenium_chrome_headless].call(app)
   )
 end
 
-def enable_chrome_headless_downloads(driver, directory)
-  bridge = driver.browser.send(:bridge)
-  path = "/session/#{bridge.session_id}/chromium/send_command"
-  bridge.http.call(:post, path, cmd: 'Page.setDownloadBehavior',
-                                params: {
-                                  behavior: 'allow',
-                                  downloadPath: directory
-                                })
+def enable_chrome_headless_downloads(driver)
+  driver.options[:options].add_preference(:download, default_directory: Capybara.save_path)
+  driver.browser.download_path = Capybara.save_path
   driver
 end
 

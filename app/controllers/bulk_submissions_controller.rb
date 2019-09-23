@@ -7,9 +7,9 @@ class BulkSubmissionsController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :find_submission_template_groups, only: [:new, :create]
+  before_action :find_submission_template_groups, only: %i[new create]
 
-  DEFAULT_SUBMISSION_TEMPLATE_GROUP = 'General'
+  DEFAULT_SUBMISSION_TEMPLATE_GROUP = 'General'.freeze
 
   def index
     redirect_to action: 'new'

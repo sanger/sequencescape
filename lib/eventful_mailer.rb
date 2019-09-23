@@ -1,5 +1,5 @@
 class EventfulMailer < ActionMailer::Base
-  def confirm_event(receiver, eventful, message, content, _milestone, sent_at = Time.now)
+  def confirm_event(receiver, eventful, message, content, _milestone, sent_at = Time.zone.now)
     @eventful = eventful
     @message = message
     @content = content
@@ -11,7 +11,7 @@ class EventfulMailer < ActionMailer::Base
     )
   end
 
-  def update_event(receiver, study, title, content, sent_at = Time.now)
+  def update_event(receiver, study, title, content, sent_at = Time.zone.now)
     @study = study
     @message = title
     @content = content
@@ -23,7 +23,7 @@ class EventfulMailer < ActionMailer::Base
     )
   end
 
-  def confirm_sample_event(receiver, eventful, message, content, _milestone, sent_at = Time.now)
+  def confirm_sample_event(receiver, eventful, message, content, _milestone, sent_at = Time.zone.now)
     @eventful = eventful
     @message = message
     @content = content
@@ -35,7 +35,7 @@ class EventfulMailer < ActionMailer::Base
     )
   end
 
-  def notify_request_fail(receiver, item, request, message, sent_at = Time.now)
+  def notify_request_fail(receiver, item, request, message, sent_at = Time.zone.now)
     @item = item
     @request = request
     @message = message
@@ -47,7 +47,7 @@ class EventfulMailer < ActionMailer::Base
     )
   end
 
-  def fail_attempt(receiver, request, sent_at = Time.now)
+  def fail_attempt(receiver, request, sent_at = Time.zone.now)
     @request = request
     mail(
       from: (configatron.sequencescape_email).to_s,
@@ -57,7 +57,7 @@ class EventfulMailer < ActionMailer::Base
     )
   end
 
-  def confirm_external_release_event(receiver, eventful, message, content, _milestone, sent_at = Time.now)
+  def confirm_external_release_event(receiver, eventful, message, content, _milestone, sent_at = Time.zone.now)
     @eventful = eventful
     @message = message
     @content = content

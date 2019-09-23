@@ -18,6 +18,7 @@ li a:visited { color: #444488; }
 .page-header {
   h1 { @extend .display-4;
     .subtitle { @extend .text-muted; @extend .font-weight-light; font-size: 50%; }
+    .title-badge { font-size: 50%; }
   }
   h1.title-long {
     font-size: 2rem
@@ -1100,9 +1101,17 @@ ul#orders > li.buttons {
 #asset_input_methods td.separator { vertical-align: middle; }
 
 label.required:after {
-  content: " \00BB"; /* &raquo; */
-  color: #880000;
+  content: fa-content($fa-var-asterisk);
+  padding: 0 0.5em;
+  @extend .text-warning;
+  @extend .fa;
 }
+
+.sqs-form  {
+  legend { @extend .col-form-label;  }
+}
+
+
 .sample_row.disabled, .sample_row.disabled input {
   background-color: #ddd;
 }
@@ -1302,8 +1311,6 @@ ul#orders li.order { text-align: left;}
 }
 
 .selected { background-color: inherit;}
-
-.nav.nav-tabs { border-bottom: inherit; }
 
 .nav.nav-tabs li a { color: inherit;}
 

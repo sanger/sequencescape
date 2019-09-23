@@ -14,6 +14,7 @@ module SampleManifestExcel
 
       validates_presence_of :start_row, :file
       validates :file_extension, inclusion: { in: ['.csv', '.xlsx'].freeze, message: 'is unsupported; should be csv or xlsx' }
+      validate :file_errors_empty
 
       ##
       # The file is opened as a Roo spreadsheet.
@@ -22,14 +23,15 @@ module SampleManifestExcel
       def initialize(file, start_row)
         @file = file
         @start_row = start_row
+        @file_errors = nil
         if valid?
-          @sheet = Roo::Spreadsheet.open(file).sheet(0)
-          @header_row = sheet.row(start_row)
-          @data = sheet.drop(start_row)
-        else
-          @header_row = []
-          @data = []
+          @sheet = read_sheet
+          @header_row = sheet&.row(start_row)
+          @data = sheet&.drop(start_row)
         end
+      ensure
+        @header_row ||= []
+        @data ||= []
       end
 
       def each(&block)
@@ -56,6 +58,20 @@ module SampleManifestExcel
           val = row[col_num - 1]
           strip_all_blanks(val)
         end
+      end
+
+      def read_sheet
+        Roo::Spreadsheet.open(file).sheet(0)
+      # In production we see a variety of errors here, all of which indicate problems with the manifest
+      rescue StandardError => e
+        # We store the errors in an instance variable, as otherwise they get lost on any subsequent
+        # calls to #valid?
+        @file_errors = "could not be read: #{e.message}"
+        nil
+      end
+
+      def file_errors_empty
+        errors.add(:file, @file_errors) if @file_errors.present?
       end
 
       def inspect

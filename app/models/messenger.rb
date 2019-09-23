@@ -1,6 +1,8 @@
+# Messengers handle passing a target into a message template
+# for rendering warehouse messages
 class Messenger < ApplicationRecord
-  belongs_to :target, polymorphic: true
-  validates_presence_of :target, :root, :template
+  belongs_to :target, ->(messenger) { includes(messenger.render_class.includes) }, polymorphic: true
+  validates :target, :root, :template, presence: true
   broadcast_via_warren
 
   def shoot

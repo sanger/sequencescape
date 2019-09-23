@@ -2,9 +2,9 @@ class PipelinesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_pipeline_by_id, only: [:show, :activate, :deactivate, :destroy, :batches]
-  before_action :lab_manager_login_required, only: [:update_priority, :deactivate, :activate]
-  before_action :prepare_batch_and_pipeline, only: [:summary, :finish]
+  before_action :find_pipeline_by_id, only: %i[show activate deactivate destroy batches]
+  before_action :lab_manager_login_required, only: %i[update_priority deactivate activate]
+  before_action :prepare_batch_and_pipeline, only: %i[summary finish]
 
   after_action :set_cache_disabled!, only: [:show]
 
@@ -21,7 +21,6 @@ class PipelinesController < ApplicationController
   def show
     expires_now
     @show_held_requests = (params[:view] == 'all')
-    @current_page       = params[:page]
 
     @pending_batches     = @pipeline.batches.pending_for_ui.includes_for_ui
     @batches_in_progress = @pipeline.batches.in_progress_for_ui.includes_for_ui
@@ -36,19 +35,19 @@ class PipelinesController < ApplicationController
     if @pipeline.group_by_parent?
       # We use the inbox presenter
       @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
-      @requests_waiting  = @inbox_presenter.requests_waiting
+      @requests_waiting = @inbox_presenter.requests_waiting
     elsif @pipeline.group_by_submission?
       # Convert to an array now as otherwise the comments counter attempts to be too clever
       # and treats the requests like a scope. Not only does this result in a more complicated
       # query, but also an invalid one
-      @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
-      requests = @pipeline.requests.inbox(@show_held_requests, @current_page).to_a
+      @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
+      requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
       @grouped_requests = requests.group_by(&:submission_id)
       @requests_comment_count = Comment.counts_for(requests)
       @assets_comment_count = Comment.counts_for(requests.map(&:asset))
     else
-      @requests_waiting = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
-      @requests = @pipeline.requests.inbox(@show_held_requests, @current_page).to_a
+      @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
+      @requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
       # We convert to an array here as otherwise tails tries to be smart
       # and use the scope. Not only does it fail, but we may as well cache
       # the result now anyway.
@@ -105,7 +104,7 @@ class PipelinesController < ApplicationController
 
   # to modify when next_request will be ready
   def update_priority
-    request  = Request.find(params[:request_id])
+    request = Request.find(params[:request_id])
     ActiveRecord::Base.transaction do
       request.update_priority
       render plain: '', layout: false

@@ -103,8 +103,7 @@ namespace :limber do
         barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
         cherrypickable_target: true,
         size: 96,
-        asset_shape: AssetShape.find_by(name: 'Standard'),
-        barcode_for_tecan: 'ean13_barcode'
+        asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
 
@@ -120,8 +119,7 @@ namespace :limber do
         barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
         cherrypickable_target: false,
         size: 96,
-        asset_shape: AssetShape.find_by(name: 'Standard'),
-        barcode_for_tecan: 'ean13_barcode'
+        asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
   end

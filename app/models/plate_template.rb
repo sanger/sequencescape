@@ -29,7 +29,7 @@ class PlateTemplate < Plate
   def stamp_to(plate)
     ActiveRecord::Base.transaction do
       wells.each do |well|
-        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map { |a| a.dup }
+        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map(&:dup)
       end
     end
   end

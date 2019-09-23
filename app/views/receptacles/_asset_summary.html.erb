@@ -17,12 +17,6 @@
     <th>Type</th>
     <td><%= asset.label %></td>
   </tr>
-  <% if asset.respond_to? :purpose %>
-  <tr>
-    <th>Purpose</th>
-    <td><%= asset.purpose.try(:name)||'Unknown' %></td>
-  </tr>
-  <% end %>
   <% if asset.is_a?(Lane) %>
     <tr>
     <th>Data to be released externally?</th>
@@ -58,9 +52,22 @@
       <th>Plate</th>
       <td>
         <% if asset.plate.present? %>
-          <%= link_to asset.plate.human_barcode, asset_path(asset.plate) %>
+          <%= link_to asset.plate.human_barcode, labware_path(asset.plate) %>
+          <%= asset.plate.details %>
         <% else %>
           No plate
+        <% end %>
+      </td>
+    </tr>
+  <% elsif asset.respond_to?(:labware) %>
+    <tr>
+      <th>Labware</th>
+      <td>
+        <% if asset.labware.present? %>
+          <%= link_to asset.labware.display_name, labware_path(asset.labware) %>
+          <%= asset.labware.details %>
+        <% else %>
+          No labware
         <% end %>
       </td>
     </tr>

@@ -22,13 +22,13 @@ namespace :benchmark do
     end
     puts ''
 
-    start = Time.now
+    start = Time.zone.now
     $stdout.puts "Starting #{start}"
     15.times do
       Transfer::BetweenPlates.create!(source: stock, destination: targets.pop, transfers: all_wells.clone, user: user)
       $stdout.print '.'
     end
     $stdout.puts
-    $stdout.puts "Took #{Time.now - start}"
+    $stdout.puts "Took #{Time.zone.now - start}"
   end
 end

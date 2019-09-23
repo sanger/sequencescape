@@ -20,8 +20,8 @@ class BatchRequest < ApplicationRecord
 
   delegate :requires_position?, to: :batch
 
-  validates_numericality_of :position, only_integer: true, if: :requires_position?
-  validates_uniqueness_of :position, scope: :batch_id, if: :need_to_check_position?
+  validates :position, numericality: { only_integer: true, if: :requires_position? }
+  validates :position, uniqueness: { scope: :batch_id, if: :need_to_check_position? }
 
   # Database validates uniqueness of request_id to ensure each request is only in one batch.
   # Constraint removed here for performance reasons

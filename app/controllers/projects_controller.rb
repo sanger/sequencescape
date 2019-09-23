@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :login_required
-  before_action :set_variables_for_project, only: [:show, :edit, :update, :destroy, :studies]
+  before_action :set_variables_for_project, only: %i[show edit update destroy studies]
   # TODO: before_action :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
 
   def index
@@ -109,7 +109,7 @@ class ProjectsController < ApplicationController
   end
 
   def follow
-    @project    = Project.find(params[:id])
+    @project = Project.find(params[:id])
     if current_user.has_role? 'follower', @project
       current_user.has_no_role 'follower', @project
       flash[:notice] = "You have stopped following the '#{@project.name}' project."

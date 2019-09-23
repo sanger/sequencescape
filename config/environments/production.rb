@@ -40,7 +40,7 @@ Rails.application.configure do
 
   # Rails 5.2 Option
   # Store uploaded files on the local file system (see config/storage.yml for options)
-  # config.active_storage.service = :local
+  config.active_storage.service = :local
 
   # Mount Action Cable outside main process or domain
   # config.action_cable.mount_path = nil
@@ -75,9 +75,6 @@ Rails.application.configure do
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
-
-  # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
 
   # Use a different logger for distributed setups.
   # require 'syslog/logger'

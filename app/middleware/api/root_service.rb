@@ -1,4 +1,4 @@
-# {include:file:static_docs/api_v1.md}
+# {include:file:docs/api_v1.md}
 module Api
   # Sinatra application which provides routing for the V1 API
   # Automatically generates routes from the files listed under `app/api/endpoints`
@@ -63,7 +63,7 @@ module Api
       body(result)
     end
 
-    [:post, :put, :delete].each do |action|
+    %i[post put delete].each do |action|
       send(action, %r{/?}) do
         raise MethodNotAllowed, [:get]
       end

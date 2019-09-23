@@ -843,10 +843,8 @@ CherrypickPipeline.create!(
   max_size: 3000,
   sorter: 10,
   request_types: [cprt],
-  workflow: liw
-) do |pipeline|
-  pipeline.add_control_request_type
-end
+  workflow: liw, &:add_control_request_type
+)
 
 ## Fluidigm Stuff
 
@@ -907,7 +905,6 @@ CherrypickPipeline.create!(
   name: 'Cherrypick for Fluidigm',
   active: true,
   sorter: 11,
-  paginate: false,
   summary: true,
   group_name: 'Sample Logistics',
   workflow: liw,
@@ -967,7 +964,6 @@ end << RequestType.create!(key: 'bespoke_hiseq_x_paired_end_sequencing',
     automated: false,
     active: true,
     sorter: 9,
-    paginate: false,
     max_size: 8,
     min_size: 8,
     summary: true,
@@ -999,7 +995,6 @@ end << RequestType.create!(key: 'bespoke_hiseq_x_paired_end_sequencing',
     automated: false,
     active: true,
     sorter: 9,
-    paginate: false,
     max_size: 8,
     min_size: 8,
     summary: true,
@@ -1032,7 +1027,6 @@ end
     automated: false,
     active: true,
     sorter: 9,
-    paginate: false,
     max_size: 8,
     min_size: 8,
     summary: true,

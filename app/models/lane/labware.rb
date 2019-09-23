@@ -7,8 +7,9 @@ class Lane::Labware < Labware
   # but we do rely on asset link to Lane. Currently aware of:
   # - Linking in {SpikedBuffer}, although this could be replaced with an actual transfer
   # - Finding lanes for a given plate on eg. the {PlateSummariesController plate summary}
-  include AssetRefactor::Labware::Methods
-
+  #   @note This doesn't use the lanes directly, but rather uses them to find the Sequencing batches.
+  #         While descendant_lanes currently looks up Lane::Labware switching to flowcells instead
+  #         would still find exactly the same batch ids.
   self.receptacle_class = 'Lane'
 
   def labwhere_location

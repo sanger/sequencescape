@@ -21,7 +21,7 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
   instance do
     has_many(
       :receptacles, json: 'receptacles', to: 'receptacles',
-                    include: [:labware, :requests]
+                    include: %i[labware requests]
     )
 
     action(:update, to: :standard_update!)
@@ -38,7 +38,7 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
 end
 
 module ::Core::Endpoint::BasicHandler::EndpointLookup
-  [:object, :class].each do |name|
+  %i[object class].each do |name|
     line = __LINE__ + 1
     module_eval("
       def endpoint_for_#{name}_with_object_service(target, *args, &block)

@@ -7,7 +7,7 @@
 # WARNING: Seeding anything other than the development or test DB takes someone who knows exactly what
 # they are doing.  So here we're preventing you from actually doing that.
 ##########################################################################################################
-unless [:development, :test, :seeding, :cucumber].include?(Rails.env.to_sym)
+unless %i[development test seeding cucumber].include?(Rails.env.to_sym)
   raise StandardError, <<~END_OF_MESSAGE
     **********************************************************************************************************
     ********************************** SERIOUSLY, YOU DON'T WANT TO DO THIS **********************************

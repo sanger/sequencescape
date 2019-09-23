@@ -128,12 +128,7 @@ class Studies::AssetGroupsController < ApplicationController
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
-    @assets = @asset_group ? @asset_group.assets.select { |asset| asset.is_a?(Barcode::Barcodeable) } : []
-
-    unbarcoded = @asset_group.assets.reject { |asset| asset.is_a?(Barcode::Barcodeable) }
-    @unbarcoded_types = unbarcoded.map { |ub| ub.sti_type.pluralize.humanize }.uniq.to_sentence
-    @unbarcoded_count = unbarcoded.length
-    @containers = unbarcoded.map { |ub| ub.labware }.uniq.select { |labware| labware.is_a?(Barcode::Barcodeable) }
+    @labware = @asset_group.labware.select { |asset| asset.is_a?(Barcode::Barcodeable) }
   end
 
   def print_labels

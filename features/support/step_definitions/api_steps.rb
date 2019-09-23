@@ -74,7 +74,7 @@ def api_request(action, path, body)
   headers = {}
   headers['HTTP_ACCEPT'] = 'application/json'
   headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
-  headers['HTTP_COOKIE'] = @cookies.map { |k, v| "#{k}=#{v}" }.join(';') unless @cookies.blank?
+  headers['HTTP_COOKIE'] = @cookies.map { |k, v| "#{k}=#{v}" }.join(';') if @cookies.present?
   yield(headers) if block_given?
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
 end
@@ -133,7 +133,7 @@ end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^\"]+)"$/ do |tube_type, name|
   tube = "#{tube_type}_tube".classify.constantize.find_by(name: name) or raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
-  visit(url_for(controller: 'api/requests', action: 'index', "#{ tube_type }_tube_id": tube.id, format: :json))
+  visit(url_for(controller: 'api/requests', action: 'index', "#{tube_type}_tube_id": tube.id, format: :json))
 end
 
 When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model, name|
@@ -323,10 +323,6 @@ Given /^the infinium barcode for plate "([^"]*)" is "([^"]*)"$/ do |plate_name, 
   plate = Plate.find_by(name: plate_name)
   plate.infinium_barcode = infinium_barcode
   plate.save!
-end
-
-Given /^no (plate purpose|request type)s exist$/ do |model|
-  model.gsub(/\s+/, '_').camelize.constantize.destroy_all
 end
 
 Given /^the number of results returned by the API per page is (\d+)$/ do |count|

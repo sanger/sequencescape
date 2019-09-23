@@ -2,15 +2,19 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_manifest_excel: true do
+RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_manifest_excel: true, sample_manifest: true do
   include SequencescapeExcel::Helpers
+
+  def cell(row, column)
+    download.worksheet.axlsx_worksheet.rows[row].cells[column]
+  end
 
   attr_reader :upload
 
-  FakeUpload = Struct.new(:name, :id)
+  let(:fake_upload) { Struct.new(:name, :id) }
 
   it 'is not valid without an upload' do
-    expect(SampleManifestExcel::Upload::Processor::Base.new(FakeUpload.new)).not_to be_valid
+    expect(SampleManifestExcel::Upload::Processor::Base.new(fake_upload)).not_to be_valid
     expect(SampleManifestExcel::Upload::Processor::Base.new(nil)).not_to be_valid
   end
 
@@ -22,107 +26,167 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
       end
     end
 
+    let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: column_list, start_row: 9) }
+    let(:processor) { described_class.new(upload) }
     let(:test_file_name) { 'test_file.xlsx' }
     let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
+    let(:tag_group) { create(:tag_group) }
+
+    before do
+      barcode = build(:plate_barcode, barcode: 23)
+      allow(PlateBarcode).to receive(:create).and_return(barcode)
+
+      download.worksheet.sample_manifest.generate
+      download.save(test_file_name)
+    end
 
     after do
       File.delete(test_file_name) if File.exist?(test_file_name)
     end
 
-    describe 'for tube manifests' do
-      let(:library_with_tag_seq_cols)            { configuration.columns.tube_library_with_tag_sequences }
-      let(:multiplex_library_with_tag_seq_cols)  { configuration.columns.tube_multiplexed_library_with_tag_sequences }
-      let(:multiplex_library_with_tag_grps_cols) { configuration.columns.tube_multiplexed_library }
-      let(:tag_group) { create(:tag_group) }
-
-      before do
-        barcode = double('barcode')
-        allow(barcode).to receive(:barcode).and_return(23)
-        allow(PlateBarcode).to receive(:create).and_return(barcode)
-
-        download.worksheet.sample_manifest.generate
-        download.save(test_file_name)
+    shared_examples 'it updates downstream aliquots' do |rows, columns|
+      it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
+        cell(rows.first, columns[:insert_size_from]).value = '100'
+        cell(rows.last, columns[:insert_size_to]).value = '1000'
+        download.save(new_test_file_name)
+        reupload2 = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: true)
+        processor = described_class.new(reupload2)
+        processor.update_samples_and_aliquots(tag_group)
+        expect(processor.substitutions[1]).to include('insert_size_from' => 100)
+        expect(processor.substitutions[2]).to include('insert_size_to' => 1000)
+        expect(processor).to be_downstream_aliquots_updated
       end
 
-      describe 'SampleManifestExcel::Upload::Processor::OneDTube' do
-        let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: library_with_tag_seq_cols, start_row: 9) }
-        let(:processor) { SampleManifestExcel::Upload::Processor::OneDTube.new(upload) }
+      it 'will update the aliquots downstream if tags were swapped and override is set to true' do
+        i7_tag1 = cell(rows.first, columns[:i7]).value
+        i7_tag2 = cell(rows.last, columns[:i7]).value
+        cell(rows.first, columns[:i7]).value = i7_tag2
+        cell(rows.last, columns[:i7]).value = i7_tag1
+        download.save(new_test_file_name)
+        reupload2 = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: true)
+        processor = described_class.new(reupload2)
+        processor.update_samples_and_aliquots(tag_group)
+        expect(processor).to be_downstream_aliquots_updated
+      end
 
-        context 'when valid' do
-          let(:download) { build(:test_download_tubes, columns: library_with_tag_seq_cols, manifest_type: 'tube_library_with_tag_sequences') }
+      it 'will update the aliquots downstream in dual index cases where the substituted tags alone look like a tag clash' do
+        # We already have distinct tag2s, so by setting these to the same, we aren't creating a tag clash.
+        cell(rows.first, columns[:i7]).value = 'ATAGATAGATAG'
+        cell(rows.last, columns[:i7]).value = 'ATAGATAGATAG'
+        download.save(new_test_file_name)
+        reupload2 = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: true)
+        processor = described_class.new(reupload2)
+        processor.update_samples_and_aliquots(tag_group)
+        expect(processor).to be_aliquots_updated
+        expect(processor).to be_downstream_aliquots_updated
+      end
 
-          it 'will not generate samples prior to processing' do
-            expect { upload }.not_to change(Sample, :count)
-          end
+      it 'will not update the aliquots downstream if there is nothing to update' do
+        download.save(new_test_file_name)
+        reupload2 = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: true)
+        processor = described_class.new(reupload2)
+        processor.update_samples_and_aliquots(tag_group)
+        expect(processor.substitutions.compact).to be_empty
+        expect(processor).not_to be_downstream_aliquots_updated
+      end
+    end
 
-          it 'will process', :aggregate_failures do
-            processor.run(tag_group)
+    describe SampleManifestExcel::Upload::Processor::OneDTube do
+      let(:column_list) { configuration.columns.tube_library_with_tag_sequences }
 
-            aggregate_failures 'update samples' do
-              expect(processor).to be_samples_updated
-              expect(upload.rows).to be_all(&:sample_updated?)
-            end
+      context 'when valid' do
+        let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: 'tube_library_with_tag_sequences') }
 
-            aggregate_failures 'update sample manifest' do
-              expect(processor).to be_sample_manifest_updated
-              expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
-            end
-
-            expect(processor).to be_processed
-          end
+        it 'will not generate samples prior to processing' do
+          expect { upload }.not_to change(Sample, :count)
         end
 
-        context 'manifest reuploaded and overriden' do
-          let(:download) { build(:test_download_tubes, columns: library_with_tag_seq_cols, manifest_type: 'tube_library_with_tag_sequences') }
-          let(:new_test_file_name) { 'new_test_file.xlsx' }
-          let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
-          let(:reupload) { SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: library_with_tag_seq_cols, start_row: 9, override: override) }
-          let(:processor) { SampleManifestExcel::Upload::Processor::OneDTube.new(reupload) }
+        it 'will process', :aggregate_failures do
+          processor.run(tag_group)
 
-          before do
-            upload.process(tag_group)
-            upload.complete
-            download.worksheet.axlsx_worksheet.rows[10].cells[11].value = '50'
-            download.worksheet.axlsx_worksheet.rows[10].cells[12].value = 'Female'
-            download.save(new_test_file_name)
-
-            processor.update_samples(tag_group)
+          aggregate_failures 'update samples' do
+            expect(processor).to be_samples_updated
+            expect(upload.rows).to be_all(&:sample_updated?)
           end
 
-          after do
-            File.delete(new_test_file) if File.exist?(new_test_file_name)
+          aggregate_failures 'update sample manifest' do
+            expect(processor).to be_sample_manifest_updated
+            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
           end
 
-          context 'when override is true' do
-            let(:override) { true }
+          expect(processor).to be_processed
+        end
+      end
 
-            it 'will update the aliquots if aliquots data has changed' do
+      context 'when the manifest is re-uploaded and overridden' do
+        let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: 'tube_library_with_tag_sequences') }
+        let(:new_test_file_name) { 'new_test_file.xlsx' }
+        let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
+
+        before do
+          upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
+          upload.complete
+        end
+
+        after do
+          File.delete(new_test_file) if File.exist?(new_test_file_name)
+        end
+
+        it_behaves_like 'it updates downstream aliquots', [10, 11], insert_size_from: 6, insert_size_to: 7, i7: 2
+
+        context 'when override is true' do
+          let(:override) { true }
+
+          context 'when updating sample data' do
+            let(:reupload) { SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: override) }
+            let(:processor) { described_class.new(reupload) }
+
+            before do
+              cell(10, 11).value = '50'
+              cell(10, 12).value = 'Female'
+              download.save(new_test_file_name)
+
+              processor.update_samples_and_aliquots(tag_group)
+            end
+
+            it 'will update the samples if sample data has changed' do
               expect(reupload.rows).to be_all(&:sample_updated?)
-              s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[1].value)
+              s1 = Sample.find_by(sanger_sample_id: cell(10, 1).value)
               expect(s1.sample_metadata.concentration).to eq('50')
               expect(s1.sample_metadata.gender).to eq('Female')
             end
           end
+        end
 
-          context 'when override is false' do
-            let(:override) { false }
+        context 'when override is false' do
+          let(:override) { false }
+          let(:reupload) { SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: override) }
+          let(:processor) { described_class.new(reupload) }
 
-            it 'will not update the aliquots if aliquots data has changed' do
-              expect(reupload.rows).not_to be_all(&:sample_updated?)
-              s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[1].value)
-              expect(s1.sample_metadata.concentration).to eq('1')
-              expect(s1.sample_metadata.gender).to eq('Unknown')
-            end
+          before do
+            cell(10, 11).value = '50'
+            cell(10, 12).value = 'Female'
+            download.save(new_test_file_name)
+
+            processor.update_samples_and_aliquots(tag_group)
+          end
+
+          it 'will not update the samples if sample data has changed' do
+            expect(reupload.rows).not_to be_all(&:sample_updated?)
+            s1 = Sample.find_by(sanger_sample_id: cell(10, 1).value)
+            expect(s1.sample_metadata.concentration).to eq('1')
+            expect(s1.sample_metadata.gender).to eq('Unknown')
           end
         end
       end
+    end
 
-      describe 'SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube' do
-        let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9) }
-        let(:processor) { SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload) }
+    describe SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube do
+      context 'when using tag sequences' do
+        let(:column_list) { configuration.columns.tube_multiplexed_library_with_tag_sequences }
 
         context 'when valid' do
-          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
+          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: column_list) }
 
           it 'will not generate samples prior to processing' do
             expect { upload }.not_to change(Sample, :count)
@@ -151,8 +215,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
         end
 
-        context 'partial' do
-          let(:download) { build(:test_download_tubes_partial, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
+        context 'with a partial manifest' do
+          let(:download) { build(:test_download_tubes_partial, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: column_list) }
 
           it 'will process partial upload and cancel unprocessed requests' do
             expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 6
@@ -165,8 +229,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
         end
 
-        context 'manifest reuploaded and overriden' do
-          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
+        context 'when manifest re-uploaded and overridden' do
+          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: column_list) }
           let(:new_test_file_name) { 'new_test_file.xlsx' }
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
@@ -179,69 +243,25 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             File.delete(new_test_file_name) if File.exist?(new_test_file_name)
           end
 
-          it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
-            download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '100'
-            download.worksheet.axlsx_worksheet.rows[11].cells[7].value = '1000'
-            download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
-            processor.update_samples_and_aliquots(tag_group)
-            expect(processor.substitutions[1]).to include('insert_size_from' => 100)
-            expect(processor.substitutions[2]).to include('insert_size_to' => 1000)
-            expect(processor).to be_downstream_aliquots_updated
-          end
-
-          it 'will update the aliquots downstream if tags were swapped and override is set to true' do
-            i7_1 = download.worksheet.axlsx_worksheet.rows[10].cells[2].value
-            i7_2 = download.worksheet.axlsx_worksheet.rows[11].cells[2].value
-            download.worksheet.axlsx_worksheet.rows[10].cells[2].value = i7_2
-            download.worksheet.axlsx_worksheet.rows[11].cells[2].value = i7_1
-            download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
-            processor.update_samples_and_aliquots(tag_group)
-            expect(processor).to be_downstream_aliquots_updated
-          end
-
-          it 'will update the aliquots downstream in dual index cases where the subtitured tags along look like a tag clash' do
-            # We already have distinct tag2s, so by setting these to the same, we aren't creating a tag clash.
-            download.worksheet.axlsx_worksheet.rows[10].cells[2].value = 'ATAGATAGATAG'
-            download.worksheet.axlsx_worksheet.rows[11].cells[2].value = 'ATAGATAGATAG'
-            download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
-            processor.update_samples_and_aliquots(tag_group)
-            expect(processor).to be_aliquots_updated
-            expect(processor).to be_downstream_aliquots_updated
-          end
-
-          it 'will not update the aliquots downstream if there is nothing to update' do
-            download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
-            processor.update_samples_and_aliquots(tag_group)
-            expect(processor.substitutions.compact).to be_empty
-            expect(processor).not_to be_downstream_aliquots_updated
-          end
+          it_behaves_like 'it updates downstream aliquots', [10, 11], insert_size_from: 6, insert_size_to: 7, i7: 2
         end
 
-        context 'mismatched tags' do
-          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols, validation_errors: [:tags]) }
+        context 'with mismatched tags' do
+          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: column_list, validation_errors: [:tags]) }
 
           it 'will not be valid' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+            processor = described_class.new(upload)
             processor.run(tag_group)
             expect(processor).not_to be_valid
           end
         end
       end
 
-      context 'Multiplexed Library Tubes with Tag Groups and Indexes' do
-        let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9) }
+      context 'when Multiplexed Library Tubes with Tag Groups and Indexes' do
+        let(:column_list) { configuration.columns.tube_multiplexed_library }
 
         context 'when valid' do
-          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
-          let(:processor) { SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload) }
+          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: column_list) }
 
           it 'will process', :aggregate_failures do
             processor.run(nil)
@@ -266,11 +286,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
         end
 
-        context 'partial' do
-          let(:download) { build(:test_download_tubes_partial, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
+        context 'when partially filled in' do
+          let(:download) { build(:test_download_tubes_partial, manifest_type: 'tube_multiplexed_library', columns: column_list) }
 
           it 'will process partial upload and cancel unprocessed requests' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+            processor = described_class.new(upload)
             expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 6
             processor.update_samples_and_aliquots(nil)
             expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 2
@@ -281,8 +301,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
         end
 
-        context 'manifest reuploaded and overriden' do
-          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
+        context 'when manifest is reuploaded and overriden' do
+          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: column_list) }
           let(:new_test_file_name) { 'new_test_file.xlsx' }
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
@@ -296,11 +316,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
 
           it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
-            download.worksheet.axlsx_worksheet.rows[10].cells[7].value = '100'
-            download.worksheet.axlsx_worksheet.rows[11].cells[8].value = '1000'
+            cell(10, 7).value = '100'
+            cell(11, 8).value = '1000'
             download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9, override: true)
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: true)
+            processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor.substitutions[1]).to include('insert_size_from' => 100)
             expect(processor.substitutions[2]).to include('insert_size_to' => 1000)
@@ -308,36 +328,36 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
 
           it 'will update the aliquots downstream if tag indexes were swapped and override is set to true' do
-            tag_group_1 = download.worksheet.axlsx_worksheet.rows[10].cells[2].value
-            tag_index_1 = download.worksheet.axlsx_worksheet.rows[10].cells[3].value
-            tag_group_2 = download.worksheet.axlsx_worksheet.rows[11].cells[2].value
-            tag_index_2 = download.worksheet.axlsx_worksheet.rows[11].cells[3].value
-            download.worksheet.axlsx_worksheet.rows[10].cells[2].value = tag_group_2
-            download.worksheet.axlsx_worksheet.rows[10].cells[3].value = tag_index_2
-            download.worksheet.axlsx_worksheet.rows[11].cells[2].value = tag_group_1
-            download.worksheet.axlsx_worksheet.rows[11].cells[3].value = tag_index_1
+            tag_group1 = cell(10, 2).value
+            tag_index1 = cell(10, 3).value
+            tag_group2 = cell(11, 2).value
+            tag_index2 = cell(11, 3).value
+            cell(10, 2).value = tag_group2
+            cell(10, 3).value = tag_index2
+            cell(11, 2).value = tag_group1
+            cell(11, 3).value = tag_index1
             download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9, override: true)
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: true)
+            processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor).to be_downstream_aliquots_updated
           end
 
           it 'will not update the aliquots downstream if there is nothing to update' do
             download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: multiplex_library_with_tag_grps_cols, start_row: 9, override: true)
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: true)
+            processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor.substitutions.compact).to be_empty
             expect(processor).not_to be_downstream_aliquots_updated
           end
         end
 
-        context 'mismatched tags' do
-          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols, validation_errors: [:tags]) }
+        context 'when tags are mismatched' do
+          let(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: column_list, validation_errors: [:tags]) }
 
           it 'will not be valid' do
-            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+            processor = described_class.new(upload)
             processor.run(nil)
             expect(processor).not_to be_valid
           end
@@ -345,22 +365,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
       end
     end
 
-    describe 'SampleManifestExcel::Upload::Processor::Plate' do
-      let(:plate_columns) { configuration.columns.plate_default.dup }
-      let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: plate_columns, start_row: 9) }
-      let(:processor) { SampleManifestExcel::Upload::Processor::Plate.new(upload) }
-
-      before do
-        barcode = double('barcode')
-        allow(barcode).to receive(:barcode).and_return(23)
-        allow(PlateBarcode).to receive(:create).and_return(barcode)
-
-        download.worksheet.sample_manifest.generate
-        download.save(test_file_name)
-      end
+    describe SampleManifestExcel::Upload::Processor::Plate do
+      let(:column_list) { configuration.columns.plate_default.dup }
 
       context 'when valid' do
-        let(:download) { build(:test_download_plates, columns: plate_columns) }
+        let(:download) { build(:test_download_plates, columns: column_list) }
 
         it 'will not generate samples prior to processing' do
           expect { processor }.not_to change(Sample, :count)
@@ -382,11 +391,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           expect(processor).to be_processed
         end
 
-        context 'partial' do
-          let(:download) { build(:test_download_plates_partial, columns: plate_columns) }
+        context 'when partial' do
+          let(:download) { build(:test_download_plates_partial, columns: column_list) }
 
           it 'will process a partial upload' do
-            processor.update_samples(nil)
+            processor.update_samples_and_aliquots(nil)
             expect(upload.sample_manifest.samples.map do |sample|
               sample.reload
               sample.sample_metadata.concentration.present?
@@ -397,7 +406,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'when using foreign barcodes' do
-          let(:download) { build(:test_download_plates_cgap, columns: plate_columns) }
+          let(:download) { build(:test_download_plates_cgap, columns: column_list) }
 
           it 'will process', :aggregate_failures do
             processor.run(nil)
@@ -415,23 +424,65 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             expect(processor).to be_processed
           end
 
-          context 'partial' do
-            let(:download) { build(:test_download_plates_partial_cgap, columns: plate_columns) }
+          context 'with a partial manifest' do
+            let(:download) { build(:test_download_plates_partial_cgap, columns: column_list) }
 
             it 'will process a partial upload' do
-              processor.update_samples(nil)
-              expect(upload.sample_manifest.samples.map do |sample|
+              processor.update_samples_and_aliquots(nil)
+              expect(upload.sample_manifest.samples.reload.count do |sample|
                 sample.reload
                 sample.sample_metadata.concentration.present?
-              end.count(true)).to eq(2)
+              end).to eq(2)
               processor.update_sample_manifest
               expect(processor).to be_processed
             end
           end
         end
 
-        context 'manifest reuploaded and overriden' do
-          let(:download) { build(:test_download_plates, columns: plate_columns) }
+        context 'when manifest reuploaded and overriden' do
+          let(:download) { build(:test_download_plates, columns: column_list) }
+          let(:new_test_file_name) { 'new_test_file.xlsx' }
+          let(:new_test_file) do
+            cell(10, 6).value = '50'
+            cell(10, 7).value = 'Female'
+            download.save(new_test_file_name)
+            Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '')
+          end
+
+          before do
+            upload.process(nil)
+            upload.complete
+          end
+
+          after do
+            File.delete(new_test_file_name) if File.exist?(new_test_file_name)
+          end
+
+          it 'will update the samples if samples data has changed and override is set true' do
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9, override: true)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
+            expect(reupload.rows).to be_all(&:sample_updated?)
+            s1 = Sample.find_by(sanger_sample_id: cell(10, 2).value)
+            expect(s1.sample_metadata.concentration).to eq('50')
+            expect(s1.sample_metadata.gender).to eq('Female')
+          end
+
+          it 'will not update the samples if samples data has changed and override is set false' do
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
+            expect(reupload.rows).not_to be_all(&:sample_updated?)
+            s1 = Sample.find_by(sanger_sample_id: cell(10, 2).value)
+            expect(s1.sample_metadata.concentration).to eq('1')
+            expect(s1.sample_metadata.gender).to eq('Unknown')
+          end
+        end
+      end
+
+      context 'when invalid' do
+        context 'when using foreign barcodes' do
+          let(:download) { build(:test_download_plates_cgap, columns: column_list) }
           let(:new_test_file_name) { 'new_test_file.xlsx' }
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
@@ -444,39 +495,24 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             File.delete(new_test_file_name) if File.exist?(new_test_file_name)
           end
 
-          it 'will update the aliquots if aliquots data has changed and override is set true' do
-            download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '50'
-            download.worksheet.axlsx_worksheet.rows[10].cells[7].value = 'Female'
+          it 'the same barcode cannot be used for multiple plates' do
+            cell(9, 0).value = 'CGAP-00000'
+            cell(10, 0).value = 'CGAP-00000'
+            cell(11, 0).value = 'CGAP-00000'
             download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: plate_columns, start_row: 9, override: true)
-            processor = SampleManifestExcel::Upload::Processor::Plate.new(reupload)
-            processor.update_samples(nil)
-            expect(reupload.rows).to be_all(&:sample_updated?)
-            s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[2].value)
-            expect(s1.sample_metadata.concentration).to eq('50')
-            expect(s1.sample_metadata.gender).to eq('Female')
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
+            expect(processor).not_to be_valid
           end
 
-          it 'will not update the aliquots if aliquots data has changed and override is set false' do
-            download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '50'
-            download.worksheet.axlsx_worksheet.rows[10].cells[7].value = 'Female'
+          it 'the same plate cannot have two different barcodes' do
+            cell(9, 0).value = 'CGAP-00000'
+            cell(10, 0).value = 'CGAP-11111'
             download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: plate_columns, start_row: 9)
-            processor = SampleManifestExcel::Upload::Processor::Plate.new(reupload)
-            processor.update_samples(nil)
-            expect(reupload.rows).not_to be_all(&:sample_updated?)
-            s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[2].value)
-            expect(s1.sample_metadata.concentration).to eq('1')
-            expect(s1.sample_metadata.gender).to eq('Unknown')
-          end
-        end
-      end
-
-      context 'invalid' do
-        context 'when using foreign barcodes' do
-          let(:download) { build(:test_download_plates_cgap, columns: plate_columns, validation_errors: [:sample_plate_id_duplicates]) }
-
-          it 'duplicates will not be valid' do
+            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
           end
         end

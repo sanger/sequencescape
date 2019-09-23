@@ -1,4 +1,5 @@
 !/.gitignore
+*.log.[0-9]
 *.log
 tmp/*
 .DS_Store

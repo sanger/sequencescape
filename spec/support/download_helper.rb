@@ -2,7 +2,7 @@
 
 module DownloadHelpers
   TIMEOUT = 5
-  PATH = Rails.root.join('tmp', 'downloads')
+  PATH = Capybara.save_path
 
   def self.downloads
     create_directory unless PATH.exist?

@@ -2,21 +2,21 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_excel: true do
+RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:options) { { option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth' } }
   let(:range) { build(:range) }
 
   it 'is not valid without options' do
-    expect(SequencescapeExcel::Validation.new).not_to be_valid
+    expect(described_class.new).not_to be_valid
   end
 
   it 'is comparable' do
-    expect(SequencescapeExcel::Validation.new(options: options)).to eq(SequencescapeExcel::Validation.new(options: options))
-    expect(SequencescapeExcel::Validation.new(options: options.except(:formula1))).not_to eq(SequencescapeExcel::Validation.new(options: options))
+    expect(described_class.new(options: options)).to eq(described_class.new(options: options))
+    expect(described_class.new(options: options.except(:formula1))).not_to eq(described_class.new(options: options))
   end
 
   context 'without range name' do
-    let(:validation) { SequencescapeExcel::Validation.new(options: options) }
+    let(:validation) { described_class.new(options: options) }
 
     it 'will have some options' do
       expect(validation.options).to eq(options)
@@ -33,7 +33,7 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
   end
 
   context 'with range name' do
-    let(:validation) { SequencescapeExcel::Validation.new(options: options, range_name: :a_range) }
+    let(:validation) { described_class.new(options: options, range_name: :a_range) }
 
     it 'will have a range name' do
       expect(validation.range_name).to eq(:a_range)
@@ -55,7 +55,7 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
   context 'with worksheet' do
     let(:worksheet) { Axlsx::Package.new.workbook.add_worksheet }
     let(:range) { build(:range) }
-    let(:validation) { SequencescapeExcel::Validation.new(options: options) }
+    let(:validation) { described_class.new(options: options) }
 
     it 'has some options' do
       expect(validation.options).to eq(options)
@@ -71,11 +71,11 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
 
     it 'is comparable' do
       validation.update(reference: range.reference, worksheet: worksheet)
-      other_validation = SequencescapeExcel::Validation.new(options: options)
+      other_validation = described_class.new(options: options)
       other_validation.update(reference: range.reference, worksheet: worksheet)
       expect(other_validation).to eq(validation)
 
-      other_validation = SequencescapeExcel::Validation.new(options: options.merge(option3: 'value3'))
+      other_validation = described_class.new(options: options.merge(option3: 'value3'))
       other_validation.update(reference: range.reference, worksheet: worksheet)
       expect(other_validation).not_to eq(validation)
     end

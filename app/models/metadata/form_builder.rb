@@ -2,6 +2,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   def initialize(*args, &block)
     super
     view_for(:field, 'shared/metadata/edit_field')
+    view_for(:radio_field, 'shared/metadata/radio_field')
     view_for(:header, 'shared/metadata/header')
     view_for(:document, 'shared/metadata/edit_document_field')
     view_for(:checktext, 'shared/metadata/edit_checktext_field')
@@ -15,9 +16,11 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   #--
   # NOTE: This is immediately overridden by the block below so don't move it!
   #++
-  def document_field(field, _options = {})
-    fields_for(:"#{ field }_attributes", builder: ActionView::Helpers::FormBuilder) do |fields|
-      fields.file_field(:uploaded_data)
+  def document_field(field, options)
+    property_field(:document, field, options) do
+      fields_for(:"#{field}_attributes", builder: ActionView::Helpers::FormBuilder) do |fields|
+        fields.file_field(:uploaded_data)
+      end
     end
   end
 
@@ -28,8 +31,15 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     select(:"#{association}_id", association_target.for_select_association, options, html_options)
   end
 
+  # Very broken looking combination of textbox and option field. Seems
+  # to allow specifying N/A or the value from the text box. Text box appears to
+  # get rendered twice, which appears to be a bug.
   def checktext_field(field, options = {})
-    render_view(:checktext, field, options)
+    options[:class] ||= []
+    options[:class] << ' form-control'
+    property_field(:field, field) do
+      render_view(:checktext, field, options)
+    end
   end
 
   %i(text_area text_field number_field).each do |field|
@@ -47,36 +57,43 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   end
 
   def select(method, choices, options = {}, html_options = {}, &block)
+    group = html_options.delete(:grouping) || options.delete(:grouping)
     html_options[:class] ||= ''
     html_options[:class] << ' custom-select'
-    super(method, choices, options, html_options, &block)
+    property_field(:field, method, grouping: group) do
+      super(method, choices, options, html_options, &block)
+    end
+  end
+
+  def radio_select(method, choices, options = {}, html_options = {})
+    group = html_options.delete(:grouping) || options.delete(:grouping)
+    property_field(:radio_field, method, grouping: group) do
+      choices.each_with_object(+''.html_safe) do |(label_text, option_value), output|
+        output << content_tag(:div, class: %w[custom-control custom-radio custom-control-inline]) do
+          value = option_value || label_text
+          concat radio_button(method, value, class: 'custom-control-input', required: true)
+          concat label(method, label_text, class: 'custom-control-label', value: value)
+        end
+      end
+    end
   end
 
   # We wrap each of the following field types (text_field, select, etc) within a special
   # layout for our properties
   #
-  {
-    document_field: :document,
-    text_area: :field,
-    text_field: :field,
-    number_field: :field,
-    select: :field,
-    file_field: :field,
-    check_box: :field,
-    checktext_field: :field
-  }.each do |field, type|
-    class_eval <<-END_OF_METHOD
-      def #{field}_with_property_field_wrapper(method, *args, &block)
-        options    = args.extract_options!
+  %i[text_area text_field number_field file_field check_box].each do |field|
+    class_eval do
+      define_method field do |method, *args, &block|
+        options = args.extract_options!
+        options[:class] ||= []
+        options[:class] << ' form-control'
         field_args = options.slice(:grouping)
         args.push(options.slice!(:grouping))
-        property_field(#{type.inspect}, method, field_args) do
-          #{field}_without_property_field_wrapper(method, *args, &block)
+        property_field(:field, method, field_args) do
+          super(method, *args, &block)
         end
       end
-    END_OF_METHOD
-    alias_method("#{field}_without_property_field_wrapper", field)
-    alias_method(field, "#{field}_with_property_field_wrapper")
+    end
   end
 
   def header(field, options = {})
@@ -129,7 +146,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     end
 
     div_options = { id: field.to_s }
-    (div_options[:class] ||= []) << 'field_with_errors' if @object.errors[field].present?
-    content_tag(:div, content, div_options)
+    div_options[:class] = 'field_with_errors' if @object.errors[field].present?
+    content_tag(:fieldset, content, div_options)
   end
 end

@@ -1,0 +1,39 @@
+
+<%= form_tag(path) %>
+<div class='info'>
+  <table class="table table-striped">
+    <thead>
+      <th> </th>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Date created</th>
+    </thead>
+    <tbody>
+      <% assets.each do |asset| %>
+        <tr>
+          <td><%= check_box_tag "printables[#{asset.id}]", 'true', true %></td>
+          <td><%= link_to((asset.name.blank? ? "id: #{asset.id}" : asset.name), labware_path(asset)) %></td>
+          <td><%= asset.sti_type %></td>
+          <td><%= asset.created_at.to_formatted_s(:day_full_with_time) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<div class='info'>
+  <table width='50%'>
+    <tr>
+      <td>
+        Please select a printer from the list:
+      </td>
+      <td>
+        <%= render partial: "shared/printer_list"%>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Print", class:"btn btn-success" %></td>
+    </tr>
+  </table>
+</div>
+</form>

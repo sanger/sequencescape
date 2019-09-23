@@ -10,7 +10,7 @@
 <% add :menu, "Samples" => study_samples_path(@study) -%>
 <% add :menu, "Sample Manifests" => sample_manifests_study_path(@study) %>
 <% add :menu, "Suppliers" => suppliers_study_path(@study) %>
-<% add :menu, "Assets" => study_information_assets_path(@study) -%>
+<% add :menu, "Receptacles (Formerly Assets)" => study_information_receptacles_path(@study) -%>
 <% add :menu, "Asset groups" => study_asset_groups_path(@study) -%>
 <% add :menu, "Projects" => projects_study_path(@study) -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) || current_user.owner?(@study) || current_user.lab? %>

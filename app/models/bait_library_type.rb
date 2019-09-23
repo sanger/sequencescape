@@ -5,13 +5,13 @@ class BaitLibraryType < ApplicationRecord
   include SharedBehaviour::Named
 
   # category is used for billing, to differentiate between products with Custom and Standard bait libraries
-  enum category: [:standard, :custom]
+  enum category: { standard: 0, custom: 1 }
 
   has_many :bait_libraries
 
   # Types have names, need to be unique
-  validates_presence_of :name, :category
-  validates_uniqueness_of :name
+  validates :name, :category, presence: true
+  validates :name, uniqueness: true
 
   scope :visible, -> { where(visible: true) }
 

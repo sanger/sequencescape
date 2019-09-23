@@ -53,47 +53,45 @@ class Study < ApplicationRecord
   extend Metadata
 
   # Constants
-  STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate']
-  YES = 'Yes'
-  NO  = 'No'
-  YES_OR_NO = [YES, NO]
-  Other_type = 'Other'
+  STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate'].freeze
+  YES = 'Yes'.freeze
+  NO  = 'No'.freeze
+  YES_OR_NO = [YES, NO].freeze
+  Other_type = 'Other'.freeze
 
-  STUDY_SRA_HOLDS = %w[Hold Public]
+  STUDY_SRA_HOLDS = %w[Hold Public].freeze
 
-  DATA_RELEASE_STRATEGY_OPEN = 'open'
-  DATA_RELEASE_STRATEGY_MANAGED = 'managed'
-  DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'
-  DATA_RELEASE_STRATEGIES = [DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED, DATA_RELEASE_STRATEGY_NOT_APPLICABLE]
+  DATA_RELEASE_STRATEGY_OPEN = 'open'.freeze
+  DATA_RELEASE_STRATEGY_MANAGED = 'managed'.freeze
+  DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'.freeze
+  DATA_RELEASE_STRATEGIES = [DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED, DATA_RELEASE_STRATEGY_NOT_APPLICABLE].freeze
 
-  DATA_RELEASE_TIMING_STANDARD = 'standard'
-  DATA_RELEASE_TIMING_NEVER    = 'never'
-  DATA_RELEASE_TIMING_DELAYED  = 'delayed'
+  DATA_RELEASE_TIMING_STANDARD = 'standard'.freeze
+  DATA_RELEASE_TIMING_NEVER    = 'never'.freeze
+  DATA_RELEASE_TIMING_DELAYED  = 'delayed'.freeze
   DATA_RELEASE_TIMINGS = [
     DATA_RELEASE_TIMING_STANDARD,
     'immediate',
     DATA_RELEASE_TIMING_DELAYED
-  ]
+  ].freeze
   DATA_RELEASE_PREVENTION_REASONS = [
     'data validity',
     'legal',
     'replication of data subset'
-  ]
+  ].freeze
 
-  DATA_RELEASE_DELAY_FOR_OTHER = 'other'
+  DATA_RELEASE_DELAY_FOR_OTHER = 'other'.freeze
   DATA_RELEASE_DELAY_REASONS_STANDARD = [
     'phd study',
     DATA_RELEASE_DELAY_FOR_OTHER
-  ]
+  ].freeze
   DATA_RELEASE_DELAY_REASONS_ASSAY = [
     'phd study',
     'assay of no other use',
     DATA_RELEASE_DELAY_FOR_OTHER
-  ]
+  ].freeze
 
-  DATA_RELEASE_DELAY_LONG  = ['6 months', '9 months', '12 months', '18 months']
-  DATA_RELEASE_DELAY_SHORT = ['3 months']
-  DATA_RELEASE_DELAY_PERIODS = DATA_RELEASE_DELAY_SHORT + DATA_RELEASE_DELAY_LONG
+  DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
   # Class variables
   self.per_page = 500
@@ -123,8 +121,6 @@ class Study < ApplicationRecord
   has_many :batches
   has_many :asset_groups
   has_many :study_reports
-  # load all the associated requests with attemps and request type
-  has_many :eager_items, ->() { includes(requests: :request_type) }, class_name: 'Item', through: :requests, source: :item
   has_many :aliquots
   has_many :initial_requests, class_name: 'Request', foreign_key: :initial_study_id
   has_many :assets_through_aliquots,  ->() { distinct }, through: :aliquots, source: :receptacle
@@ -140,9 +136,9 @@ class Study < ApplicationRecord
   has_many :suppliers, ->() { distinct }, through: :sample_manifests
 
   # Validations
-  validates :name, uniqueness: { case_sensitive: false }, presence: true
-  validates_length_of :name, maximum: 200
-  validates_format_of :abbreviation, with: /\A[\w_-]+\z/i, allow_blank: false, message: 'cannot contain spaces or be blank'
+  validates :name, uniqueness: { case_sensitive: false }, presence: true, latin1: true
+  validates :name, length: { maximum: 200 }
+  validates :abbreviation, format: { with: /\A[\w_-]+\z/i, allow_blank: false, message: 'cannot contain spaces or be blank' }
   validate :validate_ethically_approved
 
   # Callbacks
@@ -158,15 +154,15 @@ class Study < ApplicationRecord
     state :inactive, enter: :mark_deactive
 
     event :reset do
-      transitions to: :pending, from: [:inactive, :active]
+      transitions to: :pending, from: %i[inactive active]
     end
 
     event :activate do
-      transitions to: :active, from: [:pending, :inactive]
+      transitions to: :active, from: %i[pending inactive]
     end
 
     event :deactivate do
-      transitions to: :inactive, from: [:pending, :active]
+      transitions to: :inactive, from: %i[pending active]
     end
   end
 
@@ -209,9 +205,9 @@ class Study < ApplicationRecord
     custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
     custom_attribute(:bam, default: true)
 
-    with_options(required: true, if: :delayed_for_other_reasons?) do |required|
-      required.custom_attribute(:data_release_delay_other_comment)
-      required.custom_attribute(:data_release_delay_reason_comment)
+    with_options(required: true, if: :delayed_for_other_reasons?) do
+      custom_attribute(:data_release_delay_other_comment)
+      custom_attribute(:data_release_delay_reason_comment)
     end
 
     custom_attribute(:dac_policy, default: configatron.default_policy_text, if: :managed?)
@@ -220,14 +216,14 @@ class Study < ApplicationRecord
     custom_attribute(:ega_policy_accession_number)
     custom_attribute(:array_express_accession_number)
 
-    with_options(if: :delayed_for_long_time?, required: true) do |required|
-      required.custom_attribute(:data_release_delay_approval, in: YES_OR_NO, default: NO)
+    with_options(if: :delayed_for_long_time?, required: true) do
+      custom_attribute(:data_release_delay_approval, in: YES_OR_NO, default: NO)
     end
 
-    with_options(if: :never_release?, required: true) do |required|
-      required.custom_attribute(:data_release_prevention_reason, in: DATA_RELEASE_PREVENTION_REASONS)
-      required.custom_attribute(:data_release_prevention_approval, in: YES_OR_NO)
-      required.custom_attribute(:data_release_prevention_reason_comment)
+    with_options(if: :never_release?, required: true) do
+      custom_attribute(:data_release_prevention_reason, in: DATA_RELEASE_PREVENTION_REASONS)
+      custom_attribute(:data_release_prevention_approval, in: YES_OR_NO)
+      custom_attribute(:data_release_prevention_reason_comment)
     end
 
     # Note: Additional validation in Study::Metadata Class to validate_presence_of :data_access_group, if: :managed
@@ -255,6 +251,14 @@ class Study < ApplicationRecord
     }.each_with_object({}) do |(k, v), h|
       h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
     end
+
+    # These fields are warehoused, so need to match the encoding restrictions there
+    # This excludes supplementary characters, which include emoji and rare kanji
+    validates :study_abstract, :study_study_title, :study_description, :s3_email_list, utf8mb3: true
+    # These fields are restricted further as they aren't expected to ever contain anything more than ASCII
+    validates :study_project_id, :ega_dac_accession_number, :ega_policy_accession_number, :study_ebi_accession_number,
+              :array_express_accession_number, :hmdmc_approval_number,
+              format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII', allow_blank: true }
 
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?
@@ -375,18 +379,18 @@ class Study < ApplicationRecord
 
   def mark_deactive
     unless inactive?
-      logger.warn "Study deactivation failed! #{errors.map { |e| e.to_s }}"
+      logger.warn "Study deactivation failed! #{errors.map(&:to_s)}"
     end
   end
 
   def mark_active
     unless active?
-      logger.warn "Study activation failed! #{errors.map { |e| e.to_s }}"
+      logger.warn "Study activation failed! #{errors.map(&:to_s)}"
     end
   end
 
   def text_comments
-    comments.each_with_object([]) { |c, array| array << c.description unless c.description.blank? }.join(', ')
+    comments.each_with_object([]) { |c, array| array << c.description if c.description.present? }.join(', ')
   end
 
   def completed
@@ -410,7 +414,7 @@ class Study < ApplicationRecord
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.
   def asset_progress(assets = nil)
     wheres = {}
-    wheres = { asset_id: assets.map(&:id) } unless assets.blank?
+    wheres = { asset_id: assets.map(&:id) } if assets.present?
     yield(initial_requests.asset_statistics(wheres))
   end
 
@@ -472,9 +476,7 @@ class Study < ApplicationRecord
 
   def accession_all_samples
     if accession_number?
-      samples.find_each do |sample|
-        sample.accession
-      end
+      samples.find_each(&:accession)
     end
   end
 

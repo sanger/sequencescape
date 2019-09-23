@@ -5,7 +5,7 @@ module SampleManifestExcel
   # Configuration class for sample manifests handling fornatting, manifest types,
   # ranges and columns.
   class Configuration < SequencescapeExcel::Configuration
-    FILES = [:conditional_formattings, :manifest_types, :ranges, :columns].freeze
+    FILES = %i[conditional_formattings manifest_types ranges columns].freeze
 
     attr_reader(*FILES)
 
