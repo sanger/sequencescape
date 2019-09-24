@@ -18,7 +18,7 @@ class LotTest < ActiveSupport::TestCase
         create :lot
       end
 
-      should validate_uniqueness_of :lot_number
+      should validate_uniqueness_of(:lot_number).case_insensitive
     end
 
     context '#lot' do

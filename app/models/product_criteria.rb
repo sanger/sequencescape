@@ -13,7 +13,7 @@ class ProductCriteria < ApplicationRecord
   belongs_to :product
   validates :product, :stage, :behaviour, presence: true
 
-  validates :stage, uniqueness: { scope: %i[product_id deprecated_at] }
+  validates :stage, uniqueness: { scope: %i[product_id deprecated_at], case_sensitive: false }
   validates :behaviour, inclusion: { in: registered_behaviours }
 
   serialize :configuration

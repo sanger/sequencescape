@@ -16,7 +16,7 @@ class Purpose < ApplicationRecord
 
   before_validation :set_default_barcode_prefix
 
-  validates :name, format: { with: /\A\w[\s\w\.\-]+\w\z/i }, presence: true, uniqueness: true
+  validates :name, format: { with: /\A\w[\s\w\.\-]+\w\z/i }, presence: true, uniqueness: { case_sensitive: false }
 
   # Note: We should validate against valid asset subclasses, but running into some issues with
   # subclass loading while seeding.

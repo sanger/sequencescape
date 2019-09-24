@@ -3,8 +3,9 @@ class StudyType < ApplicationRecord
 
   has_many :study
 
-  validates :name, presence: true
-  validates :name, uniqueness: { message: 'of study type already present in database' }
+  validates :name,
+            presence: true,
+            uniqueness: { message: 'of study type already present in database', case_sensitive: false }
 
   scope :for_selection, ->() { order(:name).where(valid_for_creation: true) }
 

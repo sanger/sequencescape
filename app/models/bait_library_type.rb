@@ -11,7 +11,7 @@ class BaitLibraryType < ApplicationRecord
 
   # Types have names, need to be unique
   validates :name, :category, presence: true
-  validates :name, uniqueness: true
+  validates :name, uniqueness: { case_sensitive: false }
 
   scope :visible, -> { where(visible: true) }
 

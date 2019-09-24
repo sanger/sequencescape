@@ -20,8 +20,7 @@ class BaitLibrary < ApplicationRecord
     self.table_name = ('bait_library_suppliers')
 
     # The names of suppliers needs to be unique
-    validates :name, presence: true
-    validates :name, uniqueness: true
+    validates :name, presence: true, uniqueness: { case_sensitive: false }
 
     scope :visible, -> { where(visible: true) }
 
@@ -44,8 +43,7 @@ class BaitLibrary < ApplicationRecord
   before_validation :blank_as_nil
 
   # The names of the bait library are considered unique within the supplier
-  validates :name, presence: true
-  validates :name, uniqueness: { scope: :bait_library_supplier_id }
+  validates :name, presence: true, uniqueness: { scope: :bait_library_supplier_id, case_sensitive: false }
 
   # All bait libraries target a specific species and cannot be mixed
   validates :target_species, presence: true

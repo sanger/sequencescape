@@ -30,9 +30,7 @@ class User < ApplicationRecord
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
 
-  validates :login, presence: true
-  validates :login, uniqueness: true
-
+  validates :login, presence: true, uniqueness: { case_sensitive: false }
   validates :password, confirmation: { if: :password_required? }
 
   scope :with_login, ->(*logins) { where(login: logins.flatten) }
