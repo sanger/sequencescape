@@ -157,10 +157,6 @@ class LabwareController < ApplicationController
     end
   end
 
-  def reset_values_for_move
-    render layout: false
-  end
-
   def find_by_barcode; end
 
   def lab_view
@@ -186,29 +182,5 @@ class LabwareController < ApplicationController
 
   def discover_asset
     @asset = Labware.include_for_show.find(params[:id])
-  end
-
-  def check_valid_values(params = nil)
-    if (params[:study_id_to] == '0') || (params[:study_id_from] == '0')
-      flash[:error] = "You have to select 'Study From' and 'Study To'"
-      return false
-    else
-      study_from = Study.find(params[:study_id_from])
-      study_to = Study.find(params[:study_id_to])
-      if study_to.name.eql?(study_from.name)
-        flash[:error] = "You can't select the same Study."
-        return false
-      elsif params[:asset_group_id] == '0' && params[:new_assets_name].empty?
-        flash[:error] = "You must indicate an 'Asset Group'."
-        return false
-      elsif params[:asset_group_id] != '0' && !params[:new_assets_name].empty?
-        flash[:error] = 'You can select only an Asset Group!'
-        return false
-      elsif AssetGroup.find_by(name: params[:new_assets_name])
-        flash[:error] = 'The name of Asset Group exists!'
-        return false
-      end
-    end
-    true
   end
 end

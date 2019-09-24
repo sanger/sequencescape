@@ -7,7 +7,7 @@
     <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.human_barcode} for batch") %>
     <%= check_box :request, request.id, value: request.id, class: 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
   </td>
-  <td  style='text-align: center'>
+  <td data-order="<%= request.priority %>">
     <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{current_user.lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
   </td>
   <% if current_user.lab_manager? %>
@@ -21,7 +21,7 @@
   <% unless request_comments_count.zero? -%>
     <%= render partial: "request_comments", locals: { request: request, comments_count: request_comments_count } %>
   <% else -%>
-    <td>&nbsp;</td>
+    <td></td>
   <% end -%>
   <% if request.asset %>
     <td><%=  link_to "#{request.asset.human_barcode}", receptacle_path(request.asset) %></td>
@@ -36,14 +36,14 @@
     <td><%= request.submitted_at %></td>
     <td><%= request.asset.tag_count_name %></td>
   <% else %>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
+    <td></td>
+    <td></td>
+    <td></td>
   <% end %>
   <% @information_types.each do |information_type| %>
     <td  title='<%="#{information_type.key}"%>'>
       <%= h(request.request_metadata[information_type.key]) %>
     </td>
   <% end %>
-  <td width=100px><%= truncate(request.try(:submission).try(:study_names), separator: ' ') %></td>
+  <td><%= truncate(request.try(:submission).try(:study_names), separator: ' ') %></td>
 </tr>

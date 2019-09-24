@@ -12,8 +12,6 @@ group :default do
   gem 'formtastic'
   gem 'rest-client' # curb substitute.
 
-  # Caching, primarily of batch.xml Can be removed once our xml interfaces are retired.
-  gem 'actionpack-page_caching'
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
 
@@ -104,6 +102,9 @@ group :default do
 
   # Easy colour coding of console output.
   gem 'rainbow'
+
+  # Compile js
+  gem 'webpacker'
 end
 
 group :warehouse do
@@ -146,7 +147,6 @@ group :development, :test, :cucumber do
   gem 'bootstrap'
   gem 'font-awesome-sass'
   gem 'jquery-rails'
-  gem 'jquery-tablesorter'
   gem 'jquery-ui-rails'
   gem 'sass-rails'
   gem 'select2-rails'

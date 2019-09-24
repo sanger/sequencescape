@@ -2,14 +2,14 @@
 <%- add :about, "Delayed jobs" %>
 
 <%= page_title 'Delayed Jobs Queue' %>
-<table width="100%" cellpadding="5" cellspacing="0" class="sortable">
+<table class="sortable table">
   <thead>
     <tr>
-      <th width="5%"><%= link_to 'status', "javascript:void(0);" %></th>
-      <th width="5%"><%= link_to 'type', "javascript:void(0);" %></th>
-      <th width="5%"><%= link_to 'priority', "javascript:void(0);" %></th>
-      <th width="5%"><%= link_to 'attempts', "javascript:void(0);" %></th>
-      <th width="5%"><%= link_to 'Scheduled at', "javascript:void(0);" %></th>
+      <th>status</th>
+      <th>type</th>
+      <th>priority</th>
+      <th>attempts</th>
+      <th>Scheduled at</th>
     </tr>
     <tbody>
       <% @jobs.each do |job| %>

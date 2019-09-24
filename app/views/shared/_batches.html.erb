@@ -7,17 +7,17 @@
     # custom selects and joins, but that gets a little messy.
   %>
   <% request_count_cache = BatchRequest.where(batch_id:batches.to_a).group(:batch_id).count %>
-  <table class="sortable table table-striped">
+  <table class="table table-striped">
     <thead>
       <tr>
-        <th><a>Batch</a></th>
-        <th><a>Items</a></th>
-        <th><a>Created by</a></th>
-        <th><a>Assigned to</a></th>
-        <th><a>Created at</a></th>
-        <th><a>Status</a></th>
+        <th>Batch</th>
+        <th>Items</th>
+        <th>Created by</th>
+        <th>Assigned to</th>
+        <th>Created at</th>
+        <th>Status</th>
         <% if in_progress %>
-          <th><a>Last completed task</a></th>
+          <th>Last completed task</th>
         <% end %>
         <th>&nbsp;</th>
       </tr>

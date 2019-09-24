@@ -3,7 +3,6 @@
  * Note we don't use wildcards/globbing to ensure we can control load order and to avoid importing
  * eg .orig files
  */
-@import "jquery-tablesorter/theme.bootstrap";
 @import "jquery-ui";
 @import "font-awesome-sprockets";
 @import "font-awesome";

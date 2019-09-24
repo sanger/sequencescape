@@ -15,7 +15,7 @@
     }
   };
 
-  attachEvents = function(){
+  attachEvents = function(_){
     $('.remote-form').bind("ajax:beforeSend",  function(){
       $(this.dataset.throbber || '#update_loader').show();
       $(this).find('.btn').attr('disabled','disabled');
@@ -28,12 +28,12 @@
       var target;
       target = this.dataset.success ||  this.dataset.update;
       $(target).html(data);
-      $(document.body).trigger("ajaxDomUpdate");
+      $(document.body).trigger("ajaxDomUpdate", target);
     }).bind('ajax:error', function(xhr, data, status) {
       var target;
       target = this.dataset.failure ||  this.dataset.update;
       $(target).html(data);
-      $(document.body).trigger("ajaxDomUpdate");
+      $(document.body).trigger("ajaxDomUpdate", target);
     });
 
     $('.observed').bind('keyup',throttledUpdate).bind('change',throttledUpdate)

@@ -4,7 +4,6 @@
 # part of taking a Batch through a Pipeline
 class Workflow < ApplicationRecord
   has_many :tasks, -> { order('sorted') }, dependent: :destroy, foreign_key: :pipeline_workflow_id, inverse_of: :workflow
-  has_many :families, dependent: :nullify
 
   belongs_to :pipeline, inverse_of: :workflow
   validates :pipeline_id, uniqueness: { message: 'only one workflow per pipeline!' }
@@ -15,26 +14,12 @@ class Workflow < ApplicationRecord
     item_limit.present?
   end
 
-  def controls
-    families
-  end
-
-  def source_is_external?
-    locale == 'External'
-  end
-
   def source_is_internal?
     locale == 'Internal'
   end
 
   def assets
-    collection = []
-    tasks.each do |task|
-      task.families.each do |family|
-        collection.push family
-      end
-    end
-    collection
+    []
   end
 
   def deep_copy(suffix = '_dup', skip_pipeline = false)
@@ -58,17 +43,5 @@ class Workflow < ApplicationRecord
         end
       end
     end
-  end
-
-  def change_sorter_of_all_tasks(value)
-    return nil if tasks.nil?
-
-    tasks.each do |task|
-      next if (task.sorted + value).negative?
-
-      task.sorted = task.sorted + value
-      task.save
-    end
-    true
   end
 end

@@ -415,7 +415,6 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.string "kind"
     t.boolean "required"
     t.integer "sorter"
-    t.integer "family_id"
     t.string "key", limit: 50
     t.index ["task_id"], name: "index_descriptors_on_task_id"
   end
@@ -502,14 +501,6 @@ ActiveRecord::Schema.define(version: 20190910103357) do
     t.datetime "updated_at"
     t.text "comment", limit: 16777215
     t.index ["failable_id"], name: "index_failures_on_failable_id"
-  end
-
-  create_table "families", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
-    t.string "name"
-    t.text "description", limit: 16777215
-    t.string "relates_to"
-    t.integer "task_id"
-    t.integer "pipeline_workflow_id"
   end
 
   create_table "identifiers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC" do |t|
