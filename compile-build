@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e # Exit immediately if something fails
 export NODE_ENV=production
-unset RAILS_ENV
+export RAILS_ENV=development
 echo 'Updating yarn'
 bundle exec yarn
 echo 'Cleaning up'
