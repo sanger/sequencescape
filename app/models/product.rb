@@ -3,7 +3,7 @@ class Product < ApplicationRecord
   include SharedBehaviour::Deprecatable
 
   validates :name, presence: true
-  validates :name, uniqueness: { scope: :deprecated_at }
+  validates :name, uniqueness: { scope: :deprecated_at, case_sensitive: false }
   has_many :product_product_catalogues, dependent: :destroy
   has_many :product_catalogues, through: :product_product_catalogues
   has_many :submission_templates, inverse_of: :product, through: :product_catalogues

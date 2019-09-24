@@ -39,7 +39,7 @@ class BaitLibrary < ApplicationRecord
 
   # Within a supplier we have a unique identifier for each bait library.  Custom bait libraries
   # do not have this identifier, so nil is permitted.
-  validates :supplier_identifier, uniqueness: { scope: :bait_library_supplier_id, allow_nil: true }
+  validates :supplier_identifier, uniqueness: { scope: :bait_library_supplier_id, allow_nil: true, case_sensitive: false }
   before_validation :blank_as_nil
 
   # The names of the bait library are considered unique within the supplier
