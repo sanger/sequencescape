@@ -17,7 +17,8 @@ import 'datatables.net-rowgroup-bs4'
 import 'datatables.net-bs4/css/dataTables.bootstrap4.css'
 
 $.extend( $.fn.dataTable.defaults, {
-    paging: false
+    paging: false,
+    order: []
 } );
 
 $(document).ready(function() {
