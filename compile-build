@@ -1,10 +1,13 @@
 #!/bin/bash
-
-set -e
+set -e # Exit immediately if something fails
+export NODE_ENV=production
+export RAILS_ENV=development
+echo 'Updating yarn'
+bundle exec yarn
 echo 'Cleaning up'
-NODE_ENV=production bundle exec rake assets:clobber
+bundle exec rake assets:clobber
 echo 'Compiling assets'
-NODE_ENV=production bundle exec rake assets:precompile
+bundle exec rake assets:precompile
 echo 'Generating sha'
 git rev-parse HEAD > REVISION
 git tag -l --points-at HEAD --sort -version:refname | head -1 > TAG

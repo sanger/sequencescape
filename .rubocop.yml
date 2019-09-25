@@ -27,6 +27,7 @@ AllCops:
     - vendor/**/*
     - bin/*
     - sbin/*
+    - node_modules/*
 
 Rails/SkipsModelValidations:
   Exclude:
