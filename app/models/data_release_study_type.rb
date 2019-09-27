@@ -41,17 +41,6 @@ class DataReleaseStudyType < ApplicationRecord
   scope :assay_types, -> { where(is_assay_type: true) }
   scope :non_assay_types, -> { where(is_assay_type: false) }
 
-  DATA_RELEASE_TYPES_SAMPLES = ['genotyping or cytogenetics'].freeze
-  DATA_RELEASE_TYPES_STUDIES = [].freeze
-
-  def studies_excluded_for_release?
-    DATA_RELEASE_TYPES_STUDIES.include?(name)
-  end
-
-  def samples_excluded_for_release?
-    DATA_RELEASE_TYPES_SAMPLES.include?(name)
-  end
-
   #
   # Returns the default DataReleaseStudyType according to the is_default flag.
   #
