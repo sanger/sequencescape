@@ -18,7 +18,7 @@ module Accession
   #
   # An example of usage is provided in Sequenescape app/jobs/sample_accessioning_job.rb
   #
-
+  # @see ftp://ftp.sra.ebi.ac.uk/meta/xsd/ Schema definitions
   module Helpers
     def load_file(folder, filename)
       YAML::load_file(File.join(Rails.root, folder, "#{filename}.yml")).with_indifferent_access

@@ -2,6 +2,7 @@
 # {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
 # {EgaAccessionService EGA}: Mostly for human data, provides managed access to uploaded data
 # We also submit information to ArrayExpress, but this happens indirectly via the accession services above.
+# @see https://www.ebi.ac.uk/ega/submission#which_archive
 #
 # Accessioning involves submitting metadata to an external database as XML files.
 # This data receives a unique 'accession number' which we store in the database.
