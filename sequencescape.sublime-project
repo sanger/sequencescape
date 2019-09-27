@@ -14,7 +14,10 @@
         "db/archived_migrations",
         ".yardoc",
         "doc",
-        "coverage"
+        "coverage",
+        "node_modules",
+        "public/public",
+        "public/packs"
       ],
       "file_exclude_patterns":[
         ".swp",
