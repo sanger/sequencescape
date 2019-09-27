@@ -1,5 +1,5 @@
 module Io
-  # Controls API V1 IO for {AssetAudit}
+  # Controls API V1 IO for {::AssetAudit}
   class AssetAudit < ::Core::Io::Base
     # This module adds the behaviour we require from the AssetAudit module.
     module ApiIoSupport

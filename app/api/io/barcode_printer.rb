@@ -1,4 +1,4 @@
-# Controls API V1 IO for {BarcodePrinter}
+# Controls API V1 IO for {::BarcodePrinter}
 class ::Io::BarcodePrinter < ::Core::Io::Base
   set_model_for_input(::BarcodePrinter)
   set_json_root(:barcode_printer)

@@ -1,4 +1,4 @@
-# Controls API V1 IO for {Batch}
+# Controls API V1 IO for {::Batch}
 class ::Io::Batch < ::Core::Io::Base
   set_model_for_input(::Batch)
   set_json_root(:batch)

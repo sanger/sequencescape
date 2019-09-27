@@ -1,4 +1,4 @@
-# Controls API V1 IO for {QcFile}
+# Controls API V1 IO for {::QcFile}
 class ::Io::QcFile < ::Core::Io::Base
   set_model_for_input(::QcFile)
   set_json_root(:qc_file)

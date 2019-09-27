@@ -99,7 +99,7 @@ Lint/ReturnInVoidContext:
 Lint/ShadowingOuterLocalVariable:
   Exclude:
     - 'app/api/core/abilities.rb'
-    - 'app/api/core/endpoint/base.rb'
+    # - 'app/api/core/endpoint/base.rb'
     - 'app/api/core/io/base/json_formatting_behaviour/output.rb'
     - 'app/api/core/io/json/grammar.rb'
     - 'app/controllers/application_controller.rb'
@@ -1134,7 +1134,7 @@ Security/YAMLLoad:
 Style/AccessModifierDeclarations:
   Exclude:
     - 'app/api/core/abilities.rb'
-    - 'app/api/core/endpoint/base.rb'
+    # - 'app/api/core/endpoint/base.rb'
     - 'app/api/core/endpoint/basic_handler.rb'
     - 'app/api/core/endpoint/basic_handler/actions.rb'
     - 'app/api/core/endpoint/basic_handler/actions/bound/handler.rb'
@@ -1533,7 +1533,7 @@ Style/Documentation:
     - 'test/**/*'
     - 'app/api/core/abilities.rb'
     - 'app/api/core/benchmarking.rb'
-    - 'app/api/core/endpoint/base.rb'
+    # - 'app/api/core/endpoint/base.rb'
     - 'app/api/core/endpoint/basic_handler.rb'
     - 'app/api/core/endpoint/basic_handler/actions.rb'
     - 'app/api/core/endpoint/basic_handler/actions/bound.rb'
@@ -2462,7 +2462,7 @@ Style/FrozenStringLiteralComment:
     - 'app/aker/aker.rb'
     - 'app/aker/factories/container.rb'
     - 'app/aker/factories/material.rb'
-    - 'app/api/core/endpoint/base.rb'
+    # - 'app/api/core/endpoint/base.rb'
     - 'app/api/core/endpoint/basic_handler.rb'
     - 'app/api/core/endpoint/basic_handler/actions.rb'
     - 'app/api/core/endpoint/basic_handler/actions/bound.rb'

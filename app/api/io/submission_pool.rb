@@ -1,4 +1,4 @@
-# Controls API V1 IO for {SubmissionPool}
+# Controls API V1 IO for {::SubmissionPool}
 class ::Io::SubmissionPool < ::Core::Io::Base
   set_model_for_input(::SubmissionPool)
   set_json_root(:submission_pool)

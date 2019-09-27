@@ -49,7 +49,7 @@ module ApplicationHelper
 
   #
   # Renders a badge containing the supplied text, with appropriate styling.
-  # By default the 'badge-#{status}' class is supplied. These states are mapped to
+  # By default the 'badge-#!{status}' class is applied. These states are mapped to
   # bootstrap colours in components.scss (grep '// State-colour extensions')
   #
   # If you can't map the text directly to a style, such as if you are displaying a
@@ -65,8 +65,8 @@ module ApplicationHelper
   #   badge(batch.size, type: 'batch-size', style: status )
   #
   # @param status [String] The text to display in the badge. Will also be used to set the style if not otherwise specified
-  # @param type: 'generic' [String] Optional: Additional css-class applied to the badge (generic-badge by default)
-  # @param style: status [String] Optional: Override the badge-* class otherwise set directly from the status.
+  # @param type [String] Optional: Additional css-class applied to the badge (generic-badge by default)
+  # @param style [String] Optional: Override the badge-* class otherwise set directly from the status.
   #
   # @return [type] HTML to render a badge
   def badge(status, type: 'generic-badge', style: status)

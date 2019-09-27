@@ -1,4 +1,4 @@
-# Controls API V1 IO for {ReferenceGenome}
+# Controls API V1 IO for {::ReferenceGenome}
 class ::Io::ReferenceGenome < ::Core::Io::Base
   set_model_for_input(::ReferenceGenome)
   set_json_root(:reference_genome)

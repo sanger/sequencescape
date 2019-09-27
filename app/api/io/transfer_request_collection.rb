@@ -1,5 +1,5 @@
 module Io
-  # Controls API V1 IO for {TransferRequestCollection}
+  # Controls API V1 IO for {::TransferRequestCollection}
   class TransferRequestCollection < ::Core::Io::Base
     set_model_for_input(::TransferRequestCollection)
     set_json_root(:transfer_request_collection)
