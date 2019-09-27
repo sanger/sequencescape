@@ -12,8 +12,7 @@ class TagGroup < ApplicationRecord
 
   scope :chromium, -> { visible.joins(:adapter_type).where(tag_group_adapter_types: { name: CHROMIUM_ADAPTER_TYPE }) }
 
-  validates :name, presence: true
-  validates :name, uniqueness: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 
   def tags_sorted_by_map_id
     tags.sort_by(&:map_id)

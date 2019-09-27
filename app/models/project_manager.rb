@@ -8,7 +8,7 @@ class ProjectManager < ApplicationRecord
   has_many :projects
 
   validates :name, presence: true
-  validates :name, uniqueness: { message: 'of project manager already present in database' }
+  validates :name, uniqueness: { message: 'of project manager already present in database', case_sensitive: false }
 
   module Associations
     def self.included(base)
