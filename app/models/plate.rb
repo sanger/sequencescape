@@ -410,8 +410,8 @@ class Plate < Labware
       'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
       'INNER JOIN requests ON requests.request_type_id = request_types.id',
       'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
-      'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
-    ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
+      'INNER JOIN receptacles AS re ON re.id = well_links.target_well_id'
+    ]).find_by(['re.labware_id = ?', id]).try(:name) || 'UNKNOWN'
   end
 
   alias friendly_name human_barcode

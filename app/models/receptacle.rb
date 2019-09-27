@@ -259,6 +259,10 @@ class Receptacle < Asset
     labware.sti_type
   end
 
+  def friendly_name
+    labware&.friendly_name || id
+  end
+
   private
 
   def set_external_release(state)
