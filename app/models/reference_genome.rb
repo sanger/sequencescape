@@ -6,7 +6,9 @@ class ReferenceGenome < ApplicationRecord
 
   has_many :studies
   has_many :samples
-  validates :name, uniqueness: { message: 'of reference genome already present in database', allow_blank: true }
+  validates :name, uniqueness: { message: 'of reference genome already present in database',
+                                 allow_blank: true,
+                                 case_sensitive: false }
   broadcast_via_warren
 
   module Associations

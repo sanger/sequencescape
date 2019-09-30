@@ -9,8 +9,7 @@ class TagLayoutTemplate < ApplicationRecord
   belongs_to :tag_group, optional: false
   belongs_to :tag2_group, class_name: 'TagGroup'
 
-  validates :name, presence: true
-  validates :name, uniqueness: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 
   validates :direction_algorithm, presence: true
   validates :walking_algorithm, presence: true

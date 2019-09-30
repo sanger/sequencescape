@@ -9,7 +9,7 @@ RSpec.describe LotType do
       create :lot
     end
 
-    it { is_expected.to validate_uniqueness_of :name }
+    it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
   end
 
   it 'is validated', :aggregate_failures do

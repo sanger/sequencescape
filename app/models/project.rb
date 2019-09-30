@@ -55,7 +55,7 @@ class Project < ApplicationRecord
   has_many :aliquots
 
   validates :name, :state, presence: true
-  validates :name, uniqueness: { on: :create, message: "already in use (#{name})" }
+  validates :name, uniqueness: { on: :create, message: "already in use (#{name})", case_sensitive: false }
 
   scope :for_search_query, ->(query) {
     where(['name LIKE ? OR id=?', "%#{query}%", query])

@@ -9,7 +9,6 @@
 class Search < ApplicationRecord
   include Uuid::Uuidable
 
-  validates :name, presence: true
-  validates :name, uniqueness: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
   serialize :default_parameters, Hash
 end

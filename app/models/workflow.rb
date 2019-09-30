@@ -8,7 +8,7 @@ class Workflow < ApplicationRecord
   belongs_to :pipeline, inverse_of: :workflow
   validates :pipeline_id, uniqueness: { message: 'only one workflow per pipeline!' }
 
-  validates :name, uniqueness: true
+  validates :name, uniqueness: { case_sensitive: false }
 
   def batch_limit?
     item_limit.present?
