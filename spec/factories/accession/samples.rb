@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :sample_metadata_for_accessioning, class: Sample::Metadata do
     sample_taxon_id { 1 }
-    sample_common_name { 'A common name' }
     donor_id { '1' }
     gender { 'Unknown' }
     phenotype { 'Indescribeable' }
@@ -18,7 +17,6 @@ FactoryBot.define do
 
   factory :minimal_sample_metadata_for_accessioning, class: Sample::Metadata do
     sample_taxon_id { 1 }
-    sample_common_name { 'A common name' }
   end
 
   factory :sample_for_accessioning, parent: :sample do

@@ -23,13 +23,13 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     [tube.human_barcode, sample_manifest.sample_manifest_assets.first.sanger_sample_id,
      'AA', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
      'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
-     9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
+     9606, '', '', '', '', 11, 'Unknown']
   end
   let(:data_with_spaces) do
     [tube.human_barcode, sample_manifest.sample_manifest_assets.first.sanger_sample_id,
      ' ATTACTCG ', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
      'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
-     9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
+     9606, '', '', '', '', 11, 'Unknown']
   end
 
   it 'is not valid without row number' do
@@ -130,7 +130,6 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       concentration_determined_by: 'OTHER',
       sample_public_name: 'SCG--1222_A01',
       sample_taxon_id: 9606,
-      sample_common_name: 'Homo sapiens',
       donor_id: '11',
       phenotype: 'Unknown'
     )

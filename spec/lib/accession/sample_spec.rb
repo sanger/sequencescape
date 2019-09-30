@@ -22,9 +22,6 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
     sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
     expect(described_class.new(tag_list, sample)).not_to be_valid
 
-    sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_common_name: nil))
-    expect(described_class.new(tag_list, sample)).not_to be_valid
-
     sample = create(:sample_for_accessioning_with_managed_study, sample_metadata: create(:sample_metadata_for_accessioning, gender: nil))
     expect(described_class.new(tag_list, sample)).not_to be_valid
 
@@ -35,9 +32,6 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
     expect(described_class.new(tag_list, sample)).not_to be_valid
 
     sample = create(:sample_for_accessioning_with_managed_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
-    expect(described_class.new(tag_list, sample)).not_to be_valid
-
-    sample = create(:sample_for_accessioning_with_managed_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_common_name: nil))
     expect(described_class.new(tag_list, sample)).not_to be_valid
   end
 

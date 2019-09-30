@@ -28,7 +28,6 @@ plate_default:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -65,7 +64,6 @@ plate_full:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -104,7 +102,6 @@ plate_rnachip:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -150,7 +147,6 @@ plate_library:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -207,7 +203,6 @@ plate_chromium_library:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -258,7 +253,6 @@ tube_default:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -294,7 +288,6 @@ tube_full:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -332,7 +325,6 @@ tube_rnachip:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -379,7 +371,6 @@ tube_multiplexed_library:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -420,7 +411,6 @@ tube_library_with_tag_sequences:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -461,7 +451,6 @@ tube_chromium_library:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -502,7 +491,6 @@ tube_multiplexed_library_with_tag_sequences:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -543,7 +531,6 @@ tube_multiplexed_chromium_library:
     - :gc_content
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_description
     - :sample_strain_att
     - :sample_type
@@ -561,6 +548,5 @@ saphyr:
     - :concentration
     - :sample_public_name
     - :sample_taxon_id
-    - :sample_common_name
     - :sample_ebi_accession_number
     - :donor_id

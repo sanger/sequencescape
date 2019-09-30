@@ -638,11 +638,6 @@ sample_taxon_id:
       error: "Taxon ID must a number."
   conditional_formattings:
     empty_cell:
-sample_common_name:
-  heading: COMMON NAME
-  unlocked: true
-  conditional_formattings:
-    empty_cell:
 sample_description:
   heading: SAMPLE DESCRIPTION
   unlocked: true

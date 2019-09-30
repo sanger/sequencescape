@@ -1,17 +1,10 @@
 sample_taxon_id:
   services:
-    - :ENA 
-    - :EGA
-  groups:
-    - :sample_name
-  ebi_name: :taxon_id
-sample_common_name:
-  services: 
     - :ENA
     - :EGA
   groups:
     - :sample_name
-  ebi_name: :common_name
+  ebi_name: :taxon_id
 donor_id:
   services:
     - :EGA

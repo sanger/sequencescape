@@ -86,7 +86,7 @@ Feature: Sample manifest
     Given a manifest has been created for "Test study"
     Then plate "1234567" should have a purpose of "Stock Plate"
 
-  Scenario: Upload a manifest that has mismatched welle
+  Scenario: Upload a manifest that has mismatched wells
     Given a manifest has been created for "Test study"
     When I fill in "File to upload" with the file "test/data/manifests/mismatched_wells.csv"
     And I press "Upload manifest"
@@ -295,19 +295,19 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
     Then the samples table should look like:
-      | sanger_sample_id | supplier_name | sample_absent | sample_taxon_id | sample_common_name  |
-      | sample_1         | aaaa          | false         | 9606            | Human  |
-      | sample_2         | bbbb          | false         | 9607            | Human  |
-      | sample_3         | Water         | false         | 9608            | Human  |
-      | sample_4         | cccc          | false         | 9609            | Human  |
-      | sample_5         | Blank         | false         | 9610            | Human  |
-      | sample_6         | dddd          | false         | 9611            | Human  |
-      | sample_7         | xxxx          | false         | 10012           | Human  |
-      | sample_8         | eeee          | false         | 9613            | Human  |
-      | sample_9         | EMPTY         | false         | 9614            | Human  |
-      | sample_10        | ffffff        | false         | 9615            | Human  |
-      | sample_11        | None          | false         | 9616            | Human  |
-      | sample_12        | gggg          | false         | 9617            | Human  |
+      | sanger_sample_id | supplier_name | sample_absent | sample_taxon_id |
+      | sample_1         | aaaa          | false         | 9606            |
+      | sample_2         | bbbb          | false         | 9607            |
+      | sample_3         | Water         | false         | 9608            |
+      | sample_4         | cccc          | false         | 9609            |
+      | sample_5         | Blank         | false         | 9610            |
+      | sample_6         | dddd          | false         | 9611            |
+      | sample_7         | xxxx          | false         | 10012           |
+      | sample_8         | eeee          | false         | 9613            |
+      | sample_9         | EMPTY         | false         | 9614            |
+      | sample_10        | ffffff        | false         | 9615            |
+      | sample_11        | None          | false         | 9616            |
+      | sample_12        | gggg          | false         | 9617            |
 
   @override
   Scenario: Upload some empty samples, reupload with samples but with override set
@@ -341,18 +341,18 @@ Feature: Sample manifest
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
     Then the samples table should look like:
      | sanger_sample_id | supplier_name  | sample_absent | sample_taxon_id |
-     | sample_1         | aaaa_updated   | false                      | 9606            |
-     | sample_2         | bbbb           | false                      | 9607            |
-     | sample_3         | zzzzz          | false                      | 9608            |
-     | sample_4         | cccc           | false                      | 9609            |
-     | sample_5         | yyyyy          | false                      | 9610            |
-     | sample_6         | dddd           | false                      | 9611            |
-     | sample_7         | xxxx           | false                      | 10012           |
-     | sample_8         | eeee_updated   | false                      | 10013           |
-     | sample_9         | wwwww          | false                      | 10014           |
-     | sample_10        | ffffff_updated | false                      | 10015           |
-     | sample_11        | uuuuu          | false                      | 10016           |
-     | sample_12        | gggg_updated   | false                      | 10017           |
+     | sample_1         | aaaa_updated   | false         | 9606            |
+     | sample_2         | bbbb           | false         | 9607            |
+     | sample_3         | zzzzz          | false         | 9608            |
+     | sample_4         | cccc           | false         | 9609            |
+     | sample_5         | yyyyy          | false         | 9610            |
+     | sample_6         | dddd           | false         | 9611            |
+     | sample_7         | xxxx           | false         | 10012           |
+     | sample_8         | eeee_updated   | false         | 10013           |
+     | sample_9         | wwwww          | false         | 10014           |
+     | sample_10        | ffffff_updated | false         | 10015           |
+     | sample_11        | uuuuu          | false         | 10016           |
+     | sample_12        | gggg_updated   | false         | 10017           |
 
  @override
   Scenario Outline: Updating of sample accession numbers

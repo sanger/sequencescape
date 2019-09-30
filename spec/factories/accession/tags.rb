@@ -17,13 +17,6 @@ FactoryBot.define do
       ebi_name  { :taxon_id }
     end
 
-    factory :sample_common_name_accession_tag do
-      name      { :sample_common_name }
-      services  { %i[ENA EGA] }
-      groups    { [:sample_name] }
-      ebi_name  { :common_name }
-    end
-
     factory :gender_accession_tag do
       name      { :gender }
       services  { [:EGA] }

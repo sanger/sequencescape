@@ -20,32 +20,32 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
   end
 
   it 'picks out tags which are required for each service' do
-    expect(tag_list.required_for(build(:ena_service)).count).to eq(2)
-    expect(tag_list.required_for(build(:ega_service)).count).to eq(5)
+    expect(tag_list.required_for(build(:ena_service)).count).to eq(1)
+    expect(tag_list.required_for(build(:ega_service)).count).to eq(4)
   end
 
   it 'groups the tags' do
     tags = tag_list.by_group
     expect(tags.count).to eq(3)
-    expect(tags[:sample_name].count).to eq(2)
+    expect(tags[:sample_name].count).to eq(1)
     expect(tags[:sample_attributes].count).to eq(3)
-    expect(tags[:array_express].count).to eq(6)
+    expect(tags[:array_express].count).to eq(7)
   end
 
   it 'after grouping standard tag groups should not be nil' do
     extract = tag_list.extract(create(:minimal_sample_metadata_for_accessioning))
     groups = extract.by_group
     expect(groups.count).to eq(3)
-    expect(groups[:sample_name].count).to eq(2)
+    expect(groups[:sample_name].count).to eq(1)
     expect(groups[:sample_attributes].count).to eq(0)
-    expect(groups[:array_express].count).to eq(1)
+    expect(groups[:array_express].count).to eq(0)
   end
 
   it '#extract should create a new tag list with tags that have values' do
     metadata = create(:sample_metadata_for_accessioning)
     extract = tag_list.extract(create(:sample_metadata_for_accessioning))
     expect(extract.count).to eq(attributes_for(:sample_metadata_for_accessioning).count)
-    expect(extract.find(:sample_common_name).value).to eq('A common name')
+    expect(extract.find(:sample_public_name).value).to eq('Sample 666')
   end
 
   it '#extract should create a taglist that has groups ' do
