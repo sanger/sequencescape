@@ -1,4 +1,5 @@
-# Controls API V1 IO for Asset
+# Controls API V1 IO for {::Asset}
+# @note {Asset} is deprecated and has now been split into {Labware} and {Receptacle}
 class Io::Asset < Core::Io::Base
   set_model_for_input(::Asset)
   set_json_root(:asset)

@@ -58,6 +58,7 @@ class Tube < Labware
 
   alias_method :friendly_name, :human_barcode
 
+  # Delegates the provided methods to purpose, passing the tube as the first argument, and the remaining arguments as-is
   def self.delegate_to_purpose(*methods)
     methods.each do |method|
       class_eval("def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end")
@@ -66,7 +67,13 @@ class Tube < Labware
 
   # TODO: change column name to account for purpose, not plate_purpose!
   belongs_to :purpose, class_name: 'Tube::Purpose', foreign_key: :plate_purpose_id
+
+  # @!parse def stock_plate; purpose.stock_plate(tube); end
+  # @!parse def transition_to(state, user, contents, customer_accepts_responsibility)
+  #           purpose.transition_to(tube, state, user, contents, customer_accepts_responsibility)
+  #         end
   delegate_to_purpose(:transition_to, :stock_plate)
+
   delegate :barcode_type, to: :purpose
 
   def name_for_child_tube

@@ -1,3 +1,5 @@
+# Included in {Plate}
+# The intent of this file was to provide methods specific to the V1 API
 module ModelExtensions::Plate
   module NamedScopeHelpers
     def include_plate_named_scope(plate_association)

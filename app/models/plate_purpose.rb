@@ -61,6 +61,14 @@ class PlatePurpose < Purpose
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
+  # @param plate [Plate] The plate being updated
+  # @param state [String] The desired target state
+  # @param user [User] The person to associate with the action (Will take ownership of the plate)
+  # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
+  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
+  #                                                  in the the event of a failure
+  #
+  # @return [Void]
   def transition_to(plate, state, _user, contents = nil, customer_accepts_responsibility = false)
     wells = plate.wells
     wells = wells.located_at(contents) if contents.present?

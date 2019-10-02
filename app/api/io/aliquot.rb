@@ -1,4 +1,4 @@
-# Controls API V1 IO for Aliquot
+# Controls API V1 IO for {::Aliquot}
 class Io::Aliquot < Core::Io::Base
   set_model_for_input(::Aliquot)
   set_json_root(:aliquot)

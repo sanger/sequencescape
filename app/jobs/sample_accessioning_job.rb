@@ -1,3 +1,6 @@
+# Sends sample data to the ENA or EGA in order to generate an accession number
+# Records the generated accession number on the sample
+# @see Accession::Submission
 SampleAccessioningJob = Struct.new(:accessionable) do
   JobFailed = Class.new(StandardError)
 

@@ -1,3 +1,5 @@
+# Included in {AssetGroup} to provide scopes used by the V1 API
+# @note This could easily be in-lined in asset group itself
 module ModelExtensions::AssetGroup
   def self.included(base)
     base.class_eval do

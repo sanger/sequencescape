@@ -1,4 +1,4 @@
-# Controls API V1 IO for LibraryTube
+# Controls API V1 IO for {::LibraryTube}
 class Io::LibraryTube < Io::Tube
   set_model_for_input(::LibraryTube)
   set_json_root(:library_tube)

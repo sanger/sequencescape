@@ -1,6 +1,15 @@
 class IlluminaC::StockPurpose < PlatePurpose
   include PlatePurpose::Stock
 
+  # Updates the state of plate to state
+  # @param plate [Plate] The plate being updated
+  # @param state [String] The desired target state
+  # @param user [User] The person to associate with the action (Will take ownership of the plate)
+  # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
+  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
+  #                                                  in the the event of a failure
+  #
+  # @return [Void]
   def transition_to(plate, state, _user, contents = nil, _customer_accepts_responsibility = false)
     return unless %w[failed cancelled].include?(state)
 
