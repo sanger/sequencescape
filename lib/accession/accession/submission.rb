@@ -55,9 +55,13 @@ module Accession
       @response = Accession::Request.post(self) if valid?
     end
 
-    def update_accession_number
+    # Method called on successfully accessioning to set fields on the Sample.
+    def update_sample_accession_details
       if accessioned?
-        sample.update_accession_number(response.accession_number)
+        sample.update_accession_details(
+          'accession_number' => response.accession_number,
+          'common_name' => response.common_name
+        )
       end
     end
 

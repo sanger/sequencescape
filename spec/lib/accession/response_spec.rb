@@ -35,6 +35,13 @@ RSpec.describe Accession::Response, type: :model, accession: true do
     expect(response.errors).not_to be_present
   end
 
+  it 'has an common_name if accessioning has been successful' do
+    response = described_class.new(successful_accession_response)
+    expect(response).to be_accessioned
+    expect(response.common_name).to eq('Human')
+    expect(response.errors).not_to be_present
+  end
+
   it 'has some errors if accessioning was not successful' do
     response = described_class.new(failed_accession_response)
     expect(response).not_to be_accessioned

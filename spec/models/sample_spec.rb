@@ -29,17 +29,19 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
 
-    it 'will add an accession number if successful' do
+    it 'will add an accession number and common name if successful' do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
       sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_present
+      expect(sample.sample_metadata.sample_common_name).to be_present
     end
 
-    it 'will not add an accession number if it fails' do
+    it 'will not add an accession number or common name if it fails' do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
       sample = build(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
       expect { sample.save! }.to raise_error(JobFailed)
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
+      expect(sample.sample_metadata.sample_common_name).to be_nil
     end
   end
 

@@ -63,12 +63,12 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
 
   it 'updates the accession number if the submission is successfully posted' do
     submission = described_class.new(user, sample)
-    submission.update_accession_number
+    submission.update_sample_accession_details
     expect(submission.sample).not_to be_accessioned
 
     allow(Accession::Request).to receive(:post).with(submission).and_return(build(:successful_accession_response))
     submission.post
-    submission.update_accession_number
+    submission.update_sample_accession_details
     expect(submission.sample).to be_accessioned
   end
 end

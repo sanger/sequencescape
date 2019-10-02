@@ -42,6 +42,13 @@ module Accession
       xml.at('SAMPLE').try(:attribute, 'accession').try(:value)
     end
 
+    # If the request was successful extract the common name
+    def common_name
+      return unless success?
+
+      xml.at('SAMPLE').xpath('//COMMON_NAME').text
+    end
+
     # If the request failed extract the errors from the receipt.
     def errors
       return unless success?

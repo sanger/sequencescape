@@ -6,7 +6,7 @@ module Accession
     # - have at least one associated open or managed study that has been accessioned
     # - must not have an open and managed study that have been accessioned
     # - must have the required fields filled in based on the associated study
-    # - if the sample has an open study then sample_taxon_id and sample_common_name must be completed
+    # - if the sample has an open study then sample_taxon_id must be completed
     # - if the sample has a managed study then gender, phenotype, donor_id must be completed
     # If the sample meets all of the above requirements it can be accessioned
     # If the sample has an open study it will be sent to the ENA
@@ -20,7 +20,7 @@ module Accession
 
     attr_reader :standard_tags, :sample, :studies, :service, :tags
 
-    delegate :ebi_accession_number, to: :sample
+    delegate :ebi_accession_number, :common_name, to: :sample
 
     def initialize(standard_tags, sample)
       @standard_tags = standard_tags
@@ -75,8 +75,9 @@ module Accession
       sample.uuid
     end
 
-    def update_accession_number(accession_number)
-      sample.sample_metadata.sample_ebi_accession_number = accession_number
+    def update_accession_details(details)
+      sample.sample_metadata.sample_ebi_accession_number = details['accession_number']
+      sample.sample_metadata.sample_common_name = details['common_name']
       sample.save
     end
 

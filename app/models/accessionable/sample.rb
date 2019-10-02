@@ -4,7 +4,7 @@ module Accessionable
   class Sample < Base
     ARRAY_EXPRESS_FIELDS = %w[genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment].freeze
 
-    attr_reader :common_name, :taxon_id, :links, :tags
+    attr_reader :taxon_id, :links, :tags
 
     def initialize(sample)
       @sample = sample
@@ -14,8 +14,7 @@ module Accessionable
       @name = sampname.presence || sample.name
       @name = @name.gsub(/[^a-z\d]/i, '_') if @name.present?
 
-      @common_name = sample.sample_metadata.sample_common_name
-      @taxon_id    = sample.sample_metadata.sample_taxon_id
+      @taxon_id = sample.sample_metadata.sample_taxon_id
 
       # Tags from the 'ENA attributes' property group
       # NOTE[xxx]: This used to also look for 'ENA links' and push them to the 'data[:links]' value, but group was empty
@@ -68,8 +67,7 @@ module Accessionable
         xml.SAMPLE(sample_element_attributes) {
           xml.TITLE title unless title.nil?
           xml.SAMPLE_NAME {
-            xml.COMMON_NAME  common_name
-            xml.TAXON_ID     taxon_id
+            xml.TAXON_ID taxon_id
           }
           xml.SAMPLE_ATTRIBUTES {
             tags.each do |tag|
