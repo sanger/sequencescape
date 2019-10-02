@@ -94,16 +94,6 @@ Given /^I have a PacBio sequencing batch$/ do
   step('I press the first "Submit"')
 end
 
-Given /^the sample tubes are part of the study$/ do
-  sample_tube = SampleTube.find_from_barcode('NT111')
-  sample_tube.primary_aliquot.sample.sample_metadata.update!(sample_common_name: 'Homo Sapien', sample_taxon_id: 9606)
-  Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
-
-  sample_tube = SampleTube.find_from_barcode('NT222')
-  sample_tube.primary_aliquot.sample.sample_metadata.update!(sample_common_name: 'Flu', sample_taxon_id: 123, sample_strain_att: 'H1N1')
-  Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
-end
-
 Given /^sample tube "([^"]*)" is part of study "([^"]*)"$/ do |barcode, study_name|
   sample_tube = SampleTube.find_from_barcode("NT#{barcode}")
   Study.find_by(name: study_name).samples << sample_tube.primary_aliquot.sample
