@@ -1,3 +1,14 @@
+# The standard {Purpose} class for plates. This defines the standard behaviour,
+# and is the class used for the majority of PlatePurposes.
+#
+# @note JG: Generally I have been trying to eliminate as much of the purpose specific
+#       behaviour as possible, and have pushed the business logic outwards towards the
+#       pipeline applications themselves. This is to try and reduce the overall complexity
+#       or Sequencescape models, reduce coupling between Sequencescape and its clients, and
+#       to make behaviour of individual plates more predictable. This is intended to
+#       increase the flexibility and adaptability of the pipelines.
+#
+# {include:Purpose}
 class PlatePurpose < Purpose
   self.default_prefix = 'DN'
 
@@ -63,7 +74,7 @@ class PlatePurpose < Purpose
   # relate to all wells of the plate, otherwise only the selected ones are updated.
   # @param plate [Plate] The plate being updated
   # @param state [String] The desired target state
-  # @param user [User] The person to associate with the action (Will take ownership of the plate)
+  # @param _user [User] The person to associate with the action
   # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
   # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
   #                                                  in the the event of a failure

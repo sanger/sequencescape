@@ -10,7 +10,7 @@
 # @deprecated Part of non-longer active pipelines, or older variants.
 #             On 2019-10-01 was last used 2017-08-02 14:36:05 +0100
 #
-# @todo Remove this class. This will required:
+# @todo #2396 Remove this class. This will required:
 #
 #       - Update any purposes using this class to use Tube::Purpose instead
 #       - Update:
@@ -23,7 +23,7 @@ class IlluminaC::QcPoolPurpose < Tube::Purpose
   # @param state [String] The desired target state
   # @param _user [User] Provided for interface compatibility
   # @param _ [nil, Array] Provided for interface compatibility
-  # @param customer_accepts_responsibility [Boolean] Provided for interface compatibility
+  # @param _customer_accepts_responsibility [Boolean] Provided for interface compatibility
   #
   # @return [Void]
   def transition_to(tube, state, _user, _ = nil, _customer_accepts_responsibility = false)

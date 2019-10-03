@@ -1,3 +1,15 @@
+# @deprecated Part of the old Illumina-B ISC pipeline
+#
+# First plate downstream of PCR-XP plate when using a plate pooling strategy
+#
+# - Lib Norm
+#
+# @todo #2396 Remove this class. This will require:
+#       - Also remove subclass {Pulldown::InitialDownstreamPlatePurpose}
+#       - Update any purposes using this class to use PlatePurpose instead
+#       - Update:
+#           app/models/illumina_htp/plate_purposes.rb
+#         By either replacing with PlatePurpose, or removing the factories entirely
 class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlatePurpose
   # Initial plates in the pulldown pipelines change the state of the pulldown requests they are being
   # created for to exactly the same state.

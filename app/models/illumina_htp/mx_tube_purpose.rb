@@ -12,7 +12,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   # Updates the state of tube to state
   # @param tube [Tube] The tube being updated
   # @param state [String] The desired target state
-  # @param _user [User] Provided for interface compatibility (The user performing the action)
+  # @param user [User] Provided for interface compatibility (The user performing the action)
   # @param _ [nil, Array] Provided for interface compatibility
   # @param customer_accepts_responsibility [Boolean] The customer has proceeded against
   #                                                  advice and will be charged for failures

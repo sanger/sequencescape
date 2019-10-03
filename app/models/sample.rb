@@ -46,6 +46,17 @@ class Sample < ApplicationRecord
   extend EventfulRecord
   extend ValidationStateGuard
 
+  # @!attribute empty_supplier_sample_name
+  #   @deprecated Only set on older samples where samples were created at manifest generation, rather than upload
+  #   @return [Boolean] Returns true if the customer didn't fill in the supplier_sample_name. Indicating that
+  #                     there is actually no sample in the well.
+
+  # A spiral twists,
+  # turns,
+  # tracked,
+  # we tell its story,
+  # it tells our own
+
   extend Metadata
   has_metadata do
     include ReferenceGenome::Associations

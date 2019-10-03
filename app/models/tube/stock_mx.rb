@@ -9,7 +9,7 @@ class Tube::StockMx < Tube::Purpose
   # @param state [String] The desired target state
   # @param _user [User] Provided for interface compatibility (The user performing the action)
   # @param _ [nil, Array] Provided for interface compatibility
-  # @param customer_accepts_responsibility [Boolean] Provided for interface compatibility
+  # @param _customer_accepts_responsibility [Boolean] Provided for interface compatibility
   #
   # @return [Void]
   def transition_to(tube, state, _user, _ = nil, _customer_accepts_responsibility = false)

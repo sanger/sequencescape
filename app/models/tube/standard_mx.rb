@@ -15,8 +15,8 @@ class Tube::StandardMx < Tube::Purpose
   # @param state [String] The desired target state
   # @param _user [User] Provided for interface compatibility (The user performing the action)
   # @param _ [nil, Array] Provided for interface compatibility
-  # @param customer_accepts_responsibility [Boolean] The customer has proceeded against
-  #                                                  advice and will be charged for failures
+  # @param _customer_accepts_responsibility [Boolean] The customer has proceeded against advice and will be charged
+  #                                                   for failures (Provided for compatibility)
   #
   # @return [Void]
   def transition_to(tube, state, _user, _ = nil, _customer_accepts_responsibility = false)

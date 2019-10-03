@@ -1,3 +1,16 @@
+# @deprecated Part of the old Illumina-B Lims pipelines
+# Plate type used at the end of a pipeline
+#
+# - Lib PCR-XP
+# - Lib PCRR-XP
+#
+# @todo #2396 Remove this class. This will require:
+#
+#       - Update any purposes using this class to use PlatePurpose instead
+#       - Also remove the subclass {IlluminaHtp::TransferablePlatePurpose}
+#       - Update:
+#           app/models/illumina_htp/plate_purposes.rb
+#         By either replacing with PlatePurpose, or removing the factories entirely
 class IlluminaHtp::FinalPlatePurpose < PlatePurpose
   include PlatePurpose::Library
 

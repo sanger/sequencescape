@@ -18,7 +18,7 @@
 class StudyType < ApplicationRecord
   extend Attributable::Association::Target
 
-  # @!attribute vaild_for_creation
+  # @!attribute valid_for_creation
   #   @return [Boolean] Indicates a study can be created with this option (determines if it appears in the dropdown)
   # @!attribute vaild_type
   #   @return [Boolean] Indicates the study type is recognised by the EBI. If false the accessioned study will contain

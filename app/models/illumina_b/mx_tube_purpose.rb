@@ -1,5 +1,5 @@
 # @deprecated Used by 'ILB_STD_MX' part of old Illumina-B Pipeline app
-# @todo Remove this class. This will involve:
+# @todo #2396 Remove this class. This will involve:
 #
 #       - Update 'ILB_STD_MX' to use {Tube::StandardMx} instead
 #       - Update or remove the factories in `app/models/illumina_b/plate_purposes.rb`

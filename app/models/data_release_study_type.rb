@@ -12,11 +12,6 @@
 # - Determines if the <ArrayExpress> tag is added to the study accession
 # - Determines the list of valid delay reasons
 #
-# @note {Study::Metadata.study_type_valid?} has hard-coded validation to prevent the 'Not specified' study type from
-#       being used. This should probably be updated to use the {#vaild_for_creation} flag. I'm also not sure of having
-#       'Not specified' be a specific database entry, although it has been assigned to several historic studies so does
-#       at least allow a not_nil constraint.
-#
 # @see StudyType
 class DataReleaseStudyType < ApplicationRecord
   extend Attributable::Association::Target

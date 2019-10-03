@@ -1,5 +1,11 @@
+# @deprecated Part of the old pulldown pipeline
 # Specialised implementation of the plate purpose for the initial plate types in the Pulldown pipelines:
 # WGS Covaris, SC Covaris, ISC Covaris.
+# @todo #2396 Remove this class. This will require:
+#       - Update any purposes using this class to use PlatePurpose instead
+#       - Update:
+#           seeds/0002_plate_purposes.rb:
+#         Remove the seed or update to us standard plate purpose.
 class Pulldown::InitialPlatePurpose < PlatePurpose
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do

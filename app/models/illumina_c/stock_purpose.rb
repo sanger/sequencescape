@@ -1,13 +1,27 @@
+# @deprecated Part of the old Generic Lims pipelines
+# Input plate in the old Generic Lims pipelines. Used by:
+#
+# - ILC Stock
+#
+# Allowed failure of wells prior to starting
+#
+# @todo #2396 Remove this class. This will require:
+#
+#       - Update any purposes using this class to use PlatePurpose instead
+#       - Update:
+#           app/models/illumina_c/plate_purposes.rb
+#           illumina_htp/plate_purposes.rb
+#         By either replacing with PlatePurpose, or removing the factories entirely
 class IlluminaC::StockPurpose < PlatePurpose
   include PlatePurpose::Stock
 
   # Updates the state of plate to state
   # @param plate [Plate] The plate being updated
   # @param state [String] The desired target state
-  # @param user [User] The person to associate with the action (Will take ownership of the plate)
+  # @param _user [User] The person to associate with the action (Ignored. Provided for api compatibility)
   # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
-  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
-  #                                                  in the the event of a failure
+  # @param _customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
+  #                                                  in the the event of a failure (Ignored. Provided for api compatibility)
   #
   # @return [Void]
   def transition_to(plate, state, _user, contents = nil, _customer_accepts_responsibility = false)
