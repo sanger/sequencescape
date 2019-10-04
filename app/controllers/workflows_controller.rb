@@ -1,3 +1,17 @@
+# Controls progress through the {Task tasks} in a {Workflow} as part of
+# taking a {Batch} through a {Pipeline}
+#
+# {#stage} is the main processing step, and responds to *all* HTTP methods.
+# The currently active task is supplied by params[:stage]
+#
+# If params[:next_stage] is nil it will render the page associated with the current
+# {Task} using {Task#render_task}
+# If params[:next_stage] is present it will perform the current {Task} using {Task#do_task}
+# before incrementing the stage and rendering the next task.
+# If there are no further tasks present, it will redirect to the finish_batch page.
+#
+# @note A large amount of the task processing actually occurs within the controller.
+#       These methods are included via the various Handler modules.
 class WorkflowsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -23,6 +37,9 @@ class WorkflowsController < ApplicationController
   include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler
 
+  # Lists all the workflows
+  # @note JG: While this works, I don't think it is used.
+  # @todo Remove (Including route)
   def index
     @workflows = Workflow.all
 
@@ -32,6 +49,10 @@ class WorkflowsController < ApplicationController
     end
   end
 
+  # Shows a summary of the steps within a workflow
+  # @note JG: This is a remnant from when workflows were user editable. I don't believe it is used
+  #       and while it doesn't throw exceptions, its output is likely misleading for many pipelines.
+  # @todo Remove (Including route)
   def show
     respond_to do |format|
       format.html
@@ -39,12 +60,18 @@ class WorkflowsController < ApplicationController
     end
   end
 
+  # Presumably used to list all batches associated with a workflow
+  # Not listed in routes
+  # @todo Remove
   def batches
     @workflow = Workflow.find(params[:id])
     # TODO: association broken here - something to do with the attachables polymorph?
     @batches = Batch.where(workflow_id: @workflow.id).sort_by(&:id).reverse
   end
 
+  # Appears to be remnant of workflow editing? Shouldn't be in use any more.
+  # @todo Remove (Including route, which doesn't even seem to match up properly).
+  #       Also tested in workflows_controller_test.rb, but that test can be removed.
   def sort
     @workflow = Workflow.find(params[:workflow_id])
     @task_list = @workflow.tasks
@@ -103,6 +130,7 @@ class WorkflowsController < ApplicationController
     end
   end
 
+  # Default render taks activity, eg. from {Task#render_task}
   def render_task(task, params)
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.requests
@@ -121,6 +149,20 @@ class WorkflowsController < ApplicationController
     response
   end
 
+  # Flattens nested hashes down into a single layer in a similar manner
+  # to rails form parameter naming.
+  # @example Flattening a hash multiple levels deep
+  #   flatten_hash(key: 'value', key2: { key2a: 'value2a', key2b: 'value2b', key2c: { nested: 'deep'}})
+  #   # => {"key"=>"value", "key2[key2a]"=>"value2a", "key2[key2b]"=>"value2b", "key2[key2c][nested]"=>"deep"}
+  #
+  # @example Flattening a hash with ancestors
+  #   flatten_hash({key: 'value', key2: { key2a: 'value2a', key2b: 'value2b'}}, [:ancestor])
+  # # => {"ancestor[key]"=>"value", "ancestor[key2][key2a]"=>"value2a", "ancestor[key2][key2b]"=>"value2b"}
+  #
+  # @param hash [Hash] The hash to flatten
+  # @param ancestor_names [Array] Ancestors for all keys in the hash
+  #
+  # @return [type] [description]
   def flatten_hash(hash = params, ancestor_names = [])
     flat_hash = {}
     hash.each do |k, v|
