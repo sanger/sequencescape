@@ -11,10 +11,12 @@ RSpec.describe AutomatedOrder, type: :model do
     let(:aliquots) { create_list :tagged_aliquot, 2 }
 
     it { is_expected.to be_valid }
+
     it 'does not set study' do
       subject.valid?
       expect(subject.study).to be nil
     end
+
     it 'does not set project' do
       subject.valid?
       expect(subject.project).to be nil
@@ -27,10 +29,12 @@ RSpec.describe AutomatedOrder, type: :model do
     let(:aliquots) { create_list :tagged_aliquot, 2, study: study, project: project }
 
     it { is_expected.to be_valid }
+
     it 'sets study to the aliquots study' do
       subject.valid?
       expect(subject.study).to eq study
     end
+
     it 'sets project to the aliquots project' do
       subject.valid?
       expect(subject.project).to eq project

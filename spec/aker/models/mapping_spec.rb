@@ -30,10 +30,11 @@ RSpec.describe Aker::Mapping, aker: true do
       allow(mapping).to receive(:model_for_table).and_return(some_model)
     end
 
-    context '#attributes' do
+    describe '#attributes' do
       it 'generates an attributes object using the config definition and translating' do
         expect(mapping.attributes).to eq(volume: 33, concentration: 0.3)
       end
+
       context 'with any not defined attribute for sequencescape side' do
         let(:my_config) do
           %(
@@ -57,12 +58,13 @@ RSpec.describe Aker::Mapping, aker: true do
       end
     end
 
-    context '#update' do
+    describe '#update' do
       it 'updates an attribute translating to the right column of the model' do
         allow(some_model).to receive(:update).with(measured_volume: 44).and_return(true)
         allow(some_model).to receive(:update).with(gender: 'Male').and_return(true)
         expect(mapping.update(volume: 44, gender: 'Male')).to eq(true)
       end
+
       it 'returns false when it cannot update one of the attrs' do
         allow(some_model).to receive(:update).with(gender: 'Male').and_return(true)
         allow(some_model).to receive(:update).with(measured_volume: 44).and_return(false)
@@ -91,11 +93,12 @@ RSpec.describe Aker::Mapping, aker: true do
       end
     end
 
-    context '#update!' do
+    describe '#update!' do
       it 'updates an attribute translating to the right column of the model' do
         allow(some_model).to receive(:update).with(measured_volume: 44).and_return(true)
         expect { mapping.update!(volume: 44) }.not_to raise_error
       end
+
       it 'raises error when it cannot update one of the attrs' do
         allow(some_model).to receive(:update).with(gender: 'Male').and_return(true)
         allow(some_model).to receive(:update).with(measured_volume: 44).and_raise('boom!')

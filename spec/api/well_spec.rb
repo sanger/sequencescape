@@ -16,7 +16,7 @@ describe '/api/1/well-uuid' do
     well
   end
 
-  context '#get' do
+  describe '#get' do
     subject { '/api/1/' + uuid }
 
     let(:response_body) do

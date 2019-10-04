@@ -14,7 +14,7 @@ describe '/api/1/plate-uuid/submission_pools' do
   let(:tag_layout_template) { create :tag_layout_template }
   let(:request_type) { create :library_creation_request_type }
 
-  context '#get' do
+  describe '#get' do
     subject { '/api/1/' + uuid + '/submission_pools' }
 
     let(:response_code) { 200 }

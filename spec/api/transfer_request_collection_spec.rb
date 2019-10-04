@@ -15,7 +15,7 @@ describe '/api/1/transfer_request_collection', transfer_request_collection: true
   let(:user) { create :user }
   let(:submission) { create :submission }
 
-  context '#post' do
+  describe '#post' do
     let(:payload) do
       %({
         "transfer_request_collection":{

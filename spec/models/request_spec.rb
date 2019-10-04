@@ -28,6 +28,7 @@ RSpec.describe Request do
       expect(submission.requests.for_order_including_submission_based_requests(order1).length).to eq 2
       expect(submission.requests.for_order_including_submission_based_requests(order2).length).to eq 2
     end
+
     it 'an order without requests should at least find the sequencing requests' do
       expect(submission.requests.for_order_including_submission_based_requests(order3).length).to eq 1
     end

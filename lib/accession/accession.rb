@@ -55,7 +55,7 @@ module Accession
   require_relative 'accession/null_response'
   require_relative 'accession/configuration'
 
-  String.send(:include, CoreExtensions::String)
+  String.include CoreExtensions::String
 
   CENTER_NAME = 'SC'.freeze
   XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze

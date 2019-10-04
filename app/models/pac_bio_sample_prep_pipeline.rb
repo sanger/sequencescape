@@ -46,6 +46,6 @@ class PacBioSamplePrepPipeline < Pipeline
   end
 
   def number_of_smrt_cells_requested(request)
-    request.next_requests.select(&:pending?).count
+    request.next_requests.count(&:pending?)
   end
 end

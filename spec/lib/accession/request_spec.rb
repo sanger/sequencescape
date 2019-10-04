@@ -33,7 +33,7 @@ RSpec.describe Accession::Request, type: :model, accession: true do
     configatron.proxy = nil
   end
 
-  context '#post' do
+  describe '#post' do
     it 'returns nothing if the submission is not valid' do
       expect(described_class.new(nil).post).to be_nil
     end

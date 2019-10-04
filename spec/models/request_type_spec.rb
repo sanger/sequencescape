@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe RequestType do
   context described_class do
-    context '#for_multiplexing?' do
+    describe '#for_multiplexing?' do
       context 'when it is for multiplexing' do
         let(:request_type) { create :multiplexed_library_creation_request_type }
 

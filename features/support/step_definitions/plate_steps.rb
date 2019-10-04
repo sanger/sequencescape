@@ -199,9 +199,9 @@ end
 Then /^I should have a plate with uuid "([^"]*)" with the following wells volumes:$/ do |uuid, well_details|
   well_details.hashes.each do |well_detail|
     plate = Uuid.find_by(external_id: uuid).resource
-    vol1 = plate.wells.select do |w|
+    vol1 = plate.wells.find do |w|
       w.map.description == well_detail[:well_location]
-    end.first.get_current_volume
+    end.get_current_volume
     assert_equal well_detail[:current_volume].to_f, vol1
   end
 end

@@ -3,7 +3,7 @@
 require 'factory_bot'
 require 'control_request_type_creation'
 
-Pipeline.send(:include, ControlRequestTypeCreation)
+Pipeline.include ControlRequestTypeCreation
 
 FactoryBot.define do
   sequence :plate_creator_name do |n|

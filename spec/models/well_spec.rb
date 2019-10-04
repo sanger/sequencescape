@@ -276,6 +276,7 @@ describe Well do
       it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
         assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
       end
+
       it "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
@@ -303,6 +304,7 @@ describe Well do
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
+
       it "get correct buffer volume when it's above robot minimum picking volume" do
         stock_to_pick = 1
         buffer_added = 9
@@ -312,6 +314,7 @@ describe Well do
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
+
       it 'get no buffer volume if the minimum picking volume exceeds the minimum volume' do
         stock_to_pick = 10.0
         buffer_added = 0.0
@@ -321,6 +324,7 @@ describe Well do
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
+
       it 'get robot minimum picking volume if the correct buffer volume is below this value' do
         stock_to_pick = 5.0
         buffer_added = 5.0
@@ -380,6 +384,7 @@ describe Well do
         it 'gets correct volume quantity' do
           assert_equal volume_obtained, @result_volume
         end
+
         it 'gets correct buffer volume measures' do
           assert_equal buffer_volume_obtained, @result_buffer_volume
         end

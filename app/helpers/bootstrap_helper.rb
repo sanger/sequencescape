@@ -143,7 +143,7 @@ module BootstrapHelper
   end
 
   def bs_select(*args)
-    hashes = args[-2, 2].select { |arg| arg.respond_to?(:keys) }.count
+    hashes = args[-2, 2].count { |arg| arg.respond_to?(:keys) }
     (2 - hashes).times do
       args << {}
     end

@@ -80,6 +80,7 @@ describe BulkSubmission, with: :uploader do
       SubmissionSerializer.construct!(submission_template_hash)
     end
     it { is_expected.to be_valid }
+
     it 'links the samples to the study' do
       check = false
       subject.process
@@ -115,6 +116,7 @@ describe BulkSubmission, with: :uploader do
     it 'is valid' do
       expect(subject).to be_valid
     end
+
     it 'sets the expected request options' do
       subject.process
       expect(generated_submission.orders.first.request_options).to eq(expected_request_options)
@@ -147,6 +149,7 @@ describe BulkSubmission, with: :uploader do
     it 'is valid' do
       expect(subject).to be_valid
     end
+
     it 'sets the expected request options' do
       subject.process
       expect(generated_submission.orders.first.request_options).to eq(expected_request_options)
@@ -178,6 +181,7 @@ describe BulkSubmission, with: :uploader do
     it 'is valid' do
       expect(subject).to be_valid
     end
+
     it 'sets the expected request options' do
       subject.process
       expect(generated_submission.orders.first.request_options).to eq(expected_request_options)
@@ -208,6 +212,7 @@ describe BulkSubmission, with: :uploader do
     it 'is valid' do
       expect(subject).to be_valid
     end
+
     it 'uses the database case sensitive library type name in the request options' do
       subject.process
       expect(generated_submission.orders.first.request_options).to eq(expected_request_options)
@@ -228,6 +233,7 @@ describe BulkSubmission, with: :uploader do
       # validation includes trying to process the file which errors due to unrecognised library type
       expect(subject).not_to be_valid
     end
+
     it 'sets an error message' do
       subject.process
       expect(subject.errors.messages[:spreadsheet][0]).to eq('There was a problem on row(s) 2: Cannot find library type "unrecognised"')

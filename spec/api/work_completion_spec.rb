@@ -12,7 +12,7 @@ describe '/api/1/work_completions' do
   let(:parent_purpose) { create :plate_purpose }
   let(:user) { create :user }
 
-  context '#post' do
+  describe '#post' do
     let(:payload) do
       %{{
         "work_completion":{

@@ -180,7 +180,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           expect(page).to have_content('Sample manifest successfully uploaded.')
 
           expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots.select { |a| a.library_type == new_library_type_name }.count).to eq 2
+          expect(download.worksheet.multiplexed_library_tube.aliquots.count { |a| a.library_type == new_library_type_name }).to eq 2
         end
       end
 
@@ -288,7 +288,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           expect(page).to have_content('Sample manifest successfully uploaded.')
 
           expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots.select { |a| a.library_type == new_library_type_name }.count).to eq 2
+          expect(download.worksheet.multiplexed_library_tube.aliquots.count { |a| a.library_type == new_library_type_name }).to eq 2
         end
       end
 
