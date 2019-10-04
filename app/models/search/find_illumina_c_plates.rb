@@ -1,5 +1,7 @@
 require "#{Rails.root}/app/models/illumina_c/plate_purposes"
-
+# Handled finding of plates for the defunct Illumina-B pipelines
+# Can be deprecated.
+# Api endpoints can be deprecated by raising {::Core::Service::DeprecatedAction}
 class Search::FindIlluminaCPlates < Search
   def scope(criteria)
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked
