@@ -1,4 +1,4 @@
-# Controls API V1 IO for {TagLayoutTemplate}
+# Controls API V1 IO for {::TagLayoutTemplate}
 class ::Io::TagLayoutTemplate < ::Core::Io::Base
   set_model_for_input(::TagLayoutTemplate)
   set_json_root(:tag_layout_template)

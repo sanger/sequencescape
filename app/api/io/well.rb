@@ -1,4 +1,4 @@
-# Controls API V1 IO for {Well}
+# Controls API V1 IO for {::Well}
 class ::Io::Well < ::Core::Io::Base
   set_model_for_input(::Well)
   set_json_root(:well)

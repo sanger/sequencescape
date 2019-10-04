@@ -491,6 +491,8 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.20)
+    yard-activerecord (0.0.16)
+      yard (>= 0.8.3)
 
 PLATFORMS
   ruby
@@ -592,6 +594,7 @@ DEPENDENCIES
   will_paginate
   will_paginate-bootstrap
   yard
+  yard-activerecord (~> 0.0.16)
 
 BUNDLED WITH
    1.17.3

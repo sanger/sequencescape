@@ -24,7 +24,7 @@ module DeprecationHelper
   # the date approaches.
   #
   # Once date has been reached, the section will be automatically hidden. It will also log
-  # everytime it gets hit to allow for removal.
+  # every-time it gets hit to allow for removal.
   #
   # @example sample_registration.html.erb
   #  <%= deprecate_section(
@@ -33,12 +33,12 @@ module DeprecationHelper
   #     replaced_by: sample_manifest_path) do %>
   #     <p>Old we content</p>
   #  <% end %>
-  # @param date: nil [nil,Date] The date at which the section will be hidden.
-  # @param message: [String] Body explaining why the feature is being removed, and where the functionality can be found elsewhere.
-  # @param replaced_by: [String,nil] URL of the replacement (if applicable).
-  # @param custom_title: [String] Override the title determined by the level.
-  # @param custom_style: [String] Overide the styles determined by the level.
-  # @param &block [lambda] The contents of the card (ie. the feture to be deprecated)
+  # @param date [nil,Date] The date at which the section will be hidden.
+  # @param message [String] Body explaining why the feature is being removed, and where the functionality can be found elsewhere.
+  # @param replaced_by [String,nil] URL of the replacement (if applicable).
+  # @param custom_title [String] Override the title determined by the level.
+  # @param custom_style [String] Overide the styles determined by the level.
+  # @yield [Void] Yield to block rendering the contents of the card (ie. the feature to be deprecated)
   #
   # @return [String] The HTML to render
   def deprecate_section(date: nil, message: '', replaced_by: nil, custom_title: nil, custom_style: nil, &block)

@@ -11,12 +11,24 @@ module ApplicationHelper
     end
   end
 
+  #
+  # Renders a non-displayed error div warning of a data failure
+  # Appears to have been intended to be used to provide error feedback on the studies
+  # in app/views/studies/information/_items.html.erb but actual behaviour will result in the
+  # error payload being placed in the div, but remaining invisible.
+  # @todo Probably remove this and the references to it in app/views/studies/information/_items.html.erb
+  #       Or possibly restore the intended behaviour in app/assets/javascripts/sequencescape/ajax_link_handling.js
+  #
+  # @param identifier [String] The id of the element
   def remote_error(identifier = 'remote_error')
     content_tag('div', id: identifier, class: 'error', style: 'display:none;') do
       'An error has occurred and the results can not be shown at the moment'
     end
   end
 
+  # Inserts the icon used to indicate a field is required.
+  # This will also be displayed on any <label> tags with the .required class
+  # @return [String] HTML representing the required marker
   def required_marker
     icon('fas', 'asterisk', class: 'text-warning', title: 'required')
   end
@@ -35,6 +47,12 @@ module ApplicationHelper
     { api_version: RELEASE.api_version }
   end
 
+  # Renders a user guide with optional link. Applies appropriate styling
+  #
+  # @param display_text [String] The text of the user guide
+  # @param link [String] Optional url to link the guide to.
+  #
+  # @return [type] [description]
   def display_user_guide(display_text, link = nil)
     alert(:user_guide) do
       concat link.present? ? link_to(display_text, link) : display_text
@@ -49,7 +67,7 @@ module ApplicationHelper
 
   #
   # Renders a badge containing the supplied text, with appropriate styling.
-  # By default the 'badge-#{status}' class is supplied. These states are mapped to
+  # By default the 'badge-#!{status}' class is applied. These states are mapped to
   # bootstrap colours in components.scss (grep '// State-colour extensions')
   #
   # If you can't map the text directly to a style, such as if you are displaying a
@@ -65,8 +83,8 @@ module ApplicationHelper
   #   badge(batch.size, type: 'batch-size', style: status )
   #
   # @param status [String] The text to display in the badge. Will also be used to set the style if not otherwise specified
-  # @param type: 'generic' [String] Optional: Additional css-class applied to the badge (generic-badge by default)
-  # @param style: status [String] Optional: Override the badge-* class otherwise set directly from the status.
+  # @param type [String] Optional: Additional css-class applied to the badge (generic-badge by default)
+  # @param style [String] Optional: Override the badge-* class otherwise set directly from the status.
   #
   # @return [type] HTML to render a badge
   def badge(status, type: 'generic-badge', style: status)

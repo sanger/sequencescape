@@ -1,3 +1,5 @@
+# Included in {Order}
+# The intent of this file was to provide methods specific to the V1 API
 module ModelExtensions::Order
   class RequestOptionForValidation < OpenStruct
     delegate :errors, :include_unset_values?, to: :owner

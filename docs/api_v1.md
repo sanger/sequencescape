@@ -1,13 +1,20 @@
 # @title API V1
-# APIv1
 # @deprecated We are currently in the process of migrating across to the v2 api.
+# API V1
+
+> API V1 should be considered deprecated
+> We are currently in the process of migrating across to the v2 api.
 
 The V1 api resides in `app/api` which contains four folders:
+
 - core: Low level shared implementation, such as routing requests, parsing json
         and generating endpoints from the configuration.
+
 - endpoints: The controller layer. Indicates the actions which can be performed
              on either the model (eg. api/v1/plates) or an instance.
+
 - io: The view layer. Maps internal attributes to their external equivalent.
+
 - model_extensions: These modules get included in the ActiveRecord classes and
                     should provide API specific methods. In practice lots of stuff
                     is included here.

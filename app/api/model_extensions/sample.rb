@@ -1,3 +1,6 @@
+# Included in {Sample}
+# The intent of this file was to provide methods specific to the V1 API
+# @todo Rails relationships should probably be moved to Sample
 module ModelExtensions::Sample
   def self.included(base)
     base.class_eval do

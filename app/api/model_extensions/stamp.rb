@@ -1,3 +1,5 @@
+# Included in {Stamp}
+# Handles the translation of V1 API input to more standard rails attributes
 module ModelExtensions::Stamp
   def stamp_details=(details)
     stamp_qcables.build(details.map { |d| locate_qcable(d) })

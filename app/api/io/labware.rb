@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Controls API V1 IO for Asset
+# Controls API V1 IO for {::Labware}
 class Io::Labware < Core::Io::Base
   set_model_for_input(::Labware)
   set_json_root(:asset)

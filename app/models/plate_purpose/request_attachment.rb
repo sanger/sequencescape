@@ -1,4 +1,6 @@
 module PlatePurpose::RequestAttachment
+  # Performs the standard transition_to of the containing class and then
+  # connects the upstream and downstream requests to matching wells
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super
     connect_requests(plate, state, contents)

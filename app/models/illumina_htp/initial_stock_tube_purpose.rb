@@ -1,8 +1,21 @@
+# Class initially used to represent the first tube in a pipeline following pooling
+# from a plate. However appears to be a little more widespread in Limber pipelines.
+# eg. LB Custom Pool Norm
 class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
   def valid_transition?(outer_request, target_state)
     target_state != 'started' || outer_request.pending?
   end
 
+  # Called via Tube#transition_to
+  # Updates the state of tube to state
+  # @param tube [Tube] The tube being updated
+  # @param state [String] The desired target state
+  # @param _user [User] Provided for interface compatibility (The user performing the action)
+  # @param _ [nil, Array] Provided for interface compatibility
+  # @param customer_accepts_responsibility [Boolean] The customer has proceeded against
+  #                                                  advice and will be charged for failures
+  #
+  # @return [Void]
   def transition_to(tube, state, _user, _ = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do
       tube.transfer_requests_as_target.where.not(state: terminated_states).find_each do |request|

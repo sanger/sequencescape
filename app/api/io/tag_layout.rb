@@ -1,4 +1,4 @@
-# Controls API V1 IO for {TagLayout}
+# Controls API V1 IO for {::TagLayout}
 class ::Io::TagLayout < ::Core::Io::Base
   set_model_for_input(::TagLayout)
   set_json_root(:tag_layout)

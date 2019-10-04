@@ -1,4 +1,4 @@
-# Controls API V1 IO for {Supplier}
+# Controls API V1 IO for {::Supplier}
 class ::Io::Supplier < ::Core::Io::Base
   # This module adds the behaviour we require from the Supplier module.
   module ApiIoSupport

@@ -1,3 +1,6 @@
+# Used by 'Tag PCR' plates created by Gatekeeper
+# This is part of the gatekeeper QC Pipeline.
+# Delegates state to the associated qc-able, rather than the transfer requests
 class QcableLibraryPlatePurpose < PlatePurpose
   module ClassBehaviour
     def state_of(plate)

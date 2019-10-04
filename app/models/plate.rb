@@ -2,13 +2,13 @@
 
 require 'lab_where_client'
 
-# [plate_image]: https://github.com/sanger/sequencescape/raw/next_release/docs/images/plate.jpg
-# A plate is a piece of labware made up of a number of {Well wells}. This class represents the physical piece of plastic.
-# [plate_image]
+# https://github.com/sanger/sequencescape/raw/master/docs/images/plate.jpg
 #
-#   - {PlatePuprose}: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets processed.
-#   - {Well}: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
-#   - {PlateType}: Identifies the plates form factor, typically provided by robots to ensure tips are positioned correctly.
+# A plate is a piece of labware made up of a number of {Well wells}. This class represents the physical piece of plastic.
+#
+# - {PlatePurpose}: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets processed.
+# - {Well}: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
+# - {PlateType}: Identifies the plates form factor, typically provided to robots to ensure tips are positioned correctly.
 #
 class Plate < Labware
   include Api::PlateIO::Extensions
@@ -52,6 +52,10 @@ class Plate < Labware
       proxy_association.owner.plate_purpose.pool_wells(self)
     end
 
+    #
+    # Returns a hash of wells, indexed by the well name (map_description)
+    #
+    # @return [Hash] eg. { 'A1' => #<Well map_description: 'A1'>, 'B1' => #<Well map_description: 'B1'> }
     def indexed_by_location
       @index_well_cache ||= index_by(&:map_description)
     end
@@ -85,16 +89,37 @@ class Plate < Labware
     super || PlateType.plate_default_type
   end
 
+  # The state of a plate loosely defines what has happened to it. In most cases it is determined
+  # by aggregating the state of transfer requests into the wells, although exact behaviour is determined
+  # by the {PlatePurpose}. State typically only works for pipeline application plates. In general:
+  #
+  # - pending: The plate has been registered, but it empty.
+  # - started: The plate contains samples, but required further processing
+  # - passed: Work on the plate is complete, and it can be transferred to another target
+  # - failed: The plate failed QC and can not be progressed further
+  # - cancelled: The plate is no longer required and should be ignored.
+  #
+  # @return [String] Name of the state the plate is in
   def state
     plate_purpose.state_of(self)
   end
 
+  # Modifies the recorded volume information of all wells on a plate by volume_change
+  # @param volume_change [Numeric] The adjustment to apply to all wells (in ul).
+  #                                Negative values reduce the target volume, positive values increase it.
+  #
+  # @return [Void]
   def update_volume(volume_change)
     ActiveRecord::Base.transaction do
       wells.each { |well| well.update_volume(volume_change) }
     end
   end
 
+  #
+  # Counts the number of wells containing one or more aliquots.
+  # @note Does not take into account the {Sample#empty_supplier_sample_name} flag on older samples
+  #
+  # @return [Integer] The number of wells with samples
   def occupied_well_count
     wells.with_contents.count
   end
@@ -107,6 +132,12 @@ class Plate < Labware
     }
   end
 
+  #
+  # Called when cherrypicking is completed to allow the plate to trigger any callbacks,
+  # such as broadcasting Fluidigm plates to the warehouse.
+  # This behaviour varies based on the PlatePurpose
+  #
+  # @return [Void]
   def cherrypick_completed
     plate_purpose.cherrypick_completed(self)
   end
@@ -166,7 +197,15 @@ class Plate < Labware
     iter.zero? ? nil : iter # Maintains compatibility with legacy version
   end
 
+  #
   # Delegate the change of state to our plate purpose.
+  # @param state [String] The desired target state
+  # @param user [User] The person to associate with the action (Will take ownership of the plate)
+  # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
+  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
+  #                                                  in the the event of a failure
+  #
+  # @return [Void]
   def transition_to(state, user, contents = nil, customer_accepts_responsibility = false)
     purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
   end

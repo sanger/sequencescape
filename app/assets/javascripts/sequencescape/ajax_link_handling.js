@@ -1,5 +1,21 @@
-
-
+// Sets up AJAX functionality for links to allow AJAX updating of page elements
+//
+// Binds to: links with the attribute data-remote=true
+//
+// Will use the following data attributes
+// data-throbber: A JQuery identifier (eg. #id or .class) for the DOM element
+//                representing an in progress spinner to show/hide as a query runs
+// data-success: A JQuery identifier (eg. #id or .class) for the DOM element to
+//               update with the payload in the event of a success
+// data-failure: A JQuery identifier (eg. #id or .class) for the DOM element to
+//               update with the payload in the event of a failure
+// data-update:  A JQuery identifier (eg. #id or .class) for the DOM element to
+//               update with the payload regardless of success or failure
+//
+// Triggers an ajaxDomUpdate event to allow other libraries to attach their hooks
+// to the new DOM objects
+//
+// Dependent on: jquery, jquery-ujs
 ( function($, undefined){
   "use strict";
 

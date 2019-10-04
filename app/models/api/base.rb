@@ -1,3 +1,8 @@
+# Base class for API v0.5, now used for Warehouse message rendering, the actual
+# api is no longer exposed.
+# @note Originally the warehouse was built nightly by calls the the v0.5 API.
+#       When the warehouse was switched to a queue based system the same JSON
+#       exposed via the API was used to form the message payload.
 class Api::Base
   class_attribute :includes
   self.includes = []

@@ -1,4 +1,4 @@
-# Controls API V1 IO for BaitLibrary
+# Controls API V1 IO for {::BaitLibrary}
 class Io::BaitLibrary < Core::Io::Base
   set_model_for_input(::BaitLibrary)
   set_json_root(:bait_library)
