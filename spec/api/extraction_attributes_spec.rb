@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe '/api/1/extraction_attributes' do
-  context '#post' do
+  describe '#post' do
     subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
 
     let(:user) { create :user, login: 'test' }
@@ -27,7 +27,7 @@ describe '/api/1/extraction_attributes' do
       expect(status).to eq(response_code)
     end
 
-    context '#racking' do
+    describe '#racking' do
       let(:sample_tube) { create :sample_tube }
       let(:sample_tube2) { create :sample_tube }
       let(:source_tube1_uuid) { sample_tube.uuid }
@@ -90,7 +90,7 @@ describe '/api/1/extraction_attributes' do
       end
     end
 
-    context '#reracking' do
+    describe '#reracking' do
       subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
 
       let(:previous_plate) { create :plate_with_tagged_wells }
@@ -208,7 +208,7 @@ describe '/api/1/extraction_attributes' do
       end
     end
 
-    context '#racking + #reracking' do
+    describe '#racking + #reracking' do
       let(:previous_plate) { create :plate_with_tagged_wells }
       let(:previous_plate2) { create :plate_with_tagged_wells }
       let(:sample_tube) { create :sample_tube }

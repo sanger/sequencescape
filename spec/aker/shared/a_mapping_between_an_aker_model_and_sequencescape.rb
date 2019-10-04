@@ -7,22 +7,23 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
     end
 
     context 'with private methods' do
-      context '#table_names_for_attr' do
+      describe '#table_names_for_attr' do
         it 'gives back a table name from an attribute name' do
           expect(mapping.send(:table_names_for_attr, :volume)).to eq([:well_attribute])
         end
       end
 
-      context '#mapped_setting_attributes_for_table' do
+      describe '#mapped_setting_attributes_for_table' do
         it 'filters out the attributes that do not belong to the table' do
           expect(mapping.send(:mapped_setting_attributes_for_table, :sample_metadata, gender: 'Male', volume: 33)).to eq(gender: 'Male')
         end
+
         it 'translates the valid attribute to the SS nomenclature using the config ' do
           expect(mapping.send(:mapped_setting_attributes_for_table, :well_attribute, gender: 'Male', volume: 33)).to eq(measured_volume: 33)
         end
       end
 
-      context '#columns_for_table_from_field' do
+      describe '#columns_for_table_from_field' do
         it 'translates the valid attribute to the SS nomenclature using the config ' do
           expect(mapping.send(:columns_for_table_from_field, :well_attribute, :volume)).to eq([:measured_volume])
         end

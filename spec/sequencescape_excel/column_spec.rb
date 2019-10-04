@@ -101,7 +101,7 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     end
   end
 
-  context '#update with validation and formattings' do
+  describe '#update with validation and formattings' do
     let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
     let(:column) { described_class.new(options) }
     let(:range) { SequencescapeExcel::Range.new(first_column: column.number, first_row: 27, last_row: 150) }

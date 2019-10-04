@@ -71,6 +71,7 @@ describe PlateVolume do
         expect(well_attribute.current_volume).to eq volume
       end
     end
+
     it 'updates measured and current volumes for plate_without_barcodes_in_csv' do
       wells = plate_without_barcodes_in_csv.wells.includes(:well_attribute, :map).index_by(&:map_description)
       plate_b_expected_volumes.each do |well_name, volume|
@@ -79,6 +80,7 @@ describe PlateVolume do
         expect(well_attribute.current_volume).to eq volume
       end
     end
+
     it 'generates a QcResult for each well' do
       plate_with_barcodes_in_csv.wells.includes(:well_attribute, :map).each do |well|
         expect(well.qc_results).to be_one

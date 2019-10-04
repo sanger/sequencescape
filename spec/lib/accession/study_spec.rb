@@ -28,14 +28,14 @@ RSpec.describe Study, type: :model, accession: true do
       open_study = create(:open_study, accession_number: 'ENA123', samples: create_list(:sample_for_accessioning, 5) + create_list(:sample, 3))
       open_study.accession_all_samples
       open_study.reload
-      expect(open_study.samples.select { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }.count).to eq(5)
-      expect(open_study.samples.select { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }.count).to eq(3)
+      expect(open_study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }).to eq(5)
+      expect(open_study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(3)
 
       managed_study = create(:managed_study, accession_number: 'ENA123', samples: create_list(:sample_for_accessioning, 5) + create_list(:sample, 3))
       managed_study.accession_all_samples
       managed_study.reload
-      expect(managed_study.samples.select { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }.count).to eq(5)
-      expect(managed_study.samples.select { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }.count).to eq(3)
+      expect(managed_study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }).to eq(5)
+      expect(managed_study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(3)
     end
 
     it 'will not attempt to accession any samples belonging to a study that does not have an accession number' do

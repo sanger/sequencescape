@@ -23,26 +23,32 @@ RSpec.describe WorkingDilutionPlate, type: :model do
       wells = plate.wells.includes(:map, :well_attribute).index_by(&:map_description)
       expect(wells['B1'].get_concentration).to eq 2
     end
+
     it 'updates its well molarity' do
       wells = plate.wells.includes(:map, :well_attribute).index_by(&:map_description)
       expect(wells['B1'].get_molarity).to eq 3
     end
+
     it 'updates its well volume' do
       wells = plate.wells.includes(:map, :well_attribute).index_by(&:map_description)
       expect(wells['B1'].get_volume).to eq 20
     end
+
     it 'updates its well rin' do
       wells = plate.wells.includes(:map, :well_attribute).index_by(&:map_description)
       expect(wells['B1'].get_rin).to eq 6
     end
+
     it 'updates its parent plate concentration (scaled)' do
       wells = parent.wells.includes(:map, :well_attribute).index_by(&:map_description)
       expect(wells['B1'].get_concentration).to eq 20
     end
+
     it 'updates its parent plate rin (absolute)' do
       wells = parent.wells.includes(:map, :well_attribute).index_by(&:map_description)
       expect(wells['B1'].get_rin).to eq 6
     end
+
     it 'does not update its parent plate volume' do
       wells = parent.wells.includes(:map, :well_attribute).index_by(&:map_description)
       expect(wells['B1'].get_volume).to eq 15.0

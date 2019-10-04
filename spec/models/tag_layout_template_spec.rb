@@ -60,6 +60,7 @@ describe TagLayoutTemplate do
           expect(subject.plate).to eq(plate)
           expect(subject.tag2_group).to eq(tag2_group)
         end
+
         it 'records itself against the submissions' do
           # First double check we have submissions
           # otherwise out test is a false positive

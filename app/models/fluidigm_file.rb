@@ -88,7 +88,7 @@ class FluidigmFile
     end
 
     def count
-      marker_array.select(&:pass?).count
+      marker_array.count(&:pass?)
     end
 
     private

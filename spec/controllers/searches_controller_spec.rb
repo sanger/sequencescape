@@ -22,7 +22,7 @@ RSpec.describe SearchesController do
     let!(:sample_with_supplier_name) { create :sample, sample_metadata_attributes: { supplier_name: 'FindMe' } }
     let!(:sample_with_accession_number) { create :sample, sample_metadata_attributes: { sample_ebi_accession_number: 'FindMe' } }
 
-    context '#index' do
+    describe '#index' do
       setup { get :index, params: { q: query }, session: { user: current_user.id } }
 
       context 'with the valid search' do
@@ -81,6 +81,7 @@ RSpec.describe SearchesController do
         it 'finds the asset' do
           expect(assigns(:barcodes)).to include(asset.barcodes.first)
         end
+
         it 'does not find other assets' do
           expect(assigns(:barcodes)).not_to include(other_asset.barcodes.first)
         end
@@ -92,6 +93,7 @@ RSpec.describe SearchesController do
         it 'finds the asset' do
           expect(assigns(:barcodes)).to include(asset.barcodes.first)
         end
+
         it 'does not find other assets' do
           expect(assigns(:barcodes)).not_to include(other_asset.barcodes.first)
         end

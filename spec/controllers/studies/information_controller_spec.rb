@@ -12,7 +12,7 @@ RSpec.describe Studies::InformationController do
     session[:user] = user.id
   end
 
-  context '#show' do
+  describe '#show' do
     setup do
       get :show, params: { id: 'unused', study_id: study.id }
     end
@@ -23,7 +23,7 @@ RSpec.describe Studies::InformationController do
     end
   end
 
-  context '#show with requests' do
+  describe '#show with requests' do
     let(:request_type1) { create :request_type }
     let(:request_type2) { create :request_type }
     let(:request_type3) { create :request_type }

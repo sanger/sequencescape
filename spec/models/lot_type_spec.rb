@@ -19,7 +19,7 @@ RSpec.describe LotType do
     expect(subject).to belong_to :target_purpose
   end
 
-  context '#lot' do
+  describe '#lot' do
     let(:lot_type) { create :lot_type }
     let(:user) { create :user }
     let(:template) { PlateTemplate.new }

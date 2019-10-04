@@ -5,6 +5,6 @@
 # via xlsx
 module SequencescapeExcel
   def self.initialize
-    Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
+    Axlsx::Worksheet.include CoreExtensions::AxlsxWorksheet
   end
 end

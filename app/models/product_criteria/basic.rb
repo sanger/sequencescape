@@ -55,7 +55,7 @@ class ProductCriteria::Basic
   end
 
   def conflicting_gender_markers
-    (gender_markers || []).select { |marker| conflicting_marker?(marker) }.count
+    (gender_markers || []).count { |marker| conflicting_marker?(marker) }
   end
 
   def metrics

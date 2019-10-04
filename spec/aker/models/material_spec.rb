@@ -25,7 +25,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
   it_behaves_like 'a mapping between an Aker model and Sequencescape'
 
   context 'with a custom config' do
-    context '#attributes' do
+    describe '#attributes' do
       it 'generates an attributes object and adds the sample uuid as id' do
         container = double(:container)
         asset = double(:asset)
@@ -62,16 +62,18 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         it 'returns the concentration from it' do
           expect(mapping.attributes[:concentration]).to eq(@conc_b.value)
         end
+
         it 'returns the volume from it' do
           expect(mapping.attributes[:volume]).to eq(@vol_b.value)
         end
+
         it 'returns the amount from it' do
           expect(mapping.attributes[:amount]).to eq((@conc_b.value.to_f * @vol_b.value.to_f).to_s)
         end
       end
     end
 
-    context '#update' do
+    describe '#update' do
       before do
         sample.sample_metadata.update(gender: 'Male')
       end
@@ -113,10 +115,11 @@ RSpec.describe Aker::Material, type: :model, aker: true do
     # Maybe this method should be public.
 
     context 'with private methods' do
-      context '#model_for_table' do
+      describe '#model_for_table' do
         it 'gives back a model object from a table name' do
           expect(mapping.send(:model_for_table, :sample_metadata)).to eq(sample.sample_metadata)
         end
+
         context 'when the asset is a plate' do
           let(:plate) { create :full_stock_plate }
           let(:well) { plate.wells.first }
