@@ -734,3 +734,23 @@ donor_id2:
   conditional_formattings:
     empty_cell:
   attribute: :sample_id
+genome_size:
+  heading: GENOME SIZE
+  unlocked: true
+  validation:
+    options:
+      type: :decimal
+      operator: :greaterThanOrEqual
+      formula1: "0"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: ""
+      prompt: ""
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Volume"
+      error: "This value must be numeric."
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_zero:
+    is_text:

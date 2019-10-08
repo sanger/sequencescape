@@ -564,3 +564,18 @@ saphyr:
     - :sample_common_name
     - :sample_ebi_accession_number
     - :donor_id
+long_read:
+  heading: "Long Read"
+  asset_type: "1dtube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :volume
+    - :concentration
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_ebi_accession_number
+    - :donor_id
+    - :genome_size
