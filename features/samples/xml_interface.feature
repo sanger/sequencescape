@@ -47,6 +47,7 @@ Feature: The XML interface to the samples
           <property><name>Sample type</name><value/></property>
           <property><name>Sibling</name><value/></property>
           <property><name>Strain</name><value/></property>
+          <property><name>Genome Size</name><value/></property>
 
 
 
