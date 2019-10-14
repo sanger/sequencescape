@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_01_140903) do
+ActiveRecord::Schema.define(version: 2019_10_14_103520) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1341,6 +1341,8 @@ ActiveRecord::Schema.define(version: 2019_10_01_140903) do
     t.datetime "updated_at"
     t.string "donor_id"
     t.integer "genome_size"
+    t.string "saphyr"
+    t.string "pacbio"
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"

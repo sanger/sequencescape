@@ -110,6 +110,8 @@ class Sample < ApplicationRecord
     custom_attribute(:disease)
 
     custom_attribute(:genome_size)
+    custom_attribute(:saphyr)
+    custom_attribute(:pacbio)
 
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji
