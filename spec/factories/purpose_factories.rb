@@ -102,6 +102,11 @@ FactoryBot.define do
       name { 'saphyr' }
       target_type { 'SampleTube' }
     end
+
+    factory :long_read_tube_purpose do
+      name { 'long_read' }
+      target_type { 'SampleTube' }
+    end
   end
 
   factory :std_mx_tube_purpose, class: Tube::StandardMx do

@@ -302,6 +302,12 @@ en:
         treatment:
           label: Treatment
           edit_info: "EGA"
+        genome_size:
+          label: Genome Size
+        saphyr:
+          label: Saphyr
+        pacbio:
+          label: Pacbio
 
     study:
       metadata:
