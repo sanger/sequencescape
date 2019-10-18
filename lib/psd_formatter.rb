@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'syslog/logger'
+require 'logger'
 require 'ostruct'
 
-class PsdFormatter < Syslog::Logger::Formatter
+class PsdFormatter < Logger::Formatter
   LINE_FORMAT = "(thread-%s) [%s] %5s -- : %s\n".freeze
 
   def initialize(deployment_info)
