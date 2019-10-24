@@ -564,3 +564,39 @@ saphyr:
     - :sample_common_name
     - :sample_ebi_accession_number
     - :donor_id
+tube_rack_default:
+  heading: "Default Tube Rack"
+  asset_type: "tube_rack"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :reference_genome
+    - :cohort
+    - :volume
+    - :concentration
+    - :gender
+    - :country_of_origin
+    - :geographical_region
+    - :ethnicity
+    - :dna_source
+    - :date_of_sample_collection
+    - :date_of_sample_extraction
+    - :sample_extraction_method
+    - :sample_purified
+    - :purification_method
+    - :concentration_determined_by
+    - :sample_storage_conditions
+    - :mother
+    - :father
+    - :sibling
+    - :gc_content
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
+    - :sample_strain_att
+    - :sample_type
+    - :sample_ebi_accession_number
+    - :donor_id
+    - :phenotype
