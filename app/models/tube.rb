@@ -67,7 +67,7 @@ class Tube < Labware
 
   # TODO: change column name to account for purpose, not plate_purpose!
   belongs_to :purpose, class_name: 'Tube::Purpose', foreign_key: :plate_purpose_id
-  has_one :rackable_tube
+  has_one :rackable_tube, dependent: :destroy
 
   # @!method stock_plate
   #   Returns the stock plate of the tube, behaviour delegated to purpose
