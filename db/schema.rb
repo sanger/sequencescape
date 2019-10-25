@@ -1050,11 +1050,11 @@ ActiveRecord::Schema.define(version: 2019_10_24_143941) do
   end
 
   create_table "rackable_tubes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "tube_rack_id"
+    t.bigint "labware_id"
     t.bigint "tube_id"
     t.string "coordinate"
+    t.index ["labware_id"], name: "index_rackable_tubes_on_labware_id"
     t.index ["tube_id"], name: "index_rackable_tubes_on_tube_id"
-    t.index ["tube_rack_id"], name: "index_rackable_tubes_on_tube_rack_id"
   end
 
   create_table "receptacles", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
@@ -1754,12 +1754,6 @@ ActiveRecord::Schema.define(version: 2019_10_24_143941) do
     t.datetime "updated_at"
     t.integer "tube_creation_id", null: false
     t.integer "tube_id", null: false
-  end
-
-  create_table "tube_racks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "size"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
