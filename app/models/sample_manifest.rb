@@ -56,6 +56,7 @@ class SampleManifest < ApplicationRecord
 
   # Needed for the UI to work!
   def barcode_printer; end
+  def rack_size; end
 
   def template; end
 

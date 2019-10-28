@@ -6,3 +6,4 @@ class TubeRack < Labware
   has_many :rackable_tubes, foreign_key: :labware_id, dependent: :destroy
   has_many :tubes, through: :rackable_tubes
 end
+p

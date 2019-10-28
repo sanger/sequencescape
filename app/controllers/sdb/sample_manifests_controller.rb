@@ -27,6 +27,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @purposes = @sample_manifest.acceptable_purposes.pluck(:name, :id)
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
+    @rack_sizes = ['96', '48']
   end
 
   def create
