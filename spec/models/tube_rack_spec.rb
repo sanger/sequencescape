@@ -11,5 +11,14 @@ RSpec.describe TubeRack do
         change { tube_rack.rackable_tubes.count }.by(1)
       )
     end
+
+    it 'can contain a barcode' do
+      tube_rack = create :tube_rack
+      barcode = create :barcode, barcode: '1234'
+
+      tube_rack.barcodes << barcode
+
+      expect(tube_rack.barcodes.first).to eq(barcode)
+    end
   end
 end

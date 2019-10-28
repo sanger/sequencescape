@@ -116,6 +116,8 @@ group :warehouse do
 end
 
 group :development do
+  gem "rails-erd"
+
   gem 'flay', require: false
   gem 'flog', require: false
   # Detect n+1 queries

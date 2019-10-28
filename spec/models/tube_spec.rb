@@ -4,6 +4,12 @@ require 'rails_helper'
 require 'timecop'
 
 describe Tube, type: :model do
+  context 'a tube not in a rack' do
+    it 'does return nil for the tube_rack relation' do
+      tube = create :tube
+      expect(tube.tube_rack).to be_nil?
+    end
+  end
   describe '#scanned_in_date' do
     let(:scanned_in_asset) { create(:tube) }
     let(:unscanned_in_asset) { create(:tube) }
