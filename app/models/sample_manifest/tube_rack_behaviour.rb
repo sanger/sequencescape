@@ -11,7 +11,7 @@ module SampleManifest::TubeRackBehaviour
     end
 
     def generate
-      @tubes = generate_tubes(purpose)
+      @tubes = generate_tube_racks(purpose)
     end
 
     def io_samples

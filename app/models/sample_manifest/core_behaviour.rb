@@ -14,6 +14,7 @@ module SampleManifest::CoreBehaviour
         delegate :create_sample, to: :@manifest
         delegate :samples, :sample_manifest_assets, :barcodes, :study, to: :@manifest
         delegate :count, to: :@manifest
+        delegate :rack_size, to: :@manifest
         delegate :study, to: :@manifest
         delegate :purpose, to: :@manifest
       end
@@ -67,7 +68,7 @@ module SampleManifest::CoreBehaviour
     case asset_type
     when '1dtube'              then 'SampleTubeBehaviour'
     when 'plate'               then 'PlateBehaviour'
-    when 'tube_rack'           then 'SampleTubeBehaviour'
+    when 'tube_rack'           then 'TubeRackBehaviour'
     when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'
     when 'library'             then 'LibraryTubeBehaviour'
     when 'library_plate'       then 'LibraryPlateBehaviour'

@@ -39,5 +39,27 @@ module SampleManifest::SharedTubeBehaviour
     def delayed_generate_asset_requests(asset_ids, study_id)
       Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new(asset_ids, study_id)
     end
+
+    def generate_tube_racks(purpose)
+      sanger_ids = generate_sanger_ids(count*rack_size)
+      study_abbreviation = study.abbreviation
+
+      tubes = Array.new(count*rack_size) do
+        tube = purpose.create!
+        sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
+        SampleManifestAsset.create!(sanger_sample_id: sanger_sample_id,
+                                    asset: tube.receptacle,
+                                    sample_manifest: @manifest)
+        tube
+      end
+
+      @manifest.update!(barcodes: tubes.map(&:human_barcode))
+
+      delayed_generate_asset_requests(tubes.map { |tube| tube.receptacle.id }, study.id)
+      tubes
+    end
+
   end
+
+  
 end
