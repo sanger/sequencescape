@@ -18,4 +18,12 @@ module Sdb::SampleManifestsHelper
   def count_label_for(asset_type)
     count_labels.fetch(asset_type, 'Count')
   end
+
+  def submit_label_for(asset_type)
+    unless asset_type == 'tube_rack'
+      'Create manifest and print labels'
+    else
+      'Create manifest'
+    end
+  end
 end
