@@ -15,7 +15,7 @@ module SampleManifestExcel
       def initialize(attributes = {})
         super
         create_styles
-        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count)
+        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count, sample_manifest.rack_size)
         add_columns
         freeze_panes
       end
@@ -26,6 +26,8 @@ module SampleManifestExcel
                     'Tubes'
                   when 'plate'
                     'Plates'
+                  when 'tube_rack'
+                    'Tube Rack'
                   else
                     ''
                   end
@@ -34,7 +36,7 @@ module SampleManifestExcel
       # Adds title and description (study abbreviation, supplier name, number of assets sent)
       # to a worksheet.
 
-      def add_title_and_description(study, supplier, count)
+      def add_title_and_description(study, supplier, count, rack_size)
         add_row ['DNA Collections Form']
         add_rows(2)
         add_multiplexed_library_tube_barcode
@@ -42,6 +44,16 @@ module SampleManifestExcel
         add_row ['Study:', study]
         add_row ['Supplier:', supplier]
         add_row ["No. #{type} Sent:", count]
+        if type == 'Tube Rack'
+          add_row ["Rack size:", rack_size]
+          count.times do |num| 
+            axlsx_worksheet.add_row do |row|
+              row.add_cell "Rack barcode (#{num+1}):", type: :string
+              row.add_cell nil, type: :string, style: styles[:unlocked_no_border].reference
+            end
+          end
+
+        end 
         add_rows(1)
       end
 
@@ -51,7 +63,7 @@ module SampleManifestExcel
       # Adds columns with all required data to a worksheet
 
       def add_columns
-        columns.update(first_row, last_row, ranges, axlsx_worksheet)
+        columns.update(computed_first_row, last_row, ranges, axlsx_worksheet)
         add_headers
         sample_manifest.details_array.each do |detail|
           create_row(detail)
@@ -79,7 +91,7 @@ module SampleManifestExcel
       def freeze_panes(name = :sanger_sample_id)
         axlsx_worksheet.sheet_view.pane do |pane|
           pane.state = :frozen
-          pane.y_split = first_row - 1
+          pane.y_split = computed_first_row - 1
           pane.x_split = freeze_after_column(name)
           pane.active_pane = :bottom_right
         end
@@ -94,7 +106,7 @@ module SampleManifestExcel
 
       # The row where the table with data end
       def last_row
-        @last_row ||= sample_manifest.details_array.count + first_row - 1
+        @last_row ||= sample_manifest.details_array.count + computed_first_row - 1
       end
 
       def add_multiplexed_library_tube_barcode
@@ -102,6 +114,14 @@ module SampleManifestExcel
           add_row ['Multiplexed library tube barcode:', sample_manifest.labware.first.human_barcode]
         else
           add_row
+        end
+      end
+
+      def computed_first_row
+        if type == "Tube Rack"
+          first_row + sample_manifest.count
+        else
+          first_row
         end
       end
     end
