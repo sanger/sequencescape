@@ -14,7 +14,6 @@ module SampleManifest::CoreBehaviour
         delegate :create_sample, to: :@manifest
         delegate :samples, :sample_manifest_assets, :barcodes, :study, to: :@manifest
         delegate :count, to: :@manifest
-        delegate :rack_size, to: :@manifest
         delegate :study, to: :@manifest
         delegate :purpose, to: :@manifest
       end

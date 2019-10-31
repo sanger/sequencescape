@@ -5,7 +5,13 @@
 <%= semantic_form_for(@sample_manifest, html: {novalidate: false}) do |form| %>
   <%= form.inputs name: "Manifest Type" do %>
     <%= form.input :template, required: true, as: :select, prompt: 'Select a template', collection: @templates, input_html: { class: 'form-control'} %>
-    <%= form.input :purpose,  as: :select, collection: @purposes, required: true, input_html: { class: 'form-control select2'}, label: 'purpose' unless @purposes.empty? %>
+    <%= form.input :purpose,  as: :select, collection: @purposes, required: true, input_html: { class: 'form-control select2'}, label: 'Purpose' unless @purposes.empty? %>
+
+    <% if params[:asset_type] == 'tube_rack' %>
+      <%= form.input :tube_rack_purpose,  as: :select, collection: @rack_purposes, required: true, input_html: { class: 'form-control select2'}, label: 'Tube Rack Purpose' %>
+    <% end %>
+
+
     <% if params[:asset_type].blank? %>
       <p class="help-block">Used for plate manifests only.</p>
     <% end %>
@@ -24,7 +30,6 @@
   <% else %>
     <%= form.inputs name: "Tube Racks" do %>
       <%= form.input :count, input_html: { size: 3, value: "1" }, label: count_label_for(params[:asset_type]) %>
-      <%= form.input :rack_size,  as: :select, prompt: 'Rack size', collection: @rack_sizes, required: true, input_html: { class: 'form-control select2'} %>
     <% end %>
   <% end %>
 

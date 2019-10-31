@@ -122,6 +122,35 @@ namespace :limber do
         asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
+
+    unless Purpose.where(name: 'TR Stock 96').exists?
+      TubeRack::Purpose.create!(
+        name: 'TR Stock 96',
+        target_type: 'TubeRack',
+        stock_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        #asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
+
+    unless Purpose.where(name: 'TR Stock 48').exists?
+      TubeRack::Purpose.create!(
+        name: 'TR Stock 48',
+        target_type: 'TubeRack',
+        stock_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 48
+        #asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
+
+
+
   end
 
   desc 'Create the limber request types'

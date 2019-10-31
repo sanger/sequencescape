@@ -11,7 +11,7 @@ module SampleManifest::TubeRackBehaviour
     end
 
     def generate
-      @tubes = generate_tube_racks(purpose)
+      @tubes = generate_tube_racks(purpose, @manifest.tube_rack_purpose)
     end
 
     def io_samples
@@ -29,8 +29,16 @@ module SampleManifest::TubeRackBehaviour
       Tube::Purpose.where(target_type: SampleTube)
     end
 
+    def acceptable_rack_purposes
+      TubeRack::Purpose.where(target_type: TubeRack)
+    end
+
     def default_purpose
       Tube::Purpose.standard_sample_tube
+    end
+
+    def default_tube_rack_purpose
+      TubeRack::Purpose.standard_tube_rack
     end
 
     def labware_from_samples
