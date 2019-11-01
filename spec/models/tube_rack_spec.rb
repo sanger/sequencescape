@@ -3,12 +3,12 @@
 require 'rails_helper'
 RSpec.describe TubeRack do
   describe '#create' do
-    it 'can contains rackable_tubes' do
+    it 'can contains racked_tubes' do
       tube_rack = create :tube_rack
-      rackable_tube = create :rackable_tube
+      racked_tube = create :racked_tube
 
-      expect { tube_rack.rackable_tubes << rackable_tube }.to(
-        change { tube_rack.rackable_tubes.count }.by(1)
+      expect { tube_rack.racked_tubes << racked_tube }.to(
+        change { tube_rack.racked_tubes.count }.by(1)
       )
     end
 

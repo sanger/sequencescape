@@ -2,7 +2,7 @@
 
 # Links a tube to a tube rack.
 # Coordinates specifies the location it is within the rack.
-class RackableTube < ApplicationRecord
+class RackedTube < ApplicationRecord
   belongs_to :tube
   belongs_to :tube_rack
 end

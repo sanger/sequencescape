@@ -27,7 +27,7 @@ module SampleManifestExcel
                   when 'plate'
                     'Plates'
                   when 'tube_rack'
-                    'Tube Rack'
+                    'Tube Racks'
                   else
                     ''
                   end
@@ -44,18 +44,19 @@ module SampleManifestExcel
         add_row ['Study:', study]
         add_row ['Supplier:', supplier]
         add_row ["No. #{type} Sent:", count]
-        if type == 'Tube Rack'
-          rack_size = sample_manifest.tube_rack_purpose.size
-          add_row ['Rack size:', rack_size]
-          count.times do |num|
-            axlsx_worksheet.add_row do |row|
-              row.add_cell "Rack barcode (#{num + 1}):", type: :string
-              row.add_cell nil, type: :string, style: styles[:unlocked_no_border].reference
-            end
-          end
-
-        end
+        add_extra_cells_for_tube_rack(count) if type == 'Tube Racks'
         add_rows(1)
+      end
+
+      def add_extra_cells_for_tube_rack(count)
+        rack_size = sample_manifest.tube_rack_purpose.size
+        add_row ['Rack size:', rack_size]
+        count.times do |num|
+          axlsx_worksheet.add_row do |row|
+            row.add_cell "Rack barcode (#{num + 1}):", type: :string
+            row.add_cell nil, type: :string, style: styles[:unlocked_no_border].reference
+          end
+        end
       end
 
       # Using axlsx worksheet creates data worksheet with title, description, all required columns, values,
@@ -119,7 +120,7 @@ module SampleManifestExcel
       end
 
       def computed_first_row
-        if type == 'Tube Rack'
+        if type == 'Tube Racks'
           first_row + sample_manifest.count
         else
           first_row

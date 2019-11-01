@@ -1049,14 +1049,14 @@ ActiveRecord::Schema.define(version: 2019_10_31_154006) do
     t.index ["lot_id"], name: "index_lot_id"
   end
 
-  create_table "rackable_tubes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "racked_tubes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "tube_rack_id"
     t.bigint "tube_id"
     t.string "coordinate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tube_id"], name: "index_rackable_tubes_on_tube_id"
-    t.index ["tube_rack_id"], name: "index_rackable_tubes_on_tube_rack_id"
+    t.index ["tube_id"], name: "index_racked_tubes_on_tube_id"
+    t.index ["tube_rack_id"], name: "index_racked_tubes_on_tube_rack_id"
   end
 
   create_table "receptacles", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
