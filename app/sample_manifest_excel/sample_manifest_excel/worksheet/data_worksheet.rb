@@ -15,7 +15,7 @@ module SampleManifestExcel
       def initialize(attributes = {})
         super
         create_styles
-        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count, sample_manifest.rack_size)
+        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count, sample_manifest.tube_rack_purpose.size)
         add_columns
         freeze_panes
       end
