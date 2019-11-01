@@ -568,7 +568,7 @@ tube_rack_default:
   heading: "Default Tube Rack"
   asset_type: "tube_rack"
   columns:
-    - :sanger_tube_id_blank
+    - :tube_barcode
     - :sanger_sample_id
     - :supplier_name
     - :reference_genome
