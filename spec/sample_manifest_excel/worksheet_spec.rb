@@ -99,6 +99,10 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       expect(worksheet.last_row).to eq(spreadsheet.sheet(0).last_row)
     end
 
+    it 'computed first row should be correct' do
+      expect(worksheet.computed_first_row).to eq(worksheet.first_row)
+    end
+
     it 'adds title and description' do
       expect(spreadsheet.sheet(0).cell(1, 1)).to eq('DNA Collections Form')
       expect(spreadsheet.sheet(0).cell(5, 1)).to eq('Study:')
@@ -148,6 +152,68 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       expect(worksheet.axlsx_worksheet.sheet_protection.password).to be_present
       expect(worksheet.axlsx_worksheet.sheet_protection.format_columns).to be_falsey
       expect(worksheet.axlsx_worksheet.sheet_protection.format_rows).to be_falsey
+    end
+  end
+
+  context 'tube rack worksheet' do
+    let!(:worksheet) do
+      SampleManifestExcel::Worksheet::DataWorksheet.new(
+        workbook: workbook,
+        columns: SampleManifestExcel.configuration.columns.tube_rack_default.dup,
+        sample_manifest: sample_manifest,
+        ranges: SampleManifestExcel.configuration.ranges.dup,
+        password: '1111'
+      )
+    end
+
+    before do
+      save_file
+    end
+
+    context 'when a single rack' do
+      let(:sample_manifest) { create(:tube_rack_manifest) }
+
+      it 'adds extra cells into tube rack manifests' do
+        expect(spreadsheet.sheet(0).cell(7, 1)).to eq('No. Tube Racks Sent:')
+        expect(spreadsheet.sheet(0).cell(7, 2)).to eq(sample_manifest.count.to_s)
+        expect(spreadsheet.sheet(0).cell(8, 1)).to eq('Rack size:')
+        expect(spreadsheet.sheet(0).cell(8, 2)).to eq(sample_manifest.tube_rack_purpose.size.to_s)
+        expect(spreadsheet.sheet(0).cell(9, 1)).to eq('Rack barcode (1):')
+      end
+
+      it 'panes should be frozen correctly' do
+        expect(worksheet.axlsx_worksheet.sheet_view.pane.x_split).to eq(worksheet.freeze_after_column(:sanger_sample_id))
+        expect(worksheet.axlsx_worksheet.sheet_view.pane.y_split).to eq(worksheet.computed_first_row - 1)
+        expect(worksheet.axlsx_worksheet.sheet_view.pane.state).to eq('frozen')
+      end
+
+      it 'computed first row should be correct' do
+        expect(worksheet.computed_first_row).to eq(worksheet.first_row + 1)
+      end
+    end
+
+    context 'when multiple racks' do
+      let(:sample_manifest) { create(:tube_rack_manifest, count: 3) }
+
+      it 'adds extra cells into tube rack manifests' do
+        expect(spreadsheet.sheet(0).cell(7, 1)).to eq('No. Tube Racks Sent:')
+        expect(spreadsheet.sheet(0).cell(7, 2)).to eq(sample_manifest.count.to_s)
+        expect(spreadsheet.sheet(0).cell(8, 1)).to eq('Rack size:')
+        expect(spreadsheet.sheet(0).cell(8, 2)).to eq(sample_manifest.tube_rack_purpose.size.to_s)
+        expect(spreadsheet.sheet(0).cell(9, 1)).to eq('Rack barcode (1):')
+        expect(spreadsheet.sheet(0).cell(10, 1)).to eq('Rack barcode (2):')
+        expect(spreadsheet.sheet(0).cell(11, 1)).to eq('Rack barcode (3):')
+      end
+
+      it 'panes should be frozen correctly' do
+        expect(worksheet.axlsx_worksheet.sheet_view.pane.x_split).to eq(worksheet.freeze_after_column(:sanger_sample_id))
+        expect(worksheet.axlsx_worksheet.sheet_view.pane.y_split).to eq(worksheet.computed_first_row - 1)
+        expect(worksheet.axlsx_worksheet.sheet_view.pane.state).to eq('frozen')
+      end
+
+      it 'computed first row should be correct' do
+        expect(worksheet.computed_first_row).to eq(worksheet.first_row + 3)
+      end
     end
   end
 

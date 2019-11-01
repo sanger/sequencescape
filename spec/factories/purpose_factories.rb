@@ -140,15 +140,12 @@ FactoryBot.define do
     target_type { 'Tube' }
   end
 
-  factory :tube_rack_purpose, class: TubeRack::Purpose do
+  factory :tube_rack_purpose_48, class: TubeRack::Purpose do
     target_type { 'TubeRack' }
+    name { generate :purpose_name }
+    size { 48 }
 
-    factory :tube_rack_purpose_48 do
-      name { 'TR Stock 48' }
-      size { 48 }
-    end
     factory :tube_rack_purpose_96 do
-      name { 'TR Stock 96' }
       size { 96 }
     end
   end
