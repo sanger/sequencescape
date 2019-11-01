@@ -9,6 +9,9 @@ sanger_tube_id:
   heading: SANGER TUBE ID
   unlocked: true
   attribute: :barcode
+sanger_tube_id_blank:
+  heading: SANGER TUBE ID
+  unlocked: true
 sanger_sample_id:
   heading: SANGER SAMPLE ID
   attribute: :sample_id
