@@ -62,6 +62,11 @@ FactoryBot.define do
         end
       end
     end
+
+    factory :tube_rack_manifest do
+      asset_type { 'tube_rack' }
+      tube_rack_purpose { create(:tube_rack_purpose_48) }
+    end
   end
 
   factory :supplier do

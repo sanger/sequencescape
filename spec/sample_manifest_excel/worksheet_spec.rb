@@ -67,6 +67,13 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
       expect(worksheet.type).to eq('Tubes')
     end
+
+    it 'be Tube Rack for a tube rack manifest' do
+      sample_manifest = create(:tube_rack_manifest)
+      column_list = SampleManifestExcel.configuration.columns.tube_rack_default.dup
+      worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
+      expect(worksheet.type).to eq('Tube Rack')
+    end
   end
 
   context 'data worksheet' do
