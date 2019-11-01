@@ -41,10 +41,10 @@ module SampleManifest::SharedTubeBehaviour
     end
 
     def generate_tube_racks(tube_purpose, tube_rack_purpose)
-      sanger_ids = generate_sanger_ids(count*tube_rack_purpose.size)
+      sanger_ids = generate_sanger_ids(count * tube_rack_purpose.size)
       study_abbreviation = study.abbreviation
 
-      tubes = Array.new(count*tube_rack_purpose.size) do
+      tubes = Array.new(count * tube_rack_purpose.size) do
         tube = tube_purpose.create!
         sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
         SampleManifestAsset.create!(sanger_sample_id: sanger_sample_id,
@@ -58,8 +58,5 @@ module SampleManifest::SharedTubeBehaviour
       delayed_generate_asset_requests(tubes.map { |tube| tube.receptacle.id }, study.id)
       tubes
     end
-
   end
-
-
 end

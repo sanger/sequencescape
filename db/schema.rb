@@ -1050,11 +1050,13 @@ ActiveRecord::Schema.define(version: 2019_10_31_154006) do
   end
 
   create_table "rackable_tubes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "labware_id"
+    t.bigint "tube_rack_id"
     t.bigint "tube_id"
     t.string "coordinate"
-    t.index ["labware_id"], name: "index_rackable_tubes_on_labware_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["tube_id"], name: "index_rackable_tubes_on_tube_id"
+    t.index ["tube_rack_id"], name: "index_rackable_tubes_on_tube_rack_id"
   end
 
   create_table "receptacles", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
@@ -1288,7 +1290,6 @@ ActiveRecord::Schema.define(version: 2019_10_31_154006) do
     t.integer "user_id"
     t.string "password"
     t.integer "purpose_id"
-    t.integer "rack_size"
     t.integer "tube_rack_purpose_id"
     t.index ["purpose_id"], name: "fk_rails_5627ab4aaa"
     t.index ["study_id"], name: "index_sample_manifests_on_study_id"
@@ -1350,9 +1351,6 @@ ActiveRecord::Schema.define(version: 2019_10_31_154006) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "donor_id"
-    t.integer "genome_size"
-    t.string "saphyr"
-    t.string "pacbio"
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"

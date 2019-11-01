@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module SampleManifest::TubeRackBehaviour
+  # Specifies behaviour for generation of Tube Rack Manifests
+  # Ends up being included in SampleManifest model because is instantiated in CoreBehaviour
   class Core < SampleManifest::SharedTubeBehaviour::Base
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
     include SampleManifest::CoreBehaviour::StockAssets

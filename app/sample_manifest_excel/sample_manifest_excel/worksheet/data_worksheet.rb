@@ -15,7 +15,7 @@ module SampleManifestExcel
       def initialize(attributes = {})
         super
         create_styles
-        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count, sample_manifest.tube_rack_purpose.size)
+        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count)
         add_columns
         freeze_panes
       end
@@ -36,7 +36,7 @@ module SampleManifestExcel
       # Adds title and description (study abbreviation, supplier name, number of assets sent)
       # to a worksheet.
 
-      def add_title_and_description(study, supplier, count, rack_size)
+      def add_title_and_description(study, supplier, count)
         add_row ['DNA Collections Form']
         add_rows(2)
         add_multiplexed_library_tube_barcode
@@ -45,15 +45,16 @@ module SampleManifestExcel
         add_row ['Supplier:', supplier]
         add_row ["No. #{type} Sent:", count]
         if type == 'Tube Rack'
-          add_row ["Rack size:", rack_size]
-          count.times do |num| 
+          rack_size = sample_manifest.tube_rack_purpose.size
+          add_row ['Rack size:', rack_size]
+          count.times do |num|
             axlsx_worksheet.add_row do |row|
-              row.add_cell "Rack barcode (#{num+1}):", type: :string
+              row.add_cell "Rack barcode (#{num + 1}):", type: :string
               row.add_cell nil, type: :string, style: styles[:unlocked_no_border].reference
             end
           end
 
-        end 
+        end
         add_rows(1)
       end
 
@@ -118,7 +119,7 @@ module SampleManifestExcel
       end
 
       def computed_first_row
-        if type == "Tube Rack"
+        if type == 'Tube Rack'
           first_row + sample_manifest.count
         else
           first_row

@@ -20,10 +20,10 @@ module Sdb::SampleManifestsHelper
   end
 
   def submit_label_for(asset_type)
-    unless asset_type == 'tube_rack'
-      'Create manifest and print labels'
-    else
+    if asset_type == 'tube_rack'
       'Create manifest'
+    else
+      'Create manifest and print labels'
     end
   end
 end
