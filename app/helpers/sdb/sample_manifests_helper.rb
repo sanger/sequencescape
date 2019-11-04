@@ -26,4 +26,12 @@ module Sdb::SampleManifestsHelper
       'Create manifest and print labels'
     end
   end
+
+  def purpose_label_for(asset_type)
+    if asset_type == 'tube_rack'
+      'Tube purpose'
+    else
+      'Purpose'
+    end
+  end
 end

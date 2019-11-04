@@ -42,39 +42,6 @@ describe 'SampleManifest controller', sample_manifest: true do
     end
   end
 
-  shared_examples 'a tube rack manifest' do
-    it 'creating manifests' do
-      click_link('Create manifest for tube racks')
-      # expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: barcode))
-      select(study.name, from: 'Study')
-      select(supplier.name, from: 'Supplier')
-      within('#sample_manifest_template') do
-        expect(page).to have_selector('option', count: 1)
-        expect(page).to have_selector('option', text: 'Default Tube Rack')
-      end
-      select('Default Tube Rack', from: 'Template')
-      expect(page).not_to have_text('Barcodes')
-      expect(page).not_to have_text('Tube Racks')
-      select(selected_purpose.name, from: 'Purpose') if selected_purpose
-      expect(page).to have_text('Tube Rack Purpose')
-      # puts "**************"
-      # puts selected_tube_rack_purpose.name
-      within('#select2-sample_manifest_tube_rack_purpose_id-container') do
-        expect(page).to have_selector('option', count: 1)
-        expect(page).to have_selector('option', text: 'TR Stock 48')
-        expect(page).to have_selector('option', text: 'TR Stock sdkgjerct48')
-      end
-      select(selected_tube_rack_purpose.name, from: 'Tube Rack Purpose') if selected_tube_rack_purpose
-      click_button('Create manifest')
-      expect(page).to have_text('Upload a sample manifest')
-      # expect(created_plate.purpose).to eq(created_purpose)
-      click_on 'Download Blank Manifest'
-      expect(page.driver.response.headers['Content-Type']).to(
-        eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-      )
-    end
-  end
-
   before do
     login_user user
     load_manifest_spec
@@ -110,11 +77,33 @@ describe 'SampleManifest controller', sample_manifest: true do
   end
 
   context 'with a tube rack manifest' do
-    let(:selected_purpose) { created_purpose }
-    let!(:created_purpose) { create :tube_purpose }
-    let(:selected_tube_rack_purpose) { created_tube_rack_purpose }
-    let!(:created_tube_rack_purpose) { create :tube_rack_purpose_48 }
+    let!(:selected_purpose) { create :sample_tube_purpose, name: 'Standard sample' }
+    let!(:selected_tube_rack_purpose) { create :tube_rack_purpose_96, name: 'TR Stock 96' }
 
-    it_behaves_like 'a tube rack manifest'
+    it 'creating manifests' do
+      click_link('Create manifest for tube racks')
+      select(study.name, from: 'Study')
+      select(supplier.name, from: 'Supplier')
+      within('#sample_manifest_template') do
+        expect(page).to have_selector('option', count: 2)
+        expect(page).to have_selector('option', text: 'Default Tube Rack')
+      end
+      select('Default Tube Rack', from: 'Template')
+      expect(page).not_to have_text('Barcodes')
+      expect(page).to have_text('Racks required')
+      select(selected_purpose.name, from: 'Tube purpose') if selected_purpose
+      expect(page).to have_text('Tube Rack Purpose')
+      within('#sample_manifest_tube_rack_purpose_input') do
+        expect(page).to have_selector('option', count: 2)
+        expect(page).to have_selector('option', text: selected_tube_rack_purpose.name)
+      end
+      select(selected_tube_rack_purpose.name, from: 'Tube Rack Purpose') if selected_tube_rack_purpose
+      click_button('Create manifest')
+      expect(page).to have_text('Upload a sample manifest')
+      click_on 'Download Blank Manifest'
+      expect(page.driver.response.headers['Content-Type']).to(
+        eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      )
+    end
   end
 end
