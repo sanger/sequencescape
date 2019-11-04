@@ -17,7 +17,7 @@ module SampleManifest::SharedTubeBehaviour
 
     private
 
-    def generate_tubes(tube_purpose, number_of_tubes=count)
+    def generate_tubes(tube_purpose, number_of_tubes = count)
       sanger_ids = generate_sanger_ids(number_of_tubes)
       study_abbreviation = study.abbreviation
 

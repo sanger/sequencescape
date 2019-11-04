@@ -21,7 +21,7 @@ describe Tube, type: :model do
       tube.receptacles.destroy_all
       tube.destroy
 
-      expect(Tube.exists?(tube.id)).to eq(false)
+      expect(described_class.exists?(tube.id)).to eq(false)
       expect(RackedTube.exists?(racked_tube.id)).to eq(false)
       expect(TubeRack.exists?(tube_rack.id)).to eq(true)
     end
