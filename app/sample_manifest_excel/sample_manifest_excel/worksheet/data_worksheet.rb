@@ -14,6 +14,7 @@ module SampleManifestExcel
 
       def initialize(attributes = {})
         super
+        @extra_rows_added = 0
         create_styles
         add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count)
         add_columns
@@ -57,6 +58,7 @@ module SampleManifestExcel
             row.add_cell nil, type: :string, style: styles[:unlocked_no_border].reference
           end
         end
+        @extra_rows_added += count + 1
       end
 
       # Using axlsx worksheet creates data worksheet with title, description, all required columns, values,
@@ -121,7 +123,7 @@ module SampleManifestExcel
 
       def computed_first_row
         if type == 'Tube Racks'
-          first_row + sample_manifest.count
+          first_row + @extra_rows_added
         else
           first_row
         end
