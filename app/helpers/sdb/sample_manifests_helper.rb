@@ -34,4 +34,12 @@ module Sdb::SampleManifestsHelper
       'Purpose'
     end
   end
+
+  def count_barcode_heading_for(asset_type)
+    if asset_type == 'tube_rack'
+      'Tube Racks'
+    else
+      'Barcodes'
+    end
+  end
 end
