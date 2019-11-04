@@ -131,8 +131,7 @@ namespace :limber do
         default_state: 'pending',
         barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
         cherrypickable_target: false,
-        size: 96,
-        #asset_shape: AssetShape.find_by(name: 'Standard')
+        size: 96
       )
     end
 
@@ -145,7 +144,6 @@ namespace :limber do
         barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
         cherrypickable_target: false,
         size: 48
-        #asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
 
