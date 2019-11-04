@@ -92,12 +92,12 @@ describe 'SampleManifest controller', sample_manifest: true do
       expect(page).not_to have_text('Barcodes')
       expect(page).to have_text('Racks required')
       select(selected_purpose.name, from: 'Tube purpose') if selected_purpose
-      expect(page).to have_text('Tube Rack Purpose')
+      expect(page).to have_text('Tube rack purpose')
       within('#sample_manifest_tube_rack_purpose_input') do
         expect(page).to have_selector('option', count: 2)
         expect(page).to have_selector('option', text: selected_tube_rack_purpose.name)
       end
-      select(selected_tube_rack_purpose.name, from: 'Tube Rack Purpose') if selected_tube_rack_purpose
+      select(selected_tube_rack_purpose.name, from: 'Tube rack purpose') if selected_tube_rack_purpose
       click_button('Create manifest')
       expect(page).to have_text('Upload a sample manifest')
       click_on 'Download Blank Manifest'

@@ -188,7 +188,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'computed first row should be correct' do
-        expect(worksheet.computed_first_row).to eq(worksheet.first_row + 1)
+        expect(worksheet.computed_first_row).to eq(worksheet.first_row + 2)
       end
     end
 
@@ -212,7 +212,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'computed first row should be correct' do
-        expect(worksheet.computed_first_row).to eq(worksheet.first_row + 3)
+        expect(worksheet.computed_first_row).to eq(worksheet.first_row + 4)
       end
     end
   end
