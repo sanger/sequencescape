@@ -15,7 +15,8 @@ module SampleManifest::TubeRackBehaviour
     end
 
     def generate
-      @tubes = generate_tube_racks(purpose, @manifest.tube_rack_purpose)
+      desired_number_of_tubes = count * @manifest.tube_rack_purpose.size
+      @tubes = generate_tubes(purpose, desired_number_of_tubes)
     end
 
     def io_samples
