@@ -5,6 +5,7 @@
   <%= alert(:warning) do %>
     You don't currently have a swipe-card configured. This is required to use some of the pipeline applications.
     <%= link_to 'Click here to set one up now!', edit_profile_path(current_user), class: "alert-link" %>
+    <%= help_link 'Further information', 'Add a swipecard to Sequencescape' %>
   <% end %>
 <% end %>
 
