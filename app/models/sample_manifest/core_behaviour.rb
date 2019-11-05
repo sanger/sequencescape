@@ -1,5 +1,5 @@
 module SampleManifest::CoreBehaviour
-  BEHAVIOURS = %w[1dtube plate multiplexed_library library library_plate].freeze
+  BEHAVIOURS = %w[1dtube plate multiplexed_library library library_plate tube_rack].freeze
 
   # Include in cores which exhibit the default behaviour
   module NoSpecializedValidation
@@ -67,6 +67,7 @@ module SampleManifest::CoreBehaviour
     case asset_type
     when '1dtube'              then 'SampleTubeBehaviour'
     when 'plate'               then 'PlateBehaviour'
+    when 'tube_rack'           then 'TubeRackBehaviour'
     when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'
     when 'library'             then 'LibraryTubeBehaviour'
     when 'library_plate'       then 'LibraryPlateBehaviour'

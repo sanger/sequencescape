@@ -17,12 +17,12 @@ module SampleManifest::SharedTubeBehaviour
 
     private
 
-    def generate_tubes(purpose)
-      sanger_ids = generate_sanger_ids(count)
+    def generate_tubes(tube_purpose, number_of_tubes = count)
+      sanger_ids = generate_sanger_ids(number_of_tubes)
       study_abbreviation = study.abbreviation
 
-      tubes = Array.new(count) do
-        tube = purpose.create!
+      tubes = Array.new(number_of_tubes) do
+        tube = tube_purpose.create!
         sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
         SampleManifestAsset.create!(sanger_sample_id: sanger_sample_id,
                                     asset: tube.receptacle,

@@ -31,7 +31,7 @@ describe 'SampleManifest controller', sample_manifest: true do
       end
       select('Default Plate', from: 'Template')
       select(printer.name, from: 'Barcode printer')
-      select(selected_purpose.name, from: 'purpose') if selected_purpose
+      select(selected_purpose.name, from: 'Purpose') if selected_purpose
       click_button('Create manifest and print labels')
       expect(page).to have_text('Upload a sample manifest')
       expect(created_plate.purpose).to eq(created_purpose)
@@ -69,10 +69,41 @@ describe 'SampleManifest controller', sample_manifest: true do
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
       within('#sample_manifest_template') do
-        expect(page).to have_selector('option', count: 15)
+        expect(page).to have_selector('option', count: 16)
       end
-      select(created_purpose.name, from: 'purpose')
+      select(created_purpose.name, from: 'Purpose')
       expect(page).to have_text('Used for plate manifests only')
+    end
+  end
+
+  context 'with a tube rack manifest' do
+    let!(:selected_purpose) { create :sample_tube_purpose, name: 'Standard sample' }
+    let!(:selected_tube_rack_purpose) { create :tube_rack_purpose, name: 'TR Stock 96' }
+
+    it 'creating manifests' do
+      click_link('Create manifest for tube racks')
+      select(study.name, from: 'Study')
+      select(supplier.name, from: 'Supplier')
+      within('#sample_manifest_template') do
+        expect(page).to have_selector('option', count: 2)
+        expect(page).to have_selector('option', text: 'Default Tube Rack')
+      end
+      select('Default Tube Rack', from: 'Template')
+      expect(page).not_to have_text('Barcodes')
+      expect(page).to have_text('Tube racks required')
+      select(selected_purpose.name, from: 'Tube purpose') if selected_purpose
+      expect(page).to have_text('Tube rack purpose')
+      within('#sample_manifest_tube_rack_purpose_input') do
+        expect(page).to have_selector('option', count: 2)
+        expect(page).to have_selector('option', text: selected_tube_rack_purpose.name)
+      end
+      select(selected_tube_rack_purpose.name, from: 'Tube rack purpose') if selected_tube_rack_purpose
+      click_button('Create manifest')
+      expect(page).to have_text('Upload a sample manifest')
+      click_on 'Download Blank Manifest'
+      expect(page.driver.response.headers['Content-Type']).to(
+        eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      )
     end
   end
 end
