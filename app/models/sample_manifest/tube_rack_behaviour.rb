@@ -19,18 +19,6 @@ module SampleManifest::TubeRackBehaviour
       @tubes = generate_tubes(purpose, desired_number_of_tubes)
     end
 
-    # This was copied from sample_tube_behaviour.rb, commented out until needed
-    # def io_samples
-    #   samples.map do |sample|
-    #     {
-    #       sample: sample,
-    #       container: {
-    #         barcode: sample.primary_receptacle.human_barcode
-    #       }
-    #     }
-    #   end
-    # end
-
     def acceptable_purposes
       Tube::Purpose.where(target_type: SampleTube)
     end
@@ -46,23 +34,5 @@ module SampleManifest::TubeRackBehaviour
     def default_tube_rack_purpose
       TubeRack::Purpose.standard_tube_rack
     end
-
-  # This was copied from sample_tube_behaviour.rb, commented out until needed
-  #   def labware_from_samples
-  #     samples.map { |s| s.primary_receptacle.labware }
-  #   end
-
-  #   def labware=(labware)
-  #     @tubes = labware
-  #   end
-
-  #   def labware
-  #     tubes | labware_from_samples | @manifest.assets.map(&:labware)
-  #   end
-  #   alias printables labware
-
-  #   def included_resources
-  #     [{ sample: :sample_metadata, asset: %i[aliquots barcodes] }]
-  #   end
   end
 end
