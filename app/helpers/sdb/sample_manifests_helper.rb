@@ -5,7 +5,7 @@ module Sdb::SampleManifestsHelper
       'plate' => 'Plates required',
       'library' => 'Tubes required',
       'multiplexed_library' => 'Number of samples in library',
-      'tube_rack' => 'Racks required'
+      'tube_rack' => 'Tube racks required'
     }
   end
 

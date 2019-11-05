@@ -90,7 +90,7 @@ describe 'SampleManifest controller', sample_manifest: true do
       end
       select('Default Tube Rack', from: 'Template')
       expect(page).not_to have_text('Barcodes')
-      expect(page).to have_text('Racks required')
+      expect(page).to have_text('Tube racks required')
       select(selected_purpose.name, from: 'Tube purpose') if selected_purpose
       expect(page).to have_text('Tube rack purpose')
       within('#sample_manifest_tube_rack_purpose_input') do
