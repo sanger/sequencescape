@@ -78,7 +78,7 @@ describe 'SampleManifest controller', sample_manifest: true do
 
   context 'with a tube rack manifest' do
     let!(:selected_purpose) { create :sample_tube_purpose, name: 'Standard sample' }
-    let!(:selected_tube_rack_purpose) { create :tube_rack_purpose_96, name: 'TR Stock 96' }
+    let!(:selected_tube_rack_purpose) { create :tube_rack_purpose, name: 'TR Stock 96' }
 
     it 'creating manifests' do
       click_link('Create manifest for tube racks')
