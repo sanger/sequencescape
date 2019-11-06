@@ -26,6 +26,10 @@ module SampleManifestExcel
       # it will just appear to be empty, which is confusing.
       validate :check_columns, :check_processor, :check_rows, if: :data_valid?
       validate :check_processor, if: :processor?
+      # TODO: add validation steps for tube racks, if not previously uploaded: *** here, or in the processor? ***
+      # 1. check rack barcodes are present and unique
+      # 2. use microservice to check if scans are present for all barcodes
+      # 3. use microservice to retrieve tube barcodes and cross-compare with manifest
 
       delegate :processed?, to: :processor
       delegate :data_at, to: :rows
@@ -36,11 +40,12 @@ module SampleManifestExcel
         @data = Upload::Data.new(file, start_row)
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
-        @cache = Cache.new(self)
+        @cache = Cache.new(self)        # TODO: might want this to cache tube racks and racked tubes?
         @rows = Upload::Rows.new(data, columns, @cache)
         @sample_manifest = derive_sample_manifest
         @override = override || false
         @processor = create_processor
+        # TODO: extract the special header cells info here for tube racks (rack barcodes)
       end
 
       def inspect
@@ -115,6 +120,8 @@ module SampleManifestExcel
           Upload::Processor::MultiplexedLibraryTube.new(self)
         when 'plate', 'library_plate'
           Upload::Processor::Plate.new(self)
+        when 'tube_rack'
+          Upload::Processor::TubeRack.new(self)
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end
