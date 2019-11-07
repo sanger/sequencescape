@@ -92,7 +92,7 @@ RSpec.describe Study, type: :model do
     end
   end
 
-  context '#ethical approval?: ' do
+  describe '#ethical approval?: ' do
     let!(:study)  { create(:study) }
 
     context 'when contains human DNA' do
@@ -211,7 +211,7 @@ RSpec.describe Study, type: :model do
       end
     end
 
-    context '#unprocessed_submissions?' do
+    describe '#unprocessed_submissions?' do
       let!(:study)  { create(:study) }
       let!(:asset)  { create(:sample_tube) }
 
@@ -245,7 +245,7 @@ RSpec.describe Study, type: :model do
       end
     end
 
-    context '#deactivate!' do
+    describe '#deactivate!' do
       let!(:study)          { create(:study) }
       let!(:request_type)   { create(:request_type) }
 
@@ -351,7 +351,7 @@ RSpec.describe Study, type: :model do
       end
     end
 
-    context '#for_sample_accessioning' do
+    describe '#for_sample_accessioning' do
       let!(:study_1) { create(:open_study) }
       let!(:study_2) { create(:open_study, name: 'Study 2', accession_number: 'ENA123') }
       let!(:study_3) { create(:open_study, name: 'Study 3', accession_number: 'ENA456') }
@@ -383,7 +383,7 @@ RSpec.describe Study, type: :model do
       end
     end
 
-    context '#each_well_for_qc_report_in_batches' do
+    describe '#each_well_for_qc_report_in_batches' do
       let!(:study) { create(:study) }
       let(:purpose_1) { PlatePurpose.stock_plate_purpose }
       let(:purpose_2) { create :plate_purpose }

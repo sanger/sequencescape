@@ -1,4 +1,4 @@
-# Controls API V1 IO for {Order}
+# Controls API V1 IO for {::Order}
 class ::Io::Order < ::Core::Io::Base
   REQUEST_OPTIONS_FIELDS = Hash[{
     read_length: 'read_length',

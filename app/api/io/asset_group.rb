@@ -1,4 +1,4 @@
-# Controls API V1 IO for {AssetGroup}
+# Controls API V1 IO for {::AssetGroup}
 class ::Io::AssetGroup < ::Core::Io::Base
   set_model_for_input(::AssetGroup)
   set_json_root(:asset_group)

@@ -1,6 +1,8 @@
 require_dependency 'attributable'
 
 module Metadata
+  # @!macro [attach] has_metadata
+  #   @!parse class Metadata < Metadata::Base; end
   def has_metadata(options = {}, &block)
     as_class = options.delete(:as) || self
     table_name = options.delete(:table_name) || "#{as_class.name.demodulize.underscore}_metadata"

@@ -11,6 +11,8 @@ module PlatePurpose::Library
 
   STATES_TO_ASSIGN_LIBRARY_INFORMATION = %w[started passed].freeze
 
+  # Performs the standard transition_to of the containing class and then
+  # assigns library information to the wells
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super
     assign_library_information_to_wells(plate) if STATES_TO_ASSIGN_LIBRARY_INFORMATION.include?(state)

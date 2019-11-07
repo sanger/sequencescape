@@ -212,6 +212,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               it 'has one element' do
                 expect(subject.count).to eq(1)
               end
+
               it 'is a multiplexed library tube' do
                 expect(subject.first).to be_a(MultiplexedLibraryTube)
               end
@@ -267,6 +268,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
             it 'has one element' do
               expect(labware.count).to eq(1)
             end
+
             it 'is a library tube' do
               expect(labware.first).to be_a(LibraryTube)
             end
@@ -317,6 +319,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               it 'has one element' do
                 expect(labware.count).to eq(count)
               end
+
               it 'is a sample tube' do
                 expect(labware.first).to be_a(SampleTube)
               end

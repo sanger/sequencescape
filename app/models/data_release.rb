@@ -3,7 +3,6 @@ module DataRelease
 
   def valid_data_release_properties?
     return true unless enforce_data_release
-    return false if study_metadata.data_release_study_type.try(:is_not_specified?)
     return false if study_metadata.data_release_strategy.try(:blank?)
     return false if study_metadata.data_release_timing.try(:blank?)
 
@@ -13,7 +12,6 @@ module DataRelease
   def ena_accession_required?
     return false unless enforce_accessioning
     return true unless valid_data_release_properties?
-    return false if study_metadata.data_release_study_type.try(:studies_excluded_for_release?)
     # TODO[xxx]: was this removed?
     return false if study_metadata.never_release?
 

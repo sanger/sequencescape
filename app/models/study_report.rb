@@ -1,3 +1,6 @@
+# A spreadsheet summarising the QC information about a study.
+# Generally replaced by {QcReport} which adds support for pass/fail criteria,
+# automatic decisions and customer decisions.
 class StudyReport < ApplicationRecord
   extend DbFile::Uploader
 
@@ -8,7 +11,6 @@ class StudyReport < ApplicationRecord
 
   scope :for_study, ->(study) { where(study_id: study.id) }
   scope :for_user, ->(user) { where(user_id: user.id) }
-  # named_scope :without_files, -> { select_without_file_columns_for(:report) }
 
   has_uploaded :report, serialization_column: 'report_filename'
 

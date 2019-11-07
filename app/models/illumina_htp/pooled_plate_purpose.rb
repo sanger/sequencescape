@@ -1,3 +1,14 @@
+# @deprecated Part of the old Illumina-B Lims pipelines
+# Part of a plate based pooling and normalization strategy. Used by:
+#
+# - PF Lib Norm
+# - Lib Norm 2 Pool
+#
+# @todo #2396 Remove this class. This will require:
+#       - Update any purposes using this class to use PlatePurpose instead
+#       - Update:
+#           app/models/illumina_htp/plate_purposes.rb
+#         By either replacing with PlatePurpose, or removing the factories entirely
 class IlluminaHtp::PooledPlatePurpose < PlatePurpose
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do

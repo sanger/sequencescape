@@ -2,3 +2,4 @@
 -
 LICENSE
 docs/*.md
+db/schema.rb

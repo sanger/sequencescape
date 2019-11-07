@@ -1,3 +1,13 @@
+# @deprecated Part of the old Illumina-B Lims pipelines
+# QC Plate purpose which delegates its state back up to its parent. Used by:
+#
+# - Post Shear QC
+#
+# @todo #2396 Remove this class. This will require:
+#       - Update any purposes using this class to use PlatePurpose instead
+#       - Update:
+#           app/models/illumina_htp/plate_purposes.rb
+#         By either replacing with PlatePurpose, or removing the factories entirely
 class IlluminaHtp::PostShearQcPlatePurpose < PlatePurpose
   alias_method(:default_transition_to, :transition_to)
 

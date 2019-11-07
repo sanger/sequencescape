@@ -1,6 +1,6 @@
 require 'rails-authorization-plugin/lib/authorization'
 
-ActionController::Base.send(:include, Authorization::Base)
+ActionController::Base.include Authorization::Base
 # Disabled as I don't think we use them
 # ActionView::Base.send(:include, Authorization::Base::ControllerInstanceMethods)
 

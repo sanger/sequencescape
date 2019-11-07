@@ -6,7 +6,7 @@ require 'support/barcode_helper'
 describe '/api/1/' do
   subject { '/api/1/' }
 
-  context '#get' do
+  describe '#get' do
     let(:authorised_app) { create :api_application }
 
     let(:response_body) {
@@ -388,7 +388,7 @@ describe '/api/1/' do
     end
   end
 
-  context '#get unauthorized' do
+  describe '#get unauthorized' do
     let(:user) { create :user }
 
     let(:response_body) {

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Submission, type: :model do
-  context '#priority' do
+  describe '#priority' do
     let(:submission) { described_class.new(user: create(:user)) }
 
     it 'be 0 by default' do
@@ -22,7 +22,7 @@ RSpec.describe Submission, type: :model do
     end
   end
 
-  context '#orders' do
+  describe '#orders' do
     let!(:request_type_1) { create(:request_type) }
     let!(:request_type_2) { create(:request_type) }
     let!(:request_type_3) { create(:request_type) }

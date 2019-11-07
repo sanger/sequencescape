@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
   let(:tagged_well) { create :tagged_well }
 
-  context '#pass' do
+  describe '#pass' do
     subject { create :library_request, target_asset: tagged_well, state: state }
 
     let(:state) { 'started' }
@@ -16,7 +16,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
     end
   end
 
-  context '#request_metadata' do
+  describe '#request_metadata' do
     subject { build :library_request, request_metadata_attributes: request_metadata_attributes, request_type: request_type }
 
     let(:fragment_size_required_from) { 1 }
@@ -48,6 +48,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
     it 'has a fragment_size_required_from' do
       expect(subject.request_metadata.fragment_size_required_from).to eq(fragment_size_required_from)
     end
+
     context 'without fragment_size_required_from' do
       let(:fragment_size_required_from) { nil }
 
@@ -59,6 +60,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
     it 'has a fragment_size_required_to' do
       expect(subject.request_metadata.fragment_size_required_to).to eq(fragment_size_required_to)
     end
+
     context 'without fragment_size_required_to' do
       let(:fragment_size_required_to) { nil }
 
@@ -113,6 +115,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
 
         it('is valid') { expect(subject).to be_valid }
         # Defaults are set on a before validate call.
+
         it('sets defaults') do
           subject.valid?
           expect(subject.request_metadata.pcr_cycles).to eq(0)

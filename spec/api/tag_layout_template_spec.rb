@@ -11,7 +11,7 @@ describe '/api/1/tag_layout_templates' do
   let(:authorised_app) { create :api_application }
   let(:user) { create :user }
 
-  context '#get' do
+  describe '#get' do
     let(:response_body) do
       %(
         {
@@ -69,7 +69,7 @@ describe '/api/1/tag_layout_templates' do
     end
     let(:example_tag_group) { example_template.tag_group }
 
-    context '#get' do
+    describe '#get' do
       let(:response_body) do
         %({
           "tag_layout_template":{
@@ -100,7 +100,7 @@ describe '/api/1/tag_layout_templates' do
       end
     end
 
-    context '#post' do
+    describe '#post' do
       let(:target) { create :plate }
       let(:payload) do
         %({"tag_layout":{ "plate": "#{target.uuid}", "user": "#{user.uuid}"}})

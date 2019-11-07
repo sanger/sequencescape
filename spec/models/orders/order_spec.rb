@@ -41,6 +41,7 @@ RSpec.describe Order, type: :model do
       it 'detect duplicates' do
         assert @order.duplicates_within(1.month)
       end
+
       it 'yield the samples, order and submission to a block' do
         yielded = false
         @order.duplicates_within(1.month) do |samples, orders, submissions|

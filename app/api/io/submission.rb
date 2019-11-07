@@ -1,4 +1,4 @@
-# Controls API V1 IO for {Submission}
+# Controls API V1 IO for {::Submission}
 class ::Io::Submission < ::Core::Io::Base
   set_model_for_input(::Submission)
   set_json_root(:submission)

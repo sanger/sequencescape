@@ -1,5 +1,8 @@
 require_dependency 'illumina_htp/plate_purposes'
 
+# Handled finding of plates for the defunct Pulldown pipelines
+# Can be deprecated.
+# Api endpoints can be deprecated by raising {::Core::Service::DeprecatedAction}
 class Search::FindIlluminaAPlates < Search
   def scope(criteria)
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked

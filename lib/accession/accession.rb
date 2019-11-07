@@ -18,7 +18,7 @@ module Accession
   #
   # An example of usage is provided in Sequenescape app/jobs/sample_accessioning_job.rb
   #
-
+  # @see ftp://ftp.sra.ebi.ac.uk/meta/xsd/ Schema definitions
   module Helpers
     def load_file(folder, filename)
       YAML::load_file(File.join(Rails.root, folder, "#{filename}.yml")).with_indifferent_access
@@ -55,7 +55,7 @@ module Accession
   require_relative 'accession/null_response'
   require_relative 'accession/configuration'
 
-  String.send(:include, CoreExtensions::String)
+  String.include CoreExtensions::String
 
   CENTER_NAME = 'SC'.freeze
   XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze

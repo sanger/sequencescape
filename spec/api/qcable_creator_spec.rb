@@ -10,7 +10,7 @@ describe '/api/1/qcable_creators' do
   let(:lot) {  create :tag2_lot }
   let(:barcodes) { %w[CGAP-1 CGAP-2 CGAP-3 CGAP-4 CGAP-5] }
 
-  context '#post' do
+  describe '#post' do
     let(:payload) do
       %({"qcable_creator":{ "user": "#{user.uuid}", "lot": "#{lot.uuid}", "barcodes": "#{barcodes.join(',')}"}})
     end

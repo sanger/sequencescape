@@ -12,7 +12,7 @@ RSpec.describe LabSearchesController do
     let!(:other_asset) { create(:sample_tube) }
     let!(:batch) { create :batch, user: current_user }
 
-    context '#new' do
+    describe '#new' do
       setup { get :new, params: { q: query }, session: { user: current_user.id } }
 
       context 'with an asset name' do
@@ -46,6 +46,7 @@ RSpec.describe LabSearchesController do
         it 'finds the asset' do
           expect(assigns(:assets)).to include(asset)
         end
+
         it 'does not find other assets' do
           expect(assigns(:assets)).not_to include(other_asset)
         end
@@ -57,6 +58,7 @@ RSpec.describe LabSearchesController do
         it 'finds the asset' do
           expect(assigns(:assets)).to include(asset)
         end
+
         it 'does not find other assets' do
           expect(assigns(:assets)).not_to include(other_asset)
         end
@@ -69,6 +71,7 @@ RSpec.describe LabSearchesController do
         it 'finds the asset' do
           expect(assigns(:assets)).to include(asset)
         end
+
         it 'does not find other assets' do
           expect(assigns(:assets)).not_to include(other_asset)
         end

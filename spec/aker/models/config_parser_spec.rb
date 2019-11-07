@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Aker::ConfigParser, aker: true do
-  context '#tokenizer' do
+  describe '#tokenizer' do
     it 'returns the extracted information in an object' do
       expect(
         described_class.new.tokenizer('sample_metadata.sample_common_name  <=>   common_name')
@@ -11,6 +11,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
         ss_to_aker: true, aker_to_ss: true
       )
     end
+
     it 'is able to read the direction of the arrow to understand the type of update' do
       expect(
         described_class.new.tokenizer('volume  <=   volume')
@@ -34,7 +35,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
     end
   end
 
-  context '#parse' do
+  describe '#parse' do
     context 'when two colums receive the same attribute' do
       let(:my_config) do
         %(

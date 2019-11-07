@@ -1,4 +1,4 @@
-# Controls API V1 IO for LibraryEvent
+# Controls API V1 IO for {::LibraryEvent}
 class Io::LibraryEvent < ::Core::Io::Base
   set_model_for_input(::LibraryEvent)
   set_json_root(:library_event)

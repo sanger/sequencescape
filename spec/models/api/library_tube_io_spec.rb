@@ -64,6 +64,7 @@ RSpec.describe Api::LibraryTubeIO, type: :model do
     it 'does not include sample information' do
       expect(described_class.to_hash(subject)['sample_uuid']).to be nil
     end
+
     it_behaves_like('an IO object')
   end
 end

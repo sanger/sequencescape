@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-ActionController::TestCase.send(:include, AuthenticatedTestHelper)
+ActionController::TestCase.include AuthenticatedTestHelper
 
 class WorkflowsControllerTest < ActionController::TestCase
   context 'WorkflowController' do

@@ -1,4 +1,4 @@
-# Controls API V1 IO for {TransferTemplate}
+# Controls API V1 IO for {::TransferTemplate}
 class ::Io::TransferTemplate < ::Core::Io::Base
   set_model_for_input(::TransferTemplate)
   set_json_root(:transfer_template)

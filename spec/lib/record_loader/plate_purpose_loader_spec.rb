@@ -22,6 +22,7 @@ RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
       it 'creates purposes from all files' do
         expect(Purpose.where(name: created_purposes).count).to eq(3)
       end
+
       it 'sets the barcode printer' do
         expect(Purpose.where(name: created_purposes).last.barcode_printer_type).to eq(BarcodePrinterType.find_by(name: '96 Well Plate'))
       end
@@ -49,9 +50,11 @@ RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
       expect(Purpose.where(name: created_purposes).count).to eq(1)
       expect(Purpose.where(name: created_purposes.last).count).to eq(1)
     end
+
     it 'creates a plate creator' do
       expect(Plate::Creator.joins(:plate_purposes).where(plate_purposes: { name: created_purposes.last })).to exist
     end
+
     it 'sets creator parents' do
       expect(the_creator.parent_plate_purposes).to eq(PlatePurpose.where(name: 'Stock Plate'))
     end

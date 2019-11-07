@@ -9,7 +9,7 @@ describe '/api/1/plate_purposes' do
   let(:authorised_app) { create :api_application }
   let(:parent_purpose) { create :plate_purpose }
 
-  context '#post' do
+  describe '#post' do
     let(:payload) do
       %{{
         "plate_purpose":{
@@ -53,7 +53,7 @@ describe '/api/1/plate-purpose-uuid' do
     create :plate_purpose, :uuidable, uuid: uuid, name: 'Example purpose'
   end
 
-  context '#get' do
+  describe '#get' do
     subject { '/api/1/' + uuid }
 
     let(:response_body) do

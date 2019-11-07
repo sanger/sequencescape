@@ -52,6 +52,7 @@ RSpec.describe StudiesController do
         expect(subject).to set_flash.to('Your study has been created')
         expect(subject).to redirect_to('study path') { study_path(Study.last) }
       end
+
       it 'changes Study.count by 1' do
         assert_equal 1, Study.count - @study_count
       end

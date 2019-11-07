@@ -18,7 +18,7 @@ describe '/api/1/multiplexed-library-tube-uuid' do
     collection
   end
 
-  context '#get' do
+  describe '#get' do
     subject { '/api/1/' + uuid }
 
     let(:response_body) do

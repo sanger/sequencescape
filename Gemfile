@@ -213,3 +213,5 @@ group :deployment do
   gem 'slack-notifier'
   gem 'whenever', require: false
 end
+
+gem 'yard-activerecord', '~> 0.0.16'

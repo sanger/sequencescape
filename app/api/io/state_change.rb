@@ -1,4 +1,4 @@
-# Controls API V1 IO for {StateChange}
+# Controls API V1 IO for {::StateChange}
 class ::Io::StateChange < ::Core::Io::Base
   set_model_for_input(::StateChange)
   set_json_root(:state_change)

@@ -32,7 +32,7 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
     expect(container).not_to be_valid
   end
 
-  context '#create' do
+  describe '#create' do
     it 'persists the container if it is valid' do
       container = described_class.create(params)
       expect(container).to be_present
