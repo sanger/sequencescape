@@ -53,7 +53,7 @@ module SampleManifestExcel
       end
 
       ##
-      # The sample manifest is retrieved by taking the sample from the first row and retrieving
+      # The sample manifest is retrieved by taking the sanger sample id from the first row and retrieving
       # its sample manifest.
       # If it can't be found the upload will fail.
       def derive_sample_manifest
