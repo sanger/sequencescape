@@ -5,7 +5,7 @@
 module SampleManifestExcel
   SequencescapeExcel.initialize
 
-  FIRST_ROW = 11 #9 - changed temporarily to 11, to work with one tube rack - need to make this set dynamically somehow
+  FIRST_ROW = 9
 
   class << self
     attr_writer :configuration

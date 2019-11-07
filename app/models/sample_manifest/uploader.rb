@@ -26,7 +26,7 @@ class SampleManifest::Uploader
     @upload = SampleManifestExcel::Upload::Base.new(
       file: file,
       column_list: self.configuration.columns.all,
-      start_row: SampleManifestExcel::FIRST_ROW,        # TODO: fix for tube rack manifests - FIRST_ROW will be wrong for them
+      start_row: SampleManifestExcel::FIRST_ROW,
       override: override
     )
   end

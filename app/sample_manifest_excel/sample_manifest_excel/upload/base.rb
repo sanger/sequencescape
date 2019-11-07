@@ -37,6 +37,7 @@ module SampleManifestExcel
 
       def initialize(attributes = {})
         super
+        @start_row = find_start_row
         @data = Upload::Data.new(file, start_row)
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
@@ -124,6 +125,16 @@ module SampleManifestExcel
           Upload::Processor::TubeRack.new(self)
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
+        end
+      end
+
+      def find_start_row
+        opened_sheet = Roo::Spreadsheet.open(file).sheet(0)
+
+        (0..opened_sheet.last_row).each do |row_num|
+          opened_sheet.row(row_num).each do |cell_value|
+            return row_num if cell_value == 'SANGER SAMPLE ID'
+          end
         end
       end
 
