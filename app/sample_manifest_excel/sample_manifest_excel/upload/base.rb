@@ -46,7 +46,6 @@ module SampleManifestExcel
         @sample_manifest = derive_sample_manifest
         @override = override || false
         @processor = create_processor
-        # TODO: extract the special header cells info here for tube racks (rack barcodes)
       end
 
       def inspect

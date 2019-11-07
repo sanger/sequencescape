@@ -10,7 +10,7 @@ module SampleManifestExcel
       include Enumerable
       include Converters
 
-      attr_reader :sheet, :header_row, :data, :start_row, :file
+      attr_reader :sheet, :header_row, :data, :start_row, :file, :description_info
 
       validates_presence_of :start_row, :file
       validates :file_extension, inclusion: { in: ['.csv', '.xlsx'].freeze, message: 'is unsupported; should be csv or xlsx' }
@@ -28,6 +28,7 @@ module SampleManifestExcel
           @sheet = read_sheet
           @header_row = sheet&.row(start_row)
           @data = sheet&.drop(start_row)
+          @description_info = extract_description_info(sheet, start_row)
         end
       ensure
         @header_row ||= []
@@ -76,6 +77,17 @@ module SampleManifestExcel
 
       def inspect
         "<#{self.class}: @header_row=#{header_row}, @data=#{data}, @start_row=#{start_row}, @file=#{file}>"
+      end
+
+      def extract_description_info(sheet, start_row)
+        # look through the rows from under the heading (row 2), to above the start row
+        # build a hash of first cell => second cell
+        output = {}
+        (2..start_row-1).each do |row_num|
+          row = sheet.row(row_num)
+          output[row[0]] = row[1] unless row[0] == nil
+        end
+        output
       end
     end
   end
