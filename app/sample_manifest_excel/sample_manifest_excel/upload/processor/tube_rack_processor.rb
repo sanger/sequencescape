@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'net/http'
 require_dependency 'sample_manifest_excel/upload/processor/base'
 
 module SampleManifestExcel
@@ -12,14 +13,11 @@ module SampleManifestExcel
           return unless valid?
 
 
-          tube_rack_barcodes_hash = @upload.data.description_info.select { |key, value| key.start_with?('Rack barcode (') }
-          tube_rack_barcodes = tube_rack_barcodes_hash.values
-          puts "tube_rack_barcodes: #{tube_rack_barcodes}"
+          @tube_rack_barcodes = @upload.data.description_info.select { |key, value| key.start_with?('Rack barcode (') }.values
 
-          tube_rack_barcodes.each do |tube_rack_barcode|
-            create_tube_rack_if_not_existing(tube_rack_barcode)
-          end
-
+          retrieve_scan_results
+          validate_against_scan_results
+          create_tube_racks_and_link_tubes
 
           update_samples_and_aliquots(tag_group)
           # TODO: if not uploaded before,
@@ -41,10 +39,37 @@ module SampleManifestExcel
             puts "**** rack_size: #{rack_size} ****"
             tube_rack = TubeRack.create(size: rack_size)
             Barcode.create(asset_id: tube_rack.id, barcode: tube_rack_barcode, format: 7)      # TODO: should we ascertain the format from the barcode, or assume it's fluidx?
+          else
+            tube_rack = barcode.asset
           end
 
+          tube_rack
         end
 
+        def retrieve_scan_results
+          @barcode_to_scan_results = {}
+          @tube_rack_barcodes.each do |tube_rack_barcode|
+            @barcode_to_scan_results[tube_rack_barcode] = retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
+          end
+        end
+
+        def retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
+          # call the microservice here
+          # tube_rack_barcode = 'test'
+          response = Net::HTTP.get_response('localhost', '/rack/' + tube_rack_barcode, '5000')
+          puts "**** response: #{response} *****"
+        end
+
+        def validate_against_scan_results
+          # compare barcodes and coordinates between manifest and scan
+        end
+
+        def create_tube_racks_and_link_tubes
+          @tube_rack_barcodes.each do |tube_rack_barcode|
+            tube_rack = create_tube_rack_if_not_existing(tube_rack_barcode)
+            puts "**** tube_rack: #{tube_rack} ****"
+          end
+        end
 
       end
     end
