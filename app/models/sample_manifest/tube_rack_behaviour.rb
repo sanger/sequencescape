@@ -34,5 +34,9 @@ module SampleManifest::TubeRackBehaviour
     def default_tube_rack_purpose
       TubeRack::Purpose.standard_tube_rack
     end
+
+    def included_resources
+      [{ sample: :sample_metadata, asset: %i[aliquots barcodes] }]
+    end
   end
 end
