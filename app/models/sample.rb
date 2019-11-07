@@ -120,6 +120,10 @@ class Sample < ApplicationRecord
     custom_attribute(:subject)
     custom_attribute(:disease)
 
+    custom_attribute(:genome_size)
+    custom_attribute(:saphyr)
+    custom_attribute(:pacbio)
+
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji
     # @note phenotype isn't currently broadcast but has a field waiting in the warehouse
