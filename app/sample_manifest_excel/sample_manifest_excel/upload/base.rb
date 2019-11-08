@@ -121,7 +121,7 @@ module SampleManifestExcel
         when 'plate', 'library_plate'
           Upload::Processor::Plate.new(self)
         when 'tube_rack'
-          Upload::Processor::TubeRackProcessor.new(self)
+          Upload::Processor::TubeRack.new(self)
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end
