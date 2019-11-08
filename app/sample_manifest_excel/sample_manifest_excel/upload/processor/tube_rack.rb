@@ -8,8 +8,7 @@ module SampleManifestExcel
   module Upload
     module Processor
       # TODO: had to explicitly specify the namespace for Base here otherwise it picks up Upload::Base
-      # TODO: couldn't call this TubeRack because then the TubeRack.create further down thought it should reference this class, not the model
-      class TubeRackProcessor < SampleManifestExcel::Upload::Processor::Base
+      class TubeRack < SampleManifestExcel::Upload::Processor::Base
         def run(tag_group)
           return unless valid?
 
@@ -83,7 +82,7 @@ module SampleManifestExcel
 
           if barcode == nil
             rack_size = @upload.sample_manifest.tube_rack_purpose.size
-            tube_rack = TubeRack.create!(size: rack_size)
+            tube_rack = ::TubeRack.create!(size: rack_size)
             barcode = Barcode.create!(asset: tube_rack, barcode: tube_rack_barcode, format: 7)      # TODO: should we ascertain the format from the barcode, or assume it's fluidx?
           else
             tube_rack = barcode.asset
