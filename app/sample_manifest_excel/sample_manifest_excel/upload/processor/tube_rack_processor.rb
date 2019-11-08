@@ -14,14 +14,25 @@ module SampleManifestExcel
           return unless valid?
 
           @tube_rack_barcodes = @upload.data.description_info.select { |key, value| key.start_with?('Rack barcode (') }.values
-
-          retrieve_scan_results
-          validate_against_scan_results
+          process_rack_info = should_process_tube_rack_information?
+          if process_rack_info
+            retrieve_scan_results if process_rack_info
+            validate_against_scan_results if process_rack_info
+            create_tube_racks_and_link_tubes if process_rack_info
+          end
           update_samples_and_aliquots(tag_group)
-          create_tube_racks_and_link_tubes  # TODO: only do this if not uploaded before
           update_sample_manifest
         end
 
+        # if a tube rack record already exists for any of the rack barcodes in the manifest,
+        # it has been processed before and should not be re-processed
+        def should_process_tube_rack_information?
+          @tube_rack_barcodes.each do |barcode|
+            existing_barcode_record = Barcode.includes(:asset).find_by(barcode: barcode)
+            return false if(existing_barcode_record != nil && existing_barcode_record.asset != nil)
+          end
+          return true
+        end
 
         def retrieve_scan_results
           @barcode_to_scan_results = {}
