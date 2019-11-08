@@ -15,9 +15,9 @@ module SampleManifestExcel
           @tube_rack_information_processed = false
           @tube_rack_barcodes = @upload.data.description_info.select { |key, value| key.start_with?('Rack barcode (') }.values
           @tube_barcodes = @upload.data.column(1).compact   # TODO: do this based on the column name, not number
+          @should_process_tube_rack_information = should_process_tube_rack_information?
 
-          process_rack_info = should_process_tube_rack_information?
-          if process_rack_info
+          if @should_process_tube_rack_information
             if retrieve_scan_results && validate_against_scan_results
               create_tube_racks_and_link_tubes
               @tube_rack_information_processed = true
@@ -129,7 +129,11 @@ module SampleManifestExcel
         end
 
         def processed?
-          samples_updated? && sample_manifest_updated? && aliquots_updated? && @tube_rack_information_processed
+          samples_updated? && sample_manifest_updated? && aliquots_updated? && tube_rack_information_processed?
+        end
+
+        def tube_rack_information_processed?
+          @tube_rack_information_processed || !@should_process_tube_rack_information
         end
       end
     end
