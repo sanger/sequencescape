@@ -35,8 +35,10 @@ module SampleManifest::TubeRackBehaviour
       TubeRack::Purpose.standard_tube_rack
     end
 
+    # when uploading the manifest, this specifies which resources are queried and stored in the Cache
+    # accessed through sample_manifest.sample_manifest_assets.includes(<resources below>)
     def included_resources
-      [{ sample: :sample_metadata, asset: %i[aliquots barcodes] }]
+      [{ sample: :sample_metadata, asset: %i[labware aliquots barcodes] }]
     end
   end
 end
