@@ -56,8 +56,11 @@ module SampleManifestExcel
         def retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
           # call the microservice here
           # tube_rack_barcode = 'test'
+          # going to change the microservice so that the 'layout' is an object, not an array, and so that the keys are the barcodes
           response = Net::HTTP.get_response('localhost', '/rack/' + tube_rack_barcode, '5000')
           puts "**** response: #{response} *****"
+          scan_results = JSON.parse(response.body)
+          scan_results["layout"]
         end
 
         def validate_against_scan_results
