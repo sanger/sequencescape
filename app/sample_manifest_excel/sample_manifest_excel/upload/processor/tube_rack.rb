@@ -11,13 +11,14 @@ module SampleManifestExcel
       class TubeRack < SampleManifestExcel::Upload::Processor::Base
         def run(tag_group)
           return unless valid?
-          @tube_rack_information_processed = false
 
+          @tube_rack_information_processed = false
           @tube_rack_barcodes = @upload.data.description_info.select { |key, value| key.start_with?('Rack barcode (') }.values
+          @tube_barcodes = @upload.data.column(1).compact   # TODO: do this based on the column name, not number
+
           process_rack_info = should_process_tube_rack_information?
           if process_rack_info
-            if retrieve_scan_results
-              validate_against_scan_results
+            if retrieve_scan_results && validate_against_scan_results
               create_tube_racks_and_link_tubes
               @tube_rack_information_processed = true
             else
@@ -44,9 +45,8 @@ module SampleManifestExcel
 
           @tube_rack_barcodes.each do |tube_rack_barcode|
             results = retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
-            if results == nil
-              return false
-            end
+            return false if results == nil
+
             @barcode_to_scan_results[tube_rack_barcode] = results
             results.keys.each { |tube_barcode| @tube_barcode_to_rack_barcode[tube_barcode] = tube_rack_barcode }
           end
@@ -64,11 +64,12 @@ module SampleManifestExcel
           begin
             scan_results = JSON.parse(response.body)
           rescue JSON::JSONError => e
-            upload.errors.add(:base, "Response when trying to retrieve scan (tube rack with barcode #{tube_rack_barcode}) was not valid JSON so could not be understood. Error message: #{e.message}")
+            error_message = "Response when trying to retrieve scan (tube rack with barcode #{tube_rack_barcode}) was not valid JSON so could not be understood. Error message: #{e.message}"
+            upload.errors.add(:base, error_message)
             return nil
           end
 
-          unless response.code == 200
+          unless response.code == '200'
             error_message = "Scan could not be retrieved for tube rack with barcode #{tube_rack_barcode}. Service responded with status code #{response.code} "
             error_message += " and the following message: #{scan_results['error']}"
             upload.errors.add(:base, error_message)
@@ -80,11 +81,16 @@ module SampleManifestExcel
 
 
         def validate_against_scan_results
-          # are there scan results for all the rack barcodes on the manifest?
-
-
           # compare barcodes between manifest and scan
+          if @tube_barcodes == @tube_barcode_to_rack_barcode.keys
+            return true
+          else
+            error_message = "The scan and the manifest do not contain identical tube barcodes."
+            upload.errors.add(:base, error_message)
+            return false
+          end
 
+          # TODO: validate coordinates against rack size
         end
 
 
