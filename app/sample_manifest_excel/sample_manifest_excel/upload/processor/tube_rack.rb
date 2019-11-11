@@ -18,7 +18,9 @@ module SampleManifestExcel
           @should_process_tube_rack_information = should_process_tube_rack_information?
 
           if @should_process_tube_rack_information
-            if retrieve_scan_results && validate_against_scan_results
+            @rack_size = @upload.sample_manifest.tube_rack_purpose.size
+
+            if retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @barcode_to_scan_results)
               create_tube_racks_and_link_tubes
               @tube_rack_information_processed = true
             else
@@ -81,16 +83,55 @@ module SampleManifestExcel
 
 
         def validate_against_scan_results
-          # compare barcodes between manifest and scan
-          if @tube_barcodes == @tube_barcode_to_rack_barcode.keys
+          if @tube_barcodes.sort == @tube_barcode_to_rack_barcode.keys.sort
             return true
           else
             error_message = "The scan and the manifest do not contain identical tube barcodes."
             upload.errors.add(:base, error_message)
             return false
           end
+        end
 
-          # TODO: validate coordinates against rack size
+        def validate_coordinates(rack_size, barcode_to_scan_results)
+          rack_layout_map = {
+            48 => {
+              "rows" => 6,
+              "columns" => 8
+            },
+            96 => {
+              "rows" => 8,
+              "columns" => 12
+            }
+          }
+
+          num_rows = rack_layout_map[rack_size]["rows"]
+          num_columns = rack_layout_map[rack_size]["columns"]
+          valid_row_values = TubeRack.generate_valid_row_values(num_rows)
+          valid_column_values = (1..num_columns).to_a
+
+          barcode_to_scan_results.each_value do |scan_results|
+            scan_results.each_value do |coordinate|
+              row = coordinate.split(//)[0].capitalize
+              column = coordinate.split(//)[1]
+              unless valid_row_values.include?(row) && valid_column_values.include?(column)
+                error_message = "The coordinate '#{coordinate}' in the scan is not valid for a tube rack of size #{rack_size}."
+                upload.errors.add(:base, error_message)
+                return false
+              end
+            end
+          end
+
+          return true
+        end
+
+        def self.generate_valid_row_values(num_rows)
+          output = []
+          count = 1
+          ('A'..'Z').each do |letter|
+            output << letter if count <= num_rows
+            count += 1
+          end
+          output
         end
 
 
@@ -118,8 +159,7 @@ module SampleManifestExcel
           barcode = Barcode.includes(:asset).find_by(asset_id: :tube_rack_barcode)
 
           if barcode == nil
-            rack_size = @upload.sample_manifest.tube_rack_purpose.size
-            tube_rack = ::TubeRack.create!(size: rack_size)
+            tube_rack = ::TubeRack.create!(size: @rack_size)
             barcode = Barcode.create!(asset: tube_rack, barcode: tube_rack_barcode, format: 7)      # TODO: should we ascertain the format from the barcode, or assume it's fluidx?
           else
             tube_rack = barcode.asset
