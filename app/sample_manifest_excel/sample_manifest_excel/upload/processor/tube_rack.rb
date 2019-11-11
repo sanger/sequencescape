@@ -113,7 +113,7 @@ module SampleManifestExcel
             scan_results.each_value do |coordinate|
               row = coordinate.split(//)[0].capitalize
               column = coordinate.split(//)[1]
-              unless valid_row_values.include?(row) && valid_column_values.include?(column)
+              unless valid_row_values.include?(row) && valid_column_values.include?(column.to_i)
                 error_message = "The coordinate '#{coordinate}' in the scan is not valid for a tube rack of size #{rack_size}."
                 upload.errors.add(:base, error_message)
                 return false
