@@ -17,6 +17,7 @@ module SampleManifestExcel
 
       def initialize(attributes = {})
         super
+        @extra_rows_added = 0
         @validation_errors ||= []
         if type == 'Plates'
           # create a worksheet for Plates
@@ -69,6 +70,8 @@ module SampleManifestExcel
           FactoryBot.create(:sample_manifest, asset_type: 'library')
         elsif %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
           FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library')
+        elsif %w[tube_rack_default].include? manifest_type
+          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack')
         else
           FactoryBot.create(:sample_manifest, asset_type: '1dtube')
         end
@@ -131,6 +134,7 @@ module SampleManifestExcel
       end
 
       def record_tube_samples
+        tube_counter = 0
         first_to_last.each do |sheet_row|
           build_tube_sample_manifest_asset do |sample_manifest_asset|
             asset = sample_manifest_asset.asset
@@ -152,6 +156,8 @@ module SampleManifestExcel
                                                                asset.human_barcode
                                                              end
           end
+          dynamic_attributes[sheet_row][:tube_barcode] = 'TB1111111' + tube_counter.to_s
+          tube_counter += 1
         end
       end
 
@@ -163,7 +169,20 @@ module SampleManifestExcel
         add_row ['Study:', study]
         add_row ['Supplier:', supplier]
         add_row ["No. #{type} Sent:", count]
+        add_extra_cells_for_tube_rack(count) if type == 'Tube Racks'
         add_rows(1)
+      end
+
+      def add_extra_cells_for_tube_rack(count)
+        rack_size = sample_manifest.tube_rack_purpose.size
+        add_row ['Rack size:', rack_size]
+        count.times do |num|
+          axlsx_worksheet.add_row do |row|
+            row.add_cell "Rack barcode (#{num + 1}):", type: :string
+            row.add_cell "RK11111111", type: :string, style: styles[:unlocked_no_border].reference
+          end
+        end
+        @extra_rows_added += count + 1
       end
 
       def first_to_last

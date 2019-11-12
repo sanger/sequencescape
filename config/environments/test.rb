@@ -44,4 +44,6 @@ Rails.application.configure do
   config.disable_animations = true
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  config.do_tube_rack_scan_callout = false
 end

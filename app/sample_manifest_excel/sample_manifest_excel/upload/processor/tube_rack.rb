@@ -13,7 +13,6 @@ module SampleManifestExcel
         def initialize(upload)
           super(upload)
           @tube_rack_information_processed = false
-
           @tube_rack_barcodes_from_manifest = @upload.data.description_info.select { |key, value| key.start_with?('Rack barcode (') }.values
           @tube_barcodes_from_manifest = @upload.data.column(1).compact   # TODO: do this based on the column name, not number
           @should_process_tube_rack_information = should_process_tube_rack_information?
@@ -24,7 +23,6 @@ module SampleManifestExcel
 
           if @should_process_tube_rack_information
             @rack_size = @upload.sample_manifest.tube_rack_purpose.size
-
             if retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
               create_tube_racks_and_link_tubes
               @tube_rack_information_processed = true
@@ -49,9 +47,12 @@ module SampleManifestExcel
         def retrieve_scan_results
           @rack_barcode_to_scan_results = {}
           @tube_barcode_to_rack_barcode = {}
-
           @tube_rack_barcodes_from_manifest.each do |tube_rack_barcode|
-            results = retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
+            if Rails.configuration.do_tube_rack_scan_callout == true
+              results = retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
+            else
+              results = mock_scan_result()
+            end
             return false if results == nil
 
             @rack_barcode_to_scan_results[tube_rack_barcode] = results
@@ -63,9 +64,9 @@ module SampleManifestExcel
 
         def retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
           # tube_rack_barcode = 'test_valid_file'
-          host_name = 'localhost'
+          host_name = Rails.configuration.tube_rack_scans_microservice_endpoint
           path = '/tube_rack/' + tube_rack_barcode
-          port = '5000'
+          port = Rails.configuration.tube_rack_scans_microservice_port
           response = Net::HTTP.get_response(host_name, path, port)
 
           begin
@@ -84,6 +85,13 @@ module SampleManifestExcel
           end
 
           scan_results['layout'] || nil
+        end
+
+        def mock_scan_result()
+          {
+            'TB11111110' => 'e8',
+            'TB11111111' => 'b4',
+          }
         end
 
 
