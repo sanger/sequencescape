@@ -20,6 +20,8 @@ module SampleManifestExcel
           super(upload)
           @tube_rack_information_processed = false
           @tube_rack_barcodes_from_manifest = retrieve_tube_rack_barcodes_from_manifest
+          return if @tube_rack_barcodes_from_manifest.nil?
+
           @tube_barcodes_from_manifest = @upload.data.column(1).compact # TODO: do this based on the column name, not number
           @should_process_tube_rack_information = should_process_tube_rack_information?
         end
@@ -42,7 +44,8 @@ module SampleManifestExcel
         def retrieve_tube_rack_barcodes_from_manifest
           rack_barcodes_list = @upload.data.description_info.select { |key| key.start_with?('Rack barcode (') }.values
           return nil if rack_barcodes_list.any?(nil)
-          return rack_barcodes_list
+
+          rack_barcodes_list
         end
 
         # if a tube rack record already exists for any of the rack barcodes in the manifest,
@@ -51,7 +54,7 @@ module SampleManifestExcel
           @tube_rack_barcodes_from_manifest.each do |barcode|
             existing_barcode_record = Barcode.includes(:asset).find_by(barcode: barcode)
             return false if !existing_barcode_record.nil? && !existing_barcode_record.asset.nil?
-          end unless @tube_rack_barcodes_from_manifest.nil?
+          end
           true
         end
 
