@@ -26,10 +26,6 @@ module SampleManifestExcel
       # it will just appear to be empty, which is confusing.
       validate :check_columns, :check_processor, :check_rows, if: :data_valid?
       validate :check_processor, if: :processor?
-      # TODO: add validation steps for tube racks, if not previously uploaded: *** here, or in the processor? ***
-      # 1. check rack barcodes are present and unique
-      # 2. use microservice to check if scans are present for all barcodes
-      # 3. use microservice to retrieve tube barcodes and cross-compare with manifest
 
       delegate :processed?, to: :processor
       delegate :data_at, to: :rows

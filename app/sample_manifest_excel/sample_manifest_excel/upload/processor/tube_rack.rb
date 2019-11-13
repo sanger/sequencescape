@@ -11,10 +11,15 @@ module SampleManifestExcel
       # Used for processing the upload of sample manifests.
       # Contains behaviour specific to processing 'Tube Rack' manifests.
       class TubeRack < SampleManifestExcel::Upload::Processor::Base
+        include ActiveModel::Validations
+
+        validates_presence_of :tube_rack_barcodes_from_manifest
+        attr_reader :tube_rack_barcodes_from_manifest
+
         def initialize(upload)
           super(upload)
           @tube_rack_information_processed = false
-          @tube_rack_barcodes_from_manifest = @upload.data.description_info.select { |key| key.start_with?('Rack barcode (') }.values
+          @tube_rack_barcodes_from_manifest = retrieve_tube_rack_barcodes_from_manifest
           @tube_barcodes_from_manifest = @upload.data.column(1).compact # TODO: do this based on the column name, not number
           @should_process_tube_rack_information = should_process_tube_rack_information?
         end
@@ -34,13 +39,19 @@ module SampleManifestExcel
           update_sample_manifest
         end
 
+        def retrieve_tube_rack_barcodes_from_manifest
+          rack_barcodes_list = @upload.data.description_info.select { |key| key.start_with?('Rack barcode (') }.values
+          return nil if rack_barcodes_list.any?(nil)
+          return rack_barcodes_list
+        end
+
         # if a tube rack record already exists for any of the rack barcodes in the manifest,
         # it has been processed before and should not be re-processed
         def should_process_tube_rack_information?
           @tube_rack_barcodes_from_manifest.each do |barcode|
             existing_barcode_record = Barcode.includes(:asset).find_by(barcode: barcode)
             return false if !existing_barcode_record.nil? && !existing_barcode_record.asset.nil?
-          end
+          end unless @tube_rack_barcodes_from_manifest.nil?
           true
         end
 
