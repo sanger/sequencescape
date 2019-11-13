@@ -95,7 +95,7 @@ module SampleManifestExcel
         end
 
         def validate_against_scan_results
-          return true unless @tube_barcodes_from_manifest.sort == @tube_barcode_to_rack_barcode.keys.sort
+          return true if @tube_barcodes_from_manifest.sort == @tube_barcode_to_rack_barcode.keys.sort
 
           error_message = 'The scan and the manifest do not contain identical tube barcodes.'
           upload.errors.add(:base, error_message)
