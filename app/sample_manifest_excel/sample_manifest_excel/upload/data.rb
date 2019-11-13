@@ -83,9 +83,9 @@ module SampleManifestExcel
         # look through the rows from under the heading (row 2), to above the start row
         # build a hash of first cell => second cell
         output = {}
-        (2..start_row-1).each do |row_num|
+        (2..start_row - 1).each do |row_num|
           row = sheet.row(row_num)
-          output[row[0]] = row[1] unless row[0] == nil
+          output[row[0]] = row[1] unless row[0].nil?
         end
         output
       end

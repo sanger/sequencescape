@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :test_download_tubes_in_rack, class: SampleManifestExcel::TestDownload do
     columns { FactoryBot.build(:column_list) }
     validation_errors { [] }
-    no_of_rows { 1 }          # TODO: this actually builds 2 - something funny with first_row?
+    no_of_rows { 1 } # TODO: this actually builds 2 - something funny with first_row?
     study { 'WTCCC' }
     supplier { 'Test Supplier' }
     count { 1 }
@@ -25,6 +25,5 @@ FactoryBot.define do
     end
 
     skip_create
-
   end
 end

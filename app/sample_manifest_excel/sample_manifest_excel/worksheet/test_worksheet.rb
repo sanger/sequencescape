@@ -179,7 +179,7 @@ module SampleManifestExcel
         count.times do |num|
           axlsx_worksheet.add_row do |row|
             row.add_cell "Rack barcode (#{num + 1}):", type: :string
-            row.add_cell "RK11111111", type: :string, style: styles[:unlocked_no_border].reference
+            row.add_cell 'RK11111111', type: :string, style: styles[:unlocked_no_border].reference
           end
         end
         @extra_rows_added += count + 1

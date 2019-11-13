@@ -18,7 +18,7 @@ module SampleManifestExcel
 
       attr_accessor :file, :column_list, :start_row, :override
 
-      attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor, :cache  # TODO: probably shouldn't add the cache here, do it another way
+      attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor, :cache # TODO: probably shouldn't add the cache here, do it another way
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
       validate :check_data
@@ -41,7 +41,7 @@ module SampleManifestExcel
         @data = Upload::Data.new(file, start_row)
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
-        @cache = Cache.new(self)        # TODO: might want this to cache tube racks and racked tubes?
+        @cache = Cache.new(self) # TODO: might want this to cache tube racks and racked tubes?
         @rows = Upload::Rows.new(data, columns, @cache)
         @sample_manifest = derive_sample_manifest
         @override = override || false

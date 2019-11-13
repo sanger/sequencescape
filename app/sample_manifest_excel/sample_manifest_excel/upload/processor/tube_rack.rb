@@ -8,13 +8,14 @@ module SampleManifestExcel
   module Upload
     module Processor
       # TODO: had to explicitly specify the namespace for Base here otherwise it picks up Upload::Base
+      # Used for processing the upload of sample manifests.
+      # Contains behaviour specific to processing 'Tube Rack' manifests.
       class TubeRack < SampleManifestExcel::Upload::Processor::Base
-
         def initialize(upload)
           super(upload)
           @tube_rack_information_processed = false
-          @tube_rack_barcodes_from_manifest = @upload.data.description_info.select { |key, value| key.start_with?('Rack barcode (') }.values
-          @tube_barcodes_from_manifest = @upload.data.column(1).compact   # TODO: do this based on the column name, not number
+          @tube_rack_barcodes_from_manifest = @upload.data.description_info.select { |key| key.start_with?('Rack barcode (') }.values
+          @tube_barcodes_from_manifest = @upload.data.column(1).compact # TODO: do this based on the column name, not number
           @should_process_tube_rack_information = should_process_tube_rack_information?
         end
 
@@ -23,12 +24,11 @@ module SampleManifestExcel
 
           if @should_process_tube_rack_information
             @rack_size = @upload.sample_manifest.tube_rack_purpose.size
-            if retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
-              create_tube_racks_and_link_tubes
-              @tube_rack_information_processed = true
-            else
-              return
-            end
+            return unless retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
+
+            create_tube_racks_and_link_tubes
+
+            @tube_rack_information_processed = true
           end
           update_samples_and_aliquots(tag_group)
           update_sample_manifest
@@ -39,27 +39,27 @@ module SampleManifestExcel
         def should_process_tube_rack_information?
           @tube_rack_barcodes_from_manifest.each do |barcode|
             existing_barcode_record = Barcode.includes(:asset).find_by(barcode: barcode)
-            return false if(existing_barcode_record != nil && existing_barcode_record.asset != nil)
+            return false if !existing_barcode_record.nil? && !existing_barcode_record.asset.nil?
           end
-          return true
+          true
         end
 
         def retrieve_scan_results
           @rack_barcode_to_scan_results = {}
           @tube_barcode_to_rack_barcode = {}
           @tube_rack_barcodes_from_manifest.each do |tube_rack_barcode|
-            if Rails.configuration.do_tube_rack_scan_callout == true
-              results = retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
-            else
-              results = mock_scan_result()
-            end
-            return false if results == nil
+            results = if Rails.configuration.do_tube_rack_scan_callout
+                        retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
+                      else
+                        mock_scan_result
+                      end
+            return false if results.nil?
 
             @rack_barcode_to_scan_results[tube_rack_barcode] = results
             results.keys.each { |tube_barcode| @tube_barcode_to_rack_barcode[tube_barcode] = tube_rack_barcode }
           end
 
-          return true
+          true
         end
 
         def retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
@@ -87,38 +87,35 @@ module SampleManifestExcel
           scan_results['layout'] || nil
         end
 
-        def mock_scan_result()
+        def mock_scan_result
           {
             'TB11111110' => 'e8',
-            'TB11111111' => 'b4',
+            'TB11111111' => 'b4'
           }
         end
 
-
         def validate_against_scan_results
-          if @tube_barcodes_from_manifest.sort == @tube_barcode_to_rack_barcode.keys.sort
-            return true
-          else
-            error_message = "The scan and the manifest do not contain identical tube barcodes."
-            upload.errors.add(:base, error_message)
-            return false
-          end
+          return true unless @tube_barcodes_from_manifest.sort == @tube_barcode_to_rack_barcode.keys.sort
+
+          error_message = 'The scan and the manifest do not contain identical tube barcodes.'
+          upload.errors.add(:base, error_message)
+          false
         end
 
         def validate_coordinates(rack_size, rack_barcode_to_scan_results)
           rack_layout_map = {
             48 => {
-              "rows" => 6,
-              "columns" => 8
+              'rows' => 6,
+              'columns' => 8
             },
             96 => {
-              "rows" => 8,
-              "columns" => 12
+              'rows' => 8,
+              'columns' => 12
             }
           }
 
-          num_rows = rack_layout_map[rack_size]["rows"]
-          num_columns = rack_layout_map[rack_size]["columns"]
+          num_rows = rack_layout_map[rack_size]['rows']
+          num_columns = rack_layout_map[rack_size]['columns']
           valid_row_values = TubeRack.generate_valid_row_values(num_rows)
           valid_column_values = (1..num_columns).to_a
 
@@ -134,7 +131,7 @@ module SampleManifestExcel
             end
           end
 
-          return true
+          true
         end
 
         def self.generate_valid_row_values(num_rows)
@@ -146,7 +143,6 @@ module SampleManifestExcel
           end
           output
         end
-
 
         def create_tube_racks_and_link_tubes
           tube_rack_barcode_to_tube_rack = {}
@@ -173,9 +169,9 @@ module SampleManifestExcel
         def create_tube_rack_if_not_existing(tube_rack_barcode)
           barcode = Barcode.includes(:asset).find_by(asset_id: :tube_rack_barcode)
 
-          if barcode == nil
+          if barcode.nil?
             tube_rack = ::TubeRack.create!(size: @rack_size)
-            barcode = Barcode.create!(asset: tube_rack, barcode: tube_rack_barcode, format: 7)      # TODO: should we ascertain the format from the barcode, or assume it's fluidx?
+            Barcode.create!(asset: tube_rack, barcode: tube_rack_barcode, format: 7) # TODO: should we ascertain the format from the barcode, or assume it's fluidx?
           else
             tube_rack = barcode.asset
           end
