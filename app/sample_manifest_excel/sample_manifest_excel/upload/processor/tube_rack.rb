@@ -153,9 +153,7 @@ module SampleManifestExcel
           @upload.rows.each do |row|
             # create a barcode for the tube
             tube_barcode = row.value('tube_barcode')
-            tube = @upload.cache.find_by(sanger_sample_id: row.sanger_sample_id).asset.labware
-            puts "*** tube: #{tube}"
-            puts "*** tube 2: #{row.labware}"
+            tube = row.labware
             Barcode.create!(asset_id: tube.id, barcode: tube_barcode, format: 7)
 
             # link the tube to the tube rack
