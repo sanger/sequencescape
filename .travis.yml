@@ -19,6 +19,7 @@ env:
   - CUCUMBER_FORMAT=DebugFormatter
 before_install:
 - mv config/aker.yml.example config/aker.yml
+- gem install bundler # use bundler 2.0
 jobs:
   include:
   - stage: test
