@@ -20,7 +20,6 @@ env:
 before_install:
 - mv config/aker.yml.example config/aker.yml
 - gem install bundler # use bundler 2.0
-- nvm install # use and install the node version found in .nvmrc
 jobs:
   include:
   - stage: test

@@ -35,7 +35,6 @@ test_file.xlsx
 new_test_file.xlsx
 node_modules
 sbin
-yarn.lock
 
 /public/packs
 /public/packs-test
