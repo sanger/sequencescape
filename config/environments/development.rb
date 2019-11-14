@@ -67,7 +67,6 @@ Rails.application.configure do
 
   config.tube_rack_scans_microservice_endpoint = 'localhost'
   config.tube_rack_scans_microservice_port = '5000'
-  config.do_tube_rack_scan_callout = true
 end
 
 Rack::MiniProfiler.config.position = 'right'
