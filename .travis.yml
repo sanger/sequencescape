@@ -19,6 +19,7 @@ env:
   - CUCUMBER_FORMAT=DebugFormatter
 before_install:
 - mv config/aker.yml.example config/aker.yml
+- yarn install
 jobs:
   include:
   - stage: test
@@ -44,7 +45,6 @@ jobs:
     script: bundle exec rake test
     name: Rake Test
   - if: type != cron
-    env:
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile

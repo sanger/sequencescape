@@ -36,10 +36,6 @@
   <% end %>
 <hr />
 <% end %>
-<% if @asset_group.automatic_move? %>
-  <%= render partial: "reception_form", locals: { barcodes: @asset_group.assets.map(&:machine_barcode), receive_barcode: "receive_barcode", type: @asset_group.asset_types.first} %>
-<hr />
-<% end %>
 <div class='section'>
   <% if current_user.is_admin? %>
     <%= link_to 'Edit', edit_study_asset_group_path(@study, @asset_group) %> |
