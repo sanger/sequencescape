@@ -522,32 +522,32 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     describe SampleManifestExcel::Upload::Processor::TubeRack do
       let(:column_list) { configuration.columns.tube_rack_default }
 
+      before do
+        mock_microservice_responses = {
+          'RK11111110' => {
+                            'rack_barcode' => 'RK11111110',
+                            'layout' => {
+                              'TB11111110' => 'e8',
+                              'TB11111111' => 'b4'
+                            }
+                          },
+          'RK11111111' => {
+                            'rack_barcode' => 'RK11111111',
+                            'layout' => {
+                              'TB11111112' => 'a3',
+                              'TB11111113' => 'd6'
+                            }
+                          }
+        }
+
+        mock_microservice_responses.each_key do |rack_barcode|
+          stub_request(:get, "http://www.example.com/tube_rack_test:5000/tube_rack/#{rack_barcode}").
+              to_return(status: 200, body: JSON.generate(mock_microservice_responses[rack_barcode]), headers: {})
+        end
+      end
+
       context 'when valid with one tube rack' do
         let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks', count: 1, no_of_rows: 1) }
-
-        before do
-          mock_microservice_responses = {
-            'RK11111110' => {
-                              'rack_barcode' => 'RK11111110',
-                              'layout' => {
-                                'TB11111110' => 'e8',
-                                'TB11111111' => 'b4'
-                              }
-                            },
-            'RK11111111' => {
-                              'rack_barcode' => 'RK11111111',
-                              'layout' => {
-                                'TB11111112' => 'a3',
-                                'TB11111113' => 'd6'
-                              }
-                            }
-            }
-
-          mock_microservice_responses.each_key do |rack_barcode|
-            stub_request(:get, "http://www.example.com/tube_rack_test:5000/tube_rack/#{rack_barcode}").
-                to_return(status: 200, body: JSON.generate(mock_microservice_responses[rack_barcode]), headers: {})
-          end
-        end
 
         it 'will not generate samples prior to processing' do
           expect { upload }.not_to change(Sample, :count)
