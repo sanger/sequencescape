@@ -32,9 +32,9 @@ module SampleManifestExcel
             @rack_size = @upload.sample_manifest.tube_rack_purpose.size
             return unless retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
 
-            create_tube_racks_and_link_tubes
+            success = create_tube_racks_and_link_tubes
 
-            @tube_rack_information_processed = true
+            @tube_rack_information_processed = true if success
           end
           update_samples_and_aliquots(tag_group)
           update_sample_manifest
@@ -168,14 +168,23 @@ module SampleManifestExcel
         def create_tube_racks_and_link_tubes
           tube_rack_barcode_to_tube_rack = {}
           @tube_rack_barcodes_from_manifest.each do |tube_rack_barcode|
-            tube_rack_barcode_to_tube_rack[tube_rack_barcode] = create_tube_rack_if_not_existing(tube_rack_barcode)
+            created_rack = create_tube_rack_if_not_existing(tube_rack_barcode)
+            return false if created_rack.nil?
+
+            tube_rack_barcode_to_tube_rack[tube_rack_barcode] = created_rack
           end
 
           @upload.rows.each do |row|
             # create a barcode for the tube
             tube_barcode = row.value('tube_barcode')
             tube = row.labware
-            Barcode.create!(asset_id: tube.id, barcode: tube_barcode, format: 7)
+            barcode_format = Barcode.matching_barcode_format(tube_barcode)
+            if barcode_format.nil?
+              error_message = "The tube barcode '#{tube_barcode}' is not a recognised format."
+              upload.errors.add(:base, error_message)
+              return false
+            end
+            Barcode.create!(asset_id: tube.id, barcode: tube_barcode, format: barcode_format)
 
             # link the tube to the tube rack
             tube_rack_barcode = @tube_barcode_to_rack_barcode[tube_barcode]
@@ -190,7 +199,13 @@ module SampleManifestExcel
 
           if barcode.nil?
             tube_rack = ::TubeRack.create!(size: @rack_size)
-            Barcode.create!(asset: tube_rack, barcode: tube_rack_barcode, format: 7) # TODO: should we ascertain the format from the barcode, or assume it's fluidx?
+            barcode_format = Barcode.matching_barcode_format(tube_rack_barcode)
+            if barcode_format.nil?
+              error_message = "The tube rack barcode '#{tube_rack_barcode}' is not a recognised format."
+              upload.errors.add(:base, error_message)
+              return nil
+            end
+            Barcode.create!(asset: tube_rack, barcode: tube_rack_barcode, format: barcode_format)
           else
             tube_rack = barcode.asset
           end
