@@ -22,13 +22,12 @@ module SampleManifestExcel
           @tube_rack_barcodes_from_manifest = retrieve_tube_rack_barcodes_from_manifest
           return if @tube_rack_barcodes_from_manifest.nil?
 
-          @tube_barcodes_from_manifest = @upload.data.column(1).compact # TODO: do this based on the column name, not number
+          @tube_barcodes_from_manifest = @upload.data.column(1).compact # TODO: do this based on the column name, not number?
           @should_process_tube_rack_information = should_process_tube_rack_information?
         end
 
         def run(tag_group)
           return unless valid?
-
           if @should_process_tube_rack_information
             @rack_size = @upload.sample_manifest.tube_rack_purpose.size
             return unless retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
@@ -65,7 +64,7 @@ module SampleManifestExcel
             results = if Rails.configuration.do_tube_rack_scan_callout
                         retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
                       else
-                        mock_scan_result
+                        mock_scan_result(tube_rack_barcode)
                       end
             return false if results.nil?
 
@@ -101,11 +100,19 @@ module SampleManifestExcel
           scan_results['layout'] || nil
         end
 
-        def mock_scan_result
-          {
-            'TB11111110' => 'e8',
-            'TB11111111' => 'b4'
+        def mock_scan_result(tube_rack_barcode)
+          puts tube_rack_barcode
+          test_data = {
+            'RK11111110' => {
+              'TB11111110' => 'e8',
+              'TB11111111' => 'b4'
+            },
+            'RK11111111' => {
+              'TB11111112' => 'a3',
+              'TB11111113' => 'd6'
+            }
           }
+          test_data[tube_rack_barcode]
         end
 
         def validate_against_scan_results

@@ -6,7 +6,7 @@ module SampleManifestExcel
   module Worksheet
     ##
     # A test worksheet is necessary for testing uploads.
-    class TestWorksheet < SequencescapeExcel::Worksheet::Base
+  class TestWorksheet < SequencescapeExcel::Worksheet::Base
       include SequencescapeExcel::Helpers::Worksheet
 
       self.worksheet_name = 'DNA Collections Form'
@@ -17,7 +17,6 @@ module SampleManifestExcel
 
       def initialize(attributes = {})
         super
-        @extra_rows_added = 0
         @validation_errors ||= []
         if type == 'Plates'
           # create a worksheet for Plates
@@ -41,9 +40,9 @@ module SampleManifestExcel
 
       def compute_last_row
         if %w[plate_default plate_full plate_rnachip].include? manifest_type
-          first_row + (num_plates * num_samples_per_plate) - 1
+          computed_first_row + (num_plates * num_samples_per_plate) - 1
         else
-          first_row + no_of_rows
+          computed_first_row + no_of_rows
         end
       end
 
@@ -146,7 +145,7 @@ module SampleManifestExcel
             end
             dynamic_attributes[sheet_row][:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
             dynamic_attributes[sheet_row][:sanger_tube_id] = if cgap
-                                                               tube_row_num = (sheet_row - first_row) + 1
+                                                               tube_row_num = (sheet_row - computed_first_row) + 1
                                                                if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
                                                                  'CGAP-99999'
                                                                else
@@ -179,14 +178,14 @@ module SampleManifestExcel
         count.times do |num|
           axlsx_worksheet.add_row do |row|
             row.add_cell "Rack barcode (#{num + 1}):", type: :string
-            row.add_cell 'RK11111111', type: :string, style: styles[:unlocked_no_border].reference
+            row.add_cell "RK1111111#{num}", type: :string, style: styles[:unlocked_no_border].reference
           end
         end
-        @extra_rows_added += count + 1
       end
 
       def first_to_last
-        first_row..last_row
+        puts "first_to_last: #{first_row} #{computed_first_row} #{last_row}"
+        computed_first_row..last_row
       end
 
       def empty_row?(row_num)
@@ -206,9 +205,9 @@ module SampleManifestExcel
       def add_cell_data(column, row_num, partial)
         if partial && empty_row?(row_num)
           (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
-        elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && row_num == first_row
+        elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && row_num == computed_first_row
           nil
-        elsif validation_errors.include?(:sanger_sample_id_invalid) && column.name == 'sanger_sample_id' && row_num == first_row
+        elsif validation_errors.include?(:sanger_sample_id_invalid) && column.name == 'sanger_sample_id' && row_num == computed_first_row
           'ABC'
         else
           data[column.name] || dynamic_attributes[row_num][column.name]
@@ -246,15 +245,23 @@ module SampleManifestExcel
 
       def create_tags
         if %w[tube_multiplexed_library_with_tag_sequences tube_library_with_tag_sequences].include? manifest_type
-          oligos = Tags::ExampleData.new.take(first_row, last_row, validation_errors.include?(:tags))
+          oligos = Tags::ExampleData.new.take(computed_first_row, last_row, validation_errors.include?(:tags))
           dynamic_attributes.each do |k, _v|
             dynamic_attributes[k].merge!(oligos[k])
           end
         elsif %w[tube_multiplexed_library].include? manifest_type
-          groups_and_indexes = Tags::ExampleData.new.take_as_groups_and_indexes(first_row, last_row, validation_errors.include?(:tags))
+          groups_and_indexes = Tags::ExampleData.new.take_as_groups_and_indexes(computed_first_row, last_row, validation_errors.include?(:tags))
           dynamic_attributes.each do |k, _v|
             dynamic_attributes[k].merge!(groups_and_indexes[k])
           end
+        end
+      end
+
+      def computed_first_row
+        if type == 'Tube Racks'
+          first_row + count + 1
+        else
+          first_row
         end
       end
     end

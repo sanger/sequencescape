@@ -522,8 +522,47 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     describe SampleManifestExcel::Upload::Processor::TubeRack do
       let(:column_list) { configuration.columns.tube_rack_default }
 
-      context 'when valid' do
-        let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks') }
+      context 'when valid with one tube rack' do
+        let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks', count: 1, no_of_rows: 1) }
+
+        it 'will not generate samples prior to processing' do
+          expect { upload }.not_to change(Sample, :count)
+        end
+
+        it 'will process', :aggregate_failures do
+          expect(processor).to be_valid
+          puts "*** processor errors: #{processor.errors.full_messages}"
+          processor.run(tag_group)
+
+          aggregate_failures 'update samples' do
+            expect(processor).to be_samples_updated
+            expect(upload.rows).to be_all(&:sample_updated?)
+          end
+
+          aggregate_failures 'update sample manifest' do
+            expect(processor).to be_sample_manifest_updated
+            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
+          end
+
+          expect(processor).to be_processed
+          puts "*** errors: #{upload.errors.full_messages}"
+        end
+
+        # it 'will generate tube racks, with barcodes' do
+
+        # end
+
+        # it 'will generate racked tubes to link tubes to racks' do
+
+        # end
+
+        # it 'will generate barcodes for existing tubes' do
+
+        # end
+      end
+
+      context 'when valid with multiple tube racks' do
+        let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks', count: 2, no_of_rows: 3) }
 
         it 'will not generate samples prior to processing' do
           expect { upload }.not_to change(Sample, :count)
@@ -543,6 +582,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           end
 
           expect(processor).to be_processed
+
         end
 
         # it 'will generate tube racks, with barcodes' do
