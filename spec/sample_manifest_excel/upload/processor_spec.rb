@@ -35,8 +35,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     before do
       barcode = build(:plate_barcode, barcode: 23)
       allow(PlateBarcode).to receive(:create).and_return(barcode)
-
-      download.worksheet.sample_manifest.generate
+      # download.worksheet.sample_manifest.generate
       download.save(test_file_name)
     end
 
@@ -521,9 +520,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
     describe SampleManifestExcel::Upload::Processor::TubeRack do
       let(:column_list) { configuration.columns.tube_rack_default }
+      let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks', count: no_of_racks, no_of_rows: no_of_rows - 1) }
 
       before do
-        mock_microservice_responses = {
+        @mock_microservice_responses = {
           'RK11111110' => {
                             'rack_barcode' => 'RK11111110',
                             'layout' => {
@@ -540,15 +540,13 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
                           }
         }
 
-        mock_microservice_responses.each_key do |rack_barcode|
-          stub_request(:get, "http://www.example.com/tube_rack_test:5000/tube_rack/#{rack_barcode}").
-              to_return(status: 200, body: JSON.generate(mock_microservice_responses[rack_barcode]), headers: {})
+        @mock_microservice_responses.each_key do |rack_barcode|
+          stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_endpoint}:#{Rails.configuration.tube_rack_scans_microservice_port}/tube_rack/#{rack_barcode}").
+              to_return(status: 200, body: JSON.generate(@mock_microservice_responses[rack_barcode]), headers: {})
         end
       end
 
-      context 'when valid with one tube rack' do
-        let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks', count: 1, no_of_rows: 1) }
-
+      shared_examples_for 'tube rack manifest upload success case' do
         it 'will not generate samples prior to processing' do
           expect { upload }.not_to change(Sample, :count)
         end
@@ -572,54 +570,67 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           puts "*** errors: #{upload.errors.full_messages}"
         end
 
-        # it 'will generate tube racks, with barcodes' do
+        it 'will generate barcodes for existing tubes' do
+          #get tubes using the sample manifest asset association
+          tubes = upload.sample_manifest.assets.map(&:labware)
 
-        # end
+          tube_ids = tubes.map(&:id)
+          expect(tubes.size).to eq(no_of_rows) # sanity check the number of tubes that are present before the upload
+          barcodes = Barcode.where(asset_id: tube_ids, format: 7)
+          expect(barcodes).to be_empty
 
-        # it 'will generate racked tubes to link tubes to racks' do
+          processor.run(tag_group)
+          tube_racks_barcodes = tubes.map(&:tube_rack).uniq.map(&:barcodes).flatten.map(&:barcode)
+          tube_barcodes = tube_racks_barcodes.map do |rack_barcode|
+            scan_results = @mock_microservice_responses[rack_barcode]
+            scan_results['layout'].keys
+          end.flatten
 
-        # end
+          expect(barcodes.size()).to eq(no_of_rows)
+          expect(barcodes.map { |barcode| barcode.barcode }).to eq(tube_barcodes)
+        end
 
-        # it 'will generate barcodes for existing tubes' do
+        it 'will generate tube racks, with barcodes' do
+          count_before = TubeRack.count
+          processor.run(tag_group)
+          expect(TubeRack.count).to eq(count_before + no_of_racks)
 
-        # end
+          tube_rack_barcode = Barcode.find_by(barcode: 'RK11111110')
+          expect(tube_rack_barcode).to_not be_nil
+          expect(tube_rack_barcode.format).to eq('fluidx_barcode')
+          tube_rack = TubeRack.find(tube_rack_barcode.asset_id)
+          expect(tube_rack).to_not be_nil
+          expect(tube_rack.size).to eq(48)
+        end
+
+        it 'will generate racked tubes to link tubes to racks' do
+          count_before = RackedTube.count
+          processor.run(tag_group)
+          expect(RackedTube.count).to eq(count_before + no_of_rows)
+
+          tube_1 = Barcode.find_by(barcode: 'TB11111110').asset
+          tube_2 = Barcode.find_by(barcode: 'TB11111111').asset
+          tube_rack = Barcode.find_by(barcode: 'RK11111110').asset
+
+          expect(tube_1.tube_rack).to eq(tube_rack) #this goes 'through' the RackedTube association
+          expect(tube_2.tube_rack).to eq(tube_rack)
+          expect(tube_1.racked_tube.coordinate).to eq('e8')
+          expect(tube_2.racked_tube.coordinate).to eq('b4')
+        end
+      end
+
+      context 'when valid with one tube rack' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+
+        it_behaves_like 'tube rack manifest upload success case'
       end
 
       context 'when valid with multiple tube racks' do
-        let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks', count: 2, no_of_rows: 3) }
+        let(:no_of_racks) { 2 }
+        let(:no_of_rows) { 4 }
 
-        it 'will not generate samples prior to processing' do
-          expect { upload }.not_to change(Sample, :count)
-        end
-
-        it 'will process', :aggregate_failures do
-          processor.run(tag_group)
-
-          aggregate_failures 'update samples' do
-            expect(processor).to be_samples_updated
-            expect(upload.rows).to be_all(&:sample_updated?)
-          end
-
-          aggregate_failures 'update sample manifest' do
-            expect(processor).to be_sample_manifest_updated
-            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
-          end
-
-          expect(processor).to be_processed
-
-        end
-
-        # it 'will generate tube racks, with barcodes' do
-
-        # end
-
-        # it 'will generate racked tubes to link tubes to racks' do
-
-        # end
-
-        # it 'will generate barcodes for existing tubes' do
-
-        # end
+        it_behaves_like 'tube rack manifest upload success case'
       end
     end
   end
