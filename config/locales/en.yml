@@ -66,7 +66,6 @@ en:
       uat_actions: "UAT"
       pipelines: "Pipelines"
       batches: "Batches"
-      reception: "Reception"
       labwhere_reception: "Labwhere Reception"
       labsearch: "Lab search"
       labview:  "Lab View"
