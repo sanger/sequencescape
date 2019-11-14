@@ -20,6 +20,7 @@ env:
 before_install:
 - mv config/aker.yml.example config/aker.yml
 - gem install bundler # use bundler 2.0
+- yarn install
 jobs:
   include:
   - stage: test
@@ -45,10 +46,7 @@ jobs:
     script: bundle exec rake test
     name: Rake Test
   - if: type != cron
-    env:
     before_script:
-    - env
-    - node --version
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
