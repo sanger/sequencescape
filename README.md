@@ -95,7 +95,7 @@ Ruby version you are using. The ruby version required should be found in `.ruby-
     bundle install
 ```
 
-### Adujsting config
+### Adjusting config
 
 Copy the `config/aker.example.yml` file to `config/aker.example.yml`.
 
