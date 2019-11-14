@@ -133,7 +133,6 @@ group :development do
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
   gem 'travis'
-  gem 'solargraph'
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'mini_racer'
   # Pat of the JS assets pipleine
