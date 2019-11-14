@@ -94,7 +94,7 @@ Ruby version you are using. The ruby version required should be found in `.ruby-
 
 ### Adujsting config
 
-Edit the `config/config.yml` file to specify anything required.
+Copy the `config/aker.example.yml` file to `config/aker.example.yml`.
 
 The `config/database.yml` file saves the list of databases.
 
