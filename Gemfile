@@ -107,13 +107,13 @@ group :default do
   gem 'webpacker'
 end
 
-# group :warehouse do
-#   # Used to connect to oracle databases for some data import
-#   gem 'ruby-oci8', platforms: :mri
-#   # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
-#   # any newer version requires ruby-oci8 => 2.0.1
-#   gem 'activerecord-oracle_enhanced-adapter'
-# end
+group :warehouse do
+  # Used to connect to oracle databases for some data import
+  gem 'ruby-oci8', platforms: :mri
+  # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
+  # any newer version requires ruby-oci8 => 2.0.1
+  gem 'activerecord-oracle_enhanced-adapter'
+end
 
 group :development do
   gem 'flay', require: false
