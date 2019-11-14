@@ -21,6 +21,7 @@ Current installation supports a million samples and 1.3 million pieces of labwar
 a organisation of 900 people.
 
 ## Contents
+
 <!-- toc -->
 
 - [Documentation](#documentation)
@@ -32,7 +33,8 @@ a organisation of 900 people.
   * [Installing gems](#installing-gems)
   * [Adujsting config](#adujsting-config)
   * [Default setup](#default-setup)
-- [Delayed job](#delayed-job)
+    + [Delayed job](#delayed-job)
+- [Testing](#testing)
 - [Supporting applications](#supporting-applications)
   * [Barcode printing](#barcode-printing)
   * [Plate barcode service](#plate-barcode-service)
@@ -42,6 +44,7 @@ a organisation of 900 people.
   * [NPG - Illumina tracking software](#npg---illumina-tracking-software)
   * [Troubleshooting](#troubleshooting)
     + [MySQL errors when installing](#mysql-errors-when-installing)
+  * [Updating the table of contents](#updating-the-table-of-contents)
 
 <!-- tocstop -->
 
@@ -65,7 +68,7 @@ The following tools are required for development:
 * node (version defined in the `.nvmrc`)
 * mysql client libraries - if you do not want to install mysql server on your machine, consider
 using mysql-client: `brew install mysql-client`. Alternatively, to install the MySQL required by
-Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21) 
+Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21)
 helpful link.
 
 ## Getting started
@@ -100,24 +103,46 @@ The `config/database.yml` file saves the list of databases.
 
 ### Default setup
 
-```shell
-    bundle exec rake db:setup # creates the database tables
-    # The task below is optional, but creates an admin user account and a few example studies and plates
-    bundle exec rake working:setup
-    bundle exec rails webpacker:install # install webpacker and required JS libraries
-    bundle exec ./script/delayed_job start # OPTIONAL - starts a delayed job runner
-    bundle exec rails server
-```
+1. Create the database tables
+
+        bundle exec rake db:setup
+
+1. Create an admin user account and a few example studies and plates
+
+        bundle exec rake working:setup
+
+1. Install webpacker and the required JS libraries
+
+        bundle exec rails webpacker:install
+
+1. Start rails
+
+        bundle exec rails server
 
 Once setup, the default user/password is `admin/admin`.
 
-## Delayed job
+#### Delayed job
 
-For background processing Sequencescape uses `delayed_job` to ensure that the server is running.
+For background processing Sequencescape uses `delayed_job` to ensure that the server is running. It
+is strongly recommended to start one for Sequencescape to behave as expected.
 
-```shell
-bundle exec rake jobs:work
-```
+    bundle exec rake jobs:work
+
+OR
+
+    bundle exec ./script/delayed_job start
+
+## Testing
+
+Testing is done in three ways; using rspec, rails test and feature tests.
+
+1. To run the rspec tests (found in `rspec/` dir.):
+
+        bundle exec rspec
+
+1. To run the rails tests (found in `tests/` dir.):
+
+        bundle exec rake test
 
 ## Supporting applications
 
@@ -163,10 +188,18 @@ cluster formation batch which represents a flowcell.
 
 [NPG Software](http://www.sanger.ac.uk/resources/software/npg/)
 
-### Troubleshooting
+### Troubleshooting
 
 #### MySQL errors when installing
 
 If you are using homebrew with rbenv and run into errors relating to SSL, have a look [here](https://github.com/brianmario/mysql2/issues/795#issuecomment-433219176)
+
+### Updating the table of contents
+
+To update the table of contents after adding things to this README you can use the markdown-toc
+node module. To install it, make sure you have install the dev dependencies from yarn. To update
+the table of contents, run:
+
+    ./node_modules/.bin/markdown-toc -i README.md
 
 Copyright (c) 2007, 2010-2019  Genome Research Ltd.

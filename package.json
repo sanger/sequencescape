@@ -12,6 +12,7 @@
     "pdfmake": "^0.1.59"
   },
   "devDependencies": {
+    "markdown-toc": "^1.2.0",
     "webpack-dev-server": "^3.8.1"
   }
 }
