@@ -1,4 +1,5 @@
 language: ruby
+node_js:
 # We don't specify a list of ruby versions, as Travis will fall back to .ruby-version
 dist: xenial
 sudo: required
@@ -47,6 +48,8 @@ jobs:
   - if: type != cron
     env:
     before_script:
+    - env
+    - node --version
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
