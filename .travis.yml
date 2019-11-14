@@ -1,5 +1,4 @@
 language: ruby
-node_js:
 # We don't specify a list of ruby versions, as Travis will fall back to .ruby-version
 dist: xenial
 sudo: required
@@ -21,6 +20,7 @@ env:
 before_install:
 - mv config/aker.yml.example config/aker.yml
 - gem install bundler # use bundler 2.0
+- nvm install # use and install the node version found in .nvmrc
 jobs:
   include:
   - stage: test
