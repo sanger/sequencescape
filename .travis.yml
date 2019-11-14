@@ -42,14 +42,14 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: bundle exec rake test
+    script: bundle exec rake test -f
     name: Rake Test
   - if: type != cron
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: xvfb-run -a bundle exec rspec
+    script: xvfb-run -a bundle exec rspec --fail-fast
     name: Rspec
   - if: type != cron
     env:

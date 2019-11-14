@@ -138,11 +138,11 @@ Testing is done in three ways; using rspec, rails test and feature tests.
 
 1. To run the rspec tests (found in `rspec/` dir.):
 
-        bundle exec rspec
+        bundle exec rspec --fail-fast
 
 1. To run the rails tests (found in `tests/` dir.):
 
-        bundle exec rake test
+        bundle exec rake test -f
 
 ## Supporting applications
 
