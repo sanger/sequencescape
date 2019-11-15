@@ -520,30 +520,30 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     describe SampleManifestExcel::Upload::Processor::TubeRack, manifest_type: 'tube_rack' do
       let(:column_list) { configuration.columns.tube_rack_default }
       let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks', count: no_of_racks, no_of_rows: no_of_rows - 1) }
-      let(:mock_microservice_responses) {
+      let(:mock_microservice_responses) do
         {
           'RK11111110' => {
-                            'rack_barcode' => 'RK11111110',
-                            'layout' => {
-                              'TB11111110' => 'e8',
-                              'TB11111111' => 'b4'
-                            }
-                          },
+            'rack_barcode' => 'RK11111110',
+            'layout' => {
+              'TB11111110' => 'e8',
+              'TB11111111' => 'b4'
+            }
+          },
           'RK11111111' => {
-                            'rack_barcode' => 'RK11111111',
-                            'layout' => {
-                              'TB11111112' => 'a3',
-                              'TB11111113' => 'd6'
-                            }
-                          }
+            'rack_barcode' => 'RK11111111',
+            'layout' => {
+              'TB11111112' => 'a3',
+              'TB11111113' => 'd6'
+            }
+          }
         }
-      }
+      end
       let(:mock_microservices_response_status) { 200 }
 
       before do
         mock_microservice_responses.each_key do |rack_barcode|
-          stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_endpoint}:#{Rails.configuration.tube_rack_scans_microservice_port}/tube_rack/#{rack_barcode}").
-              to_return(status: mock_microservices_response_status, body: JSON.generate(mock_microservice_responses[rack_barcode]), headers: {})
+          stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_endpoint}:#{Rails.configuration.tube_rack_scans_microservice_port}/tube_rack/#{rack_barcode}")
+            .to_return(status: mock_microservices_response_status, body: JSON.generate(mock_microservice_responses[rack_barcode]), headers: {})
         end
       end
 
@@ -570,7 +570,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         it 'will generate barcodes for existing tubes' do
-          #get tubes using the sample manifest asset association
+          # get tubes using the sample manifest asset association
           tubes = upload.sample_manifest.assets.map(&:labware)
           # sanity check the number of tubes that are present before the upload
           expect(tubes.size).to eq(no_of_rows)
@@ -585,8 +585,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             scan_result['layout'].keys
           end.flatten
 
-          expect(barcodes.size()).to eq(no_of_rows)
-          expect(barcodes.map { |barcode| barcode.barcode }).to eq(tube_barcodes)
+          expect(barcodes.size).to eq(no_of_rows)
+          expect(barcodes.map(&:barcode)).to eq(tube_barcodes)
         end
 
         it 'will generate tube racks, with barcodes' do
@@ -660,9 +660,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         it 'will not create any data' do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
-          expect{ processor.run(tag_group) }.to not_change{ TubeRack.count }
-                                            .and not_change{ RackedTube.count }
-                                            .and not_change{ Barcode.count }
+          expect { processor.run(tag_group) }.to(not_change) { TubeRack.count }
+                                             .and(not_change) { RackedTube.count }
+                                             .and(not_change) { Barcode.count }
         end
 
         # context 'with override not ticked' do
@@ -685,7 +685,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         # end
       end
 
-      context 'where manifest has no tube rack barcodes' do
+      context 'when manifest has no tube rack barcodes' do
         let(:no_of_racks) { 0 }
         let(:no_of_rows) { 2 }
 
@@ -697,9 +697,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         it 'will not create any data' do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
-          expect{ processor.run(tag_group) }.to not_change{ TubeRack.count }
-                                            .and not_change{ RackedTube.count }
-                                            .and not_change{ Barcode.count }
+          expect { processor.run(tag_group) }.to(not_change) { TubeRack.count }
+                                             .and(not_change) { RackedTube.count }
+                                             .and(not_change) { Barcode.count }
         end
 
         it 'will have errors' do
@@ -710,16 +710,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
       end
 
-      context 'where there is no scan found for a tube rack in the manifest' do
+      context 'when there is no scan found for a tube rack in the manifest' do
         let(:no_of_racks) { 1 }
         let(:no_of_rows) { 2 }
-        let(:mock_microservice_responses) {
-          {
-            'RK11111110' => {
-                              'error' => 'File not found'
-                            }
-          }
-        }
+        let(:mock_microservice_responses) { { 'RK11111110' => { 'error' => 'File not found' } } }
         let(:mock_microservices_response_status) { 404 }
 
         it 'will have errors' do
@@ -733,13 +727,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when the microservice responds with a status of 500' do
         let(:no_of_racks) { 1 }
         let(:no_of_rows) { 2 }
-        let(:mock_microservice_responses) {
-          {
-            'RK11111110' => {
-                              'error' => 'Server error'
-                            }
-          }
-        }
+        let(:mock_microservice_responses) { { 'RK11111110' => { 'error' => 'Server error' } } }
         let(:mock_microservices_response_status) { 500 }
 
         it 'will have errors' do
@@ -753,17 +741,13 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when the microservice responds with an invalid body' do
         let(:no_of_racks) { 1 }
         let(:no_of_rows) { 2 }
-        let(:mock_microservice_responses) {
-          {
-            'RK11111110' => 'sf:fs9{8fa}afe"fas'
-          }
-        }
+        let(:mock_microservice_responses) { { 'RK11111110' => 'sf:fs9{8fa}afe"fas' } }
         let(:mock_microservices_response_status) { 200 }
 
         before do
           mock_microservice_responses.each_key do |rack_barcode|
-            stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_endpoint}:#{Rails.configuration.tube_rack_scans_microservice_port}/tube_rack/#{rack_barcode}").
-                to_return(status: mock_microservices_response_status, body: mock_microservice_responses[rack_barcode], headers: {})
+            stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_endpoint}:#{Rails.configuration.tube_rack_scans_microservice_port}/tube_rack/#{rack_barcode}")
+              .to_return(status: mock_microservices_response_status, body: mock_microservice_responses[rack_barcode], headers: {})
           end
         end
 
@@ -778,16 +762,16 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when the scan and the manifest have different tube barcodes' do
         let(:no_of_racks) { 1 }
         let(:no_of_rows) { 2 }
-        let(:mock_microservice_responses) {
+        let(:mock_microservice_responses) do
           {
             'RK11111110' => {
-                              'rack_barcode' => 'RK11111110',
-                              'layout' => {
-                                'TB22222222' => 'e8'
-                              }
-                            }
+              'rack_barcode' => 'RK11111110',
+              'layout' => {
+                'TB22222222' => 'e8'
+              }
+            }
           }
-        }
+        end
         let(:mock_microservices_response_status) { 200 }
 
         it 'will have errors' do
@@ -801,17 +785,17 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when the scan has an invalid coordinate' do
         let(:no_of_racks) { 1 }
         let(:no_of_rows) { 2 }
-        let(:mock_microservice_responses) {
+        let(:mock_microservice_responses) do
           {
             'RK11111110' => {
-                              'rack_barcode' => 'RK11111110',
-                              'layout' => {
-                                'TB11111110' => 'e14',
-                                'TB11111111' => 'b4'
-                              }
-                            }
+              'rack_barcode' => 'RK11111110',
+              'layout' => {
+                'TB11111110' => 'e14',
+                'TB11111111' => 'b4'
+              }
+            }
           }
-        }
+        end
         let(:mock_microservices_response_status) { 200 }
 
         it 'will have errors' do

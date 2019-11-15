@@ -6,7 +6,7 @@ module SampleManifestExcel
   module Worksheet
     ##
     # A test worksheet is necessary for testing uploads.
-  class TestWorksheet < SequencescapeExcel::Worksheet::Base
+    class TestWorksheet < SequencescapeExcel::Worksheet::Base
       include SequencescapeExcel::Helpers::Worksheet
 
       self.worksheet_name = 'DNA Collections Form'

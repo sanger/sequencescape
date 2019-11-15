@@ -28,6 +28,7 @@ module SampleManifestExcel
 
         def run(tag_group)
           return unless valid?
+
           if @should_process_tube_rack_information
             @rack_size = @upload.sample_manifest.tube_rack_purpose.size
             return unless retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
@@ -125,11 +126,11 @@ module SampleManifestExcel
             scan_results.each_value do |coordinate|
               row = coordinate[/[A-Za-z]+/].capitalize
               column = coordinate[/[0-9]+/]
-              unless valid_row_values.include?(row) && valid_column_values.include?(column.to_i)
-                error_message = "The coordinate '#{coordinate}' in the scan is not valid for a tube rack of size #{rack_size}."
-                upload.errors.add(:base, error_message)
-                return false
-              end
+              next if valid_row_values.include?(row) && valid_column_values.include?(column.to_i)
+
+              error_message = "The coordinate '#{coordinate}' in the scan is not valid for a tube rack of size #{rack_size}."
+              upload.errors.add(:base, error_message)
+              return false
             end
           end
 
