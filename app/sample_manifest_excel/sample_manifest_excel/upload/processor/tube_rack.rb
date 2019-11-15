@@ -106,45 +106,17 @@ module SampleManifestExcel
         end
 
         def validate_coordinates(rack_size, rack_barcode_to_scan_results)
-          rack_layout_map = {
-            48 => {
-              'rows' => 6,
-              'columns' => 8
-            },
-            96 => {
-              'rows' => 8,
-              'columns' => 12
-            }
-          }
+          list_of_coordinates = rack_barcode_to_scan_results.values.map { |scan_results| scan_results.values }.flatten
+          list_of_validity = ::TubeRack.check_if_coordinates_valid(rack_size, list_of_coordinates)
+          list_of_invalid_coordinates = []
 
-          num_rows = rack_layout_map[rack_size]['rows']
-          num_columns = rack_layout_map[rack_size]['columns']
-          valid_row_values = TubeRack.generate_valid_row_values(num_rows)
-          valid_column_values = (1..num_columns).to_a
-
-          rack_barcode_to_scan_results.each_value do |scan_results|
-            scan_results.each_value do |coordinate|
-              row = coordinate[/[A-Za-z]+/].capitalize
-              column = coordinate[/[0-9]+/]
-              next if valid_row_values.include?(row) && valid_column_values.include?(column.to_i)
-
-              error_message = "The coordinate '#{coordinate}' in the scan is not valid for a tube rack of size #{rack_size}."
-              upload.errors.add(:base, error_message)
-              return false
-            end
+          list_of_validity.each_with_index do |validity, index|
+            list_of_invalid_coordinates << list_of_coordinates[index] unless validity
           end
+          error_message = "The following coordinates in the scan are not valid for a tube rack of size #{rack_size}: #{list_of_invalid_coordinates.to_s}."
+          upload.errors.add(:base, error_message)
 
           true
-        end
-
-        def self.generate_valid_row_values(num_rows)
-          output = []
-          count = 1
-          ('A'..'Z').each do |letter|
-            output << letter if count <= num_rows
-            count += 1
-          end
-          output
         end
 
         def create_tube_racks_and_link_tubes

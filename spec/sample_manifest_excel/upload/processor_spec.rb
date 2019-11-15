@@ -802,7 +802,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           processor.run(tag_group)
           errors = upload.errors.full_messages
           expect(errors).not_to be_empty
-          expect(errors).to include("The coordinate 'e14' in the scan is not valid for a tube rack of size 48.")
+          expect(errors).to include('The following coordinates in the scan are not valid for a tube rack of size 48: ["e14"].')
         end
       end
     end
