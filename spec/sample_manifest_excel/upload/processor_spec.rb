@@ -660,9 +660,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         it 'will not create any data' do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
-          expect { processor.run(tag_group) }.to(not_change) { TubeRack.count }
-                                             .and(not_change) { RackedTube.count }
-                                             .and(not_change) { Barcode.count }
+          expect { processor.run(tag_group) }.to not_change { TubeRack.count }
+                                             .and not_change { RackedTube.count }
+                                             .and not_change { Barcode.count }
         end
 
         # context 'with override not ticked' do
@@ -697,9 +697,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         it 'will not create any data' do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
-          expect { processor.run(tag_group) }.to(not_change) { TubeRack.count }
-                                             .and(not_change) { RackedTube.count }
-                                             .and(not_change) { Barcode.count }
+          expect { processor.run(tag_group) }.to not_change { TubeRack.count }
+                                             .and not_change { RackedTube.count }
+                                             .and not_change { Barcode.count }
         end
 
         it 'will have errors' do
