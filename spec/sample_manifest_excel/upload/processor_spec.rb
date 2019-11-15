@@ -35,7 +35,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     before do
       barcode = build(:plate_barcode, barcode: 23)
       allow(PlateBarcode).to receive(:create).and_return(barcode)
-      # download.worksheet.sample_manifest.generate
       download.save(test_file_name)
     end
 
