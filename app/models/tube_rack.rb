@@ -7,4 +7,8 @@ class TubeRack < Labware
 
   has_many :racked_tubes, dependent: :destroy, inverse_of: :tube_rack
   has_many :tubes, through: :racked_tubes
+
+  def human_barcode
+    primary_barcode.present? ? primary_barcode.barcode : nil
+  end
 end
