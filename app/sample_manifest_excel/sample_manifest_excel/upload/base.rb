@@ -31,6 +31,8 @@ module SampleManifestExcel
       delegate :data_at, to: :rows
       delegate :study, to: :sample_manifest, allow_nil: true
 
+      SANGER_SAMPLE_ID_COLUMN_LABEL = 'SANGER SAMPLE ID'
+
       def initialize(attributes = {})
         super
         @start_row = find_start_row
@@ -128,7 +130,7 @@ module SampleManifestExcel
 
         (0..opened_sheet.last_row).each do |row_num|
           opened_sheet.row(row_num).each do |cell_value|
-            return row_num if cell_value == 'SANGER SAMPLE ID'
+            return row_num if cell_value == SANGER_SAMPLE_ID_COLUMN_LABEL
           end
         end
       end
