@@ -184,7 +184,6 @@ module SampleManifestExcel
       end
 
       def first_to_last
-        puts "first_to_last: #{first_row} #{computed_first_row} #{last_row}"
         computed_first_row..last_row
       end
 
