@@ -80,12 +80,15 @@ module SampleManifestExcel
       end
 
       def extract_description_info(sheet, start_row)
-        # look through the rows from under the heading (row 2), to above the start row
-        # build a hash of first cell => second cell
+        # look through each row starting from from under the heading (row 2), to above the start row
+        # build a hash of the value in the first column => value in second column
+        # this was built to extract the tube rack barcodes, and assumes the label is in the first column and the value in the second
         output = {}
         (2..start_row - 1).each do |row_num|
           row = sheet.row(row_num)
-          output[row[0]] = row[1] unless row[0].nil?
+          info_label = row[0]
+          info_value = row[1]
+          output[info_label] = info_value unless info_label.nil?
         end
         output
       end
