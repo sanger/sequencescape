@@ -518,7 +518,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
     end
 
-    describe SampleManifestExcel::Upload::Processor::TubeRack do
+    describe SampleManifestExcel::Upload::Processor::TubeRack, manifest_type: 'tube_rack' do
       let(:column_list) { configuration.columns.tube_rack_default }
       let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks', count: no_of_racks, no_of_rows: no_of_rows - 1) }
 
@@ -553,7 +553,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         it 'will process', :aggregate_failures do
           expect(processor).to be_valid
-          puts "*** processor errors: #{processor.errors.full_messages}"
           processor.run(tag_group)
 
           aggregate_failures 'update samples' do
@@ -567,23 +566,22 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           end
 
           expect(processor).to be_processed
-          puts "*** errors: #{upload.errors.full_messages}"
         end
 
         it 'will generate barcodes for existing tubes' do
           #get tubes using the sample manifest asset association
           tubes = upload.sample_manifest.assets.map(&:labware)
+          # sanity check the number of tubes that are present before the upload
+          expect(tubes.size).to eq(no_of_rows)
 
           tube_ids = tubes.map(&:id)
-          expect(tubes.size).to eq(no_of_rows) # sanity check the number of tubes that are present before the upload
           barcodes = Barcode.where(asset_id: tube_ids, format: 7)
           expect(barcodes).to be_empty
 
           processor.run(tag_group)
-          tube_racks_barcodes = tubes.map(&:tube_rack).uniq.map(&:barcodes).flatten.map(&:barcode)
-          tube_barcodes = tube_racks_barcodes.map do |rack_barcode|
-            scan_results = @mock_microservice_responses[rack_barcode]
-            scan_results['layout'].keys
+
+          tube_barcodes = @mock_microservice_responses.values.first(no_of_racks).map do |scan_result|
+            scan_result['layout'].keys
           end.flatten
 
           expect(barcodes.size()).to eq(no_of_rows)
@@ -595,12 +593,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           processor.run(tag_group)
           expect(TubeRack.count).to eq(count_before + no_of_racks)
 
-          tube_rack_barcode = Barcode.find_by(barcode: 'RK11111110')
-          expect(tube_rack_barcode).to_not be_nil
-          expect(tube_rack_barcode.format).to eq('fluidx_barcode')
-          tube_rack = TubeRack.find(tube_rack_barcode.asset_id)
-          expect(tube_rack).to_not be_nil
-          expect(tube_rack.size).to eq(48)
+          tube_rack_barcode_records = Barcode.where(barcode: @mock_microservice_responses.keys, format: 'fluidx_barcode')
+          expect(tube_rack_barcode_records.size).to eq(no_of_racks)
+          tube_racks = TubeRack.find(tube_rack_barcode_records.map(&:asset_id))
+          expect(tube_racks.compact.size).to eq(no_of_racks)
+          tube_racks.each { |rack| expect(rack.size).to eq(48) }
         end
 
         it 'will generate racked tubes to link tubes to racks' do
@@ -608,14 +605,17 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           processor.run(tag_group)
           expect(RackedTube.count).to eq(count_before + no_of_rows)
 
-          tube_1 = Barcode.find_by(barcode: 'TB11111110').asset
-          tube_2 = Barcode.find_by(barcode: 'TB11111111').asset
-          tube_rack = Barcode.find_by(barcode: 'RK11111110').asset
+          tube_rack_barcodes = @mock_microservice_responses.keys.first(no_of_racks)
+          tube_rack_barcodes.each do |tube_rack_barcode|
+            tube_rack = Barcode.find_by(barcode: tube_rack_barcode).asset
 
-          expect(tube_1.tube_rack).to eq(tube_rack) #this goes 'through' the RackedTube association
-          expect(tube_2.tube_rack).to eq(tube_rack)
-          expect(tube_1.racked_tube.coordinate).to eq('e8')
-          expect(tube_2.racked_tube.coordinate).to eq('b4')
+            layout = @mock_microservice_responses[tube_rack_barcode]['layout']
+            layout.each_key do |tube_barcode|
+              tube = Barcode.find_by(barcode: tube_barcode).asset
+              expect(tube.tube_rack).to eq(tube_rack)
+              expect(tube.racked_tube.coordinate).to eq(layout[tube_barcode])
+            end
+          end
         end
       end
 
