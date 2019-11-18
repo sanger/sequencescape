@@ -5,7 +5,8 @@ module SampleManifestExcel
   # and the updating of samples and their assets in Sequencescape
   module Upload
     ##
-    # An upload will:
+    # An upload will
+    # *Find the start row based on the Sanger Sample Id column header cell
     # *Create a Data object based on the file.
     # *Extract the columns based on the headings in the spreadsheet
     # *Find the sanger sample id column
@@ -36,6 +37,7 @@ module SampleManifestExcel
       def initialize(attributes = {})
         super
         @start_row = find_start_row
+        return if @start_row.nil?
         @data = Upload::Data.new(file, start_row)
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
@@ -126,17 +128,23 @@ module SampleManifestExcel
       end
 
       def find_start_row
-        opened_sheet = Roo::Spreadsheet.open(file).sheet(0)
+        opened_file = Roo::Spreadsheet.open(file) unless file.nil?
+        return nil if opened_file.nil?
+
+        opened_sheet = opened_file.sheet(0)
+        return nil if opened_sheet.nil?
 
         (0..opened_sheet.last_row).each do |row_num|
           opened_sheet.row(row_num).each do |cell_value|
             return row_num if cell_value == SANGER_SAMPLE_ID_COLUMN_LABEL
           end
         end
+
+        nil
       end
 
       def data_valid?
-        data.valid?
+        !data.nil? && data.valid?
       end
 
       def check_data
@@ -156,9 +164,9 @@ module SampleManifestExcel
       end
 
       def check_object(object)
-        return if object.valid?
+        return if !object.nil? && object.valid?
 
-        object.errors.each do |key, value|
+        object&.errors&.each do |key, value|
           errors.add key, value
         end
       end
