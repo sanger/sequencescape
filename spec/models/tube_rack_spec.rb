@@ -60,15 +60,15 @@ RSpec.describe TubeRack do
   describe 'scope #contained_samples' do
     let(:num_tubes) { locations.length }
     let(:tube_rack) { create :tube_rack }
-    let(:locations) { ["A01", "B01", "C01"]}
-    let(:barcodes) { num_tubes.times.map{ create :fluidx }}
-    let!(:tubes) {
+    let(:locations) { %w[A01 B01 C01] }
+    let(:barcodes) { num_tubes.times.map { create :fluidx } }
+    let!(:tubes) do
       num_tubes.times.map do |i|
-        create(:sample_tube, :in_a_rack, {
-          tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]]
-        })
+        create(:sample_tube, :in_a_rack,
+               tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
       end
-    }
+    end
+
     it 'returns the samples of the tubes contained in the rack' do
       expect(tube_rack.contained_samples).to eq(tubes.map(&:samples).flatten)
     end

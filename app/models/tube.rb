@@ -70,7 +70,7 @@ class Tube < Labware
   has_one :racked_tube, dependent: :destroy
   has_one :tube_rack, through: :racked_tube
 
-  scope :in_column_major_order,  -> {
+  scope :in_column_major_order, lambda {
     joins(:racked_tube).order('racked_tubes.coordinate ASC')
   }
   delegate :coordinate, to: :racked_tube

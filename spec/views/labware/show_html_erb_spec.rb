@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'labware/show.html.erb', type: :view do
@@ -9,32 +11,36 @@ RSpec.describe 'labware/show.html.erb', type: :view do
     let(:rack_barcode) { create :barcode }
     let(:tube_rack) { create :tube_rack, barcode: rack_barcode }
 
-    let(:locations) { ["A01", "B01", "C01"]}
-    let(:barcodes) { num_tubes.times.map{ create :fluidx }}
-    let!(:tubes) {
+    let(:locations) { %w[A01 B01 C01] }
+    let(:barcodes) { num_tubes.times.map { create :fluidx } }
+    let!(:tubes) do
       num_tubes.times.map do |i|
-        create(:sample_tube, :in_a_rack, {
-          tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]]
-        })
+        create(:sample_tube, :in_a_rack,
+               tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
       end
-    }
-    before do
-      assign(:asset, tube_rack)  # sets @widget = Widget.new in the view template
     end
+
+    before do
+      assign(:asset, tube_rack) # sets @widget = Widget.new in the view template
+    end
+
     context 'when the rack contains tubes' do
       let(:num_tubes) { locations.length }
+
       it 'displays the barcodes for all the tubes' do
         render
         barcodes.each do |instance|
           expect(rendered).to match(instance.barcode)
         end
       end
+
       it 'displays the coordinates for all the tubes' do
         render
         locations.each do |location|
           expect(rendered).to match(location)
         end
       end
+
       it 'displays the number of samples' do
         render
         expect(rendered).to match(tubes.length.to_s)
@@ -49,15 +55,16 @@ RSpec.describe 'labware/show.html.erb', type: :view do
     let(:tube) { create :tube, barcodes: [tube_barcode] }
 
     before do
-      assign(:asset, tube)  # sets @widget = Widget.new in the view template
+      assign(:asset, tube) # sets @widget = Widget.new in the view template
     end
 
     context 'when the tube is inside a rack' do
       before do
-        tube.update_attributes(racked_tube: racked_tube)
+        tube.update(racked_tube: racked_tube)
       end
+
       let(:coordinate) { 'A1' }
-      let(:racked_tube) { build :racked_tube, tube_rack: tube_rack, coordinate: coordinate}
+      let(:racked_tube) { build :racked_tube, tube_rack: tube_rack, coordinate: coordinate }
 
       let(:rack_barcode) { create :barcode }
       let(:tube_rack) { create :tube_rack, barcodes: [rack_barcode] }
@@ -71,15 +78,18 @@ RSpec.describe 'labware/show.html.erb', type: :view do
         render
         expect(rendered).to match(tube_rack.primary_barcode.barcode)
       end
+
       it 'renders the position in the rack' do
         render
         expect(rendered).to match(tube.racked_tube.coordinate)
       end
+
       it 'renders the tube barcode' do
         render
         expect(rendered).to match(tube.primary_barcode.barcode)
       end
     end
+
     context 'when the tube is not in a rack' do
       it 'renders a tube description label' do
         render
