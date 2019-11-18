@@ -14,7 +14,8 @@
       </colgroup>
       <thead>
         <tr>
-          <th class="tube_location">Well</th>
+          <th class="tube_location">Rack Location</th>
+          <th>Tube Barcode</th>
           <th>Sample Name</th>
           <th>Sanger Sample Id</th>
           <th>Tag</th>
@@ -25,7 +26,8 @@
         <% @asset.tubes.in_column_major_order.includes({ aliquots: [:tag, :tag2, :sample] }).each do |tube| %>
           <% tube.aliquots.each do |aliquot,i| %>
             <tr>
-              <td><%= link_to tube.coordinate, receptacle_path(tube) %></td>
+              <td><%= link_to tube.coordinate, labware_path(tube) %></td>
+              <td><%= link_to tube.primary_barcode.barcode, labware_path(tube) %></td>
               <td><strong><%= link_to aliquot.sample.name, aliquot.sample -%></strong></td>
               <td><%= aliquot.sample.sanger_sample_id %></td>
               <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag } if aliquot.tag.present? %></td>
@@ -34,7 +36,8 @@
           <% end %>
           <% if tube.aliquots.empty? %>
             <tr class="empty-tube">
-              <td><%= link_to tube.coordinate, receptacle_path(tube) %></td>
+              <td><%= link_to tube.coordinate, labware_path(tube) %></td>
+              <td><%= link_to tube.primary_barcode.barcode, labware_path(tube) %></td>
               <td>[Empty]</td>
               <td></td>
               <td></td>

@@ -24,7 +24,7 @@ RSpec.describe TubeRack do
 
       tube_rack.barcodes << barcode
 
-      expect(tube_rack.barcodes.first).to eq(barcode)
+      expect(tube_rack.barcodes.last).to eq(barcode)
     end
   end
 
@@ -54,6 +54,23 @@ RSpec.describe TubeRack do
 
       expect(RackedTube.exists?(racked_tube.id)).to eq(false)
       expect(Tube.exists?(tube.id)).to eq(true)
+    end
+  end
+
+  describe 'scope #contained_samples' do
+    let(:num_tubes) { locations.length }
+    let(:tube_rack) { create :tube_rack }
+    let(:locations) { ["A01", "B01", "C01"]}
+    let(:barcodes) { num_tubes.times.map{ create :fluidx }}
+    let!(:tubes) {
+      num_tubes.times.map do |i|
+        create(:sample_tube, :in_a_rack, {
+          tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]]
+        })
+      end
+    }
+    it 'returns the samples of the tubes contained in the rack' do
+      expect(tube_rack.contained_samples).to eq(tubes.map(&:samples).flatten)
     end
   end
 end

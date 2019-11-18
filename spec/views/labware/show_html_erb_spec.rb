@@ -1,4 +1,5 @@
 require 'spec_helper'
+
 RSpec.describe 'labware/show.html.erb', type: :view do
   include AuthenticatedSystem
   let(:user) { create :user }
@@ -8,11 +9,11 @@ RSpec.describe 'labware/show.html.erb', type: :view do
     let(:rack_barcode) { create :barcode }
     let(:tube_rack) { create :tube_rack, barcode: rack_barcode }
 
-    let(:locations) { TokenUtilsLims.generate_positions(('A'..'H').to_a, (1..12).to_a)}
+    let(:locations) { ["A01", "B01", "C01"]}
     let(:barcodes) { num_tubes.times.map{ create :fluidx }}
-    let(:tubes) {
+    let!(:tubes) {
       num_tubes.times.map do |i|
-        create(:tube, :in_a_rack, {
+        create(:sample_tube, :in_a_rack, {
           tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]]
         })
       end
@@ -20,26 +21,24 @@ RSpec.describe 'labware/show.html.erb', type: :view do
     before do
       assign(:asset, tube_rack)  # sets @widget = Widget.new in the view template
     end
-    context 'when the rack is totally occupied' do
+    context 'when the rack contains tubes' do
       let(:num_tubes) { locations.length }
-      it 'displays the barcodes of all the tubes' do
+      it 'displays the barcodes for all the tubes' do
         render
         barcodes.each do |instance|
           expect(rendered).to match(instance.barcode)
         end
       end
-    end
-    context 'when the rack is partially occupied' do
-      let(:num_tubes) { (locations.length / 2).to_i }
-      it 'displays the barcodes of part of the tubes' do
+      it 'displays the coordinates for all the tubes' do
         render
-        barcodes[0..num_tubes].each do |instance|
-          expect(rendered).to match(instance.barcode)
+        locations.each do |location|
+          expect(rendered).to match(location)
         end
       end
-    end
-    context 'when the rack is empty' do
-      let(:num_tubes) { 0 }
+      it 'displays the number of samples' do
+        render
+        expect(rendered).to match(tubes.length.to_s)
+      end
     end
   end
 
