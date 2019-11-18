@@ -24,13 +24,13 @@ module SampleManifestExcel
 
           # The following assumes that the first column of the manifest contains the tube barcode
           @tube_barcodes_from_manifest = @upload.data.column(1).compact
-          @should_process_tube_rack_information = should_process_tube_rack_information?
+          @tube_rack_information_previously_processed = check_if_tube_racks_present
         end
 
         def run(tag_group)
           return unless valid?
 
-          if @should_process_tube_rack_information
+          unless @tube_rack_information_previously_processed
             @rack_size = @upload.sample_manifest.tube_rack_purpose.size
             return unless retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
 
@@ -51,12 +51,12 @@ module SampleManifestExcel
 
         # if a tube rack record already exists for any of the rack barcodes in the manifest,
         # it has been processed before and should not be re-processed
-        def should_process_tube_rack_information?
+        def check_if_tube_racks_present
           @tube_rack_barcodes_from_manifest.each do |barcode|
             existing_barcode_record = Barcode.includes(:asset).find_by(barcode: barcode)
-            return false if !existing_barcode_record.nil? && !existing_barcode_record.asset.nil?
+            return true if !existing_barcode_record.nil? && !existing_barcode_record.asset.nil?
           end
-          true
+          false
         end
 
         def retrieve_scan_results
@@ -191,7 +191,7 @@ module SampleManifestExcel
         end
 
         def tube_rack_information_processed?
-          @tube_rack_information_processed || !@should_process_tube_rack_information
+          @tube_rack_information_processed || @tube_rack_information_previously_processed
         end
       end
     end
