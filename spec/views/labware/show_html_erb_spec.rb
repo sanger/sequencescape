@@ -12,9 +12,9 @@ RSpec.describe 'labware/show.html.erb', type: :view do
     let(:tube_rack) { create :tube_rack, barcode: rack_barcode }
 
     let(:locations) { %w[A01 B01 C01] }
-    let(:barcodes) { num_tubes.times.map { create :fluidx } }
+    let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
     let!(:tubes) do
-      num_tubes.times.map do |i|
+      Array.new(num_tubes) do |i|
         create(:sample_tube, :in_a_rack,
                tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
       end

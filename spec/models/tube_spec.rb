@@ -8,10 +8,10 @@ describe Tube, type: :model do
     let(:tube_rack) { create :tube_rack }
     let(:num_tubes) { locations.length }
     let(:locations) { %w[A01 H12 D04] }
-    let(:barcodes) { num_tubes.times.map { create :fluidx } }
+    let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
 
-    let!(:tubes) do
-      num_tubes.times.map do |i|
+    before do
+      Array.new(num_tubes) do |i|
         create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
       end
     end
