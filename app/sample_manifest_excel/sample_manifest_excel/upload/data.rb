@@ -28,11 +28,12 @@ module SampleManifestExcel
           @sheet = read_sheet
           @header_row = sheet&.row(start_row)
           @data = sheet&.drop(start_row)
-          @description_info = extract_description_info(sheet, start_row)
+          # re-check validity - it will error if the sheet was not successfully read
+          @description_info = extract_description_info(sheet, start_row) if valid?
         end
-      ensure
-        @header_row ||= []
-        @data ||= []
+        ensure
+          @header_row ||= []
+          @data ||= []
       end
 
       def each(&block)
@@ -41,7 +42,6 @@ module SampleManifestExcel
 
       def file_extension
         return nil if file.nil?
-
         File.extname(file.path)
       end
 
