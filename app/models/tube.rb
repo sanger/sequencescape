@@ -70,6 +70,11 @@ class Tube < Labware
   has_one :racked_tube, dependent: :destroy
   has_one :tube_rack, through: :racked_tube
 
+  scope :in_column_major_order,  -> {
+    joins(:racked_tube).order('racked_tubes.coordinate ASC')
+  }
+  delegate :coordinate, to: :racked_tube
+
   # @!method stock_plate
   #   Returns the stock plate of the tube, behaviour delegated to purpose
   #   @return [Plate] The stock plate
