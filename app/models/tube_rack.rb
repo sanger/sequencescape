@@ -17,14 +17,14 @@ class TubeRack < Labware
       'rows' => 8,
       'columns' => 12
     }
-  }
+  }.freeze
 
   def self.check_if_coordinates_valid(rack_size, list_coordinates)
     output = []
 
     num_rows = LAYOUTS[rack_size]['rows']
     num_columns = LAYOUTS[rack_size]['columns']
-    valid_row_values = self.generate_valid_row_values(num_rows)
+    valid_row_values = generate_valid_row_values(num_rows)
     valid_column_values = (1..num_columns).to_a
 
     list_coordinates.each do |coordinate|

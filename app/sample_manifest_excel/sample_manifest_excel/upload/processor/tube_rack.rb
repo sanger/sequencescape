@@ -106,14 +106,14 @@ module SampleManifestExcel
         end
 
         def validate_coordinates(rack_size, rack_barcode_to_scan_results)
-          list_of_coordinates = rack_barcode_to_scan_results.values.map { |scan_results| scan_results.values }.flatten
+          list_of_coordinates = rack_barcode_to_scan_results.values.map(&:values).flatten
           list_of_validity = ::TubeRack.check_if_coordinates_valid(rack_size, list_of_coordinates)
           list_of_invalid_coordinates = []
 
           list_of_validity.each_with_index do |validity, index|
             list_of_invalid_coordinates << list_of_coordinates[index] unless validity
           end
-          error_message = "The following coordinates in the scan are not valid for a tube rack of size #{rack_size}: #{list_of_invalid_coordinates.to_s}."
+          error_message = "The following coordinates in the scan are not valid for a tube rack of size #{rack_size}: #{list_of_invalid_coordinates}."
           upload.errors.add(:base, error_message)
 
           true
