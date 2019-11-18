@@ -57,7 +57,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
-            assert_equal w.aliquots.map { |a| a.sample.name }, Plate.last.wells.located_at(w.map_description).first.aliquots.map { |a| a.sample.name }
+            assert_equal (w.aliquots.map { |a| a.sample.name }), (Plate.last.wells.located_at(w.map_description).first.aliquots.map { |a| a.sample.name })
           end
         end
 

@@ -60,9 +60,9 @@ Then /^there should be an order with the bait library name set to "([^\"]+)"$/ d
 end
 
 Then /^the last submission should contain two assets$/ do
-  assert_equal 2, Submission.last.orders.reduce(0) { |total, order| total + order.assets.count }
+  assert_equal(2, Submission.last.orders.reduce(0) { |total, order| total + order.assets.count })
 end
 
 Then 'the last submission should contain the tube with barcode {string}' do |barcode|
-  assert Submission.last.orders.flat_map(&:assets).detect { |a| a.human_barcode == barcode }
+  assert(Submission.last.orders.flat_map(&:assets).detect { |a| a.human_barcode == barcode })
 end

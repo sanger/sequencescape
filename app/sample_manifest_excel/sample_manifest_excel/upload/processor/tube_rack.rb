@@ -63,7 +63,7 @@ module SampleManifestExcel
           @rack_barcode_to_scan_results = {}
           @tube_barcode_to_rack_barcode = {}
           @tube_rack_barcodes_from_manifest.each do |tube_rack_barcode|
-            results = CsvParserClient::get_tube_rack_scan_results(tube_rack_barcode, upload)
+            results = CsvParserClient.get_tube_rack_scan_results(tube_rack_barcode, upload)
             return false if results.nil?
 
             @rack_barcode_to_scan_results[tube_rack_barcode] = results

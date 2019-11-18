@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
+# For communicating with the csv-parser microservice (https://github.com/sanger/csv-parser)
 module CsvParserClient
-  def CsvParserClient::get_tube_rack_scan_results(tube_rack_barcode, object_to_add_errors_to)
+  def self.get_tube_rack_scan_results(tube_rack_barcode, object_to_add_errors_to)
     host_name = Rails.configuration.tube_rack_scans_microservice_endpoint
     path = '/tube_rack/' + tube_rack_barcode
     port = Rails.configuration.tube_rack_scans_microservice_port

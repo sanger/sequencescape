@@ -38,6 +38,7 @@ module SampleManifestExcel
         super
         @start_row = find_start_row
         return if @start_row.nil?
+
         @data = Upload::Data.new(file, start_row)
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
