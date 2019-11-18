@@ -32,14 +32,10 @@ module SampleManifestExcel
       delegate :data_at, to: :rows
       delegate :study, to: :sample_manifest, allow_nil: true
 
-      SANGER_SAMPLE_ID_COLUMN_LABEL = 'SANGER SAMPLE ID'
-
       def initialize(attributes = {})
         super
-        @start_row = find_start_row
-        return if @start_row.nil?
-
-        @data = Upload::Data.new(file, start_row)
+        @data = Upload::Data.new(file, nil)
+        @start_row = @data.start_row
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
         @cache = Cache.new(self) # TODO: might want this to cache tube racks and racked tubes?
@@ -126,22 +122,6 @@ module SampleManifestExcel
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end
-      end
-
-      def find_start_row
-        opened_file = Roo::Spreadsheet.open(file) unless file.nil?
-        return nil if opened_file.nil?
-
-        opened_sheet = opened_file.sheet(0)
-        return nil if opened_sheet.nil?
-
-        (0..opened_sheet.last_row).each do |row_num|
-          opened_sheet.row(row_num).each do |cell_value|
-            return row_num if cell_value == SANGER_SAMPLE_ID_COLUMN_LABEL
-          end
-        end
-
-        nil
       end
 
       def data_valid?
