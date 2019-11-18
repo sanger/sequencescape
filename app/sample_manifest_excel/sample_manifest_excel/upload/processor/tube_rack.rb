@@ -7,9 +7,9 @@ require_dependency 'sample_manifest_excel/upload/processor/base'
 module SampleManifestExcel
   module Upload
     module Processor
-      # TODO: had to explicitly specify the namespace for Base here otherwise it picks up Upload::Base
       # Used for processing the upload of sample manifests.
       # Contains behaviour specific to processing 'Tube Rack' manifests.
+      # Had to explicitly specify the namespace for Base here otherwise it picks up Upload::Base
       class TubeRack < SampleManifestExcel::Upload::Processor::Base
         include ActiveModel::Validations
 
@@ -22,7 +22,8 @@ module SampleManifestExcel
           @tube_rack_barcodes_from_manifest = retrieve_tube_rack_barcodes_from_manifest
           return if @tube_rack_barcodes_from_manifest.nil?
 
-          @tube_barcodes_from_manifest = @upload.data.column(1).compact # TODO: do this based on the column name, not number?
+          # The following assumes that the first column of the manifest contains the tube barcode
+          @tube_barcodes_from_manifest = @upload.data.column(1).compact
           @should_process_tube_rack_information = should_process_tube_rack_information?
         end
 
@@ -73,7 +74,6 @@ module SampleManifestExcel
         end
 
         def retrieve_tube_rack_scan_from_microservice(tube_rack_barcode)
-          # tube_rack_barcode = 'test_valid_file'
           host_name = Rails.configuration.tube_rack_scans_microservice_endpoint
           path = '/tube_rack/' + tube_rack_barcode
           port = Rails.configuration.tube_rack_scans_microservice_port
@@ -120,32 +120,26 @@ module SampleManifestExcel
         end
 
         def create_tube_racks_and_link_tubes
-          tube_rack_barcode_to_tube_rack = {}
+          rack_barcode_to_tube_rack = create_tube_racks_if_not_existing
+          return false if rack_barcode_to_tube_rack.nil?
+
+          success = create_barcodes_for_existing_tubes
+          return false unless success
+
+          link_tubes_to_racks(rack_barcode_to_tube_rack)
+          true
+        end
+
+        def create_tube_racks_if_not_existing
+          rack_barcode_to_tube_rack = {}
           @tube_rack_barcodes_from_manifest.each do |tube_rack_barcode|
             created_rack = create_tube_rack_if_not_existing(tube_rack_barcode)
-            return false if created_rack.nil?
+            return nil if created_rack.nil?
 
-            tube_rack_barcode_to_tube_rack[tube_rack_barcode] = created_rack
+            rack_barcode_to_tube_rack[tube_rack_barcode] = created_rack
           end
 
-          @upload.rows.each do |row|
-            # create a barcode for the tube
-            tube_barcode = row.value('tube_barcode')
-            tube = row.labware
-            barcode_format = Barcode.matching_barcode_format(tube_barcode)
-            if barcode_format.nil?
-              error_message = "The tube barcode '#{tube_barcode}' is not a recognised format."
-              upload.errors.add(:base, error_message)
-              return false
-            end
-            Barcode.create!(asset_id: tube.id, barcode: tube_barcode, format: barcode_format)
-
-            # link the tube to the tube rack
-            tube_rack_barcode = @tube_barcode_to_rack_barcode[tube_barcode]
-            tube_rack = tube_rack_barcode_to_tube_rack[tube_rack_barcode]
-            tube_barcode_to_coordinate = @rack_barcode_to_scan_results[tube_rack_barcode]
-            RackedTube.create!(tube_rack: tube_rack, tube: tube, coordinate: tube_barcode_to_coordinate[tube_barcode])
-          end
+          rack_barcode_to_tube_rack
         end
 
         def create_tube_rack_if_not_existing(tube_rack_barcode)
@@ -165,6 +159,31 @@ module SampleManifestExcel
           end
 
           tube_rack
+        end
+
+        def create_barcodes_for_existing_tubes
+          @upload.rows.each do |row|
+            tube_barcode = row.value('tube_barcode')
+            tube = row.labware
+            barcode_format = Barcode.matching_barcode_format(tube_barcode)
+            if barcode_format.nil?
+              error_message = "The tube barcode '#{tube_barcode}' is not a recognised format."
+              upload.errors.add(:base, error_message)
+              return false
+            end
+            Barcode.create!(asset_id: tube.id, barcode: tube_barcode, format: barcode_format)
+          end
+        end
+
+        def link_tubes_to_racks(rack_barcode_to_tube_rack)
+          @upload.rows.each do |row|
+            tube_barcode = row.value('tube_barcode')
+            tube = row.labware
+            tube_rack_barcode = @tube_barcode_to_rack_barcode[tube_barcode]
+            tube_rack = rack_barcode_to_tube_rack[tube_rack_barcode]
+            tube_barcode_to_coordinate = @rack_barcode_to_scan_results[tube_rack_barcode]
+            RackedTube.create!(tube_rack: tube_rack, tube: tube, coordinate: tube_barcode_to_coordinate[tube_barcode])
+          end
         end
 
         def processed?

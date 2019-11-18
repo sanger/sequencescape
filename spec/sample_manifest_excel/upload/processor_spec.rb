@@ -664,25 +664,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
                                              .and not_change { RackedTube.count }
                                              .and not_change { Barcode.count }
         end
-
-        # context 'with override not ticked' do
-        #   let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: column_list, start_row: 9, override: false) }
-        #   it 'will not update samples' do
-        #     # actually it chooses to update samples based on different criteria - the field on the sample itself
-        #     sample_count_before = Sample.count
-        #     processor.run(tag_group)
-        #     expect(Sample.count).to eq(sample_count_before)
-        #   end
-        # end
-
-        # context 'with override ticked' do
-        #   let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: column_list, start_row: 9, override: true) }
-        #   it 'will update samples' do
-        #     sample_count_before = Sample.count
-        #     processor.run(tag_group)
-        #     expect(Sample.count).not_to eq(sample_count_before)
-        #   end
-        # end
       end
 
       context 'when manifest has no tube rack barcodes' do
