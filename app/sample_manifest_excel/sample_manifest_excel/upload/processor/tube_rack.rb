@@ -119,7 +119,7 @@ module SampleManifestExcel
         end
 
         def create_tube_rack_if_not_existing(tube_rack_barcode)
-          barcode = Barcode.includes(:asset).find_by(asset_id: :tube_rack_barcode)
+          barcode = Barcode.includes(:asset).find_by(asset_id: tube_rack_barcode)
 
           if barcode.nil?
             tube_rack = ::TubeRack.create!(size: @rack_size)
