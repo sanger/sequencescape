@@ -2,6 +2,7 @@
 
 require 'net/http'
 require 'json'
+require 'csv_parser_client'
 require_dependency 'sample_manifest_excel/upload/processor/base'
 
 module SampleManifestExcel
