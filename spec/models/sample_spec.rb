@@ -86,4 +86,11 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       expect(create(:sample, container: container).container).to eq(container)
     end
   end
+
+  context 'genome size' do
+    it 'can be added to a sample' do
+      sample = create(:sample, sample_metadata_attributes: { genome_size: 1000 })
+      expect(sample.sample_metadata.genome_size).to eq(1000)
+    end
+  end
 end

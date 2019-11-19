@@ -64,6 +64,9 @@ Rails.application.configure do
       Bullet.bullet_logger = true
     end
   end
+
+  config.tube_rack_scans_microservice_endpoint = 'localhost'
+  config.tube_rack_scans_microservice_port = '5000'
 end
 
 Rack::MiniProfiler.config.position = 'right'

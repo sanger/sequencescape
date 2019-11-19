@@ -16,6 +16,11 @@ RSpec/DescribeClass:
     - 'spec/features/**/*.rb'
     - 'spec/lib/warren/*.rb'
     - 'spec/models/billing/*.rb'
+# expect { foo }.to change { bar }
+# This pattern is an RSpec idiom, which fails this rule (https://github.com/substancelab/dotfiles/pull/3)
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
 AllCops:
   TargetRubyVersion: 2.4
   Exclude:

@@ -551,14 +551,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :receptions, only: [:index] do
-    collection do
-      post :confirm_reception
-      get :reception
-      post :receive_barcode
-    end
-  end
-
   resources :sequenom_qc_plates, only: :index
   resources :study_reports
 

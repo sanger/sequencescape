@@ -20,7 +20,7 @@ RSpec.describe TubeRack do
 
     it 'can contain a barcode' do
       tube_rack = create :tube_rack
-      barcode = create :barcode, barcode: '1234'
+      barcode = create :barcode, barcode: 'SA00057843'
 
       tube_rack.barcodes << barcode
 
