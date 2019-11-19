@@ -34,7 +34,7 @@ module SampleManifestExcel
 
       def initialize(attributes = {})
         super
-        @data = Upload::Data.new(file, nil)
+        @data = Upload::Data.new(file)
         @start_row = @data.start_row
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
@@ -46,7 +46,7 @@ module SampleManifestExcel
       end
 
       def inspect
-        "<#{self.class}: @file=#{file}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
+        "<#{self.class}: @file=#{file}, @columns=#{columns.inspect}, @start_row=#{@start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
       end
 
       ##
@@ -54,7 +54,7 @@ module SampleManifestExcel
       # its sample manifest.
       # If it can't be found the upload will fail.
       def derive_sample_manifest
-        return unless start_row.present? && sanger_sample_id_column.present?
+        return unless @start_row.present? && sanger_sample_id_column.present?
 
         sanger_sample_id = data.cell(1, sanger_sample_id_column.number)
         SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest ||
