@@ -21,6 +21,8 @@ Lint/AmbiguousBlockAssociation:
     - 'spec/sequencescape_excel/column_spec.rb'
     - 'spec/sequencescape_excel/conditional_formatting_list_spec.rb'
     - 'spec/sequencescape_excel/worksheet_spec.rb'
+    - 'test/controllers/admin_users_controller_test.rb'
+    - 'test/unit/tasks/plate_transfer_task_test.rb'
 
 # Offense count: 6
 # Configuration parameters: AllowSafeAssignment.
