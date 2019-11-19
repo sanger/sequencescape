@@ -22,7 +22,6 @@ module SampleManifestExcel
       # The file is opened as a Roo spreadsheet.
       # If it is valid it is split by the start row.
       # Start row of column headers and data put into separate rows.
-      # Although this accepts start_row as a parameter, it has been refactored to generate start_row itself
       def initialize(file)
         @file = file
         @file_errors = nil
