@@ -125,7 +125,7 @@ module SampleManifestExcel
       end
 
       def data_valid?
-        !data.nil? && data.valid?
+        data.present? && data.valid?
       end
 
       def check_data
@@ -145,7 +145,7 @@ module SampleManifestExcel
       end
 
       def check_object(object)
-        return if !object.nil? && object.valid?
+        return if object.present? && object.valid?
 
         object&.errors&.each do |key, value|
           errors.add key, value
