@@ -13,7 +13,7 @@ module Qcable::Statemachine
         state :qc_in_progress, enter: :on_qc
         state :exhausted,      enter: :on_used
 
-        initial_state(Proc.new { |qcable| qcable.default_state })
+        initial_state Proc.new { |qcable| qcable.default_state }
 
         # State Machine events
         event :do_stamp do
