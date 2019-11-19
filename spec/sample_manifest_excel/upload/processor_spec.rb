@@ -786,6 +786,23 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(errors).to include('The following coordinates in the scan are not valid for a tube rack of size 48: ["e14"].')
         end
       end
+
+      context 'when the tube barcode exists already' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+        let(:tube) { create :tube }
+
+        before do
+          Barcode.create!(asset_id: tube.id, barcode: 'TB11111110', format: 'fluidx_barcode')
+        end
+
+        it 'will have errors' do
+          processor.run(tag_group)
+          errors = upload.errors.full_messages
+          expect(errors).not_to be_empty
+          expect(errors).to include('foreign barcode is already in use.')
+        end
+      end
     end
   end
 end

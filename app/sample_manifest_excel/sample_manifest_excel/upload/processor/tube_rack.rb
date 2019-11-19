@@ -23,7 +23,7 @@ module SampleManifestExcel
           return if @tube_rack_barcodes_from_manifest.nil?
 
           # The following assumes that the first column of the manifest contains the tube barcode
-          @tube_barcodes_from_manifest = @upload.data.column(1).compact
+          @tube_barcodes_from_manifest = upload.data.column(1).compact
           @tube_rack_information_previously_processed = check_if_tube_racks_present
         end
 
@@ -31,7 +31,7 @@ module SampleManifestExcel
           return unless valid?
 
           unless @tube_rack_information_previously_processed
-            @rack_size = @upload.sample_manifest.tube_rack_purpose.size
+            @rack_size = upload.sample_manifest.tube_rack_purpose.size
             return unless retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
 
             success = create_tube_racks_and_link_tubes
@@ -43,7 +43,7 @@ module SampleManifestExcel
         end
 
         def retrieve_tube_rack_barcodes_from_manifest
-          rack_barcodes_list = @upload.data.description_info.select { |key| key.start_with?('Rack barcode (') }.values
+          rack_barcodes_list = upload.data.description_info.select { |key| key.start_with?('Rack barcode (') }.values
           return nil if rack_barcodes_list.any?(nil)
 
           rack_barcodes_list
@@ -138,21 +138,31 @@ module SampleManifestExcel
         end
 
         def create_barcodes_for_existing_tubes
-          @upload.rows.each do |row|
+          upload.rows.each do |row|
             tube_barcode = row.value('tube_barcode')
             tube = row.labware
+            # TODO: the below foreign barcode checks are duplicated in sanger_tube_id specialised field file - refactor
             barcode_format = Barcode.matching_barcode_format(tube_barcode)
             if barcode_format.nil?
               error_message = "The tube barcode '#{tube_barcode}' is not a recognised format."
               upload.errors.add(:base, error_message)
               return false
+            else
+              return false unless check_foreign_barcode_unique(barcode_format, tube_barcode)
             end
             Barcode.create!(asset_id: tube.id, barcode: tube_barcode, format: barcode_format)
           end
         end
 
+        def check_foreign_barcode_unique(foreign_barcode_format, value)
+          return true unless Barcode.exists_for_format?(foreign_barcode_format, value)
+
+          upload.errors.add(:base, 'foreign barcode is already in use.')
+          false
+        end
+
         def link_tubes_to_racks(rack_barcode_to_tube_rack)
-          @upload.rows.each do |row|
+          upload.rows.each do |row|
             tube_barcode = row.value('tube_barcode')
             tube = row.labware
             tube_rack_barcode = @tube_barcode_to_rack_barcode[tube_barcode]
