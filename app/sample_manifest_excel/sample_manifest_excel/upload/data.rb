@@ -23,7 +23,7 @@ module SampleManifestExcel
       # If it is valid it is split by the start row.
       # Start row of column headers and data put into separate rows.
       # Although this accepts start_row as a parameter, it has been refactored to generate start_row itself
-      def initialize(file, start_row)
+      def initialize(file, _start_row)
         @file = file
         @file_errors = nil
         @sheet = read_sheet
@@ -98,7 +98,7 @@ module SampleManifestExcel
         # look through each row starting from from under the heading (row 2), to above the start row
         # build a hash of the value in the first column => value in second column
         # this was built to extract the tube rack barcodes, and assumes the label is in the first column and the value in the second
-        return nil if (sheet.nil? || start_row.nil?)
+        return nil if sheet.nil? || start_row.nil?
 
         output = {}
         (2..start_row - 1).each do |row_num|

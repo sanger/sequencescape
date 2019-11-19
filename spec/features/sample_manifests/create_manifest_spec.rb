@@ -69,7 +69,7 @@ describe 'SampleManifest controller', sample_manifest: true do
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
       within('#sample_manifest_template') do
-        expect(page).to have_selector('option', count: 16)
+        expect(page).to have_selector('option', count: 17)
       end
       select(created_purpose.name, from: 'Purpose')
       expect(page).to have_text('Used for plate manifests only')
