@@ -146,9 +146,6 @@ namespace :limber do
         size: 48
       )
     end
-
-
-
   end
 
   desc 'Create the limber request types'
