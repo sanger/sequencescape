@@ -13,14 +13,13 @@ RSpec.describe 'tube_rack_summaries/show.html.erb', type: :view do
 
     let(:locations) { %w[A01 B01 C01] }
     let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
-    let!(:tubes) do
+
+    before do
       Array.new(num_tubes) do |i|
         create(:sample_tube, :in_a_rack,
                tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
       end
-    end
 
-    before do
       assign(:tube_rack, tube_rack) # sets @widget = Widget.new in the view template
     end
 
@@ -40,7 +39,6 @@ RSpec.describe 'tube_rack_summaries/show.html.erb', type: :view do
           expect(rendered).to match(location)
         end
       end
-
     end
   end
 end
