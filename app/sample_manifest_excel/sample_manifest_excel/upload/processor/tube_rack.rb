@@ -12,6 +12,7 @@ module SampleManifestExcel
       # Had to explicitly specify the namespace for Base here otherwise it picks up Upload::Base
       class TubeRack < SampleManifestExcel::Upload::Processor::Base
         include ActiveModel::Validations
+        include ::CsvParserClient
 
         validates_presence_of :tube_rack_barcodes_from_manifest
         attr_reader :tube_rack_barcodes_from_manifest
@@ -63,7 +64,7 @@ module SampleManifestExcel
           @rack_barcode_to_scan_results = {}
           @tube_barcode_to_rack_barcode = {}
           @tube_rack_barcodes_from_manifest.each do |tube_rack_barcode|
-            results = CsvParserClient.get_tube_rack_scan_results(tube_rack_barcode, upload)
+            results = ::CsvParserClient.get_tube_rack_scan_results(tube_rack_barcode, upload)
             return false if results.nil?
 
             @rack_barcode_to_scan_results[tube_rack_barcode] = results

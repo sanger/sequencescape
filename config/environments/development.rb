@@ -65,8 +65,7 @@ Rails.application.configure do
     end
   end
 
-  config.tube_rack_scans_microservice_endpoint = 'localhost'
-  config.tube_rack_scans_microservice_port = '5000'
+  config.tube_rack_scans_microservice_url = 'http://localhost:5000'
 end
 
 Rack::MiniProfiler.config.position = 'right'
