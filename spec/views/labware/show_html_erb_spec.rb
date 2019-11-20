@@ -6,6 +6,24 @@ RSpec.describe 'labware/show.html.erb', type: :view do
   include AuthenticatedSystem
   let(:user) { create :user }
 
+  context 'when rendering a plate' do
+    let(:current_user) { user }
+    let(:plate) { create :plate_with_3_wells }
+
+    before do
+      assign(:asset, plate) # sets @widget = Widget.new in the view template
+    end
+
+    it 'displays the barcode of the plate' do
+      render
+      expect(rendered).to match(plate.human_barcode)
+    end
+    it 'does not display the barcode for the wells' do
+      render
+      expect(rendered).not_to match(/Tube Barcode/)
+    end
+  end
+
   context 'when rendering a tube rack' do
     let(:current_user) { user }
     let(:rack_barcode) { create :barcode }

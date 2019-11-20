@@ -2,20 +2,10 @@
 
 <div class='columnize'>
   <%= bs_custom_panel(:info, :table, {class: 'table table-summary'}, {title: 'Summary' }) do %>
-        <tr>
-          <th>Submissions</th>
-          <td>
-            <ul>
-             <% @tube_rack.submissions.each do |submission|%>
-               <li><%= link_to submission.name, submission_path(submission) %></li>
-             <% end %>
-           </ul>
-          </td>
-        </tr>
-        <tr>
-          <th>Tube Rack link</th>
-          <td><%= link_to "Tube Rack page", labware_path(@tube_rack) %></td>
-        </tr>
+    <tr>
+      <th>Tube Rack link</th>
+      <td><%= link_to "Tube Rack page", labware_path(@tube_rack) %></td>
+    </tr>
   <% end %>
 
 </div>

@@ -1,14 +1,14 @@
 <section id="samples-table" class='info-panel'>
   <header>
-    <a href='#plate-samples-table-collapser' role="button" data-toggle='collapse'>
+    <a href='#tube-rack-samples-table-collapser' role="button" data-toggle='collapse'>
     <h3>Samples
       <%= counter_badge @asset.contained_samples.count %>
       <small class='show-hide'>Click to toggle</small>
     </h3>
     </a>
   </header>
-  <div id="plate-samples-table-collapser" class="collapse in show">
-    <table id="plate-samples-table" class="sortable">
+  <div id="tube-rack-samples-table-collapser" class="collapse in show">
+    <table id="tube-rack-samples-table" class="sortable">
       <colgroup>
         <col class="npg_aliquot_index">
       </colgroup>
@@ -21,7 +21,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @asset.tubes.in_column_major_order.includes({ aliquots: [:tag, :tag2, :sample] }).each do |tube| %>
+        <% @asset.tubes.in_column_major_order.includes({ aliquots: [:sample] }).each do |tube| %>
           <% tube.aliquots.each do |aliquot,i| %>
             <tr>
               <td><%= link_to tube.coordinate, labware_path(tube) %></td>
@@ -35,8 +35,6 @@
               <td><%= link_to tube.coordinate, labware_path(tube) %></td>
               <td><%= link_to tube.primary_barcode.barcode, labware_path(tube) %></td>
               <td>[Empty]</td>
-              <td></td>
-              <td></td>
               <td></td>
             </tr>
           <% end %>
