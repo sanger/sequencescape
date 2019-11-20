@@ -18,8 +18,6 @@
           <th>Tube Barcode</th>
           <th>Sample Name</th>
           <th>Sanger Sample Id</th>
-          <th>Tag</th>
-          <th>Tag2</th>
         </tr>
       </thead>
       <tbody>
@@ -30,8 +28,6 @@
               <td><%= link_to tube.primary_barcode.barcode, labware_path(tube) %></td>
               <td><strong><%= link_to aliquot.sample.name, aliquot.sample -%></strong></td>
               <td><%= aliquot.sample.sanger_sample_id %></td>
-              <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag } if aliquot.tag.present? %></td>
-              <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag2 } if aliquot.tag2.present? %></td>
             </tr>
           <% end %>
           <% if tube.aliquots.empty? %>

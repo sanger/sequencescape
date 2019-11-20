@@ -51,6 +51,13 @@
       <td><%= asset.human_barcode %></td>
     </tr>
   <% end %>
+  <% if asset.kind_of? TubeRack %>
+    <tr>
+      <th>Summary page</th>
+      <td><%= link_to "Summary for #{asset.human_barcode}",
+        tube_rack_summary_path(asset.human_barcode) %></td>
+    </tr>
+  <% end %>
   <% if  @source_plate&.human_barcode %>
     <tr>
       <th>Summary page</th>
