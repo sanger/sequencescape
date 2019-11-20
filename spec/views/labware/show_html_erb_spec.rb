@@ -18,6 +18,7 @@ RSpec.describe 'labware/show.html.erb', type: :view do
       render
       expect(rendered).to match(plate.human_barcode)
     end
+
     it 'does not display the barcode for the wells' do
       render
       expect(rendered).not_to match(/Tube Barcode/)
