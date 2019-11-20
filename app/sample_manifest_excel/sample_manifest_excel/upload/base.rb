@@ -34,11 +34,11 @@ module SampleManifestExcel
 
       def initialize(attributes = {})
         super
-        @data = Upload::Data.new(file, nil)
+        @data = Upload::Data.new(file)
         @start_row = @data.start_row
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
-        @cache = Cache.new(self) # TODO: might want this to cache tube racks and racked tubes?
+        @cache = Cache.new(self)
         @rows = Upload::Rows.new(data, columns, @cache)
         @sample_manifest = derive_sample_manifest
         @override = override || false
@@ -125,7 +125,7 @@ module SampleManifestExcel
       end
 
       def data_valid?
-        !data.nil? && data.valid?
+        data.valid?
       end
 
       def check_data
@@ -145,9 +145,9 @@ module SampleManifestExcel
       end
 
       def check_object(object)
-        return if !object.nil? && object.valid?
+        return if object.valid?
 
-        object&.errors&.each do |key, value|
+        object.errors.each do |key, value|
           errors.add key, value
         end
       end

@@ -56,16 +56,16 @@ module Admin
           post :filter, params: { q: '1' }
 
           @users = assigns(:users)
-          assert(@users.detect { |u| u == @user_to_find })
-          assert(@users.detect { |u| u == @another_user })
+          assert @users.detect { |u| u == @user_to_find }
+          assert @users.detect { |u| u == @another_user }
         end
 
         should 'find multiple users with shared characters in their names' do
           post :filter, params: { q: 'o' }
 
           @users = assigns(:users)
-          assert(@users.detect { |u| u == @user_to_find })
-          assert(@users.detect { |u| u == @another_user })
+          assert @users.detect { |u| u == @user_to_find }
+          assert @users.detect { |u| u == @another_user }
         end
       end
     end

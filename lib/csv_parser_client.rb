@@ -2,11 +2,12 @@
 
 # For communicating with the csv-parser microservice (https://github.com/sanger/csv-parser)
 module CsvParserClient
+  require 'uri'
+
   def self.get_tube_rack_scan_results(tube_rack_barcode, object_to_add_errors_to)
-    host_name = Rails.configuration.tube_rack_scans_microservice_endpoint
+    endpoint = Rails.configuration.tube_rack_scans_microservice_url
     path = '/tube_rack/' + tube_rack_barcode
-    port = Rails.configuration.tube_rack_scans_microservice_port
-    response = Net::HTTP.get_response(host_name, path, port)
+    response = Net::HTTP.get_response(URI(endpoint + path))
 
     begin
       scan_results = JSON.parse(response.body)

@@ -542,7 +542,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
       before do
         mock_microservice_responses.each_key do |rack_barcode|
-          stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_endpoint}:#{Rails.configuration.tube_rack_scans_microservice_port}/tube_rack/#{rack_barcode}")
+          stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_url}/tube_rack/#{rack_barcode}")
             .to_return(status: mock_microservices_response_status, body: JSON.generate(mock_microservice_responses[rack_barcode]), headers: {})
         end
       end
@@ -554,7 +554,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         it 'will process', :aggregate_failures do
           expect(processor).to be_valid
-          processor.run(tag_group)
+          processor.run(nil)
 
           aggregate_failures 'update samples' do
             expect(processor).to be_samples_updated
@@ -579,7 +579,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           barcodes = Barcode.where(asset_id: tube_ids, format: 7)
           expect(barcodes).to be_empty
 
-          processor.run(tag_group)
+          processor.run(nil)
 
           tube_barcodes = mock_microservice_responses.values.first(no_of_racks).map do |scan_result|
             scan_result['layout'].keys
@@ -591,7 +591,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         it 'will generate tube racks, with barcodes' do
           count_before = TubeRack.count
-          processor.run(tag_group)
+          processor.run(nil)
           expect(TubeRack.count).to eq(count_before + no_of_racks)
 
           tube_rack_barcode_records = Barcode.where(barcode: mock_microservice_responses.keys, format: 'fluidx_barcode')
@@ -603,7 +603,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         it 'will generate racked tubes to link tubes to racks' do
           count_before = RackedTube.count
-          processor.run(tag_group)
+          processor.run(nil)
           expect(RackedTube.count).to eq(count_before + no_of_rows)
 
           tube_rack_barcodes = mock_microservice_responses.keys.first(no_of_racks)
@@ -653,14 +653,14 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         it 'will process' do
-          processor.run(tag_group)
+          processor.run(nil)
           expect(processor).to be_processed
         end
 
         it 'will not create any data' do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
-          expect { processor.run(tag_group) }.to not_change { TubeRack.count }
+          expect { processor.run(nil) }.to not_change { TubeRack.count }
             .and not_change { RackedTube.count }
             .and not_change { Barcode.count }
         end
@@ -671,20 +671,20 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         let(:no_of_rows) { 2 }
 
         it 'will not process' do
-          processor.run(tag_group)
+          processor.run(nil)
           expect(processor).not_to be_processed
         end
 
         it 'will not create any data' do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
-          expect { processor.run(tag_group) }.to not_change { TubeRack.count }
+          expect { processor.run(nil) }.to not_change { TubeRack.count }
             .and not_change { RackedTube.count }
             .and not_change { Barcode.count }
         end
 
         it 'will have errors' do
-          processor.run(tag_group)
+          processor.run(nil)
           errors = processor.errors.full_messages
           expect(errors).not_to be_empty
           expect(errors).to include("Tube rack barcodes from manifest can't be blank")
@@ -698,7 +698,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         let(:mock_microservices_response_status) { 404 }
 
         it 'will have errors' do
-          processor.run(tag_group)
+          processor.run(nil)
           errors = upload.errors.full_messages
           expect(errors).not_to be_empty
           expect(errors).to include('Scan could not be retrieved for tube rack with barcode RK11111110. Service responded with status code 404 and the following message: File not found')
@@ -712,7 +712,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         let(:mock_microservices_response_status) { 500 }
 
         it 'will have errors' do
-          processor.run(tag_group)
+          processor.run(nil)
           errors = upload.errors.full_messages
           expect(errors).not_to be_empty
           expect(errors).to include('Scan could not be retrieved for tube rack with barcode RK11111110. Service responded with status code 500 and the following message: Server error')
@@ -727,13 +727,13 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         before do
           mock_microservice_responses.each_key do |rack_barcode|
-            stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_endpoint}:#{Rails.configuration.tube_rack_scans_microservice_port}/tube_rack/#{rack_barcode}")
+            stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_url}/tube_rack/#{rack_barcode}")
               .to_return(status: mock_microservices_response_status, body: mock_microservice_responses[rack_barcode], headers: {})
           end
         end
 
         it 'will have errors' do
-          processor.run(tag_group)
+          processor.run(nil)
           errors = upload.errors.full_messages
           expect(errors).not_to be_empty
           expect(errors[0]).to start_with('Response when trying to retrieve scan (tube rack with barcode RK11111110) was not valid JSON so could not be understood. Error message:')
@@ -756,7 +756,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         let(:mock_microservices_response_status) { 200 }
 
         it 'will have errors' do
-          processor.run(tag_group)
+          processor.run(nil)
           errors = upload.errors.full_messages
           expect(errors).not_to be_empty
           expect(errors).to include('The scan and the manifest do not contain identical tube barcodes.')
@@ -780,10 +780,27 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         let(:mock_microservices_response_status) { 200 }
 
         it 'will have errors' do
-          processor.run(tag_group)
+          processor.run(nil)
           errors = upload.errors.full_messages
           expect(errors).not_to be_empty
           expect(errors).to include('The following coordinates in the scan are not valid for a tube rack of size 48: ["e14"].')
+        end
+      end
+
+      context 'when the tube barcode exists already' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+        let(:tube) { create :tube }
+
+        before do
+          Barcode.create!(asset_id: tube.id, barcode: 'TB11111110', format: 'fluidx_barcode')
+        end
+
+        it 'will have errors' do
+          processor.run(nil)
+          errors = upload.errors.full_messages
+          expect(errors).not_to be_empty
+          expect(errors).to include('foreign barcode is already in use.')
         end
       end
     end

@@ -18,9 +18,10 @@ RSpec/DescribeClass:
     - 'spec/models/billing/*.rb'
 # expect { foo }.to change { bar }
 # This pattern is an RSpec idiom, which fails this rule (https://github.com/substancelab/dotfiles/pull/3)
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - "spec/**/*"
+# The following does not work as it clashed with the rubocop-todo.yml file somehow
+# Lint/AmbiguousBlockAssociation:
+#   Exclude:
+#     - 'spec/**/*.rb'
 AllCops:
   TargetRubyVersion: 2.4
   Exclude:

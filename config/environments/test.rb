@@ -45,6 +45,5 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  config.tube_rack_scans_microservice_endpoint = 'http//www.example.com/tube_rack_test'
-  config.tube_rack_scans_microservice_port = '5000'
+  config.tube_rack_scans_microservice_url = 'http://www.example.com/tube_rack_test'
 end
