@@ -1,0 +1,45 @@
+<%= page_title("tube rack summary", @tube_rack.human_barcode) %>
+
+<div class='columnize'>
+  <%= bs_custom_panel(:info, :table, {class: 'table table-summary'}, {title: 'Summary' }) do %>
+    <tr>
+      <th>Tube Rack link</th>
+      <td><%= link_to "Tube Rack page", labware_path(@tube_rack) %></td>
+    </tr>
+  <% end %>
+
+</div>
+
+<%= bs_custom_panel(:info, :table, {class: 'sortable table table-striped'}, {title: 'Samples' }) do %>
+   <thead>
+     <tr>
+       <th class="tube_location">Rack Location</th>
+       <th>Tube Barcode</th>
+       <th>Sample</th>
+       <th>Study</th>
+       <th>Project</th>
+     </tr>
+   </thead>
+   <tbody>
+      <% @tube_rack.tubes.each do |tube| %>
+        <tr>
+          <td><%= link_to tube.coordinate, labware_path(tube) %></td>
+          <td><%= link_to tube.primary_barcode.barcode, labware_path(tube) %></td>
+
+          <td><% tube.samples.each do |sample| %>
+                <%= link_to sample.name, sample_path(sample) %>
+              <% end %>
+          </td>
+          <td><% tube.studies.each do |study| %>
+                <%= link_to study.name, study_path(study) %>
+              <% end %>
+          </td>
+           <td><% tube.projects.each do |project| %>
+                <%= link_to project.name, project_path(project) %>
+              <% end %>
+          </td>
+        </tr>
+      <% end %>
+   </tbody>
+<% end %>
+

@@ -92,6 +92,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :tube_rack_summaries, only: :show
+
   resources :reference_genomes
   resources :barcode_printers
 
