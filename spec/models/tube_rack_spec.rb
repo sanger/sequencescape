@@ -70,7 +70,7 @@ RSpec.describe TubeRack do
     end
 
     it 'returns the samples of the tubes contained in the rack' do
-      expect(tube_rack.contained_samples).to eq(tubes.map(&:samples).flatten)
+      expect(tube_rack.contained_samples.to_a).to eq(tubes.map(&:samples).flatten)
     end
   end
 end
