@@ -29,12 +29,13 @@ module CsvParserClient
   end
 
   def self.remove_no_read_results(tube_barcode_to_coordinate)
-    tube_barcode_to_coordinate.reject! { |key| is_no_read(key) } unless tube_barcode_to_coordinate.nil?
+    tube_barcode_to_coordinate&.reject! { |key| no_read?(key) } unless tube_barcode_to_coordinate.nil?
     tube_barcode_to_coordinate
   end
 
-  def self.is_no_read(value_to_check)
-    return true if value_to_check.downcase == 'no read'
+  def self.no_read?(value_to_check)
+    return true if value_to_check.casecmp('no read').zero?
+
     false
   end
 end
