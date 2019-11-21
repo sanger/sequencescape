@@ -542,7 +542,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
       before do
         mock_microservice_responses.each_key do |rack_barcode|
-          stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_url}/tube_rack/#{rack_barcode}")
+          stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}")
             .to_return(status: mock_microservices_response_status, body: JSON.generate(mock_microservice_responses[rack_barcode]), headers: {})
         end
       end
@@ -584,6 +584,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           tube_barcodes = mock_microservice_responses.values.first(no_of_racks).map do |scan_result|
             scan_result['layout'].keys
           end.flatten
+          tube_barcodes.reject! { |key| ::CsvParserClient.no_read?(key) }
 
           expect(barcodes.size).to eq(no_of_rows)
           expect(barcodes.map(&:barcode)).to eq(tube_barcodes)
@@ -612,6 +613,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
             layout = mock_microservice_responses[tube_rack_barcode]['layout']
             layout.each_key do |tube_barcode|
+              next if ::CsvParserClient.no_read?(tube_barcode)
+
               tube = Barcode.find_by(barcode: tube_barcode).asset
               expect(tube.tube_rack).to eq(tube_rack)
               expect(tube.racked_tube.coordinate).to eq(layout[tube_barcode])
@@ -630,6 +633,25 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when valid with multiple tube racks' do
         let(:no_of_racks) { 2 }
         let(:no_of_rows) { 4 }
+
+        it_behaves_like 'tube rack manifest upload success case'
+      end
+
+      context 'when the scan has \'no reads\'' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 1 }
+        let(:mock_microservice_responses) do
+          {
+            'RK11111110' => {
+              'rack_barcode' => 'RK11111110',
+              'layout' => {
+                'TB11111110' => 'e8',
+                'NO READ' => 'b4'
+              }
+            }
+          }
+        end
+        let(:mock_microservices_response_status) { 200 }
 
         it_behaves_like 'tube rack manifest upload success case'
       end
@@ -727,7 +749,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         before do
           mock_microservice_responses.each_key do |rack_barcode|
-            stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_url}/tube_rack/#{rack_barcode}")
+            stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}")
               .to_return(status: mock_microservices_response_status, body: mock_microservice_responses[rack_barcode], headers: {})
           end
         end
