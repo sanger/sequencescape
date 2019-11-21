@@ -19,6 +19,10 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
+require 'knapsack'
+
+Knapsack::Adapters::RSpecAdapter.bind
+
 require 'simplecov'
 
 require 'webdrivers/chromedriver'
@@ -36,9 +40,6 @@ require 'rspec/collection_matchers'
 require './lib/plate_map_generation'
 
 require 'pry'
-require 'knapsack'
-
-Knapsack::Adapters::RSpecAdapter.bind
 
 Capybara.register_driver :headless_chrome do |app|
   enable_chrome_headless_downloads(
