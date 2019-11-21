@@ -66,5 +66,20 @@ FactoryBot.define do
       format { 'cgap' }
       barcode { "#{prefix}#{number}#{suffix}" }
     end
+
+    factory :fluidx do
+      transient do
+        prefix { 'SA' }
+        sequence(:number) { |i| i.to_s.rjust(8, '0') }
+      end
+      format { 'fluidx_barcode' }
+      barcode { "#{prefix}#{number}" }
+
+      factory :fluidx_tube do
+        transient do
+          prefix { 'FD' }
+        end
+      end
+    end
   end
 end

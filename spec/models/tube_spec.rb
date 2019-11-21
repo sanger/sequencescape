@@ -4,6 +4,23 @@ require 'rails_helper'
 require 'timecop'
 
 describe Tube, type: :model do
+  describe 'scope:: in_column_major_order' do
+    let(:tube_rack) { create :tube_rack }
+    let(:num_tubes) { locations.length }
+    let(:locations) { %w[A01 H12 D04] }
+    let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
+
+    before do
+      Array.new(num_tubes) do |i|
+        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+      end
+    end
+
+    it 'sorts the racked tubes in column order' do
+      expect(tube_rack.tubes.in_column_major_order.map(&:coordinate)).to eq(%w[A01 D04 H12])
+    end
+  end
+
   context 'when a tube is not in a rack' do
     let!(:tube) { create :tube }
 
