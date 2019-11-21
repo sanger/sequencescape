@@ -45,11 +45,14 @@ jobs:
     script: bundle exec rake test
     name: Rake Test
   - if: type != cron
+  env:
+    - CI_NODE_TOTAL=2
+    - CI_NODE_INDEX=0
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: xvfb-run -a bundle exec rspec
+    script: xvfb-run -a bundle exec rake knapsack:rspec
     name: Rspec
   - if: type != cron
     env:
