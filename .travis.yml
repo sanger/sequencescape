@@ -45,6 +45,8 @@ jobs:
     script: bundle exec rake test
     name: Rake Test
   - if: type != cron
+    env:
+    - RAILS_ENV=test
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
