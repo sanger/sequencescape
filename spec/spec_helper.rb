@@ -36,6 +36,9 @@ require 'rspec/collection_matchers'
 require './lib/plate_map_generation'
 
 require 'pry'
+require 'knapsack'
+
+Knapsack::Adapters::RSpecAdapter.bind
 
 Capybara.register_driver :headless_chrome do |app|
   enable_chrome_headless_downloads(
@@ -153,3 +156,4 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 end
+
