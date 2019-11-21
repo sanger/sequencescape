@@ -45,7 +45,7 @@ jobs:
     script: bundle exec rake test
     name: Rake Test
   - if: type != cron
-  env:
+  	env:
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=0
     before_script:
