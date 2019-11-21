@@ -151,6 +151,7 @@ group :development, :test, :cucumber do
   gem 'sass-rails'
   gem 'select2-rails'
   gem 'knapsack'
+  gem 'webmock'
 end
 
 group :profile do
@@ -204,7 +205,6 @@ group :cucumber do
   gem 'cucumber-rails', require: false
   gem 'mime-types'
   gem 'rubyzip'
-  gem 'webmock'
 end
 
 group :deployment do
