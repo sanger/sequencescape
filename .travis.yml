@@ -46,6 +46,7 @@ jobs:
     name: Rake Test
   - if: type != cron
   	env:
+  	- RAILS_ENV=test
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=0
     before_script:
