@@ -47,8 +47,6 @@ jobs:
   - if: type != cron
   	env:
   	- RAILS_ENV=test
-    - CI_NODE_TOTAL=2
-    - CI_NODE_INDEX=0
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
