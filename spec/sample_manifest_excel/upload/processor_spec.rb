@@ -542,7 +542,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
       before do
         mock_microservice_responses.each_key do |rack_barcode|
-          stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_url}/tube_rack/#{rack_barcode}")
+          stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}")
             .to_return(status: mock_microservices_response_status, body: JSON.generate(mock_microservice_responses[rack_barcode]), headers: {})
         end
       end
@@ -748,7 +748,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         before do
           mock_microservice_responses.each_key do |rack_barcode|
-            stub_request(:get, "#{Rails.configuration.tube_rack_scans_microservice_url}/tube_rack/#{rack_barcode}")
+            stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}")
               .to_return(status: mock_microservices_response_status, body: mock_microservice_responses[rack_barcode], headers: {})
           end
         end
