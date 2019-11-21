@@ -148,9 +148,9 @@ group :development, :test, :cucumber do
   gem 'font-awesome-sass'
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
+  gem 'knapsack'
   gem 'sass-rails'
   gem 'select2-rails'
-  gem 'knapsack'
   gem 'webmock'
 end
 
