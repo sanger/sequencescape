@@ -54,7 +54,18 @@ jobs:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     script: xvfb-run -a bundle exec rake knapsack:rspec
-    name: Rspec
+    name: Rspec 1
+  - if: type != cron
+    env:
+    - RAILS_ENV=test
+    - CI_NODE_TOTAL=2
+    - CI_NODE_INDEX=1
+    before_script:
+    - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
+    - bundle exec rake assets:precompile
+    - bundle exec rake db:setup
+    script: xvfb-run -a bundle exec rake knapsack:rspec
+    name: Rspec 2
   - if: type != cron
     env:
     - RAILS_ENV=cucumber
