@@ -54,7 +54,7 @@ jobs:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     script: xvfb-run -a bundle exec rake knapsack:rspec
-    name: Rspec 1
+    name: RSpec 1
   - if: type != cron
     env:
     - RAILS_ENV=test
@@ -65,7 +65,7 @@ jobs:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
     script: xvfb-run -a bundle exec rake knapsack:rspec
-    name: Rspec 2
+    name: RSpec 2
   - if: type != cron
     env:
     - RAILS_ENV=cucumber
