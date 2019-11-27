@@ -147,12 +147,13 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   # This is a legacy of the old controller...
   def wells_on_specified_plate_purpose_for(plate_purpose, samples)
+    puts "**** plate_purpose: #{plate_purpose.inspect} ****"
     puts "**** samples.size: #{samples.size} ****"
     samples.map do |sample|
       # Prioritise the newest well
-      puts "sample.wells.on_plate_purpose(plate_purpose).size: #{sample.wells.on_plate_purpose(plate_purpose).size}"
-      puts "sample.wells.on_plate_purpose(plate_purpose).first.id: #{sample.wells.on_plate_purpose(plate_purpose).first.id}"
-      puts "sample.wells.on_plate_purpose(plate_purpose).first.plate.id: #{sample.wells.on_plate_purpose(plate_purpose).first.plate.id}"
+      puts "wells size: #{sample.wells.on_plate_purpose(plate_purpose).size}"
+      puts "wells first id: #{sample.wells.on_plate_purpose(plate_purpose).first.id}"
+      puts "wells first plate id: #{sample.wells.on_plate_purpose(plate_purpose).first.plate.id}" if sample.wells.on_plate_purpose(plate_purpose).first.plate.present?
       sample.wells.on_plate_purpose(plate_purpose).order(id: :desc).first ||
         raise(InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}")
     end
@@ -239,9 +240,21 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns Samples based on Sample name or Sanger ID
   # This is a legacy of the old controller...
   def find_samples_from_text(sample_text)
+    puts "*** sample_text: #{sample_text} ****"
+
     names = sample_text.split(/\s+/)
+    puts "*** names.size: #{names.size} ****"
 
     samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
+
+    puts "*** samples.size: #{samples.size} ****"
+    samples.each do |sample|
+      puts "sample: #{sample.id} #{sample.name}"
+      sample.wells.each do |well|
+        print "well: #{well.id}  |  "
+        puts "plate: #{well.plate.id}" if well.plate.present?
+      end
+    end
 
     name_set  = Set.new(names)
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
