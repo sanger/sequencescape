@@ -153,6 +153,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       # Prioritise the newest well
       puts "wells size: #{sample.wells.on_plate_purpose(plate_purpose).size}"
       puts "wells first id: #{sample.wells.on_plate_purpose(plate_purpose).first.id}"
+
+      # Below plate is nil
       puts "wells first plate id: #{sample.wells.on_plate_purpose(plate_purpose).first.plate.id}" if sample.wells.on_plate_purpose(plate_purpose).first.plate.present?
       sample.wells.on_plate_purpose(plate_purpose).order(id: :desc).first ||
         raise(InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}")
@@ -252,7 +254,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       puts "sample: #{sample.id} #{sample.name}"
       sample.wells.each do |well|
         print "well: #{well.id}  |  "
-        puts "plate: #{well.plate.id}" if well.plate.present?
+        print "plate: #{well.plate.id}" if well.plate.present?
+        puts "\n"
       end
     end
 
