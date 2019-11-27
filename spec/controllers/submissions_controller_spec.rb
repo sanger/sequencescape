@@ -115,7 +115,7 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'by sample name and working dilution' do
       setup do
         @order_count = Order.count
-        # puts "**** @order_count: #{@order_count} *****"
+        puts "**** @order_count: #{@order_count} *****"
         @wd_plate = create :working_dilution_plate, barcode: 123457
         puts "**** @wd_plate: #{@wd_plate.id} *****"
         %w[
@@ -152,7 +152,7 @@ RSpec.describe SubmissionsController, type: :controller do
       end
 
       it 'used the working dilution plate' do
-        # puts "**** Order.count: #{Order.count} *****"
+        puts "**** Order.count: #{Order.count} *****"
         assert_equal 1, Order.count - @order_count
         # puts "**** Order.last: #{Order.last} *****"
         # puts "**** Order.last.assets: #{Order.last.assets} *****"
