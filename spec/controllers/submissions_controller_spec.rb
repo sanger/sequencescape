@@ -115,7 +115,9 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'by sample name and working dilution' do
       setup do
         @order_count = Order.count
+        puts "**** @order_count: #{@order_count} *****"
         @wd_plate = create :working_dilution_plate, barcode: 123457
+        puts "**** @wd_plate: #{@wd_plate} *****"
         %w[
           A1 A2 A3
           B1 B2 B3
@@ -125,7 +127,9 @@ RSpec.describe SubmissionsController, type: :controller do
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
+        puts "**** @wd_plate.wells: #{@wd_plate.wells} *****"
         samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
+        puts "**** samples: #{samples} *****"
 
         post(:create, params: { submission: {
                is_a_sequencing_order: 'false',
@@ -147,7 +151,10 @@ RSpec.describe SubmissionsController, type: :controller do
       end
 
       it 'used the working dilution plate' do
+        puts "**** Order.count: #{Order.count} *****"
         assert_equal 1, Order.count - @order_count
+        puts "**** Order.last: #{Order.last} *****"
+        puts "**** Order.last.assets: #{Order.last.assets} *****"
         assert_equal @wd_plate, Order.last.assets.first.plate
       end
     end
