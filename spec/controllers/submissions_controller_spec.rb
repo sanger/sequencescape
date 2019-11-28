@@ -154,6 +154,7 @@ RSpec.describe SubmissionsController, type: :controller do
                plate_purpose_id: @wd_plate.plate_purpose.id.to_s,
                project_name: 'A project'
              } })
+        @wd_plate.wells.each { |well| puts "well #{well.id} is in plate #{well&.plate&.id}" }
       end
 
       it 'used the working dilution plate' do
@@ -164,7 +165,8 @@ RSpec.describe SubmissionsController, type: :controller do
         print "*** order asset ids: "
         Order.last.assets.each { |asset| puts asset.id }
         print "*** order asset plates: "
-        Order.last.assets.each { |asset| puts asset.plate.id if asset.plate.present? }
+        # Order.last.assets.each { |asset| puts asset.plate.id if asset.plate.present? }
+        @wd_plate.wells.each { |well| puts "well #{well.id} is in plate #{well&.plate&.id}" }
         assert_equal @wd_plate, Order.last.assets.first.plate
       end
     end
