@@ -147,7 +147,6 @@ RSpec.describe SubmissionsController, type: :controller do
       end
 
       it 'used the working dilution plate' do
-
         assert_equal 1, Order.count - @order_count
 
         wells = Order.last.assets

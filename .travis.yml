@@ -47,7 +47,7 @@ jobs:
   - if: type != cron
     env:
     - RAILS_ENV=test
-    - CI_NODE_TOTAL=3
+    - CI_NODE_TOTAL=5
     - CI_NODE_INDEX=0
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
@@ -58,7 +58,7 @@ jobs:
   - if: type != cron
     env:
     - RAILS_ENV=test
-    - CI_NODE_TOTAL=3
+    - CI_NODE_TOTAL=5
     - CI_NODE_INDEX=1
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
@@ -69,7 +69,7 @@ jobs:
   - if: type != cron
     env:
     - RAILS_ENV=test
-    - CI_NODE_TOTAL=3
+    - CI_NODE_TOTAL=5
     - CI_NODE_INDEX=2
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
@@ -80,8 +80,8 @@ jobs:
   - if: type != cron
     env:
     - RAILS_ENV=cucumber
-    - CI_NODE_TOTAL=2
-    - CI_NODE_INDEX=0
+    - CI_NODE_TOTAL=5
+    - CI_NODE_INDEX=3
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
@@ -91,8 +91,8 @@ jobs:
   - if: type != cron
     env:
     - RAILS_ENV=cucumber
-    - CI_NODE_TOTAL=2
-    - CI_NODE_INDEX=1
+    - CI_NODE_TOTAL=5
+    - CI_NODE_INDEX=4
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile

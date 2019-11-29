@@ -149,7 +149,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     samples.map do |sample|
       # Prioritise the newest well
 
-      # Below plate is nil
       sample.wells.on_plate_purpose(plate_purpose).order(id: :desc).first ||
         raise(InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}")
     end
@@ -236,15 +235,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns Samples based on Sample name or Sanger ID
   # This is a legacy of the old controller...
   def find_samples_from_text(sample_text)
-
     names = sample_text.split(/\s+/)
-
     samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
-
-    samples.each do |sample|
-      sample.wells.each do |well|
-      end
-    end
 
     name_set  = Set.new(names)
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
