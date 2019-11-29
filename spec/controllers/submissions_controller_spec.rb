@@ -127,6 +127,12 @@ RSpec.describe SubmissionsController, type: :controller do
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
+
+        @wd_plate.wells.each do |well|
+          puts "well #{well.id} is in plate with id #{well.plate.id}"
+          puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
+        end
+
         samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
         post(:create, params: { submission: {
@@ -153,20 +159,13 @@ RSpec.describe SubmissionsController, type: :controller do
 
         assert_equal 1, Order.count - @order_count
 
-        puts "*** order asset ids: "
-        Order.last.assets.each { |asset| puts "#{asset.id}, #{asset.class}" }
-
-        puts "*** order asset plates: "
         @wd_plate.wells.each do |well|
-          puts "well #{well.id} is in plate #{well&.plate&.id}"
-          puts "well find plate in loop: #{Well.find(well.id).plate}"
+          puts "well #{well.id} is in plate with id #{well.plate.id}"
+          puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
         end
 
         well = Order.last.assets.first
         puts "well id: #{well.id}"
-        puts "well plate: #{well.plate}"
-        puts "well reload plate: #{well.reload.plate}"
-        puts "well find plate: #{Well.find(well.id).plate}"
 
         assert_equal @wd_plate, Order.last.assets.first.plate
       end
