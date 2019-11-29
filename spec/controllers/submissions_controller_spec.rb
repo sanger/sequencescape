@@ -127,7 +127,7 @@ RSpec.describe SubmissionsController, type: :controller do
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
-
+        @wd_plate.save!
         @wd_plate.wells.each do |well|
           puts "well #{well.id} is in plate with id #{well.plate.id}"
           puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
