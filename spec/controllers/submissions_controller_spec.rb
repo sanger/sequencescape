@@ -124,18 +124,10 @@ RSpec.describe SubmissionsController, type: :controller do
           C1 C2 C3
         ].each do |location|
           well = create :empty_well, map: Map.find_by(description: location)
-          # theSample = @plate.wells.located_at(location).first.aliquots.first.sample
-          # puts "**** theSample #{theSample.id} ****"
-          # puts "**** theSample first well plate #{theSample.wells.first.plate.id} ****" if theSample.wells.first.plate.present?
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
-          # puts "**** well: #{well.id} *****"
-          # puts "**** @wd_plate.wells.size: #{@wd_plate.wells.size} *****"
         end
-        # @wd_plate.wells.each { |well| puts "well #{well.id} is in plate #{well.plate.id}" }
-        # puts "**** @wd_plate.wells: #{@wd_plate.wells} *****"
         samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
-        # puts "**** samples: #{samples} *****"
 
         post(:create, params: { submission: {
                is_a_sequencing_order: 'false',
@@ -154,24 +146,28 @@ RSpec.describe SubmissionsController, type: :controller do
                plate_purpose_id: @wd_plate.plate_purpose.id.to_s,
                project_name: 'A project'
              } })
-        # @wd_plate.wells.each { |well| puts "well #{well.id} is in plate #{well&.plate&.id}" }
       end
 
       it 'used the working dilution plate' do
         puts "**** Order.count: #{Order.count} *****"
+
         assert_equal 1, Order.count - @order_count
-        # puts "**** Order.last: #{Order.last} *****"
-        # puts "**** Order.last.assets: #{Order.last.assets} *****"
+
         puts "*** order asset ids: "
         Order.last.assets.each { |asset| puts "#{asset.id}, #{asset.class}" }
+
         puts "*** order asset plates: "
-        # Order.last.assets.each { |asset| puts asset.plate.id if asset.plate.present? }
-        @wd_plate.wells.each { |well| puts "well #{well.id} is in plate #{well&.plate&.id}" }
+        @wd_plate.wells.each do |well|
+          puts "well #{well.id} is in plate #{well&.plate&.id}"
+          puts "well find plate in loop: #{Well.find(well.id).plate}"
+        end
+
         well = Order.last.assets.first
         puts "well id: #{well.id}"
         puts "well plate: #{well.plate}"
         puts "well reload plate: #{well.reload.plate}"
         puts "well find plate: #{Well.find(well.id).plate}"
+
         assert_equal @wd_plate, Order.last.assets.first.plate
       end
     end
