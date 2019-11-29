@@ -115,9 +115,7 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'by sample name and working dilution' do
       setup do
         @order_count = Order.count
-        puts "**** @order_count: #{@order_count} *****"
         @wd_plate = create :working_dilution_plate, barcode: 123457
-        puts "**** @wd_plate: #{@wd_plate.id} *****"
         %w[
           A1 A2 A3
           B1 B2 B3
@@ -127,23 +125,6 @@ RSpec.describe SubmissionsController, type: :controller do
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
-        @wd_plate.save!
-        @wd_plate.wells.each do |well|
-          puts "well #{well.id} is in plate with id #{well.plate.id}"
-          puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
-          well.reload
-          well.reload_plate
-          Well.reset_column_information
-          puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
-        end
-        @wd_plate.reload
-        Plate.reset_column_information
-        @wd_plate.wells.reload
-
-        @wd_plate.wells.each do |well|
-          puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
-        end
-
         samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
         post(:create, params: { submission: {
@@ -166,23 +147,13 @@ RSpec.describe SubmissionsController, type: :controller do
       end
 
       it 'used the working dilution plate' do
-        puts "**** Order.count: #{Order.count} *****"
 
         assert_equal 1, Order.count - @order_count
 
-        # @wd_plate.wells.each do |well|
-        #   puts "well #{well.id} is in plate with id #{well.plate.id}"
-        #   puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
-        # end
-
-        # well = Order.last.assets.first
-        # puts "well id: #{well.id}"
-
         wells = Order.last.assets
+
         expect(wells.size).to eq(4)
-        # expect(@wd_plate.wells.include? well).to eq(true)
         wells.each { |well| expect(@wd_plate.wells.include?(well)).to eq(true) }
-        # assert_equal @wd_plate, Order.last.assets.first.plate
       end
     end
 

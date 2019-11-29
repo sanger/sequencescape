@@ -47,7 +47,7 @@ jobs:
   - if: type != cron
     env:
     - RAILS_ENV=test
-    - CI_NODE_TOTAL=2
+    - CI_NODE_TOTAL=3
     - CI_NODE_INDEX=0
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
@@ -58,7 +58,7 @@ jobs:
   - if: type != cron
     env:
     - RAILS_ENV=test
-    - CI_NODE_TOTAL=2
+    - CI_NODE_TOTAL=3
     - CI_NODE_INDEX=1
     before_script:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
@@ -66,6 +66,17 @@ jobs:
     - bundle exec rake db:setup
     script: xvfb-run -a bundle exec rake knapsack:rspec
     name: RSpec 2
+  - if: type != cron
+    env:
+    - RAILS_ENV=test
+    - CI_NODE_TOTAL=3
+    - CI_NODE_INDEX=2
+    before_script:
+    - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
+    - bundle exec rake assets:precompile
+    - bundle exec rake db:setup
+    script: xvfb-run -a bundle exec rake knapsack:rspec
+    name: RSpec 3
   - if: type != cron
     env:
     - RAILS_ENV=cucumber
