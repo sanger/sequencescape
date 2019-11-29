@@ -132,11 +132,14 @@ RSpec.describe SubmissionsController, type: :controller do
           puts "well #{well.id} is in plate with id #{well.plate.id}"
           puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
           well.reload
+          well.reload_plate
           Well.reset_column_information
           puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
         end
         @wd_plate.reload
         Plate.reset_column_information
+        @wd_plate.wells.reload
+
         @wd_plate.wells.each do |well|
           puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
         end
