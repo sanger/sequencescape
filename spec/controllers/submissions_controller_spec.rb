@@ -131,6 +131,12 @@ RSpec.describe SubmissionsController, type: :controller do
         @wd_plate.wells.each do |well|
           puts "well #{well.id} is in plate with id #{well.plate.id}"
           puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
+          well.reload
+          puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
+        end
+        @wd_plate.reload
+        @wd_plate.wells.each do |well|
+          puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
         end
 
         samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
