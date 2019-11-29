@@ -170,15 +170,19 @@ RSpec.describe SubmissionsController, type: :controller do
 
         assert_equal 1, Order.count - @order_count
 
-        @wd_plate.wells.each do |well|
-          puts "well #{well.id} is in plate with id #{well.plate.id}"
-          puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
-        end
+        # @wd_plate.wells.each do |well|
+        #   puts "well #{well.id} is in plate with id #{well.plate.id}"
+        #   puts "well #{well.id} is in plate #{Well.find(well.id).plate}"
+        # end
 
-        well = Order.last.assets.first
-        puts "well id: #{well.id}"
+        # well = Order.last.assets.first
+        # puts "well id: #{well.id}"
 
-        assert_equal @wd_plate, Order.last.assets.first.plate
+        wells = Order.last.assets
+        expect(wells.size).to eq(4)
+        # expect(@wd_plate.wells.include? well).to eq(true)
+        wells.each { |well| expect(@wd_plate.wells.include?(well)).to eq(true) }
+        # assert_equal @wd_plate, Order.last.assets.first.plate
       end
     end
 
