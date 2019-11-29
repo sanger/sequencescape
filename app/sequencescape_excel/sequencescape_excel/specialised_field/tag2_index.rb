@@ -15,7 +15,7 @@ module SequencescapeExcel
       def update(attributes = {})
         return unless valid?
 
-        attributes[:aliquot].tag2 = tag if @tag.present? && @tag.oligo.present?
+        attributes[:aliquot].tag2 = tag if tag.present? && tag.oligo.present?
       end
 
       def link(other_fields)
@@ -25,7 +25,7 @@ module SequencescapeExcel
       private
 
       def tag
-        @tag ||= ::Tag.find_by(tag_group_id: sf_tag2_group.tag2_group_id, map_id: value)
+        @tag ||= ::Tag.find_by(tag_group_id: sf_tag2_group.tag2_group_id, map_id: value).where.not(tag_group_id: [nil, ''], map_id: [nil, ''])
       end
 
       # check the index exists within the group exists here, check the group/index combination later
