@@ -15,7 +15,7 @@ module SequencescapeExcel
       def update(attributes = {})
         return unless valid?
 
-        attributes[:aliquot].tag2 = tag if tag.present? && tag.oligo.present?
+        attributes[:aliquot].tag2 = tag if @tag.present? && @tag.oligo.present?
       end
 
       def link(other_fields)
