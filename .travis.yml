@@ -17,6 +17,10 @@ env:
   global:
   - TZ=Europe/London
   - CUCUMBER_FORMAT=DebugFormatter
+branches:
+  only:
+  - master
+  - release
 before_install:
 - mv config/aker.yml.example config/aker.yml
 - yarn install
