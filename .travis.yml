@@ -33,10 +33,10 @@ jobs:
     name: Coverage
     after_script:
     - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
-  - if: type != cron
+  - if: type != cron AND tag IS blank
     script: bundle exec rubocop
     name: Rubocop
-  - if: type != cron
+  - if: type != cron AND tag IS blank
     env:
     - RUBYOPT='-W0'
     before_script:
@@ -44,7 +44,7 @@ jobs:
     - bundle exec rake db:setup
     script: bundle exec rake test
     name: Rake Test
-  - if: type != cron
+  - if: type != cron AND tag IS blank
     env:
     - RAILS_ENV=test
     - CI_NODE_TOTAL=5
@@ -55,7 +55,7 @@ jobs:
     - bundle exec rake db:setup
     script: xvfb-run -a bundle exec rake knapsack:rspec
     name: RSpec 1
-  - if: type != cron
+  - if: type != cron AND tag IS blank
     env:
     - RAILS_ENV=test
     - CI_NODE_TOTAL=5
@@ -66,7 +66,7 @@ jobs:
     - bundle exec rake db:setup
     script: xvfb-run -a bundle exec rake knapsack:rspec
     name: RSpec 2
-  - if: type != cron
+  - if: type != cron AND tag IS blank
     env:
     - RAILS_ENV=test
     - CI_NODE_TOTAL=5
@@ -77,7 +77,7 @@ jobs:
     - bundle exec rake db:setup
     script: xvfb-run -a bundle exec rake knapsack:rspec
     name: RSpec 3
-  - if: type != cron
+  - if: type != cron AND tag IS blank
     env:
     - RAILS_ENV=cucumber
     - CI_NODE_TOTAL=5
@@ -88,7 +88,7 @@ jobs:
     - bundle exec rake db:setup
     name: Cucumber Test 1
     script: xvfb-run -a bundle exec rake knapsack:cucumber
-  - if: type != cron
+  - if: type != cron AND tag IS blank
     env:
     - RAILS_ENV=cucumber
     - CI_NODE_TOTAL=5
