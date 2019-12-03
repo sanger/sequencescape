@@ -204,7 +204,7 @@ the table of contents, run:
 
 ### CI
 
-The Travis builds use the Knapsack gem to parallelize the RSpec and Cucumber tests, to reduce build time. When a Travis build runs, Knapsack uses the knapsack_rspec_report.json and knapsack_cucumber_report.json files, which list out test run times, to split the tests into equal length jobs. These report files don't need to be regenerated if tests are deleted or added unless the tests in question are particularly slow and will therefore impact the build times significantly. To regenerate a report file, run one of the following, and commit the resulting changes to the report files:
+The Travis builds use the Knapsack gem to reduce build time by parallelizing the RSpec and Cucumber tests. When a Travis build runs, Knapsack uses the knapsack_rspec_report.json and knapsack_cucumber_report.json files, which list out test run times, to split the tests into equal length jobs. These report files don't need to be regenerated if tests are deleted or added unless the tests in question are particularly slow and will therefore impact the build times significantly. To regenerate a report file, run one of the following, and commit the resulting changes to the report files:
 
     KNAPSACK_GENERATE_REPORT=true bundle exec rspec
     KNAPSACK_GENERATE_REPORT=true bundle exec cucumber
