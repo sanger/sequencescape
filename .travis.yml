@@ -20,7 +20,7 @@ env:
 branches:
   only:
   - master
-  - release
+  - develop
 before_install:
 - mv config/aker.yml.example config/aker.yml
 - yarn install
