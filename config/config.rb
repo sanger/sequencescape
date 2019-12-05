@@ -42,7 +42,7 @@ configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/d
 configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
   ['Generic Lims', 'http://www.example.com'],
-  ['Gatekeeper', 'http://www.example.com'],
+  ['Gatekeeper', 'http://www.example.com']
 ]
 
 configatron.help_link_base_url = 'http://wwww.example.com'
