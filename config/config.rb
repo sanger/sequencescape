@@ -43,7 +43,6 @@ configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
   ['Generic Lims', 'http://www.example.com'],
   ['Gatekeeper', 'http://www.example.com'],
-  ['Crier', 'http://www.example.com']
 ]
 
 configatron.help_link_base_url = 'http://wwww.example.com'
@@ -84,7 +83,6 @@ if Rails.env.development? || Rails.env.profile?
   configatron.run_information_url = 'http://example.com/'
   configatron.sso_logout_url = 'https://example.com/logout'
   configatron.run_data_by_batch_id_url = 'http://example.com/search?query='
-  configatron.sybr_green_images_url = 'http://example.com/batches/'
   configatron.sequencing_admin_email = 'admin@example.com'
   configatron.api.authorisation_code = 'development'
   configatron.api.flush_response_at = 32768
@@ -120,7 +118,6 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.run_information_url = 'http://example.com/'
   configatron.sso_logout_url = 'https://example.com/logout'
   configatron.run_data_by_batch_id_url = 'http://example.com/search?query='
-  configatron.sybr_green_images_url = 'http://example.com/batches/'
   configatron.sequencing_admin_email = 'admin@example.com'
   configatron.api.authorisation_code = 'cucumber'
   configatron.api.flush_response_at = 32768
