@@ -23,6 +23,12 @@
         return jQuery('.related_to.' + id + '.' + value);
       };
 
+      var getElementByFieldName = function(fieldName) {
+        return  document.getElementById('<%= root %>_' + fieldName) ||
+                $("input[name='study[study_metadata_attributes]["+fieldName+"]']:checked")[0] ||
+                document.getElementById('<%= root %>_' + fieldName + '_id');
+      }
+
       var processForOneDiv = function(divToProcess) {
         var fieldToCheckValueOfName;
         <% related.each do |field| %>
@@ -31,9 +37,7 @@
           }
         <% end %>
 
-        var fieldToCheckValueOf = document.getElementById('<%= root %>_' + fieldToCheckValueOfName) ||
-                $("input[name='study[study_metadata_attributes]["+fieldToCheckValueOfName+"]']:checked")[0] ||
-                document.getElementById('<%= root %>_' + fieldToCheckValueOfName + '_id');
+        var fieldToCheckValueOf = getElementByFieldName(fieldToCheckValueOfName);
 
         var relatedToDivs = $(divToProcess).find('.related_to.' + fieldToCheckValueOfName);
         hide(relatedToDivs);
@@ -50,16 +54,15 @@
 
       observe = function(id) {
 
-        var element = document.getElementById('<%= root %>_' + id) ||
-                      $("input[name='study[study_metadata_attributes]["+id+"]']:checked")[0] ||
-                      document.getElementById('<%= root %>_' + id + '_id');
+        var fieldToCheckValueOf = getElementByFieldName(id);
 
         // Hide all of the DIVs and then show the current value.  We assume that the first identified element
         // is the one we're supposed to be using and that, if there are multiple fields, then they have the
         // same initial value.
-        hide(jQuery('.related_to.' + id));
+        var relatedToDivs = jQuery('.related_to.' + id);
+        hide(relatedToDivs);
 
-        var valueFromElement = valueFrom(element);
+        var relatedToDivsWithRelevantValue = selectRelatedFor(id, valueFrom(fieldToCheckValueOf));
         show(selectRelatedFor(id, valueFromElement));
 
         // Now we can delegate handling of the click to the body element of the document.  This enables us to
@@ -69,9 +72,9 @@
         jQuery('body').delegate(selector, 'change', function() {
 
           var relatedToDivs = jQuery('.related_to.' + id);
-          var relatedToDivsWithRelevantValue = selectRelatedFor(id, valueFrom(this));
-
           hide(relatedToDivs);
+
+          var relatedToDivsWithRelevantValue = selectRelatedFor(id, valueFrom(this));
           show(relatedToDivsWithRelevantValue);
 
           relatedToDivsWithRelevantValue.each(function(index){
