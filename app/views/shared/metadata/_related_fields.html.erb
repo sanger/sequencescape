@@ -19,25 +19,69 @@
         return (value.length == 0) ? 'blank' : value;
       };
 
-      observe = function(id) {
-        var selectRelatedFor, element;
+      var selectRelatedFor = function(id, value) {
+        return jQuery('.related_to.' + id + '.' + value);
+      };
 
-        selectRelatedFor = function(value) { return jQuery('.related_to.' + id + '.' + value); };
-        element = document.getElementById('<%= root %>_' + id) ||
-                    $("input[name='study[study_metadata_attributes]["+id+"]']:checked")[0] ||
-                    document.getElementById('<%= root %>_' + id + '_id');
+      var processForOneDiv = function(divToProcess) {
+        var fieldToCheckValueOfName;
+        <% related.each do |field| %>
+          if($(divToProcess).hasClass("<%= field.to_s %>")) {
+            fieldToCheckValueOfName = "<%= field.to_s %>"
+          }
+        <% end %>
+
+        var fieldToCheckValueOf = document.getElementById('<%= root %>_' + fieldToCheckValueOfName) ||
+                $("input[name='study[study_metadata_attributes]["+fieldToCheckValueOfName+"]']:checked")[0] ||
+                document.getElementById('<%= root %>_' + fieldToCheckValueOfName + '_id');
+
+        var relatedToDivs = jQuery('.related_to.' + fieldToCheckValueOfName);
+        hide(relatedToDivs);
+
+        var valueFromElement = valueFrom(fieldToCheckValueOf);
+
+        var relatedToDivsWithRelevantValue = selectRelatedFor(fieldToCheckValueOfName, valueFromElement);
+        show(relatedToDivsWithRelevantValue);
+
+        relatedToDivsWithRelevantValue.each(function(index2){
+          processForOneDiv(this)
+        });
+      }
+
+      observe = function(id) {
+
+        var element = document.getElementById('<%= root %>_' + id) ||
+                      $("input[name='study[study_metadata_attributes]["+id+"]']:checked")[0] ||
+                      document.getElementById('<%= root %>_' + id + '_id');
+
         // Hide all of the DIVs and then show the current value.  We assume that the first identified element
         // is the one we're supposed to be using and that, if there are multiple fields, then they have the
         // same initial value.
         hide(jQuery('.related_to.' + id));
-        show(selectRelatedFor(valueFrom(element)));
+
+        var valueFromElement = valueFrom(element);
+        show(selectRelatedFor(id, valueFromElement));
 
         // Now we can delegate handling of the click to the body element of the document.  This enables us to
         // handle multiple different fields with the same identifier as though they were one, hopefully.
         selector = '[id=<%= root %>_' + id + '],[id=<%= root %>_' + id + '_id],[name=\'study[study_metadata_attributes]['+id+']\']';
+
         jQuery('body').delegate(selector, 'change', function() {
-          hide(jQuery('.related_to.' + id));
-          show(selectRelatedFor(valueFrom(this)));
+
+          var relatedToDivs = jQuery('.related_to.' + id);
+          var relatedToDivsWithRelevantValue = selectRelatedFor(id, valueFrom(this));
+
+          hide(relatedToDivs);
+          show(relatedToDivsWithRelevantValue);
+
+          relatedToDivsWithRelevantValue.each(function(index){
+            var div = this;
+            var children = $(this).children('.related_to');
+            children.each(function(index2){
+              processForOneDiv(this)
+            });
+          });
+
         });
       };
 
