@@ -35,12 +35,12 @@
                 $("input[name='study[study_metadata_attributes]["+fieldToCheckValueOfName+"]']:checked")[0] ||
                 document.getElementById('<%= root %>_' + fieldToCheckValueOfName + '_id');
 
-        var relatedToDivs = jQuery('.related_to.' + fieldToCheckValueOfName);
+        var relatedToDivs = $(divToProcess).find('.related_to.' + fieldToCheckValueOfName);
         hide(relatedToDivs);
 
         var valueFromElement = valueFrom(fieldToCheckValueOf);
 
-        var relatedToDivsWithRelevantValue = selectRelatedFor(fieldToCheckValueOfName, valueFromElement);
+        var relatedToDivsWithRelevantValue = $(divToProcess).find('.related_to.' + fieldToCheckValueOfName + '.' + valueFromElement);
         show(relatedToDivsWithRelevantValue);
 
         relatedToDivsWithRelevantValue.each(function(index2){
