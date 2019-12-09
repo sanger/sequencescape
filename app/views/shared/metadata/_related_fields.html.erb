@@ -27,9 +27,12 @@
         return  document.getElementById('<%= root %>_' + fieldName) ||
                 $("input[name='study[study_metadata_attributes]["+fieldName+"]']:checked")[0] ||
                 document.getElementById('<%= root %>_' + fieldName + '_id');
-      }
+      };
 
       var processForOneDiv = function(divToProcess) {
+
+        hide($(divToProcess));
+
         var fieldToCheckValueOfName;
         <% related.each do |field| %>
           if($(divToProcess).hasClass("<%= field.to_s %>")) {
@@ -38,19 +41,15 @@
         <% end %>
 
         var fieldToCheckValueOf = getElementByFieldName(fieldToCheckValueOfName);
+        valueFromFieldToCheckValueOf = valueFrom(fieldToCheckValueOf);
 
-        var relatedToDivs = $(divToProcess).find('.related_to.' + fieldToCheckValueOfName);
-        hide(relatedToDivs);
-
-        var valueFromElement = valueFrom(fieldToCheckValueOf);
-
-        var relatedToDivsWithRelevantValue = $(divToProcess).find('.related_to.' + fieldToCheckValueOfName + '.' + valueFromElement);
+        var relatedToDivsWithRelevantValue = $(divToProcess).children('.related_to.' + fieldToCheckValueOfName + '.' + valueFromFieldToCheckValueOf);
         show(relatedToDivsWithRelevantValue);
 
         relatedToDivsWithRelevantValue.each(function(index2){
           processForOneDiv(this)
         });
-      }
+      };
 
       observe = function(id) {
 
@@ -81,7 +80,7 @@
             var div = this;
             var children = $(this).children('.related_to');
             children.each(function(index2){
-              processForOneDiv(this)
+              processForOneDiv(this);
             });
           });
 
