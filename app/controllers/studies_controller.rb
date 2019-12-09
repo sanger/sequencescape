@@ -113,9 +113,14 @@ class StudiesController < ApplicationController
       redirect_to study_path(@study)
     end
   rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}"
+    puts "*** rescued. error: #{e} ***"
+    # Rails.logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}"
     flash.now[:error] = 'Failed to update attributes for study!'
-    render action: 'edit', id: @study.id
+    # render action: 'edit', id: @study.id
+    respond_to do |format|
+      format.html { render action: 'edit' }
+      format.xml  { render xml: @study.errors, status: :unprocessable_entity }
+    end
   end
 
   def study_status
