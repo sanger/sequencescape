@@ -2,14 +2,24 @@
 <script language="javascript">
   jQuery(function() {
     (function(undefined) {
-      var hideAndDisableInputs = function(elements) {
+      var hideSectionAndDisableInputs = function(elements) {
+        // disable inputs when hidden so they don't fire validation
+        console.log('hiding: ', elements);
         elements.each(function() {
           $(this).hide().find('input').attr('disabled','disabled');
         });
       };
-      var showAndEnableInputs = function(elements) {
+      var showSectionAndEnableInputsIfVisible = function(elements) {
+        console.log('showing if visible: ', elements);
         elements.each(function() {
-          $(this).show().find('input').attr('disabled',null);
+          $(this).show();
+
+          $(this).find('input').each(function() {
+            // only enable input if it's not hidden - could be beneath a hidden element in the DOM
+            if(!$(this).is(':visible')) return;
+            console.log('enabling: ', this);
+            $(this).attr('disabled', null);
+          });
         });
       };
 
@@ -19,12 +29,8 @@
         return (value.length == 0) ? 'blank' : value;
       };
 
-      var selectRelatedFor = function(fieldName, value) {
+      var selectRelatedByFieldAndValue = function(fieldName, value) {
         return jQuery('.related_to.' + fieldName + '.' + value);
-      };
-
-      var selectRelatedForUnderElement = function(element, fieldName, value) {
-        return jQuery(element).children('.related_to.' + fieldName + '.' + value);
       };
 
       var getElementByFieldName = function(fieldName) {
@@ -33,40 +39,12 @@
                 document.getElementById('<%= root %>_' + fieldName + '_id');
       };
 
-      var processForOneDiv = function(divToProcess) {
-
-        hideAndDisableInputs($(divToProcess));
-
-        var controllingFieldName;
-        <% related.each do |field| %>
-          if($(divToProcess).hasClass("<%= field.to_s %>")) {
-            controllingFieldName = "<%= field.to_s %>"
-          }
-        <% end %>
-
-        var controllingField = getElementByFieldName(controllingFieldName);
-        valueFromControllingField = valueFrom(controllingField);
-
-        var relatedToDivsWithRelevantValue = selectRelatedForUnderElement(divToProcess, controllingFieldName, valueFromControllingField);
-        showAndEnableInputs(relatedToDivsWithRelevantValue);
-
-        relatedToDivsWithRelevantValue.each(function(){
-          processForOneDiv(this)
-        });
-      };
-
-      hideAndShowFields = function(fieldName, controllingField) {
+      rerenderFieldsRelatedToControllingField = function(fieldName, controllingField) {
         var relatedToDivs = jQuery('.related_to.' + fieldName);
-        hideAndDisableInputs(relatedToDivs);
+        hideSectionAndDisableInputs(relatedToDivs);
 
-        var relatedToDivsWithRelevantValue = selectRelatedFor(fieldName, valueFrom(controllingField));
-        showAndEnableInputs(relatedToDivsWithRelevantValue);
-        return relatedToDivsWithRelevantValue;
-      };
-
-      hideAndShowFieldsInitially = function(fieldName) {
-        var controllingField = getElementByFieldName(fieldName);
-        hideAndShowFields(fieldName, controllingField);
+        var relatedWithRelevantValue = selectRelatedByFieldAndValue(fieldName, valueFrom(controllingField));
+        showSectionAndEnableInputsIfVisible(relatedWithRelevantValue);
       };
 
       addOnChangeHandler = function(fieldName) {
@@ -74,21 +52,17 @@
 
         jQuery('body').delegate(controllingFieldSelector, 'change', function() {
           controllingField = this;
-          relatedToDivsWithRelevantValue = hideAndShowFields(fieldName, controllingField);
-
-          relatedToDivsWithRelevantValue.each(function(){
-            var children = $(this).children('.related_to');
-            children.each(function(){
-              processForOneDiv(this);
-            });
-          });
+          rerenderFieldsRelatedToControllingField(fieldName, controllingField);
         });
       }
 
       initialize = function() {
         <% related.each do |field| %>
           var fieldName = "<%= field.to_s %>";
-          hideAndShowFieldsInitially(fieldName);
+          console.log('fieldName: ', fieldName);
+          var controllingField = getElementByFieldName(fieldName);
+
+          rerenderFieldsRelatedToControllingField(fieldName, controllingField);
           addOnChangeHandler(fieldName);
         <% end %>
       }
