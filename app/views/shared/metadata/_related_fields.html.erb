@@ -4,20 +4,18 @@
     (function(undefined) {
       var hideSectionAndDisableInputs = function(elements) {
         // disable inputs when hidden so they don't fire validation
-        console.log('hiding: ', elements);
         elements.each(function() {
           $(this).hide().find('input').attr('disabled','disabled');
         });
       };
+
       var showSectionAndEnableInputsIfVisible = function(elements) {
-        console.log('showing if visible: ', elements);
         elements.each(function() {
           $(this).show();
 
           $(this).find('input').each(function() {
             // only enable input if it's not hidden - could be beneath a hidden element in the DOM
             if(!$(this).is(':visible')) return;
-            console.log('enabling: ', this);
             $(this).attr('disabled', null);
           });
         });
@@ -59,7 +57,6 @@
       initialize = function() {
         <% related.each do |field| %>
           var fieldName = "<%= field.to_s %>";
-          console.log('fieldName: ', fieldName);
           var controllingField = getElementByFieldName(fieldName);
 
           rerenderFieldsRelatedToControllingField(fieldName, controllingField);
