@@ -2,13 +2,13 @@
 <script language="javascript">
   jQuery(function() {
     (function(undefined) {
-      var hide = function(elements) {
-        elements.each(function(index) {
+      var hideAndDisableInputs = function(elements) {
+        elements.each(function() {
           $(this).hide().find('input').attr('disabled','disabled');
         });
       };
-      var show = function(elements) {
-        elements.each(function(index) {
+      var showAndEnableInputs = function(elements) {
+        elements.each(function() {
           $(this).show().find('input').attr('disabled',null);
         });
       };
@@ -19,8 +19,12 @@
         return (value.length == 0) ? 'blank' : value;
       };
 
-      var selectRelatedFor = function(id, value) {
-        return jQuery('.related_to.' + id + '.' + value);
+      var selectRelatedFor = function(fieldName, value) {
+        return jQuery('.related_to.' + fieldName + '.' + value);
+      };
+
+      var selectRelatedForUnderElement = function(element, fieldName, value) {
+        return jQuery(element).children('.related_to.' + fieldName + '.' + value);
       };
 
       var getElementByFieldName = function(fieldName) {
@@ -31,65 +35,65 @@
 
       var processForOneDiv = function(divToProcess) {
 
-        hide($(divToProcess));
+        hideAndDisableInputs($(divToProcess));
 
-        var fieldToCheckValueOfName;
+        var controllingFieldName;
         <% related.each do |field| %>
           if($(divToProcess).hasClass("<%= field.to_s %>")) {
-            fieldToCheckValueOfName = "<%= field.to_s %>"
+            controllingFieldName = "<%= field.to_s %>"
           }
         <% end %>
 
-        var fieldToCheckValueOf = getElementByFieldName(fieldToCheckValueOfName);
-        valueFromFieldToCheckValueOf = valueFrom(fieldToCheckValueOf);
+        var controllingField = getElementByFieldName(controllingFieldName);
+        valueFromControllingField = valueFrom(controllingField);
 
-        var relatedToDivsWithRelevantValue = $(divToProcess).children('.related_to.' + fieldToCheckValueOfName + '.' + valueFromFieldToCheckValueOf);
-        show(relatedToDivsWithRelevantValue);
+        var relatedToDivsWithRelevantValue = selectRelatedForUnderElement(divToProcess, controllingFieldName, valueFromControllingField);
+        showAndEnableInputs(relatedToDivsWithRelevantValue);
 
-        relatedToDivsWithRelevantValue.each(function(index2){
+        relatedToDivsWithRelevantValue.each(function(){
           processForOneDiv(this)
         });
       };
 
-      observe = function(id) {
+      hideAndShowFields = function(fieldName, controllingField) {
+        var relatedToDivs = jQuery('.related_to.' + fieldName);
+        hideAndDisableInputs(relatedToDivs);
 
-        var fieldToCheckValueOf = getElementByFieldName(id);
+        var relatedToDivsWithRelevantValue = selectRelatedFor(fieldName, valueFrom(controllingField));
+        showAndEnableInputs(relatedToDivsWithRelevantValue);
+        return relatedToDivsWithRelevantValue;
+      };
 
-        // Hide all of the DIVs and then show the current value.  We assume that the first identified element
-        // is the one we're supposed to be using and that, if there are multiple fields, then they have the
-        // same initial value.
-        var relatedToDivs = jQuery('.related_to.' + id);
-        hide(relatedToDivs);
+      hideAndShowFieldsInitially = function(fieldName) {
+        var controllingField = getElementByFieldName(fieldName);
+        hideAndShowFields(fieldName, controllingField);
+      };
 
-        var relatedToDivsWithRelevantValue = selectRelatedFor(id, valueFrom(fieldToCheckValueOf));
-        show(relatedToDivsWithRelevantValue);
+      addOnChangeHandler = function(fieldName) {
+        controllingFieldSelector = '[id=<%= root %>_' + fieldName + '],[id=<%= root %>_' + fieldName + '_id],[name=\'study[study_metadata_attributes]['+fieldName+']\']';
 
-        // Now we can delegate handling of the click to the body element of the document.  This enables us to
-        // handle multiple different fields with the same identifier as though they were one, hopefully.
-        selector = '[id=<%= root %>_' + id + '],[id=<%= root %>_' + id + '_id],[name=\'study[study_metadata_attributes]['+id+']\']';
+        jQuery('body').delegate(controllingFieldSelector, 'change', function() {
+          controllingField = this;
+          relatedToDivsWithRelevantValue = hideAndShowFields(fieldName, controllingField);
 
-        jQuery('body').delegate(selector, 'change', function() {
-
-          var relatedToDivs = jQuery('.related_to.' + id);
-          hide(relatedToDivs);
-
-          var relatedToDivsWithRelevantValue = selectRelatedFor(id, valueFrom(this));
-          show(relatedToDivsWithRelevantValue);
-
-          relatedToDivsWithRelevantValue.each(function(index){
-            var div = this;
+          relatedToDivsWithRelevantValue.each(function(){
             var children = $(this).children('.related_to');
-            children.each(function(index2){
+            children.each(function(){
               processForOneDiv(this);
             });
           });
-
         });
-      };
+      }
 
-      <% related.each do |field| %>
-        observe("<%= field.to_s %>");
-      <% end %>
+      initialize = function() {
+        <% related.each do |field| %>
+          var fieldName = "<%= field.to_s %>";
+          hideAndShowFieldsInitially(fieldName);
+          addOnChangeHandler(fieldName);
+        <% end %>
+      }
+
+      initialize();
     })();
   });
 
