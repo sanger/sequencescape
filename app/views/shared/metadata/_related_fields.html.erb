@@ -63,7 +63,7 @@
         hide(relatedToDivs);
 
         var relatedToDivsWithRelevantValue = selectRelatedFor(id, valueFrom(fieldToCheckValueOf));
-        show(selectRelatedFor(id, valueFromElement));
+        show(relatedToDivsWithRelevantValue);
 
         // Now we can delegate handling of the click to the body element of the document.  This enables us to
         // handle multiple different fields with the same identifier as though they were one, hopefully.
@@ -88,16 +88,16 @@
         });
       };
 
-    <% related.each do |field| %>
-      observe("<%= field.to_s %>");
-    <% end %>
+      <% related.each do |field| %>
+        observe("<%= field.to_s %>");
+      <% end %>
     })();
   });
 
   (function($, undefined) {
-  <% changing_fields.reverse.each do |field, options| %>
-    attach_option_updater("<%= field.to_s %>", "<%= options[:when].to_s %>", {<%= options[:values].map { |k,v| "#{k.inspect}:#{v.inspect}" }.join(',').html_safe %>});
-  <% end %>
+    <% changing_fields.reverse.each do |field, options| %>
+      attach_option_updater("<%= field.to_s %>", "<%= options[:when].to_s %>", {<%= options[:values].map { |k,v| "#{k.inspect}:#{v.inspect}" }.join(',').html_safe %>});
+    <% end %>
 
     function attach_option_updater(target, source, values) {
       $('#<%= root %>_' + source).change(function() {
