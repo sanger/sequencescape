@@ -114,7 +114,7 @@ class StudiesController < ApplicationController
     end
   rescue ActiveRecord::RecordInvalid => e
     # don't use @study.errors.map(&:to_s) because it throws an exception when within a rescue block
-    Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s } }"
+    Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: 'edit', id: @study.id
   end
