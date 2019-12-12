@@ -164,7 +164,7 @@ class LabwareController < ApplicationController
 
     if barcode.blank?
       redirect_to action: 'find_by_barcode'
-      return
+      nil
     else
       @asset = Labware.find_from_barcode(barcode)
       redirect_to action: 'find_by_barcode', error: "Unable to find anything with this barcode: #{barcode}" if @asset.nil?

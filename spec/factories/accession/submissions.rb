@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :accession_submission, class: Accession::Submission do
+  factory :accession_submission, class: 'Accession::Submission' do
     user    { create(:user) }
     sample  { build(:accession_sample) }
 
