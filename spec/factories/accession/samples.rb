@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :sample_metadata_for_accessioning, class: Sample::Metadata do
+  factory :sample_metadata_for_accessioning, class: 'Sample::Metadata' do
     sample_taxon_id { 1 }
     sample_common_name { 'A common name' }
     donor_id { '1' }
@@ -16,7 +16,7 @@ FactoryBot.define do
     end
   end
 
-  factory :minimal_sample_metadata_for_accessioning, class: Sample::Metadata do
+  factory :minimal_sample_metadata_for_accessioning, class: 'Sample::Metadata' do
     sample_taxon_id { 1 }
     sample_common_name { 'A common name' }
   end
@@ -33,7 +33,7 @@ FactoryBot.define do
     end
   end
 
-  factory :accession_sample, class: Accession::Sample do
+  factory :accession_sample, class: 'Accession::Sample' do
     standard_tags { build(:standard_accession_tag_list) }
     sample        { create(:sample_for_accessioning_with_open_study) }
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :study_metadata, class: Study::Metadata do
+  factory :study_metadata, class: 'Study::Metadata' do
     faculty_sponsor
     study_description           { 'Some study on something' }
     program                     { Program.find_or_create_by(name: 'General') }

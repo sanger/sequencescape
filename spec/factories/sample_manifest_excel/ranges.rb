@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :range, class: SequencescapeExcel::Range do
+  factory :range, class: 'SequencescapeExcel::Range' do
     options { %w[option1 option2 option3] }
     first_row { 1 }
     worksheet_name { 'Sheet1' }

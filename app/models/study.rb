@@ -401,7 +401,7 @@ class Study < ApplicationRecord
     if (total - failed - cancelled) > 0
       (counts.fetch('passed', 0) * 100) / (total - failed - cancelled)
     else
-      return 0
+      0
     end
   end
 

@@ -23,12 +23,12 @@ FactoryBot.define do
     association(:purpose, factory: :tube_purpose)
   end
 
-  factory :unbarcoded_tube, class: Tube do
+  factory :unbarcoded_tube, class: 'Tube' do
     name { generate :asset_name }
     association(:purpose, factory: :tube_purpose)
   end
 
-  factory :empty_sample_tube, class: SampleTube, traits: [:tube_barcode] do
+  factory :empty_sample_tube, class: 'SampleTube', traits: [:tube_barcode] do
     name                { generate :asset_name }
     qc_state            { '' }
     association(:purpose, factory: :sample_tube_purpose) # { Tube::Purpose.standard_sample_tube }
@@ -83,7 +83,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:empty_library_tube, traits: [:tube_barcode], class: LibraryTube) do
+  factory(:empty_library_tube, traits: [:tube_barcode], class: 'LibraryTube') do
     name { generate :asset_name }
     association(:purpose, factory: :library_tube_purpose) #  { Tube::Purpose.standard_library_tube }
 
@@ -120,7 +120,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:tagged_library_tube, class: LibraryTube, traits: [:tube_barcode]) do
+  factory(:tagged_library_tube, class: 'LibraryTube', traits: [:tube_barcode]) do
     transient do
       tag_map_id { 1 }
       tag { build(:tag, map_id: tag_map_id) }
@@ -173,7 +173,7 @@ FactoryBot.define do
     end
   end
 
-  factory :phi_x_stock_tube, class: LibraryTube, traits: [:tube_barcode] do
+  factory :phi_x_stock_tube, class: 'LibraryTube', traits: [:tube_barcode] do
     transient do
       tag_option { 'Single' } # The PhiX Tag option to use, eg. Single/Dual
     end

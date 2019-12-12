@@ -14,12 +14,12 @@ FactoryBot.define do
     name { generate :asset_name }
   end
 
-  factory :plate_creator_purpose, class: Plate::Creator::PurposeRelationship do |_t|
+  factory :plate_creator_purpose, class: 'Plate::Creator::PurposeRelationship' do |_t|
     plate_creator
     plate_purpose
   end
 
-  factory :plate_creator, class: Plate::Creator do
+  factory :plate_creator, class: 'Plate::Creator' do
     name { generate :plate_creator_name }
   end
 
@@ -85,7 +85,7 @@ FactoryBot.define do
     end
   end
 
-  factory :fluidigm_pipeline, class: CherrypickPipeline do
+  factory :fluidigm_pipeline, class: 'CherrypickPipeline' do
     name                    { generate :pipeline_name }
     active                  { true }
     max_size                { 192 }
@@ -155,7 +155,7 @@ FactoryBot.define do
     end
   end
 
-  factory :library_completion, class: IlluminaHtp::Requests::LibraryCompletion do
+  factory :library_completion, class: 'IlluminaHtp::Requests::LibraryCompletion' do
     request_type do
       create(:request_type,
              name: 'Illumina-B Pooled',
@@ -183,7 +183,7 @@ FactoryBot.define do
     interactive { nil }
   end
 
-  factory :pipeline_admin, class: User do
+  factory :pipeline_admin, class: 'User' do
     login         { 'ad1' }
     email         { |a| "#{a.login}@example.com".downcase }
     pipeline_administrator { true }
@@ -197,7 +197,7 @@ FactoryBot.define do
     pipeline { |workflow| workflow.association(:pipeline, workflow: workflow.instance_variable_get('@instance')) }
   end
 
-  factory :lab_workflow_for_pipeline, class: Workflow do
+  factory :lab_workflow_for_pipeline, class: 'Workflow' do
     name                  { generate :lab_workflow_name }
     item_limit            { 2 }
     locale                { 'Internal' }
@@ -207,7 +207,7 @@ FactoryBot.define do
     end
   end
 
-  factory :fluidigm_pipeline_workflow, class: Workflow do
+  factory :fluidigm_pipeline_workflow, class: 'Workflow' do
     name { generate :lab_workflow_name }
 
     after(:build) do |workflow|
@@ -222,7 +222,7 @@ FactoryBot.define do
     end
   end
 
-  factory :cherrypick_pipeline_workflow, class: Workflow do
+  factory :cherrypick_pipeline_workflow, class: 'Workflow' do
     name { generate :lab_workflow_name }
 
     after(:build) do |workflow|

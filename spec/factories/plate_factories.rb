@@ -141,7 +141,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:full_plate, class: Plate, traits: %i[plate_barcode with_wells]) do
+  factory(:full_plate, class: 'Plate', traits: %i[plate_barcode with_wells]) do
     size { 96 }
     plate_purpose
 

@@ -62,7 +62,7 @@ FactoryBot.define do
     end
   end
 
-  factory :plate_template_with_well, class: PlateTemplate do
+  factory :plate_template_with_well, class: 'PlateTemplate' do
     sequence(:name) { |n| "testtemplate#{n}" }
     size { 96 }
     wells { [create(:well_with_sample_and_without_plate, map: create(:map))] }
