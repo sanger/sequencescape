@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :aker_job, class: Aker::Job do
+  factory :aker_job, class: 'Aker::Job' do
     sequence(:aker_job_id) { |n| n }
 
     aker_job_url { 'someurl' }

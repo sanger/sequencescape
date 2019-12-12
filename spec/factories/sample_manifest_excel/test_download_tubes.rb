@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :test_download_tubes, class: SampleManifestExcel::TestDownload do
+  factory :test_download_tubes, class: 'SampleManifestExcel::TestDownload' do
     columns { FactoryBot.build(:column_list) }
     validation_errors { [] }
     no_of_rows { 5 }
@@ -28,12 +28,12 @@ FactoryBot.define do
 
     # in partial download, 4 rows out of 6 are populated
     # 2 empty rows do not have supplier_sample_name and tags
-    factory :test_download_tubes_partial, class: SampleManifestExcel::TestDownload do
+    factory :test_download_tubes_partial, class: 'SampleManifestExcel::TestDownload' do
       partial { true }
     end
 
     # in cgap download, the sanger_tube_id column values are cgap barcodes
-    factory :test_download_tubes_cgap, class: SampleManifestExcel::TestDownload do
+    factory :test_download_tubes_cgap, class: 'SampleManifestExcel::TestDownload' do
       cgap { true }
     end
   end

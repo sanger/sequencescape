@@ -33,7 +33,7 @@ FactoryBot.define do
     end
   end
 
-  factory :request_base, class: Request do
+  factory :request_base, class: 'Request' do
     request_type
     request_purpose { :standard }
 
@@ -48,13 +48,13 @@ FactoryBot.define do
       request.sti_type = request.request_type.request_class_name
     end
 
-    factory :customer_request, class: CustomerRequest do
+    factory :customer_request, class: 'CustomerRequest' do
       sti_type { 'CustomerRequest' } # Oddly, this seems to be necessary!
       association(:request_type, factory: :customer_request_type)
     end
   end
 
-  factory :sequencing_request, class: SequencingRequest do
+  factory :sequencing_request, class: 'SequencingRequest' do
     association(:request_type, factory: :sequencing_request_type)
     request_purpose { :standard }
     sti_type { 'SequencingRequest' }
@@ -78,7 +78,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:library_creation_request, parent: :request, class: LibraryCreationRequest) do
+  factory(:library_creation_request, parent: :request, class: 'LibraryCreationRequest') do
     association(:asset, factory: :sample_tube)
     association(:request_type, factory: :library_creation_request_type)
 
@@ -90,18 +90,18 @@ FactoryBot.define do
   end
 
   # Well based library request as used in eg. Limber pipeline
-  factory :library_request, class: IlluminaHtp::Requests::StdLibraryRequest do
+  factory :library_request, class: 'IlluminaHtp::Requests::StdLibraryRequest' do
     association(:asset, factory: :well)
     association(:request_type, factory: :library_request_type)
     request_purpose { :standard }
     request_metadata_attributes { attributes_for :request_metadata_for_library_manufacture }
 
-    factory :gbs_request, class: IlluminaHtp::Requests::GbsRequest do
+    factory :gbs_request, class: 'IlluminaHtp::Requests::GbsRequest' do
       request_metadata_attributes { attributes_for :request_metadata_for_gbs }
     end
   end
 
-  factory(:multiplex_request, class: Request::Multiplexing) do
+  factory(:multiplex_request, class: 'Request::Multiplexing') do
     asset { nil }
     association(:target_asset, factory: :multiplexed_library_tube)
     association(:request_type, factory: :multiplex_request_type)
@@ -200,7 +200,7 @@ FactoryBot.define do
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory :request_traction_grid_ion, class: Request::Traction::GridIon do
+  factory :request_traction_grid_ion, class: 'Request::Traction::GridIon' do
     association(:asset, factory: :well)
     target_asset { nil }
     request_purpose { :standard }
@@ -208,7 +208,7 @@ FactoryBot.define do
     request_metadata_attributes { attributes_for(:request_traction_grid_ion_metadata) }
   end
 
-  factory :request_without_submission, class: Request do
+  factory :request_without_submission, class: 'Request' do
     request_type
     request_purpose { :standard }
 
@@ -221,7 +221,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:request_library_creation, class: Request::LibraryCreation, aliases: [:library_creation_request_for_testing_sequencing_requests]) do
+  factory(:request_library_creation, class: 'Request::LibraryCreation', aliases: [:library_creation_request_for_testing_sequencing_requests]) do
     association(:request_type, factory: :library_creation_request_type)
     request_purpose { :standard }
     asset        { |target| target.association(:well_with_sample_and_plate) }
@@ -229,7 +229,7 @@ FactoryBot.define do
     request_metadata_attributes { { fragment_size_required_from: 300, fragment_size_required_to: 500 } }
   end
 
-  factory(:external_multiplexed_library_tube_creation_request, class: ExternalLibraryCreationRequest) do
+  factory(:external_multiplexed_library_tube_creation_request, class: 'ExternalLibraryCreationRequest') do
     request_type { RequestType.external_multiplexed_library_creation }
     request_purpose { :standard }
     asset { create(:library_tube) }

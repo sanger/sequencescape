@@ -2,7 +2,7 @@
 
 # A plate that has exactly the right number of wells!
 FactoryBot.define do
-  factory(:transfer_plate, class: Plate) do
+  factory(:transfer_plate, class: 'Plate') do
     transient do
       well_count { 3 }
       well_locations { Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count)) }
@@ -18,7 +18,7 @@ FactoryBot.define do
   end
 
   # Transfers and their templates
-  factory(:transfer_between_plates, class: Transfer::BetweenPlates) do
+  factory(:transfer_between_plates, class: 'Transfer::BetweenPlates') do
     user
     association(:source,      factory: :transfer_plate)
     association(:destination, factory: :plate_with_empty_wells)
@@ -31,7 +31,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:transfer_from_plate_to_tube, class: Transfer::FromPlateToTube) do
+  factory(:transfer_from_plate_to_tube, class: 'Transfer::FromPlateToTube') do
     user
     source      { |target| target.association(:transfer_plate) }
     destination { |target| target.association(:library_tube) }
@@ -64,7 +64,7 @@ FactoryBot.define do
   # A tag group that works for the tag layouts
   sequence(:tag_group_for_layout_name) { |n| "Tag group #{n}" }
 
-  factory(:tag_group_for_layout, class: TagGroup) do
+  factory(:tag_group_for_layout, class: 'TagGroup') do
     sequence(:name) { |n| "Tag group layout #{n}" }
 
     transient do
@@ -99,7 +99,7 @@ FactoryBot.define do
     end
   end
 
-  factory :tag_layout_template_submission, class: TagLayout::TemplateSubmission do
+  factory :tag_layout_template_submission, class: 'TagLayout::TemplateSubmission' do
     submission
     tag_layout_template
   end
@@ -144,7 +144,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:bait_library_supplier, class: BaitLibrary::Supplier) do
+  factory(:bait_library_supplier, class: 'BaitLibrary::Supplier') do
     sequence(:name) { |i| "Bait Library Type #{i}" }
   end
 
@@ -160,7 +160,7 @@ FactoryBot.define do
     target_species { 'Human' }
   end
 
-  factory(:isc_request, class: Pulldown::Requests::IscLibraryRequest, aliases: [:pulldown_isc_request]) do
+  factory(:isc_request, class: 'Pulldown::Requests::IscLibraryRequest', aliases: [:pulldown_isc_request]) do
     transient do
       bait_library { BaitLibrary.first || create(:bait_library) }
     end
@@ -179,7 +179,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:re_isc_request, class: Pulldown::Requests::ReIscLibraryRequest) do
+  factory(:re_isc_request, class: 'Pulldown::Requests::ReIscLibraryRequest') do
     association(:request_type, factory: :library_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }

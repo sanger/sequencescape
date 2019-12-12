@@ -15,7 +15,7 @@ FactoryBot.define do
     tag { |tag| tag.association :tag, oligo: oligo }
   end
 
-  factory :tag2_layout_template_submission, class: Tag2Layout::TemplateSubmission do
+  factory :tag2_layout_template_submission, class: 'Tag2Layout::TemplateSubmission' do
     submission
     tag2_layout_template
   end

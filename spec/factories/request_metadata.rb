@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :request_metadata, class: Request::Metadata do
+  factory :request_metadata, class: 'Request::Metadata' do
     read_length { 76 }
     customer_accepts_responsibility { false }
   end
 
-  factory :request_traction_grid_ion_metadata, class: Request::Traction::GridIon::Metadata do
+  factory :request_traction_grid_ion_metadata, class: 'Request::Traction::GridIon::Metadata' do
     library_type { 'Rapid' }
     data_type { 'basecalls and raw data' }
     association(:owner, factory: :request_traction_grid_ion)
@@ -25,7 +25,7 @@ FactoryBot.define do
     factory :request_metadata_for_paired_end_sequencing
   end
 
-  factory :request_metadata_for_standard_sequencing_with_read_length, parent: :request_metadata, class: SequencingRequest::Metadata do
+  factory :request_metadata_for_standard_sequencing_with_read_length, parent: :request_metadata, class: 'SequencingRequest::Metadata' do
     fragment_size_required_from   { 1 }
     fragment_size_required_to     { 21 }
     read_length                   { 76 }
@@ -82,7 +82,7 @@ FactoryBot.define do
     factory :request_metadata_for_pulldown_library_creation
     factory :request_metadata_for_pulldown_multiplex_library_preparation
 
-    factory :request_metadata_for_gbs, class: IlluminaHtp::Requests::GbsRequest::Metadata do
+    factory :request_metadata_for_gbs, class: 'IlluminaHtp::Requests::GbsRequest::Metadata' do
       primer_panel_name { create(:primer_panel).name }
       association(:owner, factory: :gbs_request)
     end

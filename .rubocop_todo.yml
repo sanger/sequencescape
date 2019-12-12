@@ -55,7 +55,7 @@ Lint/DuplicateMethods:
 
 # Offense count: 1
 # Configuration parameters: AllowComments.
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Exclude:
     - 'test/test_helper.rb'
 
@@ -340,7 +340,7 @@ Naming/PredicateName:
 # Offense count: 15
 # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
 # AllowedNames: io, id, to, by, on, in, at, ip, db
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Exclude:
     - 'app/api/model_extensions/stamp.rb'
     - 'app/models/asset_shape.rb'
