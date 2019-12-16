@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :test_download_plates, class: SampleManifestExcel::TestDownload do
+  factory :test_download_plates, class: 'SampleManifestExcel::TestDownload' do
     columns { build :column_list }
     validation_errors { [] }
     num_plates { 2 }
@@ -29,16 +29,16 @@ FactoryBot.define do
     skip_create
 
     # in partial download, last 2 rows are left empty
-    factory :test_download_plates_partial, class: SampleManifestExcel::TestDownload do
+    factory :test_download_plates_partial, class: 'SampleManifestExcel::TestDownload' do
       partial { true }
     end
 
     # in cgap download, the sanger_plate_id column values are cgap barcodes
-    factory :test_download_plates_cgap, class: SampleManifestExcel::TestDownload do
+    factory :test_download_plates_cgap, class: 'SampleManifestExcel::TestDownload' do
       cgap { true }
     end
 
-    factory :test_download_plates_partial_cgap, class: SampleManifestExcel::TestDownload do
+    factory :test_download_plates_partial_cgap, class: 'SampleManifestExcel::TestDownload' do
       partial { true }
       cgap { true }
     end

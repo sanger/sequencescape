@@ -478,6 +478,22 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         expect(described_class.new(value: tag2_index, sample_manifest_asset: sample_manifest_asset)).not_to be_valid
       end
 
+      context 'when value and index are nil and tag exists that matches based on nil values' do
+        let!(:sf_tag2_group) { SequencescapeExcel::SpecialisedField::Tag2Group.new(value: nil) }
+        let!(:sf_tag2_index) { described_class.new(value: nil) }
+
+        before do
+          sf_tag2_index.sf_tag2_group = sf_tag2_group
+          Tag.create(oligo: 'XXXXXXXX')
+        end
+
+        it 'does not retrieve nil tag' do
+          expect(sf_tag2_index).to be_valid
+          sf_tag2_index.update(aliquot: aliquot)
+          expect(aliquot.tag2_id).to eq(-1)
+        end
+      end
+
       describe 'linking' do
         let!(:sf_tag2_group) { SequencescapeExcel::SpecialisedField::Tag2Group.new(value: tag2_group_name, sample_manifest_asset: sample_manifest_asset) }
         let!(:sf_tag2_index) { described_class.new(value: tag2_index, sample_manifest_asset: sample_manifest_asset) }

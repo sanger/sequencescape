@@ -249,13 +249,13 @@ class AccessionService
     response = rc.post(payload)
     case response.code
     when (200...300) # success
-      return response.body.to_s
+      response.body.to_s
     when (400...600)
       Rails.logger.warn($!)
       $! = nil
       raise AccessionServiceError
     else
-      return ''
+      ''
     end
   rescue StandardError => e
     raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"

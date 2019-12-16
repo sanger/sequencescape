@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :billing_product, class: Billing::Product do
+  factory :billing_product, class: 'Billing::Product' do
     billing_product_catalogue
     sequence(:name) { |n| "Product #{n}" }
     identifier { 'test' }

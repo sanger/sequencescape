@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :accession_tag, class: Accession::Tag do
+  factory :accession_tag, class: 'Accession::Tag' do
     name      { :tag_1 }
     groups    { %i[group_1 group_2] }
     services  { %i[SERVICE_1 SERVICE_2] }

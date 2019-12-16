@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :column, class: SequencescapeExcel::Column do
+  factory :column, class: 'SequencescapeExcel::Column' do
     sequence(:number)   { |n| n }
     name                { "column_#{number}".to_sym }
     heading             { "Column #{number}" }

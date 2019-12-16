@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :billing_field, class: Billing::Field do
+  factory :billing_field, class: 'Billing::Field' do
     sequence(:order) { |n| n }
     name { "field_#{order}" }
     number_of_spaces { 15 }

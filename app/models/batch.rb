@@ -307,9 +307,9 @@ class Batch < ApplicationRecord
     end
     if errors.empty?
       lab_events.create(description: 'Tube layout verified', user: user)
-      return true
+      true
     else
-      return false
+      false
     end
   end
 

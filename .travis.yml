@@ -20,7 +20,7 @@ env:
 branches:
   only:
   - master
-  - release
+  - develop
 before_install:
 - mv config/aker.yml.example config/aker.yml
 - yarn install
@@ -46,7 +46,7 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: bundle exec rake test
+    script: bundle exec rake test -f
     name: Rake Test
   - if: type != cron AND tag IS blank
     env:
@@ -57,7 +57,7 @@ jobs:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: xvfb-run -a bundle exec rake knapsack:rspec
+    script: xvfb-run -a bundle exec rake "knapsack:rspec[--fail-fast]"
     name: RSpec 1
   - if: type != cron AND tag IS blank
     env:
@@ -68,7 +68,7 @@ jobs:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: xvfb-run -a bundle exec rake knapsack:rspec
+    script: xvfb-run -a bundle exec rake "knapsack:rspec[--fail-fast]"
     name: RSpec 2
   - if: type != cron AND tag IS blank
     env:
@@ -79,7 +79,7 @@ jobs:
     - RAILS_ENV=test bundle exec rails webdrivers:chromedriver:update -r webdrivers
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: xvfb-run -a bundle exec rake knapsack:rspec
+    script: xvfb-run -a bundle exec rake "knapsack:rspec[--fail-fast]"
     name: RSpec 3
   - if: type != cron AND tag IS blank
     env:
