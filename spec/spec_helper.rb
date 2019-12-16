@@ -19,6 +19,10 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
+require 'knapsack'
+
+Knapsack::Adapters::RSpecAdapter.bind
+
 require 'simplecov'
 
 require 'webdrivers/chromedriver'

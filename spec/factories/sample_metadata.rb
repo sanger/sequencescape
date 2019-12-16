@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :sample_metadata, class: Sample::Metadata do
+  factory :sample_metadata, class: 'Sample::Metadata' do
     reference_genome_id { FactoryBot.create(:reference_genome).id }
     factory :sample_metadata_with_gender do
       gender { :male }

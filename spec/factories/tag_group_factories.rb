@@ -33,7 +33,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:tag_group_form_object, class: TagGroup::FormObject) do
+  factory(:tag_group_form_object, class: 'TagGroup::FormObject') do
     skip_create
 
     sequence(:name) { |n| "Tag Group #{n}" }
@@ -60,7 +60,7 @@ FactoryBot.define do
     end
   end
 
-  factory :adapter_type, class: TagGroup::AdapterType do
+  factory :adapter_type, class: 'TagGroup::AdapterType' do
     sequence(:name) { |i| "Adapter #{i}" }
   end
 end
