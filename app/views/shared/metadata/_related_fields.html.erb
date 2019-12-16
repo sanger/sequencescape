@@ -74,13 +74,27 @@
     <% end %>
 
     function attach_option_updater(target, source, values) {
-      $('#<%= root %>_' + source).change(function() {
+      // selector uses 'start with id' rather than 'equals id' to include radio buttons, where ids have the value appended
+      var selector = '[id^=' + '<%= root %>_' + source + ']';
+      var sourceFields = $(selector);
+      var isRadioButton = sourceFields.attr('type') == 'radio';
+
+      sourceFields.change(function() {
         select_to_change_options_in = $('#<%= root %>_' + target);
         selected_option = select_to_change_options_in.val();
         options = values[this.value].map(function(value) { return '<option value="' + value + '">' + value + '</option>'; });
         select_to_change_options_in.html(options.join('')).val(selected_option);
         select_to_change_options_in.trigger('change');
-      }).trigger('change');
+      });
+
+      // trigger change on load (for radio buttons, only if it's selected)
+      sourceFields.each(function() {
+        var isSelected = $(this).attr('checked') == 'checked';
+
+        if(!isRadioButton || (isRadioButton && isSelected)) {
+          $(this).trigger('change');
+        }
+      });
     };
   })(jQuery);
 </script>
