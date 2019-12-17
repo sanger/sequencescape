@@ -184,13 +184,10 @@ RSpec.describe 'Bug research' do
                 it 'raises an error when creating the transfer because it does not know which one is the right submission id' do
                   # There are 2 pools with equal configuration, so it does not know which pooling requests we are
                   # referring to when creating the transfer requests.
-                  create :transfer_between_plates, transfers: pool_transfer3, source: pcr_xp_plate1,
-                    destination: prepool_plate
-
                   expect{
                     create :transfer_between_plates, transfers: pool_transfer3, source: pcr_xp_plate1,
                       destination: prepool_plate
-                  }.to raise_error
+                  }.to raise_error(ActiveRecord::RecordInvalid)
                 end
               end
             end
