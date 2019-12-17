@@ -115,7 +115,7 @@ Metrics/MethodLength:
   Exclude:
     - 'db/migrate/*'
     - 'db/migrate_asset_refactor/*'
-Layout/IndentFirstArrayElement:
+Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
 Style/ClassAndModuleChildren:
   Enabled: false

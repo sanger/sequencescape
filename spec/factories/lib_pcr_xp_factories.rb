@@ -39,13 +39,13 @@ FactoryBot.define do
     key { 'Illumina_Lib_PCR_XP_Lib_Pool' }
   end
 
-  factory :lib_pool_tube, class: StockMultiplexedLibraryTube do
+  factory :lib_pool_tube, class: 'StockMultiplexedLibraryTube' do
     name { |_a| FactoryBot.generate :asset_name }
     association(:purpose, factory: :illumina_htp_initial_stock_tube_purpose)
     after(:create) { |tube| create(:transfer_request, target_asset: tube) }
   end
 
-  factory :lib_pool_norm_tube, class: MultiplexedLibraryTube do
+  factory :lib_pool_norm_tube, class: 'MultiplexedLibraryTube' do
     transient do
       parent_tube { create :lib_pool_tube }
     end

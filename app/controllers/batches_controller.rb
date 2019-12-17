@@ -369,7 +369,7 @@ class BatchesController < ApplicationController
     if batch_id.nil?
       @batch_error = 'Batch id not found.'
       render action: 'batch_error', format: :xml
-      return
+      nil
     else
       @batch = Batch.find(batch_id)
       render action: 'show', format: :xml

@@ -150,8 +150,11 @@ group :development, :test, :cucumber do
   gem 'font-awesome-sass'
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
+  gem 'knapsack'
   gem 'sass-rails'
+  gem 'sassc', '2.1.0'
   gem 'select2-rails'
+  gem 'webmock'
 end
 
 group :profile do
@@ -203,10 +206,8 @@ end
 group :cucumber do
   gem 'cucumber'
   gem 'cucumber-rails', require: false
-  gem 'knapsack'
   gem 'mime-types'
   gem 'rubyzip'
-  gem 'webmock'
 end
 
 group :deployment do

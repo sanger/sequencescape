@@ -33,7 +33,7 @@ FactoryBot.define do
     end
   end
 
-  factory :pac_bio_sequencing_batch, class: Batch do
+  factory :pac_bio_sequencing_batch, class: 'Batch' do
     transient do
       target_plate { create(:plate_with_tagged_wells, sample_count: request_count) }
       request_count { 0 }
