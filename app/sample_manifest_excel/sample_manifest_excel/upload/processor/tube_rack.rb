@@ -124,7 +124,10 @@ module SampleManifestExcel
           barcode = Barcode.includes(:asset).find_by(asset_id: tube_rack_barcode)
 
           if barcode.nil?
-            tube_rack = ::TubeRack.create!(size: @rack_size)
+            purpose = Purpose.where(target_type: 'TubeRack', size: @rack_size)
+            # TODO: handle where purpose not found
+            tube_rack = ::TubeRack.create!(size: @rack_size, plate_purpose_id: purpose[0].id)
+
             barcode_format = Barcode.matching_barcode_format(tube_rack_barcode)
             if barcode_format.nil?
               error_message = "The tube rack barcode '#{tube_rack_barcode}' is not a recognised format."

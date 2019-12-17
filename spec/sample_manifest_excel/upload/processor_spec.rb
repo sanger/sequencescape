@@ -599,7 +599,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(tube_rack_barcode_records.size).to eq(no_of_racks)
           tube_racks = TubeRack.find(tube_rack_barcode_records.map(&:asset_id))
           expect(tube_racks.compact.size).to eq(no_of_racks)
-          tube_racks.each { |rack| expect(rack.size).to eq(48) }
+          tube_racks.each do |rack|
+            expect(rack.size).to eq(48)
+            expect(Purpose.find(rack.plate_purpose_id).name).to eq('Purpose 2') # TODO: check this name is predictable from the factory - maybe make it more obvious why we're using this name
+          end
         end
 
         it 'will generate racked tubes to link tubes to racks' do
