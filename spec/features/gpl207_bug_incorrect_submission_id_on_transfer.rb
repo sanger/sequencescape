@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Bug research' do
-  context 'GPL-207' do
+  context 'with GPL-207' do
     context %(
        Incorrect submission ids recorded in transfer requests when other plates with
       the same samples have library requests under different submission ids still in progress
@@ -63,26 +63,104 @@ RSpec.describe 'Bug research' do
         end
 
         it 'will create the transfer requests under the submission id of the corresponding cherrypick request' do
-          expect(
-            pcr_xp_plate1.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id).uniq
-          ).to eq([submission_A])
-          expect(
-            pcr_xp_plate2.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id).uniq
-          ).to eq([submission_B])
+          expect(pcr_xp_plate1.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id).uniq).to eq([submission_A])
+          expect(pcr_xp_plate2.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id).uniq).to eq([submission_B])
         end
 
-        context 'when I create a LB Lib Prepool plate' do
+        context %(
+          when I create a LB Lib Prepool plate
+            and I create 1 Repooling ISC request for each well in the Lib PCR-XP plate) do
           let(:prepool_purpose) { create :plate_purpose, name: 'LB Lib Prepool' }
           let(:prepool_plate) do
             create :plate, :with_wells, sample_count: 9, plate_purpose: prepool_purpose
           end
 
-          context 'when I create 1 Repooling ISC request for each well in the Lib PCR-XP plate' do
-            let(:pool_instances1) { create_list :pre_capture_pool, 3 }
-            let(:submission_C) { 4 }
-            let(:submission_D) { 5 }
-            let(:submission_E) { 6 }
-            let(:pool_transfer1) do
+          let(:pool_instances1) { create_list :pre_capture_pool, 3 }
+          let(:submission_C) { 4 }
+          let(:submission_D) { 5 }
+          let(:submission_E) { 6 }
+          let(:pool_transfer1) do
+            {
+              'A1' => ['A1'],
+              'B1' => ['A1'],
+              'C1' => ['A1'],
+              'D1' => ['B1'],
+              'E1' => ['B1'],
+              'F1' => ['B1'],
+              'G1' => ['C1'],
+              'H1' => ['C1'],
+              'A2' => ['C1']
+            }
+          end
+          let(:pooling_definition1) do
+            [
+              %w[A1 B1 C1],
+              %w[D1 E1 F1],
+              %w[G1 H1 A2]
+            ]
+          end
+
+          before do
+            # We create the pool requests from the first Lib PCR-XP plate into the new empty Lb Lib Prepool
+            # getting wells in groups of 3 and setting submission 4,5 and 6 for the pools (at A1, B1, C1)
+            create_pool_requests(pcr_xp_plate1, pooling_definition1, pool_instances1, [submission_C, submission_D, submission_E])
+          end
+
+          it 'will create the transfer requests using the submissions ids from the Repooling requests' do
+            # Now we create the transfer requests that represent the pool from before
+            create :transfer_between_plates, transfers: pool_transfer1, source: pcr_xp_plate1,
+                                             destination: prepool_plate
+
+            # The new transfer requests should have the submission id from the pooling requests (4,5,6), not 1
+            s_ids = prepool_plate.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id)
+            expect(s_ids.uniq).to eq([submission_C, submission_D, submission_E])
+          end
+
+          # context 'when I create another Repooling ISC request for each well in the Lib PCR-XP plate' do
+          context 'when I create another Repooling ISC and the new pooling has a different transfers definition' do
+            let(:submission_F) { 7 }
+            let(:submission_G) { 8 }
+            let(:pool_instances2) { create_list :pre_capture_pool, 2 }
+            let(:pool_transfer2) do
+              {
+                'A1' => ['A1'],
+                'B1' => ['A1'],
+                'C1' => ['A1'],
+                'D1' => ['A1'],
+                'E1' => ['B1'],
+                'F1' => ['B1'],
+                'G1' => ['B1'],
+                'H1' => ['B1'],
+                'A2' => ['B1']
+              }
+            end
+            let(:pooling_definition2) do
+              [
+                %w[A1 B1 C1 D1],
+                %w[E1 F1 G1 H1 A2]
+              ]
+            end
+
+            before do
+              # Now we create another repooling
+              create_pool_requests(pcr_xp_plate1, pooling_definition2, pool_instances2, [submission_F, submission_G])
+            end
+
+            it 'creates the transfer with the right submission id' do
+              create :transfer_between_plates, transfers: pool_transfer2, source: pcr_xp_plate1,
+                                               destination: prepool_plate
+
+              s_ids = prepool_plate.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id)
+              expect(s_ids.uniq).to eq([submission_F, submission_G])
+            end
+          end
+
+          context 'when I create another Repooling ISC and and the new pooling has the same transfers definition' do
+            let(:submission_H) { 9 }
+            let(:submission_I) { 10 }
+            let(:submission_J) { 11 }
+            let(:pool_instances3) { create_list :pre_capture_pool, 3 }
+            let(:pool_transfer3) do
               {
                 'A1' => ['A1'],
                 'B1' => ['A1'],
@@ -95,7 +173,7 @@ RSpec.describe 'Bug research' do
                 'A2' => ['C1']
               }
             end
-            let(:pooling_definition1) do
+            let(:pooling_definition3) do
               [
                 %w[A1 B1 C1],
                 %w[D1 E1 F1],
@@ -104,100 +182,17 @@ RSpec.describe 'Bug research' do
             end
 
             before do
-              # We create the pool requests from the first Lib PCR-XP plate into the new empty Lb Lib Prepool
-              # getting wells in groups of 3 and setting submission 4,5 and 6 for the pools (at A1, B1, C1)
-              create_pool_requests(pcr_xp_plate1, pooling_definition1, pool_instances1, [submission_C, submission_D, submission_E])
+              # Now we create another repooling
+              create_pool_requests(pcr_xp_plate1, pooling_definition3, pool_instances3, [submission_H, submission_I, submission_J])
             end
 
-            it 'will create the transfer requests using the submissions ids from the Repooling requests' do
-              # Now we create the transfer requests that represent the pool from before
-              create :transfer_between_plates, transfers: pool_transfer1, source: pcr_xp_plate1,
-                                               destination: prepool_plate
-
-              # The new transfer requests should have the submission id from the pooling requests (4,5,6), not 1
-              s_ids = prepool_plate.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id)
-              expect(s_ids.uniq).to eq([submission_C, submission_D, submission_E])
-            end
-
-            context 'when I create another Repooling ISC request for each well in the Lib PCR-XP plate' do
-              context 'when the new pooling has a different transfers definition' do
-                let(:submission_F) { 7 }
-                let(:submission_G) { 8 }
-                let(:pool_instances2) { create_list :pre_capture_pool, 2 }
-                let(:pool_transfer2) do
-                  {
-                    'A1' => ['A1'],
-                    'B1' => ['A1'],
-                    'C1' => ['A1'],
-                    'D1' => ['A1'],
-                    'E1' => ['B1'],
-                    'F1' => ['B1'],
-                    'G1' => ['B1'],
-                    'H1' => ['B1'],
-                    'A2' => ['B1']
-                  }
-                end
-                let(:pooling_definition2) do
-                  [
-                    %w[A1 B1 C1 D1],
-                    %w[E1 F1 G1 H1 A2]
-                  ]
-                end
-
-                before do
-                  # Now we create another repooling
-                  create_pool_requests(pcr_xp_plate1, pooling_definition2, pool_instances2, [submission_F, submission_G])
-                end
-
-                it 'creates the transfer with the right submission id' do
-                  create :transfer_between_plates, transfers: pool_transfer2, source: pcr_xp_plate1,
-                                                   destination: prepool_plate
-
-                  s_ids = prepool_plate.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id)
-                  expect(s_ids.uniq).to eq([submission_F, submission_G])
-                end
-              end
-
-              context 'when the new pooling has the same transfers definition' do
-                let(:submission_H) { 9 }
-                let(:submission_I) { 10 }
-                let(:submission_J) { 11 }
-                let(:pool_instances3) { create_list :pre_capture_pool, 3 }
-                let(:pool_transfer3) do
-                  {
-                    'A1' => ['A1'],
-                    'B1' => ['A1'],
-                    'C1' => ['A1'],
-                    'D1' => ['B1'],
-                    'E1' => ['B1'],
-                    'F1' => ['B1'],
-                    'G1' => ['C1'],
-                    'H1' => ['C1'],
-                    'A2' => ['C1']
-                  }
-                end
-                let(:pooling_definition3) do
-                  [
-                    %w[A1 B1 C1],
-                    %w[D1 E1 F1],
-                    %w[G1 H1 A2]
-                  ]
-                end
-
-                before do
-                  # Now we create another repooling
-                  create_pool_requests(pcr_xp_plate1, pooling_definition3, pool_instances3, [submission_H, submission_I, submission_J])
-                end
-
-                it 'raises an error when creating the transfer because it does not know which one is the right submission id' do
-                  # There are 2 pools with equal configuration, so it does not know which pooling requests we are
-                  # referring to when creating the transfer requests.
-                  expect do
-                    create :transfer_between_plates, transfers: pool_transfer3, source: pcr_xp_plate1,
-                                                     destination: prepool_plate
-                  end.to raise_error(ActiveRecord::RecordInvalid)
-                end
-              end
+            it 'raises an error when creating the transfer because it does not know which one is the right submission id' do
+              # There are 2 pools with equal configuration, so it does not know which pooling requests we are
+              # referring to when creating the transfer requests.
+              expect do
+                create :transfer_between_plates, transfers: pool_transfer3, source: pcr_xp_plate1,
+                                                 destination: prepool_plate
+              end.to raise_error(ActiveRecord::RecordInvalid)
             end
           end
         end
