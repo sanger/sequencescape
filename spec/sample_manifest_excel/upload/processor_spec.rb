@@ -599,10 +599,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(tube_rack_barcode_records.size).to eq(no_of_racks)
           tube_racks = TubeRack.find(tube_rack_barcode_records.map(&:asset_id))
           expect(tube_racks.compact.size).to eq(no_of_racks)
+          purpose = Purpose.where(target_type: 'TubeRack', size: 48).first
+          expect(purpose).not_to be_nil
           tube_racks.each do |rack|
             expect(rack.size).to eq(48)
-            purpose = Purpose.where(target_type: 'TubeRack', size: 48).first
-            expect(purpose).not_to be_nil
             expect(rack.plate_purpose_id).to eq(purpose.id)
           end
         end
