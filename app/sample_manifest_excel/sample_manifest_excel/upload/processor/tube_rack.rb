@@ -124,7 +124,11 @@ module SampleManifestExcel
           barcode = Barcode.includes(:asset).find_by(asset_id: tube_rack_barcode)
 
           if barcode.nil?
-            tube_rack = ::TubeRack.create!(size: @rack_size)
+            # TODO: Purpose should be set based on what's selected when generating the manifest
+            # https://github.com/sanger/sequencescape/issues/2469
+            purpose = Purpose.where(target_type: 'TubeRack', size: @rack_size).first
+            tube_rack = ::TubeRack.create!(size: @rack_size, plate_purpose_id: purpose&.id)
+
             barcode_format = Barcode.matching_barcode_format(tube_rack_barcode)
             if barcode_format.nil?
               error_message = "The tube rack barcode '#{tube_rack_barcode}' is not a recognised format."
