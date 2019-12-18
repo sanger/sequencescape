@@ -601,7 +601,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(tube_racks.compact.size).to eq(no_of_racks)
           tube_racks.each do |rack|
             expect(rack.size).to eq(48)
-            expect(Purpose.find(rack.plate_purpose_id).name).to eq('Purpose 2') # TODO: check this name is predictable from the factory - maybe make it more obvious why we're using this name
+            purpose = Purpose.where(target_type: 'TubeRack', size: 48).first
+            expect(purpose).not_to be_nil
+            expect(rack.plate_purpose_id).to eq(purpose.id)
           end
         end
 
