@@ -125,8 +125,7 @@ module SampleManifestExcel
 
           if barcode.nil?
             # TODO: Purpose should be set based on what's selected when generating the manifest
-            # This would require the Tube Rack to be created at that point
-            # Or, the purpose to be recorded somewhere in the manifest
+            # https://github.com/sanger/sequencescape/issues/2469
             purpose = Purpose.where(target_type: 'TubeRack', size: @rack_size).first
             tube_rack = ::TubeRack.create!(size: @rack_size, plate_purpose_id: purpose&.id)
 
