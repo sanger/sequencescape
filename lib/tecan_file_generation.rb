@@ -33,6 +33,7 @@ module Sanger
             all_barcodes = []
             barcode_lookup = {}
             destination.each do |_plate_id, plate_info|
+              # sort plate_info['mapping'] by "dst_well" before looping
               plate_info['mapping'].each do |map_well|
                 well = map_well['src_well']
                 all_barcodes << well[0]

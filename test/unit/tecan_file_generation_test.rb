@@ -194,14 +194,15 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
       @barcodes = {
         '5555' =>
           { 'mapping' => [
-            { 'src_well' =>  %w[88888 A7], 'dst_well' => 'A1', 'volume' => 13, 'buffer_volume' => 0.0  },
-            { 'src_well' =>  %w[66666 H7], 'dst_well' => 'B2', 'volume' => 13, 'buffer_volume' => 0.0  },
-            { 'src_well' =>  %w[99999 C7], 'dst_well' => 'B3', 'volume' => 13, 'buffer_volume' => 0.0  },
-            { 'src_well' =>  %w[88888 A1], 'dst_well' => 'H9', 'volume' => 13, 'buffer_volume' => 0.0  }
+            { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S0093', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  %w[88888 A1], 'dst_well' => 'S001', 'volume' => 13, 'buffer_volume' => 0.0  }
           ] }
       }
-      @expected_order = { '88888' => 1, '66666' => 2, '99999' => 3 }
+      @expected_order = { '88888' => 1, '99999' => 2, '66666' => 3 }
       @source_index = Sanger::Robots::Tecan::Generator.source_barcode_to_plate_index(@barcodes)
+      puts "@source_index: #{@source_index}"
     end
 
     should 'remap barcodes to start at 1' do
@@ -211,8 +212,31 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
         assert @source_index[source_barcode] <= @expected_order.length
       end
     end
-    should 'preserve mapping order' do
+    should 'not preserve mapping order' do
       assert_equal @expected_order, @source_index
+    end
+  end
+
+  context '#sort_mapping_by_destination_well' do
+    setup do
+      @mapping = [
+        { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0  },
+        { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S0093', 'volume' => 13, 'buffer_volume' => 0.0  },
+        { 'src_well' =>  %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0  },
+        { 'src_well' =>  %w[88888 A1], 'dst_well' => 'S001', 'volume' => 13, 'buffer_volume' => 0.0  }
+      ]
+      @expected_order = [
+        { 'src_well' =>  %w[88888 A1], 'dst_well' => 'S001', 'volume' => 13, 'buffer_volume' => 0.0  },
+        { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0  },
+        { 'src_well' =>  %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0  },
+        { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S0093', 'volume' => 13, 'buffer_volume' => 0.0  }
+      ]
+      @new_order = Sanger::Robots::Tecan::Generator.sort_mapping_by_destination_well(@mapping)
+      puts "@new_order: #{@new_order}"
+    end
+
+    should 'sort mapping by the destination well barcode' do
+      assert_equal @expected_order, @new_order
     end
   end
 end
