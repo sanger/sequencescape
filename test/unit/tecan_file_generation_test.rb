@@ -5,6 +5,13 @@ require 'tecan_file_generation'
 
 class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
   context 'Sanger::Robots::Tecan::Generator' do
+    setup do
+      asset_shape = AssetShape.find_by(name: 'Standard')
+      purpose = Purpose.create!(name: 'test purpose', target_type: 'Plate', size: 96, asset_shape_id: asset_shape.id)
+      plate = Plate.create!(plate_purpose_id: purpose.reload.id)
+      @barcode = Barcode.create!(asset_id: plate.id, barcode: 'NT17687E', format: 0)
+    end
+
     @testcases = []
     # original
     file = File.open('test/data/tecan/original.gwl', 'rb')
@@ -19,7 +26,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
         }
       },
       'destination' => {
-        '119572' => {
+        'NT17687E' => {
           'name' => 'ABgene 0800',
           'plate_size' => 96,
           'mapping' => [
@@ -62,7 +69,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
     @testcases << { data_object: data_object, expected_output: expected_output }
 
-    file = File.open('test/data/tecan/127073.gwl', 'rb')
+    file = File.open('test/data/tecan/NT17687E.gwl', 'rb')
     expected_output = file.read
     data_object = {
       'user' => 'xyz987',
@@ -82,7 +89,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
         }
       },
       'destination' => {
-        '127073' => {
+        'NT17687E' => {
           'name' => 'ABgene 0800',
           'plate_size' => 96,
           'mapping' => [
@@ -110,7 +117,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
         }
       },
       'destination' => {
-        '1220415928662' => {
+        'NT17687E' => {
           'name' => 'ABgene 0800',
           'plate_size' => 96,
           'mapping' => [
@@ -158,7 +165,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
           should 'contain a footer' do
             assert_match(
-              /C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = [0-9]+\n$/,
+              /C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = NT[0-9]+E\n$/,
               Sanger::Robots::Tecan::Generator.mapping(@data_object, 13)
             )
           end
@@ -191,8 +198,13 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
   context '#source_barcode_to_plate_index' do
     setup do
+      asset_shape = AssetShape.find_by(name: 'Fluidigm192')
+      purpose = Purpose.create!(name: 'test purpose', target_type: 'Plate', size: 192, asset_shape_id: asset_shape.id)
+      plate = Plate.create!(plate_purpose_id: purpose.reload.id, size: 192)
+      @barcode = Barcode.create!(asset_id: plate.id, barcode: 'NT17695E', format: 0)
+
       @barcodes = {
-        '5555' =>
+        'NT17695E' =>
           { 'mapping' => [
             { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
             { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 },
@@ -218,6 +230,12 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
   context '#sort_mapping_by_destination_well' do
     setup do
+
+      asset_shape = AssetShape.find_by(name: 'Fluidigm192')
+      purpose = Purpose.create!(name: 'test purpose', target_type: 'Plate', size: 192, asset_shape_id: asset_shape.id)
+      plate = Plate.create!(plate_purpose_id: purpose.reload.id, size: 192)
+      @barcode = Barcode.create!(asset_id: plate.id, barcode: 'NT17695E', format: 0)
+
       @mapping = [
         { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
         { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 },
@@ -230,7 +248,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
         { 'src_well' =>  %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0 },
         { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 }
       ]
-      @new_order = Sanger::Robots::Tecan::Generator.sort_mapping_by_destination_well(@mapping)
+      @new_order = Sanger::Robots::Tecan::Generator.sort_mapping_by_destination_well(@barcode.barcode, @mapping)
     end
 
     should 'sort mapping by the destination well barcode' do

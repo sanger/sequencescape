@@ -30,12 +30,13 @@ module Sanger
           end
 
           def source_barcode_to_plate_index(destination)
+            # puts "destination: #{destination}"
             all_barcodes = []
             barcode_lookup = {}
-            destination.each do |_plate_id, plate_info|
+            destination.each do |plate_id, plate_info|
               # sort by destination well to make sure the plates are put the right way round for the robot
               # 'SCRC1' goes into the 1st row of the fluidigm chip, and 'SCRC2' into the 2nd
-              mapping_sorted = sort_mapping_by_destination_well(plate_info['mapping'])
+              mapping_sorted = sort_mapping_by_destination_well(plate_id, plate_info['mapping'])
               mapping_sorted.each do |map_well|
                 well = map_well['src_well']
                 all_barcodes << well[0]
@@ -47,8 +48,22 @@ module Sanger
             barcode_lookup
           end
 
-          def sort_mapping_by_destination_well(mapping)
-            mapping.sort_by { |a| a['dst_well'] }
+          def sort_mapping_by_destination_well(plate_id, mapping)
+            # query the relevant 'map' records based on:
+            # asset shape id (get from the plate purpose)
+            # asset size? (get from plate)
+            # then sort by row order
+            plate = Plate.find_by_barcode(plate_id)
+            purpose = Purpose.find(plate.plate_purpose_id)
+            relevant_map_records = Map.where(asset_shape_id: purpose.asset_shape_id, asset_size: plate.size)
+            relevant_map_records_by_name = {}
+            relevant_map_records.each { |map_record| relevant_map_records_by_name[map_record.description] = map_record }
+
+            mapping.sort_by do |a|
+              map_record_name = a['dst_well']
+              relevant_map_record = relevant_map_records_by_name[map_record_name]
+              relevant_map_record.row_order
+            end
           end
 
           private
