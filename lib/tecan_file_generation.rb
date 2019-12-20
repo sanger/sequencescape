@@ -48,9 +48,7 @@ module Sanger
           end
 
           def sort_mapping_by_destination_well(mapping)
-            mapping.sort do |a, b|
-              a['dst_well'] <=> b['dst_well']
-            end
+            mapping.sort_by { |a| a['dst_well'] }
           end
 
           private
