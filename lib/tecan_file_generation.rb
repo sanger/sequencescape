@@ -30,7 +30,6 @@ module Sanger
           end
 
           def source_barcode_to_plate_index(destination)
-            # puts "destination: #{destination}"
             all_barcodes = []
             barcode_lookup = {}
             destination.each do |plate_id, plate_info|
