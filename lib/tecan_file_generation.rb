@@ -48,10 +48,7 @@ module Sanger
           end
 
           def sort_mapping_by_destination_well(plate_id, mapping)
-            # query the relevant 'map' records based on:
-            # asset shape id (get from the plate purpose)
-            # asset size? (get from plate)
-            # then sort by row order
+            # query relevant 'map' records based on asset shape id & asset size, then sort by row order
             plate = Plate.find_by_barcode(plate_id)
             purpose = Purpose.find(plate.plate_purpose_id)
             relevant_map_records = Map.where(asset_shape_id: purpose.asset_shape_id, asset_size: plate.size)
