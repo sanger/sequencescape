@@ -51,14 +51,14 @@ module Sanger
             # query relevant 'map' records based on asset shape id & asset size, then sort by row order
             plate = Plate.find_by_barcode(plate_id)
             purpose = Purpose.find(plate.plate_purpose_id)
+
             relevant_map_records = Map.where(asset_shape_id: purpose.asset_shape_id, asset_size: plate.size)
             relevant_map_records_by_name = {}
             relevant_map_records.each { |map_record| relevant_map_records_by_name[map_record.description] = map_record }
 
             mapping.sort_by do |a|
-              map_record_name = a['dst_well']
-              relevant_map_record = relevant_map_records_by_name[map_record_name]
-              relevant_map_record.row_order
+              map_record_description = a['dst_well']
+              relevant_map_records_by_name[map_record_description].row_order
             end
           end
 
