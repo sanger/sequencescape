@@ -211,7 +211,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
         assert @source_index[source_barcode] <= @expected_order.length
       end
     end
-    should 'not preserve mapping order' do
+    should 'order source plates by destination well barcode to match the way the robot picks' do
       assert_equal @expected_order, @source_index
     end
   end
