@@ -33,6 +33,8 @@ module Sanger
             all_barcodes = []
             barcode_lookup = {}
             destination.each do |_plate_id, plate_info|
+              # sort by destination well to make sure the plates are put the right way round for the robot
+              # 'SCRC1' goes into the 1st row of the fluidigm chip, and 'SCRC2' into the 2nd
               mapping_sorted = sort_mapping_by_destination_well(plate_info['mapping'])
               mapping_sorted.each do |map_well|
                 well = map_well['src_well']
