@@ -283,7 +283,7 @@ GEM
     nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
     parallel (1.19.1)
-    parser (2.6.5.0)
+    parser (2.7.0.0)
       ast (~> 2.4.0)
     path_expander (1.1.0)
     popper_js (1.14.5)
@@ -299,7 +299,7 @@ GEM
     pusher-client (0.6.2)
       json
       websocket (~> 1.0)
-    rack (2.0.7)
+    rack (2.0.8)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
     rack-cors (1.1.0)
@@ -374,7 +374,7 @@ GEM
     rspec-support (3.9.0)
     rspec_junit_formatter (0.4.1)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (0.77.0)
+    rubocop (0.78.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.6)
@@ -383,7 +383,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 1.7)
     rubocop-performance (1.5.1)
       rubocop (>= 0.71.0)
-    rubocop-rails (2.3.2)
+    rubocop-rails (2.4.1)
       rack (>= 1.1)
       rubocop (>= 0.72.0)
     rubocop-rspec (1.37.0)
@@ -573,6 +573,7 @@ DEPENDENCIES
   rubyzip
   sanger_barcode_format!
   sass-rails
+  sassc (= 2.1.0)
   select2-rails
   shoulda-context
   shoulda-matchers
