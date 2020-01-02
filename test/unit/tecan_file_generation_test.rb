@@ -9,7 +9,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
       asset_shape = AssetShape.find_by(name: 'Standard')
       purpose = Purpose.create!(name: 'test purpose', target_type: 'Plate', size: 96, asset_shape_id: asset_shape.id)
       plate = Plate.create!(plate_purpose_id: purpose.reload.id)
-      @barcode = Barcode.create!(asset_id: plate.id, barcode: 'NT17687E', format: 0)
+      @barcode = Barcode.create!(asset_id: plate.id, barcode: 'DN12345U', format: 6)
     end
 
     @testcases = []
@@ -26,7 +26,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
         }
       },
       'destination' => {
-        'NT17687E' => {
+        'DN12345U' => {
           'name' => 'ABgene 0800',
           'plate_size' => 96,
           'mapping' => [
@@ -69,7 +69,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
     @testcases << { data_object: data_object, expected_output: expected_output }
 
-    file = File.open('test/data/tecan/NT17687E.gwl', 'rb')
+    file = File.open('test/data/tecan/DN12345U.gwl', 'rb')
     expected_output = file.read
     data_object = {
       'user' => 'xyz987',
@@ -89,7 +89,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
         }
       },
       'destination' => {
-        'NT17687E' => {
+        'DN12345U' => {
           'name' => 'ABgene 0800',
           'plate_size' => 96,
           'mapping' => [
@@ -117,7 +117,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
         }
       },
       'destination' => {
-        'NT17687E' => {
+        'DN12345U' => {
           'name' => 'ABgene 0800',
           'plate_size' => 96,
           'mapping' => [
@@ -165,7 +165,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
           should 'contain a footer' do
             assert_match(
-              /C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = NT[0-9]+E\n$/,
+              /C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = DN[0-9]+U\n$/,
               Sanger::Robots::Tecan::Generator.mapping(@data_object, 13)
             )
           end
@@ -201,10 +201,10 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
       asset_shape = AssetShape.find_by(name: 'Fluidigm192')
       purpose = Purpose.create!(name: 'test purpose', target_type: 'Plate', size: 192, asset_shape_id: asset_shape.id)
       plate = Plate.create!(plate_purpose_id: purpose.reload.id, size: 192)
-      @barcode = Barcode.create!(asset_id: plate.id, barcode: 'NT17695E', format: 0)
+      @barcode = Barcode.create!(asset_id: plate.id, barcode: 'DN12345U', format: 0)
 
       @barcodes = {
-        'NT17695E' =>
+        'DN12345U' =>
           { 'mapping' => [
             { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
             { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 },
@@ -233,7 +233,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
       asset_shape = AssetShape.find_by(name: 'Fluidigm192')
       purpose = Purpose.create!(name: 'test purpose', target_type: 'Plate', size: 192, asset_shape_id: asset_shape.id)
       plate = Plate.create!(plate_purpose_id: purpose.reload.id, size: 192)
-      @barcode = Barcode.create!(asset_id: plate.id, barcode: 'NT17695E', format: 0)
+      @barcode = Barcode.create!(asset_id: plate.id, barcode: 'DN12345U', format: 0)
 
       @mapping = [
         { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
