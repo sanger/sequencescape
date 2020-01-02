@@ -49,7 +49,7 @@ module Sanger
 
           def sort_mapping_by_destination_well(plate_id, mapping)
             # query relevant 'map' records based on asset shape id & asset size, then sort by row order
-            # return the original mapping if the Plate cannot be found using the barcde - for instance, if this is coming from stock_stamper.rb
+            # return the original mapping if the Plate cannot be found using the barcode - for instance, if this is coming from stock_stamper.rb
             plate = Plate.find_by_barcode(plate_id)
             return mapping if plate.nil?
 
