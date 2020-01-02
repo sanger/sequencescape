@@ -230,7 +230,6 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
   context '#sort_mapping_by_destination_well' do
     setup do
-
       asset_shape = AssetShape.find_by(name: 'Fluidigm192')
       purpose = Purpose.create!(name: 'test purpose', target_type: 'Plate', size: 192, asset_shape_id: asset_shape.id)
       plate = Plate.create!(plate_purpose_id: purpose.reload.id, size: 192)
