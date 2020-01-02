@@ -56,12 +56,12 @@ module Sanger
             purpose = Purpose.find(plate.plate_purpose_id)
 
             relevant_map_records = Map.where(asset_shape_id: purpose.asset_shape_id, asset_size: plate.size)
-            relevant_map_records_by_name = {}
-            relevant_map_records.each { |map_record| relevant_map_records_by_name[map_record.description] = map_record }
+            relevant_map_records_by_description = {}
+            relevant_map_records.each { |map_record| relevant_map_records_by_description[map_record.description] = map_record }
 
             mapping.sort_by do |a|
               map_record_description = a['dst_well']
-              relevant_map_records_by_name[map_record_description].row_order
+              relevant_map_records_by_description[map_record_description].row_order
             end
           end
 
