@@ -4,7 +4,8 @@ module Sdb::SampleManifestsHelper
       '1dtube' => 'Tubes required',
       'plate' => 'Plates required',
       'library' => 'Tubes required',
-      'multiplexed_library' => 'Number of samples in library'
+      'multiplexed_library' => 'Number of samples in library',
+      'tube_rack' => 'Tube racks required'
     }
   end
 
@@ -16,5 +17,29 @@ module Sdb::SampleManifestsHelper
   # @return [String] Suitable label text
   def count_label_for(asset_type)
     count_labels.fetch(asset_type, 'Count')
+  end
+
+  def submit_label_for(asset_type)
+    if asset_type == 'tube_rack'
+      'Create manifest'
+    else
+      'Create manifest and print labels'
+    end
+  end
+
+  def purpose_label_for(asset_type)
+    if asset_type == 'tube_rack'
+      'Tube purpose'
+    else
+      'Purpose'
+    end
+  end
+
+  def count_barcode_heading_for(asset_type)
+    if asset_type == 'tube_rack'
+      'Tube Racks'
+    else
+      'Barcodes'
+    end
   end
 end

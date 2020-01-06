@@ -5,7 +5,8 @@ module SampleManifestExcel
   # and the updating of samples and their assets in Sequencescape
   module Upload
     ##
-    # An upload will:
+    # An upload will
+    # *Find the start row based on the Sanger Sample Id column header cell
     # *Create a Data object based on the file.
     # *Extract the columns based on the headings in the spreadsheet
     # *Find the sanger sample id column
@@ -18,7 +19,7 @@ module SampleManifestExcel
 
       attr_accessor :file, :column_list, :start_row, :override
 
-      attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor
+      attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor, :cache # TODO: probably shouldn't add the cache here, do it another way
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
       validate :check_data
@@ -33,7 +34,8 @@ module SampleManifestExcel
 
       def initialize(attributes = {})
         super
-        @data = Upload::Data.new(file, start_row)
+        @data = Upload::Data.new(file)
+        @start_row = @data.start_row
         @columns = column_list.extract(data.header_row.reject(&:blank?) || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
         @cache = Cache.new(self)
@@ -48,7 +50,7 @@ module SampleManifestExcel
       end
 
       ##
-      # The sample manifest is retrieved by taking the sample from the first row and retrieving
+      # The sample manifest is retrieved by taking the sanger sample id from the first row and retrieving
       # its sample manifest.
       # If it can't be found the upload will fail.
       def derive_sample_manifest
@@ -115,6 +117,8 @@ module SampleManifestExcel
           Upload::Processor::MultiplexedLibraryTube.new(self)
         when 'plate', 'library_plate'
           Upload::Processor::Plate.new(self)
+        when 'tube_rack'
+          Upload::Processor::TubeRack.new(self)
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end

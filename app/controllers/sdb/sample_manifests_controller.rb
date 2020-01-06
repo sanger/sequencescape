@@ -25,6 +25,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @studies = Study.alphabetical.pluck(:name, :id)
     @suppliers = Supplier.alphabetical.pluck(:name, :id)
     @purposes = @sample_manifest.acceptable_purposes.pluck(:name, :id)
+    @rack_purposes = @sample_manifest.acceptable_rack_purposes.pluck(:name, :id) if params[:asset_type] == 'tube_rack'
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
   end
