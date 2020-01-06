@@ -64,6 +64,7 @@ class SampleManifest < ApplicationRecord
   belongs_to :project
   belongs_to :user
   belongs_to :purpose
+  belongs_to :tube_rack_purpose, class_name: 'TubeRack::Purpose', foreign_key: :tube_rack_purpose_id, inverse_of: :sample_manifests
   has_many :samples, inverse_of: :sample_manifest
   accepts_nested_attributes_for :samples
 
@@ -84,8 +85,8 @@ class SampleManifest < ApplicationRecord
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
-  delegate :printables, :acceptable_purposes, :labware, :labware=,
-           :pending_external_library_creation_requests, :default_purpose,
+  delegate :printables, :acceptable_purposes, :acceptable_rack_purposes, :labware, :labware=,
+           :pending_external_library_creation_requests, :default_purpose, :default_tube_rack_purpose,
            to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
 
@@ -183,6 +184,14 @@ class SampleManifest < ApplicationRecord
 
   def purpose_id
     super || purpose.id
+  end
+
+  def tube_rack_purpose
+    super || default_tube_rack_purpose
+  end
+
+  def tube_rack_purpose_id
+    super || tube_rack_purpose.id
   end
 
   # Upon upload, sample manifests might generate qc_results for certain

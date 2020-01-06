@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_manifest_excel: true, sample_manifest: true do
+RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
   include SequencescapeExcel::Helpers
 
   def cell(row, column)
@@ -35,8 +35,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
     before do
       barcode = build(:plate_barcode, barcode: 23)
       allow(PlateBarcode).to receive(:create).and_return(barcode)
-
-      download.worksheet.sample_manifest.generate
       download.save(test_file_name)
     end
 
@@ -515,6 +513,321 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
           end
+        end
+      end
+    end
+
+    describe SampleManifestExcel::Upload::Processor::TubeRack, manifest_type: 'tube_rack' do
+      let(:column_list) { configuration.columns.tube_rack_default }
+      let(:download) { build(:test_download_tubes_in_rack, columns: column_list, manifest_type: 'tube_rack_default', type: 'Tube Racks', count: no_of_racks, no_of_rows: no_of_rows - 1) }
+      let(:mock_microservice_responses) do
+        {
+          'RK11111110' => {
+            'rack_barcode' => 'RK11111110',
+            'layout' => {
+              'TB11111110' => 'e8',
+              'TB11111111' => 'b4'
+            }
+          },
+          'RK11111111' => {
+            'rack_barcode' => 'RK11111111',
+            'layout' => {
+              'TB11111112' => 'a3',
+              'TB11111113' => 'd6'
+            }
+          }
+        }
+      end
+      let(:mock_microservices_response_status) { 200 }
+
+      before do
+        mock_microservice_responses.each_key do |rack_barcode|
+          stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}")
+            .to_return(status: mock_microservices_response_status, body: JSON.generate(mock_microservice_responses[rack_barcode]), headers: {})
+        end
+      end
+
+      shared_examples_for 'tube rack manifest upload success case' do
+        it 'will not generate samples prior to processing' do
+          expect { upload }.not_to change(Sample, :count)
+        end
+
+        it 'will process', :aggregate_failures do
+          expect(processor).to be_valid
+          processor.run(nil)
+
+          aggregate_failures 'update samples' do
+            expect(processor).to be_samples_updated
+            expect(upload.rows).to be_all(&:sample_updated?)
+          end
+
+          aggregate_failures 'update sample manifest' do
+            expect(processor).to be_sample_manifest_updated
+            expect(upload.sample_manifest.uploaded.filename).to eq(test_file_name)
+          end
+
+          expect(processor).to be_processed
+        end
+
+        it 'will generate barcodes for existing tubes' do
+          # get tubes using the sample manifest asset association
+          tubes = upload.sample_manifest.assets.map(&:labware)
+          # sanity check the number of tubes that are present before the upload
+          expect(tubes.size).to eq(no_of_rows)
+
+          tube_ids = tubes.map(&:id)
+          barcodes = Barcode.where(asset_id: tube_ids, format: 7)
+          expect(barcodes).to be_empty
+
+          processor.run(nil)
+
+          tube_barcodes = mock_microservice_responses.values.first(no_of_racks).map do |scan_result|
+            scan_result['layout'].keys
+          end.flatten
+          tube_barcodes.reject! { |key| ::CsvParserClient.no_read?(key) }
+
+          expect(barcodes.size).to eq(no_of_rows)
+          expect(barcodes.map(&:barcode)).to eq(tube_barcodes)
+        end
+
+        it 'will generate tube racks, with barcodes' do
+          count_before = TubeRack.count
+          processor.run(nil)
+          expect(TubeRack.count).to eq(count_before + no_of_racks)
+
+          tube_rack_barcode_records = Barcode.where(barcode: mock_microservice_responses.keys, format: 'fluidx_barcode')
+          expect(tube_rack_barcode_records.size).to eq(no_of_racks)
+          tube_racks = TubeRack.find(tube_rack_barcode_records.map(&:asset_id))
+          expect(tube_racks.compact.size).to eq(no_of_racks)
+          purpose = Purpose.where(target_type: 'TubeRack', size: 48).first
+          expect(purpose).not_to be_nil
+          tube_racks.each do |rack|
+            expect(rack.size).to eq(48)
+            expect(rack.plate_purpose_id).to eq(purpose.id)
+          end
+        end
+
+        it 'will generate racked tubes to link tubes to racks' do
+          count_before = RackedTube.count
+          processor.run(nil)
+          expect(RackedTube.count).to eq(count_before + no_of_rows)
+
+          tube_rack_barcodes = mock_microservice_responses.keys.first(no_of_racks)
+          tube_rack_barcodes.each do |tube_rack_barcode|
+            tube_rack = Barcode.find_by(barcode: tube_rack_barcode).asset
+
+            layout = mock_microservice_responses[tube_rack_barcode]['layout']
+            layout.each_key do |tube_barcode|
+              next if ::CsvParserClient.no_read?(tube_barcode)
+
+              tube = Barcode.find_by(barcode: tube_barcode).asset
+              expect(tube.tube_rack).to eq(tube_rack)
+              expect(tube.racked_tube.coordinate).to eq(layout[tube_barcode])
+            end
+          end
+        end
+      end
+
+      context 'when valid with one tube rack' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+
+        it_behaves_like 'tube rack manifest upload success case'
+      end
+
+      context 'when valid with multiple tube racks' do
+        let(:no_of_racks) { 2 }
+        let(:no_of_rows) { 4 }
+
+        it_behaves_like 'tube rack manifest upload success case'
+      end
+
+      context 'when the scan has \'no reads\'' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 1 }
+        let(:mock_microservice_responses) do
+          {
+            'RK11111110' => {
+              'rack_barcode' => 'RK11111110',
+              'layout' => {
+                'TB11111110' => 'e8',
+                'NO READ' => 'b4'
+              }
+            }
+          }
+        end
+        let(:mock_microservices_response_status) { 200 }
+
+        it_behaves_like 'tube rack manifest upload success case'
+      end
+
+      context 'when has been previously uploaded' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+
+        before do
+          tube_rack = TubeRack.create(size: 48)
+          tube_rack_barcode = mock_microservice_responses.keys[0]
+          Barcode.create(asset: tube_rack, barcode: tube_rack_barcode, format: 'fluidx_barcode')
+          tubes = upload.sample_manifest.assets.map(&:labware)
+          counter = 0
+          tubes.each do |tube|
+            tube_barcode = mock_microservice_responses[tube_rack_barcode]['layout'].keys[counter]
+            Barcode.create(asset: tube, barcode: tube_barcode, format: 'fluidx_barcode')
+            RackedTube.create(tube: tube, tube_rack: tube_rack, coordinate: mock_microservice_responses[tube_rack_barcode]['layout'].values[counter])
+            counter += 1
+          end
+        end
+
+        it 'will process' do
+          processor.run(nil)
+          expect(processor).to be_processed
+        end
+
+        it 'will not create any data' do
+          RSpec::Matchers.define_negated_matcher :not_change, :change
+
+          expect { processor.run(nil) }.to not_change { TubeRack.count }
+            .and not_change { RackedTube.count }
+            .and not_change { Barcode.count }
+        end
+      end
+
+      context 'when manifest has no tube rack barcodes' do
+        let(:no_of_racks) { 0 }
+        let(:no_of_rows) { 2 }
+
+        it 'will not process' do
+          processor.run(nil)
+          expect(processor).not_to be_processed
+        end
+
+        it 'will not create any data' do
+          RSpec::Matchers.define_negated_matcher :not_change, :change
+
+          expect { processor.run(nil) }.to not_change { TubeRack.count }
+            .and not_change { RackedTube.count }
+            .and not_change { Barcode.count }
+        end
+
+        it 'will have errors' do
+          processor.run(nil)
+          errors = processor.errors.full_messages
+          expect(errors).not_to be_empty
+          expect(errors).to include("Tube rack barcodes from manifest can't be blank")
+        end
+      end
+
+      context 'when there is no scan found for a tube rack in the manifest' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+        let(:mock_microservice_responses) { { 'RK11111110' => { 'error' => 'File not found' } } }
+        let(:mock_microservices_response_status) { 404 }
+
+        it 'will have errors' do
+          processor.run(nil)
+          errors = upload.errors.full_messages
+          expect(errors).not_to be_empty
+          expect(errors).to include('Scan could not be retrieved for tube rack with barcode RK11111110. Service responded with status code 404 and the following message: File not found')
+        end
+      end
+
+      context 'when the microservice responds with a status of 500' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+        let(:mock_microservice_responses) { { 'RK11111110' => { 'error' => 'Server error' } } }
+        let(:mock_microservices_response_status) { 500 }
+
+        it 'will have errors' do
+          processor.run(nil)
+          errors = upload.errors.full_messages
+          expect(errors).not_to be_empty
+          expect(errors).to include('Scan could not be retrieved for tube rack with barcode RK11111110. Service responded with status code 500 and the following message: Server error')
+        end
+      end
+
+      context 'when the microservice responds with an invalid body' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+        let(:mock_microservice_responses) { { 'RK11111110' => 'sf:fs9{8fa}afe"fas' } }
+        let(:mock_microservices_response_status) { 200 }
+
+        before do
+          mock_microservice_responses.each_key do |rack_barcode|
+            stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}")
+              .to_return(status: mock_microservices_response_status, body: mock_microservice_responses[rack_barcode], headers: {})
+          end
+        end
+
+        it 'will have errors' do
+          processor.run(nil)
+          errors = upload.errors.full_messages
+          expect(errors).not_to be_empty
+          expect(errors[0]).to start_with('Response when trying to retrieve scan (tube rack with barcode RK11111110) was not valid JSON so could not be understood. Error message:')
+        end
+      end
+
+      context 'when the scan and the manifest have different tube barcodes' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+        let(:mock_microservice_responses) do
+          {
+            'RK11111110' => {
+              'rack_barcode' => 'RK11111110',
+              'layout' => {
+                'TB22222222' => 'e8'
+              }
+            }
+          }
+        end
+        let(:mock_microservices_response_status) { 200 }
+
+        it 'will have errors' do
+          processor.run(nil)
+          errors = upload.errors.full_messages
+          expect(errors).not_to be_empty
+          expect(errors).to include('The scan and the manifest do not contain identical tube barcodes.')
+        end
+      end
+
+      context 'when the scan has an invalid coordinate' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+        let(:mock_microservice_responses) do
+          {
+            'RK11111110' => {
+              'rack_barcode' => 'RK11111110',
+              'layout' => {
+                'TB11111110' => 'e14',
+                'TB11111111' => 'b4'
+              }
+            }
+          }
+        end
+        let(:mock_microservices_response_status) { 200 }
+
+        it 'will have errors' do
+          processor.run(nil)
+          errors = upload.errors.full_messages
+          expect(errors).not_to be_empty
+          expect(errors).to include('The following coordinates in the scan are not valid for a tube rack of size 48: ["e14"].')
+        end
+      end
+
+      context 'when the tube barcode exists already' do
+        let(:no_of_racks) { 1 }
+        let(:no_of_rows) { 2 }
+        let(:tube) { create :tube }
+
+        before do
+          Barcode.create!(asset_id: tube.id, barcode: 'TB11111110', format: 'fluidx_barcode')
+        end
+
+        it 'will have errors' do
+          processor.run(nil)
+          errors = upload.errors.full_messages
+          expect(errors).not_to be_empty
+          expect(errors).to include('foreign barcode is already in use.')
         end
       end
     end

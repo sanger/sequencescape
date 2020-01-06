@@ -2,14 +2,22 @@
 <script language="javascript">
   jQuery(function() {
     (function(undefined) {
-      var hide = function(elements) {
-        elements.each(function(index) {
+      var hideSectionAndDisableInputs = function(elements) {
+        // disable inputs when hidden so they don't fire validation
+        elements.each(function() {
           $(this).hide().find('input').attr('disabled','disabled');
         });
       };
-      var show = function(elements) {
-        elements.each(function(index) {
-          $(this).show().find('input').attr('disabled',null);;
+
+      var showSectionAndEnableInputsIfVisible = function(elements) {
+        elements.each(function() {
+          $(this).show();
+
+          $(this).find('input').each(function() {
+            // only enable input if it's not hidden - could be beneath a hidden element in the DOM
+            if(!$(this).is(':visible')) return;
+            $(this).attr('disabled', null);
+          });
         });
       };
 
@@ -19,47 +27,74 @@
         return (value.length == 0) ? 'blank' : value;
       };
 
-      observe = function(id) {
-        var selectRelatedFor, element;
-
-        selectRelatedFor = function(value) { return jQuery('.related_to.' + id + '.' + value); };
-        element = document.getElementById('<%= root %>_' + id) ||
-                    $("input[name='study[study_metadata_attributes]["+id+"]']:checked")[0] ||
-                    document.getElementById('<%= root %>_' + id + '_id');
-        // Hide all of the DIVs and then show the current value.  We assume that the first identified element
-        // is the one we're supposed to be using and that, if there are multiple fields, then they have the
-        // same initial value.
-        hide(jQuery('.related_to.' + id));
-        show(selectRelatedFor(valueFrom(element)));
-
-        // Now we can delegate handling of the click to the body element of the document.  This enables us to
-        // handle multiple different fields with the same identifier as though they were one, hopefully.
-        selector = '[id=<%= root %>_' + id + '],[id=<%= root %>_' + id + '_id],[name=\'study[study_metadata_attributes]['+id+']\']';
-        jQuery('body').delegate(selector, 'change', function() {
-          hide(jQuery('.related_to.' + id));
-          show(selectRelatedFor(valueFrom(this)));
-        });
+      var selectRelatedByFieldAndValue = function(fieldName, value) {
+        return jQuery('.related_to.' + fieldName + '.' + value);
       };
 
-    <% related.each do |field| %>
-      observe("<%= field.to_s %>");
-    <% end %>
+      var getElementByFieldName = function(fieldName) {
+        return  document.getElementById('<%= root %>_' + fieldName) ||
+                $("input[name='study[study_metadata_attributes]["+fieldName+"]']:checked")[0] ||
+                document.getElementById('<%= root %>_' + fieldName + '_id');
+      };
+
+      rerenderFieldsRelatedToControllingField = function(fieldName, controllingField) {
+        var relatedToDivs = jQuery('.related_to.' + fieldName);
+        hideSectionAndDisableInputs(relatedToDivs);
+
+        var relatedWithRelevantValue = selectRelatedByFieldAndValue(fieldName, valueFrom(controllingField));
+        showSectionAndEnableInputsIfVisible(relatedWithRelevantValue);
+      };
+
+      addOnChangeHandler = function(fieldName) {
+        controllingFieldSelector = '[id=<%= root %>_' + fieldName + '],[id=<%= root %>_' + fieldName + '_id],[name=\'study[study_metadata_attributes]['+fieldName+']\']';
+
+        jQuery('body').delegate(controllingFieldSelector, 'change', function() {
+          controllingField = this;
+          rerenderFieldsRelatedToControllingField(fieldName, controllingField);
+        });
+      }
+
+      initialize = function() {
+        <% related.each do |field| %>
+          var fieldName = "<%= field.to_s %>";
+          var controllingField = getElementByFieldName(fieldName);
+
+          rerenderFieldsRelatedToControllingField(fieldName, controllingField);
+          addOnChangeHandler(fieldName);
+        <% end %>
+      }
+
+      initialize();
     })();
   });
 
   (function($, undefined) {
-  <% changing_fields.reverse.each do |field, options| %>
-    attach_option_updater("<%= field.to_s %>", "<%= options[:when].to_s %>", {<%= options[:values].map { |k,v| "#{k.inspect}:#{v.inspect}" }.join(',').html_safe %>});
-  <% end %>
+    <% changing_fields.reverse.each do |field, options| %>
+      attach_option_updater("<%= field.to_s %>", "<%= options[:when].to_s %>", {<%= options[:values].map { |k,v| "#{k.inspect}:#{v.inspect}" }.join(',').html_safe %>});
+    <% end %>
 
     function attach_option_updater(target, source, values) {
-      $('#<%= root %>_' + source).change(function() {
+      // selector uses 'start with id' rather than 'equals id' to include radio buttons, where ids have the value appended
+      var selector = '[id^=' + '<%= root %>_' + source + ']';
+      var sourceFields = $(selector);
+      var isRadioButton = sourceFields.attr('type') == 'radio';
+
+      sourceFields.change(function() {
         select_to_change_options_in = $('#<%= root %>_' + target);
         selected_option = select_to_change_options_in.val();
         options = values[this.value].map(function(value) { return '<option value="' + value + '">' + value + '</option>'; });
         select_to_change_options_in.html(options.join('')).val(selected_option);
         select_to_change_options_in.trigger('change');
-      }).trigger('change');
+      });
+
+      // trigger change on load (for radio buttons, only if it's selected)
+      sourceFields.each(function() {
+        var isSelected = $(this).attr('checked') == 'checked';
+
+        if(!isRadioButton || (isRadioButton && isSelected)) {
+          $(this).trigger('change');
+        }
+      });
     };
   })(jQuery);
 </script>
