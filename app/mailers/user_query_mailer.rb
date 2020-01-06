@@ -1,5 +1,5 @@
 # Used when the user follows the 'Help' button
-class UserQueryMailer < ActionMailer::Base
+class UserQueryMailer < ApplicationMailer
   def request_for_help(user_query)
     @user_query = user_query
     @from = user_query.from
