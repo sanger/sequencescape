@@ -1,4 +1,4 @@
-class EventfulMailer < ApplicationMailer
+class EventfulMailer < ActionMailer::Base
   def confirm_event(receiver, eventful, message, content, _milestone, sent_at = Time.zone.now)
     @eventful = eventful
     @message = message
