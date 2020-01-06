@@ -110,7 +110,7 @@ GEM
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 1.14.3, < 2)
       sassc-rails (>= 2.0.0)
-    builder (3.2.3)
+    builder (3.2.4)
     bullet (6.0.2)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
@@ -235,7 +235,7 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     json (2.2.0)
-    jsonapi-resources (0.9.0)
+    jsonapi-resources (0.9.7)
       activerecord (>= 4.1)
       concurrent-ruby
       railties (>= 4.1)
@@ -246,7 +246,7 @@ GEM
     launchy (2.4.3)
       addressable (~> 2.3)
     libv8 (7.3.492.27.1)
-    loofah (2.3.1)
+    loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -348,7 +348,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.19.0, < 2.0)
     rainbow (3.0.0)
-    rake (13.0.0)
+    rake (13.0.1)
     regexp_parser (1.6.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -464,7 +464,7 @@ GEM
       typhoeus (~> 0.6, >= 0.6.8)
     typhoeus (0.8.0)
       ethon (>= 0.8.0)
-    tzinfo (1.2.5)
+    tzinfo (1.2.6)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
@@ -541,7 +541,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   json
-  jsonapi-resources (= 0.9.0)
+  jsonapi-resources (= 0.9.7)
   jsonapi-resources-matchers
   knapsack
   launchy

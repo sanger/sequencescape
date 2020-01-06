@@ -66,7 +66,7 @@ group :default do
   # https://github.com/JamesGlover/sequencescape/tree/depfu/update/jsonapi-resources-0.9.5
   # but not only is there a failing test, but performance was tanking in a few places
   # due to not correctly eager loading dependencies on nested resources.
-  gem 'jsonapi-resources', '0.9.0'
+  gem 'jsonapi-resources', '0.9.7'
 
   # Bunny is a RabbitMQ client.
   gem 'bunny'
