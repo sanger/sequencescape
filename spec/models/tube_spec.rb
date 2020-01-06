@@ -4,6 +4,46 @@ require 'rails_helper'
 require 'timecop'
 
 describe Tube, type: :model do
+  describe 'scope:: in_column_major_order' do
+    let(:tube_rack) { create :tube_rack }
+    let(:num_tubes) { locations.length }
+    let(:locations) { %w[A01 H12 D04] }
+    let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
+
+    before do
+      Array.new(num_tubes) do |i|
+        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+      end
+    end
+
+    it 'sorts the racked tubes in column order' do
+      expect(tube_rack.tubes.in_column_major_order.map(&:coordinate)).to eq(%w[A01 D04 H12])
+    end
+  end
+
+  context 'when a tube is not in a rack' do
+    let!(:tube) { create :tube }
+
+    it 'returns nil for the tube_rack relation' do
+      expect(tube.tube_rack).to be_nil
+    end
+  end
+
+  context 'when a tube is in a rack' do
+    let!(:tube_rack) { create :tube_rack }
+    let!(:tube) { create :tube }
+    let!(:racked_tube) { RackedTube.create(tube_rack_id: tube_rack.id, tube_id: tube.id) }
+
+    it 'destroying the Tube destroys the RackedTube too, but not the TubeRack' do
+      tube.receptacles.destroy_all
+      tube.destroy
+
+      expect(described_class.exists?(tube.id)).to eq(false)
+      expect(RackedTube.exists?(racked_tube.id)).to eq(false)
+      expect(TubeRack.exists?(tube_rack.id)).to eq(true)
+    end
+  end
+
   describe '#scanned_in_date' do
     let(:scanned_in_asset) { create(:tube) }
     let(:unscanned_in_asset) { create(:tube) }

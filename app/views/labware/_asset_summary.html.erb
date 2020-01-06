@@ -51,12 +51,41 @@
       <td><%= asset.human_barcode %></td>
     </tr>
   <% end %>
+  <% if asset.kind_of? TubeRack %>
+    <tr>
+      <th>Summary page</th>
+      <td><%= link_to "Summary for #{asset.human_barcode}",
+        tube_rack_summary_path(asset.human_barcode) %></td>
+    </tr>
+  <% end %>
   <% if  @source_plate&.human_barcode %>
     <tr>
       <th>Summary page</th>
       <td><%= link_to "Summary for #{@source_plate.human_barcode}", plate_summary_path(@source_plate.human_barcode) %></td>
     </tr>
   <% end %>
+
+  <!-- BEGIN if it is a Tube inside a rack -->
+  <% if asset.respond_to?(:tube_rack) && asset.tube_rack.present? %>
+    <tr>
+      <th>TubeRack</th>
+      <td>
+        <% if asset.tube_rack.present? %>
+          <%= link_to asset.tube_rack.human_barcode || 'No barcode', labware_path(asset.tube_rack) %>
+        <% else %>
+          No tube rack
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <th>Position in rack</th>
+      <td>
+        <%= asset.racked_tube.coordinate %>
+      </td>
+    </tr>
+  <% end %>
+  <!-- END if is a tube inside a rack -->
+
   <% if asset.respond_to?(:qc_state) && asset.qc_state %>
     <tr>
       <th>QC state</th>

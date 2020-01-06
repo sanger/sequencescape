@@ -90,6 +90,8 @@ if Rails.env.development? || Rails.env.profile?
   configatron.api.flush_response_at = 32768
 
   configatron.register_printers_automatically = false
+
+  configatron.tube_rack_scans_microservice_url = 'http://localhost:5000/tube_rack/'
 end
 if Rails.env.test? || Rails.env.cucumber?
 
@@ -126,4 +128,6 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.api.flush_response_at = 32768
 
   configatron.register_printers_automatically = false
+
+  configatron.tube_rack_scans_microservice_url = 'http://localhost:5000/tube_rack/'
 end
