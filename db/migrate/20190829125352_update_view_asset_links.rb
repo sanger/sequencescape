@@ -26,9 +26,9 @@ class UpdateViewAssetLinks < ActiveRecord::Migration[5.1]
     ViewsSchema.update_view(
       'view_asset_links',
       # Direct dump of current behaviour, keeping risk minimal by not adjusting white-space
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       %{SELECT `u1`.`external_id` AS `ancestor_uuid`,`al`.`ancestor_id` AS `ancestor_internal_id`,`sa`.`sti_type` AS `ancestor_type`,`u2`.`external_id` AS `descendant_uuid`,`al`.`descendant_id` AS `descendant_internal_id`,`da`.`sti_type` AS `descendant_type` from ((((`asset_links` `al` left join `uuids` `u1` on(((`u1`.`resource_id` = `al`.`ancestor_id`) and (`u1`.`resource_type` = 'Asset')))) left join `uuids` `u2` on(((`u2`.`resource_id` = `al`.`descendant_id`) and (`u2`.`resource_type` = 'Asset')))) left join `assets` `sa` on((`sa`.`id` = `al`.`ancestor_id`))) left join `assets` `da` on((`da`.`id` = `al`.`descendant_id`)))}
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
     )
   end
 end
