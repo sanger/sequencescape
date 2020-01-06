@@ -6,7 +6,14 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 23
+# Offense count: 2
+# Cop supports --auto-correct.
+FactoryBot/FactoryClassName:
+  Exclude:
+    - 'spec/factories/purpose_factories.rb'
+    - 'spec/factories/sample_manifest_excel/test_download_tubes_in_rack.rb'
+
+# Offense count: 25
 Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'app/models/qcable/statemachine.rb'
@@ -15,6 +22,7 @@ Lint/AmbiguousBlockAssociation:
     - 'spec/features/studies/accession_all_samples_spec.rb'
     - 'spec/lib/accession/study_spec.rb'
     - 'spec/lib/accession/submission_spec.rb'
+    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
     - 'spec/sample_manifest_excel/worksheet_spec.rb'
     - 'spec/sequencescape_excel/column_list_spec.rb'
     - 'spec/sequencescape_excel/column_spec.rb'
@@ -191,11 +199,11 @@ Lint/UselessAssignment:
     - 'test/lib/label_printer/plate_creator_test.rb'
     - 'test/unit/tasks/plate_transfer_task_test.rb'
 
-# Offense count: 401
+# Offense count: 404
 Metrics/AbcSize:
   Max: 116
 
-# Offense count: 41
+# Offense count: 42
 # Configuration parameters: CountComments, ExcludedMethods.
 # ExcludedMethods: refine
 Metrics/BlockLength:
@@ -206,16 +214,16 @@ Metrics/BlockLength:
 Metrics/BlockNesting:
   Max: 4
 
-# Offense count: 85
+# Offense count: 86
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
   Max: 612
 
-# Offense count: 59
+# Offense count: 60
 Metrics/CyclomaticComplexity:
   Max: 54
 
-# Offense count: 386
+# Offense count: 390
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/MethodLength:
   Max: 72
@@ -409,7 +417,7 @@ RSpec/BeforeAfterAll:
     - 'spec/sample_manifest_excel/worksheet_spec.rb'
     - 'spec/sequencescape_excel/worksheet_spec.rb'
 
-# Offense count: 347
+# Offense count: 348
 # Configuration parameters: Prefixes.
 # Prefixes: when, with, without
 RSpec/ContextWording:

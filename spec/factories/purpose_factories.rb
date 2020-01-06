@@ -144,4 +144,14 @@ FactoryBot.define do
     sequence(:name) { |n| "Child tube purpose #{n}" }
     target_type { 'Tube' }
   end
+
+  factory :tube_rack_purpose, class: TubeRack::Purpose do
+    target_type { 'TubeRack' }
+    name { generate :purpose_name }
+    size { 96 }
+
+    factory :tube_rack_purpose_48 do
+      size { 48 }
+    end
+  end
 end
