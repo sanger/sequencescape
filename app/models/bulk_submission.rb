@@ -147,7 +147,19 @@ class BulkSubmission
             end
 
             begin
-              submission = Submission.create!(name: submission_name, user: user, orders: orders.map(&method(:prepare_order)).compact, priority: max_priority(orders))
+              orders_processed = orders.map(&method(:prepare_order)).compact
+              # puts "orders_processed: #{orders_processed}"
+              library_type_first = nil
+              orders_processed.each do |order|
+                library_type = order.request_options['library_type']
+                library_type_first = library_type if library_type_first.nil? && library_type
+                if library_type != library_type_first
+                  errors.add :spreadsheet, "Cannot have multiple library types for the same submission."
+                  break
+                  # should break out of the transaction block here, or just let it roll back?
+                end
+              end
+              submission = Submission.create!(name: submission_name, user: user, orders: orders_processed, priority: max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
