@@ -20,6 +20,7 @@ env:
 before_install:
 - mv config/aker.yml.example config/aker.yml
 - nvm install
+- node --version
 - yarn install
 jobs:
   include:
