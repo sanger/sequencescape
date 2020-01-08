@@ -57,7 +57,7 @@ class QuantParserTest < ActiveSupport::TestCase
 
       context 'processing the file on a working dilution' do
         setup do
-          @filename = Rails.root.join('test', 'data', 'complete_quant_test.csv').to_s
+          @filename = Rails.root.join('test/data/complete_quant_test.csv').to_s
           @content = read_file @filename
           @parser = Parsers.parser_for(@filename, nil, @content)
           @plate = create :working_dilution_plate, well_count: 18, plate_metadata_attributes: { dilution_factor: 10 }
