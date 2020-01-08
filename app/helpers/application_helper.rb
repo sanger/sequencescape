@@ -258,6 +258,7 @@ module ApplicationHelper
     link_to admin_address.to_s, "mailto:#{admin_address}"
   end
 
+  # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.
   def old_url
     permitted_urls = ['http://sequencescape.psd.sanger.ac.uk', 'http://uat.sequencescape.psd.sanger.ac.uk', 'http://uat2.sequencescape.psd.sanger.ac.uk', 'http://training.sequencescape.psd.sanger.ac.uk']
     return true unless permitted_urls.include?(request.base_url)
