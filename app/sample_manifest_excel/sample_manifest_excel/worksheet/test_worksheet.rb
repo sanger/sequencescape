@@ -40,9 +40,9 @@ module SampleManifestExcel
 
       def compute_last_row
         if %w[plate_default plate_full plate_rnachip].include? manifest_type
-          first_row + (num_plates * num_samples_per_plate) - 1
+          computed_first_row + (num_plates * num_samples_per_plate) - 1
         else
-          first_row + no_of_rows
+          computed_first_row + no_of_rows
         end
       end
 
@@ -69,6 +69,8 @@ module SampleManifestExcel
           FactoryBot.create(:sample_manifest, asset_type: 'library')
         elsif %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
           FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library')
+        elsif %w[tube_rack_default].include? manifest_type
+          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack')
         else
           FactoryBot.create(:sample_manifest, asset_type: '1dtube')
         end
@@ -131,6 +133,7 @@ module SampleManifestExcel
       end
 
       def record_tube_samples
+        tube_counter = 0
         first_to_last.each do |sheet_row|
           build_tube_sample_manifest_asset do |sample_manifest_asset|
             asset = sample_manifest_asset.asset
@@ -142,7 +145,7 @@ module SampleManifestExcel
             end
             dynamic_attributes[sheet_row][:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
             dynamic_attributes[sheet_row][:sanger_tube_id] = if cgap
-                                                               tube_row_num = (sheet_row - first_row) + 1
+                                                               tube_row_num = (sheet_row - computed_first_row) + 1
                                                                if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
                                                                  'CGAP-99999'
                                                                else
@@ -152,6 +155,8 @@ module SampleManifestExcel
                                                                asset.human_barcode
                                                              end
           end
+          dynamic_attributes[sheet_row][:tube_barcode] = 'TB1111111' + tube_counter.to_s
+          tube_counter += 1
         end
       end
 
@@ -163,11 +168,23 @@ module SampleManifestExcel
         add_row ['Study:', study]
         add_row ['Supplier:', supplier]
         add_row ["No. #{type} Sent:", count]
+        add_extra_cells_for_tube_rack(count) if type == 'Tube Racks'
         add_rows(1)
       end
 
+      def add_extra_cells_for_tube_rack(count)
+        rack_size = sample_manifest.tube_rack_purpose.size
+        add_row ['Rack size:', rack_size]
+        count.times do |num|
+          axlsx_worksheet.add_row do |row|
+            row.add_cell "Rack barcode (#{num + 1}):", type: :string
+            row.add_cell "RK1111111#{num}", type: :string, style: styles[:unlocked_no_border].reference
+          end
+        end
+      end
+
       def first_to_last
-        first_row..last_row
+        computed_first_row..last_row
       end
 
       def empty_row?(row_num)
@@ -187,9 +204,9 @@ module SampleManifestExcel
       def add_cell_data(column, row_num, partial)
         if partial && empty_row?(row_num)
           (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
-        elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && row_num == first_row
+        elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && row_num == computed_first_row
           nil
-        elsif validation_errors.include?(:sanger_sample_id_invalid) && column.name == 'sanger_sample_id' && row_num == first_row
+        elsif validation_errors.include?(:sanger_sample_id_invalid) && column.name == 'sanger_sample_id' && row_num == computed_first_row
           'ABC'
         else
           data[column.name] || dynamic_attributes[row_num][column.name]
@@ -227,15 +244,23 @@ module SampleManifestExcel
 
       def create_tags
         if %w[tube_multiplexed_library_with_tag_sequences tube_library_with_tag_sequences].include? manifest_type
-          oligos = Tags::ExampleData.new.take(first_row, last_row, validation_errors.include?(:tags))
+          oligos = Tags::ExampleData.new.take(computed_first_row, last_row, validation_errors.include?(:tags))
           dynamic_attributes.each do |k, _v|
             dynamic_attributes[k].merge!(oligos[k])
           end
         elsif %w[tube_multiplexed_library].include? manifest_type
-          groups_and_indexes = Tags::ExampleData.new.take_as_groups_and_indexes(first_row, last_row, validation_errors.include?(:tags))
+          groups_and_indexes = Tags::ExampleData.new.take_as_groups_and_indexes(computed_first_row, last_row, validation_errors.include?(:tags))
           dynamic_attributes.each do |k, _v|
             dynamic_attributes[k].merge!(groups_and_indexes[k])
           end
+        end
+      end
+
+      def computed_first_row
+        if type == 'Tube Racks'
+          first_row + count + 1
+        else
+          first_row
         end
       end
     end

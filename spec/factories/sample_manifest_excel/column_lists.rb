@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :column_list, class: SequencescapeExcel::ColumnList do
+  factory :column_list, class: 'SequencescapeExcel::ColumnList' do
     initialize_with { new(build_list(:column, 5)) }
 
     factory :column_list_with_sanger_sample_id do

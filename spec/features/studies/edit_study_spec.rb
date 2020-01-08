@@ -34,4 +34,21 @@ describe 'Edit a study' do
     expect(study.study_metadata.s3_email_list).to eq('aa1@sanger.ac.uk;aa2@sanger.ac.uk;aa3@sanger.ac.uk')
     expect(study.study_metadata.data_deletion_period).to eq('3 months')
   end
+
+  context 'when data release strategy is Not Applicable' do
+    let!(:study) { create :not_app_study }
+
+    it 'does not error when setting strategy to Open', js: true do
+      study.study_metadata.data_release_strategy = 'not applicable'
+      study.save
+      login_user(user)
+      visit study_path(study)
+      click_link 'Edit'
+      expect(page).to have_content('What is the data release strategy for this study?')
+      expect(page).to have_content('Open (ENA)')
+      choose('Open (ENA)', allow_label_click: true)
+      click_button 'Save Study'
+      expect(page).to have_content('Your study has been updated')
+    end
+  end
 end

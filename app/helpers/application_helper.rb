@@ -108,15 +108,15 @@ module ApplicationHelper
   def dynamic_link_to(summary_item)
     object = summary_item.object
     if object.instance_of?(Submission)
-      return link_to("Submission #{object.id}", study_information_submission_path(object.study, object))
+      link_to("Submission #{object.id}", study_information_submission_path(object.study, object))
     elsif object.instance_of?(Receptacle)
-      return link_to("#{object.label.capitalize} #{object.name}", receptacle_path(object))
+      link_to("#{object.label.capitalize} #{object.name}", receptacle_path(object))
     elsif object.instance_of?(Labware)
-      return link_to("#{object.label.capitalize} #{object.name}", labware_path(object))
+      link_to("#{object.label.capitalize} #{object.name}", labware_path(object))
     elsif object.instance_of?(Request)
-      return link_to("Request #{object.id}", request_path(object))
+      link_to("Request #{object.id}", request_path(object))
     else
-      return 'No link available'
+      'No link available'
     end
   end
 
@@ -222,10 +222,11 @@ module ApplicationHelper
 
   def display_boolean_results(result)
     return 'NA' if result.blank?
+
     if result == 'pass' || result == '1' || result == 'true'
-      return icon('far', 'check-circle', title: result)
+      icon('far', 'check-circle', title: result)
     else
-      return icon('fas', 'exclamation-circle', class: 'text-danger', title: result)
+      icon('fas', 'exclamation-circle', class: 'text-danger', title: result)
     end
   end
 
@@ -255,5 +256,11 @@ module ApplicationHelper
   def help_email_link
     admin_address = configatron.admin_email || 'admin@test.com'
     link_to admin_address.to_s, "mailto:#{admin_address}"
+  end
+
+  # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.
+  def old_url
+    permitted_urls = ['http://sequencescape.psd.sanger.ac.uk', 'http://uat.sequencescape.psd.sanger.ac.uk', 'http://uat2.sequencescape.psd.sanger.ac.uk', 'http://training.sequencescape.psd.sanger.ac.uk']
+    return true unless permitted_urls.include?(request.base_url)
   end
 end

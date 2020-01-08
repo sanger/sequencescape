@@ -113,7 +113,8 @@ class StudiesController < ApplicationController
       redirect_to study_path(@study)
     end
   rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}"
+    # don't use @study.errors.map(&:to_s) because it throws an exception when within a rescue block
+    Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: 'edit', id: @study.id
   end

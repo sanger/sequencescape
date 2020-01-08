@@ -80,7 +80,7 @@ FactoryBot.define do
   # Builds a submission on the provided assets suitable for processing through
   # an external library pipeline such as Limber
   # Note: Not yet complete. (Just in case something crops up before I finish this!)
-  factory :library_submission, class: Submission do
+  factory :library_submission, class: 'Submission' do
     transient do
       assets { [create(:well)] }
       request_types { [create(:library_request_type), create(:multiplex_request_type)] }
