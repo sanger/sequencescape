@@ -148,8 +148,7 @@ class BulkSubmission
 
             begin
               orders_processed = orders.map(&method(:prepare_order)).compact
-              library_types = orders_processed.map { |order| order.request_options['library_type'] }.uniq
-
+              library_types = orders_processed.map { |order| order.request_options['library_type'] if order.request_options != nil }.uniq
               if library_types.size > 1
                 errors.add :spreadsheet, "Submission #{submission_name} has multiple library types: #{library_types.join(', ')}."
                 next
