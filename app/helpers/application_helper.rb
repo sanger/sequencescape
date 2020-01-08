@@ -257,4 +257,9 @@ module ApplicationHelper
     admin_address = configatron.admin_email || 'admin@test.com'
     link_to admin_address.to_s, "mailto:#{admin_address}"
   end
+
+  def old_url
+    permitted_urls = ['http://sequencescape.psd.sanger.ac.uk']
+    return true unless permitted_urls.include?(request.base_url)
+  end
 end
