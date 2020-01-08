@@ -259,7 +259,7 @@ module ApplicationHelper
   end
 
   def old_url
-    permitted_urls = ['http://sequencescape.psd.sanger.ac.uk']
+    permitted_urls = ['http://sequencescape.psd.sanger.ac.uk', 'http://uat.sequencescape.psd.sanger.ac.uk', 'http://uat2.sequencescape.psd.sanger.ac.uk', 'http://training.sequencescape.psd.sanger.ac.uk']
     return true unless permitted_urls.include?(request.base_url)
   end
 end
