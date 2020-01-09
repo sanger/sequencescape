@@ -116,7 +116,6 @@ RSpec.describe 'Bug research' do
             expect(s_ids.uniq).to eq([submission_C, submission_D, submission_E])
           end
 
-          # context 'when I create another Repooling ISC request for each well in the Lib PCR-XP plate' do
           context 'when I create another Repooling ISC and the new pooling has a different transfers definition' do
             let(:submission_F) { 7 }
             let(:submission_G) { 8 }
