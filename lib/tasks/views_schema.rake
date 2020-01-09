@@ -22,7 +22,7 @@ namespace :db do
     task schema_load: :environment do
       ActiveRecord::Tasks::DatabaseTasks.send(:each_current_configuration, ActiveRecord::Tasks::DatabaseTasks.env) do |config|
         ActiveRecord::Base.establish_connection(config)
-        load Rails.root.join('db', 'views_schema.rb')
+        load Rails.root.join('db/views_schema.rb')
       end
       # Ensure we switch back to the main dev database.
       ActiveRecord::Base.establish_connection

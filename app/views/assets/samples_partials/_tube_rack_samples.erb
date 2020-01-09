@@ -1,0 +1,46 @@
+<section id="samples-table" class='info-panel'>
+  <header>
+    <a href='#tube-rack-samples-table-collapser' role="button" data-toggle='collapse'>
+    <h3>Samples
+      <%= counter_badge @asset.contained_samples.count %>
+      <small class='show-hide'>Click to toggle</small>
+    </h3>
+    </a>
+  </header>
+  <div id="tube-rack-samples-table-collapser" class="collapse in show">
+    <table id="tube-rack-samples-table" class="sortable">
+      <colgroup>
+        <col class="npg_aliquot_index">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="tube_location">Rack Location</th>
+          <th>Tube Barcode</th>
+          <th>Sample Name</th>
+          <th>Sanger Sample Id</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @asset.tubes.in_column_major_order.includes({ aliquots: [:sample] }).each do |tube| %>
+          <% tube.aliquots.each do |aliquot,i| %>
+            <tr>
+              <td><%= link_to tube.coordinate, labware_path(tube) %></td>
+              <td><%= link_to tube.primary_barcode.barcode, labware_path(tube) %></td>
+              <td><strong><%= link_to aliquot.sample.name, aliquot.sample -%></strong></td>
+              <td><%= aliquot.sample.sanger_sample_id %></td>
+            </tr>
+          <% end %>
+          <% if tube.aliquots.empty? %>
+            <tr class="empty-tube">
+              <td><%= link_to tube.coordinate, labware_path(tube) %></td>
+              <td><%= link_to tube.primary_barcode.barcode, labware_path(tube) %></td>
+              <td>[Empty]</td>
+              <td></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>
+

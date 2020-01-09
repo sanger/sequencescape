@@ -9,22 +9,22 @@ FactoryBot.define do
     factory :stock_purpose do
       stock_plate { true }
 
-      factory :illumina_c_stock_purpose, class: IlluminaC::StockPurpose do
+      factory :illumina_c_stock_purpose, class: 'IlluminaC::StockPurpose' do
       end
     end
 
-    factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do
+    factory(:new_stock_tube_purpose, class: 'IlluminaHtp::StockTubePurpose') do
       target_type { 'StockMultiplexedLibraryTube' }
 
-      factory :illumina_htp_initial_stock_tube_purpose, class: IlluminaHtp::InitialStockTubePurpose
+      factory :illumina_htp_initial_stock_tube_purpose, class: 'IlluminaHtp::InitialStockTubePurpose'
     end
 
-    factory(:mixed_submission_mx, class: Tube::MixedSubmissionMx) do
+    factory(:mixed_submission_mx, class: 'Tube::MixedSubmissionMx') do
       target_type { 'StockMultiplexedLibraryTube' }
     end
   end
 
-  factory :strip_tube_purpose, class: PlatePurpose do
+  factory :strip_tube_purpose, class: 'PlatePurpose' do
     prefix { 'LS' }
     name               { generate :purpose_name }
     size               { '8' }
@@ -45,7 +45,7 @@ FactoryBot.define do
         source_plate_purpose.source_purpose = source_plate_purpose
       end
 
-      factory :input_plate_purpose, class: PlatePurpose::Input do
+      factory :input_plate_purpose, class: 'PlatePurpose::Input' do
         stock_plate { true }
       end
     end
@@ -75,13 +75,13 @@ FactoryBot.define do
     name { 'Dilution' }
   end
 
-  factory :working_dilution_plate_purpose, class: DilutionPlatePurpose do
+  factory :working_dilution_plate_purpose, class: 'DilutionPlatePurpose' do
     name { generate :purpose_name }
     target_type { 'WorkingDilutionPlate' }
     prefix { 'WD' }
   end
 
-  factory :tube_purpose, class: Tube::Purpose do
+  factory :tube_purpose, class: 'Tube::Purpose' do
     prefix { 'NT' }
     name        { generate :purpose_name }
     target_type { 'MultiplexedLibraryTube' }
@@ -109,39 +109,49 @@ FactoryBot.define do
     end
   end
 
-  factory :std_mx_tube_purpose, class: Tube::StandardMx do
+  factory :std_mx_tube_purpose, class: 'Tube::StandardMx' do
     prefix { 'NT' }
     name        { generate :purpose_name }
     target_type { 'MultiplexedLibraryTube' }
   end
 
-  factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do
+  factory :illumina_htp_mx_tube_purpose, class: 'IlluminaHtp::MxTubePurpose' do
     prefix { 'NT' }
     sequence(:name) { |n| "Illumina HTP Mx Tube Purpose #{n}" }
     target_type { 'MultiplexedLibraryTube' }
   end
 
-  factory(:parent_plate_purpose, class: PlatePurpose) do
+  factory(:parent_plate_purpose, class: 'PlatePurpose') do
     prefix { 'DN' }
     name { 'Parent plate purpose' }
   end
 
   # Plate creations
-  factory(:pooling_plate_purpose, class: PlatePurpose) do
+  factory(:pooling_plate_purpose, class: 'PlatePurpose') do
     prefix { 'DN' }
     sequence(:name) { |i| "Pooling purpose #{i}" }
     stock_plate { true }
   end
 
-  factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do
+  factory(:initial_downstream_plate_purpose, class: 'Pulldown::InitialDownstreamPlatePurpose') do
     prefix { 'DN' }
     name { generate :pipeline_name }
   end
 
   # Tube creations
-  factory(:child_tube_purpose, class: Tube::Purpose) do
+  factory(:child_tube_purpose, class: 'Tube::Purpose') do
     prefix { 'NT' }
     sequence(:name) { |n| "Child tube purpose #{n}" }
     target_type { 'Tube' }
+  end
+
+  factory :tube_rack_purpose, class: TubeRack::Purpose do
+    target_type { 'TubeRack' }
+    name { generate :purpose_name }
+    size { 96 }
+
+    factory :tube_rack_purpose_48 do
+      size { 48 }
+    end
   end
 end

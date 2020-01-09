@@ -42,8 +42,7 @@ configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/d
 configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
   ['Generic Lims', 'http://www.example.com'],
-  ['Gatekeeper', 'http://www.example.com'],
-  ['Crier', 'http://www.example.com']
+  ['Gatekeeper', 'http://www.example.com']
 ]
 
 configatron.help_link_base_url = 'http://wwww.example.com'
@@ -84,12 +83,13 @@ if Rails.env.development? || Rails.env.profile?
   configatron.run_information_url = 'http://example.com/'
   configatron.sso_logout_url = 'https://example.com/logout'
   configatron.run_data_by_batch_id_url = 'http://example.com/search?query='
-  configatron.sybr_green_images_url = 'http://example.com/batches/'
   configatron.sequencing_admin_email = 'admin@example.com'
   configatron.api.authorisation_code = 'development'
   configatron.api.flush_response_at = 32768
 
   configatron.register_printers_automatically = false
+
+  configatron.tube_rack_scans_microservice_url = 'http://localhost:5000/tube_rack/'
 end
 if Rails.env.test? || Rails.env.cucumber?
 
@@ -120,10 +120,11 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.run_information_url = 'http://example.com/'
   configatron.sso_logout_url = 'https://example.com/logout'
   configatron.run_data_by_batch_id_url = 'http://example.com/search?query='
-  configatron.sybr_green_images_url = 'http://example.com/batches/'
   configatron.sequencing_admin_email = 'admin@example.com'
   configatron.api.authorisation_code = 'cucumber'
   configatron.api.flush_response_at = 32768
 
   configatron.register_printers_automatically = false
+
+  configatron.tube_rack_scans_microservice_url = 'http://localhost:5000/tube_rack/'
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :accession_tag_list, class: Accession::TagList do
+  factory :accession_tag_list, class: 'Accession::TagList' do
     tags { build_list(:accession_tag, 5).index_by(&:name) }
 
     initialize_with { new(tags) }

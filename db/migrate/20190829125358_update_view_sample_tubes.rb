@@ -41,9 +41,9 @@ class UpdateViewSampleTubes < ActiveRecord::Migration[5.1]
     ViewsSchema.update_view(
       'view_sample_tubes',
       # Direct dump of current behaviour, keeping risk minimal by not adjusting white-space
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       %{SELECT `u`.`external_id` AS `uuid`,`st`.`id` AS `internal_id`,`st`.`name` AS `name`,substr(`bc`.`barcode`,3,(length(`bc`.`barcode`) - 3)) AS `barcode`,`st`.`closed` AS `closed`,`su`.`external_id` AS `sample_uuid`,`al`.`sample_id` AS `sample_internal_id`,`s`.`name` AS `sample_name`,`e`.`content` AS `scanned_in_date`,`st`.`volume` AS `volume`,`st`.`concentration` AS `concentration`,`st`.`created_at` AS `created`,substr(`bc`.`barcode`,1,2) AS `barcode_prefix` from ((((((`assets` `st` left join `aliquots` `al` on((`st`.`id` = `al`.`receptacle_id`))) left join `uuids` `u` on(((`st`.`id` = `u`.`resource_id`) and (`u`.`resource_type` = 'Asset')))) left join `barcodes` `bc` on(((`st`.`id` = `bc`.`asset_id`) and (`bc`.`format` = 1)))) left join `uuids` `su` on(((`su`.`resource_id` = `al`.`sample_id`) and (`su`.`resource_type` = 'Sample')))) left join `samples` `s` on((`s`.`id` = `al`.`sample_id`))) left join `events` `e` on(((`e`.`eventful_id` = `st`.`id`) and (`e`.`eventful_type` = 'Asset') and (`e`.`type` = 'Event::ScannedIntoLabEvent')))) where (`st`.`sti_type` = 'SampleTube')}
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
     )
   end
 end

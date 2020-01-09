@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :phi_x_stock, class: PhiX::Stock do
+  factory :phi_x_stock, class: 'PhiX::Stock' do
     to_create(&:save)
 
     name { 'PhiX Stock' }
@@ -10,7 +10,7 @@ FactoryBot.define do
     number { '1' }
   end
 
-  factory :phi_x_spiked_buffer, class: PhiX::SpikedBuffer do
+  factory :phi_x_spiked_buffer, class: 'PhiX::SpikedBuffer' do
     to_create(&:save)
 
     name { 'PhiX Spiked Buffer' }

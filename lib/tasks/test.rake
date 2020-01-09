@@ -1,6 +1,6 @@
 Rake::Task['test'].clear
 
-task :test do
+task test: :environment do
   $LOAD_PATH << 'test'
   if ENV.key?('TEST')
     Rails::TestUnit::Runner.rake_run([ENV['TEST']])
@@ -16,7 +16,7 @@ namespace :test do
   # initialize it before running our factory linters we MASSIVELY under-report
   # coverage. Any code paths hit by the linters will have a coverage of zero,
   # regardless of subsequent processing.
-  task :load_cov do
+  task load_cov: :environment do
     require 'simplecov'
   end
 
@@ -24,7 +24,7 @@ namespace :test do
     desc 'Verify that all FactoryBot factories are valid'
     task lint: :environment do
       require 'factory_bot'
-      Dir.glob(File.expand_path(File.join(Rails.root, %w{spec factories ** *.rb}))) do |factory_filename|
+      Dir.glob(File.expand_path(File.join(Rails.root, %w{spec factories ** *.rb}))).sort.each do |factory_filename|
         require factory_filename
       end
 
