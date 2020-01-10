@@ -49,6 +49,7 @@ class Asset < ApplicationRecord
     event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)
     event_constructor(:create_state_update!,           Event::AssetSetQcStateEvent,   :create_updated!)
     event_constructor(:create_scanned_into_lab!,       Event::ScannedIntoLabEvent,    :create_for_asset!)
+    event_constructor(:create_labware_failed!,         Event::LabwareFailedEvent,     :create_for_asset!)
     event_constructor(:create_plate!,                  Event::PlateCreationEvent,     :create_for_asset!)
     event_constructor(:create_gel_qc!,                 Event::SampleLogisticsQcEvent, :create_gel_qc_for_asset!)
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
