@@ -1,4 +1,3 @@
-
 (function(window,$,undefined) {
   'use strict';
 
@@ -13,11 +12,9 @@
   // Remove polyfill
   if (!Element.prototype.remove) {
     Element.prototype.remove = function() { this.parentNode.removeChild(this); };
-
   }
 
   $( document ).ready(function() {
-
     var barcode_list = $('#barcode_list')[0]
 
     // The swipecard scanners send a return.
@@ -55,7 +52,5 @@
         return false;
       }
     });
-
   });
-
 })(window,jQuery)
