@@ -20,3 +20,4 @@
 //= link bulk_submissions.js
 //= link JsBarcode.all.min.js
 //= link print_swipecard.js
+//= link descriptors.js
