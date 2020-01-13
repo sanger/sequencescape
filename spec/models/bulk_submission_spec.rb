@@ -239,4 +239,29 @@ describe BulkSubmission, with: :uploader do
       expect(subject.errors.messages[:spreadsheet][0]).to eq('There was a problem on row(s) 2: Cannot find library type "unrecognised"')
     end
   end
+
+  context 'a submission with multiple library types' do
+    let(:spreadsheet_filename) { 'with_multiple_libary_types.csv' }
+    let!(:asset) { create :plate, barcode: '111111', well_count: 2, well_factory: :untagged_well }
+    let(:submission_template_hash) do
+      {
+        name: 'Example Template',
+        submission_class_name: 'LinearSubmission',
+        product_catalogue: 'Generic',
+        submission_parameters: { request_options: { 'fragment_size_required_to' => '400',
+                                                    'fragment_size_required_from' => '100' },
+                                 request_types: request_types.map(&:key) }
+      }
+    end
+
+    before do
+      SubmissionSerializer.construct!(submission_template_hash)
+      create :library_type, name: 'Standard2'
+    end
+
+    it 'sets an error message' do
+      subject.process
+      expect(subject.errors.messages[:spreadsheet][0]).to eq('Submission submission-27 has multiple library types: Standard, Standard2.')
+    end
+  end
 end

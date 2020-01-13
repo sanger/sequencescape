@@ -75,7 +75,16 @@ class Transfer::BetweenPlates < Transfer
 
     destination_sources.each_with_object({}) do |dest_source, store|
       dest_loc, sources = *dest_source
-      uuid, transfer_details = pre_cap_groups.detect { |_uuid, group_details| group_details[:wells].sort == sources.sort }
+
+      found_pre_cap_gropus = pre_cap_groups.select { |_uuid, group_details| group_details[:wells].sort == sources.sort }
+
+      if found_pre_cap_gropus.keys.length > 1
+        errors.add(:base, "Found #{found_pre_cap_gropus.keys.length} different pools matching the condition for #{sources} to #{dest_loc} with requests in state start or pending. Please cancel the requests not needed.")
+        raise ActiveRecord::RecordInvalid, self
+      end
+
+      uuid = found_pre_cap_gropus.keys.first
+      transfer_details = found_pre_cap_gropus[uuid]
 
       if transfer_details.nil?
         errors.add(:base, "Could not find appropriate pool for #{sources} to #{dest_loc}. Check you don't have repool submissions on failed wells.")
