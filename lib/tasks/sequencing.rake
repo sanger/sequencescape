@@ -38,7 +38,7 @@ namespace :sequencing do
               SetDescriptorsTask.create!(name: 'Loading', sorted: 1, lab_activity: true, workflow: wf) do |task|
                 task.descriptors.build([
                   { kind: 'Text', sorter: 2, name: 'Operator' },
-                  { kind: 'Selection', sorter: 3, name: 'Workflow (Standard or Xp)', selection: {'Standard' => 'Standard', 'XP' => 'XP'}, value: 'Standard' },
+                  { kind: 'Selection', sorter: 3, name: 'Workflow (Standard or Xp)', selection: { 'Standard' => 'Standard', 'XP' => 'XP' }, value: 'Standard' },
                   { kind: 'Text', sorter: 4, name: 'DPX1' },
                   { kind: 'Text', sorter: 5, name: 'DPX2' },
                   { kind: 'Text', sorter: 6, name: 'DPX3' },
