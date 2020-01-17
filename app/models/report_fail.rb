@@ -53,7 +53,7 @@ class ReportFail
       BroadcastEvent::LabwareFailed.create!(
         seed: labware,
         user: user,
-        properties: { failure_reason: failure_options.key(failure_id) }
+        properties: { failure_reason: failure_options.key(failure_id.to_i) }
       )
     end
 
