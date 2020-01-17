@@ -117,3 +117,6 @@ jobs:
         repo: sanger/sequencescape
       api_key:
         secure: eWwbjG2LpK3cTHbqJfccIpcNj0PUl2YqGRYVAOQX+YPUtjOjnR4hqDMIUJTCVAHQ8PUC3yh/H7Sf4F7I5DQ5SdhY2Yeiusucig3V8yUdO6oHrpgaN2r9Nd/nM/vRxL7oVCI84Ahhu5mKL3x1PayTTpRjiu1KqL/BMbV//6s5jBs=
+notifications:
+  slack:
+    secure: cYYbPW8aReWrX5bqoxuCAQJgDb77JZ47dnTVdz1cna7iYfG4sC44BhVwz1ldkp1O4ihUPHynctwjiFaOs+Ob6jBCwSjopawE6R3efW+ZbrpdX+tHSt1tm6nJ4/MTvp+qs1KClPExBc94uAp0q+fqs6QQeJVDHaHy+VBPHXhCP3U=
