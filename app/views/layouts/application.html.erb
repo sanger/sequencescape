@@ -1,14 +1,14 @@
 
-<% add(:tab, I18n.t('navigation.tabs.studies')   => studies_path) -%>
-<% add(:tab, I18n.t('navigation.tabs.projects')  => projects_path) -%>
-<% add(:tab, I18n.t('navigation.tabs.admin')     => admin_path) if logged_in? && current_user.is_administrator? -%>
-<% add(:tab, I18n.t('navigation.tabs.uat_actions') => uat_actions_path) unless Rails.env.production? -%>
-<% add(:tab, I18n.t('navigation.tabs.pipelines') => pipelines_path) -%>
-<% add(:tab, I18n.t('navigation.tabs.batches')   => batches_path) -%>
-<% add(:tab, I18n.t('navigation.tabs.labwhere_reception') => labwhere_receptions_path) -%>
-<% add(:tab, I18n.t('navigation.tabs.labview')   => lab_view_path) -%>
-<% add(:tab, I18n.t('navigation.tabs.labsearch') => new_lab_search_path) -%>
-<% add(:tab, I18n.t('navigation.tabs.report_fails') => report_fails_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.studies')              => studies_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.projects')             => projects_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.admin')                => admin_path) if logged_in? && current_user.is_administrator? -%>
+<% add(:tab, I18n.t('navigation.tabs.uat_actions')          => uat_actions_path) unless Rails.env.production? -%>
+<% add(:tab, I18n.t('navigation.tabs.pipelines')            => pipelines_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.batches')              => batches_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.labwhere_reception')   => labwhere_receptions_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.labview')              => lab_view_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.labsearch')            => new_lab_search_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.report_fails')         => report_fails_path) if configatron.enable_report_fails -%>
 
 <!DOCTYPE html>
 <html lang="en">
