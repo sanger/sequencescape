@@ -37,9 +37,8 @@ namespace :sequencing do
               AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, lab_activity: true, workflow: wf)
               SetDescriptorsTask.create!(name: 'Loading', sorted: 1, lab_activity: true, workflow: wf) do |task|
                 task.descriptors.build([
-                  { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
                   { kind: 'Text', sorter: 2, name: 'Operator' },
-                  { kind: 'Text', sorter: 3, name: 'Workflow (Standard or Xp)' },
+                  { kind: 'Selection', sorter: 3, name: 'Workflow (Standard or Xp)', selection: { 'Standard' => 'Standard', 'XP' => 'XP' }, value: 'Standard' },
                   { kind: 'Text', sorter: 4, name: 'DPX1' },
                   { kind: 'Text', sorter: 5, name: 'DPX2' },
                   { kind: 'Text', sorter: 6, name: 'DPX3' },
@@ -53,13 +52,8 @@ namespace :sequencing do
               end
               SetDescriptorsTask.create!(name: 'Read 1 & 2', sorted: 2, lab_activity: true, workflow: wf) do |task|
                 task.descriptors.build([
-                  { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
                   { kind: 'Text', sorter: 2, name: 'Operator' },
                   { kind: 'Text', sorter: 3, name: 'Pipette Carousel' },
-                  { kind: 'Text', sorter: 4, name: 'Kit library tube' },
-                  { kind: 'Text', sorter: 5, name: 'Buffer cartridge' },
-                  { kind: 'Text', sorter: 6, name: 'Cluster cartridge' },
-                  { kind: 'Text', sorter: 7, name: 'SBS cartridge' },
                   { kind: 'Text', sorter: 8, name: 'iPCR batch #' },
                   { kind: 'Text', sorter: 9, name: 'Comment' }
                 ])
