@@ -585,6 +585,8 @@ Rails.application.routes.draw do
 
   resources :labwhere_receptions, only: %i[index create]
 
+  resources :report_fails, only: %i[index create]
+
   resources :qc_files, only: %i[show create]
 
   resources :user_queries, only: %i[new create]

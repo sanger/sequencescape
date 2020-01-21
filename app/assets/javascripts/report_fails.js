@@ -1,3 +1,5 @@
+// Copied from from labware_reception.js since similar functionality is required
+
 (function(window,$,undefined) {
   'use strict';
 
@@ -17,28 +19,21 @@
   $( document ).ready(function() {
     var barcode_list = $('#barcode_list')[0]
 
-    // The swipecard scanners send a return.
-    // This stops it from submitting the form.
-    $('#labwhere_reception_user_code').bind("keydown", function(e) {
+    // The swipecard scanners send a return - this stops it from submitting the form.
+    $('#report_fail_user_code').bind("keydown", function(e) {
       /* We don't take tab index into account here */
       var ENTER = 13, TAB = 9, code;
       code=e.charCode || e.keyCode;
       if (code==ENTER || code==TAB) {
         e.preventDefault();
-        $('#asset_scan').focus();
+        $('#failed_labware_barcodes').focus();
         return false;
       }
     });
 
-    // Update the query string automatically on changing the location field
-    // Allows the user to bookmark a particular location
-    $( '#labwhere_reception_location_id' ).bind('change', function() {
-      history.replaceState({}, document.title, '?location_id=' + this.value)
-    });
-
     // On scanning in barcodes, add them to the list.
     $('#asset_scan').bind('blur',function() {
-      new scannedBarcode(this,barcode_list, 'labwhere_reception');
+      new scannedBarcode(this,barcode_list, 'report_fail');
     });
 
     $('#asset_scan').bind("keydown", function(e) {
@@ -47,7 +42,7 @@
       code=e.charCode || e.keyCode;
       if (code==ENTER || code==TAB) {
         e.preventDefault();
-        new scannedBarcode(this,barcode_list, 'labwhere_reception');
+        new scannedBarcode(this,barcode_list, 'report_fail');
         this.focus();
         return false;
       }

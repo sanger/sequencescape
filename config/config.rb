@@ -90,7 +90,11 @@ if Rails.env.development? || Rails.env.profile?
   configatron.register_printers_automatically = false
 
   configatron.tube_rack_scans_microservice_url = 'http://localhost:5000/tube_rack/'
+
+  # Feature toggles
+  configatron.enable_report_fails = true
 end
+
 if Rails.env.test? || Rails.env.cucumber?
 
   configatron.barcode_images_url = 'http://example.com/deliberately_broken_url'

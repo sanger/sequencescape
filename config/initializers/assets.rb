@@ -30,5 +30,6 @@ Rails.application.config.assets.precompile += [
   'submissions.js',
   'bulk_submissions.js',
   'JsBarcode.all.min.js',
-  'print_swipecard.js'
+  'print_swipecard.js',
+  'report_fails.js'
 ]
