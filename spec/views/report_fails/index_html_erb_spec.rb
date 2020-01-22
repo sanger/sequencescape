@@ -9,6 +9,13 @@ RSpec.describe 'report_fails/index.html.erb', type: :view do
   context 'when rendering the index' do
     let(:current_user) { user }
     let(:report_fail) { ReportFail.new(nil, nil, []) }
+    let(:options) do
+      %w[
+        fail_because_sample_integrity
+        fail_because_quantification
+        fail_because_lab_error
+      ]
+    end
 
     before do
       assign(:report_fail, report_fail) # sets @widget = Widget.new in the view template
@@ -16,11 +23,7 @@ RSpec.describe 'report_fails/index.html.erb', type: :view do
 
     it 'renders the options' do
       render
-      [
-        'fail_because_sample_integrity',
-        'fail_because_quantification',
-        'fail_because_lab_error'
-      ].each do |key|
+      options.each do |key|
         expect(rendered).to match(key)
       end
     end

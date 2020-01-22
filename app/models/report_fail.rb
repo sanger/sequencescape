@@ -41,7 +41,7 @@ class ReportFail
       BroadcastEvent::LabwareFailed.create!(
         seed: labware,
         user: user,
-        properties: { failure_reason: I18n.t("report_fails.#{failure_id}") }
+        properties: { failure_reason: failure_id }
       )
     end
 

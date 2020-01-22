@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 module ReportFailsHelper
-  FAILURE_KEYS = [
-    'fail_because_sample_integrity',
-    'fail_because_quantification',
-    'fail_because_lab_error'
-  ]
+  FAILURE_KEYS = %w[
+    fail_because_sample_integrity
+    fail_because_quantification
+    fail_because_lab_error
+  ].freeze
   def report_fail_failure_options
-    FAILURE_KEYS.reduce({}) do |obj, val|
+    FAILURE_KEYS.each_with_object({}) do |val, obj|
       obj[I18n.t("report_fails.#{val}")] = val
-      obj
     end
   end
 
