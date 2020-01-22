@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# This helper contains the default values to report failures in plates from the Report Fail UI
+#
 module ReportFailsHelper
   FAILURE_KEYS = %w[
     fail_because_sample_integrity
