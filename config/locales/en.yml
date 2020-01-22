@@ -48,6 +48,11 @@ en:
     logout: "Logout"
     help: "Help"
 
+  report_fails:
+    fail_because_sample_integrity: "Sample integrity upon receipt"
+    fail_because_quantification: "Failure at quantification (<250ug to proceed to library)'"
+    fail_because_lab_error: "Lab error (automation failure)"
+
   navigation:
     menu:
       back_to_study: "Back to study"
