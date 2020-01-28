@@ -6,7 +6,7 @@
 # {Lane lanes} for control and calibration purposes.
 #
 # == Process
-# PhiX samples arrive on site and have {Tag tags} applied as required. These may
+# PhiX samples arrive on site and have {Tag tags} applied as required. These may be
 # single indexed (i7 only) or dual indexed (i5 & i7) as required. The single and
 # dual indexed tag sets are fixed and are selected from the 'Control Tag Group 888'
 # {TagGroup}.
