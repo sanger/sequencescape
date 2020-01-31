@@ -4,6 +4,7 @@ class Api::Messages::PacBioRunIO < Api::Base
   renders_model(::Batch)
 
   map_attribute_to_json_attribute(:id, 'pac_bio_run_id')
+  map_attribute_to_json_attribute(:id_dup, 'pac_bio_run_name')
   map_attribute_to_json_attribute(:uuid, 'pac_bio_run_uuid')
 
   map_attribute_to_json_attribute(:updated_at)
