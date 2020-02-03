@@ -11,9 +11,9 @@ RSpec.describe 'report_fails/index.html.erb', type: :view do
     let(:report_fail) { ReportFail.new(nil, nil, []) }
     let(:options) do
       %w[
-        fail_because_sample_integrity
-        fail_because_quantification
-        fail_because_lab_error
+        sample_integrity
+        quantification
+        lab_error
       ]
     end
 

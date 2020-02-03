@@ -7,9 +7,9 @@ describe ReportFailsHelper do
   describe '#report_fail_failure_options' do
     it 'returns the available options' do
       expect(helper.report_fail_failure_options.values).to eq(%w[
-        fail_because_sample_integrity
-        fail_because_quantification
-        fail_because_lab_error
+        sample_integrity
+        quantification
+        lab_error
       ])
     end
   end

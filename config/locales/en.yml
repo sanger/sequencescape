@@ -50,9 +50,9 @@ en:
 
   # Description for the keys published in the events generated for the report fails UI
   report_fails:
-    fail_because_sample_integrity: "Sample integrity upon receipt"
-    fail_because_quantification: "Failure at quantification (<250ug to proceed to library)'"
-    fail_because_lab_error: "Lab error (automation failure)"
+    sample_integrity: "Sample integrity upon receipt"
+    quantification: "Failure at quantification (<250ug to proceed to library)'"
+    lab_error: "Lab error (automation failure)"
 
   navigation:
     menu:
