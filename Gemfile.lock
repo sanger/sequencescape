@@ -395,7 +395,7 @@ GEM
     rubocop-rspec (1.37.1)
       rubocop (>= 0.68.1)
     ruby-graphviz (1.2.4)
-    ruby-oci8 (2.2.7)
+    ruby-oci8 (2.2.8)
     ruby-ole (1.2.12.2)
     ruby-plsql (0.7.1)
     ruby-prof (1.1.0)
