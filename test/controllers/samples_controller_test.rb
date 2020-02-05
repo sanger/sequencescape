@@ -39,27 +39,6 @@ class SamplesControllerTest < ActionController::TestCase
         session[:user] = @user.id
       end
 
-      context '#update' do
-        context 'when changing withdraw consent' do
-          setup do
-            @sample = FactoryBot.create :sample
-            post :update, params: { id: @sample.id, sample: { sample_metadata_attributes: { consent_withdrawn: true } } }
-            @sample.reload
-          end
-
-          should 'change the consent withdrawn' do
-            binding.pry
-            assert_equal true, @sample.consent_withdrawn
-          end
-          should 'set a timestamp in the sample' do
-            assert_equal false, @sample.date_of_consent_withdrawn.nil?
-          end
-          should 'set the user that changed the consent' do
-            assert_equal false, @sample.user_id_of_consent_withdrawn.nil?
-          end
-        end
-      end
-
       context '#add_to_study' do
         setup do
           @initial_study_sample_count = StudySample.count

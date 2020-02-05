@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Add new withdraw consent attributes to the sample metadata table
 class AddWithdrawConsentToSampleMetadata < ActiveRecord::Migration[5.2]
   def change
     add_column :sample_metadata, :consent_withdrawn, :boolean, default: false

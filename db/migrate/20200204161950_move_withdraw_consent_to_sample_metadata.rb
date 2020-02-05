@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Move old withdraw consent setting into the new columns of sample metadata
 class MoveWithdrawConsentToSampleMetadata < ActiveRecord::Migration[5.2]
   def up
     ActiveRecord::Base.transaction do
