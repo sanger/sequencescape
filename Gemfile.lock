@@ -435,7 +435,7 @@ GEM
       rack-protection (= 2.0.7)
       tilt (~> 2.0)
     slack-notifier (2.3.2)
-    spreadsheet (1.2.5)
+    spreadsheet (1.2.6)
       ruby-ole (>= 1.0)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
