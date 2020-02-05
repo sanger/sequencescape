@@ -210,7 +210,7 @@ class Sample < ApplicationRecord
       sample_common_name
     end
 
-    belongs_to :user_of_consent_withdrawn, class_name: 'User', foreign_key: 'user_id_of_consent_withdrawn', inverse_of: :consent_withdrawn_samples
+    belongs_to :user_of_consent_withdrawn, class_name: 'User', foreign_key: 'user_id_of_consent_withdrawn', inverse_of: :consent_withdrawn_sample_metadata
 
     # This is misleading, as samples are rarely released through
     # Sequencescape, so our flag gets out of sync with the ENA/EGA
@@ -430,17 +430,10 @@ class Sample < ApplicationRecord
     nil
   end
 
-  def withdraw_consent!
-    update!(consent_withdrawn: true)
-  end
-
+  # Consent withdraw attributes from sample metadata
   delegate :consent_withdrawn, :consent_withdrawn?, :consent_withdrawn=, to: :sample_metadata
   delegate :date_of_consent_withdrawn, :date_of_consent_withdrawn=, to: :sample_metadata
   delegate :user_id_of_consent_withdrawn, :user_id_of_consent_withdrawn=, to: :sample_metadata
-
-  # def consent_withdrawn?
-  #  sample_metadata.consent_withdrawn?
-  # end
 
   def subject_type
     'sample'
