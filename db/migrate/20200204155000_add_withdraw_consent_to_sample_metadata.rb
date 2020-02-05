@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddWithdrawConsentToSampleMetadata < ActiveRecord::Migration[5.2]
   def change
     add_column :sample_metadata, :consent_withdrawn, :boolean, default: false
