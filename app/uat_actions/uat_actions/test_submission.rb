@@ -36,8 +36,16 @@ class UatActions::TestSubmission < UatActions
                    'Useful where the same request type has multiple library types.',
              select_options: -> { LibraryType.alphabetical.pluck(:name) },
              options: { include_blank: 'Using default library type...' }
+  form_field :partial_number_of_wells,
+             :number_field,
+             label: 'Partial number of wells',
+             help: 'Use this option to create a partial submission. Enter the '\
+                   'number of randomly sampled wells to be submitted. '\
+                   'Leave blank to use all wells.',
+             options: { minimum: 1 }
 
   validates :submission_template, presence: { message: 'could not be found' }
+  validates :partial_number_of_wells, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
 
   #
   # Returns a default copy of the UatAction which will be used to fill in the form
@@ -56,7 +64,8 @@ class UatActions::TestSubmission < UatActions
   end
 
   #
-  # Generates a full plate submission for the given template
+  # Generates a plate submission for the given template.
+  # A partial submission is possible if the partial_number_of_wells form field has been set.
   #
   # @return [Boolean] Returns true if the action was successful, false otherwise
   def perform
@@ -81,7 +90,23 @@ class UatActions::TestSubmission < UatActions
   end
 
   def assets
-    @assets ||= labware.wells.with_aliquots
+    @assets ||= select_assets
+  end
+
+  # take a sample of the wells to go into the submission
+  def select_assets
+    if partial_number_of_wells.blank? || partial_number_of_wells.to_i.zero?
+      # default option, take all wells with aliquots
+      labware.wells.with_aliquots
+    else
+      # take the number entered in the form
+      reqd_num_samples = partial_number_of_wells.to_i
+
+      # check the number is less than the total wells with aliquots
+      # N.B. sort the array after random sampling to get back into original well order
+      num_wells_with_aliquots = labware.wells.with_aliquots.size
+      reqd_num_samples > num_wells_with_aliquots ? labware.wells.with_aliquots : labware.wells.with_aliquots.sample(reqd_num_samples).sort_by(&:map_id)
+    end
   end
 
   def labware
