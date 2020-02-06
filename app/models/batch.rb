@@ -278,6 +278,10 @@ class Batch < ApplicationRecord
     multiplexed?
   end
 
+  def id_dup
+    id
+  end
+
   def multiplexed_items_with_unique_library_ids
     requests.map { |r| r.target_asset.children }.flatten.uniq
   end

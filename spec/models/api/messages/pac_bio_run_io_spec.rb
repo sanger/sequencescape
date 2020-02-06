@@ -25,6 +25,7 @@ RSpec.describe Api::Messages::PacBioRunIO, type: :model do
   let(:expected_json) {
     {
       'pac_bio_run_id' => pac_bio_batch.id,
+      'pac_bio_run_name' => pac_bio_batch.id,
       'pac_bio_run_uuid' => pac_bio_batch.uuid,
       'plate_barcode' => plate.human_barcode,
       'plate_uuid_lims' => plate.uuid,
