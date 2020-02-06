@@ -17,7 +17,7 @@ Feature: The XML interface to the samples
         <properties>
           <property><name>Consent withdrawn</name><value/></property>
           <property><name>Date of consent withdrawn</name><value/></property>
-          <property><name>Identifier of the user that withdraw consent</name><value/></property>
+          <property><name>Identifier of the user that withdrew consent</name><value/></property>
 
           <property><name>Cohort</name><value/></property>
           <property><name>Common Name</name><value>John's Gene</value></property>

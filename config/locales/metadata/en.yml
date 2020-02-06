@@ -135,7 +135,7 @@ en:
           label: Date of consent withdrawn
 
         user_id_of_consent_withdrawn:
-          label: Identifier of the user that withdraw consent
+          label: Identifier of the user that withdrew consent
 
         gender:
           label: Gender
