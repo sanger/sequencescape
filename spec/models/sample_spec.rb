@@ -87,22 +87,6 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
     end
   end
 
-  context 'consent withdraw' do
-    let(:user) { create :user }
-    let(:time) { DateTime.now }
-    let(:sample) { create :sample }
-
-    before do
-      sample.update(consent_withdrawn: true, date_of_consent_withdrawn: time, user_id_of_consent_withdrawn: user.id)
-    end
-
-    it 'has delegated the values to sample metadata' do
-      expect(sample.consent_withdrawn).to eq(sample.sample_metadata.consent_withdrawn)
-      expect(sample.date_of_consent_withdrawn).to eq(sample.sample_metadata.date_of_consent_withdrawn)
-      expect(sample.user_id_of_consent_withdrawn).to eq(sample.sample_metadata.user_id_of_consent_withdrawn)
-    end
-  end
-
   context 'genome size' do
     it 'can be added to a sample' do
       sample = create(:sample, sample_metadata_attributes: { genome_size: 1000 })
