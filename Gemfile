@@ -163,7 +163,6 @@ group :profile do
 end
 
 group :test do
-  gem 'rspec-html-matchers'
   gem 'rspec-rails', require: false
   # Rails performance tests
   gem 'rails-perftest'
