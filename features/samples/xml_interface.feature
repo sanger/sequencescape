@@ -15,6 +15,10 @@ Feature: The XML interface to the samples
         <name>testing_the_xml_interface</name>
         <consent_withdrawn>false</consent_withdrawn>
         <properties>
+          <property><name>Consent withdrawn</name><value/></property>
+          <property><name>Date of consent withdrawn</name><value/></property>
+          <property><name>Identifier of the user that withdrew consent</name><value/></property>
+
           <property><name>Cohort</name><value/></property>
           <property><name>Common Name</name><value>John's Gene</value></property>
           <property><name>Concentration</name><value/></property>
