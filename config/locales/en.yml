@@ -48,6 +48,12 @@ en:
     logout: "Logout"
     help: "Help"
 
+  # Description for the keys published in the events generated for the report fails UI
+  report_fails:
+    sample_integrity: "Sample integrity upon receipt"
+    quantification: "Failure at quantification (<250ug to proceed to library)"
+    lab_error: "Lab error (automation failure)"
+
   navigation:
     menu:
       back_to_study: "Back to study"

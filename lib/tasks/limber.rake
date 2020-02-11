@@ -155,6 +155,12 @@ namespace :limber do
       %w[WGS LCMB].each do |prefix|
         Limber::Helper::RequestTypeConstructor.new(prefix).build!
       end
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'Duplex-Seq',
+        library_types: ['Duplex-Seq']
+      ).build!
+
       Limber::Helper::RequestTypeConstructor.new(
         'PCR Free',
         library_types: ['HiSeqX PCR free', 'PCR Free 384', 'Chromium single cell CNV', 'DAFT-seq'],
@@ -244,7 +250,8 @@ namespace :limber do
           'Ribozero RNA depletion',
           'Ribozero RNA-seq (Bacterial)',
           'Ribozero RNA-seq (HMR)',
-          'TraDIS'
+          'TraDIS',
+          'Chromium Visium'
         ],
         product_line: 'Bespoke',
         default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
@@ -438,6 +445,9 @@ namespace :limber do
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
+
+      duplex_seq_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Duplex-Seq')
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'Duplex-Seq', catalogue: duplex_seq_catalogue).build!
 
       mda_catalogue = ProductCatalogue.find_or_create_by!(name: 'GnT MDA')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GnT MDA', catalogue: mda_catalogue).build!

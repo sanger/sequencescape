@@ -17,22 +17,10 @@ class ReportFail
              'You may need to update your swipecard in Sequencescape.'
   }
 
-  SAMPLE_INTEGRITY = 'Sample integrity upon receipt'
-  QUANT = 'Failure at quantification (<250ug to proceed to library)'
-  LAB_ERROR = 'Lab error (automation failure)'
-
   def initialize(user_code, failure_id, failed_labware_barcodes)
     @user_code = user_code.try(:strip)
     @failure_id = failure_id.try(:strip)
     @failed_labware_barcodes = (failed_labware_barcodes || []).map(&:strip)
-
-    @failure_options = {
-      SAMPLE_INTEGRITY => 1,
-      QUANT => 2,
-      LAB_ERROR => 3
-    }
-    @selected_option = 1
-    @disabled_options = [2, 3]
   end
 
   def persisted?
@@ -53,7 +41,7 @@ class ReportFail
       BroadcastEvent::LabwareFailed.create!(
         seed: labware,
         user: user,
-        properties: { failure_reason: failure_options.key(failure_id.to_i) }
+        properties: { failure_reason: failure_id }
       )
     end
 

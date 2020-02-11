@@ -14,9 +14,9 @@
     <%= form.label :failure_id, 'Please select the details of the failure' %>
     <%= select(:report_fail,
                :failure_id,
-               options_for_select(report_fail.failure_options,
-                                  selected: report_fail.selected_option,
-                                  disabled: report_fail.disabled_options),
+               options_for_select(report_fail_failure_options,
+                                  selected: report_fail_selected_option,
+                                  disabled: report_fail_disabled_options),
                {:class => 'form-control'}) %>
   </div>
 
