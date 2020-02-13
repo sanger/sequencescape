@@ -2,6 +2,9 @@
 <%# NOTE[xxx]: Kind of a hack because we need 'sample[sample_metadata_attributes][X]' -%>
 <%= fields_for(sample) do |form| %>
   <%= form.fields_for(:sample_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
+
+    <%= metadata_fields.select(:consent_withdrawn, [['Yes', true], ['No', false]]) %>
+
     <%# Fields for 'Microarray genotyping' %>
     <%= metadata_fields.text_field(:cohort) %>
     <%= metadata_fields.select(:gender, Sample::GENDERS,include_blank: true) %>

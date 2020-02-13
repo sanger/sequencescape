@@ -127,6 +127,16 @@ en:
         cohort:
           label: Cohort
 
+        consent_withdrawn:
+          label: Consent withdrawn
+          help: Patient has withdrawn their consent to access their data
+
+        date_of_consent_withdrawn:
+          label: Date of consent withdrawn
+
+        user_id_of_consent_withdrawn:
+          label: Identifier of the user that withdrew consent
+
         gender:
           label: Gender
           edit_info: "Array Express"

@@ -1,0 +1,12 @@
+<% if sample.sample_metadata.consent_withdrawn? %>
+  Patient consent has been withdrawn for this sample
+  <% if sample.sample_metadata.user_of_consent_withdrawn %>
+    by user
+      <span class='font-weight-bold'>
+        <%= sample.sample_metadata.user_of_consent_withdrawn.login %>
+      </span>
+    at <span class='font-italic'>
+      <%= sample.sample_metadata.date_of_consent_withdrawn.to_formatted_s(:db) %>
+    </span>
+  <% end %>
+<% end %>
