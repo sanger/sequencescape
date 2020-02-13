@@ -251,7 +251,8 @@ namespace :limber do
           'Ribozero RNA-seq (Bacterial)',
           'Ribozero RNA-seq (HMR)',
           'TraDIS',
-          'Chromium Visium'
+          'Chromium Visium',
+          'Hi-C'
         ],
         product_line: 'Bespoke',
         default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
