@@ -88,6 +88,8 @@ class SamplesController < ApplicationController
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
       cleaned_params = clean_params_from_check(params[:sample]).permit(default_permitted_metadata_fields)
+      cleaned_params[:date_of_consent_withdrawn] = DateTime.now
+      cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
       if @sample.update(cleaned_params)
         flash[:notice] = 'Sample details have been updated'
         redirect_to sample_path(@sample)
@@ -183,6 +185,7 @@ class SamplesController < ApplicationController
 
   def default_permitted_metadata_fields
     { sample_metadata_attributes: %i[
+      consent_withdrawn
       organism gc_content cohort gender country_of_origin geographical_region ethnicity dna_source
       volume supplier_plate_id mother father replicate sample_public_name sample_common_name
       sample_strain_att sample_taxon_id sample_ebi_accession_number sample_sra_hold
