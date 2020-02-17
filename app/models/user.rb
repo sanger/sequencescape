@@ -27,6 +27,8 @@ class User < ApplicationRecord
   has_many :assigned_batches, class_name: 'Batch', foreign_key: :assignee_id, inverse_of: :assignee
   has_many :pipelines, ->() { order('batches.id DESC').distinct }, through: :batches
 
+  has_many :consent_withdrawn_sample_metadata, class_name: 'Sample::Metadata', foreign_key: 'user_id_of_consent_withdrawn', inverse_of: :user_of_consent_withdrawn
+
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
 

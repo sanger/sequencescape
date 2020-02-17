@@ -118,7 +118,7 @@ describe 'Sample#consent_withdrawn', js: false do
     it 'a user visit the sample show page' do
       login_user user
       visit sample_path(sample)
-      expect(page).to have_content 'Patient consent has been withdrawn for this sample.'
+      expect(page).to have_content 'Patient consent has been withdrawn for this sample'
     end
 
     it_behaves_like 'it reports information elsewhere'
@@ -141,7 +141,7 @@ describe 'Sample#consent_withdrawn', js: false do
     it 'and a user visit the sample show page' do
       login_user user
       visit sample_path(sample)
-      expect(page).not_to have_content 'Patient consent has been withdrawn for this sample.'
+      expect(page).not_to have_content 'Patient consent has been withdrawn for this sample'
     end
 
     it_behaves_like 'it reports information elsewhere'

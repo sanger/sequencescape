@@ -146,6 +146,34 @@ namespace :limber do
         size: 48
       )
     end
+
+    unless Purpose.where(name: 'LDS Stock').exists?
+      PlatePurpose.create!(
+        name: 'LDS Stock',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
+
+    unless Purpose.where(name: 'LDS Cherrypick').exists?
+      PlatePurpose.create!(
+        name: 'LDS Cherrypick',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: true,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
   end
 
   desc 'Create the limber request types'
@@ -158,7 +186,8 @@ namespace :limber do
 
       Limber::Helper::RequestTypeConstructor.new(
         'Duplex-Seq',
-        library_types: ['Duplex-Seq']
+        library_types: ['Duplex-Seq'],
+        default_purposes: ['LDS Stock', 'LDS Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -251,7 +280,8 @@ namespace :limber do
           'Ribozero RNA-seq (Bacterial)',
           'Ribozero RNA-seq (HMR)',
           'TraDIS',
-          'Chromium Visium'
+          'Chromium Visium',
+          'Hi-C'
         ],
         product_line: 'Bespoke',
         default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
