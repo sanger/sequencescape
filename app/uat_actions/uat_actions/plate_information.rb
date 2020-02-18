@@ -14,15 +14,15 @@ class UatActions::PlateInformation < UatActions
   validates :plate, presence: { message: 'could not be found' }
 
   def self.default
-    new()
+    new
   end
 
   def perform
     report[:plate_barcode] = plate_barcode
-    return false unless plate.present?
+    return false if plate.blank?
 
     report[:wells_with_aliquots] = wells_with_aliquots
-    return true
+    true
   end
 
   private

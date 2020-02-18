@@ -3,9 +3,7 @@
 require 'rails_helper'
 
 describe UatActions::PlateInformation do
-  context 'for a plate with aliquots' do
-    let!(:plate_with_aliquots) { create :plate_with_untagged_wells, sample_count: 3, barcode: '1' }
-
+  context 'when the plate has aliquots' do
     let(:parameters) do
       {
         plate_barcode: 'DN1S'
@@ -21,15 +19,17 @@ describe UatActions::PlateInformation do
       }
     end
 
+    before do
+      create :plate_with_untagged_wells, sample_count: 3, barcode: '1'
+    end
+
     it 'can be performed' do
       expect(uat_action.perform).to eq true
       expect(uat_action.report).to eq report
     end
   end
 
-  context 'for a plate without aliquots' do
-    let!(:plate_without_aliquots) { create :plate_with_empty_wells, well_count: 3, barcode: '2' }
-
+  context 'when the plate is without aliquots' do
     let(:parameters) do
       {
         plate_barcode: 'DN2T'
@@ -43,6 +43,10 @@ describe UatActions::PlateInformation do
         plate_barcode: 'DN2T',
         wells_with_aliquots: ''
       }
+    end
+
+    before do
+      create :plate_with_empty_wells, well_count: 3, barcode: '2'
     end
 
     it 'can be performed' do
