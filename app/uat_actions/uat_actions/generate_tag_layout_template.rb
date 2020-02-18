@@ -16,17 +16,17 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
              :text_field,
              label: 'Tag Layout Template Name',
              help: 'It will not create a tag group with a name that already exists.'
-  form_field :tag_group_id,
+  form_field :tag_group_name,
              :select,
              label: 'Tag Group',
              help: 'Select tag group 1 for the template',
-             select_options: -> { TagGroup.visible.pluck(:name, :id) },
+             select_options: -> { TagGroup.visible.pluck(:name) },
              options: { include_blank: 'Select tag group...' }
-  form_field :tag2_group_id,
+  form_field :tag2_group_name,
              :select,
              label: 'Tag2 Group',
              help: 'Select tag group 2 for the template',
-             select_options: -> { TagGroup.visible.pluck(:name, :id) },
+             select_options: -> { TagGroup.visible.pluck(:name) },
              options: { include_blank: 'Select tag 2 group...' }
   form_field :direction_algorithm,
              :select,
@@ -36,24 +36,17 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
              options: { include_blank: 'Select a direction...' }
 
   validates :name, presence: { message: 'needs a name' }
-  validates :tag_group_id, presence: { message: 'needs a choice' }
+  validates :tag_group_name, presence: { message: 'needs a choice' }
   validates :direction_algorithm, presence: { message: 'needs a choice' }
-  validate :template_does_not_exist
-
-  def template_does_not_exist
-    return true if TagLayoutTemplate.find_by(name: name).blank?
-
-    errors.add(:name, 'already exists, must be unique')
-    false
-  end
 
   def perform
     report[:name] = name
+    return true if existing_tag_layout_template
 
     tlt_parameters = {
       name: name,
-      tag_group_id: tag_group_id,
-      tag2_group_id: tag2_group_id,
+      tag_group_id: tag_group.id,
+      tag2_group_id: tag2_group&.id,
       direction_algorithm: direction_algorithm,
       walking_algorithm: 'TagLayout::WalkWellsOfPlate'
     }
@@ -66,5 +59,18 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
 
   def user
     UatActions::StaticRecords.user
+  end
+
+  def existing_tag_layout_template
+    @tag_layout_template ||= TagLayoutTemplate.find_by(name: name)
+  end
+
+  def tag_group
+    @tag_group ||= TagGroup.find_by(name: tag_group_name)
+  end
+
+  def tag2_group
+    return nil unless tag2_group_name.present?
+    @tag2_group ||= TagGroup.find_by(name: tag2_group_name)
   end
 end

@@ -11,8 +11,8 @@ describe UatActions::GenerateTagLayoutTemplate do
     let(:parameters) do
       {
         name: 'Test Tag Layout Template',
-        tag_group_id: tag_group.id,
-        tag2_group_id: tag2_group.id,
+        tag_group_name: tag_group.name,
+        tag2_group_name: tag2_group.name,
         direction_algorithm: 'TagLayout::InColumns'
       }
     end
@@ -23,9 +23,27 @@ describe UatActions::GenerateTagLayoutTemplate do
       { name: 'Test Tag Layout Template' }
     end
 
-    it 'can be performed' do
-      expect(uat_action.perform).to eq true
-      expect(uat_action.report).to eq report
+    context 'with both tag groups' do
+      it 'can be performed' do
+        expect(uat_action.perform).to eq true
+        expect(uat_action.report).to eq report
+      end
+    end
+
+    context 'without the tag2 group' do
+      let(:parameters) do
+        {
+          name: 'Test Tag Layout Template',
+          tag_group_name: tag_group.name,
+          tag2_group_name: nil,
+          direction_algorithm: 'TagLayout::InColumns'
+        }
+      end
+
+      it 'can be performed' do
+        expect(uat_action.perform).to eq true
+        expect(uat_action.report).to eq report
+      end
     end
   end
 
