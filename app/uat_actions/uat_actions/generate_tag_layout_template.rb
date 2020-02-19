@@ -2,13 +2,6 @@
 
 # Will construct a tag layout template from existing tag groups
 class UatActions::GenerateTagLayoutTemplate < UatActions
-  DIRECTIONS = {
-    'InColumns (A1,B1,C1...)': 'TagLayout::InColumns',
-    'InRows (A1,A2,A3...)': 'TagLayout::InRows',
-    'InInverseColumns (H12,G12,F12...)': 'TagLayout::InInverseColumns',
-    'InInverseRows (H12,H11,H10...)': 'TagLayout::InInverseRows'
-  }.freeze
-
   self.title = 'Generate Tag Layout Template'
   self.description = 'Generates a tag layout template from one or two tag groups.'
 
@@ -32,7 +25,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
              :select,
              label: 'Direction',
              help: 'Direction the tags are laid out by',
-             select_options: -> { DIRECTIONS },
+             select_options: -> { TagLayoutTemplatesController::DIRECTIONS },
              options: { include_blank: 'Select a direction...' }
 
   validates :name, presence: { message: 'needs a name' }
