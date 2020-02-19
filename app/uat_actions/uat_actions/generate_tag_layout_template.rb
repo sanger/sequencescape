@@ -8,7 +8,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
   form_field :name,
              :text_field,
              label: 'Tag Layout Template Name',
-             help: 'It will not create a tag group with a name that already exists.'
+             help: 'It will not create a tag layout template with a name that already exists.'
   form_field :tag_group_name,
              :select,
              label: 'Tag Group',
