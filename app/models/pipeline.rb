@@ -78,6 +78,11 @@ class Pipeline < ApplicationRecord
       .where(pipelines_request_types: { request_type_id: rt })
   }
 
+  def custom_message
+    # default do nothing, overridden in some children
+    ''
+  end
+
   def request_types_including_controls
     [control_request_type].compact + request_types
   end

@@ -1,5 +1,7 @@
 class PacBioSamplePrepPipeline < Pipeline
   ALWAYS_SHOW_RELEASE_ACTIONS = true
+  CUSTOM_MESSAGE = 'You can only batch together wells from the same plate.'
+
   include Pipeline::GroupByParent
 
   self.requires_position = false
@@ -7,6 +9,10 @@ class PacBioSamplePrepPipeline < Pipeline
   self.generate_target_assets_on_batch_create = true
   self.asset_type = 'PacBioLibraryTube'
   self.pick_to = false
+
+  def custom_message
+    CUSTOM_MESSAGE
+  end
 
   def allow_tag_collision_on_tagging_task?
     false
