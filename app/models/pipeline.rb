@@ -79,7 +79,7 @@ class Pipeline < ApplicationRecord
   }
 
   def custom_message
-    # default do nothing, overridden in some children
+    # Override this in subclasses if you want to display a custom message in the _pipeline_limit partial (blue box on pipeline show page)
     ''
   end
 

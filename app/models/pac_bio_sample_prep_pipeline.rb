@@ -1,6 +1,5 @@
 class PacBioSamplePrepPipeline < Pipeline
   ALWAYS_SHOW_RELEASE_ACTIONS = true
-  CUSTOM_MESSAGE = 'You can only batch together wells from the same plate.'
 
   include Pipeline::GroupByParent
 
@@ -11,7 +10,7 @@ class PacBioSamplePrepPipeline < Pipeline
   self.pick_to = false
 
   def custom_message
-    CUSTOM_MESSAGE
+    'You can only batch together wells from the same plate.'
   end
 
   def allow_tag_collision_on_tagging_task?
