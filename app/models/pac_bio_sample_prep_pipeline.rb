@@ -10,7 +10,7 @@ class PacBioSamplePrepPipeline < Pipeline
   self.pick_to = false
 
   def custom_message
-    'You can only batch together wells from the same plate.'
+    I18n.t('pipelines.show_page_custom_message.pacbio_sample_prep')
   end
 
   def allow_tag_collision_on_tagging_task?
