@@ -1,15 +1,21 @@
 # frozen_string_literal: true
 
+# NB: 2020-Feb-21 The column consent_withdrawn was recovered in the Samples table. The procedure
+# has been reviewed to perform the update.
+# This migration creates a backup file with the contents that are going to be migrated. Then it
+# validates and copies the data from the backup into the new column in SampleMetadata. If it
+# finds any error during validation or copying it rollsback all the migration.
+# Also provides a procedure to rollback changes.
 class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[5.2]
   def sample_id_and_consent_withdrawn
     Sample.select(:id, :migrated_consent_withdrawn_to_metadata)
   end
 
   def backup_file_path
-    '/tmp/backup-samples-consent-2020021901.txt'
+    '/var/tmp/backup-samples-consent-2020021901.txt'
   end
 
-  def is_boolean?(val)
+  def boolean?(val)
     [true, false].include? val
   end
 
@@ -19,14 +25,14 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     sample_id_and_consent_withdrawn.each do |sample|
       tuple = [sample.id, sample.migrated_consent_withdrawn_to_metadata]
       raise 'Not an int' unless tuple[0].is_a?(Integer)
-      raise 'Not a boolean value' unless is_boolean?(tuple[1])
+      raise 'Not a boolean value' unless boolean?(tuple[1])
 
       backup_data.push(tuple)
     end
     File.open(backup_file_path, 'w') { |file| file.write(backup_data.to_json) }
   end
 
-  def get_recovery_data
+  def recovery_data
     data_in_file = nil
     File.open(backup_file_path, 'r') { |file| data_in_file = JSON.parse(file.read) }
     data_in_file
@@ -40,7 +46,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
 
     data_in_file.each do |ident, value|
       raise "Value not an int #{ident}" unless ident.is_a?(Integer)
-      raise "Value not a boolean #{ident}" unless is_boolean?(value)
+      raise "Value not a boolean #{ident}" unless boolean?(value)
     end
   end
 
@@ -50,23 +56,28 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
       Sample::Metadata.reset_column_information
 
       create_recovery_file!
-      data_in_file = get_recovery_data
+      data_in_file = recovery_data
       check_recovery_data!(data_in_file)
+
+      # Consent withdrawn in sample metadata should not be in use at now but if it had any values all of them are reset to false
+      # The right value for consent withdrawn before this migration is in samples, so the next steps will copy that value
+      Sample::Metadata.where(consent_withdrawn: true).update_all(consent_withdrawn: false)
 
       num_read = 0
       data_in_file.each do |ident, value|
-        if value==true
-          num_read = num_read + 1
-          say "Moving to metadata consent withdrawn for sample #{ident} with value #{value}"
-          sample = Sample.find_by!(id: ident)
-          raise 'Not a sample' unless sample.is_a?(Sample)
+        next unless value == true
 
-          sample.sample_metadata.update!(consent_withdrawn: value)
-          raise 'Data not updated' unless sample.sample_metadata.consent_withdrawn == value
-        end
+        num_read += 1
+        say "Moving to metadata consent withdrawn for sample #{ident} with value #{value}"
+        sample = Sample.find_by!(id: ident)
+        raise 'Not a sample' unless sample.is_a?(Sample)
+
+        sample.sample_metadata.update!(consent_withdrawn: value)
+        raise 'Data not updated' unless sample.sample_metadata.consent_withdrawn == value
       end
 
       raise 'Inconsistent number of values ' unless Sample::Metadata.where(consent_withdrawn: true).count == num_read
+
       say 'Update complete!'
     end
   end
@@ -76,12 +87,15 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
       Sample.reset_column_information
       Sample::Metadata.reset_column_information
 
-      data_in_file = get_recovery_data
+      data_in_file = recovery_data
       check_recovery_data!(data_in_file)
 
+      Sample.where(migrated_consent_withdrawn_to_metadata: true).update_all(migrated_consent_withdrawn_to_metadata: false)
 
       # When rolling back we do one by one every sample
       data_in_file.each do |ident, value|
+        next unless value == true
+
         say "Moving to sample consent withdrawn for sample #{ident} with value #{value}"
         sample = Sample.find_by!(id: ident)
         raise 'Not a sample' unless sample.is_a?(Sample)

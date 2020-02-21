@@ -37,7 +37,7 @@ class Api::SampleIO < Api::Base
   map_attribute_to_json_attribute(:consent_withdrawn)
 
   with_association(:sample_metadata) do
-    #map_attribute_to_json_attribute(:consent_withdrawn)
+    # map_attribute_to_json_attribute(:consent_withdrawn)
     map_attribute_to_json_attribute(:organism)
     map_attribute_to_json_attribute(:cohort)
     map_attribute_to_json_attribute(:country_of_origin)
