@@ -80,7 +80,7 @@ class Pipeline < ApplicationRecord
 
   def custom_message
     # Override this in subclasses if you want to display a custom message in the _pipeline_limit partial (blue box on pipeline show page)
-    ''
+    I18n.t('pipelines.show_page_custom_message.default')
   end
 
   def request_types_including_controls
