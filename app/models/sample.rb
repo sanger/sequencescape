@@ -156,6 +156,10 @@ class Sample < ApplicationRecord
       h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
     end
 
+    after_initialize do |record|
+      record.consent_withdrawn = false if record.consent_withdrawn.nil?
+    end
+
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?
 
@@ -430,14 +434,14 @@ class Sample < ApplicationRecord
     nil
   end
 
+  def subject_type
+    'sample'
+  end
+
   # Consent withdraw attributes from sample metadata
   delegate :consent_withdrawn, :consent_withdrawn?, :consent_withdrawn=, to: :sample_metadata
   delegate :date_of_consent_withdrawn, :date_of_consent_withdrawn=, to: :sample_metadata
   delegate :user_id_of_consent_withdrawn, :user_id_of_consent_withdrawn=, to: :sample_metadata
-
-  def subject_type
-    'sample'
-  end
 
   def friendly_name
     sanger_sample_id || name

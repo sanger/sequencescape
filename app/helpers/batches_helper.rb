@@ -13,6 +13,7 @@ module BatchesHelper
       study_id: aliquot.study_id,
       project_id: aliquot.project_id,
       consent_withdrawn: aliquot.sample.consent_withdrawn?
+      #consent_withdrawn: aliquot.sample.sample_metadata.consent_withdrawn?
     ) {
       # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
       xml.tag!(:tag, tag_id: aliquot.tag.id) {
