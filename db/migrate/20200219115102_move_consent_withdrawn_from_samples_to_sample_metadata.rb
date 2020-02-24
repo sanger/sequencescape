@@ -81,5 +81,4 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
       say 'Update complete!'
     end
   end
-
 end
