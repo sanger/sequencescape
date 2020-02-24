@@ -1354,9 +1354,9 @@ ActiveRecord::Schema.define(version: 2020_02_19_115102) do
     t.integer "genome_size"
     t.string "saphyr"
     t.string "pacbio"
-    t.boolean "consent_withdrawn", default: false, null: false
     t.datetime "date_of_consent_withdrawn"
     t.integer "user_id_of_consent_withdrawn"
+    t.boolean "consent_withdrawn", default: false, null: false
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"
