@@ -4,7 +4,7 @@
 # has been reviewed to perform the update. This migration changes the column to not allow nulls
 class RecreateWithdrawConsentColumnInMetadata < ActiveRecord::Migration[5.2]
   def change
-    remove_column :sample_metadata, :consent_withdrawn
+    remove_column :sample_metadata, :consent_withdrawn, :boolean
     add_column :sample_metadata, :consent_withdrawn, :boolean, null: false, default: false
   end
 end
