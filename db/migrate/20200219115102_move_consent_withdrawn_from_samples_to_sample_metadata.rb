@@ -82,27 +82,4 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     end
   end
 
-  def down
-    ActiveRecord::Base.transaction do
-      Sample.reset_column_information
-      Sample::Metadata.reset_column_information
-
-      data_in_file = recovery_data
-      check_recovery_data!(data_in_file)
-
-      Sample.where(migrated_consent_withdrawn_to_metadata: true).update_all(migrated_consent_withdrawn_to_metadata: false)
-
-      # When rolling back we do one by one every sample
-      data_in_file.each do |ident, value|
-        next unless value == true
-
-        say "Moving to sample consent withdrawn for sample #{ident} with value #{value}"
-        sample = Sample.find_by!(id: ident)
-        raise 'Not a sample' unless sample.is_a?(Sample)
-
-        sample.update!(migrated_consent_withdrawn_to_metadata: value)
-        raise 'Data not updated' unless sample.migrated_consent_withdrawn_to_metadata == value
-      end
-    end
-  end
 end
