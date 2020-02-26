@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_06_110034) do
+ActiveRecord::Schema.define(version: 2020_02_19_115102) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1354,9 +1354,9 @@ ActiveRecord::Schema.define(version: 2020_02_06_110034) do
     t.integer "genome_size"
     t.string "saphyr"
     t.string "pacbio"
-    t.boolean "consent_withdrawn", default: false
     t.datetime "date_of_consent_withdrawn"
     t.integer "user_id_of_consent_withdrawn"
+    t.boolean "consent_withdrawn", default: false, null: false
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"
@@ -1382,6 +1382,7 @@ ActiveRecord::Schema.define(version: 2020_02_06_110034) do
     t.boolean "updated_by_manifest", default: false
     t.integer "work_order_id"
     t.integer "container_id"
+    t.boolean "migrated_consent_withdrawn_to_metadata", default: false
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"

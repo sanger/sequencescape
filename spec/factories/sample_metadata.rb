@@ -48,6 +48,8 @@ FactoryBot.define do
       disease { 'disease' }
       subject { 'subject' }
 
+      consent_withdrawn { false }
+
       treatment { 'treatment' }
     end
   end
