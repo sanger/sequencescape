@@ -147,7 +147,14 @@ class BulkSubmission
             end
 
             begin
-              submission = Submission.create!(name: submission_name, user: user, orders: orders.map(&method(:prepare_order)).compact, priority: max_priority(orders))
+              orders_processed = orders.map(&method(:prepare_order)).compact
+              library_types = orders_processed.map { |order| order.request_options['library_type'] unless order.request_options.nil? }.uniq
+              if library_types.size > 1
+                errors.add :spreadsheet, "Submission #{submission_name} has multiple library types: #{library_types.join(', ')}."
+                next
+              end
+
+              submission = Submission.create!(name: submission_name, user: user, orders: orders_processed, priority: max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id

@@ -52,6 +52,16 @@ FactoryBot.define do
         sample { create(:sample_with_sanger_sample_id) }
       end
     end
+
+    trait :in_a_rack do
+      transient do
+        tube_rack { nil }
+        coordinate { nil }
+      end
+      after(:create) do |tube, evaluator|
+        create(:racked_tube, tube: tube, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
+      end
+    end
   end
 
   factory :qc_tube, traits: [:tube_barcode]

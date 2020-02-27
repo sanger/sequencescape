@@ -1,5 +1,3 @@
-
-
 var scannedBarcode, updateCounter;
 
 scannedBarcode = function(barcode_source,list, model) {

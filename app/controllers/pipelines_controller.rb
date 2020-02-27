@@ -48,7 +48,7 @@ class PipelinesController < ApplicationController
     else
       @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
       @requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
-      # We convert to an array here as otherwise tails tries to be smart
+      # We convert to an array here as otherwise rails tries to be smart
       # and use the scope. Not only does it fail, but we may as well cache
       # the result now anyway.
       @requests_comment_count = Comment.counts_for(@requests)

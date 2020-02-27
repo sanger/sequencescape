@@ -26,7 +26,6 @@ class Api::SampleIO < Api::Base
   map_attribute_to_json_attribute(:uuid)
   map_attribute_to_json_attribute(:id)
   map_attribute_to_json_attribute(:name)
-  map_attribute_to_json_attribute(:consent_withdrawn)
   map_attribute_to_json_attribute(:new_name_format)
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
@@ -35,6 +34,7 @@ class Api::SampleIO < Api::Base
   map_attribute_to_json_attribute(:sample_manifest_id)
   map_attribute_to_json_attribute(:empty_supplier_sample_name)
   map_attribute_to_json_attribute(:updated_by_manifest)
+  map_attribute_to_json_attribute(:consent_withdrawn)
 
   with_association(:sample_metadata) do
     map_attribute_to_json_attribute(:organism)

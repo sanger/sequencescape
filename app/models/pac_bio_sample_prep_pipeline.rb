@@ -1,5 +1,6 @@
 class PacBioSamplePrepPipeline < Pipeline
   ALWAYS_SHOW_RELEASE_ACTIONS = true
+
   include Pipeline::GroupByParent
 
   self.requires_position = false
@@ -7,6 +8,10 @@ class PacBioSamplePrepPipeline < Pipeline
   self.generate_target_assets_on_batch_create = true
   self.asset_type = 'PacBioLibraryTube'
   self.pick_to = false
+
+  def custom_message
+    I18n.t('pipelines.show_page_custom_message.pacbio_sample_prep')
+  end
 
   def allow_tag_collision_on_tagging_task?
     false

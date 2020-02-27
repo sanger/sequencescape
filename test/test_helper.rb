@@ -18,11 +18,11 @@ rescue LoadError
   # No pry? That's okay, we're probably on the CI server
 end
 
-Dir.glob(File.expand_path(File.join(Rails.root, %w{spec factories ** *.rb}))) do |factory_filename|
+Dir.glob(File.expand_path(File.join(Rails.root, %w{spec factories ** *.rb}))).sort.each do |factory_filename|
   require factory_filename
 end
 
-Dir.glob(File.expand_path(File.join(Rails.root, %w{test shoulda_macros *.rb}))) do |macro_filename|
+Dir.glob(File.expand_path(File.join(Rails.root, %w{test shoulda_macros *.rb}))).sort.each do |macro_filename|
   require macro_filename
 end
 

@@ -1,0 +1,31 @@
+<%= form_for(report_fail) do |form| %>
+
+  <div class="form-group">
+    <%= form.label :user_code, 'User barcode or swipecard' %>
+    <%= form.text_field :user_code, required: true, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :asset_scan, 'Please scan the labware that has failed' %>
+    <%= text_field_tag :asset_scan, '', class: 'rescannable form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :failure_id, 'Please select the details of the failure' %>
+    <%= select(:report_fail,
+               :failure_id,
+               options_for_select(report_fail_failure_options,
+                                  selected: report_fail_selected_option,
+                                  disabled: report_fail_disabled_options),
+               {:class => 'form-control'}) %>
+  </div>
+
+  <div id="scanned"></div>
+
+  <ul id="barcode_list" class="barcode_list"></ul>
+
+  <%= submit_tag 'Submit', class: 'btn btn-success' %>
+<% end %>
+
+<%= javascript_include_tag 'scanned_barcode' %>
+<%= javascript_include_tag 'report_fails' %>

@@ -48,6 +48,12 @@ en:
     logout: "Logout"
     help: "Help"
 
+  # Description for the keys published in the events generated for the report fails UI
+  report_fails:
+    sample_integrity: "Sample integrity upon receipt"
+    quantification: "Failure at quantification (<250ug to proceed to library)"
+    lab_error: "Lab error (automation failure)"
+
   navigation:
     menu:
       back_to_study: "Back to study"
@@ -69,6 +75,7 @@ en:
       labwhere_reception: "Labwhere Reception"
       labsearch: "Lab search"
       labview:  "Lab View"
+      report_fails: "Report Fails"
 
   errors:
     occured: "Something has gone wrong!"
@@ -228,3 +235,8 @@ en:
       no_valid_oligos_found: "No correctly formatted oligos were found, please enter oligos as sequences of ATGC characters and separate oligos with spaces or commas."
       tag_group_form_invalid: "The tag group form object was invalid, please check oligos and tag group name."
       failed_to_save_tag_group: "The tag group was not saved successfully."
+
+  pipelines:
+    show_page_custom_message:
+      default: ""
+      pacbio_sample_prep: "You can only batch together wells from the same plate."

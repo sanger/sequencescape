@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_14_103520) do
+ActiveRecord::Schema.define(version: 2020_02_19_115102) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1049,6 +1049,16 @@ ActiveRecord::Schema.define(version: 2019_10_14_103520) do
     t.index ["lot_id"], name: "index_lot_id"
   end
 
+  create_table "racked_tubes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "tube_rack_id"
+    t.bigint "tube_id"
+    t.string "coordinate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tube_id"], name: "index_racked_tubes_on_tube_id"
+    t.index ["tube_rack_id"], name: "index_racked_tubes_on_tube_rack_id"
+  end
+
   create_table "receptacles", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "sti_type", limit: 50, default: "Receptacle", null: false
     t.string "qc_state", limit: 20
@@ -1280,6 +1290,7 @@ ActiveRecord::Schema.define(version: 2019_10_14_103520) do
     t.integer "user_id"
     t.string "password"
     t.integer "purpose_id"
+    t.integer "tube_rack_purpose_id"
     t.index ["purpose_id"], name: "fk_rails_5627ab4aaa"
     t.index ["study_id"], name: "index_sample_manifests_on_study_id"
     t.index ["supplier_id"], name: "index_sample_manifests_on_supplier_id"
@@ -1343,6 +1354,9 @@ ActiveRecord::Schema.define(version: 2019_10_14_103520) do
     t.integer "genome_size"
     t.string "saphyr"
     t.string "pacbio"
+    t.datetime "date_of_consent_withdrawn"
+    t.integer "user_id_of_consent_withdrawn"
+    t.boolean "consent_withdrawn", default: false, null: false
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"
@@ -1366,9 +1380,9 @@ ActiveRecord::Schema.define(version: 2019_10_14_103520) do
     t.boolean "control"
     t.boolean "empty_supplier_sample_name", default: false
     t.boolean "updated_by_manifest", default: false
-    t.boolean "consent_withdrawn", default: false, null: false
     t.integer "work_order_id"
     t.integer "container_id"
+    t.boolean "migrated_consent_withdrawn_to_metadata", default: false
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"

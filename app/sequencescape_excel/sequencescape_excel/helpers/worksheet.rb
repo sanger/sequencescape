@@ -6,6 +6,7 @@ module SequencescapeExcel
     # Add the basic styles which are the same across all worksheets.
     module Worksheet
       STYLES = { unlocked: { locked: false, border: { style: :thin, color: '00' } },
+                 unlocked_no_border: { locked: false },
                  wrap_text: { alignment: { horizontal: :center, vertical: :center, wrap_text: true },
                               border: { style: :thin, color: '00', edges: %i[left right top bottom] } } }.freeze
 

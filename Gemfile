@@ -116,6 +116,8 @@ group :warehouse do
 end
 
 group :development do
+  gem 'rails-erd'
+
   gem 'flay', require: false
   gem 'flog', require: false
   # Detect n+1 queries
@@ -161,6 +163,7 @@ group :profile do
 end
 
 group :test do
+  gem 'rspec-html-matchers'
   gem 'rspec-rails', require: false
   # Rails performance tests
   gem 'rails-perftest'

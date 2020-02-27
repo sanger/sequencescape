@@ -2,7 +2,7 @@ require './lib/oligo_enumerator'
 
 namespace :working do
   desc 'Confirms that the environment is correct for the task'
-  task :env_check do
+  task env_check: :environment do
     require_relative '../working_setup/standard_seeder'
     unless Rails.env.development?
       puts "CAUTION! You are running this task in the #{Rails.env} environment."

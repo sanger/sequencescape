@@ -1,0 +1,17 @@
+<%= page_title 'Report Fails' %>
+
+<% if @report_fail.valid? %>
+  <h4>Receipt</h4>
+  <p>The following labware has been scanned in.</p>
+  <ul class="list-group">
+    <% @report_fail.failed_labware.each do |labware| %>
+      <li class="list-group-item"><%= link_to labware.name, labware_path(labware) %>
+        (<%= labware.human_barcode %>): <%= labware.purpose&.name %></li>
+    <% end %>
+    <% @report_fail.missing_barcodes.each do |barcode| %>
+      <li class="list-group-item list-group-item-danger">Could not find: <%= barcode %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= render partial: 'form', locals: {report_fail: @report_fail} %>

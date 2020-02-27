@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require Rails.root.join('spec', 'support', 'mock_accession')
+require Rails.root.join('spec/support/mock_accession')
 
 FactoryBot.define do
   factory :accession_response, class: 'Accession::Response' do

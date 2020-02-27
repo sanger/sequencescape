@@ -92,6 +92,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :tube_rack_summaries, only: :show
+
   resources :reference_genomes
   resources :barcode_printers
 
@@ -582,6 +584,8 @@ Rails.application.routes.draw do
   end
 
   resources :labwhere_receptions, only: %i[index create]
+
+  resources :report_fails, only: %i[index create]
 
   resources :qc_files, only: %i[show create]
 

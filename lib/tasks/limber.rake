@@ -122,6 +122,58 @@ namespace :limber do
         asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
+
+    unless Purpose.where(name: 'TR Stock 96').exists?
+      TubeRack::Purpose.create!(
+        name: 'TR Stock 96',
+        target_type: 'TubeRack',
+        stock_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96
+      )
+    end
+
+    unless Purpose.where(name: 'TR Stock 48').exists?
+      TubeRack::Purpose.create!(
+        name: 'TR Stock 48',
+        target_type: 'TubeRack',
+        stock_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 48
+      )
+    end
+
+    unless Purpose.where(name: 'LDS Stock').exists?
+      PlatePurpose.create!(
+        name: 'LDS Stock',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
+
+    unless Purpose.where(name: 'LDS Cherrypick').exists?
+      PlatePurpose.create!(
+        name: 'LDS Cherrypick',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: true,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
   end
 
   desc 'Create the limber request types'
@@ -131,6 +183,13 @@ namespace :limber do
       %w[WGS LCMB].each do |prefix|
         Limber::Helper::RequestTypeConstructor.new(prefix).build!
       end
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'Duplex-Seq',
+        library_types: ['Duplex-Seq'],
+        default_purposes: ['LDS Stock', 'LDS Cherrypick']
+      ).build!
+
       Limber::Helper::RequestTypeConstructor.new(
         'PCR Free',
         library_types: ['HiSeqX PCR free', 'PCR Free 384', 'Chromium single cell CNV', 'DAFT-seq'],
@@ -220,7 +279,9 @@ namespace :limber do
           'Ribozero RNA depletion',
           'Ribozero RNA-seq (Bacterial)',
           'Ribozero RNA-seq (HMR)',
-          'TraDIS'
+          'TraDIS',
+          'Chromium Visium',
+          'Hi-C'
         ],
         product_line: 'Bespoke',
         default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
@@ -414,6 +475,9 @@ namespace :limber do
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
+
+      duplex_seq_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Duplex-Seq')
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'Duplex-Seq', catalogue: duplex_seq_catalogue).build!
 
       mda_catalogue = ProductCatalogue.find_or_create_by!(name: 'GnT MDA')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GnT MDA', catalogue: mda_catalogue).build!

@@ -24,7 +24,7 @@
 
 <% if @sample.consent_withdrawn? %>
   <%= alert(:danger) do %>
-    Patient consent has been withdrawn for this sample.
+    <%= render partial: 'consent_withdrawn', locals: { sample: @sample } %>
   <% end %>
 <% end %>
 

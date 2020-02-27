@@ -124,6 +124,11 @@ class Sample < ApplicationRecord
     custom_attribute(:saphyr)
     custom_attribute(:pacbio)
 
+    # Consent withdrawn
+    custom_attribute(:consent_withdrawn)
+    custom_attribute(:date_of_consent_withdrawn)
+    custom_attribute(:user_id_of_consent_withdrawn)
+
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji
     # @note phenotype isn't currently broadcast but has a field waiting in the warehouse
@@ -149,6 +154,10 @@ class Sample < ApplicationRecord
       sample_sra_hold: SRA_HOLD_VALUES
     }.each_with_object({}) do |(k, v), h|
       h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
+    end
+
+    after_initialize do |record|
+      record.consent_withdrawn = false if record.consent_withdrawn.nil?
     end
 
     before_validation do |record|
@@ -204,6 +213,8 @@ class Sample < ApplicationRecord
     def species
       sample_common_name
     end
+
+    belongs_to :user_of_consent_withdrawn, class_name: 'User', foreign_key: 'user_id_of_consent_withdrawn', inverse_of: :consent_withdrawn_sample_metadata
 
     # This is misleading, as samples are rarely released through
     # Sequencescape, so our flag gets out of sync with the ENA/EGA
@@ -423,13 +434,14 @@ class Sample < ApplicationRecord
     nil
   end
 
-  def withdraw_consent
-    update!(consent_withdrawn: true)
-  end
-
   def subject_type
     'sample'
   end
+
+  # Consent withdraw attributes from sample metadata
+  delegate :consent_withdrawn, :consent_withdrawn?, :consent_withdrawn=, to: :sample_metadata
+  delegate :date_of_consent_withdrawn, :date_of_consent_withdrawn=, to: :sample_metadata
+  delegate :user_id_of_consent_withdrawn, :user_id_of_consent_withdrawn=, to: :sample_metadata
 
   def friendly_name
     sanger_sample_id || name
