@@ -20,7 +20,6 @@ Rails.application.config.assets.precompile += [
   'assign-tubes-to-wells-task.js',
   'assigntags.js',
   'characterisation.js',
-  'descriptors.js',
   'fail_batch.js',
   'labwhere_reception.js',
   'organism_validation.js',
