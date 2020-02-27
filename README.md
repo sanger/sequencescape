@@ -24,27 +24,29 @@ a organisation of 900 people.
 
 <!-- toc -->
 
-- [Documentation](#documentation)
-- [Requirements](#requirements)
-- [Getting started](#getting-started)
+* [Documentation](#documentation)
+* [Requirements](#requirements)
+* [Getting started](#getting-started)
   * [Installing ruby](#installing-ruby)
-    + [RVM](#rvm)
-    + [rbenv](#rbenv)
+    * [RVM](#rvm)
+    * [rbenv](#rbenv)
   * [Installing gems](#installing-gems)
-  * [Adujsting config](#adujsting-config)
+  * [Adjusting config](#adjusting-config)
   * [Default setup](#default-setup)
-    + [Delayed job](#delayed-job)
-- [Testing](#testing)
-- [Supporting applications](#supporting-applications)
+    * [Delayed job](#delayed-job)
+* [Testing](#testing)
+* [Rake tasks](#rake-tasks)
+* [Supporting applications](#supporting-applications)
   * [Barcode printing](#barcode-printing)
   * [Plate barcode service](#plate-barcode-service)
   * [Data warehousing](#data-warehousing)
-- [Miscellaneous](#miscellaneous)
+* [Miscellaneous](#miscellaneous)
   * [Ruby warnings and rake 11](#ruby-warnings-and-rake-11)
   * [NPG - Illumina tracking software](#npg---illumina-tracking-software)
   * [Troubleshooting](#troubleshooting)
-    + [MySQL errors when installing](#mysql-errors-when-installing)
+    * [MySQL errors when installing](#mysql-errors-when-installing)
   * [Updating the table of contents](#updating-the-table-of-contents)
+  * [CI](#ci)
 
 <!-- tocstop -->
 
@@ -91,8 +93,8 @@ Ruby version you are using. The ruby version required should be found in `.ruby-
 [Bundler](https://bundler.io) is used to install the required gems:
 
 ```shell
-    gem install bundler
-    bundle install
+gem install bundler
+bundle install
 ```
 
 ### Adjusting config
@@ -105,19 +107,27 @@ The `config/database.yml` file saves the list of databases.
 
 1. Create the database tables
 
-        bundle exec rake db:setup
+    ```shell
+    bundle exec rake db:setup
+    ```
 
 1. Create an admin user account and a few example studies and plates
 
-        bundle exec rake working:setup
+    ```shell
+    bundle exec rake working:setup
+    ```
 
 1. Install webpacker and the required JS libraries
 
-        bundle exec rails webpacker:install
+    ```shell
+    bundle exec rails webpacker:install
+    ```
 
 1. Start rails
 
-        bundle exec rails server
+    ```shell
+    bundle exec rails server
+    ```
 
 Once setup, the default user/password is `admin/admin`.
 
@@ -126,11 +136,15 @@ Once setup, the default user/password is `admin/admin`.
 For background processing Sequencescape uses `delayed_job` to ensure that the server is running. It
 is strongly recommended to start one for Sequencescape to behave as expected.
 
-    bundle exec rake jobs:work
+```shell
+bundle exec rake jobs:work
+```
 
 OR
 
-    bundle exec ./script/delayed_job start
+```shell
+bundle exec ./script/delayed_job start
+```
 
 ## Testing
 
@@ -138,11 +152,22 @@ Testing is done in three ways; using rspec, rails test and feature tests.
 
 1. To run the rspec tests (found in `rspec/` dir.):
 
-        bundle exec rspec --fail-fast
+    ```shell
+    RAILS_ENV=test bundle exec rspec --fail-fast
+    ```
 
 1. To run the rails tests (found in `tests/` dir.):
 
-        bundle exec rake test -f
+    ```shell
+    RAILS_ENV=test bundle exec rake test -f
+    ```
+
+## Rake tasks
+
+Rake tasks are available for specialised tasks as well as support tasks. Support tasks allow ease
+of running standalone scripts multiple times.
+
+A breakdown of the the available tasks and how to run them can be found [here](lib/tasks/README.md)
 
 ## Supporting applications
 
@@ -196,17 +221,21 @@ If you are using homebrew with rbenv and run into errors relating to SSL, have a
 
 ### Updating the table of contents
 
-To update the table of contents after adding things to this README you can use the markdown-toc
+To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
 node module. To install it, make sure you have install the dev dependencies from yarn. To update
 the table of contents, run:
 
-    ./node_modules/.bin/markdown-toc -i README.md
+```shell
+./node_modules/.bin/markdown-toc -i README.md --bullets "*"
+```
 
 ### CI
 
 The Travis builds use the Knapsack gem to reduce build time by parallelizing the RSpec and Cucumber tests. When a Travis build runs, Knapsack uses the knapsack_rspec_report.json and knapsack_cucumber_report.json files, which list out test run times, to split the tests into equal length jobs. These report files don't need to be regenerated if tests are deleted or added unless the tests in question are particularly slow and will therefore impact the build times significantly. To regenerate a report file, run one of the following, and commit the resulting changes to the report files:
 
-    KNAPSACK_GENERATE_REPORT=true bundle exec rspec
-    KNAPSACK_GENERATE_REPORT=true bundle exec cucumber
+```shell
+KNAPSACK_GENERATE_REPORT=true bundle exec rspec
+KNAPSACK_GENERATE_REPORT=true bundle exec cucumber
+```
 
 Copyright (c) 2007, 2010-2019  Genome Research Ltd.
