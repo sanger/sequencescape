@@ -1370,7 +1370,7 @@ ActiveRecord::Schema.define(version: 2020_02_19_115102) do
     t.integer "asset_group_id"
   end
 
-    create_table "samples", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "samples", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.boolean "new_name_format", default: true
     t.datetime "created_at"
