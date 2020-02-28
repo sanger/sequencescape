@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # Remove the column migrated_consent_withdrawn_to_metadata from the Samples table because
 # it is no longer needed
