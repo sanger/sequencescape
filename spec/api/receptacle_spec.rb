@@ -33,27 +33,5 @@ describe '/api/1/receptacle-uuid' do
       expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
       expect(status).to eq(response_code)
     end
-
-    context 'when the receptable has metadata' do
-      let(:receptacle) { create :receptacle,
-        pcr_cycles: 10,
-        submit_for_sequencing: true,
-        sub_pool: 5,
-        coverage: 100
-      }
-
-      it 'includes the receptables metadata' do
-        api_request :get, url
-        expect(JSON.parse(response.body)['asset']['pcr_cycles']).to eq 10
-        expect(JSON.parse(response.body)['asset']['submit_for_sequencing']).to eq true
-        expect(JSON.parse(response.body)['asset']['submit_for_sequencing']).to eq true
-        expect(JSON.parse(response.body)['asset']['sub_pool']).to eq 5
-        expect(JSON.parse(response.body)['asset']['coverage']).to eq 100
-      end
-    end
   end
-
-  # TODO
-  # describe '#create' do
-  # end
 end

@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Adds fields requested for DuplexSeq pipeline from Limber
 class AddFieldsToReceptacles < ActiveRecord::Migration[5.2]
   def change
     add_column :receptacles, :pcr_cycles, :integer
