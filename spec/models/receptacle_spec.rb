@@ -43,4 +43,27 @@ RSpec.describe Receptacle, type: :model do
       it { expect(receptacle.volume).to eq(1000) }
     end
   end
+
+  describe 'fields on receptacles' do
+    context '#pcr_cycles' do
+      let(:receptacle) { create :receptacle, pcr_cycles: 10 }
+      it { expect(receptacle.pcr_cycles).to eq 10 }
+    end
+
+    context '#submit_for_sequencing' do
+      let(:receptacle) { create :receptacle, submit_for_sequencing: true }
+      it { expect(receptacle.submit_for_sequencing).to eq true }
+    end
+
+    context '#sub_pool' do
+      let(:receptacle) { create :receptacle, sub_pool: 5 }
+      it { expect(receptacle.sub_pool).to eq 5 }
+    end
+
+    context '#coverage' do
+      let(:receptacle) { create :receptacle, coverage: 100 }
+      it { expect(receptacle.coverage).to eq 100 }
+    end
+  end
+
 end

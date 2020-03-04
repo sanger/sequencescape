@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_19_115102) do
+ActiveRecord::Schema.define(version: 2020_03_04_113944) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1071,6 +1071,10 @@ ActiveRecord::Schema.define(version: 2020_02_19_115102) do
     t.integer "labware_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "pcr_cycles"
+    t.boolean "submit_for_sequencing"
+    t.integer "sub_pool"
+    t.integer "coverage"
     t.index ["labware_id"], name: "fk_rails_2201f76983"
     t.index ["sti_type", "updated_at"], name: "index_receptacles_on_sti_type_and_updated_at"
     t.index ["updated_at"], name: "index_receptacles_on_updated_at"

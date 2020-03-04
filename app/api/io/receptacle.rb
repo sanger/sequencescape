@@ -10,5 +10,9 @@ class Io::Receptacle < Core::Io::Base
                  labware.name  => name
                      qc_state  => qc_state
                       aliquots => aliquots
+                    pcr_cycles => pcr_cycles
+         submit_for_sequencing => submit_for_sequencing
+                    sub_pool   => sub_pool
+                      coverage => coverage
   ")
 end

@@ -35,6 +35,10 @@ module Api
       # Attributes
       attribute :uuid, readonly: true
       attribute :name, delegate: :display_name, readonly: true
+      attribute :pcr_cycles, readonly: true
+      attribute :submit_for_sequencing, readonly: true
+      attribute :sub_pool, readonly: true
+      attribute :coverage, readonly: true
 
       # Filters
 
