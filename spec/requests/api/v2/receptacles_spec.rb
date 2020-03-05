@@ -37,7 +37,7 @@ describe 'Receptacles API', with: :api_v2 do
     end
   end
 
-  context 'with a receptacles' do
+  context 'with one receptacle' do
     let(:pcr_cycles) { 10 }
     let(:submit_for_sequencing) { true }
     let(:sub_pool) { 5 }
