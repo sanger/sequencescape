@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of receptacle
+    # Provides a JSON API representation of a receptacle
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class ReceptacleResource < BaseResource
       # immutable # uncomment to make the resource immutable

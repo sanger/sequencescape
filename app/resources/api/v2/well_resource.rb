@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of receptacle
+    # Provides a JSON API representation of a well
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class WellResource < BaseResource
       # Constants...
@@ -38,6 +38,7 @@ module Api
       attribute :name, delegate: :display_name, readonly: true
       attribute :position, readonly: true
       attribute :state, readonly: true
+      attributes :pcr_cycles, :submit_for_sequencing, :sub_pool, :coverage
 
       # Filters
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
