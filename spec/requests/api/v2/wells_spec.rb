@@ -6,17 +6,16 @@ describe 'Wells API', with: :api_v2 do
   context 'with multiple wells' do
     before do
       create_list(:well, 5)
+      api_get '/api/v2/wells'
     end
 
     it 'sends a list of wells' do
-      api_get '/api/v2/wells'
-      # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end
 
-    # Check filters, ESPECIALLY if they aren't simple attribute filters
+    # TO DO: Check filters, ESPECIALLY if they aren't simple attribute filters
   end
 
   context 'with one well' do
@@ -28,10 +27,16 @@ describe 'Wells API', with: :api_v2 do
     let(:well) { create :well, pcr_cycles: pcr_cycles, submit_for_sequencing: submit_for_sequencing, sub_pool: sub_pool, coverage: coverage }
 
     describe '#get' do
-      it 'sends an individual well' do
+      before do
         api_get "/api/v2/wells/#{well.id}"
+      end
+
+      it 'sends an individual well' do
         expect(response).to have_http_status(:success)
         expect(json.dig('data', 'type')).to eq('wells')
+      end
+
+      it 'returns correct attributes' do
         expect(json.dig('data', 'attributes', 'pcr_cycles')).to eq pcr_cycles
         expect(json.dig('data', 'attributes', 'submit_for_sequencing')).to eq submit_for_sequencing
         expect(json.dig('data', 'attributes', 'sub_pool')).to eq sub_pool
@@ -55,20 +60,23 @@ describe 'Wells API', with: :api_v2 do
         }
       end
 
-      it 'returns successful response with the updated attributes' do
+      before do
         api_patch "/api/v2/wells/#{well.id}", payload
+      end
 
+      it 'returns successful response' do
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'returns correct updated attributes' do
         expect(json.dig('data', 'attributes', 'pcr_cycles')).to eq(11)
         expect(json.dig('data', 'attributes', 'submit_for_sequencing')).to eq(false)
         expect(json.dig('data', 'attributes', 'sub_pool')).to eq(2)
         expect(json.dig('data', 'attributes', 'coverage')).to eq(50)
-        expect(response).to have_http_status(:success)
       end
 
       it 'updates the well' do
-        api_patch "/api/v2/wells/#{well.id}", payload
         updated_model = Well.find(well.id)
-
         expect(updated_model.pcr_cycles).to eq 11
         expect(updated_model.submit_for_sequencing).to eq false
         expect(updated_model.sub_pool).to eq 2
