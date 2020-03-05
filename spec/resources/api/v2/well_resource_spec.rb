@@ -22,7 +22,10 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     it { is_expected.not_to have_updatable_field(:position) }
 
     # Updatable fields
-    # eg. it { is_expected.to have_updatable_field(:state) }
+    it { is_expected.to have_updatable_field(:pcr_cycles) }
+    it { is_expected.to have_updatable_field(:submit_for_sequencing) }
+    it { is_expected.to have_updatable_field(:sub_pool) }
+    it { is_expected.to have_updatable_field(:coverage) }
 
     # Filters
     # eg. it { is_expected.to filter(:order_type) }
