@@ -38,7 +38,7 @@ module Api
       attribute :name, delegate: :display_name, readonly: true
       attribute :position, readonly: true
       attribute :state, readonly: true
-      attributes :pcr_cycles, :submit_for_sequencing, :sub_pool, :coverage
+      attributes :pcr_cycles, :submit_for_sequencing, :sub_pool, :coverage, :diluent_volume
 
       # Filters
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }

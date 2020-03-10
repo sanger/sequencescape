@@ -23,8 +23,9 @@ describe 'Wells API', with: :api_v2 do
     let(:submit_for_sequencing) { true }
     let(:sub_pool) { 5 }
     let(:coverage) { 100 }
+    let(:diluent_volume) { 50 }
 
-    let(:well) { create :well, pcr_cycles: pcr_cycles, submit_for_sequencing: submit_for_sequencing, sub_pool: sub_pool, coverage: coverage }
+    let(:well) { create :well, pcr_cycles: pcr_cycles, submit_for_sequencing: submit_for_sequencing, sub_pool: sub_pool, coverage: coverage, diluent_volume: diluent_volume }
 
     describe '#get' do
       before do
@@ -41,6 +42,7 @@ describe 'Wells API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'submit_for_sequencing')).to eq submit_for_sequencing
         expect(json.dig('data', 'attributes', 'sub_pool')).to eq sub_pool
         expect(json.dig('data', 'attributes', 'coverage')).to eq coverage
+        expect(json.dig('data', 'attributes', 'diluent_volume')).to eq diluent_volume
       end
     end
 
@@ -54,7 +56,8 @@ describe 'Wells API', with: :api_v2 do
               'pcr_cycles': 11,
               'submit_for_sequencing': false,
               'sub_pool': 2,
-              'coverage': 50
+              'coverage': 50,
+              'diluent_volume': 34
             }
           }
         }
@@ -73,6 +76,7 @@ describe 'Wells API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'submit_for_sequencing')).to eq(false)
         expect(json.dig('data', 'attributes', 'sub_pool')).to eq(2)
         expect(json.dig('data', 'attributes', 'coverage')).to eq(50)
+        expect(json.dig('data', 'attributes', 'diluent_volume')).to eq(34)
       end
 
       it 'updates the well' do
@@ -81,6 +85,7 @@ describe 'Wells API', with: :api_v2 do
         expect(updated_model.submit_for_sequencing).to eq false
         expect(updated_model.sub_pool).to eq 2
         expect(updated_model.coverage).to eq 50
+        expect(updated_model.diluent_volume).to eq 34
       end
     end
   end

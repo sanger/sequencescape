@@ -7,5 +7,6 @@ class AddFieldsToReceptacles < ActiveRecord::Migration[5.2]
     add_column :receptacles, :submit_for_sequencing, :boolean
     add_column :receptacles, :sub_pool, :integer
     add_column :receptacles, :coverage, :integer
+    add_column :receptacles, :diluent_volume, :decimal
   end
 end

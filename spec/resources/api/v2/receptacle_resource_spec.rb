@@ -16,6 +16,7 @@ RSpec.describe Api::V2::ReceptacleResource, type: :resource do
     expect(subject).to have_attribute :submit_for_sequencing
     expect(subject).to have_attribute :sub_pool
     expect(subject).to have_attribute :coverage
+    expect(subject).to have_attribute :diluent_volume
 
     expect(subject).not_to have_updatable_field(:id)
     expect(subject).not_to have_updatable_field(:uuid)
@@ -25,6 +26,7 @@ RSpec.describe Api::V2::ReceptacleResource, type: :resource do
     expect(subject).to have_updatable_field(:submit_for_sequencing)
     expect(subject).to have_updatable_field(:sub_pool)
     expect(subject).to have_updatable_field(:coverage)
+    expect(subject).to have_updatable_field(:diluent_volume)
 
     expect(subject).to have_many(:samples).with_class_name('Sample')
     expect(subject).to have_many(:projects).with_class_name('Project')

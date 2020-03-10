@@ -26,6 +26,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     it { is_expected.to have_updatable_field(:submit_for_sequencing) }
     it { is_expected.to have_updatable_field(:sub_pool) }
     it { is_expected.to have_updatable_field(:coverage) }
+    it { is_expected.to have_updatable_field(:diluent_volume) }
 
     # Filters
     # eg. it { is_expected.to filter(:order_type) }

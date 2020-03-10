@@ -67,4 +67,10 @@ RSpec.describe Receptacle, type: :model do
 
     it { expect(receptacle.coverage).to eq 100 }
   end
+
+  describe '#diluent_volume' do
+    let(:receptacle) { create :receptacle, diluent_volume: 40 }
+
+    it { expect(receptacle.diluent_volume).to eq 40 }
+  end
 end
