@@ -32,9 +32,16 @@ describe 'Receptacles API', with: :api_v2 do
     let(:submit_for_sequencing) { true }
     let(:sub_pool) { 5 }
     let(:coverage) { 100 }
-    let(:diluent_volume) { 50 }
+    let(:diluent_volume) { 50.0 }
 
-    let(:receptacle) { create :receptacle, pcr_cycles: pcr_cycles, submit_for_sequencing: submit_for_sequencing, sub_pool: sub_pool, coverage: coverage, diluent_volume: diluent_volume }
+    let(:receptacle) do
+      create :receptacle,
+             pcr_cycles: pcr_cycles,
+             submit_for_sequencing: submit_for_sequencing,
+             sub_pool: sub_pool,
+             coverage: coverage,
+             diluent_volume: diluent_volume
+    end
 
     before do
       api_get "/api/v2/receptacles/#{receptacle.id}"
@@ -51,7 +58,7 @@ describe 'Receptacles API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'submit_for_sequencing')).to eq submit_for_sequencing
         expect(json.dig('data', 'attributes', 'sub_pool')).to eq sub_pool
         expect(json.dig('data', 'attributes', 'coverage')).to eq coverage
-        expect(json.dig('data', 'attributes', 'diluent_volume')).to eq diluent_volume
+        expect(json.dig('data', 'attributes', 'diluent_volume')).to eq diluent_volume.to_s
       end
     end
 
