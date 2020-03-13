@@ -65,6 +65,16 @@ class UatActions::GeneratePlateConcentrations < UatActions
     @conc_units ||= concentration_units
   end
 
+  def key
+    @key ||= decide_key
+  end
+
+  def decide_key
+    return 'molarity' if conc_units == 'nM'
+
+    'concentration'
+  end
+
   def min_conc
     @min_conc ||= minimum_concentration.to_f
   end
@@ -87,7 +97,7 @@ class UatActions::GeneratePlateConcentrations < UatActions
 
       QcResult.create!(
         asset: well,
-        key: 'concentration',
+        key: key,
         value: create_random_concentration,
         units: conc_units,
         assay_type: 'UAT_Testing',

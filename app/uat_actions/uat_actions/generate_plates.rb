@@ -62,8 +62,10 @@ class UatActions::GeneratePlates < UatActions
   end
 
   def construct_wells(plate)
-    wells(plate).each do |well|
-      well.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{well.map.description}", studies: [study]))
+    wells(plate).each_with_index do |well, index|
+      well.aliquots.create!(sample: Sample.create!(
+                              name: "sample_#{plate.human_barcode}_#{well.map.description}", sanger_sample_id: "sanger sample id #{index}",
+                              studies: [study], sample_metadata_attributes: {supplier_name: "sup name #{index}"}))
     end
   end
 
