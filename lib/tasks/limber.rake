@@ -323,6 +323,16 @@ namespace :limber do
         default_purposes: ['LBB Cherrypick']              # It requires default_purpose to accept an array.
       ).build!
 
+      Limber::Helper::RequestTypeConstructor.new(
+        'Heron',
+        library_types:  [
+          'Heron',
+          'Heron-384'
+        ],
+        for_multiplexing: true,
+        default_purposes: ['LHR Cherrypick']             # It requires default_purpose to accept an array.
+      ).build!
+
       unless RequestType.where(key: 'limber_multiplexing').exists?
         RequestType.create!(
           name: 'Limber Multiplexing',
@@ -458,6 +468,9 @@ namespace :limber do
       },
       'GnT Picoplex' => {
         sequencing_list: base_without_hiseq
+      },
+      'Heron' => {
+        sequencing_list: base_list
       }
     }
 
