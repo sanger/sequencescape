@@ -357,7 +357,6 @@ namespace :limber do
           'Heron',
           'Heron-384'
         ],
-        for_multiplexing: true,
         default_purposes: ['LHR Cherrypick']             # It requires default_purpose to accept an array.
       ).build!
 
