@@ -496,9 +496,6 @@ namespace :limber do
       },
       'GnT Picoplex' => {
         sequencing_list: base_without_hiseq
-      },
-      'Heron' => {
-        sequencing_list: base_list
       }
     }
 
@@ -513,6 +510,9 @@ namespace :limber do
         Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
         Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
       end
+
+      heron_catalogue = ProductCatalogue.find_or_create_by!(name: 'Heron')
+      Limber::Helper::TemplateConstructor.new(prefix: 'Heron', catalogue: heron_catalogue, sequencing_keys: base_list).build!
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
