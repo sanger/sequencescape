@@ -301,12 +301,12 @@ GEM
     pusher-client (0.6.2)
       json
       websocket (~> 1.0)
-    rack (2.1.2)
+    rack (2.2.2)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
-    rack-mini-profiler (1.1.4)
+    rack-mini-profiler (2.0.1)
       rack (>= 1.2.0)
     rack-protection (2.0.8.1)
       rack
