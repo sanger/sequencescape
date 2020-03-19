@@ -5,12 +5,13 @@ require 'support/barcode_helper'
 
 RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true do
   before do
-    PlatePurpose.stock_plate_purpose
+    create(:purpose, target_type: 'TubeRack', size: Heron::Factories::TubeRack::RACK_SIZE)
+    create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
   end
 
   context 'when there is a tube rack message' do
-    let(:tube_rack_barcode) { "ABC1234" }
-    let(:tubes_barcodes) { ["FR12345", "FR12346"] }
+    let(:tube_rack_barcode) { build(:fluidigm).barcode }
+    let(:tubes_barcodes) { [build(:fluidx).barcode, build(:fluidx).barcode] }
     let(:tubes_locations) { ["A01", "B01"] }
     let(:supplier_sample_ids) { ["PHEC-nnnnnnn1", "PHEC-nnnnnnn2"] }
     let(:tubes) {
@@ -29,27 +30,31 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
     }
     let(:payload) {
       {
-         "tube_rack": {
-            "barcode": tube_rack_barcode,
-            "tubes": tubes
-         }
+        "data": {
+          "attributes": {
+             "tube_rack": {
+                "barcode": tube_rack_barcode,
+                "tubes": tubes
+             }
+          }
+        }
       }
     }
-    let(:params) { { data: payload }.to_h.with_indifferent_access }
+    let(:params) { payload.to_h.with_indifferent_access }
 
     shared_examples_for 'an incorrect tube rack message' do
-      xit 'does not create a tube rack' do
+      it 'does not create a tube rack' do
         expect do
           post api_v2_heron_tube_racks_path, params: params
         end.not_to change(TubeRack, :count)
       end
-      xit 'returns a 422 status code' do
+      it 'returns a 422 status code' do
         post api_v2_heron_tube_racks_path, params: params
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
 
-    xit 'creates a new tube rack' do
+    it 'creates a new tube rack' do
       expect do
         post api_v2_heron_tube_racks_path, params: params
       end.to change(TubeRack, :count).by(1)
@@ -74,7 +79,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
         it_behaves_like 'an incorrect tube rack message'
       end
       context 'when some tubes do not have a barcode' do
-        let(:tubes_barcodes) { ["FR12345", nil] }
+        let(:tubes_barcodes) { [build(:fluidx).barcode, nil] }
         it_behaves_like 'an incorrect tube rack message'
       end
       context 'when some tubes do not have a supplier sample id' do

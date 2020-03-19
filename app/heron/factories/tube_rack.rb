@@ -19,7 +19,7 @@ module Heron
 
       def tubes=(attributes)
         attributes.each do |tube|
-          tubes[tube[:location]] = Heron::Factories::Tube.new(tube.except(:location).merge(study: heron_study))
+          tubes[tube[:location]] = ::Heron::Factories::Tube.new(tube.except(:location).merge(study: heron_study))
         end
       end
 
@@ -34,8 +34,8 @@ module Heron
       def save
         return false unless valid?
         ActiveRecord::Base.transaction do
-          purpose = Purpose.where(target_type: 'TubeRack', size: Heron::Factories::TubeRack::RACK_SIZE).first
-          tube_rack = ::TubeRack.create!(size: Heron::Factories::TubeRack::RACK_SIZE, plate_purpose_id: purpose&.id)
+          purpose = Purpose.where(target_type: 'TubeRack', size: ::Heron::Factories::TubeRack::RACK_SIZE).first
+          tube_rack = ::TubeRack.create!(size: ::Heron::Factories::TubeRack::RACK_SIZE, plate_purpose_id: purpose&.id)
 
           Barcode.create!(asset: tube_rack, barcode: barcode, format: barcode_format)
 
@@ -56,7 +56,8 @@ module Heron
       end
 
       def location_valid?(location)
-        location.match?(Heron::Factories::TubeRack::LOCATION_REGEXP)
+        return false unless location.present?
+        location.match?(::Heron::Factories::TubeRack::LOCATION_REGEXP)
       end
 
       def barcode_format

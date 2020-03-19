@@ -9,8 +9,12 @@ module Api
         skip_before_action :verify_authenticity_token
 
         def create
-          return render json: {}, status: :created if params[:data][:tube_rack]
-          render json: {}, status: :unprocessable_entity
+          rack_factory = ::Heron::Factories::TubeRack.new(params_for_tube_rack)
+          if rack_factory.save
+            render json: {}, status: :created
+          else
+            render json: rack_factory.errors, status: :unprocessable_entity
+          end
         #  debugger
         #   return render json: {}, status: :created if params[:data][:tube_rack]
         #   ActiveRecord::Base.transaction do
@@ -25,14 +29,16 @@ module Api
         private
 
         def create_tube_rack_response(params)
-          params[:data][:tube_rack]
-
           params[:data].each_with_object(json: [], status: :created) do |param_job, response|
             job = ::Aker::Factories::Job.new(param_job[:attributes].permit!)
             return { json: job.errors, status: :unprocessable_entity } unless job.valid?
 
             response[:json].push(job.create)
           end
+        end
+
+        def params_for_tube_rack
+          params.require(:data).require(:attributes).require(:tube_rack).permit(:barcode, tubes: [:barcode, :supplier_sample_id, :location])
         end
       end
     end
