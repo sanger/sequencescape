@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module Heron
   module Factories
+    #
+    # Factory class to generate sample tubes inside a Heron rack
     class Tube
       include ActiveModel::Model
       attr_accessor :barcode, :supplier_sample_id, :sample, :sample_tube, :study, :tube_barcode
@@ -34,11 +38,13 @@ module Heron
 
       def check_tube_barcode
         return if barcode_format.present?
+
         errors.add(:base, "The tube barcode '#{barcode}' is not a recognised format.")
       end
 
       def check_foreign_barcode_unique
         return unless Barcode.exists_for_format?(barcode_format, barcode)
+
         errors.add(:base, 'foreign barcode is already in use.')
       end
 
@@ -51,7 +57,7 @@ module Heron
           sanger_sample_id: create_sanger_sample_id!,
           name: supplier_sample_id
         ) do |sample|
-          sample.sample_metadata.update_attributes!(
+          sample.sample_metadata.update!(
             sample_public_name: supplier_sample_id,
             supplier_name: supplier_sample_id
           )

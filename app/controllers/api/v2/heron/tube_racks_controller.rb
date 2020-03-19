@@ -15,15 +15,15 @@ module Api
           else
             render json: { errors: rack_factory.errors.full_messages }, status: :unprocessable_entity
           end
-        #  debugger
-        #   return render json: {}, status: :created if params[:data][:tube_rack]
-        #   ActiveRecord::Base.transaction do
-        #     @msg = create_tube_rack_response(params)
-        #     raise ActiveRecord::Rollback unless @msg[:status] == :created
-        #   end
-        #   render @msg
-        # rescue StandardError => e
-        #   render json: e.message, status: :unprocessable_entity
+          #  debugger
+          #   return render json: {}, status: :created if params[:data][:tube_rack]
+          #   ActiveRecord::Base.transaction do
+          #     @msg = create_tube_rack_response(params)
+          #     raise ActiveRecord::Rollback unless @msg[:status] == :created
+          #   end
+          #   render @msg
+          # rescue StandardError => e
+          #   render json: e.message, status: :unprocessable_entity
         end
 
         private
@@ -38,7 +38,7 @@ module Api
         end
 
         def params_for_tube_rack
-          params.require(:data).require(:attributes).require(:tube_rack).permit(:barcode, tubes: [:barcode, :supplier_sample_id, :location])
+          params.require(:data).require(:attributes).require(:tube_rack).permit(:barcode, tubes: %i[barcode supplier_sample_id location])
         end
       end
     end

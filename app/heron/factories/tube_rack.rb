@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 module Heron
   module Factories
+    # Factory class to create Heron tube racks
     class TubeRack
       include ActiveModel::Model
 
       HERON_STUDY = 6187
-      LOCATION_REGEXP = /[A-Z][0-9]{0,1}[0-9]/
+      LOCATION_REGEXP = /[A-Z][0-9]{0,1}[0-9]/.freeze
       RACK_SIZE = 96
 
       attr_accessor :barcode, :sample_tubes, :tube_rack
@@ -33,6 +36,7 @@ module Heron
 
       def save
         return false unless valid?
+
         ActiveRecord::Base.transaction do
           purpose = Purpose.where(target_type: 'TubeRack', size: ::Heron::Factories::TubeRack::RACK_SIZE).first
           tube_rack = ::TubeRack.create!(size: ::Heron::Factories::TubeRack::RACK_SIZE, plate_purpose_id: purpose&.id)
@@ -51,12 +55,13 @@ module Heron
           tube_factory = tubes[location]
           sample_tube = tube_factory.create
           racked_tubes << RackedTube.create(tube: sample_tube, coordinate: location,
-            tube_rack: tube_rack)
+                                            tube_rack: tube_rack)
         end
       end
 
       def location_valid?(location)
-        return false unless location.present?
+        return false if location.blank?
+
         location.match?(::Heron::Factories::TubeRack::LOCATION_REGEXP)
       end
 
@@ -77,18 +82,15 @@ module Heron
         tubes.keys.each do |location|
           tube = tubes[location]
 
-          unless location_valid?(location)
-            errors.add(:location, 'Invalid location format')
-          end
+          errors.add(:location, 'Invalid location format') unless location_valid?(location)
 
-          unless tube.valid?
-            tube.errors.each do |k, v|
-              errors.add("Tube at #{location} #{k}", v)
-            end
+          next if tube.valid?
+
+          tube.errors.each do |k, v|
+            errors.add("Tube at #{location} #{k}", v)
           end
         end
       end
-
     end
   end
 end

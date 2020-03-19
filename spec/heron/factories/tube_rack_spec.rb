@@ -7,19 +7,20 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     create(:purpose, target_type: 'TubeRack', size: Heron::Factories::TubeRack::RACK_SIZE)
     create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
   end
+
   let(:params) do
     {
-      "barcode": "0000000001",
+      "barcode": '0000000001',
       "tubes": [
         {
-          "location": "A01",
-          "barcode": "FD00000001",
-          "supplier_sample_id": "PHEC-nnnnnnn1",
+          "location": 'A01',
+          "barcode": 'FD00000001',
+          "supplier_sample_id": 'PHEC-nnnnnnn1'
         },
         {
-          "location": "A02",
-          "barcode": "FD00000002",
-          "supplier_sample_id": "PHEC-nnnnnnn2",
+          "location": 'A02',
+          "barcode": 'FD00000002',
+          "supplier_sample_id": 'PHEC-nnnnnnn2'
         }
       ]
     }
@@ -27,8 +28,8 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
 
   let(:invalid_tube) do
     {
-      "location": "A03",
-      "barcode": "FD00000003"
+      "location": 'A03',
+      "barcode": 'FD00000003'
     }
   end
 
@@ -44,21 +45,21 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
 
   it 'is not valid without barcode' do
     tube_rack = described_class.new(params.except(:barcode))
-    expect(tube_rack).to_not be_valid
+    expect(tube_rack).not_to be_valid
   end
 
   it 'is not valid without tubes' do
     tube_rack = described_class.new(params.except(:tubes))
-    expect(tube_rack).to_not be_valid
+    expect(tube_rack).not_to be_valid
   end
 
   it 'is not valid unless all of the tubes are valid' do
     params[:tubes] << invalid_tube
     tube_rack = described_class.new(params)
-    expect(tube_rack).to_not be_valid
+    expect(tube_rack).not_to be_valid
   end
 
-  context '#save' do
+  describe '#save' do
     it 'returns false if barcode is not present' do
       tube_rack = described_class.new(params.except(:barcode))
       expect(tube_rack.save).to be_falsy
@@ -82,7 +83,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
 
     it 'creates the tubes' do
       tube_rack = described_class.new(params)
-      expect{tube_rack.save}.to change{SampleTube.count}.by(2)
+      expect { tube_rack.save }.to change(SampleTube, :count).by(2)
     end
 
     it 'sets up the tube in their rack location' do
@@ -92,5 +93,4 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
       expect(RackedTube.count).to eq(2)
     end
   end
-
 end
