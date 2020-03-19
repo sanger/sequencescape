@@ -83,7 +83,7 @@ module Heron
 
           unless tube.valid?
             tube.errors.each do |k, v|
-              errors.add(k, v)
+              errors.add("Tube at #{location} #{k}", v)
             end
           end
         end

@@ -52,6 +52,10 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
         post api_v2_heron_tube_racks_path, params: params
         expect(response).to have_http_status(:unprocessable_entity)
       end
+      it 'contains errors in the response' do
+        post api_v2_heron_tube_racks_path, params: params
+        expect(JSON.parse(response.body)['errors'].length > 0).to be_truthy
+      end
     end
 
     it 'creates a new tube rack' do
