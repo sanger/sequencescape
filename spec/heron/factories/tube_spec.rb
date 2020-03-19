@@ -29,6 +29,15 @@ RSpec.describe Heron::Factories::Tube, type: :model, heron: true do
     expect(tube).not_to be_valid
   end
 
+  it 'is not valid unless the barcode is unique in database for that format' do
+    barcode = 'FD00000001'
+    format = Barcode.matching_barcode_format(barcode)
+    asset = create(:sample_tube)
+    create(:barcode, barcode: barcode, asset: asset, format: format)
+    tube = described_class.new(params)
+    expect(tube).to be_invalid
+  end
+
 
   context '#create' do
     it 'persists the tube if it is valid' do
