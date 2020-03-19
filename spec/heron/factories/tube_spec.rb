@@ -2,11 +2,10 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Tube, type: :model do
+RSpec.describe Heron::Factories::Tube, type: :model, heron: true do
 
   let(:params) do
     {
-       "location": "A01",
        "barcode": "FD00000001",
        "supplier_sample_id": "PHEC-nnnnnnn1",
        "study": study
@@ -18,11 +17,6 @@ RSpec.describe Heron::Factories::Tube, type: :model do
   it 'is valid with all relevant attributes' do
     tube = described_class.new(params)
     expect(tube).to be_valid
-  end
-
-  it 'is not valid without a location' do
-    tube = described_class.new(params.except(:location))
-    expect(tube).not_to be_valid
   end
 
   it 'is not valid without a barcode' do

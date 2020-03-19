@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/barcode_helper'
 
-RSpec.describe Api::V2::Heron::TubeRacksController, type: :request do
+RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true do
   before do
     PlatePurpose.stock_plate_purpose
   end

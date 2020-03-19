@@ -2,11 +2,14 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::TubeRack, type: :model do
-
+RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
+  before do
+    create(:purpose, target_type: 'TubeRack', size: Heron::Factories::TubeRack::RACK_SIZE)
+    create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
+  end
   let(:params) do
     {
-      "barcode": "DN12345",
+      "barcode": "0000000001",
       "tubes": [
         {
           "location": "A01",
@@ -29,7 +32,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model do
     }
   end
 
-  xit 'is valid with all relevant attributes' do
+  it 'is valid with all relevant attributes' do
     tube_rack = described_class.new(params)
     expect(tube_rack).to be_valid
   end
@@ -55,64 +58,39 @@ RSpec.describe Heron::Factories::TubeRack, type: :model do
     expect(tube_rack).to_not be_valid
   end
 
-  # it 'is not valid without a location' do
-  #   tube = described_class.new(params.except(:location))
-  #   expect(tube).not_to be_valid
-  # end
+  context '#save' do
+    it 'returns false if barcode is not present' do
+      tube_rack = described_class.new(params.except(:barcode))
+      expect(tube_rack.save).to be_falsy
+    end
 
-  # it 'is not valid without a barcode' do
-  #   tube = described_class.new(params.except(:barcode))
-  #   expect(tube).not_to be_valid
-  # end
+    it 'returns false if tubes are not present' do
+      tube_rack = described_class.new(params.except(:tubes))
+      expect(tube_rack.save).to be_falsy
+    end
 
-  # it 'is not valid without a supplier_sample_id' do
-  #   tube = described_class.new(params.except(:supplier_sample_id))
-  #   expect(tube).not_to be_valid
-  # end
+    it 'returns false if any tube is invalid' do
+      params[:tubes] << invalid_tube
+      tube_rack = described_class.new(params)
+      expect(tube_rack.save).to be_falsy
+    end
 
+    it 'returns true if it saves correctly' do
+      tube_rack = described_class.new(params)
+      expect(tube_rack.save).to be_truthy
+    end
 
-  # context '#create' do
-  #   it 'persists the tube if it is valid' do
-  #     tube = described_class.new(params)
-  #     expect{
-  #       tube.create
-  #     }.to change{SampleTube.count}.by(1)
-  #   end
-  #   it 'persists the sample if it is valid' do
-  #     tube = described_class.new(params)
-  #     expect{
-  #       tube.create
-  #     }.to change{Sample.count}.by(1)
-  #   end
+    it 'creates the tubes' do
+      tube_rack = described_class.new(params)
+      expect{tube_rack.save}.to change{SampleTube.count}.by(2)
+    end
 
-  #   it 'creates a tube with the name as supplier_sample_id from MLWH' do
-  #     tube = described_class.new(params)
-  #     sample_tube = tube.create
-  #     expect(sample_tube.samples.first.name).to eq("PHEC-nnnnnnn1")
-  #   end
-
-  #   it 'creates a tube with the public name as supplier_sample_id from MLWH' do
-  #     tube = described_class.new(params)
-  #     sample_tube = tube.create
-  #     expect(sample_tube.samples.first.sample_metadata.sample_public_name).to eq("PHEC-nnnnnnn1")
-  #   end
-
-  #   it 'creates a tube with the supplier name as supplier_sample_id from MLWH' do
-  #     tube = described_class.new(params)
-  #     sample_tube = tube.create
-  #     expect(sample_tube.samples.first.sample_metadata.supplier_name).to eq("PHEC-nnnnnnn1")
-  #   end
-
-  #   it 'creates a tube with the barcode specified' do
-  #     tube = described_class.new(params)
-  #     sample_tube = tube.create
-  #     sample_tube.barcodes.reload
-  #     expect(sample_tube.barcodes.count).to eq(2)
-  #     expect(sample_tube.barcodes.last.barcode).to eq("FD00000001")
-  #   end
-
-  # end
-
-
+    it 'sets up the tube in their rack location' do
+      tube_rack = described_class.new(params)
+      tube_rack.save
+      tube_rack.racked_tubes
+      expect(RackedTube.count).to eq(2)
+    end
+  end
 
 end
