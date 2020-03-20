@@ -51,6 +51,10 @@ Rails.application.routes.draw do
       namespace :aker do
         resources :jobs, only: [:create]
       end
+
+      namespace :heron do
+        resources :tube_racks, only: [:create]
+      end
     end
   end
 
