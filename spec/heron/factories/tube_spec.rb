@@ -51,10 +51,11 @@ RSpec.describe Heron::Factories::Tube, type: :model, heron: true do
       end.to change(Sample, :count).by(1)
     end
 
-    it 'creates a tube with the name as supplier_sample_id from MLWH' do
+    it 'creates a tube with the name as sanger_sample_id' do
       tube = described_class.new(params)
       sample_tube = tube.create
-      expect(sample_tube.samples.first.name).to eq('PHEC-nnnnnnn1')
+      expect(sample_tube.samples.first.name).not_to be_nil
+      expect(sample_tube.samples.first.name).to eq(sample_tube.samples.first.sanger_sample_id)
     end
 
     it 'creates a tube with the public name as supplier_sample_id from MLWH' do

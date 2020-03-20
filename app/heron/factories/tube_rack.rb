@@ -39,7 +39,7 @@ module Heron
 
         ActiveRecord::Base.transaction do
           purpose = Purpose.where(target_type: 'TubeRack', size: ::Heron::Factories::TubeRack::RACK_SIZE).first
-          tube_rack = ::TubeRack.create!(size: ::Heron::Factories::TubeRack::RACK_SIZE, plate_purpose_id: purpose&.id)
+          @tube_rack = ::TubeRack.create!(size: ::Heron::Factories::TubeRack::RACK_SIZE, plate_purpose_id: purpose&.id)
 
           Barcode.create!(asset: tube_rack, barcode: barcode, format: barcode_format)
 
@@ -50,11 +50,18 @@ module Heron
 
       private
 
+      def unpad_location(location)
+        return location unless location
+
+        loc = location.match(/(\w)(0*)(\d*)/)
+        loc[1] + loc[3]
+      end
+
       def create_tubes!(tube_rack)
         tubes.keys.map do |location|
           tube_factory = tubes[location]
           sample_tube = tube_factory.create
-          racked_tubes << RackedTube.create(tube: sample_tube, coordinate: location,
+          racked_tubes << RackedTube.create(tube: sample_tube, coordinate: unpad_location(location),
                                             tube_rack: tube_rack)
         end
       end

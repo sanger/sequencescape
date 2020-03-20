@@ -53,9 +53,10 @@ module Heron
       end
 
       def create_sample!
+        sanger_sample_id = create_sanger_sample_id!
         Sample.create!(
-          sanger_sample_id: create_sanger_sample_id!,
-          name: supplier_sample_id
+          name: sanger_sample_id,
+          sanger_sample_id: sanger_sample_id
         ) do |sample|
           sample.sample_metadata.update!(
             sample_public_name: supplier_sample_id,

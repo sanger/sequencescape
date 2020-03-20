@@ -92,5 +92,12 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
       tube_rack.racked_tubes
       expect(RackedTube.count).to eq(2)
     end
+
+    it 'pads the locations before saving them' do
+      tube_rack = described_class.new(params)
+      tube_rack.save
+      tube_rack.racked_tubes
+      expect(tube_rack.racked_tubes.first.coordinate).to eq('A1')
+    end
   end
 end
