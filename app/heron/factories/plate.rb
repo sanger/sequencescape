@@ -6,20 +6,17 @@ module Heron
     class Plate
       include ActiveModel::Model
 
-      PURPOSE_NAME = 'RNA Stock Plate'
+      attr_accessor :tube_rack, :plate, :plate_purpose
 
-      attr_accessor :tube_rack, :plate
-
-      validates_presence_of :tube_rack
+      validates_presence_of :tube_rack, :plate_purpose
       validate :check_tube_rack_persisted
 
       def save
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          purpose = PlatePurpose.where(name: PURPOSE_NAME).first
-          @plate = purpose.create!
-          ExtractionAttribute.create!(attributes_update: plate_contents, target: plate, created_by: 'heron')
+          @plate = plate_purpose.create!
+          ExtractionAttribute.create!(attributes_update: plate_contents, target: @plate, created_by: 'heron')
 
           AssetLink.create_edge(tube_rack, plate)
         end
