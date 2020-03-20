@@ -174,6 +174,34 @@ namespace :limber do
         asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
+
+    unless Purpose.where(name: 'LHR Stock').exists?
+      PlatePurpose.create!(
+        name: 'LHR Stock',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: false,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
+
+    unless Purpose.where(name: 'LHR Cherrypick').exists?
+      PlatePurpose.create!(
+        name: 'LHR Cherrypick',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: true,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
   end
 
   desc 'Create the limber request types'
@@ -321,6 +349,15 @@ namespace :limber do
         ],
         product_line: 'Bespoke',
         default_purposes: ['LBB Cherrypick']              # It requires default_purpose to accept an array.
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'Heron',
+        library_types:  [
+          'Heron',
+          'Heron-384'
+        ],
+        default_purposes: ['LHR Cherrypick']             # It requires default_purpose to accept an array.
       ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
@@ -472,6 +509,9 @@ namespace :limber do
         Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
         Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
       end
+
+      heron_catalogue = ProductCatalogue.find_or_create_by!(name: 'Heron')
+      Limber::Helper::TemplateConstructor.new(prefix: 'Heron', catalogue: heron_catalogue, sequencing_keys: base_list).build!
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
