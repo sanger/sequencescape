@@ -19,15 +19,6 @@ module Api
 
         private
 
-        def create_tube_rack_response(params)
-          params[:data].each_with_object(json: [], status: :created) do |param_job, response|
-            job = ::Aker::Factories::Job.new(param_job[:attributes].permit!)
-            return { json: job.errors, status: :unprocessable_entity } unless job.valid?
-
-            response[:json].push(job.create)
-          end
-        end
-
         def params_for_tube_rack
           params.require(:data).require(:attributes).require(:tube_rack).permit(:barcode, tubes: %i[barcode supplier_sample_id location])
         end
