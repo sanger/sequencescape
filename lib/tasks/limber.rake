@@ -569,6 +569,18 @@ namespace :limber do
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
         )
       end
+
+      unless SubmissionTemplate.find_by(name: 'Limber-Htp - Heron - Miseq sequencing PP')
+        SubmissionTemplate.create!(
+          name: 'Limber-Htp - Heron - Miseq sequencing PP',
+          submission_class_name: 'AutomatedOrder',
+          submission_parameters: {
+            request_type_ids_list: [RequestType.where(key: 'heron_miseq_sequencing').pluck(:id)]
+          },
+          product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
+          product_catalogue: ProductCatalogue.find_by!(name: 'Heron')
+        )
+      end
     end
   end
 end

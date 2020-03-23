@@ -40,6 +40,10 @@ FactoryBot.define do
         factory :gbs_request_type do
           request_class { IlluminaHtp::Requests::GbsRequest }
         end
+
+        factory :heron_request_type do
+          request_class { IlluminaHtp::Requests::HeronRequest }
+        end
       end
 
       factory :multiplex_request_type do
