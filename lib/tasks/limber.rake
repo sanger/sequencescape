@@ -353,6 +353,7 @@ namespace :limber do
 
       Limber::Helper::RequestTypeConstructor.new(
         'Heron',
+        request_class: 'IlluminaHtp::Requests::HeronRequest',
         library_types:  [
           'Heron',
           'Heron-384'
@@ -570,9 +571,9 @@ namespace :limber do
         )
       end
 
-      unless SubmissionTemplate.find_by(name: 'Limber-Htp - Heron - Miseq sequencing PP')
+      unless SubmissionTemplate.find_by(name: 'MiSeq for Heron')
         SubmissionTemplate.create!(
-          name: 'Limber-Htp - Heron - Miseq sequencing PP',
+          name: 'MiSeq for Heron',
           submission_class_name: 'AutomatedOrder',
           submission_parameters: {
             request_type_ids_list: [RequestType.where(key: 'heron_miseq_sequencing').pluck(:id)]
