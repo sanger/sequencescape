@@ -88,4 +88,26 @@ namespace :sequencing do
       end
     end
   end
+
+  namespace :heron_miseq do
+    desc 'Setting up Heron MiSeq Request Type'
+    task setup: :environment do
+      ActiveRecord::Base.transaction do
+        unless RequestType.find_by(key: 'heron_miseq_sequencing')
+          rt = RequestType.create!(key: 'heron_miseq_sequencing',
+                                   name: 'Heron MiSeq sequencing',
+                                   asset_type: 'LibraryTube',
+                                   initial_state: 'pending',
+                                   order: 2,
+                                   request_class_name: 'MiSeqSequencingRequest',
+                                   billable: true,
+                                   request_purpose: :standard)
+          RequestType::Validator.create!(request_type: rt,
+                                         request_option: 'read_length',
+                                         valid_options: [25, 50, 130, 150, 250, 300])
+          SequencingPipeline.find_by(name: 'MiSeq sequencing').request_types << rt
+        end
+      end
+    end
+  end
 end

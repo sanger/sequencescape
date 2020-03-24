@@ -36,6 +36,14 @@ class UatActions::TestSubmission < UatActions
                    'Useful where the same request type has multiple library types.',
              select_options: -> { LibraryType.alphabetical.pluck(:name) },
              options: { include_blank: 'Using default library type...' }
+  form_field :primer_panel_name,
+             :select,
+             label: 'Primer Panel',
+             help: 'Select the primer panel to use when creating the requests. '\
+                   'Leave blank if not applicable for your submission template choice. '\
+                   'Currently only used in GBS and Heron pipelines.',
+             select_options: -> { PrimerPanel.alphabetical.pluck(:name) },
+             options: { include_blank: 'Primer panel selection...' }
   form_field :partial_number_of_wells,
              :number_field,
              label: 'Partial number of wells',
@@ -79,6 +87,7 @@ class UatActions::TestSubmission < UatActions
     report['plate_barcode_0'] = labware.human_barcode
     report['submission_id'] = order.submission.id
     report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
+    report['primer_panel'] = order.request_options[:primer_panel] if order.request_options[:primer_panel].present?
     order.submission.built!
     true
   end
@@ -143,6 +152,7 @@ class UatActions::TestSubmission < UatActions
   def custom_request_options
     options = {}
     options[:library_type] = library_type_name if library_type_name.present?
+    options[:primer_panel] = primer_panel_name if primer_panel_name.present?
     options
   end
 
