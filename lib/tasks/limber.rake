@@ -443,7 +443,8 @@ namespace :limber do
                                      :create_request_types,
                                      :create_barcode_printer_types,
                                      'sequencing:novaseq:setup',
-                                     'sequencing:gbs_miseq:setup'] do
+                                     'sequencing:gbs_miseq:setup',
+                                     'sequencing:heron_miseq:setup'] do
     puts 'Creating submission templates....'
 
     base_list = %w(
