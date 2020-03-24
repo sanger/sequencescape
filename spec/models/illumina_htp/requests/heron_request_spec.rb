@@ -17,7 +17,7 @@ describe IlluminaHtp::Requests::HeronRequest, heron: true do
     let(:mutated_hash) { {} }
 
     it 'adds primer panel' do
-      subject.update_pool_information(mutated_hash)
+      request.update_pool_information(mutated_hash)
       expect(mutated_hash.keys).to include(:primer_panel)
       expect(mutated_hash[:primer_panel]).to eq(request.request_metadata.primer_panel.summary_hash)
     end
