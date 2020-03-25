@@ -32,6 +32,12 @@ FactoryBot.define do
         request_types { [create(:library_request_type), create(:sequencing_request_type)] }
       end
     end
+
+    factory :heron_libray_and_sequencing_template do
+      transient do
+        request_types { [create(:heron_request_type), create(:sequencing_request_type)] }
+      end
+    end
   end
 
   factory :order do

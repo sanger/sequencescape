@@ -212,6 +212,7 @@ priority:
     is_error:
 primer_panel:
   heading: Primer Panel
+  attribute: primer_panel_name
   unlocked: true
   validation:
     options:
