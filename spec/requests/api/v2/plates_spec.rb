@@ -41,6 +41,31 @@ describe 'Plates API', with: :api_v2 do
       expect(json['data'].length).to eq(1)
     end
 
+    context 'when the ancestor is a tube rack' do
+      let(:purpose) do
+        create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
+      end
+      let(:rack) { create :tube_rack }
+      let(:plate_factory) { ::Heron::Factories::Plate.new(tube_rack: rack, plate_purpose: purpose) }
+      let(:tubes) { create_list(:sample_tube, 2) }
+
+      include BarcodeHelper
+
+      before do
+        mock_plate_barcode_service
+        rack.racked_tubes << create(:racked_tube, tube: tubes[0], coordinate: 'A1')
+        rack.racked_tubes << create(:racked_tube, tube: tubes[1], coordinate: 'B1')
+      end
+
+      it 'can find the plate' do
+        plate_factory.save
+        plate = plate_factory.plate
+        barcode = plate.barcodes.first.barcode
+        api_get "/api/v2/plates?filter[barcode=#{barcode}&include=purpose,parents"
+        expect(response).to have_http_status(:success)
+      end
+    end
+
     # By default jsonapi_resource has two bugs which affect polymorphic relationships
     # 1) It uses the default inheritnce_column `type` rather than the defined one
     # 2) It directly uses the type field, rather than mapping it to a resource
