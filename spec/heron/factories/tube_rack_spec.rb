@@ -13,12 +13,12 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
       "barcode": '0000000001',
       "tubes": [
         {
-          "location": 'A01',
+          "coordinate": 'A01',
           "barcode": 'FD00000001',
           "supplier_sample_id": 'PHEC-nnnnnnn1'
         },
         {
-          "location": 'A02',
+          "coordinate": 'A02',
           "barcode": 'FD00000002',
           "supplier_sample_id": 'PHEC-nnnnnnn2'
         }
@@ -28,7 +28,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
 
   let(:invalid_tube) do
     {
-      "location": 'A03',
+      "coordinate": 'A03',
       "barcode": 'FD00000003'
     }
   end
@@ -86,14 +86,14 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
       expect { tube_rack.save }.to change(SampleTube, :count).by(2)
     end
 
-    it 'sets up the tube in their rack location' do
+    it 'sets up the tube in their rack coordinate' do
       tube_rack = described_class.new(params)
       tube_rack.save
       tube_rack.racked_tubes
       expect(RackedTube.count).to eq(2)
     end
 
-    it 'pads the locations before saving them' do
+    it 'pads the coordinates before saving them' do
       tube_rack = described_class.new(params)
       tube_rack.save
       tube_rack.racked_tubes

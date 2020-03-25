@@ -12,17 +12,17 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
   context 'when there is a tube rack message' do
     let(:tube_rack_barcode) { build(:fluidigm).barcode }
     let(:tubes_barcodes) { [build(:fluidx).barcode, build(:fluidx).barcode] }
-    let(:tubes_locations) { %w[A01 B01] }
+    let(:tubes_coordinates) { %w[A1 B1] }
     let(:supplier_sample_ids) { %w[PHEC-nnnnnnn1 PHEC-nnnnnnn2] }
     let(:tubes) do
       [
         {
-          "location": tubes_locations[0],
+          "coordinate": tubes_coordinates[0],
           "barcode": tubes_barcodes[0],
           "supplier_sample_id": supplier_sample_ids[0]
         },
         {
-          "location": tubes_locations[1],
+          "coordinate": tubes_coordinates[1],
           "barcode": tubes_barcodes[1],
           "supplier_sample_id": supplier_sample_ids[1]
         }
@@ -84,8 +84,8 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
         it_behaves_like 'an incorrect tube rack message'
       end
 
-      context 'when some tubes do not have a location' do
-        let(:tubes_locations) { ['A01', nil] }
+      context 'when some tubes do not have a coordinate' do
+        let(:tubes_coordinates) { ['A01', nil] }
 
         it_behaves_like 'an incorrect tube rack message'
       end

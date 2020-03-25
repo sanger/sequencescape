@@ -12,7 +12,7 @@ module Heron
 
       attr_accessor :barcode, :sample_tubes, :tube_rack
 
-      validates_presence_of :barcode, :tubes
+      validates_presence_of :barcode, :tubes, :heron_study
 
       validate :check_tubes, :check_rack_barcode
 
@@ -22,7 +22,7 @@ module Heron
 
       def tubes=(attributes)
         attributes.each do |tube|
-          tubes[tube[:location]] = ::Heron::Factories::Tube.new(tube.except(:location).merge(study: heron_study))
+          tubes[tube[:coordinate]] = ::Heron::Factories::Tube.new(tube.except(:coordinate).merge(study: heron_study))
         end
       end
 
@@ -50,26 +50,26 @@ module Heron
 
       private
 
-      def unpad_location(location)
-        return location unless location
+      def unpad_coordinate(coordinate)
+        return coordinate unless coordinate
 
-        loc = location.match(/(\w)(0*)(\d*)/)
+        loc = coordinate.match(/(\w)(0*)(\d*)/)
         loc[1] + loc[3]
       end
 
       def create_tubes!(tube_rack)
-        tubes.keys.map do |location|
-          tube_factory = tubes[location]
+        tubes.keys.map do |coordinate|
+          tube_factory = tubes[coordinate]
           sample_tube = tube_factory.create
-          racked_tubes << RackedTube.create(tube: sample_tube, coordinate: unpad_location(location),
+          racked_tubes << RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate),
                                             tube_rack: tube_rack)
         end
       end
 
-      def location_valid?(location)
-        return false if location.blank?
+      def coordinate_valid?(coordinate)
+        return false if coordinate.blank?
 
-        location.match?(::Heron::Factories::TubeRack::LOCATION_REGEXP)
+        coordinate.match?(::Heron::Factories::TubeRack::LOCATION_REGEXP)
       end
 
       def barcode_format
@@ -86,15 +86,15 @@ module Heron
       end
 
       def check_tubes
-        tubes.keys.each do |location|
-          tube = tubes[location]
+        tubes.keys.each do |coordinate|
+          tube = tubes[coordinate]
 
-          errors.add(:location, 'Invalid location format') unless location_valid?(location)
+          errors.add(:coordinate, 'Invalid coordinate format') unless coordinate_valid?(coordinate)
 
           next if tube.valid?
 
           tube.errors.each do |k, v|
-            errors.add("Tube at #{location} #{k}", v)
+            errors.add("Tube at #{coordinate} #{k}", v)
           end
         end
       end
