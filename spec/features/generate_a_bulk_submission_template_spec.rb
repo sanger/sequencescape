@@ -54,4 +54,25 @@ describe 'Generate a bulk submission spreadsheet', js: true, bulk_submission_exc
       expect(spreadsheet.sheet(0).cell(3, 19)).to eq(primer_panel.name)
     end
   end
+
+  context 'with a bait_library submission' do
+    let!(:submission_template) { create :isc_libray_and_sequencing_template }
+    let!(:bait_library) { create :bait_library }
+
+    it 'populates the primer panel column' do
+      # Regression test for https://github.com/sanger/sequencescape/issues/2582
+      # Essentially our form was generating a field called bait_library_name
+      # whereas the spreadsheet was populating information from bait_library.
+      login_user user
+      visit bulk_submissions_path
+      fill_in 'Labware barcodes (and wells)', with: "#{plate.human_barcode} #{partial_plate.human_barcode}:A1,A2"
+      select(submission_template.name, from: 'Submission Template')
+      select(bait_library.name, from: 'Bait library')
+      fill_in('Fragment size required (from)', with: 300)
+      click_on 'Generate Template'
+      DownloadHelpers.wait_for_download(filename)
+      spreadsheet = Roo::Spreadsheet.open(DownloadHelpers.path_to(filename).to_s)
+      expect(spreadsheet.sheet(0).cell(3, 13)).to eq(bait_library.name)
+    end
+  end
 end
