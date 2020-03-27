@@ -59,7 +59,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
   it 'is not valid if the size do not match a purpose' do
     params[:size] = 44
     tube_rack = described_class.new(params)
-    expect(tube_rack).not_to be_valid    
+    expect(tube_rack).not_to be_valid
   end
 
   it 'is not valid without tubes' do
