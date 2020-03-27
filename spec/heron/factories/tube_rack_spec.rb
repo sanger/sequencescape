@@ -4,13 +4,13 @@ require 'rails_helper'
 
 RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
   before do
-    create(:purpose, target_type: 'TubeRack', size: Heron::Factories::TubeRack::RACK_SIZE)
     create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
   end
 
   let(:params) do
     {
       "barcode": '0000000001',
+      "size": '96',
       "tubes": [
         {
           "coordinate": 'A01',
@@ -32,6 +32,9 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
       "barcode": 'FD00000003'
     }
   end
+
+  let!(:purpose_96) { create(:plate_purpose, target_type: 'TubeRack', size: 96) }
+  let!(:purpose_48) { create(:plate_purpose, target_type: 'TubeRack', size: 48) }
 
   it 'is valid with all relevant attributes' do
     tube_rack = described_class.new(params)
@@ -79,6 +82,23 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     it 'returns true if it saves correctly' do
       tube_rack = described_class.new(params)
       expect(tube_rack.save).to be_truthy
+    end
+
+    it 'creates the rack' do
+      tube_rack = described_class.new(params)
+      expect { tube_rack.save }.to change(TubeRack, :count).by(1)
+    end
+
+    it 'can create a 96 rack' do
+      tube_rack = described_class.new(params.merge(size: 96))
+      tube_rack.save
+      expect(tube_rack.tube_rack.plate_purpose).to eq(purpose_96)
+    end
+
+    it 'can create a 48 rack' do
+      tube_rack = described_class.new(params.merge(size: 48))
+      tube_rack.save
+      expect(tube_rack.tube_rack.plate_purpose).to eq(purpose_48)
     end
 
     it 'creates the tubes' do

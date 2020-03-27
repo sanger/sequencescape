@@ -20,7 +20,7 @@ module Api
         private
 
         def params_for_tube_rack
-          params.require(:data).require(:attributes).require(:tube_rack).permit(:barcode, tubes: %i[barcode supplier_sample_id coordinate])
+          params.require(:data).require(:attributes).require(:tube_rack).permit(:barcode, :size, tubes: %i[barcode supplier_sample_id coordinate])
         end
       end
     end

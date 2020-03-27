@@ -4,8 +4,10 @@ require 'rails_helper'
 require 'support/barcode_helper'
 
 RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true do
+  let(:size) { 96 }
+
   before do
-    create(:purpose, target_type: 'TubeRack', size: Heron::Factories::TubeRack::RACK_SIZE)
+    create(:plate_purpose, target_type: 'TubeRack', size: 96)
     create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
   end
 
@@ -33,6 +35,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
         "data": {
           "attributes": {
             "tube_rack": {
+              "size": size,
               "barcode": tube_rack_barcode,
               "tubes": tubes
             }
@@ -72,6 +75,12 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
     end
 
     context 'when there is some data missing/incorrect' do
+      context 'when there is not plate purpose that match the rack size' do
+        let(:size) { 33 }
+
+        it_behaves_like 'an incorrect tube rack message'
+      end
+
       context 'when the tube rack doesnt have a barcode' do
         let(:tube_rack_barcode) { nil }
 

@@ -7,6 +7,7 @@ class TubeRack < Labware
 
   include Barcode::Barcodeable
 
+  belongs_to :plate_purpose
   has_many :racked_tubes, dependent: :destroy, inverse_of: :tube_rack
   has_many :tubes, through: :racked_tubes
   has_many :contained_samples, through: :tubes, source: :samples

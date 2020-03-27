@@ -8,11 +8,10 @@ module Heron
 
       HERON_STUDY = 6187
       LOCATION_REGEXP = /[A-Z][0-9]{0,1}[0-9]/.freeze
-      RACK_SIZE = 96
 
-      attr_accessor :barcode, :sample_tubes, :tube_rack
+      attr_accessor :barcode, :sample_tubes, :tube_rack, :size
 
-      validates_presence_of :barcode, :tubes, :heron_study
+      validates_presence_of :barcode, :tubes, :heron_study, :size, :plate_purpose
 
       validate :check_tubes, :check_rack_barcode
 
@@ -30,6 +29,10 @@ module Heron
         @racked_tubes ||= []
       end
 
+      def plate_purpose
+        @plate_purpose ||= Purpose.where(target_type: 'TubeRack', size: size).first
+      end
+
       def tubes
         @tubes ||= {}
       end
@@ -38,8 +41,7 @@ module Heron
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          purpose = Purpose.where(target_type: 'TubeRack', size: ::Heron::Factories::TubeRack::RACK_SIZE).first
-          @tube_rack = ::TubeRack.create!(size: ::Heron::Factories::TubeRack::RACK_SIZE, plate_purpose_id: purpose&.id)
+          @tube_rack = ::TubeRack.create!(size: size, plate_purpose: plate_purpose)
 
           Barcode.create!(asset: tube_rack, barcode: barcode, format: barcode_format)
 
