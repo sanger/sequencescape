@@ -33,8 +33,8 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     }
   end
 
-  let!(:purpose_96) { create(:plate_purpose, target_type: 'TubeRack', size: 96) }
-  let!(:purpose_48) { create(:plate_purpose, target_type: 'TubeRack', size: 48) }
+  let!(:purpose_96) { create(:tube_rack_purpose, target_type: 'TubeRack', size: 96) }
+  let!(:purpose_48) { create(:tube_rack_purpose, target_type: 'TubeRack', size: 48) }
 
   it 'is valid with all relevant attributes' do
     tube_rack = described_class.new(params)
@@ -103,13 +103,13 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     it 'can create a 96 rack' do
       tube_rack = described_class.new(params.merge(size: 96))
       tube_rack.save
-      expect(tube_rack.tube_rack.plate_purpose).to eq(purpose_96)
+      expect(tube_rack.tube_rack.purpose).to eq(purpose_96)
     end
 
     it 'can create a 48 rack' do
       tube_rack = described_class.new(params.merge(size: 48))
       tube_rack.save
-      expect(tube_rack.tube_rack.plate_purpose).to eq(purpose_48)
+      expect(tube_rack.tube_rack.purpose).to eq(purpose_48)
     end
 
     it 'creates the tubes' do

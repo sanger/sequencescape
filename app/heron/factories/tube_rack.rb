@@ -11,7 +11,7 @@ module Heron
 
       attr_accessor :barcode, :sample_tubes, :tube_rack, :size
 
-      validates_presence_of :barcode, :tubes, :heron_study, :size, :plate_purpose
+      validates_presence_of :barcode, :tubes, :heron_study, :size, :purpose
 
       validate :check_tubes, :check_rack_barcode
 
@@ -29,8 +29,8 @@ module Heron
         @racked_tubes ||= []
       end
 
-      def plate_purpose
-        @plate_purpose ||= Purpose.where(target_type: 'TubeRack', size: size).first
+      def purpose
+        @purpose ||= ::TubeRack::Purpose.where(target_type: 'TubeRack', size: size).first
       end
 
       def tubes
@@ -41,7 +41,7 @@ module Heron
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          @tube_rack = ::TubeRack.create!(size: size, plate_purpose: plate_purpose)
+          @tube_rack = ::TubeRack.create!(size: size, purpose: purpose)
 
           Barcode.create!(asset: tube_rack, barcode: barcode, format: barcode_format)
 
