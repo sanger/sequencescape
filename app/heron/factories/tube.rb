@@ -59,7 +59,6 @@ module Heron
           sanger_sample_id: sanger_sample_id
         ) do |sample|
           sample.sample_metadata.update!(
-            sample_public_name: supplier_sample_id,
             supplier_name: supplier_sample_id
           )
           sample.studies << study
