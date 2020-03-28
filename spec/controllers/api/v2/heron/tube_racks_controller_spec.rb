@@ -7,7 +7,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
   let(:size) { 96 }
 
   before do
-    create(:plate_purpose, target_type: 'TubeRack', size: 96)
+    create(:purpose, type: 'TubeRack::Purpose', target_type: 'TubeRack', size: 96)
     create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
   end
 
