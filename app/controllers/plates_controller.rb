@@ -33,13 +33,9 @@ class PlatesController < ApplicationController
           flash[:error] = 'Please scan your user barcode'
           format.html { redirect_to(new_plate_path) }
         elsif tube_rack_sources?
-          if plate_creator.create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user)
-            flash[:notice] = 'Created and printed barcodes from tube rack into plates'
-            format.html { redirect_to(new_plate_path) }
-          else
-            flash[:error] = 'Failed to print plate barcodes'
-            format.html { redirect_to(new_plate_path) }
-          end
+          new_barcodes = plate_creator.create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user)
+          flash[:notice] = "Created and printed barcodes from tube rack into plates: #{new_barcodes.join(',')}"
+          format.html { redirect_to(new_plate_path) }
         elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user, Plate::CreatorParameters.new(params[:plates]))
           flash[:notice] = 'Created plates and printed barcodes'
           format.html { redirect_to(new_plate_path) }
