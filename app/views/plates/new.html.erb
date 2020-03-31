@@ -35,7 +35,7 @@
 
   var updateFactorsFor = function(name) {
     dilutionFactorsNodes.html("");
-    if (plate_creator_parameters[name] !== null) {
+    if (name !== "" && plate_creator_parameters[name] !== null) {
       var validDilutionFactors = plate_creator_parameters[name].valid_dilution_factors;
       for (var i=0; i<validDilutionFactors.length; i++) {
         var val = validDilutionFactors[i]
