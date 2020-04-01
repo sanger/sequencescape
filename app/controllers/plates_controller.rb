@@ -21,8 +21,8 @@ class PlatesController < ApplicationController
 
   def create
     ActiveRecord::Base.transaction do
-      @creator = plate_creator         = Plate::Creator.find(params[:plates][:creator_id])
-      barcode_printer       = BarcodePrinter.find(params[:plates][:barcode_printer])
+      @creator = plate_creator = Plate::Creator.find(params[:plates][:creator_id])
+      barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
       source_plate_barcodes = params[:plates][:source_plates]
 
       scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates][:user_barcode])
@@ -52,7 +52,7 @@ class PlatesController < ApplicationController
   end
 
   def set_plate_creators
-    @plate_creators   = Plate::Creator.order(:name)
+    @plate_creators = Plate::Creator.order(:name)
   end
 
   def set_barcode_printers

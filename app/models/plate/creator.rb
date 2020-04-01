@@ -26,7 +26,7 @@ class Plate::Creator < ApplicationRecord
   serialize :valid_options
 
   def created_plates
-    @created_plates ||=[]
+    @created_plates ||= []
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
@@ -35,6 +35,7 @@ class Plate::Creator < ApplicationRecord
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
+
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                                LabelPrinter::Label::PlateCreator,
@@ -66,8 +67,9 @@ class Plate::Creator < ApplicationRecord
                                            plate_purpose: plate_purpose, user_login: scanned_user.login)
 
     unless print_job.execute
-      raise PlateCreationError, "Barcode labels failed to print."
+      raise PlateCreationError, 'Barcode labels failed to print.'
     end
+
     true
   end
 
@@ -115,17 +117,16 @@ class Plate::Creator < ApplicationRecord
           raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
         end
 
-
         add_created_plates(plates, plate, create_child_plates_from(plate, current_user, creator_parameters))
       end
     end
   end
 
   def add_created_plates(plates, source, destinations)
-    created_plates.push({
+    created_plates.push(
       source: source,
       destinations: destinations
-    })
+    )
     plates.concat(destinations)
   end
 
