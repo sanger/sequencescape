@@ -41,7 +41,7 @@ namespace :limber do
 
       desc 'Create 4 Heron stock plates'
       task heron: ['limber:setup'] do
-        seeder = WorkingSetup::StandardSeeder.new([['LHR Cherrypick', 4]])
+        seeder = WorkingSetup::StandardSeeder.new([['LHR RT', 4]])
         seeder.create_purposes
       end
 
