@@ -355,8 +355,7 @@ namespace :limber do
         'Heron',
         request_class: 'IlluminaHtp::Requests::HeronRequest',
         library_types:  [
-          'Heron',
-          'Heron-384'
+          'PCR amplicon ligated adapters'
         ],
         default_purposes: ['LHR RT']             # It requires default_purpose to accept an array.
       ).build!
