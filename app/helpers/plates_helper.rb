@@ -9,6 +9,21 @@ module PlatesHelper
     end
   end
 
+  def valid_options_for_params(val)
+    return {} unless val.valid_options
+    val.valid_options.merge({
+        valid_dilution_factors: val.valid_options[:valid_dilution_factors].map(&:to_s)
+    })
+  end
+
+  def plate_creator_parameters_json(plate_creators)
+    return({}.to_json) unless plate_creators
+    @plate_creators.reduce({}) do |memo, val|
+      memo[val.name] = valid_options_for_params(val)
+      memo
+    end.to_json
+  end
+
   private
 
   # Remove deprecate use of Well.sample

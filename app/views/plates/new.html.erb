@@ -2,6 +2,12 @@
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
 <%= page_title 'Plates', 'New' %>
 
+<% if @creator %>
+  <div class='alert alert-warning'>
+    <%= render(partial: 'plates/creator/printed_barcodes') %>
+  </div>
+<% end %>
+
 <%= semantic_form_for(:plates, url: plates_path) do |form| %>
   <div class="columnize">
   <%= panel do %>
@@ -23,38 +29,39 @@
 
 <script type="text/javascript">
 (function($) {
-  var plate_creator_parameters = {
-    <% @plate_creators.each do |pc| %>
-      "<%= pc.name %>": <%= pc.valid_options.to_json.html_safe %>,
-    <% end %>
-  };
-  var dilutionFactorsNodes = $("#plates_dilution_factor");
-  var defaultOption = "<option value='1.0'>1.0</option>";
 
-  dilutionFactorsNodes.html(defaultOption);
+  const defaultOption = "1.0"
+  const plate_creator_parameters = <%= raw json_escape(plate_creator_parameters_json(@plate_creators)) %>
 
-  var updateFactorsFor = function(name) {
-    dilutionFactorsNodes.html("");
-    if (plate_creator_parameters[name] !== null) {
-      var validDilutionFactors = plate_creator_parameters[name].valid_dilution_factors;
-      for (var i=0; i<validDilutionFactors.length; i++) {
-        var val = validDilutionFactors[i]
-        dilutionFactorsNodes.append("<option value='"+val+"'>"+val+"</option>");
-      }
-    }
-    else {
-      dilutionFactorsNodes.append(defaultOption);
-    }
+  const validDilutionFactorsForName = (name) => {
+    return (plate_creator_parameters[name]?.valid_dilution_factors || [defaultOption])
   }
 
-  $("#plates_creator_id").change(function() {
-    updateFactorsFor(this.options[this.selectedIndex].text);
-  });
-  $("#plates_creator_id").change();
-})(jQuery)
+  const dataForName = (name) => {
+    return $.map(validDilutionFactorsForName(name), (val)=>{
+      return {id: val, text: val}
+    })
+  }
 
-$(document).ready(function () {
-  $('#plates_dilution_factor').select2({theme: "bootstrap",
-                                        minimumResultsForSearch: -1});
-});
+  const updateFactorsFor = function(name) {
+    $('#plates_dilution_factor')[0].options.length = 0
+    $('#plates_dilution_factor').select2(
+      { data: dataForName(name) }
+    );
+  }
+
+  $(document).ready(function () {
+    const dilutionFactorSelect = $('#plates_dilution_factor')
+    const creatorSelect = $("#plates_creator_id")
+
+    dilutionFactorSelect.select2({
+      theme: "bootstrap",
+      minimumResultsForSearch: -1})
+
+    creatorSelect.change(function() {
+      updateFactorsFor($('option:selected', creatorSelect).text())
+    })
+    creatorSelect.change()
+  })
+})(jQuery)
 </script>

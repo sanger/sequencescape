@@ -16,6 +16,8 @@ class Plate::Creator < ApplicationRecord
 
   self.table_name = 'plate_creators'
 
+  attr_reader :created_plates
+
   # These are the plate purposes that will be created when this creator is used.
   has_many :plate_creator_purposes, class_name: 'Plate::Creator::PurposeRelationship', dependent: :destroy, foreign_key: :plate_creator_id
   has_many :plate_purposes, through: :plate_creator_purposes
@@ -27,10 +29,10 @@ class Plate::Creator < ApplicationRecord
 
   # Executes the plate creation so that the appropriate child plates are built.
   def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil)
+    @created_plates = []
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
-
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                                LabelPrinter::Label::PlateCreator,
@@ -42,17 +44,20 @@ class Plate::Creator < ApplicationRecord
   end
 
   def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, _creator_parameters = nil)
+    @created_plates = []
     plate_purpose = plate_purposes.first
     plate_factories = tube_rack_to_plate_factories(tube_racks, plate_purpose)
     return false unless plate_factories.all?(&:valid?)
 
     ActiveRecord::Base.transaction do
-      plate_factories.each(&:save)
+      plate_factories.each do |factory|
+        factory.save
+        add_created_plates([], factory.tube_rack, [factory.plate])
+      end
     end
-
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                            LabelPrinter::Label::PlateCreator,
-                                           plates: plate_factories.map(&:plate),
+                                           plates: created_plates,
                                            plate_purpose: plate_purpose, user_login: scanned_user.login)
     return false unless print_job.execute
 
@@ -103,9 +108,18 @@ class Plate::Creator < ApplicationRecord
           raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
         end
 
-        plates.concat(create_child_plates_from(plate, current_user, creator_parameters))
+
+        add_created_plates(plates, plate, create_child_plates_from(plate, current_user, creator_parameters))
       end
     end
+  end
+
+  def add_created_plates(plates, source, destinations)
+    @created_plates.push({
+      source: source,
+      destinations: destinations
+    })
+    plates.concat(destinations)
   end
 
   def create_child_plates_from(plate, current_user, creator_parameters)
