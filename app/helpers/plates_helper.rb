@@ -18,7 +18,7 @@ module PlatesHelper
 
   def plate_creator_parameters_json(plate_creators)
     return({}.to_json) unless plate_creators
-    @plate_creators.reduce({}) do |memo, val|
+    plate_creators.reduce({}) do |memo, val|
       memo[val.name] = valid_options_for_params(val)
       memo
     end.to_json

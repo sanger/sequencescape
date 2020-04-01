@@ -16,8 +16,6 @@ class Plate::Creator < ApplicationRecord
 
   self.table_name = 'plate_creators'
 
-  attr_reader :created_plates
-
   # These are the plate purposes that will be created when this creator is used.
   has_many :plate_creator_purposes, class_name: 'Plate::Creator::PurposeRelationship', dependent: :destroy, foreign_key: :plate_creator_id
   has_many :plate_purposes, through: :plate_creator_purposes
@@ -26,6 +24,10 @@ class Plate::Creator < ApplicationRecord
   has_many :parent_plate_purposes, through: :parent_purpose_relationships, source: :plate_purpose
 
   serialize :valid_options
+
+  def created_plates
+    @created_plates ||=[]
+  end
 
   # Executes the plate creation so that the appropriate child plates are built.
   def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil)
@@ -60,16 +62,13 @@ class Plate::Creator < ApplicationRecord
     end
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                            LabelPrinter::Label::PlateCreator,
-                                           plates: created_plates,
+                                           plates: created_plates.pluck(:destinations).flatten.compact,
                                            plate_purpose: plate_purpose, user_login: scanned_user.login)
 
-    # unless print_job.execute
-    #   raise PlateCreationError, "Barcode labels failed to print."
-    # end
-
-    plate_factories.map do |pf|
-      pf.plate.human_barcode
+    unless print_job.execute
+      raise PlateCreationError, "Barcode labels failed to print."
     end
+    true
   end
 
   private
@@ -123,7 +122,7 @@ class Plate::Creator < ApplicationRecord
   end
 
   def add_created_plates(plates, source, destinations)
-    @created_plates.push({
+    created_plates.push({
       source: source,
       destinations: destinations
     })
