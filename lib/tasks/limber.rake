@@ -189,9 +189,9 @@ namespace :limber do
       )
     end
 
-    unless Purpose.where(name: 'LHR Cherrypick').exists?
+    unless Purpose.where(name: 'LHR RT').exists?
       PlatePurpose.create!(
-        name: 'LHR Cherrypick',
+        name: 'LHR RT',
         target_type: 'Plate',
         stock_plate: true,
         input_plate: true,
@@ -358,7 +358,7 @@ namespace :limber do
           'Heron',
           'Heron-384'
         ],
-        default_purposes: ['LHR Cherrypick']             # It requires default_purpose to accept an array.
+        default_purposes: ['LHR RT']             # It requires default_purpose to accept an array.
       ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
