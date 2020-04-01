@@ -47,7 +47,10 @@ class Plate::Creator < ApplicationRecord
     @created_plates = []
     plate_purpose = plate_purposes.first
     plate_factories = tube_rack_to_plate_factories(tube_racks, plate_purpose)
-    return false unless plate_factories.all?(&:valid?)
+    unless plate_factories.all?(&:valid?)
+      errors = plate_factories.map(&:error_messages)
+      raise PlateCreationError, "Plate creation failed with the following errors: #{errors}"
+    end
 
     ActiveRecord::Base.transaction do
       plate_factories.each do |factory|
@@ -59,9 +62,14 @@ class Plate::Creator < ApplicationRecord
                                            LabelPrinter::Label::PlateCreator,
                                            plates: created_plates,
                                            plate_purpose: plate_purpose, user_login: scanned_user.login)
-    return false unless print_job.execute
 
-    true
+    # unless print_job.execute
+    #   raise PlateCreationError, "Barcode labels failed to print."
+    # end
+
+    plate_factories.map do |pf|
+      pf.plate.human_barcode
+    end
   end
 
   private
