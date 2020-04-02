@@ -47,7 +47,7 @@ class PlatesController < ApplicationController
   rescue Plate::Creator::PlateCreationError, ActiveRecord::RecordNotFound => e
     respond_to do |format|
       flash[:error] = e.message
-      format.html { redirect_to(new_plate_path) }
+      format.html { render(new_plate_path) }
     end
   end
 

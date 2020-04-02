@@ -92,6 +92,9 @@ module NavigationHelpers
     when /the new plate page/
       new_plate_path
 
+    when /the plate page/
+      plates_path
+
     when /the show page for library tube "([^\"]+)"/
       tube_name = $1
       library_tube = LibraryTube.find_by!(name: tube_name)
