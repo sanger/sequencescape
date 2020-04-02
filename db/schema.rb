@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_19_115102) do
+ActiveRecord::Schema.define(version: 2020_02_27_162832) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1380,9 +1380,9 @@ ActiveRecord::Schema.define(version: 2020_02_19_115102) do
     t.boolean "control"
     t.boolean "empty_supplier_sample_name", default: false
     t.boolean "updated_by_manifest", default: false
+    t.boolean "migrated_consent_withdrawn_to_metadata", default: false, null: false
     t.integer "work_order_id"
     t.integer "container_id"
-    t.boolean "migrated_consent_withdrawn_to_metadata", default: false
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"

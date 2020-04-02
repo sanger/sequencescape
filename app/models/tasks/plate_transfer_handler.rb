@@ -48,6 +48,7 @@ module Tasks::PlateTransferHandler
   end
 
   def unsuitable_wells?(source_wells)
+    # assumes all the source wells are on the same plate
     (source_wells - source_wells.first.plate.wells.with_contents).present?
   end
   private :unsuitable_wells?

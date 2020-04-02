@@ -9,8 +9,8 @@ RSpec.describe 'samples/index.html.erb', type: :view do
   context 'when rendering the index view' do
     let(:current_user) { user }
     let(:samples) { create_list :sample, 4 }
-    let(:time) { DateTime.now }
-    let(:time2) { DateTime.now + 5 }
+    let(:time) { DateTime.now.utc }
+    let(:time2) { DateTime.now.utc + 5 }
 
     context 'when the user has withdrawn consent' do
       before do

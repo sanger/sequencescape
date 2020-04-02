@@ -9,6 +9,7 @@ describe UatActions::TestSubmission do
     end
 
     let(:submission_template) { create :limber_wgs_submission_template }
+    let(:primer_panel) { create :primer_panel }
     let(:parameters) { { submission_template_name: submission_template.name } }
     let(:uat_action) { described_class.new(parameters) }
     let(:report) do
@@ -51,6 +52,24 @@ describe UatActions::TestSubmission do
         expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
         expect(uat_action.report['submission_id']).to be_a Integer
         expect(uat_action.report['library_type']).to eq 'Standard'
+      end
+    end
+
+    context 'with optional primer panel supplied' do
+      let(:parameters) do
+        {
+          submission_template_name: submission_template.name,
+          library_type_name: 'Standard',
+          primer_panel_name: 'Primer Panel 1'
+        }
+      end
+
+      it 'can be performed' do
+        expect(uat_action.perform).to eq true
+        expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
+        expect(uat_action.report['submission_id']).to be_a Integer
+        expect(uat_action.report['library_type']).to eq 'Standard'
+        expect(uat_action.report['primer_panel']).to eq 'Primer Panel 1'
       end
     end
   end

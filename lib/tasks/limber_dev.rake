@@ -7,7 +7,7 @@ namespace :limber do
   namespace :dev do
     namespace :setup do
       desc 'Create all limber pre-requisite plates'
-      task all: %i[standard scrna rna gbs]
+      task all: %i[standard scrna rna gbs heron]
 
       desc 'Create 4 LB Cherrypick plates'
       task standard: ['limber:setup'] do
@@ -36,6 +36,12 @@ namespace :limber do
       desc 'Create 4 GBS stock plates'
       task gbs: ['limber:setup'] do
         seeder = WorkingSetup::StandardSeeder.new([['GBS Stock', 4]])
+        seeder.create_purposes
+      end
+
+      desc 'Create 4 Heron stock plates'
+      task heron: ['limber:setup'] do
+        seeder = WorkingSetup::StandardSeeder.new([['LHR RT', 4]])
         seeder.create_purposes
       end
 

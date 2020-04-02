@@ -63,6 +63,31 @@ class PlatesControllerTest < ActionController::TestCase
         end
 
         context 'Create a Plate' do
+          context 'from a Heron TubeRack' do
+            setup do
+              create(:purpose, target_type: 'TubeRack', size: ::Heron::Factories::TubeRack::RACK_SIZE)
+              create(:study, id: ::Heron::Factories::TubeRack::HERON_STUDY)
+
+              params = { barcode: '0000000001', tubes: [
+                { location: 'A01', barcode: 'FD00000001', supplier_sample_id: 'PHEC-nnnnnnn1' },
+                { location: 'A02', barcode: 'FD00000002', supplier_sample_id: 'PHEC-nnnnnnn2' }
+              ] }
+              tube_rack_factory = ::Heron::Factories::TubeRack.new(params)
+              tube_rack_factory.save
+              tube_rack = tube_rack_factory.tube_rack
+              @plate_count = Plate.count
+              post :create, params: { plates: { creator_id: @dilution_plates_creator.id,
+                                                source_plates: tube_rack.barcodes.first.barcode,
+                                                barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
+            end
+
+            should 'change Plate.count by 1' do
+              assert_equal 1, Plate.count - @plate_count, 'Expected Plate.count to change by 1'
+            end
+            should respond_with :redirect
+            should set_flash.to(/Created/)
+          end
+
           context 'with one source plate' do
             setup do
               @well = create :well
