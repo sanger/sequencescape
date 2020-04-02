@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v2 do
+      jsonapi_resources :tube_racks
       jsonapi_resources :transfer_requests
       jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :lot_types
@@ -50,6 +51,10 @@ Rails.application.routes.draw do
 
       namespace :aker do
         resources :jobs, only: [:create]
+      end
+
+      namespace :heron do
+        resources :tube_racks, only: [:create]
       end
     end
   end

@@ -41,7 +41,29 @@ class Plate::Creator < ApplicationRecord
     end
   end
 
+  def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, _creator_parameters = nil)
+    plate_purpose = plate_purposes.first
+    plate_factories = tube_rack_to_plate_factories(tube_racks, plate_purpose)
+    return false unless plate_factories.all?(&:valid?)
+
+    ActiveRecord::Base.transaction do
+      plate_factories.each(&:save)
+    end
+
+    print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
+                                           LabelPrinter::Label::PlateCreator,
+                                           plates: plate_factories.map(&:plate),
+                                           plate_purpose: plate_purpose, user_login: scanned_user.login)
+    return false unless print_job.execute
+
+    true
+  end
+
   private
+
+  def tube_rack_to_plate_factories(tube_racks, plate_purpose)
+    tube_racks.map { |rack| ::Heron::Factories::Plate.new(tube_rack: rack, plate_purpose: plate_purpose) }
+  end
 
   def can_create_plates?(source_plate)
     parent_plate_purposes.empty? || parent_plate_purposes.include?(source_plate.purpose)

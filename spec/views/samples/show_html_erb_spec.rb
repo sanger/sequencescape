@@ -9,7 +9,7 @@ RSpec.describe 'samples/show.html.erb', type: :view do
   context 'when rendering a sample' do
     let(:current_user) { user }
     let(:sample) { create :sample }
-    let(:time) { DateTime.now }
+    let(:time) { DateTime.now.utc }
 
     context 'when the user has withdrawn consent' do
       before do
