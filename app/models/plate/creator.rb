@@ -58,7 +58,7 @@ class Plate::Creator < ApplicationRecord
     ActiveRecord::Base.transaction do
       plate_factories.each do |factory|
         factory.save
-        add_created_plates([], factory.tube_rack, [factory.plate])
+        add_created_plates(factory.tube_rack, [factory.plate])
       end
     end
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
@@ -98,7 +98,9 @@ class Plate::Creator < ApplicationRecord
       # bs6: we use it to create 'pico standard' barcodes, as well as 'aliquot' barcodes.
       # The latter is used on the rare occasion that we receive unlabelled samples that
       # we need to record a location for. Not sure there's anything else.
-      create_plate_without_parent(creator_parameters)
+      create_plate_without_parent(creator_parameters).tap do |destinations|
+        add_created_plates(nil, destinations)
+      end
     else
       # In the majority of cases the users are creating stamps of the provided plates.
       scanned_barcodes = source_plate_barcodes.split(/[\s,]+/)
@@ -117,17 +119,18 @@ class Plate::Creator < ApplicationRecord
           raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
         end
 
-        add_created_plates(plates, plate, create_child_plates_from(plate, current_user, creator_parameters))
+        destinations = create_child_plates_from(plate, current_user, creator_parameters)
+        add_created_plates(plate, destinations)
+        plates.concat(destinations)
       end
     end
   end
 
-  def add_created_plates(plates, source, destinations)
+  def add_created_plates(source, destinations)
     created_plates.push(
       source: source,
       destinations: destinations
     )
-    plates.concat(destinations)
   end
 
   def create_child_plates_from(plate, current_user, creator_parameters)

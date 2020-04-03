@@ -2,11 +2,7 @@
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
 <%= page_title 'Plates', 'New' %>
 
-<% if @creator && @creator.created_plates && @creator.created_plates.length > 0 %>
-  <div class='alert alert-warning'>
-    <%= render(partial: 'plates/creator/printed_barcodes') %>
-  </div>
-<% end %>
+<%= render(partial: 'plates/creator/printed_barcodes') %>
 
 <%= semantic_form_for(:plates, url: plates_path) do |form| %>
   <div class="columnize">
