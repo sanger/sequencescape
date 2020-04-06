@@ -6,7 +6,7 @@
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
 
 Sequencescape is a cloud based and highly extensible LIMS system for use in labs with large numbers
-of samples.
+of samples. 
 
 * Work order tracking
 * Sample and study management
