@@ -22,6 +22,7 @@ module NavigationHelpers
   #   end
   #
   # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/CyclomaticComplexity
   def path_to(page_name)
     case page_name
 
@@ -91,6 +92,9 @@ module NavigationHelpers
 
     when /the new plate page/
       new_plate_path
+
+    when /the plate page/
+      plates_path
 
     when /the show page for library tube "([^\"]+)"/
       tube_name = $1
@@ -219,6 +223,7 @@ module NavigationHelpers
     end
   end
   # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/CyclomaticComplexity
 end
 
 World(NavigationHelpers)
