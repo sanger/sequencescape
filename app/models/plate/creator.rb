@@ -40,8 +40,9 @@ class Plate::Creator < ApplicationRecord
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                                LabelPrinter::Label::PlateCreator,
                                                plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
-        return false unless print_job.execute
+        print_job.execute
       end
+      create_asset_group(created_plates)
       true
     end
   end
@@ -70,10 +71,29 @@ class Plate::Creator < ApplicationRecord
       raise PlateCreationError, 'Barcode labels failed to print.'
     end
 
+    create_asset_group(created_plates)
+
     true
   end
 
   private
+
+  def create_asset_group(created_plates)
+    ass_g = AssetGroup.create!(study: Study.last, name: "asset_group_#{Time.now}")
+
+    created_plates.each do |created_plate_hash|
+      destinations = created_plate_hash[:destinations]
+      destinations.each do |destination|
+        barcode = destination.human_barcode
+        plate = Plate.find_by_barcode(barcode)
+
+        plate.wells.each do |well|
+          ass_g.assets << well
+        end
+      end
+    end
+
+  end
 
   def tube_rack_to_plate_factories(tube_racks, plate_purpose)
     tube_racks.map { |rack| ::Heron::Factories::Plate.new(tube_rack: rack, plate_purpose: plate_purpose) }
