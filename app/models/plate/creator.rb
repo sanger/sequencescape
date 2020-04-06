@@ -25,6 +25,8 @@ class Plate::Creator < ApplicationRecord
 
   serialize :valid_options
 
+  attr_reader :created_asset_group
+
   def created_plates
     @created_plates ||= []
   end
@@ -42,7 +44,10 @@ class Plate::Creator < ApplicationRecord
                                                plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
         print_job.execute
       end
-      create_asset_group(created_plates) if should_create_asset_group == 'Yes'
+      if should_create_asset_group == 'Yes'
+        ass_g = create_asset_group(created_plates)
+        @created_asset_group = ass_g
+      end
       true
     end
   end
@@ -92,7 +97,7 @@ class Plate::Creator < ApplicationRecord
         end
       end
     end
-
+    ass_g
   end
 
   def tube_rack_to_plate_factories(tube_racks, plate_purpose)
