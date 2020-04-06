@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   resource :health, only: [:show]
   resource :home, only: [:show]
 
+  resources :bulk_print, controller: 'bulk_print'
+
   resource :phi_x, only: [:show] do
     scope module: :phi_x do
       resources :stocks
