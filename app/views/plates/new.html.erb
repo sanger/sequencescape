@@ -17,6 +17,7 @@
       <%= form.input :creator_id, as: :select, collection: @plate_creators, label: 'Plate purpose', input_html: { class: 'form-control select2'} %>
       <%= form.input :dilution_factor, as: :select, label: 'Dilution factor', input_html: { class: 'form-control select2'} %>
       <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
+      <%= form.input :create_asset_group, as: :select, collection: ['Yes', 'No'], label: 'Create Asset Group?', input_html: { class: 'form-control select2'} %>
       <%= form.action(:submit, disable_with: 'Please wait...') %>
     <% end %>
   <% end %>

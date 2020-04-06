@@ -30,7 +30,7 @@ class Plate::Creator < ApplicationRecord
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
-  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil)
+  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil, should_create_asset_group)
     @created_plates = []
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
@@ -42,12 +42,12 @@ class Plate::Creator < ApplicationRecord
                                                plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
         print_job.execute
       end
-      create_asset_group(created_plates)
+      create_asset_group(created_plates) if should_create_asset_group == 'Yes'
       true
     end
   end
 
-  def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, _creator_parameters = nil)
+  def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, _creator_parameters = nil, should_create_asset_group)
     @created_plates = []
     plate_purpose = plate_purposes.first
     plate_factories = tube_rack_to_plate_factories(tube_racks, plate_purpose)
@@ -71,7 +71,7 @@ class Plate::Creator < ApplicationRecord
       raise PlateCreationError, 'Barcode labels failed to print.'
     end
 
-    create_asset_group(created_plates)
+    create_asset_group(created_plates) if should_create_asset_group == 'Yes'
 
     true
   end
