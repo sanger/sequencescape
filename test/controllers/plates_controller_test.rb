@@ -90,6 +90,19 @@ class PlatesControllerTest < ActionController::TestCase
             should 'display the printed barcode' do
               assert_equal(true, response.body.include?(@tube_rack.children.first.barcodes.first.barcode))
             end
+
+            context 'when the printer fails to print' do
+              setup do
+                LabelPrinter::PrintJob.stubs(:new).raises('Boom!!')
+              end
+              should 'still display the printed barcode' do
+                assert_equal(true, response.body.include?(@tube_rack.children.first.barcodes.first.barcode))
+              end
+              should 'keep the created labware persisted' do
+                barcode = @tube_rack.children.first.barcodes.first.barcode
+                assert_equal(1, Plate.joins(:barcodes).where(barcodes: { barcode: barcode }).count)
+              end
+            end
           end
 
           context 'with one source plate' do
