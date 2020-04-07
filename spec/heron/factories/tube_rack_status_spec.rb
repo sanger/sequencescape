@@ -12,8 +12,8 @@ RSpec.describe Heron::Factories::TubeRackStatus, type: :model, heron: true do
       "barcode": '0000000001',
       "status": 'validation failed',
       "messages": [
-        "message 1",
-        "message 2"
+        'message 1',
+        'message 2'
       ]
     }
   end

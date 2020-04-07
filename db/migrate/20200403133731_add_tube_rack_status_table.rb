@@ -1,4 +1,6 @@
-class AddTubeRackStatusTable < ActiveRecord::Migration[5.2]
+# frozen_string_literal: true
+
+# Add table to track tube rack statuses
   def change
     create_table :tube_rack_statuses do |t|
       t.string 'barcode', null: false
