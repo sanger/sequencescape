@@ -1,5 +1,7 @@
 <% if @creator && @creator.created_plates && @creator.created_plates.length > 0 %>
-  <%= link_to "Click here to re-print barcodes from Asset Group", print_study_asset_group_path(id: @creator.created_asset_group, study_id: 3) %>
+  <% if @creator.created_asset_group %>
+    Asset group link for reprinting barcodes: <%= link_to @creator.created_asset_group.name, print_study_asset_group_path(id: @creator.created_asset_group, study_id: 3) %>
+  <% end %>
 
   <table class="table table-sm table-success table-bordered">
     <caption>Created labware</caption>
