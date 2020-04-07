@@ -130,5 +130,10 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
       tube_rack.racked_tubes
       expect(tube_rack.racked_tubes.first.coordinate).to eq('A1')
     end
+
+    it 'creates a tube rack status record' do
+      tube_rack = described_class.new(params)
+      expect { tube_rack.save }.to change(TubeRackStatus, :count).by(1)
+    end
   end
 end

@@ -1,0 +1,56 @@
+<div class="page-header">
+    <h1>Tube Rack Status</h1>
+</div>
+
+<%= pagination @tube_rack_statuses %>
+
+<table class="table">
+  <thead>
+    <th>Tube rack barcode</th>
+    <th>Status</th>
+    <th>Labware</th>
+    <th>Messages</th>
+    <th>Created date</th>
+  </thead>
+  <tbody>
+  <% for status_record in @tube_rack_statuses %>
+    <tr>
+      <td><%= status_record.barcode %></td>
+      <td><%= status_record.status %></td>
+      <td>
+        <% if status_record.labware && status_record.labware.descendants.any? %>
+          <% if status_record.labware.descendants.length > 1 %>
+            <ul>
+            <% for child in status_record.labware.descendants %>
+                <li>
+                  <a href="<%= labware_path(child) %>"><%= child.human_barcode %></a>
+                </li>
+            <% end %>
+            </ul>
+          <% else %>
+            <a href="<%= labware_path(status_record.labware.descendants.first.id) %>"><%= status_record.labware.descendants.first.human_barcode %></a>
+          <% end %>
+        <% end %>
+      </td>
+      <td>
+        <% if status_record.messages %>
+          <% if status_record.messages.length > 1 %>
+            <ul>
+              <% for message in status_record.messages %>
+                <li>
+                  <%= message %>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <%= status_record.messages.first %>
+          <% end %>
+        <% end %>
+      </td>
+      <td><%= status_record.created_at.strftime("%d %b %Y - %k:%m") %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= pagination @tube_rack_statuses %>

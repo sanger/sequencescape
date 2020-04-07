@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_27_162832) do
+ActiveRecord::Schema.define(version: 2020_04_03_133731) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1370,6 +1370,16 @@ ActiveRecord::Schema.define(version: 2020_02_27_162832) do
     t.integer "asset_group_id"
   end
 
+  create_table "sample_withdraw_consents", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sample_id"
+    t.boolean "consent_withdrawn"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["sample_id"], name: "index_sample_withdraw_consents_on_sample_id"
+    t.index ["user_id"], name: "index_sample_withdraw_consents_on_user_id"
+  end
+
   create_table "samples", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.boolean "new_name_format", default: true
@@ -1380,7 +1390,6 @@ ActiveRecord::Schema.define(version: 2020_02_27_162832) do
     t.boolean "control"
     t.boolean "empty_supplier_sample_name", default: false
     t.boolean "updated_by_manifest", default: false
-    t.boolean "migrated_consent_withdrawn_to_metadata", default: false, null: false
     t.integer "work_order_id"
     t.integer "container_id"
     t.index ["created_at"], name: "index_samples_on_created_at"
@@ -1760,6 +1769,15 @@ ActiveRecord::Schema.define(version: 2020_02_27_162832) do
     t.datetime "updated_at"
     t.integer "tube_creation_id", null: false
     t.integer "tube_id", null: false
+  end
+
+  create_table "tube_rack_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "barcode", null: false
+    t.string "status", null: false
+    t.text "messages"
+    t.integer "labware_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|

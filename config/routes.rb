@@ -31,9 +31,7 @@ Rails.application.routes.draw do
       jsonapi_resources :request_types
       jsonapi_resources :purposes
       jsonapi_resources :submissions
-      jsonapi_resources :orders
-      jsonapi_resources :aliquots
-      jsonapi_resources :requests
+      jsonapi_resources :tube_rack_statuses
       jsonapi_resources :users
       jsonapi_resources :tubes
       jsonapi_resources :lanes
@@ -54,6 +52,7 @@ Rails.application.routes.draw do
       end
 
       namespace :heron do
+        resources :tube_rack_statuses, only: [:create]
         resources :tube_racks, only: [:create]
       end
     end
@@ -98,6 +97,7 @@ Rails.application.routes.draw do
   end
 
   resources :tube_rack_summaries, only: :show
+  resources :tube_rack_statuses, only: :index
 
   resources :reference_genomes
   resources :barcode_printers
