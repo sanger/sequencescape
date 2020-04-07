@@ -52,8 +52,7 @@ class Plate::Creator < ApplicationRecord
         print_job.execute
       end
       if should_create_asset_group == 'Yes'
-        ass_g = create_asset_group(created_plates)
-        @created_asset_group = ass_g
+        @created_asset_group = create_asset_group(created_plates)
       end
       true
     end
@@ -91,20 +90,20 @@ class Plate::Creator < ApplicationRecord
   private
 
   def create_asset_group(created_plates)
-    ass_g = AssetGroup.create!(study: Study.last, name: "asset_group_#{Time.now}")
+    group_name = "asset_group-#{time_now_formatted}"
+    group = AssetGroup.create!(study: Study.last, name: group_name) # TO DO: handle exceptions from this?
 
-    created_plates.each do |created_plate_hash|
-      destinations = created_plate_hash[:destinations]
-      destinations.each do |destination|
-        barcode = destination.human_barcode
-        plate = Plate.find_by_barcode(barcode)
-
-        plate.wells.each do |well|
-          ass_g.assets << well
-        end
+    created_plates.each do |hash|
+      hash[:destinations].each do |plate|
+        group.assets.concat(plate.wells)
       end
     end
-    ass_g
+
+    group
+  end
+
+  def time_now_formatted
+    "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}-#{Time.now.hour}#{Time.now.min}#{Time.now.sec}"
   end
 
   def tube_rack_to_plate_factories(tube_racks, plate_purpose)
