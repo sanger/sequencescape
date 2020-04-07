@@ -7,7 +7,7 @@ module Api
     class WellResource < BaseResource
       # Constants...
 
-      immutable # uncomment to make the resource immutable
+      immutable # comment to make the resource mutable
 
       default_includes :uuid_object, :map, :transfer_requests_as_target, plate: :barcodes
 

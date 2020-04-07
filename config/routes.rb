@@ -16,36 +16,39 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v2 do
-      jsonapi_resources :tube_racks
-      jsonapi_resources :transfer_requests
+      jsonapi_resources :aliquots
+      jsonapi_resources :assets
+      jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
+      jsonapi_resources :labware
+      jsonapi_resources :lanes
       jsonapi_resources :lot_types
       jsonapi_resources :lots
-      jsonapi_resources :qcables
+      jsonapi_resources :orders
       jsonapi_resources :plate_templates
-      jsonapi_resources :tag_layout_templates
-      jsonapi_resources :tag_groups
-      jsonapi_resources :comments
+      jsonapi_resources :plates
       jsonapi_resources :pre_capture_pools
       jsonapi_resources :primer_panels
-      jsonapi_resources :request_types
-      jsonapi_resources :purposes
-      jsonapi_resources :submissions
-      jsonapi_resources :tube_rack_statuses
-      jsonapi_resources :users
-      jsonapi_resources :tubes
-      jsonapi_resources :lanes
-      jsonapi_resources :wells
-      jsonapi_resources :plates
-      jsonapi_resources :receptacles
-      jsonapi_resources :samples
-      jsonapi_resources :work_orders
-      jsonapi_resources :studies
       jsonapi_resources :projects
-      jsonapi_resources :qc_results
-      jsonapi_resources :assets
+      jsonapi_resources :purposes
       jsonapi_resources :qc_assays
-      jsonapi_resources :labware
+      jsonapi_resources :qc_results
+      jsonapi_resources :qcables
+      jsonapi_resources :receptacles
+      jsonapi_resources :request_types
+      jsonapi_resources :requests
+      jsonapi_resources :samples
+      jsonapi_resources :studies
+      jsonapi_resources :submissions
+      jsonapi_resources :tag_groups
+      jsonapi_resources :tag_layout_templates
+      jsonapi_resources :transfer_requests
+      jsonapi_resources :tube_rack_statuses
+      jsonapi_resources :tube_racks
+      jsonapi_resources :tubes
+      jsonapi_resources :users
+      jsonapi_resources :wells
+      jsonapi_resources :work_orders
 
       namespace :aker do
         resources :jobs, only: [:create]
