@@ -32,18 +32,19 @@ class Plate::Creator < ApplicationRecord
   # Executes the plate creation so that the appropriate child plates are built.
   def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil)
     @created_plates = []
+    new_plates = nil
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
-      return false if new_plates.empty?
-
-      new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
-        print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                               LabelPrinter::Label::PlateCreator,
-                                               plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
-        return false unless print_job.execute
-      end
-      true
     end
+    return false if new_plates.empty?
+
+    new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
+      print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
+                                             LabelPrinter::Label::PlateCreator,
+                                             plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
+      return false unless print_job.execute
+    end
+    true
   end
 
   def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, _creator_parameters = nil)
