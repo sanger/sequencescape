@@ -27,6 +27,13 @@ class Plate::Creator < ApplicationRecord
 
   attr_reader :created_asset_group
 
+  # array of hashes containing source and destination plates
+  # [
+  #   {
+  #     :source => #<Plate ...>,
+  #     :destinations => [#<Plate ...>, #<Plate ...>]
+  #   }
+  # ]
   def created_plates
     @created_plates ||= []
   end
