@@ -5,6 +5,6 @@ class TubeRackStatusesController < ApplicationController
   before_action :login_required
 
   def index
-    @tube_rack_statuses = TubeRackStatus.paginate(page: params[:page], per_page: 30)
+    @tube_rack_statuses = TubeRackStatus.order(created_at: :desc).paginate(page: params[:page], per_page: 30)
   end
 end

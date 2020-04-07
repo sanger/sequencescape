@@ -6,16 +6,22 @@
 
 <table class="table">
   <thead>
-    <th>Tube rack barcode</th>
+    <th>Tube rack</th>
     <th>Status</th>
-    <th>Labware</th>
+    <th>Plate</th>
     <th>Messages</th>
     <th>Created date</th>
   </thead>
   <tbody>
   <% for status_record in @tube_rack_statuses %>
     <tr>
-      <td><%= status_record.barcode %></td>
+      <td>
+        <% if status_record.labware %>
+          <a href="<%= labware_path(status_record.labware.id) %>"><%= status_record.barcode %></a>
+        <% else %>
+          <%= status_record.barcode %>
+        <% end %>
+      </td>
       <td><%= status_record.status %></td>
       <td>
         <% if status_record.labware && status_record.labware.descendants.any? %>
@@ -47,7 +53,7 @@
           <% end %>
         <% end %>
       </td>
-      <td><%= status_record.created_at.strftime("%d %b %Y - %k:%m") %></td>
+      <td><%= status_record.created_at.strftime("%d %b %Y %k:%M") %></td>
     </tr>
   <% end %>
   </tbody>
