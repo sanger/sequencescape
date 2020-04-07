@@ -93,11 +93,8 @@ class Plate::Creator < ApplicationRecord
     group_name = "asset_group-#{time_now_formatted}"
     group = AssetGroup.create!(study: Study.last, name: group_name) # TO DO: handle exceptions from this?
 
-    created_plates.each do |hash|
-      hash[:destinations].each do |plate|
-        group.assets.concat(plate.wells)
-      end
-    end
+    all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
+    group.assets.concat(all_wells)
 
     group
   end
