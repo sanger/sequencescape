@@ -92,13 +92,35 @@ class Plate::Creator < ApplicationRecord
   def create_asset_group(created_plates)
     group_name = "asset_group-#{time_now_formatted}"
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
+    study = find_relevant_study(created_plates)
+    raise PlateCreationError, "Could not find an appropriate Study to group the plates under." unless study
 
+    group = nil
     ActiveRecord::Base.transaction do # TO DO: handle exceptions from this?
-      group = AssetGroup.create!(study: Study.last, name: group_name)
+      group = AssetGroup.create!(study: study, name: group_name)
       group.assets.concat(all_wells)
     end
 
     group
+  end
+
+  def find_relevant_study(created_plates)
+    # find a relevant study to put the Asset group under
+    # otherwise would have to get user to select one
+
+    # try the link on aliquots
+    all_destination_plates = created_plates.map { |hash| hash[:destinations] }.flatten
+    study = all_destination_plates.map(&:studies).flatten.first
+    return study if study
+
+    # try the study_samples table
+    all_destination_plates.each do |plate|
+      plate.contained_samples.each do |sample|
+        return sample.studies.first if sample.studies.first
+      end
+    end
+
+    nil
   end
 
   def time_now_formatted
