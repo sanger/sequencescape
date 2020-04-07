@@ -76,24 +76,32 @@ class PlatesControllerTest < ActionController::TestCase
               tube_rack_factory.save
               @tube_rack = tube_rack_factory.tube_rack
               @plate_count = Plate.count
-              post :create, params: { plates: { creator_id: @dilution_plates_creator.id,
-                                                source_plates: @tube_rack.barcodes.first.barcode,
-                                                barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
             end
 
-            should 'change Plate.count by 1' do
-              assert_equal 1, Plate.count - @plate_count, 'Expected Plate.count to change by 1'
-            end
-            should respond_with :ok
-            should set_flash.to(/Created/)
+            context 'when creating a plate from a tube rack' do
+              setup do
+                post :create, params: { plates: { creator_id: @dilution_plates_creator.id,
+                                                  source_plates: @tube_rack.barcodes.first.barcode,
+                                                  barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
+              end
 
-            should 'display the printed barcode' do
-              assert_equal(true, response.body.include?(@tube_rack.children.first.barcodes.first.barcode))
+              should 'change Plate.count by 1' do
+                assert_equal 1, Plate.count - @plate_count, 'Expected Plate.count to change by 1'
+              end
+              should respond_with :ok
+              should set_flash.to(/Created/)
+
+              should 'display the printed barcode' do
+                assert_equal(true, response.body.include?(@tube_rack.children.first.barcodes.first.barcode))
+              end
             end
 
             context 'when the printer fails to print' do
               setup do
                 LabelPrinter::PrintJob.stubs(:new).raises('Boom!!')
+                post :create, params: { plates: { creator_id: @dilution_plates_creator.id,
+                                                  source_plates: @tube_rack.barcodes.first.barcode,
+                                                  barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
               end
               should 'still display the printed barcode' do
                 assert_equal(true, response.body.include?(@tube_rack.children.first.barcodes.first.barcode))

@@ -42,7 +42,7 @@ class PlatesController < ApplicationController
       end
       format.html { render(new_plate_path) }
     end
-  rescue Plate::Creator::PlateCreationError, ActiveRecord::RecordNotFound => e
+  rescue StandardError => e
     respond_to do |format|
       flash[:error] = e.message
       format.html { render(new_plate_path) }
