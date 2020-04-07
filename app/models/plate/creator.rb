@@ -62,6 +62,10 @@ class Plate::Creator < ApplicationRecord
   end
 
   def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, _creator_parameters = nil, should_create_asset_group)
+    # creates plates
+    # creates an asset group if user requested one
+    # prints the barcode labels
+
     @created_plates = []
     plate_purpose = plate_purposes.first
     plate_factories = tube_rack_to_plate_factories(tube_racks, plate_purpose)
@@ -77,6 +81,10 @@ class Plate::Creator < ApplicationRecord
       end
     end
 
+    if should_create_asset_group == 'Yes'
+      @created_asset_group = create_asset_group(created_plates)
+    end
+
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                            LabelPrinter::Label::PlateCreator,
                                            plates: created_plates.pluck(:destinations).flatten.compact,
@@ -84,10 +92,6 @@ class Plate::Creator < ApplicationRecord
 
     unless print_job.execute
       raise PlateCreationError, 'Barcode labels failed to print.'
-    end
-
-    if should_create_asset_group == 'Yes'
-      @created_asset_group = create_asset_group(created_plates)
     end
 
     true
@@ -103,10 +107,10 @@ class Plate::Creator < ApplicationRecord
     raise PlateCreationError, "Could not find an appropriate Study to group the plates under." unless study
 
     group = nil
-    # ActiveRecord::Base.transaction do # TO DO: handle exceptions from this?
+    ActiveRecord::Base.transaction do # TO DO: handle exceptions from this?
       group = AssetGroup.create!(study: study, name: group_name)
       group.assets.concat(all_wells)
-    # end
+    end
 
     group
   end
