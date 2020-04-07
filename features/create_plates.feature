@@ -40,7 +40,7 @@ Feature: Printing new plate barcodes
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
-    And I should be on the new plate page
+    And I should be on the plate page
 
   Scenario Outline: Creating plates
     Given I am on the new plate page
@@ -52,7 +52,7 @@ Feature: Printing new plate barcodes
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
-    And I should be on the new plate page
+    And I should be on the plate page
 
     Examples:
       | plate_purpose       |
@@ -77,7 +77,7 @@ Feature: Printing new plate barcodes
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
-    And I should be on the new plate page
+    And I should be on the plate page
 
     When I select "<plate_purpose>" from "Plate purpose"
     And I fill in the field labeled "Source plates" with "1220001454858"
@@ -85,7 +85,7 @@ Feature: Printing new plate barcodes
     And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Scanned plate 1220001454858 has a purpose Cherrypicked not valid"
-    And I should be on the new plate page
+    And I should be on the plate page
 
     Examples:
       | plate_purpose         | parent_plate_purpose |

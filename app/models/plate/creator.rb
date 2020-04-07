@@ -25,8 +25,13 @@ class Plate::Creator < ApplicationRecord
 
   serialize :valid_options
 
+  def created_plates
+    @created_plates ||= []
+  end
+
   # Executes the plate creation so that the appropriate child plates are built.
   def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil)
+    @created_plates = []
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
@@ -42,19 +47,28 @@ class Plate::Creator < ApplicationRecord
   end
 
   def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, _creator_parameters = nil)
+    @created_plates = []
     plate_purpose = plate_purposes.first
     plate_factories = tube_rack_to_plate_factories(tube_racks, plate_purpose)
-    return false unless plate_factories.all?(&:valid?)
-
-    ActiveRecord::Base.transaction do
-      plate_factories.each(&:save)
+    unless plate_factories.all?(&:valid?)
+      errors = plate_factories.map(&:error_messages)
+      raise PlateCreationError, "Plate creation failed with the following errors: #{errors}"
     end
 
+    ActiveRecord::Base.transaction do
+      plate_factories.each do |factory|
+        factory.save
+        add_created_plates(factory.tube_rack, [factory.plate])
+      end
+    end
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                            LabelPrinter::Label::PlateCreator,
-                                           plates: plate_factories.map(&:plate),
+                                           plates: created_plates.pluck(:destinations).flatten.compact,
                                            plate_purpose: plate_purpose, user_login: scanned_user.login)
-    return false unless print_job.execute
+
+    unless print_job.execute
+      raise PlateCreationError, 'Barcode labels failed to print.'
+    end
 
     true
   end
@@ -84,7 +98,9 @@ class Plate::Creator < ApplicationRecord
       # bs6: we use it to create 'pico standard' barcodes, as well as 'aliquot' barcodes.
       # The latter is used on the rare occasion that we receive unlabelled samples that
       # we need to record a location for. Not sure there's anything else.
-      create_plate_without_parent(creator_parameters)
+      create_plate_without_parent(creator_parameters).tap do |destinations|
+        add_created_plates(nil, destinations)
+      end
     else
       # In the majority of cases the users are creating stamps of the provided plates.
       scanned_barcodes = source_plate_barcodes.split(/[\s,]+/)
@@ -103,9 +119,18 @@ class Plate::Creator < ApplicationRecord
           raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
         end
 
-        plates.concat(create_child_plates_from(plate, current_user, creator_parameters))
+        destinations = create_child_plates_from(plate, current_user, creator_parameters)
+        add_created_plates(plate, destinations)
+        plates.concat(destinations)
       end
     end
+  end
+
+  def add_created_plates(source, destinations)
+    created_plates.push(
+      source: source,
+      destinations: destinations
+    )
   end
 
   def create_child_plates_from(plate, current_user, creator_parameters)
