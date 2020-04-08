@@ -27,6 +27,14 @@ class Plate::Creator < ApplicationRecord
 
   attr_reader :created_asset_group
 
+  def warnings_list
+    @warnings_list ||= []
+  end
+
+  def warnings
+    warnings_list.join(" ")
+  end
+
   # array of hashes containing source and destination plates
   # [
   #   {
@@ -52,12 +60,12 @@ class Plate::Creator < ApplicationRecord
       print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                               LabelPrinter::Label::PlateCreator,
                                               plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
-      print_job.execute
+
+      warnings_list << "Print job failed for following plate type: #{plate_purpose.name}" unless print_job.execute
     end
 
-    if should_create_asset_group == 'Yes'
-      @created_asset_group = create_asset_group(created_plates)
-    end
+    @created_asset_group = create_asset_group(created_plates) if should_create_asset_group == 'Yes'
+
     true
   end
 
@@ -81,18 +89,14 @@ class Plate::Creator < ApplicationRecord
       end
     end
 
-    if should_create_asset_group == 'Yes'
-      @created_asset_group = create_asset_group(created_plates)
-    end
+    @created_asset_group = create_asset_group(created_plates) if should_create_asset_group == 'Yes'
 
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                            LabelPrinter::Label::PlateCreator,
                                            plates: created_plates.pluck(:destinations).flatten.compact,
                                            plate_purpose: plate_purpose, user_login: scanned_user.login)
 
-    unless print_job.execute
-      raise PlateCreationError, 'Barcode labels failed to print.'
-    end
+    warnings_list << 'Barcode labels failed to print.' unless print_job.execute
 
     true
   end
@@ -100,13 +104,16 @@ class Plate::Creator < ApplicationRecord
   private
 
   def create_asset_group(created_plates)
+    group = nil
     group_name = "asset_group-#{time_now_formatted}"
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
 
     study = find_relevant_study(created_plates)
-    raise PlateCreationError, "Could not find an appropriate Study to group the plates under." unless study
+    unless study
+      warnings_list << "Failed to create Asset Group: could not find an appropriate Study to group the plates under."
+      return group
+    end
 
-    group = nil
     ActiveRecord::Base.transaction do # TO DO: handle exceptions from this?
       group = AssetGroup.create!(study: study, name: group_name)
       group.assets.concat(all_wells)

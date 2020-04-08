@@ -37,10 +37,11 @@ class PlatesController < ApplicationController
           flash[:error] = 'Failed to print plate barcodes'
         end
       elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user, Plate::CreatorParameters.new(params[:plates]), create_asset_group)
-        flash[:notice] = 'Created plates and printed barcodes'
+        flash[:notice] = 'Created plates successfully'
       else
         flash[:error] = 'Failed to create plates'
       end
+      flash[:warning] = plate_creator.warnings unless plate_creator.warnings.blank?
       format.html { render(new_plate_path) }
     end
   rescue Plate::Creator::PlateCreationError, ActiveRecord::RecordNotFound => e
