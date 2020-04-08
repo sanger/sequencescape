@@ -139,7 +139,7 @@ class Plate::Creator < ApplicationRecord
   end
 
   def asset_group_name
-    prefix = 'asset-group'
+    prefix = 'plate-creator'
     time_now_formatted = "#{Time.zone.now.year}-#{Time.zone.now.month}-#{Time.zone.now.day}-#{Time.zone.now.hour}#{Time.zone.now.min}#{Time.zone.now.sec}"
     suffix = rand(999)
     "#{prefix}-#{time_now_formatted}-#{suffix}"
