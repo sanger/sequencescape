@@ -54,7 +54,7 @@ class Plate::Creator < ApplicationRecord
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
     end
-    return false if new_plates.empty?
+    raise PlateCreationError, 'Plate creation failed' if new_plates.empty?
 
     new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
       print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
@@ -65,7 +65,6 @@ class Plate::Creator < ApplicationRecord
     end
 
     @created_asset_group = create_asset_group(created_plates) if should_create_asset_group == 'Yes'
-
     true
   end
 
@@ -97,7 +96,6 @@ class Plate::Creator < ApplicationRecord
                                            plate_purpose: plate_purpose, user_login: scanned_user.login)
 
     warnings_list << 'Barcode labels failed to print.' unless print_job.execute
-
     true
   end
 
