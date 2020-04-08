@@ -78,10 +78,10 @@ class PlatesControllerTest < ActionController::TestCase
               @plate_count = Plate.count
               @asset_group_count = AssetGroup.count
               @create_params = { plates: { creator_id: @dilution_plates_creator.id,
-                                source_plates: @tube_rack.barcodes.first.barcode,
-                                barcode_printer: @barcode_printer.id,
-                                user_barcode: '1234567',
-                                create_asset_group: 'Yes' } }
+                                           source_plates: @tube_rack.barcodes.first.barcode,
+                                           barcode_printer: @barcode_printer.id,
+                                           user_barcode: '1234567',
+                                           create_asset_group: 'Yes' } }
             end
 
             context 'when printing and asset group creation are successful' do
