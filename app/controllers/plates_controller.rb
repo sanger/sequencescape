@@ -42,12 +42,12 @@ class PlatesController < ApplicationController
           source_plate_barcodes,
           barcode_printer,
           scanned_user,
-          Plate::CreatorParameters.new(params[:plates]),
-          create_asset_group
+          create_asset_group,
+          Plate::CreatorParameters.new(params[:plates])
         )
       end
       flash[:notice] = 'Created plates successfully'
-      flash[:warning] = plate_creator.warnings unless plate_creator.warnings.blank?
+      flash[:warning] = plate_creator.warnings if plate_creator.warnings.present?
       format.html { render(new_plate_path) }
     end
   rescue Plate::Creator::PlateCreationError, ActiveRecord::RecordNotFound => e

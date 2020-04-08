@@ -32,7 +32,7 @@ class Plate::Creator < ApplicationRecord
   end
 
   def warnings
-    warnings_list.join(" ")
+    warnings_list.join(' ')
   end
 
   # array of hashes containing source and destination plates
@@ -47,7 +47,7 @@ class Plate::Creator < ApplicationRecord
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
-  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil, should_create_asset_group)
+  def execute(source_plate_barcodes, barcode_printer, scanned_user, should_create_asset_group, creator_parameters = nil)
     @created_plates = []
     new_plates = nil
 
@@ -58,8 +58,8 @@ class Plate::Creator < ApplicationRecord
 
     new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
       print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                              LabelPrinter::Label::PlateCreator,
-                                              plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
+                                             LabelPrinter::Label::PlateCreator,
+                                             plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
 
       warnings_list << "Print job failed for following plate type: #{plate_purpose.name}" unless print_job.execute
     end
@@ -68,7 +68,7 @@ class Plate::Creator < ApplicationRecord
     true
   end
 
-  def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, _creator_parameters = nil, should_create_asset_group)
+  def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, should_create_asset_group, _creator_parameters = nil)
     # creates plates
     # creates an asset group if user requested one
     # prints the barcode labels
@@ -108,7 +108,7 @@ class Plate::Creator < ApplicationRecord
 
     study = find_relevant_study(created_plates)
     unless study
-      warnings_list << "Failed to create Asset Group: could not find an appropriate Study to group the plates under."
+      warnings_list << 'Failed to create Asset Group: could not find an appropriate Study to group the plates under.'
       return group
     end
 
@@ -140,7 +140,7 @@ class Plate::Creator < ApplicationRecord
   end
 
   def time_now_formatted
-    "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}-#{Time.now.hour}#{Time.now.min}#{Time.now.sec}"
+    "#{Time.zone.now.year}-#{Time.zone.now.month}-#{Time.zone.now.day}-#{Time.zone.now.hour}#{Time.zone.now.min}#{Time.zone.now.sec}"
   end
 
   def tube_rack_to_plate_factories(tube_racks, plate_purpose)
