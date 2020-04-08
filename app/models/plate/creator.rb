@@ -103,7 +103,6 @@ class Plate::Creator < ApplicationRecord
 
   def create_asset_group(created_plates)
     group = nil
-    group_name = "asset_group-#{time_now_formatted}"
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
 
     study = find_relevant_study(created_plates)
@@ -113,7 +112,7 @@ class Plate::Creator < ApplicationRecord
     end
 
     ActiveRecord::Base.transaction do # TO DO: handle exceptions from this?
-      group = AssetGroup.create!(study: study, name: group_name)
+      group = AssetGroup.create!(study: study, name: asset_group_name)
       group.assets.concat(all_wells)
     end
 
@@ -139,8 +138,11 @@ class Plate::Creator < ApplicationRecord
     nil
   end
 
-  def time_now_formatted
-    "#{Time.zone.now.year}-#{Time.zone.now.month}-#{Time.zone.now.day}-#{Time.zone.now.hour}#{Time.zone.now.min}#{Time.zone.now.sec}"
+  def asset_group_name
+    prefix = 'asset-group'
+    time_now_formatted = "#{Time.zone.now.year}-#{Time.zone.now.month}-#{Time.zone.now.day}-#{Time.zone.now.hour}#{Time.zone.now.min}#{Time.zone.now.sec}"
+    suffix = rand(999)
+    "#{prefix}-#{time_now_formatted}-#{suffix}"
   end
 
   def tube_rack_to_plate_factories(tube_racks, plate_purpose)
