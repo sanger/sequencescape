@@ -33,7 +33,7 @@ class UatActions::GenerateTubeRacks < UatActions
     end
   end
 
-    private
+  private
 
   def construct_tubes(rack)
     rack_map.each do |i|
@@ -58,4 +58,4 @@ class UatActions::GenerateTubeRacks < UatActions
   def study
     @study ||= Study.find_by!(name: study_name)
   end
-  end
+end
