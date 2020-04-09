@@ -101,7 +101,7 @@ class PlatesControllerTest < ActionController::TestCase
               end
 
               should 'have created an asset group' do
-                assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be creatd'
+                assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be created'
               end
             end
 
@@ -125,7 +125,7 @@ class PlatesControllerTest < ActionController::TestCase
               end
 
               should 'still have created an asset group' do
-                assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be creatd'
+                assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be created'
               end
             end
 
