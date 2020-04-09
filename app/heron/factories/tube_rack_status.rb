@@ -8,7 +8,7 @@ module Heron
 
       attr_accessor :barcode, :messages, :status
 
-      validates_presence_of :barcode, :messages, :status
+      validates_presence_of :barcode, :messages
 
       validate :check_rack_barcode
 

@@ -6,7 +6,7 @@ module Heron
     class TubeRack
       include ActiveModel::Model
 
-      HERON_STUDY = 6187
+      HERON_STUDY = 1
       LOCATION_REGEXP = /[A-Z][0-9]{0,1}[0-9]/.freeze
 
       attr_accessor :barcode, :sample_tubes, :tube_rack, :size
@@ -47,11 +47,12 @@ module Heron
 
           @sample_tubes = create_tubes!(tube_rack)
 
-          ::TubeRackStatus.create!(
+          tube_rack_status = ::TubeRackStatus.new(
             barcode: barcode,
-            status: ::TubeRackStatus::STATUS_CREATED,
             labware: @tube_rack
           )
+          tube_rack_status.created!
+          tube_rack_status.save!
         end
         true
       end
