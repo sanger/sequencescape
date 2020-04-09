@@ -5,6 +5,7 @@ class TubeRackStatus < ApplicationRecord
   enum status: { created: 0, validation_failed: 1 }
 
   validates :barcode, presence: true
+  validates :status, presence: true
 
   serialize :messages
 

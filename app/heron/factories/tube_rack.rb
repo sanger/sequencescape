@@ -47,12 +47,11 @@ module Heron
 
           @sample_tubes = create_tubes!(tube_rack)
 
-          tube_rack_status = ::TubeRackStatus.new(
+          ::TubeRackStatus.create!(
             barcode: barcode,
+            status: :created,
             labware: @tube_rack
           )
-          tube_rack_status.created!
-          tube_rack_status.save!
         end
         true
       end
