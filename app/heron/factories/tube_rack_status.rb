@@ -8,9 +8,9 @@ module Heron
 
       attr_accessor :barcode, :messages, :status
 
-      validates_presence_of :barcode, :messages
+      validates_presence_of :barcode, :messages, :status
 
-      validate :check_rack_barcode, :check_status
+      validate :check_rack_barcode
 
       def save
         return false unless valid?
@@ -35,14 +35,6 @@ module Heron
         if barcode_format.nil?
           error_message = "The tube rack barcode '#{barcode}' is not a recognised format."
           errors.add(:base, error_message)
-          return false
-        end
-        true
-      end
-
-      def check_status
-        unless ::TubeRackStatus::VALID_STATES.include?(status)
-          errors.add(:status, 'The status is not valid')
           return false
         end
         true
