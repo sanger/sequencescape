@@ -24,7 +24,8 @@ class Aliquot < ApplicationRecord
 
   self.lazy_uuid_generation = true
 
-  TagClash = Class.new(ActiveRecord::RecordInvalid)
+  # TagClash = Class.new(ActiveRecord::RecordInvalid)
+  TagClash = Class.new(StandardError)
 
   # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it
   # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.

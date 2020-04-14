@@ -7,7 +7,8 @@ module Core::Service::ErrorHandling
         ::IllegalOperation,
         ::Core::Service::Error,
         ActiveRecord::ActiveRecordError,
-        ActiveModel::ValidationError
+        ActiveModel::ValidationError,
+        Aliquot::TagClash
       ) do
         buffer = [exception_thrown.message, exception_thrown.backtrace].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
@@ -96,3 +97,6 @@ class IllegalOperation < RuntimeError
   self.api_error_code    = 501
   self.api_error_message = 'requested action is not supported on this resource'
 end
+
+Aliquot::TagClash.include ::Core::Service::Error::Behaviour
+Aliquot::TagClash.api_error_code = 422

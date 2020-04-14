@@ -7,6 +7,10 @@ class TransferRequest < ApplicationRecord
   include AASM
   extend Request::Statemachine::ClassMethods
 
+  # Determines if we attempt to filter out {Aliquot#equivalent? equivalent} aliquots
+  # before performing transfers.
+  attr_accessor :merge_equivalent_aliquots
+
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
@@ -98,15 +102,29 @@ class TransferRequest < ApplicationRecord
     false
   end
 
+  # Attempts to transition the transfer request to target_state by
+  # detecting any valid state_machine transitions
+  #
+  # @param target_state [String] A string matching the state name to transition to
   def transition_to(target_state)
     aasm.fire!(suggested_transition_to(target_state))
   end
 
+  # Set the outer request associated with this transfer request
+  # the outer request is the {Request} which is currently being processed,
+  # such as a {LibraryCreationRequest}. Setting this ensures that the
+  # transfered {Aliquots} are associated with the correct request, and that
+  # submission_id on transfer request is recorded correctly.
+  # @note This is particularly important when transfering out of the initial
+  # {Receptacle} when there may be multiple active {Receptacle#requests_as_source}
+  # @param request [Request] The request which is being processed
   def outer_request=(request)
     @outer_request = request
     self.submission_id = request.submission_id
   end
 
+  # Sets the {#outer_request} from just a request_id
+  # @param request_id [Integer] the primary key of the {Request outer request}
   def outer_request_id=(request_id)
     self.outer_request = Request.find(request_id)
   end
@@ -170,15 +188,43 @@ class TransferRequest < ApplicationRecord
   def perform_transfer_of_contents
     return if asset.failed? || asset.cancelled?
 
-    target_asset.aliquots << asset.aliquots.map do |aliquot|
-      aliquot.dup(aliquot_attributes(aliquot))
-    end
+    target_asset.aliquots << aliquots_for_transfer
   rescue ActiveRecord::RecordNotUnique => e
     # We'll specifically handle tag clashes here so that we can produce more informative messages
     raise e unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(e.message)
 
     errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
+
     raise Aliquot::TagClash, self
+  end
+
+  # If merge_equivalent_aliquots is false, or unset we do not detect
+  # equivalent aliquots (ie. those with the same sample/tags/primer_panels etc)
+  # before performing a transfer.
+  # If merge_equivalent_aliquots is true, or we detect equivalent aliquots
+  # and do not attempt to transfer them. Essentially this merges the two aliquots
+  # together. It will NOT be possible to distinguish between them.
+  # This is was added to support the Heron (Covid-19) sequencing pipeline,
+  # where two plates were subject to separate PCR processes, before being
+  # merged together again.
+  def aliquots_for_transfer
+    if merge_equivalent_aliquots
+      duplicates_of_distinct_source_aliquots_only
+    else
+      duplicates_of_all_source_aliquots
+    end
+  end
+
+  def duplicates_of_all_source_aliquots
+    asset.aliquots.map do |aliquot|
+      aliquot.dup(aliquot_attributes(aliquot))
+    end
+  end
+
+  def duplicates_of_distinct_source_aliquots_only
+    duplicates_of_all_source_aliquots.reject do |candidate_aliquot|
+      target_asset.aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate_aliquot) }
+    end
   end
 
   def transfer_stock_wells
