@@ -64,7 +64,7 @@ class Plate::Creator < ApplicationRecord
       warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}" unless print_job.execute
     end
 
-    @created_asset_group = create_asset_group(created_plates) if should_create_asset_group == 'Yes'
+    @created_asset_group = create_asset_group(created_plates) if should_create_asset_group
     true
   end
 
@@ -88,7 +88,7 @@ class Plate::Creator < ApplicationRecord
       end
     end
 
-    @created_asset_group = create_asset_group(created_plates) if should_create_asset_group == 'Yes'
+    @created_asset_group = create_asset_group(created_plates) if should_create_asset_group
 
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                            LabelPrinter::Label::PlateCreator,

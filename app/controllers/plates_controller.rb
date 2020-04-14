@@ -23,7 +23,7 @@ class PlatesController < ApplicationController
     @creator = plate_creator = Plate::Creator.find(params[:plates][:creator_id])
     barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
     source_plate_barcodes = params[:plates][:source_plates]
-    create_asset_group = params[:plates][:create_asset_group]
+    create_asset_group = params[:plates][:create_asset_group] == 'Yes'
 
     scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates][:user_barcode])
 
