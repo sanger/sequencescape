@@ -96,6 +96,13 @@ class Aliquot < ApplicationRecord
       .count
   end
 
+  # Returns a list of attributes which must be the same for two Aliquots to be considered
+  # {#equivalent?} Generated dynamically to avoid accidental introduction of false positives
+  # when new columns are added
+  def self.equivalent_attributes
+    @equivalent_attributes ||= attribute_names - %w[id receptacle_id created_at updated_at]
+  end
+
   def aliquot_index_value
     aliquot_index.try(:aliquot_index)
   end
@@ -182,10 +189,7 @@ class Aliquot < ApplicationRecord
   # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
   # only id, timestamps and receptacles are excluded
   def equivalent?(other)
-    %i[
-      sample_id tag_id tag2_id library_id bait_library_id
-      insert_size_from insert_size_to library_type project_id study_id
-    ].all? do |attrib|
+    Aliquot.equivalent_attributes.all? do |attrib|
       send(attrib) == other.send(attrib)
     end
   end
