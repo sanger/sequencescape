@@ -6,7 +6,7 @@ module Heron
     class TubeRack
       include ActiveModel::Model
 
-      HERON_STUDY = 1
+      HERON_STUDY = 6187
       LOCATION_REGEXP = /[A-Z][0-9]{0,1}[0-9]/.freeze
 
       attr_accessor :barcode, :sample_tubes, :tube_rack, :size
