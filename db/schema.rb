@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_27_162832) do
+ActiveRecord::Schema.define(version: 2020_04_03_133731) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1760,6 +1760,15 @@ ActiveRecord::Schema.define(version: 2020_02_27_162832) do
     t.datetime "updated_at"
     t.integer "tube_creation_id", null: false
     t.integer "tube_id", null: false
+  end
+
+  create_table "tube_rack_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "barcode", null: false
+    t.integer "status", null: false
+    t.text "messages"
+    t.integer "labware_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|

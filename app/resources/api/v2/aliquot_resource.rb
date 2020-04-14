@@ -7,7 +7,7 @@ module Api
     class AliquotResource < BaseResource
       # Constants...
 
-      immutable # uncomment to make the resource immutable
+      immutable # comment to make the resource mutable
 
       default_includes :tag, :tag2
 

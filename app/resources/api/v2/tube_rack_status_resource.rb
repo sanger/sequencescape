@@ -2,12 +2,10 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of submission
+    # Provides a JSON API representation of TubeRackStatus
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
-    class SubmissionResource < BaseResource
-      # Constants...
-
-      immutable # comment to make the resource mutable
+    class TubeRackStatusResource < BaseResource
+      # immutable # uncomment to make the resource immutable
 
       # model_name / model_hint if required
 
@@ -17,8 +15,6 @@ module Api
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :name, readonly: true
-      attribute :used_tags, readonly: true
 
       # Filters
 

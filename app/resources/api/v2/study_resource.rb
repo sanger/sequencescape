@@ -3,7 +3,7 @@
 module Api
   module V2
     class StudyResource < BaseResource
-      immutable
+      immutable # comment to make the resource mutable
 
       attribute :name
       attribute :uuid
