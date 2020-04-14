@@ -8,11 +8,15 @@ module LabelPrinter
       end
 
       def top_right(plate)
-        "#{plate.prefix} #{plate.barcode_number}"
+        plate.plate_purpose.name.to_s
       end
 
       def bottom_right(plate)
-        "#{plate.name_for_label} #{plate.barcode_number}"
+        plate.studies.first&.abbreviation
+      end
+
+      def top_far_right(plate)
+        plate.parent.try(:barcode_number).to_s
       end
     end
   end
