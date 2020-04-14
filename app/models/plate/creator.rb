@@ -25,29 +25,54 @@ class Plate::Creator < ApplicationRecord
 
   serialize :valid_options
 
+  attr_reader :created_asset_group
+
+  def warnings_list
+    @warnings_list ||= []
+  end
+
+  def warnings
+    warnings_list.join(' ')
+  end
+
+  # array of hashes containing source and destination plates
+  # [
+  #   {
+  #     :source => #<Plate ...>,
+  #     :destinations => [#<Plate ...>, #<Plate ...>]
+  #   }
+  # ]
   def created_plates
     @created_plates ||= []
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
-  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil)
+  def execute(source_plate_barcodes, barcode_printer, scanned_user, should_create_asset_group, creator_parameters = nil)
     @created_plates = []
     new_plates = nil
+
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
     end
-    return false if new_plates.empty?
+    raise PlateCreationError, 'Plate creation failed' if new_plates.empty?
 
     new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
       print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                              LabelPrinter::Label::PlateCreator,
                                              plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
-      return false unless print_job.execute
+
+      warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}" unless print_job.execute
     end
+
+    @created_asset_group = create_asset_group(created_plates) if should_create_asset_group
     true
   end
 
-  def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, _creator_parameters = nil)
+  def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, should_create_asset_group, _creator_parameters = nil)
+    # creates plates
+    # creates an asset group if user requested one
+    # prints the barcode labels
+
     @created_plates = []
     plate_purpose = plate_purposes.first
     plate_factories = tube_rack_to_plate_factories(tube_racks, plate_purpose)
@@ -62,19 +87,63 @@ class Plate::Creator < ApplicationRecord
         add_created_plates(factory.tube_rack, [factory.plate])
       end
     end
+
+    @created_asset_group = create_asset_group(created_plates) if should_create_asset_group
+
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                            LabelPrinter::Label::PlateCreator,
                                            plates: created_plates.pluck(:destinations).flatten.compact,
                                            plate_purpose: plate_purpose, user_login: scanned_user.login)
 
-    unless print_job.execute
-      raise PlateCreationError, 'Barcode labels failed to print.'
-    end
-
+    warnings_list << 'Barcode labels failed to print.' unless print_job.execute
     true
   end
 
   private
+
+  def create_asset_group(created_plates)
+    group = nil
+    all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
+
+    study = find_relevant_study(created_plates)
+    unless study
+      warnings_list << 'Failed to create Asset Group: could not find an appropriate Study to group the plates under.'
+      return group
+    end
+
+    ActiveRecord::Base.transaction do # TO DO: handle exceptions from this?
+      group = AssetGroup.create!(study: study, name: asset_group_name)
+      group.assets.concat(all_wells)
+    end
+
+    group
+  end
+
+  def find_relevant_study(created_plates)
+    # find a relevant study to put the Asset group under
+    # otherwise would have to get user to select one
+
+    # try the link on aliquots
+    all_destination_plates = created_plates.map { |hash| hash[:destinations] }.flatten
+    study = all_destination_plates.map(&:studies).flatten.first
+    return study if study
+
+    # try the study_samples table
+    all_destination_plates.each do |plate|
+      plate.contained_samples.each do |sample|
+        return sample.studies.first if sample.studies.first
+      end
+    end
+
+    nil
+  end
+
+  def asset_group_name
+    prefix = 'plate-creator'
+    time_now_formatted = "#{Time.zone.now.year}-#{Time.zone.now.month}-#{Time.zone.now.day}-#{Time.zone.now.hour}#{Time.zone.now.min}#{Time.zone.now.sec}"
+    suffix = rand(999)
+    "#{prefix}-#{time_now_formatted}-#{suffix}"
+  end
 
   def tube_rack_to_plate_factories(tube_racks, plate_purpose)
     tube_racks.map { |rack| ::Heron::Factories::Plate.new(tube_rack: rack, plate_purpose: plate_purpose) }

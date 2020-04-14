@@ -76,39 +76,71 @@ class PlatesControllerTest < ActionController::TestCase
               tube_rack_factory.save
               @tube_rack = tube_rack_factory.tube_rack
               @plate_count = Plate.count
+              @asset_group_count = AssetGroup.count
+              @create_params = { plates: { creator_id: @dilution_plates_creator.id,
+                                           source_plates: @tube_rack.barcodes.first.barcode,
+                                           barcode_printer: @barcode_printer.id,
+                                           user_barcode: '1234567',
+                                           create_asset_group: 'Yes' } }
             end
 
-            context 'when creating a plate from a tube rack' do
+            context 'when printing and asset group creation are successful' do
               setup do
-                post :create, params: { plates: { creator_id: @dilution_plates_creator.id,
-                                                  source_plates: @tube_rack.barcodes.first.barcode,
-                                                  barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
+                post :create, params: @create_params
               end
 
               should 'change Plate.count by 1' do
                 assert_equal 1, Plate.count - @plate_count, 'Expected Plate.count to change by 1'
               end
               should respond_with :ok
-              should set_flash.to(/Created/)
+              should set_flash[:notice].to(/Created/)
+              should_not set_flash[:warning]
 
-              should 'display the printed barcode' do
+              should 'display the created barcode' do
                 assert_equal(true, response.body.include?(@tube_rack.children.first.barcodes.first.barcode))
+              end
+
+              should 'have created an asset group' do
+                assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be created'
               end
             end
 
             context 'when the printer fails to print' do
               setup do
-                LabelPrinter::PrintJob.stubs(:new).raises('Boom!!')
-                post :create, params: { plates: { creator_id: @dilution_plates_creator.id,
-                                                  source_plates: @tube_rack.barcodes.first.barcode,
-                                                  barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
+                LabelPrinter::PrintJob.any_instance.stubs(:execute).returns(false)
+                post :create, params: @create_params
               end
-              should 'still display the printed barcode' do
+
+              should 'still display the created barcode' do
                 assert_equal(true, response.body.include?(@tube_rack.children.first.barcodes.first.barcode))
               end
+
               should 'keep the created labware persisted' do
                 barcode = @tube_rack.children.first.barcodes.first.barcode
                 assert_equal(1, Plate.joins(:barcodes).where(barcodes: { barcode: barcode }).count)
+              end
+
+              should 'display a warning' do
+                should set_flash[:warning].to(/Barcode labels failed to print/)
+              end
+
+              should 'still have created an asset group' do
+                assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be created'
+              end
+            end
+
+            context 'when asset group creation fails' do
+              setup do
+                Plate::Creator.any_instance.stubs(:find_relevant_study).returns(nil)
+                post :create, params: @create_params
+              end
+
+              should 'display a warning' do
+                should set_flash[:warning].to(/Failed to create Asset Group/)
+              end
+
+              should 'not display a warning about barcode printing' do
+                should_not set_flash[:warning].to(/Barcode labels failed to print/)
               end
             end
           end

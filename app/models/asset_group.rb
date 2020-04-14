@@ -18,7 +18,7 @@ class AssetGroup < ApplicationRecord
 
   scope :for_search_query, ->(query) { where(['name LIKE ?', "%#{query}%"]) }
 
-  has_many :labware, through: :assets
+  has_many :labware, -> { distinct }, through: :assets
 
   def all_samples_have_accession_numbers?
     unaccessioned_samples.empty?
