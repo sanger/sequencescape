@@ -32,9 +32,9 @@ context 'printing plates' do
         { main_label:
           { top_left: date,
             bottom_left: asset.human_barcode.to_s,
-            top_right: "#{asset.prefix} #{asset.barcode_number}",
-            bottom_right: "#{asset.name_for_label} #{asset.barcode_number}",
-            top_far_right: nil,
+            top_right: asset.plate_purpose.name.to_s,
+            bottom_right: asset.studies.first&.abbreviation,
+            top_far_right: asset.parent.try(:barcode_number).to_s,
             barcode: asset.machine_barcode.to_s } }
       end
     end

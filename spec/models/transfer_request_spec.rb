@@ -192,6 +192,32 @@ RSpec.describe TransferRequest, type: :model do
       end
     end
 
+    context 'when the destination has equivalent aliquots' do
+      let(:equivalent_aliquot) { source.aliquots.first.dup }
+      let(:destination) { create :well, aliquots: [equivalent_aliquot] }
+      let(:transfer_request) do
+        described_class.new(asset: source, target_asset: destination,
+                            merge_equivalent_aliquots: merge)
+      end
+
+      context 'when merge_equivalent_aliquots is true' do
+        let(:merge) { true }
+
+        it 'will create a transfer request and merge aliquots' do
+          expect(transfer_request.save).to be true
+          expect(destination.aliquots.reload).to have(1).item
+        end
+      end
+
+      context 'when merge_equivalent_aliquots is false' do
+        let(:merge) { false }
+
+        it 'will throw a TagClash exception' do
+          expect { transfer_request.save }.to raise_error(Aliquot::TagClash)
+        end
+      end
+    end
+
     it 'does not permit transfers to the same asset' do
       asset = create(:sample_tube)
       expect { described_class.create!(asset: asset, target_asset: asset) }.to raise_error(ActiveRecord::RecordInvalid)

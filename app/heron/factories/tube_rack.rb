@@ -46,6 +46,12 @@ module Heron
           Barcode.create!(asset: tube_rack, barcode: barcode, format: barcode_format)
 
           @sample_tubes = create_tubes!(tube_rack)
+
+          ::TubeRackStatus.create!(
+            barcode: barcode,
+            status: :created,
+            labware: @tube_rack
+          )
         end
         true
       end

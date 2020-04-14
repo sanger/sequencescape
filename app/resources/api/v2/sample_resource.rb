@@ -3,7 +3,7 @@
 module Api
   module V2
     class SampleResource < BaseResource
-      immutable
+      immutable # comment to make the resource mutable
 
       default_includes :uuid_object
 

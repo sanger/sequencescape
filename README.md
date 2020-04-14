@@ -153,7 +153,7 @@ Testing is done in three ways; using rspec, rails test and feature tests.
 1. To run the rspec tests (found in `rspec/` dir.):
 
     ```shell
-    RAILS_ENV=test bundle exec rspec --fail-fast
+    RAILS_ENV=test bundle exec rspec --fail-fast [<path_to_spec>]
     ```
 
 1. To run the rails tests (found in `tests/` dir.):
