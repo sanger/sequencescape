@@ -6,7 +6,7 @@ version: 2
 defaults: &defaults
   docker:
     # specify the version you desire here
-    - image: circleci/ruby:2.4.6-node-browsers
+    - image: circleci/ruby:2.5.3-node-browsers
       environment:
           BUNDLE_JOBS: 4
           BUNDLE_RETRY: 3
@@ -40,7 +40,10 @@ jobs:
             - v2-dependencies-{{ checksum "Gemfile.lock" }}
             # fallback to using the latest cache if no exact match is found
             - v2-dependencies-
-
+      - run:
+          name: update bundler
+          command: |
+           gem update bundler --no-document
       - run:
           name: install dependencies
           command: |
@@ -78,6 +81,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - run: gem update bundler --no-document
       - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       - run: cp ./.circleci/database.yml ./config/database.yml
       - run:
@@ -117,6 +121,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - run: gem update bundler --no-document
       - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       - run: cp ./.circleci/database.yml ./config/database.yml
       - run:
@@ -155,6 +160,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - run: gem update bundler --no-document
       - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
       - run: cp ./.circleci/database.yml ./config/database.yml
       - run:
@@ -190,6 +196,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - run: gem update bundler --no-document
       - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
 
       # run tests!

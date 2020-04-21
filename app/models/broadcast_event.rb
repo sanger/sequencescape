@@ -75,3 +75,4 @@ class BroadcastEvent < ApplicationRecord
 end
 
 require_dependency 'broadcast_event/qc_assay'
+require_dependency 'broadcast_event/asset_audit'
