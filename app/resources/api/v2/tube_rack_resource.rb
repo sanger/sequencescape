@@ -37,7 +37,6 @@ module Api
           'human_barcode' => _model.human_barcode
         }
       end
-
     end
   end
 end
