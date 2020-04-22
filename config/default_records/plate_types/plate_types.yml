@@ -9,3 +9,5 @@ FluidX03:
   maximum_volume: 280
 KingFisher 96 2ml:
   maximum_volume: 2000
+Optical96 and Base:
+  maximum_volume: 250
