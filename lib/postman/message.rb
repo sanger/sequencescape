@@ -12,6 +12,7 @@ class Postman
       /Mysql2::Error: closed MySQL connection:/, # 2013,
       /Mysql2::Error: MySQL server has gone away/, # 2006
       /Mysql2::Error: Can't connect to local MySQL server through socket/, # , 2002, 2001, 2003, 2004, 2005,
+      /Mysql2::Error::ConnectionError: Lost connection to MySQL server during query/, # Bugfix - First message was always lost
       /Mysql2::Error: MySQL client is not connected/
     ].freeze
 
