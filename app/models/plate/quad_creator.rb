@@ -11,18 +11,30 @@ class Plate::QuadCreator
 
   validates_nested :creation
 
-  # Rubocop is unhappy, but we'll be extending this method shortly
-  # rubocop:disable Rails/Delegate
   def save
-    creation.save
+    creation.save && transfer_request_collection.save
+    true
   end
-  # rubocop:enable Rails/Delegate
+
+  def target_plate
+    @creation.child
+  end
+
+  private
 
   def creation
     @creation ||= PooledPlateCreation.new(user: user, parents: parents.values, child_purpose: target_purpose)
   end
 
-  def target_plate
-    @creation.child
+  def transfer_request_collection
+    @transfer_request_collection ||= TransferRequestCollection.new(
+      user: user,
+      transfer_requests_attributes: transfer_requests_attributes
+    )
+  end
+
+  def transfer_requests_attributes
+    # Logic for quad stamping.
+    []
   end
 end
