@@ -22,6 +22,7 @@ class Map < ApplicationRecord
       384 => [24, 16]
     )
 
+    # Seems to expect row to be zero-indexed but column to be 1 indexed
     def self.location_from_row_and_column(row, column, _ = nil, __ = nil)
       "#{(?A.getbyte(0) + row).chr}#{column}"
     end

@@ -28,7 +28,24 @@ RSpec.describe Plate::QuadCreator, type: :model do
     end
 
     setup do
-      expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
+      allow(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
+    end
+
+    describe '#target_coordinate_for' do
+     [
+       [ 0, 'A1', 'A1'],
+       [ 1, 'A1', 'B1'],
+       [ 2, 'A1', 'A2'],
+       [ 3, 'A1', 'B2'],
+       [ 0, 'H12', 'O23'],
+       [ 1, 'H12', 'P23'],
+       [ 2, 'H12', 'O24'],
+       [ 3, 'H12', 'P24']
+     ].each do |quad_index, source_well, target_well|
+        it "Transfers quadrant #{quad_index} well #{source_well} to #{target_well}" do
+          expect(quad_creator.target_coordinate_for(source_well, quad_index)).to eq target_well
+        end
+     end
     end
 
     describe '#save' do
