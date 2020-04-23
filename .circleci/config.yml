@@ -184,6 +184,8 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+      - store_artifacts:
+          path: ~/repo/tmp/capybara
       - persist_to_workspace:
           root: ~/repo
           paths:

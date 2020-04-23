@@ -121,8 +121,14 @@ When /^(?:|I )attach the file "([^\"]*)" to "([^\"]*)"(?: within "([^\"]*)")?$/ 
 end
 
 Then /^(?:|I )should see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, selector|
-  with_scope(selector) do
-    assert page.has_content?(text), "Could not see #{text} on page (#{page.text})."
+  begin
+    with_scope(selector) do
+      assert page.has_content?(text), "Could not see #{text} on page (#{page.text})."
+    end
+  rescue => e
+    filename = SecureRandom.uuid
+    page.save_screenshot("#{filename}.png")
+    raise e
   end
 end
 
