@@ -20,10 +20,10 @@ class Plate::QuadCreator
     @creation&.child
   end
 
-  def target_coordinate_for(source_coordinate_name, quadrant_index)
+  def self.target_coordinate_for(source_coordinate_name, quadrant_index)
     row_offset = quadrant_index % 2 # q0 -> 0, q1 -> 1, q2 -> 0, q3 -> 1
     col_offset = quadrant_index / 2 # q0 -> 0, q1 -> 0, q2 -> 1, q3 -> 1
-    col, row = well_coordinate(source_coordinate_name) # A1 -> 0, 0
+    col, row = locn_coordinate(source_coordinate_name) # A1 -> 0, 0
     target_col = (col*2)+col_offset
     target_row = (row*2)+row_offset
     Map.location_from_row_and_column(target_row, target_col + 1) # this method expects target_col to be 1-indexed
@@ -36,7 +36,9 @@ class Plate::QuadCreator
   end
 
   def creation
-    @creation ||= PooledPlateCreation.new(user: user, parents: parents.values, child_purpose: target_purpose)
+    creationClass = PooledPlateCreation
+    creationClass = PooledTubeRackCreation if parent_type == 'TubeRack'
+    @creation ||= creationClass.new(user: user, parents: parents.values, child_purpose: target_purpose)
   end
 
   def transfer_request_collection
@@ -50,24 +52,41 @@ class Plate::QuadCreator
     # Logic for quad stamping.
     [:quad_1, :quad_2, :quad_3, :quad_4].each_with_index.flat_map do |quadrant_name, quadrant_index|
       next if parents[quadrant_name].blank?
-      parents[quadrant_name].wells.map do |well|
-        target_coordinate = target_coordinate_for(well.map_description, quadrant_index)
-        {
-          asset_id: well.id,
-          target_asset_id: indexed_target_wells[target_coordinate].id
-        }
+
+      if parent_type == 'TubeRack'
+        parents[quadrant_name].racked_tubes.map do |racked_tube|
+          target_coordinate = Plate::QuadCreator.target_coordinate_for(racked_tube.coordinate, quadrant_index)
+          {
+            asset_id: racked_tube.tube.receptacle.id,
+            target_asset_id: indexed_target_wells[target_coordinate].id
+          }
+        end
+      else
+        parents[quadrant_name].wells.map do |well|
+          target_coordinate = Plate::QuadCreator.target_coordinate_for(well.map_description, quadrant_index)
+          {
+            asset_id: well.id,
+            target_asset_id: indexed_target_wells[target_coordinate].id
+          }
+        end
       end
     end.compact
   end
 
   #
-  # Converts a well name to its co-ordinates
+  # Converts a well or tube location name to its co-ordinates
   #
-  # @param [<String>] well Name of the well. Eg. A3
+  # @param [<String>] Location name of the well or tube. Eg. A3
   #
   # @return [Array<Integer>] An array of two integers indicating column and row. eg. [0, 2]
   #
-  def well_coordinate(well)
-    [well[1..-1].to_i - 1, well.upcase.getbyte(0) - 'A'.getbyte(0)]
+  def self.locn_coordinate(locn_name)
+    [locn_name[1..-1].to_i - 1, locn_name.upcase.getbyte(0) - 'A'.getbyte(0)]
   end
+
+  def parent_type
+    @parent_type ||= parents.values.first.label
+  end
+
+
 end
