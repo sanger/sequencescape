@@ -5,33 +5,32 @@ require 'rails_helper'
 # The Quad creator takes 4 parent 96 well plates or size 96 tube-racks
 # and transfers them onto a new 384 well plate
 RSpec.describe Plate::QuadCreator, type: :model do
+  let(:target_purpose) { create :plate_purpose, size: 384 }
+  let(:user) { create :user }
+  let(:quad_creator) do
+    described_class.new(parents: parents_hash, target_purpose: target_purpose, user: user)
+  end
+
+  setup do
+    allow(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
+  end
+
   context 'with parent plates' do
-    let(:parents) { create_list :plate_with_untagged_wells, 4, occupied_well_index: [0,95] } # 2 wells in each, A1 & H12
-    let(:target_purpose) { create :plate_purpose, size: 384 }
-    let(:parents_hash) do
-      {
-        quad_1: parents[0],
-        quad_2: parents[1],
-        quad_3: parents[2],
-        quad_4: parents[3]
-      }
-    end
-    let(:user) { create :user }
-
-    let(:quad_1_wells) { parents[0].wells.index_by(&:map_description) }
-    let(:quad_2_wells) { parents[1].wells.index_by(&:map_description) }
-    let(:quad_3_wells) { parents[2].wells.index_by(&:map_description) }
-    let(:quad_4_wells) { parents[3].wells.index_by(&:map_description) }
-
-    let(:quad_creator) do
-      described_class.new(parents: parents_hash, target_purpose: target_purpose, user: user)
-    end
-
-    setup do
-      allow(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
-    end
-
     context 'with 4 parents' do
+      let(:parents) { create_list :plate_with_untagged_wells, 4, occupied_well_index: [0,95] } # 2 wells in each, A1 & H12
+      let(:parents_hash) do
+        {
+          quad_1: parents[0],
+          quad_2: parents[1],
+          quad_3: parents[2],
+          quad_4: parents[3]
+        }
+      end
+      let(:quad_1_wells) { parents[0].wells.index_by(&:map_description) }
+      let(:quad_2_wells) { parents[1].wells.index_by(&:map_description) }
+      let(:quad_3_wells) { parents[2].wells.index_by(&:map_description) }
+      let(:quad_4_wells) { parents[3].wells.index_by(&:map_description) }
+
       describe '#target_coordinate_for' do
       [
         [ 0, 'A1', 'A1'],
@@ -89,18 +88,50 @@ RSpec.describe Plate::QuadCreator, type: :model do
           expect(TransferRequest.count).to eq(@transfer_request_count + num_wells)
         end
       end
+    end
 
-      context 'with 1 parent' do
-        let(:parents) { create_list :plate_with_untagged_wells, 1, occupied_well_index: [0,95] } # 2 wells, A1 & H12
-        let(:parents_hash) { { quad_3: parents[0] } }
-        let(:quad_3_wells) { parents[0].wells.index_by(&:map_description) }
+    context 'with 1 parent' do
+      let(:parents) { create_list :plate_with_untagged_wells, 1, occupied_well_index: [0,95] } # 2 wells, A1 & H12
+      let(:parents_hash) { { quad_3: parents[0] } }
+      let(:quad_3_wells) { parents[0].wells.index_by(&:map_description) }
 
-        before { quad_creator.save }
+      before { quad_creator.save }
 
-        it 'will transfer the material from the source plates' do
-          well_hash = quad_creator.target_plate.wells.index_by(&:map_description)
-          expect(well_hash['A2'].samples).to eq(quad_3_wells['A1'].samples)
-          expect(well_hash['O24'].samples).to eq(quad_3_wells['H12'].samples)
+      it 'will transfer the material from the source plates' do
+        well_hash = quad_creator.target_plate.wells.index_by(&:map_description)
+        expect(well_hash['A2'].samples).to eq(quad_3_wells['A1'].samples)
+        expect(well_hash['O24'].samples).to eq(quad_3_wells['H12'].samples)
+      end
+    end
+  end
+
+  context 'with parent tube racks' do
+    context 'with 4 parents' do
+      let(:parents) { create_list :tube_rack_with_tubes, 4 }
+      let(:parents_hash) do
+        {
+          quad_1: parents[0],
+          quad_2: parents[1],
+          quad_3: parents[2],
+          quad_4: parents[3]
+        }
+      end
+      let(:quad_1_tubes) { parents[0].racked_tubes.index_by(&:coordinate) }
+      let(:quad_2_tubes) { parents[1].racked_tubes.index_by(&:coordinate) }
+      let(:quad_3_tubes) { parents[2].racked_tubes.index_by(&:coordinate) }
+      let(:quad_4_tubes) { parents[3].racked_tubes.index_by(&:coordinate) }
+
+      describe '#save' do
+        before do
+          @transfer_request_collection_count = TransferRequestCollection.count
+          @transfer_request_count = TransferRequest.count
+          @asset_creation_count = AssetCreation.count
+          quad_creator.save
+        end
+
+        it 'will create a new plate of the selected purpose' do
+          # TO DO: carry on from here. PooledPlateCreation expects a plate, not a tube rack!
+          expect(quad_creator.target_plate.purpose).to eq target_purpose
         end
       end
     end
