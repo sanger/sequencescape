@@ -57,7 +57,7 @@ class Plate::QuadCreator
           target_asset_id: indexed_target_wells[target_coordinate].id
         }
       end
-    end
+    end.compact
   end
 
   #
