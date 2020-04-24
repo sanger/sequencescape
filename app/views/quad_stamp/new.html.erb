@@ -1,0 +1,21 @@
+
+<div class="page-header"><h1>Quadrant Stamping</h1></div>
+
+<%= semantic_form_for(:plates, url: quad_stamp_index_path) do |form| %>
+  <div class="columnize">
+  <%= panel do %>
+    <%= form.inputs name: "Sources" do %>
+      <%= form.input :user_barcode, input_html: { class: 'form-control' } %>
+      <%= form.input :sources, as: :text, required: false, input_html: { class: 'form-control'} %>
+    <% end %>
+  <% end %>
+  <%= panel do %>
+    <%= form.inputs name: "With Options" do %>
+      <!-- restrict plate purposes to 384 size -->
+      <%= form.input :creator_id, as: :select, collection: @plate_creators, label: 'Plate purpose', input_html: { class: 'form-control select2'} %>
+      <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
+      <%= form.action(:submit, disable_with: 'Please wait...') %>
+    <% end %>
+  <% end %>
+  </div>
+<% end %>
