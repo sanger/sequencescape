@@ -77,3 +77,14 @@ After do |scenario|
     end
   end
 end
+
+After('@javascript') do |scenario|
+  if scenario.failed?
+    errors = page.driver.browser.manage.logs.get(:browser)
+    puts '== JS errors ============'
+    errors.each do |jserror|
+      puts jserror.message
+    end
+    puts '========================='
+  end
+end
