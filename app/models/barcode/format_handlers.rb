@@ -202,7 +202,7 @@ module Barcode::FormatHandlers
   # nnnnnnnnnnNBC (Early UK Biocenter)
   # where n is a digit
   class UkBiocentreV1 < BaseRegExBarcode
-    self.format = /\A(?<number>\d{10})(?<suffix>NBC)\z/
+    self.format = /\A(?<number>\d{9,11})(?<suffix>NBC)\z/
   end
 
   # Added to support plates from UK Biocentre https://www.ukbiocentre.com/
@@ -212,7 +212,7 @@ module Barcode::FormatHandlers
   # nnnnnnnnnANBC (Later UK Biocenter)
   # where n is a digit
   class UkBiocentreV2 < BaseRegExBarcode
-    self.format = /\A(?<number>\d{9})(?<suffix>ANBC)\z/
+    self.format = /\A(?<number>\d{9,10})(?<suffix>ANBC)\z/
   end
 
   # Added to support plates from Alderley park:

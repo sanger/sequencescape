@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Barcode::FormatHandlers' do
+describe Barcode::FormatHandlers do
   # Set up the expectations for a valid barcode
   # @example
   #  it_has_a_valid_barcode 'DN12345S', number: 12345, prefix: 'DN', suffix: 'S'
