@@ -215,6 +215,15 @@ module Barcode::FormatHandlers
     self.format = /\A(?<number>\d{9,10})(?<suffix>ANBC)\z/
   end
 
+  # Added to support plates from UK Biocentre https://www.ukbiocentre.com/
+  # as part of project Heron
+  # See issue: https://github.com/sanger/sequencescape/issues/2634
+  # Format identified during validation:
+  # RNADWPnnn
+  class UkBiocentreUnid < BaseRegExBarcode
+    self.format = /\A(?<prefix>RNADWP)(?<number>\d{3})\z/
+  end
+
   # Added to support plates from Alderley park:
   # as part of project Heron
   # See issue: https://github.com/sanger/sequencescape/issues/2634
