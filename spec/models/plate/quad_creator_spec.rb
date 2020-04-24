@@ -144,6 +144,36 @@ RSpec.describe Plate::QuadCreator, type: :model do
           expect(well_hash['O24'].samples).to eq(quad_3_tubes['H12'].samples)
           expect(well_hash['P24'].samples).to eq(quad_4_tubes['H12'].samples)
         end
+
+        it 'will set each parent as a parent rack of the target' do
+          parents.each do |parent|
+            expect(quad_creator.target_plate.parents).to include(parent)
+          end
+        end
+
+        it 'records an asset creation' do
+          expect(AssetCreation.count).to eq(@asset_creation_count + 1)
+        end
+
+        it 'creates the correct transfer request collection' do
+          expect(TransferRequestCollection.count).to eq(@transfer_request_collection_count + 1)
+          num_tubes = 8 # 2 per parent rack
+          expect(TransferRequest.count).to eq(@transfer_request_count + num_tubes)
+        end
+      end
+    end
+
+    context 'with 1 parent' do
+      let(:parents) { create_list :tube_rack_with_tubes, 1 }
+      let(:parents_hash) { { quad_3: parents[0] } }
+      let(:quad_3_tubes) { parents[0].tubes.index_by { |tube| tube.racked_tube.coordinate } }
+
+      before { quad_creator.save }
+
+      it 'will transfer the material from the source plates' do
+        well_hash = quad_creator.target_plate.wells.index_by(&:map_description)
+        expect(well_hash['A2'].samples).to eq(quad_3_tubes['A1'].samples)
+        expect(well_hash['O24'].samples).to eq(quad_3_tubes['H12'].samples)
       end
     end
   end
