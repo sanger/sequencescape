@@ -31,7 +31,7 @@ class Plate::QuadCreator
 
   private
 
-  def indexed_target_wells(target_plate)
+  def indexed_target_wells
     target_plate.wells.index_by(&:map_description)
   end
 
@@ -52,7 +52,10 @@ class Plate::QuadCreator
       next if parents[quadrant_name].blank?
       parents[quadrant_name].wells.map do |well|
         target_coordinate = target_coordinate_for(well.map_description, quadrant_index)
-        { asset_id: well.id, target_asset_id: indexed_target_wells[target_coordinate] }
+        {
+          asset_id: well.id,
+          target_asset_id: indexed_target_wells[target_coordinate].id
+        }
       end
     end
   end

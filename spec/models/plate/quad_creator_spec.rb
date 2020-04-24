@@ -56,10 +56,6 @@ RSpec.describe Plate::QuadCreator, type: :model do
       end
 
       it 'will transfer the material from the source plates' do
-        # create transfer requests, in a transfer request collection
-        # specifies source well, destination well and state of transfer (pending, passed etc.)
-        # pass the transfer requests
-        # where do the actual aliquots get created?
         well_hash = quad_creator.target_plate.wells.index_by(&:map_description)
         expect(well_hash['A1'].samples).to eq(quad_1_wells['A1'].samples)
         expect(well_hash['B1'].samples).to eq(quad_2_wells['A1'].samples)
