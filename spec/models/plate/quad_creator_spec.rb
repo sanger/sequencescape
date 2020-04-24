@@ -6,7 +6,7 @@ require 'rails_helper'
 # and transfers them onto a new 384 well plate
 RSpec.describe Plate::QuadCreator, type: :model do
   context 'with 4 parent plates' do
-    let(:parents) { create_list :plate_with_untagged_wells, 4, occupied_well_index: [0,95] }
+    let(:parents) { create_list :plate_with_untagged_wells, 4, occupied_well_index: [0,95] } # 2 wells in each, A1 & H12
     let(:target_purpose) { create :plate_purpose, size: 384 }
     let(:parents_hash) do
       {
@@ -49,7 +49,12 @@ RSpec.describe Plate::QuadCreator, type: :model do
     end
 
     describe '#save' do
-      before { quad_creator.save }
+      before do
+        @transfer_request_collection_count = TransferRequestCollection.count
+        @transfer_request_count = TransferRequest.count
+        @asset_creation_count = AssetCreation.count
+        quad_creator.save
+      end
 
       it 'will create a new plate of the selected purpose' do
         expect(quad_creator.target_plate.purpose).to eq target_purpose
@@ -67,10 +72,21 @@ RSpec.describe Plate::QuadCreator, type: :model do
         expect(well_hash['P24'].samples).to eq(quad_4_wells['H12'].samples)
       end
 
-      it 'will set each parent as a parent plate of the target'
-      it 'records an asset creation'
-      it 'records plate metadata (custom_metadatum_collection) with quadrant -> stock plate barcodes?'
-      it 'creates the correct transfer request collection'
+      it 'will set each parent as a parent plate of the target' do
+        parents.each do |parent|
+          expect(quad_creator.target_plate.parents).to include(parent)
+        end
+      end
+
+      it 'records an asset creation' do
+        expect(AssetCreation.count).to eq(@asset_creation_count + 1)
+      end
+
+      it 'creates the correct transfer request collection' do
+        expect(TransferRequestCollection.count).to eq(@transfer_request_collection_count + 1)
+        num_wells = 8 # 2 per parent plate
+        expect(TransferRequest.count).to eq(@transfer_request_count + num_wells)
+      end
     end
   end
 end
