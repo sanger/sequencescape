@@ -4,16 +4,14 @@
 # The Quad creator takes 4 parent 96 well plates or size 96 tube-racks
 # and transfers them onto a new 384 well plate
 class Plate::QuadCreator
-  extend NestedValidation
   include ActiveModel::Model
 
   attr_accessor :parents, :target_purpose, :user
 
-  validates_nested :creation
+  validate :all_parents_acceptable
 
   def save
-    creation.save && transfer_request_collection.save
-    true
+    valid? && creation.save && transfer_request_collection.save
   end
 
   def target_plate
@@ -29,7 +27,38 @@ class Plate::QuadCreator
     Map.location_from_row_and_column(target_row, target_col + 1) # this method expects target_col to be 1-indexed
   end
 
+  def parent_barcodes=(quad_barcodes)
+    @parent_barcodes = quad_barcodes
+    found_parents = Labware.with_barcode(quad_barcodes.values)
+    self.parents = quad_barcodes.transform_values do |barcode| 
+      found_parents.detect { |candidate| candidate.any_barcode_matching?(barcode) } || :not_found
+    end
+  end
+
+  def parent_barcodes
+    @parent_barcodes ||= parents.transform_values { |parent| parent.machine_barcode }
+  end
+
   private
+
+  def all_parents_acceptable
+    parents.each do |location, parent|
+      case parent
+      when Plate, TubeRack
+        next if parent.size == 96
+        add_error(location, 'is the wrong size')
+      when :not_found
+        add_error(location, 'could not be found')
+      else
+        add_error(location, 'is not a plate or tube rack')
+      end
+    end
+  end
+
+  def add_error(location, message)
+    location_name = location.to_s.humanize
+    errors.add(:parent_barcodes, "#{location_name} (#{parent_barcodes[location]}) #{message}")
+  end
 
   def indexed_target_wells
     target_plate.wells.index_by(&:map_description)
@@ -87,6 +116,4 @@ class Plate::QuadCreator
   def parent_type
     @parent_type ||= parents.values.first.label
   end
-
-
 end

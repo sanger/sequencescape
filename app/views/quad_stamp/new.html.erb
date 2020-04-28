@@ -1,19 +1,25 @@
 
 <div class="page-header"><h1>Quadrant Stamping</h1></div>
 
-<%= semantic_form_for(:plates, url: quad_stamp_index_path) do |form| %>
+<%= semantic_form_for(:quad_creator, url: quad_stamp_index_path) do |form| %>
   <div class="columnize">
   <%= panel do %>
     <%= form.inputs name: "Sources" do %>
       <%= form.input :user_barcode, input_html: { class: 'form-control' } %>
-      <%= form.input :sources, as: :text, required: false, input_html: { class: 'form-control'} %>
+      <p>Enter between 1 and 4 plate OR tube rack barcodes (not a mixture) in your chosen quadrants:</p>
+
+      <%= form.fields_for :parent_barcodes do |parent_barcodes| %>
+        <%= parent_barcodes.input :quad_1, label: 'Quadrant 1', required: false, input_html: { class: 'form-control' } %>
+        <%= parent_barcodes.input :quad_2, label: 'Quadrant 2', required: false, input_html: { class: 'form-control' } %>
+        <%= parent_barcodes.input :quad_3, label: 'Quadrant 3', required: false, input_html: { class: 'form-control' } %>
+        <%= parent_barcodes.input :quad_4, label: 'Quadrant 4', required: false, input_html: { class: 'form-control' } %>
+      <% end %>
     <% end %>
   <% end %>
   <%= panel do %>
-    <%= form.inputs name: "With Options" do %>
-      <!-- restrict plate purposes to 384 size -->
-      <%= form.input :creator_id, as: :select, collection: @plate_creators, label: 'Plate purpose', input_html: { class: 'form-control select2'} %>
-      <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
+    <%= form.inputs name: "Destination" do %>
+      <%= form.input :target_purpose_id, as: :select, collection: @plate_purposes, label: 'Plate purpose', prompt: 'Select a plate purpose...', input_html: { class: 'form-control select2'} %>
+      <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, prompt: 'Select a printer...', input_html: { class: 'form-control select2'} %>
       <%= form.action(:submit, disable_with: 'Please wait...') %>
     <% end %>
   <% end %>
