@@ -3,7 +3,7 @@
 module Heron
   module Factories
     # Factory class to create Heron tube racks
-    class Plate
+    class PlateFromRack
       include ActiveModel::Model
 
       attr_accessor :tube_rack, :plate, :plate_purpose

@@ -54,7 +54,7 @@ module Heron
 
       def create_sample!
         sanger_sample_id = create_sanger_sample_id!
-        Sample.create!(
+        ::Sample.create!(
           name: sanger_sample_id,
           sanger_sample_id: sanger_sample_id
         ) do |sample|

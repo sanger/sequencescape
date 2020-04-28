@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Plate, type: :model, heron: true do
+RSpec.describe Heron::Factories::PlateFromRack, type: :model, heron: true do
   let(:purpose) do
     create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
   end
