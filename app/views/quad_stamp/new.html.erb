@@ -1,5 +1,6 @@
+<%= page_title 'Quadrant Stamping', 'Create' %>
 
-<div class="page-header"><h1>Quadrant Stamping</h1></div>
+<%= error_messages_for(@quad_creator) %>
 
 <%= semantic_form_for(:quad_creator, url: quad_stamp_index_path) do |form| %>
   <div class="columnize">
@@ -19,7 +20,9 @@
   <%= panel do %>
     <%= form.inputs name: "Destination" do %>
       <%= form.input :target_purpose_id, as: :select, collection: @plate_purposes, label: 'Plate purpose', prompt: 'Select a plate purpose...', input_html: { class: 'form-control select2'} %>
-      <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, prompt: 'Select a printer...', input_html: { class: 'form-control select2'} %>
+      <%= semantic_fields_for :barcode_printer do |printer| %>
+        <%= printer.input :name, as: :select, collection: @barcode_printers.pluck(:name), required: false, prompt: 'Select a printer...', input_html: { class: 'form-control select2'}, label: 'Barcode printer' %>
+      <% end %>
       <%= form.action(:submit, disable_with: 'Please wait...') %>
     <% end %>
   <% end %>

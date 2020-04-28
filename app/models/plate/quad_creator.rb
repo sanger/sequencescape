@@ -6,8 +6,9 @@
 class Plate::QuadCreator
   include ActiveModel::Model
 
-  attr_accessor :parents, :target_purpose, :user
+  attr_accessor :parents, :target_purpose, :user, :user_barcode
 
+  validates :user, presence: { message: 'could not be found' }
   validate :all_parents_acceptable
 
   def save
@@ -39,6 +40,10 @@ class Plate::QuadCreator
     @parent_barcodes ||= parents.transform_values { |parent| parent.machine_barcode }
   end
 
+  def target_purpose_id
+    @target_purpose&.id
+  end
+
   private
 
   def all_parents_acceptable
@@ -61,13 +66,11 @@ class Plate::QuadCreator
   end
 
   def indexed_target_wells
-    target_plate.wells.index_by(&:map_description)
+    @indexed_target_wells ||= target_plate.wells.index_by(&:map_description)
   end
 
   def creation
-    creationClass = PooledPlateCreation
-    creationClass = PooledTubeRackCreation if parent_type == 'TubeRack'
-    @creation ||= creationClass.new(user: user, parents: parents.values, child_purpose: target_purpose)
+    @creation ||= PooledPlateCreation.new(user: user, parents: parents.values, child_purpose: target_purpose)
   end
 
   def transfer_request_collection
