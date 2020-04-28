@@ -75,16 +75,13 @@ After do |scenario|
       page.save_page("#{name}.html")
       puts "📐 HTML saved to #{Capybara.save_path}/#{name}.html"
     end
-  end
-end
-
-After('@javascript') do |scenario|
-  if scenario.failed?
-    errors = page.driver.browser.manage.logs.get(:browser)
-    puts '== JS errors ============'
-    errors.each do |jserror|
-      puts jserror.message
+    if page.driver.browser.respond_to?(:manage)
+      errors = page.driver.browser.manage.logs.get(:browser)
+      puts '== JS errors ============'
+      errors.each do |jserror|
+        puts jserror.message
+      end
+      puts '========================='
     end
-    puts '========================='
   end
 end
