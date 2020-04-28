@@ -8,8 +8,16 @@ module Heron
 
       validates_presence_of :study
 
+      validate :check_no_other_params_when_uuid
+
       def initialize(params)
         @params = params
+      end
+
+      def check_no_other_params_when_uuid
+        return unless @params[:sample_uuid]
+
+        errors(:base, 'No other params can be added when sample uuid specified') unless (@params.keys - %i[sample_uuid study study_uuid]).empty?
       end
 
       ##
@@ -33,6 +41,8 @@ module Heron
       end
 
       def create_sample!
+        return ::Sample.with_uuid(@params[:sample_uuid]).first if @params[:sample_uuid]
+
         ::Sample.create!(params_for_sample_creation) do |sample|
           sample.sample_metadata.update!(params_for_sample_metadata_table)
           sample.studies << study
