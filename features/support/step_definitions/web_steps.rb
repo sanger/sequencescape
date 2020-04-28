@@ -122,7 +122,7 @@ end
 
 Then /^(?:|I )should see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, selector|
   with_scope(selector) do
-    assert page.has_content?(text), "Could not see #{text} on page."
+    assert page.has_content?(text), "Could not see #{text} on page (#{page.text})."
   end
 end
 

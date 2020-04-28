@@ -71,3 +71,4 @@ end
 
 require_dependency 'tube/purpose'
 require_dependency 'plate_purpose'
+require_dependency 'tube_rack/purpose'
