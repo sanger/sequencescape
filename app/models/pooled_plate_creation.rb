@@ -12,7 +12,7 @@ class PooledPlateCreation < AssetCreation
   has_many :parent_associations, foreign_key: 'asset_creation_id', class_name: 'PooledPlateCreation::ParentAssociation'
 
   # This is the child that is created from the parent.  It cannot be assigned before validation.
-  has_many :parents, through: :parent_associations, class_name: 'Plate'
+  has_many :parents, through: :parent_associations, class_name: 'Labware'
 
   include_plate_named_scope :parents
 
