@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :tube_rack do
+    size { 96 }
     transient do
       barcode { create(:barcode) }
     end
