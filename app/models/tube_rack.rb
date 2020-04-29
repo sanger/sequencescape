@@ -10,6 +10,7 @@ class TubeRack < Labware
   has_many :racked_tubes, dependent: :destroy, inverse_of: :tube_rack
   has_many :tubes, through: :racked_tubes
   has_many :contained_samples, through: :tubes, source: :samples
+  has_many :receptacles, through: :tubes, source: :receptacles
 
   LAYOUTS = {
     48 => {
@@ -24,6 +25,12 @@ class TubeRack < Labware
 
   def human_barcode
     primary_barcode.present? ? primary_barcode.barcode : nil
+  end
+
+  # Used to unify interface with TubeRacks. Returns a list of all {Receptacle receptacles}
+  # with position information included for aid performance
+  def receptacles_with_position
+    receptacles.includes(:racked_tubes)
   end
 
   def self.check_if_coordinates_valid(rack_size, list_coordinates)
