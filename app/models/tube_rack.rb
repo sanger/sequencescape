@@ -37,7 +37,7 @@ class TubeRack < Labware
   # Used to unify interface with TubeRacks. Returns a list of all {Receptacle receptacles}
   # with position information included for aid performance
   def receptacles_with_position
-    tube_receptacles.includes(:racked_tubes)
+    tube_receptacles.includes(:racked_tube)
   end
 
   def self.check_if_coordinates_valid(rack_size, list_coordinates)
