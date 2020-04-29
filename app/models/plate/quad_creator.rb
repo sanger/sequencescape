@@ -19,25 +19,16 @@ class Plate::QuadCreator
     @creation&.child
   end
 
-  def self.target_coordinate_for(source_coordinate_name, quadrant_index)
-    row_offset = quadrant_index % 2 # q0 -> 0, q1 -> 1, q2 -> 0, q3 -> 1
-    col_offset = quadrant_index / 2 # q0 -> 0, q1 -> 0, q2 -> 1, q3 -> 1
-    col, row = locn_coordinate(source_coordinate_name) # A1 -> 0, 0
-    target_col = (col*2)+col_offset
-    target_row = (row*2)+row_offset
-    Map.location_from_row_and_column(target_row, target_col + 1) # this method expects target_col to be 1-indexed
-  end
-
   def parent_barcodes=(quad_barcodes)
     @parent_barcodes = quad_barcodes
     found_parents = Labware.with_barcode(quad_barcodes.values)
-    self.parents = quad_barcodes.transform_values do |barcode| 
+    self.parents = quad_barcodes.transform_values do |barcode|
       found_parents.detect { |candidate| candidate.any_barcode_matching?(barcode) } || :not_found
     end
   end
 
   def parent_barcodes
-    @parent_barcodes ||= parents.transform_values { |parent| parent.machine_barcode }
+    @parent_barcodes ||= parents.transform_values(&:machine_barcode)
   end
 
   def target_purpose_id
@@ -51,6 +42,7 @@ class Plate::QuadCreator
       case parent
       when Plate, TubeRack
         next if parent.size == 96
+
         add_error(location, 'is the wrong size')
       when :not_found
         add_error(location, 'could not be found')
@@ -82,7 +74,7 @@ class Plate::QuadCreator
 
   def transfer_requests_attributes
     # Logic for quad stamping.
-    [:quad_1, :quad_2, :quad_3, :quad_4].each_with_index.flat_map do |quadrant_name, quadrant_index|
+    %i[quad_1 quad_2 quad_3 quad_4].each_with_index.flat_map do |quadrant_name, quadrant_index|
       next if parents[quadrant_name].blank?
 
       if parent_type == 'TubeRack'
@@ -102,21 +94,50 @@ class Plate::QuadCreator
           }
         end
       end
+      # WIP: Unify interface
+      # parents[quadrant_name].receptacles_with_position.map do |receptacle|
+      #   target_coordinate = Plate::QuadCreator.target_coordinate_for(receptacle.absolute_position, quadrant_index)
+      #   {
+      #     asset_id: receptacle.id,
+      #     target_asset_id: indexed_target_wells[target_coordinate].id
+      #   }
+      # end
     end.compact
-  end
-
-  #
-  # Converts a well or tube location name to its co-ordinates
-  #
-  # @param [<String>] Location name of the well or tube. Eg. A3
-  #
-  # @return [Array<Integer>] An array of two integers indicating column and row. eg. [0, 2]
-  #
-  def self.locn_coordinate(locn_name)
-    [locn_name[1..-1].to_i - 1, locn_name.upcase.getbyte(0) - 'A'.getbyte(0)]
   end
 
   def parent_type
     @parent_type ||= parents.values.first.label
+  end
+
+  class << self
+    #
+    # Calculate the target coordinate for a source coordinate and quadrant number
+    #
+    # @param [<String>] Location name of the well or tube. Eg. H12
+    # @param [<int>] Quadrant index 1-4 e.g. 4
+    #
+    # @return [<String>] The target coordinate in the destination 384-well plate, e.g. P24
+    #
+    def target_coordinate_for(source_coordinate_name, quadrant_index)
+      row_offset = quadrant_index % 2 # q0 -> 0, q1 -> 1, q2 -> 0, q3 -> 1
+      col_offset = quadrant_index / 2 # q0 -> 0, q1 -> 0, q2 -> 1, q3 -> 1
+      col, row = locn_coordinate(source_coordinate_name) # A1 -> 0, 0
+      target_col = (col * 2) + col_offset
+      target_row = (row * 2) + row_offset
+      Map.location_from_row_and_column(target_row, target_col + 1) # this method expects target_col to be 1-indexed
+    end
+
+    private
+
+    #
+    # Converts a well or tube location name to its co-ordinates
+    #
+    # @param [<String>] Location name of the well or tube. Eg. A3
+    #
+    # @return [Array<Integer>] An array of two integers indicating column and row. eg. [0, 2]
+    #
+    def locn_coordinate(locn_name)
+      [locn_name[1..-1].to_i - 1, locn_name.upcase.getbyte(0) - 'A'.getbyte(0)]
+    end
   end
 end

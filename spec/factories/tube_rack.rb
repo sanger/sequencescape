@@ -12,7 +12,7 @@ FactoryBot.define do
 
     factory :tube_rack_with_tubes do
       transient do
-        locations { ['A1', 'H12'] }
+        locations { %w[A1 H12] }
       end
 
       after(:build) do |rack, generator|

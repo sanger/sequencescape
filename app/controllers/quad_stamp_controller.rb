@@ -1,5 +1,5 @@
-
-
+# Handles transfer of 1-4 96 well plates or tube racks onto a single new
+# 384 well plate
 class QuadStampController < ApplicationController
   before_action :set_plate_purposes, only: [:new, :create]
   before_action :set_barcode_printers, only: [:new, :create]
@@ -41,7 +41,6 @@ class QuadStampController < ApplicationController
     end
   end
 
-
   # Selects the appropriate plate purposes for the user to choose from.
   # In this case they must be 384-well stock plates.
   def set_plate_purposes
@@ -58,6 +57,6 @@ class QuadStampController < ApplicationController
   def parent_barcodes
     params.require(:quad_creator)
           .require(:parent_barcodes)
-          .reject { |key, barcode| barcode.blank? }
+          .reject { |_key, barcode| barcode.blank? }
   end
 end
