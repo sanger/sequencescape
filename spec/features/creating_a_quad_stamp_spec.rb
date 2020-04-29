@@ -51,12 +51,23 @@ describe 'Creating a quad stamp' do
     click_link 'Create quad-stamped plates and print barcodes'
     # We're on the page
     expect(page).to have_content('Quadrant Stamping')
+    # We fill in the form
     fill_in 'User barcode', with: swipecard
     fill_in 'Quadrant 1', with: 'invalid'
     fill_in 'Quadrant 2', with: quad_2.machine_barcode
-
     select plate_purpose.name, from: 'Plate purpose'
+    # We submit the form and expect to get an error
     click_on 'Submit'
-    expect(page).to have_content "Parent barcodes Quad 1 (invalid) could not be found"
+    expect(page).to have_content 'Parent barcodes Quad 1 (invalid) could not be found'
+  end
+  # rubocop:enable RSpec/ExampleLength
+
+  it 'links from the tube racks status page' do
+    login_user user
+    visit root_path
+    click_link 'Status of Tube Rack Imports'
+    click_link 'Create quad-stamped plates and print barcodes'
+    # We're on the page
+    expect(page).to have_content('Quadrant Stamping')
   end
 end
