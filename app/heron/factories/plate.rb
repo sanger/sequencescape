@@ -15,21 +15,25 @@ module Heron
       end
 
       def check_valid_samples_information
-        return true if sample_factories.empty?
+        return if sample_factories.empty?
 
         return if sample_factories.values.flatten.all?(&:valid?)
 
-        sample_factories.each do |k, factory|
-          errors.add(k, factory.errors)
+        sample_factories.each do |k, factories|
+          factories.each do |factory|
+            errors.add(k, factory.errors)
+          end
         end
       end
 
       def sample_factories
-        return [] unless @params[:wells]
+        return [] unless @params[:wells_content]
 
-        @sample_factories ||= @params[:wells].keys.each_with_object({}) do |location, memo|
-          sample_params = @params[:wells][location]
-          memo[location] = ::Heron::Factories::Sample.new(sample_params.merge(study: study))
+        @sample_factories ||= @params[:wells_content].keys.each_with_object({}) do |location, memo|
+          samples_params = [@params[:wells_content][location]].flatten
+          memo[location] = samples_params.map do |sample_params|
+            ::Heron::Factories::Sample.new(sample_params.merge(study: study))
+          end
         end
       end
 
@@ -43,21 +47,20 @@ module Heron
 
       def create
         return unless valid?
+        return @plate if @plate
 
         @plate = plate_purpose.create!(params_for_plate_creation)
-        sample_factories.each do |location, factory|
+        sample_factories.each do |location, factories|
           well_at_location = @plate.wells.located_at(unpad_coordinate(location)).first
-          if factory.valid?
-            sample = factory.create
-            well_at_location.aliquots.create(sample: sample, study: study)
+          factories.each do |factory|
+            factory.create_aliquot_at(well_at_location) if factory.valid?
           end
         end
         @plate
       end
 
       def params_for_plate_creation
-        ignored_list = %i[study study_uuid plate_purpose plate_purpose_uuid wells]
-        @params.reject { |k, _v| ignored_list.include?(k) }
+        @params.except(:study, :study_uuid, :plate_purpose, :plate_purpose_uuid, :wells_content)
       end
 
       def unpad_coordinate(coordinate)

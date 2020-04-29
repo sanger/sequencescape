@@ -2,7 +2,140 @@
 
 require 'rails_helper'
 
-describe 'Plates API', with: :api_v2 do
+describe 'Plates API', with: :api_v2, tags: :lighthouse do
+  let(:params) do
+  end
+
+  describe '#create' do
+    include BarcodeHelper
+
+    before do
+      mock_plate_barcode_service
+    end
+
+    context 'when providing a payload for creating a plate' do
+      let(:purpose) { create(:plate_purpose) }
+      let(:study) { create(:study) }
+      let!(:sample) { create(:sample) }
+      let(:wells_content) do
+        {
+          'A01': { 'phenotype': 'A phenotype' },
+          'B01': { 'sample_uuid': sample.uuid }
+        }
+      end
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'plates',
+            'attributes' => {
+              'plate_purpose_uuid' => purpose.uuid,
+              'study_uuid' => study.uuid,
+              'wells_content' => wells_content
+            }
+          }
+        }
+      end
+
+      context 'when payload is valid' do
+        it 'creates a new plate' do
+          expect do
+            api_post '/api/v2/plates', payload
+          end.to(change(Plate, :count).by(1).and(
+            change(Sample, :count).by(1)
+          ).and(
+            change(Aliquot, :count).by(2)
+          ))
+          expect(response).to have_http_status(:created)
+        end
+
+        context 'with the created plate' do
+          let(:request) { api_post '/api/v2/plates', payload }
+          let(:plate_id) do 
+            request
+            JSON.parse(response.body)['data']['id']
+          end
+          let(:plate) { ::Plate.find(plate_id)}
+          it 'has defined the plate purpose' do
+            expect(plate.plate_purpose).to eq(purpose)
+          end
+          it 'has the defined study' do
+            expect(plate.studies).to eq([study])
+          end
+          it 'has a barcode' do
+            expect(plate.primary_barcode).not_to be_nil
+          end
+        end
+
+        context 'when we specify a foreign barcode' do
+          it 'creates the new plate with that barcode' do
+          end
+        end
+
+        context 'when there is an exception during plate creation' do
+          before do
+            allow(::Sample).to receive(:with_uuid).with(sample.uuid).and_raise('BOOM!!')
+          end
+
+          it 'does not create any plates' do
+            expect do
+              api_post '/api/v2/plates', payload
+            end.not_to change(Plate, :count)
+          end
+
+          it 'does not create any samples' do
+            expect do
+              api_post '/api/v2/plates', payload
+            end.not_to change(Sample, :count)
+          end
+
+          it 'does not create any aliquots' do
+            expect do
+              api_post '/api/v2/plates', payload
+            end.not_to change(Aliquot, :count)
+          end
+        end
+      end
+
+      context 'when payload is not valid' do
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'plates',
+              'attributes' => {
+                'plate_purpose_uuid' => nil,
+                'study_uuid' => study.uuid,
+                'wells_content' => wells_content
+              }
+            }
+          }
+        end
+
+        it 'does not create a new plate' do
+          expect do
+            api_post '/api/v2/plates', payload
+          end.not_to(change(Plate, :count))
+        end
+
+        it 'does not create a new sample' do
+          expect do
+            api_post '/api/v2/plates', payload
+          end.not_to(change(Sample, :count))
+        end
+
+        it 'returns an error code' do
+          api_post '/api/v2/plates', payload
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'returns an error message' do
+          api_post '/api/v2/plates', payload
+          msg = JSON.parse(response.body)['errors'][0]['msg']
+          expect(msg).to eq("Plate purpose can't be blank")
+        end
+      end
+    end
+  end
+
   context 'with multiple plates' do
     before do
       create_list(:plate, 5)
@@ -46,7 +179,7 @@ describe 'Plates API', with: :api_v2 do
         create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
       end
       let(:rack) { create :tube_rack }
-      let(:plate_factory) { ::Heron::Factories::Plate.new(tube_rack: rack, plate_purpose: purpose) }
+      let(:plate_factory) { ::Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose: purpose) }
       let(:tubes) { create_list(:sample_tube, 2) }
 
       include BarcodeHelper

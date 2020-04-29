@@ -45,6 +45,26 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
     end
   end
 
+  describe '#create_aliquot_at' do
+    context 'when the factory is valid' do
+      let(:well) { create :well }
+      let(:tag_id) { 1 }
+      let(:factory) { described_class.new(study: study, aliquot: { tag_id: tag_id }) }
+
+      it 'can create an aliquot of the sample in the well' do
+        expect do
+          factory.create_aliquot_at(well)
+        end.to change(::Aliquot, :count).by(1).and(change(::Sample, :count).by(1))
+      end
+
+      it 'creates aliquots using the arguments provided' do
+        aliquot = factory.create_aliquot_at(well)
+        expect(aliquot.class).to eq(::Aliquot)
+        expect(aliquot.tag_id).to eq(tag_id)
+      end
+    end
+  end
+
   describe '#create' do
     context 'when the factory is invalid' do
       it 'returns nil' do
@@ -57,6 +77,37 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
       it 'returns a sample instance' do
         factory = described_class.new(study: study)
         expect(factory.create.class).to eq(::Sample)
+      end
+
+      it 'returns the same sample instance in any subsequent call' do
+        factory = described_class.new(study: study)
+        sample = factory.create
+        sample2 = factory.create
+        expect(sample).to eq(sample2)
+      end
+
+      context 'when providing sample_uuid' do
+        let(:sample) { create(:sample) }
+
+        it 'wont create a new sample' do
+          factory = described_class.new(study: study, sample_uuid: sample.uuid)
+          expect { factory.create }.not_to change(Sample, :count)
+        end
+
+        it 'will return the sample with uuid specified' do
+          factory = described_class.new(study: study, sample_uuid: sample.uuid)
+          expect(factory.create).to eq(sample)
+        end
+
+        it 'will be invalid if providing any other extra attributes' do
+          factory = described_class.new(study: study, sample_uuid: sample.uuid, sample_id: '1234')
+          expect(factory).to be_invalid
+        end
+
+        it 'will be valid if providing any other attributes not sample related' do
+          factory = described_class.new(study: study, sample_uuid: sample.uuid, aliquot: { tag_id: 1 })
+          expect(factory).to be_valid
+        end
       end
 
       context 'when providing a sanger_sample_id' do
