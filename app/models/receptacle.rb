@@ -21,7 +21,12 @@ class Receptacle < Asset
   has_many :parents, through: :labware
   has_many :ancestors, through: :labware
   has_many :descendants, through: :labware
-  has_one :racked_tube, through: :labware
+
+  # We don't do a has_one through as not all receptacles are part of tubes and then
+  # we'd have to add racked_tube associations to labware. While we may eventually want to
+  # rack different kinds of labware, I'd prefer to avoid making it easier to inadvertantly
+  # put a tube rack in a tube rack.
+  has_one :racked_tube, foreign_key: :labware_id, primary_key: :labware_id
 
   delegate :human_barcode, :machine_barcode, to: :labware, allow_nil: true
   delegate :asset_type_for_request_types, to: :labware, allow_nil: true

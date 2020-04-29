@@ -144,6 +144,7 @@ end
 
 group :development, :test, :cucumber do
   gem 'pry'
+  gem 'pry-byebug'
   gem 'pry-stack_explorer'
   # Asset compilation, js and style libraries
   gem 'bootstrap'
