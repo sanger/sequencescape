@@ -5,6 +5,10 @@ module Heron
     # Factory class to create Heron tube racks
     class Plate
       include ActiveModel::Model
+      
+      include Concerns::CoordinatesSupport
+      include Concerns::ForeignBarcodes
+
       attr_accessor :plate
 
       validates_presence_of :study, :plate_purpose
@@ -12,6 +16,10 @@ module Heron
 
       def initialize(params)
         @params = params
+      end
+
+      def barcode
+        @params[:barcode]
       end
 
       def check_valid_samples_information
@@ -45,30 +53,32 @@ module Heron
         @plate_purpose ||= @params[:plate_purpose] || PlatePurpose.with_uuid(@params[:plate_purpose_uuid]).first
       end
 
-      def create
-        return unless valid?
-        return @plate if @plate
+      def save
+        return false unless valid?
 
-        @plate = plate_purpose.create!(params_for_plate_creation)
+        ActiveRecord::Base.transaction do
+          @plate = plate_purpose.create!(params_for_plate_creation)
+
+          Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
+
+          create_samples!(plate)
+        end
+        true
+      end
+
+      def create_samples!(plate)
         sample_factories.each do |location, factories|
-          well_at_location = @plate.wells.located_at(unpad_coordinate(location)).first
+          well_at_location = plate.wells.located_at(unpad_coordinate(location)).first
           factories.each do |factory|
             factory.create_aliquot_at(well_at_location) if factory.valid?
           end
         end
-        @plate
       end
 
       def params_for_plate_creation
-        @params.except(:study, :study_uuid, :plate_purpose, :plate_purpose_uuid, :wells_content)
+        @params.except(:study, :study_uuid, :plate_purpose, :plate_purpose_uuid, :wells_content, :barcode)
       end
 
-      def unpad_coordinate(coordinate)
-        return coordinate unless coordinate
-
-        loc = coordinate.match(/(\w)(0*)(\d*)/)
-        loc[1] + loc[3]
-      end
     end
   end
 end

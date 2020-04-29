@@ -9,9 +9,9 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
   let(:study) do
     create(:study)
   end
-  let(:plate_factory) { described_class.new(params) }
+  let(:barcode) { '0000000001' }
   let(:params) do
-    { study: study, plate_purpose: purpose }
+    { study: study, plate_purpose: purpose, barcode: barcode }
   end
 
   include BarcodeHelper
@@ -20,21 +20,41 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
     mock_plate_barcode_service
   end
 
-  it 'can build a valid plate factory' do
-    expect(plate_factory).to be_valid
+  context 'with valid params' do
+    let(:plate_factory) { described_class.new(params) }
+    it 'can build a valid plate factory' do
+      expect(plate_factory).to be_valid
+    end
   end
 
-  describe '#create' do
-    it 'can create a new plate' do
+  context 'with invalid params' do
+    it 'is not valid without barcode' do
+      factory = described_class.new({ study: study, plate_purpose: purpose})
+      expect(factory).to be_invalid
+    end
+    it 'is not valid without a plate purpose' do
+      factory = described_class.new({ study: study, barcode: barcode })
+      expect(factory).to be_invalid
+    end
+    it 'is not valid without a study' do
+      factory = described_class.new({ plate_purpose: purpose, barcode: barcode })
+      expect(factory).to be_invalid
+    end
+  end
+
+  describe '#save' do
+    let(:plate_factory) { described_class.new(params) }
+    it 'can persist a new plate' do
       expect do
-        plate_factory.create
+        plate_factory.save
       end.to change(Plate, :count).by(1)
     end
 
-    it 'returns the same instance in any subsequent call' do
-      plate = plate_factory.create
-      plate2 = plate_factory.create
-      expect(plate).to eq(plate2)
+    it 'does not create several plates in subsequent calls' do
+      expect{
+        plate_factory.save
+        plate_factory.save
+      }.to raise_error(StandardError).and(change(Plate, :count).by(1))
     end
 
     context 'when providing samples information' do
@@ -47,24 +67,24 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
         }
       end
       let(:params) do
-        { study: study, plate_purpose: purpose, wells_content: wells_content }
+        { barcode: barcode, study: study, plate_purpose: purpose, wells_content: wells_content }
       end
 
-      it 'creates the plate' do
+      it 'persists the plate' do
         expect do
-          plate_factory.create
+          plate_factory.save
         end.to change(Plate, :count).by(1)
       end
 
       it 'creates the new samples' do
-        expect { plate_factory.create }.to change(Plate, :count).by(1).and(
+        expect { plate_factory.save }.to change(Plate, :count).by(1).and(
           change(Sample, :count).by(2).and(change(Aliquot, :count).by(3))
         )
       end
 
       context 'when creating more than one sample in the same location' do
         let(:params) do
-          { study: study, plate_purpose: purpose, wells_content: samples_same_location }
+          { barcode: barcode, study: study, plate_purpose: purpose, wells_content: samples_same_location }
         end
         let(:samples_same_location) do
           {
@@ -74,17 +94,16 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
             'C01': { sample_uuid: sample.uuid }
           }
         end
-        let(:factory) { described_class.new(params) }
 
         it 'creates the right number of elements' do
-          expect { factory.create }.to change(Plate, :count).by(1).and(
+          expect { plate_factory.save }.to change(Plate, :count).by(1).and(
             change(Sample, :count).by(2).and(change(Aliquot, :count).by(4))
           )
         end
 
         it 'creates the right aliquots' do
-          plate = factory.create
-
+          plate_factory.save
+          plate = plate_factory.plate
           first_well = plate.wells.located_at('A1').first
 
           expect(first_well.aliquots.count).to eq(2)
