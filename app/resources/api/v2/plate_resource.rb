@@ -41,12 +41,6 @@ module Api
       attribute :created_at, readonly: true
       attribute :updated_at, readonly: true
 
-      # Custom attributes
-      attribute :wells_content, readonly: true
-      attribute :plate_purpose_uuid, readonly: true
-      attribute :study_uuid, readonly: true
-      attribute :barcode, readonly: true
-
       # Filters
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
@@ -67,26 +61,13 @@ module Api
         }
       end
 
-      def plate_purpose_uuid
-        @model.plate_purpose.uuid
+      # Custom methods for Plate creation
+      HERON_PLATE_CREATION_ATTRS = %i[study_uuid wells_content barcode plate_purpose_uuid].freeze
+      attributes(*HERON_PLATE_CREATION_ATTRS)
+      attr_reader(*HERON_PLATE_CREATION_ATTRS)
+      def self.fetchable_fields(context)
+        super - HERON_PLATE_CREATION_ATTRS
       end
-
-      def study_uuid; end
-
-      # Setter (because spoken_languages needed for creation)
-      def plate_purpose_uuid=(uuid)
-        @model.plate_purpose = PlatePurpose.find_by(uuid: uuid)
-      end
-
-      def study_uuid=(uuid); end
-
-      def wells_content=(data); end
-
-      def wells_content; end
-
-      def barcode; end
-
-      def barcode=(barcode); end
 
       # Class method overrides
     end
