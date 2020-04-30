@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# require 'lib/nested_validators'
 # The Quad creator takes 4 parent 96 well plates or size 96 tube-racks
 # and transfers them onto a new 384 well plate
 class Plate::QuadCreator
@@ -77,36 +76,14 @@ class Plate::QuadCreator
     %i[quad_1 quad_2 quad_3 quad_4].each_with_index.flat_map do |quadrant_name, quadrant_index|
       next if parents[quadrant_name].blank?
 
-      if parent_type == 'TubeRack'
-        parents[quadrant_name].racked_tubes.map do |racked_tube|
-          target_coordinate = Plate::QuadCreator.target_coordinate_for(racked_tube.coordinate, quadrant_index)
-          {
-            asset_id: racked_tube.tube.receptacle.id,
-            target_asset_id: indexed_target_wells[target_coordinate].id
-          }
-        end
-      else
-        parents[quadrant_name].wells.map do |well|
-          target_coordinate = Plate::QuadCreator.target_coordinate_for(well.map_description, quadrant_index)
-          {
-            asset_id: well.id,
-            target_asset_id: indexed_target_wells[target_coordinate].id
-          }
-        end
+      parents[quadrant_name].receptacles_with_position.map do |receptacle|
+        target_coordinate = Plate::QuadCreator.target_coordinate_for(receptacle.absolute_position_name, quadrant_index)
+        {
+          asset_id: receptacle.id,
+          target_asset_id: indexed_target_wells[target_coordinate].id
+        }
       end
-      # WIP: Unify interface
-      # parents[quadrant_name].receptacles_with_position.map do |receptacle|
-      #   target_coordinate = Plate::QuadCreator.target_coordinate_for(receptacle.absolute_position, quadrant_index)
-      #   {
-      #     asset_id: receptacle.id,
-      #     target_asset_id: indexed_target_wells[target_coordinate].id
-      #   }
-      # end
     end.compact
-  end
-
-  def parent_type
-    @parent_type ||= parents.values.first.label
   end
 
   class << self
