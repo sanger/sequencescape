@@ -9,7 +9,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
   let(:target_purpose) { create :plate_purpose, size: 384 }
   let(:user) { create :user }
-  let(:creation_options) { { parents: parents_hash, target_purpose: target_purpose, user: user } }
+  let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose: target_purpose, user: user } }
 
   setup do
     allow(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
@@ -33,10 +33,10 @@ RSpec.describe Plate::QuadCreator, type: :model do
   end
 
   context 'when loading from barcodes' do
-    let(:creation_options) { { parent_barcodes: parents_hash, target_purpose: target_purpose, user: user } }
+    let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose: target_purpose, user: user } }
 
     context 'when a barcode is invalid' do
-      let(:parents_hash) { { quad_1: 'INVALID' } }
+      let(:parent_barcodes_hash) { { 'quad_1' => 'INVALID' } }
 
       it { is_expected.not_to be_valid }
 
@@ -48,7 +48,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
     context 'when a parent is not a plate or rack' do
       let(:tube) { create :tube }
-      let(:parents_hash) { { quad_1: tube.machine_barcode } }
+      let(:parent_barcodes_hash) { { 'quad_1' => tube.machine_barcode } } # this should pass in the tube, not the barcode
 
       it { is_expected.not_to be_valid }
 
@@ -60,7 +60,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
     context 'when a parent is the wrong size' do
       let(:plate) { create :plate, size: 384, barcode: 1 }
-      let(:parents_hash) { { quad_1: plate.machine_barcode } }
+      let(:parent_barcodes_hash) { { 'quad_1' => plate.machine_barcode } } # this should pass in the plate, not the barcode
 
       it { is_expected.not_to be_valid }
 
@@ -76,12 +76,12 @@ RSpec.describe Plate::QuadCreator, type: :model do
       let(:occupied_wells) { [0, 95] }
       let(:number_of_parents) { 4 }
       let(:parents) { create_list :plate_with_untagged_wells, number_of_parents, occupied_well_index: occupied_wells } # 2 wells in each, A1 & H12
-      let(:parents_hash) do
+      let(:parent_barcodes_hash) do
         {
-          quad_1: parents[0],
-          quad_2: parents[1],
-          quad_3: parents[2],
-          quad_4: parents[3]
+          'quad_1' => parents[0].machine_barcode,
+          'quad_2' => parents[1].machine_barcode,
+          'quad_3' => parents[2].machine_barcode,
+          'quad_4' => parents[3].machine_barcode
         }
       end
       let(:quad_1_wells) { parents[0].wells.index_by(&:map_description) }
@@ -129,12 +129,17 @@ RSpec.describe Plate::QuadCreator, type: :model do
           expect { quad_creator.save }.to change(TransferRequestCollection, :count).by(1)
                                                                                    .and change(TransferRequest, :count).by(expected_transfers)
         end
+
+        it 'creates a custom metadatum collection and custom metadata' do
+          expect { quad_creator.save }.to change(CustomMetadatumCollection, :count).by(1)
+                                                                                   .and change(CustomMetadatum, :count).by(4)
+        end
       end
     end
 
     context 'with 1 parent' do
       let(:parents) { create_list :plate_with_untagged_wells, 1, occupied_well_index: [0, 95] } # 2 wells, A1 & H12
-      let(:parents_hash) { { quad_3: parents[0] } }
+      let(:parent_barcodes_hash) { { 'quad_3' => parents[0].machine_barcode } }
       let(:quad_3_wells) { parents[0].wells.index_by(&:map_description) }
 
       before { quad_creator.save }
@@ -151,12 +156,12 @@ RSpec.describe Plate::QuadCreator, type: :model do
     context 'with 4 parents' do
       let(:parents) { create_list :tube_rack_with_tubes, 4 }
       let(:total_number_of_tubes) { parents.sum { |parent| parent.tubes.count } }
-      let(:parents_hash) do
+      let(:parent_barcodes_hash) do
         {
-          quad_1: parents[0],
-          quad_2: parents[1],
-          quad_3: parents[2],
-          quad_4: parents[3]
+          'quad_1' => parents[0].machine_barcode,
+          'quad_2' => parents[1].machine_barcode,
+          'quad_3' => parents[2].machine_barcode,
+          'quad_4' => parents[3].machine_barcode
         }
       end
       let(:quad_1_tubes) { parents[0].tubes.index_by { |tube| tube.racked_tube.coordinate } }
@@ -205,11 +210,16 @@ RSpec.describe Plate::QuadCreator, type: :model do
         expect { quad_creator.save }.to change(TransferRequestCollection, :count).by(1)
                                                                                  .and change(TransferRequest, :count).by(expected_transfers)
       end
+
+      it 'creates a custom metadatum collection and custom metadata' do
+        expect { quad_creator.save }.to change(CustomMetadatumCollection, :count).by(1)
+                                                                                 .and change(CustomMetadatum, :count).by(4)
+      end
     end
 
     context 'with 1 parent' do
       let(:parents) { create_list :tube_rack_with_tubes, 1 }
-      let(:parents_hash) { { quad_3: parents[0] } }
+      let(:parent_barcodes_hash) { { 'quad_3' => parents[0].machine_barcode } }
       let(:quad_3_tubes) { parents[0].tubes.index_by { |tube| tube.racked_tube.coordinate } }
 
       before { quad_creator.save }

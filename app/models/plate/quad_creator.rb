@@ -5,13 +5,13 @@
 class Plate::QuadCreator
   include ActiveModel::Model
 
-  attr_accessor :parents, :target_purpose, :user, :user_barcode
+  attr_accessor :target_purpose, :user, :user_barcode
 
   validates :user, presence: { message: 'could not be found' }
   validate :all_parents_acceptable
 
   def save
-    valid? && creation.save && transfer_request_collection.save
+    valid? && creation.save && transfer_request_collection.save && quadrant_metadata_collection.save
   end
 
   def target_plate
@@ -21,13 +21,13 @@ class Plate::QuadCreator
   def parent_barcodes=(quad_barcodes)
     @parent_barcodes = quad_barcodes
     found_parents = Labware.with_barcode(quad_barcodes.values)
-    self.parents = quad_barcodes.transform_values do |barcode|
+    @parents = quad_barcodes.transform_values do |barcode|
       found_parents.detect { |candidate| candidate.any_barcode_matching?(barcode) } || :not_found
     end
   end
 
   def parent_barcodes
-    @parent_barcodes ||= parents.transform_values(&:machine_barcode)
+    @parent_barcodes ||= @parents.transform_values(&:machine_barcode)
   end
 
   def target_purpose_id
@@ -37,7 +37,7 @@ class Plate::QuadCreator
   private
 
   def all_parents_acceptable
-    parents.each do |location, parent|
+    @parents.each do |location, parent|
       case parent
       when Plate, TubeRack
         next if parent.size == 96
@@ -61,7 +61,7 @@ class Plate::QuadCreator
   end
 
   def creation
-    @creation ||= PooledPlateCreation.new(user: user, parents: parents.values, child_purpose: target_purpose)
+    @creation ||= PooledPlateCreation.new(user: user, parents: @parents.values, child_purpose: target_purpose)
   end
 
   def transfer_request_collection
@@ -73,10 +73,10 @@ class Plate::QuadCreator
 
   def transfer_requests_attributes
     # Logic for quad stamping.
-    %i[quad_1 quad_2 quad_3 quad_4].each_with_index.flat_map do |quadrant_name, quadrant_index|
-      next if parents[quadrant_name].blank?
+    %w[quad_1 quad_2 quad_3 quad_4].each_with_index.flat_map do |quadrant_name, quadrant_index|
+      next if @parents[quadrant_name].blank?
 
-      parents[quadrant_name].receptacles_with_position.map do |receptacle|
+      @parents[quadrant_name].receptacles_with_position.map do |receptacle|
         target_coordinate = Plate::QuadCreator.target_coordinate_for(receptacle.absolute_position_name, quadrant_index)
         {
           asset_id: receptacle.id,
@@ -84,6 +84,20 @@ class Plate::QuadCreator
         }
       end
     end.compact
+  end
+
+  # Sets up the metadata we store on the destination plate that tells us which source went into which quadrant.
+  # This will get displayed on the plate view in Sequencescape.
+  def quadrant_metadata_collection
+    quadrant_metadata = {}
+    %w[quad_1 quad_2 quad_3 quad_4].each_with_index do |quadrant_name, quadrant_index|
+      quadrant_metadata["Quadrant #{quadrant_index + 1}"] = parent_barcodes[quadrant_name] || 'Empty'
+    end
+    @quadrant_metadata_collection ||= CustomMetadatumCollection.new(
+      user: user,
+      asset: target_plate,
+      metadata: quadrant_metadata
+    )
   end
 
   class << self
