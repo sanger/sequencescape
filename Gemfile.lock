@@ -374,6 +374,8 @@ GEM
       nokogiri (~> 1)
       rspec (>= 3.0.0.a, < 4)
     rspec-json_expectations (2.2.0)
+    rspec-longrun (3.1.0)
+      rspec-core (>= 3.5.0, < 4)
     rspec-mocks (3.9.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
@@ -579,6 +581,7 @@ DEPENDENCIES
   rspec-collection_matchers
   rspec-html-matchers
   rspec-json_expectations
+  rspec-longrun
   rspec-rails
   rspec_junit_formatter
   rubocop
@@ -616,4 +619,4 @@ DEPENDENCIES
   yard-activerecord (~> 0.0.16)
 
 BUNDLED WITH
-   2.0.2
+   2.1.4
