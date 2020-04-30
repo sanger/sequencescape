@@ -45,6 +45,7 @@ module Api
       attribute :wells_content, readonly: true
       attribute :plate_purpose_uuid, readonly: true
       attribute :study_uuid, readonly: true
+      attribute :barcode, readonly: true
 
       # Filters
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
@@ -82,6 +83,10 @@ module Api
       def wells_content=(data); end
 
       def wells_content; end
+
+      def barcode; end
+
+      def barcode=(barcode); end
 
       # Class method overrides
     end

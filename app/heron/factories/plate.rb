@@ -5,7 +5,7 @@ module Heron
     # Factory class to create Heron tube racks
     class Plate
       include ActiveModel::Model
-      
+
       include Concerns::CoordinatesSupport
       include Concerns::ForeignBarcodes
 
@@ -78,7 +78,6 @@ module Heron
       def params_for_plate_creation
         @params.except(:study, :study_uuid, :plate_purpose, :plate_purpose_uuid, :wells_content, :barcode)
       end
-
     end
   end
 end

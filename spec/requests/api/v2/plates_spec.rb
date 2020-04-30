@@ -23,11 +23,13 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
           'B01': { 'sample_uuid': sample.uuid }
         }
       end
+      let(:barcode) { '0000000001' }
       let(:payload) do
         {
           'data' => {
             'type' => 'plates',
             'attributes' => {
+              "barcode": barcode,
               'plate_purpose_uuid' => purpose.uuid,
               'study_uuid' => study.uuid,
               'wells_content' => wells_content
@@ -50,24 +52,26 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
 
         context 'with the created plate' do
           let(:request) { api_post '/api/v2/plates', payload }
-          let(:plate_id) do 
+          let(:plate_id) do
             request
             JSON.parse(response.body)['data']['id']
           end
-          let(:plate) { ::Plate.find(plate_id)}
+          let(:plate) { ::Plate.find(plate_id) }
+
           it 'has defined the plate purpose' do
             expect(plate.plate_purpose).to eq(purpose)
           end
+
           it 'has the defined study' do
             expect(plate.studies).to eq([study])
           end
+
           it 'has a barcode' do
             expect(plate.primary_barcode).not_to be_nil
           end
-        end
 
-        context 'when we specify a foreign barcode' do
-          it 'creates the new plate with that barcode' do
+          it 'creates the new plate with the barcode specified' do
+            expect(plate.barcodes.map(&:barcode)).to include(barcode)
           end
         end
 
@@ -102,6 +106,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
             'data' => {
               'type' => 'plates',
               'attributes' => {
+                'barcode' => barcode,
                 'plate_purpose_uuid' => nil,
                 'study_uuid' => study.uuid,
                 'wells_content' => wells_content

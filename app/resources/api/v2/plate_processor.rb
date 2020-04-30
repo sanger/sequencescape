@@ -12,10 +12,10 @@ module Api
 
       def build_resource_response(factory)
         if factory.valid?
-          plate = nil
           ActiveRecord::Base.transaction do
-            plate = factory.create
+            factory.save
           end
+          plate = factory.plate
           JSONAPI::ResourceOperationResult.new(:created,
                                                PlateResource.new(plate, @context))
         else

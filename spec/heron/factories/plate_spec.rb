@@ -22,6 +22,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
 
   context 'with valid params' do
     let(:plate_factory) { described_class.new(params) }
+
     it 'can build a valid plate factory' do
       expect(plate_factory).to be_valid
     end
@@ -29,21 +30,24 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
 
   context 'with invalid params' do
     it 'is not valid without barcode' do
-      factory = described_class.new({ study: study, plate_purpose: purpose})
+      factory = described_class.new(study: study, plate_purpose: purpose)
       expect(factory).to be_invalid
     end
+
     it 'is not valid without a plate purpose' do
-      factory = described_class.new({ study: study, barcode: barcode })
+      factory = described_class.new(study: study, barcode: barcode)
       expect(factory).to be_invalid
     end
+
     it 'is not valid without a study' do
-      factory = described_class.new({ plate_purpose: purpose, barcode: barcode })
+      factory = described_class.new(plate_purpose: purpose, barcode: barcode)
       expect(factory).to be_invalid
     end
   end
 
   describe '#save' do
     let(:plate_factory) { described_class.new(params) }
+
     it 'can persist a new plate' do
       expect do
         plate_factory.save
@@ -51,10 +55,10 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
     end
 
     it 'does not create several plates in subsequent calls' do
-      expect{
+      expect do
         plate_factory.save
         plate_factory.save
-      }.to raise_error(StandardError).and(change(Plate, :count).by(1))
+      end.to raise_error(StandardError).and(change(Plate, :count).by(1))
     end
 
     context 'when providing samples information' do

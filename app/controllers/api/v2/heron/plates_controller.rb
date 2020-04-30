@@ -20,7 +20,7 @@ module Api
         private
 
         def params_for_plate
-          params.require(:data).require(:attributes).require(:plate).permit(:barcode, wells_content: [], :plate_purpose_uuid, :study_uuid))
+          params.require(:data).require(:attributes).require(:plate).permit(:barcode, { wells_content: [] }, :plate_purpose_uuid, :study_uuid)
         end
       end
     end
