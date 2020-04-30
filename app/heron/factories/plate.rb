@@ -5,14 +5,12 @@ module Heron
     # Factory class to create Heron tube racks
     class Plate
       include ActiveModel::Model
-
-      include Concerns::CoordinatesSupport
       include Concerns::ForeignBarcodes
 
       attr_accessor :plate
 
-      validates_presence_of :study, :plate_purpose
-      validate :check_valid_samples_information
+      validates_presence_of :plate_purpose
+      validate :validate_wells_content
 
       def initialize(params)
         @params = params
@@ -22,31 +20,16 @@ module Heron
         @params[:barcode]
       end
 
-      def check_valid_samples_information
-        return if sample_factories.empty?
-
-        return if sample_factories.values.flatten.all?(&:valid?)
-
-        sample_factories.each do |k, factories|
-          factories.each do |factory|
-            errors.add(k, factory.errors)
-          end
-        end
+      def wells_content
+        @wells_content ||= ::Heron::Factories::WellsContent.new(@params[:wells_content])
       end
 
-      def sample_factories
-        return [] unless @params[:wells_content]
+      def validate_wells_content
+        return if wells_content.valid?
 
-        @sample_factories ||= @params[:wells_content].keys.each_with_object({}) do |location, memo|
-          samples_params = [@params[:wells_content][location]].flatten
-          memo[location] = samples_params.map do |sample_params|
-            ::Heron::Factories::Sample.new(sample_params.merge(study: study))
-          end
+        wells_content.sample_factories.each do |factory|
+          errors.add(:sample, factory.errors)
         end
-      end
-
-      def study
-        @study ||= @params[:study] || Study.with_uuid(@params[:study_uuid]).first
       end
 
       def plate_purpose
@@ -61,22 +44,13 @@ module Heron
 
           Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
 
-          create_samples!(plate)
+          wells_content.add_aliquots_into_plate(plate)
         end
         true
       end
 
-      def create_samples!(plate)
-        sample_factories.each do |location, factories|
-          well_at_location = plate.wells.located_at(unpad_coordinate(location)).first
-          factories.each do |factory|
-            factory.create_aliquot_at(well_at_location) if factory.valid?
-          end
-        end
-      end
-
       def params_for_plate_creation
-        @params.except(:study, :study_uuid, :plate_purpose, :plate_purpose_uuid, :wells_content, :barcode)
+        @params.except(:plate_purpose, :plate_purpose_uuid, :wells_content, :barcode)
       end
     end
   end

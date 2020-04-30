@@ -5,17 +5,14 @@ module Heron
     class Sample
       include ActiveModel::Model
 
-      validates_presence_of :study
-
-      validate :check_no_other_params_when_uuid
+      validates_presence_of :study, unless: :sample_already_present?
+      validate :check_no_other_params_when_uuid, if: :sample_already_present?
 
       def initialize(params)
         @params = params
       end
 
       def check_no_other_params_when_uuid
-        return unless @params[:sample_uuid]
-
         errors.add(:base, 'No other params can be added when sample uuid specified') unless sample_keys.empty?
       end
 
@@ -54,6 +51,10 @@ module Heron
         return @sample if @sample
 
         @sample = ::Sample.with_uuid(@params[:sample_uuid]).first if @params[:sample_uuid]
+      end
+
+      def sample_already_present?
+        sample.present?
       end
 
       def create_sample!

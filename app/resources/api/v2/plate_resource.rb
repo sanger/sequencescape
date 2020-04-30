@@ -62,9 +62,10 @@ module Api
       end
 
       # Custom methods for Plate creation
-      HERON_PLATE_CREATION_ATTRS = %i[study_uuid wells_content barcode plate_purpose_uuid].freeze
+      HERON_PLATE_CREATION_ATTRS = %i[barcode wells_content plate_purpose_uuid study_uuid].freeze
       attributes(*HERON_PLATE_CREATION_ATTRS)
       attr_reader(*HERON_PLATE_CREATION_ATTRS)
+
       def self.fetchable_fields(context)
         super - HERON_PLATE_CREATION_ATTRS
       end

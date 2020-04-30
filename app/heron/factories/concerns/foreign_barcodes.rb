@@ -14,7 +14,7 @@ module Heron
             attr_accessor :barcode
 
             validates_presence_of :barcode
-            validate :check_barcode
+            validate :check_barcode_format, :check_foreign_barcode_unique
           end
         end
 
@@ -22,13 +22,16 @@ module Heron
           Barcode.matching_barcode_format(barcode)
         end
 
-        def check_barcode
-          if barcode_format.nil?
-            error_message = "The barcode '#{barcode}' is not a recognised format."
-            errors.add(:base, error_message)
-            return false
-          end
-          true
+        def check_barcode_format
+          return if barcode_format.present?
+
+          errors.add(:base, "The barcode '#{barcode}' is not a recognised format.")
+        end
+
+        def check_foreign_barcode_unique
+          return unless Barcode.exists_for_format?(barcode_format, barcode)
+
+          errors.add(:base, 'foreign barcode is already in use.')
         end
       end
     end

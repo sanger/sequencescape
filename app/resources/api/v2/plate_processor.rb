@@ -6,8 +6,16 @@ module Api
     # Otherwise it will be a 201
     class PlateProcessor < JSONAPI::Processor
       def create_resource
-        factory = ::Heron::Factories::Plate.new(params_for_creation)
-        build_resource_response(factory) || super
+        if creation_defined_by_plate_purpose?
+          factory = ::Heron::Factories::Plate.new(params_for_creation)
+          build_resource_response(factory) || super
+        else
+          super
+        end
+      end
+
+      def creation_defined_by_plate_purpose?
+        return true if params_for_creation.key?(:plate_purpose_uuid)
       end
 
       def build_resource_response(factory)

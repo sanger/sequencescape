@@ -19,7 +19,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
       let!(:sample) { create(:sample) }
       let(:wells_content) do
         {
-          'A01': { 'phenotype': 'A phenotype' },
+          'A01': { 'phenotype': 'A phenotype', 'study_uuid': study.uuid },
           'B01': { 'sample_uuid': sample.uuid }
         }
       end
@@ -31,7 +31,6 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
             'attributes' => {
               "barcode": barcode,
               'plate_purpose_uuid' => purpose.uuid,
-              'study_uuid' => study.uuid,
               'wells_content' => wells_content
             }
           }
