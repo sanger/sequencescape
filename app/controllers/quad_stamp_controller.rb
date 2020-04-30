@@ -22,7 +22,7 @@ class QuadStampController < ApplicationController
 
     if @quad_creator.save
       print_labels
-      redirect_to asset_path(@quad_creator.target_plate), notice: "A new #{@target_purpose.name} plate was created and labels printed"
+      redirect_to labware_path(@quad_creator.target_plate), notice: "A new #{@target_purpose.name} plate was created and labels printed"
     else
       render :new
     end
