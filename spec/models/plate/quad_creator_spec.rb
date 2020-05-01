@@ -150,12 +150,22 @@ RSpec.describe Plate::QuadCreator, type: :model do
         expect(well_hash['O24'].samples).to eq(quad_3_wells['H12'].samples)
       end
     end
+
+    context 'with zero parents' do
+      let(:parent_barcodes_hash) { {} }
+
+      it { is_expected.not_to be_valid }
+
+      it 'produces a useful error' do
+        quad_creator.valid?
+        expect(quad_creator.errors.full_messages).to include('Parent barcodes Please fill in at least one quadrant.')
+      end
+    end
   end
 
   context 'with parent tube racks' do
     context 'with 4 parents' do
       let(:parents) { create_list :tube_rack_with_tubes, 4 }
-      let(:total_number_of_tubes) { parents.sum { |parent| parent.tubes.count } }
       let(:parent_barcodes_hash) do
         {
           'quad_1' => parents[0].machine_barcode,
@@ -171,8 +181,6 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
       describe '#save' do
         before do
-          # @transfer_request_collection_count = TransferRequestCollection.count
-          # @transfer_request_count = TransferRequest.count
           quad_creator.save
         end
 
@@ -200,34 +208,58 @@ RSpec.describe Plate::QuadCreator, type: :model do
           end
         end
       end
+    end
+  end
 
-      it 'records an asset creation' do
-        expect { quad_creator.save }.to change(AssetCreation, :count).by(1)
-      end
+  context 'with a mixture of parent plates and racks' do
+    let(:parents_plates) { create_list :plate_with_untagged_wells, 2, occupied_well_index: [0, 95] } # 2 wells in each, A1 & H12
+    let(:parents_racks) { create_list :tube_rack_with_tubes, 2 }
 
-      it 'creates the correct transfer request collection' do
-        expected_transfers = total_number_of_tubes
-        expect { quad_creator.save }.to change(TransferRequestCollection, :count).by(1)
-                                                                                 .and change(TransferRequest, :count).by(expected_transfers)
-      end
-
-      it 'creates a custom metadatum collection and custom metadata' do
-        expect { quad_creator.save }.to change(CustomMetadatumCollection, :count).by(1)
-                                                                                 .and change(CustomMetadatum, :count).by(4)
-      end
+    let(:parent_barcodes_hash) do
+      {
+        'quad_1' => parents_plates[0].machine_barcode,
+        'quad_2' => parents_plates[1].machine_barcode,
+        'quad_3' => parents_racks[0].machine_barcode,
+        'quad_4' => parents_racks[1].machine_barcode
+      }
     end
 
-    context 'with 1 parent' do
-      let(:parents) { create_list :tube_rack_with_tubes, 1 }
-      let(:parent_barcodes_hash) { { 'quad_3' => parents[0].machine_barcode } }
-      let(:quad_3_tubes) { parents[0].tubes.index_by { |tube| tube.racked_tube.coordinate } }
+    let(:quad_1_wells) { parents_plates[0].wells.index_by(&:map_description) }
+    let(:quad_2_wells) { parents_plates[1].wells.index_by(&:map_description) }
+    let(:quad_3_tubes) { parents_racks[0].tubes.index_by { |tube| tube.racked_tube.coordinate } }
+    let(:quad_4_tubes) { parents_racks[1].tubes.index_by { |tube| tube.racked_tube.coordinate } }
 
-      before { quad_creator.save }
+    describe '#save' do
+      before do
+        quad_creator.save
+      end
 
-      it 'will transfer the material from the source plates' do
+      it 'will create a new plate of the selected purpose' do
+        expect(quad_creator.target_plate.purpose).to eq target_purpose
+      end
+
+      # rubocop:disable RSpec/ExampleLength
+      it 'will transfer the material from the sources' do
         well_hash = quad_creator.target_plate.wells.index_by(&:map_description)
+        expect(well_hash['A1'].samples).to eq(quad_1_wells['A1'].samples)
+        expect(well_hash['B1'].samples).to eq(quad_2_wells['A1'].samples)
         expect(well_hash['A2'].samples).to eq(quad_3_tubes['A1'].samples)
+        expect(well_hash['B2'].samples).to eq(quad_4_tubes['A1'].samples)
+        expect(well_hash['O23'].samples).to eq(quad_1_wells['H12'].samples)
+        expect(well_hash['P23'].samples).to eq(quad_2_wells['H12'].samples)
         expect(well_hash['O24'].samples).to eq(quad_3_tubes['H12'].samples)
+        expect(well_hash['P24'].samples).to eq(quad_4_tubes['H12'].samples)
+      end
+      # rubocop:enable RSpec/ExampleLength
+
+      it 'will set each parent as a parent rack or plate of the target' do
+        parents_plates.each do |parent|
+          expect(quad_creator.target_plate.parents).to include(parent)
+        end
+
+        parents_racks.each do |parent|
+          expect(quad_creator.target_plate.parents).to include(parent)
+        end
       end
     end
   end

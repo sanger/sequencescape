@@ -9,6 +9,7 @@ class Plate::QuadCreator
 
   validates :user, presence: { message: 'could not be found' }
   validate :all_parents_acceptable
+  validate :at_least_one_parent
 
   def save
     valid? && creation.save && transfer_request_collection.save && quadrant_metadata_collection.save
@@ -49,6 +50,10 @@ class Plate::QuadCreator
         add_error(location, 'is not a plate or tube rack')
       end
     end
+  end
+
+  def at_least_one_parent
+    errors.add(:parent_barcodes, 'Please fill in at least one quadrant.') if @parents.empty?
   end
 
   def add_error(location, message)

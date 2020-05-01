@@ -10,8 +10,8 @@
   <%= panel do %>
     <%= form.inputs name: "Sources" do %>
       <%= form.input :user_barcode, input_html: { class: 'form-control' } %>
-      <p>Enter between 1 and 4 plate OR tube rack barcodes (not a mixture) in your chosen quadrants:</p>
-
+      <p>Enter between 1 and 4 plate or tube rack barcodes in your chosen quadrants:</p>
+      <br>
       <%= form.fields_for :parent_barcodes do |parent_barcodes| %>
         <%= parent_barcodes.input :quad_1, label: 'Quadrant 1', required: false, input_html: { class: 'form-control' } %>
         <%= parent_barcodes.input :quad_2, label: 'Quadrant 2', required: false, input_html: { class: 'form-control' } %>
