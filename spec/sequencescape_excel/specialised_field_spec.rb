@@ -605,4 +605,33 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
     end
   end
+
+  describe SequencescapeExcel::SpecialisedField::PrimerPanel do
+    let(:primer_panel) { create :primer_panel }
+
+    it 'will not be valid without a persisted primer panel' do
+      expect(described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: 'A new primer panel', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    end
+
+    it 'will be valid if blank' do
+      expect(described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)).to be_valid
+    end
+
+    it 'will add the the value to the aliquot' do
+      specialised_field = described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update(aliquot: aliquot)
+      expect(aliquot.primer_panel).to eq(primer_panel)
+    end
+
+    context 'with multiple aliquots' do
+      let(:asset) { create(:tagged_well, map: map, aliquot_count: 2) }
+
+      it 'will add the the value to all aliquots' do
+        specialised_field = described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)
+        specialised_field.update(aliquot: aliquot)
+        expect(asset.aliquots).to all(have_attributes(primer_panel: primer_panel))
+      end
+    end
+  end
 end

@@ -830,3 +830,23 @@ pacbio:
   conditional_formattings:
     empty_cell:
     is_error:
+primer_panel:
+  heading: PRIMER PANEL
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: true
+      showDropDown: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Primer panel"
+      error: "You must enter a primer panel from the list provided."
+      promptTitle: "Primer panel"
+      prompt: "Provide a primer panel from the approved list"
+    range_name: :primer_panel
+  conditional_formattings:
+    empty_cell:
+    is_error:

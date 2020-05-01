@@ -172,6 +172,7 @@ plate_library:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
+    - :primer_panel
 plate_chromium_library:
   heading: "Chromium Library Plate"
   asset_type: "library_plate"
@@ -386,6 +387,7 @@ tube_multiplexed_library:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :primer_panel
 tube_library_with_tag_sequences:
   heading: "Library Tube with Tag Sequences"
   asset_type: "library"
@@ -427,6 +429,7 @@ tube_library_with_tag_sequences:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :primer_panel
 tube_chromium_library:
   heading: "Chromium Library Tube"
   asset_type: "library"
@@ -509,6 +512,7 @@ tube_multiplexed_library_with_tag_sequences:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :primer_panel
 tube_multiplexed_chromium_library:
   heading: "Multiplexed Chromium Library Tube"
   asset_type: "multiplexed_library"
