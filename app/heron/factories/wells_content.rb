@@ -9,20 +9,25 @@ module Heron
 
       validate :sample_factories
 
-      def initialize(params)
+      attr_accessor :study_uuid
+
+      def initialize(params, study_uuid = nil)
         @params = params
+        @study_uuid = study_uuid
       end
 
       def sample_factories
         return [] unless @params
 
         @sample_factories ||= @params.keys.each_with_object({}) do |location, memo|
-          errors.add(:coordinate, 'Invalid coordinate format') unless coordinate_valid?(location)
+          errors.add(:coordinate, "Invalid coordinate format (#{location})") unless coordinate_valid?(location)
 
           samples_params = [@params[location]].flatten
-          memo[location] = samples_params.map do |sample_params|
+          memo[location] = samples_params.each_with_index.map do |sample_params, pos|
+            label = samples_params.length == 1 ? location : "#{location}, pos: #{pos}"
+            sample_params = sample_params.merge(study_uuid: study_uuid) if study_uuid
             factory = ::Heron::Factories::Sample.new(sample_params)
-            errors.add(:sample, factory.errors) unless factory.valid?
+            errors.add(label, factory.errors.full_messages) unless factory.valid?
             factory
           end
         end

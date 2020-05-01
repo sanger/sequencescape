@@ -1,68 +1,26 @@
 module Api
   module V2
-    # This class defines the callback for the creation of the resource that we use
-    # for creating the model using Heron::Factories::Plate.
-    # If the factory detects any problem it returns a 422 with the error messages.
-    # Otherwise it will be a 201
+    # This class adds the plate purpose to the context so PlateResource can use it to
+    # generate the new instance of the Plate
     class PlateProcessor < JSONAPI::Processor
       def create_resource
-        if creation_defined_by_plate_purpose?
-          factory = ::Heron::Factories::Plate.new(params_for_creation)
-          build_resource_response(factory) || super
-        else
+        @params.dig(:data, :attributes).tap do |attrs|
+          # We permit wells content as it is not permitted by default
+          attrs[:wells_content]&.permit!
+
+          inject_study(attrs[:wells_content], attrs[:study_uuid]) if attrs[:wells_content] && attrs[:study_uuid]
+
+          # We set up context to store plate_purpose_uuid
+          @context[:plate_purpose_uuid] = attrs[:plate_purpose_uuid] if attrs[:plate_purpose_uuid]
+        end
+        ActiveRecord::Base.transaction do
           super
         end
       end
 
-      def creation_defined_by_plate_purpose?
-        return true if params_for_creation.key?(:plate_purpose_uuid)
-      end
-
-      def build_resource_response(factory)
-        if factory.valid?
-          ActiveRecord::Base.transaction do
-            factory.save
-          end
-          plate = factory.plate
-          JSONAPI::ResourceOperationResult.new(:created,
-                                               PlateResource.new(plate, @context))
-        else
-          JSONAPI::ErrorsOperationResult.new(:unprocessable_entity, errors_for_factory(factory))
-        end
-      rescue StandardError => e
-        error_objs = errors_for_factory(factory) || ErrorForOperation.new(:internal_server_error, e.msg)
-        JSONAPI::ErrorsOperationResult.new(:internal_server_error, error_objs)
-      end
-
-      # JSON-API resources requires a model that responds to :status when generating the error
-      # response using ErrorsOperationResult. This class encapsulates the ActiveModel::Errors
-      # list so it can be rendered by ErrorsOperationResult
-      class ErrorForOperation
-        def initialize(status, msg)
-          @status = status
-          @msg = msg
-        end
-
-        attr_reader :status
-
-        def to_s
-          @msg
-        end
-      end
-
-      # It generates a list of ErrorForOperation that can be used by JSONapi::ErrorsOperationResult
-      # to render the error message from the Plate factory
-      def errors_for_factory(factory)
-        factory.errors.full_messages.map do |msg|
-          ErrorForOperation.new(:unprocessable_entity, msg)
-        end
-      end
-
-      # wells_content is not part of the standard set of attributes for plate so it needed to be
-      # permitted
-      def params_for_creation
-        params.dig(:data, :attributes).tap do |attrs|
-          attrs[:wells_content].permit!
+      def inject_study(wells_content, study_uuid)
+        [wells_content.values].flatten.each do |content|
+          content[:study_uuid] = study_uuid
         end
       end
     end

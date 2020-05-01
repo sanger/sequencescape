@@ -15,6 +15,39 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
       end
     end
 
+    context 'when receiving a column that does not exist in sample or sample metadata' do
+      let(:params) { { "study": study, 'asdf': 'wrong' } }
+
+      it 'is not valid' do
+        factory = described_class.new(params)
+        expect(factory).to be_invalid
+      end
+
+      it 'stores the error message' do
+        factory = described_class.new(params)
+        factory.validate
+        expect(factory.errors.full_messages).to eq(['Asdf Unexisting field for sample or sample_metadata'])
+      end
+    end
+
+    context 'when receiving other fields and sample_uuid' do
+      let(:sample) { create(:sample) }
+      let(:params) { { "study": study, 'phenotype': 'A phenotype', 'sample_uuid': sample.uuid } }
+
+      it 'is not valid' do
+        factory = described_class.new(params)
+        expect(factory).to be_invalid
+      end
+
+      it 'stores the error message' do
+        factory = described_class.new(params)
+        factory.validate
+        expect(factory.errors.full_messages).to eq(
+          ['Phenotype No other params can be added when sample uuid specified']
+        )
+      end
+    end
+
     context 'when receiving a study uuid' do
       context 'when the study uuid exists' do
         let(:params) { { "study_uuid": study.uuid } }

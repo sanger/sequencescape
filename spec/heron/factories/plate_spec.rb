@@ -81,6 +81,27 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
           change(Sample, :count).by(2).and(change(Aliquot, :count).by(3))
         )
       end
+
+      context 'when there is an error in the sample info' do
+        let(:wells_content) do
+          {
+            'A01': { 'wrong': 'wrong', study_uuid: study.uuid },
+            'C01': [{ 'phenotype': 'right' }, { sample_uuid: sample.uuid, 'phenotype': 'wrong' }]
+          }
+        end
+
+        it 'is invalid' do
+          expect(plate_factory).to be_invalid
+        end
+
+        it 'stores the error message from samples' do
+          expect(plate_factory.tap(&:validate).errors.full_messages).to eq([
+            'Wells content A01 Wrong Unexisting field for sample or sample_metadata',
+            "Wells content C01, pos: 0 Study can't be blank",
+            'Wells content C01, pos: 1 Phenotype No other params can be added when sample uuid specified'
+          ])
+        end
+      end
     end
   end
 end

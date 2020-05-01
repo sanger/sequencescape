@@ -21,14 +21,46 @@ RSpec.describe Heron::Factories::WellsContent, type: :model, lighthouse: true, h
   end
 
   context 'with invalid params' do
-    it 'is not valid if keys are not valid coordinates' do
-      factory = described_class.new('test1': [])
-      expect(factory).to be_invalid
+    context 'when keys are not valid coordinates' do
+      let(:params) { { 'test1': [], 'B01': [], 'test2': [] } }
+
+      it 'is not valid' do
+        factory = described_class.new(params)
+        expect(factory).to be_invalid
+      end
+
+      it 'gets an error message about it for each wrong location' do
+        factory = described_class.new(params)
+        factory.validate
+        expect(factory.errors.full_messages.uniq).to eq(
+          ['Coordinate Invalid coordinate format (test1)', 'Coordinate Invalid coordinate format (test2)']
+        )
+      end
     end
 
-    it 'is not valid if the samples factories are not valid either' do
-      factory = described_class.new('A1': { 'asdf': 'wrong' })
-      expect(factory).to be_invalid
+    context 'when the samples have wrong fields' do
+      let(:study) { create(:study) }
+      let(:sample) { create(:sample) }
+      let(:params) do
+        {
+          'A1': [{ 'phenotype': 'Another phenotype', 'study_uuid': study.uuid }, { 'phenotype': 'A phenotype', 'study_uuid': study.uuid }],
+          'B1': [{ 'phenotype': 'Right', 'study_uuid': study.uuid }, { 'sample_uuid': sample.uuid, 'phenotype': 'wrong' }],
+          'C1': { 'phenotype': 'Right', 'asdf': 'wrong' }
+        }
+      end
+
+      it 'is not valid' do
+        factory = described_class.new(params)
+        expect(factory).to be_invalid
+      end
+
+      it 'gets an error message about it for each wrong sample' do
+        expect(described_class.new(params).tap(&:validate).errors.full_messages.uniq).to eq([
+          'B1, pos: 1 Phenotype No other params can be added when sample uuid specified',
+          "C1 Study can't be blank",
+          'C1 Asdf Unexisting field for sample or sample_metadata'
+        ])
+      end
     end
   end
 

@@ -10,8 +10,8 @@ module Api
 
         def create
           factory = ::Heron::Factories::Plate.new(params_for_plate)
-          if factory.save
-            render json: {}, status: :created
+          if factory.valid? && factory.save
+            render json: { data: { attributes: { uuid: factory.plate.uuid } } }, status: :created
           else
             render json: { errors: factory.errors.full_messages }, status: :unprocessable_entity
           end
@@ -20,7 +20,10 @@ module Api
         private
 
         def params_for_plate
-          params.require(:data).require(:attributes).require(:plate).permit(:barcode, { wells_content: [] }, :plate_purpose_uuid, :study_uuid)
+          params.require(:data).require(:attributes).permit(
+            :barcode, :plate_purpose_uuid, :study_uuid,
+            wells_content: {}
+          )
         end
       end
     end

@@ -13,23 +13,113 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
       mock_plate_barcode_service
     end
 
-    context 'when providing a payload for creating a plate' do
-      let(:purpose) { create(:plate_purpose) }
-      let(:study) { create(:study) }
-      let!(:sample) { create(:sample) }
-      let(:wells_content) do
-        {
-          'A01': { 'phenotype': 'A phenotype', 'study_uuid': study.uuid },
-          'B01': { 'sample_uuid': sample.uuid }
-        }
+    let(:request) { api_post '/api/v2/plates', payload }
+    let(:plate) do
+      request
+      uuid = JSON.parse(response.body).dig('data', 'attributes', 'uuid')
+      Plate.with_uuid(uuid).first
+    end
+
+    shared_examples_for 'a successful plate creation' do
+      it 'returns 201' do
+        request
+        expect(response).to have_http_status(:created)
       end
-      let(:barcode) { '0000000001' }
+
+      it 'can create a plate' do
+        expect { request }.to change(Plate, :count).by(1)
+      end
+    end
+
+    context 'when providing a payload using default JSON API' do
+      let(:purpose) { create :plate_purpose }
+      let(:well) { create :well }
+      let(:well2) { create :well }
       let(:payload) do
         {
           'data' => {
             'type' => 'plates',
             'attributes' => {
-              "barcode": barcode,
+            },
+            'relationships': {
+              'purpose': {
+                'data': { 'id': purpose.id.to_s, 'type': 'purposes' }
+              },
+              'wells': {
+                'data': [
+                  { 'type': 'wells', 'id': well.id }, { 'type': 'wells', 'id': well2.id }
+                ]
+              }
+            }
+          }
+        }
+      end
+
+      it_behaves_like 'a successful plate creation'
+      it 'creates the wells' do
+        expect(plate.wells).to eq([well, well2])
+      end
+    end
+
+    context 'when providing plate_purpose_uuid' do
+      let(:purpose) { create(:plate_purpose) }
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'plates',
+            'attributes' => {
+              'plate_purpose_uuid' => purpose.uuid
+            }
+          }
+        }
+      end
+
+      it_behaves_like 'a successful plate creation'
+
+      it 'has defined the plate purpose' do
+        request
+        expect(plate.plate_purpose).to eq(purpose)
+      end
+    end
+
+    context 'when providing a barcode' do
+      let(:barcode) { '0000000001' }
+      let(:purpose) { create(:plate_purpose) }
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'plates',
+            'attributes' => {
+              'barcode': barcode,
+              'plate_purpose_uuid' => purpose.uuid
+            }
+          }
+        }
+      end
+
+      it_behaves_like 'a successful plate creation'
+
+      it 'has defined the plate purpose' do
+        expect(plate.plate_purpose).to eq(purpose)
+      end
+    end
+
+    context 'when providing wells_content' do
+      let(:purpose) { create(:plate_purpose) }
+      let(:study) { create(:study) }
+      let!(:sample) { create(:sample) }
+      let(:wells_content) do
+        {
+          'A01': { 'phenotype': 'A phenotype' },
+          'B01': { 'sample_uuid': sample.uuid }
+        }
+      end
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'plates',
+            'attributes' => {
+              'study_uuid' => study.uuid,
               'plate_purpose_uuid' => purpose.uuid,
               'wells_content' => wells_content
             }
@@ -37,104 +127,49 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
         }
       end
 
-      context 'when payload is valid' do
-        it 'creates a new plate' do
-          expect do
-            api_post '/api/v2/plates', payload
-          end.to(change(Plate, :count).by(1).and(
-            change(Sample, :count).by(1)
-          ).and(
-            change(Aliquot, :count).by(2)
-          ))
-          expect(response).to have_http_status(:created)
-        end
+      it_behaves_like 'a successful plate creation'
 
-        context 'with the created plate' do
-          let(:request) { api_post '/api/v2/plates', payload }
-          let(:plate_id) do
-            request
-            JSON.parse(response.body)['data']['id']
-          end
-          let(:plate) { ::Plate.find(plate_id) }
-
-          it 'has defined the plate purpose' do
-            expect(plate.plate_purpose).to eq(purpose)
-          end
-
-          it 'has the defined study' do
-            expect(plate.studies).to eq([study])
-          end
-
-          it 'has a barcode' do
-            expect(plate.primary_barcode).not_to be_nil
-          end
-
-          it 'creates the new plate with the barcode specified' do
-            expect(plate.barcodes.map(&:barcode)).to include(barcode)
-          end
-        end
-
-        context 'when there is an exception during plate creation' do
-          before do
-            allow(::Sample).to receive(:with_uuid).with(sample.uuid).and_raise('BOOM!!')
-          end
-
-          it 'does not create any plates' do
-            expect do
-              api_post '/api/v2/plates', payload
-            end.not_to change(Plate, :count)
-          end
-
-          it 'does not create any samples' do
-            expect do
-              api_post '/api/v2/plates', payload
-            end.not_to change(Sample, :count)
-          end
-
-          it 'does not create any aliquots' do
-            expect do
-              api_post '/api/v2/plates', payload
-            end.not_to change(Aliquot, :count)
-          end
-        end
+      it 'creates a new plate with that content' do
+        expect { request }.to change(Sample, :count).by(1).and change(Aliquot, :count).by(2)
       end
 
-      context 'when payload is not valid' do
+      it 'has the defined study' do
+        expect(plate.studies).to eq([study])
+      end
+
+      context 'when not providing study' do
         let(:payload) do
           {
             'data' => {
               'type' => 'plates',
               'attributes' => {
-                'barcode' => barcode,
-                'plate_purpose_uuid' => nil,
-                'study_uuid' => study.uuid,
+                'plate_purpose_uuid' => purpose.uuid,
                 'wells_content' => wells_content
               }
             }
           }
         end
 
-        it 'does not create a new plate' do
-          expect do
-            api_post '/api/v2/plates', payload
-          end.not_to(change(Plate, :count))
+        it 'does not create a plate' do
+          expect { request }.not_to change(Plate, :count)
+        end
+      end
+
+      context 'when there is an exception during plate creation' do
+        before do
+          allow(::Sample).to receive(:with_uuid).with(sample.uuid).and_raise('BOOM!!')
         end
 
-        it 'does not create a new sample' do
-          expect do
-            api_post '/api/v2/plates', payload
-          end.not_to(change(Sample, :count))
+        it 'does not create any plates' do
+          expect { request }.not_to change(Plate, :count)
         end
 
-        it 'returns an error code' do
-          api_post '/api/v2/plates', payload
-          expect(response).to have_http_status(:unprocessable_entity)
+        it 'does not create any samples' do
+          expect { request }.not_to change(Sample, :count)
         end
 
-        it 'returns an error message' do
-          api_post '/api/v2/plates', payload
-          msg = JSON.parse(response.body)['errors'][0]['msg']
-          expect(msg).to eq("Plate purpose can't be blank")
+        it 'does not create any aliquots' do
+          expect { request }.not_to change(Aliquot, :count)
         end
       end
     end

@@ -57,6 +57,7 @@ Rails.application.routes.draw do
       namespace :heron do
         resources :tube_rack_statuses, only: [:create]
         resources :tube_racks, only: [:create]
+        resources :plates, only: [:create]
       end
     end
   end

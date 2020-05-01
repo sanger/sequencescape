@@ -21,15 +21,13 @@ module Heron
       end
 
       def wells_content
-        @wells_content ||= ::Heron::Factories::WellsContent.new(@params[:wells_content])
+        @wells_content ||= ::Heron::Factories::WellsContent.new(@params[:wells_content], @params[:study_uuid])
       end
 
       def validate_wells_content
         return if wells_content.valid?
 
-        wells_content.sample_factories.each do |factory|
-          errors.add(:sample, factory.errors)
-        end
+        errors.add(:wells_content, wells_content.errors.full_messages)
       end
 
       def plate_purpose
@@ -40,17 +38,13 @@ module Heron
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          @plate = plate_purpose.create!(params_for_plate_creation)
+          @plate = plate_purpose.create!
 
           Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
 
           wells_content.add_aliquots_into_plate(plate)
         end
         true
-      end
-
-      def params_for_plate_creation
-        @params.except(:plate_purpose, :plate_purpose_uuid, :wells_content, :barcode)
       end
     end
   end

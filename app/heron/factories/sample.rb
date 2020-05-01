@@ -7,13 +7,18 @@ module Heron
 
       validates_presence_of :study, unless: :sample_already_present?
       validate :check_no_other_params_when_uuid, if: :sample_already_present?
+      validate :all_fields_are_existing_columns
 
       def initialize(params)
         @params = params
       end
 
       def check_no_other_params_when_uuid
-        errors.add(:base, 'No other params can be added when sample uuid specified') unless sample_keys.empty?
+        return if sample_keys.empty?
+
+        sample_keys.each do |key|
+          errors.add(key, 'No other params can be added when sample uuid specified')
+        end
       end
 
       def sample_keys
@@ -63,6 +68,21 @@ module Heron
         @sample = ::Sample.create!(params_for_sample_creation) do |sample|
           sample.sample_metadata.update!(params_for_sample_metadata_table)
           sample.studies << study
+        end
+      end
+
+      def unexisting_column_keys
+        (sample_keys - [
+          params_for_sample_table.keys,
+          params_for_sample_metadata_table.keys
+        ].flatten.map(&:to_sym))
+      end
+
+      def all_fields_are_existing_columns
+        return if unexisting_column_keys.empty?
+
+        unexisting_column_keys.each do |col|
+          errors.add(col, 'Unexisting field for sample or sample_metadata')
         end
       end
 
