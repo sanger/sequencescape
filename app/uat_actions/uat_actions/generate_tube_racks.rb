@@ -25,7 +25,7 @@ class UatActions::GenerateTubeRacks < UatActions
 
   def perform
     rack_count.to_i.times do |i|
-      TubeRack.create!.tap do |rack|
+      TubeRack.create!(size: 96).tap do |rack|
         Barcode.create!(asset: rack, barcode: "AB#{Time.zone.now.hash.abs.to_s.slice(0, 8)}", format: 'fluidx_barcode')
         construct_tubes(rack)
         report["rack_#{i}"] = rack.human_barcode

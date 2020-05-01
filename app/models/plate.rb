@@ -89,6 +89,12 @@ class Plate < Labware
     super || PlateType.plate_default_type
   end
 
+  # Used to unify interface with TubeRacks. Returns a list of all receptacles {Well wells}
+  # with position information included for aid performance
+  def receptacles_with_position
+    wells.includes(:map)
+  end
+
   # The state of a plate loosely defines what has happened to it. In most cases it is determined
   # by aggregating the state of transfer requests into the wells, although exact behaviour is determined
   # by the {PlatePurpose}. State typically only works for pipeline application plates. In general:

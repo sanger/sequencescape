@@ -1,3 +1,5 @@
+<% add :menu, 'Status of Tube Rack Imports' => tube_rack_statuses_path %>
+
 <%= page_title "Sample Management", "Lab view" %>
 <div class="card-columns">
   <%= panel :info, title: 'Verification' do %>
@@ -7,9 +9,11 @@
       <p>Verify cherrypicked plates which have been created in Sequencescape.</p>
   <% end %>
 
-  <%= panel :info, title: 'Barcode Printing' do %>
+  <%= panel :info, title: 'Plate Creation and Barcode Printing' do %>
     <h3><%= link_to "Print plate barcodes", new_plate_path  %></h3>
       <p>Create plates and print barcodes.</p>
+    <h3><%= link_to "Create quad-stamped plates and print barcodes", new_quad_stamp_path  %></h3>
+      <p>Create quad-stamped 384-well plates from 96-well plates or from tube racks and print barcodes.</p>
   <% end %>
 
   <%= panel :info, title: 'Tracking' do %>
