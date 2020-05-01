@@ -4,9 +4,6 @@ class QuadStampController < ApplicationController
   before_action :set_plate_purposes, only: [:new, :create]
   before_action :set_barcode_printers, only: [:new, :create]
 
-  # TODO: validation that at least one quadrant is filled
-  # TODO: validation that all sources are sane type (plate OR tube rack
-
   def new
     @quad_creator = Plate::QuadCreator.new
 
