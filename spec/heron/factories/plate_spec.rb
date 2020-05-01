@@ -29,14 +29,62 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
   end
 
   context 'with invalid params' do
-    it 'is not valid without barcode' do
-      factory = described_class.new(plate_purpose: purpose)
-      expect(factory).to be_invalid
+    shared_examples_for 'an invalid parameter' do
+      let(:factory) { described_class.new(params) }
+      it 'is not valid' do
+        expect(factory).to be_invalid
+      end
+
+      it 'has an error' do
+        factory.validate
+        expect(factory.errors.full_messages).to eq(error_messages)
+      end
     end
 
-    it 'is not valid without a plate purpose' do
-      factory = described_class.new(barcode: barcode)
-      expect(factory).to be_invalid
+    context 'without a barcode' do
+      let(:params) { { plate_purpose: purpose } }
+      let(:error_messages) do
+        ["Barcode can't be blank",
+         "The barcode '' is not a recognised format."]
+      end
+
+      it_behaves_like 'an invalid parameter'
+    end
+
+    context 'without a plate purpose' do
+      let(:params) { { barcode: barcode } }
+      let(:error_messages) { ['You have to define either plate_purpose_uuid or plate_purpose'] }
+
+      it_behaves_like 'an invalid parameter'
+    end
+
+    context 'with a plate purpose uuid set to nil' do
+      let(:params) { { plate_purpose_uuid: nil, barcode: barcode } }
+      let(:error_messages) { ['Plate purpose for uuid () do not exist'] }
+
+      it_behaves_like 'an invalid parameter'
+    end
+
+    context 'with a plate purpose set to nil' do
+      let(:params) { { plate_purpose: nil, barcode: barcode } }
+      let(:error_messages) { ["Plate purpose can't be blank"] }
+
+      it_behaves_like 'an invalid parameter'
+    end
+
+    context 'with a plate purpose uuid that do not exist' do
+      let(:uuid) { SecureRandom.uuid }
+      let(:params) { { plate_purpose_uuid: uuid, barcode: barcode } }
+      let(:error_messages) { ["Plate purpose for uuid (#{uuid}) do not exist"] }
+
+      it_behaves_like 'an invalid parameter'
+    end
+
+    context 'with both plate purpose uuid and plate purpose' do
+      let(:params) { { plate_purpose_uuid: purpose.uuid, plate_purpose: purpose, barcode: barcode } }
+      let(:error_messages) { ['You cannot define plate_purpose_uuid and plate_purpose at same time'] }
+
+      it_behaves_like 'an invalid parameter'
     end
   end
 

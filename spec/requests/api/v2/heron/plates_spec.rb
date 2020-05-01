@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Plates Heron API', with: :api_v2, tags: :lighthouse do
+describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
   describe '#create' do
     include BarcodeHelper
 
@@ -20,6 +20,7 @@ describe 'Plates Heron API', with: :api_v2, tags: :lighthouse do
       uuid = JSON.parse(response.body).dig('data', 'attributes', 'uuid')
       Plate.with_uuid(uuid).first
     end
+    let(:url_for_plate) { JSON.parse(response.body).dig('data', 'links', 'self') }
     let(:error_messages) do
       request
       JSON.parse(response.body).dig('errors')
@@ -33,6 +34,7 @@ describe 'Plates Heron API', with: :api_v2, tags: :lighthouse do
 
       it 'can create a plate' do
         expect { request }.to change(Plate, :count).by(1)
+        expect(url_for_plate).not_to be_nil
       end
     end
 
@@ -83,7 +85,7 @@ describe 'Plates Heron API', with: :api_v2, tags: :lighthouse do
 
       it 'displays the error' do
         expect(error_messages).to eq([
-          "Plate purpose can't be blank"
+          'You have to define either plate_purpose_uuid or plate_purpose'
         ])
       end
     end

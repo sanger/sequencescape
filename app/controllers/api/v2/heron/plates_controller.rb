@@ -11,7 +11,16 @@ module Api
         def create
           factory = ::Heron::Factories::Plate.new(params_for_plate)
           if factory.valid? && factory.save
-            render json: { data: { attributes: { uuid: factory.plate.uuid } } }, status: :created
+            render json: {
+              data: {
+                attributes: {
+                  uuid: factory.plate.uuid
+                },
+                links: {
+                  'self': api_v2_plate_url(factory.plate)
+                }
+              }
+            }, status: :created
           else
             render json: { errors: factory.errors.full_messages }, status: :unprocessable_entity
           end
