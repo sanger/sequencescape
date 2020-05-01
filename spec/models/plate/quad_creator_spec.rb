@@ -253,11 +253,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
       # rubocop:enable RSpec/ExampleLength
 
       it 'will set each parent as a parent rack or plate of the target' do
-        parents_plates.each do |parent|
-          expect(quad_creator.target_plate.parents).to include(parent)
-        end
-
-        parents_racks.each do |parent|
+        parents_plates.concat(parents_racks).each do |parent|
           expect(quad_creator.target_plate.parents).to include(parent)
         end
       end
