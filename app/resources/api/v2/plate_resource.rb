@@ -61,51 +61,6 @@ module Api
         }
       end
 
-      # This wraps the default PlateResource behaviour, so if the plate purpose has been
-      # stored in context by PlateProcessor it will create the instance of Plate model
-      # using the purpose creation method.
-      def self.create(context)
-        purpose_uuid = context[:plate_purpose_uuid]
-        return new(PlatePurpose.with_uuid(purpose_uuid).first.create!, context) if purpose_uuid
-
-        super
-      end
-
-      # Custom methods for Plate creation
-      HERON_PLATE_CREATION_ATTRS = %i[barcode wells_content plate_purpose_uuid study_uuid].freeze
-
-      attributes(*HERON_PLATE_CREATION_ATTRS)
-
-      def self.fetchable_fields(context)
-        super - HERON_PLATE_CREATION_ATTRS
-      end
-
-      attr_accessor :plate_purpose_uuid, :study_uuid
-
-      def barcode
-        @model.barcodes.map(&:barcode)
-      end
-
-      def barcode=(barcode)
-        barcode_format = Barcode.matching_barcode_format(barcode)
-        @model.errors.add(:base, "The barcode '#{barcode}' is not a recognised format.") && return if barcode_format.nil?
-        @model.barcodes << Barcode.new(asset: @model, barcode: barcode, format: barcode_format) if @model.barcodes.where(barcode: barcode).count.zero?
-      end
-
-      def wells_content
-        nil
-      end
-
-      def wells_content=(wells_content)
-        factory = ::Heron::Factories::WellsContent.new(wells_content)
-        if factory.valid?
-          factory.add_aliquots_into_plate(@model)
-        else
-          @model.errors.add(:wells_content, factory.errors)
-          raise @model.errors.full_messages.join('')
-        end
-      end
-
       # Class method overrides
     end
   end
