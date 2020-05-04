@@ -22,6 +22,12 @@ class Receptacle < Asset
   has_many :ancestors, through: :labware
   has_many :descendants, through: :labware
 
+  # We don't do a has_one through as not all receptacles are part of tubes and then
+  # we'd have to add racked_tube associations to labware. While we may eventually want to
+  # rack different kinds of labware, I'd prefer to avoid making it easier to inadvertantly
+  # put a tube rack in a tube rack.
+  has_one :racked_tube, foreign_key: :tube_id, primary_key: :labware_id
+
   delegate :human_barcode, :machine_barcode, to: :labware, allow_nil: true
   delegate :asset_type_for_request_types, to: :labware, allow_nil: true
   delegate :has_stock_asset?, to: :labware, allow_nil: true
@@ -261,6 +267,12 @@ class Receptacle < Asset
 
   def friendly_name
     labware&.friendly_name || id
+  end
+
+  # Returns the name of the position (eg. A1) of the receptacle
+  # within the context of any tube-rack it may be contained within
+  def absolute_position_name
+    racked_tube&.coordinate
   end
 
   private

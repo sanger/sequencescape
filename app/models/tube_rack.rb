@@ -11,6 +11,14 @@ class TubeRack < Labware
   has_many :tubes, through: :racked_tubes
   has_many :contained_samples, through: :tubes, source: :samples
 
+  # The receptacles within the tubes.
+  # While it may be tempting to just name this association :receptacles it intefers
+  # badly with the association on the parent class. Specifically, it looks like the
+  # dependent on that relationship triggers a destroy action on *this* association,
+  # which doesn't handle it well. Ironic considering the dependent action in the parent
+  # class is intended to prevent inadvertant destruction of receptacles.
+  has_many :tube_receptacles, through: :tubes, source: :receptacle
+
   LAYOUTS = {
     48 => {
       'rows' => 6,
@@ -24,6 +32,12 @@ class TubeRack < Labware
 
   def human_barcode
     primary_barcode.present? ? primary_barcode.barcode : nil
+  end
+
+  # Used to unify interface with TubeRacks. Returns a list of all {Receptacle receptacles}
+  # with position information included for aid performance
+  def receptacles_with_position
+    tube_receptacles.includes(:racked_tube)
   end
 
   def self.check_if_coordinates_valid(rack_size, list_coordinates)

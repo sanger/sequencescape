@@ -57,6 +57,7 @@ Rails.application.routes.draw do
       namespace :heron do
         resources :tube_rack_statuses, only: [:create]
         resources :tube_racks, only: [:create]
+        resources :plates, only: [:create]
       end
     end
   end
@@ -629,4 +630,6 @@ Rails.application.routes.draw do
 
   # We removed workflows, which broke study links. Some customers may have their own studies bookmarked
   get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')
+
+  resources :quad_stamp, only: %i[new create]
 end

@@ -194,4 +194,52 @@ module Barcode::FormatHandlers
   class FluidxBarcode < BaseRegExBarcode
     self.format = /\A(?<prefix>[A-Za-z]{2})(?<number>\d{8})\z/
   end
+
+  # Added to support plates from UK Biocentre https://www.ukbiocentre.com/
+  # as part of project Heron
+  # See issue: https://github.com/sanger/sequencescape/issues/2634
+  # Expected formats:
+  # nnnnnnnnnnNBC (Early UK Biocenter)
+  # where n is a digit
+  class UkBiocentreV1 < BaseRegExBarcode
+    self.format = /\A(?<number>\d{9,11})(?<suffix>NBC)\z/
+  end
+
+  # Added to support plates from UK Biocentre https://www.ukbiocentre.com/
+  # as part of project Heron
+  # See issue: https://github.com/sanger/sequencescape/issues/2634
+  # Expected formats:
+  # nnnnnnnnnANBC (Later UK Biocenter)
+  # where n is a digit
+  class UkBiocentreV2 < BaseRegExBarcode
+    self.format = /\A(?<number>\d{9,10})(?<suffix>ANBC)\z/
+  end
+
+  # Added to support plates from UK Biocentre https://www.ukbiocentre.com/
+  # as part of project Heron
+  # See issue: https://github.com/sanger/sequencescape/issues/2634
+  # Format identified during validation:
+  # RNADWPnnn
+  class UkBiocentreUnid < BaseRegExBarcode
+    self.format = /\A(?<prefix>RNADWP)(?<number>\d{3})\z/
+  end
+
+  # Added to support plates from Alderley park:
+  # as part of project Heron
+  # See issue: https://github.com/sanger/sequencescape/issues/2634
+  # Expected formats:
+  # RNA_nnnn (Early Alderley park: Temporary barcodes on early plates)
+  class AlderlyParkV1 < BaseRegExBarcode
+    self.format = /\A(?<prefix>RNA)_(?<number>\d{4})\z/
+  end
+
+  # Added to support plates from Alderley park:
+  # as part of project Heron
+  # See issue: https://github.com/sanger/sequencescape/issues/2634
+  # Expected formats:
+  # AP-ccc-nnnnnnnn (Later Alderley park: The new permanent barcodes are AP-rna-00110029
+  #                @note some RNA plates had the AP-kfr-00090016 barcode applied in error
+  class AlderlyParkV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>AP\-[a-z]{3})\-(?<number>\d{8})\z/
+  end
 end

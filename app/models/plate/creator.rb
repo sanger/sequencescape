@@ -146,7 +146,7 @@ class Plate::Creator < ApplicationRecord
   end
 
   def tube_rack_to_plate_factories(tube_racks, plate_purpose)
-    tube_racks.map { |rack| ::Heron::Factories::Plate.new(tube_rack: rack, plate_purpose: plate_purpose) }
+    tube_racks.map { |rack| ::Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose: plate_purpose) }
   end
 
   def can_create_plates?(source_plate)
