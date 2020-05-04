@@ -3,7 +3,7 @@ namespace :product_criteria do
   task add_phenotype: [:environment] do
     puts 'Adding phenotype to product criteria...'
     ActiveRecord::Base.transaction do
-      PRODUCTS_LIST = %w[MWGS PWGS HSqX].freeze
+      PRODUCTS_LIST = ['MWGS', 'PWGS', 'HSqX', 'Bespoke RNA'].freeze
       ADDED_CRITERIA = {
         phenotype: {}
       }.freeze
