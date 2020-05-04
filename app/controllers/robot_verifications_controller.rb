@@ -23,6 +23,7 @@ class RobotVerificationsController < ApplicationController
   def download
     if @robot_verification.valid_submission?(params)
       @robot_verification.set_plate_types(params[:source_plate_types])
+      @robot_verification.set_plate_types(params.fetch(:destination_plate_types, {}))
       @batch = Batch.find(params[:batch_id])
       @batch.robot_verified!(params[:user_id])
       @destination_plate_id = Plate.find_from_barcode(params[:destination_plate_barcodes].keys.first).human_barcode

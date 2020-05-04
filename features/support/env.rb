@@ -63,3 +63,25 @@ After('@javascript') do
   # See https://github.com/iangreenleaf/transactional_capybara
   TransactionalCapybara::AjaxHelpers.wait_for_ajax(page)
 end
+
+After do |scenario|
+  if scenario.failed?
+    name = scenario.name.parameterize
+    if page.respond_to?(:save_screenshot)
+      page.save_screenshot("#{name}.png")
+      puts "📸 Screenshot saved to #{Capybara.save_path}/#{name}.png"
+    end
+    if page.respond_to?(:save_page)
+      page.save_page("#{name}.html")
+      puts "📐 HTML saved to #{Capybara.save_path}/#{name}.html"
+    end
+    if page.driver.browser.respond_to?(:manage)
+      errors = page.driver.browser.manage.logs.get(:browser)
+      puts '== JS errors ============'
+      errors.each do |jserror|
+        puts jserror.message
+      end
+      puts '========================='
+    end
+  end
+end

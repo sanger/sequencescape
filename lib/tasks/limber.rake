@@ -370,7 +370,9 @@ namespace :limber do
         request_class: 'IlluminaHtp::Requests::HeronRequest',
         library_types:  [
           'PCR amplicon ligated adapters',
-          'PCR amplicon ligated adapters 384'
+          'PCR amplicon ligated adapters 384',
+          'PCR with TruSeq tails amplicon',
+          'PCR with TruSeq tails amplicon 384'
         ],
         default_purposes: ['LHR RT', 'LHR-384 RT']             # It requires default_purpose to accept an array.
       ).build!

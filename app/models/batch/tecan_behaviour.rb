@@ -7,7 +7,10 @@ module Batch::TecanBehaviour
       'destination' => {}
     }
 
-    requests.includes([{ asset: %i[plate map] }, { target_asset: [:map, :well_attribute, { plate: :barcodes }] }])
+    requests.includes([
+      { asset: [{ plate: [:barcodes, :labware_type] }, :map] },
+      { target_asset: [:map, :well_attribute, { plate: [:barcodes, :labware_type] }] }
+    ])
             .where(state: 'passed')
             .find_each do |request|
       target_plate = request.target_asset.plate
@@ -17,14 +20,15 @@ module Batch::TecanBehaviour
       full_source_barcode = request.asset.plate.machine_barcode
       full_destination_barcode = request.target_asset.plate.machine_barcode
 
-      source_plate_name = override_plate_type.presence || request.asset.plate.plate_type.tr('_', "\s")
-
       if data_object['source'][full_source_barcode].nil?
-        data_object['source'][full_source_barcode] = { 'name' => source_plate_name, 'plate_size' => request.asset.plate.size }
+        source_plate_type = override_plate_type.presence || request.asset.plate.plate_type.tr('_', "\s")
+        data_object['source'][full_source_barcode] = { 'name' => source_plate_type, 'plate_size' => request.asset.plate.size }
       end
+
       if data_object['destination'][full_destination_barcode].nil?
+        target_plate_type = (target_plate.plate_type || PlateType.cherrypickable_default_type).tr('_', "\s")
         data_object['destination'][full_destination_barcode] = {
-          'name' => PlateType.cherrypickable_default_type.tr('_', "\s"),
+          'name' => target_plate_type,
           'plate_size' => request.target_asset.plate.size
         }
       end

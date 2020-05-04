@@ -20,6 +20,7 @@ module Api
       attribute :name, readonly: true
 
       # Filters
+      filter :name
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about

@@ -289,6 +289,11 @@ class Well < Receptacle
   # def map_description
   delegate :description, to: :map, prefix: true, allow_nil: true
 
+  # Returns the name of the position (eg. A1) of the well
+  def absolute_position_name
+    map_description
+  end
+
   def qc_data
     { pico: get_pico_pass,
       gel: get_gel_pass,
