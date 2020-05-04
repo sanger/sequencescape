@@ -6,18 +6,14 @@ module Heron
     class TubeRack
       include ActiveModel::Model
 
-      HERON_STUDY = 6187
-      LOCATION_REGEXP = /[A-Z][0-9]{0,1}[0-9]/.freeze
+      include Concerns::HeronStudy
+      include Concerns::CoordinatesSupport
+      include Concerns::ForeignBarcodes
 
-      attr_accessor :barcode, :sample_tubes, :tube_rack, :size
+      attr_accessor :sample_tubes, :tube_rack, :size
 
-      validates_presence_of :barcode, :tubes, :heron_study, :size, :purpose
-
-      validate :check_tubes, :check_rack_barcode
-
-      def heron_study
-        @heron_study ||= Study.find(Heron::Factories::TubeRack::HERON_STUDY)
-      end
+      validates_presence_of :tubes, :size, :purpose
+      validate :check_tubes
 
       def tubes=(attributes)
         attributes.each do |tube|
@@ -58,13 +54,6 @@ module Heron
 
       private
 
-      def unpad_coordinate(coordinate)
-        return coordinate unless coordinate
-
-        loc = coordinate.match(/(\w)(0*)(\d*)/)
-        loc[1] + loc[3]
-      end
-
       def create_tubes!(tube_rack)
         tubes.keys.map do |coordinate|
           tube_factory = tubes[coordinate]
@@ -72,25 +61,6 @@ module Heron
           racked_tubes << RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate),
                                             tube_rack: tube_rack)
         end
-      end
-
-      def coordinate_valid?(coordinate)
-        return false if coordinate.blank?
-
-        coordinate.match?(::Heron::Factories::TubeRack::LOCATION_REGEXP)
-      end
-
-      def barcode_format
-        Barcode.matching_barcode_format(barcode)
-      end
-
-      def check_rack_barcode
-        if barcode_format.nil?
-          error_message = "The tube rack barcode '#{barcode}' is not a recognised format."
-          errors.add(:base, error_message)
-          return false
-        end
-        true
       end
 
       def check_tubes

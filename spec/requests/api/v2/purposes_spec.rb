@@ -4,9 +4,10 @@ require 'rails_helper'
 
 describe 'Purposes API', with: :api_v2 do
   context 'with multiple purposes' do
+    let!(:plate_purpose) { create(:plate_purpose) }
+
     before do
       create(:purpose)
-      create(:plate_purpose)
       create(:tube_purpose)
     end
 
@@ -19,6 +20,12 @@ describe 'Purposes API', with: :api_v2 do
     end
 
     # Check filters, ESPECIALLY if they aren't simple attribute filters
+    it 'filters purposes by name' do
+      api_get '/api/v2/purposes?filter[name]="' + plate_purpose.name + '"'
+      expect(response).to have_http_status(:success)
+      expect(json['data'].length).to eq(1)
+      expect(json['data'][0]['attributes']['uuid']).to eq(plate_purpose.uuid)
+    end
   end
 
   context 'with a purpose' do

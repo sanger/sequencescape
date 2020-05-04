@@ -7,7 +7,7 @@ module Api
     class PlateResource < BaseResource
       # Constants...
 
-      immutable # comment to make the resource mutable
+      # immutable # comment to make the resource mutable
 
       default_includes :uuid_object, :barcodes, :plate_purpose, :transfer_requests
 

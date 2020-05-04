@@ -2,7 +2,67 @@
 
 require 'rails_helper'
 
-describe 'Plates API', with: :api_v2 do
+describe 'Plates API', with: :api_v2, tags: :lighthouse do
+  let(:params) do
+  end
+
+  describe '#create' do
+    include BarcodeHelper
+
+    before do
+      mock_plate_barcode_service
+    end
+
+    let(:request) { api_post '/api/v2/plates', payload }
+    let(:plate) do
+      request
+      uuid = JSON.parse(response.body).dig('data', 'attributes', 'uuid')
+      Plate.with_uuid(uuid).first
+    end
+
+    shared_examples_for 'a successful plate creation' do
+      it 'returns 201' do
+        request
+        expect(response).to have_http_status(:created)
+      end
+
+      it 'can create a plate' do
+        expect { request }.to change(Plate, :count).by(1)
+      end
+    end
+
+    context 'when providing a payload using default JSON API' do
+      let(:purpose) { create :plate_purpose }
+      let(:well) { create :well }
+      let(:well2) { create :well }
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'plates',
+            'attributes' => {
+            },
+            'relationships': {
+              'purpose': {
+                'data': { 'id': purpose.id.to_s, 'type': 'purposes' }
+              },
+              'wells': {
+                'data': [
+                  { 'type': 'wells', 'id': well.id }, { 'type': 'wells', 'id': well2.id }
+                ]
+              }
+            }
+          }
+        }
+      end
+
+      it_behaves_like 'a successful plate creation'
+
+      it 'creates the wells' do
+        expect(plate.wells).to eq([well, well2])
+      end
+    end
+  end
+
   context 'with multiple plates' do
     before do
       create_list(:plate, 5)
@@ -46,7 +106,7 @@ describe 'Plates API', with: :api_v2 do
         create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
       end
       let(:rack) { create :tube_rack }
-      let(:plate_factory) { ::Heron::Factories::Plate.new(tube_rack: rack, plate_purpose: purpose) }
+      let(:plate_factory) { ::Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose: purpose) }
       let(:tubes) { create_list(:sample_tube, 2) }
 
       include BarcodeHelper
