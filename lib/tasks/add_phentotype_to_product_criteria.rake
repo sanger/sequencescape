@@ -3,9 +3,9 @@ namespace :product_criteria do
   task add_phenotype: [:environment] do
     puts 'Adding phenotype to product criteria...'
     ActiveRecord::Base.transaction do
-      PRODUCTS_LIST = %w(MWGS PWGS HSqX).freeze
+      PRODUCTS_LIST = %w[MWGS PWGS HSqX].freeze
       ADDED_CRITERIA = {
-          phenotype: {}
+        phenotype: {}
       }.freeze
 
       PRODUCTS_LIST.each do |product_name|
@@ -15,7 +15,7 @@ namespace :product_criteria do
         puts "Adding phenotype to for product #{product_name}"
 
         cloned_product_criteria = product_criteria.dup
-        product_criteria.deprecate! if product_criteria
+        product_criteria&.deprecate!
         cloned_product_criteria.configuration.merge!(ADDED_CRITERIA)
         cloned_product_criteria.save!
       end
