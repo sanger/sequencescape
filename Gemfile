@@ -169,6 +169,7 @@ group :test do
   # Rails performance tests
   gem 'rails-perftest'
   gem 'rspec-collection_matchers' # Provides matchers for dealing with arrays
+  gem 'rspec-longrun' # Extends scenario logging for more verbose tracking
   gem 'test-prof'
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
