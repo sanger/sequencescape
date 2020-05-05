@@ -4,7 +4,7 @@ module SequencescapeExcel
   module SpecialisedField
     ##
     # The primer panel must exist in the primer_panels table and is identified by
-    # its name. It is set as an association on aliquot. 
+    # its name. It is set as an association on aliquot.
     class PrimerPanel
       include Base
 
