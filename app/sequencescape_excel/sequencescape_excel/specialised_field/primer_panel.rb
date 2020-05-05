@@ -3,8 +3,8 @@
 module SequencescapeExcel
   module SpecialisedField
     ##
-    # The library type is a value which must already exist.
-    # Weirdly the library type is stored as a value rather than an association.
+    # The primer panel must exist in the primer_panels table and is identified by
+    # its name. It is set as an association on aliquot. 
     class PrimerPanel
       include Base
 
