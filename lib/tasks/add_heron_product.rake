@@ -4,7 +4,6 @@ namespace :product_heron do
     puts 'Creating new product & product criteria for Heron study...'
 
     ActiveRecord::Base.transaction do
-      PRODUCT_NAME = 'Heron'
       ADDITIONAL_CRITERIA = {
         sanger_sample_id: {},
         sample_description: {},
@@ -14,9 +13,9 @@ namespace :product_heron do
         supplier_name: {}
       }.freeze
 
-      product = Product.create!(name: PRODUCT_NAME)
+      product = Product.create!(name: 'Heron')
 
-      product_criteria = ProductCriteria.create!(
+      ProductCriteria.create!(
         product: product,
         stage: 'stock',
         configuration: ADDITIONAL_CRITERIA
