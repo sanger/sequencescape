@@ -77,11 +77,19 @@ class PlatesControllerTest < ActionController::TestCase
                                            user_barcode: '1234567',
                                            create_asset_group: 'Yes' } }
               @plate_count = Plate.count
+              post :create, params: @create_params
             end
 
             should 'create the plates' do
-              post :create, params: @create_params
               assert_equal @plate_count + @num_create, Plate.count
+            end
+
+            should 'not display an error' do
+              should_not set_flash[:error].to(/Could not find plate/)
+            end
+
+            should 'display created barcodes' do
+              assert_equal(true, response.body.include?('Created labware'))
             end
 
             context 'when one of the scanned source plates do not exist' do
