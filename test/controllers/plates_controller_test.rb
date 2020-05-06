@@ -63,6 +63,51 @@ class PlatesControllerTest < ActionController::TestCase
         end
 
         context 'Create a Plate' do
+          context 'from a group of plates' do
+            setup do
+              @purpose = create(:plate_purpose, name: 'A purpose', size: 96)
+
+              @asset_group_count = AssetGroup.count
+              @num_create = 2
+              @plates = Array.new(@num_create) { @purpose.create! }
+              @plate_barcodes = @plates.map(&:barcodes).flatten.map(&:barcode)
+              @create_params = { plates: { creator_id: @dilution_plates_creator.id,
+                                           source_plates: @plate_barcodes.join(','),
+                                           barcode_printer: @barcode_printer.id,
+                                           user_barcode: '1234567',
+                                           create_asset_group: 'Yes' } }
+              @plate_count = Plate.count
+            end
+
+            should 'create the plates' do
+              post :create, params: @create_params
+              assert_equal @plate_count + @num_create, Plate.count
+            end
+
+            context 'when one of the scanned source plates do not exist' do
+              setup do
+                @missing_barcode_create_params = { plates: { creator_id: @dilution_plates_creator.id,
+                                                             source_plates: @plate_barcodes.concat(['missing']).join(','),
+                                                             barcode_printer: @barcode_printer.id,
+                                                             user_barcode: '1234567',
+                                                             create_asset_group: 'Yes' } }
+                @plates_already = Plate.count
+                post :create, params: @missing_barcode_create_params
+              end
+
+              should 'rollback all group created' do
+                assert_equal @plates_already, Plate.count, 'Expected Plate.count not to change'
+              end
+
+              should 'display an error' do
+                should set_flash[:error].to(/Could not find plate/)
+              end
+
+              should 'not display created barcodes' do
+                assert_equal(false, response.body.include?('Created labware'))
+              end
+            end
+          end
           context 'from a Heron TubeRack' do
             setup do
               create(:tube_rack_purpose, target_type: 'TubeRack', size: 96)
@@ -102,6 +147,30 @@ class PlatesControllerTest < ActionController::TestCase
 
               should 'have created an asset group' do
                 assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be created'
+              end
+            end
+
+            context 'when one of the scanned source plates do not exist' do
+              setup do
+                @missing_barcode_create_params = { plates: { creator_id: @dilution_plates_creator.id,
+                                                             source_plates: @tube_rack.barcodes.first.barcode + ',missing',
+                                                             barcode_printer: @barcode_printer.id,
+                                                             user_barcode: '1234567',
+                                                             create_asset_group: 'Yes' } }
+                @plates_already = Plate.count
+                post :create, params: @missing_barcode_create_params
+              end
+
+              should 'rollback all group created' do
+                assert_equal @plates_already, Plate.count, 'Expected Plate.count not to change'
+              end
+
+              should 'display an error' do
+                should set_flash[:error].to(/Could not find plate/)
+              end
+
+              should 'not display created barcodes' do
+                assert_equal(false, response.body.include?('Created labware'))
               end
             end
 
