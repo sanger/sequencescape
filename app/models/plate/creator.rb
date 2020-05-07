@@ -46,6 +46,11 @@ class Plate::Creator < ApplicationRecord
     @created_plates ||= []
   end
 
+  def fail_with_error(msg)
+    @created_plates = []
+    raise PlateCreationError, msg
+  end
+
   # Executes the plate creation so that the appropriate child plates are built.
   def execute(source_plate_barcodes, barcode_printer, scanned_user, should_create_asset_group, creator_parameters = nil)
     @created_plates = []
@@ -54,7 +59,7 @@ class Plate::Creator < ApplicationRecord
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
     end
-    raise PlateCreationError, 'Plate creation failed' if new_plates.empty?
+    fail_with_error('Plate creation failed') if new_plates.empty?
 
     new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
       print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
@@ -78,7 +83,7 @@ class Plate::Creator < ApplicationRecord
     plate_factories = tube_rack_to_plate_factories(tube_racks, plate_purpose)
     unless plate_factories.all?(&:valid?)
       errors = plate_factories.map(&:error_messages)
-      raise PlateCreationError, "Plate creation failed with the following errors: #{errors}"
+      fail_with_error("Plate creation failed with the following errors: #{errors}")
     end
 
     ActiveRecord::Base.transaction do
@@ -174,19 +179,18 @@ class Plate::Creator < ApplicationRecord
     else
       # In the majority of cases the users are creating stamps of the provided plates.
       scanned_barcodes = source_plate_barcodes.split(/[\s,]+/)
-      raise PlateCreationError, "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
+      fail_with_error("Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}") if scanned_barcodes.blank?
 
       # NOTE: Plate barcodes are not unique within certain laboratories.  That means that we cannot do:
       #  plates = Plate.with_barcode(*scanned_barcodes).all(:include => [ :location, { :wells => :aliquots } ])
       # Because then you get multiple matches.  So we take the first match, which is just not right.
-
       scanned_barcodes.each_with_object([]) do |scanned, plates|
         plate =
           Plate.with_barcode(scanned).eager_load(wells: :aliquots).first or
-          raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
+          fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
 
         unless can_create_plates?(plate)
-          raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
+          fail_with_error("Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]")
         end
 
         destinations = create_child_plates_from(plate, current_user, creator_parameters)
