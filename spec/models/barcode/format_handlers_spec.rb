@@ -53,6 +53,18 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode " 1234567890NCB\na"
   end
 
+  describe Barcode::FormatHandlers::UkBiocentreV3 do
+    it_has_a_valid_barcode 'RNA12345', prefix: 'RNA', number: 12345, suffix: nil
+    it_has_an_invalid_barcode '123456789ANBC'
+    it_has_an_invalid_barcode 'INVALID'
+    it_has_an_invalid_barcode '123456789NCB'
+    it_has_an_invalid_barcode '123456789MBC'
+    it_has_an_invalid_barcode '1234567890ANBC'
+    it_has_an_invalid_barcode 'RNA_1234'
+    it_has_an_invalid_barcode ' 1234567890NBC'
+    it_has_an_invalid_barcode " 1234567890NBC\na"
+  end
+
   describe Barcode::FormatHandlers::UkBiocentreUnid do
     it_has_a_valid_barcode 'RNADWP004', prefix: 'RNADWP', number: 4, suffix: nil
     it_has_an_invalid_barcode 'DNADWP004'
