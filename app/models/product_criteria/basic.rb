@@ -108,6 +108,10 @@ class ProductCriteria::Basic
     passed? ? PASSSED_STATE : FAILED_STATE
   end
 
+  def storage_location
+    @well_or_metric.plate.try(:storage_location) || 'Unknown'
+  end
+
   private
 
   def well_attribute
