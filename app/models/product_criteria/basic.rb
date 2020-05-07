@@ -109,7 +109,7 @@ class ProductCriteria::Basic
   end
 
   def storage_location
-    @well_or_metric.plate.try(:storage_location) || 'Unknown'
+    @well_or_metric.labware.try(:storage_location) || 'Unknown'
   end
 
   private
