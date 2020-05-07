@@ -242,4 +242,13 @@ module Barcode::FormatHandlers
   class AlderlyParkV2 < BaseRegExBarcode
     self.format = /\A(?<prefix>AP\-[a-z]{3})\-(?<number>\d{8})\z/
   end
+
+  # Added to support plates from UK Biocentre https://www.ukbiocentre.com/
+  # as part of project Heron
+  # Expected formats:
+  # RNAnnnnnnnnn
+  # where n is a digit
+  class UkBiocentreV3 < BaseRegExBarcode
+    self.format = /\A(?<prefix>RNA)(?<number>\d+)\z/
+  end
 end
