@@ -26,11 +26,11 @@
 
 <script type="text/javascript">
 (function($) {
-  const defaultOption = { valid_dilution_factors: ["1.0"] }
+  const defaultOption = ["1.0"]
   const plate_creator_parameters = <%= raw json_escape(plate_creator_parameters_json(@plate_creators)) %>
 
   const validDilutionFactorsForName = (name) => {
-    return (plate_creator_parameters[name] || defaultOption).valid_dilution_factors
+    return (plate_creator_parameters[name] || {}).valid_dilution_factors || defaultOption
   }
 
   const dataForName = (name) => {

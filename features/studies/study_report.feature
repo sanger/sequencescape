@@ -12,7 +12,7 @@ Feature: create a report on the current state of a study going through QC
     Given I am visiting study "Study A" homepage
     And there is 1 pending report for study "Study A"
     And there is 1 completed report for study "Study A"
-    When I follow "Qc Reports"
+    When I follow "Study QC Reports"
     Then I should see "QC Reports for Study A"
      Then I should see qc reports table:
       | Study   | Created on | Created by | Download   | Rerun |

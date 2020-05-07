@@ -52,3 +52,6 @@ chromium_tag_groups:
   identifier: :name
   scope: :chromium
   scope_on: TagGroup
+primer_panel:
+  identifier: :name
+  scope: :alphabetical
