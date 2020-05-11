@@ -12,6 +12,7 @@ module Api
       attribute :name
       attribute :sanger_sample_id
       attribute :uuid
+      attribute :control
     end
   end
 end
