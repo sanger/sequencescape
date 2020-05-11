@@ -478,6 +478,11 @@ class Sample < ApplicationRecord
     end
   end
 
+  def control_formatted
+    # replace underscores with spaces to make more readable for UIs
+    control&.gsub('_', ' ')
+  end
+
   private
 
   def safe_to_destroy
