@@ -110,7 +110,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
     end
   end
 
-  context '#control_formatted' do
+  describe '#control_formatted' do
     it 'removes underscores and capitalizes' do
       sample = create(:sample, control: 'positive_control')
       expect(sample.control_formatted).to eq('Positive control')
