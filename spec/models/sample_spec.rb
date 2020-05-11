@@ -109,4 +109,16 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       expect(sample.sample_metadata.genome_size).to eq(1000)
     end
   end
+
+  context '#control_formatted' do
+    it 'removes underscores and capitalizes' do
+      sample = create(:sample, control: 'positive_control')
+      expect(sample.control_formatted).to eq('Positive control')
+    end
+
+    it 'handles nil' do
+      sample = create(:sample, control: nil)
+      expect(sample.control_formatted).to eq('Not specified')
+    end
+  end
 end
