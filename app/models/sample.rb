@@ -480,7 +480,9 @@ class Sample < ApplicationRecord
 
   def control_formatted
     # replace underscores with spaces to make more readable for UIs
-    control&.gsub('_', ' ')
+    return 'Not specified' unless control
+
+    control.gsub('_', ' ').capitalize
   end
 
   private
