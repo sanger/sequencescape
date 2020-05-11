@@ -482,7 +482,7 @@ class Sample < ApplicationRecord
     # replace underscores with spaces to make more readable for UIs
     return 'Not specified' unless control
 
-    control.gsub('_', ' ').capitalize
+    control.tr('_', ' ').capitalize
   end
 
   private
