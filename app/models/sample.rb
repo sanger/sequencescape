@@ -272,6 +272,13 @@ class Sample < ApplicationRecord
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
+  enum control: {
+    not_control: 0,
+    control: 1, # here to support legacy data from when this column was a boolean
+    positive_control: 2,
+    negative_control: 3
+  }
+
   # this method has to be before validation_guarded_by
   def rename_to!(new_name)
     update!(name: new_name)
