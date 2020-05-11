@@ -272,6 +272,7 @@ class Sample < ApplicationRecord
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
+  # 'control' was changed from a boolean to an enum May 2020
   enum control: {
     not_control: 0,
     control: 1, # here to support legacy data from when this column was a boolean
