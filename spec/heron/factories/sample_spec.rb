@@ -185,9 +185,9 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
 
       context 'when providing other arguments' do
         it 'updates other sample attributes' do
-          factory = described_class.new(study: study, control: true)
+          factory = described_class.new(study: study, control: 'control')
           sample = factory.create
-          expect(sample.control).to eq(true)
+          expect(sample.control).to eq('control')
         end
 
         it 'updates other sample_metadata attributes' do
