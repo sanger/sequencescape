@@ -21,6 +21,17 @@ class Api::SampleIO < Api::Base
     end
   end
 
+  # Sequencescape field 'control' was changed to an enum May 2020
+  # MLWH field retained as a boolean
+  # because difficult to change the legacy warehouse which receives same message
+  # map all types of control to 1
+  CONTROL_DATA_MAPPING = {
+    'not_control' => '0',
+    'control' => '1',
+    'positive_control' => '1',
+    'negative_control' => '1'
+  }
+
   renders_model(::Sample)
 
   map_attribute_to_json_attribute(:uuid)
@@ -68,6 +79,11 @@ class Api::SampleIO < Api::Base
   extra_json_attributes do |_object, json_attributes|
     if json_attributes['reference_genome'].blank?
       json_attributes['reference_genome'] = nil
+    end
+    if CONTROL_DATA_MAPPING.has_key?(json_attributes['control'])
+      json_attributes['control'] = CONTROL_DATA_MAPPING[json_attributes['control']]
+    else
+      json_attributes['control'] = nil
     end
   end
 
