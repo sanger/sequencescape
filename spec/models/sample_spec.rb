@@ -128,7 +128,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
 
     it 'shows something useful when control type is unspecified' do
       sample = create(:sample, control: true, control_type: nil)
-      expect(sample.control_formatted).to eq 'Yes'
+      expect(sample.control_formatted).to eq 'Yes (type unspecified)'
     end
   end
 end

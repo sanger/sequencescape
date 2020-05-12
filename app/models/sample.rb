@@ -482,14 +482,8 @@ class Sample < ApplicationRecord
 
     return 'No' if control == false
 
-    case control_type
-    when 'positive'
-      'Yes (positive)'
-    when 'negative'
-      'Yes (negative)'
-    else
-      'Yes'
-    end
+    type_text = control_type || 'type unspecified'
+    "Yes (#{type_text})"
   end
 
   private
