@@ -50,6 +50,7 @@ class UatActions::GeneratePlates < UatActions
         report["plate_#{i}"] = plate.human_barcode
       end
     end
+    true
   end
 
   private
@@ -63,7 +64,7 @@ class UatActions::GeneratePlates < UatActions
 
   def construct_wells(plate)
     wells(plate).each do |well|
-      well.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{well.map.description}", studies: [study]))
+      well.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{well.map.description}", studies: [study]), study: study)
     end
   end
 
