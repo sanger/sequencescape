@@ -31,6 +31,7 @@ class UatActions::GenerateTubeRacks < UatActions
         report["rack_#{i}"] = rack.human_barcode
       end
     end
+    true
   end
 
   private
@@ -38,7 +39,7 @@ class UatActions::GenerateTubeRacks < UatActions
   def construct_tubes(rack)
     rack_map.each do |i|
       tube = Tube::Purpose.standard_sample_tube.create!
-      tube.aliquots.create!(sample: Sample.create!(name: "sample_#{rack.human_barcode}_#{i}", studies: [study]))
+      tube.aliquots.create!(sample: Sample.create!(name: "sample_#{rack.human_barcode}_#{i}", studies: [study]), study: study)
 
       racked_tube = RackedTube.create!(tube_rack_id: rack.id, tube_id: tube.id, coordinate: i)
       rack.racked_tubes << racked_tube
