@@ -272,7 +272,7 @@ class Sample < ApplicationRecord
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
-  validate :control_is_true_if_control_type_set
+  validates :control_type, absence: { with: true, unless: :control?, message: 'should be blank if "control" is set to false' }
 
   enum control_type: {
     negative: 0,
@@ -491,11 +491,5 @@ class Sample < ApplicationRecord
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')
     throw(:abort)
-  end
-
-  def control_is_true_if_control_type_set
-    return unless control_type && control == false
-
-    errors.add(:base, 'If control type is set, control must also be set to true.')
   end
 end

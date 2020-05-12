@@ -131,4 +131,10 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       expect(sample.control_formatted).to eq 'Yes (type unspecified)'
     end
   end
+
+  context 'control_type validation' do
+    subject { build(:sample, control: false, control_type: 'positive') }
+
+    it { is_expected.not_to be_valid }
+  end
 end
