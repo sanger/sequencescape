@@ -109,4 +109,26 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       expect(sample.sample_metadata.genome_size).to eq(1000)
     end
   end
+
+  describe '#control_formatted' do
+    it 'is nil when control is nil' do
+      sample = create(:sample, control: nil)
+      expect(sample.control_formatted).to be_nil
+    end
+
+    it 'shows something useful when control type is positive' do
+      sample = create(:sample, control: true, control_type: 'positive')
+      expect(sample.control_formatted).to eq 'Yes (positive)'
+    end
+
+    it 'shows something useful when control type is negative' do
+      sample = create(:sample, control: true, control_type: 'negative')
+      expect(sample.control_formatted).to eq 'Yes (negative)'
+    end
+
+    it 'shows something useful when control type is unspecified' do
+      sample = create(:sample, control: true, control_type: nil)
+      expect(sample.control_formatted).to eq 'Yes'
+    end
+  end
 end
