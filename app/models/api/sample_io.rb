@@ -30,7 +30,7 @@ class Api::SampleIO < Api::Base
     'control' => '1',
     'positive_control' => '1',
     'negative_control' => '1'
-  }
+  }.freeze
 
   renders_model(::Sample)
 
@@ -80,11 +80,7 @@ class Api::SampleIO < Api::Base
     if json_attributes['reference_genome'].blank?
       json_attributes['reference_genome'] = nil
     end
-    if CONTROL_DATA_MAPPING.has_key?(json_attributes['control'])
-      json_attributes['control'] = CONTROL_DATA_MAPPING[json_attributes['control']]
-    else
-      json_attributes['control'] = nil
-    end
+    json_attributes['control'] = CONTROL_DATA_MAPPING[json_attributes['control']] # sets to nil if not found in hash
   end
 
   # Whenever we create samples through the API we also need to register a sample tube too.  The user
