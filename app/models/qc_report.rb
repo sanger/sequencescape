@@ -79,6 +79,10 @@ class QcReport < ApplicationRecord
           # If there are some wells of interest, we get them in a list
           connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
 
+          plates = assets.collect { |well| well.labware }.compact
+          plate_id_to_storage_location = {}
+          plates.each { |plate| plate_id_to_storage_location[plate.id] = plate.storage_location }
+
           # This transaction is inside the block as otherwise large reports experience issues
           # with high memory usage. In the event that an exception is raised the most
           # recent set of decisions will be rolled back, and the report will be re-queued.
@@ -86,6 +90,7 @@ class QcReport < ApplicationRecord
           # metric on complete reports (Although wont help if, say, the database connection fails)
           ActiveRecord::Base.transaction do
             assets.each do |asset|
+              asset.plate.storage_location = plate_id_to_storage_location[asset.plate.id]
               criteria = product_criteria.assess(asset, connected_wells[asset.id])
               QcMetric.create!(asset: asset, qc_decision: criteria.qc_decision, metrics: criteria.metrics, qc_report: self)
             end

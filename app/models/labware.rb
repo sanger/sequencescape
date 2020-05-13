@@ -81,6 +81,10 @@ class Labware < Asset
     @storage_location ||= obtain_storage_location
   end
 
+  def storage_location=(preloaded_storage_location)
+    @storage_location = preloaded_storage_location
+  end
+
   def scanned_in_date
     scanned_into_lab_event.try(:content) || ''
   end
