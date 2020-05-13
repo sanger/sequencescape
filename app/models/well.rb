@@ -81,7 +81,7 @@ class Well < Receptacle
   }
   scope :include_map, -> { includes(:map) }
   scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
-  scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
+  scope :on_plate_purpose, ->(purposes) { includes(:labware).references(:labware).where(labware: { plate_purpose_id: purposes }) }
 
   scope :for_study_through_aliquot, ->(study) {
     joins(:aliquots)
