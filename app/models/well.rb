@@ -82,6 +82,13 @@ class Well < Receptacle
   scope :include_map, -> { includes(:map) }
   scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
   scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
+  # added version of scope with includes to avoid multiple calls to LabWhere in qc report when getting storage location
+  # for wells in the same plate
+  scope :on_plate_purpose_included, ->(purposes) {
+    includes(:labware)
+      .references(:labware)
+      .where(labware: { plate_purpose_id: purposes })
+  }
 
   scope :for_study_through_aliquot, ->(study) {
     joins(:aliquots)
