@@ -272,6 +272,13 @@ class Sample < ApplicationRecord
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
+  validates :control_type, absence: { with: true, unless: :control?, message: 'should be blank if "control" is set to false' }
+
+  enum control_type: {
+    negative: 0,
+    positive: 1
+  }
+
   # this method has to be before validation_guarded_by
   def rename_to!(new_name)
     update!(name: new_name)
@@ -468,6 +475,15 @@ class Sample < ApplicationRecord
     else
       true
     end
+  end
+
+  def control_formatted
+    return nil if control.nil?
+
+    return 'No' if control == false
+
+    type_text = control_type || 'type unspecified'
+    "Yes (#{type_text})"
   end
 
   private
