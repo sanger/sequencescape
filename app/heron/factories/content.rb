@@ -3,7 +3,7 @@
 module Heron
   module Factories
     # Factory class to create Heron wells content in a plate
-    class WellsContent
+    class Content
       include ActiveModel::Model
       include Concerns::CoordinatesSupport
 
@@ -33,13 +33,13 @@ module Heron
         end
       end
 
-      def add_aliquots_into_plate(plate)
+      def add_aliquots_into_locations(containers_for_locations)
         return false unless valid?
 
         sample_factories.each do |location, factories|
-          well_at_location = plate.wells.located_at(unpad_coordinate(location)).first
+          container = containers_for_locations[location]
           factories.each do |factory|
-            factory.create_aliquot_at(well_at_location) if factory.valid?
+            factory.create_aliquot_at(container) if factory.valid?
           end
         end
         true

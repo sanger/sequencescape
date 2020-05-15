@@ -11,25 +11,28 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     {
       "barcode": '0000000001',
       "size": '96',
-      "tubes": [
-        {
-          "coordinate": 'A01',
-          "barcode": 'FD00000001',
+      "tubes": {
+        'A01' => {
+          "container": {
+            "barcode": 'FD00000001'
+          },
           "supplier_sample_id": 'PHEC-nnnnnnn1'
         },
-        {
-          "coordinate": 'A02',
-          "barcode": 'FD00000002',
+        'A02' => {
+          "container": {
+            "barcode": 'FD00000002'
+          },
           "supplier_sample_id": 'PHEC-nnnnnnn2'
         }
-      ]
+      }
     }
   end
 
   let(:invalid_tube) do
     {
-      "coordinate": 'A03',
-      "barcode": 'FD00000003'
+      "container": {
+        "barcode": 'FD00000003'
+      }
     }
   end
 
@@ -68,7 +71,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
   end
 
   it 'is not valid unless all of the tubes are valid' do
-    params[:tubes] << invalid_tube
+    params[:tubes]["A03"] = invalid_tube
     tube_rack = described_class.new(params)
     expect(tube_rack).not_to be_valid
   end
@@ -85,7 +88,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     end
 
     it 'returns false if any tube is invalid' do
-      params[:tubes] << invalid_tube
+      params[:tubes]["A03"] = invalid_tube
       tube_rack = described_class.new(params)
       expect(tube_rack.save).to be_falsy
     end

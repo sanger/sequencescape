@@ -17,18 +17,16 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
     let(:tubes_coordinates) { %w[A1 B1] }
     let(:supplier_sample_ids) { %w[PHEC-nnnnnnn1 PHEC-nnnnnnn2] }
     let(:tubes) do
-      [
-        {
-          "coordinate": tubes_coordinates[0],
-          "barcode": tubes_barcodes[0],
+      {
+        "#{tubes_coordinates[0]}": {
+          "container": {"barcode": tubes_barcodes[0]},
           "supplier_sample_id": supplier_sample_ids[0]
         },
-        {
-          "coordinate": tubes_coordinates[1],
-          "barcode": tubes_barcodes[1],
+        "#{tubes_coordinates[1]}": {
+          "container": {"barcode": tubes_barcodes[1]},
           "supplier_sample_id": supplier_sample_ids[1]
         }
-      ]
+      }
     end
     let(:payload) do
       {

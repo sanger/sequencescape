@@ -6,6 +6,7 @@ module Heron
     class Plate
       include ActiveModel::Model
       include Concerns::ForeignBarcodes
+      include Concerns::CoordinatesSupport
 
       attr_accessor :plate
 
@@ -22,7 +23,7 @@ module Heron
       end
 
       def wells_content
-        @wells_content ||= ::Heron::Factories::WellsContent.new(@params[:wells_content], @params[:study_uuid])
+        @wells_content ||= ::Heron::Factories::Content.new(@params[:wells_content], @params[:study_uuid])
       end
 
       def validate_wells_content
@@ -42,15 +43,30 @@ module Heron
 
       attr_reader :plate_purpose
 
+
+      def create_containers!
+        @plate = plate_purpose.create!
+
+        Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
+      end
+
+      def containers_for_locations
+        @plate.wells.reduce({}) do |memo, well|
+          memo[unpad_coordinate(well.map.description)] = well
+          memo
+        end
+      end
+
+      def create_contents!
+        wells_content.add_aliquots_into_locations(containers_for_locations)
+      end
+
       def save
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          @plate = plate_purpose.create!
-
-          Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
-
-          wells_content.add_aliquots_into_plate(plate)
+          create_containers!
+          create_contents!
         end
         true
       end
