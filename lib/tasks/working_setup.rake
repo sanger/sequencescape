@@ -4,11 +4,11 @@ namespace :working do
   # We don't want to load Sequencescape just to tell the user that nothing happens.
   # rubocop:disable Rails/RakeEnvironment
   task :basic do
-    puts '📣 working:basic no loger generates records. These are made automatically when seeding development.'
+    puts '📣 working:basic no longer generates records. These are made automatically when seeding development.'
   end
 
   task :printers do
-    puts '📣 working:printers no loger generates printers. These are made automatically when seeding development.'
+    puts '📣 working:printers no longer generates printers. These are made automatically when seeding development.'
   end
 
   task :generate_tag_plates do

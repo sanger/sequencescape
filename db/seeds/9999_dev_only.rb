@@ -8,6 +8,8 @@ if Rails.env.development?
   # or at least the most frequently used when I first put this together)
   plate = BarcodePrinterType.find_by!(name: '96 Well Plate')
   tube = BarcodePrinterType.find_by!(name: '1D Tube')
+  plate384 = BarcodePrinterType384DoublePlate.find_by!(name: '384 Well Plate Double')
+
   BarcodePrinter.find_or_create_by!(name: 'g312bc2', barcode_printer_type: plate)
   BarcodePrinter.find_or_create_by!(name: 'g311bc2', barcode_printer_type: plate)
   BarcodePrinter.find_or_create_by!(name: 'g316bc',  barcode_printer_type: plate)
@@ -15,13 +17,17 @@ if Rails.env.development?
   BarcodePrinter.find_or_create_by!(name: 'g314bc',  barcode_printer_type: plate)
   BarcodePrinter.find_or_create_by!(name: 'f225bc',  barcode_printer_type: plate)
   BarcodePrinter.find_or_create_by!(name: 'g311bc1', barcode_printer_type: tube)
+  BarcodePrinter.find_or_create_by!(name: 'dnapbc2', barcode_printer_type: plate384)
+  BarcodePrinter.find_or_create_by!(name: 'ogilviebc', barcode_printer_type: plate384)
 
   # Previous content of working:basic provides a few example studies
   # and the admin user
-  seeder = WorkingSetup::StandardSeeder.new
+  seeder = WorkingSetup::StandardSeeder.new([['Stock Plate', 1]])
   seeder.user
   seeder.study
   seeder.study_b
   seeder.project
   seeder.supplier
+  # Generates a handful of samples and robots
+  seeder.seed
 end
