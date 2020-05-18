@@ -3,26 +3,25 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
-  before do
-    create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
-  end
+  let(:study) { create(:study, id: Heron::Factories::TubeRack::HERON_STUDY) }
 
   let(:params) do
     {
       "barcode": '0000000001',
       "size": '96',
+      "study_uuid": study.uuid,
       "tubes": {
         'A01' => {
           "container": {
             "barcode": 'FD00000001'
           },
-          "supplier_sample_id": 'PHEC-nnnnnnn1'
+          "supplier_name": 'PHEC-nnnnnnn1'
         },
         'A02' => {
           "container": {
             "barcode": 'FD00000002'
           },
-          "supplier_sample_id": 'PHEC-nnnnnnn2'
+          "supplier_name": 'PHEC-nnnnnnn2'
         }
       }
     }
@@ -30,9 +29,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
 
   let(:invalid_tube) do
     {
-      "container": {
-        "barcode": 'FD00000003'
-      }
+      "container": {}
     }
   end
 
@@ -71,7 +68,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
   end
 
   it 'is not valid unless all of the tubes are valid' do
-    params[:tubes]["A03"] = invalid_tube
+    params[:tubes]['A03'] = invalid_tube
     tube_rack = described_class.new(params)
     expect(tube_rack).not_to be_valid
   end
@@ -88,7 +85,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     end
 
     it 'returns false if any tube is invalid' do
-      params[:tubes]["A03"] = invalid_tube
+      params[:tubes]['A03'] = invalid_tube
       tube_rack = described_class.new(params)
       expect(tube_rack.save).to be_falsy
     end

@@ -10,43 +10,37 @@ module Heron
       include Concerns::CoordinatesSupport
       include Concerns::ForeignBarcodes
 
+      attr_accessor :sample_tubes, :tube_rack
 
-      attr_accessor :sample_tubes, :tube_rack, :size
-
-      validates_presence_of :tubes, :size, :purpose
-      validate :check_tubes
-
-      validate :validate_tubes_content
+      validates_presence_of :size, :purpose, :tubes
+      validate :check_tubes, if: :tubes
+      validate :check_tubes_content, if: :tubes_content
 
       def initialize(params)
         @params = params
-        tubes=@params[:tubes]
+      end
+
+      def barcode
+        @params[:barcode]
+      end
+
+      def size
+        @params[:size]
+      end
+
+      def tubes
+        return nil unless @params[:tubes]
+
+        @tubes ||= @params[:tubes].keys.each_with_object({}) do |coordinate, memo|
+          container_attrs = @params[:tubes][coordinate].dig(:container) || {}
+          memo[coordinate] = ::Heron::Factories::Tube.new(container_attrs)
+        end
       end
 
       def tubes_content
+        return unless @params[:tubes]
+
         @tubes_content ||= ::Heron::Factories::Content.new(params_for_content, @params[:study_uuid])
-      end
-
-      def params_for_content
-        return {} unless @params[:tubes].to_h
-        @params[:tubes].to_h.reduce({}) do |memo, location|
-          obj = @params[:tubes][location]
-          memo[location] = @params[:tubes][location].except(:container) if obj
-          memo
-        end
-      end
-
-      def validate_tubes_content
-        return if tubes_content.valid?
-
-        errors.add(:tubes_content, tubes_content.errors.full_messages)
-      end
-
-      def tubes=(attributes)
-        attributes.each do |coordinate|
-          container_attrs = attributes[coordinate].dig(:container, {}).merge(study: heron_study)
-          tubes[coordinate] = ::Heron::Factories::Tube.new(container_attrs)
-        end
       end
 
       def racked_tubes
@@ -57,8 +51,11 @@ module Heron
         @purpose ||= ::TubeRack::Purpose.where(target_type: 'TubeRack', size: size).first
       end
 
-      def tubes
-        @tubes ||= {}
+      def params_for_content
+        @params_for_content ||= @params[:tubes].keys.each_with_object({}) do |location, memo|
+          obj = @params[:tubes][location]
+          memo[location] = @params[:tubes][location].except(:container) if obj
+        end
       end
 
       def save
@@ -76,7 +73,6 @@ module Heron
         true
       end
 
-
       private
 
       def create_containers!
@@ -88,14 +84,13 @@ module Heron
       end
 
       def containers_for_locations
-        @tube_rack.racked_tubes.reduce({}) do |racked_tube|
+        @tube_rack.racked_tubes.each_with_object({}) do |racked_tube, memo|
           memo[unpad_coordinate(racked_tube.coordinate)] = racked_tube.tube
-          memo
         end
       end
 
-      def create_contents!          
-        tubes_contents.add_aliquots_into_locations(containers_for_locations)
+      def create_contents!
+        tubes_content.add_aliquots_into_locations(containers_for_locations)
       end
 
       def create_tubes!(tube_rack)
@@ -105,6 +100,12 @@ module Heron
           racked_tubes << RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate),
                                             tube_rack: tube_rack)
         end
+      end
+
+      def check_tubes_content
+        return if tubes_content.valid?
+
+        errors.add(:tubes_content, tubes_content.errors.full_messages)
       end
 
       def check_tubes

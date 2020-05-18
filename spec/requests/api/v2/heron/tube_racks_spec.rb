@@ -3,15 +3,14 @@
 require 'rails_helper'
 require 'support/barcode_helper'
 
-RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true do
+RSpec.describe 'TubeRacks Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
   let(:size) { 96 }
+  let(:purpose) { create(:purpose, type: 'TubeRack::Purpose', target_type: 'TubeRack', size: 96) }
 
-  before do
-    create(:purpose, type: 'TubeRack::Purpose', target_type: 'TubeRack', size: 96)
-    create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
-  end
+  let(:request) { api_post '/api/v2/heron/tube_racks', payload }
 
   context 'when there is a tube rack message' do
+    let(:study) { create(:study, id: Heron::Factories::TubeRack::HERON_STUDY) }
     let(:tube_rack_barcode) { build(:fluidigm).barcode }
     let(:tubes_barcodes) { [build(:fluidx).barcode, build(:fluidx).barcode] }
     let(:tubes_coordinates) { %w[A1 B1] }
@@ -19,12 +18,12 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
     let(:tubes) do
       {
         "#{tubes_coordinates[0]}": {
-          "container": {"barcode": tubes_barcodes[0]},
-          "supplier_sample_id": supplier_sample_ids[0]
+          "container": { "barcode": tubes_barcodes[0] },
+          "supplier_name": supplier_sample_ids[0]
         },
         "#{tubes_coordinates[1]}": {
-          "container": {"barcode": tubes_barcodes[1]},
-          "supplier_sample_id": supplier_sample_ids[1]
+          "container": { "barcode": tubes_barcodes[1] },
+          "supplier_name": supplier_sample_ids[1]
         }
       }
     end
@@ -33,6 +32,8 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
         "data": {
           "attributes": {
             "tube_rack": {
+              "purpose_uuid": purpose.uuid,
+              "study_uuid": study.uuid,
               "size": size,
               "barcode": tube_rack_barcode,
               "tubes": tubes
@@ -41,34 +42,33 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
         }
       }
     end
-    let(:params) { payload.to_h.with_indifferent_access }
 
     shared_examples_for 'an incorrect tube rack message' do
       it 'does not create a tube rack' do
         expect do
-          post api_v2_heron_tube_racks_path, params: params
+          request
         end.not_to change(TubeRack, :count)
       end
 
       it 'returns a 422 status code' do
-        post api_v2_heron_tube_racks_path, params: params
+        request
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'contains errors in the response' do
-        post api_v2_heron_tube_racks_path, params: params
+        request
         expect(!JSON.parse(response.body)['errors'].empty?).to be_truthy
       end
     end
 
     it 'creates a new tube rack' do
       expect do
-        post api_v2_heron_tube_racks_path, params: params
+        request
       end.to change(TubeRack, :count).by(1)
     end
 
     it 'returns a 201 status code' do
-      post api_v2_heron_tube_racks_path, params: params
+      request
       expect(response).to have_http_status(:created)
     end
 
@@ -103,11 +103,14 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
         it_behaves_like 'an incorrect tube rack message'
       end
 
-      context 'when some tubes do not have a supplier sample id' do
-        let(:supplier_sample_ids) { ['PHEC-nnnnnnn1', nil] }
+      # NB: Not needed because this check is already happening in MLWH database.
+      # SS however could be accepting requests from other services, where this condition should not be applied.
+      # context 'when some tubes do not have a supplier sample id' do
+      # Remove this commented code on merge
+      #   let(:supplier_sample_ids) { ['PHEC-nnnnnnn1', nil] }
 
-        it_behaves_like 'an incorrect tube rack message'
-      end
+      #   it_behaves_like 'an incorrect tube rack message'
+      # end
     end
   end
 end

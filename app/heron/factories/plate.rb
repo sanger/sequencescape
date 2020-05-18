@@ -43,7 +43,6 @@ module Heron
 
       attr_reader :plate_purpose
 
-
       def create_containers!
         @plate = plate_purpose.create!
 
@@ -51,9 +50,8 @@ module Heron
       end
 
       def containers_for_locations
-        @plate.wells.reduce({}) do |memo, well|
+        @plate.wells.each_with_object({}) do |well, memo|
           memo[unpad_coordinate(well.map.description)] = well
-          memo
         end
       end
 

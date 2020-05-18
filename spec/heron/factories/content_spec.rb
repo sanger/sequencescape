@@ -65,18 +65,17 @@ RSpec.describe Heron::Factories::Content, type: :model, lighthouse: true, heron:
   end
 
   describe '#add_aliquots_into_locations' do
-
     shared_examples_for 'I can add aliquots into each location' do
       context 'when receiving empty config' do
         let(:params) { {} }
-  
+
         it 'does nothing' do
           expect do
-            factory.add_aliquots_into_locations(plate)
+            factory.add_aliquots_into_locations(containers_for_locations)
           end.not_to change(Aliquot, :count)
         end
       end
-  
+
       context 'when providing samples information' do
         let!(:sample) { create(:sample) }
         let(:params) do
@@ -86,18 +85,18 @@ RSpec.describe Heron::Factories::Content, type: :model, lighthouse: true, heron:
             'C01': { sample_uuid: sample.uuid }
           }
         end
-  
+
         it 'is valid' do
           expect(factory).to be_valid
         end
-  
+
         it 'creates the new aliquots' do
           expect do
-            factory.add_aliquots_into_locations(plate)
+            factory.add_aliquots_into_locations(containers_for_locations)
           end.to change(Sample, :count).by(2).and(change(Aliquot, :count).by(3))
         end
-  
-        context 'when creating more than one aliquot in the same location' do
+
+        context 'when it creates more than one aliquot in the same location' do
           let(:params) do
             {
               'A01': [{ phenotype: 'A phenotype', aliquot: { tag_id: 1 }, study_uuid: study.uuid },
@@ -106,34 +105,61 @@ RSpec.describe Heron::Factories::Content, type: :model, lighthouse: true, heron:
               'C01': { sample_uuid: sample.uuid }
             }
           end
-  
+
           it 'is valid' do
             expect(factory).to be_valid
           end
-  
+
           it 'creates the right number of elements' do
             expect do
-              factory.add_aliquots_into_locations(plate)
+              factory.add_aliquots_into_locations(containers_for_locations)
             end.to change(Sample, :count).by(2).and(change(Aliquot, :count).by(4))
           end
-  
-          # it 'creates the right aliquots' do
-          #   factory.add_aliquots_into_locations(plate)
-          #   first_well = plate.wells.located_at('A1').first
-  
-          #   expect(first_well.aliquots.count).to eq(2)
-          #   expect(first_well.aliquots.last.sample).to eq(sample)
-          # end
+
+          it 'creates the right aliquots for A1' do
+            factory.add_aliquots_into_locations(containers_for_locations)
+
+            expect(containers_for_locations['A1'].aliquots.count).to eq(2)
+            expect(containers_for_locations['A1'].aliquots.last.sample).to eq(sample)
+          end
+
+          it 'creates the right aliquots for B1' do
+            factory.add_aliquots_into_locations(containers_for_locations)
+            expect(containers_for_locations['B1'].aliquots.count).to eq(1)
+          end
+
+          it 'creates the right aliquots for C1' do
+            factory.add_aliquots_into_locations(containers_for_locations)
+            expect(containers_for_locations['C1'].aliquots.count).to eq(1)
+            expect(containers_for_locations['C1'].aliquots.first.sample).to eq(sample)
+          end
         end
-      end  
+      end
     end
 
     context 'with a tube rack' do
       let(:purpose) do
         create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
       end
-      let(:plate) { purpose.create! }
-      
+      let(:tube_rack) do
+        ::TubeRack.create!(size: '96', purpose: purpose)
+      end
+      let(:plate) { tube_rack }
+      let(:tubes) do
+        %w[A1 B1 C1].map do |coordinate|
+          tube = create(:tube)
+          create(:racked_tube, tube: tube, coordinate: coordinate, tube_rack: tube_rack)
+          tube
+        end
+      end
+      let(:containers_for_locations) do
+        {
+          'A1' => tubes[0],
+          'B1' => tubes[1],
+          'C1' => tubes[2]
+        }
+      end
+
       it_behaves_like 'I can add aliquots into each location'
     end
 
@@ -142,9 +168,15 @@ RSpec.describe Heron::Factories::Content, type: :model, lighthouse: true, heron:
         create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
       end
       let(:plate) { purpose.create! }
-      
+      let(:containers_for_locations) do
+        {
+          'A1' => plate.wells.located_at('A1').first,
+          'B1' => plate.wells.located_at('B1').first,
+          'C1' => plate.wells.located_at('C1').first
+        }
+      end
+
       it_behaves_like 'I can add aliquots into each location'
     end
-
   end
 end

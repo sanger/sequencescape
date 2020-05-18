@@ -23,7 +23,7 @@ module Heron
 
       # def create_tube_barcode!(sample_tube)
       #   # TODO: the below foreign barcode checks are duplicated in sanger_tube_id specialised field file - refactor
-        
+
       # end
 
       # def create_sanger_sample_id!
