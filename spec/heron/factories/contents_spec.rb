@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Content, type: :model, lighthouse: true, heron: true do
+RSpec.describe Heron::Factories::Contents, type: :model, lighthouse: true, heron: true do
   let(:factory) { described_class.new(params) }
   let(:study) { create :study }
 

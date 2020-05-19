@@ -7,9 +7,10 @@ module Heron
       include ActiveModel::Model
       include Concerns::ForeignBarcodes
       include Concerns::CoordinatesSupport
-      include Concerns::ContentSupport
+      include Concerns::RecipientsCoordinates
+      include Concerns::Contents
 
-      attr_accessor :plate
+      attr_accessor :plate, :plate_purpose
 
       validate :plate_purpose_exists
 
@@ -25,6 +26,25 @@ module Heron
         @params[:barcode]
       end
 
+      def save
+        return false unless valid?
+
+        ActiveRecord::Base.transaction do
+          @plate = plate_purpose.create!
+
+          Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
+  
+          create_contents!
+        end
+        true
+      end
+
+      private
+
+      def create_contents!
+        contents&.add_aliquots_into_locations(containers_for_locations)
+      end
+
       def plate_purpose_exists
         unless @params.key?(:plate_purpose_uuid)
           errors.add(:base, 'Plate purpose uuid not defined')
@@ -34,33 +54,12 @@ module Heron
         errors.add(:base, "Plate purpose for uuid (#{@params[:plate_purpose_uuid]}) do not exist") unless @plate_purpose
       end
 
-      attr_reader :plate_purpose
-
-      def create_containers!
-        @plate = plate_purpose.create!
-
-        Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
-      end
-
       def containers_for_locations
         @plate.wells.each_with_object({}) do |well, memo|
           memo[unpad_coordinate(well.map.description)] = well
         end
       end
 
-      def create_contents!
-        content&.add_aliquots_into_locations(containers_for_locations)
-      end
-
-      def save
-        return false unless valid?
-
-        ActiveRecord::Base.transaction do
-          create_containers!
-          create_contents!
-        end
-        true
-      end
     end
   end
 end

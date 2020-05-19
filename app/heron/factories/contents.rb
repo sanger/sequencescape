@@ -2,8 +2,8 @@
 
 module Heron
   module Factories
-    # Factory class to create Heron wells content in a plate
-    class Content
+    # Factory class to create Heron wells contents in a plate
+    class Contents
       include ActiveModel::Model
       include Concerns::CoordinatesSupport
 

@@ -199,8 +199,8 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
 
         it 'displays the error' do
           expect(error_messages).to eq([
-            'Wells content A1 Asdf Unexisting field for sample or sample_metadata',
-            'Wells content B1 Phenotype No other params can be added when sample uuid specified'
+            'Content A1 Asdf Unexisting field for sample or sample_metadata',
+            'Content B1 Phenotype No other params can be added when sample uuid specified'
           ])
         end
       end
@@ -223,7 +223,7 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
 
         it 'displays the error' do
           expect(error_messages).to eq([
-            "Wells content A1 Study can't be blank"
+            "Content A1 Study can't be blank"
           ])
         end
       end

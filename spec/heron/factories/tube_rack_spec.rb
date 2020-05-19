@@ -38,7 +38,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
 
   it 'will create the correct number of tubes' do
     tube_rack = described_class.new(params)
-    expect(tube_rack.tubes.count).to eq(params[:tubes].length)
+    expect(tube_rack.recipients.count).to eq(params[:tubes].length)
   end
 
   it 'is not valid without barcode' do
@@ -115,15 +115,13 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     it 'sets up the tube in their rack coordinate' do
       tube_rack = described_class.new(params)
       tube_rack.save
-      tube_rack.racked_tubes
       expect(RackedTube.count).to eq(2)
     end
 
     it 'pads the coordinates before saving them' do
       tube_rack = described_class.new(params)
       tube_rack.save
-      tube_rack.racked_tubes
-      expect(tube_rack.racked_tubes.first.coordinate).to eq('A1')
+      expect(tube_rack.tube_rack.racked_tubes.first.coordinate).to eq('A1')
     end
 
     it 'creates a tube rack status record' do
