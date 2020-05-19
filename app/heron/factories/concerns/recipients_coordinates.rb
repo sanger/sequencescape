@@ -11,13 +11,14 @@ module Heron
       module RecipientsCoordinates
         def self.included(klass)
           klass.instance_eval do
-            validate :check_recipient_coordinates            
+            validate :check_recipient_coordinates
           end
         end
 
         def check_recipient_coordinates
           return unless @params[recipients_key]
-          @params[recipients_key].keys.select{|k| !coordinate_valid?(k) }.each do |k|
+
+          @params[recipients_key].keys.reject { |k| coordinate_valid?(k) }.each do |k|
             errors.add(:coordinate, "The location \"#{k}\" has an invalid format")
           end
         end

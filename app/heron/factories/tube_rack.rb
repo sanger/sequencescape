@@ -12,7 +12,7 @@ module Heron
       include Concerns::RecipientsCoordinates
       include Concerns::Recipients
       include Concerns::Contents
-      
+
       attr_accessor :sample_tubes, :tube_rack
 
       validates_presence_of :size, :purpose, :recipients
@@ -48,7 +48,7 @@ module Heron
           @tube_rack = ::TubeRack.create!(size: size, purpose: purpose)
 
           Barcode.create!(asset: tube_rack, barcode: barcode, format: barcode_format)
-  
+
           create_recipients!
           create_contents!
 
@@ -72,7 +72,7 @@ module Heron
           tube_factory = recipients[coordinate]
           sample_tube = tube_factory.create
           RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate),
-                                            tube_rack: tube_rack)
+                            tube_rack: tube_rack)
         end
       end
 
@@ -85,7 +85,6 @@ module Heron
           memo[unpad_coordinate(racked_tube.coordinate)] = racked_tube.tube
         end
       end
-
     end
   end
 end

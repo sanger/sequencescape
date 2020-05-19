@@ -17,7 +17,7 @@ module Heron
 
         def contents
           return unless @params[recipients_key]
-          return if errors.count > 0
+          return if errors.count.positive?
 
           @contents ||= ::Heron::Factories::Contents.new(params_for_contents, @params[:study_uuid])
         end

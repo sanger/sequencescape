@@ -33,7 +33,7 @@ module Heron
           @plate = plate_purpose.create!
 
           Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
-  
+
           create_contents!
         end
         true
@@ -59,7 +59,6 @@ module Heron
           memo[unpad_coordinate(well.map.description)] = well
         end
       end
-
     end
   end
 end
