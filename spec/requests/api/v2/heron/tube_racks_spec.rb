@@ -72,6 +72,13 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, tags: [:lighthouse, :heron]
       expect(response).to have_http_status(:created)
     end
 
+    it 'writes the supplier name' do
+      request
+      expect(
+        ::Sample::Metadata.joins(sample: { aliquots: { receptacle: :barcodes } }).where(barcodes: { barcode: tubes_barcodes }).map(&:supplier_name)
+      ).to eq(supplier_sample_ids)
+    end
+
     context 'when there is some data missing/incorrect' do
       context 'when there is not plate purpose that match the rack size' do
         let(:size) { 33 }
@@ -102,15 +109,6 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, tags: [:lighthouse, :heron]
 
         it_behaves_like 'an incorrect tube rack message'
       end
-
-      # NB: Not needed because this check is already happening in MLWH database.
-      # SS however could be accepting requests from other services, where this condition should not be applied.
-      # context 'when some tubes do not have a supplier sample id' do
-      # Remove this commented code on merge
-      #   let(:supplier_sample_ids) { ['PHEC-nnnnnnn1', nil] }
-
-      #   it_behaves_like 'an incorrect tube rack message'
-      # end
     end
   end
 end
