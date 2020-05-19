@@ -3,32 +3,31 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: true, heron: true do
-  require "rspec/mocks/standalone"
-  let(:factory_klass) { 
-    Class.new do 
+  require 'rspec/mocks/standalone'
+  let(:factory_klass) do
+    Class.new do
       include ActiveModel::Model
       include Heron::Factories::Concerns::CoordinatesSupport
       include Heron::Factories::Concerns::RecipientsCoordinates
       include Heron::Factories::Concerns::Contents
-      
 
       def initialize(params)
         @params = params
       end
 
       def self.model_name
-        ActiveModel::Name.new(self, nil, "temp")
-      end    
+        ActiveModel::Name.new(self, nil, 'temp')
+      end
 
       def content_factory
-       ::Heron::Factories::Sample
+        ::Heron::Factories::Sample
       end
 
       def recipients_key
         :wells
       end
     end
-  }
+  end
   let(:factory) { factory_klass.new(params) }
   let(:study) { create :study }
 
@@ -39,7 +38,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
   end
 
   context 'with valid params' do
-    let(:params) { {wells: {}, study_uuid: study.uuid } }
+    let(:params) { { wells: {}, study_uuid: study.uuid } }
 
     it 'can build a valid content factory' do
       expect(factory).to be_valid
@@ -47,20 +46,8 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
   end
 
   context 'with invalid params' do
-    context 'when wells key is not present' do
-      let(:params) { {study_uuid: study.uuid} }
-      xit 'is invalid' do
-        expect(factory).to be_invalid
-      end
-    end
-    context 'when using a wrong recipient key' do
-      let(:params) { {wells2: {}, study_uuid: study.uuid } }
-      xit 'is invalid' do
-        expect(factory).to be_invalid
-      end
-    end
     context 'when keys are not valid coordinates' do
-      let(:params) { {wells: { 'test1': [], 'B01': [], 'test2': [] }, study_uuid: study.uuid } }
+      let(:params) { { wells: { 'test1': [], 'B01': [], 'test2': [] }, study_uuid: study.uuid } }
 
       it 'is not valid' do
         factory = factory_klass.new(params)
@@ -71,8 +58,34 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         factory = factory_klass.new(params)
         factory.validate
         expect(factory.errors.full_messages.uniq).to eq(
-          ["Coordinate The location \"test1\" has an invalid format", "Coordinate The location \"test2\" has an invalid format"]
+          ['Coordinate The location "test1" has an invalid format', 'Coordinate The location "test2" has an invalid format']
         )
+      end
+    end
+
+    context 'when the samples do not have a study' do
+      let(:study) { create(:study) }
+      let(:sample) { create(:sample) }
+      let(:params) do
+        {
+          wells:
+        {
+          'A1': { content: {} }
+        }
+        }
+      end
+
+      it 'is not valid' do
+        factory = factory_klass.new(params)
+        expect(factory).to be_invalid
+      end
+
+      context 'when supplying the study_uuid' do
+        it 'is valid' do
+          params[:study_uuid] = study.uuid
+          factory = factory_klass.new(params)
+          expect(factory).to be_valid
+        end
       end
     end
 
@@ -81,11 +94,11 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
       let(:sample) { create(:sample) }
       let(:params) do
         {
-          wells: 
+          wells:
         {
-          'A1': {content: [{ 'phenotype': 'Another phenotype', 'study_uuid': study.uuid }, { 'phenotype': 'A phenotype', 'study_uuid': study.uuid }]},
-          'B1': {content: [{ 'phenotype': 'Right', 'study_uuid': study.uuid }, { 'sample_uuid': sample.uuid, 'phenotype': 'wrong' }] },
-          'C1': {content: { 'phenotype': 'Right', 'asdf': 'wrong' } }
+          'A1': { content: [{ 'phenotype': 'Another phenotype', 'study_uuid': study.uuid }, { 'phenotype': 'A phenotype', 'study_uuid': study.uuid }] },
+          'B1': { content: [{ 'phenotype': 'Right', 'study_uuid': study.uuid }, { 'sample_uuid': sample.uuid, 'phenotype': 'wrong' }] },
+          'C1': { content: { 'phenotype': 'Right', 'asdf': 'wrong' } }
         }
         }
       end
@@ -120,12 +133,11 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
       context 'when providing samples information' do
         let!(:sample) { create(:sample) }
         let(:params) do
-          {wells: {
-            'A01': {content: { phenotype: 'A phenotype', study_uuid: study.uuid } }, 
-            'B01': {content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-            'C01': {content: { sample_uuid: sample.uuid } }
-          }, study_uuid: study.uuid
-          }
+          { wells: {
+            'A01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+            'B01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+            'C01': { content: { sample_uuid: sample.uuid } }
+          }, study_uuid: study.uuid }
         end
 
         it 'is valid' do
@@ -140,13 +152,12 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
 
         context 'when it creates more than one aliquot in the same location' do
           let(:params) do
-            {wells: {
-              'A01': {content: [{ phenotype: 'A phenotype', aliquot: { tag_id: 1 }, study_uuid: study.uuid },
-                      { sample_uuid: sample.uuid, aliquot: { tag_id: 2 } }]},
-              'B01': {content: { phenotype: 'A phenotype', study_uuid: study.uuid }},
-              'C01': {content: { sample_uuid: sample.uuid } }
-            }, study_uuid: study.uuid
-            }
+            { wells: {
+              'A01': { content: [{ phenotype: 'A phenotype', aliquot: { tag_id: 1 }, study_uuid: study.uuid },
+                                 { sample_uuid: sample.uuid, aliquot: { tag_id: 2 } }] },
+              'B01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+              'C01': { content: { sample_uuid: sample.uuid } }
+            }, study_uuid: study.uuid }
           end
 
           it 'is valid' do

@@ -25,10 +25,10 @@ module Heron
         end
 
         def check_recipients
+          return if errors.count.positive?
+
           recipients.keys.each do |coordinate|
             recipient = recipients[coordinate]
-
-            errors.add(:coordinate, 'Invalid coordinate format') unless coordinate_valid?(coordinate)
 
             next if recipient.valid?
 

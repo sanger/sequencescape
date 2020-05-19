@@ -20,21 +20,18 @@ module Heron
         end
 
         def contents
-          #unless @params[recipients_key]
-          #  errors.add(:recipients, "Recipient key not found ")
-          #end
           return if errors.count.positive?
-
-          #@contents ||= ::Heron::Factories::Contents.new(params_for_contents, @params[:study_uuid])
           return unless params_for_contents
+
           @contents ||= params_for_contents.keys.each_with_object({}) do |coordinate, memo|
             samples_params = [params_for_contents[coordinate]].flatten.compact
-            memo[unpad_coordinate(coordinate)]=_factories_for_location(coordinate, samples_params)
+            memo[unpad_coordinate(coordinate)] = _factories_for_location(coordinate, samples_params)
           end
         end
 
         def add_aliquots_into_locations(containers_for_locations)
           return unless contents
+
           contents.each do |location, factories|
             container = containers_for_locations[location]
             factories.each do |factory|
@@ -42,7 +39,7 @@ module Heron
             end
           end
           true
-        end 
+        end
 
         def params_for_contents
           return unless @params[recipients_key]
@@ -61,7 +58,6 @@ module Heron
             factory
           end
         end
-  
       end
     end
   end
