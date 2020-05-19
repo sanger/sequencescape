@@ -22,6 +22,10 @@ module Heron
         :wells
       end
 
+      def content_factory
+        ::Heron::Factories::Sample
+      end
+
       def barcode
         @params[:barcode]
       end
@@ -42,7 +46,7 @@ module Heron
       private
 
       def create_contents!
-        contents&.add_aliquots_into_locations(containers_for_locations)
+        add_aliquots_into_locations(containers_for_locations)
       end
 
       def plate_purpose_exists
