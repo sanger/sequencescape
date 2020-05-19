@@ -9,15 +9,19 @@ module Heron
       include Concerns::HeronStudy
       include Concerns::CoordinatesSupport
       include Concerns::ForeignBarcodes
+      include Concerns::ContentSupport
 
       attr_accessor :sample_tubes, :tube_rack
 
       validates_presence_of :size, :purpose, :tubes
       validate :check_tubes, if: :tubes
-      validate :check_tubes_content, if: :tubes_content
 
       def initialize(params)
         @params = params
+      end
+
+      def recipients_key
+        :tubes
       end
 
       def barcode
@@ -29,18 +33,11 @@ module Heron
       end
 
       def tubes
-        return nil unless @params[:tubes]
+        return nil unless @params[recipients_key]
 
-        @tubes ||= @params[:tubes].keys.each_with_object({}) do |coordinate, memo|
-          container_attrs = @params[:tubes][coordinate].dig(:container) || {}
-          memo[coordinate] = ::Heron::Factories::Tube.new(container_attrs)
+        @tubes ||= params_for_container.keys.each_with_object({}) do |coordinate, memo|
+          memo[coordinate] = ::Heron::Factories::Tube.new(params_for_container[coordinate])
         end
-      end
-
-      def tubes_content
-        return unless @params[:tubes]
-
-        @tubes_content ||= ::Heron::Factories::Content.new(params_for_content, @params[:study_uuid])
       end
 
       def racked_tubes
@@ -49,13 +46,6 @@ module Heron
 
       def purpose
         @purpose ||= ::TubeRack::Purpose.where(target_type: 'TubeRack', size: size).first
-      end
-
-      def params_for_content
-        @params_for_content ||= @params[:tubes].keys.each_with_object({}) do |location, memo|
-          obj = @params[:tubes][location]
-          memo[location] = @params[:tubes][location].except(:container) if obj
-        end
       end
 
       def save
@@ -90,7 +80,7 @@ module Heron
       end
 
       def create_contents!
-        tubes_content.add_aliquots_into_locations(containers_for_locations)
+        content&.add_aliquots_into_locations(containers_for_locations)
       end
 
       def create_tubes!(tube_rack)
@@ -100,12 +90,6 @@ module Heron
           racked_tubes << RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate),
                                             tube_rack: tube_rack)
         end
-      end
-
-      def check_tubes_content
-        return if tubes_content.valid?
-
-        errors.add(:tubes_content, tubes_content.errors.full_messages)
       end
 
       def check_tubes

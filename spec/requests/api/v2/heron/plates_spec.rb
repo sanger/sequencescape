@@ -154,13 +154,13 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
       end
     end
 
-    context 'when providing wells_content' do
+    context 'when providing wells' do
       let(:study) { create(:study) }
       let!(:sample) { create(:sample) }
-      let(:wells_content) do
+      let(:wells) do
         {
-          'A01': { 'phenotype': 'A phenotype' },
-          'B01': { 'sample_uuid': sample.uuid }
+          'A01': { 'content': { 'phenotype': 'A phenotype' } },
+          'B01': { 'content': { 'sample_uuid': sample.uuid } }
         }
       end
       let(:payload) do
@@ -171,7 +171,7 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
               'barcode' => barcode,
               'study_uuid' => study.uuid,
               'plate_purpose_uuid' => purpose.uuid,
-              'wells_content' => wells_content
+              'wells' => wells
             }
           }
         }
@@ -187,11 +187,11 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
         expect(plate.studies).to eq([study])
       end
 
-      context 'when wells_content is wrong' do
-        let(:wells_content) do
+      context 'when wells is wrong' do
+        let(:wells) do
           {
-            'A01': { 'asdf': 'A phenotype' },
-            'B01': { 'phenotype': 'wrong', 'sample_uuid': sample.uuid }
+            'A01': { 'content': { 'asdf': 'A phenotype' } },
+            'B01': { 'content': { 'phenotype': 'wrong', 'sample_uuid': sample.uuid } }
           }
         end
 
@@ -213,7 +213,7 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
               'attributes' => {
                 'barcode' => barcode,
                 'plate_purpose_uuid' => purpose.uuid,
-                'wells_content' => wells_content
+                'wells' => wells
               }
             }
           }

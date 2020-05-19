@@ -93,15 +93,15 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
 
     context 'when providing samples information' do
       let!(:sample) { create(:sample) }
-      let(:wells_content) do
+      let(:wells) do
         {
-          'A01': { phenotype: 'A phenotype', study_uuid: study.uuid },
-          'B01': { phenotype: 'A phenotype', study_uuid: study.uuid },
-          'C01': { sample_uuid: sample.uuid }
+          'A01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+          'B01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+          'C01': { content: { sample_uuid: sample.uuid } }
         }
       end
       let(:params) do
-        { barcode: barcode, plate_purpose_uuid: purpose.uuid, wells_content: wells_content }
+        { barcode: barcode, plate_purpose_uuid: purpose.uuid, wells: wells }
       end
 
       it 'persists the plate' do
@@ -117,10 +117,10 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       end
 
       context 'when there is an error in the sample info' do
-        let(:wells_content) do
+        let(:wells) do
           {
-            'A01': { 'wrong': 'wrong', study_uuid: study.uuid },
-            'C01': [{ 'phenotype': 'right' }, { sample_uuid: sample.uuid, 'phenotype': 'wrong' }]
+            'A01': { content: { 'wrong': 'wrong', study_uuid: study.uuid } },
+            'C01': { content: [{ 'phenotype': 'right' }, { sample_uuid: sample.uuid, 'phenotype': 'wrong' }] }
           }
         end
 
@@ -130,9 +130,9 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
 
         it 'stores the error message from samples' do
           expect(plate_factory.tap(&:validate).errors.full_messages).to eq([
-            'Wells content A1 Wrong Unexisting field for sample or sample_metadata',
-            "Wells content C1, pos: 0 Study can't be blank",
-            'Wells content C1, pos: 1 Phenotype No other params can be added when sample uuid specified'
+            'Content A1 Wrong Unexisting field for sample or sample_metadata',
+            "Content C1, pos: 0 Study can't be blank",
+            'Content C1, pos: 1 Phenotype No other params can be added when sample uuid specified'
           ])
         end
       end

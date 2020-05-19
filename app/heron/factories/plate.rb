@@ -7,29 +7,22 @@ module Heron
       include ActiveModel::Model
       include Concerns::ForeignBarcodes
       include Concerns::CoordinatesSupport
+      include Concerns::ContentSupport
 
       attr_accessor :plate
 
       validate :plate_purpose_exists
 
-      validate :validate_wells_content
-
       def initialize(params)
         @params = params
       end
 
+      def recipients_key
+        :wells
+      end
+
       def barcode
         @params[:barcode]
-      end
-
-      def wells_content
-        @wells_content ||= ::Heron::Factories::Content.new(@params[:wells_content], @params[:study_uuid])
-      end
-
-      def validate_wells_content
-        return if wells_content.valid?
-
-        errors.add(:wells_content, wells_content.errors.full_messages)
       end
 
       def plate_purpose_exists
@@ -56,7 +49,7 @@ module Heron
       end
 
       def create_contents!
-        wells_content.add_aliquots_into_locations(containers_for_locations)
+        content&.add_aliquots_into_locations(containers_for_locations)
       end
 
       def save

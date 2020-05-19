@@ -12,16 +12,12 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
       "study_uuid": study.uuid,
       "tubes": {
         'A01' => {
-          "container": {
-            "barcode": 'FD00000001'
-          },
-          "supplier_name": 'PHEC-nnnnnnn1'
+          "barcode": 'FD00000001',
+          "content": { "supplier_name": 'PHEC-nnnnnnn1' }
         },
         'A02' => {
-          "container": {
-            "barcode": 'FD00000002'
-          },
-          "supplier_name": 'PHEC-nnnnnnn2'
+          "barcode": 'FD00000002',
+          "content": { "supplier_name": 'PHEC-nnnnnnn2' }
         }
       }
     }
@@ -29,7 +25,6 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
 
   let(:invalid_tube) do
     {
-      "container": {}
     }
   end
 

@@ -18,12 +18,12 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, tags: [:lighthouse, :heron]
     let(:tubes) do
       {
         "#{tubes_coordinates[0]}": {
-          "container": { "barcode": tubes_barcodes[0] },
-          "supplier_name": supplier_sample_ids[0]
+          "barcode": tubes_barcodes[0],
+          "content": { "supplier_name": supplier_sample_ids[0] }
         },
         "#{tubes_coordinates[1]}": {
-          "container": { "barcode": tubes_barcodes[1] },
-          "supplier_name": supplier_sample_ids[1]
+          "barcode": tubes_barcodes[1],
+          "content": { "supplier_name": supplier_sample_ids[1] }
         }
       }
     end

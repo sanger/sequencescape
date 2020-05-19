@@ -24,16 +24,18 @@ module Heron
             errors.add(:coordinate, "Invalid coordinate format (#{location})")
             next
           end
+          samples_params = [@params[location]].flatten.compact
+          memo[unpad_coordinate(location)] = _sample_factories_for_location(location, samples_params)
+        end
+      end
 
-          samples_params = [@params[location]].flatten
-          location = unpad_coordinate(location)
-          memo[location] = samples_params.each_with_index.map do |sample_params, pos|
-            label = samples_params.length == 1 ? location : "#{location}, pos: #{pos}"
-            sample_params = sample_params.merge(study_uuid: study_uuid) if study_uuid
-            factory = ::Heron::Factories::Sample.new(sample_params)
-            errors.add(label, factory.errors.full_messages) unless factory.valid?
-            factory
-          end
+      def _sample_factories_for_location(location, samples_params)
+        samples_params.each_with_index.map do |sample_params, pos|
+          label = samples_params.length == 1 ? location : "#{location}, pos: #{pos}"
+          sample_params = sample_params.merge(study_uuid: study_uuid) if study_uuid
+          factory = ::Heron::Factories::Sample.new(sample_params)
+          errors.add(label, factory.errors.full_messages) unless factory.valid?
+          factory
         end
       end
 

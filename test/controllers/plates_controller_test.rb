@@ -125,8 +125,8 @@ class PlatesControllerTest < ActionController::TestCase
                 plate_purpose_uuid: tube_rack_purpose.uuid,
                 study_uuid: study.uuid,
                 barcode: '0000000001', size: 96, tubes: {
-                  'A1' => { container: { barcode: 'FD00000001' }, supplier_name: 'PHEC-nnnnnnn1' },
-                  'A2' => { container: { barcode: 'FD00000002' }, supplier_name: 'PHEC-nnnnnnn2' }
+                  'A1' => { barcode: 'FD00000001', content: { supplier_name: 'PHEC-nnnnnnn1' } },
+                  'A2' => { barcode: 'FD00000002', content: { supplier_name: 'PHEC-nnnnnnn2' } }
                 }
               }
               tube_rack_factory = ::Heron::Factories::TubeRack.new(params)
