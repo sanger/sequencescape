@@ -8,7 +8,7 @@ module Heron
       # Eg: ::Heron::Factories::Sample
       #
       # **Requirements**
-      # - The method or attribute content_factory needs to be defined with the class that act as 
+      # - The method or attribute content_factory needs to be defined with the class that act as
       #   factory for contents. Eg: ::Heron::Factories::Sample
       # - The content configuration should be already stored in @params
       # - The content configuration object needs to be in @params[recipients_key]
@@ -19,7 +19,7 @@ module Heron
       # - The class should include the module Heron::Factories:Concerns::CoordinatesSupport
       #
       # **Use**
-      # Include the module in the class after checking the previous list of requirements. 
+      # Include the module in the class after checking the previous list of requirements.
       #
       # **Effect**
       # Factories for each content in each well will be generated.
@@ -28,10 +28,10 @@ module Heron
       # **Examples of params**
       # 1. Empty contents
       # {}
-      # 
+      #
       # 2. A well at position A1, with a sample that has name 'Sample 1'
       # { wells: {'A1': {content: {name: 'Sample 1', sample_uuid: <uuid>} } } }
-      # 
+      #
       # 3. Two aliquots in position B1 from samples with name 'Sample 1' and 'Sample 2'
       #    and both will be created under study <uuid>
       # { wells: {'B1': {content: [{name: 'Sample 1'}, {name: 'Sample 2'}] } }, sample_uuid: <uuid>}
@@ -61,7 +61,7 @@ module Heron
         # containers_for_locations: Hash<Coordinate, Container> where container is a Well or a tube and Coordinate
         # is a position in the rack
         # Returns:
-        # Boolean indicating if the action was produced        
+        # Boolean indicating if the action was produced
         def add_aliquots_into_locations(containers_for_locations)
           return unless contents
 
