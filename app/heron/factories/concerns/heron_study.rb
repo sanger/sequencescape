@@ -2,7 +2,6 @@
 
 module Heron
   module Factories
-    # Factory class to create Heron tube racks
     module Concerns
       # Tools to access the Heron study
       module HeronStudy

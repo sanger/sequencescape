@@ -5,9 +5,8 @@ module Heron
     # Factory class to create Heron tube racks
     module Concerns
       #
-      # A foreign barcode is a barcode that has been externally set, that is added as
-      # another extra barcode for the labware referred.
-      # This module adds validation and processing methods for this barcodes
+      # Validates the object under @params[recipients_key] to check that all keys
+      # are valid coordinates, otherwise it will add the errors to the active model instance
       module RecipientsCoordinates
         def self.included(klass)
           klass.instance_eval do
