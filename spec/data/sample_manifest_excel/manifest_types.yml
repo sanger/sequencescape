@@ -6,7 +6,6 @@ plate_default:
     - :well
     - :sanger_sample_id
     - :supplier_name
-    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -44,7 +43,6 @@ plate_full:
     - :well
     - :sanger_sample_id
     - :supplier_name
-    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -87,7 +85,7 @@ plate_full:
     - :subject
     - :disease
     - :sample_ebi_accession_number
-    - :donor_id
+    - :donor_id2
     - :control_type
 plate_rnachip:
   heading: "RNA/ChIP Plate"
@@ -97,7 +95,6 @@ plate_rnachip:
     - :well
     - :sanger_sample_id
     - :supplier_name
-    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -116,65 +113,7 @@ plate_rnachip:
     - :immunoprecipitate
     - :organism_part
     - :sample_ebi_accession_number
-    - :donor_id
-plate_library:
-  heading: "Library Plate"
-  asset_type: "library_plate"
-  columns:
-    - :sanger_plate_id
-    - :well
-    - :sanger_sample_id
-    - :supplier_name
-    - :i7
-    - :i5
-    - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
-    - :cohort
-    - :volume
-    - :concentration
-    - :gender
-    - :country_of_origin
-    - :geographical_region
-    - :ethnicity
-    - :dna_source
-    - :date_of_sample_collection
-    - :date_of_sample_extraction
-    - :sample_extraction_method
-    - :sample_purified
-    - :purification_method
-    - :concentration_determined_by
-    - :sample_storage_conditions
-    - :mother
-    - :father
-    - :sibling
-    - :gc_content
-    - :sample_public_name
-    - :sample_taxon_id
-    - :sample_common_name
-    - :sample_description
-    - :sample_strain_att
-    - :sample_type
-    - :genotype
-    - :phenotype
-    - :age
-    - :developmental_stage
-    - :cell_type
-    - :disease_state
-    - :compound
-    - :dose
-    - :immunoprecipitate
-    - :growth_condition
-    - :rnai
-    - :organism_part
-    - :time_point
-    - :treatment
-    - :subject
-    - :disease
-    - :sample_ebi_accession_number
-    - :donor_id
-    - :primer_panel
+    - :donor_id2
 plate_chromium_library:
   heading: "Chromium Library Plate"
   asset_type: "library_plate"
@@ -239,7 +178,6 @@ tube_default:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
-    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -275,7 +213,6 @@ tube_full:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
-    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -318,7 +255,7 @@ tube_full:
     - :subject
     - :disease
     - :sample_ebi_accession_number
-    - :donor_id
+    - :donor_id2
 tube_rnachip:
   heading: "RNA/ChIP Tube"
   asset_type: "1dtube"
@@ -326,7 +263,6 @@ tube_rnachip:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
-    - :reference_genome
     - :cohort
     - :volume
     - :concentration
@@ -345,22 +281,21 @@ tube_rnachip:
     - :immunoprecipitate
     - :organism_part
     - :sample_ebi_accession_number
-    - :donor_id
+    - :donor_id2
 tube_multiplexed_library:
   heading: "Multiplexed Library Tube"
   asset_type: "multiplexed_library"
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_name
     - :tag_group
     - :tag_index
     - :tag2_group
     - :tag2_index
-    - :reference_genome
     - :library_type
     - :insert_size_from
     - :insert_size_to
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -397,13 +332,13 @@ tube_library_with_tag_sequences:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_name
     - :i7
     - :i5
     - :reference_genome
     - :library_type
     - :insert_size_from
     - :insert_size_to
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -480,13 +415,13 @@ tube_multiplexed_library_with_tag_sequences:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_name
     - :i7
     - :i5
-    - :reference_genome
     - :library_type
+    - :reference_genome
     - :insert_size_from
     - :insert_size_to
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
