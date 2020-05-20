@@ -14,8 +14,8 @@ RSpec.describe SequencescapeExcel::RangeList, type: :model, sample_manifest_exce
   end
 
   it 'creates the right ranges' do
-    static_range = range_list.first[1]
-    dynamic_range = range_list.find_by(ranges.keys.last)
+    static_range = range_list.find_by('gender')
+    dynamic_range = range_list.find_by('reference_genome')
     expect(static_range).not_to be_dynamic
     assert static_range.static?
     assert static_range.name
