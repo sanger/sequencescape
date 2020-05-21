@@ -15,7 +15,7 @@ module Heron
 
       attr_accessor :sample_tubes, :tube_rack
 
-      validates_presence_of :size, :purpose, :recipients
+      validates_presence_of :purpose, :purpose_uuid, :recipients
 
       def initialize(params)
         @params = params
@@ -37,12 +37,14 @@ module Heron
         @params[:barcode]
       end
 
-      def size
-        @params[:size]
+      delegate :size, to: :purpose
+
+      def purpose_uuid
+        @params[:purpose_uuid]
       end
 
       def purpose
-        @purpose ||= ::TubeRack::Purpose.where(target_type: 'TubeRack', size: size).first
+        @purpose ||= ::TubeRack::Purpose.with_uuid(purpose_uuid).first
       end
 
       def save

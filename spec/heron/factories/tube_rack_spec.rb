@@ -8,7 +8,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
   let(:params) do
     {
       "barcode": '0000000001',
-      "size": '96',
+      "purpose_uuid": purpose_96.uuid,
       "study_uuid": study.uuid,
       "tubes": {
         'A01' => {
@@ -46,13 +46,13 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     expect(tube_rack).not_to be_valid
   end
 
-  it 'is not valid without the size' do
-    tube_rack = described_class.new(params.except(:size))
+  it 'is not valid without a purpose' do
+    tube_rack = described_class.new(params.except(:purpose_uuid))
     expect(tube_rack).not_to be_valid
   end
 
-  it 'is not valid if the size do not match a purpose' do
-    params[:size] = 44
+  it 'is not valid if the purpose do not match a purpose' do
+    params[:purpose_uuid] = SecureRandom.uuid
     tube_rack = described_class.new(params)
     expect(tube_rack).not_to be_valid
   end
@@ -96,13 +96,13 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     end
 
     it 'can create a 96 rack' do
-      tube_rack = described_class.new(params.merge(size: 96))
+      tube_rack = described_class.new(params.merge(purpose_uuid: purpose_96.uuid))
       tube_rack.save
       expect(tube_rack.tube_rack.purpose).to eq(purpose_96)
     end
 
     it 'can create a 48 rack' do
-      tube_rack = described_class.new(params.merge(size: 48))
+      tube_rack = described_class.new(params.merge(purpose_uuid: purpose_48.uuid))
       tube_rack.save
       expect(tube_rack.tube_rack.purpose).to eq(purpose_48)
     end

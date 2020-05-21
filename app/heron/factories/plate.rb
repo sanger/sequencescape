@@ -10,9 +10,9 @@ module Heron
       include Concerns::RecipientsCoordinates
       include Concerns::Contents
 
-      attr_accessor :plate, :plate_purpose
+      attr_accessor :plate, :purpose
 
-      validate :plate_purpose_exists
+      validate :purpose_exists
 
       def initialize(params)
         @params = params
@@ -34,7 +34,7 @@ module Heron
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          @plate = plate_purpose.create!
+          @plate = purpose.create!
 
           Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
 
@@ -49,13 +49,13 @@ module Heron
         add_aliquots_into_locations(containers_for_locations)
       end
 
-      def plate_purpose_exists
-        unless @params.key?(:plate_purpose_uuid)
+      def purpose_exists
+        unless @params.key?(:purpose_uuid)
           errors.add(:base, 'Plate purpose uuid not defined')
           return
         end
-        @plate_purpose ||= PlatePurpose.with_uuid(@params[:plate_purpose_uuid]).first
-        errors.add(:base, "Plate purpose for uuid (#{@params[:plate_purpose_uuid]}) do not exist") unless @plate_purpose
+        @purpose ||= PlatePurpose.with_uuid(@params[:purpose_uuid]).first
+        errors.add(:base, "Plate purpose for uuid (#{@params[:purpose_uuid]}) do not exist") unless @purpose
       end
 
       def containers_for_locations

@@ -49,14 +49,14 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
       end
     end
 
-    context 'when providing plate_purpose_uuid' do
+    context 'when providing purpose_uuid' do
       let(:payload) do
         {
           'data' => {
             'type' => 'plates',
             'attributes' => {
               'barcode' => barcode,
-              'plate_purpose_uuid' => purpose.uuid
+              'purpose_uuid' => purpose.uuid
             }
           }
         }
@@ -69,7 +69,7 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
       end
     end
 
-    context 'when not providing plate_purpose_uuid' do
+    context 'when not providing purpose_uuid' do
       let(:payload) do
         {
           'data' => {
@@ -97,7 +97,7 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
             'type' => 'plates',
             'attributes' => {
               'barcode': barcode,
-              'plate_purpose_uuid' => purpose.uuid
+              'purpose_uuid' => purpose.uuid
             }
           }
         }
@@ -116,7 +116,7 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
           'data' => {
             'type' => 'plates',
             'attributes' => {
-              'plate_purpose_uuid' => purpose.uuid
+              'purpose_uuid' => purpose.uuid
             }
           }
         }
@@ -138,7 +138,7 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
           'data' => {
             'type' => 'plates',
             'attributes' => {
-              'plate_purpose_uuid' => purpose.uuid,
+              'purpose_uuid' => purpose.uuid,
               'barcode' => '1234'
             }
           }
@@ -170,7 +170,7 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
             'attributes' => {
               'barcode' => barcode,
               'study_uuid' => study.uuid,
-              'plate_purpose_uuid' => purpose.uuid,
+              'purpose_uuid' => purpose.uuid,
               'wells' => wells
             }
           }
@@ -212,7 +212,7 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
               'type' => 'plates',
               'attributes' => {
                 'barcode' => barcode,
-                'plate_purpose_uuid' => purpose.uuid,
+                'purpose_uuid' => purpose.uuid,
                 'wells' => wells
               }
             }

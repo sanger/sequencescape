@@ -14,8 +14,9 @@ module Heron
       # - The content configuration object needs to be in @params[recipients_key]
       # - The method or attribute recipients_key will need to identify the key where the config is
       #   stored. Eg: :wells
-      # - All keys in the content configuration are considered as validated, if that is not the case,
-      #   that validation can be provided by including the module Heron::Factories::Concerns::RecipientsCoordinate
+      # - All keys referring to coordinates in the content configuration are considered as validated,
+      #   if that is not the case, that validation can be provided by including the module
+      #   Heron::Factories::Concerns::RecipientsCoordinate
       # - The class should include the module Heron::Factories:Concerns::CoordinatesSupport
       #
       # **Use**
@@ -34,7 +35,7 @@ module Heron
       #
       # 3. Two aliquots in position B1 from samples with name 'Sample 1' and 'Sample 2'
       #    and both will be created under study <uuid>
-      # { wells: {'B1': {content: [{name: 'Sample 1'}, {name: 'Sample 2'}] } }, sample_uuid: <uuid>}
+      # { wells: {'B1': {content: [{name: 'Sample 1'}, {name: 'Sample 2'}] } }, study_uuid: <uuid>}
       module Contents
         def self.included(klass)
           klass.instance_eval do
@@ -65,13 +66,16 @@ module Heron
         def add_aliquots_into_locations(containers_for_locations)
           return unless contents
 
-          contents.each do |location, factories|
-            container = containers_for_locations[location]
-            factories.each do |factory|
-              factory.create_aliquot_at(container) if factory.valid?
-            end
+          contents.keys.each do |location, _factories|
+            add_aliquots_into_location(containers_for_locations[location], contents[location])
           end
           true
+        end
+
+        def add_aliquots_into_location(container, factories)
+          factories.each do |factory|
+            factory.create_aliquot_at(container) if factory.valid?
+          end
         end
 
         def params_for_contents
@@ -84,12 +88,18 @@ module Heron
 
         def _factories_for_location(location, samples_params)
           samples_params.each_with_index.map do |sample_params, pos|
-            label = samples_params.length == 1 ? "Content #{location}" : "Content #{location}, pos: #{pos}"
             sample_params = sample_params.merge(study_uuid: study_uuid) if study_uuid
             factory = content_factory.new(sample_params)
-            errors.add(label, factory.errors.full_messages) unless factory.valid?
+            unless factory.valid?
+              label = label_for_error_message(location, pos, samples_params)
+              errors.add(label, factory.errors.full_messages)
+            end
             factory
           end
+        end
+
+        def label_for_error_message(location, pos, samples_params)
+          samples_params.length == 1 ? "Content #{location}" : "Content #{location}, pos: #{pos}"
         end
       end
     end

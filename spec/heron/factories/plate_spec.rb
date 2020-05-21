@@ -11,7 +11,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
   end
   let(:barcode) { '0000000001' }
   let(:params) do
-    { plate_purpose_uuid: purpose.uuid, barcode: barcode }
+    { purpose_uuid: purpose.uuid, barcode: barcode }
   end
 
   include BarcodeHelper
@@ -42,7 +42,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
     end
 
     context 'without a barcode' do
-      let(:params) { { plate_purpose_uuid: purpose.uuid } }
+      let(:params) { { purpose_uuid: purpose.uuid } }
       let(:error_messages) do
         ["Barcode can't be blank",
          "The barcode '' is not a recognised format."]
@@ -59,7 +59,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
     end
 
     context 'with a plate purpose uuid set to nil' do
-      let(:params) { { plate_purpose_uuid: nil, barcode: barcode } }
+      let(:params) { { purpose_uuid: nil, barcode: barcode } }
       let(:error_messages) { ['Plate purpose for uuid () do not exist'] }
 
       it_behaves_like 'an invalid parameter'
@@ -67,7 +67,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
 
     context 'with a plate purpose uuid that do not exist' do
       let(:uuid) { SecureRandom.uuid }
-      let(:params) { { plate_purpose_uuid: uuid, barcode: barcode } }
+      let(:params) { { purpose_uuid: uuid, barcode: barcode } }
       let(:error_messages) { ["Plate purpose for uuid (#{uuid}) do not exist"] }
 
       it_behaves_like 'an invalid parameter'
@@ -101,7 +101,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
         }
       end
       let(:params) do
-        { barcode: barcode, plate_purpose_uuid: purpose.uuid, wells: wells }
+        { barcode: barcode, purpose_uuid: purpose.uuid, wells: wells }
       end
 
       it 'persists the plate' do
