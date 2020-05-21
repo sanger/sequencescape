@@ -18,8 +18,17 @@ tables by using their column name:
 
 ```ruby
 # This creates a sample belonging to study with uuid uuid and will use the study abbreviation
-# to generate the name. The sanger_sample_id will by 'My sample'
-::Heron::Factories::Sample.new({study_uuid: "uuid", sanger_sample_id: "My sample"}).create
+# to generate the sanger_sample_id. The name will by 'Mysample'
+::Heron::Factories::Sample.new({study_uuid: "uuid", name: "My sample"}).create
+```
+
+By default, the same value from sanger_sampe_id will be applied in the name and sanger_sample_id
+columns.
+
+```ruby
+# This creates a sample belonging to study with uuid uuid and will have name and sanger_sample_id as
+# 'Mysample'
+::Heron::Factories::Sample.new({study_uuid: "uuid", sanger_sample_id: "Mysample"}).create
 ```
 
 If a sample_uuid is provided it won't create a new sample, but retrieve an already existing
