@@ -2,7 +2,6 @@
 
 module Heron
   module Factories
-    # Factory class to create Heron tube racks
     module Concerns
       #
       # This module adds validation and tools to manage factories that act as content in a receptacle
@@ -27,15 +26,6 @@ module Heron
       # Factories for each recipient in each well will be generated.
       # Any validation error from them will be aggregated in the base object.
       #
-      # **Examples of params**
-      # 1. Empty contents
-      # {}
-      #
-      # 2. A tube at position A1, with barcode '1' and another at B1 with barcode '2'
-      # { tubes: {'A1': {barcode: '1', content: {name: 'Sample 1'}, 'B1: {barcode: '2'}' } } }
-      #
-      # 3. A tube at position B1 with barcode '2'
-      # { tubes: {'B1': {barcode: '2', content: [{name: 'Sample 1', aliquot: {tag_id: 1}}, {name: 'Sample 2', aliquot: {tag_id: 2}}] } }}
       module Recipients
         def self.included(klass)
           klass.instance_eval do

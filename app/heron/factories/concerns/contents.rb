@@ -26,16 +26,6 @@ module Heron
       # Factories for each content in each well will be generated.
       # Any validation error from them will be aggregated in the base object.
       #
-      # **Examples of params**
-      # 1. Empty contents
-      # {}
-      #
-      # 2. A well at position A1, with a sample that has name 'Sample 1'
-      # { wells: {'A1': {content: {name: 'Sample 1', sample_uuid: <uuid>} } } }
-      #
-      # 3. Two aliquots in position B1 from samples with name 'Sample 1' and 'Sample 2'
-      #    and both will be created under study <uuid>
-      # { wells: {'B1': {content: [{name: 'Sample 1'}, {name: 'Sample 2'}] } }, study_uuid: <uuid>}
       module Contents
         def self.included(klass)
           klass.instance_eval do
