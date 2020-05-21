@@ -17,11 +17,15 @@ module SequencescapeExcel
           sample.control_type = value
         else
           sample.control = false
+          sample.control_type = nil
         end
+        sample.save
       end
 
       def check_control_type_matches_enum
-        Sample.control_types.include? value
+        return if value.blank? || Sample.control_types.include?(value)
+
+        errors.add(:base, "the control type #{value} was not recognised.")
       end
     end
   end
