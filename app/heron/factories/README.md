@@ -1,8 +1,58 @@
 # Heron Factories
 
+## ::Heron::Factories::Sample
+
+A sample factory can create a new Sample and its associated Sample::Metadata instances. 
+A study is mandatory for the creation of the sample.
+By default, any sample will be created with a generated name and sanger_sample_id making use 
+of the Study abbreviation:
+
+```ruby
+# This creates a sample belonging to study with uuid uuid and will use the study abbreviation
+# to generate the name and the sanger_sample_id
+::Heron::Factories::Sample.new({study_uuid: "uuid"}).create
+```
+
+However, we can overwrite these values, or any other field in the Sample and Sample::Metadata
+tables by using their column name:
+
+```ruby
+# This creates a sample belonging to study with uuid uuid and will use the study abbreviation
+# to generate the name. The sanger_sample_id will by 'My sample'
+::Heron::Factories::Sample.new({study_uuid: "uuid", sanger_sample_id: "My sample"}).create
+```
+
+If a sample_uuid is provided it won't create a new sample, but retrieve an already existing
+one that uses that uuid. In this case we don't need to specify the study:
+
+```ruby
+# This will return an already existing sample with uuid 'existing_uuid'
+::Heron::Factories::Sample.new({sample_uuid: "existing_uuid"}).create
+```
+
+Once we have a factory we can use it to create aliquots in a recipient as well (inside a tube, or a well):
+
+```ruby
+# This will create an aliquot of sample with uuid existing_uuid in position A01 of plate with barcode 1234
+well = Plate.with_barcode('1234').wells.located_at('A01')
+::Heron::Factories::Sample.new({sample_uuid: "existing_uuid"}).create_aliquot_at(well)
+```
+
+Aliquots properties can be added so the aliquots created for this sample will be applied on creation:
+
+```ruby
+# This will create an aliquot of sample with uuid existing_uuid in position A01 of plate with barcode 1234
+# with tag id 1
+well = Plate.with_barcode('1234').wells.located_at('A01')
+::Heron::Factories::Sample.new({sample_uuid: "existing_uuid", aliquot: {tag_id: 1}}).create_aliquot_at(well)
+```
+
+
 ## ::Heron::Factories::Plate / ::Heron::Factories::TubeRack
 
-### Recipients
+Plate and TubeRack factories share the same specicification for their recipients and contents.
+
+### About Recipients (wells and tubes)
 
 Plates and racks could contain recipients which are each of the positions in them (A1, B1, etc...).
 A recipient for a plate would represent a well, while for a rack it would represent a tube. 
@@ -46,7 +96,7 @@ of a different tube purpose:
     "A1": { barcode: '2', purpose_uuid: "uuid2"}
   }}).save
 ```
-### Contents
+### About Contents (aliquots of samples)
 
 Contents represents the samples inside a position in a plate or rack. Contents attributes represent
 sample information and they can be expressed under the 'contents' key inside a recipient as a list
