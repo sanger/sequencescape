@@ -48,6 +48,7 @@ class UatActions::GeneratePlates < UatActions
       plate_purpose.create!.tap do |plate|
         construct_wells(plate)
         report["plate_#{i}"] = plate.human_barcode
+        yield plate if block_given?
       end
     end
     true
