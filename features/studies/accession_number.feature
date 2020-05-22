@@ -63,4 +63,3 @@ Feature: Studies should be able to generate accession numbers
 
     When I follow "Generate Accession Number"
     Then I should see "EBI may be down or invalid data submitted"
-
