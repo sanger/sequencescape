@@ -95,7 +95,7 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::CgapPlate do
-    it_has_a_valid_barcode 'PLTE-1E69F5', prefix: 'PLTE'
+    it_has_a_valid_barcode 'PLTE-1E69F5', prefix: 'PLTE', number: '1E69F5'
     it_has_an_invalid_barcode 'PLTE-1234567-'
     it_has_an_invalid_barcode 'PLATE-1234567 '
     it_has_an_invalid_barcode "PLTE-1234567\n1"

@@ -188,7 +188,7 @@ module Barcode::FormatHandlers
   class CgapPlate < BaseRegExBarcode
     # They have a prefix 'PLTE-', then a hex number that will grow in length.
     # The last character is a checksum hex digit.
-    self.format = /\A(?<prefix>PLTE)-(?<number>[0-9a-fA-F]+)(?<suffix>[0-9a-fA-F])\z/
+    self.format = /\A(?<prefix>PLTE)-(?<number>[0-9a-fA-F]+)\z/
 
     def number
       # number is a hexadecimal string here
