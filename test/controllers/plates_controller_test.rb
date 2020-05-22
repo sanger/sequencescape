@@ -122,7 +122,7 @@ class PlatesControllerTest < ActionController::TestCase
               study = create(:study, id: ::Heron::Factories::TubeRack::HERON_STUDY)
 
               params = {
-                plate_purpose_uuid: tube_rack_purpose.uuid,
+                purpose_uuid: tube_rack_purpose.uuid,
                 study_uuid: study.uuid,
                 barcode: '0000000001', size: 96, tubes: {
                   'A1' => { barcode: 'FD00000001', content: { supplier_name: 'PHEC-nnnnnnn1' } },
