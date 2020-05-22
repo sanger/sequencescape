@@ -828,3 +828,23 @@ primer_panel:
   conditional_formattings:
     empty_cell:
     is_error:
+control_type:
+  heading: CONTROL TYPE
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: true
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "What Type of Control is it?"
+      prompt: "Select from the list provided if the sample is a control."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "What Type of Control is it?"
+      error: "Select from the list provided if the sample is a control."
+    range_name: :control_type
+  conditional_formattings:
+    empty_cell:
+    is_error:

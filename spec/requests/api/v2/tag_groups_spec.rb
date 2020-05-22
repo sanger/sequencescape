@@ -19,6 +19,14 @@ describe 'TagGroups API', with: :api_v2 do
     end
 
     # Check filters, ESPECIALLY if they aren't simple attribute filters
+
+    it 'filters tag_groups by name' do
+      api_get "/api/v2/tag_groups?filter[name]=#{TagGroup.first.name}"
+      expect(response).to have_http_status(:success)
+      # check to make sure the right tag group is returned
+      expect(json['data'].length).to eq(1)
+      expect(json['data'][0]['attributes']['name']).to eq(TagGroup.first.name)
+    end
   end
 
   context 'with a TagGroup' do
