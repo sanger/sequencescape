@@ -42,15 +42,6 @@ module Metadata
         build_#{association_name}
       end
 
-      def validating_ena_required_fields=(state)
-        @validating_ena_required_fields = !!state
-        self.#{association_name}.validating_ena_required_fields = state
-      end
-
-      def validating_ena_required_fields?
-        instance_variable_defined?(:@validating_ena_required_fields) && @validating_ena_required_fields
-      end
-
       def tags
         self.class.tags.select{|tag| tag.for?(accession_service.provider)}
       end
@@ -137,14 +128,6 @@ module Metadata
     end
 
     include Attributable
-
-    def validating_ena_required_fields?
-      @validating_ena_required_fields ||= false
-    end
-
-    def validating_ena_required_fields=(state)
-      @validating_ena_required_fields = !!state
-    end
 
     delegate :validator_for, to: :owner
 

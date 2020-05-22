@@ -363,13 +363,6 @@ class Study < ApplicationRecord
     scope.find_in_batches { |wells| yield wells }
   end
 
-  # We only need to validate the field if we are enforcing data release
-  def validating_ena_required_fields_with_enforce_data_release=(state)
-    self.validating_ena_required_fields_without_enforce_data_release = state if enforce_data_release
-  end
-  alias validating_ena_required_fields_with_enforce_data_release= validating_ena_required_fields=
-  alias validating_ena_required_fields= validating_ena_required_fields_with_enforce_data_release=
-
   def warnings
     # These studies are now invalid, but the warning should remain until existing studies are fixed.
     if study_metadata.managed? && study_metadata.data_access_group.blank?
@@ -513,10 +506,7 @@ class Study < ApplicationRecord
   end
 
   def validate_ena_required_fields!
-    self.validating_ena_required_fields = true
-    valid? or raise ActiveRecord::RecordInvalid, self
-  ensure
-    self.validating_ena_required_fields = false
+    valid?(:accession) or raise ActiveRecord::RecordInvalid, self
   end
 
   def mailing_list_of_managers

@@ -141,7 +141,7 @@ class Sample < ApplicationRecord
     validates :sample_ebi_accession_number,
               format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII', allow_blank: true }
 
-    with_options(if: :validating_ena_required_fields?) do
+    with_options(on: :accession) do
       validates :service_specific_fields, presence: true
     end
 
@@ -288,10 +288,10 @@ class Sample < ApplicationRecord
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
-  validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, _attr, value|
+  validates_each(:ena_study, on: :accession) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
-  validates_associated(:ena_study, allow_blank: true, if: :validating_ena_required_fields?)
+  validates_associated(:ena_study, allow_blank: true, on: :accession)
 
   before_destroy :safe_to_destroy
   after_save :accession
@@ -409,18 +409,10 @@ class Sample < ApplicationRecord
 
   attr_reader :ena_study
 
-  def validating_ena_required_fields_with_first_study=(state)
-    self.validating_ena_required_fields_without_first_study = state
-    @ena_study.try(:validating_ena_required_fields=, state)
-  end
-  alias validating_ena_required_fields_without_first_study= validating_ena_required_fields=
-  alias validating_ena_required_fields= validating_ena_required_fields_with_first_study=
-
   def validate_ena_required_fields!
     # Do not alter the order of this line, otherwise @ena_study won't be set correctly!
     @ena_study = studies.first
-    self.validating_ena_required_fields = true
-    valid? || raise(ActiveRecord::RecordInvalid, self)
+    valid?(:accession) || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
     unless @ena_study.nil?
       @ena_study.errors.full_messages.each do |message|
@@ -429,8 +421,6 @@ class Sample < ApplicationRecord
     end
     raise e
   ensure
-    # Do not alter the order of this line, otherwise the @ena_study won't be reset!
-    self.validating_ena_required_fields = false
     @ena_study = nil
   end
 
