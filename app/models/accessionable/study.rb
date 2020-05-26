@@ -7,6 +7,7 @@
 module Accessionable
   class Study < Base
     attr_reader :study_title, :description, :center_study_name, :study_abstract, :existing_study_type, :tags
+
     def initialize(study)
       @study = study
       data = {}

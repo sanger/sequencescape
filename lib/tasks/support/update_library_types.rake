@@ -38,7 +38,7 @@ namespace :support do
       end
 
       puts('Touching the batch to send messages to update the MLWH')
-      Batch.find(batch_id).touch # rubocop:disable SkipsModelValidations
+      Batch.find(batch_id).touch # rubocop:disable Rails/SkipsModelValidations
 
       done = Time.zone.now
       print_summary(batch_id, lanes, record_count, done - start)

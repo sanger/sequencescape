@@ -160,7 +160,7 @@ class Sample < ApplicationRecord
       dna_source: DNA_SOURCES,
       sample_sra_hold: SRA_HOLD_VALUES
     }.each_with_object({}) do |(k, v), h|
-      h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
+      h[k] = v.index_by { |b| b.downcase }
     end
 
     after_initialize do |record|

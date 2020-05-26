@@ -114,9 +114,9 @@ module Tasks::CherrypickHandler
         end
 
       # We can preload the well locations so that we can do efficient lookup later.
-      well_locations = Hash[Map.where_plate_size(partial_plate.try(:size) || size).where_plate_shape(partial_plate.try(:asset_shape) || asset_shape_id).in_row_major_order.map do |location|
-        [location.description, location]
-      end]
+      well_locations = Map.where_plate_size(partial_plate.try(:size) || size).where_plate_shape(partial_plate.try(:asset_shape) || asset_shape_id).in_row_major_order.index_by do |location|
+        location.description
+      end
 
       # All of the requests we're going to be using should be part of the batch.  If they are not
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a

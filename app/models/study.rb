@@ -249,7 +249,7 @@ class Study < ApplicationRecord
       contains_human_dna: YES_OR_NO,
       commercially_available: YES_OR_NO
     }.each_with_object({}) do |(k, v), h|
-      h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
+      h[k] = v.index_by { |b| b.downcase }
     end
 
     # These fields are warehoused, so need to match the encoding restrictions there

@@ -61,6 +61,7 @@ module Metadata
 
   class AccessionedTag
     attr_reader :tag, :name, :downcase
+
     def initialize(tag, as = nil, services = [], downcase = false)
       @tag = tag
       @name = as || tag
