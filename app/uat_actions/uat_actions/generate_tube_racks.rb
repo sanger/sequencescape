@@ -39,7 +39,17 @@ class UatActions::GenerateTubeRacks < UatActions
   def construct_tubes(rack)
     rack_map.each do |i|
       tube = Tube::Purpose.standard_sample_tube.create!
-      tube.aliquots.create!(sample: Sample.create!(name: "sample_#{rack.human_barcode}_#{i}", studies: [study]), study: study)
+
+      sample_name = "sample_#{rack.human_barcode}_#{i}"
+      tube.aliquots.create!(
+        sample: Sample.create!(
+          name: sample_name,
+          studies: [study],
+          sample_metadata_attributes: {
+            supplier_name: sample_name
+          }
+        ),
+        study: study)
 
       racked_tube = RackedTube.create!(tube_rack_id: rack.id, tube_id: tube.id, coordinate: i)
       rack.racked_tubes << racked_tube
