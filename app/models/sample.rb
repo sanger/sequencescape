@@ -145,6 +145,17 @@ class Sample < ApplicationRecord
       validates :service_specific_fields, presence: true
     end
 
+    with_options(on: [:EGA, :ENA]) do
+      validates :sample_taxon_id, presence: { message: 'is required' }
+      validates :sample_common_name, presence: { message: 'is required' }
+    end
+
+    with_options(on: :EGA) do
+      validates :gender, presence: { message: 'is required' }
+      validates :phenotype, presence: { message: 'is required' }
+      validates :donor_id, presence: { message: 'is required' }
+    end
+
     # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
     # capitalisation of these is correct.
     REMAPPED_ATTRIBUTES = {
@@ -171,6 +182,8 @@ class Sample < ApplicationRecord
       end
     end
   end
+
+  validates_associated :sample_metadata, on: %i[accession EGA ENA]
 
   include_tag(:sample_strain_att)
   include_tag(:sample_description)
@@ -288,7 +301,7 @@ class Sample < ApplicationRecord
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
-  validates_each(:ena_study, on: :accession) do |record, _attr, value|
+  validates_each(:ena_study, on: %i[accession ENA EGA]) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
   validates_associated(:ena_study, allow_blank: true, on: :accession)
@@ -407,21 +420,21 @@ class Sample < ApplicationRecord
     events.updated_using_sample_manifest!(user)
   end
 
-  attr_reader :ena_study
+  def ena_study
+    studies.first
+  end
 
   def validate_ena_required_fields!
-    # Do not alter the order of this line, otherwise @ena_study won't be set correctly!
-    @ena_study = studies.first
-    valid?(:accession) || raise(ActiveRecord::RecordInvalid, self)
+    valid?(:accession) &&
+      valid?(accession_service.provider) ||
+      raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
-    unless @ena_study.nil?
-      @ena_study.errors.full_messages.each do |message|
+    unless ena_study.nil?
+      ena_study.errors.full_messages.each do |message|
         errors.add(:base, "#{message} on study")
       end
     end
     raise e
-  ensure
-    @ena_study = nil
   end
 
   def sample_reference_genome

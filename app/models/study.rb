@@ -271,6 +271,7 @@ class Study < ApplicationRecord
       end
     end
   end
+  validates_associated :study_metadata, on: %i[accession EGA ENA]
 
   # See app/models/study/metadata.rb for further customization
 
