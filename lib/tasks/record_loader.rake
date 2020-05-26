@@ -13,3 +13,6 @@ end
 # Uncomment the following to automatically trigger record loader on running the application:post_deploy task.
 # You may need to set `post_deploy: true` in the ansible configuration for your application.
 task 'application:post_deploy' => 'record_loader:all'
+
+# Automatically run record loader before seeds
+task 'db:seed' => 'record_loader:all'
