@@ -141,10 +141,6 @@ class Sample < ApplicationRecord
     validates :sample_ebi_accession_number,
               format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII', allow_blank: true }
 
-    with_options(on: :accession) do
-      validates :service_specific_fields, presence: true
-    end
-
     with_options(on: [:EGA, :ENA]) do
       validates :sample_taxon_id, presence: { message: 'is required' }
       validates :sample_common_name, presence: { message: 'is required' }
@@ -191,12 +187,6 @@ class Sample < ApplicationRecord
   include_tag(:gender, services: :EGA, downcase: true)
   include_tag(:phenotype, services: :EGA)
   include_tag(:donor_id, services: :EGA, as: 'subject_id')
-
-  require_tag(:sample_taxon_id)
-  require_tag(:sample_common_name)
-  require_tag(:gender, :EGA)
-  require_tag(:phenotype, :EGA)
-  require_tag(:donor_id, :EGA)
 
   # Reopens the Sample::Metadata class which was defined by has_metadata above
   # Sample::Metadata tracks sample information, either for use in the lab, or passing to

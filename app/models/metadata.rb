@@ -46,10 +46,6 @@ module Metadata
         self.class.tags.select{|tag| tag.for?(accession_service.provider)}
       end
 
-      def required_tags
-        self.class.required_tags[accession_service.try(:provider)]+self.class.required_tags[:all]
-      end
-
       def self.tags
         @tags ||= []
       end
@@ -57,20 +53,10 @@ module Metadata
       before_validation :#{association_name}, on: :create, unless: :lazy_metadata?
 
     ", __FILE__, line)
-
-    def self.required_tags
-      @required_tags ||= Hash.new { |h, k| h[k] = Array.new }
-    end
   end
 
   def include_tag(tag, options = Hash.new)
     tags << AccessionedTag.new(tag, options[:as], options[:services], options[:downcase])
-  end
-
-  def require_tag(tag, services = :all)
-    [services].flatten.each do |service|
-      required_tags[service] << tag
-    end
   end
 
   class AccessionedTag
@@ -130,12 +116,6 @@ module Metadata
     include Attributable
 
     delegate :validator_for, to: :owner
-
-    def service_specific_fields
-      owner.required_tags.uniq.select do |tag|
-        owner.errors.add(:base, "#{tag} is required") if send(tag).blank?
-      end.empty?
-    end
 
     class << self
       def metadata_attribute_path_store
