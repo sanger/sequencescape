@@ -67,10 +67,23 @@ class QcReport::File
 
   private
 
-  # This should ONLY be called after the headers have been read out.
-  # This puts the column headers at the top of the remaining csv file
+  def start_line
+    return @start_line unless @start_line.nil?
+
+    parse_headers
+    @start_line
+  end
+
+  # In Ruby 2.6 the CSV parser loads in multiple lines at a time, and so takes
+  # the IO past the header row when we initially read in the file. Here we
+  # rewind the file and seek to the correct line with several gets.
   def body_csv
-    @body_csv ||= CSV.new(@file, headers: :first_row, header_converters: [:symbol])
+    return @body_csv unless @body_csv.nil?
+
+    header_line = start_line
+    @file.rewind
+    header_line.times { @file.gets }
+    @body_csv = CSV.new(@file, headers: :first_row, header_converters: [:symbol])
   end
 
   def each_group_of_decisions
@@ -132,12 +145,11 @@ class QcReport::File
   def parse_headers
     headers = {}
     header_parser = CSV.new(@file)
-    lines_read = 0
-    while (row = header_parser.shift) && is_header?(row) && lines_read < MAXIMUM_HEADER_SIZE
+    while (row = header_parser.shift) && is_header?(row) && header_parser.lineno < MAXIMUM_HEADER_SIZE
       headers[row[0]] = (row[1] || '').strip
-      lines_read += 1
     end
-    invalid('Please make sure there is an empty line before the column headers.') if lines_read >= MAXIMUM_HEADER_SIZE
+    invalid('Please make sure there is an empty line before the column headers.') if header_parser.lineno >= MAXIMUM_HEADER_SIZE
+    @start_line = header_parser.lineno
     @headers = headers
   end
 end
