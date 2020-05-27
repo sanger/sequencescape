@@ -1,7 +1,7 @@
 <div class="uat-form-group">
   <%= f.label(form_field.attribute, form_field.label) %>
   <% if form_field.type == :select %>
-    <%= f.select(form_field.attribute, form_field.select_options, form_field.options) %>
+    <%= f.select(form_field.attribute, form_field.select_options, form_field.options, { class: 'select2' }) %>
   <% else %>
     <%= f.send(form_field.type, form_field.attribute, form_field.options) %>
   <% end %>
