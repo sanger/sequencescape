@@ -10,7 +10,7 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
   let(:request) { api_post '/api/v2/heron/tube_racks', payload }
 
   context 'when there is a tube rack message' do
-    let(:study) { create(:study, id: Heron::Factories::TubeRack::HERON_STUDY) }
+    let(:study) { create(:study) }
     let(:tube_rack_barcode) { build(:fluidigm).barcode }
     let(:tubes_barcodes) { [build(:fluidx).barcode, build(:fluidx).barcode] }
     let(:tubes_coordinates) { %w[A1 B1] }

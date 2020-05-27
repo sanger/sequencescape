@@ -119,7 +119,7 @@ class PlatesControllerTest < ActionController::TestCase
           context 'from a Heron TubeRack' do
             setup do
               tube_rack_purpose = create(:tube_rack_purpose, target_type: 'TubeRack', size: 96)
-              study = create(:study, id: ::Heron::Factories::TubeRack::HERON_STUDY)
+              study = create(:study)
 
               params = {
                 purpose_uuid: tube_rack_purpose.uuid,

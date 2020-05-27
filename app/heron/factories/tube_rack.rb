@@ -6,7 +6,6 @@ module Heron
     class TubeRack
       include ActiveModel::Model
 
-      include Concerns::HeronStudy
       include Concerns::CoordinatesSupport
       include Concerns::ForeignBarcodes
       include Concerns::RecipientsCoordinates

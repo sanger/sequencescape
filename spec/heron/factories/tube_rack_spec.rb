@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
-  let(:study) { create(:study, id: Heron::Factories::TubeRack::HERON_STUDY) }
+  let(:study) { create(:study) }
 
   let(:params) do
     {
