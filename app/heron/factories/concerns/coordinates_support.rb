@@ -10,10 +10,7 @@ module Heron
         LOCATION_REGEXP = /[A-Z][0-9]{0,1}[0-9]/.freeze
 
         def unpad_coordinate(coordinate)
-          return coordinate unless coordinate
-
-          loc = coordinate.match(/(\w)(0*)(\d*)/)
-          loc[1] + loc[3]
+          Map.strip_description(coordinate.to_s)
         end
 
         def coordinate_valid?(coordinate)

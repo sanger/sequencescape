@@ -10,8 +10,17 @@ module Api
 
         def create
           rack_factory = ::Heron::Factories::TubeRack.new(params_for_tube_rack)
-          if rack_factory.save
-            render json: {}, status: :created
+          if rack_factory.valid? && rack_factory.save
+            render json: {
+              data: {
+                attributes: {
+                  uuid: rack_factory.tube_rack.uuid
+                },
+                links: {
+                  'self': api_v2_tube_rack_url(rack_factory.tube_rack)
+                }
+              }
+            }, status: :created
           else
             render json: { errors: rack_factory.errors.full_messages }, status: :unprocessable_entity
           end
@@ -20,8 +29,8 @@ module Api
         private
 
         def params_for_tube_rack
-          params.require(:data).require(:attributes).require(:tube_rack).permit(
-            :barcode, :size, tubes: %i[barcode supplier_sample_id coordinate]
+          params.require(:data).require(:attributes).permit(
+            :barcode, :study_uuid, :purpose_uuid, tubes: {}
           )
         end
       end

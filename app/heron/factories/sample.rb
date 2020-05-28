@@ -37,7 +37,7 @@ module Heron
       def create_aliquot_at(well)
         return unless create
 
-        well.aliquots.create(params_for_aliquot_creation)
+        well&.aliquots&.create(params_for_aliquot_creation)
       end
 
       def study

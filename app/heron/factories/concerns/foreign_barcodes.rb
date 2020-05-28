@@ -2,7 +2,6 @@
 
 module Heron
   module Factories
-    # Factory class to create Heron tube racks
     module Concerns
       #
       # A foreign barcode is a barcode that has been externally set, that is added as
