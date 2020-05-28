@@ -118,13 +118,17 @@ class PlatesControllerTest < ActionController::TestCase
           end
           context 'from a Heron TubeRack' do
             setup do
-              create(:tube_rack_purpose, target_type: 'TubeRack', size: 96)
-              create(:study, id: ::Heron::Factories::TubeRack::HERON_STUDY)
+              tube_rack_purpose = create(:tube_rack_purpose, target_type: 'TubeRack', size: 96)
+              study = create(:study)
 
-              params = { barcode: '0000000001', size: 96, tubes: [
-                { coordinate: 'A01', barcode: 'FD00000001', supplier_sample_id: 'PHEC-nnnnnnn1' },
-                { coordinate: 'A02', barcode: 'FD00000002', supplier_sample_id: 'PHEC-nnnnnnn2' }
-              ] }
+              params = {
+                purpose_uuid: tube_rack_purpose.uuid,
+                study_uuid: study.uuid,
+                barcode: '0000000001', size: 96, tubes: {
+                  'A1' => { barcode: 'FD00000001', content: { supplier_name: 'PHEC-nnnnnnn1' } },
+                  'A2' => { barcode: 'FD00000002', content: { supplier_name: 'PHEC-nnnnnnn2' } }
+                }
+              }
               tube_rack_factory = ::Heron::Factories::TubeRack.new(params)
               tube_rack_factory.save
               @tube_rack = tube_rack_factory.tube_rack
