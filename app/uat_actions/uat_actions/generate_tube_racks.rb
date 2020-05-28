@@ -14,7 +14,7 @@ class UatActions::GenerateTubeRacks < UatActions
              :select,
              label: 'Study',
              help: 'The study under which samples begin. List includes all active studies.',
-             select_options: -> { Study.active.pluck(:name) }
+             select_options: -> { Study.active.alphabetical.pluck(:name) }
 
   def self.default
     new(

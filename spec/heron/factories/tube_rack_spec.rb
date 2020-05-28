@@ -3,33 +3,28 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
-  before do
-    create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
-  end
+  let(:study) { create(:study) }
 
   let(:params) do
     {
       "barcode": '0000000001',
-      "size": '96',
-      "tubes": [
-        {
-          "coordinate": 'A01',
+      "purpose_uuid": purpose_96.uuid,
+      "study_uuid": study.uuid,
+      "tubes": {
+        'A01' => {
           "barcode": 'FD00000001',
-          "supplier_sample_id": 'PHEC-nnnnnnn1'
+          "content": { "supplier_name": 'PHEC-nnnnnnn1' }
         },
-        {
-          "coordinate": 'A02',
+        'A02' => {
           "barcode": 'FD00000002',
-          "supplier_sample_id": 'PHEC-nnnnnnn2'
+          "content": { "supplier_name": 'PHEC-nnnnnnn2' }
         }
-      ]
+      }
     }
   end
 
   let(:invalid_tube) do
     {
-      "coordinate": 'A03',
-      "barcode": 'FD00000003'
     }
   end
 
@@ -43,7 +38,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
 
   it 'will create the correct number of tubes' do
     tube_rack = described_class.new(params)
-    expect(tube_rack.tubes.count).to eq(params[:tubes].length)
+    expect(tube_rack.recipients.count).to eq(params[:tubes].length)
   end
 
   it 'is not valid without barcode' do
@@ -51,13 +46,13 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     expect(tube_rack).not_to be_valid
   end
 
-  it 'is not valid without the size' do
-    tube_rack = described_class.new(params.except(:size))
+  it 'is not valid without a purpose' do
+    tube_rack = described_class.new(params.except(:purpose_uuid))
     expect(tube_rack).not_to be_valid
   end
 
-  it 'is not valid if the size do not match a purpose' do
-    params[:size] = 44
+  it 'is not valid if the purpose do not match a purpose' do
+    params[:purpose_uuid] = SecureRandom.uuid
     tube_rack = described_class.new(params)
     expect(tube_rack).not_to be_valid
   end
@@ -68,7 +63,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
   end
 
   it 'is not valid unless all of the tubes are valid' do
-    params[:tubes] << invalid_tube
+    params[:tubes]['A03'] = invalid_tube
     tube_rack = described_class.new(params)
     expect(tube_rack).not_to be_valid
   end
@@ -85,7 +80,7 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     end
 
     it 'returns false if any tube is invalid' do
-      params[:tubes] << invalid_tube
+      params[:tubes]['A03'] = invalid_tube
       tube_rack = described_class.new(params)
       expect(tube_rack.save).to be_falsy
     end
@@ -101,13 +96,13 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     end
 
     it 'can create a 96 rack' do
-      tube_rack = described_class.new(params.merge(size: 96))
+      tube_rack = described_class.new(params.merge(purpose_uuid: purpose_96.uuid))
       tube_rack.save
       expect(tube_rack.tube_rack.purpose).to eq(purpose_96)
     end
 
     it 'can create a 48 rack' do
-      tube_rack = described_class.new(params.merge(size: 48))
+      tube_rack = described_class.new(params.merge(purpose_uuid: purpose_48.uuid))
       tube_rack.save
       expect(tube_rack.tube_rack.purpose).to eq(purpose_48)
     end
@@ -120,15 +115,13 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
     it 'sets up the tube in their rack coordinate' do
       tube_rack = described_class.new(params)
       tube_rack.save
-      tube_rack.racked_tubes
       expect(RackedTube.count).to eq(2)
     end
 
     it 'pads the coordinates before saving them' do
       tube_rack = described_class.new(params)
       tube_rack.save
-      tube_rack.racked_tubes
-      expect(tube_rack.racked_tubes.first.coordinate).to eq('A1')
+      expect(tube_rack.tube_rack.racked_tubes.first.coordinate).to eq('A1')
     end
 
     it 'creates a tube rack status record' do

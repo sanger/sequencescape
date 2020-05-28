@@ -11,7 +11,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
   end
   let(:barcode) { '0000000001' }
   let(:params) do
-    { plate_purpose: purpose, barcode: barcode }
+    { purpose_uuid: purpose.uuid, barcode: barcode }
   end
 
   include BarcodeHelper
@@ -42,7 +42,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
     end
 
     context 'without a barcode' do
-      let(:params) { { plate_purpose: purpose } }
+      let(:params) { { purpose_uuid: purpose.uuid } }
       let(:error_messages) do
         ["Barcode can't be blank",
          "The barcode '' is not a recognised format."]
@@ -51,38 +51,24 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       it_behaves_like 'an invalid parameter'
     end
 
-    context 'without a plate purpose' do
+    context 'without a plate purpose uuid' do
       let(:params) { { barcode: barcode } }
-      let(:error_messages) { ['You have to define either plate_purpose_uuid or plate_purpose'] }
+      let(:error_messages) { ['Plate purpose uuid not defined'] }
 
       it_behaves_like 'an invalid parameter'
     end
 
     context 'with a plate purpose uuid set to nil' do
-      let(:params) { { plate_purpose_uuid: nil, barcode: barcode } }
+      let(:params) { { purpose_uuid: nil, barcode: barcode } }
       let(:error_messages) { ['Plate purpose for uuid () do not exist'] }
-
-      it_behaves_like 'an invalid parameter'
-    end
-
-    context 'with a plate purpose set to nil' do
-      let(:params) { { plate_purpose: nil, barcode: barcode } }
-      let(:error_messages) { ["Plate purpose can't be blank"] }
 
       it_behaves_like 'an invalid parameter'
     end
 
     context 'with a plate purpose uuid that do not exist' do
       let(:uuid) { SecureRandom.uuid }
-      let(:params) { { plate_purpose_uuid: uuid, barcode: barcode } }
+      let(:params) { { purpose_uuid: uuid, barcode: barcode } }
       let(:error_messages) { ["Plate purpose for uuid (#{uuid}) do not exist"] }
-
-      it_behaves_like 'an invalid parameter'
-    end
-
-    context 'with both plate purpose uuid and plate purpose' do
-      let(:params) { { plate_purpose_uuid: purpose.uuid, plate_purpose: purpose, barcode: barcode } }
-      let(:error_messages) { ['You cannot define plate_purpose_uuid and plate_purpose at same time'] }
 
       it_behaves_like 'an invalid parameter'
     end
@@ -107,15 +93,15 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
 
     context 'when providing samples information' do
       let!(:sample) { create(:sample) }
-      let(:wells_content) do
+      let(:wells) do
         {
-          'A01': { phenotype: 'A phenotype', study_uuid: study.uuid },
-          'B01': { phenotype: 'A phenotype', study_uuid: study.uuid },
-          'C01': { sample_uuid: sample.uuid }
+          'A01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+          'B01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+          'C01': { content: { sample_uuid: sample.uuid } }
         }
       end
       let(:params) do
-        { barcode: barcode, plate_purpose: purpose, wells_content: wells_content }
+        { barcode: barcode, purpose_uuid: purpose.uuid, wells: wells }
       end
 
       it 'persists the plate' do
@@ -131,10 +117,10 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       end
 
       context 'when there is an error in the sample info' do
-        let(:wells_content) do
+        let(:wells) do
           {
-            'A01': { 'wrong': 'wrong', study_uuid: study.uuid },
-            'C01': [{ 'phenotype': 'right' }, { sample_uuid: sample.uuid, 'phenotype': 'wrong' }]
+            'A01': { content: { 'wrong': 'wrong', study_uuid: study.uuid } },
+            'C01': { content: [{ 'phenotype': 'right' }, { sample_uuid: sample.uuid, 'phenotype': 'wrong' }] }
           }
         end
 
@@ -144,9 +130,9 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
 
         it 'stores the error message from samples' do
           expect(plate_factory.tap(&:validate).errors.full_messages).to eq([
-            'Wells content A01 Wrong Unexisting field for sample or sample_metadata',
-            "Wells content C01, pos: 0 Study can't be blank",
-            'Wells content C01, pos: 1 Phenotype No other params can be added when sample uuid specified'
+            'Content a1 Wrong Unexisting field for sample or sample_metadata',
+            "Content c1, pos: 0 Study can't be blank",
+            'Content c1, pos: 1 Phenotype No other params can be added when sample uuid specified'
           ])
         end
       end

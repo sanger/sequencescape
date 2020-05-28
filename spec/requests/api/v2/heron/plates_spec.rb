@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
+describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
   describe '#create' do
     include BarcodeHelper
 
@@ -49,14 +49,14 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
       end
     end
 
-    context 'when providing plate_purpose_uuid' do
+    context 'when providing purpose_uuid' do
       let(:payload) do
         {
           'data' => {
             'type' => 'plates',
             'attributes' => {
               'barcode' => barcode,
-              'plate_purpose_uuid' => purpose.uuid
+              'purpose_uuid' => purpose.uuid
             }
           }
         }
@@ -69,7 +69,7 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
       end
     end
 
-    context 'when not providing plate_purpose_uuid' do
+    context 'when not providing purpose_uuid' do
       let(:payload) do
         {
           'data' => {
@@ -85,7 +85,7 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
 
       it 'displays the error' do
         expect(error_messages).to eq([
-          'You have to define either plate_purpose_uuid or plate_purpose'
+          'Plate purpose uuid not defined'
         ])
       end
     end
@@ -97,7 +97,7 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
             'type' => 'plates',
             'attributes' => {
               'barcode': barcode,
-              'plate_purpose_uuid' => purpose.uuid
+              'purpose_uuid' => purpose.uuid
             }
           }
         }
@@ -116,7 +116,7 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
           'data' => {
             'type' => 'plates',
             'attributes' => {
-              'plate_purpose_uuid' => purpose.uuid
+              'purpose_uuid' => purpose.uuid
             }
           }
         }
@@ -138,7 +138,7 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
           'data' => {
             'type' => 'plates',
             'attributes' => {
-              'plate_purpose_uuid' => purpose.uuid,
+              'purpose_uuid' => purpose.uuid,
               'barcode' => '1234'
             }
           }
@@ -154,13 +154,13 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
       end
     end
 
-    context 'when providing wells_content' do
+    context 'when providing wells' do
       let(:study) { create(:study) }
       let!(:sample) { create(:sample) }
-      let(:wells_content) do
+      let(:wells) do
         {
-          'A01': { 'phenotype': 'A phenotype' },
-          'B01': { 'sample_uuid': sample.uuid }
+          'A01': { 'content': { 'phenotype': 'A phenotype' } },
+          'B01': { 'content': { 'sample_uuid': sample.uuid } }
         }
       end
       let(:payload) do
@@ -170,8 +170,8 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
             'attributes' => {
               'barcode' => barcode,
               'study_uuid' => study.uuid,
-              'plate_purpose_uuid' => purpose.uuid,
-              'wells_content' => wells_content
+              'purpose_uuid' => purpose.uuid,
+              'wells' => wells
             }
           }
         }
@@ -187,11 +187,11 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
         expect(plate.studies).to eq([study])
       end
 
-      context 'when wells_content is wrong' do
-        let(:wells_content) do
+      context 'when wells is wrong' do
+        let(:wells) do
           {
-            'A01': { 'asdf': 'A phenotype' },
-            'B01': { 'phenotype': 'wrong', 'sample_uuid': sample.uuid }
+            'A01': { 'content': { 'asdf': 'A phenotype' } },
+            'B01': { 'content': { 'phenotype': 'wrong', 'sample_uuid': sample.uuid } }
           }
         end
 
@@ -199,8 +199,8 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
 
         it 'displays the error' do
           expect(error_messages).to eq([
-            'Wells content A01 Asdf Unexisting field for sample or sample_metadata',
-            'Wells content B01 Phenotype No other params can be added when sample uuid specified'
+            'Content a1 Asdf Unexisting field for sample or sample_metadata',
+            'Content b1 Phenotype No other params can be added when sample uuid specified'
           ])
         end
       end
@@ -212,8 +212,8 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
               'type' => 'plates',
               'attributes' => {
                 'barcode' => barcode,
-                'plate_purpose_uuid' => purpose.uuid,
-                'wells_content' => wells_content
+                'purpose_uuid' => purpose.uuid,
+                'wells' => wells
               }
             }
           }
@@ -223,7 +223,7 @@ describe 'Plates Heron API', with: :api_v2, tags: [:lighthouse, :heron] do
 
         it 'displays the error' do
           expect(error_messages).to eq([
-            "Wells content A01 Study can't be blank"
+            "Content a1 Study can't be blank"
           ])
         end
       end
