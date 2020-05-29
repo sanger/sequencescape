@@ -77,20 +77,39 @@ class ExtractionAttribute < ApplicationRecord
 
   def rack_well(well_data)
     return unless well_data && well_data['sample_tube_uuid']
-    unless well_data['sample_tube_resource']
-      raise SampleTubeNotExists
-    end
+
+    raise SampleTubeNotExists unless well_data['sample_tube_resource']
 
     sample_tube = well_data['sample_tube_resource']
     aliquots = sample_tube.aliquots.map(&:dup)
     samples = sample_tube.samples
     location = well_data['location']
+
+    if sample_tube.class == SampleTube
+      createRackedTubeEtc(sample_tube, aliquots, samples, location)
+    else
+      addAliquotsToWell(sample_tube, aliquots, samples, location)
+    end
+  end
+
+  def addAliquotsToWell(sample_tube, aliquots, samples, location)
     destination_well = location_wells[location]
 
     if validate_well_for_racking_samples!(destination_well, samples)
       destination_well.aliquots << aliquots
       AssetLink.create_edge(sample_tube, destination_well)
     end
+  end
+
+  def createRackedTubeEtc(sample_tube, aliquots, samples, location)
+    tube = Tube.create!(
+      aliquots: aliquots
+    )
+
+    target.racked_tubes.create!(
+      coordinate: location,
+      tube: tube
+    )
   end
 
   def rerack_well(well_data)

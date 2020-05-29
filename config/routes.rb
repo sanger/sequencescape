@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       jsonapi_resources :assets
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
+      jsonapi_resources :extraction_attributes
       jsonapi_resources :labware
       jsonapi_resources :lanes
       jsonapi_resources :lot_types

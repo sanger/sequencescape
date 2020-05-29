@@ -18,6 +18,7 @@ class TubeRack < Labware
   # which doesn't handle it well. Ironic considering the dependent action in the parent
   # class is intended to prevent inadvertant destruction of receptacles.
   has_many :tube_receptacles, through: :tubes, source: :receptacle
+  has_many :extraction_attributes, foreign_key: 'target_id'
 
   LAYOUTS = {
     48 => {
