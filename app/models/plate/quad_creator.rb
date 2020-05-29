@@ -133,7 +133,7 @@ class Plate::QuadCreator
     # @return [Array<Integer>] An array of two integers indicating column and row. eg. [0, 2]
     #
     def locn_coordinate(locn_name)
-      [locn_name[1..-1].to_i - 1, locn_name.upcase.getbyte(0) - 'A'.getbyte(0)]
+      [locn_name[1..].to_i - 1, locn_name.upcase.getbyte(0) - 'A'.getbyte(0)]
     end
   end
 end

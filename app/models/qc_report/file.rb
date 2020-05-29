@@ -29,14 +29,12 @@ class QcReport::File
     return false unless valid?
 
     ActiveRecord::Base.transaction do
-      begin
-        each_group_of_decisions do |group|
-          process_group(group)
-        end
-      rescue DataError, QcMetric::InvalidValue => e
-        invalid(e.message)
-        raise ActiveRecord::Rollback
+      each_group_of_decisions do |group|
+        process_group(group)
       end
+    rescue DataError, QcMetric::InvalidValue => e
+      invalid(e.message)
+      raise ActiveRecord::Rollback
     end
     qc_report.proceed_decision! if @valid
     @valid

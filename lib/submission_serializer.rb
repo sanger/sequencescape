@@ -39,7 +39,7 @@ module SubmissionSerializer
     end
 
     if ensp[:request_options] && ensp[:request_options][:initial_state]
-      new_initial = Hash[ensp[:request_options][:initial_state].map { |k, v| [RequestType.find(k).key, v] }]
+      new_initial = ensp[:request_options][:initial_state].transform_keys { |k| RequestType.find(k).key }
       ensp[:request_options][:initial_state] = new_initial
     end
 
@@ -69,7 +69,7 @@ module SubmissionSerializer
     end
 
     if sp[:request_options] && sp[:request_options][:initial_state]
-      new_initial = Hash[sp[:request_options][:initial_state].map { |k, v| [RequestType.find_by(key: k).id, v] }]
+      new_initial = sp[:request_options][:initial_state].transform_keys { |k| RequestType.find_by(key: k).id }
       sp[:request_options][:initial_state] = new_initial
     end
 

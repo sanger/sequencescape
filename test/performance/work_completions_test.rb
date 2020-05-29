@@ -26,7 +26,7 @@ class WorkCompletionsTest < ActionDispatch::PerformanceTest
       create :library_request, request_type: library_request_type, asset: well, submission: @target_submission, state: 'started', billing_product: product
       create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: 'started', billing_product: product
     end
-    submission_request_types[1..-1].each do |downstream_type|
+    submission_request_types[1..].each do |downstream_type|
       input_plate.wells.count.times do
         create :multiplex_request, request_type: downstream_type, submission: @target_submission
         create :multiplex_request, request_type: downstream_type, submission: decoy_submission
