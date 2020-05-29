@@ -18,6 +18,7 @@ module Api
       # Attributes
       attribute :uuid, readonly: true
       attribute :name, readonly: true
+      attribute :size, readonly: true
 
       # Filters
       filter :name
