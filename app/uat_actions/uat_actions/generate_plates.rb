@@ -73,7 +73,8 @@ class UatActions::GeneratePlates < UatActions
             supplier_name: sample_name
           }
         ),
-        study: study)
+        study: study
+      )
     end
   end
 

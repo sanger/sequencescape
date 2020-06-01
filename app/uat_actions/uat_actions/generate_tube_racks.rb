@@ -50,7 +50,8 @@ class UatActions::GenerateTubeRacks < UatActions
             supplier_name: sample_name
           }
         ),
-        study: study)
+        study: study
+      )
 
       racked_tube = RackedTube.create!(tube_rack_id: rack.id, tube_id: tube.id, coordinate: i)
       rack.racked_tubes << racked_tube
