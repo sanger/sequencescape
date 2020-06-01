@@ -102,7 +102,7 @@ class ExtractionAttribute < ApplicationRecord
   end
 
   def createRackedTubeEtc(sample_tube, aliquots, samples, location)
-    tube = Tube.create!(  # set purpose, other things
+    tube = Tube.create!(
       aliquots: aliquots
     )
 
