@@ -16,7 +16,6 @@ module Api
       # Associations:
       has_many :racked_tubes
       has_one :purpose, foreign_key: :plate_purpose_id
-      has_many :extraction_attributes, foreign_key: 'target_id'
 
       # Attributes
       attribute :uuid, readonly: true
