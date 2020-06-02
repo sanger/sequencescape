@@ -149,18 +149,41 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
           described_class.new(study: study, sanger_sample_id: sample_id)
         end
 
-        it 'does not generate a new sanger_sample_id' do
-          expect  do
-            factory.create
-          end.not_to change(SangerSampleId, :count)
+        it 'sets the id provided as sanger_sample_id' do
+          expect(factory.create.sanger_sample_id).to eq(sample_id)
+        end
+      end
+
+      context 'when providing a name' do
+        let(:sample_id) { 'test' }
+        let(:factory) do
+          described_class.new(study: study, name: sample_id)
         end
 
-        it 'sets the id provided as sample name' do
+        it 'sets the id provided as name' do
           expect(factory.create.name).to eq(sample_id)
+        end
+      end
+
+      context 'when providing both sanger_sample_id and name' do
+        let(:sample_id) { 'test' }
+        let(:name) { 'testingname' }
+        let(:factory) do
+          described_class.new(study: study, name: name, sanger_sample_id: sample_id)
         end
 
         it 'sets the id provided as sanger_sample_id' do
           expect(factory.create.sanger_sample_id).to eq(sample_id)
+        end
+
+        it 'sets the id provided as name' do
+          expect(factory.create.name).to eq(name)
+        end
+
+        it 'does not generate a new sanger_sample_id' do
+          expect do
+            factory.create
+          end.not_to change(SangerSampleId, :count)
         end
       end
 

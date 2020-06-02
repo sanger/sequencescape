@@ -14,7 +14,7 @@ describe Billing::Product, billing: true do
 
   it 'can have an identifier' do
     product.identifier = 'test'
-    expect(product.identifier). to eq 'test'
+    expect(product.identifier).to eq 'test'
   end
 
   it 'has a particular category' do

@@ -20,7 +20,7 @@ module Tasks::PlateTransferHandler
     raise InvalidBatch if unsuitable_wells?(source_wells)
 
     task.purpose.create!.tap do |target|
-      well_map = Hash[target.wells.map { |well| [well.map_id, well] }]
+      well_map = target.wells.index_by { |well| well.map_id }
 
       batch_requests.each do |outer_request|
         source = outer_request.asset

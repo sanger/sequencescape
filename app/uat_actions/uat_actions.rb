@@ -29,7 +29,9 @@ class UatActions
 
     # Called by UatActions classes to register themselves
     def inherited(other)
-      uat_actions[other.id] = other
+      # Register the form_fields of the parent class
+      other.form_fields.concat(form_fields)
+      UatActions.uat_actions[other.id] = other
     end
 
     def to_partial_path
@@ -43,11 +45,12 @@ class UatActions
     def form_field(attribute, type, options = {})
       @form_fields ||= []
       attr_accessor attribute
+
       @form_fields << UatActions::FormField.new(options.merge(attribute: attribute, type: type))
     end
 
     def form_fields
-      @form_fields || []
+      @form_fields ||= []
     end
 
     def permitted

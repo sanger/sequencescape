@@ -27,7 +27,7 @@ class Api::Base
     # Maps the attribute names in the errors to their JSON counterparts, so that the end user gets
     # the correct information.
     def map_attribute_to_json_attribute_in_errors(attribute_errors)
-      Hash[attribute_errors.map { |a, v| [json_attribute_for_attribute(*a.to_s.split('.')), v] }]
+      attribute_errors.transform_keys { |a| json_attribute_for_attribute(*a.to_s.split('.')) }
     end
   end
 

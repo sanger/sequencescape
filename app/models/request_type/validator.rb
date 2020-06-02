@@ -7,6 +7,7 @@
 class RequestType::Validator < ApplicationRecord
   class LibraryTypeValidator
     attr_reader :request_type_id
+
     def initialize(request_type_id)
       @request_type_id = request_type_id
     end

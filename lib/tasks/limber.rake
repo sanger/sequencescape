@@ -147,6 +147,18 @@ namespace :limber do
       )
     end
 
+    unless Purpose.where(name: 'Heron Lysed Tube Rack').exists?
+      TubeRack::Purpose.create!(
+        name: 'Heron Lysed Tube Rack',
+        target_type: 'TubeRack',
+        stock_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96
+      )
+    end
+
     unless Purpose.where(name: 'LDS Stock').exists?
       PlatePurpose.create!(
         name: 'LDS Stock',
@@ -213,6 +225,20 @@ namespace :limber do
         barcode_printer_type: BarcodePrinterType.find_by(name: '384 Well Plate'),
         cherrypickable_target: true,
         size: 384,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
+
+    unless Purpose.where(name: 'Heron Lysed Plate').exists?
+      PlatePurpose.create!(
+        name: 'Heron Lysed Plate',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: true,
+        size: 96,
         asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
@@ -372,7 +398,9 @@ namespace :limber do
           'PCR amplicon ligated adapters',
           'PCR amplicon ligated adapters 384',
           'PCR with TruSeq tails amplicon',
-          'PCR with TruSeq tails amplicon 384'
+          'PCR with TruSeq tails amplicon 384',
+          'Sanger_artic_v3_96',
+          'Sanger_artic_v4_96'
         ],
         default_purposes: ['LHR RT', 'LHR-384 RT']             # It requires default_purpose to accept an array.
       ).build!

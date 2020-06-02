@@ -3,6 +3,7 @@ class Request::ChangeDecision
 
   class ChangeDecisionError < ::StandardError
     attr_reader :object
+
     def initialize(object)
       @object = object
     end
@@ -21,6 +22,7 @@ class Request::ChangeDecision
   end
 
   attr_accessor :asset_qc_state
+
   validates_each(:asset_qc_state, unless: :asset_qc_state_absent?) do |record, _attr, value|
     if not record.request.target_asset.been_through_qc?
       record.errors.add(:asset, 'has not been through QC')
@@ -31,11 +33,13 @@ class Request::ChangeDecision
   validates :asset_qc_state, presence: { unless: :asset_qc_state_absent? }
 
   attr_accessor :comment
+
   validates :comment, presence: true
 
   attr_accessor :request
 
   attr_accessor :user
+
   validates(:request, presence: true)
 
   def initialize(attributes)

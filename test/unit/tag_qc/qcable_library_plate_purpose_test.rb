@@ -5,6 +5,7 @@ require 'test_helper'
 class QcableLibraryPlatePurposeTest < ActiveSupport::TestCase
   class MockAliquot
     attr_accessor :library, :library_type, :insert_size
+
     def save!; true; end
   end
 

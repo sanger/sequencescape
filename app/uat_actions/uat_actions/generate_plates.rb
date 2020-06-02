@@ -24,7 +24,7 @@ class UatActions::GeneratePlates < UatActions
              :select,
              label: 'Study',
              help: 'The study under which samples begin. List includes all active studies.',
-             select_options: -> { Study.active.pluck(:name) }
+             select_options: -> { Study.active.alphabetical.pluck(:name) }
   form_field :well_layout,
              :select,
              label: 'Well layout',
@@ -48,6 +48,7 @@ class UatActions::GeneratePlates < UatActions
       plate_purpose.create!.tap do |plate|
         construct_wells(plate)
         report["plate_#{i}"] = plate.human_barcode
+        yield plate if block_given?
       end
     end
     true
@@ -64,7 +65,17 @@ class UatActions::GeneratePlates < UatActions
 
   def construct_wells(plate)
     wells(plate).each do |well|
-      well.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{well.map.description}", studies: [study]), study: study)
+      sample_name = "sample_#{plate.human_barcode}_#{well.map.description}"
+      well.aliquots.create!(
+        sample: Sample.create!(
+          name: sample_name,
+          studies: [study],
+          sample_metadata_attributes: {
+            supplier_name: sample_name
+          }
+        ),
+        study: study
+      )
     end
   end
 

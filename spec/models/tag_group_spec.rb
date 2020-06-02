@@ -54,13 +54,13 @@ RSpec.describe TagGroup, type: :model do
 
     let(:tag_group) { build_stubbed :tag_group, adapter_type: adapter_type }
 
-    context 'when an adapter is specified' do
+    context 'when an adapter type is specified' do
       let(:adapter_type) { build_stubbed :adapter_type, name: 'name' }
 
       it { is_expected.to eq 'name' }
     end
 
-    context 'when an adapter is specified' do
+    context 'when an adapter type is unspecified' do
       let(:adapter_type) { nil }
 
       it { is_expected.to eq 'Unspecified' }

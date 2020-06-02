@@ -202,6 +202,7 @@ module Core
       end
 
       attr_reader             :request
+
       initialized_attr_reader :handled_by, :object
 
       delegate :io, :identifier, :started_at, to: :request

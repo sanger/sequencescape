@@ -14,7 +14,7 @@ class UatActions::GenerateTubeRacks < UatActions
              :select,
              label: 'Study',
              help: 'The study under which samples begin. List includes all active studies.',
-             select_options: -> { Study.active.pluck(:name) }
+             select_options: -> { Study.active.alphabetical.pluck(:name) }
 
   def self.default
     new(
@@ -24,8 +24,9 @@ class UatActions::GenerateTubeRacks < UatActions
   end
 
   def perform
+    purpose = Purpose.find_by(name: 'TR Stock 96')
     rack_count.to_i.times do |i|
-      TubeRack.create!(size: 96).tap do |rack|
+      TubeRack.create!(size: 96, purpose: purpose).tap do |rack|
         Barcode.create!(asset: rack, barcode: "AB#{Time.zone.now.hash.abs.to_s.slice(0, 8)}", format: 'fluidx_barcode')
         construct_tubes(rack)
         report["rack_#{i}"] = rack.human_barcode
@@ -39,7 +40,18 @@ class UatActions::GenerateTubeRacks < UatActions
   def construct_tubes(rack)
     rack_map.each do |i|
       tube = Tube::Purpose.standard_sample_tube.create!
-      tube.aliquots.create!(sample: Sample.create!(name: "sample_#{rack.human_barcode}_#{i}", studies: [study]), study: study)
+
+      sample_name = "sample_#{rack.human_barcode}_#{i}"
+      tube.aliquots.create!(
+        sample: Sample.create!(
+          name: sample_name,
+          studies: [study],
+          sample_metadata_attributes: {
+            supplier_name: sample_name
+          }
+        ),
+        study: study
+      )
 
       racked_tube = RackedTube.create!(tube_rack_id: rack.id, tube_id: tube.id, coordinate: i)
       rack.racked_tubes << racked_tube

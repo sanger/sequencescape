@@ -60,3 +60,7 @@ gc_content:
     - 'Neutral'
     - 'High AT'
     - 'High GC'
+control_type:
+  options:
+    - 'positive'
+    - 'negative'

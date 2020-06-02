@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Heron::Factories::TubeRackStatus, type: :model, heron: true do
   before do
-    create(:study, id: Heron::Factories::TubeRack::HERON_STUDY)
+    create(:study)
   end
 
   let(:params) do

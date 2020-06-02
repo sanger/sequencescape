@@ -10,6 +10,7 @@ class TagSubstitution::Substitution
 
   attr_accessor :sample_id, :library_id
   attr_reader :tag_substitution, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id, :tag_substituter
+
   delegate :disable_match_expectation, to: :tag_substituter, allow_nil: true
 
   delegate :friendly_name, to: :sample, prefix: true

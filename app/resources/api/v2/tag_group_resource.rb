@@ -22,6 +22,7 @@ module Api
 
       # Filters
       filter :visible, default: true
+      filter :name
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about

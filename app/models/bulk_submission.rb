@@ -32,6 +32,7 @@ class BulkSubmission
   include Submission::AssetSubmissionFinder
 
   attr_accessor :spreadsheet, :encoding
+
   define_attribute_methods [:spreadsheet]
 
   validates :spreadsheet, presence: true

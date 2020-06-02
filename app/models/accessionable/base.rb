@@ -3,6 +3,7 @@
 class Accessionable::Base
   InvalidData = Class.new(AccessionService::AccessionServiceError)
   attr_reader :accession_number, :name, :date, :date_short
+
   def initialize(accession_number)
     @accession_number = accession_number
 
@@ -77,6 +78,7 @@ class Accessionable::Base
 
   class Tag
     attr_reader :value
+
     def initialize(label_scope, name, value, downcase = false)
       @name = name
       @value = downcase && value ? value.downcase : value

@@ -1,6 +1,7 @@
 class Transfer::FromPlateToSpecificTubesByPool < Transfer::BetweenPlateAndTubes
   # Not used since 2017-07-24 10:32:21
   attr_reader :targets
+
   def targets=(uuids_for_tubes)
     # {'pool_uuid'=>'target_uuid'}
     @targets = Uuid.include_resource.lookup_many_uuids(uuids_for_tubes.values).map(&:resource)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :test_download_tubes_in_rack, class: SampleManifestExcel::TestDownload do
+  factory :test_download_tubes_in_rack, class: 'SampleManifestExcel::TestDownload' do
     columns { FactoryBot.build(:column_list) }
     validation_errors { [] }
     no_of_rows { 3 } # TODO: this seems to actually be 'number of rows in addition to first row'...?

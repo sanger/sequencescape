@@ -6,31 +6,44 @@ module Heron
     class TubeRack
       include ActiveModel::Model
 
-      include Concerns::HeronStudy
       include Concerns::CoordinatesSupport
       include Concerns::ForeignBarcodes
+      include Concerns::RecipientsCoordinates
+      include Concerns::Recipients
+      include Concerns::Contents
 
-      attr_accessor :sample_tubes, :tube_rack, :size
+      attr_accessor :sample_tubes, :tube_rack
 
-      validates_presence_of :tubes, :size, :purpose
-      validate :check_tubes
+      validates_presence_of :purpose, :purpose_uuid, :recipients
 
-      def tubes=(attributes)
-        attributes.each do |tube|
-          tubes[tube[:coordinate]] = ::Heron::Factories::Tube.new(tube.except(:coordinate).merge(study: heron_study))
-        end
+      def initialize(params)
+        @params = params
       end
 
-      def racked_tubes
-        @racked_tubes ||= []
+      def recipients_key
+        :tubes
+      end
+
+      def recipient_factory
+        ::Heron::Factories::Tube
+      end
+
+      def content_factory
+        ::Heron::Factories::Sample
+      end
+
+      def barcode
+        @params[:barcode]
+      end
+
+      delegate :size, to: :purpose
+
+      def purpose_uuid
+        @params[:purpose_uuid]
       end
 
       def purpose
-        @purpose ||= ::TubeRack::Purpose.where(target_type: 'TubeRack', size: size).first
-      end
-
-      def tubes
-        @tubes ||= {}
+        @purpose ||= ::TubeRack::Purpose.with_uuid(purpose_uuid).first
       end
 
       def save
@@ -41,7 +54,8 @@ module Heron
 
           Barcode.create!(asset: tube_rack, barcode: barcode, format: barcode_format)
 
-          @sample_tubes = create_tubes!(tube_rack)
+          create_recipients!
+          create_contents!
 
           ::TubeRackStatus.create!(
             barcode: barcode,
@@ -54,26 +68,26 @@ module Heron
 
       private
 
+      def create_recipients!
+        @sample_tubes = create_tubes!(tube_rack)
+      end
+
       def create_tubes!(tube_rack)
-        tubes.keys.map do |coordinate|
-          tube_factory = tubes[coordinate]
+        recipients.keys.map do |coordinate|
+          tube_factory = recipients[coordinate]
           sample_tube = tube_factory.create
-          racked_tubes << RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate),
-                                            tube_rack: tube_rack)
+          RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate),
+                            tube_rack: tube_rack)
         end
       end
 
-      def check_tubes
-        tubes.keys.each do |coordinate|
-          tube = tubes[coordinate]
+      def create_contents!
+        add_aliquots_into_locations(containers_for_locations)
+      end
 
-          errors.add(:coordinate, 'Invalid coordinate format') unless coordinate_valid?(coordinate)
-
-          next if tube.valid?
-
-          tube.errors.each do |k, v|
-            errors.add("Tube at #{coordinate} #{k}", v)
-          end
+      def containers_for_locations
+        @tube_rack.racked_tubes.each_with_object({}) do |racked_tube, memo|
+          memo[unpad_coordinate(racked_tube.coordinate)] = racked_tube.tube
         end
       end
     end
