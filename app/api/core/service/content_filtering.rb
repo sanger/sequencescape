@@ -31,11 +31,7 @@ module Core::Service::ContentFiltering
     end
 
     def process_response_body
-      headers('Content-Type' => request_accepted)
-    end
-
-    def process_json_response_body
-      headers('Content-Type' => 'application/json')
+      headers('Content-Type' => request_accepted.first)
     end
 
     ACCEPTABLE_TYPES = if Rails.env.development?

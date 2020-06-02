@@ -249,7 +249,7 @@ class Study < ApplicationRecord
       contains_human_dna: YES_OR_NO,
       commercially_available: YES_OR_NO
     }.each_with_object({}) do |(k, v), h|
-      h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
+      h[k] = v.index_by { |b| b.downcase }
     end
 
     # These fields are warehoused, so need to match the encoding restrictions there
@@ -271,6 +271,7 @@ class Study < ApplicationRecord
       end
     end
   end
+  validates_associated :study_metadata, on: %i[accession EGA ENA]
 
   # See app/models/study/metadata.rb for further customization
 
@@ -362,13 +363,6 @@ class Study < ApplicationRecord
     scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
     scope.find_in_batches { |wells| yield wells }
   end
-
-  # We only need to validate the field if we are enforcing data release
-  def validating_ena_required_fields_with_enforce_data_release=(state)
-    self.validating_ena_required_fields_without_enforce_data_release = state if enforce_data_release
-  end
-  alias validating_ena_required_fields_with_enforce_data_release= validating_ena_required_fields=
-  alias validating_ena_required_fields= validating_ena_required_fields_with_enforce_data_release=
 
   def warnings
     # These studies are now invalid, but the warning should remain until existing studies are fixed.
@@ -513,10 +507,7 @@ class Study < ApplicationRecord
   end
 
   def validate_ena_required_fields!
-    self.validating_ena_required_fields = true
-    valid? or raise ActiveRecord::RecordInvalid, self
-  ensure
-    self.validating_ena_required_fields = false
+    valid?(:accession) or raise ActiveRecord::RecordInvalid, self
   end
 
   def mailing_list_of_managers

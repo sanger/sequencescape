@@ -30,6 +30,7 @@ module Core::Initializable
 
   def initialized_attr_reader(*names)
     attr_reader(*names)
+
     self::Initializer.delegated_attribute_writer(*names)
   end
 

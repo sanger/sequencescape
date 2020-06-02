@@ -79,7 +79,7 @@ RSpec.describe Submission, type: :model do
   it 'knows all samples that can not be included in submission' do
     sample_manifest = create :tube_sample_manifest_with_samples
     sample_manifest.samples.first.sample_metadata.update(supplier_name: 'new_name')
-    samples = sample_manifest.samples[1..-1]
+    samples = sample_manifest.samples[1..]
     order1 = create :order, assets: sample_manifest.labware
 
     asset = create :sample_tube

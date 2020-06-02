@@ -56,7 +56,7 @@ module Heron
         def add_aliquots_into_locations(containers_for_locations)
           return unless contents
 
-          contents.keys.each do |location, _factories|
+          contents.each_key do |location, _factories|
             add_aliquots_into_location(containers_for_locations[location], contents[location])
           end
           true

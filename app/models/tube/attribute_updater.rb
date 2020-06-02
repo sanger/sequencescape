@@ -22,6 +22,7 @@ module Tube::AttributeUpdater
   # in the event we don't recognize the QC type
   class Base
     attr_reader :tube, :qc_result
+
     class_attribute :target_units
     delegate :value, :units, :assay_type, :assay_version, to: :qc_result
 

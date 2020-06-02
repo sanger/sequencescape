@@ -59,8 +59,8 @@ module Heron
       end
 
       def containers_for_locations
-        @plate.wells.each_with_object({}) do |well, memo|
-          memo[unpad_coordinate(well.map.description)] = well
+        @plate.wells.index_by do |well|
+          unpad_coordinate(well.map.description)
         end
       end
     end

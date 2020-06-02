@@ -60,6 +60,7 @@ class PlateTemplateTask < Task
   # Presenter, seemingly used in DnaQCHandler
   class PlateTemplateData < Task::RenderElement
     attr_reader :testing
+
     alias_attribute :well, :asset
   end
 

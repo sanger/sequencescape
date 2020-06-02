@@ -10,9 +10,7 @@ Before do
 end
 
 After do
-  begin
-    mocha_verify
-  ensure
-    mocha_teardown
-  end
+  mocha_verify
+ensure
+  mocha_teardown
 end

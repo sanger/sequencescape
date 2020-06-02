@@ -12,6 +12,8 @@ require_dependency 'study'
 
 class Study
   class Metadata
+    delegate :enforce_data_release, to: :study
+
     def remove_x_and_autosomes?
       remove_x_and_autosomes == YES
     end
@@ -87,7 +89,7 @@ class Study
       end
     end
 
-    with_options(if: :validating_ena_required_fields?) do
+    with_options(on: :accession, if: :enforce_data_release) do
       validates :data_release_strategy, presence: true
       validates :data_release_timing, presence: true
       validates :study_description, presence: true

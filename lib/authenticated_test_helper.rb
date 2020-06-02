@@ -67,6 +67,7 @@ end
 class BaseLoginProxy
   attr_reader :controller
   attr_reader :options
+
   def initialize(controller, login)
     @controller = controller
     @login      = login

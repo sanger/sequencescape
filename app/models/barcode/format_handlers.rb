@@ -21,6 +21,7 @@ module Barcode::FormatHandlers
   #
   class SangerBase
     attr_reader :barcode_object
+
     def initialize(barcode)
       @barcode_object = SBCF::SangerBarcode.from_human(barcode)
     end

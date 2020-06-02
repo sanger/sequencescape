@@ -24,7 +24,7 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
   def new
     @submission_template = SubmissionTemplate.find_by(id: params[:submission_template_id])
     @input_field_infos = @submission_template&.input_field_infos || []
-    @input_field_infos .reject! { |k| k.key == :customer_accepts_responsibility }
+    @input_field_infos.reject! { |k| k.key == :customer_accepts_responsibility }
     render 'new', layout: !request.xhr?
   end
 

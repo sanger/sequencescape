@@ -1,4 +1,3 @@
-
 SimpleCov.configure do
   add_filter '/test/'
   add_filter '/config/'

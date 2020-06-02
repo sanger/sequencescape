@@ -23,8 +23,8 @@ class LabEvent < ApplicationRecord
   after_create :generate_broadcast_event
 
   def unescape_for_descriptors
-    self[:descriptors] = (self[:descriptors] || {}).to_h.each_with_object({}) do |(key, value), hash|
-      hash[CGI.unescape(key)] = value
+    self[:descriptors] = (self[:descriptors] || {}).to_h.transform_keys do |key|
+      CGI.unescape(key)
     end
   end
 
