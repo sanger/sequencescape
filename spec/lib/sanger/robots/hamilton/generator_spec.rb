@@ -11,7 +11,7 @@ describe Sanger::Robots::Hamilton::Generator, type: :model do
     create(:stock_plate, barcode: 12345)
   end
 
-  shared_examples 'a valid hamilton file generation' do
+  shared_examples 'a hamilton file generation' do
     context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do
       it 'returns a String object' do
         expect(described_class.mapping(data_object)).to be_a_kind_of(String)
@@ -48,7 +48,7 @@ describe Sanger::Robots::Hamilton::Generator, type: :model do
   end
 
   context 'when performing a cherrypick with a control and multiple sources' do
-    let(:expected_file) { File.open('spec/data/hamilton/simple_cherrypick.csv', 'rb') }
+    let(:expected_file) { File.open('spec/data/hamilton/standard_cherrypick.csv', 'rb') }
     let(:data_object) do
       {
         'source' => {
@@ -216,8 +216,70 @@ describe Sanger::Robots::Hamilton::Generator, type: :model do
       }
     end
 
-    it_behaves_like 'a valid hamilton file generation'
+    it_behaves_like 'a hamilton file generation'
   end
+
+  context 'when performing a pooled cherrypick' do
+    let(:expected_file) { File.open('spec/data/hamilton/pooled_cherrypick.csv', 'rb') }
+    let(:data_object) do
+      {
+        'source' => {
+          'DN626424D' => {
+            'name' => 'ABgene_0800',
+            'plate_size' => 96
+          },
+          '10001' => {
+            'name' => 'KingFisher 96 2ml',
+            'plate_size' => 96
+          }
+        },
+        'destination' => {
+          'DN12345U' => {
+            'name' => 'Eppendorf Twin.Tec',
+            'plate_size' => 96,
+            'mapping' => [
+              { 'src_well' => %w[DN626424D A1], 'dst_well' => 'A12', 'volume' => 10, 'buffer_volume' => 0.0 },
+              { 'src_well' => %w[DN626424D H12], 'dst_well' => 'H12', 'volume' => 10, 'buffer_volume' => 0.0 },
+              { 'src_well' => %w[10001 A1], 'dst_well' => 'A1', 'volume' => 10, 'buffer_volume' => 0.0 },
+              { 'src_well' => %w[10001 B1], 'dst_well' => 'A1', 'volume' => 10, 'buffer_volume' => 0.0 },
+              { 'src_well' => %w[10001 C1], 'dst_well' => 'A1', 'volume' => 10, 'buffer_volume' => 0.0 },
+              { 'src_well' => %w[10001 D1], 'dst_well' => 'A1', 'volume' => 10, 'buffer_volume' => 0.0 },
+              { 'src_well' => %w[10001 E1], 'dst_well' => 'A1', 'volume' => 10, 'buffer_volume' => 0.0 }
+            ]
+          }
+        }
+      }
+    end
+
+    it_behaves_like 'a hamilton file generation'
+  end
+
+
+   # file = File.open('test/data/tecan/pooled_cherrypick.gwl', 'rb')
+   #  expected_output = file.read
+   #  data_object = {
+   #    'user' => 'xyz987',
+   #    'time' => 'Fri Nov 27 10:11:13 2009',
+   #    'source' => {
+   #      '1220415828863' => {
+   #        'name' => 'ABgene 0765',
+   #        'plate_size' => 96
+   #      }
+   #    },
+   #    'destination' => {
+   #      'DN12345U' => {
+   #        'name' => 'ABgene 0800',
+   #        'plate_size' => 96,
+   #        'mapping' => [
+   #          { 'src_well' => %w[1220415828863 A1], 'dst_well' => 'A1', 'volume' => 13.0, 'buffer_volume' => 0.0 },
+   #          { 'src_well' => %w[1220415828863 A2], 'dst_well' => 'A1', 'volume' => 13.0, 'buffer_volume' => 0.0 },
+   #          { 'src_well' => %w[1220415828863 A3], 'dst_well' => 'A1', 'volume' => 13.0, 'buffer_volume' => 0.0 },
+   #          { 'src_well' => %w[1220415828863 A4], 'dst_well' => 'A1', 'volume' => 13.0, 'buffer_volume' => 0.0 },
+   #          { 'src_well' => %w[1220415828863 A5], 'dst_well' => 'A1', 'volume' => 13.0, 'buffer_volume' => 0.0 }
+   #        ]
+   #      }
+   #    }
+   #  }
 end
 
 # TODO: test for volume precision
