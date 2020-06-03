@@ -1,5 +1,9 @@
 ---
-# This file was automatically generated via `rails g record_loader`
-# You should modify it to match your particular model.
-Unique attribute: {}
-Unique attribute 2: {}
+1D Tube:
+  printer_type_id: 2
+  type: BarcodePrinterType1DTube
+  label_template_name: sqsc_1dtube_label_template
+96 Well Plate:
+  printer_type_id: 1
+  type: BarcodePrinterType96Plate
+  label_template_name: sqsc_96plate_label_template_code39

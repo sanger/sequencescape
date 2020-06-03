@@ -26,6 +26,11 @@ RSpec.describe RecordLoader::BarcodePrinterTypeLoader, type: :model, loader: tru
       expect { record_loader.create! }.not_to change(BarcodePrinterType, :count)
     end
 
-    it 'sets attributes on the created records'
+    it 'sets attributes on the created records' do
+      record_loader.create!
+      expect(BarcodePrinterType96Plate.last).to have_attributes(
+        name: '96 Well Plate', printer_type_id: 1, label_template_name: 'sqsc_96plate_label_template_code39'
+      )
+    end
   end
 end
