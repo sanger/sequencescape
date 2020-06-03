@@ -9,7 +9,7 @@
       <% if output_plate %>
         <th>Plate's Purpose</th>
         <th>Worksheet Link</th>
-        <th>Robot File</th>
+        <th>Robot Files</th>
       <% end %>
     </tr>
   </thead>
@@ -37,6 +37,8 @@
                 <%= link_to 'Fluidigm file', url_for(controller: :plates, action: :fluidigm_file, id: parent.id,  format: :csv), type: 'text/csv', title: "Fluidigm file for Plate #{parent.fluidigm_barcode}" %>
             	<% else  -%>
                 <%= link_to 'Tecan file', url_for(controller: :batches, action: :gwl_file, id: @batch.id, barcode: parent.human_barcode), title: "Tecan file for Plate #{parent.human_barcode}" %>
+              </br>
+                <%= link_to 'Hamilton file', url_for(controller: :batches, action: :hamilton_csv_file, id: @batch.id, barcode: parent.human_barcode), title: "Hamilton file for Plate #{parent.human_barcode}" %>
               <% end -%>
             </td>
           <% end %>

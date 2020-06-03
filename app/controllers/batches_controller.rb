@@ -8,10 +8,10 @@ class BatchesController < ApplicationController
 
   before_action :login_required, except: %i[released qc_criteria]
   before_action :find_batch_by_id, only: %i[
-    show edit update qc_information save fail
-    fail_batch print_labels print_plate_labels print_multiplex_labels
-    print verify verify_tube_layout reset_batch previous_qc_state filtered swap
-    download_spreadsheet gwl_file pacbio_sample_sheet sample_prep_worksheet
+    show edit update qc_information save fail fail_batch print_labels
+    print_plate_labels print_multiplex_labels print verify verify_tube_layout
+    reset_batch previous_qc_state filtered swap download_spreadsheet
+    gwl_file hamilton_csv_file pacbio_sample_sheet sample_prep_worksheet
   ]
   before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_pulldown_multiplex_tube_labels print_plate_barcodes print_barcodes]
 
@@ -332,6 +332,7 @@ class BatchesController < ApplicationController
                           disposition: 'attachment'
   end
 
+  # For Tecan robots
   def gwl_file
     @plate_barcode = @batch.plate_barcode(params[:barcode])
     tecan_gwl_file_as_string = @batch.tecan_gwl_file_as_text(@plate_barcode,
@@ -340,6 +341,15 @@ class BatchesController < ApplicationController
     send_data tecan_gwl_file_as_string, type: 'text/plain',
                                         filename: "#{@batch.id}_batch_#{@plate_barcode}.gwl",
                                         disposition: 'attachment'
+  end
+
+  # For hamilton robots
+  def hamilton_csv_file
+    @plate_barcode = @batch.plate_barcode(params[:barcode])
+    hamilton_csv_file_as_string = @batch.hamilton_csv_file_as_text(@plate_barcode, params[:plate_type])
+    send_data hamilton_csv_file_as_string, type: 'text/plain',
+                                           filename: "#{@batch.id}_batch_#{@plate_barcode}.csv",
+                                           disposition: 'attachment'
   end
 
   def find_batch_by_id

@@ -1,5 +1,6 @@
 require 'timeout'
 require 'tecan_file_generation'
+require 'hamilton_file_generation'
 require 'aasm'
 
 # A {Batch} groups 1 or more {Request requests} together to enable processing in a
@@ -15,6 +16,8 @@ class Batch < ApplicationRecord
   include StandardNamedScopes
   include ::Batch::PipelineBehaviour
   include ::Batch::StateMachineBehaviour
+  include ::Batch::CommonRobotBehaviour
+  include ::Batch::HamiltonBehaviour
   include ::Batch::TecanBehaviour
   extend EventfulRecord
 
