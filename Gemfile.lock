@@ -414,7 +414,7 @@ GEM
     ruby-oci8 (2.2.8)
     ruby-ole (1.2.12.2)
     ruby-plsql (0.7.1)
-    ruby-prof (1.1.0)
+    ruby-prof (1.4.1)
     ruby-progressbar (1.10.1)
     ruby-units (2.3.1)
     ruby2_keywords (0.0.2)
