@@ -45,7 +45,7 @@ module Heron
         def check_recipients
           return if errors.count.positive?
 
-          recipients.keys.each do |coordinate|
+          recipients.each_key do |coordinate|
             recipient = recipients[coordinate]
 
             next if recipient.valid?

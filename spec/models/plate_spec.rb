@@ -118,12 +118,6 @@ describe Plate do
         it { is_expected.to eq 'DN12345U' }
       end
 
-      describe '#human_barcode' do
-        subject { plate.human_barcode }
-
-        it { is_expected.to eq 'DN12345U' }
-      end
-
       describe '#ean13_barcode' do
         subject { plate.ean13_barcode }
 

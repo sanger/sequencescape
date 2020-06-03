@@ -12,6 +12,7 @@ module SampleManifestExcel
         subclasses? :one_d_tube, :multiplexed_library_tube, :library_tube, :plate, modual: to_s.deconstantize
 
         attr_reader :upload
+
         validates_presence_of :upload
         validate :check_upload_type
         validate :check_for_barcodes_unique

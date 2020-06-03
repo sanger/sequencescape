@@ -34,6 +34,7 @@ Rails.application.routes.draw do
       jsonapi_resources :qc_assays
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
+      jsonapi_resources :racked_tubes
       jsonapi_resources :receptacles
       jsonapi_resources :request_types
       jsonapi_resources :requests

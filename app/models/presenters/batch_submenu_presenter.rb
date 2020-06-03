@@ -4,6 +4,7 @@ module Presenters
   # encapsulates the logic which was previously in the view itself.
   class BatchSubmenuPresenter
     attr_reader :options
+
     # Provide access to url_for and other Rails URL helpers {ActionDispatch::Routing::UrlFor}
     # Included directly as Rails.application.routes.url_helpers itself generates a
     # new module every time it is called

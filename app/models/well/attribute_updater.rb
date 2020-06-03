@@ -22,6 +22,7 @@ module Well::AttributeUpdater
   # in the event we don't recognize the QC type
   class Base
     attr_reader :well, :qc_result
+
     class_attribute :target_units
     delegate :value, :units, :assay_type, :assay_version, to: :qc_result
 

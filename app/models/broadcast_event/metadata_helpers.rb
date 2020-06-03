@@ -1,6 +1,7 @@
 module BroadcastEvent::MetadataHelpers
   class SimpleMetadataFinder
     attr_reader :name, :method
+
     def initialize(name, method)
       @name = name.to_s
       @method = method
@@ -13,6 +14,7 @@ module BroadcastEvent::MetadataHelpers
 
   class BlockMetadataFinder
     attr_reader :name, :block
+
     def initialize(name, &block)
       @name = name.to_s
       @block = block
