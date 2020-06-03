@@ -1,3 +1,4 @@
+# Holds robot behaviour specific to the Hamilton
 module Batch::HamiltonBehaviour
   def hamilton_csv_file_as_text(target_barcode, plate_type = nil)
     data_object = generate_picking_data(target_barcode, plate_type)
