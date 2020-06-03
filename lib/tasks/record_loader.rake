@@ -6,6 +6,10 @@
 namespace :record_loader do
   desc 'Automatically runs all record loader tasks'
   task all: :environment
+
+  task all_except_in_test: :environment do
+    Rake::Task['record_loader:all'].invoke unless Rails.env.test?
+  end
 end
 
 # In Sanger PSD we have the ansible deployment project configured to run `rake application:post_deploy` after migrations
@@ -15,4 +19,4 @@ end
 task 'application:post_deploy' => 'record_loader:all'
 
 # Automatically run record loader before seeds
-task 'db:seed' => 'record_loader:all'
+task 'db:seed' => 'record_loader:all_except_in_test'
