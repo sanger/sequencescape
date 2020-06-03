@@ -1,0 +1,2 @@
+class Hamilton < RobotVerification
+end
