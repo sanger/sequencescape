@@ -1,6 +1,6 @@
 # Common robot behaviour
 module Batch::CommonRobotBehaviour
-  def generate_picking_data(target_barcode, override_plate_type = nil)
+  def generate_picking_data(target_barcode)
     data_object = {
       'user' => user.login,
       'time' => Time.zone.now,
@@ -22,7 +22,7 @@ module Batch::CommonRobotBehaviour
       full_destination_barcode = request.target_asset.plate.machine_barcode
 
       if data_object['source'][full_source_barcode].nil?
-        source_plate_type = override_plate_type.presence || request.asset.plate.plate_type.tr('_', "\s")
+        source_plate_type = request.asset.plate.plate_type.tr('_', "\s")
         data_object['source'][full_source_barcode] = { 'name' => source_plate_type, 'plate_size' => request.asset.plate.size }
       end
 
