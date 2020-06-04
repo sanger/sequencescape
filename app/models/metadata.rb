@@ -42,21 +42,8 @@ module Metadata
         build_#{association_name}
       end
 
-      def validating_ena_required_fields=(state)
-        @validating_ena_required_fields = !!state
-        self.#{association_name}.validating_ena_required_fields = state
-      end
-
-      def validating_ena_required_fields?
-        instance_variable_defined?(:@validating_ena_required_fields) && @validating_ena_required_fields
-      end
-
       def tags
         self.class.tags.select{|tag| tag.for?(accession_service.provider)}
-      end
-
-      def required_tags
-        self.class.required_tags[accession_service.try(:provider)]+self.class.required_tags[:all]
       end
 
       def self.tags
@@ -66,24 +53,15 @@ module Metadata
       before_validation :#{association_name}, on: :create, unless: :lazy_metadata?
 
     ", __FILE__, line)
-
-    def self.required_tags
-      @required_tags ||= Hash.new { |h, k| h[k] = Array.new }
-    end
   end
 
   def include_tag(tag, options = Hash.new)
     tags << AccessionedTag.new(tag, options[:as], options[:services], options[:downcase])
   end
 
-  def require_tag(tag, services = :all)
-    [services].flatten.each do |service|
-      required_tags[service] << tag
-    end
-  end
-
   class AccessionedTag
     attr_reader :tag, :name, :downcase
+
     def initialize(tag, as = nil, services = [], downcase = false)
       @tag = tag
       @name = as || tag
@@ -138,21 +116,7 @@ module Metadata
 
     include Attributable
 
-    def validating_ena_required_fields?
-      @validating_ena_required_fields ||= false
-    end
-
-    def validating_ena_required_fields=(state)
-      @validating_ena_required_fields = !!state
-    end
-
     delegate :validator_for, to: :owner
-
-    def service_specific_fields
-      owner.required_tags.uniq.select do |tag|
-        owner.errors.add(:base, "#{tag} is required") if send(tag).blank?
-      end.empty?
-    end
 
     class << self
       def metadata_attribute_path_store

@@ -8,6 +8,7 @@ class Transfer::FromPlateToSpecificTubes < Transfer::BetweenPlateAndTubes
   # Additionally: Remove ant transfer template using this class.
 
   attr_reader :targets
+
   def targets=(uuids_for_tubes)
     @targets = Uuid.lookup_many_uuids(uuids_for_tubes).map(&:resource)
   end

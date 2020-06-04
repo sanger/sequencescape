@@ -121,6 +121,7 @@ class Task < ApplicationRecord
 
   class RenderElement
     attr_reader :request, :asset
+
     def initialize(request)
       @request = request
       @asset = request.asset

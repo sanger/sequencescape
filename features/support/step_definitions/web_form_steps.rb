@@ -105,11 +105,9 @@ When /^(?:|I )attach the relative file "([^\"]+)" to "([^\"]+)"(?: within "([^\"
 end
 
 When /^I fill in "([^\"]*)" with(?: the)? multiline text:?$/ do |field, value|
-  begin
-    find_field(field).send_keys(value)
-  rescue NotImplementedError
-    fill_in(field, with: value)
-  end
+  find_field(field).send_keys(value)
+rescue NotImplementedError
+  fill_in(field, with: value)
 end
 
 When /^I fill in the hidden field "([^"]*)" with "([^\"]+)"$/ do |field, value|

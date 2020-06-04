@@ -47,7 +47,7 @@ request_information_types_data.each do |data|
   )
 end
 
-REQUEST_INFORMATION_TYPES = Hash[RequestInformationType.all.map { |t| [t.key, t] }].freeze
+REQUEST_INFORMATION_TYPES = RequestInformationType.all.index_by { |t| t.key }.freeze
 def create_request_information_types(pipeline, *keys)
   PipelineRequestInformationType.create!(keys.map { |k| { pipeline: pipeline, request_information_type: REQUEST_INFORMATION_TYPES[k] } })
 end

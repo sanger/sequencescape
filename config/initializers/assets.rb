@@ -7,29 +7,3 @@ Rails.application.config.assets.version = '1.0'
 
 # Add Yarn node_modules folder to the asset load path.
 Rails.application.config.assets.paths << Rails.root.join('node_modules')
-
-# Precompile additional assets.
-# application.js, application.css, and all non-JS/CSS in the app/assets
-# folder are already added.
-Rails.application.config.assets.precompile += [
-  'disable_animations.css',
-  'sessions.css',
-  'print.css',
-  'scanned_barcode.js',
-  'pipeline.js',
-  'assign-tubes-to-wells-task.js',
-  'assigntags.js',
-  'characterisation.js',
-  'descriptors.js',
-  'fail_batch.js',
-  'labwhere_reception.js',
-  'organism_validation.js',
-  'pipeline.js',
-  'pooling.js',
-  'sample_move.js',
-  'submissions.js',
-  'bulk_submissions.js',
-  'JsBarcode.all.min.js',
-  'print_swipecard.js',
-  'report_fails.js'
-]

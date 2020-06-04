@@ -9,8 +9,8 @@ module ReportFailsHelper
     lab_error
   ].freeze
   def report_fail_failure_options
-    FAILURE_KEYS.each_with_object({}) do |val, obj|
-      obj[I18n.t("report_fails.#{val}")] = val
+    FAILURE_KEYS.index_by do |val|
+      I18n.t("report_fails.#{val}")
     end
   end
 
