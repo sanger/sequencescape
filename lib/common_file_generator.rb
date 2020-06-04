@@ -1,3 +1,4 @@
+# Common methods for robot file generators
 module CommonFileGenerator
   # Returns a hash of barcodes to indexes used for ordering plates to beds for the worksheet
   def barcode_to_plate_index(plates)
