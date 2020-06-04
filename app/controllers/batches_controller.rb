@@ -336,8 +336,7 @@ class BatchesController < ApplicationController
   def gwl_file
     @plate_barcode = @batch.plate_barcode(params[:barcode])
     tecan_gwl_file_as_string = @batch.tecan_gwl_file_as_text(@plate_barcode,
-                                                             @batch.total_volume_to_cherrypick,
-                                                             params[:plate_type])
+                                                             @batch.total_volume_to_cherrypick)
     send_data tecan_gwl_file_as_string, type: 'text/plain',
                                         filename: "#{@batch.id}_batch_#{@plate_barcode}.gwl",
                                         disposition: 'attachment'
