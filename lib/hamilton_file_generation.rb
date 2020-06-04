@@ -6,9 +6,11 @@ module Sanger
       #
       class Generator
         class << self
+          include ::CommonFileGenerator
+
           # Formats values in the data object into output rows for the file
           def mapping(data_object)
-            raise ArgumentError, 'Data object not present' if data_object.nil?
+            raise ArgumentError, 'Data object not present for Hamilton mapping' if data_object.nil?
 
             output_file_contents = [column_headers]
             output_file_contents << source_mappings(data_object)
