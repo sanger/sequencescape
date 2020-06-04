@@ -345,7 +345,7 @@ class BatchesController < ApplicationController
   # For hamilton robots
   def hamilton_csv_file
     @plate_barcode = @batch.plate_barcode(params[:barcode])
-    hamilton_csv_file_as_string = @batch.hamilton_csv_file_as_text(@plate_barcode, params[:plate_type])
+    hamilton_csv_file_as_string = @batch.hamilton_csv_file_as_text(@plate_barcode)
     send_data hamilton_csv_file_as_string, type: 'text/plain',
                                            filename: "#{@batch.id}_batch_#{@plate_barcode}.csv",
                                            disposition: 'attachment'
