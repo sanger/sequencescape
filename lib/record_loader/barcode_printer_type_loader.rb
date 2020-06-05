@@ -7,11 +7,11 @@
 # @see https://rubydoc.info/github/sanger/record_loader/
 module RecordLoader
   # Creates the specified plate types if they are not present
-  class PlateTypeLoader < ApplicationRecordLoader
-    config_folder 'plate_types'
+  class BarcodePrinterTypeLoader < ApplicationRecordLoader
+    config_folder 'barcode_printer_types'
 
     def create_or_update!(name, options)
-      PlateType.create_with(options).find_or_create_by!(name: name)
+      BarcodePrinterType.create_with(options).find_or_create_by!(name: name)
     end
   end
 end

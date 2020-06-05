@@ -1,0 +1,7 @@
+---
+Robot 1:
+  location: Room 1
+  barcode: 1234
+Robot 2:
+  location: Room 2
+  barcode: 5678

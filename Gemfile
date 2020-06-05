@@ -19,6 +19,7 @@ group :default do
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'
+  gem 'record_loader'
 
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'

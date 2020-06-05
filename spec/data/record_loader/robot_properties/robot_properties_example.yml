@@ -1,0 +1,33 @@
+---
+Robot 1:
+  properties:
+    -
+      name: 'Max Number of plates'
+      value: '1'
+      key: 'max_plates'
+    -
+      name: 'Source plate 1'
+      value: '1'
+      key: 'SCRC1'
+    -
+      name: 'Destination'
+      value: '1'
+      key: 'DEST1'
+Robot 2:
+  properties:
+    -
+      name: 'Max Number of plates'
+      value: '2'
+      key: 'max_plates'
+    -
+      name: 'Source plate 1'
+      value: '1'
+      key: 'SCRC1'
+    -
+      name: 'Source plate 2'
+      value: '2'
+      key: 'SCRC2'
+    -
+      name: 'Destination'
+      value: '1'
+      key: 'DEST1'
