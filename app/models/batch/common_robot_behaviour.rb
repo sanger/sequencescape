@@ -15,22 +15,28 @@ module Batch::CommonRobotBehaviour
             .where(state: 'passed')
             .find_each do |request|
       target_plate = request.target_asset.plate
+      source_plate = request.asset.plate
 
       next unless target_plate.any_barcode_matching?(target_barcode)
 
-      full_source_barcode = request.asset.plate.machine_barcode
-      full_destination_barcode = request.target_asset.plate.machine_barcode
+      full_source_barcode = source_plate.machine_barcode
+      full_destination_barcode = target_plate.machine_barcode
 
       if data_object['source'][full_source_barcode].nil?
-        source_plate_type = request.asset.plate.plate_type.tr('_', "\s")
-        data_object['source'][full_source_barcode] = { 'name' => source_plate_type, 'plate_size' => request.asset.plate.size }
+        source_plate_type = source_plate.plate_type.tr('_', "\s")
+        control = source_plate.pick_as_control?
+        data_object['source'][full_source_barcode] = {
+          'name' => source_plate_type,
+          'plate_size' => source_plate.size,
+          'control' => control
+        }
       end
 
       if data_object['destination'][full_destination_barcode].nil?
         target_plate_type = (target_plate.plate_type || PlateType.cherrypickable_default_type).tr('_', "\s")
         data_object['destination'][full_destination_barcode] = {
           'name' => target_plate_type,
-          'plate_size' => request.target_asset.plate.size
+          'plate_size' => target_plate.size
         }
       end
       data_object['destination'][full_destination_barcode]['mapping'] = [] if data_object['destination'][full_destination_barcode]['mapping'].nil?
