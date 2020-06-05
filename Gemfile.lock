@@ -351,6 +351,7 @@ GEM
       thor (>= 0.19.0, < 2.0)
     rainbow (3.0.0)
     rake (13.0.1)
+    record_loader (0.1.1)
     regexp_parser (1.7.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -585,6 +586,7 @@ DEPENDENCIES
   rails-erd
   rails-perftest
   rainbow
+  record_loader
   rest-client
   roo
   rspec-collection_matchers
