@@ -12,8 +12,8 @@ RSpec.describe RecordLoader::BarcodePrinterTypeLoader, type: :model, loader: tru
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/barcode_printer_types') }
 
-  context 'with two_entry_example selected' do
-    let(:selected_files) { 'two_entry_example' }
+  context 'with barcode_printers_basic selected' do
+    let(:selected_files) { 'barcode_printers_basic' }
 
     it 'creates two records' do
       expect { record_loader.create! }.to change(BarcodePrinterType, :count).by(2)
