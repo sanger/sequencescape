@@ -1,16 +1,6 @@
 # Used in {PacBioSequencingPipeline}, used to validate the CSVs that get generated
 # to drive the machine. These files aren't compatible with the newer PacBIo machines though.
 class ValidateSampleSheetTask < Task
-  class ValidateSampleSheetData < Task::RenderElement
-    def initialize(request)
-      super(request)
-    end
-  end
-
-  def create_render_element(request)
-    request.asset && ValidateSampleSheetData.new(request)
-  end
-
   def partial
     'validate_sample_sheet_batches'
   end

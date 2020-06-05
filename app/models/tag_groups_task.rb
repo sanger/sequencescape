@@ -1,15 +1,4 @@
 class TagGroupsTask < Task
-  class TagGroupsData < Task::RenderElement
-    alias_attribute :well, :asset
-    def initialize(request)
-      super(request)
-    end
-  end
-
-  def create_render_element(request)
-    request.asset && TagGroupsData.new(request)
-  end
-
   def partial
     'tag_groups_batches'
   end
