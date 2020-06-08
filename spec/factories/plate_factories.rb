@@ -139,6 +139,7 @@ FactoryBot.define do
         sample_count { 8 }
         well_factory { :tagged_well }
       end
+      plate_purpose { create(:fluidigm_192_purpose) }
       barcodes { build_list :fluidigm, 1 }
       size { 192 }
     end
