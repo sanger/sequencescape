@@ -8,6 +8,15 @@ module Sanger
         class << self
           include ::CommonFileGenerator
 
+          # Returns a hash of plates to indexes sorted by destination well to make sure
+          # the plates are put the right way round for the robot
+          # e.g. for Tecan 'SCRC1' goes into the 1st row of the fluidigm chip, and 'SCRC2' into the 2nd
+          def source_barcode_to_plate_index(destinations)
+            # We don't need to sort control and source barcodes for the Tecan, so just
+            # don't apply a filter. All source plates will be included
+            filter_barcode_to_plate_index(destinations)
+          end
+
           def mapping(data_object, total_volume)
             raise ArgumentError, 'Data object not present for Tecan mapping' if data_object.nil?
 
@@ -28,6 +37,10 @@ module Sanger
           end
 
           private
+
+          def sort_order
+            :row_order
+          end
 
           def header(data_object)
             "C;\nC; This file created by #{data_object["user"]} on #{data_object["time"]}\nC;"

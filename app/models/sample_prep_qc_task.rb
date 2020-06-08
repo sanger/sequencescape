@@ -1,14 +1,4 @@
 class SamplePrepQcTask < Task
-  class SamplePrepQcData < Task::RenderElement
-    def initialize(request)
-      super(request)
-    end
-  end
-
-  def create_render_element(request)
-    request.asset && SamplePrepQcData.new(request)
-  end
-
   def partial
     'sample_prep_qc_batches'
   end

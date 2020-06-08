@@ -6,14 +6,11 @@
 # The target asset of each request will have its plate and map set accordingly.
 # Well attributes are set to track picking volumes
 #
-# @see PlateTransferTask for previous step
+# @see PlateTemplateTask for previous step
 # @see Tasks::CherrypickHandler for behaviour included in the {WorkflowsController}
 class CherrypickTask < Task
   EMPTY_WELL          = [0, 'Empty', ''].freeze
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
-
-  def create_render_element(request)
-  end
 
   # An instance of this class represents the target plate being picked onto.  It can have a template
   # and be a partial plate, and so when wells are picked into it we need to ensure that we don't hit

@@ -1,14 +1,4 @@
 class MovieLengthTask < Task
-  class MovieLengthData < Task::RenderElement
-    def initialize(request)
-      super(request)
-    end
-  end
-
-  def create_render_element(request)
-    request.asset && MovieLengthData.new(request)
-  end
-
   def partial
     'movie_length_batches'
   end
