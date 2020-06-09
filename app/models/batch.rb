@@ -1,5 +1,6 @@
 require 'timeout'
 require 'tecan_file_generation'
+require 'beckman_file_generation'
 require 'hamilton_file_generation'
 require 'aasm'
 
@@ -17,6 +18,7 @@ class Batch < ApplicationRecord
   include ::Batch::PipelineBehaviour
   include ::Batch::StateMachineBehaviour
   include ::Batch::CommonRobotBehaviour
+  include ::Batch::BeckmanBehaviour
   include ::Batch::HamiltonBehaviour
   include ::Batch::TecanBehaviour
   extend EventfulRecord

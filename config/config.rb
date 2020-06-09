@@ -73,6 +73,7 @@ if Rails.env.development? || Rails.env.profile?
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 
   configatron.tecan_precision = 2
+  configatron.beckman_precision = 2
   configatron.hamilton_precision = 2
   configatron.uploaded_spreadsheet.max_number_of_samples = 384
 
@@ -115,6 +116,7 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 
   configatron.tecan_precision = 1
+  configatron.beckman_precision = 2
   configatron.hamilton_precision = 2
   configatron.uploaded_spreadsheet.max_number_of_samples = 380
 

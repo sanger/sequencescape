@@ -61,6 +61,8 @@
             	<% else  -%>
                 <%= link_to 'Tecan file', url_for(controller: :batches, action: :gwl_file, id: @batch.id, barcode: parent.human_barcode), title: "Tecan file for Plate #{parent.human_barcode}" %>
               </br>
+                <%= link_to 'Beckman file', url_for(controller: :batches, action: :beckman_csv_file, id: @batch.id, barcode: parent.human_barcode), title: "Beckman file for Plate #{parent.human_barcode}" %>
+              </br>
                 <%= link_to 'Hamilton file', url_for(controller: :batches, action: :hamilton_csv_file, id: @batch.id, barcode: parent.human_barcode), title: "Hamilton file for Plate #{parent.human_barcode}" %>
               <% end -%>
             </td>

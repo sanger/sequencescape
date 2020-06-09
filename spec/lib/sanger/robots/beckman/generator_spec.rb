@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'hamilton_file_generation'
+require 'beckman_file_generation'
 
-describe Sanger::Robots::Hamilton::Generator, type: :model do
+describe Sanger::Robots::Beckman::Generator, type: :model do
   let(:expected_output) { expected_file.read }
 
   setup do
     create(:stock_plate, barcode: 12345)
   end
 
-  shared_examples 'a hamilton file generation' do
+  shared_examples 'a beckman file generation' do
     context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do
       it 'returns a String object' do
         expect(described_class.mapping(data_object)).to be_a_kind_of(String)
@@ -47,7 +47,7 @@ describe Sanger::Robots::Hamilton::Generator, type: :model do
   end
 
   context 'when performing a cherrypick with a control and multiple sources' do
-    let(:expected_file) { File.open('spec/data/hamilton/standard_cherrypick.csv', 'rb') }
+    let(:expected_file) { File.open('spec/data/beckman/standard_cherrypick.csv', 'rb') }
     let(:data_object) do
       {
         'source' => {
@@ -215,11 +215,11 @@ describe Sanger::Robots::Hamilton::Generator, type: :model do
       }
     end
 
-    it_behaves_like 'a hamilton file generation'
+    it_behaves_like 'a beckman file generation'
   end
 
   context 'when performing a pooled cherrypick' do
-    let(:expected_file) { File.open('spec/data/hamilton/pooled_cherrypick.csv', 'rb') }
+    let(:expected_file) { File.open('spec/data/beckman/pooled_cherrypick.csv', 'rb') }
     let(:data_object) do
       {
         'source' => {
@@ -250,6 +250,6 @@ describe Sanger::Robots::Hamilton::Generator, type: :model do
       }
     end
 
-    it_behaves_like 'a hamilton file generation'
+    it_behaves_like 'a beckman file generation'
   end
 end
