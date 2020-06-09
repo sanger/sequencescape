@@ -195,10 +195,10 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
   context '#source_barcode_to_plate_index' do
     setup do
-      create(:plate_with_fluidigm_barcode, barcode: 12345)
+      plate = create(:plate_with_fluidigm_barcode)
 
       @barcodes = {
-        'DN12345U' =>
+        plate.machine_barcode =>
           { 'mapping' => [
             { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
             { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 },
@@ -224,7 +224,7 @@ class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
 
   context '#sort_mapping_by_destination_well' do
     setup do
-      plate = create(:plate_with_fluidigm_barcode, barcode: 12345)
+      plate = create(:plate_with_fluidigm_barcode)
 
       @mapping = [
         { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
