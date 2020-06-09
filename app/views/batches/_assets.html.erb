@@ -26,12 +26,35 @@
           <td><%= link_to 'Show plate', show_plate_labware_path(parent)%></td>
           <% if output_plate %>
             <td><%= purpose_for_labware(parent) %></td>
-            <td><%= link_to 'Print worksheet',
+            <td>
+            <div class="btn-group btn-group-sm">
+              <%= link_to icon('fas', 'print', 'Print worksheet'),
                             url_for(controller: :batches,
                                     action: :print,
                                     id: @batch.id,
                                     barcode: parent.human_barcode),
-                            title: "Print worksheet for Plate #{parent.human_barcode}" %></td>
+                            title: "Print worksheet for Plate #{parent.human_barcode}",
+                            class: 'btn btn-primary' %>
+              <% unless @robots.empty? %>
+                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                  <% @robots.each do |robot| %>
+                  <%= link_to "Print #{robot.name} worksheet",
+                              url_for(controller: :batches,
+                                      action: :print,
+                                      id: @batch.id,
+                                      barcode: parent.human_barcode,
+                                      robot_id: robot.id),
+                              title: "Print worksheet for Plate #{parent.human_barcode}",
+                              class: 'dropdown-item' %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+            </td>
             <td>
               <% if fluidigm_target?(@batch) %>
                 <%= link_to 'Fluidigm file', url_for(controller: :plates, action: :fluidigm_file, id: parent.id,  format: :csv), type: 'text/csv', title: "Fluidigm file for Plate #{parent.fluidigm_barcode}" %>
@@ -57,4 +80,3 @@
     <% end -%>
   </tbody>
 </table>
-

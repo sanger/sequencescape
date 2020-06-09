@@ -10,10 +10,9 @@
   <title>Batch <%= @batch.id %></title>
 </head>
 <body>
-
   <% @plates.each do |plate| %>
-    <% robot_plate_layout = @batch.tecan_layout_plate_barcodes(plate.human_barcode) %>
-    <%= render partial: 'cherrypick_single_worksheet' , locals: {batch: @batch, robot_plate_layout: robot_plate_layout, plate_barcode: plate.human_barcode} %>
+    <% robot_plate_layout = @robot.expected_layout(@batch, plate.human_barcode) %>
+    <%= render partial: 'cherrypick_single_worksheet' , locals: {batch: @batch, robot_plate_layout: robot_plate_layout, plate_barcode: plate.human_barcode, robot: @robot} %>
   <hr>
   <% end %>
   <% unless ["cucumber", "test"].include?(Rails.env) %>

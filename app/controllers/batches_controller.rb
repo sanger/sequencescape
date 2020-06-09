@@ -43,6 +43,12 @@ class BatchesController < ApplicationController
         @rits = @pipeline.request_information_types
         @input_labware = @batch.input_labware_group
         @output_labware = @batch.output_labware_group
+
+        @robots = if @batch.robot_id
+                    Robot.with_verification_behaviour
+                  else
+                    []
+                  end
       end
       format.xml { render layout: false }
     end
@@ -265,6 +271,7 @@ class BatchesController < ApplicationController
     @workflow = @batch.workflow
     @pipeline = @batch.pipeline
     @comments = @batch.comments
+    @robot = Robot.find(params.fetch(:robot_id, @batch.robot_id))
 
     if @pipeline.is_a?(CherrypickingPipeline)
       @plates = if params[:barcode]

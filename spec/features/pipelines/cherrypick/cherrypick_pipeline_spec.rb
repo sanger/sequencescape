@@ -82,6 +82,8 @@ describe 'cherrypick pipeline', js: true do
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
+    expect(page).to have_content('Print worksheet')
+    expect(page).to have_content('Tecan File')
   end
 
   it 'Pick by ng/µl: 65, conc default' do

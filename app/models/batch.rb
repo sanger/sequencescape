@@ -180,6 +180,14 @@ class Batch < ApplicationRecord
     lab_events.any? { |event| event_name.downcase == event.description.try(:downcase) }
   end
 
+  def event_with_description(name)
+    lab_events.order(id: :desc).find_by(description: name)
+  end
+
+  def robot_id
+    event_with_description('Cherrypick Layout Set')&.descriptor_value('robot_id')
+  end
+
   def underrun
     has_limit? ? (item_limit - batch_requests.size) : 0
   end

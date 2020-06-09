@@ -5,6 +5,7 @@ class Robot < ApplicationRecord
   validates :location, presence: true
   has_many :robot_properties
   has_one :max_plates_property, ->() { where(key: 'max_plates') }, class_name: 'RobotProperty'
+  has_one :verification_behaviour_property, ->() { where(key: 'verification_behaviour') }, class_name: 'RobotProperty'
 
   scope :with_barcode, ->(barcode) {
                          return none unless Barcode.prefix_from_barcode(barcode) == prefix
@@ -14,8 +15,19 @@ class Robot < ApplicationRecord
 
   scope :include_properties, -> { includes(:robot_properties) }
 
+  scope :with_verification_behaviour, -> { includes(:robot_properties).where(robot_properties: { key: 'verification_behaviour' }) }
+
+  delegate :expected_layout, to: :verification_behaviour
+
   def max_beds
     max_plates_property.try(:value).to_i
+  end
+
+  def verification_behaviour
+    {
+      'Hamilton' => Hamilton,
+      'Tecan' => Tecan
+    }.fetch(verification_behaviour_property&.value, Tecan).new
   end
 
   class << self

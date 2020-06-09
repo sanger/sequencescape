@@ -92,7 +92,7 @@ module Tasks::CherrypickHandler
     size = params[:plate_size]
     plate_type = params[:plate_type]
 
-    ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do # rubocop:todo Metrics/BlockLength
       # Determine if there is a standard plate to use.
       partial_plate = nil
       plate_barcode = params[:plate_barcode]
@@ -114,9 +114,7 @@ module Tasks::CherrypickHandler
         end
 
       # We can preload the well locations so that we can do efficient lookup later.
-      well_locations = Map.where_plate_size(partial_plate.try(:size) || size).where_plate_shape(partial_plate.try(:asset_shape) || asset_shape_id).in_row_major_order.index_by do |location|
-        location.description
-      end
+      well_locations = Map.where_plate_size(partial_plate.try(:size) || size).where_plate_shape(partial_plate.try(:asset_shape) || asset_shape_id).in_row_major_order.index_by(&:description)
 
       # All of the requests we're going to be using should be part of the batch.  If they are not
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
@@ -185,6 +183,11 @@ module Tasks::CherrypickHandler
           [source_plate.id, target_plate.id]
         end
       end.uniq
+
+      @batch.lab_events.create(description: 'Cherrypick Layout Set', message: 'Layout set', user_id: current_user.id,
+                               descriptors: {
+                                 'robot_id' => params[:robot_id]
+                               })
 
       AssetLink::BuilderJob.create(links)
 
