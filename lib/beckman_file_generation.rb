@@ -1,8 +1,8 @@
 module Sanger
   module Robots
-    module Hamilton
+    module Beckman
       #
-      # Generates the picking file contents for the Hamilton robot
+      # Generates the picking file contents for the Beckman robot
       #
       class Generator
         class << self
@@ -38,7 +38,7 @@ module Sanger
 
           # Formats values in the data object into output rows for the file
           def mapping(data_object)
-            raise ArgumentError, 'Data object not present for Hamilton mapping' if data_object.nil?
+            raise ArgumentError, 'Data object not present for Beckman mapping' if data_object.nil?
 
             output_file_contents = [column_headers]
             output_file_contents << source_mappings(data_object)
@@ -52,8 +52,8 @@ module Sanger
           end
 
           # sets number of decimal places on volumes, robot has a precision limit when aspirating/dispensing
-          def hamilton_precision_value(value)
-            value.to_f.round(configatron.hamilton_precision)
+          def beckman_precision_value(value)
+            value.to_f.round(configatron.beckman_precision)
           end
 
           # sorts the rows by destination well
@@ -90,12 +90,12 @@ module Sanger
                 source_plate_barcode,
                 source_well_position,
                 source_plate_type,
-                hamilton_precision_value(mapping['volume']).to_s,
+                beckman_precision_value(mapping['volume']).to_s,
                 destination_plate_barcode,
                 destination_well_position,
                 destination_plate_type,
-                hamilton_precision_value(mapping['volume']).to_s,
-                hamilton_precision_value(mapping['buffer_volume']).to_s
+                beckman_precision_value(mapping['volume']).to_s,
+                beckman_precision_value(mapping['buffer_volume']).to_s
               ].join(',')
               source_mappings += "#{current_row}\n"
             end
