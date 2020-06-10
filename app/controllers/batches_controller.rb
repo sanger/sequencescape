@@ -272,7 +272,7 @@ class BatchesController < ApplicationController
     @workflow = @batch.workflow
     @pipeline = @batch.pipeline
     @comments = @batch.comments
-    @robot = Robot.find(params.fetch(:robot_id, @batch.robot_id))
+    @robot = Robot.find(params.fetch(:robot_id, @batch.robot_id)) if @batch.robot_id.present?
 
     if @pipeline.is_a?(CherrypickingPipeline)
       @plates = if params[:barcode]
