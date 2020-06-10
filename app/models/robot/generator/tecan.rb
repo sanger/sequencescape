@@ -13,6 +13,6 @@ class Robot::Generator::Tecan < Robot::Generator::Base
   end
 
   def as_text
-    @batch.tecan_gwl_file_as_text(@plate_barcode, @batch.total_volume_to_cherrypick)
+    Sanger::Robots::Tecan::Generator.mapping(picking_data, @batch.total_volume_to_cherrypick.to_i)
   end
 end

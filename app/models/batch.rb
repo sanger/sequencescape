@@ -17,10 +17,6 @@ class Batch < ApplicationRecord
   include StandardNamedScopes
   include ::Batch::PipelineBehaviour
   include ::Batch::StateMachineBehaviour
-  include ::Batch::CommonRobotBehaviour
-  include ::Batch::BeckmanBehaviour
-  include ::Batch::HamiltonBehaviour
-  include ::Batch::TecanBehaviour
   extend EventfulRecord
 
   DEFAULT_VOLUME = 13

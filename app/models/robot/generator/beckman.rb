@@ -13,6 +13,6 @@ class Robot::Generator::Beckman < Robot::Generator::Base
   end
 
   def as_text
-    @batch.beckman_csv_file_as_text(@plate_barcode)
+    Sanger::Robots::Beckman::Generator.mapping(picking_data)
   end
 end

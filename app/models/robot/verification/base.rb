@@ -25,12 +25,9 @@ class Robot::Verification::Base
   #                       2nd Element: Hash of source plate barcodes and their sort position
   #                       3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
   #         @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}]
-
   def expected_layout(batch, destination_plate_barcode)
-    data_object = batch.generate_picking_data(destination_plate_barcode)
-    dest_barcode_index = Sanger::Robots::Tecan::Generator.barcode_to_plate_index(data_object['destination'])
-    source_barcode_index = Sanger::Robots::Tecan::Generator.source_barcode_to_plate_index(data_object['destination'])
-    [dest_barcode_index, source_barcode_index]
+    data_object = generate_picking_data(batch, destination_plate_barcode)
+    layout_data_object(data_object)
   end
 
   def valid_submission?(params)
@@ -76,6 +73,10 @@ class Robot::Verification::Base
   end
 
   private
+
+  def generate_picking_data(batch, destination_plate_barcode)
+    Robot::PickData.new(batch, destination_plate_barcode).picking_data
+  end
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout)
     return false unless valid_source_plates_on_robot?(params[:bed_barcodes], params[:plate_barcodes], robot, batch, expected_plate_layout)

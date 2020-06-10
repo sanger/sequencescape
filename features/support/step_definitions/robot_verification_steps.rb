@@ -87,7 +87,7 @@ end
 Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
   batch = Batch.find_by(barcode: Barcode.number_to_human(batch_barcode)) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
   plate = Plate.find_from_barcode(plate_barcode) or raise StandardError, "Cannot find plate with machine barcode #{plate_barcode.inspect}"
-  generated_file = batch.tecan_gwl_file_as_text(plate.human_barcode, batch.total_volume_to_cherrypick)
+  generated_file = Robot::Generator::Tecan.new(batch: batch, plate_barcode: plate.human_barcode).as_text
   generated_lines = generated_file.split(/\n/)
   generated_lines.shift(2)
   assert_not_nil generated_lines

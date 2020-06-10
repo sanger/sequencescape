@@ -13,6 +13,6 @@ class Robot::Generator::Hamilton < Robot::Generator::Base
   end
 
   def as_text
-    @batch.hamilton_csv_file_as_text(@plate_barcode)
+    Sanger::Robots::Hamilton::Generator.mapping(picking_data)
   end
 end

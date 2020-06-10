@@ -4,13 +4,8 @@
 # plates have distinct beds
 class Robot::Verification::SourceDestControlBeds < Robot::Verification::Base
   def expected_layout(batch, destination_plate_barcode)
-    data_object = batch.generate_picking_data(destination_plate_barcode)
-    destination = data_object['destination']
-    source = data_object['source']
-    dest_barcode_index = Sanger::Robots::Hamilton::Generator.barcode_to_plate_index(destination)
-    source_barcode_index = Sanger::Robots::Hamilton::Generator.source_barcode_to_plate_index(destination, source)
-    control_barcode_index = Sanger::Robots::Hamilton::Generator.control_barcode_to_plate_index(destination, source)
-    [dest_barcode_index, source_barcode_index, control_barcode_index]
+    data_object = generate_picking_data(batch, destination_plate_barcode)
+    layout_data_object(data_object)
   end
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout)
@@ -22,5 +17,16 @@ class Robot::Verification::SourceDestControlBeds < Robot::Verification::Base
 
   def valid_control_plates_on_robot?(beds, plates, robot, batch, all_expected_plate_layout)
     valid_plates_on_robot?(beds, plates, 'CTRL', robot, batch, all_expected_plate_layout[2])
+  end
+
+  private
+
+  def layout_data_object(data_object)
+    destination = data_object['destination']
+    source = data_object['source']
+    dest_barcode_index = Sanger::Robots::Hamilton::Generator.barcode_to_plate_index(destination)
+    source_barcode_index = Sanger::Robots::Hamilton::Generator.source_barcode_to_plate_index(destination, source)
+    control_barcode_index = Sanger::Robots::Hamilton::Generator.control_barcode_to_plate_index(destination, source)
+    [dest_barcode_index, source_barcode_index, control_barcode_index]
   end
 end

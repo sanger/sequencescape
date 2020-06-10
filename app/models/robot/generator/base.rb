@@ -11,4 +11,8 @@ class Robot::Generator::Base
     @batch = batch
     @plate_barcode = plate_barcode
   end
+
+  def picking_data
+    @picking_data ||= Robot::PickData.new(@batch, @plate_barcode).picking_data
+  end
 end
