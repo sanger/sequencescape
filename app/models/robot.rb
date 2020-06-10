@@ -38,7 +38,7 @@ class Robot < ApplicationRecord
       'Hamilton' => Robot::Generator::Hamilton,
       'Tecan' => Robot::Generator::Tecan,
       'Beckman' => Robot::Generator::Beckman
-    }.fetch(verification_behaviour_property&.value, Robot::Generator::Beckman)
+    }.fetch(verification_behaviour_property&.value, Robot::Generator::Tecan)
   end
 
   class << self

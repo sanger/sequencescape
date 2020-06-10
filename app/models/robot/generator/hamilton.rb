@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_dependency 'robot'
-require_dependency 'robot/verification'
 
 # Handles picking file generation for Hamilton robots
 class Robot::Generator::Hamilton < Robot::Generator::Base

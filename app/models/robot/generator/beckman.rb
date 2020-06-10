@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_dependency 'robot'
-require_dependency 'robot/verification'
 
 # Handles picking file generation for Beckman robots
 class Robot::Generator::Beckman < Robot::Generator::Base
