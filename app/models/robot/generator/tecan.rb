@@ -3,6 +3,7 @@
 require_dependency 'robot'
 require_dependency 'robot/verification'
 
+# Handles picking file generation for Tecan robots
 class Robot::Generator::Tecan < Robot::Generator::Base
   def filename
     "#{@batch.id}_batch_#{@plate_barcode}.gwl"

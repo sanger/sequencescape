@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-
   factory :robot do
     name      { 'myrobot' }
     location  { 'lab' }
@@ -38,5 +37,4 @@ FactoryBot.define do
       key   { 'generation_behaviour' }
     end
   end
-
 end
