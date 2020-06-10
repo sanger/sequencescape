@@ -3,8 +3,8 @@
 require 'rails_helper'
 require 'broadcast_event/lab_event'
 
-RSpec.describe Beckman do
-  subject(:beckman) { described_class.new }
+RSpec.describe Robot::Verification::SourceDestBeds do
+  subject(:verifier) { described_class.new }
 
   describe '#expected_layout' do # expected_layout(batch, destination_plate_barcode)
     let(:source_plate_1) { create :plate, well_count: 2 }
@@ -50,15 +50,14 @@ RSpec.describe Beckman do
           { destination_plate.machine_barcode => 1 }, # Destinations
           {
             source_plate_3.machine_barcode => 1,
-            source_plate_2.machine_barcode => 2,
-            source_plate_1.machine_barcode => 3
-          }, # Sources
-          {} # Controls
+            source_plate_2.machine_barcode => 3,
+            source_plate_1.machine_barcode => 2
+          }
         ]
       end
 
       it 'generates a layout' do
-        expect(beckman.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+        expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
       end
     end
 
@@ -71,16 +70,14 @@ RSpec.describe Beckman do
           { destination_plate.machine_barcode => 1 }, # Destinations
           {
             source_plate_3.machine_barcode => 1,
+            source_plate_2.machine_barcode => 3,
             source_plate_1.machine_barcode => 2
-          }, # Sources
-          {
-            source_plate_2.machine_barcode => 1
-          } # Controls
+          }
         ]
       end
 
       it 'generates a layout' do
-        expect(beckman.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+        expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
       end
     end
   end

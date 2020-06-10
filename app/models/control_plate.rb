@@ -4,7 +4,8 @@
 # via a ControlPlate.
 #
 # The main differences control plates show from standard plates is:
-# - When Cherrypicking via the {Hamilton} they are asigned a seperate bed to reduce the risk of contamination
+# - When Cherrypicking via a robot with {Robot::Verification::SourceDestControlBeds} such as the Hamilton they
+#   are asigned a seperate bed to reduce the risk of contamination
 class ControlPlate < Plate
   # When Cherrypicking, especially on the Hamilton, control plates get placed
   # on a seperate bed. This is currently set to true. However, as the behaviouir needs to be explicitly enabled

@@ -333,6 +333,7 @@ class BatchesController < ApplicationController
     end
   end
 
+  # Used in Cherrypicking pipeline to generate the template for CSV driven picks
   def download_spreadsheet
     csv_string = Tasks::PlateTemplateHandler.generate_spreadsheet(@batch)
     send_data csv_string, type: 'text/plain',
@@ -340,32 +341,26 @@ class BatchesController < ApplicationController
                           disposition: 'attachment'
   end
 
+  # TODO: Pull into seperate controller
   # For Tecan robots
   def gwl_file
     @plate_barcode = @batch.plate_barcode(params[:barcode])
-    tecan_gwl_file_as_string = @batch.tecan_gwl_file_as_text(@plate_barcode,
-                                                             @batch.total_volume_to_cherrypick)
-    send_data tecan_gwl_file_as_string, type: 'text/plain',
-                                        filename: "#{@batch.id}_batch_#{@plate_barcode}.gwl",
-                                        disposition: 'attachment'
+    generator = Robot::Generator::Tecan.new(batch: @batch, plate_barcode: @plate_barcode)
+    send_generator_file(generator)
   end
 
   # For beckman robots
   def beckman_csv_file
     @plate_barcode = @batch.plate_barcode(params[:barcode])
-    beckman_csv_file_as_string = @batch.beckman_csv_file_as_text(@plate_barcode)
-    send_data beckman_csv_file_as_string, type: 'text/plain',
-                                          filename: "#{@batch.id}_batch_#{@plate_barcode}.csv",
-                                          disposition: 'attachment'
+    generator = Robot::Generator::Beckman.new(batch: @batch, plate_barcode: @plate_barcode)
+    send_generator_file(generator)
   end
 
   # For hamilton robots
   def hamilton_csv_file
     @plate_barcode = @batch.plate_barcode(params[:barcode])
-    hamilton_csv_file_as_string = @batch.hamilton_csv_file_as_text(@plate_barcode)
-    send_data hamilton_csv_file_as_string, type: 'text/plain',
-                                           filename: "#{@batch.id}_batch_#{@plate_barcode}.csv",
-                                           disposition: 'attachment'
+    generator = Robot::Generator::Hamilton.new(batch: @batch, plate_barcode: @plate_barcode)
+    send_generator_file(generator)
   end
 
   def find_batch_by_id
@@ -403,6 +398,12 @@ class BatchesController < ApplicationController
   end
 
   private
+
+  def send_generator_file(generator)
+    send_data generator.as_text, type: 'text/plain',
+                                 filename: generator.filename,
+                                 disposition: 'attachment'
+  end
 
   def print_handler(print_class)
     print_job = LabelPrinter::PrintJob.new(params[:printer],

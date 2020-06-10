@@ -1,2 +1,0 @@
-class Tecan < RobotVerification
-end

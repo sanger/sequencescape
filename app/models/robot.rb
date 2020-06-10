@@ -6,6 +6,7 @@ class Robot < ApplicationRecord
   has_many :robot_properties
   has_one :max_plates_property, ->() { where(key: 'max_plates') }, class_name: 'RobotProperty'
   has_one :verification_behaviour_property, ->() { where(key: 'verification_behaviour') }, class_name: 'RobotProperty'
+  has_one :generator_behaviour_property, ->() { where(key: 'generator_behaviour') }, class_name: 'RobotProperty'
 
   scope :with_barcode, ->(barcode) {
                          return none unless Barcode.prefix_from_barcode(barcode) == prefix
@@ -25,9 +26,19 @@ class Robot < ApplicationRecord
 
   def verification_behaviour
     {
-      'Hamilton' => Hamilton,
-      'Tecan' => Tecan
-    }.fetch(verification_behaviour_property&.value, Tecan).new
+      'Hamilton' => Robot::Verification::SourceDestControlBeds,
+      'SourceDestControlBeds' => Robot::Verification::SourceDestControlBeds,
+      'Tecan' => Robot::Verification::SourceDestBeds,
+      'SourceDestBeds' => Robot::Verification::SourceDestBeds
+    }.fetch(verification_behaviour_property&.value, Robot::Verification::SourceDestBeds).new
+  end
+
+  def generator_behaviour
+    {
+      'Hamilton' => Robot::Generator::Hamilton,
+      'Tecan' => Robot::Generator::Tecan,
+      'Beckman' => Robot::Generator::Beckman
+    }.fetch(verification_behaviour_property&.value, Robot::Generator::Beckman)
   end
 
   class << self

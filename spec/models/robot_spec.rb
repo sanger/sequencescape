@@ -18,12 +18,22 @@ describe Robot do
   end
 
   describe '#verification_behaviour' do
-    let(:robot_with_verification_behaviour) do
+    let(:robot) do
       create(:robot_with_verification_behaviour, name: 'robot 2', verification_behaviour_value: 'Hamilton')
     end
 
     it 'returns the appropriate class' do
-      expect(robot_with_verification_behaviour.verification_behaviour).to be_a(Hamilton)
+      expect(robot.verification_behaviour).to be_a(Robot::Verification::SourceDestControlBeds)
+    end
+  end
+
+  describe '#generator_behaviour' do
+    let(:robot) do
+      create(:robot_with_generation_behaviour, name: 'robot 2', generation_behaviour_value: 'Hamilton')
+    end
+
+    it 'returns the appropriate class' do
+      expect(robot.generator_behaviour).to eq(Robot::Generator::Hamilton)
     end
   end
 end

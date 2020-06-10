@@ -216,19 +216,6 @@ class Batch < ApplicationRecord
 
   alias_method :ordered_requests, :requests
 
-  def shift_item_positions(position, number)
-    return unless number
-
-    BatchRequest.transaction do
-      batch_requests.each do |batch_request|
-        next unless batch_request.position >= position
-        next if batch_request.request.asset.try(:resource?)
-
-        batch_request.move_to_position!(batch_request.position + number)
-      end
-    end
-  end
-
   def assigned_user
     assignee.try(:login) || ''
   end

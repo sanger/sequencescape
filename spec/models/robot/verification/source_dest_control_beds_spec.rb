@@ -3,8 +3,8 @@
 require 'rails_helper'
 require 'broadcast_event/lab_event'
 
-RSpec.describe Hamilton do
-  subject(:hamilton) { described_class.new }
+RSpec.describe Robot::Verification::SourceDestControlBeds do
+  subject(:verifier) { described_class.new }
 
   describe '#expected_layout' do # expected_layout(batch, destination_plate_barcode)
     let(:source_plate_1) { create :plate, well_count: 2 }
@@ -58,7 +58,7 @@ RSpec.describe Hamilton do
       end
 
       it 'generates a layout' do
-        expect(hamilton.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+        expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Hamilton do
       end
 
       it 'generates a layout' do
-        expect(hamilton.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+        expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
       end
     end
   end
