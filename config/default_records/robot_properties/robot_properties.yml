@@ -6,9 +6,13 @@ Hamilton STAR 6:
       value: '25'
       key: 'max_plates'
     -
-      name: 'Max Number of control plates'
-      value: '1'
-      key: 'max_control_plates'
+      name: Verification Behaviour
+      value: 'SourceDestControlBeds'
+      key: verification_behaviour
+    -
+      name: Generator Behaviour
+      value: 'Hamilton'
+      key: generator_behaviour
     -
       name: 'Source plate 1'
       value: '1'

@@ -41,6 +41,10 @@ class Robot < ApplicationRecord
     }.fetch(verification_behaviour_property&.value, Robot::Generator::Tecan)
   end
 
+  def generator_action
+    generator_behaviour.action
+  end
+
   class << self
     def prefix
       'RB'

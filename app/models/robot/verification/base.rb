@@ -10,10 +10,21 @@ class Robot::Verification::Base
     return yield('No barcodes specified')      if barcode_hash.nil?
 
     yield('Worksheet barcode invalid')         if barcode_hash[:batch_barcode].blank?             || !Batch.valid_barcode?(barcode_hash[:batch_barcode])
-    yield('Tecan robot barcode invalid')       if barcode_hash[:robot_barcode].blank?             || !Robot.valid_barcode?(barcode_hash[:robot_barcode])
+    yield('Robot barcode invalid')             if barcode_hash[:robot_barcode].blank?             || !Robot.valid_barcode?(barcode_hash[:robot_barcode])
     yield('User barcode invalid')              if barcode_hash[:user_barcode].blank?              || !User.find_with_barcode_or_swipecard_code(barcode_hash[:user_barcode])
     yield('Destination plate barcode invalid') if barcode_hash[:destination_plate_barcode].blank? || !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
   end
+
+  #
+  # Returns the barcodes and their expected sort order for verifications and worksheets
+  #
+  # @param [Batch] batch The batch associated with the pick
+  # @param [String] destination_plate_barcode The barcode of the destination plate being picked
+  #
+  # @return [Array<Hash>] 1st Element: Hash of destination plate barcodes and their sort position
+  #                       2nd Element: Hash of source plate barcodes and their sort position
+  #                       3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
+  #         @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}]
 
   def expected_layout(batch, destination_plate_barcode)
     data_object = batch.generate_picking_data(destination_plate_barcode)

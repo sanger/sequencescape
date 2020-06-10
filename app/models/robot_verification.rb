@@ -1,1 +1,0 @@
-RobotVerification = Robot::Verification::Base

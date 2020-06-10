@@ -123,7 +123,7 @@ describe 'cherrypick pipeline', js: true do
     step 'Robot verification step 1' do
       visit robot_verifications_path
       fill_in('Scan user ID', with: '2470041440697')
-      fill_in('Scan Tecan robot', with: '4880000444853')
+      fill_in('Scan robot', with: '4880000444853')
       fill_in('Scan worksheet', with: '550000555760')
       fill_in('Scan destination plate', with: 'DN99999F')
 
@@ -155,12 +155,12 @@ describe 'cherrypick pipeline', js: true do
 
       step 'Wait for verify' do
         click_button 'Verify'
-        expect(page).to have_content 'Download TECAN file'
+        expect(page).to have_content 'Download myrobot File'
       end
     end
 
     step 'Robot verification step 3' do
-      click_link('Download TECAN file')
+      click_link('Download myrobot File')
       # Tecan file generation is slow. Can probably be sped up, but for the moment...
       generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_DN99999F.gwl")
       generated_lines = generated_file.lines
