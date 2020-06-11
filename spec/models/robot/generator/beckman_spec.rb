@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'beckman_file_generation'
 
-describe Sanger::Robots::Beckman::Generator, type: :model do
+describe Robot::Generator::Beckman, type: :model do
+  subject(:generator) { described_class.new(picking_data: data_object) }
+
   let(:expected_output) { expected_file.read }
 
   setup do
@@ -13,29 +14,29 @@ describe Sanger::Robots::Beckman::Generator, type: :model do
   shared_examples 'a beckman file generation' do
     context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do
       it 'returns a String object' do
-        expect(described_class.mapping(data_object)).to be_a_kind_of(String)
+        expect(generator.mapping).to be_a_kind_of(String)
       end
 
       it 'generates the expected output' do
-        expect(described_class.mapping(data_object)).equal?(expected_output)
+        expect(generator.mapping).equal?(expected_output)
       end
 
       it 'contains column headers' do
         regex = /^SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume/
 
-        assert_match(regex, described_class.mapping(data_object))
+        assert_match(regex, generator.mapping)
       end
 
       it 'contains source control plate rows' do
         regex = /(?:DN626424D,[A-P]\d*,ABgene_0800,[0-9]*+(\.[0-9]*),DN12345U,[A-P]\d*,Eppendorf Twin.Tec,[0-9]*+(\.[0-9]*),[0-9]*+(\.[0-9]*))/
 
-        assert_match(regex, described_class.mapping(data_object))
+        assert_match(regex, generator.mapping)
       end
 
       it 'contains source plate rows' do
         regex = /(?:10001,[A-P]\d*,KingFisher 96 2ml,[0-9]*+(\.[0-9]*),DN12345U,[A-P]\d*,Eppendorf Twin.Tec,[0-9]*+(\.[0-9]*),[0-9]*+(\.[0-9]*))/
 
-        assert_match(regex, described_class.mapping(data_object))
+        assert_match(regex, generator.mapping)
       end
     end
 

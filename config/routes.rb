@@ -135,6 +135,10 @@ Rails.application.routes.draw do
     resources :comments, controller: 'batches/comments'
     resources :stock_assets, only: %i[new create]
 
+    resources :robots do
+      resource :driver_file, only: :show
+    end
+
     member do
       get :print_labels
       get :print_stock_labels
