@@ -10,7 +10,7 @@ Hamilton STAR 6:
       value: 'SourceDestControlBeds'
       key: verification_behaviour
     -
-      name: Generator Behaviour
+      name: Generation Behaviour
       value: 'Hamilton'
       key: generation_behaviour
     -
