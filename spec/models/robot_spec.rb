@@ -27,13 +27,13 @@ describe Robot do
     end
   end
 
-  describe '#generator_behaviour' do
+  describe '#generation_behaviour' do
     let(:robot) do
       create(:robot_with_generation_behaviour, name: 'robot 2', generation_behaviour_value: 'Hamilton')
     end
 
     it 'returns the appropriate class' do
-      expect(robot.generator_behaviour).to eq(Robot::Generator::Hamilton)
+      expect(robot.generation_behaviour).to eq(Robot::Generator::Hamilton)
     end
   end
 

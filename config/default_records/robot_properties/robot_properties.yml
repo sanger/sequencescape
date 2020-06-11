@@ -12,7 +12,7 @@ Hamilton STAR 6:
     -
       name: Generator Behaviour
       value: 'Hamilton'
-      key: generator_behaviour
+      key: generation_behaviour
     -
       name: 'Source plate 1'
       value: '1'
