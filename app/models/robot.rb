@@ -1,6 +1,7 @@
 class Robot < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::Robot
+
   validates :name, presence: true
   validates :location, presence: true
   has_many :robot_properties
@@ -13,9 +14,7 @@ class Robot < ApplicationRecord
 
                          where(barcode: Barcode.number_to_human(barcode))
                        }
-
   scope :include_properties, -> { includes(:robot_properties) }
-
   scope :with_verification_behaviour, -> { includes(:robot_properties).where(robot_properties: { key: 'verification_behaviour' }) }
 
   delegate :expected_layout, to: :verification_behaviour
@@ -38,11 +37,13 @@ class Robot < ApplicationRecord
       'Hamilton' => Robot::Generator::Hamilton,
       'Tecan' => Robot::Generator::Tecan,
       'Beckman' => Robot::Generator::Beckman
-    }.fetch(verification_behaviour_property&.value, Robot::Generator::Tecan)
+    }.fetch(generator_behaviour_property&.value, Robot::Generator::Tecan)
   end
 
-  def generator_action
-    generator_behaviour.action
+  def generator(batch:, plate_barcode:)
+    picking_data = Robot::PickData.new(batch, plate_barcode).picking_data
+    layout = verification_behaviour.layout_data_object(picking_data)
+    generator_behaviour.new(batch: batch, plate_barcode: plate_barcode, picking_data: picking_data, layout: layout)
   end
 
   class << self

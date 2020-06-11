@@ -16,7 +16,20 @@ FactoryBot.define do
       transient do
         generation_behaviour_value { 'Tecan' }
       end
-      robot_properties { build_list :validation_property, 1, value: generation_behaviour_value }
+      robot_properties { build_list :generation_property, 1, value: generation_behaviour_value }
+    end
+
+    factory :full_robot do
+      transient do
+        verification_behaviour_value { 'Tecan' }
+        generation_behaviour_value { 'Tecan' }
+      end
+      robot_properties do
+        [
+          build(:validation_property, value: verification_behaviour_value),
+          build(:generation_property, value: generation_behaviour_value)
+        ]
+      end
     end
   end
 

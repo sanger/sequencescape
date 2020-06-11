@@ -45,11 +45,10 @@ class BatchesController < ApplicationController
         @input_labware = @batch.input_labware_group
         @output_labware = @batch.output_labware_group
 
-        @robots = if @batch.robot_id
-                    Robot.with_verification_behaviour
-                  else
-                    []
-                  end
+        if @pipeline.pick_data
+          @robot = @batch.robot_id ? Robot.find(@batch.robot_id) : Robot.with_verification_behaviour.first
+          @robots = Robot.with_verification_behaviour
+        end
       end
       format.xml { render layout: false }
     end
@@ -341,28 +340,6 @@ class BatchesController < ApplicationController
                           disposition: 'attachment'
   end
 
-  # TODO: Pull into seperate controller
-  # For Tecan robots
-  def gwl_file
-    @plate_barcode = @batch.plate_barcode(params[:barcode])
-    generator = Robot::Generator::Tecan.new(batch: @batch, plate_barcode: @plate_barcode)
-    send_generator_file(generator)
-  end
-
-  # For beckman robots
-  def beckman_csv_file
-    @plate_barcode = @batch.plate_barcode(params[:barcode])
-    generator = Robot::Generator::Beckman.new(batch: @batch, plate_barcode: @plate_barcode)
-    send_generator_file(generator)
-  end
-
-  # For hamilton robots
-  def hamilton_csv_file
-    @plate_barcode = @batch.plate_barcode(params[:barcode])
-    generator = Robot::Generator::Hamilton.new(batch: @batch, plate_barcode: @plate_barcode)
-    send_generator_file(generator)
-  end
-
   def find_batch_by_id
     @batch = Batch.find(params[:id])
   end
@@ -398,12 +375,6 @@ class BatchesController < ApplicationController
   end
 
   private
-
-  def send_generator_file(generator)
-    send_data generator.as_text, type: 'text/plain',
-                                 filename: generator.filename,
-                                 disposition: 'attachment'
-  end
 
   def print_handler(print_class)
     print_job = LabelPrinter::PrintJob.new(params[:printer],

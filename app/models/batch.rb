@@ -1,7 +1,4 @@
 require 'timeout'
-require 'tecan_file_generation'
-require 'beckman_file_generation'
-require 'hamilton_file_generation'
 require 'aasm'
 
 # A {Batch} groups 1 or more {Request requests} together to enable processing in a

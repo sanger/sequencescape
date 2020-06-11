@@ -83,7 +83,7 @@ describe 'cherrypick pipeline', js: true do
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
     expect(page).to have_content('Print worksheet')
-    expect(page).to have_content('Tecan file')
+    expect(page).to have_content("Download #{robot.name} File")
   end
 
   it 'Pick by ng/µl: 65, conc default' do
@@ -252,7 +252,7 @@ describe 'cherrypick pipeline', js: true do
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
 
-    click_link('Tecan file')
+    click_link("#{robot.name} file")
     batch = Batch.last
     # We proceed to check the generated TECAN file here.
     # This is an import of an old test which appeared to address
