@@ -41,21 +41,6 @@ class BatchTest < ActiveSupport::TestCase
         assert_equal(expected, actual, 'Positions of requests do not match')
       end
     end
-
-    context '#shift_item_positions' do
-      setup do
-        @requests.each { |r| r.update!(asset: nil) }
-      end
-
-      should 'move the requests that are at, and after, the position by the number and have no asset' do
-        @batch.shift_item_positions(5, 2)
-
-        positions = [1, 2, 3, 4, 7, 8, 9, 10, 11, 12]
-        expected  = Hash[@requests.each_with_index.map { |request, index| [request.id, positions[index]] }]
-        actual    = @batch.batch_requests.each_with_object({}) { |batch_request, memo| memo[batch_request.request_id] = batch_request.position }
-        assert_equal(expected, actual, 'Positions of requests do not match')
-      end
-    end
   end
 
   context 'when batch is created' do
@@ -212,7 +197,7 @@ class BatchTest < ActiveSupport::TestCase
     should have_many :lab_events
     should have_many :requests
 
-    should_have_instance_methods :shift_item_positions, :assigned_user, :start, :fail, :workflow, :started?, :released?, :qc_state
+    should_have_instance_methods :assigned_user, :start, :fail, :workflow, :started?, :released?, :qc_state
 
     setup do
       @pipeline_next = create :pipeline, name: 'Next pipeline'
@@ -388,17 +373,6 @@ class BatchTest < ActiveSupport::TestCase
         assert_not @batch.verify_tube_layout([@asset1.machine_barcode, @asset2.machine_barcode])
         assert_not @batch.errors.empty?
         assert_equal number_of_batch_events, @batch.lab_events.size
-      end
-
-      should "reorder requests by increasing request.position if it's > 3" do
-        create :batch_request, batch: @batch, position: 6
-        create :batch_request, batch: @batch, position: 8
-        @batch.shift_item_positions(4, 1)
-        v = @batch.ordered_requests
-        # assert_equal 3, v[2].id # make sure that requests are the same
-        # assert_equal 4, v[3].id # make sure that requests are the same
-        assert_equal 9, v[3].position # make sure that requests.position was increased properly
-        assert_equal 7, v[2].position # make sure that requests.position was increased properly
       end
 
       should 'return empty assigned user' do

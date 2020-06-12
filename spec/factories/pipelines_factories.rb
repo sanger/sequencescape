@@ -271,17 +271,6 @@ FactoryBot.define do
     equipment_type      { 'Cluster Station' }
   end
 
-  factory :robot do
-    name      { 'myrobot' }
-    location  { 'lab' }
-  end
-
-  factory :robot_property do
-    name      { 'myrobot' }
-    value     { 'lab' }
-    key       { 'key_robot' }
-  end
-
   factory :map do
     description      { 'A2' }
     asset_size       { '96' }

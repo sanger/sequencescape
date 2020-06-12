@@ -6,16 +6,6 @@
 #
 # @see Tasks::BindingKitBarcodeHandler for behaviour included in the {WorkflowsController}
 class BindingKitBarcodeTask < Task
-  class BindingKitBarcodeData < Task::RenderElement
-    def initialize(request)
-      super(request)
-    end
-  end
-
-  def create_render_element(request)
-    request.asset && BindingKitBarcodeData.new(request)
-  end
-
   def partial
     'binding_kit_barcode_batches'
   end

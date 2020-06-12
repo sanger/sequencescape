@@ -1219,7 +1219,6 @@ Style/AndOr:
     - 'app/helpers/batches_helper.rb'
     - 'app/models/api/base.rb'
     - 'app/models/batch.rb'
-    - 'app/models/cherrypick_task.rb'
     - 'app/models/event/request_descriptor_update_event.rb'
     - 'app/models/illumina_htp/stock_tube_purpose.rb'
     - 'app/models/map.rb'
@@ -2094,7 +2093,6 @@ Style/EmptyMethod:
     - 'app/controllers/users_controller.rb'
     - 'app/models/accessionable/base.rb'
     - 'app/models/asset_link.rb'
-    - 'app/models/cherrypick_task.rb'
     - 'app/models/pac_bio/worksheet.rb'
     - 'app/models/pac_bio_sequencing_request.rb'
     - 'app/models/pipeline.rb'
@@ -2455,7 +2453,6 @@ Style/MultilineBlockChain:
     - 'app/api/core/io/base/json_formatting_behaviour/output.rb'
     - 'app/middleware/api/root_service.rb'
     - 'app/models/bulk_submission.rb'
-    - 'app/models/cherrypick_task.rb'
     - 'app/models/parsers/bioanalysis_csv_parser.rb'
     - 'app/models/plate.rb'
     - 'app/models/plate/creator.rb'
@@ -2550,7 +2547,6 @@ Style/Not:
     - 'app/controllers/assets/plate_layout.rb'
     - 'app/controllers/studies_controller.rb'
     - 'app/helpers/assets_helper.rb'
-    - 'app/models/cherrypick_task.rb'
     - 'app/models/pipeline/batch_validation.rb'
     - 'app/models/request.rb'
     - 'app/models/request/change_decision.rb'
@@ -2635,7 +2631,6 @@ Style/ParallelAssignment:
     - 'app/models/cherrypick/task/pick_by_nano_grams.rb'
     - 'app/models/cherrypick/task/pick_by_nano_grams_per_micro_litre.rb'
     - 'app/models/cherrypick/volume_by_nano_grams.rb'
-    - 'app/models/cherrypick_task.rb'
     - 'app/models/health.rb'
     - 'app/models/metadata/builder_base.rb'
     - 'app/models/metadata/form_builder.rb'
@@ -2878,7 +2873,6 @@ Style/RedundantParentheses:
 # Configuration parameters: AllowMultipleReturnValues.
 Style/RedundantReturn:
   Exclude:
-    - 'app/models/cherrypick_task.rb'
     - 'app/models/sample_registrar.rb'
     - 'lib/lab_where_client.rb'
 
@@ -3044,7 +3038,6 @@ Style/SymbolProc:
   Exclude:
     - 'app/models/sample.rb'
     - 'app/models/study.rb'
-    - 'app/models/tasks/cherrypick_handler.rb'
     - 'app/models/tasks/plate_transfer_handler.rb'
     - 'db/seeds/0001_workflows.rb'
 
