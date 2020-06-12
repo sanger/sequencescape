@@ -21,7 +21,7 @@ class Robot::Generator::Hamilton < Robot::Generator::Base
                       DestinationWellID DestinationPlateType DestinationPlateVolume WaterVolume].freeze
 
   # Formats values in the data object into output rows for the file
-  def mapping(data_object)
+  def mapping(data_object = picking_data)
     raise ArgumentError, 'Data object not present for Hamilton mapping' if data_object.nil?
 
     output_file_contents = [column_headers]

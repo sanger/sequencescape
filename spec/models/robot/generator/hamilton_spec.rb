@@ -42,7 +42,7 @@ describe Robot::Generator::Hamilton, type: :model do
 
     context 'when passed invalid object' do
       it 'throws an ArgumentError' do
-        expect { described_class.mapping nil }.to raise_error(ArgumentError)
+        expect { generator.mapping nil }.to raise_error(ArgumentError)
       end
     end
   end
