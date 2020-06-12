@@ -41,8 +41,10 @@ class Robot < ApplicationRecord
     }.fetch(generation_behaviour_property&.value, Robot::Generator::Tecan)
   end
 
-  def generator_action
-    generation_behaviour.action
+  def generator(batch:, plate_barcode:)
+    picking_data = Robot::PickData.new(batch, plate_barcode).picking_data
+    layout = verification_behaviour.layout_data_object(picking_data)
+    generation_behaviour.new(batch: batch, plate_barcode: plate_barcode, picking_data: picking_data, layout: layout)
   end
 
   class << self
