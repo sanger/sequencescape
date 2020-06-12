@@ -47,6 +47,9 @@ class BatchesController < ApplicationController
 
         if @pipeline.pick_data
           @robot = @batch.robot_id ? Robot.find(@batch.robot_id) : Robot.with_verification_behaviour.first
+          # In the event we have no robots with the correct behaviour, and none are specialised on the batch, fallback
+          # to the first robot.
+          @robot ||= Robot.first
           @robots = Robot.with_verification_behaviour
         end
       end

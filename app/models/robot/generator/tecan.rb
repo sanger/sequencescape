@@ -14,7 +14,7 @@ class Robot::Generator::Tecan < Robot::Generator::Base
 
   private
 
-  def mapping(data_object: picking_data, total_volume: @batch.total_volume_to_cherrypick.to_i)
+  def mapping(data_object: picking_data)
     raise ArgumentError, 'Data object not present for Tecan mapping' if data_object.nil?
 
     output_file_contents = [header(data_object)]
