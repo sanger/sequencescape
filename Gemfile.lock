@@ -98,7 +98,7 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     amq-protocol (2.3.1)
     arel (9.0.0)
-    ast (2.4.0)
+    ast (2.4.1)
     autoprefixer-rails (9.6.1.1)
       execjs
     backports (3.15.0)
@@ -410,7 +410,7 @@ GEM
       activesupport
       rack (>= 1.1)
       rubocop (>= 0.72.0)
-    rubocop-rspec (1.39.0)
+    rubocop-rspec (1.40.0)
       rubocop (>= 0.68.1)
     ruby-graphviz (1.2.4)
     ruby-oci8 (2.2.8)
