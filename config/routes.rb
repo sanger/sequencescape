@@ -145,7 +145,6 @@ Rails.application.routes.draw do
       get :print_plate_labels
       get :filtered
       post :swap
-      get :gwl_file
       post :fail_items
       post :reset_batch
       get :download_spreadsheet
@@ -161,8 +160,6 @@ Rails.application.routes.draw do
       get :released
       get :sample_prep_worksheet
       get :new_stock_assets
-      get :beckman_csv_file
-      get :hamilton_csv_file
     end
 
     collection do

@@ -32,6 +32,7 @@ class Robot::PickData
     ])
             .passed
             .find_each do |request|
+      # Note: source includes control wells/plates
       source_plate = request.asset.plate
       target_plate = request.target_asset.plate
       source_well = request.asset
