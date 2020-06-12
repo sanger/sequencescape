@@ -140,9 +140,9 @@ class Robot::Verification::Base
   def valid_plates_on_robot?(beds, plates, bed_prefix, robot, _batch, expected_plate_layout)
     return false if expected_plate_layout.blank?
 
-    expected_plate_layout.each do |plate_barcode, bed_number|
-      scanned_bed_barcode = Barcode.number_to_human(beds[bed_number.to_s].strip)
-      expected_bed_barcode = robot.robot_properties.find_by!(key: "#{bed_prefix}#{bed_number}")
+    expected_plate_layout.each do |plate_barcode, sort_number|
+      scanned_bed_barcode = Barcode.number_to_human(beds[sort_number.to_s].strip)
+      expected_bed_barcode = robot.robot_properties.find_by!(key: "#{bed_prefix}#{sort_number}")
       return false if expected_bed_barcode.nil?
       return false if scanned_bed_barcode != expected_bed_barcode.value
       return false if plates[plate_barcode]&.strip != plate_barcode
