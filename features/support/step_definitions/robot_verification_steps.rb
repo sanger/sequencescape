@@ -87,13 +87,14 @@ end
 Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
   batch = Batch.find_by(barcode: Barcode.number_to_human(batch_barcode)) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
   plate = Plate.find_from_barcode(plate_barcode) or raise StandardError, "Cannot find plate with machine barcode #{plate_barcode.inspect}"
-  generated_file = Robot.first.generator(batch: batch, plate_barcode: plate.human_barcode).as_text
+  robot = create :full_robot
+  generated_file = robot.generator(batch: batch, plate_barcode: plate.human_barcode).as_text
   generated_lines = generated_file.lines(chomp: true)
   generated_lines.shift(2)
   assert_not_nil generated_lines
   tecan_file_lines = tecan_file.lines(chomp: true)
   generated_lines.each_with_index do |line, index|
-    assert_equal tecan_file_lines[index], line
+    assert_equal tecan_file_lines[index], line, "Mismatch on line #{index + 2} in #{generated_file}"
   end
 end
 

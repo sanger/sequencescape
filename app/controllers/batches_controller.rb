@@ -11,8 +11,7 @@ class BatchesController < ApplicationController
     show edit update qc_information save fail fail_batch print_labels
     print_plate_labels print_multiplex_labels print verify verify_tube_layout
     reset_batch previous_qc_state filtered swap download_spreadsheet
-    gwl_file hamilton_csv_file beckman_csv_file pacbio_sample_sheet
-    sample_prep_worksheet
+    pacbio_sample_sheet sample_prep_worksheet
   ]
   before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_pulldown_multiplex_tube_labels print_plate_barcodes print_barcodes]
 
