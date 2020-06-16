@@ -125,7 +125,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       it 'allows you to fetch a unique list of study names' do
         plate_factory.save
 
-        expect(plate_factory.sample_study_names).to eq ['Study 1']
+        expect(plate_factory.sample_study_names).to eq [study.name]
       end
 
       context 'when there is an error in the sample info' do
