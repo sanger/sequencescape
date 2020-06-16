@@ -110,10 +110,14 @@ Hamilton STAR 6:
       value: '24'
       key: 'SCRC24'
     -
-      name: 'Control Plate'
+      name: 'Water'
       value: '25'
+      key: 'WATER'
+    -
+      name: 'Control Plate'
+      value: '26'
       key: 'CTRL1'
     -
       name: 'Destination'
-      value: '26'
+      value: '27'
       key: 'DEST1'
