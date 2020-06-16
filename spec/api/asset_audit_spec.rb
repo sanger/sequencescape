@@ -132,6 +132,50 @@ describe '/api/1/asset_audits' do
         expect(status).to eq(response_code)
       end
     end
+
+    context 'with valid options and metadata' do
+      let(:payload) do
+        {
+          "asset_audit": {
+            "message": 'My message',
+            "key": 'some_key',
+            "created_by": 'john',
+            "asset": labware.uuid,
+            "witnessed_by": 'jane',
+            "metadata": {
+              'bed_1': 'plate_1'
+            }
+          }
+        }.to_json
+      end
+
+      let(:response_body) do
+        {
+          "asset_audit": {
+            "actions": {},
+            "created_by": 'john',
+            "key": 'some_key',
+            "message": 'My message',
+            "witnessed_by": 'jane',
+            "metadata": {
+              'bed_1': 'plate_1'
+            },
+
+            "asset": {
+              "actions": {},
+              "uuid": labware.uuid
+            }
+          }
+        }
+      end
+      let(:response_code) { 201 }
+
+      it 'allows resource creation' do
+        api_request :post, resources, payload
+        expect(JSON.parse(response.body)).to include_json(response_body)
+        expect(status).to eq(response_code)
+      end
+    end
   end
 
   describe '#get' do

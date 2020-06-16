@@ -258,6 +258,39 @@ module ApplicationHelper
     link_to admin_address.to_s, "mailto:#{admin_address}"
   end
 
+  #
+  # Handles rendering of JSON to a series of nested lists. Does the following:
+  # String: Rendered as-is
+  # Array: Unordered list (Strictly speaking arrays are ordered, but we probably don't care.)
+  # Object: Descriptive list
+  # Other: Calls to_s
+  # Processes each in turn and clled recursively
+  #
+  # @param [Hash, String, Array,, #to_s] json The Object to render
+  #
+  # @return [String] HTML formatted for rendering
+  #
+  def render_parsed_json(json)
+    case json
+    when String; then json
+    when Array
+      tag.ul do
+        json.each { |elem, _string| concat tag.li(render_parsed_json(elem)) }
+      end
+    when Hash
+      tag.dl do
+        json.each do |key, value|
+          # Strictly speaking json should only have strings as keys. But the same constraint doesn't apply to hashes,
+          # so we're a little more permissive here for flexibilities sake
+          concat tag.dt(render_parsed_json(key))
+          concat tag.dd(render_parsed_json(value))
+        end
+      end
+    else
+      json.to_s
+    end
+  end
+
   # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.
   def old_url
     permitted_urls = ['http://sequencescape.psd.sanger.ac.uk', 'http://uat.sequencescape.psd.sanger.ac.uk', 'http://uat2.sequencescape.psd.sanger.ac.uk', 'http://training.sequencescape.psd.sanger.ac.uk']
