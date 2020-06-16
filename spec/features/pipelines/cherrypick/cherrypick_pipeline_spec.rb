@@ -151,7 +151,7 @@ describe 'cherrypick pipeline', js: true do
       fill_in('DEST 1', with: '4880000020729')
       fill_in('DN99999F', with: 'DN99999F')
 
-      select 'Custom Type', from: 'destination_plate_types[DN99999F]'
+      select 'Custom Type', from: 'plate_types[DN99999F]'
 
       step 'Wait for verify' do
         click_button 'Verify'

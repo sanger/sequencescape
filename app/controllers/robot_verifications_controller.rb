@@ -18,7 +18,10 @@ class RobotVerificationsController < ApplicationController
     end
 
     if errors.empty?
-      @all_labels = @robot_verification.expected_layout(@batch, barcode_hash[:destination_plate_barcode])
+      @dest_plates, @source_plates, @ctrl_plates = @robot_verification.expected_layout(
+        @batch,
+        barcode_hash[:destination_plate_barcode]
+      )
     else
       flash[:error] = errors
       redirect_to action: :index
@@ -32,8 +35,7 @@ class RobotVerificationsController < ApplicationController
     @robot = Robot.find(params[:robot_id])
     @robot_verification = @robot.verification_behaviour
     if @robot_verification.valid_submission?(params)
-      @robot_verification.record_plate_types(params[:source_plate_types])
-      @robot_verification.record_plate_types(params.fetch(:destination_plate_types, {}))
+      @robot_verification.record_plate_types(params[:plate_types])
       @batch = Batch.find(params[:batch_id])
       @batch.robot_verified!(params[:user_id])
       @destination_plate_id = Plate.find_from_barcode(params[:destination_plate_barcodes].keys.first).human_barcode

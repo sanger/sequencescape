@@ -24,7 +24,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
   describe '#download' do
     let(:expected_layout) { [{ '142334' => 1 }, { '127168' => 3, '134443' => 4, '127162' => 1, '127167' => 2 }] }
     let!(:before_event_count) { Event.count }
-    let(:source_plate_types) do
+    let(:plate_types) do
       {
         'DN127162U' => 'ABgene_0765',
         'DN127167C' => 'ABgene_0765',
@@ -56,7 +56,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         user_id: user.id,
         batch_id: batch.id,
         robot_id: robot.id,
-        source_plate_types: source_plate_types,
+        plate_types: plate_types,
         barcodes: barcodes,
         bed_barcodes: bed_barcodes,
         plate_barcodes: plate_barcodes,
