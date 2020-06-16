@@ -3,6 +3,6 @@
 # beds etc.
 class AddMetadataToAssetAudit < ActiveRecord::Migration[5.2]
   def change
-    add_column :asset_audits, :metadata, :text
+    add_column :asset_audits, :metadata, :json
   end
 end

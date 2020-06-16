@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(version: 2020_06_16_134501) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "witnessed_by"
-    t.text "metadata"
+    t.json "metadata"
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
   end
 
