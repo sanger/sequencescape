@@ -83,6 +83,12 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       end.to change(Plate, :count).by(1)
     end
 
+    it 'the plate has a purpose' do
+      plate_factory.save
+
+      expect(plate_factory.purpose.name).to eq 'Stock Plate'
+    end
+
     it 'does not create several plates in subsequent calls' do
       expect(Plate.count).to eq(0)
       expect(plate_factory.save).to be_truthy
@@ -114,6 +120,12 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
         expect { plate_factory.save }.to change(Plate, :count).by(1).and(
           change(Sample, :count).by(2).and(change(Aliquot, :count).by(3))
         )
+      end
+
+      it 'allows you to fetch a unique list of study names' do
+        plate_factory.save
+
+        expect(plate_factory.sample_study_names).to eq ['Study 1']
       end
 
       context 'when there is an error in the sample info' do
