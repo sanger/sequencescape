@@ -727,6 +727,9 @@ table.detailed {
 tr.destination{
   background-color: #ccc;
 }
+tr.control {
+  background-color: #eee;
+}
 
 tr.qc_fail.roweven  {
   background-color: #caa;

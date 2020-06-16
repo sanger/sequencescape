@@ -16,7 +16,6 @@ describe 'Creating a quad stamp' do
     allow(PlateBarcode).to receive(:create).and_return(new_barcode)
   end
 
-  # rubocop:disable RSpec/ExampleLength
   it 'handles correct input' do
     login_user user
     visit root_path
@@ -60,7 +59,6 @@ describe 'Creating a quad stamp' do
     click_on 'Submit'
     expect(page).to have_content 'Parent barcodes Quad 1 (invalid) could not be found'
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it 'links from the tube racks status page' do
     login_user user

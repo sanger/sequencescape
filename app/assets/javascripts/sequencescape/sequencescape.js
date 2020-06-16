@@ -34,9 +34,9 @@ window.deselect_all = function(){
   $(scope).find('input[type="checkbox"]:enabled').prop('checked', false);
 }
 
-window.disable_cr_and_change_focus = function(event, current_field, next_field) {
+window.disable_cr_and_change_focus = function(event, next_field) {
   if (event.keyCode !=13 && event.keyCode !=10) { return true; }
-  $(next_field).focus();
+  $('#'+next_field).focus();
   return false;
 }
 

@@ -52,6 +52,17 @@ FactoryBot.define do
           build(:generation_property, value: generation_behaviour_value)
         ]
       end
+
+      factory :hamilton do
+        name { 'Alexander' }
+        transient do
+          verification_behaviour_value { 'SourceDestControlBeds' }
+          generation_behaviour_value { 'Hamilton' }
+          number_of_sources { 24 }
+          number_of_destinations { 1 }
+          number_of_controls { 1 }
+        end
+      end
     end
   end
 

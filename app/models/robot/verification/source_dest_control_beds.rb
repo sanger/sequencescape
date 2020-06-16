@@ -14,7 +14,7 @@ class Robot::Verification::SourceDestControlBeds < Robot::Verification::Base
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout)
     return false unless super
-    return false unless valid_control_plates_on_robot?(beds, plates, robot, batch, all_expected_plate_layout)
+    return false unless valid_control_plates_on_robot?(params[:control_bed_barcodes], params[:control_plate_barcodes], robot, batch, expected_plate_layout)
 
     true
   end
