@@ -82,6 +82,8 @@ describe 'cherrypick pipeline', js: true do
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
+    expect(page).to have_content('Print worksheet')
+    expect(page).to have_content("Download #{robot.name} File")
   end
 
   it 'Pick by ng/µl: 65, conc default' do
@@ -121,7 +123,7 @@ describe 'cherrypick pipeline', js: true do
     step 'Robot verification step 1' do
       visit robot_verifications_path
       fill_in('Scan user ID', with: '2470041440697')
-      fill_in('Scan Tecan robot', with: '4880000444853')
+      fill_in('Scan robot', with: '4880000444853')
       fill_in('Scan worksheet', with: '550000555760')
       fill_in('Scan destination plate', with: 'DN99999F')
 
@@ -149,16 +151,16 @@ describe 'cherrypick pipeline', js: true do
       fill_in('DEST 1', with: '4880000020729')
       fill_in('DN99999F', with: 'DN99999F')
 
-      select 'Custom Type', from: 'destination_plate_types[DN99999F]'
+      select 'Custom Type', from: 'plate_types[DN99999F]'
 
       step 'Wait for verify' do
         click_button 'Verify'
-        expect(page).to have_content 'Download TECAN file'
+        expect(page).to have_content 'Download myrobot File'
       end
     end
 
     step 'Robot verification step 3' do
-      click_link('Download TECAN file')
+      click_link('Download myrobot File')
       # Tecan file generation is slow. Can probably be sped up, but for the moment...
       generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_DN99999F.gwl")
       generated_lines = generated_file.lines
@@ -250,7 +252,7 @@ describe 'cherrypick pipeline', js: true do
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
 
-    click_link('Tecan file')
+    click_link("#{robot.name} file")
     batch = Batch.last
     # We proceed to check the generated TECAN file here.
     # This is an import of an old test which appeared to address

@@ -23,7 +23,9 @@ class StockStamper
   end
 
   def generate_tecan_gwl_file_as_text
-    @file_content = Sanger::Robots::Tecan::Generator.mapping(generate_tecan_data, 0)
+    picking_data = generate_tecan_data
+    layout = Robot::Verification::SourceDestBeds.new.layout_data_object(picking_data)
+    @file_content = Robot::Generator::Tecan.new(picking_data: picking_data, layout: layout, total_volume: 0).as_text
   end
 
   def generate_tecan_data

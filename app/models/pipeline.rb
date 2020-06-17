@@ -21,7 +21,8 @@ class Pipeline < ApplicationRecord
                   :genotyping, :sequencing, :purpose_information, :can_create_stock_assets,
                   :inbox_eager_loading, :group_by_submission, :group_by_parent,
                   :generate_target_assets_on_batch_create, :pick_to,
-                  :asset_type, :request_sort_order, instance_writer: false
+                  :asset_type, :request_sort_order, :pick_data,
+                  instance_writer: false
 
   # Pipeline defaults
   self.batch_worksheet = 'detailed_worksheet'
@@ -40,6 +41,7 @@ class Pipeline < ApplicationRecord
   self.group_by_parent = false
   self.generate_target_assets_on_batch_create = false
   self.request_sort_order = { id: :desc }.freeze
+  self.pick_data = false
 
   delegate :item_limit, :batch_limit?, to: :workflow
 

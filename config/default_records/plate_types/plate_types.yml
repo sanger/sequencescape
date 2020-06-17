@@ -11,3 +11,5 @@ KingFisher 96 2ml:
   maximum_volume: 2000
 Optical96 and Base:
   maximum_volume: 250
+Bio-Rad_96PCR:
+  maximum_volume: 200

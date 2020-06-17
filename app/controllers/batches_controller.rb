@@ -8,10 +8,10 @@ class BatchesController < ApplicationController
 
   before_action :login_required, except: %i[released qc_criteria]
   before_action :find_batch_by_id, only: %i[
-    show edit update qc_information save fail
-    fail_batch print_labels print_plate_labels print_multiplex_labels
-    print verify verify_tube_layout reset_batch previous_qc_state filtered swap
-    download_spreadsheet gwl_file pacbio_sample_sheet sample_prep_worksheet
+    show edit update qc_information save fail fail_batch print_labels
+    print_plate_labels print_multiplex_labels print verify verify_tube_layout
+    reset_batch previous_qc_state filtered swap download_spreadsheet
+    pacbio_sample_sheet sample_prep_worksheet
   ]
   before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_pulldown_multiplex_tube_labels print_plate_barcodes print_barcodes]
 
@@ -43,6 +43,14 @@ class BatchesController < ApplicationController
         @rits = @pipeline.request_information_types
         @input_labware = @batch.input_labware_group
         @output_labware = @batch.output_labware_group
+
+        if @pipeline.pick_data
+          @robot = @batch.robot_id ? Robot.find(@batch.robot_id) : Robot.with_verification_behaviour.first
+          # In the event we have no robots with the correct behaviour, and none are specialised on the batch, fallback
+          # to the first robot.
+          @robot ||= Robot.first
+          @robots = Robot.with_verification_behaviour
+        end
       end
       format.xml { render layout: false }
     end
@@ -265,6 +273,7 @@ class BatchesController < ApplicationController
     @workflow = @batch.workflow
     @pipeline = @batch.pipeline
     @comments = @batch.comments
+    @robot = Robot.find(params.fetch(:robot_id, @batch.robot_id)) if @batch.robot_id.present?
 
     if @pipeline.is_a?(CherrypickingPipeline)
       @plates = if params[:barcode]
@@ -325,21 +334,12 @@ class BatchesController < ApplicationController
     end
   end
 
+  # Used in Cherrypicking pipeline to generate the template for CSV driven picks
   def download_spreadsheet
     csv_string = Tasks::PlateTemplateHandler.generate_spreadsheet(@batch)
     send_data csv_string, type: 'text/plain',
                           filename: "#{@batch.id}_cherrypick_layout.csv",
                           disposition: 'attachment'
-  end
-
-  def gwl_file
-    @plate_barcode = @batch.plate_barcode(params[:barcode])
-    tecan_gwl_file_as_string = @batch.tecan_gwl_file_as_text(@plate_barcode,
-                                                             @batch.total_volume_to_cherrypick,
-                                                             params[:plate_type])
-    send_data tecan_gwl_file_as_string, type: 'text/plain',
-                                        filename: "#{@batch.id}_batch_#{@plate_barcode}.gwl",
-                                        disposition: 'attachment'
   end
 
   def find_batch_by_id

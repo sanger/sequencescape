@@ -14,17 +14,6 @@ class AssignTagsTask < Task
     [{ requests: [{ asset: [:asset_groups, { primary_aliquot: :sample }] }, :target_asset, :batch_request] }, :pipeline]
   end
 
-  class AssignTagsData < Task::RenderElement
-    alias_attribute :well, :asset
-    def initialize(request)
-      super(request)
-    end
-  end
-
-  def create_render_element(request)
-    request.asset && AssignTagsData.new(request)
-  end
-
   def partial
     'assign_tags_batches'
   end

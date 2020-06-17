@@ -6,14 +6,11 @@
 # The target asset of each request will have its plate and map set accordingly.
 # Well attributes are set to track picking volumes
 #
-# @see PlateTransferTask for previous step
+# @see PlateTemplateTask for previous step
 # @see Tasks::CherrypickHandler for behaviour included in the {WorkflowsController}
 class CherrypickTask < Task
   EMPTY_WELL          = [0, 'Empty', ''].freeze
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
-
-  def create_render_element(request)
-  end
 
   # An instance of this class represents the target plate being picked onto.  It can have a template
   # and be a partial plate, and so when wells are picked into it we need to ensure that we don't hit
@@ -25,7 +22,9 @@ class CherrypickTask < Task
     end
 
     def initialize(template, asset_shape = nil, partial = nil)
-      @wells, @size, @shape = [], template.size, asset_shape || AssetShape.default
+      @wells = []
+      @size = template.size
+      @shape = asset_shape || AssetShape.default
       initialize_already_occupied_wells_from(template, partial)
       add_any_wells_from_template_or_partial(@wells)
     end
@@ -37,6 +36,7 @@ class CherrypickTask < Task
       end
       private :well_position
 
+      # rubocop:todo Style/MultilineBlockChain
       def completed_view
         @wells.dup.tap do |wells|
           complete(wells)
@@ -44,6 +44,7 @@ class CherrypickTask < Task
           wells.tap { wells[@shape.horizontal_to_vertical(index + 1, @size)] = well }
         end.compact
       end
+      # rubocop:enable Style/MultilineBlockChain
     end
 
     # Deals with generating the pick plate by travelling in a column direction, so A1, B1, C1 ...
@@ -65,6 +66,7 @@ class CherrypickTask < Task
       end
       private :well_position
 
+      # rubocop:todo Style/MultilineBlockChain
       def completed_view
         @wells.dup.tap do |wells|
           complete(wells)
@@ -72,6 +74,7 @@ class CherrypickTask < Task
           wells.tap { wells[@shape.vertical_to_interlaced_vertical(index + 1, @size)] = well }
         end.compact
       end
+      # rubocop:enable Style/MultilineBlockChain
     end
 
     def empty?
@@ -113,7 +116,7 @@ class CherrypickTask < Task
     # checked to see if subsequent wells are already taken.  In other words, after calling this method
     # the next position on the pick plate is known to be empty.
     def add_any_wells_from_template_or_partial(wells)
-      wells << CherrypickTask::TEMPLATE_EMPTY_WELL until wells.size >= @size or @used_wells[well_position(wells)].nil?
+      wells << CherrypickTask::TEMPLATE_EMPTY_WELL until (wells.size >= @size) || @used_wells[well_position(wells)].nil?
     end
     private :add_any_wells_from_template_or_partial
 
@@ -145,9 +148,11 @@ class CherrypickTask < Task
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
-    plates, current_plate          = [], yield
-    source_plates, current_sources = Set.new, Set.new
-    plates_hash                    = build_plate_wells_from_requests(requests)
+    plates = []
+    current_plate = yield
+    source_plates = Set.new
+    current_sources = Set.new
+    plates_hash = build_plate_wells_from_requests(requests)
 
     push_completed_plate = lambda do
       plates << current_plate.completed_view
@@ -159,7 +164,7 @@ class CherrypickTask < Task
       # Doing this here ensures that the plate_barcode being processed will be the first
       # well on the new plate.
       unless current_sources.include?(plate_barcode)
-        push_completed_plate.call if not current_sources.empty? and (current_sources.size % max_plates).zero? and not current_plate.empty?
+        push_completed_plate.call if !current_sources.empty? && (current_sources.size % max_plates).zero? && !current_plate.empty?
         source_plates   << plate_barcode
         current_sources << plate_barcode
       end
@@ -189,7 +194,7 @@ class CherrypickTask < Task
     workflow.do_cherrypick_task(self, params)
   rescue Cherrypick::Error => e
     workflow.send(:flash)[:error] = e.message
-    return false
+    false
   end
 
   private

@@ -500,6 +500,13 @@ class Plate < Labware
     end
   end
 
+  # When Cherrypicking, especially on the Hamilton, control plates get placed
+  # on a seperate bed. ControlPlates overide this.
+  # @return [false]
+  def pick_as_control?
+    false
+  end
+
   private
 
   def lookup_stock_plate

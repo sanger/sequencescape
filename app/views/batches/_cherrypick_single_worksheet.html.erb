@@ -1,69 +1,25 @@
 <div id="header">
   <div class="page-header"><h1>Batch <%= batch.id %> - <%= batch.studies.pluck(:name).join('; ') %></h1></div>
 </div>
-
+<% if robot.present? %>
+  <p>This worksheet was generated with the <%= robot.name %> robot selected. Other robots may have different layouts configured.</p>
+<% end %>
 <svg id="batchbarcode_<%= plate_barcode %>"></svg>
 
 <script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>", {format: "UPC"});</script>
 
+<% destination_layout, source_layout, control_layout = robot_plate_layout %>
+<% source_plate_colour = source_layout.transform_values { |sort_order| "colour#{sort_order%12}" } %>
+
 <div id="plate_details">
-  <div id="sourceplates">
-  <h2>Source plates</h2>
-  <table>
-     <thead>
-       <tr>
-         <th>Bed</th>
-         <th>Plate name</th>
-         <th>Barcode</th>
-         <th>Storage location</th>
-       </tr>
-     </thead>
-     <tbody>
-       <% source_plate_colour = {} %>
-       <% robot_plate_layout[1].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
-         <% plate = Plate.find_from_barcode(barcode) %>
-         <% source_plate_colour["#{barcode}"] = "colour#{index%12}" %>
-         <tr>
-           <td>SCRC<%= index %></td>
-           <td><%= plate.barcode_number %></td>
-           <td><strong><%= barcode %></strong></td>
-           <td ><%= plate.storage_location %></td>
-         </tr>
-       <% end -%>
-     </tbody>
-   </table>
-  </div>
-
-  <div id="destinationplates">
-  <h2>Destination plate</h2>
-  <table>
-     <thead>
-       <tr>
-         <th>Bed</th>
-         <th>Plate name</th>
-         <th>Barcode</th>
-         <th>Wells</th>
-       </tr>
-     </thead>
-     <tbody>
-       <% robot_plate_layout[0].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
-         <% plate = Plate.find_from_barcode(barcode) %>
-       <tr>
-         <td>DEST<%= index %></td>
-         <th><%= plate.barcode_number %></td>
-         <td><strong><%= barcode %></strong></td>
-         <td><%= plate.wells.count %></td>
-       </tr>
-       <% end -%>
-     </tbody>
-   </table>
-  </div>
+  <%= render partial: 'cherrypick_worksheet_plate_list', locals: { section_name: 'Source plates', plates: source_layout, bed_prefix: 'SCRC' } %>
+  <%= render partial: 'cherrypick_worksheet_plate_list', locals: { section_name: 'Control plates', plates: control_layout, bed_prefix: 'CTRL' } %>
+  <%= render partial: 'cherrypick_worksheet_plate_list', locals: { section_name: 'Destination plate', plates: destination_layout, bed_prefix: 'DEST' } %>
 </div>
-
 
 <div id="plate_layouts">
   <% indexed_requests = batch.requests.includes(asset: [:map, { plate: :barcodes }]).index_by(&:target_asset_id) %>
-  <% robot_plate_layout[0].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
+  <% destination_layout.sort_by(&:last).each do |barcode,index| -%>
       <% plate = Plate.includes(wells: [:map, :well_attribute]).find_from_barcode(barcode) %>
       <% if plate.buffer_required? %>
         <h3> Buffer Required </h3>

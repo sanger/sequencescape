@@ -21,7 +21,9 @@ FactoryBot.define do
       # HELPERS: Generally you shouldn't need to use these transients
       studies_cycle { studies.cycle } # Allow us to rotate through listed studies when building out wells
       projects_cycle { projects.cycle } # Allow us to rotate through listed studies when building out wells
-      well_locations { maps.where(well_order => occupied_well_index) }
+      well_locations do
+        maps.where(well_order => occupied_well_index)
+      end
       occupied_well_index { (0...well_count) }
     end
 
@@ -137,6 +139,7 @@ FactoryBot.define do
         sample_count { 8 }
         well_factory { :tagged_well }
       end
+      plate_purpose { create(:fluidigm_192_purpose) }
       barcodes { build_list :fluidigm, 1 }
       size { 192 }
     end
@@ -207,6 +210,7 @@ FactoryBot.define do
   factory :control_plate, traits: %i[plate_barcode with_wells] do
     plate_purpose
     name { 'Control Plate name' }
+    size { 96 }
   end
 
   factory :pico_assay_plate, traits: %i[plate_barcode with_wells] do

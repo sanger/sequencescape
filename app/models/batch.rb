@@ -1,5 +1,4 @@
 require 'timeout'
-require 'tecan_file_generation'
 require 'aasm'
 
 # A {Batch} groups 1 or more {Request requests} together to enable processing in a
@@ -15,7 +14,6 @@ class Batch < ApplicationRecord
   include StandardNamedScopes
   include ::Batch::PipelineBehaviour
   include ::Batch::StateMachineBehaviour
-  include ::Batch::TecanBehaviour
   extend EventfulRecord
 
   DEFAULT_VOLUME = 13
@@ -177,6 +175,14 @@ class Batch < ApplicationRecord
     lab_events.any? { |event| event_name.downcase == event.description.try(:downcase) }
   end
 
+  def event_with_description(name)
+    lab_events.order(id: :desc).find_by(description: name)
+  end
+
+  def robot_id
+    event_with_description('Cherrypick Layout Set')&.descriptor_value('robot_id')
+  end
+
   def underrun
     has_limit? ? (item_limit - batch_requests.size) : 0
   end
@@ -202,19 +208,6 @@ class Batch < ApplicationRecord
   end
 
   alias_method :ordered_requests, :requests
-
-  def shift_item_positions(position, number)
-    return unless number
-
-    BatchRequest.transaction do
-      batch_requests.each do |batch_request|
-        next unless batch_request.position >= position
-        next if batch_request.request.asset.try(:resource?)
-
-        batch_request.move_to_position!(batch_request.position + number)
-      end
-    end
-  end
 
   def assigned_user
     assignee.try(:login) || ''

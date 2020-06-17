@@ -1,0 +1,19 @@
+# Note: printer_type_id in here references the id in an external legacy barcode
+# printing service.
+---
+1D Tube:
+  printer_type_id: 2
+  type: BarcodePrinterType1DTube
+  label_template_name: sqsc_1dtube_label_template
+96 Well Plate:
+  printer_type_id: 1
+  type: BarcodePrinterType96Plate
+  label_template_name: sqsc_96plate_label_template_code39
+384 Well Plate:
+  printer_type_id: 6
+  type: BarcodePrinterType384Plate
+  label_template_name: sqsc_384plate_label_template
+384 Well Plate Double:
+  printer_type_id: 10
+  type: BarcodePrinterType384DoublePlate
+  label_template_name: plate_6mm_double_code39
