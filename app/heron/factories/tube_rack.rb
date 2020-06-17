@@ -66,6 +66,16 @@ module Heron
         true
       end
 
+      def sample_study_names
+        return unless @tube_rack
+
+        @tube_rack.tubes.each_with_object([]) do |tube, study_names|
+          next if tube.aliquots.first.blank?
+
+          study_names << tube.aliquots.first.study.name if tube.aliquots.first.study.present?
+        end.uniq
+      end
+
       private
 
       def create_recipients!

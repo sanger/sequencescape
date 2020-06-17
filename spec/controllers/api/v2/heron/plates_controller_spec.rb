@@ -35,7 +35,6 @@ RSpec.describe Api::V2::Heron::PlatesController, type: :request, heron: true do
     let!(:before_plate_count) { Plate.count }
 
     setup do
-      # @before_plate_count = Plate.count
       post api_v2_heron_plates_path, params: params
     end
 
