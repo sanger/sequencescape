@@ -12,7 +12,7 @@ describe 'Show plate', js: true do
 
   it 'the samples table shows empty wells' do
     login_user user
-    visit asset_path(plate)
+    visit labware_path(plate)
     expect(fetch_table('#plate-samples-table')).to eq([
       ['Well', 'Sample Name', 'Sanger Sample Id', 'Tag', 'Tag2', 'Control?'],
       ['A1',   '[Empty]',     '',                 '',    '',     ''],
