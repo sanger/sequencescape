@@ -95,7 +95,7 @@ describe '/api/1/asset_audits' do
       end
     end
 
-    context 'with vaild options' do
+    context 'with valid options' do
       let(:payload) do
         {
           "asset_audit": {
