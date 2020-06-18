@@ -188,3 +188,17 @@ dl.order-summary {
   @extend .fa-book;
   padding-right: 0.5em;
 }
+
+.asset-audit-details {
+  dl{ // Don't apply the styles to the top level.
+    dl {
+      @extend .row;
+      dt {
+        @extend .col-2;
+      }
+      dd {
+        @extend .col-10;
+      }
+    }
+  }
+}

@@ -10,7 +10,7 @@
 
 <div class="card mb-3">
   <%- unless @asset.events.empty? %>
-    <h3><%= pluralize @asset.events.size, "event" %></h3>
+    <div class="card-body"><h3><%= pluralize @asset.events.size, "event" %></h3></div>
     <table class="sortable table table-striped" id="events">
       <thead>
         <tr>
@@ -47,7 +47,7 @@
             <td><%= asset_audit.key %></td>
             <td><%= asset_audit.created_at.to_formatted_s(:long) %></td>
             <td><%= asset_audit.created_by %></td>
-            <td><%= render_parsed_json(asset_audit.metadata) %></td>
+            <td class="asset-audit-details"><%= render_parsed_json(asset_audit.metadata) %></td>
           </tr>
         <% end %>
       </tbody>
