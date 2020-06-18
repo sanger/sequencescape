@@ -264,7 +264,7 @@ module ApplicationHelper
   # Array: Unordered list (Strictly speaking arrays are ordered, but we probably don't care.)
   # Object: Descriptive list
   # Other: Calls to_s
-  # Processes each in turn and clled recursively
+  # Processes each in turn and called recursively
   #
   # @param [Hash, String, Array,, #to_s] json The Object to render
   #
