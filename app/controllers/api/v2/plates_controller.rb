@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # Provides a JSON API controller for well
+    # Provides a JSON API controller for Plate
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class PlatesController < JSONAPI::ResourceController
       # By default JSONAPI::ResourceController provides most the standard
