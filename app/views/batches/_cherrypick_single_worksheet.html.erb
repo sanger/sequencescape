@@ -1,5 +1,10 @@
 <div id="header">
-  <div class="page-header"><h1>Batch <%= batch.id %> - <%= batch.studies.pluck(:name).join('; ') %></h1></div>
+  <div class="page-header">
+    <h1>Batch <%= batch.id %> - <%= batch.studies.pluck(:name).join('; ') %></h1>
+    <% if num_picks > 1 %>
+      <h2>Pick <%= pick_number + 1 %> of <%= num_picks %></h2>
+    <% end %>
+  </div>
 </div>
 <% if robot.present? %>
   <p>This worksheet was generated with the <%= robot.name %> robot selected. Other robots may have different layouts configured.</p>
