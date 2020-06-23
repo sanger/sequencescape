@@ -95,6 +95,18 @@ class Robot::PickData
 
       source_plates << full_source_barcode
 
+      if @max_beds && source_plates.size > @max_beds
+        data_objects << data_object
+        # reset
+        data_object = {
+          'user' => user.login,
+          'time' => Time.zone.now,
+          'source' => {},
+          'destination' => {}
+        }
+        source_plates.clear
+      end
+
       data_object['source'][full_source_barcode] ||= plate_information(source_plate)
       data_object['destination'][full_destination_barcode] ||= destination_plate_information(target_plate)
 
@@ -104,18 +116,6 @@ class Robot::PickData
         'volume' => target_well.get_picked_volume,
         'buffer_volume' => target_well.get_buffer_volume
       }
-
-      next unless source_plates.size == @max_beds
-
-      data_objects << data_object
-
-      data_object = {
-        'user' => user.login,
-        'time' => Time.zone.now,
-        'source' => {},
-        'destination' => {}
-      }
-      source_plates.clear
     end
     data_objects << data_object if !data_object['source'].empty?
 
