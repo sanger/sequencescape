@@ -155,7 +155,7 @@ class CherrypickTask < Task
 
     push_completed_plate = lambda do
       destination_plates << current_destination_plate.completed_view
-      current_destination_plate = yield # reset to start picking to a fresh one
+      current_destination_plate = yield # reset to start picking to a fresh one
     end
 
     plates_hash.each do |request_id, plate_barcode, well_location|
@@ -166,7 +166,7 @@ class CherrypickTask < Task
     end
 
     # Ensure that a non-empty plate is stored
-    push_completed_plate.call unless current_plate.empty?
+    push_completed_plate.call unless current_destination_plate.empty?
 
     [destination_plates, source_plates]
   end
