@@ -19,6 +19,10 @@ class Robot < ApplicationRecord
 
   delegate :expected_layout, to: :verification_behaviour
 
+  def expected_layouts(batch, plate_barcode)
+    verification_behaviour.expected_layouts(batch, plate_barcode, max_beds)
+  end
+
   def max_beds
     max_plates_property.try(:value).to_i
   end

@@ -8,6 +8,7 @@
 
 <script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>", {format: "UPC"});</script>
 
+<%# see Robot::Verification::Base#expected_layout for structure of robot_plate_layout %>
 <% destination_layout, source_layout, control_layout = robot_plate_layout %>
 <% source_plate_colour = source_layout.transform_values { |sort_order| "colour#{sort_order%12}" } %>
 
@@ -81,8 +82,7 @@
   <% end -%>
 </div>
 
-
-
-
-  <div id="footer">Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %> -
-  Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %></div>
+<div id="footer">
+  Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %> -
+  Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %>
+</div>
