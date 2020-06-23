@@ -30,12 +30,6 @@ class Robot::Verification::Base
     layout_data_object(data_object)
   end
 
-  def expected_layouts(batch, destination_plate_barcode, max_beds)
-    data_objects = generate_picking_data_list(batch, destination_plate_barcode, max_beds)
-
-    data_objects.map { |obj| layout_data_object(obj) }
-  end
-
   def valid_submission?(params)
     destination_plate_barcode = params[:barcodes][:destination_plate_barcode]
     batch = Batch.find_by(id: params[:batch_id])
@@ -125,45 +119,7 @@ class Robot::Verification::Base
   end
 
   def generate_picking_data(batch, destination_plate_barcode)
-    # returns the following structure:
-    # {
-    #   'user' => user.login,
-    #   'time' => Time.zone.now,
-    #   'source' =>
-    #     {
-    #       <plate machine barcode> =>
-    #         {
-    #           'name' => plate_type,
-    #           'plate_size' => plate.size,
-    #           'control' => plate.pick_as_control?
-    #         },
-    #         ...
-    #     },
-    #   'destination' =>
-    #     {
-    #       <plate machine barcode> =>
-    #         {
-    #           'name' => plate_type,
-    #           'plate_size' => plate.size,
-    #           'control' => plate.pick_as_control?,
-    #           'mapping' =>
-    #             [
-    #               {
-    #                 'src_well' => [full_source_barcode, source_well.map_description],
-    #                 'dst_well' => target_well.map_description,
-    #                 'volume' => target_well.get_picked_volume,
-    #                 'buffer_volume' => target_well.get_buffer_volume
-    #               },
-    #               ...
-    #             ]
-    #         }
-    #     }
-    # }
     Robot::PickData.new(batch, destination_plate_barcode).picking_data
-  end
-
-  def generate_picking_data_list(batch, destination_plate_barcode, max_beds)
-    Robot::PickData.new(batch, destination_plate_barcode, max_beds: max_beds).picking_data_list
   end
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout)
