@@ -61,20 +61,20 @@ RSpec.describe Robot::Verification::SourceDestControlBeds do
 
       let(:params) do
         {
-          bed_barcodes: { '1'=>'580000001806', '2'=>'580000002810', '3'=>'580000003824' },
+          bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824' },
           plate_barcodes: {
-            source_plate_3.machine_barcode=>source_plate_3.machine_barcode,
-            source_plate_2.machine_barcode=>source_plate_2.machine_barcode,
-            source_plate_1.machine_barcode=>source_plate_1.machine_barcode
+            source_plate_3.machine_barcode => source_plate_3.machine_barcode,
+            source_plate_2.machine_barcode => source_plate_2.machine_barcode,
+            source_plate_1.machine_barcode => source_plate_1.machine_barcode
           },
           plate_types: {
-            source_plate_3.machine_barcode=>'ABgene_0765',
-            source_plate_2.machine_barcode=>'ABgene_0765',
-            source_plate_1.machine_barcode=>'ABgene_0765',
-            destination_plate.machine_barcode=>'ABgene_0800'
+            source_plate_3.machine_barcode => 'ABgene_0765',
+            source_plate_2.machine_barcode => 'ABgene_0765',
+            source_plate_1.machine_barcode => 'ABgene_0765',
+            destination_plate.machine_barcode => 'ABgene_0800'
           },
-          destination_bed_barcodes: { '1'=>'580000026663' },
-          destination_plate_barcodes: { destination_plate.machine_barcode=>destination_plate.machine_barcode },
+          destination_bed_barcodes: { '1' => '580000026663' },
+          destination_plate_barcodes: { destination_plate.machine_barcode => destination_plate.machine_barcode },
           commit: 'Verify',
           barcodes: {
             destination_plate_barcode: destination_plate.machine_barcode
@@ -113,21 +113,21 @@ RSpec.describe Robot::Verification::SourceDestControlBeds do
 
       let(:params) do
         {
-          bed_barcodes: { '1'=>'580000001806', '2'=>'580000002810' },
+          bed_barcodes: { '1' => '580000001806', '2' => '580000002810' },
           plate_barcodes: {
-            source_plate_3.machine_barcode=>source_plate_3.machine_barcode,
-            source_plate_1.machine_barcode=>source_plate_1.machine_barcode
+            source_plate_3.machine_barcode => source_plate_3.machine_barcode,
+            source_plate_1.machine_barcode => source_plate_1.machine_barcode
           },
           plate_types: {
-            source_plate_3.machine_barcode=>'ABgene_0765',
-            source_plate_2.machine_barcode=>'ABgene_0765',
-            source_plate_1.machine_barcode=>'ABgene_0765',
-            destination_plate.machine_barcode=>'ABgene_0800'
+            source_plate_3.machine_barcode => 'ABgene_0765',
+            source_plate_2.machine_barcode => 'ABgene_0765',
+            source_plate_1.machine_barcode => 'ABgene_0765',
+            destination_plate.machine_barcode => 'ABgene_0800'
           },
-          control_bed_barcodes: { '1'=>'580000025659' },
-          control_plate_barcodes: { source_plate_2.machine_barcode=>source_plate_2.machine_barcode },
-          destination_bed_barcodes: { '1'=>'580000026663' },
-          destination_plate_barcodes: { destination_plate.machine_barcode=>destination_plate.machine_barcode },
+          control_bed_barcodes: { '1' => '580000025659' },
+          control_plate_barcodes: { source_plate_2.machine_barcode => source_plate_2.machine_barcode },
+          destination_bed_barcodes: { '1' => '580000026663' },
+          destination_plate_barcodes: { destination_plate.machine_barcode => destination_plate.machine_barcode },
           commit: 'Verify',
           barcodes: {
             destination_plate_barcode: destination_plate.machine_barcode
