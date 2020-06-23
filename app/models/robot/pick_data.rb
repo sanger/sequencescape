@@ -6,14 +6,19 @@ class Robot::PickData
 
   delegate :requests, to: :batch
 
-  def initialize(batch, target_barcode, user: batch.user)
+  def initialize(batch, target_barcode, user: batch.user, max_beds: nil)
     @batch = batch
     @target_barcode = target_barcode
     @user = user
+    @max_beds = max_beds
   end
 
   def picking_data
     @picking_data ||= generate_picking_data
+  end
+
+  def picking_data_list
+    @picking_data_list ||= generate_picking_data_list
   end
 
   private
@@ -55,6 +60,66 @@ class Robot::PickData
     end
 
     data_object
+  end
+
+  def generate_picking_data_list()
+    data_objects = []
+
+    data_object = {
+      'user' => user.login,
+      'time' => Time.zone.now,
+      'source' => {},
+      'destination' => {}
+    }
+    source_plates = Set.new
+
+    # might need to order this by source plate, if isn't already
+    requests.includes([
+      { asset: [{ plate: [:barcodes, :labware_type] }, :map] },
+      { target_asset: [:map, :well_attribute, { plate: [:barcodes, :labware_type] }] }
+    ])
+            .passed
+            .find_each do |request|
+
+
+      # Note: source includes control wells/plates
+      source_plate = request.asset.plate
+      target_plate = request.target_asset.plate
+      source_well = request.asset
+      target_well = request.target_asset
+
+      next unless target_plate.any_barcode_matching?(target_barcode)
+
+      full_source_barcode = source_plate.machine_barcode
+      full_destination_barcode = target_plate.machine_barcode
+
+      source_plates << full_source_barcode
+
+      data_object['source'][full_source_barcode] ||= plate_information(source_plate)
+      data_object['destination'][full_destination_barcode] ||= destination_plate_information(target_plate)
+
+      data_object['destination'][full_destination_barcode]['mapping'] << {
+        'src_well' => [full_source_barcode, source_well.map_description],
+        'dst_well' => target_well.map_description,
+        'volume' => target_well.get_picked_volume,
+        'buffer_volume' => target_well.get_buffer_volume
+      }
+
+      next unless source_plates.size == @max_beds
+
+      data_objects << data_object
+
+      data_object = {
+        'user' => user.login,
+        'time' => Time.zone.now,
+        'source' => {},
+        'destination' => {}
+      }
+      source_plates.clear
+    end
+    data_objects << data_object if !data_object['source'].empty?
+
+    data_objects
   end
 
   def plate_information(plate)
