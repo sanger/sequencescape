@@ -148,35 +148,27 @@ class CherrypickTask < Task
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
-    plates = []
-    current_plate = yield
+    destination_plates = []
+    current_destination_plate = yield # instance of ByRow, ByColumn or ByInterlacedColumn
     source_plates = Set.new
-    current_sources = Set.new
-    plates_hash = build_plate_wells_from_requests(requests)
+    plates_hash = build_plate_wells_from_requests(requests) # array formed from requests
 
     push_completed_plate = lambda do
-      plates << current_plate.completed_view
-      current_sources.clear
-      current_plate = yield
+      destination_plates << current_destination_plate.completed_view
+      current_destination_plate = yield # reset to start picking to a fresh one
     end
 
     plates_hash.each do |request_id, plate_barcode, well_location|
-      # Doing this here ensures that the plate_barcode being processed will be the first
-      # well on the new plate.
-      unless current_sources.include?(plate_barcode)
-        source_plates   << plate_barcode
-        current_sources << plate_barcode
-      end
-
+      source_plates << plate_barcode
       # Add this well to the pick and if the plate is filled up by that push it to the list.
-      current_plate.push(request_id, plate_barcode, well_location)
-      push_completed_plate.call if current_plate.full?
+      current_destination_plate.push(request_id, plate_barcode, well_location)
+      push_completed_plate.call if current_destination_plate.full?
     end
 
     # Ensure that a non-empty plate is stored
     push_completed_plate.call unless current_plate.empty?
 
-    [plates, source_plates]
+    [destination_plates, source_plates]
   end
   private :perform_pick
 
@@ -198,6 +190,7 @@ class CherrypickTask < Task
 
   private
 
+  # returns array [ [ request id, source plate barcode, source coordinate ] ]
   def build_plate_wells_from_requests(requests)
     loaded_requests = Request.where(requests: { id: requests })
                              .includes(asset: [{ plate: :barcodes }, :map])
