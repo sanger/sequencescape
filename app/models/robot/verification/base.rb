@@ -25,15 +25,22 @@ class Robot::Verification::Base
   #                       2nd Element: Hash of source plate barcodes and their sort position
   #                       3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
   #         @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}]
-  def expected_layout(batch, destination_plate_barcode)
-    data_object = generate_picking_data(batch, destination_plate_barcode)
-    layout_data_object(data_object)
+  def expected_layout(batch, destination_plate_barcode, pick_number = 0)
+    pick_number_to_expected_layout(batch, destination_plate_barcode, nil)[pick_number]
   end
 
-  def expected_layouts(batch, destination_plate_barcode, max_beds)
-    data_objects = generate_picking_data_list(batch, destination_plate_barcode, max_beds)
+  # returns a hash of { pick_number => expected_layout }, for a batch and a specific destination plate
+  # pick number is a sequential number, starting at 0
+  # there will only be more than one pick if the number of source plates exceed the max plates allowed on the robot
+  # and therefore more than one pick is needed to transfer from all the wells onto the destination plate
+  def pick_number_to_expected_layout(batch, destination_plate_barcode, max_beds)
+    return @pick_number_to_expected_layout if @pick_number_to_expected_layout
 
-    data_objects.map { |obj| layout_data_object(obj) }
+    output = {}
+    data_objects = generate_picking_data_list(batch, destination_plate_barcode, max_beds)
+    data_objects.each_with_index { |obj, index| output[index] = layout_data_object(obj) }
+    @pick_number_to_expected_layout = output
+    output
   end
 
   def valid_submission?(params)
@@ -163,6 +170,7 @@ class Robot::Verification::Base
   end
 
   def generate_picking_data_list(batch, destination_plate_barcode, max_beds)
+    # TODO: probably better to just pass the whole robot to PickData, more future proof
     Robot::PickData.new(batch, destination_plate_barcode, max_beds: max_beds).picking_data_list
   end
 

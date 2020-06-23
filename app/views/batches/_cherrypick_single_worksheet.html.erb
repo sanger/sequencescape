@@ -18,6 +18,7 @@
   <%= render partial: 'cherrypick_worksheet_plate_list', locals: { section_name: 'Destination plate', plates: destination_layout, bed_prefix: 'DEST' } %>
 </div>
 
+<%# TODO: modify the following section to only display wells for this pick %>
 <div id="plate_layouts">
   <% indexed_requests = batch.requests.includes(asset: [:map, { plate: :barcodes }]).index_by(&:target_asset_id) %>
   <% destination_layout.sort_by(&:last).each do |barcode,index| -%>

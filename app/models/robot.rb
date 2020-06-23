@@ -19,8 +19,8 @@ class Robot < ApplicationRecord
 
   delegate :expected_layout, to: :verification_behaviour
 
-  def expected_layouts(batch, plate_barcode)
-    verification_behaviour.expected_layouts(batch, plate_barcode, max_beds)
+  def pick_number_to_expected_layout(batch, plate_barcode)
+    verification_behaviour.pick_number_to_expected_layout(batch, plate_barcode, max_beds)
   end
 
   def max_beds

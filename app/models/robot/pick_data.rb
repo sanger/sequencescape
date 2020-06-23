@@ -62,7 +62,7 @@ class Robot::PickData
     data_object
   end
 
-  def generate_picking_data_list()
+  def generate_picking_data_list
     data_objects = []
 
     data_object = {
@@ -80,7 +80,6 @@ class Robot::PickData
     ])
             .passed
             .find_each do |request|
-
 
       # Note: source includes control wells/plates
       source_plate = request.asset.plate
