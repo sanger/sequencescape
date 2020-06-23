@@ -164,7 +164,6 @@ class CherrypickTask < Task
       # Doing this here ensures that the plate_barcode being processed will be the first
       # well on the new plate.
       unless current_sources.include?(plate_barcode)
-        push_completed_plate.call if !current_sources.empty? && (current_sources.size % max_plates).zero? && !current_plate.empty?
         source_plates   << plate_barcode
         current_sources << plate_barcode
       end
