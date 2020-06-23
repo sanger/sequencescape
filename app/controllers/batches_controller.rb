@@ -273,7 +273,12 @@ class BatchesController < ApplicationController
     @workflow = @batch.workflow
     @pipeline = @batch.pipeline
     @comments = @batch.comments
-    @robot = Robot.find(params.fetch(:robot_id, @batch.robot_id)) if @batch.robot_id.present?
+
+    robot_id = params.fetch(:robot_id, @batch.robot_id)
+
+    @robot = robot_id ? Robot.find(robot_id) : Robot.with_verification_behaviour.first
+    # Fallback
+    @robot ||= Robot.first
 
     if @pipeline.is_a?(CherrypickingPipeline)
       @plates = if params[:barcode]
