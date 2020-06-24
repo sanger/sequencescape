@@ -108,9 +108,9 @@ describe 'cherrypick pipeline with control plates', js: true do
       fill_in('DN1S', with: 'DN1S')
       fill_in('SCRC 2', with: '4880000002794')
       fill_in('DN10I', with: 'DN10I')
-      fill_in('CTRL 1', with: '4880000026783')
+      fill_in('CTRL 1', with: '4880000025779')
       fill_in('DN5W', with: 'DN5W')
-      fill_in('DEST 1', with: '4880000025779')
+      fill_in('DEST 1', with: '4880000026783')
       fill_in('DN99999F', with: 'DN99999F')
 
       select 'Custom Type', from: 'plate_types[DN99999F]'
