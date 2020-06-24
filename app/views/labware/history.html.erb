@@ -2,50 +2,57 @@
 <% add :about, "This page displays details the event history for an item." -%>
 <% add :menu, "Back to labware" => labware_path(@asset.id) -%>
 
-<%= page_title 'Event History' %>
+<%= page_title 'Event History', @asset.name %>
 
-<div class="help">
+<p class="lead">
   Complete event history for labware <%= @asset.id %>, in chronological order.
-</div>
+</p>
 
-<div class="info">
+<div class="card mb-3">
   <%- unless @asset.events.empty? %>
-    <h3><%= pluralize @asset.events.size, "event" %></h3>
-    <table width="100%" cellspacing="0" cellpadding="4" class="sortable" id="events">
-      <tr>
-        <th>Message</th>
-        <th>Content</th>
-        <th>Created at</th>
-        <th>Created by</th>
-      </tr>
-      <%= render partial: "requests/event", collection: @asset.events.sort{ |a,b| a.id <=> b.id  } %>
+    <div class="card-body"><h3><%= pluralize @asset.events.size, "event" %></h3></div>
+    <table class="sortable table table-striped" id="events">
+      <thead>
+        <tr>
+          <th>Message</th>
+          <th>Content</th>
+          <th>Created at</th>
+          <th>Created by</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render partial: "requests/event", collection: @asset.events.sort_by(&:id) %>
+      </tbody>
     </table>
   <%- else %>
-    <%= display_user_guide("No events registered") %>
+    <div class="card-body"><%= display_user_guide("No events registered") %></div>
   <%- end %>
 </div>
 
-<div class="info">
+<div class="card mb-3">
   <%- if @asset.try(:asset_audits).present? %>
-    <h3>Activity Logging</h3>
-    <table width="100%" cellspacing="0" cellpadding="4" class="sortable" id="asset_audits">
-      <tr>
+    <div class="card-body"><h3 class="card-title">Activity Logging</h3></div>
+    <table class="sortable table table-striped" id="asset_audits">
+      <thead><tr>
         <th>Message</th>
         <th>Key</th>
         <th>Created at</th>
         <th>Created by</th>
-      </tr>
-      <% @asset.asset_audits.each do |asset_audit| %>
-        <tr>
-          <td><%= asset_audit.message %></td>
-          <td><%= asset_audit.key %></td>
-          <td><%= asset_audit.created_at.to_formatted_s(:long) %></td>
-          <td><%= asset_audit.created_by %></td>
-        </tr>
-      <% end %>
-
+        <th>Details</th>
+      </tr></thead>
+      <tbody>
+        <% @asset.asset_audits.each do |asset_audit| %>
+          <tr>
+            <td><%= asset_audit.message %></td>
+            <td><%= asset_audit.key %></td>
+            <td><%= asset_audit.created_at.to_formatted_s(:long) %></td>
+            <td><%= asset_audit.created_by %></td>
+            <td class="asset-audit-details"><%= render_parsed_json(asset_audit.metadata) %></td>
+          </tr>
+        <% end %>
+      </tbody>
     </table>
   <%- else %>
-    <%= display_user_guide("No events registered") %>
+    <div class="card-body"><%= display_user_guide("No asset audit activity") %></div>
   <%- end %>
 </div>
