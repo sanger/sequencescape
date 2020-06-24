@@ -50,16 +50,16 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true do
   let(:project) { create :project }
   let(:study) { create :study }
   let(:pipeline) { create :cherrypick_pipeline }
-  let(:robot) { create(:robot) do |robot|
-    robot.robot_properties << RobotProperties.create(key: 'max_plates', value: 17)
-  end }
+  let(:robot) { create(:robot, robot_properties: [create(:robot_property, name: 'maxplates', key: 'max_plates', value: 17)]) }
+  # let(:robot) { create(:robot) do |robot|
+  #   robot.robot_properties << RobotProperty.create(key: 'max_plates', value: 17)
+  # end }
   let(:submission) { create :submission }  
 
   describe 'where the number of plates doesnt exceed the max beds for the robot' do
 
     it 'has a max beds property' do
-      p robot.max_beds
-      expect(robot.max_beds).to be_present
+      expect(robot.max_beds).to eq(17)
     end
   end
 
