@@ -44,7 +44,8 @@ require 'rails_helper'
 # scan all source and destination and eventually control barcodes
 # ???
 
-describe 'Creating worksheets', type: :feature, cherrypicking: true do
+describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
+  include RSpec::Longrun::DSL
 
   let(:user) { create :admin }
   let(:project) { create :project }
@@ -54,6 +55,8 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true do
   let(:plates) { create_list(:plate_with_untagged_wells, robot.max_beds, sample_count: 2)}
   let(:submission) { create :submission }
   let!(:plate_template) { create :plate_template }
+  let!(:plate_type) { create :plate_type }
+  let(:destination_plate_barcode) { '9999' }
 
   describe 'where the number of plates doesnt exceed the max beds for the robot' do
 
@@ -63,6 +66,13 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true do
           create :cherrypick_request, asset: well, request_type: pipeline.request_types.first, submission: submission, study: study, project: project
         end
       end
+
+      # need to have js enabled otherwis this doesnt get called and the destination plate doesnt get created and it fails
+      stub_request(:post, "#{configatron.plate_barcode_service}plate_barcodes.xml").to_return(
+        headers: { 'Content-Type' => 'text/xml' },
+        body: "<plate_barcode><id>42</id><name>Barcode #{destination_plate_barcode}</name><barcode>#{destination_plate_barcode}</barcode></plate_barcode>"
+      )
+
     end
 
     it 'has a max beds property' do
@@ -70,19 +80,62 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true do
     end
 
     it 'should create worksheet' do
-      login_user(user)
-      visit pipeline_path(pipeline)
-      expect(page).to have_content("Pipeline #{pipeline.name}")
-      plates.each do |plate|
-        expect(page).to have_content(plate.human_barcode)
-        check("Select #{plate.human_barcode} for batch")
+      step 'Access the Cherrypicking pipeline' do
+        login_user(user)
+        visit pipeline_path(pipeline)
+        expect(page).to have_content("Pipeline #{pipeline.name}")
       end
-      first(:select, 'action_on_requests').select('Create Batch')
-      first(:button, 'Submit').click
-      click_link 'Select Plate Template'
-      select(plate_template.name, from: 'Plate Template')
-      select(robot.name, from: 'Picking Robot')
-      # now we create the batch
+
+      step 'Create a batch for cherrypicking' do
+        plates.each do |plate|
+          expect(page).to have_content(plate.human_barcode)
+          check("Select #{plate.human_barcode} for batch")
+        end
+        first(:select, 'action_on_requests').select('Create Batch')
+        first(:button, 'Submit').click
+      end
+
+      step 'Task 1 - Select plate template' do
+        click_link 'Select Plate Template'
+      end
+
+      step 'Task 1, Step 1 - Select layout' do
+        select(plate_template.name, from: 'Plate Template')
+      end
+
+      step 'Task 1, Step 2 - Select Robot' do
+        select(robot.name, from: 'Picking Robot')
+      end
+
+      step 'Task 1, Step 3 - Specify quantity to pickup' do
+        choose('Pick by µl')
+        fill_in('micro_litre_volume_required', with: '13')
+        click_button 'Next step'
+      end
+
+      step 'Task 2 - Accept layout' do
+        click_button 'Next step'
+      end
+
+      step 'Task 3 - finish task' do
+        click_button 'Release this batch'
+        expect(page).to have_content('Batch released!')
+        within('#input_assets table tbody') do
+          expect(page).to have_selector('tr', count: plates.count)
+        end
+        within('#output_assets table tbody') do
+          expect(page).to have_selector('tr', count: 1)
+        end
+      end
+
+      step 'print worksheet' do
+        within("#output_assets") do
+          click_link 'Print worksheet'
+        end
+        expect(page).to have_content('This worksheet was generated')  
+      end
+
+
     end
   end
 
