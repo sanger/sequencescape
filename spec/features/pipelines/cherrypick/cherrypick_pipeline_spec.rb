@@ -8,7 +8,7 @@ describe 'cherrypick pipeline', js: true do
   include RSpec::Longrun::DSL
 
   let(:user) { create :admin, barcode: 'ID41440E' }
-  let(:project) { create :project, name: 'Test project' }
+  let(:project) { create :plroject, name: 'Test project' }
   let(:study) { create :study }
   let(:pipeline_name) { pipeline.name }
   let(:pipeline) { create :cherrypick_pipeline }
