@@ -62,6 +62,20 @@ class Robot::PickData
     data_object
   end
 
+  # processes cherrypicking requests for a single batch and destination plate
+  # if there are more source plates than the maxiumum capacity for the robot, splits it out into multiple picks
+  # returns a hash of pick number (1-indexed) to data object containing info about source and destination plates
+  # basic hash structure:
+  # {
+  #   1 => {
+  #     'destination' => {},
+  #     'source' => {},
+  #     'time' => Time.zone.now,
+  #     'user' => user.login
+  #   },
+  #   2 => { etc. }
+  # }
+  # see pick_data_spec.rb for the more detailed structure
   def generate_picking_data_hash
     data_objects = {}
     source_barcode_to_pick_number = {}

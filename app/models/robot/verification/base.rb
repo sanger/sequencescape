@@ -129,40 +129,6 @@ class Robot::Verification::Base
   end
 
   def generate_picking_data(batch, destination_plate_barcode)
-    # returns the following structure:
-    # {
-    #   'user' => user.login,
-    #   'time' => Time.zone.now,
-    #   'source' =>
-    #     {
-    #       <plate machine barcode> =>
-    #         {
-    #           'name' => plate_type,
-    #           'plate_size' => plate.size,
-    #           'control' => plate.pick_as_control?
-    #         },
-    #         ...
-    #     },
-    #   'destination' =>
-    #     {
-    #       <plate machine barcode> =>
-    #         {
-    #           'name' => plate_type,
-    #           'plate_size' => plate.size,
-    #           'control' => plate.pick_as_control?,
-    #           'mapping' =>
-    #             [
-    #               {
-    #                 'src_well' => [full_source_barcode, source_well.map_description],
-    #                 'dst_well' => target_well.map_description,
-    #                 'volume' => target_well.get_picked_volume,
-    #                 'buffer_volume' => target_well.get_buffer_volume
-    #               },
-    #               ...
-    #             ]
-    #         }
-    #     }
-    # }
     Robot::PickData.new(batch, destination_plate_barcode).picking_data
   end
 
