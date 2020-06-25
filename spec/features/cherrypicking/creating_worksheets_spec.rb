@@ -131,6 +131,12 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
           click_link 'Print worksheet'
         end
         expect(page).to have_content('This worksheet was generated')
+        within('#source_plates') do
+          plates.each do |plate|
+            expect(page).to have_content(plate.human_barcode)
+          end
+        end
+        # save_and_open_page
       end
     end
   end
