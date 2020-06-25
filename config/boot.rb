@@ -21,10 +21,15 @@ begin
     FileUtils.remove_file('tmp/cache/bootsnap-load-path-cache')
     puts ' Done!'
   end
-rescue Errno::ENOENT
+rescue Errno::ENOENT, NotImplementedError
+  # Errno::ENOENT
   # File doesn't exist. So no problems here.
   # It *Might* be that the bootsnap-load-path-cache file doesn't exist
   # but again, we don't actually care.
+  #
+  # NotImplementedError
+  # Saw this on travis where 'birthtime' was not implimented
+  # In this case we'll just continue.
 end
 # rubocop:enable Rails/Output, Rails/TimeZone
 
