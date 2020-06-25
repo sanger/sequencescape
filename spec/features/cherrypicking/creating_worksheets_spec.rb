@@ -42,7 +42,7 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
     # check that a worksheets is created x
 
     # for worksheet:
-    # should have a batch barcode which is unique 
+    # should have a batch barcode which is unique
     # source barcode should be correct x
     # destination barcode should be correct x
     # for each well the number should match the source plate
@@ -184,5 +184,9 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
     # scan all robot barcodes
     # scan all source and destination and eventually control barcodes
     # ???
+
+    it 'works' do
+      expect(true).to be_truthy
+    end
   end
 end
