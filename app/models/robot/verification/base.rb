@@ -25,12 +25,13 @@ class Robot::Verification::Base
   #                       2nd Element: Hash of source plate barcodes and their sort position
   #                       3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
   #         @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}]
+  # TODO: can remove this after all code is changed to use pick_number_to_expected_layout
   def expected_layout(batch, destination_plate_barcode, pick_number = 0)
     pick_number_to_expected_layout(batch, destination_plate_barcode, nil)[pick_number]
   end
 
-  # returns a hash of { pick_number => expected_layout }, for a batch and a specific destination plate
-  # pick number is a sequential number, starting at 0
+  # returns a hash of { pick_number => layout_data_object }, for a batch and a specific destination plate
+  # pick number is a sequential number, starting at 1
   # there will only be more than one pick if the number of source plates exceed the max plates allowed on the robot
   # and therefore more than one pick is needed to transfer from all the wells onto the destination plate
   def pick_number_to_expected_layout(batch, destination_plate_barcode, max_beds)
@@ -128,6 +129,7 @@ class Robot::Verification::Base
     end
   end
 
+  # TODO: can remove this after all code is changed to use generate_picking_data_hash
   def generate_picking_data(batch, destination_plate_barcode)
     Robot::PickData.new(batch, destination_plate_barcode).picking_data
   end

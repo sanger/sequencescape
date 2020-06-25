@@ -23,6 +23,7 @@ class Robot::PickData
 
   private
 
+  # TODO: can remove this after all code is changed to use generate_picking_data_hash
   def generate_picking_data
     data_object = {
       'user' => user.login,
