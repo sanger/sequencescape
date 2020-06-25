@@ -2,48 +2,6 @@
 
 require 'rails_helper'
 
-# create user
-# create a robot with a max beds number
-# create some plates with number max beds plus 1
-# create a submission from plates
-# go to page pipelines cherrypick
-# select all plates
-# click on create batch
-# go to batch screen
-# create plate template with size 96
-# click on select plate template
-# select plate purpose
-# select plate template from drop down list
-# select source plates type
-# select picking robot which would be robot we created with max beds number
-# select pick by ul (micro litre)
-# click next step
-# should be on approve plate layout
-# click on next step
-# click on release batch
-# should be page for that batch
-# should only be one barcode in the output list
-
-# click on print worksheet
-# check that two worksheets are created
-
-# each worksheet:
-# should have a batch barcode which is unique
-# source barcode should be correct
-# destination barcode should be correct
-# for each well the number should match the source plate
-
-# go to robot verifications page
-# scan swipe card id
-# scan robot
-# scan worksheet
-# scan destination plate
-# click check
-# got to new page
-# scan all robot barcodes
-# scan all source and destination and eventually control barcodes
-# ???
-
 describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
   include RSpec::Longrun::DSL
 
@@ -59,6 +17,46 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
   let(:destination_plate_barcode) { '9999' }
 
   describe 'where the number of plates doesnt exceed the max beds for the robot' do
+    # create user x
+    # create a robot with a max beds number x
+    # create a submission from plates ?
+    # go to page pipelines cherrypick x
+    # select all plates x
+    # click on create batch x
+    # go to batch screen x
+    # create plate template with size 96 ?
+    # click on select plate template x
+    # select plate purpose ?
+    # select plate template from drop down list x
+    # select source plates type x
+    # select picking robot which would be robot we created x
+    # select pick by ul (micro litre) x
+    # click next step x
+    # should be on approve plate layout x
+    # click on next step x
+    # click on release batch x
+    # should be page for that batch x
+    # should only be one barcode in the output list x
+
+    # click on print worksheet x
+    # check that a worksheets is created x
+
+    # for worksheet:
+    # should have a batch barcode which is unique 
+    # source barcode should be correct x
+    # destination barcode should be correct x
+    # for each well the number should match the source plate
+
+    # go to robot verifications page
+    # scan swipe card id
+    # scan robot
+    # scan worksheet
+    # scan destination plate
+    # click check
+    # got to new page
+    # scan all robot barcodes
+    # scan all source and destination and eventually control barcodes
+    # ???
     before do
       plates.each do |plate|
         plate.wells.each do |well|
@@ -136,8 +134,55 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
             expect(page).to have_content(plate.human_barcode)
           end
         end
+        within('#destination_plate') do
+          expect(page).to have_content(destination_plate_barcode)
+        end
         # save_and_open_page
       end
     end
+  end
+
+  describe 'where the number of plates exceeds the max beds for the robot' do
+    # create user
+    # create a robot with a max beds number
+    # create some plates with number max beds plus 1
+    # create a submission from plates
+    # go to page pipelines cherrypick
+    # select all plates
+    # click on create batch
+    # go to batch screen
+    # create plate template with size 96
+    # click on select plate template
+    # select plate purpose
+    # select plate template from drop down list
+    # select source plates type
+    # select picking robot which would be robot we created with max beds number
+    # select pick by ul (micro litre)
+    # click next step
+    # should be on approve plate layout
+    # click on next step
+    # click on release batch
+    # should be page for that batch
+    # should only be one barcode in the output list
+
+    # click on print worksheet
+    # check that two worksheets are created
+
+    # each worksheet:
+    # should have a batch barcode which is unique
+    # source barcode should be correct
+    # destination barcode should be correct
+    # for each well the number should match the source plate
+
+    # go to robot verifications page
+    # scan swipe card id
+    # scan robot
+    # scan worksheet
+    # scan destination plate
+    # click check
+    # got to new page
+    # scan all robot barcodes
+    # scan all source and destination and eventually control barcodes
+    # ???
   end
 end
