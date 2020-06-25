@@ -4,7 +4,7 @@ Given /^a supplier called "(.*)" exists$/ do |supplier_name|
   Supplier.create!(name: supplier_name)
 end
 
-Given /^the library type "([^\"]+)" exists$/ do |name|
+Given /^the library type "([^"]+)" exists$/ do |name|
   LibraryType.find_or_create_by(name: name)
 end
 
@@ -18,7 +18,7 @@ Given /^the last sample has been updated by a manifest$/ do
   sample.update!(updated_by_manifest: true)
 end
 
-Then /^study "([^\"]*)" should have (\d+) samples$/ do |study_name, number_of_samples|
+Then /^study "([^"]*)" should have (\d+) samples$/ do |study_name, number_of_samples|
   study = Study.find_by!(name: study_name)
   actual = study.samples.count
   expected = number_of_samples.to_i
@@ -179,13 +179,13 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
 end
 
-When /^the sample manifest with ID (\d+) is owned by study "([^\"]+)"$/ do |id, name|
+When /^the sample manifest with ID (\d+) is owned by study "([^"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
   study    = Study.find_by(name: name) or raise StandardError, "Cannot find study #{name.inspect}"
   manifest.update!(study: study)
 end
 
-When /^the sample manifest with ID (\d+) is supplied by "([^\"]+)"$/ do |id, name|
+When /^the sample manifest with ID (\d+) is supplied by "([^"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
   supplier = Supplier.find_by(name: name) or raise StandardError, "Cannot find supplier #{name.inspect}"
   manifest.update!(supplier: supplier)

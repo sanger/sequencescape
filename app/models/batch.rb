@@ -20,8 +20,8 @@ class Batch < ApplicationRecord
 
   self.per_page = 500
 
-  belongs_to :user, foreign_key: 'user_id'
-  belongs_to :assignee, class_name: 'User', foreign_key: 'assignee_id'
+  belongs_to :user
+  belongs_to :assignee, class_name: 'User'
 
   has_many :failures, as: :failable
   has_many :messengers, as: :target, inverse_of: :target

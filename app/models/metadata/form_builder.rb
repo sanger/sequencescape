@@ -69,7 +69,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     group = html_options.delete(:grouping) || options.delete(:grouping)
     property_field(:radio_field, method, grouping: group) do
       choices.each_with_object(+''.html_safe) do |(label_text, option_value), output|
-        output << content_tag(:div, class: %w[custom-control custom-radio custom-control-inline]) do
+        output << tag.div(class: %w[custom-control custom-radio custom-control-inline]) do
           value = option_value || label_text
           concat radio_button(method, value, class: 'custom-control-input', required: true)
           concat label(method, label_text, class: 'custom-control-label', value: value)
@@ -109,7 +109,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
 
     values  = (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map { |v| v.to_s.downcase.gsub(/[^a-z0-9]+/, '_') }
     content = capture(&block)
-    concat(content_tag(:div, content, class: [:related_to, options[:to], values].flatten.join(' ')))
+    concat(tag.div(content, class: [:related_to, options[:to], values].flatten.join(' ')))
 
     @related_fields.push(options[:to])
     content
@@ -147,6 +147,6 @@ class Metadata::FormBuilder < Metadata::BuilderBase
 
     div_options = { id: field.to_s }
     div_options[:class] = 'field_with_errors' if @object.errors[field].present?
-    content_tag(:fieldset, content, div_options)
+    tag.fieldset(content, div_options)
   end
 end

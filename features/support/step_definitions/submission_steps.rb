@@ -37,7 +37,7 @@ Then /^I have a WGS submission template$/ do
   SubmissionSerializer.construct!(submission_parameters) unless SubmissionTemplate.find_by(name: 'Illumina-B - Pooled PATH - HiSeq Paired end sequencing')
 end
 
-Then /^the submission with UUID "([^\"]+)" is ready$/ do |uuid|
+Then /^the submission with UUID "([^"]+)" is ready$/ do |uuid|
   submission = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
   assert(submission.ready?, "Submission is not ready (#{submission.state.inspect}: #{submission.message})")
 end
@@ -52,7 +52,7 @@ Then /^the submission with UUID "([^"]+)" should have (\d+) "([^"]+)" requests?$
   assert_equal(count.to_i, requests.size, "Unexpected number of #{name.inspect} requests")
 end
 
-Given /^the request type "([^\"]+)" exists$/ do |name|
+Given /^the request type "([^"]+)" exists$/ do |name|
   FactoryBot.create(:request_type, name: name)
 end
 
@@ -63,11 +63,11 @@ def submission_in_state(state, attributes = {})
   submission.save(validate: false)
 end
 
-Given /^I have a submission in the "([^\"]+)" state$/ do |state|
+Given /^I have a submission in the "([^"]+)" state$/ do |state|
   submission_in_state(state)
 end
 
-Given /^I have a submission in the "failed" state with message "([^\"]+)"$/ do |message|
+Given /^I have a submission in the "failed" state with message "([^"]+)"$/ do |message|
   submission_in_state('failed', message: message)
 end
 
@@ -115,19 +115,19 @@ def with_request_type_scope(name, &block)
   with_scope("#request_type_options_for_#{request_type.id}", &block)
 end
 
-When /^I fill in "([^\"]+)" with "([^\"]+)" for the "([^\"]+)" request type$/ do |name, value, type|
+When /^I fill in "([^"]+)" with "([^"]+)" for the "([^"]+)" request type$/ do |name, value, type|
   with_request_type_scope(type) do
     fill_in(name, with: value)
   end
 end
 
-When /^I select "([^\"]+)" from "([^\"]+)" for the "([^\"]+)" request type$/ do |value, name, type|
+When /^I select "([^"]+)" from "([^"]+)" for the "([^"]+)" request type$/ do |value, name, type|
   with_request_type_scope(type) do
     select(value, from: name)
   end
 end
 
-Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_name, table|
+Given /^I have a "([^"]*)" submission with the following setup:$/ do |template_name, table|
   submission_template = SubmissionTemplate.find_by(name: template_name)
   params = table.rows_hash
   request_options = {}

@@ -55,7 +55,7 @@ Given /^I have a PacBio Library Prep batch$/ do
   step('Well "DN1234567":"B1" has a PacBioLibraryTube "NT444D"')
 end
 
-Given /^Well "([^\"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|
+Given /^Well "([^"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|
   well = Plate.find_from_barcode(plate_barcode).wells.located_at(well).first
   request = Request.find_by(asset_id: well.id)
   tube = request.target_asset.labware

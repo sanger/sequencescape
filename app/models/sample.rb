@@ -270,7 +270,7 @@ class Sample < ApplicationRecord
 
   validates :name, presence: true
   validates :name, format: { with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create }
-  validates :name, format: { with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update }
+  validates :name, format: { with: /\A[()+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update }
   validates :name, uniqueness: { on: :create, message: 'already in use', unless: :sample_manifest_id?, case_sensitive: false }
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
@@ -358,7 +358,7 @@ class Sample < ApplicationRecord
     case sanger_sample_id
     when nil then sanger_sample_id
     when sanger_sample_id.size < 10 then sanger_sample_id
-    when /([\d]{7})$/ then Regexp.last_match(1)
+    when /(\d{7})$/ then Regexp.last_match(1)
     else
       sanger_sample_id
     end
