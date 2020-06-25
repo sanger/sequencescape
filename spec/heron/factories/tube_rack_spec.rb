@@ -128,5 +128,12 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
       tube_rack = described_class.new(params)
       expect { tube_rack.save }.to change(TubeRackStatus, :count).by(1)
     end
+
+    it 'allows you to fetch a unique list of study names' do
+      tube_rack = described_class.new(params)
+      tube_rack.save
+
+      expect(tube_rack.sample_study_names).to eq [study.name]
+    end
   end
 end

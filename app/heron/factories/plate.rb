@@ -43,6 +43,16 @@ module Heron
         true
       end
 
+      def sample_study_names
+        return unless @plate
+
+        @plate.wells.each_with_object([]) do |well, study_names|
+          next if well.aliquots.first.blank?
+
+          study_names << well.aliquots.first.study.name if well.aliquots.first.study.present?
+        end.uniq
+      end
+
       private
 
       def create_contents!

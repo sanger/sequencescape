@@ -39,11 +39,12 @@ module Io
     # attribute of whatever 'parent' is.
 
     define_attribute_and_json_mapping("
-         message  <=> message
-             key  <=> key
-      created_by  <=> created_by
-      asset_uuid  <=> asset
-    witnessed_by  <=> witnessed_by
+     message  <=> message
+     key  <=> key
+     created_by  <=> created_by
+     asset_uuid  <=> asset
+     witnessed_by  <=> witnessed_by
+     metadata <=> metadata
     ")
   end
 end

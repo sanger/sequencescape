@@ -175,10 +175,6 @@ module NavigationHelpers
       asset = Labware.find_from_barcode($1)
       history_labware_path(asset)
 
-    when /the events page for sample "([^"]+)"/
-      sample = Sample.find_by!(name: $1)
-      history_sample_path(sample)
-
     when /the sample move using spreadsheet page/
       move_spreadsheet_samples_path
 
@@ -189,15 +185,8 @@ module NavigationHelpers
       sample = Sample.find_by!(name: $1)
       history_sample_path(sample)
 
-    when /the events page for the last sequenom plate/
-      history_asset_path(SequenomQcPlate.last!)
-
     when /the tag changing page/
       change_tags_path
-
-    when /the events page for labware (\d+)/
-      asset = Labware.find($1)
-      history_labware_path(asset)
 
     when /the XML show page for request (\d+)/
       request = Request.find($1)

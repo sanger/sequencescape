@@ -97,7 +97,7 @@ Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   well = Uuid.find_by(external_id: well_uuid).resource
   plate = Uuid.find_by(external_id: plate_uuid).resource
   well.update!(plate: plate, map: Map.find_by(description: 'A1'))
-  step("the barcode for plate #{plate.id} is \"DN1S\"")
+  Plate.find(plate_id).primary_barcode.update!(barcode: 'DN1S')
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|

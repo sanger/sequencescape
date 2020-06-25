@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_12_142142) do
+ActiveRecord::Schema.define(version: 2020_06_16_134501) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 2020_05_12_142142) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "witnessed_by"
+    t.json "metadata"
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
   end
 

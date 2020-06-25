@@ -14,7 +14,9 @@ module Api
             render json: {
               data: {
                 attributes: {
-                  uuid: factory.plate.uuid
+                  uuid: factory.plate.uuid,
+                  purpose_name: factory.purpose.name,
+                  study_names: factory.sample_study_names
                 },
                 links: {
                   'self': api_v2_plate_url(factory.plate)
