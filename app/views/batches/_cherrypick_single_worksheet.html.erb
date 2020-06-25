@@ -23,7 +23,6 @@
   <%= render partial: 'cherrypick_worksheet_plate_list', locals: { section_name: 'Destination plate', plates: destination_layout, bed_prefix: 'DEST' } %>
 </div>
 
-<%# TODO: modify the following section to only display wells for this pick %>
 <div id="plate_layouts">
   <% indexed_requests = batch.requests.includes(asset: [:map, { plate: :barcodes }]).index_by(&:target_asset_id) %>
   <% destination_layout.sort_by(&:last).each do |barcode,index| -%>
@@ -31,60 +30,66 @@
       <% if plate.buffer_required? %>
         <h3> Buffer Required </h3>
       <% end %>
-  <table class="plate_layout">
-    <thead>
-      <tr>
-      <% num_rows = plate.height -%>
-      <% num_columns = plate.width -%>
-      <th></th>
-      <% num_columns.times do |column| -%>
-        <th><%= column+1 %></th>
-      <% end -%>
-      <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    <% plate_wells = plate.wells.index_by {|w| w.map.row_order } %>
-    <% num_rows.times do |row| -%>
-      <tr>
-        <% rowchar = (65+row).chr %>
-        <td><strong><%= rowchar %></strong></td>
-        <% (num_columns).times do |column| -%>
-          <% well = plate_wells[row*num_columns+column] -%>
-            <% if  well.present? -%>
-              <% request = indexed_requests[well.id]  %>
-              <% source_well = request&.asset %>
-              <% if source_well.present? && -%>
-                <% if source_well.plate.is_a?(ControlPlate) %>
-                  <td class="control">
-                <% elsif source_well.is_a?(Well) %>
-                  <td class="<%= source_plate_colour[source_well.plate.machine_barcode]%> ">
+    <table class="plate_layout">
+      <thead>
+        <tr>
+        <% num_rows = plate.height -%>
+        <% num_columns = plate.width -%>
+        <th></th>
+        <% num_columns.times do |column| -%>
+          <th><%= column+1 %></th>
+        <% end -%>
+        <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% plate_wells = plate.wells.index_by {|w| w.map.row_order } %>
+        <% num_rows.times do |row| -%>
+          <tr>
+            <% rowchar = (65+row).chr %>
+            <td><strong><%= rowchar %></strong></td>
+            <% (num_columns).times do |column| -%>
+              <% well = plate_wells[row*num_columns+column] -%>
+                <% if  well.present? -%>
+                  <% request = indexed_requests[well.id]  %>
+                  <% source_well = request&.asset %>
+                  <% if source_well.present? -%>
+                    <% source_barcode = source_well.plate.machine_barcode %>
+                    <% well_is_in_this_pick = ( source_layout.has_key?(source_barcode) || (control_layout && control_layout.has_key?(source_barcode)) ) -%>
+                    <% if well_is_in_this_pick -%>
+                      <% if source_well.plate.is_a?(ControlPlate) %>
+                        <td class="control">
+                      <% elsif source_well.is_a?(Well) %>
+                        <td class="<%= source_plate_colour[source_barcode]%> ">
+                      <% else %>
+                        <td>
+                      <% end -%>
+                      <%= source_well.map_description %>
+                      <%= source_well.plate.barcode_number %>
+                      v<%= "%.#{configatron.tecan_precision}f" % well.get_picked_volume %> b<%= "%.#{configatron.tecan_precision}f" % well.get_buffer_volume %>
+                    <% else %>
+                      <td>
+                    <% end -%>
+                  <% else %>
+                    <td>
+                  <% end -%>
                 <% else %>
                   <td>
                 <% end -%>
-                <%= source_well.map_description %>
-                <%= source_well.plate.barcode_number %>
-                v<%= "%.#{configatron.tecan_precision}f" % well.get_picked_volume %> b<%= "%.#{configatron.tecan_precision}f" % well.get_buffer_volume %>
-              <% else %>
-                <td>
-              <% end -%>
-            <% else %>
-            <td>
+                </td>
             <% end -%>
-            </td>
+            <td><strong><%= rowchar %></strong></td>
+          </tr>
         <% end -%>
-        <td><strong><%= rowchar %></strong></td>
-      </tr>
-    <% end -%>
-    <tr>
-      <th></th>
-      <% num_columns.times do |column| -%>
-        <th><%= column+1 %></th>
-      <% end -%>
-      <th></th>
-    </tr>
-    </tbody>
-  </table>
+        <tr>
+          <th></th>
+          <% num_columns.times do |column| -%>
+            <th><%= column+1 %></th>
+          <% end -%>
+          <th></th>
+        </tr>
+      </tbody>
+    </table>
   <% end -%>
 </div>
 
