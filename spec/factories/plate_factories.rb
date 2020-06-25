@@ -10,6 +10,7 @@
 FactoryBot.define do
   # Allows a plate to automatically generate wells. Invluded in most plate factories already
   # If you inherit from the standard plate, you do not need to include this.
+
   trait :with_wells do
     transient do
       sample_count { 0 } # The number of wells to create [LEGACY: use well_count instead]
@@ -79,6 +80,14 @@ FactoryBot.define do
           create :transfer_request, asset: well_hash[well.map_description], target_asset: well, outer_request: outer_request
         end
       end
+    end
+
+    factory :plate_with_untagged_wells_and_custom_name do
+      transient do
+        sample_count { 8 }
+        well_factory { :untagged_well }
+      end
+      sequence(:name) { |i| "Plate #{i}" }
     end
 
     factory :plate_with_untagged_wells do

@@ -5,18 +5,22 @@ require 'rails_helper'
 describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
   include RSpec::Longrun::DSL
 
-  let(:user) { create :admin }
+  let(:swipecard_code) { '123456' }
+  let(:user) { create :admin, swipecard_code: swipecard_code }
   let(:project) { create :project }
   let(:study) { create :study }
   let(:pipeline) { create :cherrypick_pipeline }
-  let(:robot) { create(:robot, robot_properties: [create(:robot_property, name: 'maxplates', key: 'max_plates', value: 17)]) }
-  let(:plates) { create_list(:plate_with_untagged_wells, robot.max_beds, sample_count: 2) }
+  let(:robot) { create(:robot, barcode: '1111', robot_properties: [create(:robot_property, name: 'maxplates', key: 'max_plates', value: 17)]) }
+  let(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, robot.max_beds, sample_count: 2) }
   let(:submission) { create :submission }
   let!(:plate_template) { create :plate_template }
   let!(:plate_type) { create :plate_type }
   let(:destination_plate_barcode) { '9999' }
+  let(:destination_plate_human_barcode) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode }
 
   describe 'where the number of plates doesnt exceed the max beds for the robot' do
+    attr_reader :batch_id
+
     # create user x
     # create a robot with a max beds number x
     # create a submission from plates ?
@@ -42,20 +46,19 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
     # check that a worksheets is created x
 
     # for worksheet:
-    # should have a batch barcode which is unique
     # source barcode should be correct x
     # destination barcode should be correct x
     # for each well the number should match the source plate
 
     # go to robot verifications page
-    # scan swipe card id
-    # scan robot
-    # scan worksheet
-    # scan destination plate
-    # click check
-    # got to new page
-    # scan all robot barcodes
-    # scan all source and destination and eventually control barcodes
+    # scan swipe card id x
+    # scan robot x
+    # scan worksheet x
+    # scan destination plate x
+    # click check x
+    # got to new page x
+    # scan all robot barcodes x
+    # scan all source and destination and eventually control barcodes x
     # ???
     before do
       plates.each do |plate|
@@ -69,6 +72,11 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
         headers: { 'Content-Type' => 'text/xml' },
         body: "<plate_barcode><id>42</id><name>Barcode #{destination_plate_barcode}</name><barcode>#{destination_plate_barcode}</barcode></plate_barcode>"
       )
+
+      (1..plates.count).each do |i|
+        robot.robot_properties.create(key: "SCRC#{i}", value: i)
+      end
+      robot.robot_properties.create(key: 'DEST1', value: plates.count + 1)
     end
 
     it 'has a max beds property' do
@@ -125,6 +133,10 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
       end
 
       step 'print worksheet' do
+        within('.page-header') do
+          @batch_id = page.find('.subtitle').text
+        end
+
         within('#output_assets') do
           click_link 'Print worksheet'
         end
@@ -137,7 +149,43 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
         within('#destination_plate') do
           expect(page).to have_content(destination_plate_barcode)
         end
-        # save_and_open_page
+      end
+
+      step 'visit robot verifications page' do
+        visit('/robot_verifications')
+      end
+
+      step 'scan user id' do
+        fill_in('Scan user ID', with: swipecard_code)
+      end
+
+      step 'scan robot barcode' do
+        fill_in('Scan robot', with: SBCF::SangerBarcode.new(prefix: 'RB', number: robot.barcode).machine_barcode)
+      end
+
+      step 'scan worksheet' do
+        fill_in('Scan worksheet', with: Barcode.calculate_barcode('BA', batch_id))
+      end
+
+      step 'scan destination plate' do
+        SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode
+        fill_in('Scan destination plate', with: SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode)
+        click_on('Check')
+      end
+
+      step 'perform bed verification' do
+        (1..plates.count).each do |i|
+          fill_in("SCRC #{i}", with: SBCF::SangerBarcode.new(prefix: 'RB', number: i).machine_barcode)
+        end
+        fill_in('DEST 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: plates.count + 1).machine_barcode)
+
+        plates.each do |plate|
+          fill_in(plate.human_barcode, with: plate.human_barcode)
+        end
+        fill_in(destination_plate_human_barcode, with: destination_plate_human_barcode)
+
+        click_on('Verify')
+        expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
       end
     end
   end
