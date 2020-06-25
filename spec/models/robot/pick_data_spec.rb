@@ -144,7 +144,7 @@ RSpec.describe Robot::PickData do
       let(:source_plate_2) { create :plate, well_count: 2 }
       let(:expected_picking_data_hash) do
         {
-          0 => {
+          1 => {
             'destination' => {
               destination_plate.machine_barcode => {
                 'name' => 'ABgene 0800',
@@ -173,7 +173,7 @@ RSpec.describe Robot::PickData do
             'time' => time,
             'user' => user.login
           },
-          1 => {
+          2 => {
             'destination' => {
               destination_plate.machine_barcode => {
                 'name' => 'ABgene 0800',

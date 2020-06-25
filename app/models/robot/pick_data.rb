@@ -67,7 +67,7 @@ class Robot::PickData
     source_barcode_to_pick_number = {}
 
     current_pick_size = lambda do
-      data_objects[data_objects.size - 1]['source'].size
+      data_objects[data_objects.size]['source'].size
     end
 
     requests_for_destination_plate.find_each do |request|
@@ -77,7 +77,7 @@ class Robot::PickData
       source_barcode = request.asset.plate.machine_barcode
 
       # if no max beds, default to all in one pick
-      pick_to_use = 0 unless @max_beds
+      pick_to_use = 1 unless @max_beds
 
       # find if barcode already encountered
       pick_to_use = source_barcode_to_pick_number[source_barcode]
@@ -85,10 +85,10 @@ class Robot::PickData
       unless pick_to_use
         if !data_objects.empty? && current_pick_size.call < @max_beds
           # use latest pick if hasn't exceed robot beds limit
-          pick_to_use = data_objects.size - 1
+          pick_to_use = data_objects.size
         else
           # start new pick
-          pick_to_use = data_objects.size
+          pick_to_use = data_objects.size + 1
           data_objects[pick_to_use] = {
             'destination' => {},
             'source' => {},
