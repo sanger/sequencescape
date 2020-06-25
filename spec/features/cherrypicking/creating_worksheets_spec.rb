@@ -52,15 +52,14 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
   let(:study) { create :study }
   let(:pipeline) { create :cherrypick_pipeline }
   let(:robot) { create(:robot, robot_properties: [create(:robot_property, name: 'maxplates', key: 'max_plates', value: 17)]) }
-  let(:plates) { create_list(:plate_with_untagged_wells, robot.max_beds, sample_count: 2)}
+  let(:plates) { create_list(:plate_with_untagged_wells, robot.max_beds, sample_count: 2) }
   let(:submission) { create :submission }
   let!(:plate_template) { create :plate_template }
   let!(:plate_type) { create :plate_type }
   let(:destination_plate_barcode) { '9999' }
 
   describe 'where the number of plates doesnt exceed the max beds for the robot' do
-
-    before(:each) do
+    before do
       plates.each do |plate|
         plate.wells.each do |well|
           create :cherrypick_request, asset: well, request_type: pipeline.request_types.first, submission: submission, study: study, project: project
@@ -72,14 +71,13 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
         headers: { 'Content-Type' => 'text/xml' },
         body: "<plate_barcode><id>42</id><name>Barcode #{destination_plate_barcode}</name><barcode>#{destination_plate_barcode}</barcode></plate_barcode>"
       )
-
     end
 
     it 'has a max beds property' do
       expect(robot.max_beds).to eq(17)
     end
 
-    it 'should create worksheet' do
+    it 'creates worksheet' do
       step 'Access the Cherrypicking pipeline' do
         login_user(user)
         visit pipeline_path(pipeline)
@@ -129,14 +127,11 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
       end
 
       step 'print worksheet' do
-        within("#output_assets") do
+        within('#output_assets') do
           click_link 'Print worksheet'
         end
-        expect(page).to have_content('This worksheet was generated')  
+        expect(page).to have_content('This worksheet was generated')
       end
-
-
     end
   end
-
 end

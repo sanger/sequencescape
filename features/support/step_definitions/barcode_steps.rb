@@ -12,7 +12,7 @@ Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ 
   (start.to_i..finish.to_i).each { |i| step(%Q{the plate barcode webservice returns "#{i}"}) }
 end
 
-Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
+Given /^the "([^"]+)" barcode printer "([^"]+)" exists$/ do |type_name, name|
   printer_type = BarcodePrinterType.find_by!(name: type_name)
   BarcodePrinter.create!(name: name, barcode_printer_type: printer_type, active: true)
 end
@@ -31,7 +31,7 @@ Given '{batch} has a barcode of {string}' do |barcoded, barcode|
   barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
 end
 
-Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
+Given /^the barcode of the last sample tube is "([^"]+)"$/ do |barcode|
   bc = SBCF::SangerBarcode.new(prefix: 'NT', number: barcode).human_barcode
   tube = SampleTube.last or raise StandardError, 'There appear to be no sample tubes'
   tube.primary_barcode.update!(barcode: bc)

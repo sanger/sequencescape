@@ -29,7 +29,7 @@ When /^I edit the CustomText$/ do
   step(%Q{I follow "Edit" within "##{@current_custom_text.name}-details"})
 end
 
-Given /^the application information box should contain "([^\"]*)"$/ do |info_text|
+Given /^the application information box should contain "([^"]*)"$/ do |info_text|
   regexp = Regexp.new(info_text)
   with_scope('#app-info-box') do
     assert page.has_xpath?('//*', text: regexp)
@@ -40,7 +40,7 @@ Then /^the application information box is not shown$/ do
   assert page.has_no_xpath?('//*[@id="app-info-box"]')
 end
 
-Given /^I am editing the custom text field "([^\"]+)"$/ do |name|
+Given /^I am editing the custom text field "([^"]+)"$/ do |name|
   field = CustomText.find_by(identifier: name) or raise StandardError, "Cannot find custom text field #{name.inspect}"
   visit edit_admin_custom_text_path(field)
 end

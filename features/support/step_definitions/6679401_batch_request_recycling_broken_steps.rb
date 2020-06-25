@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/ do |study_name, group_name, count|
+Given /^study "([^"]+)" has an asset group called "([^"]+)" with (\d+) wells$/ do |study_name, group_name, count|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find the study #{study_name.inspect}"
 
   plate = FactoryBot.create(:plate)
@@ -9,7 +9,7 @@ Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/
   end
 end
 
-When /^I check "([^\"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
+When /^I check "([^"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
   (start.to_i..finish.to_i).each do |i|
     step(%Q{I check "#{label_root} #{i}"})
   end
@@ -25,7 +25,7 @@ Then /^the batch (input|output) asset table should be:$/ do |name, expected_tabl
   expected_table.diff!(table(fetch_table("##{name}_assets")))
 end
 
-Given /^the plate template "([^\"]+)" exists$/ do |name|
+Given /^the plate template "([^"]+)" exists$/ do |name|
   FactoryBot.create(:plate_template, name: name)
 end
 

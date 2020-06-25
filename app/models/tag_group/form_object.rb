@@ -36,7 +36,7 @@ class TagGroup::FormObject
   private
 
   def parse_oligos_list
-    oligos_text&.squish&.split(/[\s\,]+/) || []
+    oligos_text&.squish&.split(/[\s,]+/) || []
   end
 
   def check_entered_oligos

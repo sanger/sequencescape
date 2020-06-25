@@ -30,11 +30,11 @@ Given /^user "([^"]*)" exists with barcode "([^"]*)"$/ do |user_name, barcode|
   end
 end
 
-Given /^the user with login "([^\"]+)" exists$/ do |login|
+Given /^the user with login "([^"]+)" exists$/ do |login|
   User.find_by(login: login) || FactoryBot.create(:user, login: login)
 end
 
-Then /^the user (\d+) should validate the swipecard code "([^\"]+)"/ do |user_id, code|
+Then /^the user (\d+) should validate the swipecard code "([^"]+)"/ do |user_id, code|
   user = User.find(user_id)
   assert user.compare_swipecard_code(code)
 end

@@ -141,7 +141,7 @@ Given 'all of the wells on {plate_name} are in an asset group called {string} ow
   AssetGroup.create!(study: study, name: name, assets: plate.wells)
 end
 
-Then /^all "([^\"]+)" requests should have the following details:$/ do |name, table|
+Then /^all "([^"]+)" requests should have the following details:$/ do |name, table|
   request_type = RequestType.find_by(name: name) or raise StandardError, "Could not find request type #{name.inspect}"
   raise StandardError, "No requests of type #{name.inspect}" if request_type.requests.empty?
 
