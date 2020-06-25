@@ -5,18 +5,7 @@ require 'rails_helper'
 describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
   include RSpec::Longrun::DSL
 
-  let(:swipecard_code) { '123456' }
-  let(:user) { create :admin, swipecard_code: swipecard_code }
-  let(:project) { create :project }
-  let(:study) { create :study }
-  let(:pipeline) { create :cherrypick_pipeline }
-  let(:robot) { create(:robot, barcode: '1111', robot_properties: [create(:robot_property, name: 'maxplates', key: 'max_plates', value: 17)]) }
-  let(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, robot.max_beds, sample_count: 2) }
-  let(:submission) { create :submission }
-  let!(:plate_template) { create :plate_template }
-  let!(:plate_type) { create :plate_type }
-  let(:destination_plate_barcode) { '9999' }
-  let(:destination_plate_human_barcode) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode }
+  # shared_examples_for 'a cherrypicking procedure' do
 
   describe 'where the number of plates doesnt exceed the max beds for the robot' do
     attr_reader :batch_id
@@ -60,6 +49,20 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
     # scan all robot barcodes x
     # scan all source and destination and eventually control barcodes x
     # ???
+
+    let(:swipecard_code) { '123456' }
+    let(:user) { create :admin, swipecard_code: swipecard_code }
+    let(:project) { create :project }
+    let(:study) { create :study }
+    let(:pipeline) { create :cherrypick_pipeline }
+    let(:robot) { create(:robot, barcode: '1111', robot_properties: [create(:robot_property, name: 'maxplates', key: 'max_plates', value: 17)]) }
+    let(:submission) { create :submission }
+    let!(:plate_template) { create :plate_template }
+    let!(:plate_type) { create :plate_type }
+    let(:destination_plate_barcode) { '9999' }
+    let(:destination_plate_human_barcode) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode }
+    let(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, robot.max_beds, sample_count: 2) }
+
     before do
       plates.each do |plate|
         plate.wells.each do |well|
@@ -77,10 +80,6 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
         robot.robot_properties.create(key: "SCRC#{i}", value: i)
       end
       robot.robot_properties.create(key: 'DEST1', value: plates.count + 1)
-    end
-
-    it 'has a max beds property' do
-      expect(robot.max_beds).to eq(17)
     end
 
     it 'creates worksheet' do
@@ -233,8 +232,46 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
     # scan all source and destination and eventually control barcodes
     # ???
 
+    let(:swipecard_code) { '123456' }
+    let(:user) { create :admin, swipecard_code: swipecard_code }
+    let(:project) { create :project }
+    let(:study) { create :study }
+    let(:pipeline) { create :cherrypick_pipeline }
+    let(:max_plates) { 17 }
+    let(:robot) { create(:robot, barcode: '1111', robot_properties: [create(:robot_property, name: 'maxplates', key: 'max_plates', value: max_plates)]) }
+    let(:submission) { create :submission }
+    let!(:plate_template) { create :plate_template }
+    let!(:plate_type) { create :plate_type }
+    let(:destination_plate_barcode) { '9999' }
+    let(:destination_plate_human_barcode) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode }
+    let(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, robot.max_beds + 1, sample_count: 2) }
+
+    before do
+      plates.each do |plate|
+        plate.wells.each do |well|
+          create :cherrypick_request, asset: well, request_type: pipeline.request_types.first, submission: submission, study: study, project: project
+        end
+      end
+
+      # need to have js enabled otherwis this doesnt get called and the destination plate doesnt get created and it fails
+      stub_request(:post, "#{configatron.plate_barcode_service}plate_barcodes.xml").to_return(
+        headers: { 'Content-Type' => 'text/xml' },
+        body: "<plate_barcode><id>42</id><name>Barcode #{destination_plate_barcode}</name><barcode>#{destination_plate_barcode}</barcode></plate_barcode>"
+      )
+
+      (1..max_plates).each do |i|
+        robot.robot_properties.create(key: "SCRC#{i}", value: i)
+      end
+      robot.robot_properties.create(key: 'DEST1', value: max_plates + 1)
+    end
+
     it 'works' do
       expect(true).to be_truthy
     end
   end
+
+  # describe 'a single cherrypicking' do
+  #   let(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, robot.max_beds, sample_count: 2) }
+  #   it_behaves_like 'a cherrypicking procedure'
+  # end
 end
