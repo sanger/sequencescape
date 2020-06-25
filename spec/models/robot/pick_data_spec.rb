@@ -117,7 +117,7 @@ RSpec.describe Robot::PickData do
       # These are specified in an odd order to ensure we are sorting by
       # destination well, not request id, or other side effects of creation order
       {
-        source_plate_3.wells[0] => destination_wells[0], #1
+        source_plate_3.wells[0] => destination_wells[0],
         source_plate_2.wells[1] => destination_wells[5],
         source_plate_1.wells[1] => destination_wells[3],
         source_plate_2.wells[0] => destination_wells[1],
