@@ -9,9 +9,9 @@
 <% if robot.present? %>
   <p>This worksheet was generated with the <%= robot.name %> robot selected. Other robots may have different layouts configured.</p>
 <% end %>
-<svg id="batchbarcode_<%= plate_barcode %>"></svg>
+<svg id="batchbarcode_<%= plate_barcode %>-<%= pick_number %>"></svg>
 
-<script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>", {format: "UPC"});</script>
+<script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>-<%= pick_number %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>-<%= pick_number %>", {format: "CODE128"});</script>
 
 <%# see Robot::Verification::Base#expected_layout for structure of robot_plate_layout %>
 <% destination_layout, source_layout, control_layout = robot_plate_layout %>
