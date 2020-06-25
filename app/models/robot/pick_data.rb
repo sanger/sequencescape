@@ -17,8 +17,8 @@ class Robot::PickData
     @picking_data ||= generate_picking_data
   end
 
-  def picking_data_list
-    @picking_data_list ||= generate_picking_data_list
+  def picking_data_hash
+    @picking_data_hash ||= generate_picking_data_hash
   end
 
   private
@@ -62,7 +62,7 @@ class Robot::PickData
     data_object
   end
 
-  def generate_picking_data_list
+  def generate_picking_data_hash
     data_objects = {}
     source_barcode_to_pick_number = {}
 

@@ -34,12 +34,9 @@ class Robot::Verification::Base
   # there will only be more than one pick if the number of source plates exceed the max plates allowed on the robot
   # and therefore more than one pick is needed to transfer from all the wells onto the destination plate
   def pick_number_to_expected_layout(batch, destination_plate_barcode, max_beds)
-    return @pick_number_to_expected_layout if @pick_number_to_expected_layout
-
     output = {}
-    data_objects = generate_picking_data_list(batch, destination_plate_barcode, max_beds)
-    data_objects.each_with_index { |obj, index| output[index] = layout_data_object(obj) }
-    @pick_number_to_expected_layout = output
+    data_objects_hash = generate_picking_data_hash(batch, destination_plate_barcode, max_beds)
+    data_objects_hash.each { |pick_number, data_object| output[pick_number] = layout_data_object(data_object) }
     output
   end
 
@@ -169,9 +166,8 @@ class Robot::Verification::Base
     Robot::PickData.new(batch, destination_plate_barcode).picking_data
   end
 
-  def generate_picking_data_list(batch, destination_plate_barcode, max_beds)
-    # TODO: probably better to just pass the whole robot to PickData, more future proof
-    Robot::PickData.new(batch, destination_plate_barcode, max_beds: max_beds).picking_data_list
+  def generate_picking_data_hash(batch, destination_plate_barcode, max_beds)
+    Robot::PickData.new(batch, destination_plate_barcode, max_beds: max_beds).picking_data_hash
   end
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout)

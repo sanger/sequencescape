@@ -98,7 +98,7 @@ RSpec.describe Robot::PickData do
     end
   end
 
-  describe '#picking_data_list' do
+  describe '#picking_data_hash' do
     subject(:pick_data) { described_class.new(batch, destination_plate.machine_barcode, max_beds: 2) }
 
     let(:time) { Time.zone.local(2010, 7, 12, 10, 25, 0) }
@@ -142,7 +142,7 @@ RSpec.describe Robot::PickData do
 
     context 'without control plates' do
       let(:source_plate_2) { create :plate, well_count: 2 }
-      let(:expected_picking_data_list) do
+      let(:expected_picking_data_hash) do
         {
           0 => {
             'destination' => {
@@ -199,12 +199,12 @@ RSpec.describe Robot::PickData do
       end
 
       it 'generates a layout' do
-        actual = pick_data.picking_data_list
+        actual = pick_data.picking_data_hash
         # puts "actual"
         # pp actual
         # puts "expected"
-        # pp expected_picking_data_list
-        expect(actual).to eq(expected_picking_data_list)
+        # pp expected_picking_data_hash
+        expect(actual).to eq(expected_picking_data_hash)
       end
     end
   end
