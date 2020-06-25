@@ -11,7 +11,7 @@ def transfer_model(name)
   "transfer/#{name}".gsub(/\s+/, '_').camelize.constantize
 end
 
-Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |model, id, uuid_value|
+Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^"]+)"$/ do |model, id, uuid_value|
   set_uuid_for(transfer_model(model).find(id), uuid_value)
 end
 
@@ -19,11 +19,11 @@ Given /^the transfer (between plates|from plate to tube) exists with ID (\d+)$/ 
   FactoryBot.create(:"transfer_#{name.gsub(/\s+/, '_')}", id: id)
 end
 
-Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |target, model, id, uuid_value|
+Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^"]+)"$/ do |target, model, id, uuid_value|
   set_uuid_for(transfer_model(model).find(id).send(target), uuid_value)
 end
 
-Given /^the ((?:pooling ||multiplex )?transfer template) called "([^\"]+)" exists$/ do |type, name|
+Given /^the ((?:pooling ||multiplex )?transfer template) called "([^"]+)" exists$/ do |type, name|
   FactoryBot.create(type.gsub(/\s/, '_').to_sym, name: name)
 end
 
@@ -41,7 +41,7 @@ Given /^a transfer plate exists with ID (\d+)$/ do |id|
   FactoryBot.create(:transfer_plate, id: id)
 end
 
-Given /^a transfer plate called "([^\"]+)" exists$/ do |name|
+Given /^a transfer plate called "([^"]+)" exists$/ do |name|
   FactoryBot.create(:transfer_plate, name: name)
 end
 
@@ -54,7 +54,7 @@ Given /^the plate "(.*?)" has additional wells$/ do |name|
   end
 end
 
-Given /^a transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
+Given /^a transfer plate called "([^"]+)" exists as a child of "([^"]+)"$/ do |name, parent|
   parent_plate = Plate.find_by!(name: parent)
   AssetLink.create!(ancestor: parent_plate, descendant: FactoryBot.create(:transfer_plate, name: name))
 end
@@ -64,7 +64,7 @@ Given(/^a transfer plate called "([^"]*)" exists as a child of plate (\d+)$/) do
   AssetLink.create!(ancestor: parent_plate, descendant: FactoryBot.create(:transfer_plate, name: name))
 end
 
-Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|
+Given /^the "([^"]+)" transfer template has been used between "([^"]+)" and "([^"]+)"$/ do |template_name, source_name, destination_name|
   template    = TransferTemplate.find_by(name: template_name) or raise StandardError, "Could not find transfer template #{template_name.inspect}"
   source      = Plate.find_by(name: source_name)              or raise StandardError, "Could not find source plate #{source_name.inspect}"
   destination = Plate.find_by(name: destination_name)         or raise StandardError, "Could not find destination plate #{destination_plate.inspect}"

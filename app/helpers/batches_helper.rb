@@ -37,12 +37,12 @@ module BatchesHelper
   def workflow_name(batch)
     return unless batch and batch.workflow
 
-    batch.workflow.name.gsub(/Cluster formation | \([^\)]*\)/, '')
+    batch.workflow.name.gsub(/Cluster formation | \([^)]*\)/, '')
   end
 
   def batch_link(batch, options)
-    link_text = content_tag(:strong, "Batch #{batch.id} ") <<
-                content_tag(:span, batch.pipeline.name, class: 'pipline-name') << ' ' <<
+    link_text = tag.strong("Batch #{batch.id} ") <<
+                tag.span(batch.pipeline.name, class: 'pipline-name') << ' ' <<
                 badge(batch.state, type: 'batch-state')
     link_to(link_text, batch_path(batch), options)
   end

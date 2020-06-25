@@ -32,7 +32,7 @@ class LocationReport::LocationReportForm
   attr_writer :barcodes_text
 
   def name=(input_name)
-    @name = input_name.gsub(/[^A-Za-z0-9_\-\.\s]/, '').squish.gsub(/\s/, '_') if input_name.present?
+    @name = input_name.gsub(/[^A-Za-z0-9_\-.\s]/, '').squish.gsub(/\s/, '_') if input_name.present?
     @name = Time.current.to_formatted_s(:number) if input_name.blank?
   end
 
@@ -61,7 +61,7 @@ class LocationReport::LocationReportForm
   end
 
   def barcodes
-    @barcodes ||= barcodes_text&.squish&.split(/[\s\,]+/) || []
+    @barcodes ||= barcodes_text&.squish&.split(/[\s,]+/) || []
   end
 
   #######

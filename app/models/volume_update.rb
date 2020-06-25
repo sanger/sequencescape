@@ -8,7 +8,7 @@ class VolumeUpdate < ApplicationRecord
   validates :created_by, presence: true
 
   # This is the target asset for which to update the state
-  belongs_to :target, class_name: 'Labware', foreign_key: :target_id
+  belongs_to :target, class_name: 'Labware'
   validates :target, presence: true
 
   validates :volume_change, presence: true

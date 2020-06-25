@@ -52,19 +52,19 @@ RSpec.describe 'Bug research' do
             hash[w.map_description] = w.map_description
           end
         end
-        let(:submission_A) { 1 }
-        let(:submission_B) { 2 }
+        let(:submission_a) { 1 }
+        let(:submission_b) { 2 }
 
         before do
           # We create a cherrypick request for each well at stock plate to the 2 destinations plates Lib PCR-XP
           # this will also create the transfer requests
-          create_cherrypick_requests(stock_plate, pcr_xp_plate1, stamp_transfers, submission_A)
-          create_cherrypick_requests(stock_plate, pcr_xp_plate2, stamp_transfers, submission_B)
+          create_cherrypick_requests(stock_plate, pcr_xp_plate1, stamp_transfers, submission_a)
+          create_cherrypick_requests(stock_plate, pcr_xp_plate2, stamp_transfers, submission_b)
         end
 
         it 'will create the transfer requests under the submission id of the corresponding cherrypick request' do
-          expect(pcr_xp_plate1.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id).uniq).to eq([submission_A])
-          expect(pcr_xp_plate2.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id).uniq).to eq([submission_B])
+          expect(pcr_xp_plate1.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id).uniq).to eq([submission_a])
+          expect(pcr_xp_plate2.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id).uniq).to eq([submission_b])
         end
 
         context %(
@@ -76,9 +76,9 @@ RSpec.describe 'Bug research' do
           end
 
           let(:pool_instances1) { create_list :pre_capture_pool, 3 }
-          let(:submission_C) { 4 }
-          let(:submission_D) { 5 }
-          let(:submission_E) { 6 }
+          let(:submission_c) { 4 }
+          let(:submission_d) { 5 }
+          let(:submission_e) { 6 }
           let(:pool_transfer1) do
             {
               'A1' => ['A1'],
@@ -103,7 +103,7 @@ RSpec.describe 'Bug research' do
           before do
             # We create the pool requests from the first Lib PCR-XP plate into the new empty Lb Lib Prepool
             # getting wells in groups of 3 and setting submission 4,5 and 6 for the pools (at A1, B1, C1)
-            create_pool_requests(pcr_xp_plate1, pooling_definition1, pool_instances1, [submission_C, submission_D, submission_E])
+            create_pool_requests(pcr_xp_plate1, pooling_definition1, pool_instances1, [submission_c, submission_d, submission_e])
           end
 
           it 'will create the transfer requests using the submissions ids from the Repooling requests' do
@@ -113,12 +113,12 @@ RSpec.describe 'Bug research' do
 
             # The new transfer requests should have the submission id from the pooling requests (4,5,6), not 1
             s_ids = prepool_plate.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id)
-            expect(s_ids.uniq).to eq([submission_C, submission_D, submission_E])
+            expect(s_ids.uniq).to eq([submission_c, submission_d, submission_e])
           end
 
           context 'when I create another Repooling ISC and the new pooling has a different transfers definition' do
-            let(:submission_F) { 7 }
-            let(:submission_G) { 8 }
+            let(:submission_f) { 7 }
+            let(:submission_g) { 8 }
             let(:pool_instances2) { create_list :pre_capture_pool, 2 }
             let(:pool_transfer2) do
               {
@@ -142,7 +142,7 @@ RSpec.describe 'Bug research' do
 
             before do
               # Now we create another repooling
-              create_pool_requests(pcr_xp_plate1, pooling_definition2, pool_instances2, [submission_F, submission_G])
+              create_pool_requests(pcr_xp_plate1, pooling_definition2, pool_instances2, [submission_f, submission_g])
             end
 
             it 'creates the transfer with the right submission id' do
@@ -150,14 +150,14 @@ RSpec.describe 'Bug research' do
                                                destination: prepool_plate
 
               s_ids = prepool_plate.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id)
-              expect(s_ids.uniq).to eq([submission_F, submission_G])
+              expect(s_ids.uniq).to eq([submission_f, submission_g])
             end
           end
 
           context 'when I create another Repooling ISC and and the new pooling has the same transfers definition' do
-            let(:submission_H) { 9 }
-            let(:submission_I) { 10 }
-            let(:submission_J) { 11 }
+            let(:submission_h) { 9 }
+            let(:submission_i) { 10 }
+            let(:submission_j) { 11 }
             let(:pool_instances3) { create_list :pre_capture_pool, 3 }
             let(:pool_transfer3) do
               {
@@ -182,7 +182,7 @@ RSpec.describe 'Bug research' do
 
             before do
               # Now we create another repooling
-              create_pool_requests(pcr_xp_plate1, pooling_definition3, pool_instances3, [submission_H, submission_I, submission_J])
+              create_pool_requests(pcr_xp_plate1, pooling_definition3, pool_instances3, [submission_h, submission_i, submission_j])
             end
 
             it 'raises an error when creating the transfer because it does not know which one is the right submission id' do

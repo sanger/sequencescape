@@ -19,11 +19,11 @@ Then /^the checkbox labeled "([^"]+)" should be checked$/ do |label|
   step %Q{the "#{label}" checkbox should be checked}
 end
 
-Then /^the field labeled "([^\"]*)" should be disabled$/ do |label|
+Then /^the field labeled "([^"]*)" should be disabled$/ do |label|
   find_field(label, disabled: true)
 end
 
-Then /^the field labeled "([^\"]*)" should not be disabled$/ do |label|
+Then /^the field labeled "([^"]*)" should not be disabled$/ do |label|
   find_field(label)
 end
 
@@ -56,12 +56,12 @@ def locate_labeled_field_type(label_text, field_type)
   field
 end
 
-Then /^I should see the (required )?(text|select|textarea) field "([^\"]+)"$/ do |required, type, field|
+Then /^I should see the (required )?(text|select|textarea) field "([^"]+)"$/ do |required, type, field|
   assert_label_exists(field, required)
   locate_labeled_field_type(field, type)
 end
 
-Then /^I should see the (required )?select field "([^\"]+)" with options "([^\"]+(?:\/[^\"]+)+)"$/ do |required, field, options|
+Then /^I should see the (required )?select field "([^"]+)" with options "([^"]+(?:\/[^"]+)+)"$/ do |required, field, options|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
   options.split('/').each do |option|
@@ -69,28 +69,28 @@ Then /^I should see the (required )?select field "([^\"]+)" with options "([^\"]
   end
 end
 
-Then /^I should see the (required )?select field "([^\"]+)" with the option "([^\"]+)"$/ do |required, field, option|
+Then /^I should see the (required )?select field "([^"]+)" with the option "([^"]+)"$/ do |required, field, option|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
   element.all('option').detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
-Then /^I should see the (required )?select field "([^\"]+)" without the option "([^\"]+)"$/ do |required, field, option|
+Then /^I should see the (required )?select field "([^"]+)" without the option "([^"]+)"$/ do |required, field, option|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
   element.all('option').none? { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
 end
 
-Then /^the select field "([^\"]+)" should have the option "([^\"]+)"$/ do |field, option|
+Then /^the select field "([^"]+)" should have the option "([^"]+)"$/ do |field, option|
   element = page.find_field(field, visible: :all, disabled: true)
   element.all('option').detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
-Then /^the select field "([^\"]+)" should not have the option "([^\"]+)"$/ do |field, option|
+Then /^the select field "([^"]+)" should not have the option "([^"]+)"$/ do |field, option|
   element = page.find_field(field, visible: :all, disabled: true)
   element.all('option').none? { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
-Then /^the "([^\"]+)" field should be marked in error$/ do |field|
+Then /^the "([^"]+)" field should be marked in error$/ do |field|
   element = page.find_field(field) or raise Capybara::ElementNotFound, "Field #{field.inspect} not found"
   find(".field_with_errors ##{element['id']}")
 end
@@ -98,19 +98,19 @@ end
 # There is an issue when attaching a file to a field and using the @javascript tag: the path is relative to some
 # location that appears not to be the project root.  So you have to use an absolute path, rather than the relative
 # one that is passed.
-When /^(?:|I )attach the relative file "([^\"]+)" to "([^\"]+)"(?: within "([^\"]+)")?$/ do |path, field, selector|
+When /^(?:|I )attach the relative file "([^"]+)" to "([^"]+)"(?: within "([^"]+)")?$/ do |path, field, selector|
   with_scope(selector) do
     attach_file(field, File.expand_path(path))
   end
 end
 
-When /^I fill in "([^\"]*)" with(?: the)? multiline text:?$/ do |field, value|
+When /^I fill in "([^"]*)" with(?: the)? multiline text:?$/ do |field, value|
   find_field(field).send_keys(value)
 rescue NotImplementedError
   fill_in(field, with: value)
 end
 
-When /^I fill in the hidden field "([^"]*)" with "([^\"]+)"$/ do |field, value|
+When /^I fill in the hidden field "([^"]*)" with "([^"]+)"$/ do |field, value|
   find("input##{field}", visible: false).set(value)
 end
 

@@ -126,7 +126,7 @@ module Barcode::FormatHandlers
     end
 
     def code39_barcode?
-      %r{\A[A-Z0-9 \-\.$\/\+%]+\z}.match?(@human_barcode)
+      %r{\A[A-Z0-9 \-.$/+%]+\z}.match?(@human_barcode)
     end
 
     def valid?
@@ -265,7 +265,7 @@ module Barcode::FormatHandlers
   # AP-ccc-nnnnnnnn (Later Alderley park: The new permanent barcodes are AP-rna-00110029
   #                @note some RNA plates had the AP-kfr-00090016 barcode applied in error
   class AlderlyParkV2 < BaseRegExBarcode
-    self.format = /\A(?<prefix>AP\-[a-z]{3})\-(?<number>\d{8})\z/
+    self.format = /\A(?<prefix>AP-[a-z]{3})-(?<number>\d{8})\z/
   end
 
   # Added to support plates from UK Biocentre https://www.ukbiocentre.com/
