@@ -452,7 +452,9 @@ class Batch < ApplicationRecord
 
   class << self
     def find_by_barcode(code)
-      human_batch_barcode = Barcode.number_to_human(code)
+      # split off pick number before lookup if present
+      split_code = code.split('-').first
+      human_batch_barcode = Barcode.number_to_human(split_code)
       batch = Batch.find_by(barcode: human_batch_barcode)
       batch ||= Batch.find_by(id: human_batch_barcode)
 
