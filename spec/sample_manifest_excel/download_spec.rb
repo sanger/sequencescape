@@ -70,7 +70,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
-    it 'have the correct number of columns' do
+    it 'have the correct number of columns' do # rubocop:todo RSpec/AggregateExamples
       expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.plate_full.count)
     end
   end
@@ -93,7 +93,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
-    it 'have the correct number of columns' do
+    it 'have the correct number of columns' do # rubocop:todo RSpec/AggregateExamples
       expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_full.count)
     end
   end
@@ -116,7 +116,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
-    it 'have the correct number of columns' do
+    it 'have the correct number of columns' do # rubocop:todo RSpec/AggregateExamples
       expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_multiplexed_library.count)
     end
   end
@@ -140,7 +140,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
-    it 'have the correct number of columns' do
+    it 'have the correct number of columns' do # rubocop:todo RSpec/AggregateExamples
       expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.count)
     end
   end
@@ -165,7 +165,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
-    it 'have the correct number of columns' do
+    it 'have the correct number of columns' do # rubocop:todo RSpec/AggregateExamples
       expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.saphyr.count)
     end
   end
@@ -190,7 +190,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
-    it 'have the correct number of columns' do
+    it 'have the correct number of columns' do # rubocop:todo RSpec/AggregateExamples
       expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.long_read.count)
     end
   end

@@ -15,7 +15,7 @@ RSpec.describe Api::V2::TransferRequestResource, type: :resource do
     expect(transfer_request).to have_attribute :volume
   end
 
-  it 'exposes non-updateable fields', :aggregate_failures do
+  it 'exposes non-updateable fields', :aggregate_failures do # rubocop:todo RSpec/AggregateExamples
     # Read only attributes
     expect(transfer_request).not_to have_updatable_field(:id)
     expect(transfer_request).not_to have_updatable_field(:uuid)
@@ -28,7 +28,7 @@ RSpec.describe Api::V2::TransferRequestResource, type: :resource do
   # Filters
   # eg. expect(transfer_request).to filter(:order_type)
 
-  it 'exposes associations', :aggregate_failures do
+  it 'exposes associations', :aggregate_failures do # rubocop:todo RSpec/AggregateExamples
     # Associations
     expect(transfer_request).to have_one(:target_asset).with_class_name('Receptacle')
     expect(transfer_request).to have_one(:source_asset).with_class_name('Receptacle')

@@ -44,7 +44,7 @@ RSpec.describe TagGroup, type: :model do
       expect(described_class.visible).not_to include(tag_group_2)
     end
 
-    it 'remaining tag groups should be selectable by the visible scope' do
+    it 'remaining tag groups should be selectable by the visible scope' do # rubocop:todo RSpec/AggregateExamples
       expect(described_class.visible).to include(tag_group_1, tag_group_3)
     end
   end

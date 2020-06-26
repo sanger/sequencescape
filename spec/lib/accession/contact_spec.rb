@@ -20,7 +20,7 @@ RSpec.describe Accession::Contact, type: :model, accession: true do
     expect(subject.name).to eq('Santa Claus')
   end
 
-  it 'has an email' do
+  it 'has an email' do # rubocop:todo RSpec/AggregateExamples
     expect(subject.email).to eq('user1@example.com')
   end
 

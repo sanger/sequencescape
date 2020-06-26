@@ -29,7 +29,7 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
 
   # Custom method tests
   # Add tests for any custom methods you've added.
-  it 'renders relevant metadata' do
+  it 'renders relevant metadata' do # rubocop:todo RSpec/AggregateExamples
     expect(subject.options).to eq(expected_metadata)
   end
 

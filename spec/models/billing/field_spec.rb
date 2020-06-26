@@ -14,7 +14,7 @@ describe Billing::Field, billing: true do
     expect(field.value).to eq 'TEST'
   end
 
-  it 'knows its length' do
+  it 'knows its length' do # rubocop:todo RSpec/AggregateExamples
     expect(field.length).to eq 16
   end
 
