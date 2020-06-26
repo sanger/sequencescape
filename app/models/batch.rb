@@ -456,7 +456,12 @@ class Batch < ApplicationRecord
   end
 
   def self.extract_pick_number(code)
-    code.split('-').last
+    # expecting format 550000555760-1 with pick number at end
+    split_code = code.split('-')
+    return Integer(split_code.last) if split_code.size > 1
+
+    # default to 1 if the pick number is not present
+    1
   end
 
   class << self

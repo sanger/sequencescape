@@ -17,14 +17,14 @@
     <% request_groups.each do |group, requests| -%>
       <% next if group.blank? %>
 
-      <% parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Labware.find(pid) %>
-      <% unless parent.nil? %>
+      <% labware  = @pipeline.group_by_parent? && ( pid = group.shift ) && Labware.find(pid) %>
+      <% unless labware.nil? %>
         <tr>
-          <td><%= link_to parent.id, labware_path(parent) %></td>
-          <td><%= parent.human_barcode %></td>
+          <td><%= link_to labware.id, labware_path(labware) %></td>
+          <td><%= labware.human_barcode %></td>
           <td><%= requests.size %></td>
-          <td><%= link_to 'Show plate', show_plate_labware_path(parent)%></td>
-          <td><%= purpose_for_labware(parent) %></td>
+          <td><%= link_to 'Show plate', show_plate_labware_path(labware)%></td>
+          <td><%= purpose_for_labware(labware) %></td>
           <% if show_pick_data %>
             <td>
               <div class="btn-group btn-group-sm">
@@ -32,8 +32,8 @@
                               url_for(controller: :batches,
                                       action: :print,
                                       id: @batch.id,
-                                      barcode: parent.human_barcode),
-                              title: "Print worksheet for Plate #{parent.human_barcode}",
+                                      barcode: labware.human_barcode),
+                              title: "Print worksheet for Plate #{labware.human_barcode}",
                               class: 'btn btn-primary' %>
                 <% unless @robots.empty? %>
                   <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
@@ -46,9 +46,9 @@
                                 url_for(controller: :batches,
                                         action: :print,
                                         id: @batch.id,
-                                        barcode: parent.human_barcode,
+                                        barcode: labware.human_barcode,
                                         robot_id: robot.id),
-                                title: "Print worksheet for Plate #{parent.human_barcode}",
+                                title: "Print worksheet for Plate #{labware.human_barcode}",
                                 class: 'dropdown-item' %>
                     <% end %>
                   </div>
@@ -57,29 +57,31 @@
             </td>
             <td>
             <% if fluidigm_target?(@batch) %>
-                <%= link_to 'Fluidigm file', url_for(controller: :plates, action: :fluidigm_file, id: parent.id,  format: :csv), type: 'text/csv', title: "Fluidigm file for Plate #{parent.fluidigm_barcode}" %>
+                <%= link_to 'Fluidigm file', url_for(controller: :plates, action: :fluidigm_file, id: labware.id,  format: :csv), type: 'text/csv', title: "Fluidigm file for Plate #{labware.fluidigm_barcode}" %>
             	<% else  -%>
-                <div class="btn-group btn-group-sm">
-                  <%= link_to icon('fas', 'file-download', "Download #{@robot.name} File"),
-                              batch_robot_driver_file_path(@batch, @robot, barcode: parent.human_barcode),
-                              title: "#{@robot.name} file for Plate #{parent.human_barcode}",
-                              class: 'btn btn-primary'
-                  %>
-                  <% unless @robots.empty? %>
-                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                      <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu">
-                      <% @robots.each do |robot| %>
-                      <%= link_to "Download #{robot.name} file",
-                                  batch_robot_driver_file_path(@batch, robot, barcode: parent.human_barcode),
-                                  title: "#{robot.name} for Plate #{parent.human_barcode}",
-                                  class: 'dropdown-item' %>
-                      <% end %>
-                    </div>
-                  <% end %>
-                </div>
+                <% @robot.pick_number_to_expected_layout(@batch, labware.human_barcode).each_key do |pick| %>
+                  <div class="btn-group btn-group-sm">
+                    <%= link_to icon('fas', 'file-download', "Download #{@robot.name} File (Pick #{pick})"),
+                                batch_robot_driver_file_path(@batch, @robot, barcode: labware.human_barcode, pick_number: pick),
+                                title: "#{@robot.name} file for Plate #{labware.human_barcode}",
+                                class: 'btn btn-primary'
+                    %>
+                    <% unless @robots.empty? %>
+                      <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                              aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                      </button>
+                      <div class="dropdown-menu">
+                        <% @robots.each do |robot| %>
+                        <%= link_to "Download #{robot.name} file",
+                                    batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick),
+                                    title: "#{robot.name} for Plate #{labware.human_barcode}",
+                                    class: 'dropdown-item' %>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  </div>
+                <% end %>
               <% end -%>
             </td>
           <% end %>
