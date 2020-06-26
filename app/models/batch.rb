@@ -20,8 +20,8 @@ class Batch < ApplicationRecord
 
   self.per_page = 500
 
-  belongs_to :user, foreign_key: 'user_id'
-  belongs_to :assignee, class_name: 'User', foreign_key: 'assignee_id'
+  belongs_to :user
+  belongs_to :assignee, class_name: 'User'
 
   has_many :failures, as: :failable
   has_many :messengers, as: :target, inverse_of: :target
@@ -438,7 +438,8 @@ class Batch < ApplicationRecord
 
   def self.valid_barcode?(code)
     begin
-      Barcode.barcode_to_human!(code, prefix)
+      split_code = barcode_without_pick_number(code)
+      Barcode.barcode_to_human!(split_code, prefix)
     rescue
       return false
     end
@@ -450,9 +451,23 @@ class Batch < ApplicationRecord
     true
   end
 
+  def self.barcode_without_pick_number(code)
+    code.split('-').first
+  end
+
+  def self.extract_pick_number(code)
+    # expecting format 550000555760-1 with pick number at end
+    split_code = code.split('-')
+    return Integer(split_code.last) if split_code.size > 1
+
+    # default to 1 if the pick number is not present
+    1
+  end
+
   class << self
     def find_by_barcode(code)
-      human_batch_barcode = Barcode.number_to_human(code)
+      split_code = barcode_without_pick_number(code)
+      human_batch_barcode = Barcode.number_to_human(split_code)
       batch = Batch.find_by(barcode: human_batch_barcode)
       batch ||= Batch.find_by(id: human_batch_barcode)
 

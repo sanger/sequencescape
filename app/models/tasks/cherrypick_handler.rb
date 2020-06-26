@@ -87,7 +87,7 @@ module Tasks::CherrypickHandler
     @fluidigm_barcode = params[:fluidigm_plate]
   end
 
-  def do_cherrypick_task(_task, params)
+  def do_cherrypick_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     plates = params[:plate]
     size = params[:plate_size]
     plate_type = params[:plate_type]

@@ -15,9 +15,9 @@ module BootstrapHelper
     title = options.delete(:title)
     options[:class] ||= String.new
     options[:class] << " card card-style-#{type} mb-3"
-    content_tag(:div, options) do
+    tag.div(options) do
       out = String.new.html_safe
-      out << content_tag(:h3, title, class: 'card-header-custom') unless title.nil?
+      out << tag.h3(title, class: 'card-header-custom') unless title.nil?
       out << content_tag(body_type, body_options, &block)
     end
   end
@@ -29,7 +29,7 @@ module BootstrapHelper
     options[:class] ||= String.new
     options[:role] ||= 'alert'
     options[:class] << " alert alert-#{type}"
-    content_tag(:div, options, &block)
+    tag.div(options, &block)
   end
 
   # Summary composits a panel with a table to deliver
@@ -48,8 +48,8 @@ module BootstrapHelper
     bs_custom_panel(type, :table, { class: 'table table-summary' }, options) do
       String.new.html_safe.tap do |rows|
         yield.each do |key, value|
-          rows << content_tag(:tr) do
-            content_tag(:th, key) << content_tag(:td, value)
+          rows << tag.tr do
+            tag.th(key) << tag.td(value)
           end
         end
       end
@@ -60,16 +60,16 @@ module BootstrapHelper
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
   def page_title(title, subtitle = nil, titlecase: true, badges: [])
-    content_tag(:div, class: 'page-header') do
+    tag.div(class: 'page-header') do
       title_class = title.length > 25 ? 'title-long' : 'title-short'
-      content_tag(:h1, class: title_class) do
+      tag.h1(class: title_class) do
         if titlecase
           concat title.titleize
         else
           concat title
         end
         concat ' '
-        concat content_tag(:span, subtitle, class: 'subtitle') if subtitle.present?
+        concat tag.span(subtitle, class: 'subtitle') if subtitle.present?
         badges.each do |badge_text|
           concat ' '
           concat badge(badge_text, type: 'title-badge')
@@ -84,11 +84,11 @@ module BootstrapHelper
 
   # <div class="col-md-size form-group sqs-form"></div>
   def form_group(&block)
-    content_tag(:div, class: 'form-group row sqs-form', &block)
+    tag.div(class: 'form-group row sqs-form', &block)
   end
 
   def bs_column(size = 6, screen = 'md', &block)
-    content_tag(:div, class: "col-#{screen}-#{size}", &block)
+    tag.div(class: "col-#{screen}-#{size}", &block)
   end
 
   def progress_bar(count)
@@ -99,9 +99,9 @@ module BootstrapHelper
                 else
                   'bg-warning'
                 end
-    content_tag(:span, count, style: 'display:none') <<
-      content_tag(:div, class: 'progress') do
-        content_tag(:div, "#{count}%", class: ['progress-bar', 'progress-bar-striped', css_class], role: 'progressbar', style: "width: #{count}%;")
+    tag.span(count, style: 'display:none') <<
+      tag.div(class: 'progress') do
+        tag.div("#{count}%", class: ['progress-bar', 'progress-bar-striped', css_class], role: 'progressbar', style: "width: #{count}%;")
       end
   end
 
@@ -111,25 +111,25 @@ module BootstrapHelper
   #   </div>
   # </div>
   def loading_bar(id = 'update_loader')
-    content_tag(:div, class: 'loading-bar-placeholder') do
-      content_tag(:div, id: id, class: 'loading-bar-container', style: 'display: none;') do
-        content_tag(:div, 'Loading', class: 'loading-bar', role: 'progressbar')
+    tag.div(class: 'loading-bar-placeholder') do
+      tag.div(id: id, class: 'loading-bar-container', style: 'display: none;') do
+        tag.div('Loading', class: 'loading-bar', role: 'progressbar')
       end
     end
   end
 
   def render_section(form, field_name, sections, field)
     label = form.label(field_name, sections.label, sections.label_options) <<
-            content_tag(:span, sections.edit_info, class: 'property_edit_info')
+            tag.span(sections.edit_info, class: 'property_edit_info')
     help = sections.help
     form_collection(label, field, help)
   end
 
   def render_radio_section(_form, _field_name, sections, field)
-    label = content_tag(:label, sections.label, sections.label_options) <<
-            content_tag(:span, sections.edit_info, class: 'property_edit_info')
+    label = tag.label(sections.label, sections.label_options) <<
+            tag.span(sections.edit_info, class: 'property_edit_info')
     help = sections.help
-    content_tag(:legend, sections.label, class: 'sr-only') <<
+    tag.legend(sections.label, class: 'sr-only') <<
       form_collection(label, field, help)
   end
 
