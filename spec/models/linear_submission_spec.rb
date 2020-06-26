@@ -85,7 +85,7 @@ RSpec.describe LinearSubmission do
               expect(mpx_submission).to be_multiplexed
             end
 
-            it "not save a comment if one isn't supplied" do
+            it "not save a comment if one isn't supplied" do # rubocop:todo RSpec/AggregateExamples
               expect(mpx_submission.comments).to be_blank
             end
           end
@@ -152,7 +152,7 @@ RSpec.describe LinearSubmission do
         expect(submission.multiplexed?).to be false
       end
 
-      it 'save request_types as array of Integers' do
+      it 'save request_types as array of Integers' do # rubocop:todo RSpec/AggregateExamples
         expect(submission.orders.first.request_types).to be_a Array
         expect(submission.orders.first.request_types).to eq(request_type_option)
       end
@@ -184,7 +184,7 @@ RSpec.describe LinearSubmission do
                                                                         fragment_size_required_from: '150')
           end
 
-          it 'sets metadata on sequencing requests' do
+          it 'sets metadata on sequencing requests' do # rubocop:todo RSpec/AggregateExamples
             expect(sequencing_request.request_metadata).to have_attributes(customer_accepts_responsibility: nil,
                                                                            read_length: 108)
           end

@@ -26,7 +26,7 @@ RSpec.describe Request::Statistics::Counter do
     expect(subject.started).to eq(0)
   end
 
-  it '#states returns an array of statistics in a nice order' do
+  it '#states returns an array of statistics in a nice order' do # rubocop:todo RSpec/AggregateExamples
     # Cancelled requests are filtered out here.
     expect(subject.states).to eq([['pending', 3, 30], ['passed', 4, 40], ['failed', 3, 30]])
   end

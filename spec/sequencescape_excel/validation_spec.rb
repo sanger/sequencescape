@@ -22,7 +22,7 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
       expect(validation.options).to eq(options)
     end
 
-    it 'will not have a range name' do
+    it 'will not have a range name' do # rubocop:todo RSpec/AggregateExamples
       expect(validation.range_name).to be_nil
     end
 

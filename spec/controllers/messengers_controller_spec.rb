@@ -17,7 +17,7 @@ RSpec.describe MessengersController do
 
     it { is_expected.to respond_with :success }
 
-    it 'returns the messenger payload' do
+    it 'returns the messenger payload' do # rubocop:todo RSpec/AggregateExamples
       expect(response.body).to eq(messenger.to_json)
     end
   end

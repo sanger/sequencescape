@@ -71,20 +71,20 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
 
       it { is_expected.to be true }
 
-      it 'generates tubes according to the number supplied' do
+      it 'generates tubes according to the number supplied' do # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to have(2).items
       end
 
-      it 'generates PhiX SpikedBuffer tubes' do
+      it 'generates PhiX SpikedBuffer tubes' do # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all be_a SpikedBuffer
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(purpose: PhiX.spiked_buffer_purpose)
       end
 
-      it 'names tubes appropriately' do
+      it 'names tubes appropriately' do # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(name: a_string_starting_with('Example #'))
       end
 
-      it 'sets the concentration and volume' do
+      it 'sets the concentration and volume' do # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(concentration: 0.8, volume: 10)
       end
 
