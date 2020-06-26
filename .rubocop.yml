@@ -4,10 +4,8 @@ require:
  - rubocop-performance
  - rubocop-rails
  - rubocop-rspec
-RSpec/AggregateFailures:
-  Enabled: true
-  Include:
-    - 'spec/**/*.rb'
+RSpec/AggregateExamples:
+  AddAggregateFailuresMetadata: false
 # Added exclude because api and feature specs do not have a specific class.
 RSpec/DescribeClass:
   Exclude:

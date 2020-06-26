@@ -20,15 +20,15 @@ describe PlatePurpose, type: :model do
         expect(matched[:prefix]).to eq barcode_prefix
       end
 
-      it 'builds a plate of the correct size' do
+      it 'builds a plate of the correct size' do # rubocop:todo RSpec/AggregateExamples
         expect(subject.size).to eq size
       end
 
-      it 'sets itself as the purpose' do
+      it 'sets itself as the purpose' do # rubocop:todo RSpec/AggregateExamples
         expect(subject.purpose).to eq(plate_purpose)
       end
 
-      it 'creates wells' do
+      it 'creates wells' do # rubocop:todo RSpec/AggregateExamples
         expect(subject.wells.count).to eq size
       end
     end

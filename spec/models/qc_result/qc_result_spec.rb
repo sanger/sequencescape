@@ -23,11 +23,11 @@ RSpec.describe QcResult, type: :model, qc_result: true do
     expect(build(:qc_result).cv).to be_present
   end
 
-  it 'can have an assay type' do
+  it 'can have an assay type' do # rubocop:todo RSpec/AggregateExamples
     expect(build(:qc_result).assay_type).to be_present
   end
 
-  it 'can have an assay version' do
+  it 'can have an assay version' do # rubocop:todo RSpec/AggregateExamples
     expect(build(:qc_result).assay_version).to be_present
   end
 

@@ -77,14 +77,14 @@ RSpec.describe Study, type: :model do
       expect(another_study.followers).to be_empty
     end
 
-    it 'deals with managers' do
+    it 'deals with managers' do # rubocop:todo RSpec/AggregateExamples
       expect(study.managers).not_to be_empty
       expect(study.managers).not_to include(user1)
       expect(study.managers).to include(user2)
       expect(another_study.managers).to be_empty
     end
 
-    it 'deals with owners' do
+    it 'deals with owners' do # rubocop:todo RSpec/AggregateExamples
       expect(study.owners).not_to be_empty
       expect(study.owners).to include(user1)
       expect(study.owners).not_to include(user2)
@@ -269,7 +269,7 @@ RSpec.describe Study, type: :model do
         expect(study).to be_inactive
       end
 
-      it 'not cancel any associated requests' do
+      it 'not cancel any associated requests' do # rubocop:todo RSpec/AggregateExamples
         expect(study.requests).to be_all(&:passed?)
       end
     end
@@ -480,123 +480,123 @@ RSpec.describe Study, type: :model do
         expect(study.study_metadata.prelim_id).to eq(metadata[:prelim_id])
       end
 
-      it 'will have a study_description' do
+      it 'will have a study_description' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_description).to eq(metadata[:study_description])
       end
 
-      it 'will have a contaminated_human_dna' do
+      it 'will have a contaminated_human_dna' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.contaminated_human_dna).to eq(metadata[:contaminated_human_dna])
       end
 
-      it 'will have a remove_x_and_autosomes' do
+      it 'will have a remove_x_and_autosomes' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.remove_x_and_autosomes).to eq(metadata[:remove_x_and_autosomes])
       end
 
-      it 'will have a separate_y_chromosome_data' do
+      it 'will have a separate_y_chromosome_data' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.separate_y_chromosome_data).to eq(metadata[:separate_y_chromosome_data])
       end
 
-      it 'will have a study_project_id' do
+      it 'will have a study_project_id' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_project_id).to eq(metadata[:study_project_id])
       end
 
-      it 'will have a study_abstract' do
+      it 'will have a study_abstract' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_abstract).to eq(metadata[:study_abstract])
       end
 
-      it 'will have a study_study_title' do
+      it 'will have a study_study_title' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_study_title).to eq(metadata[:study_study_title])
       end
 
-      it 'will have a study_ebi_accession_number' do
+      it 'will have a study_ebi_accession_number' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_ebi_accession_number).to eq(metadata[:study_ebi_accession_number])
       end
 
-      it 'will have a study_sra_hold' do
+      it 'will have a study_sra_hold' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_sra_hold).to eq(metadata[:study_sra_hold])
       end
 
-      it 'will have a contains_human_dna' do
+      it 'will have a contains_human_dna' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.contains_human_dna).to eq(metadata[:contains_human_dna])
       end
 
-      it 'will have a commercially_available' do
+      it 'will have a commercially_available' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.commercially_available).to eq(metadata[:commercially_available])
       end
 
-      it 'will have a study_name_abbreviation' do
+      it 'will have a study_name_abbreviation' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_name_abbreviation).to eq(metadata[:study_name_abbreviation])
       end
 
-      it 'will have a data_release_strategy' do
+      it 'will have a data_release_strategy' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_strategy).to eq(metadata[:data_release_strategy])
       end
 
-      it 'will have a data_release_timing' do
+      it 'will have a data_release_timing' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_timing).to eq(metadata[:data_release_timing])
       end
 
-      it 'will have a bam' do
+      it 'will have a bam' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.bam).to eq(metadata[:bam])
       end
 
-      it 'will have a ega_dac_accession_number' do
+      it 'will have a ega_dac_accession_number' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.ega_dac_accession_number).to eq(metadata[:ega_dac_accession_number])
       end
 
-      it 'will have a ega_policy_accession_number' do
+      it 'will have a ega_policy_accession_number' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.ega_policy_accession_number).to eq(metadata[:ega_policy_accession_number])
       end
 
-      it 'will have a array_express_accession_number' do
+      it 'will have a array_express_accession_number' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.array_express_accession_number).to eq(metadata[:array_express_accession_number])
       end
 
-      it 'will have a data_access_group' do
+      it 'will have a data_access_group' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_access_group).to eq(metadata[:data_access_group])
       end
 
-      it 'will have a snp_study_id' do
+      it 'will have a snp_study_id' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.snp_study_id).to eq(metadata[:snp_study_id])
       end
 
-      it 'will have a snp_parent_study_id' do
+      it 'will have a snp_parent_study_id' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.snp_parent_study_id).to eq(metadata[:snp_parent_study_id])
       end
 
-      it 'will have a number_of_gigabases_per_sample' do
+      it 'will have a number_of_gigabases_per_sample' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.number_of_gigabases_per_sample).to eq(metadata[:number_of_gigabases_per_sample])
       end
 
-      it 'will have a hmdmc_approval_number' do
+      it 'will have a hmdmc_approval_number' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.hmdmc_approval_number).to eq(metadata[:hmdmc_approval_number])
       end
 
-      it 'will have a s3_email_list' do
+      it 'will have a s3_email_list' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.s3_email_list).to eq(metadata[:s3_email_list])
       end
 
-      it 'will have a data_deletion_period' do
+      it 'will have a data_deletion_period' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_deletion_period).to eq(metadata[:data_deletion_period])
       end
 
-      it 'must have a study type' do
+      it 'must have a study type' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_type).not_to be_nil
       end
 
-      it 'must have a data release study type' do
+      it 'must have a data release study type' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_study_type).not_to be_nil
       end
 
-      it 'must have a reference genome' do
+      it 'must have a reference genome' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.reference_genome).not_to be_nil
       end
 
-      it 'must have a faculty sponsor' do
+      it 'must have a faculty sponsor' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.faculty_sponsor).not_to be_nil
       end
 
-      it 'must have a program' do
+      it 'must have a program' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.program).not_to be_nil
       end
     end
@@ -608,7 +608,7 @@ RSpec.describe Study, type: :model do
         expect(study.study_metadata.data_release_delay_reason).to eq(metadata[:data_release_delay_reason])
       end
 
-      it 'will have a data_release_delay_period' do
+      it 'will have a data_release_delay_period' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_delay_period).to eq(metadata[:data_release_delay_period])
       end
     end
@@ -620,11 +620,11 @@ RSpec.describe Study, type: :model do
         expect(study.study_metadata.data_release_standard_agreement).to eq(metadata[:data_release_standard_agreement])
       end
 
-      it 'will have a dac_policy' do
+      it 'will have a dac_policy' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.dac_policy).to eq(metadata[:dac_policy])
       end
 
-      it 'will have a dac_policy_title' do
+      it 'will have a dac_policy_title' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.dac_policy_title).to eq(metadata[:dac_policy_title])
       end
     end
@@ -636,7 +636,7 @@ RSpec.describe Study, type: :model do
         expect(study.study_metadata.data_release_delay_other_comment).to eq(metadata[:data_release_delay_other_comment])
       end
 
-      it 'will have a data_release_delay_reason_comment' do
+      it 'will have a data_release_delay_reason_comment' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_delay_reason_comment).to eq(metadata[:data_release_delay_reason_comment])
       end
     end
@@ -656,11 +656,11 @@ RSpec.describe Study, type: :model do
         expect(study.study_metadata.data_release_prevention_reason).to eq(metadata[:data_release_prevention_reason])
       end
 
-      it 'will have a data_release_prevention_approval' do
+      it 'will have a data_release_prevention_approval' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_prevention_approval).to eq(metadata[:data_release_prevention_approval])
       end
 
-      it 'will have a data_release_prevention_reason_comment' do
+      it 'will have a data_release_prevention_reason_comment' do # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_prevention_reason_comment).to eq(metadata[:data_release_prevention_reason_comment])
       end
     end

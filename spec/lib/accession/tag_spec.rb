@@ -29,16 +29,16 @@ RSpec.describe Accession::Tag, type: :model, accession: true do
     expect(described_class.new.add_value(2).value).to eq('2')
   end
 
-  it 'can have an ebi name' do
+  it 'can have an ebi name' do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(ebi_name: :ebi_tag).ebi_name).to eq(:ebi_tag)
   end
 
-  it 'has a label' do
+  it 'has a label' do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(name: :tag_1).label).to eq('TAG_1')
     expect(described_class.new(name: :tag_1, ebi_name: :ebi_tag).label).to eq('EBI_TAG')
   end
 
-  it 'can have an array express label' do
+  it 'can have an array express label' do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(name: :tag_1).array_express_label).to eq('ArrayExpress-TAG_1')
     expect(described_class.new(name: :tag_1, ebi_name: :ebi_tag).array_express_label).to eq('ArrayExpress-EBI_TAG')
   end

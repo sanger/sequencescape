@@ -50,20 +50,20 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
 
       it { is_expected.to be true }
 
-      it 'generates tubes according to the number supplied' do
+      it 'generates tubes according to the number supplied' do # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to have(2).items
       end
 
-      it 'generates PhiX Stock tubes' do
+      it 'generates PhiX Stock tubes' do # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to all be_a LibraryTube
         expect(phi_x_stock.created_stocks).to all have_attributes(purpose: PhiX.stock_purpose)
       end
 
-      it 'names tubes appropriately' do
+      it 'names tubes appropriately' do # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to all have_attributes(name: a_string_starting_with('Example #'))
       end
 
-      it 'sets the concentration' do
+      it 'sets the concentration' do # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to all have_attributes(concentration: 0.8)
       end
 

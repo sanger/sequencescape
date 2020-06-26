@@ -27,11 +27,11 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
       expect(conditional_formatting.options).to eq(rule[:options])
     end
 
-    it 'has a style' do
+    it 'has a style' do # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting.style).to eq(rule[:style])
     end
 
-    it 'will not have a formula' do
+    it 'will not have a formula' do # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting.formula).to be_nil
     end
 
@@ -39,7 +39,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
       expect(conditional_formatting.update(worksheet: worksheet)).to be_styled
     end
 
-    it '#to_h produces a hash of options' do
+    it '#to_h produces a hash of options' do # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting.to_h).to eq(conditional_formatting.options)
     end
 
@@ -64,7 +64,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
       expect(conditional_formatting.update(references).options['formula']).to eq(SequencescapeExcel::Formula.new(formula.merge(references)).to_s)
     end
 
-    it '#to_h should produce a hash of options' do
+    it '#to_h should produce a hash of options' do # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting.to_h).to eq(conditional_formatting.options)
     end
 

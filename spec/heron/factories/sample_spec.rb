@@ -176,7 +176,7 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
           expect(factory.create.sanger_sample_id).to eq(sample_id)
         end
 
-        it 'sets the id provided as name' do
+        it 'sets the id provided as name' do # rubocop:todo RSpec/AggregateExamples
           expect(factory.create.name).to eq(name)
         end
 

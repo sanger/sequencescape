@@ -45,7 +45,7 @@ describe Pooling, type: :model, poolings: true do
       expect(pooling).to be_valid
     end
 
-    it 'creates only standard mx tube if stock is not required' do
+    it 'creates only standard mx tube if stock is not required' do # rubocop:todo RSpec/AggregateExamples
       expect(pooling.execute).to be true
       expect(pooling.stock_mx_tube.present?).to be false
       expect(pooling.standard_mx_tube.aliquots.count).to eq 5
