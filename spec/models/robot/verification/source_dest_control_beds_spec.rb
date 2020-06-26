@@ -14,7 +14,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds do
 
     let(:transfers) do
       # We generate the plates before the transfer map, as otherwise
-      # or random re-ordering of them is pointless!
+      # our random re-ordering of them is pointless!
       source_plate_1
       source_plate_2
       source_plate_3
