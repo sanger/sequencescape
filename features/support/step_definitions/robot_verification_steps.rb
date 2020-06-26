@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require './spec/support/download_helper'
+
 Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
@@ -85,10 +87,10 @@ Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode
 end
 
 Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
-  batch = Batch.find_by(barcode: Barcode.number_to_human(batch_barcode)) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
-  plate = Plate.find_from_barcode(plate_barcode) or raise StandardError, "Cannot find plate with machine barcode #{plate_barcode.inspect}"
-  robot = FactoryBot.create :full_robot
-  generated_file = robot.generator(batch: batch, plate_barcode: plate.human_barcode).as_text
+  batch = Batch.find_by_barcode(batch_barcode) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
+
+  generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_#{plate_barcode}.gwl")
+
   generated_lines = generated_file.lines(chomp: true)
   generated_lines.shift(2)
   assert_not_nil generated_lines
