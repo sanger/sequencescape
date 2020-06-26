@@ -8,7 +8,7 @@ Given /^I am logged in as "(.*)"$/ do |login|
   step(%Q{I am an "internal" user logged in as "#{login}"})
 end
 
-Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
+Given /^I am an? "([^"]*)" user logged in as "([^"]*)"$/ do |role_name, login|
   @current_user = FactoryBot.create(:user,
                                     login: login,
                                     first_name: 'John',
@@ -29,7 +29,7 @@ Given /^there is at least one administrator$/ do
   FactoryBot.create :admin
 end
 
-Then /^I should be logged in as "([^\"]*)"$/ do |login|
+Then /^I should be logged in as "([^"]*)"$/ do |login|
   user = User.find_by(login: login)
   assert @current_user == user
 end

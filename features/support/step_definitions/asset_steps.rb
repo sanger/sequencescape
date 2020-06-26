@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-Given /^the barcode for the sample tube "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
+Given /^the barcode for the sample tube "([^"]+)" is "([^"]+)"$/ do |name, barcode|
   sample_tube = SampleTube.find_by!(name: name)
   sample_tube.primary_barcode.update!(barcode: barcode)
 end
 
-Given /^the barcode for the asset "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
+Given /^the barcode for the asset "([^"]+)" is "([^"]+)"$/ do |name, barcode|
   Barcode.find_by(barcode: barcode)&.destroy
   asset = Labware.find_by!(name: name)
   if asset.primary_barcode
@@ -19,11 +19,11 @@ Given /^tube "([^"]*)" has a public name of "([^"]*)"$/ do |name, public_name|
   Labware.find_by(name: name).update!(public_name: public_name)
 end
 
-Given /^(?:I have )?a phiX tube called "([^\"]+)"$/ do |name|
+Given /^(?:I have )?a phiX tube called "([^"]+)"$/ do |name|
   FactoryBot.create(:sample_tube, name: name, study: nil, project: nil)
 end
 
-Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, name|
+Given /^(?:I have )?a (sample|library) tube called "([^"]+)"$/ do |tube_type, name|
   FactoryBot.create(:"#{tube_type}_tube", name: name)
 end
 

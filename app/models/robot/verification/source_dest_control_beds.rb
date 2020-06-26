@@ -20,6 +20,11 @@ class Robot::Verification::SourceDestControlBeds < Robot::Verification::Base
   end
 
   def valid_control_plates_on_robot?(beds, plates, robot, batch, all_expected_plate_layout)
+    # it is valid for this type of robot not to have any control plates in the batch
+    # e.g. for a second batch onto a partial destination plate that already contains controls
+    # e.g. when no controls are needed
+    return true if all_expected_plate_layout[2].blank?
+
     valid_plates_on_robot?(beds, plates, 'CTRL', robot, batch, all_expected_plate_layout[2])
   end
 

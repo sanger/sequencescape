@@ -12,7 +12,7 @@ Then /^plate with barcode "([^"]*)" should exist$/ do |plate_barcode|
   assert_not_nil plate
 end
 
-Given /^plate "([^\"]*)" has concentration and volume results$/ do |plate_barcode|
+Given /^plate "([^"]*)" has concentration and volume results$/ do |plate_barcode|
   plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update!(
@@ -22,7 +22,7 @@ Given /^plate "([^\"]*)" has concentration and volume results$/ do |plate_barcod
   end
 end
 
-Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_barcode|
+Given /^plate "([^"]*)" has low concentration and volume results$/ do |plate_barcode|
   plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update!(
@@ -58,7 +58,7 @@ Given /^plate (\d+) has is a stock plate$/ do |plate_id|
   Plate.find(plate_id).update(plate_purpose: PlatePurpose.stock_plate_purpose)
 end
 
-Given /^the plate with ID (\d+) has a plate purpose of "([^\"]+)"$/ do |id, name|
+Given /^the plate with ID (\d+) has a plate purpose of "([^"]+)"$/ do |id, name|
   purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   Plate.find(id).update!(plate_purpose: purpose)
 end
@@ -87,7 +87,7 @@ Then /^plate "([^"]*)" is the parent of plate "([^"]*)"$/ do |parent_plate_barco
   parent_plate.save!
 end
 
-Given /^the well with ID (\d+) is at position "([^\"]+)" on the plate with ID (\d+)$/ do |well_id, position, plate_id|
+Given /^the well with ID (\d+) is at position "([^"]+)" on the plate with ID (\d+)$/ do |well_id, position, plate_id|
   plate = Plate.find(plate_id)
   map   = Map.where_description(position).where_plate_size(plate.size).where_plate_shape(plate.asset_shape).first or raise StandardError, "Could not find position #{position}"
   Well.find(well_id).update!(plate: plate, map: map)
@@ -97,14 +97,14 @@ Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   well = Uuid.find_by(external_id: well_uuid).resource
   plate = Uuid.find_by(external_id: plate_uuid).resource
   well.update!(plate: plate, map: Map.find_by(description: 'A1'))
-  step("the barcode for plate #{plate.id} is \"DN1S\"")
+  Plate.find(plate_id).primary_barcode.update!(barcode: 'DN1S')
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
   assert_equal plate_purpose_name, Plate.find_from_barcode("DN#{plate_barcode}").plate_purpose.name
 end
 
-Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
+Given /^a "([^"]+)" plate called "([^"]+)" exists$/ do |name, plate_name|
   plate_purpose = PlatePurpose.find_by!(name: name)
   plate_purpose.create!(name: plate_name)
 end
@@ -119,12 +119,12 @@ Given(/^a full plate called "([^"]*)" exists with purpose "([^"]*)" and barcode 
   FactoryBot.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode, well_count: 16)
 end
 
-Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name, barcode|
+Given /^a "([^"]+)" plate called "([^"]+)" exists with barcode "([^"]+)"$/ do |name, plate_name, barcode|
   plate_purpose = PlatePurpose.find_by!(name: name)
   plate_purpose.create!(name: plate_name, barcode: barcode)
 end
 
-Given /^a "([^\"]+)" plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, plate_name, parent_name|
+Given /^a "([^"]+)" plate called "([^"]+)" exists as a child of "([^"]+)"$/ do |name, plate_name, parent_name|
   plate_purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   parent        = Plate.find_by(name: parent_name) or raise StandardError, "Cannot find parent plate #{parent_name.inspect}"
   AssetLink.create!(ancestor: parent, descendant: plate_purpose.create!(name: plate_name))

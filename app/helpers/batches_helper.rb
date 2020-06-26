@@ -37,7 +37,7 @@ module BatchesHelper
   def workflow_name(batch)
     return unless batch and batch.workflow
 
-    batch.workflow.name.gsub(/Cluster formation | \([^\)]*\)/, '')
+    batch.workflow.name.gsub(/Cluster formation | \([^)]*\)/, '')
   end
 
   def batch_link(batch, options)

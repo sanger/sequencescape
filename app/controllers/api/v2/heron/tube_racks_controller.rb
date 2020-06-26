@@ -14,7 +14,9 @@ module Api
             render json: {
               data: {
                 attributes: {
-                  uuid: rack_factory.tube_rack.uuid
+                  uuid: rack_factory.tube_rack.uuid,
+                  purpose_name: rack_factory.purpose.name,
+                  study_names: rack_factory.sample_study_names
                 },
                 links: {
                   'self': api_v2_tube_rack_url(rack_factory.tube_rack)

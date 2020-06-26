@@ -14,14 +14,14 @@ Then 'the aliquots of {uuid} should be the same as the wells {well_range} of {pl
   )
 end
 
-Given /^the sample tube "([^\"]+)" has (\d+) aliquots$/ do |tube_name, number|
+Given /^the sample tube "([^"]+)" has (\d+) aliquots$/ do |tube_name, number|
   tube = SampleTube.find_by(name: tube_name) or raise "Can't find SampleTube named #{tube_name}"
   1.upto(number.to_i - tube.aliquots.size).each do |_i|
     tube.aliquots << FactoryBot.create(:aliquot, tag: FactoryBot.create(:tag), receptacle: tube)
   end
 end
 
-Given /^the aliquots in the library tube called "([^\"]+)" have been modified$/ do |name|
+Given /^the aliquots in the library tube called "([^"]+)" have been modified$/ do |name|
   tube = LibraryTube.find_by(name: name) or raise "Can't find library tube named #{name.inspect}"
   tube.aliquots.each { |a| a.updated_at = Time.zone.now; a.save(validate: false) }
 end

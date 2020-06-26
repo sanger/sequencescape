@@ -15,13 +15,13 @@ When /^I get the XML for the last batch$/ do ||
   visit(batch_path(batch, format: :xml))
 end
 
-Given /^the last batch is for the "([^\"]+)" pipeline$/ do |name|
+Given /^the last batch is for the "([^"]+)" pipeline$/ do |name|
   batch    = Batch.last or raise StandardError, 'There appear to be no batches'
   pipeline = Pipeline.find_by(name: name) or raise StandardError, "Unable to find the pipeline #{name}"
   pipeline.batches << batch
 end
 
-Given /^"([^\"]+)" is the owner of batch with ID (\d+)$/ do |login, id|
+Given /^"([^"]+)" is the owner of batch with ID (\d+)$/ do |login, id|
   user = User.find_by(login: login) or raise StandardError, "Cannot find user login #{login.inspect}"
   Batch.find(id).update!(user: user)
 end

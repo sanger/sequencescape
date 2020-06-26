@@ -16,7 +16,7 @@ Given /^the role "([^"]*)" exists$/ do |role_name|
   Role.create!(name: role_name.tr(' ', '_').downcase)
 end
 
-Given /^user "([^\"]+)" is an administrator$/ do |login|
+Given /^user "([^"]+)" is an administrator$/ do |login|
   user = User.find_by(login: login) or raise StandardError, "Cannot find user with login #{login.inspect}"
   user.roles.create!(name: 'administrator')
 end

@@ -42,6 +42,8 @@ RSpec.describe Robot::Verification::SourceDestControlBeds do
     end
 
     let(:batch) { create :batch, requests: requests, pipeline: pipeline }
+    let(:user) { create :user }
+    let(:robot) { create :hamilton, barcode: '444' }
 
     context 'without control plates' do
       let(:source_plate_2) { create :plate, well_count: 2 }
@@ -57,8 +59,38 @@ RSpec.describe Robot::Verification::SourceDestControlBeds do
         ]
       end
 
+      let(:params) do
+        {
+          bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824' },
+          plate_barcodes: {
+            source_plate_3.machine_barcode => source_plate_3.machine_barcode,
+            source_plate_2.machine_barcode => source_plate_2.machine_barcode,
+            source_plate_1.machine_barcode => source_plate_1.machine_barcode
+          },
+          plate_types: {
+            source_plate_3.machine_barcode => 'ABgene_0765',
+            source_plate_2.machine_barcode => 'ABgene_0765',
+            source_plate_1.machine_barcode => 'ABgene_0765',
+            destination_plate.machine_barcode => 'ABgene_0800'
+          },
+          destination_bed_barcodes: { '1' => '580000026663' },
+          destination_plate_barcodes: { destination_plate.machine_barcode => destination_plate.machine_barcode },
+          commit: 'Verify',
+          barcodes: {
+            destination_plate_barcode: destination_plate.machine_barcode
+          },
+          batch_id: batch.id,
+          robot_id: robot.id,
+          user_id: user.id
+        }
+      end
+
       it 'generates a layout' do
         expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+      end
+
+      it 'is is a valid submission' do
+        expect(verifier.valid_submission?(params)).to eq true
       end
     end
 
@@ -79,8 +111,39 @@ RSpec.describe Robot::Verification::SourceDestControlBeds do
         ]
       end
 
+      let(:params) do
+        {
+          bed_barcodes: { '1' => '580000001806', '2' => '580000002810' },
+          plate_barcodes: {
+            source_plate_3.machine_barcode => source_plate_3.machine_barcode,
+            source_plate_1.machine_barcode => source_plate_1.machine_barcode
+          },
+          plate_types: {
+            source_plate_3.machine_barcode => 'ABgene_0765',
+            source_plate_2.machine_barcode => 'ABgene_0765',
+            source_plate_1.machine_barcode => 'ABgene_0765',
+            destination_plate.machine_barcode => 'ABgene_0800'
+          },
+          control_bed_barcodes: { '1' => '580000025659' },
+          control_plate_barcodes: { source_plate_2.machine_barcode => source_plate_2.machine_barcode },
+          destination_bed_barcodes: { '1' => '580000026663' },
+          destination_plate_barcodes: { destination_plate.machine_barcode => destination_plate.machine_barcode },
+          commit: 'Verify',
+          barcodes: {
+            destination_plate_barcode: destination_plate.machine_barcode
+          },
+          batch_id: batch.id,
+          robot_id: robot.id,
+          user_id: user.id
+        }
+      end
+
       it 'generates a layout' do
         expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+      end
+
+      it 'is is a valid submission' do
+        expect(verifier.valid_submission?(params)).to eq true
       end
     end
   end

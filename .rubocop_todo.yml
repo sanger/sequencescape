@@ -704,6 +704,7 @@ RSpec/LetSetup:
     - 'spec/requests/api/v2/comments_spec.rb'
     - 'spec/requests/api/v2/plates_spec.rb'
     - 'spec/sequencescape_excel/range_spec.rb'
+    - 'spec/features/cherrypicking/creating_worksheets_spec.rb'
 
 # Offense count: 49
 # Configuration parameters: .
