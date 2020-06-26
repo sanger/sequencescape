@@ -109,14 +109,12 @@ class Robot::PickData
       end
 
       # initialize the data_object for this pick if it doesn't exist already
-      if data_objects[pick_to_use].nil?
-        data_objects[pick_to_use] = {
-          'destination' => {},
-          'source' => {},
-          'time' => Time.zone.now,
-          'user' => user.login
-        }
-      end
+      data_objects[pick_to_use] ||= {
+        'destination' => {},
+        'source' => {},
+        'time' => Time.zone.now,
+        'user' => user.login
+      }
 
       data_object = data_objects[pick_to_use]
       populate_data_object!(data_object, request)
