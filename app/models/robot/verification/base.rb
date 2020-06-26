@@ -26,7 +26,7 @@ class Robot::Verification::Base
   #                       3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
   #         @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}]
   # TODO: can remove this after all code is changed to use pick_number_to_expected_layout
-  def expected_layout(batch, destination_plate_barcode, pick_number = 0)
+  def expected_layout(batch, destination_plate_barcode, pick_number = 1)
     pick_number_to_expected_layout(batch, destination_plate_barcode, nil)[pick_number]
   end
 
