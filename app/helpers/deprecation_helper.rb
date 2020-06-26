@@ -53,14 +53,14 @@ module DeprecationHelper
     title = (custom_title || level.title) % remaining
     style = custom_style || level.style
 
-    content_tag(:div, class: ['card', "border-#{style}", 'mb-3']) do
-      concat(content_tag(:div, class: ['card-body', "bg-#{style}", 'text-white']) do
+    tag.div(class: ['card', "border-#{style}", 'mb-3']) do
+      concat(tag.div(class: ['card-body', "bg-#{style}", 'text-white']) do
         concat icon('fas', level.icon, title)
-        concat content_tag(:p, message)
+        concat tag.p(message)
         concat link_to 'See the alternative', replaced_by, class: %w[btn btn-block btn-outline-light] if replaced_by
         concat mail_to configatron.admin_email, icon('far', 'envelope ', 'Let us know if you still need this'), class: %w[btn btn-block btn-outline-light]
       end)
-      concat content_tag(:div, class: 'card-body', &block)
+      concat tag.div(class: 'card-body', &block)
     end
   end
 

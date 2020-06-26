@@ -87,7 +87,7 @@ class Request < ApplicationRecord
   has_many :billing_items, class_name: 'Billing::Item'
 
   # Only actively used by poolable requests, but here to help with eager loading
-  has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
+  has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', inverse_of: :request
   has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
 
   delegate :position, to: :batch_request

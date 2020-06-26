@@ -14,7 +14,7 @@ class SubmissionTemplate < ApplicationRecord
   belongs_to :product_line
 
   has_many   :supercedes,    class_name: 'SubmissionTemplate', foreign_key: :superceded_by_id
-  belongs_to :superceded_by, class_name: 'SubmissionTemplate', foreign_key: :superceded_by_id
+  belongs_to :superceded_by, class_name: 'SubmissionTemplate'
 
   belongs_to :product_catalogue, inverse_of: :submission_templates
   delegate :product_for, to: :product_catalogue
