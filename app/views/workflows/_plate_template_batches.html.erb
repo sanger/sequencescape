@@ -20,7 +20,7 @@
             <p class='help-block'>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in Sequencescape.  Wells can be rearranged in the next step.</p>
 
             <label for="control_plate">Control plate</label>
-            <%= select("Control", "plate", ControlPlate.all.collect {|p| [ p.name, p.id ] }, { include_blank: true }, class: 'form-control select2') %>
+            <%= select("Control", "plate", ControlPlate.all.collect {|p| [ "#{p.human_barcode} - #{p.name}", p.id ] }, { include_blank: true }, class: 'form-control select2') %>
           </fieldset>
         </div>
 

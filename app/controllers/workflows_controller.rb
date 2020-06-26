@@ -139,10 +139,6 @@ class WorkflowsController < ApplicationController
     @task = task
   end
 
-  def control_plates
-    @control_plates ||= ControlPlate.all.map(&:name)
-  end
-
   private
 
   def ordered_fields(fields)
