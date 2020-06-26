@@ -18,6 +18,7 @@ require 'cucumber/rails'
 require 'factory_bot_rails'
 
 require_relative 'capybara'
+require_relative 'parameter_types'
 # Capybara defaults to CSS3 selectors rather than XPath.
 # If you'd prefer to use XPath, just uncomment this line and adjust any
 # selectors in your step definitions to use the XPath syntax.
@@ -70,19 +71,19 @@ After do |scenario|
     name = scenario.name.parameterize
     if page.respond_to?(:save_screenshot)
       page.save_screenshot("#{name}.png")
-      puts "📸 Screenshot saved to #{Capybara.save_path}/#{name}.png"
+      log "📸 Screenshot saved to #{Capybara.save_path}/#{name}.png"
     end
     if page.respond_to?(:save_page)
       page.save_page("#{name}.html")
-      puts "📐 HTML saved to #{Capybara.save_path}/#{name}.html"
+      log "📐 HTML saved to #{Capybara.save_path}/#{name}.html"
     end
     if page.driver.browser.respond_to?(:manage)
       errors = page.driver.browser.manage.logs.get(:browser)
-      puts '== JS errors ============'
+      log '== JS errors ============'
       errors.each do |jserror|
-        puts jserror.message
+        log jserror.message
       end
-      puts '========================='
+      log '========================='
     end
   end
 end
