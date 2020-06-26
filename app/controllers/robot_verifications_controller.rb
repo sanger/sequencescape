@@ -22,6 +22,7 @@ class RobotVerificationsController < ApplicationController
         @batch,
         barcode_hash[:destination_plate_barcode]
       )
+      @pick_number = Batch.extract_pick_number(barcode_hash[:batch_barcode])
     else
       flash[:error] = errors
       redirect_to action: :index
@@ -39,6 +40,7 @@ class RobotVerificationsController < ApplicationController
       @batch = Batch.find(params[:batch_id])
       @batch.robot_verified!(params[:user_id])
       @destination_plate_id = Plate.find_from_barcode(params[:destination_plate_barcodes].keys.first).human_barcode
+      @pick_number = params[:pick_number]
     else
       flash[:error] = "Error: #{@robot_verification.errors.join('; ')}"
       redirect_to action: :index

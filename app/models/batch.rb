@@ -455,6 +455,10 @@ class Batch < ApplicationRecord
     code.split('-').first
   end
 
+  def self.extract_pick_number(code)
+    code.split('-').last
+  end
+
   class << self
     def find_by_barcode(code)
       split_code = barcode_without_pick_number(code)

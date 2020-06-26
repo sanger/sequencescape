@@ -11,6 +11,8 @@ class DriverFilesController < ApplicationController
 
   def show
     @plate_barcode = @batch.plate_barcode(params[:barcode])
+    @pick_number = params[:pick_number]
+    # TODO: change generator to take the pick number
     generator = @robot.generator(batch: @batch, plate_barcode: @plate_barcode)
     send_data generator.as_text, type: generator.type,
                                  filename: generator.filename,
