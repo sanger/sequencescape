@@ -438,7 +438,8 @@ class Batch < ApplicationRecord
 
   def self.valid_barcode?(code)
     begin
-      Barcode.barcode_to_human!(code, prefix)
+      split_code = barcode_without_pick_number(code)
+      Barcode.barcode_to_human!(split_code, prefix)
     rescue
       return false
     end
@@ -450,10 +451,13 @@ class Batch < ApplicationRecord
     true
   end
 
+  def self.barcode_without_pick_number(code)
+    code.split('-').first
+  end
+
   class << self
     def find_by_barcode(code)
-      # split off pick number before lookup if present
-      split_code = code.split('-').first
+      split_code = barcode_without_pick_number(code)
       human_batch_barcode = Barcode.number_to_human(split_code)
       batch = Batch.find_by(barcode: human_batch_barcode)
       batch ||= Batch.find_by(id: human_batch_barcode)
