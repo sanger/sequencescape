@@ -1,13 +1,19 @@
 <div id="header">
-  <div class="page-header"><h1>Batch <%= batch.id %> - <%= batch.studies.pluck(:name).join('; ') %></h1></div>
+  <div class="page-header">
+    <h1>Batch <%= batch.id %> - <%= batch.studies.pluck(:name).join('; ') %></h1>
+    <% if num_picks > 1 %>
+      <h2>Pick <%= pick_number %> of <%= num_picks %></h2>
+    <% end %>
+  </div>
 </div>
 <% if robot.present? %>
   <p>This worksheet was generated with the <%= robot.name %> robot selected. Other robots may have different layouts configured.</p>
 <% end %>
-<svg id="batchbarcode_<%= plate_barcode %>"></svg>
+<svg id="batchbarcode_<%= plate_barcode %>-<%= pick_number %>"></svg>
 
-<script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>", {format: "UPC"});</script>
+<script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>-<%= pick_number %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>-<%= pick_number %>", {format: "CODE128"});</script>
 
+<%# see Robot::Verification::Base#expected_layout for structure of robot_plate_layout %>
 <% destination_layout, source_layout, control_layout = robot_plate_layout %>
 <% source_plate_colour = source_layout.transform_values { |sort_order| "colour#{sort_order%12}" } %>
 
@@ -24,65 +30,70 @@
       <% if plate.buffer_required? %>
         <h3> Buffer Required </h3>
       <% end %>
-  <table class="plate_layout">
-    <thead>
-      <tr>
-      <% num_rows = plate.height -%>
-      <% num_columns = plate.width -%>
-      <th></th>
-      <% num_columns.times do |column| -%>
-        <th><%= column+1 %></th>
-      <% end -%>
-      <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    <% plate_wells = plate.wells.index_by {|w| w.map.row_order } %>
-    <% num_rows.times do |row| -%>
-      <tr>
-        <% rowchar = (65+row).chr %>
-        <td><strong><%= rowchar %></strong></td>
-        <% (num_columns).times do |column| -%>
-          <% well = plate_wells[row*num_columns+column] -%>
-            <% if  well.present? -%>
-              <% request = indexed_requests[well.id]  %>
-              <% source_well = request&.asset %>
-              <% if source_well.present? && -%>
-                <% if source_well.plate.is_a?(ControlPlate) %>
-                  <td class="control">
-                <% elsif source_well.is_a?(Well) %>
-                  <td class="<%= source_plate_colour[source_well.plate.machine_barcode]%> ">
+    <table class="plate_layout">
+      <thead>
+        <tr>
+        <% num_rows = plate.height -%>
+        <% num_columns = plate.width -%>
+        <th></th>
+        <% num_columns.times do |column| -%>
+          <th><%= column+1 %></th>
+        <% end -%>
+        <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% plate_wells = plate.wells.index_by {|w| w.map.row_order } %>
+        <% num_rows.times do |row| -%>
+          <tr>
+            <% rowchar = (65+row).chr %>
+            <td><strong><%= rowchar %></strong></td>
+            <% (num_columns).times do |column| -%>
+              <% well = plate_wells[row*num_columns+column] -%>
+                <% if  well.present? -%>
+                  <% request = indexed_requests[well.id]  %>
+                  <% source_well = request&.asset %>
+                  <% if source_well.present? -%>
+                    <% source_barcode = source_well.plate.machine_barcode %>
+                    <% well_is_in_this_pick = ( source_layout.has_key?(source_barcode) || (control_layout && control_layout.has_key?(source_barcode)) ) -%>
+                    <% if well_is_in_this_pick -%>
+                      <% if source_well.plate.is_a?(ControlPlate) %>
+                        <td class="control">
+                      <% elsif source_well.is_a?(Well) %>
+                        <td class="<%= source_plate_colour[source_barcode]%> ">
+                      <% else %>
+                        <td>
+                      <% end -%>
+                      <%= source_well.map_description %>
+                      <%= source_well.plate.barcode_number %>
+                      v<%= "%.#{configatron.tecan_precision}f" % well.get_picked_volume %> b<%= "%.#{configatron.tecan_precision}f" % well.get_buffer_volume %>
+                    <% else %>
+                      <td>
+                    <% end -%>
+                  <% else %>
+                    <td>
+                  <% end -%>
                 <% else %>
                   <td>
                 <% end -%>
-                <%= source_well.map_description %>
-                <%= source_well.plate.barcode_number %>
-                v<%= "%.#{configatron.tecan_precision}f" % well.get_picked_volume %> b<%= "%.#{configatron.tecan_precision}f" % well.get_buffer_volume %>
-              <% else %>
-                <td>
-              <% end -%>
-            <% else %>
-            <td>
+                </td>
             <% end -%>
-            </td>
+            <td><strong><%= rowchar %></strong></td>
+          </tr>
         <% end -%>
-        <td><strong><%= rowchar %></strong></td>
-      </tr>
-    <% end -%>
-    <tr>
-      <th></th>
-      <% num_columns.times do |column| -%>
-        <th><%= column+1 %></th>
-      <% end -%>
-      <th></th>
-    </tr>
-    </tbody>
-  </table>
+        <tr>
+          <th></th>
+          <% num_columns.times do |column| -%>
+            <th><%= column+1 %></th>
+          <% end -%>
+          <th></th>
+        </tr>
+      </tbody>
+    </table>
   <% end -%>
 </div>
 
-
-
-
-  <div id="footer">Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %> -
-  Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %></div>
+<div id="footer">
+  Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %> -
+  Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %>
+</div>
