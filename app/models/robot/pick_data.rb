@@ -96,15 +96,15 @@ class Robot::PickData
 
       unless pick_to_use
         # if no max beds, default to all in one pick
-        if @max_beds.nil?
-          pick_to_use = 1
-        elsif !data_objects.empty? && current_pick_size.call < @max_beds
-          # use latest pick if hasn't exceeded robot beds limit
-          pick_to_use = data_objects.size
-        else
-          # start new pick
-          pick_to_use = data_objects.size + 1
-        end
+        pick_to_use = if @max_beds.nil?
+                        1
+                      elsif !data_objects.empty? && current_pick_size.call < @max_beds
+                        # use latest pick if hasn't exceeded robot beds limit
+                        data_objects.size
+                      else
+                        # start new pick
+                        data_objects.size + 1
+                      end
         source_barcode_to_pick_number[source_barcode] = pick_to_use
       end
 
