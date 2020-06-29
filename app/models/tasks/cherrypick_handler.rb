@@ -87,11 +87,19 @@ module Tasks::CherrypickHandler
     @fluidigm_barcode = params[:fluidigm_plate]
   end
 
+  def create_control_requests!
+    submission = @batch.requests.first.submission
+    @control_assets = @control_plate.wells
+    submission.create_requests_for_assets!(@control_assets)
+  end
+
+
   def do_cherrypick_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     plates = params[:plate]
     size = params[:plate_size]
     plate_type = params[:plate_type]
-
+    control_plate_barcode = params[:control]
+        
     ActiveRecord::Base.transaction do # rubocop:todo Metrics/BlockLength
       # Determine if there is a standard plate to use.
       partial_plate = nil
@@ -103,6 +111,9 @@ module Tasks::CherrypickHandler
       # Ensure that we have a plate purpose for any plates we are creating
       plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
       asset_shape_id = plate_purpose.asset_shape_id
+
+      control_plate = Plate.find_by(barcode: control_plate_barcode)
+      create_control_requests!(control_plate) if control_plate
 
       # Configure the cherrypicking action based on the parameters
       cherrypicker =

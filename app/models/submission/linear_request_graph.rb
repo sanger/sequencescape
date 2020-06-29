@@ -21,13 +21,17 @@ module Submission::LinearRequestGraph
   def build_request_graph!(multiplexing_assets = nil)
     ActiveRecord::Base.transaction do
       mx_assets_tmp = nil
-      create_request_chain!(
-        build_request_type_multiplier_pairs,
-        assets.map { |asset| SourceData.new(asset, asset.latest_stock_metrics(product), nil) },
-        multiplexing_assets
-      ) { |a| mx_assets_tmp = a }
+      create_requests_for_assets!(assets, multiplexing_assets) { |a| mx_assets_tmp = a }
       mx_assets_tmp
     end
+  end
+
+  def create_requests_for_assets!(assets, multiplexing_assets=nil, &block)
+    create_request_chain!(
+      build_request_type_multiplier_pairs,
+      assets.map { |asset| SourceData.new(asset, asset.latest_stock_metrics(product), nil) },
+      multiplexing_assets
+    )    
   end
 
   private
