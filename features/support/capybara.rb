@@ -13,8 +13,13 @@ Webdrivers::Chromedriver.update
 Capybara.register_driver :headless_chrome do |app|
   driver = Capybara.drivers[:selenium_chrome_headless].call(app)
 
-  driver.options[:options].add_argument('--window-size=1600,3200')
+  set_window_size(driver)
   enable_chrome_headless_downloads(driver)
+end
+
+def set_window_size(driver)
+  # links in header disappear if window is too small, then capybara can't click on them
+  driver.options[:options].add_argument('--window-size=1600,3200')
 end
 
 def enable_chrome_headless_downloads(driver)
