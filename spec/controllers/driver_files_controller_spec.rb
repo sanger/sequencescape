@@ -32,7 +32,7 @@ RSpec.describe DriverFilesController, type: :controller do
     it 'returns an appropriate file' do
       expect(response.content_type).to eq 'text/plain'
       expect(response.headers['Content-Disposition']).to(
-        eq("attachment; filename=\"#{batch.id}_batch_#{destination_plate.human_barcode}.gwl\"")
+        eq("attachment; filename=\"#{batch.id}_batch_#{destination_plate.human_barcode}_1.gwl\"")
       )
     end
   end
