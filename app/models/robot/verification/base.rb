@@ -46,15 +46,17 @@ class Robot::Verification::Base
     batch = Batch.find_by(id: params[:batch_id])
     robot = Robot.find_by(id: params[:robot_id])
     user = User.find_by(id: params[:user_id])
+    pick_number = params[:pick_number]
 
     @errors = []
     @errors << "Could not find batch #{params[:batch_id]}" if batch.nil?
-    @eerors << 'Could not find robot' if robot.nil?
+    @errors << 'Could not find robot' if robot.nil?
     @errors << 'Could not find user' if user.nil?
     @errors << 'No destination barcode specified' if destination_plate_barcode.blank?
+    @errors << 'Could not determine pick number' if pick_number.blank?
     return false unless @errors.empty?
 
-    expected_plate_layout = expected_layout(batch, destination_plate_barcode)
+    expected_plate_layout = robot.pick_number_to_expected_layout(batch, destination_plate_barcode)[pick_number.to_i]
 
     if valid_plate_locations?(params, batch, robot, expected_plate_layout)
       batch.events.create(
