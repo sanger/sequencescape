@@ -166,7 +166,8 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
       end
 
       step 'scan worksheet' do
-        fill_in('Scan worksheet', with: Barcode.calculate_barcode('BA', batch_id)) # won't this have a pick number attached?
+        worksheet_barcode = "#{Barcode.calculate_barcode('BA', batch_id)}-1" # suffix is pick_number (1)
+        fill_in('Scan worksheet', with: worksheet_barcode)
       end
 
       step 'scan destination plate' do
