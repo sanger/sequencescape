@@ -70,7 +70,7 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
         end
       end
 
-      # need to have js enabled otherwis this doesnt get called and the destination plate doesnt get created and it fails
+      # need to have js enabled otherwise this doesnt get called and the destination plate doesnt get created and it fails
       stub_request(:post, "#{configatron.plate_barcode_service}plate_barcodes.xml").to_return(
         headers: { 'Content-Type' => 'text/xml' },
         body: "<plate_barcode><id>42</id><name>Barcode #{destination_plate_barcode}</name><barcode>#{destination_plate_barcode}</barcode></plate_barcode>"
@@ -139,12 +139,15 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
         within('#output_assets') do
           click_link 'Print worksheet'
         end
+
         expect(page).to have_content('This worksheet was generated')
+
         within('#source_plates') do
           plates.each do |plate|
             expect(page).to have_content(plate.human_barcode)
           end
         end
+
         within('#destination_plate') do
           expect(page).to have_content(destination_plate_barcode)
         end
@@ -163,12 +166,12 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
       end
 
       step 'scan worksheet' do
-        fill_in('Scan worksheet', with: Barcode.calculate_barcode('BA', batch_id))
+        fill_in('Scan worksheet', with: Barcode.calculate_barcode('BA', batch_id)) # won't this have a pick number attached?
       end
 
       step 'scan destination plate' do
-        SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode
-        fill_in('Scan destination plate', with: SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode)
+        dest_plate_barcode = SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode
+        fill_in('Scan destination plate', with: dest_plate_barcode)
         click_on('Check')
       end
 
