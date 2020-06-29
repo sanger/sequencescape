@@ -89,7 +89,7 @@ end
 Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
   batch = Batch.find_by_barcode(batch_barcode) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
 
-  generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_#{plate_barcode}.gwl")
+  generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_#{plate_barcode}_1.gwl")
 
   generated_lines = generated_file.lines(chomp: true)
   generated_lines.shift(2)

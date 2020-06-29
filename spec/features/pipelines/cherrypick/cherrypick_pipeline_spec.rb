@@ -162,7 +162,7 @@ describe 'cherrypick pipeline', js: true do
     step 'Robot verification step 3' do
       click_link('Download myrobot File')
       # Tecan file generation is slow. Can probably be sped up, but for the moment...
-      generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_DN99999F.gwl")
+      generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_DN99999F_1.gwl")
       generated_lines = generated_file.lines
       # Shift off the comment lines
       generated_lines.shift(2)
@@ -260,7 +260,7 @@ describe 'cherrypick pipeline', js: true do
     # 13ul. Unfortunately there is no further information recorded.
     # Maintaining this as an integration test, as it could be a case
     # of values getting passed through from the front end incorrectly.
-    generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_DN99999F.gwl")
+    generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_DN99999F_1.gwl")
     generated_lines = generated_file.lines
     # Shift off the comment lines
     generated_lines.shift(2)
