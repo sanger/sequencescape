@@ -35,6 +35,7 @@ class RobotVerificationsController < ApplicationController
   def download
     @robot = Robot.find(params[:robot_id])
     @robot_verification = @robot.verification_behaviour
+
     if @robot_verification.valid_submission?(params)
       @robot_verification.record_plate_types(params[:plate_types])
       @batch = Batch.find(params[:batch_id])

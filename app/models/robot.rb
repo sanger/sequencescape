@@ -17,9 +17,6 @@ class Robot < ApplicationRecord
   scope :include_properties, -> { includes(:robot_properties) }
   scope :with_verification_behaviour, -> { includes(:robot_properties).where(robot_properties: { key: 'verification_behaviour' }) }
 
-  # TODO: can remove this after all code is changed to use pick_number_to_expected_layout
-  delegate :expected_layout, to: :verification_behaviour
-
   def pick_number_to_expected_layout(batch, plate_barcode)
     verification_behaviour.pick_number_to_expected_layout(batch, plate_barcode, max_beds)
   end

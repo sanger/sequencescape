@@ -15,24 +15,13 @@ class Robot::Verification::Base
     yield('Destination plate barcode invalid') if barcode_hash[:destination_plate_barcode].blank? || !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
   end
 
-  #
-  # Returns the barcodes and their expected sort order for verifications and worksheets
-  #
-  # @param [Batch] batch The batch associated with the pick
-  # @param [String] destination_plate_barcode The barcode of the destination plate being picked
-  #
-  # @return [Array<Hash>] 1st Element: Hash of destination plate barcodes and their sort position
-  #                       2nd Element: Hash of source plate barcodes and their sort position
-  #                       3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
-  #         @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}]
-  # TODO: can remove this after all code is changed to use pick_number_to_expected_layout
-  def expected_layout(batch, destination_plate_barcode, pick_number = 1)
-    pick_number_to_expected_layout(batch, destination_plate_barcode, nil)[pick_number]
-  end
-
-  # returns a hash of { pick_number => layout_data_object }, for a batch and a specific destination plate
-  # pick number is a sequential number, starting at 1
-  # there will only be more than one pick if the number of source plates exceed the max plates allowed on the robot
+  # Returns a hash of { pick_number => layout_data_object }, for a batch and a specific destination plate
+  # pick_number is a sequential number, starting at 1
+  # layout_data_object is an array of hashes: 1st Element: Hash of destination plate barcodes and their sort position
+  #                                           2nd Element: Hash of source plate barcodes and their sort position
+  #                                           3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
+  #     @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}]
+  # There will only be more than one pick if the number of source plates exceed the max plates allowed on the robot
   # and therefore more than one pick is needed to transfer from all the wells onto the destination plate
   def pick_number_to_expected_layout(batch, destination_plate_barcode, max_beds)
     output = {}
