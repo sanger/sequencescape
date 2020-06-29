@@ -120,11 +120,6 @@ class Robot::Verification::Base
     end
   end
 
-  # TODO: can remove this after all code is changed to use generate_picking_data_hash
-  def generate_picking_data(batch, destination_plate_barcode)
-    Robot::PickData.new(batch, destination_plate_barcode).picking_data
-  end
-
   def generate_picking_data_hash(batch, destination_plate_barcode, max_beds)
     Robot::PickData.new(batch, destination_plate_barcode, max_beds: max_beds).picking_data_hash
   end
