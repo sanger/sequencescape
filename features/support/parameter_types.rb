@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'well_range'
+
 ParameterType(
   name: 'plate_id',
   regexp: /the plate with ID (\d+)/,

@@ -16,7 +16,7 @@ bundler_args: "--without warehouse deployment"
 env:
   global:
   - TZ=Europe/London
-  - CUCUMBER_FORMAT=DebugFormatter
+  - CUCUMBER_FORMAT=summary
 before_install:
 - mv config/aker.yml.example config/aker.yml
 - nvm install
