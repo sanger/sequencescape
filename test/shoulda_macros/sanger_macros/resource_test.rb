@@ -13,7 +13,7 @@ module Sanger
       module Macros
         RESTFUL_ACTIONS = %w(index new create show update destroy edit).freeze
 
-        def resource_test(
+        def resource_test( # rubocop:todo Metrics/CyclomaticComplexity
           resource_name,
           ignore_actions: [],
           actions: (RESTFUL_ACTIONS - ignore_actions),

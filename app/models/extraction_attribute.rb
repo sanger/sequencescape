@@ -3,7 +3,7 @@ class ExtractionAttribute < ApplicationRecord
 
   validates :created_by, presence: true
 
-  belongs_to :target, class_name: 'Labware', foreign_key: :target_id
+  belongs_to :target, class_name: 'Labware'
 
   validates :target, presence: true
 

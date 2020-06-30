@@ -5,7 +5,7 @@ module Billing
   class Product < ApplicationRecord
     enum category: { library_creation: 0, sequencing: 1 }
 
-    belongs_to :billing_product_catalogue, class_name: 'Billing::ProductCatalogue', foreign_key: :billing_product_catalogue_id
+    belongs_to :billing_product_catalogue, class_name: 'Billing::ProductCatalogue'
     has_many :requests
     validates :name, presence: true, uniqueness: true
     validates :category, presence: true

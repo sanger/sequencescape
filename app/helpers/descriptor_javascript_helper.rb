@@ -7,8 +7,7 @@ module DescriptorJavascriptHelper
 
   def link_to_with_onclick_only(on_click_code, &block)
     concat(
-      content_tag(
-        :a,
+      tag.a(
         capture(&block),
         href: 'javascript:void();',
         onClick: on_click_code
