@@ -10,9 +10,18 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
   let(:project) { create :project }
   let(:study) { create :study }
   let(:pipeline) { create :cherrypick_pipeline }
-  let(:swipecard_code) { '123456' }
   let(:max_plates) { 17 }
-  let(:robot) { create(:robot, barcode: '1111', robot_properties: [create(:robot_property, name: 'maxplates', key: 'max_plates', value: max_plates)]) }
+  let(:robot_num_destinations) { 1 }
+  let(:robot) do
+    create(
+      :full_robot,
+      barcode: '1111',
+      number_of_sources: max_plates,
+      number_of_destinations: robot_num_destinations,
+      robot_properties: [create(:robot_property, name: 'maxplates', key: 'max_plates', value: max_plates)]
+    )
+  end
+  let(:robot_barcode) { SBCF::SangerBarcode.new(prefix: 'RB', number: robot.barcode).machine_barcode }
   let(:submission) { create :submission }
   let!(:plate_template) { create :plate_template }
   let!(:plate_type) { create :plate_type }
@@ -32,11 +41,6 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
       headers: { 'Content-Type' => 'text/xml' },
       body: "<plate_barcode><id>42</id><name>Barcode #{destination_plate_barcode}</name><barcode>#{destination_plate_barcode}</barcode></plate_barcode>"
     )
-
-    (1..max_plates).each do |i|
-      robot.robot_properties.create(key: "SCRC#{i}", value: i)
-    end
-    robot.robot_properties.create(key: 'DEST1', value: max_plates + 1)
   end
 
   # shared_examples_for 'a cherrypicking procedure' do
@@ -90,7 +94,6 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
     # it_behaves_like 'a cherrypicking procedure'
 
     it 'creates worksheet' do
-
       step 'Access the Cherrypicking pipeline' do
         login_user(user)
         visit pipeline_path(pipeline)
@@ -170,7 +173,7 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
       end
 
       step 'scan robot barcode' do
-        fill_in('Scan robot', with: SBCF::SangerBarcode.new(prefix: 'RB', number: robot.barcode).machine_barcode)
+        fill_in('Scan robot', with: robot_barcode)
       end
 
       step 'scan worksheet' do
@@ -185,11 +188,13 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
       end
 
       step 'perform bed verification' do
+        # fill in robot beds
         (1..plates.count).each do |i|
           fill_in("SCRC #{i}", with: SBCF::SangerBarcode.new(prefix: 'RB', number: i).machine_barcode)
         end
-        fill_in('DEST 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: plates.count + 1).machine_barcode)
+        fill_in('DEST 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: max_plates + 1).machine_barcode)
 
+        # fill in plate barcodes
         plates.each do |plate|
           fill_in(plate.human_barcode, with: plate.human_barcode)
         end
@@ -248,8 +253,14 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
 
     let(:max_plates) { 2 }
     let(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, robot.max_beds + 1, sample_count: 2) }
+    let(:expected_plates) do
+      {
+        1 => [plates[0], plates[1]],
+        2 => [plates[2]]
+      }
+    end
 
-    it 'creates worksheet' do
+    it 'creates worksheets' do
       step 'Access the Cherrypicking pipeline' do
         login_user(user)
         visit pipeline_path(pipeline)
@@ -298,12 +309,7 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
         end
       end
 
-      step 'print worksheet' do
-        expected_plates = {
-          1 => [plates[0], plates[1]],
-          2 => [plates[2]]
-        }
-
+      step 'Print worksheets' do
         within('.page-header') do
           @batch_id = page.find('.subtitle').text
           @batch_barcode = Barcode.calculate_barcode('BA', batch_id)
@@ -314,10 +320,10 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
 
         expect(page).to have_content('This worksheet was generated')
 
-        (1..2).each do |index|
-          within("#worksheet_plate_#{destination_plate_human_barcode}_pick_#{index}") do
+        (1..expected_plates.size).each do |pick_number_index|
+          within("#worksheet_plate_#{destination_plate_human_barcode}_pick_#{pick_number_index}") do
             within('#source_plates') do
-              expected_plates[index].each do |plate|
+              expected_plates[pick_number_index].each do |plate|
                 expect(page).to have_content(plate.human_barcode)
               end
             end
@@ -327,8 +333,8 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
             end
 
             # check barcode
-            within("#batchbarcode_#{destination_plate_human_barcode}-#{index}") do
-              expect(page).to have_content("#{batch_barcode}-#{index}")
+            within("#batchbarcode_#{destination_plate_human_barcode}-#{pick_number_index}") do
+              expect(page).to have_content("#{batch_barcode}-#{pick_number_index}")
             end
 
             # check wells
@@ -337,7 +343,7 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
 
               # check that the number each cell contains is in the expected list of source plate barcodes
               cells_with_content.each do |cell|
-                barcode_numbers = expected_plates[index].map(&:barcode_number)
+                barcode_numbers = expected_plates[pick_number_index].map(&:barcode_number)
                 number_in_cell = cell.text.split(' ')[1]
 
                 expect(barcode_numbers).to include(number_in_cell)
@@ -347,44 +353,56 @@ describe 'Creating worksheets', type: :feature, cherrypicking: true, js: true do
         end
       end
 
-      step 'visit robot verifications page' do
-        visit('/robot_verifications')
+      step 'Perform bed verifications' do
+        (1..expected_plates.size).each do |pick_number_index|
+          step 'visit robot verifications page' do
+            visit('/robot_verifications')
+          end
+
+          step 'scan user id' do
+            fill_in('Scan user ID', with: swipecard_code)
+          end
+
+          step 'scan robot barcode' do
+            fill_in('Scan robot', with: robot_barcode)
+          end
+
+          step 'scan worksheet' do
+            worksheet_barcode = "#{batch_barcode}-#{pick_number_index}"
+            puts "DEBUG: worksheet barcode = #{worksheet_barcode}"
+            fill_in('Scan worksheet', with: worksheet_barcode)
+          end
+
+          step 'scan destination plate' do
+            puts "DEBUG: destination plate barcode = #{destination_plate_human_barcode}"
+            fill_in('Scan destination plate', with: destination_plate_human_barcode)
+            click_on('Check')
+          end
+
+          step 'perform bed verification' do
+            # need subset of plates for the current pick number
+            current_plates = expected_plates[pick_number_index]
+            puts "DEBUG: current_plates = #{current_plates.inspect}"
+
+            # fill in robot beds
+            (1..current_plates.count).each do |i|
+              fill_in("SCRC #{i}", with: SBCF::SangerBarcode.new(prefix: 'RB', number: i).machine_barcode)
+            end
+            fill_in('DEST 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: max_plates + 1).machine_barcode)
+
+            # fill in plate barcodes
+            current_plates.each do |plate|
+              puts "DEBUG: SCRC plate = #{plate.human_barcode}"
+              fill_in(plate.human_barcode, with: plate.human_barcode)
+            end
+            puts "DEBUG: DEST plate = #{destination_plate_human_barcode}"
+            fill_in(destination_plate_human_barcode, with: destination_plate_human_barcode)
+
+            click_on('Verify')
+            expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
+          end
+        end
       end
-
-      step 'scan user id' do
-        fill_in('Scan user ID', with: swipecard_code)
-      end
-
-      step 'scan robot barcode' do
-        fill_in('Scan robot', with: SBCF::SangerBarcode.new(prefix: 'RB', number: robot.barcode).machine_barcode)
-      end
-
-      step 'scan worksheet' do
-        # TODO: test both worksheets - pick numbers 1 & 2 ?
-        worksheet_barcode = "#{batch_barcode}-1" # suffix is pick_number (1)
-        fill_in('Scan worksheet', with: worksheet_barcode)
-      end
-
-      step 'scan destination plate' do
-        dest_plate_barcode = SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode
-        fill_in('Scan destination plate', with: dest_plate_barcode)
-        click_on('Check')
-      end
-
-      # step 'perform bed verification' do
-      #   (1..plates.count).each do |i|
-      #     fill_in("SCRC #{i}", with: SBCF::SangerBarcode.new(prefix: 'RB', number: i).machine_barcode)
-      #   end
-      #   fill_in('DEST 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: plates.count + 1).machine_barcode)
-
-      #   plates.each do |plate|
-      #     fill_in(plate.human_barcode, with: plate.human_barcode)
-      #   end
-      #   fill_in(destination_plate_human_barcode, with: destination_plate_human_barcode)
-
-      #   click_on('Verify')
-      #   expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
-      # end
     end
   end
 
