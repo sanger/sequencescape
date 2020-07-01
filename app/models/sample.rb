@@ -282,6 +282,13 @@ class Sample < ApplicationRecord
     positive: 1
   }
 
+  enum priority: {
+    nopriority: 0,
+    backlog: 1,
+    surveillance: 2,
+    priority: 3
+  }
+
   # this method has to be before validation_guarded_by
   def rename_to!(new_name)
     update!(name: new_name)
