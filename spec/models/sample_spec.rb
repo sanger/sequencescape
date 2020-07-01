@@ -138,21 +138,15 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
     it { is_expected.not_to be_valid }
   end
 
-  context 'priority' do
-    it 'will have a default of None - 0' do
+  describe '#priority', :aggregate_failures do
+    it 'will have a default priority of nopriority - 0' do
       expect(build(:sample).priority).to eq('nopriority')
     end
 
-    it 'can have a priority of Backlog - 1' do
-      expect(build(:sample, priority: :backlog).priority).to eq('backlog')
-    end
-
-    it 'can have a priority of Surveillance - 2' do
-      expect(build(:sample, priority: :surveillance).priority).to eq('surveillance')
-    end
-
-    it 'can have a priority of Priority - 3' do
-      expect(build(:sample, priority: :priority).priority).to eq('priority')
+    it 'can have a priority' do
+      %w[backlog surveillance priority].each do |priority|
+        expect(build(:sample, priority: priority).priority).to eq(priority)
+      end
     end
   end
 end
