@@ -81,6 +81,14 @@ class CherrypickTask < Task
       @wells.empty?
     end
 
+    def content
+      @wells
+    end
+
+    def size
+      @size
+    end
+
     def full?
       @wells.size == @size
     end
@@ -126,41 +134,81 @@ class CherrypickTask < Task
     private :add_empty_well
   end
 
-  def pick_new_plate(requests, template, robot, plate_purpose)
+  # Free wells = Plate.size - template.wells.count - partial_plate.count
+  def control_positions(batch_id, num_free_wells, num_control_wells)
+    return [0,1] # Just temporarily
+    # Variations without repetition of Free wells, using ControlWells.count
+    # V(F,C) = (FreeWells)! / (ControlWells.count)!
+    variations_without_repetition = ((num_free_wells - num_control_wells)..num_free_wells).reduce(1, :*)
+    # Num = Batch Id % V(F,C)
+    unique_number = batch_id % variations_without_repetition
+    unique_number.to_s(num_free_wells).split('').map(&:to_i)
+  end
+
+
+  def pick_new_plate(requests, template, robot, control_plate, plate_purpose)
     target_type = PickTarget.for(plate_purpose)
-    perform_pick(requests, robot) do
+    perform_pick(requests, robot, control_plate) do
       target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
 
-  def pick_onto_partial_plate(requests, template, robot, partial_plate)
+  def pick_onto_partial_plate(requests, template, robot, control_plate, partial_plate)
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
-    perform_pick(requests, robot) do
+    perform_pick(requests, robot, control_plate) do
       target_type.new(template, purpose.try(:asset_shape), partial_plate).tap do
         partial_plate = nil # Ensure that subsequent calls have no partial plate
       end
     end
   end
 
-  def perform_pick(requests, robot)
+  def create_control_requests!(batch, control_assets)
+    #batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
+    order = batch.requests.first.submission.orders.first
+    destination_control_wells = nil
+    order.create_requests_for_assets!(control_assets, nil, true) do |created_wells| 
+      destination_control_wells=created_wells
+    end
+    requests_from_controls = destination_control_wells.map(&:requests_as_target).flatten
+    batch.requests << requests_from_controls
+
+    requests_from_controls
+  end
+
+  def perform_pick(requests, robot, control_plate)
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
     destination_plates = []
     current_destination_plate = yield # instance of ByRow, ByColumn or ByInterlacedColumn
     source_plates = Set.new
-    plates_hash = build_plate_wells_from_requests(requests) # array formed from requests
+    plates_hash = build_plate_wells_from_requests(requests.where(state: :started)) # array formed from requests
 
     push_completed_plate = lambda do
       destination_plates << current_destination_plate.completed_view
       current_destination_plate = yield # reset to start picking to a fresh one
     end
 
+    if control_plate
+      batch = requests.first.batch
+      control_assets = control_plate.wells.joins(:samples)
+      control_positions = control_positions(batch.id, current_destination_plate.size, control_assets.count)
+    end
+
     plates_hash.each do |request_id, plate_barcode, well_location|
       source_plates << plate_barcode
       # Add this well to the pick and if the plate is filled up by that push it to the list.
+      if control_plate
+        while (asset_position = control_positions.find_index(current_destination_plate.content.length))
+          control_request = create_control_requests!(batch, [control_assets[asset_position]]).first
+          control_request.start!
+          current_destination_plate.push(control_request.id, 
+            control_request.asset.plate.human_barcode, control_request.asset.map_description)
+          push_completed_plate.call if current_destination_plate.full?
+        end
+      end
       current_destination_plate.push(request_id, plate_barcode, well_location)
       push_completed_plate.call if current_destination_plate.full?
     end

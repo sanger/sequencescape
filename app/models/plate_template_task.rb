@@ -66,8 +66,27 @@ class PlateTemplateTask < Task
     workflow.render_plate_template_task(self, params)
   end
 
+  def create_control_requests!(params)
+    control_plate_id = params[:Control][:plate_id]
+
+    control_plate = Plate.find(control_plate_id)
+    control_assets = control_plate.wells.joins(:samples)
+
+    batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
+    order = batch.requests.first.submission.orders.first
+    destination_control_wells = nil
+    order.create_requests_for_assets!(control_assets, nil, true) do |created_wells| 
+      destination_control_wells=created_wells
+    end
+    requests_from_controls = destination_control_wells.map(&:requests_as_target).flatten
+    batch.requests << requests_from_controls
+
+    requests_from_controls
+  end
+
   def do_task(workflows_controller, params)
     return true if params[:file].blank?
+
 
     plate_size = if params[:plate_template].blank?
                    PlatePurpose.find(params[:plate_purpose_id]).size

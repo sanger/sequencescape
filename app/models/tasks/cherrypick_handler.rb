@@ -23,6 +23,9 @@ module Tasks::CherrypickHandler
       return
     end
 
+    control_plate_id = params[:Control][:plate_id] if params[:Control]
+    @control_plate = Plate.find(control_plate_id) if control_plate_id
+
     setup_input_params_for_pass_through
 
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
@@ -55,9 +58,9 @@ module Tasks::CherrypickHandler
     @map_info = if @spreadsheet_layout
                   @spreadsheet_layout
                 elsif @plate.present?
-                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @plate)
+                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @control_plate, @plate)
                 else
-                  @task.pick_new_plate(@requests, plate_template, @robot, @plate_purpose)
+                  @task.pick_new_plate(@requests, plate_template, @robot, @control_plate, @plate_purpose)
                 end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
@@ -87,19 +90,13 @@ module Tasks::CherrypickHandler
     @fluidigm_barcode = params[:fluidigm_plate]
   end
 
-  def create_control_requests!
-    submission = @batch.requests.first.submission
-    @control_assets = @control_plate.wells
-    submission.create_requests_for_assets!(@control_assets)
-  end
-
-
   def do_cherrypick_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     plates = params[:plate]
     size = params[:plate_size]
     plate_type = params[:plate_type]
-    control_plate_barcode = params[:control]
-        
+
+    
+  
     ActiveRecord::Base.transaction do # rubocop:todo Metrics/BlockLength
       # Determine if there is a standard plate to use.
       partial_plate = nil
@@ -112,8 +109,6 @@ module Tasks::CherrypickHandler
       plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
       asset_shape_id = plate_purpose.asset_shape_id
 
-      control_plate = Plate.find_by(barcode: control_plate_barcode)
-      create_control_requests!(control_plate) if control_plate
 
       # Configure the cherrypicking action based on the parameters
       cherrypicker =
