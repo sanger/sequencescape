@@ -201,6 +201,20 @@ namespace :limber do
       )
     end
 
+    unless Purpose.where(name: 'LHR Cherrypick').exists?
+      PlatePurpose.create!(
+        name: 'LHR Cherrypick',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: false,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: true,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
+
     unless Purpose.where(name: 'LHR RT').exists?
       PlatePurpose.create!(
         name: 'LHR RT',
