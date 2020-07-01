@@ -81,7 +81,7 @@ module SubmissionsHelper
       ) + button_to('Edit Submission', edit_submission_path(submission), method: :get, class: 'button')
     when 'pending'
       display_user_guide('Your submission is currently pending.') +
-        content_tag(:p, 'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.')
+        tag.p('It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.')
     when 'processing'
       display_user_guide('Your submission is currently being processed.  This should take no longer than five minutes.')
     when 'failed'
@@ -104,11 +104,11 @@ module SubmissionsHelper
 
     return request_type_name unless request_type.request_class_name.match?(/SequencingRequest$/)
 
-    content_tag(:em, pluralize(presenter.lanes_of_sequencing, 'Lane') + ' of ') + request_type_name
+    tag.em(pluralize(presenter.lanes_of_sequencing, 'Lane') + ' of ') + request_type_name
   end
 
   def submission_link(submission, options)
-    link_text = content_tag(:strong, submission.name) << ' ' <<
+    link_text = tag.strong(submission.name) << ' ' <<
                 badge(submission.state, type: 'submission-state')
     link_to(link_text, submission_path(submission), options)
   end

@@ -70,13 +70,14 @@ RSpec.describe StudiesController do
         }
       end
 
-      it { is_expected.to render_template :new }
+      specify(:aggregate_failures) do
+        expect(subject).to render_template :new
+        expect(subject).to set_flash.now.to('Problems creating your new study')
+      end
 
       it 'not change Study.count' do
         assert_equal @initial_study_count, Study.count
       end
-
-      it { is_expected.to set_flash.now.to('Problems creating your new study') }
     end
   end
 

@@ -31,11 +31,11 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
     expect(json).not_to be_nil
   end
 
-  it 'sets the event type based on the lab event' do
+  it 'sets the event type based on the lab event' do # rubocop:todo RSpec/AggregateExamples
     expect(json).to include_json('event' => { 'event_type' => 'read_1_lin_block_hyb_load' })
   end
 
-  it 'grabs the metadata verbatim from the descriptors hash' do
+  it 'grabs the metadata verbatim from the descriptors hash' do # rubocop:todo RSpec/AggregateExamples
     expect(json).to include_json('event' => { 'metadata' => { 'key_a' => 'value a', 'key_b' => 'value b' } })
   end
 

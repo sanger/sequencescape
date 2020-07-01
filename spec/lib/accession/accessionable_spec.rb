@@ -19,11 +19,11 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
     expect(Accessionobubble.new.ebi_alias_datestamped).to eq('ALIAS-2016-12-08T13:29:59Z')
   end
 
-  it 'has a file name' do
+  it 'has a file name' do # rubocop:todo RSpec/AggregateExamples
     expect(Accessionobubble.new.filename).to eq('ALIAS-2016-12-08T13:29:59Z.accessionobubble.xml')
   end
 
-  it 'has some xml' do
+  it 'has some xml' do # rubocop:todo RSpec/AggregateExamples
     expect(Accessionobubble.new.to_xml).to be_present
   end
 

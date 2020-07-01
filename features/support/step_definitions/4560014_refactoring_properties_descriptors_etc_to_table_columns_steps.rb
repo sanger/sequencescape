@@ -34,7 +34,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
   end
 end
 
-Given /^the (sample|library) tube "([^\"]+)" has been involved in a "([^\"]+)" request within the study "([^\"]+)" for the project "([^\"]+)"$/ do |tube_type, tube_name, request_type_name, study_name, project_name|
+Given /^the (sample|library) tube "([^"]+)" has been involved in a "([^"]+)" request within the study "([^"]+)" for the project "([^"]+)"$/ do |tube_type, tube_name, request_type_name, study_name, project_name|
   study        = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
   project      = Project.find_by(name: project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
   request_type = RequestType.find_by(name: request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
@@ -44,7 +44,7 @@ Given /^the (sample|library) tube "([^\"]+)" has been involved in a "([^\"]+)" r
   create_request(request_type, study, project, asset, target_asset)
 end
 
-Given /^I have already made a "([^\"]+)" request within the study "([^\"]+)" for the project "([^\"]+)"$/ do |type, study_name, project_name|
+Given /^I have already made a "([^"]+)" request within the study "([^"]+)" for the project "([^"]+)"$/ do |type, study_name, project_name|
   study        = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
   project      = Project.find_by(name: project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
   request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
@@ -54,7 +54,7 @@ Given /^I have already made a "([^\"]+)" request within the study "([^\"]+)" for
   create_request(request_type, study, project, asset, target_asset)
 end
 
-Given /^I have already made (\d+) "([^\"]+)" requests? with IDs starting at (\d+) within the study "([^\"]+)" for the project "([^\"]+)"$/ do |count, type, id, study_name, project_name|
+Given /^I have already made (\d+) "([^"]+)" requests? with IDs starting at (\d+) within the study "([^"]+)" for the project "([^"]+)"$/ do |count, type, id, study_name, project_name|
   study        = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
   project      = Project.find_by(name: project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
   request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
@@ -66,7 +66,7 @@ Given /^I have already made (\d+) "([^\"]+)" requests? with IDs starting at (\d+
   end
 end
 
-Given /^I have already made a "([^\"]+)" request with ID (\d+) within the study "([^\"]+)" for the project "([^\"]+)"$/ do |type, id, study_name, project_name|
+Given /^I have already made a "([^"]+)" request with ID (\d+) within the study "([^"]+)" for the project "([^"]+)"$/ do |type, id, study_name, project_name|
   step(%Q{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"})
 end
 

@@ -62,7 +62,7 @@ describe Tube, type: :model do
       expect(scanned_in_asset.scanned_in_date).to eq(Time.zone.today.to_s)
     end
 
-    it "returns nothing if it hasn't been scanned in" do
+    it "returns nothing if it hasn't been scanned in" do # rubocop:todo RSpec/AggregateExamples
       expect(unscanned_in_asset.scanned_in_date).to be_blank
     end
   end

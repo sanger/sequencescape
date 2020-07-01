@@ -52,7 +52,7 @@ When /^I upload a file with 2 valid SC submissions$/ do
   upload_submission_spreadsheet('2_valid_sc_submissions')
 end
 
-Then /^there should be an order with the bait library name set to "([^\"]+)"$/ do |name|
+Then /^there should be an order with the bait library name set to "([^"]+)"$/ do |name|
   assert_not_nil(
     Order.all.detect { |o| o.request_options[:bait_library_name] == name },
     "There is no order with the bait library name set to #{name.inspect}"

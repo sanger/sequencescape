@@ -4,7 +4,7 @@ Given /^the sample name "([^"]*)" has previously been released$/ do |name|
   Sample.find_by(name: name).release
 end
 
-When /^ignoring "([^\"]+)" the XML submission for the sample "([^"]*)" should be:$/ do |key_regexp, name, serialized_xml|
+When /^ignoring "([^"]+)" the XML submission for the sample "([^"]*)" should be:$/ do |key_regexp, name, serialized_xml|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   accession_service = sample.accession_service
   accessionable_sample = Accessionable::Sample.new(sample)

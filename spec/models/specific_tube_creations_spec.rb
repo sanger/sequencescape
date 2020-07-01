@@ -21,11 +21,11 @@ RSpec.describe SpecificTubeCreation, type: :model do
         expect(subject.children.count).to eq purpose_count
       end
 
-      it 'creates a tube' do
+      it 'creates a tube' do # rubocop:todo RSpec/AggregateExamples
         expect(first_child).to be_a Tube
       end
 
-      it 'sets the purpose' do
+      it 'sets the purpose' do # rubocop:todo RSpec/AggregateExamples
         expect(first_child.purpose).to eq child_purpose
       end
 

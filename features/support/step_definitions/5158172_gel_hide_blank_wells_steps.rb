@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Given /^all wells on plate "([^"]*)" have non\-empty sample names$/ do |plate_barcode|
+Given /^all wells on plate "([^"]*)" have non-empty sample names$/ do |plate_barcode|
   plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.aliquots.clear

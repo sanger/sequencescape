@@ -8,11 +8,11 @@ RSpec.describe Comment, type: :model do
       expect(subject).to belong_to(:commentable).required
     end
 
-    it 'belongs to a user' do
+    it 'belongs to a user' do # rubocop:todo RSpec/AggregateExamples
       expect(subject).to belong_to :user
     end
 
-    it 'can have many comments' do
+    it 'can have many comments' do # rubocop:todo RSpec/AggregateExamples
       expect(subject).to have_many :comments
     end
   end
@@ -65,12 +65,12 @@ RSpec.describe Comment, type: :model do
         expect(request3.comments.length).to eq(1)
       end
 
-      it 'always adds comments to the sequencing requests of the submission' do
+      it 'always adds comments to the sequencing requests of the submission' do # rubocop:todo RSpec/AggregateExamples
         expect(sequencing_request.comments.length).to eq(3)
         expect(sequencing_request2.comments.length).to eq(1)
       end
 
-      it 'includes all the comments in the submission requests comment list' do
+      it 'includes all the comments in the submission requests comment list' do # rubocop:todo RSpec/AggregateExamples
         expect(submission.requests.map(&:comments).flatten.length).to eq(5)
         expect(order4.submission.requests.map(&:comments).flatten.length).to eq(2)
       end

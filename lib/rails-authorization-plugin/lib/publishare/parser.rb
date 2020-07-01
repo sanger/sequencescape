@@ -28,7 +28,7 @@ module Authorization
       # 3) Eval
 
       def parse_authorization_expression(str)
-        if str.match?(/[^A-Za-z0-9_:'\(\)\s]/)
+        if str.match?(/[^A-Za-z0-9_:'()\s]/)
           raise AuthorizationExpressionInvalid, "Invalid authorization expression (#{str})"
           return false
         end

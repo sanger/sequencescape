@@ -4,11 +4,11 @@ Given /^an accessioning webservice exists which returns a (study|sample|dac|poli
   FakeAccessionService.instance.success(type, accession_number)
 end
 
-Given /^an accessioning webservice exists that errors with "([^\"]+)"$/ do |message|
+Given /^an accessioning webservice exists that errors with "([^"]+)"$/ do |message|
   FakeAccessionService.instance.failure(message)
 end
 
-Given /^an accessioning service exists which returns an array express accession number "([^\"]+)"/ do |ae_an|
+Given /^an accessioning service exists which returns an array express accession number "([^"]+)"/ do |ae_an|
   FakeAccessionService.instance.success('Study', 'EGAS00001000241', <<-XML)
   <EXT_ID accession="#{ae_an}" type="ArrayExpress"/>
   XML

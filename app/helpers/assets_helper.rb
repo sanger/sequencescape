@@ -46,7 +46,7 @@ module AssetsHelper
   # Returns a select tag that has it's options ordered by name (assumes present of sorted_by_name function)
   # and disabled if a value has been pre-selected.
   def select_field_sorted_by_name(field, select_options_source, selected, options = {})
-    content_tag(:div, class: 'col-md-5') do
+    tag.div(class: 'col-md-5') do
       select_tag(
         field,
         options_for_select(select_options_source.sorted_by_name.pluck(:name, :id), selected.try(:to_i)),

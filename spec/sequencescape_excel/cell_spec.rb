@@ -7,17 +7,17 @@ RSpec.describe SequencescapeExcel::Cell, type: :model, sample_manifest_excel: tr
     expect(described_class.new(1, 4).row).to eq(1)
   end
 
-  it 'creates a column' do
+  it 'creates a column' do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(1, 1).column).to eq('A')
     expect(described_class.new(1, 4).column).to eq('D')
     expect(described_class.new(1, 53).column).to eq('BA')
   end
 
-  it 'creates a reference' do
+  it 'creates a reference' do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(150, 53).reference).to eq('BA150')
   end
 
-  it 'creates a fixed reference' do
+  it 'creates a fixed reference' do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(150, 53).fixed).to eq('$BA$150')
   end
 
