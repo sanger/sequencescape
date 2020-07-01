@@ -135,14 +135,22 @@ class CherrypickTask < Task
   end
 
   # Free wells = Plate.size - template.wells.count - partial_plate.count
-  def control_positions(batch_id, num_free_wells, num_control_wells)
-    return [0,1] # Just temporarily
-    # Variations without repetition of Free wells, using ControlWells.count
-    # V(F,C) = (FreeWells)! / (ControlWells.count)!
-    variations_without_repetition = ((num_free_wells - num_control_wells)..num_free_wells).reduce(1, :*)
-    # Num = Batch Id % V(F,C)
-    unique_number = batch_id % variations_without_repetition
-    unique_number.to_s(num_free_wells).split('').map(&:to_i)
+  def control_positions(batch_id, num_plate, num_free_wells, num_control_wells)
+    unique_number = batch_id
+
+    # Generation of the choice
+    positions = []    
+    available_positions = (0..num_free_wells).to_a
+
+    while (positions.length < num_control_wells)
+      current_size = available_positions.length
+      position = available_positions.slice!(unique_number % current_size)
+      position_for_plate = (position+num_plate) % num_free_wells
+      positions.push(position_for_plate)
+      unique_number = unique_number / current_size
+    end
+
+    return positions
   end
 
 
@@ -177,6 +185,30 @@ class CherrypickTask < Task
     requests_from_controls
   end
 
+  def add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
+    while (asset_position = control_positions.find_index(current_destination_plate.content.length))
+      control_asset = control_assets[asset_position]
+      add_control_request(batch, control_asset, current_destination_plate)
+    end
+  end
+
+  def add_control_request(batch, control_asset, current_destination_plate)
+    control_request = create_control_requests!(batch, [control_asset]).first
+    control_request.start!
+    current_destination_plate.push(control_request.id, 
+      control_request.asset.plate.human_barcode, control_request.asset.map_description)
+  end
+
+  def add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate, &block)
+    remaining_list = control_positions.select{|c| c >= current_destination_plate.content.length }
+    control_positions.each_with_index do |pos, idx|
+      if (pos >= current_destination_plate.content.length)
+        control_asset = control_assets[idx]
+        add_control_request(batch, control_asset, current_destination_plate)
+      end
+    end
+  end
+
   def perform_pick(requests, robot, control_plate)
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
@@ -186,34 +218,34 @@ class CherrypickTask < Task
     source_plates = Set.new
     plates_hash = build_plate_wells_from_requests(requests.where(state: :started)) # array formed from requests
 
-    push_completed_plate = lambda do
-      destination_plates << current_destination_plate.completed_view
-      current_destination_plate = yield # reset to start picking to a fresh one
-    end
+    num_plate = 0
 
     if control_plate
       batch = requests.first.batch
-      control_assets = control_plate.wells.joins(:samples)
-      control_positions = control_positions(batch.id, current_destination_plate.size, control_assets.count)
+      control_assets = control_plate.wells.joins(:samples)      
+      control_positions = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
+    end
+
+    push_completed_plate = lambda do
+      destination_plates << current_destination_plate.completed_view
+      current_destination_plate = yield # reset to start picking to a fresh one
+      num_plate = num_plate + 1
+      control_positions = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
     end
 
     plates_hash.each do |request_id, plate_barcode, well_location|
       source_plates << plate_barcode
       # Add this well to the pick and if the plate is filled up by that push it to the list.
       if control_plate
-        while (asset_position = control_positions.find_index(current_destination_plate.content.length))
-          control_request = create_control_requests!(batch, [control_assets[asset_position]]).first
-          control_request.start!
-          current_destination_plate.push(control_request.id, 
-            control_request.asset.plate.human_barcode, control_request.asset.map_description)
-          push_completed_plate.call if current_destination_plate.full?
-        end
+        add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
+        push_completed_plate.call if current_destination_plate.full?
       end
       current_destination_plate.push(request_id, plate_barcode, well_location)
       push_completed_plate.call if current_destination_plate.full?
     end
 
     # Ensure that a non-empty plate is stored
+    add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate)
     push_completed_plate.call unless current_destination_plate.empty?
 
     [destination_plates, source_plates]
