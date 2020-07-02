@@ -85,9 +85,7 @@ class CherrypickTask < Task
       @wells
     end
 
-    def size
-      @size
-    end
+    attr_reader :size
 
     def full?
       @wells.size == @size
@@ -141,29 +139,28 @@ class CherrypickTask < Task
     unique_number = batch_id
 
     # Generation of the choice
-    positions = []    
-    available_positions = (0..num_free_wells).to_a
+    positions = []
+    available_positions = (0..(num_free_wells-1)).to_a
 
-    while (positions.length < num_control_wells)
+    while positions.length < num_control_wells
       current_size = available_positions.length
       position = available_positions.slice!(unique_number % current_size)
-      position_for_plate = (position+num_plate) % num_free_wells
+      position_for_plate = (position + num_plate) % num_free_wells
       positions.push(position_for_plate)
-      unique_number = unique_number / current_size
+      unique_number /= current_size
     end
 
-    return positions
+    positions
   end
 
-
-  def pick_new_plate(requests, template, robot, plate_purpose, control_plate=nil)
+  def pick_new_plate(requests, template, robot, plate_purpose, control_plate = nil)
     target_type = PickTarget.for(plate_purpose)
     perform_pick(requests, robot, control_plate) do
       target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
 
-  def pick_onto_partial_plate(requests, template, robot, partial_plate, control_plate=nil)
+  def pick_onto_partial_plate(requests, template, robot, partial_plate, control_plate = nil)
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
@@ -178,8 +175,8 @@ class CherrypickTask < Task
   def create_control_requests!(batch, control_assets)
     order = batch.requests.first.submission.orders.first
     destination_control_wells = nil
-    order.create_requests_for_assets!(control_assets, nil, true) do |created_wells| 
-      destination_control_wells=created_wells
+    order.create_requests_for_assets!(control_assets, nil, true) do |created_wells|
+      destination_control_wells = created_wells
     end
     requests_from_controls = destination_control_wells.map(&:requests_as_target).flatten
     batch.requests << requests_from_controls
@@ -199,14 +196,14 @@ class CherrypickTask < Task
   def add_control_request(batch, control_asset, current_destination_plate)
     control_request = create_control_requests!(batch, [control_asset]).first
     control_request.start!
-    current_destination_plate.push(control_request.id, 
-      control_request.asset.plate.human_barcode, control_request.asset.map_description)
+    current_destination_plate.push(control_request.id,
+                                   control_request.asset.plate.human_barcode, control_request.asset.map_description)
   end
 
   # Adds any remaining control requests not already added, into the current_destination_plate plate
-  def add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate, &block)
+  def add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate)
     control_positions.each_with_index do |pos, idx|
-      if (pos >= current_destination_plate.content.length)
+      if pos >= current_destination_plate.content.length
         control_asset = control_assets[idx]
         add_control_request(batch, control_asset, current_destination_plate)
       end
@@ -226,7 +223,7 @@ class CherrypickTask < Task
     if control_plate
       num_plate = 0
       batch = requests.first.batch
-      control_assets = control_plate.wells.joins(:samples)      
+      control_assets = control_plate.wells.joins(:samples)
       control_positions = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
     end
 
@@ -235,7 +232,7 @@ class CherrypickTask < Task
       current_destination_plate = yield # reset to start picking to a fresh one
       if control_plate
         # when we start a new plate we rebuild the list of positions where the requests should be placed
-        num_plate = num_plate + 1
+        num_plate += 1
         control_positions = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
       end
     end
@@ -255,7 +252,7 @@ class CherrypickTask < Task
 
     # If there are any remaining control requests, we'll add all of them at the end of the last plate
     add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate) if control_plate
-    
+
     # Ensure that a non-empty plate is stored
     push_completed_plate.call unless current_destination_plate.empty?
 

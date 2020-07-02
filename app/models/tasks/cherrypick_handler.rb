@@ -24,7 +24,7 @@ module Tasks::CherrypickHandler
     end
 
     control_plate_id = params[:Control][:plate_id] if params[:Control]
-    @control_plate = Plate.find(control_plate_id) if control_plate_id && (!control_plate_id.empty?)
+    @control_plate = Plate.find(control_plate_id) if control_plate_id.present?
 
     setup_input_params_for_pass_through
 
@@ -95,8 +95,6 @@ module Tasks::CherrypickHandler
     size = params[:plate_size]
     plate_type = params[:plate_type]
 
-    
-  
     ActiveRecord::Base.transaction do # rubocop:todo Metrics/BlockLength
       # Determine if there is a standard plate to use.
       partial_plate = nil
@@ -108,7 +106,6 @@ module Tasks::CherrypickHandler
       # Ensure that we have a plate purpose for any plates we are creating
       plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
       asset_shape_id = plate_purpose.asset_shape_id
-
 
       # Configure the cherrypicking action based on the parameters
       cherrypicker =

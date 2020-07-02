@@ -69,7 +69,6 @@ class PlateTemplateTask < Task
   def do_task(workflows_controller, params)
     return true if params[:file].blank?
 
-
     plate_size = if params[:plate_template].blank?
                    PlatePurpose.find(params[:plate_purpose_id]).size
                  else

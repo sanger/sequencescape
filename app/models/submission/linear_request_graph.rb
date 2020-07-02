@@ -26,7 +26,7 @@ module Submission::LinearRequestGraph
     end
   end
 
-  def create_requests_for_assets!(assets, multiplexing_assets=nil, run_assets_in_a_block=false, &block)
+  def create_requests_for_assets!(assets, multiplexing_assets = nil, run_assets_in_a_block = false, &block)
     create_request_chain!(
       build_request_type_multiplier_pairs,
       assets.map { |asset| SourceData.new(asset, asset.latest_stock_metrics(product), nil) },
@@ -59,9 +59,9 @@ module Submission::LinearRequestGraph
   # Creates the next step in the request graph, taking the first request type specified and building
   # enough requests for the source assets.  It will recursively call itself if there are more requests
   # that need creating.
-  # @yieldreturn [Array<Asset>] Yields the target assets, for example, 
+  # @yieldreturn [Array<Asset>] Yields the target assets, for example,
   #                             when multiplexing it would be a {MultiplexedLibraryTube}.
-  def create_request_chain!(request_type_and_multiplier_pairs, source_data_set, multiplexing_assets, run_assets_in_a_block=false, &block) # rubocop:todo Metrics/CyclomaticComplexity
+  def create_request_chain!(request_type_and_multiplier_pairs, source_data_set, multiplexing_assets, run_assets_in_a_block = false, &block) # rubocop:todo Metrics/CyclomaticComplexity
     raise StandardError, 'No request types specified!' if request_type_and_multiplier_pairs.empty?
 
     request_type, multiplier = request_type_and_multiplier_pairs.shift
