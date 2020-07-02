@@ -18,23 +18,24 @@ class RobotVerificationsController < ApplicationController
     end
 
     if errors.empty?
-      @dest_plates, @source_plates, @ctrl_plates = @robot_verification.expected_layout(
+      @pick_number = Batch.extract_pick_number(barcode_hash[:batch_barcode])
+      @dest_plates, @source_plates, @ctrl_plates = @robot.pick_number_to_expected_layout(
         @batch,
         barcode_hash[:destination_plate_barcode]
-      )
-      @pick_number = Batch.extract_pick_number(barcode_hash[:batch_barcode])
+      )[@pick_number]
     else
       flash[:error] = errors
       redirect_to action: :index
     end
   end
 
-  # Step 3: Recieves the submission form and checks if it is valid. In the event it is valid
+  # Step 3: Receives the submission form and checks if it is valid. In the event it is valid
   #         provides a link to download the gwl/csv driver file for the robot. Otherwise
   #         redirects the user back to step 1 with an error message.
   def download
     @robot = Robot.find(params[:robot_id])
     @robot_verification = @robot.verification_behaviour
+
     if @robot_verification.valid_submission?(params)
       @robot_verification.record_plate_types(params[:plate_types])
       @batch = Batch.find(params[:batch_id])

@@ -13,55 +13,11 @@ class Robot::PickData
     @max_beds = max_beds
   end
 
-  def picking_data
-    @picking_data ||= generate_picking_data
-  end
-
   def picking_data_hash
     @picking_data_hash ||= generate_picking_data_hash
   end
 
   private
-
-  # TODO: can remove this after all code is changed to use generate_picking_data_hash
-  def generate_picking_data
-    data_object = {
-      'user' => user.login,
-      'time' => Time.zone.now,
-      'source' => {},
-      'destination' => {}
-    }
-
-    requests.includes([
-      { asset: [{ plate: [:barcodes, :labware_type] }, :map] },
-      { target_asset: [:map, :well_attribute, { plate: [:barcodes, :labware_type] }] }
-    ])
-            .passed
-            .find_each do |request|
-      # Note: source includes control wells/plates
-      source_plate = request.asset.plate
-      target_plate = request.target_asset.plate
-      source_well = request.asset
-      target_well = request.target_asset
-
-      next unless target_plate.any_barcode_matching?(target_barcode)
-
-      full_source_barcode = source_plate.machine_barcode
-      full_destination_barcode = target_plate.machine_barcode
-
-      data_object['source'][full_source_barcode] ||= plate_information(source_plate)
-      data_object['destination'][full_destination_barcode] ||= destination_plate_information(target_plate)
-
-      data_object['destination'][full_destination_barcode]['mapping'] << {
-        'src_well' => [full_source_barcode, source_well.map_description],
-        'dst_well' => target_well.map_description,
-        'volume' => target_well.get_picked_volume,
-        'buffer_volume' => target_well.get_buffer_volume
-      }
-    end
-
-    data_object
-  end
 
   # processes cherrypicking requests for a single batch and destination plate
   # if there are more source plates than the maxiumum capacity for the robot, splits it out into multiple picks
