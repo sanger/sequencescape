@@ -276,4 +276,8 @@ module Barcode::FormatHandlers
   class UkBiocentreV3 < BaseRegExBarcode
     self.format = /\A(?<prefix>RNA)(?<number>\d+)\z/
   end
+
+  class Glasgow < BaseRegExBarcode
+    self.format = /\A(?<prefix>GLA)(?<number>[0-9]{6})(?<suffix>R)\z/
+  end
 end

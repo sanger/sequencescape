@@ -100,5 +100,16 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'PLATE-1234567 '
     it_has_an_invalid_barcode "PLTE-1234567\n1"
   end
+
+  describe Barcode::FormatHandlers::Glasgow do
+    it_has_a_valid_barcode 'GLA123456R', prefix: 'GLA', number: 123456, suffix: 'R'
+    it_has_a_valid_barcode 'GLA100000R', prefix: 'GLA', number: 100000, suffix: 'R'
+    it_has_an_invalid_barcode 'GLA-123456-R'
+    it_has_an_invalid_barcode 'GLA123456R '
+    it_has_an_invalid_barcode "GLA123456R\n1"
+    it_has_an_invalid_barcode "GLA123456S"
+    it_has_an_invalid_barcode "GLE123456R"
+    it_has_an_invalid_barcode "GLA1234567R"
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end
