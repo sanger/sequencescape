@@ -28,6 +28,7 @@ shared_examples 'a cherrypicking procedure' do
       step 'Task 1, Step 1 - Select layout options' do
         select(target_purpose.name, from: 'Output plate purpose')
         select(plate_template.name, from: 'Plate Template')
+
         # optionally select a control plate
         select(control_plate.human_barcode, from: 'Control plate') if control_plate
       end
@@ -37,29 +38,25 @@ shared_examples 'a cherrypicking procedure' do
       end
 
       step 'Task 1, Step 3 - Specify volume to pick' do
-        # select based on choice of option
         choose(layout_volume_option)
+
         case layout_volume_option
-          when 'Pick by µl'
-            # choose('Pick by µl')
-            fill_in('micro_litre_volume_required', with: '13')
-          when 'Pick by ng/µl'
-            # choose('Pick by ng/µl')
-            fill_in('Volume Required', with: '65')
-            within('#pick_by_nano_grams_per_micro_litre') do
-              fill_in('Robot Minimum Picking Volume', with: '1.0')
-            end
-          when 'Pick by ng'
-            # choose('Pick by ng')
-            within('#pick_by_nano_grams') do
-              fill_in('Robot Minimum Picking Volume', with: '2.0')
-              fill_in('Quantity to pick', with: 10000)
-              fill_in('Minimum Volume', with: 20)
-              fill_in('Maximum Volume', with: 150)
-            end
-          else
-            "You gave me #{x} -- I have no idea what to do with that."
+        when 'Pick by µl'
+          fill_in('micro_litre_volume_required', with: '13')
+        when 'Pick by ng/µl'
+          fill_in('Volume Required', with: '65')
+          within('#pick_by_nano_grams_per_micro_litre') do
+            fill_in('Robot Minimum Picking Volume', with: '1.0')
+          end
+        when 'Pick by ng'
+          within('#pick_by_nano_grams') do
+            fill_in('Robot Minimum Picking Volume', with: '2.0')
+            fill_in('Quantity to pick', with: 10000)
+            fill_in('Minimum Volume', with: 20)
+            fill_in('Maximum Volume', with: 150)
+          end
         end
+
         click_button 'Next step'
       end
 
@@ -167,34 +164,29 @@ shared_examples 'a cherrypicking procedure' do
     step 'Perform the bed verifications and check picking files' do
       expected_plates_by_destination_plate.each do |(destination_barcode, current_expected_plates)|
         (1..current_expected_plates.size).each do |pick_number_index|
-          step "Bed verify destination plate #{destination_barcode} pick number #{pick_number_index}" do
+          step "Setup bed verification for #{destination_barcode} pick number #{pick_number_index}" do
             step 'visit robot verifications page' do
               visit('/robot_verifications')
             end
 
-            step 'scan user id' do
-              fill_in('Scan user ID', with: swipecard_code)
-            end
-
-            step 'scan robot barcode' do
-              fill_in('Scan robot', with: robot_barcode)
-            end
-
-            step 'scan worksheet' do
+            step 'scan user, and robot, worksheet and destination plate barcodes' do
               worksheet_barcode = "#{batch_barcode}-#{pick_number_index}"
-              fill_in('Scan worksheet', with: worksheet_barcode)
-            end
 
-            step 'scan destination plate' do
+              fill_in('Scan user ID', with: swipecard_code)
+              fill_in('Scan robot', with: robot_barcode)
+              fill_in('Scan worksheet', with: worksheet_barcode)
               fill_in('Scan destination plate', with: destination_barcode)
+
               click_on('Check')
             end
+          end
 
-            step 'perform bed verification' do
-              # need subset of plates for the current pick number
-              current_source_plates = current_expected_plates[pick_number_index][:sources]
-              control_plate = current_expected_plates[pick_number_index][:control]
+          step 'Perform bed verification' do
+            # need subset of plates for the current pick number
+            current_source_plates = current_expected_plates[pick_number_index][:sources]
+            control_plate = current_expected_plates[pick_number_index][:control]
 
+            step 'scan beds' do
               # fill in robot bed barcodes for sources
               # NB. screen erb seems to override key in robot properties and adds the space e.g. SCRC 1 not SCRC1
               (1..current_source_plates.count).each do |i|
@@ -202,11 +194,13 @@ shared_examples 'a cherrypicking procedure' do
               end
 
               # fill in robot bed barcode for control if present
-              fill_in("CTRL 1", with: SBCF::SangerBarcode.new(prefix: 'RB', number: max_plates).machine_barcode) if control_plate
+              fill_in('CTRL 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: max_plates).machine_barcode) if control_plate
 
               # fill in robot bed barcode for destination
               fill_in('DEST 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: max_plates + 1).machine_barcode)
+            end
 
+            step 'scan plate barcodes' do
               # source plate barcodes
               current_source_plates.each do |plate|
                 fill_in(plate.human_barcode, with: plate.human_barcode)
@@ -217,10 +211,14 @@ shared_examples 'a cherrypicking procedure' do
 
               # destination plate barcodes
               fill_in(destination_barcode, with: destination_barcode)
+            end
 
+            step 'optionally set custom destination plate type' do
               # optionally fill in custom plate type for the destination
               select(custom_destination_type_name, from: "plate_types[#{destination_barcode}]") if custom_destination_type
+            end
 
+            step 'verify bed layout' do
               click_on('Verify')
             end
           end
@@ -228,14 +226,14 @@ shared_examples 'a cherrypicking procedure' do
           step "Download pick file for destination plate #{destination_barcode} pick number #{pick_number_index}" do
             expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
 
-            if(expected_pick_files_by_destination_plate.present?)
+            if expected_pick_files_by_destination_plate.present?
               # fetch our expected file structure
               expected_file = expected_pick_files_by_destination_plate[destination_barcode][pick_number_index]
 
               click_link("Download #{robot.name} File")
 
               # robot file generation differs by generator
-              if(robot.generation_behaviour_property.value == 'Hamilton')
+              if robot.generation_behaviour_property.value == 'Hamilton'
                 # for Robot::Generator::Hamilton
                 generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
                 generated_lines = generated_file.lines

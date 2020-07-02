@@ -14,25 +14,32 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:pipeline) { create :cherrypick_pipeline }
   let(:pipeline_name) { pipeline.name }
   let(:max_plates) { 17 }
-  let!(:robot) do
+  let(:robot) do
     create(:full_robot, barcode: '1111', number_of_sources: max_plates,
                         number_of_destinations: 1, max_plates_value: max_plates)
   end
   let(:robot_barcode) { SBCF::SangerBarcode.new(prefix: 'RB', number: robot.barcode).machine_barcode }
   let(:submission) { create :submission }
-  let!(:plate_template) { create :plate_template }
-  let!(:plate_type) { create :plate_type, name: 'ABgene_0765', maximum_volume: 800 }
+  let(:plate_template) { create :plate_template }
+  let(:plate_type) { create :plate_type, name: 'ABgene_0765', maximum_volume: 800 }
   let(:destination_plate_barcode) { '1001' }
   let(:destination_plate_human_barcode) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode }
-  let!(:target_purpose) { create :plate_purpose }
-  let!(:control_plate) { nil }
+  let(:target_purpose) { create :plate_purpose }
+  let(:control_plate) { nil }
   let(:concentrations_required) { false }
-  let!(:custom_destination_type) { nil }
+  let(:custom_destination_type) { nil }
   let(:custom_destination_type_name) { custom_destination_type.name || nil }
   let(:expected_pick_files_by_destination_plate) { nil }
   let!(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2) }
 
   before do
+    plate_template
+    plate_type
+    target_purpose
+    robot
+    custom_destination_type
+    control_plate
+
     plates.each do |plate|
       plate.wells.each_with_index do |well, index|
         # create the requests for cherrypicking
@@ -76,7 +83,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   describe 'where picking by ng/µl for a tecan robot' do
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng/µl' }
-    let!(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
+    let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
     let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {
@@ -148,7 +155,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   describe 'where picking by ng for a tecan robot' do
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng' }
-    let!(:plate_type) { create :plate_type, name: 'ABgene_0800', maximum_volume: 800 }
+    let(:plate_type) { create :plate_type, name: 'ABgene_0800', maximum_volume: 800 }
     let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {
@@ -258,10 +265,10 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:plates) { [plate1, plate2, plate3] }
     # TODO: robot factory should use max_plates value passed in
     let(:max_plates) { 25 }
-    let!(:robot) { create :hamilton, barcode: '444' }
+    let(:robot) { create :hamilton, barcode: '444' }
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng/µl' }
-    let!(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
+    let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
     let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {
