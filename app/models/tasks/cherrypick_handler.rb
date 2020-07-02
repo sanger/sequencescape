@@ -24,7 +24,7 @@ module Tasks::CherrypickHandler
     end
 
     control_plate_id = params[:Control][:plate_id] if params[:Control]
-    @control_plate = Plate.find(control_plate_id) if control_plate_id
+    @control_plate = Plate.find(control_plate_id) if control_plate_id && (!control_plate_id.empty?)
 
     setup_input_params_for_pass_through
 
@@ -58,9 +58,9 @@ module Tasks::CherrypickHandler
     @map_info = if @spreadsheet_layout
                   @spreadsheet_layout
                 elsif @plate.present?
-                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @control_plate, @plate)
+                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @plate, @control_plate)
                 else
-                  @task.pick_new_plate(@requests, plate_template, @robot, @control_plate, @plate_purpose)
+                  @task.pick_new_plate(@requests, plate_template, @robot, @plate_purpose, @control_plate)
                 end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]

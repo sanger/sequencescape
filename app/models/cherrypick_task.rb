@@ -156,14 +156,14 @@ class CherrypickTask < Task
   end
 
 
-  def pick_new_plate(requests, template, robot, control_plate, plate_purpose)
+  def pick_new_plate(requests, template, robot, plate_purpose, control_plate=nil)
     target_type = PickTarget.for(plate_purpose)
     perform_pick(requests, robot, control_plate) do
       target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
 
-  def pick_onto_partial_plate(requests, template, robot, control_plate, partial_plate)
+  def pick_onto_partial_plate(requests, template, robot, partial_plate, control_plate=nil)
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
@@ -220,7 +220,7 @@ class CherrypickTask < Task
     destination_plates = []
     current_destination_plate = yield # instance of ByRow, ByColumn or ByInterlacedColumn
     source_plates = Set.new
-    plates_hash = build_plate_wells_from_requests(requests.where(state: :started)) # array formed from requests
+    plates_hash = build_plate_wells_from_requests(requests) # array formed from requests
 
     # Initial settings needed for control requests addition
     if control_plate
