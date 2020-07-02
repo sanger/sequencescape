@@ -140,7 +140,7 @@ class CherrypickTask < Task
 
     # Generation of the choice
     positions = []
-    available_positions = (0..(num_free_wells-1)).to_a
+    available_positions = (0..(num_free_wells - 1)).to_a
 
     while positions.length < num_control_wells
       current_size = available_positions.length
