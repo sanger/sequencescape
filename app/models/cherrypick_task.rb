@@ -173,15 +173,17 @@ class CherrypickTask < Task
 
   # Creates control requests for the control assets provided and adds them to the batch
   def create_control_requests!(batch, control_assets)
-    order = batch.requests.first.submission.orders.first
-    destination_control_wells = nil
-    order.create_requests_for_assets!(control_assets, nil, true) do |created_wells|
-      destination_control_wells = created_wells
+    control_requests = control_assets.map do |control_asset|
+       CherrypickRequest.create(
+        asset: control_asset, 
+        target_asset: Well.new, 
+        submission: batch.requests.first.submission, 
+        request_type: RequestType.find_by_key('cherrypick'), 
+        request_purpose: 'standard'
+      )
     end
-    requests_from_controls = destination_control_wells.map(&:requests_as_target).flatten
-    batch.requests << requests_from_controls
-
-    requests_from_controls
+    batch.requests << control_requests
+    return control_requests
   end
 
   def add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)
