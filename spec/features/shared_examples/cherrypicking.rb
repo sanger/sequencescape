@@ -109,9 +109,7 @@ shared_examples 'a cherrypicking procedure' do
             expect(page).to have_content(transfer_request.target_aliquots.first.sample.name)
 
             # check for control sample transfer into the destination if appropriate
-            if control_plate
-              expect(page).to have_content(control_plate.contained_samples.first.name)
-            end
+            expect(page).to have_content(control_plate.contained_samples.first.name) if control_plate
           end
 
           step 'check the worksheets' do

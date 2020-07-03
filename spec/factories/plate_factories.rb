@@ -225,14 +225,14 @@ FactoryBot.define do
       well_factory { :untagged_well }
     end
 
-    after(:create) do |plate, evaluator|
+    after(:create) do |plate, _evaluator|
       plate.wells.each_with_index do |well, index|
         next if well.aliquots.count == 0
 
-        if(index%2 == 0)
-          well.aliquots.first.sample.update_attributes(:control => true, :control_type => 'positive')
+        if index.even?
+          well.aliquots.first.sample.update(control: true, control_type: 'positive')
         else
-          well.aliquots.first.sample.update_attributes(:control => true, :control_type => 'negative')
+          well.aliquots.first.sample.update(control: true, control_type: 'negative')
         end
       end
     end

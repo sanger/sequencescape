@@ -174,7 +174,7 @@ class CherrypickTask < Task
   # Creates control requests for the control assets provided and adds them to the batch
   def create_control_requests!(batch, control_assets)
     control_requests = control_assets.map do |control_asset|
-       CherrypickRequest.create(
+      CherrypickRequest.create(
         asset: control_asset,
         target_asset: Well.new,
         submission: batch.requests.first.submission,
@@ -183,7 +183,7 @@ class CherrypickTask < Task
       )
     end
     batch.requests << control_requests
-    return control_requests
+    control_requests
   end
 
   def add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)

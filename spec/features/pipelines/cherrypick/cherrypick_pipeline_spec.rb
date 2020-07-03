@@ -261,7 +261,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   describe 'where there is a control plate and a single destination' do
     let(:plate1) { create  :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
     let(:plate2) { create  :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
-    let(:control_plate) { create  :control_plate, sample_count: 2, barcode: '5' }
+    let(:control_plate) { create :control_plate, sample_count: 2, barcode: '5' }
     let(:plates) { [plate1, plate2] }
     let(:max_plates) { 25 }
     let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
@@ -282,7 +282,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   describe 'where there is a control plate and multiple destinations' do
     let(:plate1) { create  :plate_with_untagged_wells, sample_count: 50, barcode: '1' }
     let(:plate2) { create  :plate_with_untagged_wells, sample_count: 50, barcode: '10' }
-    let(:control_plate) { create  :control_plate, sample_count: 2, barcode: '5' }
+    let(:control_plate) { create :control_plate, sample_count: 2, barcode: '5' }
     let(:plates) { [plate1, plate2] }
     let(:max_plates) { 25 }
     let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
