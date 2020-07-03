@@ -21,13 +21,17 @@ module Submission::LinearRequestGraph
   def build_request_graph!(multiplexing_assets = nil)
     ActiveRecord::Base.transaction do
       mx_assets_tmp = nil
-      create_request_chain!(
-        build_request_type_multiplier_pairs,
-        assets.map { |asset| SourceData.new(asset, asset.latest_stock_metrics(product), nil) },
-        multiplexing_assets
-      ) { |a| mx_assets_tmp = a }
+      create_requests_for_assets!(assets, multiplexing_assets) { |a| mx_assets_tmp = a }
       mx_assets_tmp
     end
+  end
+
+  def create_requests_for_assets!(assets, multiplexing_assets = nil, run_assets_in_a_block = false, &block)
+    create_request_chain!(
+      build_request_type_multiplier_pairs,
+      assets.map { |asset| SourceData.new(asset, asset.latest_stock_metrics(product), nil) },
+      multiplexing_assets, run_assets_in_a_block, &block
+    )
   end
 
   private
@@ -55,9 +59,9 @@ module Submission::LinearRequestGraph
   # Creates the next step in the request graph, taking the first request type specified and building
   # enough requests for the source assets.  It will recursively call itself if there are more requests
   # that need creating.
-  # @yieldreturn [Array<Asset>] For orders with multiplexed request types, yields the target asset of
-  #                             the multiplexing, such as a {MultiplexedLibraryTube}.
-  def create_request_chain!(request_type_and_multiplier_pairs, source_data_set, multiplexing_assets, &block) # rubocop:todo Metrics/CyclomaticComplexity
+  # @yieldreturn [Array<Asset>] Yields the target assets, for example,
+  #                             when multiplexing it would be a {MultiplexedLibraryTube}.
+  def create_request_chain!(request_type_and_multiplier_pairs, source_data_set, multiplexing_assets, run_assets_in_a_block = false, &block) # rubocop:todo Metrics/CyclomaticComplexity
     raise StandardError, 'No request types specified!' if request_type_and_multiplier_pairs.empty?
 
     request_type, multiplier = request_type_and_multiplier_pairs.shift
@@ -71,7 +75,7 @@ module Submission::LinearRequestGraph
         else
           source_data_set.map { |source_data| create_target_asset_for!(request_type, source_data.asset) }
         end
-      yield(target_assets) if block_given? and request_type.for_multiplexing?
+      yield(target_assets) if block_given? and (request_type.for_multiplexing? or run_assets_in_a_block)
 
       # Now we can iterate over the source assets and target assets building the requests between them.
       # Ensure that the request has the correct comments on it, and that the aliquots of the source asset
