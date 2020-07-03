@@ -240,6 +240,10 @@ class CherrypickTask < Task
       batch = requests.first.batch
       control_assets = auto_add_control_plate.wells.joins(:samples)
       control_positions = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
+
+      # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the
+      # beginning of the plate
+      add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)
     end
 
     push_completed_plate = lambda do
@@ -252,9 +256,6 @@ class CherrypickTask < Task
       end
     end
 
-    # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the
-    # beginning of the plate
-    add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)
 
     plates_hash.each do |request_id, plate_barcode, well_location|
       source_plates << plate_barcode
