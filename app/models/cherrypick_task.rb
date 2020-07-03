@@ -175,10 +175,10 @@ class CherrypickTask < Task
   def create_control_requests!(batch, control_assets)
     control_requests = control_assets.map do |control_asset|
        CherrypickRequest.create(
-        asset: control_asset, 
-        target_asset: Well.new, 
-        submission: batch.requests.first.submission, 
-        request_type: RequestType.find_by_key('cherrypick'), 
+        asset: control_asset,
+        target_asset: Well.new,
+        submission: batch.requests.first.submission,
+        request_type: batch.requests.first.request_type,
         request_purpose: 'standard'
       )
     end
