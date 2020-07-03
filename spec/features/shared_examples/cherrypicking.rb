@@ -161,6 +161,7 @@ shared_examples 'a cherrypicking procedure' do
       end
     end
 
+    # rubocop:disable Metrics/BlockLength
     step 'Perform the bed verifications and check picking files' do
       expected_plates_by_destination_plate.each do |(destination_barcode, current_expected_plates)|
         (1..current_expected_plates.size).each do |pick_number_index|
@@ -268,5 +269,6 @@ shared_examples 'a cherrypicking procedure' do
         end
       end
     end
+    # rubocop:enable Metrics/BlockLength
   end
 end
