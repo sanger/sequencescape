@@ -97,10 +97,16 @@ shared_examples 'a cherrypicking procedure' do
             end
 
             destination_plate = Plate.find_by_barcode(destination_barcode)
+
+            # check for source transfer into the destination
             # assumption that there is a cherrypick into the A1 in the destination
             transfer_request = destination_plate.wells.first.transfer_requests_as_target.first
-
             expect(page).to have_content(transfer_request.target_aliquots.first.sample.name)
+
+            # check for control sample transfer into the destination if appropriate
+            if control_plate
+              expect(page).to have_content(control_plate.contained_samples.first.name)
+            end
           end
 
           step 'check the worksheets' do
@@ -124,7 +130,7 @@ shared_examples 'a cherrypicking procedure' do
                 end
 
                 control_plate = expected_plates[pick_number_index][:control]
-                if control_plate.present?
+                if control_plate
                   within('#control_plates') do
                     expect(page).to have_content(control_plate.human_barcode)
                   end
@@ -147,7 +153,6 @@ shared_examples 'a cherrypicking procedure' do
                   # N.B. this doesn't actually check the correct picks are going to correct wells at sample level
                   cells_with_content.each do |cell|
                     barcode_numbers = expected_plates[pick_number_index][:sources].map(&:barcode_number)
-                    control_plate = expected_plates[pick_number_index][:control]
                     barcode_numbers << control_plate.barcode_number if control_plate
                     number_in_cell = cell.text.split(' ')[1]
 
@@ -161,6 +166,7 @@ shared_examples 'a cherrypicking procedure' do
       end
     end
 
+    # rubocop:disable Metrics/BlockLength
     step 'Perform the bed verifications and check picking files' do
       expected_plates_by_destination_plate.each do |(destination_barcode, current_expected_plates)|
         (1..current_expected_plates.size).each do |pick_number_index|
@@ -226,38 +232,43 @@ shared_examples 'a cherrypicking procedure' do
           step "Download pick file for destination plate #{destination_barcode} pick number #{pick_number_index}" do
             expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
 
-            if expected_pick_files_by_destination_plate.present?
-              # fetch our expected file structure
-              expected_file = expected_pick_files_by_destination_plate[destination_barcode][pick_number_index]
+            click_link("Download #{robot.name} File")
 
-              click_link("Download #{robot.name} File")
+            # robot file generation differs by generator
+            case robot.generation_behaviour_property.value
+            when 'Hamilton'
+              # for Robot::Generator::Hamilton
+              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
+              generated_lines = generated_file.lines
 
-              # robot file generation differs by generator
-              if robot.generation_behaviour_property.value == 'Hamilton'
-                # for Robot::Generator::Hamilton
-                generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
-                generated_lines = generated_file.lines
-
+              # optionally if an expected file was supplied. compare it to the result
+              if expected_pick_files_by_destination_plate.present?
+                # fetch our expected file structure
+                expected_file = expected_pick_files_by_destination_plate[destination_barcode][pick_number_index]
                 expected_file_lines = expected_file.lines
 
                 expect(generated_lines.length).to eq(expected_file_lines.length)
-
                 expected_file_lines.each_with_index do |expected_line, index|
                   expect(generated_lines[index]).to eq(expected_line), "Error on line #{index} in #{expected_file}"
                 end
-              else
-                # for Robot::Generator::Tecan
-                generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl")
-                generated_lines = generated_file.lines
-                # Shift off the comment lines
+              end
+            when 'Tecan'
+              # for Robot::Generator::Tecan
+              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl")
+              generated_lines = generated_file.lines
+
+              # optionally if an expected file was supplied. compare it to the result
+              if expected_pick_files_by_destination_plate.present?
+                # Shift off the dynamic comment lines
                 generated_lines.shift(2)
 
+                # fetch our expected file structure
+                expected_file = expected_pick_files_by_destination_plate[destination_barcode][pick_number_index]
                 expected_file_lines = expected_file.lines
                 # Shift off the comment lines
                 expected_file_lines.shift(2)
 
                 expect(generated_lines.length).to eq(expected_file_lines.length)
-
                 expected_file_lines.each_with_index do |expected_line, index|
                   # Shift the error line number
                   expect(generated_lines[index]).to eq(expected_line), "Error on line #{index + 2} in #{expected_file}"
@@ -268,5 +279,6 @@ shared_examples 'a cherrypicking procedure' do
         end
       end
     end
+    # rubocop:enable Metrics/BlockLength
   end
 end

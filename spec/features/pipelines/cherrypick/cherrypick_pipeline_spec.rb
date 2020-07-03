@@ -258,39 +258,46 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     it_behaves_like 'a cherrypicking procedure'
   end
 
-  describe 'where there is a control plate' do
+  describe 'where there is a control plate and a single destination' do
     let(:plate1) { create  :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
     let(:plate2) { create  :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
-    let(:plate3) { create  :control_plate, sample_count: 2, barcode: '5' }
-    let(:plates) { [plate1, plate2, plate3] }
-    # TODO: robot factory should use max_plates value passed in
+    let(:control_plate) { create  :control_plate, sample_count: 2, barcode: '5' }
+    let(:plates) { [plate1, plate2] }
     let(:max_plates) { 25 }
-    let(:robot) { create :hamilton, barcode: '444' }
+    let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng/µl' }
     let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
     let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {
-          1 => { sources: [plates[0], plates[1]], control: plates[2] }
+          1 => { sources: [plates[0], plates[1]], control: control_plate }
         }
       }
     end
-    let(:expected_hamilton_file) do
-      <<~FILE
-        SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
-        #{plates[0].human_barcode},A1,ABgene 0765,15.85,#{destination_plate_human_barcode},A1,Custom Type,15.85,49.15
-        #{plates[0].human_barcode},B1,ABgene 0765,15.78,#{destination_plate_human_barcode},B1,Custom Type,15.78,49.22
-        #{plates[1].human_barcode},A1,ABgene 0765,15.85,#{destination_plate_human_barcode},C1,Custom Type,15.85,49.15
-        #{plates[1].human_barcode},B1,ABgene 0765,15.78,#{destination_plate_human_barcode},D1,Custom Type,15.78,49.22
-        #{plates[2].human_barcode},A1,ABgene 0765,15.85,#{destination_plate_human_barcode},E1,Custom Type,15.85,49.15
-        #{plates[2].human_barcode},B1,ABgene 0765,15.78,#{destination_plate_human_barcode},F1,Custom Type,15.78,49.22
-      FILE
-    end
-    let(:expected_pick_files_by_destination_plate) do
+
+    it_behaves_like 'a cherrypicking procedure'
+  end
+
+  describe 'where there is a control plate and multiple destinations' do
+    let(:plate1) { create  :plate_with_untagged_wells, sample_count: 50, barcode: '1' }
+    let(:plate2) { create  :plate_with_untagged_wells, sample_count: 50, barcode: '10' }
+    let(:control_plate) { create  :control_plate, sample_count: 2, barcode: '5' }
+    let(:plates) { [plate1, plate2] }
+    let(:max_plates) { 25 }
+    let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
+    let(:concentrations_required) { true }
+    let(:layout_volume_option) { 'Pick by ng/µl' }
+    let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
+    let(:destination_plate_barcode_2) { '1002' }
+    let(:destination_plate_human_barcode_2) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode_2).human_barcode }
+    let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {
-          1 => expected_hamilton_file
+          1 => { sources: [plates[0], plates[1]], control: control_plate }
+        },
+        destination_plate_human_barcode_2 => {
+          1 => { sources: [plates[1]], control: control_plate }
         }
       }
     end
