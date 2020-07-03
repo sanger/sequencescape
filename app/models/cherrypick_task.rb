@@ -105,13 +105,13 @@ class CherrypickTask < Task
       batch.requests << control_requests
       control_requests
     end
-    
+
     # Creates a new control request for the control_asset and adds it into the current_destination_plate plate
     def add_control_request(batch, control_asset, current_destination_plate)
       control_request = create_control_requests!(batch, [control_asset]).first
       control_request.start!
       current_destination_plate.push(control_request.id,
-                                    control_request.asset.plate.human_barcode, control_request.asset.map_description)
+                                     control_request.asset.plate.human_barcode, control_request.asset.map_description)
     end
 
     # Adds any remaining control requests not already added, into the current_destination_plate plate
@@ -124,20 +124,17 @@ class CherrypickTask < Task
       end
     end
 
-
     def push_and_write_remaining(request_id, plate_barcode, well_location, control_positions, batch, control_assets, current_destination_plate)
       @wells << [request_id, plate_barcode, well_location]
       remaining_controls = control_positions.select { |c| c >= @wells.length }
-      if ((@wells.length + remaining_controls.length) >= (@size-1))
-        add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate)      
-      end
+      add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate) if (@wells.length + remaining_controls.length) >= (@size - 1)
       add_any_wells_from_template_or_partial(@wells)
       self
     end
 
     def push(request_id, plate_barcode, well_location)
       @wells << [request_id, plate_barcode, well_location]
-      
+
       add_any_wells_from_template_or_partial(@wells)
       self
     end
@@ -182,7 +179,6 @@ class CherrypickTask < Task
   # Returns a list with the destination positions for the control wells distributed by
   # using batch_id and num_plate as position generators.
   def control_positions(batch_id, num_plate, num_free_wells, num_control_wells)
-    return [95,0]
     unique_number = batch_id
 
     # Generation of the choice
@@ -316,8 +312,8 @@ class CherrypickTask < Task
         push_completed_plate.call if current_destination_plate.full?
       end
       # Add this well to the pick and if the plate is filled up by that push it to the list.
-      current_destination_plate.push_and_write_remaining(request_id, plate_barcode, well_location, 
-        control_positions, batch, control_assets, current_destination_plate)
+      current_destination_plate.push_and_write_remaining(request_id, plate_barcode, well_location,
+                                                         control_positions, batch, control_assets, current_destination_plate)
       push_completed_plate.call if current_destination_plate.full?
     end
 
