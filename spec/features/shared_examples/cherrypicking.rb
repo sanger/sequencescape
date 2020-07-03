@@ -70,8 +70,10 @@ shared_examples 'a cherrypicking procedure' do
       step 'Task 3 - finish task' do
         click_button 'Release this batch'
         expect(page).to have_content('Batch released!')
+        expected_input_count = plates.count
+        expected_input_count += 1 if control_plate
         within('#input_assets table tbody') do
-          expect(page).to have_selector('tr', count: plates.count)
+          expect(page).to have_selector('tr', count: expected_input_count)
         end
         within('#output_assets table tbody') do
           expect(page).to have_selector('tr', count: expected_plates_by_destination_plate.size)
