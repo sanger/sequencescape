@@ -111,5 +111,13 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode "GLE123456R"
     it_has_an_invalid_barcode "GLA1234567R"
   end
+
+  describe Barcode::FormatHandlers::CambridgeAZ do
+    it_has_a_valid_barcode '002107834', number: '002107834'
+    it_has_a_valid_barcode '1087739333', number: '1087739333'
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'AB1234567'
+    it_has_an_invalid_barcode '002107834 '
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end

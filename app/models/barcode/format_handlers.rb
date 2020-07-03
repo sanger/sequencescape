@@ -280,4 +280,9 @@ module Barcode::FormatHandlers
   class Glasgow < BaseRegExBarcode
     self.format = /\A(?<prefix>GLA)(?<number>[0-9]{6})(?<suffix>R)\z/
   end
+
+  class CambridgeAZ < BaseRegExBarcode
+    self.format = /\A(?<number>[0-9]{9,10})\z/
+  end
 end
+
