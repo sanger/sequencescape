@@ -256,7 +256,6 @@ class CherrypickTask < Task
       end
     end
 
-
     plates_hash.each do |request_id, plate_barcode, well_location|
       source_plates << plate_barcode
       if auto_add_control_plate
