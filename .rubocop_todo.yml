@@ -217,6 +217,8 @@ Metrics/ClassLength:
 # Configuration parameters: IgnoredMethods.
 Metrics/CyclomaticComplexity:
   Max: 20
+  Exclude: 
+    - app/models/submission/linear_request_graph.rb
 
 # Offense count: 397
 # Configuration parameters: CountComments, ExcludedMethods.
