@@ -243,7 +243,7 @@ shared_examples 'a cherrypicking procedure' do
             case robot.generation_behaviour_property.value
             when 'Hamilton'
               # for Robot::Generator::Hamilton
-              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
+              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 10)
               generated_lines = generated_file.lines
 
               # check generated lines match expected by calculation - headers row + one row per sample/control transfer
@@ -253,7 +253,7 @@ shared_examples 'a cherrypicking procedure' do
               # check count of controls present in destination file lines is correct
               if control_plate
                 count_control_plate_entries = 0
-                generated_lines.each { |line| count_control_plate_entries += 1 if line =~ /#{control_plate.human_barcode}/ }
+                generated_lines.each { |line| count_control_plate_entries += 1 if /#{control_plate.human_barcode}/.match?(line) }
                 expect(count_control_plate_entries).to eq(control_plate.contained_samples.count)
               end
 
@@ -263,21 +263,20 @@ shared_examples 'a cherrypicking procedure' do
                 expected_file = expected_pick_files_by_destination_plate[destination_barcode][pick_number_index]
                 expected_file_lines = expected_file.lines
 
-                expect(generated_lines.length).to eq(expected_file_lines.length)
                 expected_file_lines.each_with_index do |expected_line, index|
                   expect(generated_lines[index]).to eq(expected_line), "Error on line #{index} in #{expected_file}"
                 end
               end
             when 'Tecan'
               # for Robot::Generator::Tecan
-              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl")
+              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl", timeout: 10)
               generated_lines = generated_file.lines
 
               # check count of controls present in destination file lines is correct
               # NB. Tecan file has additional plate barcode lines at bottom of file for beds so add 1
               if control_plate
                 count_control_plate_entries = 0
-                generated_lines.each { |line| count_control_plate_entries += 1 if line =~ /#{control_plate.human_barcode}/ }
+                generated_lines.each { |line| count_control_plate_entries += 1 if /#{control_plate.human_barcode}/.match?(line) }
                 expect(count_control_plate_entries).to eq(control_plate.contained_samples.count + 1)
               end
 
@@ -292,7 +291,6 @@ shared_examples 'a cherrypicking procedure' do
                 # Shift off the comment lines
                 expected_file_lines.shift(2)
 
-                expect(generated_lines.length).to eq(expected_file_lines.length)
                 expected_file_lines.each_with_index do |expected_line, index|
                   # Shift the error line number
                   expect(generated_lines[index]).to eq(expected_line), "Error on line #{index + 2} in #{expected_file}"
