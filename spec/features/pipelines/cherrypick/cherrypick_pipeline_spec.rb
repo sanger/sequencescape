@@ -62,6 +62,10 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     end
 
     mock_plate_barcode_service
+
+    stub_const('NUM_HAMILTON_HEADER_LINES', 1)
+    stub_const('NUM_TECAN_HEADER_LINES', 2)
+    stub_const('NUM_TECAN_EXTRA_BARCODE_LINES', 1)
   end
 
   describe 'when creating batches' do
