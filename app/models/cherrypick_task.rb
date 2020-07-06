@@ -155,9 +155,7 @@ class CherrypickTask < Task
       @wells << [request_id, plate_barcode, well_location]
       if control_positions
         add_any_consecutive_control_requests(control_positions, batch, control_assets)
-        if ((@wells.length + remaining_wells(control_positions).length) == @size)
-          add_remaining_control_requests(control_positions, batch, control_assets)
-        end
+        add_remaining_control_requests(control_positions, batch, control_assets) if (@wells.length + remaining_wells(control_positions).length) == @size
       end
       add_any_wells_from_template_or_partial(@wells)
       self
@@ -207,7 +205,6 @@ class CherrypickTask < Task
       end
       add_any_consecutive_control_requests(control_positions, batch, control_assets)
     end
-
   end
 
   #
@@ -273,7 +270,7 @@ class CherrypickTask < Task
     push_completed_plate = lambda do |idx|
       destination_plates << current_destination_plate.completed_view
       current_destination_plate = yield # reset to start picking to a fresh one
-      if (auto_add_control_plate && (idx < (plates_hash.length-1)))
+      if auto_add_control_plate && (idx < (plates_hash.length - 1))
         # when we start a new plate we rebuild the list of positions where the requests should be placed
         num_plate += 1
         control_positions = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
@@ -285,8 +282,8 @@ class CherrypickTask < Task
       request_id, plate_barcode, well_location = list
       source_plates << plate_barcode
       current_destination_plate.push_with_controls(request_id, plate_barcode, well_location,
-        control_positions, batch, control_assets)
-      push_completed_plate.call(idx) if current_destination_plate.full?  
+                                                   control_positions, batch, control_assets)
+      push_completed_plate.call(idx) if current_destination_plate.full?
     end
     # If there are any remaining control requests, we'll add all of them at the end of the last plate
     unless current_destination_plate.empty?

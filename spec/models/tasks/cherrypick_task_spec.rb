@@ -12,7 +12,7 @@ RSpec.describe CherrypickTask, type: :model do
   let(:request_type) { create :request_type }
 
   def pick_without_request_id(plates)
-    plates.map { |plate| plate.map{|_id, barcode, pos| [ barcode, pos ] } }
+    plates.map { |plate| plate.map { |_id, barcode, pos| [barcode, pos] } }
   end
 
   describe '#pick_new_plate' do
@@ -64,11 +64,12 @@ RSpec.describe CherrypickTask, type: :model do
             ]
           ]
         end
-  
+
         before do
           template.wells.create!
           template.wells.first.update(map_id: 6)
         end
+
         it 'places controls in a different position' do
           pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
           expect(pick_without_request_id(pick[0])).to eq(destinations)
@@ -79,10 +80,12 @@ RSpec.describe CherrypickTask, type: :model do
 
   describe '#pick_onto_partial_plate' do
     let!(:partial_plate) { create :plate, size: 6 }
+
     before do
       partial_plate.wells.create!
       partial_plate.wells.first.update(map_id: 6)
     end
+
     context 'with controls' do
       before do
         control_plate.wells[0].samples.first.update(control: true, control_type: 'positive')
@@ -101,7 +104,7 @@ RSpec.describe CherrypickTask, type: :model do
             [plate.human_barcode, 'B1'],
             [control_plate.human_barcode, 'A1'],
             ['Empty', ''],
-            ["---", ""]
+            ['---', '']
           ]]
         end
 
@@ -121,7 +124,7 @@ RSpec.describe CherrypickTask, type: :model do
               [plate.human_barcode, 'B1'],
               [plate.human_barcode, 'C1'],
               [control_plate.human_barcode, 'A1'],
-              ["---", ""]
+              ['---', '']
             ],
             [
               [control_plate.human_barcode, 'A1'],
@@ -129,17 +132,16 @@ RSpec.describe CherrypickTask, type: :model do
               [plate.human_barcode, 'D1'],
               ['Empty', ''],
               ['Empty', ''],
-              ["Empty", ""]
+              ['Empty', '']
             ]
           ]
         end
-  
+
         it 'places controls in a different position' do
           pick = described_class.new.pick_onto_partial_plate(requests, template, robot, partial_plate, control_plate)
           expect(pick_without_request_id(pick[0])).to eq(destinations)
         end
       end
-
     end
   end
 
