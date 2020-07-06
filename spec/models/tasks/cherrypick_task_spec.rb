@@ -11,6 +11,10 @@ RSpec.describe CherrypickTask, type: :model do
   let(:submission) { create :submission }
   let(:request_type) { create :request_type }
 
+  def pick_without_request_id(plates)
+    plates.map { |plate| plate.map{|_id, barcode, pos| [ barcode, pos ] } }
+  end
+
   describe '#pick_new_plate' do
     context 'with control plate' do
       before do
@@ -21,57 +25,54 @@ RSpec.describe CherrypickTask, type: :model do
         allow(requests.first).to receive(:batch).and_return(batch)
       end
 
-      let(:plates) do
-        [[
-          [control_plate.human_barcode, 'B1'],
-          [plate.human_barcode, 'A1'],
-          [plate.human_barcode, 'B1'],
-          [plate.human_barcode, 'C1'],
-          [plate.human_barcode, 'D1'],
-          [control_plate.human_barcode, 'A1']
-        ]]
+      context 'when controls and wells fit in one plate' do
+        let(:destinations) do
+          [[
+            [control_plate.human_barcode, 'B1'],
+            [plate.human_barcode, 'A1'],
+            [plate.human_barcode, 'B1'],
+            [plate.human_barcode, 'C1'],
+            [plate.human_barcode, 'D1'],
+            [control_plate.human_barcode, 'A1']
+          ]]
+        end
+
+        it 'generates one plate' do
+          pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
+          expect(pick_without_request_id(pick[0])).to eq(destinations)
+        end
       end
 
-      let(:expected_2_1) do
-        [
-          [control_plate.human_barcode, 'B1'],
-          [plate.human_barcode, 'A1'],
-          [plate.human_barcode, 'B1'],
-          [plate.human_barcode, 'C1'],
-          [control_plate.human_barcode, 'A1'],
-          ['---', '']
-        ]
-      end
-
-      let(:expected_2_2) do
-        [
-          [control_plate.human_barcode, 'A1'],
-          [control_plate.human_barcode, 'B1'],
-          [plate.human_barcode, 'D1'],
-          ['Empty', ''],
-          ['Empty', ''],
-          ['---', '']
-        ]
-      end
-
-      it 'picks controls' do
-        pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
-        #expect(pick[0].length).to eq()
-        expect(pick[0].map { |plate| plate.map{|_id, barcode, pos| [barcode, pos] } }).to eq(plates)
-      end
-
-      # Empty position 6
-      # 2 plates
-      # First plate
-      # controls should go to positions 0,5
-      # Second plate
-      # controls should go to positions 0,1
-      it 'places controls in a different position when clashing with templates' do
-        template.wells.create!
-        template.wells.first.update(map_id: 6)
-        pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
-        expect(pick[0][0].map { |_id, barcode, pos| [barcode, pos] }).to eq(expected_2_1)
-        expect(pick[0][1].map { |_id, barcode, pos| [barcode, pos] }).to eq(expected_2_2)
+      context 'when control positions clashes with templates' do
+        let(:destinations) do
+          [
+            [
+              [control_plate.human_barcode, 'B1'],
+              [plate.human_barcode, 'A1'],
+              [plate.human_barcode, 'B1'],
+              [plate.human_barcode, 'C1'],
+              [control_plate.human_barcode, 'A1'],
+              ['---', '']
+            ],
+            [
+              [control_plate.human_barcode, 'A1'],
+              [control_plate.human_barcode, 'B1'],
+              [plate.human_barcode, 'D1'],
+              ['Empty', ''],
+              ['Empty', ''],
+              ['---', '']
+            ]
+          ]
+        end
+  
+        before do
+          template.wells.create!
+          template.wells.first.update(map_id: 6)
+        end
+        it 'places controls in a different position' do
+          pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
+          expect(pick_without_request_id(pick[0])).to eq(destinations)
+        end
       end
     end
   end

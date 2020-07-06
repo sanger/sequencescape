@@ -107,33 +107,35 @@ class CherrypickTask < Task
     end
 
     # Creates a new control request for the control_asset and adds it into the current_destination_plate plate
-    def add_control_request(batch, control_asset, current_destination_plate)
+    def add_control_request(batch, control_asset)
       control_request = create_control_requests!(batch, [control_asset]).first
       control_request.start!
-      current_destination_plate.push(control_request.id,
-                                     control_request.asset.plate.human_barcode, control_request.asset.map_description)
+      push(control_request.id, control_request.asset.plate.human_barcode, control_request.asset.map_description)
+    end
+
+    # Adds any consecutive list of control requests into the current_destination_plate
+    def add_any_consecutive_control_requests(control_positions, batch, control_assets)
+      # find the index of the well we are filling right now
+      current_well_index = content.length
+
+      # check if this well should contain a control
+      # add it if so, and any consecutive ones by looping
+      while control_positions.include?(current_well_index)
+        control_asset = control_assets[control_positions.find_index(current_well_index)]
+        add_control_request(batch, control_asset)
+        # above adds to current_destination_plate, so current_well_index should be recalculated
+        current_well_index = content.length
+      end
     end
 
     # Adds any remaining control requests not already added, into the current_destination_plate plate
-    def add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate)
+    def add_remaining_control_requests(control_positions, batch, control_assets)
       control_positions.each_with_index do |pos, idx|
-        if pos >= current_destination_plate.content.length
+        if pos >= content.length
           control_asset = control_assets[idx]
-          add_control_request(batch, control_asset, current_destination_plate)
+          add_control_request(batch, control_asset)
         end
       end
-    end
-
-    def push_and_write_remaining(request_id, plate_barcode, well_location, control_positions, batch, control_assets, current_destination_plate)
-      @wells << [request_id, plate_barcode, well_location]
-      if control_positions
-        remaining_controls = control_positions.select { |c| c > @wells.length }
-        remaining_used_wells = @used_wells.keys.select { |c| c > @wells.length }
-        remaining_wells = remaining_controls.concat(remaining_used_wells).flatten
-        add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate) if (@wells.length + remaining_wells.length) == @size
-      end
-      add_any_wells_from_template_or_partial(@wells)
-      self
     end
 
     def push(request_id, plate_barcode, well_location)
@@ -149,34 +151,18 @@ class CherrypickTask < Task
       remaining_controls.concat(remaining_used_wells).flatten
     end
 
-    def push_with_controls(request_id, plate_barcode, well_location, control_positions, batch, control_assets, current_destination_plate)
+    def push_with_controls(request_id, plate_barcode, well_location, control_positions, batch, control_assets)
       @wells << [request_id, plate_barcode, well_location]
       if control_positions
-        add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
+        add_any_consecutive_control_requests(control_positions, batch, control_assets)
         if ((@wells.length + remaining_wells(control_positions).length) == @size)
-          add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate)
+          add_remaining_control_requests(control_positions, batch, control_assets)
         end
       end
       
       add_any_wells_from_template_or_partial(@wells)
       self
     end
-
-    # Adds any consecutive list of control requests into the current_destination_plate
-    def add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
-      # find the index of the well we are filling right now
-      current_well_index = current_destination_plate.content.length
-
-      # check if this well should contain a control
-      # add it if so, and any consecutive ones by looping
-      while control_positions.include?(current_well_index)
-        control_asset = control_assets[control_positions.find_index(current_well_index)]
-        add_control_request(batch, control_asset, current_destination_plate)
-        # above adds to current_destination_plate, so current_well_index should be recalculated
-        current_well_index = current_destination_plate.content.length
-      end
-    end
-
 
     # Completes the given well array such that it looks like the plate has been completely picked.
     def complete(wells)
@@ -212,6 +198,17 @@ class CherrypickTask < Task
       wells << CherrypickTask::EMPTY_WELL
     end
     private :add_empty_well
+
+    # When starting a new plate, it writes all control requests from the beginning of the plate
+    def add_any_initial_control_requests(control_positions, batch, control_assets)
+      current_well_index = content.length
+      control_positions.select { |c| c <= current_well_index }.each do |control_well_index|
+        control_asset = control_assets[control_positions.find_index(control_well_index)]
+        add_control_request(batch, control_asset)
+      end
+      add_any_consecutive_control_requests(control_positions, batch, control_assets)
+    end
+
   end
 
   #
@@ -253,63 +250,6 @@ class CherrypickTask < Task
     end
   end
 
-  # Creates control requests for the control assets provided and adds them to the batch
-  def create_control_requests!(batch, control_assets)
-    control_requests = control_assets.map do |control_asset|
-      CherrypickRequest.create(
-        asset: control_asset,
-        target_asset: Well.new,
-        submission: batch.requests.first.submission,
-        request_type: batch.requests.first.request_type,
-        request_purpose: 'standard'
-      )
-    end
-    batch.requests << control_requests
-    control_requests
-  end
-
-  def add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)
-    current_well_index = current_destination_plate.content.length
-    control_positions.select { |c| c <= current_well_index }.each do |control_well_index|
-      control_asset = control_assets[control_positions.find_index(control_well_index)]
-      add_control_request(batch, control_asset, current_destination_plate)
-    end
-    add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
-  end
-
-  # Adds any consecutive list of control requests into the current_destination_plate
-  def add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
-    # find the index of the well we are filling right now
-    current_well_index = current_destination_plate.content.length
-
-    # check if this well should contain a control
-    # add it if so, and any consecutive ones by looping
-    while control_positions.include?(current_well_index)
-      control_asset = control_assets[control_positions.find_index(current_well_index)]
-      add_control_request(batch, control_asset, current_destination_plate)
-      # above adds to current_destination_plate, so current_well_index should be recalculated
-      current_well_index = current_destination_plate.content.length
-    end
-  end
-
-  # Creates a new control request for the control_asset and adds it into the current_destination_plate plate
-  def add_control_request(batch, control_asset, current_destination_plate)
-    control_request = create_control_requests!(batch, [control_asset]).first
-    control_request.start!
-    current_destination_plate.push(control_request.id,
-                                   control_request.asset.plate.human_barcode, control_request.asset.map_description)
-  end
-
-  # Adds any remaining control requests not already added, into the current_destination_plate plate
-  def add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate)
-    control_positions.each_with_index do |pos, idx|
-      if pos >= current_destination_plate.content.length
-        control_asset = control_assets[idx]
-        add_control_request(batch, control_asset, current_destination_plate)
-      end
-    end
-  end
-
   def perform_pick(requests, robot, auto_add_control_plate)
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
@@ -328,7 +268,7 @@ class CherrypickTask < Task
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the
       # beginning of the plate
-      add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)
+      current_destination_plate.add_any_initial_control_requests(control_positions, batch, control_assets)
     end
 
     push_completed_plate = lambda do |idx|
@@ -338,7 +278,7 @@ class CherrypickTask < Task
         # when we start a new plate we rebuild the list of positions where the requests should be placed
         num_plate += 1
         control_positions = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
-        add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)
+        current_destination_plate.add_any_initial_control_requests(control_positions, batch, control_assets)
       end
     end
 
@@ -346,12 +286,12 @@ class CherrypickTask < Task
       request_id, plate_barcode, well_location = list
       source_plates << plate_barcode
       current_destination_plate.push_with_controls(request_id, plate_barcode, well_location,
-        control_positions, batch, control_assets, current_destination_plate)
+        control_positions, batch, control_assets)
       push_completed_plate.call(idx) if current_destination_plate.full?  
     end
     # If there are any remaining control requests, we'll add all of them at the end of the last plate
     unless current_destination_plate.empty?
-      add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate) if auto_add_control_plate
+      current_destination_plate.add_remaining_control_requests(control_positions, batch, control_assets) if auto_add_control_plate
     end
 
     # Ensure that a non-empty plate is stored
