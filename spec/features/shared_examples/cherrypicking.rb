@@ -308,7 +308,7 @@ shared_examples 'a cherrypicking procedure' do
               if control_plate
                 count_control_plate_entries = 0
                 generated_lines.each { |line| count_control_plate_entries += 1 if /#{control_plate.human_barcode}/.match?(line) }
-                expect(count_control_plate_entries).to eq(control_plate.contained_samples.count + 1)
+                expect(count_control_plate_entries).to eq(control_plate.contained_samples.count + NUM_TECAN_EXTRA_BARCODE_LINES)
               end
 
               # optionally if an expected file was supplied. compare it to the result
