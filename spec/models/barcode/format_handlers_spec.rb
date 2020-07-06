@@ -107,9 +107,9 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'GLA-123456-R'
     it_has_an_invalid_barcode 'GLA123456R '
     it_has_an_invalid_barcode "GLA123456R\n1"
-    it_has_an_invalid_barcode "GLA123456S"
-    it_has_an_invalid_barcode "GLE123456R"
-    it_has_an_invalid_barcode "GLA1234567R"
+    it_has_an_invalid_barcode 'GLA123456S'
+    it_has_an_invalid_barcode 'GLE123456R'
+    it_has_an_invalid_barcode 'GLA1234567R'
   end
 
   describe Barcode::FormatHandlers::CambridgeAZ do

@@ -42,7 +42,7 @@ class Barcode < ApplicationRecord
   FOREIGN_BARCODE_FORMATS = %i[cgap fluidx_barcode fluidigm
                                uk_biocentre_v1 uk_biocentre_v2 uk_biocentre_unid
                                alderly_park_v1 alderly_park_v2 uk_biocentre_v3 cgap_plate cgap_rack
-                              glasgow cambridge_a_z].freeze
+                               glasgow cambridge_a_z].freeze
 
   validate :barcode_valid?
   validates :barcode, uniqueness: { scope: :format, case_sensitive: false }

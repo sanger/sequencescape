@@ -277,12 +277,21 @@ module Barcode::FormatHandlers
     self.format = /\A(?<prefix>RNA)(?<number>\d+)\z/
   end
 
+  # Added to support plates from Queen Elizabeth University Hospital
+  # as part of project Heron
+  # Expected formats:
+  # GLAnnnnnnR
+  # where n is a digit
   class Glasgow < BaseRegExBarcode
     self.format = /\A(?<prefix>GLA)(?<number>[0-9]{6})(?<suffix>R)\z/
   end
 
+  # Added to support plates from Cambridge AZ
+  # as part of project Heron
+  # Expected formats:
+  # nnnnnnnnn, nnnnnnnnnn
+  # where n is a digit
   class CambridgeAZ < BaseRegExBarcode
     self.format = /\A(?<number>[0-9]{9,10})\z/
   end
 end
-
