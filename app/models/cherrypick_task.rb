@@ -129,8 +129,8 @@ class CherrypickTask < Task
       if control_positions
         remaining_controls = control_positions.select { |c| c >= @wells.length }
         add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate) if (@wells.length + remaining_controls.length) >= (@size - 1)
-        add_any_wells_from_template_or_partial(@wells)
       end
+      add_any_wells_from_template_or_partial(@wells)
       self
     end
 
