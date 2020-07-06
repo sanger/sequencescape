@@ -21,15 +21,15 @@ RSpec.describe CherrypickTask, type: :model do
         allow(requests.first).to receive(:batch).and_return(batch)
       end
 
-      let(:expected_1) do
-        [
+      let(:plates) do
+        [[
           [control_plate.human_barcode, 'B1'],
           [plate.human_barcode, 'A1'],
           [plate.human_barcode, 'B1'],
           [plate.human_barcode, 'C1'],
           [plate.human_barcode, 'D1'],
           [control_plate.human_barcode, 'A1']
-        ]
+        ]]
       end
 
       let(:expected_2_1) do
@@ -56,8 +56,8 @@ RSpec.describe CherrypickTask, type: :model do
 
       it 'picks controls' do
         pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
-        expect(pick[0].length).to eq(1)
-        expect(pick[0][0].map { |_id, barcode, pos| [barcode, pos] }).to eq(expected_1)
+        #expect(pick[0].length).to eq()
+        expect(pick[0].map { |plate| plate.map{|_id, barcode, pos| [barcode, pos] } }).to eq(plates)
       end
 
       # Empty position 6

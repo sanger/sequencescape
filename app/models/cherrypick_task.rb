@@ -143,6 +143,41 @@ class CherrypickTask < Task
       self
     end
 
+    def remaining_wells(control_positions)
+      remaining_controls = control_positions.select { |c| c > @wells.length }
+      remaining_used_wells = @used_wells.keys.select { |c| c > @wells.length }
+      remaining_controls.concat(remaining_used_wells).flatten
+    end
+
+    def push_with_controls(request_id, plate_barcode, well_location, control_positions, batch, control_assets, current_destination_plate)
+      @wells << [request_id, plate_barcode, well_location]
+      if control_positions
+        add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
+        if ((@wells.length + remaining_wells(control_positions).length) == @size)
+          add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate)
+        end
+      end
+      
+      add_any_wells_from_template_or_partial(@wells)
+      self
+    end
+
+    # Adds any consecutive list of control requests into the current_destination_plate
+    def add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
+      # find the index of the well we are filling right now
+      current_well_index = current_destination_plate.content.length
+
+      # check if this well should contain a control
+      # add it if so, and any consecutive ones by looping
+      while control_positions.include?(current_well_index)
+        control_asset = control_assets[control_positions.find_index(current_well_index)]
+        add_control_request(batch, control_asset, current_destination_plate)
+        # above adds to current_destination_plate, so current_well_index should be recalculated
+        current_well_index = current_destination_plate.content.length
+      end
+    end
+
+
     # Completes the given well array such that it looks like the plate has been completely picked.
     def complete(wells)
       until wells.size >= @size
@@ -235,10 +270,11 @@ class CherrypickTask < Task
 
   def add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)
     current_well_index = current_destination_plate.content.length
-    control_positions.select { |c| c < current_well_index }.each do |control_well_index|
+    control_positions.select { |c| c <= current_well_index }.each do |control_well_index|
       control_asset = control_assets[control_positions.find_index(control_well_index)]
       add_control_request(batch, control_asset, current_destination_plate)
     end
+    add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
   end
 
   # Adds any consecutive list of control requests into the current_destination_plate
@@ -295,38 +331,31 @@ class CherrypickTask < Task
       add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)
     end
 
-    push_completed_plate = lambda do
+    push_completed_plate = lambda do |idx|
       destination_plates << current_destination_plate.completed_view
       current_destination_plate = yield # reset to start picking to a fresh one
-      if auto_add_control_plate
+      if (auto_add_control_plate && (idx < (plates_hash.length-1)))
         # when we start a new plate we rebuild the list of positions where the requests should be placed
         num_plate += 1
         control_positions = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
+        add_any_initial_control_requests(control_positions, batch, control_assets, current_destination_plate)
       end
     end
 
-    plates_hash.each do |request_id, plate_barcode, well_location|
+    plates_hash.each_with_index do |list, idx|
+      request_id, plate_barcode, well_location = list
       source_plates << plate_barcode
-      if auto_add_control_plate
-        # If we are automatically placing controls,
-        # check if a control should be in the next well position (by looking at 'control_positions' array)
-        # if so, add that control and any consecutive controls
-        # then add the normal well and carry on
-        add_any_consecutive_control_requests(control_positions, batch, control_assets, current_destination_plate)
-        push_completed_plate.call if current_destination_plate.full?
-      end
-      # Add this well to the pick and if the plate is filled up by that push it to the list.
-      current_destination_plate.push_and_write_remaining(request_id, plate_barcode, well_location,
-                                                         control_positions, batch, control_assets, current_destination_plate)
-
-      push_completed_plate.call if current_destination_plate.full?
+      current_destination_plate.push_with_controls(request_id, plate_barcode, well_location,
+        control_positions, batch, control_assets, current_destination_plate)
+      push_completed_plate.call(idx) if current_destination_plate.full?  
     end
-
     # If there are any remaining control requests, we'll add all of them at the end of the last plate
-    add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate) if auto_add_control_plate
+    unless current_destination_plate.empty?
+      add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate) if auto_add_control_plate
+    end
 
     # Ensure that a non-empty plate is stored
-    push_completed_plate.call unless current_destination_plate.empty?
+    push_completed_plate.call(plates_hash.length) unless current_destination_plate.empty?
 
     [destination_plates, source_plates]
   end
