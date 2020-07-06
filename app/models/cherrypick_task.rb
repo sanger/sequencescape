@@ -159,7 +159,6 @@ class CherrypickTask < Task
           add_remaining_control_requests(control_positions, batch, control_assets)
         end
       end
-      
       add_any_wells_from_template_or_partial(@wells)
       self
     end
