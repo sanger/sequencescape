@@ -216,10 +216,26 @@ FactoryBot.define do
     end
   end
 
-  factory :control_plate, traits: %i[plate_barcode with_wells] do
+  factory :control_plate, class: 'ControlPlate', traits: %i[plate_barcode with_wells] do
     plate_purpose
     name { 'Control Plate name' }
     size { 96 }
+
+    transient do
+      well_factory { :untagged_well }
+    end
+
+    after(:create) do |plate, _evaluator|
+      plate.wells.each_with_index do |well, index|
+        next if well.aliquots.count == 0
+
+        if index.even?
+          well.aliquots.first.sample.update(control: true, control_type: 'positive')
+        else
+          well.aliquots.first.sample.update(control: true, control_type: 'negative')
+        end
+      end
+    end
   end
 
   factory :pico_assay_plate, traits: %i[plate_barcode with_wells] do

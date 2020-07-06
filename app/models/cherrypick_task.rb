@@ -223,7 +223,7 @@ class CherrypickTask < Task
         asset: control_asset,
         target_asset: Well.new,
         submission: batch.requests.first.submission,
-        request_type: RequestType.find_by(key: 'cherrypick'),
+        request_type: batch.requests.first.request_type,
         request_purpose: 'standard'
       )
     end

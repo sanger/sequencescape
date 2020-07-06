@@ -45,11 +45,13 @@ FactoryBot.define do
       transient do
         verification_behaviour_value { 'Tecan' }
         generation_behaviour_value { 'Tecan' }
+        max_plates_value { 17 }
       end
       robot_properties do
         [
           build(:validation_property, value: verification_behaviour_value),
-          build(:generation_property, value: generation_behaviour_value)
+          build(:generation_property, value: generation_behaviour_value),
+          build(:max_plates_property, value: max_plates_value)
         ]
       end
 
@@ -58,6 +60,7 @@ FactoryBot.define do
         transient do
           verification_behaviour_value { 'SourceDestControlBeds' }
           generation_behaviour_value { 'Hamilton' }
+          max_plates_value { 25 }
           number_of_sources { 24 }
           number_of_controls { 1 }
           number_of_destinations { 1 }
@@ -81,6 +84,12 @@ FactoryBot.define do
       name  { 'Generation behaviour' }
       value { 'Tecan' }
       key   { 'generation_behaviour' }
+    end
+
+    factory :max_plates_property do
+      name  { 'Maximum plates' }
+      value { 17 }
+      key   { 'max_plates' }
     end
   end
 end

@@ -44,7 +44,7 @@ class Robot < ApplicationRecord
   end
 
   def generator(batch:, plate_barcode:, pick_number:)
-    picking_data = Robot::PickData.new(batch, plate_barcode).picking_data_hash[pick_number]
+    picking_data = Robot::PickData.new(batch, plate_barcode, max_beds: max_beds).picking_data_hash[pick_number]
     layout = verification_behaviour.layout_data_object(picking_data)
     generation_behaviour.new(batch: batch, plate_barcode: plate_barcode, picking_data: picking_data, layout: layout)
   end
