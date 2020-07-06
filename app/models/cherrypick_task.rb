@@ -98,7 +98,7 @@ class CherrypickTask < Task
           asset: control_asset,
           target_asset: Well.new,
           submission: batch.requests.first.submission,
-          request_type: RequestType.find_by(key: 'cherrypick'),
+          request_type: batch.requests.first.request_type,
           request_purpose: 'standard'
         )
       end
@@ -127,8 +127,10 @@ class CherrypickTask < Task
     def push_and_write_remaining(request_id, plate_barcode, well_location, control_positions, batch, control_assets, current_destination_plate)
       @wells << [request_id, plate_barcode, well_location]
       if control_positions
-        remaining_controls = control_positions.select { |c| c >= @wells.length }
-        add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate) if (@wells.length + remaining_controls.length) >= (@size - 1)
+        remaining_controls = control_positions.select { |c| c > @wells.length }
+        remaining_used_wells = @used_wells.keys.select { |c| c > @wells.length }
+        remaining_wells = remaining_controls.concat(remaining_used_wells).flatten
+        add_remaining_control_requests(control_positions, batch, control_assets, current_destination_plate) if (@wells.length + remaining_wells.length) == @size
       end
       add_any_wells_from_template_or_partial(@wells)
       self
@@ -316,6 +318,7 @@ class CherrypickTask < Task
       # Add this well to the pick and if the plate is filled up by that push it to the list.
       current_destination_plate.push_and_write_remaining(request_id, plate_barcode, well_location,
                                                          control_positions, batch, control_assets, current_destination_plate)
+
       push_completed_plate.call if current_destination_plate.full?
     end
 

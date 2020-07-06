@@ -851,6 +851,7 @@ RSpec/ScatteredSetup:
 # Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
 RSpec/VerifiedDoubles:
   Exclude:
+    - 'spec/models/tasks/cherrypick_task_spec.rb'
     - 'spec/aker/models/mapping_spec.rb'
     - 'spec/aker/models/material_spec.rb'
     - 'spec/lib/warren/broadcast_spec.rb'
