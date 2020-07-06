@@ -243,11 +243,14 @@ shared_examples 'a cherrypicking procedure' do
             case robot.generation_behaviour_property.value
             when 'Hamilton'
               # for Robot::Generator::Hamilton
+              # Hamilton files comprise a column headers row plus one row per transfer e.g.
+              # SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
+              # DN1000001A,A1,ABgene 0765,15.85,DN20000001B,A1,ABgene 0800,15.85,49.15
               generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 10)
               generated_lines = generated_file.lines
 
-              # check generated lines match expected by calculation - headers row + one row per sample/control transfer
-              expected_num_lines = current_destination_plate.wells.map(&:transfer_requests_as_target).count + 1
+              # check generated lines match expected by calculation
+              expected_num_lines = current_destination_plate.wells.map(&:transfer_requests_as_target).count + NUM_HAMILTON_HEADER_LINES
               expect(generated_lines.length).to eq(expected_num_lines)
 
               # check count of controls present in destination file lines is correct
@@ -269,6 +272,34 @@ shared_examples 'a cherrypicking procedure' do
               end
             when 'Tecan'
               # for Robot::Generator::Tecan
+              # Tecan files start with 2 lines of dynamic information for user and date, e.g.
+              # C;
+              # C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
+
+              # then a gap e.g.
+              # C;
+
+              # then 3 rows for each buffer transfer into the destination, e.g.
+              # A;BUFF;;96-TROUGH;1;;49.1
+              # D;DN3U;;Custom Type;1;;49.1
+              # W;
+
+              # then a gap e.g.
+              # C;
+
+              # then 3 rows for each source to destination transfer, e.g.
+              # A;DN1S;;ABgene 0765;1;;15.9
+              # D;DN3U;;Custom Type;1;;15.9
+              # W;
+
+              # then a gap e.g.
+              # C;
+
+              # then rows for defining each bed, 1 per plate plus a gap e.g.
+              # C; SCRC1 = DN1S
+              # C; SCRC2 = DN2T
+              # C;
+              # C; DEST1 = DN3U
               generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl", timeout: 10)
               generated_lines = generated_file.lines
 
@@ -283,17 +314,17 @@ shared_examples 'a cherrypicking procedure' do
               # optionally if an expected file was supplied. compare it to the result
               if expected_pick_files_by_destination_plate.present?
                 # Shift off the dynamic comment lines
-                generated_lines.shift(2)
+                generated_lines.shift(NUM_TECAN_HEADER_LINES)
 
                 # fetch our expected file structure
                 expected_file = expected_pick_files_by_destination_plate[destination_barcode][pick_number_index]
                 expected_file_lines = expected_file.lines
                 # Shift off the comment lines
-                expected_file_lines.shift(2)
+                expected_file_lines.shift(NUM_TECAN_HEADER_LINES)
 
                 expected_file_lines.each_with_index do |expected_line, index|
                   # Shift the error line number
-                  expect(generated_lines[index]).to eq(expected_line), "Error on line #{index + 2} in #{expected_file}"
+                  expect(generated_lines[index]).to eq(expected_line), "Error on line #{index + NUM_TECAN_HEADER_LINES} in #{expected_file}"
                 end
               end
             end
