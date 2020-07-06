@@ -237,6 +237,8 @@ shared_examples 'a cherrypicking procedure' do
 
             click_link("Download #{robot.name} File")
 
+            current_destination_plate = Plate.find_by_barcode(destination_barcode)
+
             # robot file generation differs by generator
             case robot.generation_behaviour_property.value
             when 'Hamilton'
@@ -244,7 +246,18 @@ shared_examples 'a cherrypicking procedure' do
               generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
               generated_lines = generated_file.lines
 
-              # optionally if an expected file was supplied. compare it to the result
+              # check generated lines match expected by calculation - headers row + one row per sample/control transfer
+              expected_num_lines = current_destination_plate.wells.map(&:transfer_requests_as_target).count + 1
+              expect(generated_lines.length).to eq(expected_num_lines)
+
+              # check count of controls present in destination file lines is correct
+              if control_plate
+                count_control_plate_entries = 0
+                generated_lines.each { |line| count_control_plate_entries += 1 if line =~ /#{control_plate.human_barcode}/ }
+                expect(count_control_plate_entries).to eq(control_plate.contained_samples.count)
+              end
+
+              # optionally if an expected file was supplied, compare it to the result
               if expected_pick_files_by_destination_plate.present?
                 # fetch our expected file structure
                 expected_file = expected_pick_files_by_destination_plate[destination_barcode][pick_number_index]
@@ -259,6 +272,14 @@ shared_examples 'a cherrypicking procedure' do
               # for Robot::Generator::Tecan
               generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl")
               generated_lines = generated_file.lines
+
+              # check count of controls present in destination file lines is correct
+              # NB. Tecan file has additional plate barcode lines at bottom of file for beds so add 1
+              if control_plate
+                count_control_plate_entries = 0
+                generated_lines.each { |line| count_control_plate_entries += 1 if line =~ /#{control_plate.human_barcode}/ }
+                expect(count_control_plate_entries).to eq(control_plate.contained_samples.count + 1)
+              end
 
               # optionally if an expected file was supplied. compare it to the result
               if expected_pick_files_by_destination_plate.present?
