@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CherrypickTask, type: :model do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
-  let!(:control_plate) { create :plate_with_untagged_wells, sample_count: 2 }
+  let(:control_plate) { create :control_plate, sample_count: 2}
   let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w) }.flatten }
   let(:template) { create(:plate_template, size: 6) }
   let(:robot) { double('robot', max_beds: 2) }
@@ -18,9 +18,6 @@ RSpec.describe CherrypickTask, type: :model do
   describe '#pick_new_plate' do
     context 'with control plate' do
       before do
-        control_plate.wells[0].samples.first.update(control: true, control_type: 'positive')
-        control_plate.wells[1].samples.first.update(control: true, control_type: 'negative')
-
         requests.first.update(submission: submission, request_type: request_type)
         allow(requests.first).to receive(:batch).and_return(batch)
       end
@@ -88,9 +85,6 @@ RSpec.describe CherrypickTask, type: :model do
 
     context 'with controls' do
       before do
-        control_plate.wells[0].samples.first.update(control: true, control_type: 'positive')
-        control_plate.wells[1].samples.first.update(control: true, control_type: 'negative')
-
         requests.first.update(submission: submission, request_type: request_type)
         allow(requests.first).to receive(:batch).and_return(batch)
       end
