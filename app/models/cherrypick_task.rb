@@ -155,6 +155,7 @@ class CherrypickTask < Task
       @wells << [request_id, plate_barcode, well_location]
       if control_positions
         add_any_consecutive_control_requests(control_positions, batch, control_assets)
+        # This assumes that the template wells will fall at the end of the plate
         add_remaining_control_requests(control_positions, batch, control_assets) if (@wells.length + remaining_wells(control_positions).length) == @size
       end
       add_any_wells_from_template_or_partial(@wells)
