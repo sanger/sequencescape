@@ -140,7 +140,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
 
   describe '#priority', :aggregate_failures do
     it 'will have a default priority of nopriority - 0' do
-      expect(build(:sample).priority).to eq('nopriority')
+      expect(build(:sample).priority).to eq('no_priority')
     end
 
     it 'can have a priority' do

@@ -283,7 +283,7 @@ class Sample < ApplicationRecord
   }
 
   enum priority: {
-    nopriority: 0,
+    no_priority: 0,
     backlog: 1,
     surveillance: 2,
     priority: 3
