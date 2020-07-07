@@ -39,7 +39,7 @@ module Heron
 
         new_aliquot = container&.aliquots&.create(params_for_aliquot_creation)
 
-        container.register_stock! if new_aliquot && new_aliquot.id
+        container.register_stock! if new_aliquot&.persisted?
 
         new_aliquot
       end
