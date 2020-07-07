@@ -875,4 +875,4 @@ priority:
   unlocked: true
   conditional_formattings:
     empty_cell:
-    number_greater_than_zero:
+    is_number:
