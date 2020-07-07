@@ -37,7 +37,11 @@ module Heron
       def create_aliquot_at(well)
         return unless create
 
-        well&.aliquots&.create(params_for_aliquot_creation)
+        new_aliquot = well&.aliquots&.create(params_for_aliquot_creation)
+
+        well.register_stock! if new_aliquot && new_aliquot.id
+
+        new_aliquot
       end
 
       def study
