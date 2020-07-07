@@ -34,12 +34,12 @@ module Heron
         @sample = create_sample!
       end
 
-      def create_aliquot_at(well)
+      def create_aliquot_at(container)
         return unless create
 
-        new_aliquot = well&.aliquots&.create(params_for_aliquot_creation)
+        new_aliquot = container&.aliquots&.create(params_for_aliquot_creation)
 
-        well.register_stock! if new_aliquot && new_aliquot.id
+        container.register_stock! if new_aliquot && new_aliquot.id
 
         new_aliquot
       end
