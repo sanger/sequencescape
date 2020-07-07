@@ -144,7 +144,8 @@ class CherrypickTask < Task
       add_any_wells_from_template_or_partial(@wells)
       self
     end
-# includes control wells and template / partial wells that are yet to be added
+
+    # includes control wells and template / partial wells that are yet to be added
     def remaining_wells(control_positions)
       remaining_controls = control_positions.select { |c| c > @wells.length }
       remaining_used_wells = @used_wells.keys.select { |c| c > @wells.length }

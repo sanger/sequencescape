@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CherrypickTask, type: :model do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
-  let(:control_plate) { create :control_plate, sample_count: 2}
+  let(:control_plate) { create :control_plate, sample_count: 2 }
   let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w) }.flatten }
   let(:template) { create(:plate_template, size: 6) }
   let(:robot) { double('robot', max_beds: 2) }
