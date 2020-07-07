@@ -154,7 +154,7 @@ class CherrypickTask < Task
 
     def push_with_controls(request_id, plate_barcode, well_location, control_positions, batch, control_assets)
       @wells << [request_id, plate_barcode, well_location]
-      if control_positions
+      if control_positions # would be nil if no control plate selected
         add_any_consecutive_control_requests(control_positions, batch, control_assets)
         # This assumes that the template wells will fall at the end of the plate
         add_remaining_control_requests(control_positions, batch, control_assets) if (@wells.length + remaining_wells(control_positions).length) == @size
