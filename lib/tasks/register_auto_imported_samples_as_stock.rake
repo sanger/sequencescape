@@ -9,7 +9,7 @@ namespace :auto_imported_samples do
     # Add extra checks that sample_manifest is nil
     # And purpose is one of expected ones
 
-    relevant_study_names = ['Heron Project', 'Heron Project R & D', 'Project Kestrel']
+    relevant_study_names = ['Heron Project', 'Heron Project R & D', 'Heron Project ONT', 'Heron Project PacBio', 'Project Kestrel']
     relevant_study_ids = Study.where(name: relevant_study_names).map(&:id).join(',')
 
     # Some samples will be in more than one of these, but we think that's ok.
