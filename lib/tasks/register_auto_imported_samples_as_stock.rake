@@ -37,7 +37,7 @@ namespace :auto_imported_samples do
     existing_stock_resource_messengers = Messenger.where(target: receptacles, root: 'stock_resource', target_type: 'Receptacle')
     # 0 in training 2020-07-08
     puts "existing_stock_resource_messengers count: #{existing_stock_resource_messengers.count}"
-    receptacle_ids_with_messengers = existing_stock_resource_messengers.map(&target_id).compact.uniq
+    receptacle_ids_with_messengers = existing_stock_resource_messengers.map(&:target_id).compact.uniq
     puts "receptacle_ids_with_messengers count: #{receptacle_ids_with_messengers.count}"
 
     puts 'registering as stock...'
