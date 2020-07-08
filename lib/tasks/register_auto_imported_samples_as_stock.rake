@@ -38,15 +38,14 @@ namespace :auto_imported_samples do
     existing_stock_resource_messengers = Messenger.where(target: receptacles, root: 'stock_resource', target_type: 'Receptacle')
     # 0 in training 2020-07-08
     puts "existing_stock_resource_messengers count: #{existing_stock_resource_messengers.count}"
-
-    existing_stock_resource_messengers.each do |messenger|
-      receptacles.delete { |r| r.id == messenger.target_id }
-    end
-    puts "receptacles count: #{receptacles.count}"
+    receptacle_ids_with_messengers = existing_stock_resource_messengers.map(&target_id).compact.uniq
+    puts "receptacle_ids_with_messengers count: #{receptacle_ids_with_messengers.count}"
 
     puts 'registering as stock...'
     # call register_stock! on each of them
-    receptacles.each(&:register_stock!)
+    receptacles.each do |r|
+      r.register_stock! unless receptacle_ids_with_messengers.include? r.id
+    end
     puts 'Done'
   end
 end
