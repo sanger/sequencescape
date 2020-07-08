@@ -18,21 +18,20 @@ namespace :auto_imported_samples do
                               'Heron Lysed Plate', 'Heron Lysed Tube Rack']
     relevant_purpose_ids = Purpose.where(name: relevant_purpose_names).map(&:id).join(',')
 
-    labware_samples = Labware.joins(:aliquots).includes(:samples).where(
-      """
+    labware_samples = Labware.joins(:samples).where(
+      ''"
       labware.created_at > '2020-05-01 00:00:00' AND
       labware.sti_type IN ('Plate', 'TubeRack') AND
       labware.plate_purpose_id IN (#{relevant_purpose_ids}) AND
-      aliquots.study_id IN (#{relevant_study_ids}) AND
       samples.sample_manifest_id IS NULL
-      """
+      "''
     ) # 78,507 in training 2020-07-07
     puts "labware_samples count: #{labware_samples.count}"
 
     labware = labware_samples.uniq # 890 in training 2020-07-07
     puts "labware count: #{labware.count}"
 
-    receptacles = Receptacle.where(labware: labware).joins(:aliquots)
+    receptacles = Receptacle.where(labware: labware).joins(:aliquots).where("aliquots.study_id IN (#{relevant_study_ids})")
     # 78,507 in training 2020-07-08 (85,440 before join with aliquots)
     puts "receptacles count: #{receptacles.count}"
 
@@ -40,28 +39,14 @@ namespace :auto_imported_samples do
     # 0 in training 2020-07-08
     puts "existing_stock_resource_messengers count: #{existing_stock_resource_messengers.count}"
 
-    existing_stock_resource_messengers.each |messenger|
+    existing_stock_resource_messengers.each do |messenger|
       receptacles.delete { |r| r.id == messenger.target_id }
     end
     puts "receptacles count: #{receptacles.count}"
 
-    puts "registering as stock..."
+    puts 'registering as stock...'
     # call register_stock! on each of them
-    receptacles.each do |r|
-      r.register_stock!
-    end
-    puts "Done"
+    receptacles.each(&:register_stock!)
+    puts 'Done'
   end
 end
-
-
-# SQL equivalent of labware query - numbers agree - 78,507
-# SELECT *
-# FROM labware
-# JOIN receptacles ON labware.id = receptacles.labware_id
-# JOIN aliquots ON receptacles.id = aliquots.receptacle_id
-# JOIN samples ON aliquots.sample_id = samples.id
-# WHERE labware.created_at > '2020-05-01 00:00:00'
-# AND labware.sti_type IN ('Plate', 'TubeRack')
-# AND labware.plate_purpose_id IN (2, 344, 348, 373, 374)
-# AND samples.sample_manifest_id IS NULL
