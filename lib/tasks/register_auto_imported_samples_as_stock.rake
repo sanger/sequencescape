@@ -12,8 +12,7 @@ namespace :auto_imported_samples do
     relevant_study_names = ['Heron Project', 'Heron Project R & D', 'Project Kestrel']
     relevant_study_ids = Study.where(name: relevant_study_names).map(&:id).join(',')
 
-    # should we include Heron Lysed Plate, Heron Lysed Tube Rack?
-    # if a sample is in multiple of these, should we include multiple stock receptacles per sample?
+    # Some samples will be in more than one of these, but we think that's ok.
     relevant_purpose_names = ['Stock Plate', 'LHR Stock', 'TR Stock 96',
                               'Heron Lysed Plate', 'Heron Lysed Tube Rack']
     relevant_purpose_ids = Purpose.where(name: relevant_purpose_names).map(&:id).join(',')
