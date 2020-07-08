@@ -28,9 +28,8 @@ namespace :auto_imported_samples do
 
     labware = labware_samples.uniq # 890 in training 2020-07-07
 
-    receptacles = labware.map(&:receptacles).flatten
-    # 85,440 in training 2020-07-07
-    # includes the empty ones - TODO: filter these out
+    receptacles = Receptacle.where(labware: labware).joins(:aliquots)
+    # 78,507 in training 2020-07-08 (85,440 before join with aliquots)
 
     # call register_stock! on each of them
     receptacles.each do |r|
