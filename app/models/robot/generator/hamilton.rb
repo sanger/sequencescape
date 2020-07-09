@@ -4,8 +4,8 @@ require_dependency 'robot'
 
 # Handles picking file generation for Hamilton robots
 class Robot::Generator::Hamilton < Robot::Generator::Base
-  def filename
-    "#{@batch.id}_batch_#{@plate_barcode}.csv"
+  def filename(base)
+    "#{base}.csv"
   end
 
   # The MIME type of the generated file.

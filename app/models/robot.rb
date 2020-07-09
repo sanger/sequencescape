@@ -17,7 +17,9 @@ class Robot < ApplicationRecord
   scope :include_properties, -> { includes(:robot_properties) }
   scope :with_verification_behaviour, -> { includes(:robot_properties).where(robot_properties: { key: 'verification_behaviour' }) }
 
-  delegate :expected_layout, to: :verification_behaviour
+  def pick_number_to_expected_layout(batch, plate_barcode)
+    verification_behaviour.pick_number_to_expected_layout(batch, plate_barcode, max_beds)
+  end
 
   def max_beds
     max_plates_property.try(:value).to_i
@@ -41,8 +43,8 @@ class Robot < ApplicationRecord
     }.fetch(generation_behaviour_property&.value, Robot::Generator::Tecan)
   end
 
-  def generator(batch:, plate_barcode:)
-    picking_data = Robot::PickData.new(batch, plate_barcode).picking_data
+  def generator(batch:, plate_barcode:, pick_number:)
+    picking_data = Robot::PickData.new(batch, plate_barcode, max_beds: max_beds).picking_data_hash[pick_number]
     layout = verification_behaviour.layout_data_object(picking_data)
     generation_behaviour.new(batch: batch, plate_barcode: plate_barcode, picking_data: picking_data, layout: layout)
   end

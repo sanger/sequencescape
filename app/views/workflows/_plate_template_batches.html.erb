@@ -1,28 +1,41 @@
 
 <% add :menu, "New/Edit Plate Templates" => plate_templates_path -%>
 
-  <%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form", multipart: true} do |form| %>
-    <%= panel(:info,title:"Step 1: Layout wells on plates") do %>
-    <div class="columnize">
-    <fieldset>
-      <legend>Automatic</legend>
-      <label for="plate_purpose_id">Output plate purpose</label>
-      <%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id), class: 'form-control select2') %>
-      <label for="existing_plate">Scan partial plate <em>Optional</em></label>
-      <%= text_field_tag 'existing_plate', nil, class: 'form-control' %>
-      <label for="plate_template_0">Plate Template</label>
-      <%= select(:plate_template, "0", @plate_templates.map { |pt| [pt.name, pt.id ] }, {}, class: 'form-control select2')  %>
-      <p class='help-block'>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in Sequencescape.  Wells can be rearranged in the next step.</p>
-    </fieldset>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form", multipart: true} do |form| %>
+  <%= panel(:info,title:"Step 1: Layout wells on plates") do %>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <fieldset>
+            <legend>Automatic</legend>
 
-    <fieldset>
-      <legend>Manual</legend>
-      <%= link_to "Download spreadsheet", download_spreadsheet_batch_path(@batch), class: 'btn btn-block btn-success mb-3' %>
-      <%= file_field_tag "file", size: 50 %>
-      <p class='help-block'><%= link_to "Download the file", url_for(controller: :batches, action: :download_spreadsheet, id: @batch.id) %>, enter the destination wells (A1,B2...), save as CSV, then upload.  If there are any errors with the uploaded wells, the wells wont be cherrypicked and will be put back in the inbox.  Wells can be rearranged in the next step.</p>
-    </fieldset>
+            <label for="plate_purpose_id">Output plate purpose</label>
+            <%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id), class: 'form-control select2') %>
+
+            <label for="existing_plate">Scan partial plate <em>Optional</em></label>
+            <%= text_field_tag 'existing_plate', nil, class: 'form-control' %>
+
+            <label for="plate_template_0">Plate Template</label>
+            <%= select(:plate_template, "0", @plate_templates.map { |pt| [pt.name, pt.id ] }, {}, class: 'form-control select2')  %>
+            <p class='help-block'>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in Sequencescape.  Wells can be rearranged in the next step.</p>
+
+            <label for="Control_plate_id">Control plate</label>
+            <%= select("Control", "plate_id", ControlPlate.all.collect {|p| [ "#{p.human_barcode} - #{p.name}", p.id ] }, { include_blank: true }, class: 'form-control select2') %>
+          </fieldset>
+        </div>
+
+        <div class="col-md-6">
+          <fieldset>
+            <legend>Manual</legend>
+            <%= link_to "Download spreadsheet", download_spreadsheet_batch_path(@batch), class: 'btn btn-block btn-success mb-3' %>
+            <%= file_field_tag "file", size: 50 %>
+            <p class='help-block'><%= link_to "Download the file", url_for(controller: :batches, action: :download_spreadsheet, id: @batch.id) %>, enter the destination wells (A1,B2...), save as CSV, then upload.  If there are any errors with the uploaded wells, the wells wont be cherrypicked and will be put back in the inbox.  Wells can be rearranged in the next step.</p>
+          </fieldset>
+        </div>
+      </div>
     </div>
   <% end %>
+
   <%= panel(:info,title:"Step 2: Pick robot and plate types") do %>
     <fieldset>
       <legend>Cherrypicking robot</legend>
@@ -32,6 +45,7 @@
       <%= select_tag "robot_id", options_for_select(@robots.collect {|p| [ p.name, p.id ] }), class: 'select2' %>
     </fieldset>
   <% end %>
+
   <%= panel(:info,title:"Step 3: Set volumes and concentrations") do %>
     <%= render partial: 'cherrypicking_volume_parameters' %>
   <% end %>

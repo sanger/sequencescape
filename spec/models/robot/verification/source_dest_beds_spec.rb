@@ -6,11 +6,12 @@ require 'broadcast_event/lab_event'
 RSpec.describe Robot::Verification::SourceDestBeds do
   subject(:verifier) { described_class.new }
 
-  describe '#expected_layout' do # expected_layout(batch, destination_plate_barcode)
+  describe '#pick_number_to_expected_layout' do
     let(:source_plate_1) { create :plate, well_count: 2 }
     let(:source_plate_3) { create :plate, well_count: 2 }
     let(:destination_plate) { create :plate, well_count: 9 }
     let(:pipeline) { create :cherrypick_pipeline }
+    let(:max_beds) { 17 }
 
     let(:transfers) do
       # We generate the plates before the transfer map, as otherwise
@@ -57,7 +58,7 @@ RSpec.describe Robot::Verification::SourceDestBeds do
       end
 
       it 'generates a layout' do
-        expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+        expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)[1]).to eq(expected_layout)
       end
     end
 
@@ -77,7 +78,7 @@ RSpec.describe Robot::Verification::SourceDestBeds do
       end
 
       it 'generates a layout' do
-        expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+        expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)[1]).to eq(expected_layout)
       end
     end
   end
