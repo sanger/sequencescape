@@ -95,6 +95,12 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
         expect(aliquot.class).to eq(::Aliquot)
         expect(aliquot.tag_id).to eq(tag_id)
       end
+
+      it 'registers a stock resource message' do
+        expect do
+          factory.create_aliquot_at(well)
+        end.to change(::Messenger.where(root: 'stock_resource', template: 'WellStockResourceIO', target: well), :count).by(1)
+      end
     end
   end
 
