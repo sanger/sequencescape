@@ -9,7 +9,8 @@ RSpec.describe Api::SampleIO, type: :model do
            empty_supplier_sample_name: false,
            updated_by_manifest: true,
            sample_metadata_attributes: {
-             supplier_name: 'A name'
+             supplier_name: 'A name',
+             phenotype: 'positive'
            }
   end
 
@@ -38,7 +39,8 @@ RSpec.describe Api::SampleIO, type: :model do
       'control' => nil,
       'empty_supplier_sample_name' => false,
       'supplier_name' => 'A name',
-      'updated_by_manifest' => true
+      'updated_by_manifest' => true,
+      'phenotype' => 'positive'
     }
   end
 
