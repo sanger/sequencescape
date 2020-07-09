@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_01_102344) do
+ActiveRecord::Schema.define(version: 2020_06_16_134501) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1385,7 +1385,6 @@ ActiveRecord::Schema.define(version: 2020_07_01_102344) do
     t.integer "work_order_id"
     t.integer "container_id"
     t.integer "control_type"
-    t.integer "priority", default: 0
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"
