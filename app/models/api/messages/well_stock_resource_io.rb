@@ -14,7 +14,7 @@ class Api::Messages::WellStockResourceIO < Api::Base
   map_attribute_to_json_attribute(:subject_type, 'labware_type')
 
   with_association(:plate) do
-    map_attribute_to_json_attribute(:ean13_barcode, 'machine_barcode')
+    map_attribute_to_json_attribute(:machine_barcode, 'machine_barcode')
     map_attribute_to_json_attribute(:human_barcode, 'human_barcode')
   end
 
