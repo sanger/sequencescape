@@ -870,3 +870,9 @@ control_type:
   conditional_formattings:
     empty_cell:
     is_error:
+priority:
+  heading: PRIORITY
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+    is_number:
