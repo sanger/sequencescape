@@ -5,7 +5,8 @@ require_dependency 'robot/generator'
 
 # Base class for handling generation of robot picking files for a batch plate
 class Robot::Generator::Base
-  attr_reader :batch, :plate_barcode, :source_barcode_index, :dest_barcode_index, :ctrl_barcode_index
+  attr_reader :batch, :plate_barcode, :source_barcode_index, :dest_barcode_index, :ctrl_barcode_index,
+              :picking_data
 
   def initialize(batch: nil, plate_barcode: nil, picking_data: nil, layout: nil, total_volume: nil)
     @batch = batch
@@ -17,10 +18,6 @@ class Robot::Generator::Base
 
   def total_volume
     @total_volume ||= @batch&.total_volume_to_cherrypick.to_i
-  end
-
-  def picking_data
-    @picking_data ||= Robot::PickData.new(@batch, @plate_barcode).picking_data
   end
 
   # The MIME type of the generated file.

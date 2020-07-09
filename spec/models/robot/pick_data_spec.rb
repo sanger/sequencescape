@@ -11,7 +11,9 @@ RSpec.describe Robot::PickData do
     end
   end
 
-  describe '#picking_data' do
+  describe '#picking_data_hash' do
+    subject(:pick_data) { described_class.new(batch, destination_plate.machine_barcode, max_beds: 2) }
+
     let(:time) { Time.zone.local(2010, 7, 12, 10, 25, 0) }
     let(:source_plate_1) { create :plate, well_count: 2 }
     let(:source_plate_3) { create :plate, well_count: 2 }
@@ -20,7 +22,7 @@ RSpec.describe Robot::PickData do
 
     let(:transfers) do
       # We generate the plates before the transfer map, as otherwise
-      # or random re-ordering of them is pointless!
+      # our random re-ordering of them is pointless!
       source_plate_1
       source_plate_2
       source_plate_3
@@ -53,47 +55,69 @@ RSpec.describe Robot::PickData do
 
     context 'without control plates' do
       let(:source_plate_2) { create :plate, well_count: 2 }
-      let(:expected_picking_data) do
+      let(:expected_picking_data_hash) do
         {
-          'destination' => {
-            destination_plate.machine_barcode => {
-              'mapping' => [
-                { 'buffer_volume' => 0.0, 'dst_well' => 'A1', 'src_well' => [source_plate_3.machine_barcode, 'A1'], 'volume' => nil },
-                { 'buffer_volume' => 0.0, 'dst_well' => 'F1', 'src_well' => [source_plate_2.machine_barcode, 'B1'], 'volume' => nil },
-                { 'buffer_volume' => 0.0, 'dst_well' => 'D1', 'src_well' => [source_plate_1.machine_barcode, 'B1'], 'volume' => nil },
-                { 'buffer_volume' => 0.0, 'dst_well' => 'B1', 'src_well' => [source_plate_2.machine_barcode, 'A1'], 'volume' => nil },
-                { 'buffer_volume' => 0.0, 'dst_well' => 'C1', 'src_well' => [source_plate_3.machine_barcode, 'B1'], 'volume' => nil },
-                { 'buffer_volume' => 0.0, 'dst_well' => 'A2', 'src_well' => [source_plate_1.machine_barcode, 'A1'], 'volume' => nil }
-              ],
-              'name' => 'ABgene 0800',
-              'plate_size' => 96,
-              'control' => false
-            }
-          },
-          'source' => {
-            source_plate_1.machine_barcode => {
-              'control' => false,
-              'name' => 'ABgene 0800',
-              'plate_size' => 96
+          1 => {
+            'destination' => {
+              destination_plate.machine_barcode => {
+                'name' => 'ABgene 0800',
+                'plate_size' => 96,
+                'control' => false,
+                'mapping' => [
+                  { 'src_well' => [source_plate_3.machine_barcode, 'A1'], 'dst_well' => 'A1', 'volume' => nil, 'buffer_volume' => 0.0 },
+                  { 'src_well' => [source_plate_2.machine_barcode, 'B1'], 'dst_well' => 'F1', 'volume' => nil, 'buffer_volume' => 0.0 },
+                  { 'src_well' => [source_plate_2.machine_barcode, 'A1'], 'dst_well' => 'B1', 'volume' => nil, 'buffer_volume' => 0.0 },
+                  { 'src_well' => [source_plate_3.machine_barcode, 'B1'], 'dst_well' => 'C1', 'volume' => nil, 'buffer_volume' => 0.0 }
+                ]
+              }
             },
-            source_plate_2.machine_barcode => {
-              'control' => false,
-              'name' => 'ABgene 0800',
-              'plate_size' => 96
+            'source' => {
+              source_plate_3.machine_barcode => {
+                'name' => 'ABgene 0800',
+                'plate_size' => 96,
+                'control' => false
+              },
+              source_plate_2.machine_barcode => {
+                'name' => 'ABgene 0800',
+                'plate_size' => 96,
+                'control' => false
+              }
             },
-            source_plate_3.machine_barcode => {
-              'control' => false,
-              'name' => 'ABgene 0800',
-              'plate_size' => 96
-            }
+            'time' => time,
+            'user' => user.login
           },
-          'time' => time,
-          'user' => user.login
+          2 => {
+            'destination' => {
+              destination_plate.machine_barcode => {
+                'name' => 'ABgene 0800',
+                'plate_size' => 96,
+                'control' => false,
+                'mapping' => [
+                  { 'src_well' => [source_plate_1.machine_barcode, 'B1'], 'dst_well' => 'D1', 'volume' => nil, 'buffer_volume' => 0.0 },
+                  { 'src_well' => [source_plate_1.machine_barcode, 'A1'], 'dst_well' => 'A2', 'volume' => nil, 'buffer_volume' => 0.0 }
+                ]
+              }
+            },
+            'source' => {
+              source_plate_1.machine_barcode => {
+                'name' => 'ABgene 0800',
+                'plate_size' => 96,
+                'control' => false
+              }
+            },
+            'time' => time,
+            'user' => user.login
+          }
         }
       end
 
       it 'generates a layout' do
-        expect(pick_data.picking_data).to eq(expected_picking_data)
+        actual = pick_data.picking_data_hash
+        # puts "actual"
+        # pp actual
+        # puts "expected"
+        # pp expected_picking_data_hash
+        expect(actual).to eq(expected_picking_data_hash)
       end
     end
   end

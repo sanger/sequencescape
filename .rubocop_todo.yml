@@ -217,6 +217,8 @@ Metrics/ClassLength:
 # Configuration parameters: IgnoredMethods.
 Metrics/CyclomaticComplexity:
   Max: 20
+  Exclude: 
+    - app/models/submission/linear_request_graph.rb
 
 # Offense count: 397
 # Configuration parameters: CountComments, ExcludedMethods.
@@ -704,6 +706,7 @@ RSpec/LetSetup:
     - 'spec/requests/api/v2/comments_spec.rb'
     - 'spec/requests/api/v2/plates_spec.rb'
     - 'spec/sequencescape_excel/range_spec.rb'
+    - 'spec/features/cherrypicking/creating_worksheets_spec.rb'
 
 # Offense count: 49
 # Configuration parameters: .
@@ -848,6 +851,7 @@ RSpec/ScatteredSetup:
 # Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
 RSpec/VerifiedDoubles:
   Exclude:
+    - 'spec/models/tasks/cherrypick_task_spec.rb'
     - 'spec/aker/models/mapping_spec.rb'
     - 'spec/aker/models/material_spec.rb'
     - 'spec/lib/warren/broadcast_spec.rb'

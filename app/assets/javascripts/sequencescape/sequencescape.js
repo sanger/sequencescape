@@ -26,12 +26,16 @@ window.hide_update_loader = function () {
 
 window.select_all = function(){
   var scope = this.dataset.scope || 'body';
-  $(scope).find('input[type="checkbox"]:enabled').prop('checked', true);
+  // find all the enabled, unchecked checkboxes and select them
+  // fire the change event on them, to allow other js code to pick up that they have changed
+  $(scope).find('input[type="checkbox"]:enabled:not(:checked)').prop('checked', true).trigger('change');
 }
 
 window.deselect_all = function(){
   var scope = this.dataset.scope || 'body';
-  $(scope).find('input[type="checkbox"]:enabled').prop('checked', false);
+  // find all the enabled, checked checkboxes and deselect them
+  // fire the change event on them, to allow other js code to pick up that they have changed
+  $(scope).find('input[type="checkbox"]:enabled:checked').prop('checked', false).trigger('change');
 }
 
 window.disable_cr_and_change_focus = function(event, next_field) {

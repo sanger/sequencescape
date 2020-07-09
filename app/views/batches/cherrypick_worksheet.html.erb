@@ -11,9 +11,13 @@
 </head>
 <body>
   <% @plates.each do |plate| %>
-    <% robot_plate_layout = @robot.expected_layout(@batch, plate.human_barcode) %>
-    <%= render partial: 'cherrypick_single_worksheet' , locals: {batch: @batch, robot_plate_layout: robot_plate_layout, plate_barcode: plate.human_barcode, robot: @robot} %>
-  <hr>
+    <% pick_to_layout = @robot.pick_number_to_expected_layout(@batch, plate.human_barcode) %>
+    <% pick_to_layout.each do |pick_number, robot_plate_layout| %>
+      <div id="worksheet_plate_<%= plate.human_barcode %>_pick_<%= pick_number %>">
+        <%= render partial: 'cherrypick_single_worksheet' , locals: {batch: @batch, pick_number: pick_number, num_picks: pick_to_layout.size, robot_plate_layout: robot_plate_layout, plate_barcode: plate.human_barcode, robot: @robot} %>
+        <hr>
+      </div>
+    <% end%>
   <% end %>
   <% unless ["cucumber", "test"].include?(Rails.env) %>
     <!-- window.print open a popup window that we can't control with capybara -->

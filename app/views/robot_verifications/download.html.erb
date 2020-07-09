@@ -3,7 +3,7 @@
 <%= form_for :robot_verifications, url: {action: "finish"} do |f| %>
 <%= page_title "Download #{@robot.name} File", 'Step 3 of 3' %>
 <%= link_to icon('fas', 'file-download', "Download #{@robot.name} File"),
-            batch_robot_driver_file_path(@batch, @robot, barcode: @destination_plate_id),
+            batch_robot_driver_file_path(@batch, @robot, barcode: @destination_plate_id, pick_number: @pick_number),
             class: 'btn btn-success btn-lg'
 %>
 

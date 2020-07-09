@@ -6,15 +6,16 @@ require 'broadcast_event/lab_event'
 RSpec.describe Robot::Verification::SourceDestControlBeds do
   subject(:verifier) { described_class.new }
 
-  describe '#expected_layout' do # expected_layout(batch, destination_plate_barcode)
+  describe '#pick_number_to_expected_layout' do # expected_layout(batch, destination_plate_barcode)
     let(:source_plate_1) { create :plate, well_count: 2 }
     let(:source_plate_3) { create :plate, well_count: 2 }
     let(:destination_plate) { create :plate, well_count: 9 }
     let(:pipeline) { create :cherrypick_pipeline }
+    let(:max_beds) { 17 }
 
     let(:transfers) do
       # We generate the plates before the transfer map, as otherwise
-      # or random re-ordering of them is pointless!
+      # our random re-ordering of them is pointless!
       source_plate_1
       source_plate_2
       source_plate_3
@@ -81,12 +82,13 @@ RSpec.describe Robot::Verification::SourceDestControlBeds do
           },
           batch_id: batch.id,
           robot_id: robot.id,
-          user_id: user.id
+          user_id: user.id,
+          pick_number: 1
         }
       end
 
       it 'generates a layout' do
-        expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+        expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)[1]).to eq(expected_layout)
       end
 
       it 'is is a valid submission' do
@@ -134,12 +136,13 @@ RSpec.describe Robot::Verification::SourceDestControlBeds do
           },
           batch_id: batch.id,
           robot_id: robot.id,
-          user_id: user.id
+          user_id: user.id,
+          pick_number: 1
         }
       end
 
       it 'generates a layout' do
-        expect(verifier.expected_layout(batch, destination_plate.human_barcode)).to eq(expected_layout)
+        expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)[1]).to eq(expected_layout)
       end
 
       it 'is is a valid submission' do

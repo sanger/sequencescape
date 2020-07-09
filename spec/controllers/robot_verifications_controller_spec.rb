@@ -61,7 +61,8 @@ RSpec.describe RobotVerificationsController, type: :controller do
         bed_barcodes: bed_barcodes,
         plate_barcodes: plate_barcodes,
         destination_bed_barcodes: destination_bed_barcodes,
-        destination_plate_barcodes: destination_plate_barcodes
+        destination_plate_barcodes: destination_plate_barcodes,
+        pick_number: 1
       }
     end
 
@@ -84,7 +85,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
       it 'is successful' do
         expect(response).to have_http_status(:success)
-        expect(before_event_count + 1).to eq Event.count
+        expect(Event.count).to eq(before_event_count + 1)
       end
     end
 
@@ -116,7 +117,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         it 'redirects and sets the flash error' do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Error')
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
 
@@ -137,7 +138,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Error')
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
 
@@ -158,7 +159,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Error')
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
 
@@ -179,7 +180,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Error')
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
 
@@ -200,7 +201,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Error')
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
 
@@ -229,7 +230,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Error')
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
 
@@ -243,7 +244,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Error')
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
 
@@ -257,7 +258,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Error')
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
 
@@ -272,7 +273,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Error')
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
 
@@ -300,7 +301,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
         it 'is successful', :aggregate_failures do
           expect(response).to have_http_status(:success)
-          expect(before_event_count + 1).to eq Event.count
+          expect(Event.count).to eq(before_event_count + 1)
         end
       end
     end

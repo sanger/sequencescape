@@ -5,7 +5,7 @@
 class Robot::Verification::SourceDestBeds < Robot::Verification::Base
   def layout_data_object(data_object)
     dest_barcode_index = barcode_to_plate_index(data_object['destination'])
-    source_barcode_index = source_barcode_to_plate_index(data_object['destination'])
+    source_barcode_index = source_barcode_to_plate_index(data_object['destination']) # uses 'mapping' -> 'src_well'
     [dest_barcode_index, source_barcode_index]
   end
 

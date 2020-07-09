@@ -77,6 +77,7 @@ Feature: RobotVerification
     """
     And I press "Verify"
     Then I should see "Download Myrobot File"
+    Then I follow "Download myrobot File"
     Then the downloaded robot file for batch "550000555760" and plate "DN99999F" is
     """
 C;
@@ -176,6 +177,7 @@ C; DEST1 = DN99999F
     """
     And I press "Verify"
     Then I should see "Download Myrobot File"
+    Then I follow "Download myrobot File"
     Then the downloaded robot file for batch "550000555760" and plate "DN99999F" is
     """
 C;
@@ -357,6 +359,7 @@ Scenario: Source volumes should be updated once
     """
     And I press "Verify"
     Then I should see "Download Myrobot File"
+    Then I follow "Download myrobot File"
     Then the downloaded robot file for batch "550000555760" and plate "DN99999F" is
     """
 C;
@@ -423,6 +426,7 @@ C; DEST1 = DN99999F
 
     And I press "Verify"
     Then I should see "Download Myrobot File"
+    Then I follow "Download myrobot File"
     Then the downloaded robot file for batch "550000555760" and plate "DN99999F" is
 """
 C;
