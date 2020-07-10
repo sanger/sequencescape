@@ -34,7 +34,7 @@ module Pipeline::GroupByParent
 
   # Note can be overidden if also grouping by submission
   def grouping_parser
-    GrouperByParent.new(self)
+    Pipeline::GrouperByParent.new(self)
   end
 
   def grouping_function

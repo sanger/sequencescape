@@ -195,7 +195,8 @@ group :test, :cucumber do
   gem 'nokogiri', require: false
   gem 'shoulda-context', require: false
   gem 'shoulda-matchers', require: false
-  gem 'simplecov', require: false
+  # Pin due to Code climate compatibility issues. Should be able to unpin soon.
+  gem 'simplecov', '~>0.17.0', require: false
   gem 'timecop', require: false
   # Simplifies shared transactions between server and test threads
   # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
