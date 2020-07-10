@@ -14,6 +14,6 @@ class GenotypingPipeline < Pipeline
   private
 
   def grouping_parser
-    GrouperByParentAndSubmission.new(self)
+    Pipeline::GrouperByParentAndSubmission.new(self)
   end
 end
