@@ -90,9 +90,9 @@ class BatchesController < ApplicationController
   def create
     @pipeline = Pipeline.find(params[:id])
 
-    # TODO: These should be different endpoints
     requests = @pipeline.extract_requests_from_input_params(request_parameters)
 
+    # TODO: These should be different endpoints
     case params[:action_on_requests]
     when 'cancel_requests'
       transition_requests(requests, :cancel_before_started!, 'Requests cancelled')
