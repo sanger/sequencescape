@@ -33,10 +33,12 @@ class PipelinesController < ApplicationController
     @information_types = @pipeline.request_information_types.shown_in_inbox
 
     if @pipeline.group_by_parent?
+      Rails.logger.info('Pipeline grouped by parent')
       # We use the inbox presenter
       @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
       @requests_waiting = @inbox_presenter.requests_waiting
     elsif @pipeline.group_by_submission?
+      Rails.logger.info('Pipeline grouped by submision')
       # Convert to an array now as otherwise the comments counter attempts to be too clever
       # and treats the requests like a scope. Not only does this result in a more complicated
       # query, but also an invalid one
@@ -46,6 +48,7 @@ class PipelinesController < ApplicationController
       @requests_comment_count = Comment.counts_for(requests)
       @assets_comment_count = Comment.counts_for(requests.map(&:asset))
     else
+      Rails.logger.info('Pipeline fallback behaviour')
       @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
       @requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
       # We convert to an array here as otherwise rails tries to be smart
