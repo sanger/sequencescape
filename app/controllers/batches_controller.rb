@@ -91,7 +91,7 @@ class BatchesController < ApplicationController
     @pipeline = Pipeline.find(params[:id])
 
     # TODO: These should be different endpoints
-    requests = @pipeline.extract_requests_from_input_params(params.to_unsafe_h)
+    requests = @pipeline.extract_requests_from_input_params(request_parameters)
 
     case params[:action_on_requests]
     when 'cancel_requests'
@@ -445,5 +445,9 @@ class BatchesController < ApplicationController
       format.html { redirect_to action: :show, id: @batch.id }
       format.xml  { head :created, location: batch_url(@batch) }
     end
+  end
+
+  def request_parameters
+    params.permit(request: {}, request_group: {}).to_h
   end
 end
