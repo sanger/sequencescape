@@ -27,7 +27,7 @@ RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
       ],
       'stock_resource_id' => well.id,
       'stock_resource_uuid' => well.uuid,
-      'machine_barcode' => '1220012345855',
+      'machine_barcode' => 'DN12345U',
       'human_barcode' => 'DN12345U',
       'labware_coordinate' => 'A1',
 
