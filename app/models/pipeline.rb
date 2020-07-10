@@ -139,14 +139,12 @@ class Pipeline < ApplicationRecord
     controls.empty? ? false : true
   end
 
+  # Extracts the request ids from the selected requests. Overidden in pipleines
+  # which group by parent, as requests are grouped together by eg. submission id and labware id
+  # and the individual request ids are unavailable
   def extract_requests_from_input_params(params)
-    if (request_ids = params['request']).present?
-      requests.inputs(true).order(:id).find(selected_keys_from(request_ids))
-    elsif (selected_groups = params['request_group']).present?
-      grouping_parser.all(selected_keys_from(selected_groups))
-    else
-      raise StandardError, 'Unknown manner in which to extract requests!'
-    end
+    request_ids = params.fetch('request')
+    requests.inputs(true).order(:id).find(selected_keys_from(request_ids))
   end
 
   def all_requests_from_submissions_selected?(_request_ids)

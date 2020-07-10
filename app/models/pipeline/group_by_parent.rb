@@ -25,7 +25,17 @@ module Pipeline::GroupByParent
     raise StandardError, 'Use the Presenters::GroupedPipelineInboxPresenter'
   end
 
+  def extract_requests_from_input_params(params)
+    selected_groups = params.fetch('request_group')
+    grouping_parser.all(selected_keys_from(selected_groups))
+  end
+
   private
+
+  # Note can be overidden if also grouping by submission
+  def grouping_parser
+    GrouperByParent.new(self)
+  end
 
   def grouping_function
     lambda do |request|

@@ -8,4 +8,10 @@ module Pipeline::InboxGroupedBySubmission
     base.group_by_submission = true
     base.request_sort_order = { submission_id: :desc, id: :asc }.freeze
   end
+
+  private
+
+  def grouping_parser
+    GrouperBySubmission.new(self)
+  end
 end
