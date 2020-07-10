@@ -1,19 +1,21 @@
 # frozen_string_literal: true
 
+# Batches represent collections of {Request requests} processed through a {Pipeline}
+# at the same time. They are created via selecting requests on the {PipelinesController#show pipelines show page}
 class BatchesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
   before_action :evil_parameter_hack!
 
-  before_action :login_required, except: %i[released qc_criteria]
+  before_action :login_required, except: %i[released]
   before_action :find_batch_by_id, only: %i[
-    show edit update qc_information save fail fail_batch print_labels
+    show edit update save fail print_labels
     print_plate_labels print_multiplex_labels print verify verify_tube_layout
     reset_batch previous_qc_state filtered swap download_spreadsheet
     pacbio_sample_sheet sample_prep_worksheet
   ]
-  before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_pulldown_multiplex_tube_labels print_plate_barcodes print_barcodes]
+  before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_plate_barcodes print_barcodes]
 
   def index
     if logged_in?
@@ -84,7 +86,7 @@ class BatchesController < ApplicationController
   end
 
   def batch_parameters
-    @bp ||= params.require(:batch).permit(:assignee_id)
+    @batch_parameters ||= params.require(:batch).permit(:assignee_id)
   end
 
   def create
@@ -207,10 +209,11 @@ class BatchesController < ApplicationController
       @output_barcodes << plate_barcode if plate_barcode.present?
     end
 
-    if @output_barcodes.blank?
-      flash[:error] = 'Output plates do not have barcodes to print'
-      redirect_to controller: 'batches', action: 'show', id: @batch.id
-    end
+    return if @output_barcodes.present?
+
+    # We have no output barcodes, which means a problem
+    flash[:error] = 'Output plates do not have barcodes to print'
+    redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
 
   def print_multiplex_labels
