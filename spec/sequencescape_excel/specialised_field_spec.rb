@@ -635,6 +635,33 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     end
   end
 
+  describe SequencescapeExcel::SpecialisedField::Priority do
+    it 'will be valid if value blank string or nil' do
+      expect(described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)).to be_valid
+    end
+
+    it 'will be valid if value matches enum' do
+      expect(described_class.new(value: '0', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: '1', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: '2', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: '3', sample_manifest_asset: sample_manifest_asset)).to be_valid
+    end
+
+    it 'will not be valid if value does not match enum' do
+      sf = described_class.new(value: '5', sample_manifest_asset: sample_manifest_asset)
+      expect(sf).not_to be_valid
+      expect(sf.errors.full_messages).to include('the priority 5 was not recognised.')
+    end
+
+    it 'will update the priority on the sample when present' do
+      specialised_field = described_class.new(value: '1', sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update(aliquot: aliquot)
+      aliquot.save
+      expect(sample_manifest_asset.sample.priority).to eq('backlog')
+    end
+  end
+
   describe SequencescapeExcel::SpecialisedField::ControlType do
     it 'will be valid if value blank string or nil' do
       expect(described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)).to be_valid
