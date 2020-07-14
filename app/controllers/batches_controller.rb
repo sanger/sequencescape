@@ -1,19 +1,21 @@
 # frozen_string_literal: true
 
+# Batches represent collections of {Request requests} processed through a {Pipeline}
+# at the same time. They are created via selecting requests on the {PipelinesController#show pipelines show page}
 class BatchesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
   before_action :evil_parameter_hack!
 
-  before_action :login_required, except: %i[released qc_criteria]
+  before_action :login_required, except: %i[released]
   before_action :find_batch_by_id, only: %i[
-    show edit update qc_information save fail fail_batch print_labels
+    show edit update save fail print_labels
     print_plate_labels print_multiplex_labels print verify verify_tube_layout
     reset_batch previous_qc_state filtered swap download_spreadsheet
     pacbio_sample_sheet sample_prep_worksheet
   ]
-  before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_pulldown_multiplex_tube_labels print_plate_barcodes print_barcodes]
+  before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_plate_barcodes print_barcodes]
 
   def index
     if logged_in?
@@ -41,8 +43,8 @@ class BatchesController < ApplicationController
         @pipeline = @batch.pipeline
         @tasks    = @batch.tasks.sort_by(&:sorted)
         @rits = @pipeline.request_information_types
-        @input_labware = @batch.input_labware_group
-        @output_labware = @batch.output_labware_group
+        @input_labware = @batch.input_labware_report
+        @output_labware = @batch.output_labware_report
 
         if @pipeline.pick_data
           @robot = @batch.robot_id ? Robot.find(@batch.robot_id) : Robot.with_verification_behaviour.first
@@ -84,15 +86,15 @@ class BatchesController < ApplicationController
   end
 
   def batch_parameters
-    @bp ||= params.require(:batch).permit(:assignee_id)
+    @batch_parameters ||= params.require(:batch).permit(:assignee_id)
   end
 
   def create
     @pipeline = Pipeline.find(params[:id])
 
-    # TODO: These should be different endpoints
-    requests = @pipeline.extract_requests_from_input_params(params.to_unsafe_h)
+    requests = @pipeline.extract_requests_from_input_params(request_parameters)
 
+    # TODO: These should be different endpoints
     case params[:action_on_requests]
     when 'cancel_requests'
       transition_requests(requests, :cancel_before_started!, 'Requests cancelled')
@@ -207,10 +209,11 @@ class BatchesController < ApplicationController
       @output_barcodes << plate_barcode if plate_barcode.present?
     end
 
-    if @output_barcodes.blank?
-      flash[:error] = 'Output plates do not have barcodes to print'
-      redirect_to controller: 'batches', action: 'show', id: @batch.id
-    end
+    return if @output_barcodes.present?
+
+    # We have no output barcodes, which means a problem
+    flash[:error] = 'Output plates do not have barcodes to print'
+    redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
 
   def print_multiplex_labels
@@ -445,5 +448,9 @@ class BatchesController < ApplicationController
       format.html { redirect_to action: :show, id: @batch.id }
       format.xml  { head :created, location: batch_url(@batch) }
     end
+  end
+
+  def request_parameters
+    params.permit(request: {}, request_group: {}).to_h
   end
 end
