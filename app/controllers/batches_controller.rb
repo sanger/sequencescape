@@ -43,8 +43,8 @@ class BatchesController < ApplicationController
         @pipeline = @batch.pipeline
         @tasks    = @batch.tasks.sort_by(&:sorted)
         @rits = @pipeline.request_information_types
-        @input_labware = @batch.input_labware
-        @output_labware = @batch.output_labware
+        @input_labware = @batch.input_labware_report
+        @output_labware = @batch.output_labware_report
 
         if @pipeline.pick_data
           @robot = @batch.robot_id ? Robot.find(@batch.robot_id) : Robot.with_verification_behaviour.first

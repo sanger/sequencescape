@@ -10,7 +10,7 @@ module Pipeline::GroupByParent
   end
 
   def input_labware(requests)
-    labware_report(:requests_as_source, requests)
+    labware_report(:requests_as_source, requests, group_by: groups)
   end
 
   def output_labware(requests)
@@ -30,11 +30,11 @@ module Pipeline::GroupByParent
 
   private
 
-  def labware_report(request_association, requests)
+  def labware_report(request_association, requests, group_by: 'labware.id')
     Labware.joins(request_association)
            .where('requests.id' => requests)
            .preload(:barcodes, :purpose)
-           .group(groups)
+           .group(group_by)
            .select('labware.*', 'COUNT(DISTINCT requests.id) AS request_count')
   end
 

@@ -105,12 +105,12 @@ class Pipeline < ApplicationRecord
 
   # Overridden in group-by parent pipelines to display input plates
   def input_labware(_requests)
-    []
+    Labware.none
   end
 
   # Overridden in group-by parent pipelines to display output
   def output_labware(_requests)
-    []
+    Labware.none
   end
 
   def post_finish_batch(batch, user)
