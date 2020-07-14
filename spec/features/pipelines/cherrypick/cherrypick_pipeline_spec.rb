@@ -281,9 +281,24 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     end
 
     it_behaves_like 'a cherrypicking procedure'
+
+    context 'when the number of plates exceeds number of beds (Several runs)' do
+      let(:max_plates) { 2 }
+      let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
+      let(:expected_plates_by_destination_plate) do
+        {
+          destination_plate_human_barcode => {
+            1 => { sources: [plate1], control: control_plate },
+            2 => { sources: [plate2] }
+          }
+        }
+      end
+
+      it_behaves_like 'a cherrypicking procedure'
+    end
   end
 
-  describe 'where there is a control plate and multiple destinations' do
+  describe 'where there is a control plate and multiple destinations', js: true do
     let(:plate1) { create  :plate_with_untagged_wells, sample_count: 50, barcode: '1' }
     let(:plate2) { create  :plate_with_untagged_wells, sample_count: 50, barcode: '10' }
     let(:control_plate) { create :control_plate, sample_count: 2, barcode: '5' }
@@ -307,5 +322,23 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     end
 
     it_behaves_like 'a cherrypicking procedure'
+
+    context 'when the number of plates exceeds number of beds (Several runs)' do
+      let(:max_plates) { 2 }
+      let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
+      let(:expected_plates_by_destination_plate) do
+        {
+          destination_plate_human_barcode => {
+            1 => { sources: [plates[0]], control: control_plate },
+            2 => { sources: [plates[1]] }
+          },
+          destination_plate_human_barcode_2 => {
+            1 => { sources: [plates[1]], control: control_plate }
+          }
+        }
+      end
+
+      it_behaves_like 'a cherrypicking procedure'
+    end
   end
 end

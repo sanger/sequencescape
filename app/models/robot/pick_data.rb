@@ -19,6 +19,14 @@ class Robot::PickData
 
   private
 
+  # [nil, nil, nil, true, true] => [true, true, nil, nil, nil]
+  def compare_requests_with_controls(arg1, arg2)
+    return -1 if arg1.asset.aliquots.first.sample.control
+    return 1 if arg2.asset.aliquots.first.sample.control
+
+    0
+  end
+
   # processes cherrypicking requests for a single batch and destination plate
   # if there are more source plates than the maxiumum capacity for the robot, splits it out into multiple picks
   # returns a hash of pick number (1-indexed) to data object containing info about source and destination plates
@@ -41,7 +49,11 @@ class Robot::PickData
       data_objects[data_objects.size]['source'].size
     end
 
-    requests_for_destination_plate.find_each do |request|
+    sorted_requests_for_destination_plate = requests_for_destination_plate.sort do |arg1, arg2|
+      compare_requests_with_controls(arg1, arg2)
+    end
+
+    sorted_requests_for_destination_plate.each do |request|
       target_plate = request.target_asset.plate
       next unless target_plate.any_barcode_matching?(target_barcode)
 
