@@ -21,8 +21,8 @@ class Robot::PickData
 
   # [nil, nil, nil, true, true] => [true, true, nil, nil, nil]
   def compare_requests_with_controls(arg1, arg2)
-    return -1 if arg1.asset.aliquots.first.sample.control
-    return 1 if arg2.asset.aliquots.first.sample.control
+    return -1 if arg1.asset.aliquots.first&.sample&.control
+    return 1 if arg2.asset.aliquots.first&.sample&.control
 
     0
   end
