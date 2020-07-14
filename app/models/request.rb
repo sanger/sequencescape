@@ -236,7 +236,7 @@ class Request < ApplicationRecord
   # https://github.com/rails/rails/issues/15185
   scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies, { labware: :barcodes }] }]) }
   scope :loaded_for_sequencing_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) }, { request_type: :product_line }]) }
-  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: { labware: :barcodes } }, :target_asset]) }
+  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: { labware: [:purpose, :barcodes] } }, :target_asset, :order]) }
   scope :loaded_for_pacbio_inbox_display, -> { preload(:submission) }
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
