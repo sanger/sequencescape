@@ -14,15 +14,12 @@
     </tr>
   </thead>
   <tbody>
-    <% request_groups.each do |group, requests| -%>
-      <% next if group.blank? %>
-
-      <% labware  = @pipeline.group_by_parent? && ( pid = group.shift ) && Labware.find(pid) %>
+    <% listed_labware.each do |labware| -%>
       <% unless labware.nil? %>
         <tr>
           <td><%= link_to labware.id, labware_path(labware) %></td>
           <td><%= labware.human_barcode %></td>
-          <td><%= requests.size %></td>
+          <td><%= labware.request_count %></td>
           <td><%= link_to 'Show plate', show_plate_labware_path(labware)%></td>
           <td><%= purpose_for_labware(labware) %></td>
           <% if show_pick_data %>
@@ -90,7 +87,7 @@
         <tr>
           <td style="background:red;">&nbsp;</td>
           <td style="background:red;">&nbsp;</td>
-          <td style="background:red;"><%= requests.size %></td>
+          <td style="background:red;"><%= labware.request_count %></td>
           <% if output_plate %><td style="background:red;">&nbsp;</td><% end %>
           <td style="background:red;">&nbsp;</td>
           <td style="background:red;">&nbsp;</td>

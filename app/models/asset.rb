@@ -192,6 +192,7 @@ class Asset < ApplicationRecord
   # Generates a message to broadcast the tube to the stock warehouse
   # tables. Raises an exception if no template is configured for a give
   # asset. In most cases this is because the asset is not a stock
+  # Called when importing samples, e.g. in sample_manifest > core_behaviour, on manifest upload
   def register_stock!
     class_name = self.class.name
     raise StandardError, "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class." if stock_message_template.nil?

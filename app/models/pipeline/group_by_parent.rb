@@ -9,14 +9,12 @@ module Pipeline::GroupByParent
     self.group_by_parent = true
   end
 
-  # Overridden in group-by parent pipelines to display input plates
   def input_labware(requests)
-    requests.asset_on_labware.select('requests.*').group_by(&grouping_function)
+    labware_report(:requests_as_source, requests, group_by: groups)
   end
 
-  # Overridden in group-by parent pipelines to display output
   def output_labware(requests)
-    requests.target_asset_on_labware.group_by { |request| [request.labware_id] }
+    labware_report(:requests_as_target, requests)
   end
 
   def requests_in_inbox(_show_held_requests = true)
@@ -25,14 +23,29 @@ module Pipeline::GroupByParent
     raise StandardError, 'Use the Presenters::GroupedPipelineInboxPresenter'
   end
 
+  def extract_requests_from_input_params(params)
+    selected_groups = params.fetch('request_group')
+    grouping_parser.all(selected_keys_from(selected_groups))
+  end
+
   private
 
-  def grouping_function
-    lambda do |request|
-      [].tap do |group_key|
-        group_key << request.labware_id
-        group_key << request.submission_id if group_by_submission?
-      end
-    end
+  def labware_report(request_association, requests, group_by: 'labware.id')
+    Labware.joins(request_association)
+           .where('requests.id' => requests)
+           .preload(:barcodes, :purpose)
+           .group(group_by)
+           .select('labware.*', 'COUNT(DISTINCT requests.id) AS request_count')
+  end
+
+  # Note can be overidden if also grouping by submission
+  def grouping_parser
+    Pipeline::GrouperByParent.new(self)
+  end
+
+  def groups
+    return ['labware.id', 'requests.submission_id'] if group_by_submission?
+
+    'labware.id'
   end
 end

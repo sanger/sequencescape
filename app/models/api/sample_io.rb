@@ -64,6 +64,7 @@ class Api::SampleIO < Api::Base
     end
     map_attribute_to_json_attribute(:supplier_name)
     map_attribute_to_json_attribute(:donor_id)
+    map_attribute_to_json_attribute(:phenotype)
   end
 
   extra_json_attributes do |_object, json_attributes|

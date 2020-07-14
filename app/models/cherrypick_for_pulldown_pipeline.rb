@@ -4,8 +4,6 @@
 # the users expected, and they stopped using the pipeline.
 # However the {FlexibleCherrypickPipeline} is still active, and is sub-classed from this.
 class CherrypickForPulldownPipeline < CherrypickingPipeline
-  include Pipeline::InboxGroupedBySubmission
-
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
   def post_finish_batch(batch, user)
