@@ -21,12 +21,12 @@
   <div id="input_assets">
     <h3>Input</h3>
 
-    <%= render partial: "assets", locals: {show_pick_data: false, request_groups: @input_labware } %>
+    <%= render partial: "assets", locals: {show_pick_data: false, listed_labware: @input_labware } %>
   </div>
   <% unless @output_labware.blank? %>
     <div id="output_assets">
       <h3>Output</h3>
-      <%= render partial: "assets", locals: {show_pick_data: @pipeline.pick_data, request_groups: @output_labware }%>
+      <%= render partial: "assets", locals: {show_pick_data: @pipeline.pick_data, listed_labware: @output_labware }%>
     </div>
   <%end %>
   <br/>

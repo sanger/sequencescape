@@ -217,11 +217,11 @@ class Batch < ApplicationRecord
     requests.with_assets_for_starting_requests.not_failed.map(&:start!)
   end
 
-  def input_labware_group
+  def input_labware
     pipeline.input_labware requests
   end
 
-  def output_labware_group
+  def output_labware
     pipeline.output_labware requests.with_target
   end
 
