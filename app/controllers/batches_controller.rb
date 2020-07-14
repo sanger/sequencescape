@@ -422,6 +422,7 @@ class BatchesController < ApplicationController
   def standard_create(requests)
     return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
     return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
+    return pipeline_error_on_batch_creation('Batches must contain at least one request') if requests.empty?
 
     begin
       ActiveRecord::Base.transaction do
