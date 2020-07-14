@@ -15,7 +15,8 @@ class Pipeline::GrouperByParentAndSubmission < Pipeline::GrouperForPipeline
     # to trigger at different levels. We probably only want to switch to the
     # native function when it no longer builds its queries recursively. (Or when
     # ruby handles recursive method calls differently.)
-    base_scope.where(queries.join(' OR '))
+    combined_queries = queries.join(' OR ').presence || 'FALSE'
+    base_scope.where(combined_queries)
   end
 
   private
