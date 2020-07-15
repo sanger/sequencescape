@@ -197,5 +197,11 @@ RSpec.describe CherrypickTask, type: :model do
       expect(described_class.new.control_positions(12345, 3, 3, 1)).to eq([0])
       expect(described_class.new.control_positions(12345, 4, 3, 1)).to eq([1])
     end
+
+    it 'does not place controls in the first three columns for a 96-well destination plate' do
+      expect(described_class.new.control_positions(12345, 0, 96, 3)).to eq([57, 53, 26])
+      expect(described_class.new.control_positions(12345, 1, 96, 3)).to eq([58, 54, 27])
+      expect(described_class.new.control_positions(12345, 2, 96, 3)).to eq([59, 55, 28])
+    end
   end
 end
