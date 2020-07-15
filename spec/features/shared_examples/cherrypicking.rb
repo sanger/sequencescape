@@ -192,7 +192,7 @@ shared_examples 'a cherrypicking procedure' do
 
           def get_machine_barcode_for_bed(bedcode)
             num_barcode = robot.robot_properties.where(key: bedcode).first.value
-            SBCF::SangerBarcode.new(prefix: 'RB', number: num_barcode).machine_barcode
+            SBCF::SangerBarcode.new(prefix: 'BD', number: num_barcode).machine_barcode
           end
 
           step 'Perform bed verification' do
@@ -214,7 +214,7 @@ shared_examples 'a cherrypicking procedure' do
                   fill_in('CTRL 1', with: get_machine_barcode_for_bed('CTRL1'))
                 else
                   # This is for Tecan robots, where control plates are in a normal source bed
-                  fill_in('CTRL 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: max_plates).machine_barcode)
+                  fill_in('CTRL 1', with: SBCF::SangerBarcode.new(prefix: 'BD', number: max_plates).machine_barcode)
                 end
               end
               # fill in robot bed barcode for destination
