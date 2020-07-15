@@ -58,7 +58,7 @@ class SubmissionTemplate < ApplicationRecord
     end
   end
 
-  def create_with_submission!(attributes)
+  def create_with_submission!(attributes = {})
     create_order!(attributes) do |order|
       order.create_submission(user_id: order.user_id)
     end
