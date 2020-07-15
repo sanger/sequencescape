@@ -216,17 +216,17 @@ class CherrypickTask < Task
   #
   # Returns a list with the destination positions for the control wells distributed by
   # using batch_id and num_plate as position generators.
-  def control_positions(batch_id, num_plate, num_free_wells, num_control_wells)
+  def control_positions(batch_id, num_plate, total_wells, num_control_wells)
     unique_number = batch_id
 
     # Generation of the choice
     positions = []
-    available_posns = available_control_positions(num_free_wells)
+    available_posns = available_control_positions(total_wells)
 
     while positions.length < num_control_wells
       current_size = available_posns.length
       position = available_posns.slice!(unique_number % current_size)
-      position_for_plate = (position + num_plate) % num_free_wells
+      position_for_plate = (position + num_plate) % total_wells
       positions.push(position_for_plate)
       unique_number /= current_size
     end
@@ -334,12 +334,12 @@ class CherrypickTask < Task
   end
 
   # determines the range of available control positions
-  def available_control_positions(num_free_wells)
-    case num_free_wells
+  def available_control_positions(total_wells)
+    case total_wells
     when 96
-      (CONTROL_START_INDX_96...num_free_wells).to_a
+      (CONTROL_START_INDX_96...total_wells).to_a
     else
-      (CONTROL_START_INDX_OTHER...num_free_wells).to_a
+      (CONTROL_START_INDX_OTHER...total_wells).to_a
     end
   end
 end
