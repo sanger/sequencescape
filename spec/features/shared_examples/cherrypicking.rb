@@ -259,7 +259,7 @@ shared_examples 'a cherrypicking procedure' do
               # SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
               # DN1000001A,A1,ABgene 0765,15.85,DN20000001B,A1,ABgene 0800,15.85,49.15
               # DownloadHelpers.wait_for_download("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
-              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 60)
+              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 30)
               # TODO: This #lines method sometimes return an empty string when it doesnt have enough time to generate the content.
               # We increased the timeout to 60 seconds, but could still be creating problems
               generated_lines = generated_file.lines
