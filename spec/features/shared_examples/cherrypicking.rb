@@ -261,7 +261,7 @@ shared_examples 'a cherrypicking procedure' do
               # DownloadHelpers.wait_for_download("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
               generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 30)
               # TODO: This #lines method sometimes return an empty string when it doesnt have enough time to generate the content.
-              # We increased the timeout to 60 seconds, but could still be creating problems
+              # We increased the timeout to 30 seconds, but could still be creating problems
               generated_lines = generated_file.lines
 
               expect(generated_lines).not_to be_empty
