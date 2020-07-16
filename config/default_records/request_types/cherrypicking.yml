@@ -1,0 +1,15 @@
+---
+  # There are multiple different cherrypicking request types.
+# This does not include fluidigm, which was always an abuse of the cherrypicking
+# pipeline.
+cherrypick:
+  name: Cherrypick
+  asset_type: Well
+  order: 2
+  target_asset_type: Well
+  request_class_name: CherrypickForPulldownRequest
+flexible_cherrypick:
+  name: Flexible Cherrypick
+  asset_type: Well
+  order: 1
+  request_class_name: PooledCherrypickRequest
