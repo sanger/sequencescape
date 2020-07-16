@@ -334,7 +334,7 @@ shared_examples 'a cherrypicking procedure' do
               # C; SCRC2 = DN2T
               # C;
               # C; DEST1 = DN3U
-              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl", timeout: 60)
+              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl", timeout: 30)
               generated_lines = generated_file.lines
 
               # check count of controls present in destination file lines is correct
