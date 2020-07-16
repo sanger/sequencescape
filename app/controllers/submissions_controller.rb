@@ -1,3 +1,10 @@
+# frozen_string_literal: true
+
+# The submission controller handles the AJAXy submission form, not bulk submissions
+# The typical submission creation process is actually handled by a series of requests,
+# such as the fields that get displayed when a submission template is selected, and
+# the creation of each independent order.
+# Most the actual heavy lifting occurs in {Submission::SubmissionCreator}
 class SubmissionsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
