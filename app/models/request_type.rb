@@ -1,7 +1,7 @@
 # {Order orders} use RequestTypes as a factory to construct {Request requests}.
 # The list of request types to use is provided by Order#request_types and usually
 # gets populated by the SubmissionTemplate.
-# Once the request it buit, request type identifies the type of {Request} and
+# Once the request it built, request type identifies the type of {Request} and
 # associates it with a particular {Pipeline}.
 # In the case of external pipelines, such as Limber, other properties of {Request}
 # such as its {LibraryType} may also be considered.
@@ -60,7 +60,7 @@ class RequestType < ApplicationRecord
   has_many :acceptable_plate_purposes, through: :plate_purposes, source: :plate_purpose
 
   # While a request type describes what a request is, a request purpose describes why it is being done.
-  # ie. standrad, qc, internal
+  # ie. standard, qc, internal
   # The value on request type acts as a default for requests
   enum request_purpose: {
     standard: 1,
@@ -76,6 +76,9 @@ class RequestType < ApplicationRecord
   belongs_to :billing_product_catalogue, class_name: 'Billing::ProductCatalogue'
 
   validates :request_purpose, presence: true
+  # Order in this case is merely a means of sorting lists of request types to ensure that
+  # those earlier in the typical process appear first.
+  # eg. library_creation has a lower order than sequencing
   validates :order, presence: true
   validates :order, numericality: { integer_only: true }
   validates :morphology, numericality: { in: MORPHOLOGIES }

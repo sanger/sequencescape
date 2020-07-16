@@ -200,6 +200,12 @@ class Order < ApplicationRecord
     @asset_input_methods ||= DEFAULT_ASSET_INPUT_METHODS
   end
 
+  # request_type_ids_list is set for orders created by submission templates
+  # It is used by the input_field_infos section, which controls rendering
+  # form fields appropriate to each request type in the submission interface
+  # {request_type_ids} is calculated from this in the various sub-classes
+  # and gets persisted to the database, and used for the actual construction.
+  # TODO: Simplify this
   def request_types_list
     request_type_ids_list.map { |ids| RequestType.find(ids) }
   end
