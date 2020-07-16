@@ -9,8 +9,7 @@ class PickList < ApplicationRecord
   # PickLists are currently a wrapper for submissions, and batches. In future
   # it would be nice if we could make them more lightweight, and the cherrypicking
   # interface would use them directly.
-  belongs_to :submission
-  has_many :receptacles, through: :submission
+  belongs_to :submission, optional: false, autosave: true
   enum state: { pending: 0, built: 1 }
 
   # Asynchronous indicates whether the submission should be built asynchronously

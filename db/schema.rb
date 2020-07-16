@@ -722,7 +722,7 @@ ActiveRecord::Schema.define(version: 2020_07_14_152350) do
 
   create_table "pick_lists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "state", default: 0, null: false
-    t.integer "submission_id"
+    t.integer "submission_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["submission_id"], name: "index_pick_lists_on_submission_id"
