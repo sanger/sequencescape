@@ -1,41 +1,77 @@
 require 'rails_helper'
 
 RSpec.describe PickList, type: :model do
-  let(:wells) { create_list :well, 2 }
+  subject(:pick_list) { described_class.new(receptacles: wells, asynchronous: asynchronous) }
+
+  let(:wells) { create_list :untagged_well, 2 }
+  let(:asynchronous) { false }
 
   before do
-    create :cherrypick_submission_template
+    rt = create :cherrypick_request_type, key: 'cherrypick'
+    create :cherrypick_pipeline, request_type: rt
   end
 
-  describe '::create' do
-    subject { described_class.create(receptacles: wells, asynchronous: asynchronous) }
+  describe '#valid?' do
+    # We want a simple interface, that doesn't demand any options that are not
+    # strictly required.
+    context 'with wells pre-populates with study and project' do
+      it { is_expected.to be_valid }
+    end
+
+    context 'when wells lack project information' do
+      let(:wells) { create_list :untagged_well, 2, project: nil }
+
+      it { is_expected.not_to be_valid }
+    end
+  end
+
+  describe '#state' do
+    before { pick_list.save }
 
     context 'when asynchronous is true' do
       let(:asynchronous) { true }
 
-      it { is_expected.to be_pending }
+      it { expect(pick_list).to be_pending }
     end
 
     context 'when asynchronous is false' do
       let(:asynchronous) { false }
 
-      xit { is_expected.to be_built }
+      it { expect(pick_list).to be_built }
     end
   end
 
   describe '.receptacles' do
-    subject { described_class.create(receptacles: wells, asynchronous: asynchronous).receptacles }
+    subject { pick_list.receptacles }
 
     context 'when asynchronous is true' do
       let(:asynchronous) { true }
 
-      xit { is_expected.to eq wells }
+      it { is_expected.to eq wells }
     end
 
     context 'when asynchronous is false' do
       let(:asynchronous) { false }
 
-      xit { is_expected.to eq wells }
+      it { is_expected.to eq wells }
+    end
+  end
+
+  describe '#links' do
+    subject { pick_list.links }
+
+    before { pick_list.save }
+
+    context 'when asynchronous is true' do
+      let(:asynchronous) { true }
+
+      it { is_expected.to eq [] }
+    end
+
+    context 'when asynchronous is false' do
+      let(:asynchronous) { false }
+
+      it { is_expected.to include(name: "Batch #{Batch.last.id}", url: batch_url(Batch.last, host: configatron.site_url)) }
     end
   end
 end
