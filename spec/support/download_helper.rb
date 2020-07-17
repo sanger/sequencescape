@@ -23,15 +23,18 @@ module DownloadHelpers
   def self.wait_for_download(file, timeout = TIMEOUT)
     Timeout.timeout(timeout) do
       sleep 0.1 until downloaded?(file)
-      # Sleep a further 5 seconds, it may take some time to write the file
-      sleep 5 if downloaded?(file)
     end
   rescue Timeout::Error
     raise StandardError, "Could not open #{file} after #{timeout} seconds"
   end
 
   def self.downloaded?(file)
-    !downloading? && path_to(file).exist?
+    # Lots of the code in this file seems to be using this source:
+    # <https://collectiveidea.com/blog/archives/2012/01/27/testing-file-downloads-with-capybara-and-chromedriver>
+    # Comment on November 25, 2013 at 16:26 PM seems to have the same problem that we have on getting an
+    # empty file and they seem to solve it by altering the order of this condition. For more info check
+    # original source.
+    path_to(file).exist? && !downloading?
   end
 
   def self.downloading?
