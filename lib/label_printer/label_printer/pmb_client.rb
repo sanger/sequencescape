@@ -66,9 +66,10 @@ module LabelPrinter
     def self.pretty_errors(errors)
       if errors.present?
         parsed_errors = JSON.parse(errors)['errors']
-        if parsed_errors.is_a? Array
+        case parsed_errors
+        when Array
           prettify_new_errors(parsed_errors)
-        elsif parsed_errors.is_a? Hash
+        when Hash
           prettify_old_errors(parsed_errors)
         end
       end

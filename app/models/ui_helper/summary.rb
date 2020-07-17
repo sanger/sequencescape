@@ -4,8 +4,7 @@ require 'will_paginate/array'
 
 module UiHelper
   class Summary
-    attr_accessor :summary_items
-    attr_accessor :current_page
+    attr_accessor :summary_items, :current_page
 
     def initialize(options = {})
       @summary_items = []

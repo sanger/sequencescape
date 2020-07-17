@@ -19,7 +19,7 @@ class AssetsController < ApplicationController
         format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
-        format.xml { render xml: ['relations' => { 'parents' => @asset.parents, 'children' => @asset.children }].to_xml }
+        format.xml { render xml: [{ 'relations' => { 'parents' => @asset.parents, 'children' => @asset.children } }].to_xml }
       end
     end
   end
@@ -133,9 +133,10 @@ class AssetsController < ApplicationController
     if params[:asset] && params[:asset][:barcode]
       @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
 
-      if @assets.size == 1
+      case @assets.size
+      when 1
         redirect_to @assets.first
-      elsif @assets.size == 0
+      when 0
         flash.now[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
         respond_to do |format|
           format.html { render action: 'lookup' }

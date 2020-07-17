@@ -12,9 +12,7 @@ class SequenomQcPlate < Plate
   self.per_page = 50
   self.default_plate_size = 384
 
-  attr_accessor :gender_check_bypass
-  attr_accessor :plate_prefix
-  attr_accessor :user_barcode
+  attr_accessor :gender_check_bypass, :plate_prefix, :user_barcode
 
   validates :name, presence: true
 

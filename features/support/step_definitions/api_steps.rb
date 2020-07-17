@@ -30,11 +30,12 @@ def assert_hash_equal(h1, h2, *args)
 end
 
 def walk_hash_structure(hash_data, &block)
-  if hash_data.is_a?(Hash)
+  case hash_data
+  when Hash
     hash_data.each_with_object({}) do |(key, value), hash|
       hash[key] = walk_hash_structure(value, &block) unless yield(key)
     end
-  elsif hash_data.is_a?(Array)
+  when Array
     hash_data.map { |entry| walk_hash_structure(entry, &block) }
   else
     hash_data

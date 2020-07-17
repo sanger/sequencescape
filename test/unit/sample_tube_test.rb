@@ -32,8 +32,8 @@ class SampleTubeTest < ActiveSupport::TestCase
                        'created_at' => '2012-03-11T10:22:42+00:00',
                        'updated_at' => '2012-03-11T10:22:42+00:00',
                        'samples' => [
-                         'sample_uuid' => @sample.uuid,
-                         'study_uuid' => @study.uuid
+                         { 'sample_uuid' => @sample.uuid,
+                           'study_uuid' => @study.uuid }
                        ],
                        'stock_resource_id' => @sample_tube.receptacle.id,
                        'stock_resource_uuid' => @sample_tube.receptacle.uuid,
