@@ -259,9 +259,7 @@ shared_examples 'a cherrypicking procedure' do
               # SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
               # DN1000001A,A1,ABgene 0765,15.85,DN20000001B,A1,ABgene 0800,15.85,49.15
               # DownloadHelpers.wait_for_download("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
-              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 30)
-              # TODO: This #lines method sometimes return an empty string when it doesnt have enough time to generate the content.
-              # We increased the timeout to 30 seconds, but could still be creating problems
+              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 5)
               generated_lines = generated_file.lines
 
               expect(generated_lines).not_to be_empty
@@ -334,7 +332,7 @@ shared_examples 'a cherrypicking procedure' do
               # C; SCRC2 = DN2T
               # C;
               # C; DEST1 = DN3U
-              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl", timeout: 30)
+              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl", timeout: 5)
               generated_lines = generated_file.lines
 
               # check count of controls present in destination file lines is correct
