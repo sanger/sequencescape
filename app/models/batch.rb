@@ -49,7 +49,7 @@ class Batch < ApplicationRecord
   after_create :generate_target_assets_for_requests, if: :generate_target_assets_on_batch_create?
   after_commit :rebroadcast
 
-  # Named scope for search by query string behavior
+  # Named scope for search by query string behaviour
   scope :for_search_query, ->(query) {
     user = User.find_by(login: query)
     if user
@@ -85,7 +85,8 @@ class Batch < ApplicationRecord
   alias friendly_name id
 
   def all_requests_are_ready?
-    # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
+    # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed
+    # (as referred by #75102998)
     unless requests.all?(&:ready?)
       errors.add :base, 'All requests must be ready to be added to a batch'
     end
@@ -219,7 +220,7 @@ class Batch < ApplicationRecord
 
   # Returns a list of input labware including their barcodes,
   # purposes, and a count of the number of requests associated with the
-  # batch. Output depends on Pipeline. Some pipleine retrun an empt
+  # batch. Output depends on Pipeline. Some pipelines return an empty relationship
   #
   # @return [Labware::ActiveRecord_Relation] The associated labware
   def input_labware_report
@@ -228,7 +229,7 @@ class Batch < ApplicationRecord
 
   # Returns a list of output labware including their barcodes,
   # purposes, and a count of the number of requests associated with the
-  # batch. Output depends on Pipeline. Some pipleine retrun an empt
+  # batch. Output depends on Pipeline. Some pipelines return an empty relationship
   #
   # @return [Labware::ActiveRecord_Relation] The associated labware
   def output_labware_report
@@ -289,7 +290,7 @@ class Batch < ApplicationRecord
     requests.map { |r| r.target_asset.children }.flatten.uniq
   end
 
-  # Source Labware returns the physical pieces of lawbare (ie. a plate for wells, but stubes for tubes)
+  # Source Labware returns the physical pieces of labware (ie. a plate for wells, but tubes for tubes)
   def source_labware
     requests.map(&:asset).map(&:labware).uniq
   end
@@ -321,7 +322,7 @@ class Batch < ApplicationRecord
   end
 
   def release_pending_requests
-    # We set the unusued requests to pendind.
+    # We set the unused requests to pending.
     # this is to allow unused well to be cherry-picked again
     requests.each do |request|
       detach_request(request) if request.started?

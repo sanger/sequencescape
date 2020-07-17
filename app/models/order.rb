@@ -42,7 +42,7 @@ class Order < ApplicationRecord
   #  attributes which are not saved for a submission but can be pre-set via SubmissionTemplate
   # return a list of request_types lists  (a sequence of choices) to display in the new view
   attr_writer :request_type_ids_list, :input_field_infos
-  attr_accessor :info_differential # aggrement text to display when creating a new submission
+  attr_accessor :info_differential # agreement text to display when creating a new submission
   attr_accessor :customize_partial # the name of a partial to render.
   attr_writer :asset_input_methods
 
