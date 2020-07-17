@@ -14,21 +14,9 @@
 #             requests may be shared between multiple orders.
 class Order < ApplicationRecord
   # Ensure order methods behave correctly
-  module InstanceMethods
-    # The instance methods have been included in a module in order to take advantage
-    # of the way ruby handles inheritance. This pops this version of :complete_building
-    # in the inheritance tree before the rest of the modules, so when they call super,
-    # they'll eventually end up here. We could 'prepend' the modules instead (and move
-    # this onto the class itself) but that would change the inheritance so might
-    # have other side effects
-    def complete_building
-      # nothing just so mixin can use super
-    end
-  end
   AssetTypeError = Class.new(StandardError)
   DEFAULT_ASSET_INPUT_METHODS = ['select an asset group'].freeze
 
-  include InstanceMethods
   include Uuid::Uuidable
   include Submission::AssetGroupBehaviour
   include Submission::ProjectValidation
@@ -100,6 +88,11 @@ class Order < ApplicationRecord
     def render_class
       Api::OrderIO
     end
+  end
+
+  def complete_building
+    check_project_details!
+    complete_building_asset_group
   end
 
   def assets=(assets_to_add)
