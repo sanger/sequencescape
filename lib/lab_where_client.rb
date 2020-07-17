@@ -87,8 +87,7 @@ module LabWhereClient
   class Labware < Endpoint
     endpoint_name 'labwares'
 
-    attr_reader :barcode
-    attr_reader :location
+    attr_reader :barcode, :location
 
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?
@@ -137,9 +136,7 @@ module LabWhereClient
   class Location < Endpoint
     endpoint_name 'locations'
 
-    attr_reader :name
-    attr_reader :parentage
-    attr_reader :barcode
+    attr_reader :name, :parentage, :barcode
 
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?

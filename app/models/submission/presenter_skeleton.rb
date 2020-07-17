@@ -15,9 +15,7 @@ class Submission::PresenterSkeleton
   end
 
   # id accessors need to be explicitly defined...
-  attr_reader :id
-
-  attr_writer :id
+  attr_accessor :id
 
   def lanes_of_sequencing
     return lanes_from_request_options if %{building pending}.include?(submission.state)
