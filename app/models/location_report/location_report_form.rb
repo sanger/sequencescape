@@ -21,8 +21,7 @@ class LocationReport::LocationReportForm
 
   attr_accessor :barcodes_text
   attr_reader :name
-
-  attr_writer :location_report, :barcodes, :barcodes_text # rubocop:todo Lint/DuplicateMethods
+  attr_writer :location_report, :barcodes
 
   # validations
   validate :check_labwhere_location_exists, :check_maxlength_of_barcodes, :check_for_valid_barcodes,
