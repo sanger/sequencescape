@@ -15,6 +15,12 @@
 class Order < ApplicationRecord
   # Ensure order methods behave correctly
   module InstanceMethods
+    # The instance methods have been included in a module in order to take advantage
+    # of the way ruby handles inheritance. This pops this version of :complete_building
+    # in the inheritance tree before the rest of the modules, so when they call super,
+    # they'll eventually end up here. We could 'prepend' the modules instead (and move
+    # this onto the class itself) but that would change the inheritance so might
+    # have other side effects
     def complete_building
       # nothing just so mixin can use super
     end
