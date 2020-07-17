@@ -70,7 +70,7 @@ class Order < ApplicationRecord
 
   validate :study_is_active, on: :create
   validate :assets_are_appropriate
-  validate :no_consent_withdrawl
+  validate :no_consent_withdrawal
 
   before_destroy :building_submission?
   after_destroy :on_delete_destroy_submission
@@ -280,7 +280,7 @@ class Order < ApplicationRecord
     request_type.asset_type == asset.asset_type_for_request_types.name
   end
 
-  def no_consent_withdrawl
+  def no_consent_withdrawal
     return true unless all_samples.any?(&:consent_withdrawn?)
 
     withdrawn_samples = all_samples.select(&:consent_withdrawn?).map(&:friendly_name)
