@@ -21,10 +21,11 @@ class PickList < ApplicationRecord
   # via the delayed job, or synchronously.
   attribute :asynchronous, :boolean, default: true
 
-  # We override the setter
-  def receptacles=(receptacles)
-    receptacles.group_by(&:study_ids).each_value do |receptacle_group|
-      submission.orders << build_order(receptacle_group)
+  def pick_attributes=(picks)
+    picks.map { |pick| Pick.new(pick) }
+         .group_by(&:order_options)
+         .each do |order_options, pick_group|
+      submission.orders << build_order(pick_group, order_options)
     end
   end
 
@@ -75,11 +76,12 @@ class PickList < ApplicationRecord
     @request_type ||= RequestType.find_by!(key: REQUEST_TYPE_KEY)
   end
 
-  def build_order(receptacle_group)
+  def build_order(pick_group, order_options)
     AutomatedOrder.new(
       user: user,
-      assets: receptacle_group,
-      request_types: [request_type_id]
+      assets: pick_group.map(&:source_receptacle),
+      request_types: [request_type_id],
+      ** order_options # Merge the order options into the arguments
     )
   end
 
