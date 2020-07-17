@@ -23,6 +23,8 @@ module DownloadHelpers
   def self.wait_for_download(file, timeout = TIMEOUT)
     Timeout.timeout(timeout) do
       sleep 0.1 until downloaded?(file)
+      # Sleep a further 5 seconds, it may take some time to write the file
+      sleep 5 if downloaded?(file)
     end
   rescue Timeout::Error
     raise StandardError, "Could not open #{file} after #{timeout} seconds"
