@@ -320,7 +320,6 @@ class CherrypickTask < Task
     false
   end
 
-  private
 
   # returns array [ [ request id, source plate barcode, source coordinate ] ]
   def build_plate_wells_from_requests(requests)
@@ -328,29 +327,23 @@ class CherrypickTask < Task
                              .includes(asset: [{ plate: :barcodes }, :map])
 
 
-    source_plate_barcodes = loaded_requests.map(&:request.asset.plate.human_barcode).uniq
+    source_plate_barcodes = loaded_requests.map { |request| request.asset.plate.human_barcode }.uniq
 
-    puts "DEBUG: source_plate_barcodes = #{source_plate_barcodes.inspect}"
     # retrieve Labwhere locations for all source_plate_barcodes
-    barcode_to_location = Labware.find_by_barcodes(source_plate_barcodes)
+    barcode_to_location = Labware.labwhere_locations(source_plate_barcodes)
     barcodes_sorted = barcode_to_location.sort_by{ |k, v| v }.to_h.keys
-    puts "DEBUG: barcodes_sorted = #{barcodes_sorted.inspect}"
     # TODO: may need to also sort where locations (values) are empty string by plate barcode
 
     sorted_requests = loaded_requests.sort_by do |request|
       [barcodes_sorted.index(request.asset.plate.human_barcode), request.asset.plate.id, request.asset.map.column_order]
     end
-    puts "DEBUG: sorted_requests = #{sorted_requests.inspect}"
 
-    # sorted_requests = loaded_requests.sort_by do |request|
-    #   [request.asset.plate.id, request.asset.map.column_order]
-    # end
     sorted_requests.map do |request|
       [request.id, request.asset.plate.human_barcode, request.asset.map_description]
     end
   end
 
-
+  private
 
   # determines the range of available control positions
   def available_control_positions(total_wells)

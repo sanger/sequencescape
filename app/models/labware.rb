@@ -100,7 +100,7 @@ class Labware < Asset
 
     unless labware_barcodes.count == barcodes_to_parentage.count
       labware_barcodes.each do |barcode|
-        next unless barcodes_to_parentage.contains_key? barcode
+        next unless barcodes_to_parentage.has_key? barcode
 
         barcodes_to_parentage[barcode] = nil
       end

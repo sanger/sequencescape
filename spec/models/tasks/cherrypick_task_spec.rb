@@ -1,6 +1,11 @@
 require 'rails_helper'
 
+RSpec.configure do |c|
+  c.include LabWhereClientHelper
+end
+
 RSpec.describe CherrypickTask, type: :model do
+
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
   let(:control_plate) { create :control_plate, sample_count: 2 }
   let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w) }.flatten }
@@ -13,6 +18,10 @@ RSpec.describe CherrypickTask, type: :model do
 
   def pick_without_request_id(plates)
     plates.map { |plate| plate.map { |_id, barcode, pos| [barcode, pos] } }
+  end
+
+  def requests_for_plate(plate)
+    plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w) }.flatten
   end
 
   describe '#pick_new_plate' do
@@ -70,6 +79,134 @@ RSpec.describe CherrypickTask, type: :model do
         it 'places controls in a different position' do
           pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
           expect(pick_without_request_id(pick[0])).to eq(destinations)
+        end
+      end
+    end
+
+    describe '#build_plate_wells_from_requests' do
+      let!(:plate_1) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate1' }
+      let!(:plate_2) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate2' }
+      let!(:plate_3) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate3' }
+      let(:plates) { [plate_1, plate_2, plate_3] }
+      let(:requests_1) { requests_for_plate(plate_1) }
+      let(:requests_2) { requests_for_plate(plate_2) }
+      let(:requests_3) { requests_for_plate(plate_3) }
+      let(:requests) { requests_1 + requests_2 + requests_3 }
+
+      let(:parentage_1) { 'Sanger / Ogilvie / AA316' } # Expected order: 2nd
+      let(:parentage_2) { 'Sanger / Ogilvie / AA317' } # Expected order: 3rd
+      let(:parentage_3) { 'Sanger / Ogilvie / AA316' } # Expected order: 1st
+      let(:location_1) { 'Shelf 2' }
+      let(:location_2) { 'Shelf 2' }
+      let(:location_3) { 'Shelf 1' }
+
+
+      context 'with locations set' do
+        let(:expected_output) {
+          output = []
+          requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          output
+        }
+
+        before do
+          stub_lwclient_labware_bulk_find_by_bc(
+            [
+              {
+                lw_barcode: plate_1.human_barcode,
+                lw_locn_name: location_1,
+                lw_locn_parentage: parentage_1
+              },
+              {
+                lw_barcode: plate_2.human_barcode,
+                lw_locn_name: location_2,
+                lw_locn_parentage: parentage_2
+              },
+              {
+                lw_barcode: plate_3.human_barcode,
+                lw_locn_name: location_3,
+                lw_locn_parentage: parentage_3
+              }
+            ]
+          )
+        end
+
+        it 'works' do
+          expect(described_class.new.build_plate_wells_from_requests(requests)).to eq expected_output
+        end
+      end
+
+      context 'with no locations set' do
+        # with no locations, they should just be in plate creation order
+        let(:expected_output) {
+          output = []
+          requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          output
+        }
+
+        before do
+          stub_lwclient_labware_bulk_find_by_bc(
+            [
+              {
+                lw_barcode: plate_1.human_barcode,
+                lw_locn_name: '',
+                lw_locn_parentage: ''
+              },
+              {
+                lw_barcode: plate_2.human_barcode,
+                lw_locn_name: '',
+                lw_locn_parentage: ''
+              },
+              {
+                lw_barcode: plate_3.human_barcode,
+                lw_locn_name: '',
+                lw_locn_parentage: ''
+              }
+            ]
+          )
+        end
+
+        it 'works' do
+          expect(described_class.new.build_plate_wells_from_requests(requests)).to eq expected_output
+        end
+      end
+
+      context 'with a mix of locations and no locations' do
+        let(:expected_output) {
+          output = []
+          requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] } # no location, should be first
+          requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          output
+        }
+
+        before do
+          stub_lwclient_labware_bulk_find_by_bc(
+            [
+              {
+                lw_barcode: plate_1.human_barcode,
+                lw_locn_name: '',
+                lw_locn_parentage: ''
+              },
+              {
+                lw_barcode: plate_2.human_barcode,
+                lw_locn_name: location_2,
+                lw_locn_parentage: parentage_2
+              },
+              {
+                lw_barcode: plate_3.human_barcode,
+                lw_locn_name: location_3,
+                lw_locn_parentage: parentage_3
+              }
+            ]
+          )
+        end
+
+        it 'works' do
+          expect(described_class.new.build_plate_wells_from_requests(requests)).to eq expected_output
         end
       end
     end
