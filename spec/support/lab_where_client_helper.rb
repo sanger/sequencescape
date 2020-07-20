@@ -21,11 +21,25 @@ module LabWhereClientHelper
     )
   end
 
+  def create_labwares(lw_params_list)
+    lw_params_list.map { |lw_params| create_labware(lw_params[:lw_barcode], lw_params[:lw_locn_name], lw_params[:lw_locn_parentage]) }
+  end
+
   def stub_lwclient_labware_find_by_bc(lw_params)
     allow(LabWhereClient::Labware).to receive(:find_by_barcode)
       .with(lw_params[:lw_barcode])
       .and_return(
         create_labware(lw_params[:lw_barcode], lw_params[:lw_locn_name], lw_params[:lw_locn_parentage])
+      )
+  end
+
+  def stub_lwclient_labware_bulk_find_by_bc(lw_params_list)
+    lw_barcodes = lw_params_list.map { |lw_params| lw_params[:lw_barcode] }
+
+    allow(LabWhereClient::Labware).to receive(:find_by_barcodes)
+      .with(lw_barcodes)
+      .and_return(
+        create_labwares(lw_params_list)
       )
   end
 

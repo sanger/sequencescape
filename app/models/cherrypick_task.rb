@@ -259,7 +259,8 @@ class CherrypickTask < Task
     destination_plates = []
     current_destination_plate = yield # instance of ByRow, ByColumn or ByInterlacedColumn
     source_plates = Set.new
-    plates_hash = build_plate_wells_from_requests(requests) # array formed from requests
+    plates_array = build_plate_wells_from_requests(requests) # array formed from requests
+    source_plate_barcodes = plates_array.map { |ar| ar[1] } # second element in the array is the source plate barcode
 
     # Initial settings needed for control requests addition
     if auto_add_control_plate
@@ -276,7 +277,7 @@ class CherrypickTask < Task
     push_completed_plate = lambda do |idx|
       destination_plates << current_destination_plate.completed_view
       current_destination_plate = yield # reset to start picking to a fresh one
-      if auto_add_control_plate && (idx < (plates_hash.length - 1))
+      if auto_add_control_plate && (idx < (plates_array.length - 1))
         # when we start a new plate we rebuild the list of positions where the requests should be placed
         num_plate += 1
         control_posns = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
@@ -284,7 +285,7 @@ class CherrypickTask < Task
       end
     end
 
-    plates_hash.each_with_index do |list, idx|
+    plates_array.each_with_index do |list, idx|
       request_id, plate_barcode, well_location = list
       source_plates << plate_barcode
       current_destination_plate.push_with_controls(request_id, plate_barcode, well_location,
@@ -297,7 +298,7 @@ class CherrypickTask < Task
     end
 
     # Ensure that a non-empty plate is stored
-    push_completed_plate.call(plates_hash.length) unless current_destination_plate.empty?
+    push_completed_plate.call(plates_array.length) unless current_destination_plate.empty?
 
     [destination_plates, source_plates]
   end
