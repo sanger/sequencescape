@@ -9,23 +9,67 @@ RSpec.configure do |c|
 end
 
 describe Plate do
+  # TODO: should move these to labware_spec, as the method is on the labware model...?
   context 'labwhere' do
-    subject { plate.labwhere_location }
+    describe '#labwhere_location' do
+      subject { plate.labwhere_location }
 
-    let(:plate) { create :plate, barcode: 1 }
-    let(:parentage) { 'Sanger / Ogilvie / AA316' }
-    let(:location) { 'Shelf 1' }
+      let(:plate) { create :plate, barcode: 1 }
+      let(:parentage) { 'Sanger / Ogilvie / AA316' }
+      let(:location) { 'Shelf 1' }
 
-    setup do
-      stub_lwclient_labware_find_by_bc(lw_barcode: plate.human_barcode,
-                                       lw_locn_name: location,
-                                       lw_locn_parentage: parentage)
-      stub_lwclient_labware_find_by_bc(lw_barcode: plate.machine_barcode,
-                                       lw_locn_name: location,
-                                       lw_locn_parentage: parentage)
+      setup do
+        stub_lwclient_labware_find_by_bc(lw_barcode: plate.human_barcode,
+                                        lw_locn_name: location,
+                                        lw_locn_parentage: parentage)
+        stub_lwclient_labware_find_by_bc(lw_barcode: plate.machine_barcode,
+                                        lw_locn_name: location,
+                                        lw_locn_parentage: parentage)
+      end
+
+      it { is_expected.to eq "#{parentage} - #{location}" }
     end
 
-    it { is_expected.to eq "#{parentage} - #{location}" }
+    describe '#labwhere_locations' do
+      subject { Plate.labwhere_locations(barcodes) }
+
+      let(:plate_1) { create :plate, barcode: 1 }
+      let(:plate_2) { create :plate, barcode: 2 }
+      let(:barcodes) { [plate_1.barcode, plate_2.barcode] }
+      let(:parentage_1) { 'Sanger / Ogilvie / AA316' }
+      let(:parentage_2) { 'Sanger / Ogilvie / AA317' }
+      let(:location_1) { 'Shelf 1' }
+      let(:location_2) { 'Shelf 2' }
+      let(:expected) {
+        {
+          plate_1.barcode => "#{parentage_1} - #{location_1}",
+          plate_2.barcode => "#{parentage_2} - #{location_2}"
+        }
+      }
+
+      setup do
+        stub_lwclient_labware_bulk_find_by_bc(
+          [
+            {
+              lw_barcode: plate_1.human_barcode,
+              lw_locn_name: location_1,
+              lw_locn_parentage: parentage_1
+            },
+            {
+              lw_barcode: plate_2.human_barcode,
+              lw_locn_name: location_2,
+              lw_locn_parentage: parentage_2
+            }
+          ]
+        )
+
+        # stub_lwclient_labware_find_by_bc(lw_barcode: plate.machine_barcode,
+        #                                 lw_locn_name: location,
+        #                                 lw_locn_parentage: parentage)
+      end
+
+      it { is_expected.to eq expected }
+    end
   end
 
   describe '#comments' do
