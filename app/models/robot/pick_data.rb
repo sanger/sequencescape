@@ -19,12 +19,13 @@ class Robot::PickData
 
   private
 
-  # [nil, nil, nil, true, true] => [true, true, nil, nil, nil]
-  def compare_requests_with_controls(arg1, arg2)
-    return -1 if arg1.asset.aliquots.first&.sample&.control
-    return 1 if arg2.asset.aliquots.first&.sample&.control
-
-    0
+  # Given a list of requests it will sort them by:
+  # - In first place all control requests
+  # - Then all requests for a target plate coming from a source plate, sorted by well location
+  def sorted_requests_for_destination_plate(requests_to_sort)
+    requests_to_sort.sort_by do |a|
+      [a.asset.aliquots&.first&.sample&.control ? 0 : 1, a.target_asset.plate.id, a.asset.plate.id, a.target_asset.map_id]
+    end
   end
 
   # processes cherrypicking requests for a single batch and destination plate
@@ -49,11 +50,7 @@ class Robot::PickData
       data_objects[data_objects.size]['source'].size
     end
 
-    sorted_requests_for_destination_plate = requests_for_destination_plate.sort do |arg1, arg2|
-      compare_requests_with_controls(arg1, arg2)
-    end
-
-    sorted_requests_for_destination_plate.each do |request|
+    sorted_requests_for_destination_plate(requests_for_destination_plate).each do |request|
       target_plate = request.target_asset.plate
       next unless target_plate.any_barcode_matching?(target_barcode)
 
