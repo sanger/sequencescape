@@ -35,15 +35,15 @@ describe Plate do
 
       let(:plate_1) { create :plate, barcode: 1 }
       let(:plate_2) { create :plate, barcode: 2 }
-      let(:barcodes) { [plate_1.barcode, plate_2.barcode] }
+      let(:barcodes) { [plate_1.human_barcode, plate_2.human_barcode] }
       let(:parentage_1) { 'Sanger / Ogilvie / AA316' }
       let(:parentage_2) { 'Sanger / Ogilvie / AA317' }
       let(:location_1) { 'Shelf 1' }
       let(:location_2) { 'Shelf 2' }
       let(:expected) {
         {
-          plate_1.barcode => "#{parentage_1} - #{location_1}",
-          plate_2.barcode => "#{parentage_2} - #{location_2}"
+          plate_1.human_barcode => "#{parentage_1} - #{location_1}",
+          plate_2.human_barcode => "#{parentage_2} - #{location_2}"
         }
       }
 
@@ -62,10 +62,6 @@ describe Plate do
             }
           ]
         )
-
-        # stub_lwclient_labware_find_by_bc(lw_barcode: plate.machine_barcode,
-        #                                 lw_locn_name: location,
-        #                                 lw_locn_parentage: parentage)
       end
 
       it { is_expected.to eq expected }

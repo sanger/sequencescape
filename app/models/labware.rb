@@ -85,6 +85,30 @@ class Labware < Asset
     scanned_into_lab_event.try(:content) || ''
   end
 
+  def self.labwhere_locations(labware_barcodes)
+    begin
+      info_from_labwhere = LabWhereClient::LabwareSearch.find_by_barcodes(labware_barcodes)
+    rescue LabWhereClient::LabwhereException => e
+      return "Not found (#{e.message})"
+    end
+
+    return 'Labwhere information not found' unless info_from_labwhere.present?
+
+    barcodes_to_parentage = info_from_labwhere.labwares.each_with_object({}) do |info, barcodes_to_parentage|
+      barcodes_to_parentage[info.barcode] = info.location.location_info
+    end
+
+    unless labware_barcodes.count == barcodes_to_parentage.count
+      labware_barcodes.each do |barcode|
+        next unless barcodes_to_parentage.contains_key? barcode
+
+        barcodes_to_parentage[barcode] = nil
+      end
+    end
+
+    return barcodes_to_parentage
+  end
+
   private
 
   def obtain_storage_location

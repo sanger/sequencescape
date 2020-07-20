@@ -36,7 +36,7 @@ module LabWhereClientHelper
   def stub_lwclient_labware_bulk_find_by_bc(lw_params_list)
     lw_barcodes = lw_params_list.map { |lw_params| lw_params[:lw_barcode] }
 
-    allow(LabWhereClient::Labware).to receive(:find_by_barcodes)
+    allow(LabWhereClient::LabwareSearch).to receive(:find_by_barcodes)
       .with(lw_barcodes)
       .and_return(
         create_labwares(lw_params_list)
