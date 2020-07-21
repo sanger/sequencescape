@@ -171,8 +171,11 @@ shared_examples 'a cherrypicking procedure' do
 
     # rubocop:disable Metrics/BlockLength
     step 'Perform the bed verifications and check picking files' do
+      # for each destination plate...
       expected_plates_by_destination_plate.each do |(destination_barcode, current_expected_plates)|
+        # for each pick...
         (1..current_expected_plates.size).each do |pick_number_index|
+
           step "Setup bed verification for #{destination_barcode} pick number #{pick_number_index}" do
             step 'visit robot verifications page' do
               visit('/robot_verifications')
