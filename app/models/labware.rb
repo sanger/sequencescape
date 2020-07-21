@@ -87,7 +87,7 @@ class Labware < Asset
 
   def self.labwhere_locations(labware_barcodes)
     begin
-      info_from_labwhere = LabWhereClient::LabwareSearch.find_by(barcodes: labware_barcodes)
+      info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
     rescue LabWhereClient::LabwhereException => e
       return "Not found (#{e.message})"
     end
