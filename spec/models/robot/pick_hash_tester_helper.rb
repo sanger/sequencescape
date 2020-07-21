@@ -1,5 +1,4 @@
 class PickHashTesterHelper
-
   def initialize(destination_plate, picks, time, user)
     @destination_plate = destination_plate
     @picks = picks
@@ -24,7 +23,7 @@ class PickHashTesterHelper
   end
 
   private
-  
+
   def plate_for_dest_location(location)
     @picks[location][0]
   end
@@ -39,20 +38,19 @@ class PickHashTesterHelper
       source_location = source_location_for_dest_location(location)
       { 'src_well' => [source_plate.machine_barcode, source_location], 'dst_well' => location, 'volume' => nil, 'buffer_volume' => 0.0 }
     end
-  end  
+  end
 
   def source_plates(locations)
-    locations.map{|loc| plate_for_dest_location(loc)}
+    locations.map { |loc| plate_for_dest_location(loc) }
   end
 
   def sources_for_plates(plates)
-    plates.reduce({}) do |memo, plate|
+    plates.each_with_object({}) do |plate, memo|
       memo[plate.machine_barcode] = {
         'name' => 'ABgene 0800',
         'plate_size' => 96,
-        'control' => false
+        'control' => plate.is_a?(ControlPlate)
       }
-      memo
     end
   end
 end

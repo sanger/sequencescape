@@ -20,11 +20,16 @@ class Robot::PickData
   private
 
   # Given a list of requests it will sort them by:
-  # - In first place all control requests
-  # - Then all requests for a target plate sorted by well location
+  # - First group them by destination plate
+  # - Second, inside that group sort them putting the controls in the front
+  # - Third, with the remaining requests, sort them in column order for that plate
   def sorted_requests_for_destination_plate(requests_to_sort)
     requests_to_sort.sort_by do |req|
-      [req.asset.aliquots&.first&.sample&.control ? 0 : 1, req.target_asset.plate.id, req.target_asset.map.column_order]
+      if req.target_asset&.map&.column_order
+        [req.target_asset.plate.id, req.asset.aliquots&.first&.sample&.control ? 0 : 1, req.target_asset.map.column_order]
+      else
+        [req.target_asset.plate.id, req.asset.aliquots&.first&.sample&.control ? 0 : 1]
+      end
     end
   end
 
