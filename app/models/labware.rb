@@ -87,26 +87,26 @@ class Labware < Asset
 
   def self.labwhere_locations(labware_barcodes)
     begin
-      info_from_labwhere = LabWhereClient::LabwareSearch.find_by_barcodes(labware_barcodes)
+      info_from_labwhere = LabWhereClient::LabwareSearch.find_by(barcodes: labware_barcodes)
     rescue LabWhereClient::LabwhereException => e
       return "Not found (#{e.message})"
     end
 
-    return 'Labwhere information not found' unless info_from_labwhere.present?
+    return 'Labwhere information not found' if info_from_labwhere.blank?
 
-    barcodes_to_parentage = info_from_labwhere.labwares.each_with_object({}) do |info, barcodes_to_parentage|
-      barcodes_to_parentage[info.barcode] = info.location.location_info
+    barcodes_to_parentage = info_from_labwhere.labwares.each_with_object({}) do |info, obj|
+      obj[info.barcode] = info.location.location_info
     end
 
     unless labware_barcodes.count == barcodes_to_parentage.count
       labware_barcodes.each do |barcode|
-        next unless barcodes_to_parentage.has_key? barcode
+        next unless barcodes_to_parentage.key? barcode
 
         barcodes_to_parentage[barcode] = nil
       end
     end
 
-    return barcodes_to_parentage
+    barcodes_to_parentage
   end
 
   private

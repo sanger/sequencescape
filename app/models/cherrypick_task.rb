@@ -320,18 +320,16 @@ class CherrypickTask < Task
     false
   end
 
-
   # returns array [ [ request id, source plate barcode, source coordinate ] ]
   def build_plate_wells_from_requests(requests)
     loaded_requests = Request.where(requests: { id: requests })
                              .includes(asset: [{ plate: :barcodes }, :map])
 
-
     source_plate_barcodes = loaded_requests.map { |request| request.asset.plate.human_barcode }.uniq
 
     # retrieve Labwhere locations for all source_plate_barcodes
     barcode_to_location = Labware.labwhere_locations(source_plate_barcodes)
-    barcodes_sorted = barcode_to_location.sort_by{ |k, v| v }.to_h.keys
+    barcodes_sorted = barcode_to_location.sort_by { |_k, v| v }.to_h.keys
     # TODO: may need to also sort where locations (values) are empty string by plate barcode
 
     sorted_requests = loaded_requests.sort_by do |request|
