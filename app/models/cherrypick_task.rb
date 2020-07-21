@@ -234,25 +234,26 @@ class CherrypickTask < Task
     positions
   end
 
-  def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil)
+  def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller)
+    puts "DEBUG: pick_new_plate"
     target_type = PickTarget.for(plate_purpose)
-    perform_pick(requests, robot, auto_add_control_plate) do
+    perform_pick(requests, robot, auto_add_control_plate, workflow_controller) do
       target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
 
-  def pick_onto_partial_plate(requests, template, robot, partial_plate, auto_add_control_plate = nil)
+  def pick_onto_partial_plate(requests, template, robot, partial_plate, auto_add_control_plate = nil, workflow_controller)
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
-    perform_pick(requests, robot, auto_add_control_plate) do
+    perform_pick(requests, robot, auto_add_control_plate, workflow_controller) do
       target_type.new(template, purpose.try(:asset_shape), partial_plate).tap do
         partial_plate = nil # Ensure that subsequent calls have no partial plate
       end
     end
   end
 
-  def perform_pick(requests, robot, auto_add_control_plate)
+  def perform_pick(requests, robot, auto_add_control_plate, workflow_controller)
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
@@ -260,7 +261,7 @@ class CherrypickTask < Task
     current_destination_plate = yield # instance of ByRow, ByColumn or ByInterlacedColumn
     source_plates = Set.new
     # [ [ request id, source plate barcode, source coordinate ] ]
-    plates_array = build_plate_wells_from_requests(requests) # array formed from requests
+    plates_array = build_plate_wells_from_requests(requests, workflow_controller) # array formed from requests
 
     # Initial settings needed for control requests addition
     if auto_add_control_plate
@@ -308,29 +309,35 @@ class CherrypickTask < Task
     'cherrypick_batches'
   end
 
-  def render_task(workflow, params)
+  def render_task(workflow_controller, params)
     super
-    workflow.render_cherrypick_task(self, params)
+    workflow_controller.render_cherrypick_task(self, params)
   end
 
-  def do_task(workflow, params)
-    workflow.do_cherrypick_task(self, params)
+  def do_task(workflow_controller, params)
+    workflow_controller.do_cherrypick_task(self, params)
   rescue Cherrypick::Error => e
     workflow.send(:flash)[:error] = e.message
     false
   end
 
   # returns array [ [ request id, source plate barcode, source coordinate ] ]
-  def build_plate_wells_from_requests(requests)
+  def build_plate_wells_from_requests(requests, workflow_controller)
     loaded_requests = Request.where(requests: { id: requests })
                              .includes(asset: [{ plate: :barcodes }, :map])
 
     source_plate_barcodes = loaded_requests.map { |request| request.asset.plate.human_barcode }.uniq
 
-    # retrieve Labwhere locations for all source_plate_barcodes
-    barcode_to_location = Labware.labwhere_locations(source_plate_barcodes)
-    barcodes_sorted = barcode_to_location.sort_by { |_k, v| v }.to_h.keys
-    # TODO: may need to also sort where locations (values) are empty string by plate barcode
+    begin
+      # retrieve Labwhere locations for all source_plate_barcodes
+      labware_locations_response = Labware.labwhere_locations(source_plate_barcodes)
+      barcodes_sorted = labware_locations_response.sort_by { |_k, v| v }.to_h.keys
+    rescue LabWhereClient::LabwhereException => e
+      message = "Labware locations are unavailable (#{e.message}). Wells are sorted by plate creation order."
+      workflow_controller.send(:flash)[:error] = message
+
+      barcodes_sorted = source_plate_barcodes
+    end
 
     sorted_requests = loaded_requests.sort_by do |request|
       [barcodes_sorted.index(request.asset.plate.human_barcode), request.asset.plate.id, request.asset.map.column_order]
