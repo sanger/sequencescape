@@ -38,7 +38,11 @@ module DownloadHelpers
   end
 
   def self.downloading?
-    downloads.grep(/\.part$/).any?
+    # if the folder has a file with a particular extension, we know it is still downloading
+    # convert from array of Pathname to array of strings, so can use grep successfully
+    downloads_strings = downloads.map(&:to_s)
+    downloads_strings.grep(/\.crdownload$/).any?
+    # downloads_strings.grep(/\.part$/).any? # uncomment if switch to using Firefox
   end
 
   def self.remove_downloads
