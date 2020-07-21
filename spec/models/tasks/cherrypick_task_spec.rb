@@ -100,6 +100,7 @@ RSpec.describe CherrypickTask, type: :model do
       let(:location_3) { 'Shelf 1' }
 
       context 'with locations set' do
+        # with locations set we expect requests to be order by location parentage
         let(:expected_output) do
           output = []
           requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
