@@ -145,7 +145,7 @@ RSpec.describe Labware, type: :model do
     end
   end
 
-  context 'labwhere' do
+  context 'when retrieving labwhere locations' do
     describe '#labwhere_location' do
       subject { plate.labwhere_location }
 

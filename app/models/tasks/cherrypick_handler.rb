@@ -58,9 +58,9 @@ module Tasks::CherrypickHandler
     @map_info = if @spreadsheet_layout
                   @spreadsheet_layout
                 elsif @plate.present?
-                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @plate, @control_plate, self)
+                  @task.pick_onto_partial_plate(self, @requests, plate_template, @robot, @plate, @control_plate)
                 else
-                  @task.pick_new_plate(@requests, plate_template, @robot, @plate_purpose, @control_plate, self)
+                  @task.pick_new_plate(self, @requests, plate_template, @robot, @plate_purpose, @control_plate)
                 end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]

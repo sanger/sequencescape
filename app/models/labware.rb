@@ -88,7 +88,7 @@ class Labware < Asset
   def self.labwhere_locations(labware_barcodes)
     info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
 
-    raise LabWhereClient::LabwhereException, "Labwhere service did not return information" if info_from_labwhere.blank?
+    raise LabWhereClient::LabwhereException, 'Labwhere service did not return information' if info_from_labwhere.blank?
 
     barcodes_to_parentage = info_from_labwhere.labwares.each_with_object({}) do |info, obj|
       obj[info.barcode] = info.location.location_info

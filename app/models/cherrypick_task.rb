@@ -234,15 +234,14 @@ class CherrypickTask < Task
     positions
   end
 
-  def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller)
-    puts "DEBUG: pick_new_plate"
+  def pick_new_plate(workflow_controller, requests, template, robot, plate_purpose, auto_add_control_plate = nil)
     target_type = PickTarget.for(plate_purpose)
     perform_pick(requests, robot, auto_add_control_plate, workflow_controller) do
       target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
 
-  def pick_onto_partial_plate(requests, template, robot, partial_plate, auto_add_control_plate = nil, workflow_controller)
+  def pick_onto_partial_plate(workflow_controller, requests, template, robot, partial_plate, auto_add_control_plate = nil)
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
