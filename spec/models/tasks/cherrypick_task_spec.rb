@@ -5,7 +5,6 @@ RSpec.configure do |c|
 end
 
 RSpec.describe CherrypickTask, type: :model do
-
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
   let(:control_plate) { create :control_plate, sample_count: 2 }
   let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w) }.flatten }
@@ -100,15 +99,14 @@ RSpec.describe CherrypickTask, type: :model do
       let(:location_2) { 'Shelf 2' }
       let(:location_3) { 'Shelf 1' }
 
-
       context 'with locations set' do
-        let(:expected_output) {
+        let(:expected_output) do
           output = []
           requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
           requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
           requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
           output
-        }
+        end
 
         before do
           stub_lwclient_labware_bulk_find_by_bc(
@@ -132,20 +130,20 @@ RSpec.describe CherrypickTask, type: :model do
           )
         end
 
-        it 'works' do
+        it 'sorts by location' do
           expect(described_class.new.build_plate_wells_from_requests(requests)).to eq expected_output
         end
       end
 
       context 'with no locations set' do
         # with no locations, they should just be in plate creation order
-        let(:expected_output) {
+        let(:expected_output) do
           output = []
           requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
           requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
           requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
           output
-        }
+        end
 
         before do
           stub_lwclient_labware_bulk_find_by_bc(
@@ -169,19 +167,20 @@ RSpec.describe CherrypickTask, type: :model do
           )
         end
 
-        it 'works' do
+        it 'sorts by location' do
           expect(described_class.new.build_plate_wells_from_requests(requests)).to eq expected_output
         end
       end
 
       context 'with a mix of locations and no locations' do
-        let(:expected_output) {
+        # with a mixture we expect plates woth no locations to be sorted first then those with locations
+        let(:expected_output) do
           output = []
           requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] } # no location, should be first
           requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
           requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
           output
-        }
+        end
 
         before do
           stub_lwclient_labware_bulk_find_by_bc(
@@ -205,7 +204,78 @@ RSpec.describe CherrypickTask, type: :model do
           )
         end
 
-        it 'works' do
+        it 'sorts by location' do
+          expect(described_class.new.build_plate_wells_from_requests(requests)).to eq expected_output
+        end
+      end
+
+      context 'with multiple plates with same location' do
+        # when multiple plates have the same location (e.g. a box) we expect order to be by plate creation
+        let(:expected_output) do
+          output = []
+          requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+          output
+        end
+
+        before do
+          stub_lwclient_labware_bulk_find_by_bc(
+            [
+              {
+                lw_barcode: plate_1.human_barcode,
+                lw_locn_name: location_1,
+                lw_locn_parentage: parentage_1
+              },
+              {
+                lw_barcode: plate_2.human_barcode,
+                lw_locn_name: location_1,
+                lw_locn_parentage: parentage_1
+              },
+              {
+                lw_barcode: plate_3.human_barcode,
+                lw_locn_name: location_1,
+                lw_locn_parentage: parentage_1
+              }
+            ]
+          )
+        end
+
+        it 'sorts by plate id' do
+          expect(described_class.new.build_plate_wells_from_requests(requests)).to eq expected_output
+        end
+      end
+
+      context 'with 1 plate' do
+        # redefine requests so we can jumble them up in a different order
+        let(:request_1) { create(:cherrypick_request, asset: plate_1.wells[2]) } # C1
+        let(:request_2) { create(:cherrypick_request, asset: plate_1.wells[0]) } # A1
+        let(:request_3) { create(:cherrypick_request, asset: plate_1.wells[3]) } # D1
+        let(:request_4) { create(:cherrypick_request, asset: plate_1.wells[1]) } # B1
+        let!(:requests) { [request_1, request_2, request_3, request_4] }
+
+        let(:expected_output) do
+          output = []
+          output << [request_2.id, request_2.asset.plate.human_barcode, request_2.asset.map_description]
+          output << [request_4.id, request_4.asset.plate.human_barcode, request_4.asset.map_description]
+          output << [request_1.id, request_1.asset.plate.human_barcode, request_1.asset.map_description]
+          output << [request_3.id, request_3.asset.plate.human_barcode, request_3.asset.map_description]
+          output
+        end
+
+        before do
+          stub_lwclient_labware_bulk_find_by_bc(
+            [
+              {
+                lw_barcode: plate_1.human_barcode,
+                lw_locn_name: '',
+                lw_locn_parentage: ''
+              }
+            ]
+          )
+        end
+
+        it 'sorts by map description' do
           expect(described_class.new.build_plate_wells_from_requests(requests)).to eq expected_output
         end
       end
