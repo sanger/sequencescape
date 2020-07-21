@@ -107,7 +107,7 @@ module LabWhereClient
 
     attr_reader :labwares
 
-    def self.find_by_barcodes(barcodes)
+    def self.find_locations_by_barcodes(barcodes)
       return nil if barcodes.blank?
 
       payload = { "barcodes": barcodes }
