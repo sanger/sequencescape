@@ -234,14 +234,14 @@ class CherrypickTask < Task
     positions
   end
 
-  def pick_new_plate(workflow_controller, requests, template, robot, plate_purpose, auto_add_control_plate = nil)
+  def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)
     perform_pick(requests, robot, auto_add_control_plate, workflow_controller) do
       target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
 
-  def pick_onto_partial_plate(workflow_controller, requests, template, robot, partial_plate, auto_add_control_plate = nil)
+  def pick_onto_partial_plate(requests, template, robot, partial_plate, auto_add_control_plate = nil, workflow_controller = nil)
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
@@ -321,7 +321,7 @@ class CherrypickTask < Task
   end
 
   # returns array [ [ request id, source plate barcode, source coordinate ] ]
-  def build_plate_wells_from_requests(requests, workflow_controller)
+  def build_plate_wells_from_requests(requests, workflow_controller = nil)
     loaded_requests = Request.where(requests: { id: requests })
                              .includes(asset: [{ plate: :barcodes }, :map])
 
@@ -333,7 +333,7 @@ class CherrypickTask < Task
       barcodes_sorted = labware_locations_response.sort_by { |_k, v| v }.to_h.keys
     rescue LabWhereClient::LabwhereException => e
       message = "Labware locations are unavailable (#{e.message}). Wells are sorted by plate creation order."
-      workflow_controller.send(:flash)[:error] = message
+      workflow_controller.send(:flash)[:error] = message unless workflow_controller.nil?
 
       barcodes_sorted = source_plate_barcodes
     end
