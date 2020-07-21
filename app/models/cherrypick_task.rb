@@ -259,8 +259,7 @@ class CherrypickTask < Task
     destination_plates = []
     current_destination_plate = yield # instance of ByRow, ByColumn or ByInterlacedColumn
     source_plates = Set.new
-    # [ [ request id, source plate barcode, source coordinate ] ]
-    plates_array = build_plate_wells_from_requests(requests, workflow_controller) # array formed from requests
+    plates_array = build_plate_wells_from_requests(requests, workflow_controller)
 
     # Initial settings needed for control requests addition
     if auto_add_control_plate
@@ -328,18 +327,18 @@ class CherrypickTask < Task
     source_plate_barcodes = loaded_requests.map { |request| request.asset.plate.human_barcode }.uniq
 
     begin
-      # retrieve Labwhere locations for all source_plate_barcodes
-      labware_locations_response = Labware.labwhere_locations(source_plate_barcodes)
-      barcodes_sorted = labware_locations_response.sort_by { |_k, v| v }.to_h.keys
+      # retrieve Labwhere locations for all source_plate_barcodes, in form { 'DN1234' => 'Sanger / Room 1 - Shelf 2' }
+      labwhere_response = Labware.labwhere_locations(source_plate_barcodes)
+      barcodes_sorted_by_location = labwhere_response.sort_by { |_k, v| v }.to_h.keys
     rescue LabWhereClient::LabwhereException => e
       message = "Labware locations are unavailable (#{e.message}). Wells are sorted by plate creation order."
       workflow_controller.send(:flash)[:error] = message unless workflow_controller.nil?
 
-      barcodes_sorted = source_plate_barcodes
+      barcodes_sorted_by_location = source_plate_barcodes
     end
 
     sorted_requests = loaded_requests.sort_by do |request|
-      [barcodes_sorted.index(request.asset.plate.human_barcode), request.asset.plate.id, request.asset.map.column_order]
+      [barcodes_sorted_by_location.index(request.asset.plate.human_barcode), request.asset.plate.id, request.asset.map.column_order]
     end
 
     sorted_requests.map do |request|
