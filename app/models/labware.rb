@@ -85,6 +85,7 @@ class Labware < Asset
     scanned_into_lab_event.try(:content) || ''
   end
 
+  # Bulk retrieves locations for multiple labwares at once
   def self.labwhere_locations(labware_barcodes)
     info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
 
@@ -96,12 +97,10 @@ class Labware < Asset
 
     unless labware_barcodes.count == barcodes_to_parentage.count
       labware_barcodes.each do |barcode|
-        next unless barcodes_to_parentage.key? barcode
-
-        barcodes_to_parentage[barcode] = nil
+        # add missing barcodes to the hash, with an empty string for location, for ones that Labwhere didn't return
+        barcodes_to_parentage[barcode] ||= ''
       end
     end
-
     barcodes_to_parentage
   end
 
