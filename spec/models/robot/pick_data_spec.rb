@@ -17,6 +17,7 @@ RSpec.describe Robot::PickData do
 
     let(:time) { Time.zone.local(2010, 7, 12, 10, 25, 0) }
     let(:source_plate_1) { create :plate, well_count: 2 }
+    let(:source_plate_2) { create :plate, well_count: 2 }
     let(:source_plate_3) { create :plate, well_count: 2 }
     let(:destination_plate) { create :plate, well_count: 9 }
     let(:pipeline) { create :cherrypick_pipeline }
@@ -27,14 +28,12 @@ RSpec.describe Robot::PickData do
       source_plate_1
       source_plate_2
       source_plate_3
-      destination_wells = destination_plate.wells.in_column_major_order
       # These are specified in an odd order to ensure we are sorting by
       # destination well, not request id, or other side effects of creation order
-      picks.keys.reduce({}) do |memo, dest_location|
+      picks.keys.each_with_object({}) do |dest_location, memo|
         dest_well = destination_plate.wells.located_at(dest_location).first
         src_well = picks[dest_location][0].wells.located_at(picks[dest_location][1]).first
         memo[src_well] = dest_well
-        memo
       end
       # {
       #   source_plate_3.wells[0] => destination_wells[0],
@@ -61,13 +60,7 @@ RSpec.describe Robot::PickData do
     let(:batch) { create :batch, requests: requests, pipeline: pipeline, user: user }
 
     shared_examples_for 'a picking process' do
-      
-
-      #context 'without control plates' do
-      
-      # let(:expected_picking_data_hash) do
-      #   expected_pick.keys.reduce do |memo, pick_number|
-      #     memo[pick_number] = picks_from_wells(expected_pick[pick_number])
+      # This is how the output of the process should be displayed:
       #   {
       #     1 => {
       #       'destination' => {
@@ -122,29 +115,19 @@ RSpec.describe Robot::PickData do
       #     }
       #   }
       # end
+      let(:obtained) { pick_data.picking_data_hash }
+      let(:helper) { PickHashTesterHelper.new(destination_plate, picks, time, user) }
 
       it 'generates a layout' do
-        helper = PickHashTesterHelper.new(destination_plate, picks, time, user)
-        obtained = pick_data.picking_data_hash
-  
         expect(expected_pick.keys).to eq(obtained.keys)
-        expected_pick.keys.each do |pick_number|
-          expectation = helper.pickings_for(expected_pick[pick_number])
-          expect(obtained[pick_number]).to eq(expectation)
+        expected_pick.each_key do |pick_number|
+          expect(obtained[pick_number]).to eq(helper.pickings_for(expected_pick[pick_number]))
         end
-  
-        #actual = pick_data.picking_data_hash
-        # puts "actual"
-        # pp actual
-        # puts "expected"
-        # pp expected_picking_data_hash
-        #expect(actual).to eq(expected_picking_data_hash)
       end
     end
 
     context 'when request have been created out of order' do
-      let(:source_plate_2) { create :plate, well_count: 2 }
-      let(:picks) {
+      let(:picks) do
         {
           'A1' => [source_plate_3, 'A1'],
           'F1' => [source_plate_2, 'B1'],
@@ -153,15 +136,74 @@ RSpec.describe Robot::PickData do
           'C1' => [source_plate_3, 'B1'],
           'A2' => [source_plate_1, 'A1']
         }
-      }
-      let(:expected_pick) {
+      end
+      let(:expected_pick) do
         {
-          1 => ['A1', 'B1', 'C1', 'F1'],
-          2 => ['D1', 'A2']
+          1 => %w[A1 B1 C1 F1],
+          2 => %w[D1 A2]
         }
-      }
+      end
+
       it_behaves_like 'a picking process'
     end
 
+    context 'when we have several plates and needs to use several picks' do
+      let(:destination_plate) { create :plate, well_count: 10 }
+      let(:plates) { create_list :plate, 5, well_count: 2 }
+      let(:picks) do
+        {
+          'A1' => [plates[0], 'A1'],
+          'B1' => [plates[0], 'B1'],
+          'C1' => [plates[1], 'A1'],
+          'D1' => [plates[1], 'B1'],
+          'E1' => [plates[2], 'A1'],
+          'F1' => [plates[2], 'B1'],
+          'G1' => [plates[3], 'A1'],
+          'H1' => [plates[3], 'B1'],
+          'A2' => [plates[4], 'A1'],
+          'B2' => [plates[4], 'B1']
+        }
+      end
+      let(:expected_pick) do
+        {
+          1 => %w[A1 B1 C1 D1],
+          2 => %w[E1 F1 G1 H1],
+          3 => %w[A2 B2]
+        }
+      end
+
+      it_behaves_like 'a picking process'
+
+      context 'when we create the requests in different order' do
+        let(:requests) do
+          transfers.to_a.reverse.map do |source, target|
+            create :cherrypick_request,
+                   asset: source,
+                   target_asset: target,
+                   request_type: pipeline.request_types.first,
+                   state: 'passed'
+          end
+        end
+
+        it_behaves_like 'a picking process'
+
+        context 'when we have a control' do
+          let(:control_plate) { create :control_plate, sample_count: 2 }
+          let(:expected_pick) do
+            {
+              1 => %w[A2 B2 A1 B1],
+              2 => %w[C1 D1 E1 F1],
+              3 => %w[G1 H1]
+            }
+          end
+
+          before do
+            plates[4] = control_plate
+          end
+
+          it_behaves_like 'a picking process'
+        end
+      end
+    end
   end
 end
