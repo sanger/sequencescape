@@ -1,4 +1,4 @@
-module ApplicationRecord::StringSanitizer
+module Squishify
   def self.extended(base)
     base.instance_eval do
       def squishify(*names)
@@ -13,8 +13,4 @@ module ApplicationRecord::StringSanitizer
       end
     end
   end
-end
-
-class ApplicationRecord
-  extend ApplicationRecord::StringSanitizer
 end

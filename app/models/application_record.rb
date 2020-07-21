@@ -6,6 +6,7 @@ class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
   include Warren::BroadcastMessages
+  extend Squishify # Provides squishify
 
   # Annoyingly active record doesn't handle out of range ids when generating queries,
   # and throws an exception ActiveModel::Type::Integer
