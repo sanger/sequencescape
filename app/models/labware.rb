@@ -87,7 +87,7 @@ class Labware < Asset
 
   # Bulk retrieves locations for multiple labwares at once
   # Returns hash { labware barcode => location string, .. } e.g. { 'DN1234' => 'Sanger - Room 1 - Shelf 2' }
-  # Hash has blank values where location was not found for a particular barcode
+  # Hash has blank values where location was not found for a particular barcode
   # Or raises LabWhereClient::LabwhereException if Labwhere response is unexpected
   def self.labwhere_locations(labware_barcodes)
     info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
