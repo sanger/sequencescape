@@ -48,7 +48,7 @@ class Submission < ApplicationRecord
   has_many :comments_from_requests, through: :requests, source: :comments
 
   has_many :receptacles, through: :orders, source: :assets
-  has_many :batches, through: :requests
+  has_many :batches, -> { distinct }, through: :requests
 
   # Required at initial construction time ...
   validates_with OrderCompatibilityValidator, if: :building?

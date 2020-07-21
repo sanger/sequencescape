@@ -4,7 +4,6 @@
 # and to provide an interface for eventually building a simplified means
 # or generating cherrypicks
 class PickList < ApplicationRecord
-  # TODO: This will likely go through a refactor
   REQUEST_TYPE_KEY = 'cherrypick'.freeze
 
   after_create :process
@@ -13,7 +12,7 @@ class PickList < ApplicationRecord
   # it would be nice if we could make them more lightweight, and the cherrypicking
   # interface would use them directly.
   belongs_to :submission, optional: false, autosave: true
-  has_many :batches, through: :submission
+  has_many :batches, -> { distinct }, through: :submission
 
   enum state: { pending: 0, built: 1 }
 
@@ -44,6 +43,12 @@ class PickList < ApplicationRecord
     end
   end
 
+  def process_immediately
+    submission.process_synchronously!
+    create_batch
+    update!(state: :built)
+  end
+
   private
 
   # Trigger the creation of the requests and batch.
@@ -57,12 +62,6 @@ class PickList < ApplicationRecord
   # method
   def queue_processing
     Delayed::Job.enqueue PickListJob.new(id)
-  end
-
-  def process_immediately
-    submission.process_synchronously!
-    create_batch
-    update!(state: :built)
   end
 
   # Returns the submission associated with the pick-list.

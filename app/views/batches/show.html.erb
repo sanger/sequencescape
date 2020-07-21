@@ -38,7 +38,7 @@
 <%= render partial: "events", locals: { events: @batch.lab_events } %>
 
 <% if @batch.show_actions?  %>
-  <%= render partial: "shared/actions" %>
+  <%= render partial: "shared/actions", locals: { batch: @batch } %>
 <% elsif @batch.show_fail_link? %>
   <ul>
     <li><%= link_to "Fail batch or items", action: "fail", id: @batch.id %></li>
