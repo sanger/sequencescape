@@ -12,30 +12,30 @@
     <%= badge('Multiplexed', type: 'batch-mx', style: 'primary') %>
   <% end %>
 </h2>
-<div class="info">
-  Created at: <%= @batch.created_at.to_formatted_s(:full) %><br />
+
+<%= alert(:info) do %>
+  Created at: <%= time_tag( @batch.created_at) %><br />
   This batch belongs to pipeline: <%= @pipeline.name %>
-</div>
+<% end %>
 
 <% if @pipeline.group_by_parent %>
-  <div id="input_assets">
-    <h3>Input</h3>
-
+  <%= panel_no_body :default, title: 'Input', id: 'input_assets' do %>
     <%= render partial: "assets", locals: {show_pick_data: false, listed_labware: @input_labware } %>
-  </div>
+  <% end %>
+
   <% unless @output_labware.blank? %>
-    <div id="output_assets">
-      <h3>Output</h3>
+    <%= panel_no_body :default, title: 'Output', id: 'output_assets' do %>
       <%= render partial: "assets", locals: {show_pick_data: @pipeline.pick_data, listed_labware: @output_labware }%>
-    </div>
+   <% end %>
   <%end %>
   <br/>
 <% else %>
   <%= render partial: "shared/batch", locals: { requests: @batch.ordered_requests.include_for_batch_view, edit: false, stage: false } %>
 <% end %>
 
-<h3>Events</h3>
-<%= render partial: "events", locals: { events: @batch.lab_events } %>
+<%= panel_no_body :default, title: 'Events', id: 'input_assets' do %>
+  <%= render partial: "events", locals: { events: @batch.lab_events } %>
+<% end %>
 
 <% if @batch.show_actions?  %>
   <%= render partial: "shared/actions", locals: { batch: @batch } %>
