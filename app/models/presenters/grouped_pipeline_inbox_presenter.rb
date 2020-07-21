@@ -126,7 +126,7 @@ module Presenters
     end
 
     def parent
-      @parent ||= Labware.find(group.first)
+      @parent ||= request.asset.labware || Labware.find(group.first)
     end
 
     def submission_name

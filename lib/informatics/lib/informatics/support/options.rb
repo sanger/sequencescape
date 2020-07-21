@@ -36,9 +36,10 @@ module Informatics
 
       def incoming_options
         o = nil
-        if @options.is_a? Hash
+        case @options
+        when Hash
           o = @options
-        elsif @options.is_a? Array
+        when Array
           o = @options[0]
         end
         o

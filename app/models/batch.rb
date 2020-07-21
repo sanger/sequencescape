@@ -217,11 +217,21 @@ class Batch < ApplicationRecord
     requests.with_assets_for_starting_requests.not_failed.map(&:start!)
   end
 
-  def input_labware_group
+  # Returns a list of input labware including their barcodes,
+  # purposes, and a count of the number of requests associated with the
+  # batch. Output depends on Pipeline. Some pipleine retrun an empt
+  #
+  # @return [Labware::ActiveRecord_Relation] The associated labware
+  def input_labware_report
     pipeline.input_labware requests
   end
 
-  def output_labware_group
+  # Returns a list of output labware including their barcodes,
+  # purposes, and a count of the number of requests associated with the
+  # batch. Output depends on Pipeline. Some pipleine retrun an empt
+  #
+  # @return [Labware::ActiveRecord_Relation] The associated labware
+  def output_labware_report
     pipeline.output_labware requests.with_target
   end
 

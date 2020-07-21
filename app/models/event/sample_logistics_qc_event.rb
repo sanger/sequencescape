@@ -1,8 +1,9 @@
 class Event::SampleLogisticsQcEvent < Event
   def self.create_gel_qc_for_asset!(asset, result, user)
-    if asset.is_a?(Well)
+    case asset
+    when Well
       gel_qc_message(asset, "Gel Analysed for well #{asset.id} with #{result}", 'gel_analysed', user)
-    elsif asset.is_a?(Plate)
+    when Plate
       gel_qc_message(asset, 'Gel Analysed', 'gel_analysed', user)
     end
   end

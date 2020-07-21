@@ -12,8 +12,7 @@ class CreatorTest < ActiveSupport::TestCase
   end
 
   test 'should send request to print labels' do
-    barcode = mock('barcode')
-    barcode.stubs(:barcode).returns(23)
+    barcode = create(:barcode)
     PlateBarcode.stubs(:create).returns(barcode)
 
     LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
@@ -26,8 +25,7 @@ class CreatorTest < ActiveSupport::TestCase
   end
 
   test 'should properly create plates' do
-    barcode = mock('barcode')
-    barcode.stubs(:barcode).returns(23)
+    barcode = create(:barcode)
     PlateBarcode.stubs(:create).returns(barcode)
 
     LabelPrinter::PrintJob.any_instance.stubs(:execute).returns(true)

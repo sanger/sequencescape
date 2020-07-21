@@ -10,4 +10,10 @@ class GenotypingPipeline < Pipeline
   def request_actions
     %i[fail remove]
   end
+
+  private
+
+  def grouping_parser
+    Pipeline::GrouperByParentAndSubmission.new(self)
+  end
 end

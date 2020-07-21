@@ -217,7 +217,7 @@ Metrics/ClassLength:
 # Configuration parameters: IgnoredMethods.
 Metrics/CyclomaticComplexity:
   Max: 20
-  Exclude: 
+  Exclude:
     - app/models/submission/linear_request_graph.rb
 
 # Offense count: 397
@@ -289,7 +289,6 @@ Naming/HeredocDelimiterNaming:
 # SupportedStylesForLeadingUnderscores: disallowed, required, optional
 Naming/MemoizedInstanceVariableName:
   Exclude:
-    - 'app/controllers/batches_controller.rb'
     - 'app/helpers/workflows_helper.rb'
     - 'app/models/batch/pipeline_behaviour.rb'
     - 'app/models/fluidigm_file.rb'
@@ -1048,7 +1047,6 @@ Rails/LexicallyScopedActionFilter:
   Exclude:
     - 'app/controllers/admin/programs_controller.rb'
     - 'app/controllers/assets_controller.rb'
-    - 'app/controllers/batches_controller.rb'
     - 'app/controllers/pipelines_controller.rb'
     - 'app/controllers/projects_controller.rb'
     - 'app/controllers/requests_controller.rb'
@@ -1445,7 +1443,6 @@ Style/Documentation:
     - 'app/controllers/barcode_printers_controller.rb'
     - 'app/controllers/batches/comments_controller.rb'
     - 'app/controllers/batches/requests_controller.rb'
-    - 'app/controllers/batches_controller.rb'
     - 'app/controllers/billing_reports_controller.rb'
     - 'app/controllers/bulk_submissions_controller.rb'
     - 'app/controllers/documents_controller.rb'
@@ -2190,7 +2187,6 @@ Style/GuardClause:
     - 'app/controllers/admin/projects_controller.rb'
     - 'app/controllers/admin/studies_controller.rb'
     - 'app/controllers/assets_controller.rb'
-    - 'app/controllers/batches_controller.rb'
     - 'app/controllers/orders_controller.rb'
     - 'app/controllers/plates_controller.rb'
     - 'app/controllers/studies_controller.rb'
