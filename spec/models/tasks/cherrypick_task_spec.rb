@@ -92,15 +92,17 @@ RSpec.describe CherrypickTask, type: :model do
       let(:requests_3) { requests_for_plate(plate_3) }
       let(:requests) { requests_1 + requests_2 + requests_3 }
 
-      let(:parentage_1) { 'Sanger / Ogilvie / AA316' } # Expected order: 2nd
-      let(:parentage_2) { 'Sanger / Ogilvie / AA317' } # Expected order: 3rd
-      let(:parentage_3) { 'Sanger / Ogilvie / AA316' } # Expected order: 1st
-      let(:location_1) { 'Shelf 2' }
-      let(:location_2) { 'Shelf 2' }
-      let(:location_3) { 'Shelf 1' }
+      let(:location_1) { 'Shelf 2' } # Expected order: 2nd
+      let(:parentage_1) { 'Sanger / Ogilvie / AA316' }
+
+      let(:location_2) { 'Shelf 2' } # Expected order: 3rd
+      let(:parentage_2) { 'Sanger / Ogilvie / AA317' }
+
+      let(:location_3) { 'Shelf 1' } # Expected order: 1st
+      let(:parentage_3) { 'Sanger / Ogilvie / AA316' }
 
       context 'with locations set' do
-        # with locations set we expect requests to be order by location parentage
+        # with locations set we expect requests to be ordered primarily by location parentage
         let(:expected_output) do
           output = []
           requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
