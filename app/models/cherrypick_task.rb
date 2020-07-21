@@ -337,6 +337,7 @@ class CherrypickTask < Task
       barcodes_sorted_by_location = source_plate_barcodes
     end
 
+    # sort by location in lab, followed by plate id, followed by well coordinate on plate
     sorted_requests = loaded_requests.sort_by do |request|
       [barcodes_sorted_by_location.index(request.asset.plate.human_barcode), request.asset.plate.id, request.asset.map.column_order]
     end
