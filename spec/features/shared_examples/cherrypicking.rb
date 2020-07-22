@@ -285,7 +285,7 @@ shared_examples 'a cherrypicking procedure' do
                   puts "DEBUG: request.inspect: #{request.inspect}"
                   puts "DEBUG: request.asset.inspect: #{request.asset.inspect}"
                 end
-                plates_and_controls_barcodes.include?(Labware.find(request.asset.labware_id).human_barcode)
+                plates_and_controls_barcodes.include?(Labware.find(r.first.asset.labware_id).human_barcode)
               end
               expected_num_lines = input_wells_requests_for_current_pick.count + NUM_HAMILTON_HEADER_LINES
               expect(generated_lines.length).to eq(expected_num_lines)
