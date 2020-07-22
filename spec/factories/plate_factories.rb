@@ -232,6 +232,7 @@ FactoryBot.define do
         puts "before control plate well creation: plate id= #{well.plate&.id}"
 
         well.update(plate: plate)
+        well.update(labware_id: plate.id)
         puts "after control plate well creation: well id= #{well.id}"
         puts "after control plate well creation: plate= #{well.plate}"
         puts "after control plate well creation: plate id= #{well.plate&.id}"
