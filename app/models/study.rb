@@ -96,9 +96,7 @@ class Study < ApplicationRecord
   # Class variables
   self.per_page = 500
 
-  attr_accessor :approval
-  attr_accessor :run_count
-  attr_accessor :total_price
+  attr_accessor :approval, :run_count, :total_price
 
   # Associations
   has_many_events

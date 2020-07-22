@@ -47,7 +47,6 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
 
     it 'creates a new tube rack successfully' do
       expect(response).to have_http_status(:created)
-      puts response.inspect
       expect(TubeRack.count).to eq(before_tube_rack_count + 1)
       expect(Tube.count).to eq(before_tube_count + 2)
     end
