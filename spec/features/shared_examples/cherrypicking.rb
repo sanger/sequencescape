@@ -276,8 +276,9 @@ shared_examples 'a cherrypicking procedure' do
                 # Assuming there is only one asset for the TransferRequest,
                 # As pooling is not supported in cherrypicking,
                 # ie. a well can only have one input sample
-                
+
                 r.each do |request|
+                  puts "DEBUG: well.id: #{request.asset.id}"
                   puts "DEBUG: request.asset.plate: #{request.asset.plate}"
                   puts "DEBUG: well plate: #{Well.find(request.asset.id).plate}"
                 end
