@@ -227,17 +227,17 @@ FactoryBot.define do
 
     after(:create) do |plate, _evaluator|
       plate.wells.each_with_index do |well, index|
-        puts "before control plate well creation: well id= #{well.id}"
-        puts "before control plate well creation: plate= #{well.plate}"
-        puts "before control plate well creation: plate id= #{well.plate&.id}"
+        #puts "before control plate well creation: well id= #{well.id}"
+        #puts "before control plate well creation: plate= #{well.plate}"
+        #puts "before control plate well creation: plate id= #{well.plate&.id}"
 
         well.update(plate: plate)
         well.update(labware_id: plate.id)
-        puts "after control plate well creation: well id= #{well.id}"
-        puts "after control plate well creation: plate= #{well.plate}"
-        puts "after control plate well creation: plate id= #{well.plate&.id}"
+        #puts "after control plate well creation: well id= #{well.id}"
+        #puts "after control plate well creation: plate= #{well.plate}"
+        #puts "after control plate well creation: plate id= #{well.plate&.id}"
 
-        puts "Access plate in database #{Well.find(well.id).plate}"
+        #puts "Access plate in database #{Well.find(well.id).plate}"
 
         next if well.aliquots.count == 0
 
