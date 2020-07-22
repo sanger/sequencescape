@@ -238,12 +238,6 @@ FactoryBot.define do
 
         puts "Access plate in database #{Well.find(well.id).plate}"
 
-        puts "well.dirty? #{well.dirty?}"
-        well.save if well.dirty?
-        puts "after well.dirty ? #{well.dirty?}"
-
-        puts "after well dirty well creation: plate= #{well.plate}"
-
         next if well.aliquots.count == 0
 
         if index.even?
