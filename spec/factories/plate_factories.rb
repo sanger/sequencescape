@@ -227,6 +227,7 @@ FactoryBot.define do
 
     after(:create) do |plate, _evaluator|
       plate.wells.each_with_index do |well, index|
+        well.update(plate: plate)
         next if well.aliquots.count == 0
 
         if index.even?
