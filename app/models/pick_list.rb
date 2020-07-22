@@ -16,6 +16,8 @@ class PickList < ApplicationRecord
 
   enum state: { pending: 0, built: 1 }
 
+  delegate :orders, to: :submission
+
   # Asynchronous indicates whether the submission should be built asynchronously
   # via the delayed job, or synchronously.
   attribute :asynchronous, :boolean, default: true
@@ -24,7 +26,15 @@ class PickList < ApplicationRecord
     picks.map { |pick| Pick.new(pick) }
          .group_by(&:order_options)
          .each do |order_options, pick_group|
-      submission.orders << build_order(pick_group, order_options)
+      orders << build_order(pick_group, order_options)
+    end
+  end
+
+  def pick_attributes
+    orders.flat_map do |order|
+      order.assets.map do |source_receptacle|
+        { source_receptacle: source_receptacle, study: order.study, project: order.project }
+      end
     end
   end
 
@@ -34,7 +44,7 @@ class PickList < ApplicationRecord
   # TODO: Some performance improvements here, but will revisit once the API stabilizes
   #       as I'm tempted to use 'picks' instead.
   def receptacles
-    submission.orders.flat_map(&:assets)
+    orders.flat_map(&:assets)
   end
 
   def links

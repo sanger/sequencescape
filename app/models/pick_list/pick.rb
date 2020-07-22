@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 # A pick represents an intended cherrypick. It pretty much maps
-# exactly to a {CherrypickRequest}
+# exactly to a {CherrypickRequest}. Currently these are just plain old
+# Ruby objects, but may end up being database backed in future if we update
+# Cherrypicking to avoid the need for submissions. (Although now cherrypicking
+# is billed this may be less useful)
 class PickList::Pick
   include ActiveModel::Model
   attr_accessor :source_receptacle

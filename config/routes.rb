@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v2 do
+      jsonapi_resources :pick_lists
       jsonapi_resources :aliquots
       jsonapi_resources :assets
       jsonapi_resources :comments
