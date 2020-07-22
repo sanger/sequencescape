@@ -79,6 +79,9 @@ class Batch < ApplicationRecord
   scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
+  # Returns batches owned or assigned to user. Not filter applied if passed :any
+  scope :for_user, ->(user) { user == 'all' ? all : where(assignee_id: user).or(where(user_id: user)) }
+
   delegate :size, to: :requests
   delegate :sequencing?, :generate_target_assets_on_batch_create?, :min_size, to: :pipeline
 

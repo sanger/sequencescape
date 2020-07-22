@@ -1,13 +1,18 @@
 
 <% add :about, "Batches created by or assigned to you. Or find batches by pipeline using the links below." -%>
 
-<% Pipeline.all.each do |pipeline| -%>
-  <% add :menu, "#{pipeline.name}" => url_for(controller: :pipelines, action: :batches, id: pipeline.id) %>
+<% Pipeline.active.pluck(:name,:id).each do |name, id| -%>
+  <% add :menu, "#{name}" => url_for(controller: :pipelines, action: :batches, id: id) %>
 <% end -%>
 
 <% add :back_menu, "Back to all pipelines" => pipelines_path -%>
 
 <%= page_title 'Batches', 'Index' %>
 
-<%= render partial: "shared/batches", locals: {batches: @batches, showing_all: true, in_progress: true, batch_state: 'assigned'} %>
+<% if @user == 'all' %>
+  <%= link_to 'See just my batches', batches_path %>
+<% else %>
+  <%= link_to 'See all batches', batches_path(user: 'all') %>
+<% end %>
 
+<%= render partial: "shared/batches", locals: {batches: @batches, showing_all: true, in_progress: true, batch_state: 'assigned'} %>
