@@ -281,6 +281,9 @@ shared_examples 'a cherrypicking procedure' do
                   puts "DEBUG: well.id: #{request.asset.id}"
                   puts "DEBUG: request.asset.plate: #{request.asset.plate}"
                   puts "DEBUG: well plate: #{Well.find(request.asset.id).plate}"
+                  puts "DEBUG labware_id: #{request.asset.labware_id}"
+                  puts "DEBUG: request.inspect: #{request.inspect}"
+                  puts "DEBUG: request.asset.inspect: #{request.asset.inspect}"
                 end
                 plates_and_controls_barcodes.include?(Well.find(r.first.asset.id).plate.human_barcode)
               end

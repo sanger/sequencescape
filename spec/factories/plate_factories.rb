@@ -238,6 +238,8 @@ FactoryBot.define do
         puts "after control plate well creation: plate id= #{well.plate&.id}"
 
         puts "Access plate in database #{Well.find(well.id).plate}"
+        puts "labware_id= #{well.labware_id}"
+        puts "inspect well=#{well.inspect}"
 
         next if well.aliquots.count == 0
 
