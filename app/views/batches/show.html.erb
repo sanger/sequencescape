@@ -33,7 +33,7 @@
   <%= render partial: "shared/batch", locals: { requests: @batch.ordered_requests.include_for_batch_view, edit: false, stage: false } %>
 <% end %>
 
-<%= panel_no_body :default, title: 'Events', id: 'input_assets' do %>
+<%= panel_no_body :default, title: 'Events' do %>
   <%= render partial: "events", locals: { events: @batch.lab_events } %>
 <% end %>
 
