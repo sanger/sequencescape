@@ -231,14 +231,22 @@ FactoryBot.define do
         puts "before control plate well creation: plate= #{well.plate}"
         puts "before control plate well creation: plate id= #{well.plate&.id}"
 
+<<<<<<< HEAD
         well.update!(plate: plate)
         well.update!(labware_id: plate.id)
+=======
+        well.update(plate: plate)
+        well.update(labware_id: plate.id)
+>>>>>>> 07be568cb2cc1bf7dc26c5713eb983d45c2e5d0b
         puts "after control plate well creation: well id= #{well.id}"
         puts "after control plate well creation: plate= #{well.plate}"
         puts "after control plate well creation: plate id= #{well.plate&.id}"
 
         puts "Access plate in database #{Well.find(well.id).plate}"
+<<<<<<< HEAD
         pp Well.find(well.id)
+=======
+>>>>>>> 07be568cb2cc1bf7dc26c5713eb983d45c2e5d0b
         puts "labware_id= #{well.labware_id}"
         puts "inspect well=#{well.inspect}"
 
