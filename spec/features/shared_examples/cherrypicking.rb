@@ -95,7 +95,7 @@ shared_examples 'a cherrypicking procedure' do
             visit batch_path(batch_id)
 
             within('#output_assets table tbody') do
-              row = page.all('tr', text: /#{destination_barcode}/).first
+              row = page.find('tr', text: /#{destination_barcode}/)
               within(row) do
                 click_link 'Show plate'
               end
