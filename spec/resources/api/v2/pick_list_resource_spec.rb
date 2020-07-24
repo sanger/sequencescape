@@ -21,6 +21,7 @@ RSpec.describe Api::V2::PickListResource, type: :resource, pick_list: true do
     expect(resource).not_to have_updatable_field(:state)
     expect(resource).not_to have_updatable_field(:links)
     expect(resource).to have_creatable_field(:pick_attributes)
+    expect(resource).to have_creatable_field(:labware_pick_attributes)
     expect(resource).to have_creatable_field(:asynchronous)
   end
   # rubocop:enable RSpec/ExampleLength

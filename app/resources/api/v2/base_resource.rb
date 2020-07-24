@@ -30,6 +30,14 @@ module Api
           _relationships.select { |_rel_key, rel| rel.options[:readonly] }.keys
       end
 
+      # This extension allows the writeonly property to be used on attributes/relationships
+      #  This avoids the need to override fetchable_fields on
+      # every resource.
+      def fetchable_fields
+        super - self.class._attributes.select { |_attr, options| options[:writeonly] }.keys -
+          self.class._relationships.select { |_rel_key, rel| rel.options[:writeonly] }.keys
+      end
+
       # Eager load specified models by default. Useful when attributes are
       # dependent on an associated model.
       def self.default_includes(*inclusions)

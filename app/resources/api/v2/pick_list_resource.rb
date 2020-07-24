@@ -5,55 +5,9 @@ module Api
     # Provides a JSON API representation of PickList
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class PickListResource < BaseResource
-      # The record cache collects all ids used in the request and optimizes
-      # the lookup into a single query, with appropriate eager loading.
-      class RecordCache
-        def initialize
-          @receptacle_ids = []
-          @study_ids = []
-          @project_ids = []
-        end
-
-        def <<(entry)
-          source_receptacle_id, study_id, project_id = entry.values_at(:source_receptacle_id, :study_id, :project_id)
-          @receptacle_ids << source_receptacle_id if source_receptacle_id
-          @study_ids << study_id if study_id
-          @project_ids << project_id if project_id
-          self
-        end
-
-        def convert(entry)
-          source_receptacle_id, study_id, project_id = entry.values_at(:source_receptacle_id, :study_id, :project_id)
-          entry.permit(*PERMITTED_PICK_ATTRIBUTES)
-               .to_hash
-               .tap do |converted|
-            converted[:source_receptacle] = source_receptacle(source_receptacle_id) if source_receptacle_id
-            converted[:study] = study(study_id) if study_id
-            converted[:project] = project(project_id) if project_id
-          end
-        end
-
-        private
-
-        def source_receptacle(id)
-          @source_receptacle ||= Receptacle.includes(:studies, :projects)
-                                           .find(@receptacle_ids)
-                                           .index_by(&:id)
-          @source_receptacle.fetch(id)
-        end
-
-        def study(id)
-          @study ||= Study.find(@study_ids).index_by(&:id)
-          @study.fetch(id)
-        end
-
-        def project(id)
-          @project ||= Project.find(@project_ids).index_by(&:id)
-          @project.fetch(id)
-        end
-      end
       # Constants...
-
+      PERMITTED_PICK_ATTRIBUTES = %i[source_receptacle_id study_id project_id].freeze
+      PERMITTED_LABWARE_PICK_ATTRIBUTES = %i[source_labware_id source_labware_barcode study_id project_id].freeze
       # immutable # uncomment to make the resource immutable
 
       # model_name / model_hint if required
@@ -67,10 +21,8 @@ module Api
       attribute :links, readonly: true
 
       attribute :pick_attributes
+      attribute :labware_pick_attributes, writeonly: true
       attribute :asynchronous
-
-      # Any permitted pick attributes beyond the relationships handled in the cache
-      PERMITTED_PICK_ATTRIBUTES = [].freeze
 
       # Filters
 
@@ -86,10 +38,29 @@ module Api
       # from the ids. The RecordCache allows us to do this with a single database
       # query.
       def pick_attributes=(picks)
-        # Extract and look up records here
-        # before passing through
-        cache = picks.reduce(RecordCache.new) { |building_cache, pick| building_cache << pick }
-        @model.pick_attributes = picks.map { |pick| cache.convert(pick) }
+        # Extract and look up records here before passing through
+        cache = PickList::RecordCache::ByReceptacle.new(picks)
+        @model.pick_attributes = picks.map { |pick| cache.convert(pick.permit(PERMITTED_PICK_ATTRIBUTES)) }
+      rescue KeyError => e
+        # We'll see this if one of the attributes passed in doesn't match an actual record,
+        # such as a non-existent study id.
+        raise JSONAPI::Exceptions::BadRequest, e.message
+      end
+
+      # This provides an alternative API for passing in a list of labware, either by
+      # ids or barcodes. This avoids the need to make additional requests for the receptacle
+      # ids. We keep this as a separate accessor to avoid the confusion of passing in a list
+      # of 12 picks, and receiving more back.
+      def labware_pick_attributes=(labware_picks)
+        # Extract and look up records here before passing through
+        cache = PickList::RecordCache::ByLabware.new(labware_picks)
+        @model.pick_attributes = labware_picks.flat_map do |pick|
+          cache.convert(pick.permit(PERMITTED_LABWARE_PICK_ATTRIBUTES))
+        end
+      rescue KeyError => e
+        # We'll see this if one of the attributes passed in doesn't match an actual record,
+        # such as a non-existent study id.
+        raise JSONAPI::Exceptions::BadRequest, e.message
       end
 
       def pick_attributes

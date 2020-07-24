@@ -24,7 +24,7 @@ class Receptacle < Asset
 
   # We don't do a has_one through as not all receptacles are part of tubes and then
   # we'd have to add racked_tube associations to labware. While we may eventually want to
-  # rack different kinds of labware, I'd prefer to avoid making it easier to inadvertantly
+  # rack different kinds of labware, I'd prefer to avoid making it easier to inadvertently
   # put a tube rack in a tube rack.
   has_one :racked_tube, foreign_key: :tube_id, primary_key: :labware_id
 
@@ -125,6 +125,7 @@ class Receptacle < Asset
   # Provide some named scopes that will fit with what we've used in the past
   scope :with_sample_id, ->(id)     { where(aliquots: { sample_id: Array(id)     }).joins(:aliquots) }
   scope :with_sample,    ->(sample) { where(aliquots: { sample_id: Array(sample) }).joins(:aliquots) }
+  scope :with_contents, -> { joins(:aliquots) }
 
   # Scope for caching the samples of the receptacle
   scope :for_bulk_submission, -> { includes(samples: :studies) }
@@ -237,7 +238,7 @@ class Receptacle < Asset
 
   def name
     labware_name = labware.present? ? labware.try(:name) : '(not on a labware)'
-    labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
+    labware_name ||= labware.display_name # In the event the labware is barcode-less (ie strip tubes) use its name
     labware_name
   end
 

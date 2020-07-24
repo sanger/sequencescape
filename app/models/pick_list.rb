@@ -22,6 +22,18 @@ class PickList < ApplicationRecord
   # via the delayed job, or synchronously.
   attribute :asynchronous, :boolean, default: true
 
+  #
+  # Build a list of picks based on the supplied array of pick-attributes
+  #
+  # @param [Hash] picks Array of hashes with the following parameters
+  #               source_receptacle: The source {Receptacle}
+  #               study: The {Study} associated with the pick
+  #               project: The {Project} to charge for the pick
+  #
+  #               study and project are not required is already set on the {Aliquot aliquots} in the source_receptacle
+  #
+  # @return [Array<PickList::Pick>] The picks created
+  #
   def pick_attributes=(picks)
     picks.map { |pick| Pick.new(pick) }
          .group_by(&:order_options)
@@ -48,14 +60,16 @@ class PickList < ApplicationRecord
   end
 
   def links
-    batches.map do |batch|
+    [
+      { name: "Pick-list #{id}", url: url_helpers.pick_list_url(self, host: configatron.site_url) }
+    ] + batches.map do |batch|
       { name: "Batch #{batch.id}", url: url_helpers.batch_url(batch, host: configatron.site_url) }
     end
   end
 
   def process_immediately
     submission.process_synchronously!
-    create_batch
+    create_batch!
     update!(state: :built)
   end
 
@@ -94,7 +108,7 @@ class PickList < ApplicationRecord
     )
   end
 
-  def create_batch
+  def create_batch!
     Batch.create!(requests: submission.requests.reload, pipeline: pipeline, user: user)
   end
 
