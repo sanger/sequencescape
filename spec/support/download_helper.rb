@@ -42,6 +42,11 @@ module DownloadHelpers
 
   def self.create_directory
     PATH.parent.mkdir unless PATH.parent.exist?
-    PATH.mkdir
+    PATH.mkdir unless PATH.exist?
+  rescue Errno::EEXIST
+    # Saw this on travis, suggesting a race condition
+    # probably chrome creating the directory for the actual download.
+    # We retry, as we could potentially have failed creating the parent directory.
+    retry
   end
 end
