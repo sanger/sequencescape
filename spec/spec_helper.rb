@@ -148,6 +148,12 @@ RSpec.configure do |config|
     Warren.handler.disable!
   end
 
+  config.before do
+    # Reset the barcode_number sequence at the beginning of each
+    # test to reduce the impact test order has on test execution
+    FactoryBot.sequence_by_name(:barcode_number).rewind
+  end
+
   config.before(:each, js: true) do
     page.driver.browser.manage.window.resize_to(1024, 1024)
   end
