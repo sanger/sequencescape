@@ -1,8 +1,8 @@
 # A pick list is a lightweight wrapper to provide a simplified interface
-# for automatically generating {Batch batches} for the {CherrypickPipeline}
+# for automatically generating {Batch batches} for the {CherrypickPipeline}.
 # It is intended to isolate external applications from the implementation
 # and to provide an interface for eventually building a simplified means
-# or generating cherrypicks
+# for generating cherrypicks
 class PickList < ApplicationRecord
   REQUEST_TYPE_KEY = 'cherrypick'.freeze
 

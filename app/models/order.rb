@@ -205,6 +205,16 @@ class Order < ApplicationRecord
   # {request_type_ids} is calculated from this in the various sub-classes
   # and gets persisted to the database, and used for the actual construction.
   # TODO: Simplify this
+  # - There are a few attributes which all refer to loosely the same thing, a list of request type ids:
+  #   * request_type_ids_list - Set by submission templates, but also recalculated on the fly and used in various methods
+  #   * request_types_ids - Setter on order subclasses.
+  #   * request_types - Serialized version on order, persisted in the database
+  # - The request_types on the database should become the authoritative source.
+  # - request_type_ids_list should just be a setter, which populates request_types.
+  #   It may need to transform the input slightly. Ideally we eliminate this entirely, and be consistent between
+  #   templates and orders
+  # - There appear to be several methods which essentially do the same thing. They should be unified.
+  # - I'm not even 100% how request_types_ids factors in.
   def request_types_list
     request_type_ids_list.map { |ids| RequestType.find(ids) }
   end

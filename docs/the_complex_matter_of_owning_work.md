@@ -1,4 +1,6 @@
+<!--
 # @title The complex matter of owning work
+-->
 # The complex matter of owning work
 
 There are two main categories of ownership we'll be taking about here:
@@ -9,7 +11,7 @@ There are two main categories of ownership we'll be taking about here:
 
 We'll also be considering the various things that can be 'owned' in particular:
 
-1. Stuff - Such as {Labware} and {Receptacle recpetacles} or, slightly more abstract {Sample samples}
+1. Stuff - Such as {Labware} and {Receptacle receptacles} or, slightly more abstract {Sample samples}
 2. Work - Processes actually performed of stuff to yield more stuff, or data. Mostly represented by {Submission}, {Order}
           and {Request}.
 
@@ -24,7 +26,7 @@ cross-{Study} and cross-{Project} pools were born. This made things complicated.
 First, the simple bits:
 
 {Aliquot} - Is still pretty simple. We assign each to a single {Study} and {Project} and this largely works. It does mean
-            that stock aliquots have a de-facto study, but this is generally no a major limitation. There are some difficulties
+            that stock aliquots have a de-facto study, but this is generally not a major limitation. There are some difficulties
             with accessioning and the premature linking of a sample to a study, but that is more an issue of {Study} having
             too many roles.
 {Sample} - Samples can belong to multiple {Study studies}. This is probably best seen as an organizational tool.
@@ -51,6 +53,6 @@ situations:
 
 And then some situations which just don't work:
 
-1) A multiplexed library tube contains Aliquots owned by {Study} and study B. Its about to get re-sequenced, but this time
+1) A multiplexed library tube contains Aliquots owned by {Study study A} and study B. Its about to get re-sequenced, but this time
    under studies C and D. We could store the new studies on the aliquots in the target lanes, but currently have no means
    of actually achieving this as this information is usually populated by the {Request}.
