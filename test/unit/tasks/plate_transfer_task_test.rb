@@ -3,8 +3,7 @@
 require 'test_helper'
 
 class DummyWorkflowController < WorkflowsController
-  attr_accessor :batch
-  attr_accessor :flash
+  attr_accessor :batch, :flash
 
   def initialize
     @flash = {}

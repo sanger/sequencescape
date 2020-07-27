@@ -721,7 +721,7 @@ RSpec/MultipleDescribes:
 
 # Offense count: 700
 RSpec/MultipleExpectations:
-  Max: 19
+  Max: 21
 
 # Offense count: 362
 # Configuration parameters: IgnoreSharedExamples.

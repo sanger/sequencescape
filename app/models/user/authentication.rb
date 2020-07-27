@@ -32,10 +32,11 @@ module User::Authentication
   module ClassMethods
     # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
     def authenticate(login, password)
-      if configatron.authentication == 'ldap'
+      case configatron.authentication
+      when 'ldap'
         authenticated = authenticate_with_ldap(login, password)
         authenticated ? register_or_update_via_ldap(login) : nil
-      elsif configatron.authentication == 'none'
+      when 'none'
         raise StandardError, 'Can only disable authentication in development' unless Rails.env.development?
 
         User.find_by(login: login)

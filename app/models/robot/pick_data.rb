@@ -19,6 +19,20 @@ class Robot::PickData
 
   private
 
+  # Given a list of requests it will sort them by:
+  # - First group them by destination plate
+  # - Second, inside that group sort them putting the controls in the front
+  # - Third, with the remaining requests, sort them in column order for that plate
+  def sorted_requests_for_destination_plate(requests_to_sort)
+    requests_to_sort.sort_by do |req|
+      if req.target_asset&.map&.column_order
+        [req.target_asset.plate.id, req.asset.aliquots&.first&.sample&.control ? 0 : 1, req.target_asset.map.column_order]
+      else
+        [req.target_asset.plate.id, req.asset.aliquots&.first&.sample&.control ? 0 : 1]
+      end
+    end
+  end
+
   # processes cherrypicking requests for a single batch and destination plate
   # if there are more source plates than the maxiumum capacity for the robot, splits it out into multiple picks
   # returns a hash of pick number (1-indexed) to data object containing info about source and destination plates
@@ -41,7 +55,7 @@ class Robot::PickData
       data_objects[data_objects.size]['source'].size
     end
 
-    requests_for_destination_plate.find_each do |request|
+    sorted_requests_for_destination_plate(requests_for_destination_plate).each do |request|
       target_plate = request.target_asset.plate
       next unless target_plate.any_barcode_matching?(target_barcode)
 

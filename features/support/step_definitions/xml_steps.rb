@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 def sort_arrays(xml_data)
-  if xml_data.is_a?(Hash)
+  case xml_data
+  when Hash
     Hash[xml_data.map { |k, v| [k, sort_arrays(v)] }]
-  elsif xml_data.is_a?(Array)
+  when Array
     # Kind of a hack but works for the cases where Hash elements exist
     xml_data.map { |e| sort_arrays(e) }.sort_by(&:to_a)
   else

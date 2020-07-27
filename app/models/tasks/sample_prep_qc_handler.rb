@@ -13,9 +13,10 @@ module Tasks::SamplePrepQcHandler
         flash[:error] = "Couldnt find Request #{request_id}"
         return false
       end
-      if qc_status == 'failed'
+      case qc_status
+      when 'failed'
         request.fail!
-      elsif qc_status == 'passed'
+      when 'passed'
         request.pass!
         request.target_asset.labware.pac_bio_library_tube_metadata.update!(smrt_cells_available: 1)
       else

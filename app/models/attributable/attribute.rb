@@ -8,8 +8,7 @@ module Attributable
   #    requests themselves
   # 3) Wiping out some fields on the condition of others
   class Attribute
-    attr_reader :name
-    attr_reader :default
+    attr_reader :name, :default
 
     alias assignable_attribute_name name
 

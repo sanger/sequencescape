@@ -171,7 +171,9 @@ shared_examples 'a cherrypicking procedure' do
 
     # rubocop:disable Metrics/BlockLength
     step 'Perform the bed verifications and check picking files' do
+      # for each destination plate...
       expected_plates_by_destination_plate.each do |(destination_barcode, current_expected_plates)|
+        # for each pick...
         (1..current_expected_plates.size).each do |pick_number_index|
           step "Setup bed verification for #{destination_barcode} pick number #{pick_number_index}" do
             step 'visit robot verifications page' do
@@ -190,6 +192,11 @@ shared_examples 'a cherrypicking procedure' do
             end
           end
 
+          def get_machine_barcode_for_bed(bedcode)
+            num_barcode = robot.robot_properties.where(key: bedcode).first.value
+            SBCF::SangerBarcode.new(prefix: 'BD', number: num_barcode).machine_barcode
+          end
+
           step 'Perform bed verification' do
             # need subset of plates for the current pick number
             current_source_plates = current_expected_plates[pick_number_index][:sources]
@@ -199,14 +206,21 @@ shared_examples 'a cherrypicking procedure' do
               # fill in robot bed barcodes for sources
               # NB. screen erb seems to override key in robot properties and adds the space e.g. SCRC 1 not SCRC1
               (1..current_source_plates.count).each do |i|
-                fill_in("SCRC #{i}", with: SBCF::SangerBarcode.new(prefix: 'RB', number: i).machine_barcode)
+                fill_in("SCRC #{i}", with: get_machine_barcode_for_bed("SCRC#{i}"))
               end
 
               # fill in robot bed barcode for control if present
-              fill_in('CTRL 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: max_plates).machine_barcode) if control_plate
-
+              if control_plate
+                if robot.robot_properties.where(key: 'CTRL1').count > 0
+                  # This is for Hamilton robots, which have a control specific bed
+                  fill_in('CTRL 1', with: get_machine_barcode_for_bed('CTRL1'))
+                else
+                  # This is for Tecan robots, where control plates are in a normal source bed
+                  fill_in('CTRL 1', with: SBCF::SangerBarcode.new(prefix: 'BD', number: max_plates).machine_barcode)
+                end
+              end
               # fill in robot bed barcode for destination
-              fill_in('DEST 1', with: SBCF::SangerBarcode.new(prefix: 'RB', number: max_plates + 1).machine_barcode)
+              fill_in('DEST 1', with: get_machine_barcode_for_bed('DEST1'))
             end
 
             step 'scan plate barcodes' do
@@ -246,18 +260,47 @@ shared_examples 'a cherrypicking procedure' do
               # Hamilton files comprise a column headers row plus one row per transfer e.g.
               # SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
               # DN1000001A,A1,ABgene 0765,15.85,DN20000001B,A1,ABgene 0800,15.85,49.15
+              # DownloadHelpers.wait_for_download("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
               generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 10)
               generated_lines = generated_file.lines
 
+              expect(generated_lines).not_to be_empty
+
               # check generated lines match expected by calculation
-              expected_num_lines = current_destination_plate.wells.map(&:transfer_requests_as_target).count + NUM_HAMILTON_HEADER_LINES
+              plates_and_controls_barcodes = [
+                current_expected_plates[pick_number_index][:sources],
+                current_expected_plates[pick_number_index][:control]
+              ].flatten.compact.map(&:human_barcode)
+
+              input_wells_requests_for_current_pick = current_destination_plate.wells.map(&:transfer_requests_as_target).select do |r|
+                # Assuming there is only one asset for the TransferRequest,
+                # As pooling is not supported in cherrypicking,
+                # ie. a well can only have one input sample
+
+                r.each do |request|
+                  puts "DEBUG: well.id: #{request.asset.id}"
+                  puts "DEBUG: request.asset.plate: #{request.asset.plate}"
+                  puts "DEBUG: well plate: #{Well.find(request.asset.id).plate}"
+                  puts "DEBUG labware_id: #{request.asset.labware_id}"
+                  puts "DEBUG: request.inspect: #{request.inspect}"
+                  puts "DEBUG: request.asset.inspect: #{request.asset.inspect}"
+                end
+                plates_and_controls_barcodes.include?(Labware.find(r.first.asset.labware_id).human_barcode)
+              end
+              expected_num_lines = input_wells_requests_for_current_pick.count + NUM_HAMILTON_HEADER_LINES
               expect(generated_lines.length).to eq(expected_num_lines)
 
-              # check count of controls present in destination file lines is correct
+              # check count of controls present in destination file lines is correct,
+              # but only in the first run, as controls should only be present in pick 1
               if control_plate
                 count_control_plate_entries = 0
                 generated_lines.each { |line| count_control_plate_entries += 1 if /#{control_plate.human_barcode}/.match?(line) }
-                expect(count_control_plate_entries).to eq(control_plate.contained_samples.count)
+
+                if pick_number_index == 1
+                  expect(count_control_plate_entries).to eq(control_plate.contained_samples.count)
+                elsif pick_number_index > 1
+                  expect(count_control_plate_entries).to eq(0)
+                end
               end
 
               # optionally if an expected file was supplied, compare it to the result

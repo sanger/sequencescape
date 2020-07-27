@@ -80,9 +80,10 @@ class Admin::StudiesController < ApplicationController
 
   def sort
     @studies = Study.all.sort_by(&:name)
-    if params[:sort] == 'date'
+    case params[:sort]
+    when 'date'
       @studies = @studies.sort_by(&:created_at)
-    elsif params[:sort] == 'owner'
+    when 'owner'
       @studies = @studies.sort_by(&:user_id)
     end
     render partial: 'studies'

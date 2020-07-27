@@ -118,14 +118,15 @@ module Authorization
 
       # Try to find a model to query for permissions
       def get_model(str)
-        if str.match?(/\s*([A-Z]+\w*)\s*/)
+        case str
+        when /\s*([A-Z]+\w*)\s*/
           # Handle model class
           begin
             Module.const_get(str)
           rescue
             raise CannotObtainModelClass, "Couldn't find model class: #{str}"
           end
-        elsif str =~ /\s*:*(\w+)\s*/
+        when /\s*:*(\w+)\s*/
           # Handle model instances
           model_name = $1
           model_symbol = model_name.to_sym

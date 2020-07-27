@@ -21,7 +21,7 @@ class LabwareController < ApplicationController
         format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Labware.find(params[:asset_id])
-        format.xml { render xml: ['relations' => { 'parents' => @asset.parents, 'children' => @asset.children }].to_xml }
+        format.xml { render xml: [{ 'relations' => { 'parents' => @asset.parents, 'children' => @asset.children } }].to_xml }
       end
     end
   end
