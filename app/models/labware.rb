@@ -85,6 +85,28 @@ class Labware < Asset
     scanned_into_lab_event.try(:content) || ''
   end
 
+  # Bulk retrieves locations for multiple labwares at once
+  # Returns hash { labware barcode => location string, .. } e.g. { 'DN1234' => 'Sanger - Room 1 - Shelf 2' }
+  # Hash has blank values where location was not found for a particular barcode
+  # Or raises LabWhereClient::LabwhereException if Labwhere response is unexpected
+  def self.labwhere_locations(labware_barcodes)
+    info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
+
+    raise LabWhereClient::LabwhereException, 'Labwhere service did not return information' if info_from_labwhere.blank?
+
+    barcodes_to_parentage = info_from_labwhere.labwares.each_with_object({}) do |info, obj|
+      obj[info.barcode] = info.location.location_info
+    end
+
+    unless labware_barcodes.count == barcodes_to_parentage.count
+      labware_barcodes.each do |barcode|
+        # add missing barcodes to the hash, with an empty string for location, for ones that Labwhere didn't return
+        barcodes_to_parentage[barcode] ||= ''
+      end
+    end
+    barcodes_to_parentage
+  end
+
   private
 
   def obtain_storage_location

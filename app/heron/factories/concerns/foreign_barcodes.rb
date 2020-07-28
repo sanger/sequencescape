@@ -30,7 +30,7 @@ module Heron
         def check_foreign_barcode_unique
           return unless Barcode.exists_for_format?(barcode_format, barcode)
 
-          errors.add(:base, 'foreign barcode is already in use.')
+          errors.add(:base, "The barcode '#{barcode}' is already in use.")
         end
       end
     end

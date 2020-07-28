@@ -37,6 +37,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       @batch = mock('batch')
 
       @template = PlateTemplate.new(size: 12)
+
+      LabWhereClient::LabwareSearch.stubs(:find_locations_by_barcodes).returns(nil)
     end
 
     context '#pick_onto_partial_plate' do
