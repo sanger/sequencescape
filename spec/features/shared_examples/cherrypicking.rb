@@ -95,7 +95,7 @@ shared_examples 'a cherrypicking procedure' do
             visit batch_path(batch_id)
 
             within('#output_assets table tbody') do
-              row = page.all('tr', text: /#{destination_barcode}/).first
+              row = page.find('tr', text: /#{destination_barcode}/)
               within(row) do
                 click_link 'Show plate'
               end
@@ -367,7 +367,18 @@ shared_examples 'a cherrypicking procedure' do
 
                 expected_file_lines.each_with_index do |expected_line, index|
                   # Shift the error line number
-                  expect(generated_lines[index]).to eq(expected_line), "Error on line #{index + NUM_TECAN_HEADER_LINES} in #{expected_file}"
+                  error = <<~ERROR
+                    Error on line #{index + NUM_TECAN_HEADER_LINES}
+                    Expected Line: #{expected_line}
+                    Actual Line: #{generated_lines[index]}
+                    ---
+                    Expected Output
+                    #{expected_file}
+                    ---
+                    Actual Output
+                    #{generated_file}
+                  ERROR
+                  expect(generated_lines[index]).to eq(expected_line), error
                 end
               end
             end

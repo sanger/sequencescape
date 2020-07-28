@@ -6,6 +6,16 @@ class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
   include Warren::BroadcastMessages
+  # Provides {Squishify} which allows attributes to automatically have their whitespace compressed before validation
+  # @example Squishifying a study title
+  #  class Study < ApplicationRecord
+  #    squishify :title
+  #  end
+  #
+  #  study = Study.new(title: 'Double  spaces  are    not cool')
+  #  study.valid? # => true
+  #  study.title # => "Double spaces are not cool"
+  extend Squishify
 
   # Annoyingly active record doesn't handle out of range ids when generating queries,
   # and throws an exception ActiveModel::Type::Integer

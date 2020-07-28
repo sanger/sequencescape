@@ -22,7 +22,11 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:submission) { create :submission }
   let(:plate_template) { create :plate_template }
   let(:plate_type) { create :plate_type, name: 'ABgene_0765', maximum_volume: 800 }
-  let(:destination_plate_barcode) { '1001' }
+  let(:_destination_plate_barcode) { create(:plate_barcode) }
+  let(:destination_plate_barcode) { _destination_plate_barcode.barcode }
+  let(:_destination_plate_barcode_2) { create(:plate_barcode) }
+  let(:destination_plate_barcode_2) { _destination_plate_barcode_2.barcode }
+  let(:destination_plate_human_barcode_2) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode_2).human_barcode }
   let(:destination_plate_human_barcode) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode }
   let(:target_purpose) { create :plate_purpose }
   let(:control_plate) { nil }
@@ -61,7 +65,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
       end
     end
 
-    mock_plate_barcode_service
+    allow(PlateBarcode).to receive(:create).and_return(_destination_plate_barcode, _destination_plate_barcode_2)
 
     stub_const('NUM_HAMILTON_HEADER_LINES', 1)
     stub_const('NUM_TECAN_HEADER_LINES', 2)
@@ -142,7 +146,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
         C; SCRC2 = #{plates[1].human_barcode}
         C; SCRC3 = #{plates[2].human_barcode}
         C;
-        C; DEST1 = DN1001S
+        C; DEST1 = #{destination_plate_human_barcode}
       TECAN
     end
     let(:expected_pick_files_by_destination_plate) do
@@ -244,9 +248,6 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:additional_plates) { create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2) }
     let!(:plates) { additional_plates << full_plate }
 
-    let(:destination_plate_barcode_2) { '1002' }
-    let(:destination_plate_human_barcode_2) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode_2).human_barcode }
-
     let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {
@@ -263,9 +264,9 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   end
 
   describe 'where there is a control plate and a single destination' do
-    let(:plate1) { create  :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
-    let(:plate2) { create  :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
-    let(:control_plate) { create :control_plate, sample_count: 2, barcode: '5' }
+    let(:plate1) { create  :plate_with_untagged_wells, sample_count: 2 }
+    let(:plate2) { create  :plate_with_untagged_wells, sample_count: 2 }
+    let(:control_plate) { create :control_plate, sample_count: 2 }
     let(:plates) { [plate1, plate2] }
     let(:max_plates) { 25 }
     let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
@@ -299,17 +300,16 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   end
 
   describe 'where there is a control plate and multiple destinations', js: true do
-    let(:plate1) { create  :plate_with_untagged_wells, sample_count: 50, barcode: '1' }
-    let(:plate2) { create  :plate_with_untagged_wells, sample_count: 50, barcode: '10' }
-    let(:control_plate) { create :control_plate, sample_count: 2, barcode: '5' }
+    let(:plate1) { create  :plate_with_untagged_wells, sample_count: 50 }
+    let(:plate2) { create  :plate_with_untagged_wells, sample_count: 50 }
+    let(:control_plate) { create :control_plate, sample_count: 2 }
+
     let(:plates) { [plate1, plate2] }
     let(:max_plates) { 25 }
     let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng/µl' }
     let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
-    let(:destination_plate_barcode_2) { '1002' }
-    let(:destination_plate_human_barcode_2) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode_2).human_barcode }
     let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {

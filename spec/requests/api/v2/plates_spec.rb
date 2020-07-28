@@ -127,7 +127,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
     end
 
     # By default jsonapi_resource has two bugs which affect polymorphic relationships
-    # 1) It uses the default inheritnce_column `type` rather than the defined one
+    # 1) It uses the default inheritance_column `type` rather than the defined one
     # 2) It directly uses the type field, rather than mapping it to a resource
     # These tests validate both behaviours, as corrected in the monkey patch in
     # config/initializers/patch_json_api_resource.rb

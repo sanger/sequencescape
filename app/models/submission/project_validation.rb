@@ -16,11 +16,6 @@ module Submission::ProjectValidation
     end
   end
 
-  def complete_building
-    check_project_details!
-    super
-  end
-
   def checking_project?
     validating? && project.enforce_quotas?
   end
