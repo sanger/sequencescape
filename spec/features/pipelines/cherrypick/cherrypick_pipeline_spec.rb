@@ -299,7 +299,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     end
   end
 
-  describe 'where there is a control plate and multiple destinations', js: true  do
+  describe 'where there is a control plate and multiple destinations', js: true do
     let(:plate1) { create  :plate_with_untagged_wells, sample_count: 50 }
     let(:plate2) { create  :plate_with_untagged_wells, sample_count: 50 }
     let(:control_plate) { create :control_plate, sample_count: 2 }
