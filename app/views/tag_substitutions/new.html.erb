@@ -94,7 +94,7 @@
     // Without this optimization select2 takes about 140s to update the DOM.
     // The majority of this is spent in the select2 _resolveWidth function, which
     // tries to match the width of the select2 element, to that of the original
-    // element. Providing a fixed withd overides this.
+    // element. Providing a fixed width overrides this.
     // It still takes about 30s to render, which isn't great, but somewhat more
     // tolerable.
     $(".tag-list").select2({
