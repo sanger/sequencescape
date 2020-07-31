@@ -1,0 +1,2 @@
+class PlatePicksController < ApplicationController
+end
