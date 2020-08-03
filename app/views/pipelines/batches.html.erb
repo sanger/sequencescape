@@ -4,7 +4,7 @@
 
 <div class="page-header"><h1>All batches for <%= @pipeline.name %> pipeline</h1></div>
 <div class="content">
-  <%= pagination @batches %>
+  <%# No pagination above the partial, as already included in shared batches %>
   <%= render partial: "shared/batches", locals: {batches: @batches, in_progress: false, showing_all: true, batch_state: 'normal' } %>
   <%= pagination @batches %>
 </div>

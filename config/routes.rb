@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v2 do
+      jsonapi_resources :pick_lists
       jsonapi_resources :aliquots
       jsonapi_resources :assets
       jsonapi_resources :comments
@@ -636,4 +637,5 @@ Rails.application.routes.draw do
   get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')
 
   resources :quad_stamp, only: %i[new create]
+  resources :pick_lists, only: %i[index show]
 end

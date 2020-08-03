@@ -3,7 +3,7 @@
 # Batches represent collections of {Request requests} processed through a {Pipeline}
 # at the same time. They are created via selecting requests on the {PipelinesController#show pipelines show page}
 class BatchesController < ApplicationController
-  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behaviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
   before_action :evil_parameter_hack!
@@ -19,8 +19,8 @@ class BatchesController < ApplicationController
 
   def index
     if logged_in?
-      @user = current_user
-      @batches = Batch.where(assignee_id: @user).or(Batch.where(user_id: @user))
+      @user = params.fetch(:user, current_user)
+      @batches = Batch.for_user(@user)
                       .order(id: :desc)
                       .includes(:user, :assignee, :pipeline)
                       .page(params[:page])
@@ -48,7 +48,7 @@ class BatchesController < ApplicationController
 
         if @pipeline.pick_data
           @robot = @batch.robot_id ? Robot.find(@batch.robot_id) : Robot.with_verification_behaviour.first
-          # In the event we have no robots with the correct behaviour, and none are specialised on the batch, fallback
+          # In the event we have no robots with the correct behaviour, and none are specialised on the batch, fall-back
           # to the first robot.
           @robot ||= Robot.first
           @robots = Robot.with_verification_behaviour
@@ -115,26 +115,26 @@ class BatchesController < ApplicationController
   end
 
   def pipeline
-    # All pipline batches routes should just direct to batches#index with pipeline and state as filter parameters
+    # All pipeline batches routes should just direct to batches#index with pipeline and state as filter parameters
     @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
   end
 
   def pending
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.pending.order(id: :desc).includes(%i[user pipeline]).page(params[:page])
   end
 
   def started
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.started.order(id: :desc).includes(%i[user pipeline]).page(params[:page])
   end
 
   def released
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
 
@@ -146,14 +146,14 @@ class BatchesController < ApplicationController
   end
 
   def completed
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.completed.order(id: :desc).includes(%i[user pipeline]).page(params[:page])
   end
 
   def failed
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.failed.order(id: :desc).includes(%i[user pipeline]).page(params[:page])
@@ -280,7 +280,7 @@ class BatchesController < ApplicationController
     robot_id = params.fetch(:robot_id, @batch.robot_id)
 
     @robot = robot_id ? Robot.find(robot_id) : Robot.with_verification_behaviour.first
-    # Fallback
+    # Fall-back
     @robot ||= Robot.first
 
     if @pipeline.is_a?(CherrypickingPipeline)
@@ -417,7 +417,7 @@ class BatchesController < ApplicationController
     end
   end
 
-  # This is the expected create behaviour, and is only in a seperate
+  # This is the expected create behaviour, and is only in a separate
   # method due to the overloading on the create endpoint.
   def standard_create(requests)
     return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
@@ -436,7 +436,7 @@ class BatchesController < ApplicationController
       # If this isn't the exception we're expecting, re-raise it.
       raise e unless /request_id/.match?(e.message)
 
-      # Find the requests which casued the clash.
+      # Find the requests which caused the clash.
       batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
       # Limit the length of the error message, otherwise big batches may generate errors which are too
       # big to pass back in the flash.

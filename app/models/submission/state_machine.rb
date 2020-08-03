@@ -75,14 +75,18 @@ module Submission::StateMachine
   def configure_state_machine
     aasm column: :state, whiny_persistence: true do
       state :building,    initial: true, exit: :valid_for_leaving_building_state
-      state :pending,     after_enter: :complete_building
+      state :pending,     after_enter: :queue_submission_builder
       state :processing,  enter: :process_submission!, exit: :process_callbacks!
       state :ready,       enter: :broadcast_events
       state :failed
       state :cancelled, enter: :cancel_all_requests
 
       event :built do
-        transitions to: :pending, from: [:building]
+        transitions to: :pending, from: [:building], success: :complete_building
+      end
+
+      event :process_synchronously do
+        transitions to: :processing, from: [:building], success: :complete_building
       end
 
       event :cancel do

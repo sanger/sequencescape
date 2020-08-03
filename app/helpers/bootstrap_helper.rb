@@ -11,14 +11,17 @@ module BootstrapHelper
     bs_custom_panel(type, :div, { class: 'link-panel' }, options, &block)
   end
 
+  def panel_no_body(type = :default, options = {}, &block)
+    bs_custom_panel(type, :div, {}, options, &block)
+  end
+
   def bs_custom_panel(type, body_type, body_options, options, &block)
     title = options.delete(:title)
     options[:class] ||= String.new
     options[:class] << " card card-style-#{type} mb-3"
     tag.div(options) do
-      out = String.new.html_safe
-      out << tag.h3(title, class: 'card-header-custom') unless title.nil?
-      out << content_tag(body_type, body_options, &block)
+      concat tag.h3(title, class: 'card-header-custom') unless title.nil?
+      concat content_tag(body_type, body_options, &block)
     end
   end
 

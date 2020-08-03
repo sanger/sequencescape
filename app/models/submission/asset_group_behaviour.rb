@@ -17,9 +17,8 @@ module Submission::AssetGroupBehaviour
   end
   private :assets_need_validating?
 
-  def complete_building
+  def complete_building_asset_group
     create_our_asset_group unless asset_group? or assets.blank?
-    super
   end
 
   def asset_group?

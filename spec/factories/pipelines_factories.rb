@@ -70,6 +70,10 @@ FactoryBot.define do
   end
 
   factory :cherrypick_pipeline do
+    transient do
+      request_type { build(:cherrypick_request_type) }
+    end
+
     name            { generate :pipeline_name }
     automated       { false }
     active          { true }
@@ -78,9 +82,9 @@ FactoryBot.define do
     externally_managed { false }
     min_size { 1 }
 
-    after(:build) do |pipeline|
+    after(:build) do |pipeline, evaluator|
       pipeline.workflow = build :cherrypick_pipeline_workflow, pipeline: pipeline unless pipeline.workflow
-      pipeline.request_types << build(:cherrypick_request_type)
+      pipeline.request_types << evaluator.request_type
       pipeline.add_control_request_type
     end
   end
