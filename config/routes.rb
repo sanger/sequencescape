@@ -638,4 +638,5 @@ Rails.application.routes.draw do
 
   resources :quad_stamp, only: %i[new create]
   resources :pick_lists, only: %i[index show]
+  resource :plate_picks, only: [:show]
 end
