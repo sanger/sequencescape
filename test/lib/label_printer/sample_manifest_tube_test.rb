@@ -26,7 +26,7 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
                bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
                round_label_top_line: prefix,
                round_label_bottom_line: barcode1,
-               barcode: tube1.ean13_barcode }
+               barcode: tube1.human_barcode }
   end
 
   test 'should return the right list of tubes' do
