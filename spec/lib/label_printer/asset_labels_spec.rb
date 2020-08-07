@@ -73,8 +73,7 @@ context 'printing tubes' do
           bottom_line: date,
           round_label_top_line: asset.prefix,
           round_label_bottom_line: asset.barcode_number,
-          barcode: asset.human_barcode
-           } }
+          barcode: asset.human_barcode } }
       end
     end
 
