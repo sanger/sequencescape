@@ -146,6 +146,7 @@ dl.order-summary {
 .badge-released { @extend .badge-success; }
 .badge-started { @extend .badge-primary; }
 .badge-passed { @extend .badge-success; }
+.table-error { @extend .table-danger; }
 
 .btn-default { @extend .btn-primary; }
 

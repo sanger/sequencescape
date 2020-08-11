@@ -11,11 +11,33 @@
         <th>Picks</th>
       </thead>
       <tbody>
-        <td>DN12345</td><td>Scanned</td><td>Pick 1</td>
+        <tr
+          v-for="plate in plates"
+          :key="plate.barcode"
+          :class="`table-${plate.status}`"
+        >
+          <td>{{ plate.barcode }}</td>
+          <td>{{ plate.status }}</td>
+          <td>
+            <span v-if="plate.message">{{ plate.message }}</span>
+            <span
+              v-for="pick in plate.picks"
+              :key="pick.name"
+            >{{ pick.name }}</span>
+          </td>
+        </tr>
       </tbody>
       <tfoot>
-        <td><input id="scan-plate"/></td>
-        <td colspan="2"><label for="scan-plate">Scan a plate</label></td>
+        <td>
+          <input
+            id="scan-plate"
+            v-model="scannedBarcode"
+            @blur="plateBarcodeScan"
+          >
+        </td>
+        <td colspan="2">
+          <label for="scan-plate">Scan a plate</label>
+        </td>
       </tfoot>
     </table>
   </section>
@@ -23,10 +45,24 @@
 
 <script>
 export default {
-  data: function () {
-    return { }
+  components: {
   },
-  methods: {}
+  data: function () {
+    return {
+      scannedBarcode: ''
+    }
+  },
+  computed: {
+    plates () { return this.$store.state.plates }
+  },
+  methods: {
+    plateBarcodeScan () {
+      const last_scan = this.scannedBarcode.trim()
+      if (last_scan === '') { return }
+      this.scannedBarcode = ''
+      this.$store.dispatch('plateBarcodeScan', last_scan)
+    }
+  }
 }
 </script>
 

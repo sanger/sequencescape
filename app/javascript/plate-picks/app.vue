@@ -17,8 +17,8 @@ See: https://github.com/sanger/sequencescape/issues/2860
       This is the help text.
     </help-toggle>
     <div id="sections">
-      <plates-section id="plates-section"/>
-      <picks-section id="picks-section"/>
+      <plates-section id="plates-section" />
+      <picks-section id="picks-section" />
     </div>
   </div>
 </template>
@@ -29,16 +29,16 @@ import PicksSection from './components/PicksSection.vue'
 import PlatesSection from './components/PlatesSection.vue'
 
 export default {
+  components: {
+    'help-toggle': HelpToggle,
+    'picks-section': PicksSection,
+    'plates-section': PlatesSection
+  },
   data: function () {
     return {
       plates: [],
       picks: {}
     }
-  },
-  components: {
-    'help-toggle': HelpToggle,
-    'picks-section': PicksSection,
-    'plates-section': PlatesSection
   }
 }
 </script>

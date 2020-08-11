@@ -3,8 +3,12 @@
 -->
 <template>
   <section>
-    <button v-on:click="toggleVisibility">{{ visible ? "Hide" : "Show" }} help</button>
-    <article v-if="visible"><slot></slot></article>
+    <button @click="toggleVisibility">
+      {{ visible ? "Hide" : "Show" }} help
+    </button>
+    <article v-if="visible">
+      <slot />
+    </article>
   </section>
 </template>
 

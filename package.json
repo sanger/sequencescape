@@ -20,7 +20,11 @@
     "@testing-library/jest-dom": "^5.11.2",
     "@vue/test-utils": "^1.0.3",
     "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.1.0",
     "babel-jest": "^26.2.2",
+    "eslint": "^7.6.0",
+    "eslint-plugin-jest": "^23.20.0",
+    "eslint-plugin-vue": "^6.2.2",
     "jest": "^26.2.2",
     "markdown-toc": "^1.2.0",
     "miragejs": "^0.1.40",
@@ -28,7 +32,8 @@
     "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint --ext .js --ext .vue app/javascript"
   },
   "jest": {
     "roots": [
