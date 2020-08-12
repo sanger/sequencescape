@@ -32,7 +32,7 @@ module LabelPrinter
       end
 
       def barcode(tube)
-        tube.ean13_barcode
+        tube.machine_barcode
       end
 
       def tubes
