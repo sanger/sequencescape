@@ -149,9 +149,9 @@ RSpec.configure do |config|
   end
 
   config.before do
-    # Reset the barcode_number sequence at the beginning of each
+    # Reset the all sequences at the beginning of each
     # test to reduce the impact test order has on test execution
-    FactoryBot.sequence_by_name(:barcode_number).rewind
+    FactoryBot.rewind_sequences
   end
 
   config.before(:each, js: true) do
