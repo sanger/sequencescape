@@ -8,7 +8,7 @@
 
 # The factories in here, at time of writing could do with a bit of TLC.
 FactoryBot.define do
-  # Allows a plate to automatically generate wells. Invluded in most plate factories already
+  # Allows a plate to automatically generate wells. Included in most plate factories already
   # If you inherit from the standard plate, you do not need to include this.
 
   trait :with_wells do
@@ -227,21 +227,6 @@ FactoryBot.define do
 
     after(:create) do |plate, _evaluator|
       plate.wells.each_with_index do |well, index|
-        puts "before control plate well creation: well id= #{well.id}"
-        puts "before control plate well creation: plate= #{well.plate}"
-        puts "before control plate well creation: plate id= #{well.plate&.id}"
-
-        well.update!(plate: plate)
-        well.update!(labware_id: plate.id)
-        puts "after control plate well creation: well id= #{well.id}"
-        puts "after control plate well creation: plate= #{well.plate}"
-        puts "after control plate well creation: plate id= #{well.plate&.id}"
-
-        puts "Access plate in database #{Well.find(well.id).plate}"
-        pp Well.find(well.id)
-        puts "labware_id= #{well.labware_id}"
-        puts "inspect well=#{well.inspect}"
-
         next if well.aliquots.count == 0
 
         if index.even?

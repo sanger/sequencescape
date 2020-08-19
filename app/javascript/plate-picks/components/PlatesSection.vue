@@ -4,35 +4,34 @@
 <template>
   <section>
     <h2>Plates</h2>
-    <table class="table table-striped">
+    <table class="table table-striped table-sm">
       <thead>
-        <th>Barcode</th>
-        <th>Status</th>
-        <th>Picks</th>
+        <th scope="col">
+          Barcode
+        </th>
+        <th scope="col">
+          Status
+        </th>
+        <th scope="col">
+          Picks
+        </th>
       </thead>
       <tbody>
-        <tr
-          v-for="plate in plates"
+        <PlatesSectionPlate
+          v-for="plate in scannedPlates"
           :key="plate.barcode"
-          :class="`table-${plate.status}`"
-        >
-          <td>{{ plate.barcode }}</td>
-          <td>{{ plate.status }}</td>
-          <td>
-            <span v-if="plate.message">{{ plate.message }}</span>
-            <span
-              v-for="pick in plate.picks"
-              :key="pick.name"
-            >{{ pick.name }}</span>
-          </td>
-        </tr>
+          v-bind="plate"
+        />
       </tbody>
       <tfoot>
         <td>
           <input
             id="scan-plate"
+            ref="scanPlate"
             v-model="scannedBarcode"
-            @blur="plateBarcodeScan"
+            class="form-control"
+            @keydown.enter="plateBarcodeScan"
+            @keydown.tab="plateBarcodeScan"
           >
         </td>
         <td colspan="2">
@@ -44,8 +43,11 @@
 </template>
 
 <script>
+import PlatesSectionPlate from './PlatesSectionPlate'
+
 export default {
   components: {
+    PlatesSectionPlate
   },
   data: function () {
     return {
@@ -53,14 +55,20 @@ export default {
     }
   },
   computed: {
-    plates () { return this.$store.state.plates }
+    plates () { return this.$store.state.plates },
+    scannedPlates () { return this.plates.filter(plate => plate.scanned) }
+  },
+  mounted() {
+    this.$refs.scanPlate.focus()
   },
   methods: {
-    plateBarcodeScan () {
+    plateBarcodeScan (event) {
       const last_scan = this.scannedBarcode.trim()
       if (last_scan === '') { return }
       this.scannedBarcode = ''
       this.$store.dispatch('plateBarcodeScan', last_scan)
+      // Prevent us from losing focus
+      event.preventDefault()
     }
   }
 }

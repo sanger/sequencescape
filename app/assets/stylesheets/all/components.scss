@@ -131,6 +131,19 @@ dl.order-summary {
   dd { @extend .col-10; }
 }
 
+// Apply the standard spacing
+.ss-card {
+  @extend .card;
+  @extend .mb-3;
+}
+
+// Apply slight x-padding for badge separation from other badges
+// and content.
+.ss-badge {
+  @extend .badge;
+  @extend .mx-1;
+}
+
 // State-colour extensions
 // These extend the bootstrap classes to cover our states
 .badge-building { @extend .badge-info; }

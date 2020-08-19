@@ -14,7 +14,9 @@ See: https://github.com/sanger/sequencescape/issues/2860
 <template>
   <div id="app">
     <help-toggle>
-      This is the help text.
+      <ol>
+        <li>Ensure the 'Plate scan' box is selected</li>
+      </ol>
     </help-toggle>
     <div id="sections">
       <plates-section id="plates-section" />
@@ -45,6 +47,6 @@ export default {
 
 <style scoped>
   #sections { display: flex; }
-  #plates-section { flex-grow: 1; }
-  #picks-section { flex-grow: 1; }
+  #plates-section { flex-grow: 1; padding: 1em; }
+  #picks-section { flex-grow: 1; padding: 1em; }
 </style>

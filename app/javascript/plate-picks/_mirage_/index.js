@@ -19,6 +19,7 @@ export function startMirage() {
   return new Server({
     trackRequests: true,
     environment: 'test',
+    namespace: 'plate_picks',
     models: {
       plate: Model,
       batch: Model,

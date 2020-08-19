@@ -1,7 +1,7 @@
 import mutations from './mutations'
 
 describe('mutations.js', () => {
-  const { addPlate, updateBatch, updatePlate, addPickToPlate } = mutations
+  const { addPlate, updateBatch, updatePlate, addPickToPlate, incrementPick } = mutations
   it('addPlate', () => {
     // mock state
     const state = { plates: [] }
@@ -34,6 +34,9 @@ describe('mutations.js', () => {
     })
 
     it('updates plates when they exist already', () => {
+      // Provided by the browser. We mock it. Currently just mock a string as we're not doing anything fancy
+      global.SpeechSynthesisUtterance = class extends String {}
+      global.speechSynthesis = { speak: jest.fn() }
       // mock state
       const state = { plates: [{ barcode: 'DN12345', batches: ['1', '2', '3'] }] }
       const new_plate = { barcode: 'DN12345', scanned: true }
@@ -59,6 +62,14 @@ describe('mutations.js', () => {
       expect(state.plates).toEqual([{ barcode: 'DN12345', batches: ['1', '2', '3'],
         picks: { 1: ['Pick'], 2: ['Other', 'New'] }
       }])
+    })
+  })
+
+  describe('incrementPick', ()=>{
+    it('keeps track of picks', () => {
+      const state = { pickCount: 0 }
+      incrementPick(state)
+      expect(state.pickCount).toEqual(1)
     })
   })
 })

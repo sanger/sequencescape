@@ -63,7 +63,7 @@ h3.card-header-custom {
 
 .target_plate {width:100%;}
 .target_plate th.corner-tr {border-top-right-radius: 10px;}
-.target_plate th.corner-tl {}
+.target_plate th.corner-tl {border-top-right-radius: 0;}
 .target_plate th.corner-br {border-bottom-right-radius: 10px;}
 .target_plate th.corner-bl {border-bottom-left-radius: 10px;}
 .tube_source {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
@@ -459,8 +459,6 @@ padding-bottom: 5px;
 }
 .sortasc {
 font-weight: bold;
-}
-.sortcol {
 }
 .sortdsc {
 font-weight: bold;

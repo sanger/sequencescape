@@ -3,8 +3,8 @@
 require 'rails_helper'
 require './spec/models/robot/pick_hash_tester_helper'
 
-RSpec.describe Robot::PickData do
-  subject(:pick_data) { described_class.new(batch, destination_plate.machine_barcode) }
+RSpec.describe Robot::PickData, robot_verification: true do
+  subject(:pick_data) { described_class.new(batch, max_beds: 2) }
 
   around do |example|
     travel_to(time) do
@@ -13,8 +13,6 @@ RSpec.describe Robot::PickData do
   end
 
   describe '#picking_data_hash' do
-    subject(:pick_data) { described_class.new(batch, destination_plate.machine_barcode, max_beds: 2) }
-
     let(:time) { Time.zone.local(2010, 7, 12, 10, 25, 0) }
     let(:source_plate_1) { create :plate, well_count: 2 }
     let(:source_plate_2) { create :plate, well_count: 2 }
@@ -115,7 +113,7 @@ RSpec.describe Robot::PickData do
       #     }
       #   }
       # end
-      let(:obtained) { pick_data.picking_data_hash }
+      let(:obtained) { pick_data.picking_data_hash(destination_plate.machine_barcode) }
       let(:helper) { PickHashTesterHelper.new(destination_plate, picks, time, user) }
 
       it 'generates a layout' do

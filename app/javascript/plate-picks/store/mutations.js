@@ -1,4 +1,12 @@
 import Vue from 'vue'
+import { say } from '../../libs/speechSynth'
+
+const alertPick = (pick) => { say(pick.name) }
+const alertPicks = (picks) => {
+  if (picks) {
+    for (const pick in Object.values(picks).flat()) { alertPick(pick) }
+  }
+}
 
 // Mutations handle synchronous update of state.
 export default {
@@ -28,15 +36,18 @@ export default {
       // this approach ensures that the properties all remain reactive.
       let combined_plate = Object.assign({}, state.plates[found_plate], new_attributes)
       Vue.set(state.plates, found_plate, combined_plate)
+      if (new_attributes.scanned && !state.plates[found_plate].scanned) { alertPicks(combined_plate.picks) }
     } else {
       state.plates.push(new_attributes)
-      console.log(new_attributes)
     }
   },
   addPickToPlate: (state, { plate, batch, pick }) => {
-    const found_plate = state.plates.find(list_plate => list_plate.barcode === plate.barcode)
+    let found_plate = state.plates.find(list_plate => list_plate.barcode === plate.barcode)
+    if (found_plate === undefined) { state.plates.push(plate); found_plate = plate }
     if (found_plate.picks === undefined) { Vue.set(found_plate, 'picks', {}) }
     const existing_picks = found_plate.picks[batch] || []
     Vue.set(found_plate.picks, batch, [...existing_picks, pick])
-  }
+    if (found_plate.scanned) { alertPick(pick) }
+  },
+  incrementPick: state => state.pickCount += 1
 }

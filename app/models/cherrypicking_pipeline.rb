@@ -10,4 +10,8 @@ class CherrypickingPipeline < GenotypingPipeline
       request.reduce_source_volume if request.respond_to?(:reduce_source_volume)
     end
   end
+
+  def pick_information?(batch)
+    %w[completed released].include?(batch.state)
+  end
 end

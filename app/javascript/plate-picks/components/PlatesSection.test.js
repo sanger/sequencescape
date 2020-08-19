@@ -1,38 +1,27 @@
-// test('there is no I in team', () => {
-//   expect('team').not.toMatch(/I/);
-// });
-
 import { shallowMount } from '@vue/test-utils'
 import '@testing-library/jest-dom'
 import PlatesSection from './PlatesSection.vue'
-
-const extractTable = (table) => {
-  return table.findAll('tr').wrappers.map((row) => {
-    return row.findAll('td,th').wrappers.map(cell => cell.text())
-  })
-}
+import PlatesSectionPlate from './PlatesSectionPlate.vue'
 
 describe('PlatesSection.vue', () => {
-  it('renders a list of plates', () => {
+  it('renders a list of scanned plates', () => {
     const wrapper = shallowMount(PlatesSection, {
       mocks: {
         $store: {
           state: {
             plates: [
-              { barcode: 'DN12345R', status: 'Pick', picks: [{name: 'Example Pick 1 of 3'}] },
-              { barcode: 'DN12346S', status: 'Pick', picks: [{name: 'Example Pick 1 of 3'}] }
+              { barcode: 'DN12345R', scanned: true, status: 'Pick', picks: {1: { name: 'Example Pick 1 of 3'}} },
+              { barcode: 'DN12346S', scanned: true, status: 'Pick', picks: {1: { name: 'Example Pick 1 of 3'}} },
+              { barcode: 'DN12347T', status: 'Pick', picks: { 1: { name: 'Example Pick 1 of 3' } } }
             ]
           }
         }
       }
     })
-    const tableBody = wrapper.find('tbody')
-    expect(tableBody.findAll('tr').length).toBe(2)
-    let tableContent = extractTable(tableBody)
-    expect(tableContent).toEqual([
-      ['DN12345R', 'Pick', 'Example Pick 1 of 3'],
-      ['DN12346S', 'Pick', 'Example Pick 1 of 3']
-    ])
+    const plates = wrapper.findAllComponents(PlatesSectionPlate)
+    expect(plates.length).toBe(2)
+    expect(plates.at(0).props('barcode')).toBe('DN12345R')
+    expect(plates.at(1).props('barcode')).toBe('DN12346S')
   })
 
   it('triggers plate lookup', async () => {
@@ -48,7 +37,7 @@ describe('PlatesSection.vue', () => {
 
     const input = wrapper.find('#scan-plate')
     await input.setValue('DN12345R')
-    await input.trigger('blur')
+    await input.trigger('keydown.enter')
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
       'plateBarcodeScan', 'DN12345R')

@@ -37,6 +37,7 @@ class Batch < ApplicationRecord
   has_many :aliquots, -> { distinct }, through: :source_assets
   has_many :samples, -> { distinct }, through: :source_assets, source: :samples
   has_many :output_labware, -> { distinct }, through: :assets, source: :labware
+  has_many :input_labware, -> { distinct }, through: :source_assets, source: :labware
 
   has_many_events
   has_many_lab_events
@@ -76,11 +77,17 @@ class Batch < ApplicationRecord
     ])
   }
 
+  scope :from_labware_barcodes, ->(barcodes) {
+    joins(input_labware: :barcodes).where(barcodes: { barcode: barcodes }).distinct
+  }
+
   scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
   # Returns batches owned or assigned to user. Not filter applied if passed :any
   scope :for_user, ->(user) { user == 'all' ? all : where(assignee_id: user).or(where(user_id: user)) }
+
+  scope :for_pipeline, ->(pipeline) { where(pipeline_id: pipeline) }
 
   delegate :size, to: :requests
   delegate :sequencing?, :generate_target_assets_on_batch_create?, :min_size, to: :pipeline
@@ -295,7 +302,7 @@ class Batch < ApplicationRecord
 
   # Source Labware returns the physical pieces of labware (ie. a plate for wells, but tubes for tubes)
   def source_labware
-    requests.map(&:asset).map(&:labware).uniq
+    input_labware
   end
 
   #
@@ -518,6 +525,10 @@ class Batch < ApplicationRecord
 
   def rebroadcast
     messengers.each(&:queue_for_broadcast)
+  end
+
+  def pick_information?
+    pipeline.pick_information?(self)
   end
 
   private
