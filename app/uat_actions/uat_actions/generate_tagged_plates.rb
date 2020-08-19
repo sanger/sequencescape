@@ -2,7 +2,7 @@
 
 # Will construct plates with well_count wells filled with samples
 class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
-  # These walking algortihms have dependencies on submission and do
+  # These walking algorithms have dependencies on submission and do
   # not make sense here.
   EXCLUDED_WALKING = ['wells in pools', 'manual by pool'].freeze
 
@@ -23,7 +23,8 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
              label: 'i5 (tag2) Tag group',
              help: 'Select the tag group to use for the i7 tag. '\
                    'Set to \'Untagged\' for single indexed samples.',
-             select_options: -> { TagGroup.visible.alphabetical.pluck(:name) }
+             select_options: -> { TagGroup.visible.alphabetical.pluck(:name) },
+             options: { include_blank: 'Untagged' }
   form_field :direction,
              :select,
              label: 'Tag direction',
@@ -45,7 +46,7 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
   validates :walking_by, inclusion: { in: TagLayout::WALKING_ALGORITHMS.keys - EXCLUDED_WALKING }, presence: true
   validates :tag_group_name, presence: true
   validates :tag_group, presence: { message: 'could not be found' }, if: :tag_group_name
-  validates :tag2_group, presence: { message: 'could not be found' }, if: :tag2_group_name
+  validates :tag2_group, presence: { message: 'could not be found' }, if: :tag2_group_name?
 
   def self.default
     new(
@@ -73,6 +74,10 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
   end
 
   private
+
+  def tag2_group_name?
+    tag2_group_name.present?
+  end
 
   def user
     UatActions::StaticRecords.user
