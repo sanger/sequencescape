@@ -173,28 +173,28 @@ Rails.application.routes.draw do
   end
   resources :uuids, only: [:show]
 
-  match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch, :via => :get
-  match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch, :via => :get
+  get 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch
+  get 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch
 
   resources :events
   resources :sources
 
-  match '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup', :via => :get
-  match '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup', :via => :get
+  get '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup'
+  get '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup'
 
-  match '/studies/:study_id/information/summary_detailed/:id' => 'studies/information#summary_detailed', :via => :post
+  post '/studies/:study_id/information/summary_detailed/:id' => 'studies/information#summary_detailed'
 
-  match 'studies/accession/:id' => 'studies#accession', :via => :get
-  match 'studies/policy_accession/:id' => 'studies#policy_accession', :via => :get
-  match 'studies/dac_accession/:id' => 'studies#dac_accession', :via => :get
+  get 'studies/accession/:id' => 'studies#accession'
+  get 'studies/policy_accession/:id' => 'studies#policy_accession'
+  get 'studies/dac_accession/:id' => 'studies#dac_accession'
 
-  match 'studies/accession/show/:id' => 'studies#show_accession', :as => :study_show_accession, :via => :get
-  match 'studies/accession/dac/show/:id' => 'studies#show_dac_accession', :as => :study_show_dac_accession, :via => :get
-  match 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession, :via => :get
+  get 'studies/accession/show/:id' => 'studies#show_accession', :as => :study_show_accession
+  get 'studies/accession/dac/show/:id' => 'studies#show_dac_accession', :as => :study_show_dac_accession
+  get 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession
 
-  match 'samples/accession/:id' => 'samples#accession', :via => :get
-  match 'samples/accession/show/:id' => 'samples#show_accession', :via => :get
-  match 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession, :via => :get
+  get 'samples/accession/:id' => 'samples#accession'
+  get 'samples/accession/show/:id' => 'samples#show_accession'
+  get 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession
 
   resources :studies do
     collection do
@@ -304,8 +304,8 @@ Rails.application.routes.draw do
   resources :orders
   resources :documents
 
-  match 'requests/:id/change_decision' => 'requests#filter_change_decision', :as => :filter_change_decision_request, :via => 'get'
-  match 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request, :via => 'put'
+  get 'requests/:id/change_decision' => 'requests#filter_change_decision', :as => :filter_change_decision_request
+  put 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request
 
   resources :requests do
     resources :comments, controller: 'requests/comments'

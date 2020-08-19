@@ -49,7 +49,7 @@ module Aker
       end
 
       def put_study_in_sample(study)
-        sample.studies << study if study && !sample.studies.include?(study)
+        sample.studies << study if study && sample.studies.exclude?(study)
       end
 
       def as_json

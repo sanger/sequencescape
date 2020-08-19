@@ -159,7 +159,7 @@ class RequestType < ApplicationRecord
     attributes = request_options.symbolize_keys
     common_attributes = request_class::Metadata.attribute_details.map(&:name)
     common_attributes.concat(request_class::Metadata.association_details.map(&:assignable_attribute_name))
-    attributes.delete_if { |k, _| not common_attributes.include?(k) }
+    attributes.delete_if { |k, _| common_attributes.exclude?(k) }
   end
 
   def create_target_asset!(&block)

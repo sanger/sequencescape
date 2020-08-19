@@ -22,7 +22,7 @@ module Core::Service::ContentFiltering
 
     def process_request_body
       content = request.body.read
-      raise Core::Service::ContentFiltering::InvalidBodyContentType if content.present? and !acceptable_types.include?(request.content_type)
+      raise Core::Service::ContentFiltering::InvalidBodyContentType if content.present? and acceptable_types.exclude?(request.content_type)
 
       @json = content.blank? ? {} : MultiJson.load(content) if request.content_type == 'application/json' || content.blank?
     ensure

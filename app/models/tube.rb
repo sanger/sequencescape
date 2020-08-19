@@ -110,7 +110,7 @@ class Tube < Labware
     prefix     = attributes.delete(:barcode_prefix)&.prefix || default_prefix
     if barcode.present?
       human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
-      raise "Barcode: #{barcode} already used!" if Barcode.where(barcode: human).exists?
+      raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
     end
     barcode ||= AssetBarcode.new_barcode
     primary_barcode = { prefix: prefix, number: barcode }

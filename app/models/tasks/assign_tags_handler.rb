@@ -14,7 +14,7 @@ module Tasks::AssignTagsHandler
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return false
     end
-    if MultiplexedLibraryTube.where(name: params[:mx_library_name]).exists?
+    if MultiplexedLibraryTube.exists?(name: params[:mx_library_name])
       flash[:warning] = 'Name already in use.'
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return false

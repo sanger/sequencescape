@@ -115,7 +115,7 @@ module Aker
     def table_names_for_attr(attr_name)
       [].tap do |list|
         config[:map_ss_columns_with_aker].each do |table_name, column_object|
-          list.push(table_name) if column_object.values.flatten.include?(attr_name) && !list.include?(table_name)
+          list.push(table_name) if column_object.values.flatten.include?(attr_name) && list.exclude?(table_name)
         end
       end
     end
@@ -128,7 +128,7 @@ module Aker
     def columns_for_table_from_field(table_name, field_name)
       [].tap do |list|
         config[:map_ss_columns_with_aker][table_name].each do |column_name, field_names|
-          list.push(column_name) if field_names.include?(field_name) && !list.include?(column_name)
+          list.push(column_name) if field_names.include?(field_name) && list.exclude?(column_name)
         end
       end
     end

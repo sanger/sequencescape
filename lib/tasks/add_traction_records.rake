@@ -5,7 +5,7 @@ namespace :traction do
   task create_request_types: [:environment] do
     puts 'Creating request types...'
     ActiveRecord::Base.transaction do
-      unless RequestType.where(key: 'traction_grid_ion').exists?
+      unless RequestType.exists?(key: 'traction_grid_ion')
         RequestType.create!(
           name: 'Traction GridION',
           key: 'traction_grid_ion',
@@ -40,7 +40,7 @@ namespace :traction do
   task create_submission_templates: %i(environment create_request_types) do
     puts 'Creating submission templates....'
     ActiveRecord::Base.transaction do
-      unless SubmissionTemplate.where(name: 'Traction - GridION').exists?
+      unless SubmissionTemplate.exists?(name: 'Traction - GridION')
         SubmissionTemplate.create!(
           name: 'Traction - GridION',
           submission_class_name: 'LinearSubmission',
