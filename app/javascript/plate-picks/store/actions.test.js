@@ -23,7 +23,7 @@ describe('actions.js', () => {
       // apply action
       await plateBarcodeScan({ commit, state, dispatch }, 'DN12345R')
       // assert result
-      expect(commit).toHaveBeenCalledWith('updatePlate', { barcode: 'DN12345R', scanned: true })
+      expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: 'DN12345R' })
       // And our server shouldn't have been hit
       let requests = mirageServer.pretender.handledRequests
       expect(requests.length).toEqual(0)
@@ -31,7 +31,7 @@ describe('actions.js', () => {
 
     it('fetches plates and batches if needed', async () => {
       // Set up mirage mocks
-      mirageServer.create('plate', { barcode: 'DN12345R', batches: [1, 2, 3] })
+      mirageServer.create('plate', { barcode: 'DN12345R', batches: [1, 2, 3], control: false })
 
       // mock commit
       const mergedPlate = { barcode: 'DN12345R', scanned: true }
@@ -41,11 +41,9 @@ describe('actions.js', () => {
       // apply action
       await plateBarcodeScan({ commit, state, dispatch }, 'DN12345R')
       // assert result
+      expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: 'DN12345R' })
       expect(commit).toHaveBeenNthCalledWith(
-        1, 'updatePlate', { barcode: 'DN12345R', scanned: true }
-      )
-      expect(commit).toHaveBeenNthCalledWith(
-        2, 'updatePlate', { barcode: 'DN12345R', batches: [1, 2, 3], id: '1' }
+        2, 'updatePlate', { barcode: 'DN12345R', batches: [1, 2, 3], id: '1', control: false }
       )
 
       expect(dispatch).toHaveBeenCalledWith(
@@ -70,11 +68,9 @@ describe('actions.js', () => {
       // apply action
       await plateBarcodeScan({ commit, state }, 'BadPlate')
       // assert result
-      expect(commit).toHaveBeenNthCalledWith(
-        1, 'updatePlate', { barcode: 'BadPlate', scanned: true }
-      )
-      expect(commit).toHaveBeenNthCalledWith(
-        2, 'updatePlate', { barcode: 'BadPlate', errorMessage: 'Internal Server Error: Something went wrong' }
+      expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: 'BadPlate' })
+      expect(commit).toHaveBeenCalledWith(
+        'updatePlate', { barcode: 'BadPlate', errorMessage: 'Internal Server Error: Something went wrong' }
       )
       expect(console.error).toHaveBeenCalled()
     })

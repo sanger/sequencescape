@@ -1,16 +1,7 @@
 import mutations from './mutations'
 
 describe('mutations.js', () => {
-  const { addPlate, updateBatch, updatePlate, addPickToPlate, incrementPick } = mutations
-  it('addPlate', () => {
-    // mock state
-    const state = { plates: [] }
-    const new_plate = { barcode: 'DN12345' }
-    // apply mutation
-    addPlate(state, new_plate)
-    // assert result
-    expect(state.plates).toEqual([new_plate])
-  })
+  const { updateBatch, updatePlate, addPickToPlate, incrementPick, scanPlate } = mutations
 
   it('updateBatch', () => {
     // mock state
@@ -70,6 +61,21 @@ describe('mutations.js', () => {
       const state = { pickCount: 0 }
       incrementPick(state)
       expect(state.pickCount).toEqual(1)
+    })
+  })
+
+  describe('scanPlate', () => {
+    it('records each plate with the order in which it was scanned', () => {
+      // mock state
+      const known_plate = { barcode: 'DN12346' }
+      const state = { plates: [known_plate], scanCount: 0 }
+      const new_plate = { barcode: 'DN12345' }
+      // apply mutation
+      scanPlate(state, new_plate)
+      scanPlate(state, known_plate)
+      // assert result
+      expect(state.plates).toEqual([{ barcode: 'DN12346', scanned: 2 }, { barcode: 'DN12345', scanned: 1 }])
+      expect(state.scanCount).toEqual(2)
     })
   })
 })

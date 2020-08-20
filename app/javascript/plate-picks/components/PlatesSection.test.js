@@ -5,15 +5,19 @@ import PlatesSectionPlate from './PlatesSectionPlate.vue'
 
 describe('PlatesSection.vue', () => {
   it('renders a list of scanned plates', () => {
+    const allPlates = [
+      { barcode: 'DN12345R', scanned: true, status: 'Pick', picks: { 1: { name: 'Example Pick 1 of 3' } } },
+      { barcode: 'DN12346S', scanned: true, status: 'Pick', picks: { 1: { name: 'Example Pick 1 of 3' } } },
+      { barcode: 'DN12347T', status: 'Pick', picks: { 1: { name: 'Example Pick 1 of 3' } } }
+    ]
     const wrapper = shallowMount(PlatesSection, {
       mocks: {
         $store: {
           state: {
-            plates: [
-              { barcode: 'DN12345R', scanned: true, status: 'Pick', picks: {1: { name: 'Example Pick 1 of 3'}} },
-              { barcode: 'DN12346S', scanned: true, status: 'Pick', picks: {1: { name: 'Example Pick 1 of 3'}} },
-              { barcode: 'DN12347T', status: 'Pick', picks: { 1: { name: 'Example Pick 1 of 3' } } }
-            ]
+            plates: allPlates
+          },
+          getters: {
+            sortedScannedPlates: allPlates.filter(plate => plate.scanned)
           }
         }
       }
@@ -27,7 +31,8 @@ describe('PlatesSection.vue', () => {
   it('triggers plate lookup', async () => {
     const mockStore = {
       state: { plates: [] },
-      dispatch: jest.fn()
+      dispatch: jest.fn(),
+      getters: { sortedScannedPlates: [] }
     }
     const wrapper = shallowMount(PlatesSection, {
       mocks: {
@@ -46,7 +51,8 @@ describe('PlatesSection.vue', () => {
   it('ignores empty input', async () => {
     const mockStore = {
       state: { plates: [] },
-      dispatch: jest.fn()
+      dispatch: jest.fn(),
+      getters: { sortedScannedPlates: [] }
     }
     const wrapper = shallowMount(PlatesSection, {
       mocks: {

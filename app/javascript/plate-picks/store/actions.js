@@ -101,7 +101,7 @@ const extractErrors = async (response) => {
 export default {
   plateBarcodeScan: async ({ commit, dispatch, state }, plate_barcode) => {
     // Firstly we record that the plate has been scanned.
-    commit('updatePlate', { barcode: plate_barcode, scanned: true })
+    commit('scanPlate', { barcode: plate_barcode })
     const updated_plate = state.plates.find(plate => plate.barcode === plate_barcode)
     // If we have batch information, we don't need to fetch more plate info
     // But we may have batches to fetch
@@ -130,10 +130,12 @@ export default {
   fetchBatch: async ({ commit, state, dispatch }, batch_attributes) => {
     // Add the batch to the list so that we can show a spinner
     const batch_id = batch_attributes.id
-    commit('updateBatch', { id: batch_id })
-    const updated_batch = state.batches.find(batch => batch.id === batch_id)
+    const batchExists = state.batches.find(batch => batch.id === batch_id)
+    // We only want to trigger a lookup once, so back out if we already exist.
+    if (batchExists) { return }
 
-    if (updated_batch.picks) { return }
+    // Add the batch to the list so that we can show a spinner
+    commit('updateBatch', { id: batch_id })
 
     try {
       const response = await batchRequest(batch_id)

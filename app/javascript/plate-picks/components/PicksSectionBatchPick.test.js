@@ -10,6 +10,12 @@ describe('PicksSectionBatchPick.vue', () => {
         name,
         id: '1',
         plates: []
+      },
+      mocks: {
+        $store: {
+          state: {},
+          getters: { plateWithBarcode() { } }
+        }
       }
     })
     expect(wrapper.text()).toContain(name)

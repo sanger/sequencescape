@@ -46,6 +46,19 @@ describe('PlatesSectionPlate.vue', () => {
     expect(wrapper.find('.table-warning')).toBeTruthy()
   })
 
+  it('indicates when its a control', () => {
+    const wrapper = shallowMount(PlatesSectionPlate, {
+      propsData: {
+        barcode: 'DN12345',
+        batches: [],
+        control: true,
+        picks: {}
+      }
+    })
+    expect(wrapper.find('.table-secondary')).toBeTruthy()
+    expect(wrapper.text()).toContain('Control')
+  })
+
   it('indicates when its a single pick', () => {
     const wrapper = shallowMount(PlatesSectionPlate, {
       propsData: {

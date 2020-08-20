@@ -53,6 +53,11 @@ export default {
       required: false,
       default: null
     },
+    control: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     errorMessage: {
       type: String,
       required: false,
@@ -64,6 +69,7 @@ export default {
     state() {
       if (this.errorMessage) { return 'error' } // Something went wrong
       else if (this.batches === null) { return 'wait-plate' } // We're fetching the plate
+      else if (this.control) { return 'control' } // The plate is a control
       else if (this.pendingBatches) { return 'wait-batch' } // We're fetching the plate
       else if (this.totalPicks === 1) { return 'single-pick' }
       else if (this.totalPicks > 1) { return 'multi-pick'}
@@ -82,6 +88,7 @@ export default {
       case 'multi-pick':
         return 'primary'
       case 'no-pick':
+      case 'control':
         return 'secondary'
       default: // We really shouldn't end up here. If we do, somethings gone wrong.
         return 'danger'
@@ -101,6 +108,8 @@ export default {
         return 'check'
       case 'multi-pick':
         return 'check-double'
+      case 'control':
+        return 'vial'
       default: // We really shouldn't end up here. If we do, somethings gone wrong.
         return 'error'
       }
@@ -128,6 +137,8 @@ export default {
         return 'Fetching batch information'
       case 'no-pick':
         return 'No picks found'
+      case 'control':
+        return 'Control plate'
       default:
         return null
       }

@@ -21,11 +21,14 @@
     </div>
     <ul class="list-group list-group-flush">
       <li
-        v-for="plate in plates"
+        v-for="plate in storePlates"
         :key="plate.barcode"
-        class="list-group-item"
+        :class="{
+          'list-group-item': true,
+          'list-group-item-success': plate.scanned
+        }"
       >
-        {{ plate.barcode }}
+        <i :class="`fas fa-${plate.scanned ? 'check' : ''}`" /> {{ plate.barcode }}
       </li>
     </ul>
   </div>
@@ -56,7 +59,12 @@ export default {
   data: function () {
     return { }
   },
-  // computed: {},
+  computed: {
+    storePlates() {
+      const lookup = this.$store.getters.plateWithBarcode
+      return this.plates.map(plate => lookup(plate.barcode) || plate)
+    }
+  },
   // methods: {},
 }
 </script>

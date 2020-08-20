@@ -55,8 +55,7 @@ export default {
     }
   },
   computed: {
-    plates () { return this.$store.state.plates },
-    scannedPlates () { return this.plates.filter(plate => plate.scanned) }
+    scannedPlates () { return this.$store.getters.sortedScannedPlates }
   },
   mounted() {
     this.$refs.scanPlate.focus()
