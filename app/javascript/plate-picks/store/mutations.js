@@ -35,14 +35,18 @@ export default {
    * @param {Object} new_attributes The new attributes to be applied the the batch with new_attributes.id
    */
   updateBatch: (state, new_attributes) => {
-    const found_batch = state.batches.findIndex(batch => batch.id === new_attributes.id)
-    if (found_batch >= 0) {
+    // We index with b+id, rather than just id itself, as this maintains insertion order.
+    // Solely numeric keys get sorted in numeric order.
+    // We can't use a Map, as Vue doesn't handle reactivity properly for Maps.
+    const batchIndex = `b${new_attributes.id}`
+    const found_batch = state.batches[batchIndex]
+    if (found_batch) {
       // If we've found a new plate, merge the two together and update the original
       // this approach ensures that the properties all remain reactive.
-      let combined_batch = Object.assign({}, state.batches[found_batch], new_attributes)
-      Vue.set(state.batches, found_batch, combined_batch)
+      let combined_batch = Object.assign({}, found_batch, new_attributes)
+      Vue.set(state.batches, batchIndex, combined_batch)
     } else {
-      state.batches.push(new_attributes)
+      Vue.set(state.batches, batchIndex, new_attributes)
     }
   },
   /**

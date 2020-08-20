@@ -1,22 +1,24 @@
 import mutations from './mutations'
+import defaultState from './state'
+import { emptyBatch } from '../_test_examples_'
 
 describe('mutations.js', () => {
   const { updateBatch, updatePlate, addPickToPlate, incrementPick, scanPlate } = mutations
 
   it('updateBatch', () => {
     // mock state
-    const state = { batches: [] }
-    const new_batch = { id: 1234, picks: [] }
+    const state = defaultState()
+    const new_batch = emptyBatch({ id: '1234' })
     // apply mutation
     updateBatch(state, new_batch)
     // assert result
-    expect(state.batches).toEqual([new_batch])
+    expect(state.batches).toEqual({b1234: new_batch})
   })
 
   describe('updatePlate', ()=>{
     it('registers a plate if none exists', () => {
       // mock state
-      const state = { plates: [] }
+      const state = defaultState()
       const new_plate = { barcode: 'DN12345', scanned: true }
       // apply mutation
       updatePlate(state, new_plate)
@@ -29,7 +31,8 @@ describe('mutations.js', () => {
       global.SpeechSynthesisUtterance = class extends String {}
       global.speechSynthesis = { speak: jest.fn() }
       // mock state
-      const state = { plates: [{ barcode: 'DN12345', batches: ['1', '2', '3'] }] }
+      const state = defaultState()
+      state.plates =  [{ barcode: 'DN12345', batches: ['1', '2', '3'] }]
       const new_plate = { barcode: 'DN12345', scanned: true }
       // apply mutation
       updatePlate(state, new_plate)
@@ -41,14 +44,16 @@ describe('mutations.js', () => {
   describe('addPickToPlate', ()=>{
     it('adds a pick to the matching plate', () => {
       const plate = { barcode: 'DN12345', batches: ['1', '2', '3'] }
-      const state = { plates: [plate] }
+      const state = defaultState()
+      state.plates = [plate]
       addPickToPlate(state, { plate: plate, batch: '1', pick: 'Pick' })
       expect(state.plates).toEqual([{ barcode: 'DN12345', batches: ['1', '2', '3'], picks: { 1: ['Pick'] } }])
     })
 
     it('handles picks from other batches', () => {
       const plate = { barcode: 'DN12345', batches: ['1', '2', '3'], picks: { 1: ['Pick'], 2: ['Other']} }
-      const state = { plates: [plate] }
+      const state = defaultState()
+      state.plates = [plate]
       addPickToPlate(state, { plate: plate, batch: '2', pick: 'New' })
       expect(state.plates).toEqual([{ barcode: 'DN12345', batches: ['1', '2', '3'],
         picks: { 1: ['Pick'], 2: ['Other', 'New'] }
@@ -58,7 +63,7 @@ describe('mutations.js', () => {
 
   describe('incrementPick', ()=>{
     it('keeps track of picks', () => {
-      const state = { pickCount: 0 }
+      const state = defaultState()
       incrementPick(state)
       expect(state.pickCount).toEqual(1)
     })

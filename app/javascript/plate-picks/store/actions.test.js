@@ -1,6 +1,8 @@
 import actions from './actions'
 import { startMirage } from '../_mirage_'
 import { Response } from 'miragejs'
+import { exampleBarcode, plateWithPicks, plateWithoutPicks, pendingScannedPlate } from '../_test_examples_'
+import defaultState from './state'
 
 let mirageServer
 
@@ -13,17 +15,13 @@ describe('actions.js', () => {
 
     it('does not hit the server if all data is present', async () => {
       // mock commit
-      const mergedPlate = { barcode: 'DN12345R', picks: { 1: ['Pick 1'], 2: ['Pick 2'] }, batches: [1, 2] }
-      const state = {
-        plates: [],
-        batches: []
-      }
+      const state = defaultState()
       const dispatch = jest.fn()
-      const commit = jest.fn( _ => state.plates = [mergedPlate] )
+      const commit = jest.fn(_ => state.plates = [plateWithPicks()] )
       // apply action
-      await plateBarcodeScan({ commit, state, dispatch }, 'DN12345R')
+      await plateBarcodeScan({ commit, state, dispatch }, exampleBarcode)
       // assert result
-      expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: 'DN12345R' })
+      expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: exampleBarcode })
       // And our server shouldn't have been hit
       let requests = mirageServer.pretender.handledRequests
       expect(requests.length).toEqual(0)
@@ -31,23 +29,22 @@ describe('actions.js', () => {
 
     it('fetches plates and batches if needed', async () => {
       // Set up mirage mocks
-      mirageServer.create('plate', { barcode: 'DN12345R', batches: [1, 2, 3], control: false })
-
+      mirageServer.create('plate', plateWithoutPicks({id: '1'}))
       // mock commit
-      const mergedPlate = { barcode: 'DN12345R', scanned: true }
-      const state = { plates: [] }
+      const mergedPlate = pendingScannedPlate()
+      const state = defaultState()
       const commit = jest.fn(_ => state.plates = [mergedPlate] )
       const dispatch = jest.fn()
       // apply action
-      await plateBarcodeScan({ commit, state, dispatch }, 'DN12345R')
+      await plateBarcodeScan({ commit, state, dispatch }, exampleBarcode)
       // assert result
-      expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: 'DN12345R' })
+      expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: exampleBarcode })
       expect(commit).toHaveBeenNthCalledWith(
-        2, 'updatePlate', { barcode: 'DN12345R', batches: [1, 2, 3], id: '1', control: false }
+        2, 'updatePlate', plateWithoutPicks({ id: '1' })
       )
 
       expect(dispatch).toHaveBeenCalledWith(
-        'fetchBatches', { ids: [1, 2, 3] }
+        'fetchBatches', { ids: ['1', '2', '3'] }
       )
     })
 
@@ -62,7 +59,7 @@ describe('actions.js', () => {
       console.error = jest.fn()
       // mock commit
       const mergedPlate = { barcode: 'BadPlate', scanned: true }
-      const state = { plates: [] }
+      const state = defaultState()
       const commit = jest.fn(_ => state.plates = [mergedPlate] )
       // mock dependencies
       // apply action
@@ -81,7 +78,7 @@ describe('actions.js', () => {
       // mock commit
       const commit = jest.fn()
       const dispatch = jest.fn()
-      const state = { plates: [], batches: [], pickCount: 0 }
+      const state = defaultState()
       // apply action
       fetchBatches({ commit, dispatch, state }, { ids: [1, 2] })
       // assert result
@@ -99,7 +96,7 @@ describe('actions.js', () => {
           {
             name: 'Name 1',
             plates: [
-              { barcode: 'DN12345R', batches: ['1'] },
+              { barcode: exampleBarcode, batches: ['1'] },
               { barcode: 'DN12346S', batches: ['1'] }
             ]
           },
@@ -120,7 +117,7 @@ describe('actions.js', () => {
             id: 1,
             name: 'Name 1',
             plates: [
-              { barcode: 'DN12345R', batches: ['1'] },
+              { barcode: exampleBarcode, batches: ['1'] },
               { barcode: 'DN12346S', batches: ['1'] }
             ]
           },
@@ -138,8 +135,8 @@ describe('actions.js', () => {
       mirageServer.create('batch', returnedBatch)
 
       // mock commit
-      const state = { plates: [], batches: [], pickCount: 0 }
-      const commit = jest.fn().mockImplementationOnce(_ => state.batches.push({ id: '1' }))
+      const state = defaultState()
+      const commit = jest.fn().mockImplementationOnce(_ => state.batches['b1'] = { id: '1' })
       const dispatch = jest.fn(_ => state.pickCount += 1)
 
       // apply action
@@ -147,7 +144,7 @@ describe('actions.js', () => {
       // assert result
       expect(commit).toHaveBeenCalledWith('updateBatch', { id: '1' })
       expect(commit).toHaveBeenCalledWith('updateBatch', augmentedBatch)
-      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { barcode: 'DN12345R', batches: ['1'] }, batch: '1', pick: { name: 'Name 1', id: 1 } })
+      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { barcode: exampleBarcode, batches: ['1'] }, batch: '1', pick: { name: 'Name 1', id: 1 } })
       expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { barcode: 'DN12346S', batches: ['1'] }, batch: '1', pick: { name: 'Name 1', id: 1 } })
       expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { barcode: 'DN12347T', batches: ['1'] }, batch: '1', pick: { name: 'Name 2', id: 2 } })
       expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { barcode: 'DN12348U', batches: ['1', '2'] }, batch: '1', pick: { name: 'Name 2', id: 2 } })
@@ -157,7 +154,7 @@ describe('actions.js', () => {
   describe('nextPickId', () => {
     it('returns an ascending series of integers', async () => {
       // Set up initial state
-      const state = { plates: [], batches: [], pickCount: 0 }
+      const state = defaultState()
       // apply action
       const commit = jest.fn(_ => state.pickCount += 1 )
       const returned = nextPickId({ commit, state })

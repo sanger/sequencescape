@@ -16,7 +16,10 @@
 -->
 <template>
   <div>
-    <div :class="['card-header', `colour-${id}`]" :id="`pick-${id}`">
+    <div
+      :id="`pick-${id}`"
+      :class="['card-header', `colour-${id}`]"
+    >
       {{ name }}
     </div>
     <ul class="list-group list-group-flush">

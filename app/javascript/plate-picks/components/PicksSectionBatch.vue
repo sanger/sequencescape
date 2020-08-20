@@ -28,7 +28,7 @@
       v-for="pick in picks"
       :key="pick.name"
       v-bind="pick"
-      class="card"
+      class="ss-card"
     />
   </div>
 </template>

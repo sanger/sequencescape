@@ -2,16 +2,14 @@ import { shallowMount } from '@vue/test-utils'
 import '@testing-library/jest-dom'
 import PicksSection from './PicksSection.vue'
 import PicksSectionBatch from './PicksSectionBatch.vue'
+import defaultState from '../store/state'
 
 describe('PicksSection.vue', () => {
   it('provides feedback when no picks are visible', () => {
     const wrapper = shallowMount(PicksSection, {
       mocks: {
         $store: {
-          state: {
-            batches: [],
-            plates: []
-          }
+          state: defaultState()
         }
       }
     })
@@ -23,8 +21,9 @@ describe('PicksSection.vue', () => {
       mocks: {
         $store: {
           state: {
-            batches: [
-              {
+            ...defaultState,
+            batches: {
+              1: {
                 id: '1',
                 picks: [
                   {
@@ -43,7 +42,7 @@ describe('PicksSection.vue', () => {
                   }
                 ]
               },
-              {
+              2: {
                 id: '2',
                 picks: [
                   {
@@ -54,8 +53,7 @@ describe('PicksSection.vue', () => {
                   }
                 ]
               }
-            ],
-            plates: []
+            }
           }
         }
       }

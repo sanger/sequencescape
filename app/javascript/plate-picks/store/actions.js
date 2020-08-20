@@ -130,9 +130,9 @@ export default {
   fetchBatch: async ({ commit, state, dispatch }, batch_attributes) => {
     // Add the batch to the list so that we can show a spinner
     const batch_id = batch_attributes.id
-    const batchExists = state.batches.find(batch => batch.id === batch_id)
+    const existingBatch = state.batches[`b${batch_id}`]
     // We only want to trigger a lookup once, so back out if we already exist.
-    if (batchExists) { return }
+    if (existingBatch) { return }
 
     // Add the batch to the list so that we can show a spinner
     commit('updateBatch', { id: batch_id })

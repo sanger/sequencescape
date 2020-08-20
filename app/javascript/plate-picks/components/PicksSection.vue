@@ -26,8 +26,8 @@ export default {
     return { }
   },
   computed: {
-    empty() { return this.$store.state.batches.length === 0 },
-    batches() { return this.$store.state.batches }
+    empty() { return Object.keys(this.$store.state.batches).length === 0 },
+    batches() { return Object.values(this.$store.state.batches) }
   },
   methods: {}
 }

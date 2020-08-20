@@ -20,6 +20,7 @@ class PlatePicksController < ApplicationController
                 end
 
       render json: { plate: {
+        id: plate.id,
         barcode: plate.machine_barcode,
         batches: batches,
         control: plate.pick_as_control?
@@ -42,7 +43,12 @@ class PlatePicksController < ApplicationController
                              .where(batches: { pipeline_id: CherrypickPipeline.all })
                              .index_by(&:machine_barcode)
                              .transform_values do |plate|
-                               { barcode: plate.machine_barcode, batches: plate.batches_as_source.ids.map(&:to_s) }
+                               {
+                                 id: plate.id,
+                                 barcode: plate.machine_barcode,
+                                 batches: plate.batches_as_source.ids.map(&:to_s),
+                                 control: plate.pick_as_control?
+                               }
                              end
     picks = robot.all_picks(batch)
 
