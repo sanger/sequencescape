@@ -21,11 +21,12 @@
     </th>
     <td><i :class="`fas fa-${icon}`" /></td>
     <td>
-      <span
+      <a
         v-for="pick in flatPicks"
         :key="pick.name"
         :class="['ss-badge', `colour-${pick.id}`]"
-      >{{ pick.name }}</span>
+        :href="`#pick-${pick.id}`"
+      >{{ pick.name }}</a>
       <span v-if="message">{{ message }}</span>
     </td>
   </tr>
