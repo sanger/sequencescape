@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils'
 import '@testing-library/jest-dom'
 import PicksSectionBatchPick from './PicksSectionBatchPick.vue'
+import defaultState from '../store/state'
 
 describe('PicksSectionBatchPick.vue', () => {
   it('includes the name', () => {
@@ -13,8 +14,8 @@ describe('PicksSectionBatchPick.vue', () => {
       },
       mocks: {
         $store: {
-          state: {},
-          getters: { plateWithBarcode() { } }
+          state: defaultState(),
+          getters: { }
         }
       }
     })

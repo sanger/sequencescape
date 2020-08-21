@@ -15,9 +15,10 @@ describe('actions.js', () => {
 
     it('does not hit the server if all data is present', async () => {
       // mock commit
-      const state = defaultState()
+      const plates = { 1: plateWithPicks() }
+      const state = { ...defaultState(), plates }
       const dispatch = jest.fn()
-      const commit = jest.fn(_ => state.plates = [plateWithPicks()] )
+      const commit = jest.fn((_) => state.scanStore[`_${exampleBarcode}`] = { barcode: exampleBarcode, id: 1 })
       // apply action
       await plateBarcodeScan({ commit, state, dispatch }, exampleBarcode)
       // assert result
@@ -31,17 +32,15 @@ describe('actions.js', () => {
       // Set up mirage mocks
       mirageServer.create('plate', plateWithoutPicks({id: '1'}))
       // mock commit
-      const mergedPlate = pendingScannedPlate()
       const state = defaultState()
-      const commit = jest.fn(_ => state.plates = [mergedPlate] )
+      const commit = jest.fn((_) => state.scanStore[`_${exampleBarcode}`] = { barcode: exampleBarcode })
       const dispatch = jest.fn()
       // apply action
       await plateBarcodeScan({ commit, state, dispatch }, exampleBarcode)
       // assert result
       expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: exampleBarcode })
-      expect(commit).toHaveBeenNthCalledWith(
-        2, 'updatePlate', plateWithoutPicks({ id: '1' })
-      )
+      expect(commit).toHaveBeenCalledWith('updateScanPlate', { barcode: exampleBarcode, id: '1' })
+      expect(commit).toHaveBeenCalledWith('updatePlate', plateWithoutPicks({ id: '1', scanned: true }))
 
       expect(dispatch).toHaveBeenCalledWith(
         'fetchBatches', { ids: ['1', '2', '3'] }
@@ -60,14 +59,14 @@ describe('actions.js', () => {
       // mock commit
       const mergedPlate = { barcode: 'BadPlate', scanned: true }
       const state = defaultState()
-      const commit = jest.fn(_ => state.plates = [mergedPlate] )
+      const commit = jest.fn((_) => state.scanStore['_BadPlate'] = { barcode: 'BadPlate' })
       // mock dependencies
       // apply action
       await plateBarcodeScan({ commit, state }, 'BadPlate')
       // assert result
       expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: 'BadPlate' })
       expect(commit).toHaveBeenCalledWith(
-        'updatePlate', { barcode: 'BadPlate', errorMessage: 'Internal Server Error: Something went wrong' }
+        'updateScanPlate', { barcode: 'BadPlate', errorMessage: 'Internal Server Error: Something went wrong' }
       )
       expect(console.error).toHaveBeenCalled()
     })

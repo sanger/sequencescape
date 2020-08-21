@@ -1,55 +1,35 @@
 import getters from './getters'
+import defaultState from './state'
 
 describe('getters.js', () => {
   const state = {
-    plates: [
-      { barcode: 'DN12345', scanned: null },
-      { barcode: 'DN12346', scanned: 2 },
-      { barcode: 'DN12347', scanned: 1 },
-      { barcode: 'DN12348', scanned: 3 },
-    ]
+    ... defaultState(),
+    plates: {
+      1: { barcode: 'DN12345', scanned: null },
+      2: { barcode: 'DN12346', scanned: true },
+      3: { barcode: 'DN12347', scanned: true },
+      4: { barcode: 'DN12348', scanned: true },
+    },
+    scanStore: {
+      _DN12347: { barcode: 'DN12347', id: 3 },
+      _DN12346: { barcode: 'DN12346', id: 2 },
+      _BadPlate: { barcode: '_BadPlate', id: null, errrorMessage: 'Bad' },
+      _DN12348: { barcode: 'DN12348', id: 4 }
+    }
   }
+
   const scannedPlatesData = [
-    { barcode: 'DN12346', scanned: 2 },
-    { barcode: 'DN12347', scanned: 1 },
-    { barcode: 'DN12348', scanned: 3 },
+    { barcode: 'DN12347', scanned: true, id: 3 },
+    { barcode: 'DN12346', scanned: true, id: 2 },
+    { barcode: '_BadPlate', id: null, errrorMessage: 'Bad' },
+    { barcode: 'DN12348', scanned: true, id: 4 },
   ]
-  const { scannedPlates, sortedScannedPlates, scannedPlate, plateWithBarcode } = getters
+
+  const { scannedPlates, scannedPlate } = getters
 
   describe('scannedPlates', () => {
-
-    it('returns only scanned plates', () => {
-      expect(scannedPlates(state)).toContainEqual({ barcode: 'DN12346', scanned: 2 })
-      expect(scannedPlates(state)).toContainEqual({ barcode: 'DN12347', scanned: 1 })
-      expect(scannedPlates(state)).toContainEqual({ barcode: 'DN12348', scanned: 3 })
-      expect(scannedPlates(state)).not.toContainEqual({ barcode: 'DN12345', scanned: null })
-    })
-  })
-  describe('sortedScannedPlates', () => {
-
-    it('returns sorted plates', () => {
-      expect(sortedScannedPlates(state, { scannedPlates: scannedPlatesData })).toEqual([
-        { barcode: 'DN12347', scanned: 1 },
-        { barcode: 'DN12346', scanned: 2 },
-        { barcode: 'DN12348', scanned: 3 }
-      ])
-    })
-  })
-
-  describe('scannedPlate', () => {
-
-    it('returns true if a plate is scanned', () => {
-      expect(scannedPlate(state, { scannedPlates: scannedPlatesData })('DN12347')).toEqual(true)
-    })
-
-    it('returns false if a plate is not scanned', () => {
-      expect(scannedPlate(state, { scannedPlates: scannedPlatesData })('DN12345')).toEqual(false)
-    })
-  })
-
-  describe('plateWithBarcode', () => {
-    it('finds a plate', () => {
-      expect(plateWithBarcode(state, { scannedPlates: scannedPlatesData })('DN12347')).toEqual({ barcode: 'DN12347', scanned: 1 })
+    it('returns sorted scanned plates', () => {
+      expect(scannedPlates(state)).toEqual(scannedPlatesData)
     })
   })
 })

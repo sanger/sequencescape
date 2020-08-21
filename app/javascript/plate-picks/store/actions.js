@@ -67,12 +67,14 @@ const batchRequest = async (batch_id) => {
  * @param {Response} response The response to extract data from
  * @param {Function} commit A Vuex commit function
  * @param {Function} dispatch A Vuex dispatch function
+ * @param {String} plate_barcode the barcode of the plate as scanned. Ensures that
+ *                               handle cases where the barcode scanned was NOT the
+ *                               primary barcode.
  */
-const handleResponse = async (response, commit, dispatch) => {
+const extractPlateJson = async (response, commit, dispatch, plate_barcode) => {
   try {
     const json = await response.json()
-    commit('updatePlate', json.plate)
-    dispatch('fetchBatches', { ids: json.plate.batches })
+    return json.plate
   } catch (e) {
     console.error(e)
     throw 'Unexpected response from the server. Contact support.'
@@ -102,24 +104,32 @@ export default {
   plateBarcodeScan: async ({ commit, dispatch, state }, plate_barcode) => {
     // Firstly we record that the plate has been scanned.
     commit('scanPlate', { barcode: plate_barcode })
-    const updated_plate = state.plates.find(plate => plate.barcode === plate_barcode)
-    // If we have batch information, we don't need to fetch more plate info
-    // But we may have batches to fetch
-    if (updated_plate.batches) { return dispatch('fetchBatches', { ids: updated_plate.batches }) }
+    const scanned_plate_id = state.scanStore[`_${plate_barcode}`].id
 
-    try {
-      const response = await plateRequest(plate_barcode)
+    // If we have an id, we don't need to fetch more plate info but we may have
+    // batches to fetch
+    if (scanned_plate_id) {
+      const scanned_plate = state.plates[scanned_plate_id]
+      dispatch('fetchBatches', { ids: scanned_plate.batches })
+    } else {
+      // We've not loaded the plate yet, so go fetch it.
+      try {
+        const response = await plateRequest(plate_barcode)
 
-      if (response.status === 200) {
-        await handleResponse(response, commit, dispatch)
-      } else {
-        const error_message = await extractErrors(response)
-        throw error_message
+        if (response.status === 200) {
+          const plate = await extractPlateJson(response, commit, dispatch)
+          commit('updatePlate', { ...plate, scanned: true })
+          commit('updateScanPlate', { barcode: plate_barcode, id: plate.id })
+          dispatch('fetchBatches', { ids: plate.batches })
+        } else {
+          const error_message = await extractErrors(response)
+          throw error_message
+        }
+      } catch (error) {
+        // We catch and log most expected errors where they occur, and re-throw with
+        // a user-friendly error message. This handles displaying that
+        commit('updateScanPlate', { 'barcode': plate_barcode, errorMessage: error })
       }
-    } catch (error) {
-      // We catch and log most expected errors where they occur, and re-throw with
-      // a user-friendly error message. This handles displaying that
-      commit('updatePlate', { 'barcode': plate_barcode, errorMessage: error })
     }
   },
   fetchBatches({ dispatch }, batch_details) {

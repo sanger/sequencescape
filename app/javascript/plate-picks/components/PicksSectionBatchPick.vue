@@ -64,8 +64,7 @@ export default {
   },
   computed: {
     storePlates() {
-      const lookup = this.$store.getters.plateWithBarcode
-      return this.plates.map(plate => lookup(plate.barcode) || plate)
+      return this.plates.map(plate => this.$store[plate.id] || plate)
     }
   },
   // methods: {},

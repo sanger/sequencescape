@@ -3,26 +3,19 @@ import { say } from '../../libs/speechSynth'
 
 const alertPick = (pick) => { say(pick.name) }
 const alertPicks = (picks) => {
-  if (picks) {
-    for (const pick in Object.values(picks).flat()) { alertPick(pick) }
-  }
+  if (picks) { Object.values(picks).flat().forEach(alertPick) }
 }
 
 /**
  * Finds the plate in the list with the given barcode
  *
- * @param {String} barcode The barcode of the plate to find
  * @param {Array} list The list of plates to search
+ * @param {String} barcode The barcode of the plate to find
  */
-const findPlate = (barcode, list) => list.find(list_plate => list_plate.barcode === barcode)
+const findPlate = (list, { barcode }) => {
+  return Object.values(list).find(list_plate => list_plate.barcode === barcode)
+}
 
-/**
- * Finds the index of a plate in the list with the given barcode
- *
- * @param {String} barcode The barcode of the plate to find
- * @param {Array} list The list of plates to search
- */
-const findPlateIndex = (barcode, list) => list.findIndex(list_plate => list_plate.barcode === barcode)
 
 // Mutations handle synchronous update of state.
 export default {
@@ -58,16 +51,10 @@ export default {
    * @param {Object} new_attributes The new attributes to be applied the the plate with new_attributes.barcode
    */
   updatePlate: (state, new_attributes) => {
-    const found_plate = findPlateIndex(new_attributes.barcode, state.plates)
-    if (found_plate >= 0) {
-      // If we've found a new plate, merge the two together and update the original
-      // this approach ensures that the properties all remain reactive.
-      let combined_plate = Object.assign({}, state.plates[found_plate], new_attributes)
-      Vue.set(state.plates, found_plate, combined_plate)
-      if (new_attributes.scanned && !state.plates[found_plate].scanned) { alertPicks(combined_plate.picks) }
-    } else {
-      state.plates.push(new_attributes)
-    }
+    const found_plate = state.plates[new_attributes.id] || {}
+    // Merge the new attributes into the old, and update the plate
+    let combined_plate = Object.assign({}, found_plate, new_attributes)
+    Vue.set(state.plates, new_attributes.id, combined_plate)
   },
   /**
   * Adds a new pick to the plate associated with the batch.
@@ -80,8 +67,8 @@ export default {
   addPickToPlate: (state, { plate, batch, pick }) => {
     // Ignore control plates, as they are part of almost every pick.
     if (plate.control) { return }
-    let found_plate = findPlate(plate.barcode, state.plates)
-    if (found_plate === undefined) { state.plates.push(plate); found_plate = plate }
+    let found_plate = state.plates[plate.id]
+    if (found_plate === undefined) { Vue.set(state.plates, plate.id, plate); found_plate = plate }
     if (found_plate.picks === undefined) { Vue.set(found_plate, 'picks', {}) }
     const existing_picks = found_plate.picks[batch] || []
     Vue.set(found_plate.picks, batch, [...existing_picks, pick])
@@ -92,18 +79,39 @@ export default {
    */
   incrementPick: state => state.pickCount += 1,
   /**
-   * Records the the plate with barcode has been scanned
+   * Records the the plate with barcode has been scanned and references the
+   * plate record if its already been found.
    *
    * @param {Object} state The Vuex state object
    * @param {String} barcode The barcode which has just been scanned
    */
   scanPlate: (state, { barcode }) => {
-    state.scanCount += 1
-    const found_plate = findPlate(barcode,state.plates)
+    const found_plate = findPlate(state.plates, { barcode })
+    console.log('scanPlate', barcode, found_plate)
     if (found_plate) {
-      Vue.set(found_plate, 'scanned', state.scanCount)
-    } else {
-      state.plates.push({ barcode: barcode, scanned: state.scanCount })
+      console.log(found_plate)
+      Vue.set(found_plate, 'scanned', true)
+
+      alertPicks(found_plate.picks)
     }
+    Vue.set(state.scanStore, `_${barcode}`, {
+      barcode: barcode,
+      id: found_plate?.id || null,
+      errorMessage: null
+    })
+  },
+  /**
+   * Updates the scanStore with a reference to the actual plate
+   *
+   * @param {Object} state The Vuex state object
+   * @param {String} barcode The barcode which has just been scanned. It is best if this is pulled from the scan itself,
+   *                         rather than the returned record, as this allows the user to scan a non-primary barcode.
+   * @param {String} id The id of the found plate
+   * @param {String} errorMessage Optional field. Set when the fetch operation fails.
+   */
+  updateScanPlate: (state, { barcode, id, errorMessage }) => {
+    const scan_store_plate = state.scanStore[`_${barcode}`]
+    scan_store_plate.id = id || null
+    scan_store_plate.errorMessage = errorMessage || null
   }
 }
