@@ -7,7 +7,8 @@
 
 <%= render partial: 'orders' %>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
+
   (function(window, $, undefined){
     "use strict";
 
@@ -19,4 +20,5 @@
       SCAPE.submission.study_id = <%= @presenter.study_id %>;
     <% end -%>
   })(window, jQuery);
-</script>
+
+<% end %>

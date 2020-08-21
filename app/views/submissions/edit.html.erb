@@ -6,7 +6,8 @@
 <div class="page-header"><h1>Edit Submission</h1></div>
 <%= render partial: 'orders' %>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
+
   (function(window, $, undefined) {
    "use strict";
 
@@ -17,6 +18,6 @@
    SCAPE.submissions_inbox_url = <%= submissions_url.inspect %>;
 
    })(window, jQuery);
-</script>
-<%=  %>
 
+<% end %>
+<%=  %>

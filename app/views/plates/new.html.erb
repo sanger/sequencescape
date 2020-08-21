@@ -24,7 +24,7 @@
   </div>
 <% end %>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
 (function($) {
   const defaultOption = ["1.0"]
   const plate_creator_parameters = <%= raw json_escape(plate_creator_parameters_json(@plate_creators)) %>
@@ -60,4 +60,4 @@
     creatorSelect.change()
   })
 })(jQuery)
-</script>
+<% end %>

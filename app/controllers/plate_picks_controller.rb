@@ -52,10 +52,6 @@ class PlatePicksController < ApplicationController
                              end
     picks = robot.all_picks(batch)
 
-    if batch.present?
-      render json: PlatePicks::BatchesJson.new(batch.id, picks, plate_information).to_json
-    else
-      render json: { errors: 'Could not find batch in Sequencescape' }, status: 404
-    end
+    render json: PlatePicks::BatchesJson.new(batch.id, picks, plate_information).to_json
   end
 end

@@ -1,5 +1,5 @@
 
-<script language="javascript">
+<%= javascript_tag nonce: true do %>
   jQuery(function() {
     (function(undefined) {
       var hideSectionAndDisableInputs = function(elements) {
@@ -97,4 +97,4 @@
       });
     };
   })(jQuery);
-</script>
+<% end %>

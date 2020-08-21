@@ -1,5 +1,5 @@
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
   (function($){
     $(function(){
       // Set the activity monitors iframe to fill the yield window
@@ -8,7 +8,7 @@
 
     });
   })(jQuery);
-</script>
+<% end %>
 
 <%- add :about, "Activity Logging" %>
 <iframe id="activity-logging" src="<%= configatron.asset_audits_url  %>">

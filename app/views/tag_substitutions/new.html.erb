@@ -55,7 +55,8 @@
   <% end %>
 <% end %>
 
-<script>
+
+<%= javascript_tag nonce: true do %>
   $(function() {
     var tagGroupsList = <%= tags_in_groups.to_json.html_safe %>;
 
@@ -76,5 +77,4 @@
       $(".tag-list").append(optgroup);
     });
   });
-
-</script>
+<% end %>

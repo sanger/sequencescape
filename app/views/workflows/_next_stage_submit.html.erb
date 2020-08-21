@@ -6,7 +6,8 @@
 </div>
 
 <% if (check_selection ||= false) %>
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
+
   (function($,undefined) {
     $('#stage_form').bind('submit', function() {
       var checkboxes = $('.sample_check:checkbox');
@@ -22,5 +23,6 @@
       return true;
     });
   })(jQuery);
-</script>
+
+<% end %>
 <% end %>

@@ -8,7 +8,7 @@
 
 <%= render partial: @pipeline.inbox_partial, locals: { pipeline: @pipeline } %>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
   /*
    * When someone clicks on a request group checkbox we ensure that the count of the number of requests selected is
    * updated and, if the pipeline has a limit, that any group requests that would take us over that limit are disabled.
@@ -48,4 +48,4 @@
     updateSelectableRequests();
 <% end %>
   })(jQuery);
-</script>
+<% end %>
