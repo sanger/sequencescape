@@ -9,8 +9,9 @@ describe('PicksSection.vue', () => {
     const wrapper = shallowMount(PicksSection, {
       mocks: {
         $store: {
-          state: defaultState()
-        }
+          state: defaultState(),
+          getters: { denormalizedBatches: [] }
+        },
       }
     })
     expect(wrapper.text()).toContain('Start scanning plates to see the associated picks')
@@ -54,6 +55,39 @@ describe('PicksSection.vue', () => {
                 ]
               }
             }
+          },
+          getters: {
+            denormalizedBatches: [
+              {
+                id: '1',
+                picks: [
+                  {
+                    name: 'Name 1',
+                    plates: [
+                      { barcode: 'DN12345R', batches: ['1'] },
+                      { barcode: 'DN12346S', batches: ['1'] }
+                    ]
+                  },
+                  {
+                    name: 'Name 2',
+                    plates: [
+                      { barcode: 'DN12347T', batches: ['1'] },
+                      { barcode: 'DN12348U', batches: ['1', '2'] }
+                    ]
+                  }
+                ]
+              },{
+                id: '2',
+                picks: [
+                  {
+                    name: 'Name 3',
+                    plates: [
+                      { barcode: 'DN12348U', batches: ['1', '2'] }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         }
       }

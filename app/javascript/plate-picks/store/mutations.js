@@ -87,9 +87,7 @@ export default {
    */
   scanPlate: (state, { barcode }) => {
     const found_plate = findPlate(state.plates, { barcode })
-    console.log('scanPlate', barcode, found_plate)
     if (found_plate) {
-      console.log(found_plate)
       Vue.set(found_plate, 'scanned', true)
 
       alertPicks(found_plate.picks)

@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     empty() { return Object.keys(this.$store.state.batches).length === 0 },
-    batches() { return Object.values(this.$store.state.batches) }
+    batches() { return this.$store.getters.denormalizedBatches }
   },
   methods: {}
 }

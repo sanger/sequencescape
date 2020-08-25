@@ -24,7 +24,7 @@
     </div>
     <ul class="list-group list-group-flush">
       <li
-        v-for="plate in storePlates"
+        v-for="plate in plates"
         :key="plate.barcode"
         :class="{
           'list-group-item': true,
@@ -62,11 +62,7 @@ export default {
   data: function () {
     return { }
   },
-  computed: {
-    storePlates() {
-      return this.plates.map(plate => this.$store[plate.id] || plate)
-    }
-  },
+  computed: {}
   // methods: {},
 }
 </script>
