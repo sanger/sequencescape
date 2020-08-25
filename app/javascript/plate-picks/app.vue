@@ -26,15 +26,15 @@ See: https://github.com/sanger/sequencescape/issues/2860
         <li>
           <ul>
             <li>
+              <i class="fas fa-clock" />
+              Information about the plate is still being retrieved. The plate will be amber.
+            </li>
+            <li>
               <i class="fas fa-check" />
               If the plate is in a single pick, the plate will turn green, and the pick
               will be listed. If the sound is turned on, the pick name will be read out.
             </li>
             <li>
-              <i class="fas fa-check" />
-              If the plate is in a multiple pick, the plate will turn blue, and the picks
-              will be listed. If the sound is turned on, the pick names will be read out.
-            </li>
             <li>
               <i class="fas fa-check-double" />
               If the plate is in a multiple pick, the plate will turn blue, and the picks
@@ -42,7 +42,7 @@ See: https://github.com/sanger/sequencescape/issues/2860
             </li>
             <li>
               <i class="fas fa-times" />
-              If the plate is not ina pick, the plate will turn grey.
+              If the plate is not in a pick, the plate will turn grey.
             </li>
             <li>
               <i class="fas fa-vial" />
