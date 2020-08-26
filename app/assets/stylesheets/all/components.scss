@@ -144,6 +144,12 @@ dl.order-summary {
   @extend .mx-1;
 }
 
+.ss-badge-lg {
+  @extend .ss-badge;
+  font-size: 95%;
+  font-weight: 500;
+}
+
 // State-colour extensions
 // These extend the bootstrap classes to cover our states
 .badge-building { @extend .badge-info; }

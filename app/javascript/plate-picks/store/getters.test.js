@@ -83,5 +83,15 @@ describe('getters.js', () => {
     it('returns batches with inline plates', () => {
       expect(denormalizedBatches(state)).toEqual(denormalizedBatchData)
     })
+
+    it('returns null for picks if there is no pick data', () => {
+      const noPickState = {
+        ...state, batches: {
+          1: { id: '1'}
+        }
+      }
+      const noPickDenormalizedBatchData = [{ id: '1' }]
+      expect(denormalizedBatches(noPickState)).toEqual(noPickDenormalizedBatchData)
+    })
   })
 })

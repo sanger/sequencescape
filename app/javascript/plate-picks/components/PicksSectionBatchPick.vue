@@ -18,9 +18,10 @@
   <div>
     <div
       :id="`pick-${id}`"
-      :class="['card-header', `colour-${id}`]"
+      :class="['card-header', `colour-${id}`, 'd-flex', 'justify-content-between']"
     >
-      {{ name }}
+      <span class=''>{{ name }}</span>
+      <span class="ss-badge-lg badge-light">Basket {{id}}</span>
     </div>
     <ul class="list-group list-group-flush">
       <li

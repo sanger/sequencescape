@@ -71,7 +71,7 @@ const batchRequest = async (batch_id) => {
  *                               handle cases where the barcode scanned was NOT the
  *                               primary barcode.
  */
-const extractPlateJson = async (response, commit, dispatch, plate_barcode) => {
+const extractPlateJson = async (response) => {
   try {
     const json = await response.json()
     return json.plate
@@ -117,7 +117,7 @@ export default {
         const response = await plateRequest(plate_barcode)
 
         if (response.status === 200) {
-          const plate = await extractPlateJson(response, commit, dispatch)
+          const plate = await extractPlateJson(response)
           commit('updatePlate', { ...plate, scanned: true })
           commit('updateScanPlate', { barcode: plate_barcode, id: plate.id })
           dispatch('fetchBatches', { ids: plate.batches })

@@ -4,6 +4,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './app.vue'
 import storeConfig from './store'
+import BaseRadio from '@sharedComponents/BaseRadio'
+
+Vue.component('BaseRadio', BaseRadio)
 
 Vue.use(Vuex)
 

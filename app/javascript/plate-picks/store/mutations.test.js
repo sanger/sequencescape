@@ -3,7 +3,8 @@ import defaultState from './state'
 import { emptyBatch, plateWithoutPicks, pendingScannedPlate } from '../_test_examples_'
 
 describe('mutations.js', () => {
-  const { updateBatch, updatePlate, addPickToPlate, incrementPick, scanPlate, updateScanPlate } = mutations
+  const { updateBatch, updatePlate, addPickToPlate, incrementPick,
+    scanPlate, updateScanPlate, updateNotifyMode } = mutations
 
   it('updateBatch', () => {
     // mock state
@@ -132,6 +133,17 @@ describe('mutations.js', () => {
       expect(state.scanStore).toEqual({
         '_DN12345R': { barcode: 'DN12345R', id: null, errorMessage: 'Not found' }
       })
+    })
+  })
+
+  describe('updateNotifyMode', () => {
+    it('sets the notify mode', () => {
+      // mock state
+      const state = { ...defaultState() }
+
+      // apply mutation
+      updateNotifyMode(state, { mode: 'long' })
+      expect(state.options.notifyMode).toEqual({ mode: 'long' })
     })
   })
 })

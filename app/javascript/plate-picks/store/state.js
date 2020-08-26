@@ -25,6 +25,15 @@ export default () => {
     // fetched from Sequencescape. This ensures we can keep track of scan
     // order, and plates still awaiting the response from Sequencescape, while
     // still allowing out main plate store to be indexed by id.
-    scanStore: {}
+    scanStore: {},
+    // The options object contains any attribute that are concerned
+    // with the behaviour of the app, rather than data.
+    options: {
+      // Controls how notifications are delivered to the user
+      notifyMode: {
+        // Whether to use the full pick name by default, or a short name.
+        mode: 'short'
+      }
+    }
   }
 }

@@ -4,7 +4,7 @@
  * Colours from: https://stackoverflow.com/questions/33295120/how-to-generate-gif-256-colors-palette/33295456#33295456
  * calculated that each colour on the list has maximal distance from all previous colours.
  */
-.ss-badge, .card-header {
+.ss-badge, .card-header, .ss-badge-lg {
   &.colour-1 { @include colour-badge(#FFFF00, #000000); }
   &.colour-2 { @include colour-badge(#1CE6FF, #000000); }
   &.colour-3 { @include colour-badge(#FF34FF, #000000); }

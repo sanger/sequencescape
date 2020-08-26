@@ -27,12 +27,14 @@ export default {
   },
   /**
    * Returns an array of batches with pick and plate information
-   * inline
+   * inline. Picks remains undefined if it is absent from the batch.
    * @param {Object} state The Vuex state object
    */
   denormalizedBatches: (state) => {
     return Object.values(state.batches).map((batch) => {
-      const denormalizedPicks = (batch.picks || []).map(denormalizedPick(state))
+      if (!batch.picks) { return batch }
+
+      const denormalizedPicks = batch.picks.map(denormalizedPick(state))
       return {
         ...batch,
         picks: denormalizedPicks

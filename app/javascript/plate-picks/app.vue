@@ -35,7 +35,6 @@ See: https://github.com/sanger/sequencescape/issues/2860
               will be listed. If the sound is turned on, the pick name will be read out.
             </li>
             <li>
-            <li>
               <i class="fas fa-check-double" />
               If the plate is in a multiple pick, the plate will turn blue, and the picks
               will be listed. If the sound is turned on, the pick names will be read out.
@@ -64,6 +63,16 @@ See: https://github.com/sanger/sequencescape/issues/2860
         <li>Proceed to scan in the next plate</li>
       </ol>
     </help-toggle>
+    <BaseRadio
+      id="notifyMode"
+      v-model="notifyMode"
+      :options="[
+        { value: 'short', label: 'Short pick names' },
+        { value: 'long', label: 'Long pick names' }
+      ]"
+      name="notifyMode"
+      :inline="true"
+    />
     <div id="sections">
       <plates-section id="plates-section" />
       <picks-section id="picks-section" />
@@ -82,8 +91,16 @@ export default {
     'picks-section': PicksSection,
     'plates-section': PlatesSection
   },
-  data: function () {
-    return {}
+  data: function () { return {} },
+  computed: {
+    notifyMode: {
+      get () {
+        return this.$store.state.options.notifyMode.mode
+      },
+      set (value) {
+        this.$store.commit('updateNotifyMode', { mode: value })
+      }
+    }
   }
 }
 </script>

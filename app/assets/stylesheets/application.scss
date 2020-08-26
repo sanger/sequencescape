@@ -6,6 +6,11 @@
 @import "jquery-ui";
 @import "font-awesome-sprockets";
 @import "font-awesome";
+@import "all/bootstrap_variables";
+@import "all/datatables-bootstrap";
+@import "bootstrap";
+@import "formtastic";
+@import "select2";
 @import "all/sequencescape";
 @import "all/colours";
 @import "all/header";
@@ -19,9 +24,4 @@
 @import "all/components";
 @import "all/uat_actions";
 @import "all/comments_box";
-@import "all/bootstrap_variables";
-@import "all/datatables-bootstrap";
-@import "bootstrap";
-@import "formtastic";
-@import "select2";
 @import "lib/select2-bootstrap4";

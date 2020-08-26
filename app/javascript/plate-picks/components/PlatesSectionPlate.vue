@@ -23,10 +23,11 @@
     <td>
       <a
         v-for="pick in flatPicks"
-        :key="pick.name"
-        :class="['ss-badge', `colour-${pick.id}`]"
+        :key="pick.id"
+        :class="['ss-badge-lg', `colour-${pick.id}`]"
         :href="`#pick-${pick.id}`"
-      >{{ pick.name }}</a>
+        :title="pick.name"
+      >{{ shortName ? `Basket ${pick.id}` : pick.name }}</a>
       <span v-if="message">{{ message }}</span>
     </td>
   </tr>
@@ -143,6 +144,9 @@ export default {
       default:
         return null
       }
+    },
+    shortName() {
+      return this.$store.state.options.notifyMode.mode === 'short'
     }
   },
   // methods: {},

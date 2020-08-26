@@ -64,7 +64,7 @@ export default {
   computed: {
     state() {
       if (this.errorMessage) { return 'error' }
-      else if (this.picks === undefined) { return 'wait-batch' }
+      else if (!this.picks) { return 'wait-batch' }
       else if (this.picks.length === 0) { return 'no-pick' }
       else { return 'success' }
     },

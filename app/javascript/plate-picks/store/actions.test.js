@@ -1,7 +1,7 @@
 import actions from './actions'
 import { startMirage } from '../_mirage_'
 import { Response } from 'miragejs'
-import { exampleBarcode, plateWithPicks, plateWithoutPicks, pendingScannedPlate } from '../_test_examples_'
+import { exampleBarcode, plateWithPicks, plateWithoutPicks } from '../_test_examples_'
 import defaultState from './state'
 
 let mirageServer
@@ -57,7 +57,6 @@ describe('actions.js', () => {
       // actual failing tests
       console.error = jest.fn()
       // mock commit
-      const mergedPlate = { barcode: 'BadPlate', scanned: true }
       const state = defaultState()
       const commit = jest.fn((_) => state.scanStore['_BadPlate'] = { barcode: 'BadPlate' })
       // mock dependencies

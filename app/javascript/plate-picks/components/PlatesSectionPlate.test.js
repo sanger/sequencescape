@@ -1,10 +1,17 @@
 import { shallowMount } from '@vue/test-utils'
 import '@testing-library/jest-dom'
 import PlatesSectionPlate from './PlatesSectionPlate.vue'
+import defaultState from '../store/state'
 
 describe('PlatesSectionPlate.vue', () => {
   it('lists the plate', () => {
-    const wrapper = shallowMount(PlatesSectionPlate, {
+    const wrapper = shallowMount(PlatesSectionPlate,{
+      mocks: {
+        $store: {
+          state: { ...defaultState() },
+          getters: {}
+        }
+      },
       propsData: {
         barcode: 'DN12345'
       }
@@ -14,6 +21,12 @@ describe('PlatesSectionPlate.vue', () => {
 
   it('indicates when something went wrong', () => {
     const wrapper = shallowMount(PlatesSectionPlate, {
+      mocks: {
+        $store: {
+          state: { ...defaultState() },
+          getters: {}
+        }
+      },
       propsData: {
         barcode: 'DN12345',
         errorMessage: 'This is bad'
@@ -26,6 +39,12 @@ describe('PlatesSectionPlate.vue', () => {
 
   it('indicates when its looking up a plate', () => {
     const wrapper = shallowMount(PlatesSectionPlate, {
+      mocks: {
+        $store: {
+          state: { ...defaultState() },
+          getters: {}
+        }
+      },
       propsData: {
         barcode: 'DN12345'
       }
@@ -36,6 +55,12 @@ describe('PlatesSectionPlate.vue', () => {
 
   it('indicates when its looking up a batch', () => {
     const wrapper = shallowMount(PlatesSectionPlate, {
+      mocks: {
+        $store: {
+          state: { ...defaultState() },
+          getters: {}
+        }
+      },
       propsData: {
         barcode: 'DN12345',
         batches: ['1','2'],
@@ -48,6 +73,12 @@ describe('PlatesSectionPlate.vue', () => {
 
   it('indicates when its a control', () => {
     const wrapper = shallowMount(PlatesSectionPlate, {
+      mocks: {
+        $store: {
+          state: { ...defaultState() },
+          getters: {}
+        }
+      },
       propsData: {
         barcode: 'DN12345',
         batches: [],
@@ -61,6 +92,52 @@ describe('PlatesSectionPlate.vue', () => {
 
   it('indicates when its a single pick', () => {
     const wrapper = shallowMount(PlatesSectionPlate, {
+      mocks: {
+        $store: {
+          state: { ...defaultState() },
+          getters: {}
+        }
+      },
+      propsData: {
+        barcode: 'DN12345',
+        batches: ['1'],
+        picks: { '1': [{ name: 'Pick A', id: 1 }] }
+      }
+    })
+    expect(wrapper.find('.table-success')).toBeTruthy()
+    expect(wrapper.text()).toContain('Basket 1')
+  })
+
+  it('indicates when its a multi pick', () => {
+    const wrapper = shallowMount(PlatesSectionPlate, {
+      mocks: {
+        $store: {
+          state: { ...defaultState() },
+          getters: {}
+        }
+      },
+      propsData: {
+        barcode: 'DN12345',
+        batches: ['1'],
+        picks: { '1': [{ name: 'Pick A', id: 1 }, { name: 'Pick B', id: 2 }] }
+      }
+    })
+    expect(wrapper.find('.table-info')).toBeTruthy()
+    expect(wrapper.text()).toContain('Basket 1')
+    expect(wrapper.text()).toContain('Basket 2')
+  })
+
+  it('uses the full name when option is set', () => {
+    const wrapper = shallowMount(PlatesSectionPlate, {
+      mocks: {
+        $store: {
+          state: {
+            ...defaultState(),
+            options: { notifyMode: { mode: 'long' } }
+          },
+          getters: {}
+        }
+      },
       propsData: {
         barcode: 'DN12345',
         batches: ['1'],
@@ -71,21 +148,14 @@ describe('PlatesSectionPlate.vue', () => {
     expect(wrapper.text()).toContain('Pick A')
   })
 
-  it('indicates when its a multi pick', () => {
-    const wrapper = shallowMount(PlatesSectionPlate, {
-      propsData: {
-        barcode: 'DN12345',
-        batches: ['1'],
-        picks: { '1': [{ name: 'Pick A', id: 1 }, { name: 'Pick B', id: 1 }] }
-      }
-    })
-    expect(wrapper.find('.table-info')).toBeTruthy()
-    expect(wrapper.text()).toContain('Pick A')
-    expect(wrapper.text()).toContain('Pick B')
-  })
-
   it('assigns the pick a class based on id', () => {
     const wrapper = shallowMount(PlatesSectionPlate, {
+      mocks: {
+        $store: {
+          state: { ...defaultState() },
+          getters: {}
+        }
+      },
       propsData: {
         barcode: 'DN12345',
         batches: ['1'],
