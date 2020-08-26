@@ -1,10 +1,10 @@
 import mutations from './mutations'
 import defaultState from './state'
-import { emptyBatch, plateWithoutPicks, pendingScannedPlate } from '../_test_examples_'
+import { emptyBatch, plateWithoutPicks, pendingScannedPlate, pick1 } from '../_test_examples_'
 
 describe('mutations.js', () => {
   const { updateBatch, updatePlate, addPickToPlate, incrementPick,
-    scanPlate, updateScanPlate, updateNotifyMode } = mutations
+    scanPlate, updateScanPlate, updateNotifyMode, updatePick } = mutations
 
   it('updateBatch', () => {
     // mock state
@@ -42,13 +42,41 @@ describe('mutations.js', () => {
     })
   })
 
+  describe('updatePick', () => {
+    it('registers a pick if none exists', () => {
+      // mock state
+      const state = defaultState()
+      const new_pick = pick1({ id: 1 })
+      // apply mutation
+      updatePick(state, new_pick)
+      // assert result
+      expect(state.picks).toEqual({ 1: new_pick })
+    })
+
+    it('updates picks when they exist already', () => {
+      // Provided by the browser. We mock it. Currently just mock a string as we're not doing anything fancy
+      global.SpeechSynthesisUtterance = class extends String { }
+      global.speechSynthesis = { speak: jest.fn() }
+      // mock state
+      const state = {
+        ...defaultState(),
+        picks: { 1: pick1({ id: 1, name: 'Basket 1', plates: [{id: 1}] }) }
+      }
+      const new_pick = pick1({ id: 1, name: 'Basket A' })
+      // apply mutation
+      updatePick(state, new_pick)
+      // assert result
+      expect(state.picks).toEqual({ 1: pick1({ id: 1, name: 'Basket A', plates: [{ id: 1 }] }) })
+    })
+  })
+
   describe('addPickToPlate', ()=>{
     it('adds a pick to the matching plate', () => {
       const plate = plateWithoutPicks({ id: 1 })
       const state = defaultState()
       state.plates = { 1: plate }
-      addPickToPlate(state, { plate: plate, batch: '1', pick: {id: 1, name: 'Pick'} })
-      expect(state.plates[1]).toEqual(plateWithoutPicks({ id: 1, picks: {1:[{ id: 1, name: 'Pick' }]} }))
+      addPickToPlate(state, { plate: plate, batch: '1', pick: {id: 1} })
+      expect(state.plates[1]).toEqual(plateWithoutPicks({ id: 1, picks: {1:[{ id: 1 }]} }))
     })
 
     it('handles picks from other batches', () => {

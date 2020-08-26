@@ -31,7 +31,6 @@ export default {
   /**
    * Updates a batch with new_attributes, or registers a new batch if it doesn't
    * match an existing batch.
-   * Returns the updated batch information (eg. old data merged with new)
    *
    * @param {Object} state The Vuex state object
    * @param {Object} new_attributes The new attributes to be applied the the batch with new_attributes.id
@@ -54,7 +53,6 @@ export default {
   /**
    * Updates a plate with new_attributes, or registers a new
    * plate if it doesn't match an existing plate
-   * Returns the updated plate information (eg. old data merged with new)
    *
    * @param {Object} state The Vuex state object
    * @param {Object} new_attributes The new attributes to be applied the the plate with new_attributes.barcode
@@ -87,6 +85,19 @@ export default {
    * Increment the pick counter in order to be able to assign a unique id to each pick
    */
   incrementPick: state => state.pickCount += 1,
+  /**
+   * Updates a pick with new_attributes, or registers a new
+   * pick if it doesn't match an existing pick
+   *
+   * @param {Object} state The Vuex state object
+   * @param {Object} new_attributes The new attributes to be applied the the plate with new_attributes.barcode
+   */
+  updatePick: (state, new_attributes) => {
+    const found_pick = state.picks[new_attributes.id] || {}
+    // Merge the new attributes into the old, and update the pick
+    let combined_pick = Object.assign({}, found_pick, new_attributes)
+    Vue.set(state.picks, new_attributes.id, combined_pick)
+  },
   /**
    * Records the the plate with barcode has been scanned and references the
    * plate record if its already been found.

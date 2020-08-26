@@ -12,6 +12,10 @@ export default () => {
     // associated with the plate, from which we can look up the relevant lists,
     // or fetch the batch in needed.
     batches: {},
+    // Pick data is extracted from the batch payload. They get assigned ids then
+    // get recorded here. This provides the authoritative source, which can be
+    // used by both batches and plates. Allowing, for example, pick renaming.
+    picks: {},
     // We keep track of the pick count to be able to apply a unique colour
     // to each pick. We keep it within VueX to assist with debugging and tracking.
     pickCount: 0,

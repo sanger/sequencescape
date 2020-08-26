@@ -88,47 +88,26 @@ describe('actions.js', () => {
   describe('fetchBatch', () => {
     it('fetches a batch from the server', async () => {
       // Set up mirage mocks
+      const pick1 = {
+        name: 'Name 1',
+        plates: [
+          { id: 1, barcode: exampleBarcode, batches: ['1'] },
+          { id: 2, barcode: 'DN12346S', batches: ['1'] }
+        ]
+      }
+      const pick2 = {
+        name: 'Name 2',
+        plates: [
+          { id: 3, barcode: 'DN12347T', batches: ['1'] },
+          { id: 4, barcode: 'DN12348U', batches: ['1', '2'] }
+        ]
+      }
       const returnedBatch = {
         id: '1',
-        picks: [
-          {
-            name: 'Name 1',
-            plates: [
-              { barcode: exampleBarcode, batches: ['1'] },
-              { barcode: 'DN12346S', batches: ['1'] }
-            ]
-          },
-          {
-            name: 'Name 2',
-            plates: [
-              { barcode: 'DN12347T', batches: ['1'] },
-              { barcode: 'DN12348U', batches: ['1', '2'] }
-            ]
-          }
-        ]
+        picks: [pick1, pick2]
       }
 
-      const augmentedBatch = {
-        id: '1',
-        picks: [
-          {
-            id: 1,
-            name: 'Name 1',
-            plates: [
-              { barcode: exampleBarcode, batches: ['1'] },
-              { barcode: 'DN12346S', batches: ['1'] }
-            ]
-          },
-          {
-            id: 2,
-            name: 'Name 2',
-            plates: [
-              { barcode: 'DN12347T', batches: ['1'] },
-              { barcode: 'DN12348U', batches: ['1', '2'] }
-            ]
-          }
-        ]
-      }
+      const augmentedBatch = { id: '1', picks: ['1','2'] }
 
       mirageServer.create('batch', returnedBatch)
 
@@ -142,10 +121,12 @@ describe('actions.js', () => {
       // assert result
       expect(commit).toHaveBeenCalledWith('updateBatch', { id: '1' })
       expect(commit).toHaveBeenCalledWith('updateBatch', augmentedBatch)
-      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { barcode: exampleBarcode, batches: ['1'] }, batch: '1', pick: { name: 'Name 1', id: 1 } })
-      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { barcode: 'DN12346S', batches: ['1'] }, batch: '1', pick: { name: 'Name 1', id: 1 } })
-      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { barcode: 'DN12347T', batches: ['1'] }, batch: '1', pick: { name: 'Name 2', id: 2 } })
-      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { barcode: 'DN12348U', batches: ['1', '2'] }, batch: '1', pick: { name: 'Name 2', id: 2 } })
+      expect(commit).toHaveBeenCalledWith('updatePick', { id: '1', short: 'Basket 1', ...pick1 })
+      expect(commit).toHaveBeenCalledWith('updatePick', { id: '2', short: 'Basket 2', ...pick2 })
+      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { id: 1, barcode: exampleBarcode, batches: ['1'] }, batch: '1', pick: { id: '1' } })
+      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { id: 2, barcode: 'DN12346S', batches: ['1'] }, batch: '1', pick: { id: '1' } })
+      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { id: 3, barcode: 'DN12347T', batches: ['1'] }, batch: '1', pick: { id: '2' } })
+      expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { id: 4, barcode: 'DN12348U', batches: ['1', '2'] }, batch: '1', pick: { id: '2' } })
     })
   })
 

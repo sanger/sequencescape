@@ -1,6 +1,6 @@
 /*
- * Import all the required stylesheets. We use SASS,so that we can use bootstrap
- * Note we don't use wildcards/globbing to ensure we can control load order and to avoid importing
+ * Import all the required style-sheets. We use SASS,so that we can use bootstrap
+ * Note we don't use wild-cards/globbing to ensure we can control load order and to avoid importing
  * eg .orig files
  */
 @import "jquery-ui";

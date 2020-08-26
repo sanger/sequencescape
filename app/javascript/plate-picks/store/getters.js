@@ -1,10 +1,11 @@
 /**
- * Returns a function to denormalize a pick using the
+ * Returns a function to denormalize a pick on batch using the
  * provided state object
  * @param {Object} state The Vuex state object
  */
-const denormalizedPick = (state) => {
-  return (pick) => {
+const denormalizedBatchPick = (state) => {
+  return (pickId) => {
+    const pick = state.picks[pickId]
     const plates = pick.plates.map(plate => state.plates[plate.id])
     return {
       ...pick,
@@ -13,16 +14,32 @@ const denormalizedPick = (state) => {
   }
 }
 
+/**
+ * Returns a function to denormalize a pick on plate using the
+ * provided state object
+ * @param {Object} state The Vuex state object
+ */
+const denormalizedPlatePick = (state, picks) => {
+  const denormalized_picks = {}
+  for (const batch_id in picks) {
+    const batch_picks = picks[batch_id]
+    denormalized_picks[batch_id] = batch_picks.map(pick => state.picks[pick.id])
+  }
+  return denormalized_picks
+}
+
 // Getters are like computed properties
 export default {
   /**
    * Returns an array of all scanned plates in the order in which they were
-   * scanned
+   * scanned, denormalized with pick data
    * @param {Object} state The Vuex state object
    */
   scannedPlates: (state) => {
     return Object.values(state.scanStore).map((scan) => {
-      return { ...state.plates[scan.id], ...scan }
+      const plate = state.plates[scan.id] || {}
+      const picks = denormalizedPlatePick(state, plate.picks)
+      return { ...plate, picks, ...scan }
     })
   },
   /**
@@ -34,10 +51,10 @@ export default {
     return Object.values(state.batches).map((batch) => {
       if (!batch.picks) { return batch }
 
-      const denormalizedPicks = batch.picks.map(denormalizedPick(state))
+      const denormalizedBatchPicks = batch.picks.map(denormalizedBatchPick(state))
       return {
         ...batch,
-        picks: denormalizedPicks
+        picks: denormalizedBatchPicks
       }
     })
   }

@@ -12,12 +12,17 @@ const BATCH_PATH = '/plate_picks/batches/'
 // Private:
 // Extracts pick information from batch and adds it to the plate
 async function processPicks({commit, dispatch}, batch) {
+  const pick_ids = []
   for (const pick of batch.picks) {
-    pick.id = await dispatch('nextPickId')
+    const id = (await dispatch('nextPickId')).toString()
+    const new_pick = { ...pick, id, short: `Basket ${id}` }
+    pick_ids.push(id)
+    commit('updatePick', new_pick)
     for (const plate of pick.plates) {
-      commit('addPickToPlate', { plate: plate, batch: batch.id, pick: { name: pick.name, id: pick.id } })
+      commit('addPickToPlate', { plate: plate, batch: batch.id, pick: { id } })
     }
   }
+  return pick_ids
 }
 
 
@@ -152,8 +157,9 @@ export default {
 
       if (response.status === 200) {
         const json = await response.json()
-        await processPicks({ commit, dispatch }, json.batch)
-        commit('updateBatch', json.batch)
+        const picks = await processPicks({ commit, dispatch }, json.batch)
+
+        commit('updateBatch', { ...json.batch, picks })
       } else {
         const error_message = await extractErrors(response)
         throw error_message
