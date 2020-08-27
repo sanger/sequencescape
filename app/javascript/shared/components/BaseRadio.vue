@@ -29,9 +29,9 @@
     >
       <input
         :id="`${id}-${option.value}`"
+        v-model="value"
         type="radio"
         :name="name"
-        v-model="value"
         class="custom-control-input"
         :value="option.value"
         @change="change"
@@ -52,16 +52,16 @@
 // for order of other options
 export default {
   name: 'BaseRadio',
+  model: {
+    prop: 'selected',
+    event: 'change'
+  },
   props: {
     options: { type: Array, required: true }, // Array of objects { value: 'option value', label: 'Displayed label' }
     selected: { type: [Number, String], required: false, default: null },
     inline: { type: Boolean, required: false, default: false },
     name: { type: String, required: true },
     id: { type: String, required: true } // Unique id essential for generating labels
-  },
-    model: {
-    prop: 'selected',
-    event: 'change'
   },
   data: function () {
     return {

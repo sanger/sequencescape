@@ -27,7 +27,7 @@
         :class="['ss-badge-lg', `colour-${pick.id}`]"
         :href="`#pick-${pick.id}`"
         :title="pick.name"
-      >{{ shortName ? `Basket ${pick.id}` : pick.name }}</a>
+      >{{ shortName ? pick.short : pick.name }}</a>
       <span v-if="message">{{ message }}</span>
     </td>
   </tr>

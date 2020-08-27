@@ -2,8 +2,8 @@
 # associated picks.
 class PlatePicksController < ApplicationController
   # Renders the plate_pick vue app
-  def index
-    render :index
+  def show
+    render :show
   end
 
   def plates
@@ -16,7 +16,7 @@ class PlatePicksController < ApplicationController
       batches = if plate.pick_as_control?
                   []
                 else
-                  plate.batches_as_source.for_pipeline(CherrypickPipeline.all).ids.map(&:to_s)
+                  plate.batches_as_source.for_pipeline(CherrypickPipeline.all).ids.sort.map(&:to_s)
                 end
 
       render json: { plate: {
@@ -46,12 +46,15 @@ class PlatePicksController < ApplicationController
                                {
                                  id: plate.id,
                                  barcode: plate.machine_barcode,
-                                 batches: plate.batches_as_source.ids.map(&:to_s),
+                                 batches: plate.batches_as_source.ids.sort.map(&:to_s),
                                  control: plate.pick_as_control?
                                }
                              end
+
     picks = robot.all_picks(batch)
 
     render json: PlatePicks::BatchesJson.new(batch.id, picks, plate_information).to_json
+  rescue ActiveRecord::RecordNotFound
+    render json: { errors: 'Could not find batch in Sequencescape' }, status: 404
   end
 end

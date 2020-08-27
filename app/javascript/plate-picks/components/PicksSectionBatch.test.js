@@ -40,6 +40,7 @@ describe('PicksSectionBatch.vue', () => {
         picks: [
           {
             name: 'Name 1',
+            short: 'Basket 1',
             id: '1',
             plates: [
               { barcode: 'DN12345R', batches: ['1'] },
@@ -48,6 +49,7 @@ describe('PicksSectionBatch.vue', () => {
           },
           {
             name: 'Name 2',
+            short: 'Basket 2',
             id: '2',
             plates: [
               { barcode: 'DN12347T', batches: ['1'] },

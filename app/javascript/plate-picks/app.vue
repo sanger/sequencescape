@@ -45,7 +45,7 @@ See: https://github.com/sanger/sequencescape/issues/2860
             </li>
             <li>
               <i class="fas fa-vial" />
-              If the plate is a control pick will not be shown and instead it will indicate control.
+              If the plate is a control its picks will not be shown and instead it will indicate control.
               This is beacuse control plates are used in a large number of picks, and attempting to
               display them all would be impractical.
               The plate will turn grey.

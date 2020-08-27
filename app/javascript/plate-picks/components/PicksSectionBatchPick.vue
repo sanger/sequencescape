@@ -18,10 +18,15 @@
   <div>
     <div
       :id="`pick-${id}`"
-      :class="['card-header', `colour-${id}`, 'd-flex', 'justify-content-between']"
+      :class="['card-header', `colour-${id}`, 'd-flex', 'justify-content-between', 'align-items-center']"
     >
-      <span class=''>{{ name }}</span>
-      <span class="ss-badge-lg badge-light">Basket {{id}}</span>
+      <h5>{{ name }}</h5>
+      <div>
+        <input
+          v-model="shortName"
+          class="form-control"
+        >
+      </div>
     </div>
     <ul class="list-group list-group-flush">
       <li
@@ -51,6 +56,10 @@ export default {
       type: String,
       required: true
     },
+    short: {
+      type: String,
+      required: true
+    },
     id: {
       type: [String, Number],
       required: true
@@ -63,7 +72,14 @@ export default {
   data: function () {
     return { }
   },
-  computed: {}
+  computed: {
+    shortName: {
+      get() { return this.short },
+      set(value) {
+        this.$store.commit('updatePick', { id: this.id, short: value })
+      }
+    }
+  }
   // methods: {},
 }
 </script>

@@ -1,15 +1,15 @@
 import getters from './getters'
 import defaultState from './state'
-import { storePick1, storePick2 } from '../_test_examples_'
+import { example } from '../_test_examples_'
 
 describe('getters.js', () => {
-  const pick1 = storePick1()
-  const pick2 = storePick2()
+  const pick1 = example.storePick1()
+  const pick2 = example.storePick2()
 
-  const plate1 = { id: '1', barcode: 'DN12345R', scanned: null, picks: { 1: [{ id: '1' }] }, batches: ['1'] }
-  const plate2 = { id: '2', barcode: 'DN12346S', scanned: true, picks: { 1: [{ id: '1' }] }, batches: ['1'] }
-  const plate3 = { id: '3', barcode: 'DN12347T', scanned: true, picks: { 1: [{ id: '2' }] }, batches: ['1'] }
-  const plate4 = { id: '4', barcode: 'DN12348U', scanned: true, picks: { 1: [{ id: '2' }] }, batches: ['1', '2'] }
+  const plate1 = example.storePlate1()
+  const plate2 = example.storePlate2()
+  const plate3 = example.storePlate3()
+  const plate4 = example.storePlate4()
 
   const state = {
     ... defaultState(),
@@ -23,7 +23,7 @@ describe('getters.js', () => {
       _DN12348: { barcode: 'DN12348', id: 4 }
     },
     batches: {
-      1: { id: '1', picks: ['1','2'] }
+      1: example.storeBatch1()
     },
     picks: {
       1: pick1,

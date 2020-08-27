@@ -1,17 +1,18 @@
 import Vue from 'vue'
 import { say } from '../../libs/speechSynth'
 
-const alertPick = (notifyMode, pick) => {
-  switch (notifyMode.mode) {
-    case 'short':
-      say(`Basket ${pick.id}`)
-      break
-    default:
-      say(pick.name)
+const alertPick = (state, { id }) => {
+  const pick = state.picks[id]
+  switch (state.options.notifyMode.mode) {
+  case 'short':
+    say(pick.short)
+    break
+  default:
+    say(pick.name)
   }
 }
-const alertPicks = (notifyMode, picks) => {
-  const curriedPick = (pick) => alertPick(notifyMode, pick)
+const alertPicks = (state, picks) => {
+  const curriedPick = (pick) => alertPick(state, pick)
   if (picks) { Object.values(picks).flat().forEach(curriedPick) }
 }
 
@@ -79,7 +80,7 @@ export default {
     if (found_plate.picks === undefined) { Vue.set(found_plate, 'picks', {}) }
     const existing_picks = found_plate.picks[batch] || []
     Vue.set(found_plate.picks, batch, [...existing_picks, pick])
-    if (found_plate.scanned) { alertPick(state.options.notifyMode, pick) }
+    if (found_plate.scanned) { alertPick(state, pick) }
   },
   /**
    * Increment the pick counter in order to be able to assign a unique id to each pick
@@ -110,7 +111,7 @@ export default {
     if (found_plate) {
       Vue.set(found_plate, 'scanned', true)
 
-      alertPicks(state.options.notifyMode, found_plate.picks)
+      alertPicks(state, found_plate.picks)
     }
     Vue.set(state.scanStore, `_${barcode}`, {
       barcode: barcode,

@@ -101,7 +101,7 @@ describe('PlatesSectionPlate.vue', () => {
       propsData: {
         barcode: 'DN12345',
         batches: ['1'],
-        picks: { '1': [{ name: 'Pick A', id: 1 }] }
+        picks: { '1': [{ name: 'Pick A', id: 1, short: 'Basket 1' }] }
       }
     })
     expect(wrapper.find('.table-success')).toBeTruthy()
@@ -119,7 +119,7 @@ describe('PlatesSectionPlate.vue', () => {
       propsData: {
         barcode: 'DN12345',
         batches: ['1'],
-        picks: { '1': [{ name: 'Pick A', id: 1 }, { name: 'Pick B', id: 2 }] }
+        picks: { '1': [{ name: 'Pick A', id: 1, short: 'Basket 1' }, { name: 'Pick B', id: 2, short: 'Basket 2' }] }
       }
     })
     expect(wrapper.find('.table-info')).toBeTruthy()
@@ -141,7 +141,7 @@ describe('PlatesSectionPlate.vue', () => {
       propsData: {
         barcode: 'DN12345',
         batches: ['1'],
-        picks: { '1': [{ name: 'Pick A', id: 1 }] }
+        picks: { '1': [{ name: 'Pick A', id: 1, short: 'Basket 1' }] }
       }
     })
     expect(wrapper.find('.table-success')).toBeTruthy()
@@ -159,7 +159,7 @@ describe('PlatesSectionPlate.vue', () => {
       propsData: {
         barcode: 'DN12345',
         batches: ['1'],
-        picks: { '1': [{ name: 'Pick A', id: 1 }, { name: 'Pick B', id: 2 }] }
+        picks: { '1': [{ name: 'Pick A', id: 1, short: 'Basket 1' }, { name: 'Pick B', id: 2, short: 'Basket 2' }] }
       }
     })
     expect(wrapper.find('.colour-1')).toBeTruthy()
