@@ -37,6 +37,7 @@ FactoryBot.define do
 
     factory :cherrypick_batch do
       transient do
+        request_count { 1 } # We create one request by default as cherrypick pipelines have a minimum batch size
         batch_request_factory { :cherrypick_batch_request }
         request_factory { :cherrypick_request }
       end
