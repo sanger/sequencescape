@@ -67,7 +67,7 @@ class ProductCriteria::Basic
   end
 
   def plate_barcode
-    @well_or_metric.plate.try(:human_barcode) || 'Unknown'
+    @well_or_metric.labware.try(:human_barcode) || 'Unknown'
   end
 
   # We sort in Ruby here as we've loaded the wells in bulk. Performing this selection in
