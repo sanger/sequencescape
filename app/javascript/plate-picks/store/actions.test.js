@@ -47,6 +47,25 @@ describe('actions.js', () => {
       )
     })
 
+    it('does not fetch batches for control plates', async () => {
+      // Set up mirage mocks
+      mirageServer.create('plate', plateWithoutPicks({ id: '1', control: true }))
+      // mock commit
+      const state = defaultState()
+      const commit = jest.fn((_) => state.scanStore[`_${exampleBarcode}`] = { barcode: exampleBarcode })
+      const dispatch = jest.fn()
+      // apply action
+      await plateBarcodeScan({ commit, state, dispatch }, exampleBarcode)
+      // assert result
+      expect(commit).toHaveBeenCalledWith('scanPlate', { barcode: exampleBarcode })
+      expect(commit).toHaveBeenCalledWith('updateScanPlate', { barcode: exampleBarcode, id: '1' })
+      expect(commit).toHaveBeenCalledWith('updatePlate', plateWithoutPicks({ id: '1', scanned: true, control: true }))
+
+      expect(dispatch).not.toHaveBeenCalledWith(
+        'fetchBatches', { ids: ['1', '2', '3'] }
+      )
+    })
+
     it('records server errors', async () => {
       // Set up mirage mocks
       mirageServer.get('plates/BadPlate', () => {

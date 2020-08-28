@@ -73,10 +73,11 @@ export default {
   * @param {Object} pick {name:,id:} associated with the pick
   */
   addPickToPlate: (state, { plate, batch, pick }) => {
-    // Ignore control plates, as they are part of almost every pick.
-    if (plate.control) { return }
     let found_plate = state.plates[plate.id]
     if (found_plate === undefined) { Vue.set(state.plates, plate.id, plate); found_plate = plate }
+    // Ignore control plates, as they are part of almost every pick.
+    if (plate.control) { return }
+
     if (found_plate.picks === undefined) { Vue.set(found_plate, 'picks', {}) }
     const existing_picks = found_plate.picks[batch] || []
     Vue.set(found_plate.picks, batch, [...existing_picks, pick])

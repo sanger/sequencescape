@@ -115,7 +115,8 @@ export default {
     // batches to fetch
     if (scanned_plate_id) {
       const scanned_plate = state.plates[scanned_plate_id]
-      dispatch('fetchBatches', { ids: scanned_plate.batches })
+      // Don't fetch batches from control plates
+      if (!scanned_plate.control) { dispatch('fetchBatches', { ids: scanned_plate.batches }) }
     } else {
       // We've not loaded the plate yet, so go fetch it.
       try {
@@ -125,7 +126,7 @@ export default {
           const plate = await extractPlateJson(response)
           commit('updatePlate', { ...plate, scanned: true })
           commit('updateScanPlate', { barcode: plate_barcode, id: plate.id })
-          dispatch('fetchBatches', { ids: plate.batches })
+          if (!plate.control) {  dispatch('fetchBatches', { ids: plate.batches }) }
         } else {
           const error_message = await extractErrors(response)
           throw error_message

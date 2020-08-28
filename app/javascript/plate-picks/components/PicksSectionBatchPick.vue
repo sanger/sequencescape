@@ -37,7 +37,9 @@
           'list-group-item-success': plate.scanned
         }"
       >
-        <i :class="`fas fa-${plate.scanned ? 'check' : ''}`" /> {{ plate.barcode }}
+        <i :class="`fas fa-${plate.scanned ? 'check' : ''}`" />
+        <i class="fas fa-vial" v-if="plate.control" />
+        {{ plate.barcode }}
       </li>
     </ul>
   </div>
