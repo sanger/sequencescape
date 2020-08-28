@@ -15,9 +15,13 @@ class QcReport < ApplicationRecord
     def self.included(base)
       base.class_eval do
         # When adding new states, please make sure you update the config/locals/en.yml file
-        # with decriptions.
+        # with descriptions.
 
-        aasm column: :state, whiny_persistence: true do
+        # We disable the transactions here as otherwise our entire job gets wrapped in a transaction.
+        # This causes problems for very large reports, as it causes objects with after transaction callbacks to
+        # be persisted for the entire job. We'd already chunked our transaction into batches, but this transaction
+        # was counteracting that.
+        aasm column: :state, whiny_persistence: true, use_transactions: false do
           # A report has just been created and is awaiting processing. There is probably a corresponding delayed job
           state :queued, initial: true
 
