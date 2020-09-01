@@ -23,9 +23,9 @@ RSpec.describe 'PlatePicks', type: :request do
   let(:missing_plate) { '{"errors":"Could not find plate in Sequencescape"}' }
   let(:pick_name) { "#{released_cherrypick_batch.id}:#{destination_plate.human_barcode} 1 of 1" }
   let(:found_batch) do
-    { batch: {
-      id: released_cherrypick_batch.id.to_s,
-      picks: [{ name: pick_name, plates: [plate_payload] }]
+    { 'batch' => {
+      'id' => released_cherrypick_batch.id.to_s,
+      'picks' => [{ 'name' => pick_name, 'plates' => [plate_payload] }]
     } }
   end
   let(:not_suitable) { '{"errors":"Batch has no pick information"}' }
@@ -77,7 +77,7 @@ RSpec.describe 'PlatePicks', type: :request do
       get "/plate_picks/batches/#{released_cherrypick_batch.id}", headers: headers
       expect(response.content_type).to eq('application/json')
       expect(response).to have_http_status(:success)
-      expect(response.body).to include_json(found_batch)
+      expect(JSON.parse(response.body)).to eq(found_batch)
     end
 
     it 'returns an error if the batch has no pick info', :aggregate_failures do

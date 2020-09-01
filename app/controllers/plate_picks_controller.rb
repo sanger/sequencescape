@@ -43,7 +43,8 @@ class PlatePicksController < ApplicationController
     # Extract the plates in advance in a single query. This optimizes performance
     plate_information = batch.input_labware
                              .includes(:batches_as_source, :barcodes)
-                             .where(batches: { pipeline_id: CherrypickPipeline.all })
+                             .where(batches: { pipeline_id: CherrypickPipeline.all,
+                                               state: CherrypickPipeline::PICKED_STATES })
                              .index_by(&:machine_barcode)
                              .transform_values do |plate|
                                {
