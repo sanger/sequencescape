@@ -249,7 +249,9 @@ class Batch < ApplicationRecord
   end
 
   def output_plates
-    output_labware
+    # We use re-order here as batch_requests applies a default sort order to
+    # the relationship, which takes preference, even though we're has_many throughing
+    output_labware.reorder(id: :asc)
   end
 
   def first_output_plate
