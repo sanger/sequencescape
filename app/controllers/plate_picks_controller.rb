@@ -16,7 +16,10 @@ class PlatePicksController < ApplicationController
       batches = if plate.pick_as_control?
                   []
                 else
-                  plate.batches_as_source.for_pipeline(CherrypickPipeline.all).ids.sort.map(&:to_s)
+                  plate.batches_as_source
+                       .for_pipeline(CherrypickPipeline.all)
+                       .where(state: CherrypickPipeline::PICKED_STATES)
+                       .ids.sort.map(&:to_s)
                 end
 
       render json: { plate: {

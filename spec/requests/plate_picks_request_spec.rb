@@ -12,11 +12,14 @@ RSpec.describe 'PlatePicks', type: :request do
   end
   let(:released_other_batch) { build :batch, state: 'released', request_attributes: [{ asset: plate.wells[0] }] }
   let(:pending_cherrypick_batch) { build :cherrypick_batch, state: 'pending', request_attributes: [{ asset: plate.wells[0] }] }
-  # We include the pending batches here, because otherwise pending batches fall into Limbo
-  # They may not be needed, but its not good if they are invisible.
-  let(:batch_ids) { [released_cherrypick_batch.id.to_s, pending_cherrypick_batch.id.to_s] }
-  let(:plate_payload) { { id: plate.id, barcode: plate.machine_barcode, control: false, batches: batch_ids } }
-  let(:found_plate) { { plate: plate_payload } }
+  # We exclude the pending batches here, as they don't have pick information.
+  # Initially we still showed them, to improve visibility of pending work, but UAT feedback
+  # was that this was confusing, and they'd prefer to hide them.
+  let(:batch_ids) { [released_cherrypick_batch.id.to_s] }
+  let(:plate_payload) do
+    { 'id' => plate.id, 'barcode' => plate.machine_barcode, 'control' => false, 'batches' => batch_ids }
+  end
+  let(:found_plate) { { 'plate' => plate_payload } }
   let(:missing_plate) { '{"errors":"Could not find plate in Sequencescape"}' }
   let(:pick_name) { "#{released_cherrypick_batch.id}:#{destination_plate.human_barcode} 1 of 1" }
   let(:found_batch) do
@@ -51,7 +54,7 @@ RSpec.describe 'PlatePicks', type: :request do
       get "/plate_picks/plates/#{plate.machine_barcode}", headers: headers
       expect(response.content_type).to eq('application/json')
       expect(response).to have_http_status(:success)
-      expect(response.body).to include_json(found_plate)
+      expect(JSON.parse(response.body)).to eq(found_plate)
     end
 
     it 'returns 404 if the plate is missing', :aggregate_failures do
