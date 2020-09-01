@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require './app/views/plate_picks/batches_json'
+require './app/controllers/concerns/plate_picks/batches_json'
 
-RSpec.describe PlatePicks::BatchesJson, type: :view do
+RSpec.describe PlatePicks::BatchesJson do
   describe '#to_json' do
     subject { described_class.new(1, pick_info, plate_info).to_json }
 
