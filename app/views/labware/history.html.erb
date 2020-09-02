@@ -8,7 +8,7 @@
   Complete event history for labware <%= @asset.id %>, in chronological order.
 </p>
 
-<div class="card mb-3">
+<div class="ss-card">
   <%- unless @asset.events.empty? %>
     <div class="card-body"><h3><%= pluralize @asset.events.size, "event" %></h3></div>
     <table class="sortable table table-striped" id="events">
@@ -29,7 +29,7 @@
   <%- end %>
 </div>
 
-<div class="card mb-3">
+<div class="ss-card">
   <%- if @asset.try(:asset_audits).present? %>
     <div class="card-body"><h3 class="card-title">Activity Logging</h3></div>
     <table class="sortable table table-striped" id="asset_audits">

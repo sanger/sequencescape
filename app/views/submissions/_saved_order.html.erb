@@ -85,7 +85,9 @@
     </div>
   <% end -%>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
+
   SCAPE.submission.id = <%= presenter.submission.id %>;
-</script>
+
+<% end %>
 <% end %>

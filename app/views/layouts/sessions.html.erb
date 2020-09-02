@@ -14,7 +14,9 @@
     <%= stylesheet_link_tag 'disable_animations' %>
 
     <!-- Turn off animations in jQuery -->
-    <script>$.fx.off = true;</script>
+    <%= javascript_tag nonce: true do %>
+      $.fx.off = true;
+    <% end %>
   <% end %>
 </head>
 

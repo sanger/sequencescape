@@ -453,7 +453,7 @@ class Request < ApplicationRecord
     return [] if lab_events.empty?
 
     events.map do |event|
-      next if event.family.nil? or not %w[pass fail].include?(event.family.downcase)
+      next if event.family.nil? or %w[pass fail].exclude?(event.family.downcase)
 
       message = event.message || '(No message was specified)'
       { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message, 'created_at' => event.created_at }

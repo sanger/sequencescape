@@ -40,7 +40,7 @@
 
  <div class="form-group"><%= link_to 'Show', action: :show, id: @asset.id %></div>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
 (function($, undefined) {
   $(document).on('dom:loaded', function() {
 
@@ -68,4 +68,4 @@
    });
  });
 })(jQuery);
-</script>
+<% end %>

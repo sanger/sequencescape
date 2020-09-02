@@ -19,6 +19,6 @@ class Event::ScannedIntoLabEvent < Event
 
   def qc_state_not_final?
     asset.respond_to?(:receptacle) &&
-      !%w[passed failed].include?(asset.receptacle.qc_state)
+      %w[passed failed].exclude?(asset.receptacle.qc_state)
   end
 end

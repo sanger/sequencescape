@@ -14,7 +14,8 @@
   </div>
   <% end -%>
 
-  <script type="text/javascript">
+  <%= javascript_tag nonce: true do %>
+
   (function(window,$,undefined) {
     SCAPE.submission.is_a_sequencing_order  = <%= @presenter.order.sequencing_order? %>;
     SCAPE.submission.pre_capture_plex_level = <%= @presenter.pre_capture_plex_level || 'null' %>;
@@ -33,6 +34,6 @@
       });
     <% end -%>
   })(window,jQuery);
-  </script>
-<% end -%>
 
+<% end %>
+<% end -%>

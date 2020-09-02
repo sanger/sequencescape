@@ -1,13 +1,15 @@
 
 <%= javascript_include_tag "assign-tubes-to-wells-task" %>
 <div id='error_messages'></div>
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
+
   (function(window, $, undefined){
     "use strict";
     if (window.SCAPE == undefined) window.SCAPE = {};
     SCAPE.preventMatchingSamplePooling = false;
   })(window, jQuery);
-</script>
+
+<% end %>
 <%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form", multipart: true} do |form| %>
   <%# This isn't ideal. We pass in certain aspects of the pipeline configuration %>
   <h2>Wells</h2>

@@ -129,7 +129,7 @@ class Plate::Creator < ApplicationRecord
     # otherwise would have to get user to select one
 
     # try the link on aliquots
-    all_destination_plates = created_plates.map { |hash| hash[:destinations] }.flatten
+    all_destination_plates = created_plates.pluck(:destinations).flatten
     study = all_destination_plates.map(&:studies).flatten.first
     return study if study
 

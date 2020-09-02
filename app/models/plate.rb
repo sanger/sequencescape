@@ -85,10 +85,6 @@ class Plate < Labware
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
 
-  def labware_type
-    super || PlateType.plate_default_type
-  end
-
   # Used to unify interface with TubeRacks. Returns a list of all receptacles {Well wells}
   # with position information included for aid performance
   def receptacles_with_position
@@ -318,7 +314,7 @@ class Plate < Labware
   end
 
   def plate_type
-    labware_type.name
+    labware_type&.name || Sequencescape::Application.config.plate_default_type
   end
 
   def plate_type=(plate_type)

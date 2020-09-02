@@ -53,7 +53,7 @@ module DeprecationHelper
     title = (custom_title || level.title) % remaining
     style = custom_style || level.style
 
-    tag.div(class: ['card', "border-#{style}", 'mb-3']) do
+    tag.div(class: ['ss-card', "border-#{style}"]) do
       concat(tag.div(class: ['card-body', "bg-#{style}", 'text-white']) do
         concat icon('fas', level.icon, title)
         concat tag.p(message)
