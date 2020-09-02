@@ -68,7 +68,8 @@
   <% end %>
 <% end %>
 
-<script>
+
+<%= javascript_tag nonce: true do %>
   $(function() {
     var tagGroupsList = <%= tags_in_groups.to_json.html_safe %>;
 
@@ -103,5 +104,4 @@
       minimumResultsForSearch: 10
     });
   });
-
-</script>
+<% end %>

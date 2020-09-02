@@ -3,10 +3,34 @@
 require 'rails_helper'
 require 'broadcast_event/lab_event'
 
-RSpec.describe Robot::Verification::SourceDestBeds do
+RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
   subject(:verifier) { described_class.new }
 
-  describe '#pick_number_to_expected_layout' do
+  # We test pick_number_to_expected_layout and pick_numbers with shared contexts
+  # as it is important that they both show the same behaviour.
+  # @note pick_numbers collects the behaviour that was originally in batches/_assets
+  #       and extracts it into a method to allow testing and optimization. The original
+  #       implementation was as simple as pick_number_to_expected_layout(...).keys
+  context 'with a pick' do
+    shared_examples 'it generates layout information' do
+      describe '#pick_number_to_expected_layout' do
+        it 'generates a layout' do
+          expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)).to eq(expected_layout)
+        end
+      end
+
+      describe '#pick_numbers' do
+        it 'generates a list' do
+          expect(verifier.pick_numbers(batch, destination_plate.human_barcode, max_beds)).to eq(expected_layout.keys)
+        end
+      end
+
+      describe '#all_picks' do
+        it 'generates a list of all picks' do
+          expect(verifier.all_picks(batch, max_beds)).to eq(all_picks)
+        end
+      end
+    end
     let(:source_plate_1) { create :plate, well_count: 2 }
     let(:source_plate_3) { create :plate, well_count: 2 }
     let(:destination_plate) { create :plate, well_count: 9 }
@@ -47,19 +71,23 @@ RSpec.describe Robot::Verification::SourceDestBeds do
     context 'without control plates' do
       let(:source_plate_2) { create :plate, well_count: 2 }
       let(:expected_layout) do
-        [
-          { destination_plate.machine_barcode => 1 }, # Destinations
-          {
-            source_plate_3.machine_barcode => 1,
-            source_plate_2.machine_barcode => 3,
-            source_plate_1.machine_barcode => 2
-          }
-        ]
+        {
+          1 => [
+            { destination_plate.machine_barcode => 1 }, # Destinations
+            {
+              source_plate_3.machine_barcode => 1,
+              source_plate_2.machine_barcode => 3,
+              source_plate_1.machine_barcode => 2
+            }
+          ]
+        }
       end
 
-      it 'generates a layout' do
-        expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)[1]).to eq(expected_layout)
+      let(:all_picks) do
+        { destination_plate.machine_barcode => expected_layout }
       end
+
+      it_behaves_like 'it generates layout information'
     end
 
     context 'with control plates' do
@@ -67,24 +95,27 @@ RSpec.describe Robot::Verification::SourceDestBeds do
         create :control_plate, well_count: 2
       end
       let(:expected_layout) do
-        [
-          { destination_plate.machine_barcode => 1 }, # Destinations
-          {
-            source_plate_3.machine_barcode => 1,
-            source_plate_2.machine_barcode => 3,
-            source_plate_1.machine_barcode => 2
-          }
-        ]
+        { 1 =>
+          [
+            { destination_plate.machine_barcode => 1 }, # Destinations
+            {
+              source_plate_3.machine_barcode => 1,
+              source_plate_2.machine_barcode => 3,
+              source_plate_1.machine_barcode => 2
+            }
+          ] }
       end
 
-      it 'generates a layout' do
-        expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)[1]).to eq(expected_layout)
+      let(:all_picks) do
+        { destination_plate.machine_barcode => expected_layout }
       end
+
+      it_behaves_like 'it generates layout information'
     end
   end
 
   # Pulled from original tests. While I like the testing via the data object, these are now private methods
-  # so proably shouldn't be tested.
+  # so probably shouldn't be tested.
   describe '#barcode_to_plate_index' do
     let(:barcodes) { { '1111' => 'aaa', '5555' => 'tttt', '4444' => 'bbbb', '7777' => 'zzzz' } }
     let(:plate_index_lookup) { verifier.send(:barcode_to_plate_index, barcodes) }

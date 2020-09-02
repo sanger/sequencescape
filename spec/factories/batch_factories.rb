@@ -12,15 +12,18 @@ FactoryBot.define do
     production_state      { nil }
 
     transient do
+      request_attributes { Array.new(request_count) { {} } }
       request_count { 0 }
+      request_factory { :request }
       batch_request_factory { :batch_request }
     end
 
     after(:build) do |batch, evaluator|
-      if evaluator.request_count.positive?
-        batch.batch_requests = build_list(evaluator.batch_request_factory,
-                                          evaluator.request_count,
-                                          batch: batch)
+      request_type = batch.pipeline.request_types.first
+      if evaluator.request_attributes.present?
+        batch.requests = evaluator.request_attributes.map do |request_attribute|
+          build(evaluator.request_factory, request_attribute.reverse_merge(request_type: request_type))
+        end
       end
     end
 
@@ -30,6 +33,15 @@ FactoryBot.define do
 
     factory :sequencing_batch do
       association(:pipeline, factory: :sequencing_pipeline)
+    end
+
+    factory :cherrypick_batch do
+      transient do
+        request_count { 1 } # We create one request by default as cherrypick pipelines have a minimum batch size
+        batch_request_factory { :cherrypick_batch_request }
+        request_factory { :cherrypick_request }
+      end
+      association(:pipeline, factory: :cherrypick_pipeline)
     end
   end
 

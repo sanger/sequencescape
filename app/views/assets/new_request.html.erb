@@ -90,7 +90,7 @@
 
 <% end %>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
   /*
    * Hook into the 'Request type' select dropdown so that if the value is changed the correct fields
    * are displayed.
@@ -131,4 +131,4 @@
     });
 
   })(jQuery);
-</script>
+<% end %>

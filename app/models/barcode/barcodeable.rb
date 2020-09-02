@@ -43,7 +43,13 @@ module Barcode::Barcodeable
   end
 
   def primary_barcode
-    barcodes.last
+    # If we've already loaded the barcodes, then their order is indeterminate
+    # rather than re-fetching them, we sort in Ruby.
+    if barcodes.loaded?
+      barcodes.max_by(&:id)
+    else
+      barcodes.last
+    end
   end
 
   def infinium_barcode

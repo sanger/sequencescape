@@ -56,13 +56,11 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  if ENV['WITH_BULLET'] == 'true'
-    config.after_initialize do
-      require 'bullet'
-      Bullet.enable = true
-      Bullet.alert = ENV['NOISY_BULLET'] == 'true'
-      Bullet.bullet_logger = true
-    end
+  config.after_initialize do
+    Bullet.enable = ENV['WITH_BULLET'] == 'true'
+    Bullet.alert = ENV['NOISY_BULLET'] == 'true'
+    Bullet.bullet_logger = true
+    Bullet.rails_logger = true
   end
 end
 

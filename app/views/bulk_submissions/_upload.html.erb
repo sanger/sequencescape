@@ -19,7 +19,7 @@
     <%= loading_bar %>
   </div>
 <% end %>
-<script>
+<%= javascript_tag nonce: true do %>
 (function($, undefined) {
   $(document).on('dom:loaded', function() {
     $('#new_bulk_submission').on('submit', function() {
@@ -29,4 +29,4 @@
     });
   });
 })(jQuery);
-</script>
+<% end %>

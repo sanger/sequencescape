@@ -28,7 +28,7 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
   end
 
   it '#headings returns list of headings' do # rubocop:todo RSpec/AggregateExamples
-    expect(column_list.headings).to eq(yaml.values.collect { |column| column[:heading] })
+    expect(column_list.headings).to eq(yaml.values.pluck(:heading))
   end
 
   it '#column_values returns all of the values for the column list' do

@@ -21,9 +21,9 @@
   <% end %>
   <% unless ["cucumber", "test"].include?(Rails.env) %>
     <!-- window.print open a popup window that we can't control with capybara -->
-  <script language="javascript">
-     window.print();
-  </script>
+    <%= javascript_tag nonce: true do %>
+      window.print();
+    <% end %>
   <% end %>
 </body>
 </html>

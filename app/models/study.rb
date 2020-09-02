@@ -353,10 +353,12 @@ class Study < ApplicationRecord
   end
 
   def each_well_for_qc_report_in_batches(exclude_existing, product_criteria, plate_purposes = nil)
+    # @note We include aliquots here, despite the fact they are only needed if we have to set a poor-quality flag
+    #       as in some cases failures are not as rare as you may imagine, and it can cause major performance issues.
     base_scope = Well.on_plate_purpose_included(PlatePurpose.where(name: plate_purposes || STOCK_PLATE_PURPOSES))
                      .for_study_through_aliquot(self)
                      .without_blank_samples
-                     .includes(:well_attribute, samples: :sample_metadata)
+                     .includes(:well_attribute, :aliquots, :map, samples: :sample_metadata)
                      .readonly(true)
     scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
     scope.find_in_batches { |wells| yield wells }
@@ -415,7 +417,13 @@ class Study < ApplicationRecord
     if samples.blank?
       requests.sample_statistics_new
     else
+      # Rubocop suggests this changes as it allows MySQL to perform a single query, which is usually better
+      # however in this case we've actually already loaded the samples. If we do try passing in the
+      # samples themselves, then things top working as intended. (Performance tanks in some places, and
+      # we generate invalid SQL in others)
+      # rubocop:disable Rails/PluckInWhere
       yield(requests.where(aliquots: { sample_id: samples.pluck(:id) }).sample_statistics_new)
+      # rubocop:enable Rails/PluckInWhere
     end
   end
 

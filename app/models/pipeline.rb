@@ -180,6 +180,10 @@ class Pipeline < ApplicationRecord
             .count
   end
 
+  def pick_information?(_)
+    false
+  end
+
   private
 
   def apply_includes(scope)

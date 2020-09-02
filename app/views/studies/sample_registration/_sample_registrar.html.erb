@@ -229,7 +229,8 @@
   <p><%= submit_tag "Register samples", class: "enhanced" %></p>
 <% end %>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
+
 (function($) {
 
   var updateIgnoreState = function(ignored, row) {
@@ -298,11 +299,13 @@
 
 // Fix Firefox tooltip layout
 $('#property_sample_name').css("overflow", "auto;");
-</script>
+
+<% end %>
 
 <%= organism_validation_javascript %>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
+
   function resetColumnVisibility(classname)
   {
     var template_node = $(classname)[0];
@@ -391,4 +394,5 @@ $('#property_sample_name').css("overflow", "auto;");
       }
     }
   }
-</script>
+
+<% end %>

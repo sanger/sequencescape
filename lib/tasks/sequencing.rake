@@ -8,7 +8,7 @@ namespace :sequencing do
     desc 'Setting up NovaSeq 6000 PE pipeline'
     task setup: :environment do
       ActiveRecord::Base.transaction do
-        unless RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').exists?
+        unless RequestType.exists?(key: 'illumina_htp_novaseq_6000_paired_end_sequencing')
           RequestType.create!(key: 'illumina_htp_novaseq_6000_paired_end_sequencing',
                               name: 'Illumina-HTP NovaSeq 6000 Paired end sequencing',
                               asset_type: 'LibraryTube',
@@ -21,7 +21,7 @@ namespace :sequencing do
             RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150, 50, 75, 100])
           end
         end
-        unless SequencingPipeline.where(name: 'NovaSeq 6000 PE').exists?
+        unless SequencingPipeline.exists?(name: 'NovaSeq 6000 PE')
           SequencingPipeline.create!(
             name: 'NovaSeq 6000 PE',
             automated: false,

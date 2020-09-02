@@ -54,8 +54,8 @@
 
   <div class="footer">Printed at <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %></div>
 
-  <script language="javascript">
+  <%= javascript_tag nonce: true do %>
      window.print();
-  </script>
+  <% end %>
 </body>
 </html>

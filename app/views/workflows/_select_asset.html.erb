@@ -43,7 +43,8 @@
   <br /><br />
 <% end %>
 <% end %>
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
+
   function toggle_fragments(){
     if ($('#fragments').style.display == 'none'){
       $('#fragments').show();
@@ -53,4 +54,5 @@
       $('#toggle_fragments_link').innerHTML = 'Expand';
     }
   }
-</script>
+
+<% end %>

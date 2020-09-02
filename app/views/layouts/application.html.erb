@@ -27,7 +27,9 @@
       <%= stylesheet_link_tag 'disable_animations' %>
 
       <!-- Turn off animations in jQuery -->
-      <script>$.fx.off = true;</script>
+      <%= javascript_tag nonce: true do %>
+        $.fx.off = true;
+      <% end %>
     <% end %>
     <%= csrf_meta_tags %>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />

@@ -11,7 +11,9 @@
 <% end %>
 <svg id="batchbarcode_<%= plate_barcode %>-<%= pick_number %>"></svg>
 
-<script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>-<%= pick_number %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>-<%= pick_number %>", {format: "CODE128"});</script>
+<%= javascript_tag nonce: true do %>
+  JsBarcode("#batchbarcode_<%= plate_barcode %>-<%= pick_number %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>-<%= pick_number %>", {format: "CODE128"});
+<% end %>
 
 <%# see Robot::Verification::Base#pick_number_to_expected_layout for structure of robot_plate_layout %>
 <% destination_layout, source_layout, control_layout = robot_plate_layout %>

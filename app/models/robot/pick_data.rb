@@ -2,39 +2,51 @@
 
 # Builds the information about a cherrypick for a {Batch}
 class Robot::PickData
-  attr_reader :batch, :user, :target_barcode
+  attr_reader :batch, :user
 
   delegate :requests, to: :batch
 
-  def initialize(batch, target_barcode, user: batch.user, max_beds: nil)
+  #
+  # Create a pick data object
+  #
+  # @param [Batch] batch The batch being picked
+  # @param [User] user The user generating the file (defaults to batch owner)
+  # @param [Integer] max_beds The maximum number of source plates in any one pick
+  # @param [Boolean] include_mapping Set to false to disable generation of extra pick information
+  #
+  def initialize(batch, user: batch.user, max_beds: nil)
     @batch = batch
-    @target_barcode = target_barcode
     @user = user
     @max_beds = max_beds
+    @picking_data_hash ||= Hash.new { |hash, barcode| hash[barcode] = generate_picking_data_hash(barcode) }
   end
 
-  def picking_data_hash
-    @picking_data_hash ||= generate_picking_data_hash
+  def picking_data_hash(target_barcode)
+    @picking_data_hash[target_barcode]
   end
 
   private
 
+  def default_type
+    @default_type ||= PlateType.cherrypickable_default_type
+  end
+
   # Given a list of requests it will sort them by:
   # - First group them by destination plate
-  # - Second, inside that group sort them putting the controls in the front
+  # - Second, inside that group sort them putting the controls (ie. those from the control plate) in the front
   # - Third, with the remaining requests, sort them in column order for that plate
   def sorted_requests_for_destination_plate(requests_to_sort)
     requests_to_sort.sort_by do |req|
       if req.target_asset&.map&.column_order
-        [req.target_asset.plate.id, req.asset.aliquots&.first&.sample&.control ? 0 : 1, req.target_asset.map.column_order]
+        [req.target_asset.plate.id, req.asset.plate&.pick_as_control? ? 0 : 1, req.target_asset.map.column_order]
       else
-        [req.target_asset.plate.id, req.asset.aliquots&.first&.sample&.control ? 0 : 1]
+        [req.target_asset.plate.id, req.asset.plate&.pick_as_control? ? 0 : 1]
       end
     end
   end
 
   # processes cherrypicking requests for a single batch and destination plate
-  # if there are more source plates than the maxiumum capacity for the robot, splits it out into multiple picks
+  # if there are more source plates than the maximum capacity for the robot, splits it out into multiple picks
   # returns a hash of pick number (1-indexed) to data object containing info about source and destination plates
   # basic hash structure:
   # {
@@ -47,7 +59,7 @@ class Robot::PickData
   #   2 => { etc. }
   # }
   # see pick_data_spec.rb for the more detailed structure
-  def generate_picking_data_hash
+  def generate_picking_data_hash(target_barcode, requests: requests_for_destination_plate)
     data_objects = {}
     source_barcode_to_pick_number = {}
 
@@ -55,7 +67,7 @@ class Robot::PickData
       data_objects[data_objects.size]['source'].size
     end
 
-    sorted_requests_for_destination_plate(requests_for_destination_plate).each do |request|
+    sorted_requests_for_destination_plate(requests).each do |request|
       target_plate = request.target_asset.plate
       next unless target_plate.any_barcode_matching?(target_barcode)
 
@@ -94,7 +106,7 @@ class Robot::PickData
   end
 
   def requests_for_destination_plate
-    requests.includes([
+    @requests_for_destination_plate ||= requests.includes([
       { asset: [{ plate: [:barcodes, :labware_type] }, :map] },
       { target_asset: [:map, :well_attribute, { plate: [:barcodes, :labware_type] }] }
     ]).passed
@@ -121,7 +133,7 @@ class Robot::PickData
   end
 
   def plate_information(plate)
-    plate_type = (plate.plate_type || PlateType.cherrypickable_default_type).tr('_', "\s")
+    plate_type = (plate.plate_type || default_type).tr('_', "\s")
     control = plate.pick_as_control?
     {
       'name' => plate_type,
