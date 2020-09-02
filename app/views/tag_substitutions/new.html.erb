@@ -37,15 +37,28 @@
         </tr>
       </thead>
       <tbody>
-        <% @tag_substitution.substitutions.each do |substitution| %>
+        <% @tag_substitution.substitutions.each_with_index do |substitution, index| %>
           <%= form.fields_for :substitutions, substitution, index: nil do |sub| %>
             <tr>
-              <td><%= sub.hidden_field :sample_id %><%= substitution.sample_id %>: <%= substitution.sample_friendly_name %></td>
-              <td><%= sub.hidden_field :library_id %><%= substitution.library_id %></td>
-              <td><%= sub.hidden_field :original_tag_id %><%= tag_name(substitution.original_tag_id) %></td>
-              <td><%= sub.select :substitute_tag_id, tag_options_for(substitution.substitute_tag_id), {}, class: 'select2 tag-list' %></td>
-              <td><%= sub.hidden_field :original_tag2_id %><%= tag_name(substitution.original_tag2_id) %></td>
-              <td><%= sub.select :substitute_tag2_id, tag_options_for(substitution.substitute_tag2_id), {}, class: 'select2 tag-list' %></td>
+              <td>
+                <%= sub.hidden_field :sample_id, id: "ts_s_id_#{index}" %>
+                <%= substitution.sample_id %>: <%= substitution.sample_friendly_name %>
+              </td>
+              <td><%= sub.hidden_field :library_id, id: "ts_l_id_#{index}"  %><%= substitution.library_id %></td>
+              <td>
+                <%= sub.hidden_field :original_tag_id, id: "ts_ot_id_#{index}" %>
+                <%= tag_name(substitution.original_tag_id) %>
+              </td>
+              <td><%= sub.select :substitute_tag_id, tag_options_for(substitution.substitute_tag_id),
+                                 {},
+                                 class: 'tag-list', id: "ts_st_id_#{index}"  %></td>
+              <td>
+                <%= sub.hidden_field :original_tag2_id, id: "ts_ot2_id_#{index}" %>
+                <%= tag_name(substitution.original_tag2_id) %>
+              </td>
+              <td><%= sub.select :substitute_tag2_id, tag_options_for(substitution.substitute_tag2_id),
+                                 {},
+                                 class: 'tag-list' , id: "ts_st2_id_#{index}" %></td>
             </tr>
           <% end %>
         <% end %>
@@ -75,6 +88,20 @@
         optgroup.append(new Option(obj[0], obj[1]));
       });
       $(".tag-list").append(optgroup);
+    });
+
+    // We don't use the default .select2 binding here for performance reasons.
+    // With very high plexed lanes we end up rendering a LOT of select elements.
+    // Without this optimization select2 takes about 140s to update the DOM.
+    // The majority of this is spent in the select2 _resolveWidth function, which
+    // tries to match the width of the select2 element, to that of the original
+    // element. Providing a fixed width overrides this.
+    // It still takes about 30s to render, which isn't great, but somewhat more
+    // tolerable.
+    $(".tag-list").select2({
+      theme: "bootstrap4",
+      width: '175px',
+      minimumResultsForSearch: 10
     });
   });
 <% end %>
