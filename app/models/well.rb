@@ -84,7 +84,7 @@ class Well < Receptacle
   # added version of scope with includes to avoid multiple calls to LabWhere in qc report when getting storage location
   # for wells in the same plate
   scope :on_plate_purpose_included, ->(purposes) {
-    includes(:labware)
+    includes(labware: :barcodes)
       .references(:labware)
       .where(labware: { plate_purpose_id: purposes })
   }
