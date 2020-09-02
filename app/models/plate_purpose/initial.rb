@@ -5,14 +5,10 @@ module PlatePurpose::Initial
     end
   end
 
-  # Initial plates in the pulldown pipelines change the state of the pulldown requests they are being
-  # created for to exactly the same state.
-  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
-    broadcast_library_start(plate, user)
-    super
-  end
-
   # Ensure that the pulldown library creation request is started
+  # @note PlatePurpose defines its own version of this method, which should
+  #       be more versatile and performant. This has been left to ensure
+  #       we don't introduce unexpected behaviour changes.
   def broadcast_library_start(plate, user)
     orders = Set.new
     each_well_and_its_library_request(plate) do |_, request|
@@ -21,11 +17,4 @@ module PlatePurpose::Initial
     generate_events_for(plate, orders, user)
   end
   private :broadcast_library_start
-
-  def generate_events_for(plate, orders, user)
-    orders.each do |order_id|
-      BroadcastEvent::LibraryStart.create!(seed: plate, user: user, properties: { order_id: order_id })
-    end
-  end
-  private :generate_events_for
 end

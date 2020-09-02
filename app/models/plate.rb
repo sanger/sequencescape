@@ -155,7 +155,6 @@ class Plate < Labware
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, to: :plate_purpose, allow_nil: true
   delegate :asset_shape, to: :plate_purpose, allow_nil: true
-  delegate :supports_multiple_submissions?, to: :plate_purpose
   delegate :dilution_factor, :dilution_factor=, to: :plate_metadata
 
   scope :include_for_show, -> {

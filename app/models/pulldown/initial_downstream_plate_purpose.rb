@@ -18,6 +18,4 @@ class Pulldown::InitialDownstreamPlatePurpose < IlluminaHtp::InitialDownstreamPl
 
     Well.joins(:requests).where(requests: { target_asset_id: plate.wells.located_at(contents).pluck(:id) })
   end
-
-  def supports_multiple_submissions?; true; end
 end

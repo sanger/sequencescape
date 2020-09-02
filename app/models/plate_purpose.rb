@@ -80,10 +80,10 @@ class PlatePurpose < Purpose
   #                                                  in the the event of a failure
   #
   # @return [Void]
-  def transition_to(plate, state, _user, contents = nil, customer_accepts_responsibility = false)
+  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     wells = plate.wells
     wells = wells.located_at(contents) if contents.present?
-
+    broadcast_library_start(plate, user) unless %w[failed cancelled].include?(state)
     transition_state_requests(wells, state)
     fail_stock_well_requests(wells, customer_accepts_responsibility) if state == 'failed'
   end
@@ -178,10 +178,6 @@ class PlatePurpose < Purpose
     stock_wells
   end
 
-  def supports_multiple_submissions?
-    false
-  end
-
   private
 
   def fail_stock_well_requests(wells, customer_accepts_responsibility)
@@ -213,6 +209,18 @@ class PlatePurpose < Purpose
 
   def set_default_printer_type
     self.barcode_printer_type ||= BarcodePrinterType96Plate.first
+  end
+
+  # Record the start of library creation for the plate
+  def broadcast_library_start(plate, user)
+    orders = plate.in_progress_requests.pending.distinct(:order_id)
+    generate_events_for(plate, orders, user)
+  end
+
+  def generate_events_for(plate, orders, user)
+    orders.each do |order_id|
+      BroadcastEvent::LibraryStart.create!(seed: plate, user: user, properties: { order_id: order_id })
+    end
   end
 end
 
