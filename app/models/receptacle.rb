@@ -28,7 +28,7 @@ class Receptacle < Asset
   # put a tube rack in a tube rack.
   has_one :racked_tube, foreign_key: :tube_id, primary_key: :labware_id
 
-  delegate :human_barcode, :machine_barcode, to: :labware, allow_nil: true
+  delegate :human_barcode, :machine_barcode, :barcode_number, to: :labware, allow_nil: true
   delegate :asset_type_for_request_types, to: :labware, allow_nil: true
   delegate :has_stock_asset?, to: :labware, allow_nil: true
   delegate :children, to: :labware, allow_nil: true
