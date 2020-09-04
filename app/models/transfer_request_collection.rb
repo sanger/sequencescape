@@ -76,7 +76,10 @@ class TransferRequestCollection < ApplicationRecord
   # and associated records, and pass them to the transfer requests directly.
   def transfer_requests_attributes=(args)
     asset_ids = extract_asset_ids(args)
-    asset_cache = Receptacle.includes(:aliquots, :transfer_requests_as_target).find(asset_ids).index_by(&:id)
+    asset_cache = Receptacle.includes(:aliquots, :transfer_requests_as_target,
+                                      requests: :request_metadata,
+                                      labware: :purpose)
+                            .find(asset_ids).index_by(&:id)
     optimized_parameters = args.map do |param|
       param['asset'] ||= asset_cache[param.delete('asset_id')]
       param['target_asset'] ||= asset_cache[param.delete('target_asset_id')]

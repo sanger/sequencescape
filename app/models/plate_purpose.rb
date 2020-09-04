@@ -101,7 +101,13 @@ class PlatePurpose < Purpose
     private
 
     def transition_state_requests(wells, state)
-      wells = wells.includes(:requests_as_target, transfer_requests_as_target: :associated_requests)
+      wells = wells.includes(
+        requests_as_target: [:request_type, :request_events],
+        transfer_requests_as_target: [
+          { associated_requests: [:request_type, :request_events] },
+          :target_aliquot_requests
+        ]
+      )
       wells.each do |w|
         w.requests_as_target.each { |r| r.transition_to(state) }
         w.transfer_requests_as_target.each { |r| r.transition_to(state) }
@@ -213,7 +219,7 @@ class PlatePurpose < Purpose
 
   # Record the start of library creation for the plate
   def broadcast_library_start(plate, user)
-    orders = plate.in_progress_requests.pending.distinct(:order_id)
+    orders = plate.in_progress_requests.pending.distinct.pluck(:order_id)
     generate_events_for(plate, orders, user)
   end
 
