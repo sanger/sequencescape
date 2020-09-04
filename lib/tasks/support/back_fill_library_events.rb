@@ -69,7 +69,7 @@ class BackFillLibraryEvents
       if state_change.created_at < deploy_date
         false # Our event pre-dates the fixes
       else
-        BroadcastEvent::LibraryStart.where(seed: labware).exists?
+        BroadcastEvent::LibraryStart.exists?(seed: labware)
       end
     end
 
