@@ -42,6 +42,6 @@ class WorkCompletion::TubeCompletion
 
   def detect_upstream_requests
     CustomerRequest.includes(WorkCompletion::REQUEST_INCLUDES)
-                   .where(id: target_tube.aliquots.pluck(:request_id))
+                   .where(id: target_tube.aliquots.pluck(:request_id)) # rubocop:todo Rails/PluckInWhere
   end
 end

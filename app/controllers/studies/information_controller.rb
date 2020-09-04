@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Responsible for displaying overcomplicated reporting pages
+# rubocop:todo Rails/PluckInWhere
 class Studies::InformationController < ApplicationController
   BASIC_TABS = [
     %w[summary Summary],
@@ -88,3 +89,4 @@ class Studies::InformationController < ApplicationController
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 end
+# rubocop:enable Rails/PluckInWhere

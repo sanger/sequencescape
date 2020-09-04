@@ -53,10 +53,10 @@
               </div>
             </td>
             <td>
-            <% if fluidigm_target?(@batch) %>
+              <% if fluidigm_target?(@batch) %>
                 <%= link_to 'Fluidigm file', url_for(controller: :plates, action: :fluidigm_file, id: labware.id,  format: :csv), type: 'text/csv', title: "Fluidigm file for Plate #{labware.fluidigm_barcode}" %>
-            	<% else  -%>
-                <% @robot.pick_number_to_expected_layout(@batch, labware.human_barcode).each_key do |pick| %>
+              <% else -%>
+                <% @robot.pick_numbers(@batch, labware.human_barcode).each do |pick| %>
                   <div class="btn-group btn-group-sm">
                     <%= link_to icon('fas', 'file-download', "Download #{@robot.name} File (Pick #{pick})"),
                                 batch_robot_driver_file_path(@batch, @robot, barcode: labware.human_barcode, pick_number: pick),

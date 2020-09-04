@@ -18,7 +18,7 @@ module BootstrapHelper
   def bs_custom_panel(type, body_type, body_options, options, &block)
     title = options.delete(:title)
     options[:class] ||= String.new
-    options[:class] << " card card-style-#{type} mb-3"
+    options[:class] << " ss-card card-style-#{type}"
     tag.div(options) do
       concat tag.h3(title, class: 'card-header-custom') unless title.nil?
       concat content_tag(body_type, body_options, &block)
@@ -35,7 +35,7 @@ module BootstrapHelper
     tag.div(options, &block)
   end
 
-  # Summary composits a panel with a table to deliver
+  # Summary composites a panel with a table to deliver
   # a list of key-value pairs
   #   <div class="card card-default">
   #     <h3 class="card-header">Summary</h3>
@@ -113,10 +113,10 @@ module BootstrapHelper
   #     <span class="sr-only">45% Complete</span>
   #   </div>
   # </div>
-  def loading_bar(id = 'update_loader')
+  def loading_bar(id = 'update_loader', show: false, text: 'Loading')
     tag.div(class: 'loading-bar-placeholder') do
-      tag.div(id: id, class: 'loading-bar-container', style: 'display: none;') do
-        tag.div('Loading', class: 'loading-bar', role: 'progressbar')
+      tag.div(id: id, class: 'loading-bar-container', style: show ? '' : 'display: none;') do
+        tag.div(text, class: 'loading-bar', role: 'progressbar')
       end
     end
   end

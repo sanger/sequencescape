@@ -1,5 +1,7 @@
 # Superclass for all Cherrypicking pipelines. Not used directly
 class CherrypickingPipeline < GenotypingPipeline
+  PICKED_STATES = %w[completed released].freeze
+
   self.batch_worksheet = 'cherrypick_worksheet'
   self.inbox_eager_loading = :loaded_for_grouped_inbox_display
   self.asset_type = 'Well'
@@ -9,5 +11,9 @@ class CherrypickingPipeline < GenotypingPipeline
     batch.requests.each do |request|
       request.reduce_source_volume if request.respond_to?(:reduce_source_volume)
     end
+  end
+
+  def pick_information?(batch)
+    PICKED_STATES.include?(batch.state)
   end
 end

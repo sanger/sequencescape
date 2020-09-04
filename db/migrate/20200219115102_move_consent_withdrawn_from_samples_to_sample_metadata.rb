@@ -69,7 +69,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
 
         num_read += 1
         say "Moving to metadata consent withdrawn for sample #{ident} with value #{value}"
-        sample = Sample.find_by!(id: ident)
+        sample = Sample.find(ident)
         raise 'Not a sample' unless sample.is_a?(Sample)
 
         sample.sample_metadata.update!(consent_withdrawn: value)

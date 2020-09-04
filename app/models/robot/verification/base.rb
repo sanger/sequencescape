@@ -15,19 +15,47 @@ class Robot::Verification::Base
     yield('Destination plate barcode invalid') if barcode_hash[:destination_plate_barcode].blank? || !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
   end
 
+  #
+  # Returns an array of all pick numbers associated with the corresponding batch and plate_barcode
+  # @note Added as I refactor the batches/_assets.html.erb page. Currently just wraps pick_number_to_expected_layout
+  #       and as a result performs a lot of unnecessary work.
+  #
+  # @param [Batch] batch The Batch to get pick numbers for
+  # @param [String] destination_plate_barcode The barcode of the destination plate
+  # @param [Integer] max_beds The max_beds for plates on the robot
+  #
+  # @return [Array<String>] Array of pick numbers associated with the batch/plate
+  #
+  def pick_numbers(batch, destination_plate_barcode, max_beds)
+    pick_number_to_expected_layout(batch, destination_plate_barcode, max_beds).keys
+  end
+
   # Returns a hash of { pick_number => layout_data_object }, for a batch and a specific destination plate
   # pick_number is a sequential number, starting at 1
   # layout_data_object is an array of hashes: 1st Element: Hash of destination plate barcodes and their sort position
   #                                           2nd Element: Hash of source plate barcodes and their sort position
   #                                           3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
-  #     @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}]
+  #     @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}, {}]
   # There will only be more than one pick if the number of source plates exceed the max plates allowed on the robot
   # and therefore more than one pick is needed to transfer from all the wells onto the destination plate
   def pick_number_to_expected_layout(batch, destination_plate_barcode, max_beds)
-    output = {}
-    data_objects_hash = generate_picking_data_hash(batch, destination_plate_barcode, max_beds)
-    data_objects_hash.each { |pick_number, data_object| output[pick_number] = layout_data_object(data_object) }
-    output
+    generate_picking_data_hash(batch, destination_plate_barcode, max_beds)
+      .transform_values { |data_object| layout_data_object(data_object) }
+  end
+
+  # Returns all pick information by destination_bed barcode
+  # @example
+  #  { 'DN3R' => {
+  #   1 => [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}, {}]
+  # }}
+  #
+  # @param [Batch] batch The batch to get the pick-list for
+  # @param [Integer] max_beds The max_beds for plates on the robot
+  def all_picks(batch, max_beds)
+    # @note No optimization yet.
+    batch.output_labware.each_with_object({}) do |plate, store|
+      store[plate.machine_barcode] = pick_number_to_expected_layout(batch, plate.machine_barcode, max_beds)
+    end
   end
 
   def valid_submission?(params)
@@ -121,7 +149,7 @@ class Robot::Verification::Base
   end
 
   def generate_picking_data_hash(batch, destination_plate_barcode, max_beds)
-    Robot::PickData.new(batch, destination_plate_barcode, max_beds: max_beds).picking_data_hash
+    cached_pick_data(batch, max_beds).picking_data_hash(destination_plate_barcode)
   end
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout)
@@ -151,5 +179,10 @@ class Robot::Verification::Base
     end
 
     true
+  end
+
+  def cached_pick_data(batch, max_beds)
+    @cached_pick_data ||= {}
+    @cached_pick_data[[batch, max_beds]] ||= Robot::PickData.new(batch, max_beds: max_beds)
   end
 end

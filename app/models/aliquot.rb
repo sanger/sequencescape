@@ -44,8 +44,8 @@ class Aliquot < ApplicationRecord
   # An aliquot is held within a receptacle
   belongs_to :receptacle, inverse_of: :aliquots
 
-  belongs_to :tag
-  belongs_to :tag2, class_name: 'Tag'
+  belongs_to :tag, optional: true
+  belongs_to :tag2, class_name: 'Tag', optional: true
 
   # An aliquot can belong to a study and a project.
   belongs_to :study
@@ -155,6 +155,10 @@ class Aliquot < ApplicationRecord
     super unless tag_id == UNASSIGNED_TAG
   end
 
+  def tag2
+    super unless tag2_id == UNASSIGNED_TAG
+  end
+
   def set_library
     self.library = receptacle
   end
@@ -178,7 +182,7 @@ class Aliquot < ApplicationRecord
     # is checking the upstream aliquot
     case
     when sample_id != object.sample_id                                                   then false # The samples don't match
-    when object.library_id.present?      && (library_id      != object.library_id)       then false # Our librarys don't match.
+    when object.library_id.present?      && (library_id      != object.library_id)       then false # Our libraries don't match.
     when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)  then false # We have different bait libraries
     when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)                        then raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
     when object.no_tags? then true # The upstream aliquot was untagged, we don't need to check tags

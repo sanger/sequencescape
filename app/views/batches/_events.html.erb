@@ -26,13 +26,7 @@
             <% end -%>
 
             <td><%= event.created_at.nil? ? 'Unknown' : event.created_at.strftime("%A %d %B at %H:%M") %></td>
-
-            <% if event.user -%>
-              <td><%= event.user.try(:login)||'Unknown' %></td>
-            <% else -%>
-              <td>&#8211;</td>
-            <% end -%>
-
+            <td><%= event.user.try(:login)||'Unknown' %></td>
           </tr>
         <% end -%>
       <% end -%>

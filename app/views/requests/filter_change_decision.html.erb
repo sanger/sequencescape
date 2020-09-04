@@ -42,7 +42,8 @@
   <% end %>
 </div>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
+
 (function($, undefined) {
  $(document).on('dom:loaded', function() {
    $('input[type=checkbox]').each(function(checkbox) {
@@ -58,7 +59,8 @@
    });
  });
 })(jQuery);
-</script>
+
+<% end %>
 
 <% else %>
 <div class="info">

@@ -83,7 +83,8 @@
   <br />
 </div>
 <% if edit %>
-  <script type="text/javascript">
+  <%= javascript_tag nonce: true do %>
+
     (function() {
       function batchListPostParametersFromSortable(node) {
         return $(node).sortable('toArray').map(function(s) {return s.replace(/request_/,'requests_list[]=');}).join('&');
@@ -95,5 +96,6 @@
       });
       $( "#requests_list" ).disableSelection();
     }());
-  </script>
+
+<% end %>
 <% end %>

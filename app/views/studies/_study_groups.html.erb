@@ -13,13 +13,15 @@
     <%= loading_bar %>
     <%= remote_error %>
     <div class="group_content" id="everything">
-      <script type="text/javascript">
+      <%= javascript_tag nonce: true do %>
+
       (function($, undefined){
         $("#everything").load('<%= study_list_studies_path(scope: scope)%>', function() {
           $(document.body).trigger("ajaxDomUpdate", $("#everything"));
         });
       })(jQuery);
-      </script>
+
+<% end %>
     </div>
   </div>
 </div>

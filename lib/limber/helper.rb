@@ -50,7 +50,7 @@ module Limber::Helper
         rt.library_types << LibraryType.find_or_create_by!(name: name) unless rt_lts.include?(name)
       end
 
-      return true if rt.request_type_validators.where(request_option: 'library_type').exists?
+      return true if rt.request_type_validators.exists?(request_option: 'library_type')
 
       RequestType::Validator.create!(
         request_type: rt,
@@ -218,7 +218,7 @@ module Limber::Helper
     def each_submission_template
       cherrypick_options.each do |cherrypick|
         sequencing_request_types.each do |sequencing_request_type|
-          next if SubmissionTemplate.where(name: name_for(cherrypick, sequencing_request_type)).exists?
+          next if SubmissionTemplate.exists?(name: name_for(cherrypick, sequencing_request_type))
 
           yield({
             name: name_for(cherrypick, sequencing_request_type),

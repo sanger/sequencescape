@@ -49,7 +49,7 @@
   <%= submit_tag "Save" %>
 <% end %>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
   function empty_well(well,row,col,plate_width) {
     if($(well).className == 'empty') {
       $(well).removeClassName('empty');
@@ -59,4 +59,4 @@
       $(well).update('Empty<input type="hidden" name="empty_well['+well+']" value="'+ (((row)*plate_width)+ col)+'">');
     }
   }
-</script>
+<% end %>

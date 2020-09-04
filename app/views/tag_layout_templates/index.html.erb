@@ -24,7 +24,9 @@
   </tbody>
 </table>
 
-<script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
+<%= javascript_tag nonce: true do %>
+$('table tbody > tr:nth-child(even)').addClass('roweven');
+<% end %>
 
 <br>
 <%= link_to 'To tag groups list', tag_groups_path %>

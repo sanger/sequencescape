@@ -16,6 +16,8 @@ class Pulldown::InitialDownstreamPlatePurpose < IlluminaHtp::InitialDownstreamPl
   def stock_wells(plate, contents)
     return plate.parents.map(&:wells).flatten if contents.blank?
 
+    # rubocop:todo Rails/PluckInWhere
     Well.joins(:requests).where(requests: { target_asset_id: plate.wells.located_at(contents).pluck(:id) })
+    # rubocop:enable Rails/PluckInWhere
   end
 end
