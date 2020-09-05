@@ -109,7 +109,9 @@ class BackFillLibraryEvents
         end
 
         # Find the earliest state change associated with each order
-        earliest = order_states.min(&:occurred_at)
+        # Not sure why we can't use order_states.min(&:occurred_at) here, it throws
+        # ArgumentError: wrong number of arguments (given 1, expected 0)
+        earliest = order_states.min { |os| os.occurred_at } # rubocop:disable Style/SymbolProc
         # Log it
         Rails.logger.info earliest
         # Create the event
