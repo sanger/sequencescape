@@ -17,6 +17,7 @@ shared_context 'a limber target plate with submissions' do |library_state = 'sta
   let(:target_submission) do
     create :library_submission, assets: input_plate.wells, request_types: submission_request_types
   end
+  let(:order) { create :linear_submission }
   # The decoy submission represents a submission which we don't care about
   let(:decoy_submission) do
     create :library_submission, assets: input_plate.wells, request_types: submission_request_types
@@ -30,7 +31,8 @@ shared_context 'a limber target plate with submissions' do |library_state = 'sta
 
   let(:build_library_requests) do
     input_plate.wells.each do |well|
-      create_list :library_request, requests_per_well, request_type: library_request_type, asset: well, submission: target_submission, state: library_state
+      create_list :library_request, requests_per_well, request_type: library_request_type, asset: well,
+                                                       submission: target_submission, state: library_state, order: order
       create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: library_state
     end
   end

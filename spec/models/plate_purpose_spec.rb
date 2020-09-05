@@ -75,7 +75,7 @@ describe PlatePurpose, type: :model do
         # Requests are started and we create one event per order.
         expect do
           target_plate.plate_purpose.transition_to(target_plate, 'started', user)
-        end.to change(BroadcastEvent::LibraryStart, :count).by(3)
+        end.to change(BroadcastEvent::LibraryStart, :count).by(1)
         expect(library_requests).to all(be_started)
       end
     end
