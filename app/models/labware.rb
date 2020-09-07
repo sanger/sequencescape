@@ -3,7 +3,6 @@
 # Labware represents a physical object which moves around the lab.
 # It has one or more receptacles.
 class Labware < Asset
-  include LabwareAssociations
   include Commentable
   include Uuid::Uuidable
   include AssetLink::Associations
@@ -17,8 +16,11 @@ class Labware < Asset
   self.receptacle_class = 'Receptacle'
   self.sample_partial = 'assets/samples_partials/asset_samples'
 
+  has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
   has_many :receptacles, dependent: :restrict_with_exception
   has_many :messengers, as: :target, inverse_of: :target, dependent: :destroy
+
+  # The following are all through receptacles
   has_many :aliquots, through: :receptacles
   has_many :samples, through: :receptacles
   has_many :studies, -> { distinct }, through: :receptacles
@@ -29,6 +31,17 @@ class Labware < Asset
   has_many :transfer_requests_as_target, through: :receptacles
   has_many :submissions, through: :receptacles
   has_many :asset_groups, through: :receptacles
+
+  # The requests which were being processed to make the plate/tube
+  # This should probably be switched to going through aliquots, but not 100% certain that it wont cause side effects
+  # Might just be safer to wait until we've moved off onto the new api
+  has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
+
+  has_many :contained_samples, through: :receptacles, source: :samples
+  has_many :contained_aliquots, through: :receptacles, source: :aliquots
+
+  has_many :in_progress_requests, through: :contained_aliquots, source: :request
+
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
 
   belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
@@ -54,6 +67,32 @@ class Labware < Asset
   scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
   scope :include_creation_batches, -> { includes(:creation_batches) }
+
+  # We accept not only an individual barcode but also an array of them.
+  scope :with_barcode, lambda { |*barcodes|
+    db_barcodes = Barcode.extract_barcodes(barcodes)
+    joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+  }
+  # In contrast to with_barocde, filter_by_barcode only filters in the event
+  # a parameter is supplied. eg. an empty string does not filter the data
+  scope :filter_by_barcode, lambda { |*barcodes|
+    db_barcodes = Barcode.extract_barcodes(barcodes)
+    db_barcodes.blank? ? includes(:barcodes) : includes(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+  }
+
+  scope :source_assets_from_machine_barcode, lambda { |destination_barcode|
+    destination_asset = find_by_barcode(destination_barcode)
+    if destination_asset
+      source_asset_ids = destination_asset.parents.map(&:id)
+      if source_asset_ids.empty?
+        none
+      else
+        where(id: source_asset_ids)
+      end
+    else
+      none
+    end
+  }
 
   def human_barcode
     'UNKNOWN'
@@ -87,26 +126,52 @@ class Labware < Asset
     scanned_into_lab_event.try(:content) || ''
   end
 
-  # Bulk retrieves locations for multiple labwares at once
-  # Returns hash { labware barcode => location string, .. } e.g. { 'DN1234' => 'Sanger - Room 1 - Shelf 2' }
-  # Hash has blank values where location was not found for a particular barcode
-  # Or raises LabWhereClient::LabwhereException if Labwhere response is unexpected
-  def self.labwhere_locations(labware_barcodes)
-    info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
+  # Class methods
+  class << self
+    # Bulk retrieves locations for multiple labwares at once
+    # Returns hash { labware barcode => location string, .. } e.g. { 'DN1234' => 'Sanger - Room 1 - Shelf 2' }
+    # Hash has blank values where location was not found for a particular barcode
+    # Or raises LabWhereClient::LabwhereException if Labwhere response is unexpected
+    def labwhere_locations(labware_barcodes)
+      info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
 
-    raise LabWhereClient::LabwhereException, 'Labwhere service did not return information' if info_from_labwhere.blank?
+      raise LabWhereClient::LabwhereException, 'Labwhere service did not return information' if info_from_labwhere.blank?
 
-    barcodes_to_parentage = info_from_labwhere.labwares.each_with_object({}) do |info, obj|
-      obj[info.barcode] = info.location.location_info
+      barcodes_to_parentage = info_from_labwhere.labwares.each_with_object({}) do |info, obj|
+        obj[info.barcode] = info.location.location_info
+      end
+
+      unless labware_barcodes.count == barcodes_to_parentage.count
+        labware_barcodes.each do |barcode|
+          # add missing barcodes to the hash, with an empty string for location, for ones that Labwhere didn't return
+          barcodes_to_parentage[barcode] ||= ''
+        end
+      end
+      barcodes_to_parentage
     end
 
-    unless labware_barcodes.count == barcodes_to_parentage.count
-      labware_barcodes.each do |barcode|
-        # add missing barcodes to the hash, with an empty string for location, for ones that Labwhere didn't return
-        barcodes_to_parentage[barcode] ||= ''
+    def find_from_any_barcode(source_barcode)
+      if source_barcode.blank?
+        nil
+      elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
+        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode).first # rubocop:disable Rails/FindBy
+      else
+        find_by_barcode(source_barcode)
       end
     end
-    barcodes_to_parentage
+
+    def find_by_barcode(source_barcode)
+      with_barcode(source_barcode).first
+    end
+    alias find_from_barcode find_by_barcode
+  end
+
+  def parent
+    parents.first
+  end
+
+  def child
+    children.last
   end
 
   private

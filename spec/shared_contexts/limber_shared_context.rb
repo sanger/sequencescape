@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'a limber target plate with submissions' do
+shared_context 'a limber target plate with submissions' do |library_state = 'started'|
   # A note on improving speed: before(:context) could be used instead of before(:each) to ensure these elements only get
   # built once. This will speed things up, but is discouraged. You can't use let in a before(:context) so instance variables
   # would need to be set instead.
@@ -17,6 +17,7 @@ shared_context 'a limber target plate with submissions' do
   let(:target_submission) do
     create :library_submission, assets: input_plate.wells, request_types: submission_request_types
   end
+  let(:order) { target_submission.orders.first }
   # The decoy submission represents a submission which we don't care about
   let(:decoy_submission) do
     create :library_submission, assets: input_plate.wells, request_types: submission_request_types
@@ -27,10 +28,12 @@ shared_context 'a limber target plate with submissions' do
   let(:library_requests) { target_submission.requests.where(request_type_id: library_request_type.id) }
   let(:multiplex_requests) { target_submission.requests.where(request_type_id: multiplex_request_type.id) }
   let(:decoy_submission_requests) { decoy_submission.requests.where(request_type_id: library_request_type.id) }
+
   let(:build_library_requests) do
     input_plate.wells.each do |well|
-      create_list :library_request, requests_per_well, request_type: library_request_type, asset: well, submission: target_submission, state: 'started'
-      create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: 'started'
+      create_list :library_request, requests_per_well, request_type: library_request_type, asset: well,
+                                                       submission: target_submission, state: library_state, order: order
+      create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: library_state
     end
   end
   # Build the requests we'll use. The order here is important, as submissions depend on it for finding the

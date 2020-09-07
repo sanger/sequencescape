@@ -137,6 +137,8 @@ class TransferRequest < ApplicationRecord
   def sibling_requests
     if associated_requests.loaded?
       associated_requests.select { |r| r.submission_id == submission_id }
+    elsif asset.requests.loaded?
+      asset.requests.select { |r| r.submission_id == submission_id }
     else
       associated_requests.where(submission: submission_id)
     end
