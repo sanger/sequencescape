@@ -68,7 +68,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def printables
-      multiplexed_library_tube
+      multiplexed_library_tube.labware
     end
 
     def included_resources

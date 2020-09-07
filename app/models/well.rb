@@ -181,7 +181,7 @@ class Well < Receptacle
   end
 
   def stock_wells_for_downstream_wells
-    plate&.stock_plate? ? [self] : stock_wells
+    labware&.stock_plate? ? [self] : stock_wells
   end
 
   def subject_type

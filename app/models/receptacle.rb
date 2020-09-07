@@ -28,7 +28,7 @@ class Receptacle < Asset
   # put a tube rack in a tube rack.
   has_one :racked_tube, foreign_key: :tube_id, primary_key: :labware_id
 
-  delegate :human_barcode, :machine_barcode, to: :labware, allow_nil: true
+  delegate :human_barcode, :machine_barcode, :barcode_number, to: :labware, allow_nil: true
   delegate :asset_type_for_request_types, to: :labware, allow_nil: true
   delegate :has_stock_asset?, to: :labware, allow_nil: true
   delegate :children, to: :labware, allow_nil: true
@@ -76,12 +76,9 @@ class Receptacle < Asset
   has_many :upstream_plates, through: :upstream_wells, source: :plate
 
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id, dependent: :restrict_with_exception
-  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request',
-                                                                  foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
-  has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request',
-                                                                      foreign_key: :asset_id, dependent: :restrict_with_exception, inverse_of: :asset
-  has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request',
-                                                                      foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
+  has_one  :source_request, class_name: 'Request', foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
+  has_many :requests_as_source, class_name: 'Request', foreign_key: :asset_id, dependent: :restrict_with_exception, inverse_of: :asset
+  has_many :requests_as_target, class_name: 'Request', foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
   has_many :source_batches, class_name: 'Batch', through: :requests_as_source, source: :batch
   has_many :source_receptacles, through: :requests_as_target, source: :asset
