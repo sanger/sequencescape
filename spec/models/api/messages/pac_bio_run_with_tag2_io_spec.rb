@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::Messages::PacBioRunWithTag2IO, type: :model do
-  subject { described_class.to_hash(pac_bio_batch) }
+  let(:message) { described_class.to_hash(pac_bio_batch) }
 
   let(:plate) { create(:plate_with_tagged_wells, sample_count: 2) }
 
@@ -22,7 +22,7 @@ RSpec.describe Api::Messages::PacBioRunWithTag2IO, type: :model do
   let(:well_a1) { plate.wells.located_at('A1').first }
   let(:well_b1) { plate.wells.located_at('B1').first }
 
-  let(:expected_json) {
+  let(:expected_json) do
     {
       'pac_bio_run_id' => pac_bio_batch.id,
       'pac_bio_run_name' => pac_bio_batch.id,
@@ -61,10 +61,10 @@ RSpec.describe Api::Messages::PacBioRunWithTag2IO, type: :model do
         }
       ]
     }
-  }
+  end
 
   it 'generates valid json' do
-    actual = subject.as_json
+    actual = message.as_json
     actual.delete('updated_at')
     expect(actual).to eq(expected_json)
   end
