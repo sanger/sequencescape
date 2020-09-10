@@ -213,7 +213,6 @@ class CherrypickTask < Task
     end
   end
 
-  #
   # Returns a list with the destination positions for the control wells distributed by
   # using batch_id and num_plate as position generators.
   def control_positions(batch_id, num_plate, total_wells, num_control_wells)
@@ -226,9 +225,21 @@ class CherrypickTask < Task
     while positions.length < num_control_wells
       current_size = available_posns.length
       position = available_posns.slice!(unique_number % current_size)
-      position_for_plate = (position + num_plate) % total_wells
+      position_for_plate = position % total_wells
       positions.push(position_for_plate)
       unique_number /= current_size
+    end
+
+    if num_plate > 0
+      positions.map! do |pos|
+        new_pos = pos + num_plate
+        start_index = 0
+        start_index = CONTROL_START_INDX_96 if total_wells == 96
+        if new_pos > total_wells - 1
+          new_pos =  start_index + ((new_pos - total_wells) % (total_wells - start_index))
+        end
+        new_pos
+      end
     end
 
     positions

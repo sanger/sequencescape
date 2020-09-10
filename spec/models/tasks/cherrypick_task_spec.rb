@@ -155,6 +155,37 @@ RSpec.describe CherrypickTask, type: :model do
       expect(described_class.new.control_positions(0, 2, 5, 2)).to eq([2, 3])
       expect(described_class.new.control_positions(0, 3, 5, 2)).to eq([3, 4])
       expect(described_class.new.control_positions(0, 4, 5, 2)).to eq([4, 0])
+      expect(described_class.new.control_positions(0, 5, 5, 2)).to eq([0, 1])
+    end
+
+    context 'with a plate that has 96 wells' do
+      it 'can generate the control positions of 384 plates of the same batch id with 96 wells (3 columns empty)' do
+        val= 65
+        val2 = 8
+
+        384.times.map do |num_plate|
+          expect(described_class.new.control_positions(77321, num_plate, 96, 2)).to eq([24 + (val+num_plate) % 72, 24 + (val2+num_plate) % 72])
+        end
+      end
+
+      it 'can generate the control positions of 384 plates of the same batch id with 32 wells (all columns available)' do
+        val= 9
+        val2 = 30
+
+        384.times.map do |num_plate|
+          expect(described_class.new.control_positions(77321, num_plate, 32, 2)).to eq([(val+num_plate) % 32, (val2+num_plate) % 32])
+        end
+      end
+
+
+      it 'can allocate right controls (excluding first 3 columns) when number of plate position exceeds wells' do
+        expect(described_class.new.control_positions(77321, 0, 96, 2)).to eq([89, 32])
+        expect(described_class.new.control_positions(77321, 1, 96, 2)).to eq([90, 33])
+        expect(described_class.new.control_positions(77321, 5, 96, 2)).to eq([94, 37])
+        expect(described_class.new.control_positions(77321, 6, 96, 2)).to eq([95, 38])
+        expect(described_class.new.control_positions(77321, 7, 96, 2)).to eq([24, 39])
+        expect(described_class.new.control_positions(77321, 8, 96, 2)).to eq([25, 40])
+      end
     end
 
     it 'can allocate all controls in all wells' do
