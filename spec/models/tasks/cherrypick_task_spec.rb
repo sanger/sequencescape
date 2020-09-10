@@ -176,6 +176,18 @@ RSpec.describe CherrypickTask, type: :model do
         end
       end
 
+      it 'can pass a random batch id test' do
+        batch_id  = rand(99999)
+        num_plate = rand(384)
+        puts "Random batch = #{batch_id}"
+        puts "Random plate = #{num_plate}"
+
+        list = described_class.new.control_positions(batch_id, num_plate, 96, 2)
+
+        expect(list[0]>=24).to be_truthy
+        expect(list[1]>=24).to be_truthy
+      end
+
       it 'can allocate right controls (excluding first 3 columns) when number of plate position exceeds wells' do
         expect(described_class.new.control_positions(77321, 0, 96, 2)).to eq([89, 32])
         expect(described_class.new.control_positions(77321, 1, 96, 2)).to eq([90, 33])
