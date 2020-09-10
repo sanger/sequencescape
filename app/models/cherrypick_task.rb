@@ -230,14 +230,12 @@ class CherrypickTask < Task
       unique_number /= current_size
     end
 
-    if num_plate > 0
+    if num_plate.positive?
       positions.map! do |pos|
         new_pos = pos + num_plate
         start_index = 0
         start_index = CONTROL_START_INDX_96 if total_wells == 96
-        if new_pos > total_wells - 1
-          new_pos =  start_index + ((new_pos - total_wells) % (total_wells - start_index))
-        end
+        new_pos = start_index + ((new_pos - total_wells) % (total_wells - start_index)) if new_pos > total_wells - 1
         new_pos
       end
     end
