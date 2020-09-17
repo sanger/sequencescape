@@ -159,8 +159,9 @@ class Aliquot < ApplicationRecord
     super unless tag2_id == UNASSIGNED_TAG
   end
 
-  def set_library
-    self.library = receptacle
+  # Cop disabled as this isn't a setter
+  def set_library(force: false) # rubocop:disable Naming/AccessorMethodName
+    self.library = receptacle if library.nil? || force
   end
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
