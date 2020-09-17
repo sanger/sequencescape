@@ -367,12 +367,19 @@ class Plate < Labware
     wells.any?(&:buffer_required?)
   end
 
-  def valid_positions?(positions)
-    unique_positions_from_caller = positions.sort.uniq
-    unique_positions_on_plate = maps.where_description(unique_positions_from_caller)
-                                    .distinct
-                                    .pluck(:description).sort
-    unique_positions_on_plate == unique_positions_from_caller
+  #
+  # Given a list of well  map_descriptions (eg. A1), returns those not present on the plate
+  #
+  # @param [Array] positions Array of positions to test
+  #
+  # @return [Array] Array of invalid positions
+  #
+  def invalid_positions(positions)
+    (positions.uniq - unique_positions_on_plate).sort
+  end
+
+  def unique_positions_on_plate
+    maps.distinct.pluck(:description)
   end
 
   def name_for_label
