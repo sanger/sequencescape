@@ -23,7 +23,11 @@ namespace :limber do
                 { name: 'GBS Stock',
                   size: 384 },
                 { name: 'GnT Stock',
-                  size: 96 }
+                  size: 96 },
+                { name: 'LTHR RT',
+                  size: 96 },
+                { name: 'LTHR-384 RT',
+                  size: 384 }
                 ]
 
     purposes.each do |purpose|
@@ -415,9 +419,10 @@ namespace :limber do
         'Heron LTHR',
         request_class: 'IlluminaHtp::Requests::HeronTailedRequest',
         library_types:  [
+          'PCR amplicon tailed adapters 96',
           'PCR amplicon tailed adapters 384'
         ],
-        default_purposes: ['LTHR-384 RT']             # It requires default_purpose to accept an array.
+        default_purposes: ['LTHR-384 RT', 'LTHR RT']
       ).build!
 
 
