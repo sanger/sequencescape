@@ -8,10 +8,10 @@ class Transfer::FromPlateToTube < Transfer
 
   # The values in the transfers must be an array and must be valid well positions on the plate.
   validates_each(:transfers) do |record, _attribute, value|
-    if not value.is_a?(Array)
+    if value.is_a?(Array)
+      record.validate_transfers(value, record.source, 'source')
+    else
       record.errors.add(:transfers, 'must be an array of well positions')
-    elsif record.source.present? and not record.source.valid_positions?(value)
-      record.errors.add(:transfers, 'are not valid positions on the source plate')
     end
   end
 
