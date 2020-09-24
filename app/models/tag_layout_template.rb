@@ -4,8 +4,6 @@ class TagLayoutTemplate < ApplicationRecord
   include Uuid::Uuidable
   include Lot::Template
 
-  attr_writer :enforce_uniqueness
-
   belongs_to :tag_group, optional: false
   belongs_to :tag2_group, class_name: 'TagGroup'
 
@@ -25,19 +23,16 @@ class TagLayoutTemplate < ApplicationRecord
 
   # Create a TagLayout instance that does the actual work of laying out the tags.
   def create!(attributes = {}, &block)
-    TagLayout.create!(attributes.merge(tag_layout_attributes), &block).tap do |tag_layout|
-      record_template_use(tag_layout.plate)
+    new_tag_layout_attributes = attributes.except(:enforce_uniqueness).merge(tag_layout_attributes)
+    # By default if not overridden, dual indexed tag template enforce their uniqueness
+    # We use fetch here, as both nil and false are expected values
+    enforce_uniqueness = attributes.fetch(:enforce_uniqueness, tag2_group.present?)
+    TagLayout.create!(new_tag_layout_attributes, &block).tap do |tag_layout|
+      record_template_use(tag_layout.plate, enforce_uniqueness)
     end
   end
 
   private
-
-  # By default if not overidden, dual indexed tag template
-  # enforce their uniqueness
-  # Note we need to use instance_variable_defined? as nil is a perfectly valid value
-  def enforce_uniqueness
-    instance_variable_defined?('@enforce_uniqueness') ? @enforce_uniqueness : tag2_group.present?
-  end
 
   def direction_algorithm_class
     direction_algorithm.constantize
@@ -56,7 +51,7 @@ class TagLayoutTemplate < ApplicationRecord
     }
   end
 
-  def record_template_use(plate)
+  def record_template_use(plate, enforce_uniqueness)
     plate.submissions.each do |submission|
       TagLayout::TemplateSubmission.create!(submission: submission, tag_layout_template: self, enforce_uniqueness: enforce_uniqueness)
     end
