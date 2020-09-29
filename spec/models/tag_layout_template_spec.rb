@@ -89,7 +89,7 @@ describe TagLayoutTemplate do
 
         it 'records itself against the submissions' do
           # First double check we have submissions
-          # otherwise out test is a false positive
+          # otherwise our test is a false positive
           subject
           submissions = plate.submissions.map(&:id)
           expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
