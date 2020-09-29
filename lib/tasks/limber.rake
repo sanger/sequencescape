@@ -582,9 +582,9 @@ namespace :limber do
       Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: 'Heron', catalogue: heron_catalogue).build!
 
       heron_lthr_catalogue = ProductCatalogue.find_or_create_by!(name: 'Heron LTHR')
-      Limber::Helper::TemplateConstructor.new(prefix: 'Heron LTHR', catalogue: heron_lthr_catalogue, sequencing_keys: base_list).build!
-      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'Heron LTHR', catalogue: heron_lthr_catalogue).build!
-      Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: 'Heron LTHR', catalogue: heron_lthr_catalogue).build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'Heron LTHR', catalogue: heron_lthr_catalogue, sequencing_keys: base_list, role: 'LTHR').build!
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'Heron LTHR', catalogue: heron_lthr_catalogue, role: 'LTHR').build!
+      Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: 'Heron LTHR', catalogue: heron_lthr_catalogue, role: 'LTHR').build!
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
