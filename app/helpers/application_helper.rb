@@ -207,14 +207,6 @@ module ApplicationHelper
     tag.div(class: ['tab-pane', 'fade', 'show', active_class], id: id, role: 'tabpanel', aria_labelledby: tab_id, &block)
   end
 
-  def item_status(item)
-    if item.failures.empty?
-      ''
-    else
-      '<span style="color:red;">FAILED</span>'
-    end
-  end
-
   def display_request_information(request, rit, batch = nil)
     r = request.value_for(rit.name, batch)
     r.presence || 'NA'

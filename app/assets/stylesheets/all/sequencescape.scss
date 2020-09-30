@@ -163,7 +163,7 @@ div.quota {
   }
   div.field {
     @extend .col-sm-10;
-    input { @extend .form-control; }
+    input, textarea { @extend .form-control; }
     select { @extend .custom-select; }
     .form-help {
       @extend .text-muted;
