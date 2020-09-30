@@ -172,9 +172,9 @@ class BatchesController < ApplicationController
       fail_params = params.permit(:id, requested_fail: {}, requested_remove: {}, failure: %i[reason comment fail_but_charge])
       fail_and_remover = Batch::RequestFailAndRemover.new(fail_params)
       if fail_and_remover.save
-        flash[:notice] = fail_and_remover.notice
+        flash[:notice] = truncate_flash(fail_and_remover.notice)
       else
-        flash[:error] = fail_and_remover.errors.full_messages.join(';')
+        flash[:error] = truncate_flash(fail_and_remover.errors.full_messages.join(';'))
       end
       redirect_to action: :fail, id: params[:id]
     end
