@@ -5,6 +5,10 @@ require 'authenticated_system'
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  # {FlashTruncation} provides the #truncate_flash method for automatically trimming
+  # large flash messages to prevent cookie overflow.
+  include FlashTruncation
+
   helper :all # include all helpers, all the time
 
   # See ActionController::RequestForgeryProtection for details
