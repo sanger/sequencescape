@@ -393,10 +393,11 @@ class Request < ApplicationRecord
     rit = RequestInformationType.find_by(name: name)
     rit_value = get_value(rit) if rit.present?
     return rit_value if rit_value.present?
+
     event_value_for(name, batch)
   end
 
-  def event_value_for(name, batch=nil)
+  def event_value_for(name, batch = nil)
     list = (batch.present? ? lab_events_for_batch(batch) : lab_events)
     list.each { |event| desc = event.descriptor_value_for(name) and return desc }
     ''
