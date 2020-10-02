@@ -8,6 +8,7 @@ namespace :hic_library_types do
 
     ['Hi-C- Arima v2', 'Hi-C – Qiagen', 'Hi-C – OmniC', 'Hi-C – Arima v1', 'Hi-C – Dovetail'].each do |name|
       next if LibraryType.find_by(name: name)
+
       LibraryType.create!(name: name, request_types: request_types)
       puts "Library type created for #{name}"
     end
