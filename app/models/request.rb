@@ -381,9 +381,9 @@ class Request < ApplicationRecord
   end
 
   def get_value(request_information_type)
-    return '' unless request_metadata.respond_to?(request_information_type.key.to_sym)
+    return '' unless request_metadata.respond_to?(request_information_type.key)
 
-    value = request_metadata.send(request_information_type.key.to_sym)
+    value = request_metadata.send(request_information_type.key)
     return value.to_s if value.blank? or request_information_type.data_type != 'Date'
 
     value.to_date.strftime('%d %B %Y')
@@ -394,6 +394,10 @@ class Request < ApplicationRecord
     rit_value = get_value(rit) if rit.present?
     return rit_value if rit_value.present?
 
+    event_value_for(name, batch)
+  end
+
+  def event_value_for(name, batch = nil)
     list = (batch.present? ? lab_events_for_batch(batch) : lab_events)
     list.each { |event| desc = event.descriptor_value_for(name) and return desc }
     ''
@@ -404,7 +408,11 @@ class Request < ApplicationRecord
   end
 
   def lab_events_for_batch(batch)
-    lab_events.where(batch_id: batch.id)
+    if lab_events.loaded?
+      lab_events.select { |le| le.batch_id == batch.id }
+    else
+      lab_events.where(batch_id: batch.id)
+    end
   end
 
   def event_with_key_value(k, v = nil)
