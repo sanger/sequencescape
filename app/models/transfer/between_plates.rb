@@ -15,12 +15,11 @@ class Transfer::BetweenPlates < Transfer
   # The values in the transfers must be a hash and must be valid well positions on both the
   # source and destination plates.
   validates_each(:transfers) do |record, _attribute, value|
-    if not value.is_a?(Hash)
+    if value.is_a?(Hash)
+      record.validate_transfers(value.keys, record.source, 'source')
+      record.validate_transfers(value.values.flatten, record.destination, 'destination')
+    else
       record.errors.add(:transfers, 'must be a map from source to destination location')
-    elsif record.source.present? and not record.source.valid_positions?(value.keys)
-      record.errors.add(:transfers, 'are not valid positions for the source plate')
-    elsif record.destination.present? and not record.destination.valid_positions?(value.values.flatten)
-      record.errors.add(:transfers, "#{value.values.inspect} are not valid positions for the destination plate")
     end
   end
 

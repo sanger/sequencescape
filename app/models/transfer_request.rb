@@ -195,9 +195,10 @@ class TransferRequest < ApplicationRecord
     # We'll specifically handle tag clashes here so that we can produce more informative messages
     raise e unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(e.message)
 
-    errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
+    message = "#{asset.display_name} contains aliquots which can't be transferred due to tag clash"
+    errors.add(:asset, message)
 
-    raise Aliquot::TagClash, self
+    raise Aliquot::TagClash, message
   end
 
   # If merge_equivalent_aliquots is false, or unset we do not detect

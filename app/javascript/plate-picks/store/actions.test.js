@@ -140,8 +140,8 @@ describe('actions.js', () => {
       // assert result
       expect(commit).toHaveBeenCalledWith('updateBatch', { id: '1' })
       expect(commit).toHaveBeenCalledWith('updateBatch', augmentedBatch)
-      expect(commit).toHaveBeenCalledWith('updatePick', { id: '1', short: 'Basket 1', ...pick1 })
-      expect(commit).toHaveBeenCalledWith('updatePick', { id: '2', short: 'Basket 2', ...pick2 })
+      expect(commit).toHaveBeenCalledWith('updatePick', { id: '1', short: '1', ...pick1 })
+      expect(commit).toHaveBeenCalledWith('updatePick', { id: '2', short: '2', ...pick2 })
       expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { id: 1, barcode: exampleBarcode, batches: ['1'] }, batch: '1', pick: { id: '1' } })
       expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { id: 2, barcode: 'DN12346S', batches: ['1'] }, batch: '1', pick: { id: '1' } })
       expect(commit).toHaveBeenCalledWith('addPickToPlate', { plate: { id: 3, barcode: 'DN12347T', batches: ['1'] }, batch: '1', pick: { id: '2' } })

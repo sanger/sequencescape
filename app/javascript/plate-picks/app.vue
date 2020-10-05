@@ -20,7 +20,7 @@ See: https://github.com/sanger/sequencescape/issues/2860
         <li>Scan your plate into the search box using a barcode scanner</li>
         <li>Sequencescape will retrieve the plate information, and any associated batches</li>
         <li>
-          This process may take a few moments for the first plate you scan, but should be substantialy faster for
+          This process may take a few moments for the first plate you scan, but should be substantially faster for
           subsequent plates in the same batch.
         </li>
         <li>

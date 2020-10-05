@@ -103,6 +103,10 @@ FactoryBot.define do
     factory :heron_request, class: 'IlluminaHtp::Requests::HeronRequest' do
       request_metadata_attributes { attributes_for :request_metadata_for_heron }
     end
+
+    factory :heron_tailed_request, class: 'IlluminaHtp::Requests::HeronTailedRequest' do
+      request_metadata_attributes { attributes_for :request_metadata_for_heron }
+    end
   end
 
   factory(:multiplex_request, class: 'Request::Multiplexing') do

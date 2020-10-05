@@ -196,9 +196,9 @@ class Receptacle < Asset
     aliquots.pluck(:library_type).uniq
   end
 
-  def set_as_library
+  def set_as_library(force: false)
     aliquots.each do |aliquot|
-      aliquot.set_library
+      aliquot.set_library(force: force)
       aliquot.save!
     end
   end
