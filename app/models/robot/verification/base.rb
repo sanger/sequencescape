@@ -53,7 +53,7 @@ class Robot::Verification::Base
   # @param [Integer] max_beds The max_beds for plates on the robot
   def all_picks(batch, max_beds)
     # @note No optimization yet.
-    batch.output_labware.each_with_object({}) do |plate, store|
+    batch.output_plates.each_with_object({}) do |plate, store|
       store[plate.machine_barcode] = pick_number_to_expected_layout(batch, plate.machine_barcode, max_beds)
     end
   end

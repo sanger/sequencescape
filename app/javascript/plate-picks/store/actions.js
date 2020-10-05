@@ -15,7 +15,7 @@ async function processPicks({commit, dispatch}, batch) {
   const pick_ids = []
   for (const pick of batch.picks) {
     const id = (await dispatch('nextPickId')).toString()
-    const new_pick = { ...pick, id, short: `Basket ${id}` }
+    const new_pick = { ...pick, id, short: `${id}` }
     pick_ids.push(id)
     commit('updatePick', new_pick)
     for (const plate of pick.plates) {
