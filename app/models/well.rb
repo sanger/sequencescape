@@ -311,8 +311,9 @@ class Well < Receptacle
   end
 
   def display_name
-    plate_name = plate.present? ? plate.human_barcode : '(not on a plate)'
-    plate_name ||= plate.display_name # In the even the plate is barcodeless (ie strip tubes) use its name
+    source = association_cached?(:plate) ? plate : labware
+    plate_name = source.present? ? source.human_barcode : '(not on a plate)'
+    plate_name ||= source.display_name # In the even the plate is barcodeless (ie strip tubes) use its name
     "#{plate_name}:#{map_description}"
   end
 

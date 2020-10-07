@@ -5,7 +5,8 @@
       No libraries found.
     </div>
   <% else -%>
-    <table class="sortable">
+    <% request_actions = @batch.pipeline.request_actions %>
+    <table class="sortable table table-dense-information">
       <thead>
         <tr>
           <th>Sample</th>
@@ -17,26 +18,25 @@
           <th>From</th>
           <th>To</th>
           <th>Conc.</th>
-          <% @batch.pipeline.request_actions.each do |action| -%>
+          <% request_actions.each do |action| -%>
             <th class="nosort">
               <%= action.to_s.capitalize %>
               <input type='checkbox' id='select_all_<%= action.to_s %>' class='select_all' data-action='<%= action.to_s %>'>
             </th>
           <% end %>
-          <th>&nbsp;</th>
         </tr>
       </thead>
       <tbody>
-        <% requests.each_with_index do |request, index| -%>
+        <% requests.includes([:request_metadata, :batch_request, :lab_events, :failures, { asset: [:map, :parents, {labware: [:barcodes]}]}]).each_with_index do |request, index| -%>
           <tr>
-            <td>
+            <td><%# Sample (But shows parent barcodes?) %>
               <% request.asset&.parents&.each do |parent| %>
                 <%= link_to parent.human_barcode, labware_path(parent), target: "_blank" %>
               <% end %>
             </td>
 
             <% if  request.asset %>
-              <td><%= request.asset.try(:numan_barcode) %></td>
+              <td><%= request.asset.try(:human_barcode) %></td>
               <td><%= h(request.asset.display_name) %></td>
             <% else %>
               <td></td>
@@ -44,31 +44,30 @@
             <% end %>
 
             <td><%= link_to request.id, request_url(request), target: "_blank" %></td>
-            <td><%= request.value_for("Read length", @batch) %></td>
+            <td><%= request.request_metadata.read_length %></td>
             <td><%= request.position %></td>
-            <td><%= request.value_for("Fragment size required (from)", @batch) %></td>
-            <td><%= request.value_for("Fragment size required (to)", @batch) %></td>
-            <td><%= request.value_for("Concentration", @batch) %></td>
+            <td><%= request.request_metadata.fragment_size_required_from %></td>
+            <td><%= request.request_metadata.fragment_size_required_to %></td>
+            <td><%= request.event_value_for("Concentration", @batch) %></td>
 
             <% if request.failures.empty? -%>
               <% if request.asset && request.asset.resource? -%>
-                <% @batch.pipeline.request_actions.each do |action| -%>
-                  <td class="7%"><input name='requested_fail[control]' type='checkbox'></td>
+                <% request_actions.each do |action| -%>
+                  <td><input name='requested_fail[control]' type='checkbox'></td>
                 <% end %>
               <% else -%>
-                <% @batch.pipeline.request_actions.each do |action| -%>
-                  <td class="7%">
+                <% request_actions.each do |action| -%>
+                  <td>
                     <label for="requested_<%= action.to_s %>_<%= request.id %>" style="display:none;"><%= action.to_s.capitalize %> request <%= index+1 %></label>
                     <input name='requested_<%= action.to_s %>[<%= request.id %>]' id="requested_<%= action.to_s %>_<%= request.id %>" type='checkbox' class='select_<%= action.to_s %> select_all_target' data-action='<%= action.to_s %>'>
                   </td>
                 <% end %>
               <% end -%>
             <% else -%>
-              <% @batch.pipeline.request_actions.each do |action| -%>
-                <td class="7%">&nbsp;</td>
-              <% end %>
+              <td colspan='<%=  request_actions.length %>'>
+                <%= badge('failed') %>
+              </td>
             <% end -%>
-            <td class="7%"><%= item_status(request) %></td>
           </tr>
         <% end -%>
       </tbody>
