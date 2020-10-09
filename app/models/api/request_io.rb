@@ -44,6 +44,7 @@ class Api::RequestIO < Api::Base
   # Maintains the pre-existing identifiers
   class WarehouseAsset
     attr_reader :asset
+
     def initialize(asset)
       @asset = asset.is_a?(Well) ? asset : asset.try(:labware)
     end

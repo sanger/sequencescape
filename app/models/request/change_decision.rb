@@ -3,6 +3,7 @@ class Request::ChangeDecision
 
   class ChangeDecisionError < ::StandardError
     attr_reader :object
+
     def initialize(object)
       @object = object
     end
@@ -10,8 +11,7 @@ class Request::ChangeDecision
 
   InvalidDecision = Class.new(ChangeDecisionError)
 
-  attr_accessor :change_decision_check_box
-  attr_accessor :asset_qc_state_check_box
+  attr_accessor :change_decision_check_box, :asset_qc_state_check_box, :asset_qc_state, :comment, :request, :user
 
   def checkboxes
     [change_decision_check_box, asset_qc_state_check_box]
@@ -20,7 +20,6 @@ class Request::ChangeDecision
     record.errors.add(attribute, 'at least one must be selected') if list_of_checkbox_values.all? { |v| v.blank? or v == '0' }
   end
 
-  attr_accessor :asset_qc_state
   validates_each(:asset_qc_state, unless: :asset_qc_state_absent?) do |record, _attr, value|
     if not record.request.target_asset.been_through_qc?
       record.errors.add(:asset, 'has not been through QC')
@@ -30,12 +29,8 @@ class Request::ChangeDecision
   end
   validates :asset_qc_state, presence: { unless: :asset_qc_state_absent? }
 
-  attr_accessor :comment
   validates :comment, presence: true
 
-  attr_accessor :request
-
-  attr_accessor :user
   validates(:request, presence: true)
 
   def initialize(attributes)

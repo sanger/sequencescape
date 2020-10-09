@@ -41,16 +41,16 @@ class Batch::RequestFailAndRemover
 
   def fail_requests
     @batch.fail_batch_items(@requested_fail, reason, comment, fail_but_charge)
-    notice << "#{requested_fail.to_sentence} set to failed.#{charge_message}"
+    notice << "#{requested_fail.length} requests failed#{charge_message}: #{requested_fail.to_sentence}."
   end
 
   def remove_requests
     @batch.remove_request_ids(requested_remove, reason, comment)
-    notice << "#{requested_remove.to_sentence} removed."
+    notice << "#{requested_remove.length} requests removed: #{requested_remove.to_sentence}."
   end
 
   def charge_message
-    fail_but_charge ? ' The customer will still be charged.' : ''
+    fail_but_charge ? ', the customer will still be charged.' : ''
   end
 
   def requested_fail

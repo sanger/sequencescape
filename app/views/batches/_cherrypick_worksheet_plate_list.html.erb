@@ -1,0 +1,26 @@
+<% if plates.present? %>
+  <div id="<%= section_name.downcase.gsub(' ','_') %>">
+    <h2><%= section_name %></h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Bed</th>
+          <th>Plate name</th>
+          <th>Barcode</th>
+          <th>Storage location</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% plates.sort_by(&:last).each do |barcode,index| -%>
+          <% plate = Plate.find_from_barcode(barcode) %>
+          <tr>
+            <td><%= bed_prefix %><%= index %></td>
+            <td><%= plate.barcode_number %></td>
+            <td><strong><%= barcode %></strong></td>
+            <td ><%= plate.storage_location %></td>
+          </tr>
+        <% end -%>
+      </tbody>
+    </table>
+  </div>
+<% end %>

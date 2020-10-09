@@ -87,8 +87,7 @@ module LabWhereClient
   class Labware < Endpoint
     endpoint_name 'labwares'
 
-    attr_reader :barcode
-    attr_reader :location
+    attr_reader :barcode, :location
 
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?
@@ -100,6 +99,27 @@ module LabWhereClient
     def initialize(params)
       @barcode = params['barcode']
       @location = Location.new(params['location'])
+    end
+  end
+
+  class LabwareSearch < Endpoint
+    endpoint_name 'labwares/searches'
+
+    attr_reader :labwares
+
+    def self.find_locations_by_barcodes(barcodes)
+      return nil if barcodes.blank?
+
+      payload = { "barcodes": barcodes }
+
+      attrs = LabWhere.new.post(self, '', payload)
+      new(attrs) unless attrs.nil?
+    end
+
+    def initialize(params_list)
+      @labwares = params_list.map do |params|
+        Labware.new(params)
+      end
     end
   end
 
@@ -137,9 +157,7 @@ module LabWhereClient
   class Location < Endpoint
     endpoint_name 'locations'
 
-    attr_reader :name
-    attr_reader :parentage
-    attr_reader :barcode
+    attr_reader :name, :parentage, :barcode
 
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?
@@ -155,6 +173,8 @@ module LabWhereClient
     end
 
     def location_info
+      return '' if parentage.blank? && name.blank?
+
       [parentage, name].join(' - ')
     end
 

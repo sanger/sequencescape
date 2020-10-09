@@ -1,0 +1,25 @@
+<%= page_title 'Pick-List', @pick_list.id, badges: [@pick_list.state] %>
+
+<p class="lead">A quick overview of picklist <%= @pick_list.id %></p>
+
+<% if @pick_list.pending? %>
+  <%= alert(:info) do %>
+    This list is still being built and currently can not be processed through cherrypicking just yet.
+  <% end %>
+<% else %>
+  <!-- We should only really have one batch here, but... -->
+  <% @pick_list.batches.each do |batch| %>
+    <%= panel do %>
+      This pick-list has been automatically added to batch <%= batch.id %> <%= badge(batch.state) %>.<br/>
+      You can access the batch page here, or jump straight to processing it below.<br/>
+      <%= link_to 'See batch', batch_path(batch), class: 'btn btn-primary' %>
+    <% end %>
+    <%= render partial: "shared/actions", locals: { batch: batch } %>
+  <% end %>
+<% end %>
+
+<%= link_panel :default, title: 'Receptacles' do %>
+  <% @pick_list.receptacles.each do |receptacle| %>
+    <%= link_to receptacle.display_name, receptacle_path(receptacle) %>
+  <% end %>
+<% end %>

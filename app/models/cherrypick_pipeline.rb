@@ -12,10 +12,8 @@
 #    pooling or a tag clash, but rather two wells with the same location on the same plate.
 #
 # @note Cherrypicking is typically processed by an SSR, and the batch worksheet is passed over to the lab.
-#       Actual lab work is tracked via {RobotVerification} through the {RobotVerificationsController}
+#       Actual lab work is tracked via {Robot::Verification::Base} classes through the {RobotVerificationsController}
 class CherrypickPipeline < CherrypickingPipeline
-  include Pipeline::InboxGroupedBySubmission
-
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
   def post_finish_batch(batch, user)

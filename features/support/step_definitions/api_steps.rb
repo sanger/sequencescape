@@ -30,11 +30,12 @@ def assert_hash_equal(h1, h2, *args)
 end
 
 def walk_hash_structure(hash_data, &block)
-  if hash_data.is_a?(Hash)
+  case hash_data
+  when Hash
     hash_data.each_with_object({}) do |(key, value), hash|
       hash[key] = walk_hash_structure(value, &block) unless yield(key)
     end
-  elsif hash_data.is_a?(Array)
+  when Array
     hash_data.map { |entry| walk_hash_structure(entry, &block) }
   else
     hash_data
@@ -49,7 +50,7 @@ def assert_json_equal(expected, received, &block)
   )
 end
 
-Given /^all HTTP requests to the API have the cookie "([^\"]+)" set to "([^\"]+)"$/ do |cookie, value|
+Given /^all HTTP requests to the API have the cookie "([^"]+)" set to "([^"]+)"$/ do |cookie, value|
   @cookies ||= {}
   @cookies[cookie] = value
 end
@@ -58,11 +59,11 @@ Given /^no cookies are set for HTTP requests to the API$/ do
   @cookies = {}
 end
 
-Given /^the WTSI single sign-on service recognises "([^\"]+)" as "([^\"]+)"$/ do |key, login|
+Given /^the WTSI single sign-on service recognises "([^"]+)" as "([^"]+)"$/ do |key, login|
   User.find_or_create_by(login: login).update!(api_key: key)
 end
 
-Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cookie|
+Given /^the WTSI single sign-on service does not recognise "([^"]+)"$/ do |cookie|
   User.find_by(api_key: cookie).update!(api_key: nil)
 end
 
@@ -91,33 +92,33 @@ Given /^I am using the latest version of the API$/ do
   step(%Q{I am using version "#{::Core::Service::API_VERSION}" of the API})
 end
 
-When /^I (GET|PUT|POST|DELETE) the API path "(\/[^\"]*)"$/ do |action, path|
+When /^I (GET|PUT|POST|DELETE) the API path "(\/[^"]*)"$/ do |action, path|
   json_api_request(action, path, nil)
 end
 
-When /^I (POST|PUT) the following JSON to the API path "(\/[^\"]*)":$/ do |action, path, serialized_json|
+When /^I (POST|PUT) the following JSON to the API path "(\/[^"]*)":$/ do |action, path, serialized_json|
   json_api_request(action, path, serialized_json)
 end
 
-When /^I GET the "([^\"]+)" from the API path "(\/[^\"]*)"$/ do |content_type, path|
+When /^I GET the "([^"]+)" from the API path "(\/[^"]*)"$/ do |content_type, path|
   api_request('GET', path, nil) do |headers|
     headers.merge!('HTTP_ACCEPT' => content_type)
   end
 end
 
-When /^I (POST|PUT) the following "([^\"]+)" to the API path "(\/[^\"]*)":$/ do |action, content_type, path, body|
+When /^I (POST|PUT) the following "([^"]+)" to the API path "(\/[^"]*)":$/ do |action, content_type, path, body|
   api_request(action, path, body) do |headers|
     headers.merge!('CONTENT_TYPE' => content_type)
   end
 end
 
-When /^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^\"]*)"$/ do |action, path|
+When /^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^"]*)"$/ do |action, path|
   api_request(action, path, nil) do |headers|
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
   end
 end
 
-When /^I make an authorised (POST|PUT) with the following JSON to the API path "(\/[^\"]*)":$/ do |action, path, serialized_json|
+When /^I make an authorised (POST|PUT) with the following JSON to the API path "(\/[^"]*)":$/ do |action, path, serialized_json|
   api_request(action, path, serialized_json) do |headers|
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
   end
@@ -131,17 +132,17 @@ When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
   step(%Q{I GET the API path "/#{model}"})
 end
 
-When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^\"]+)"$/ do |tube_type, name|
+When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^"]+)"$/ do |tube_type, name|
   tube = "#{tube_type}_tube".classify.constantize.find_by(name: name) or raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
   visit(url_for(controller: 'api/requests', action: 'index', "#{tube_type}_tube_id": tube.id, format: :json))
 end
 
-When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model, name|
+When /^I retrieve the JSON for the (sample|study) "([^"]+)"$/ do |model, name|
   object = model.classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
   visit(url_for(controller: "api/#{model.pluralize}", action: 'show', id: object, format: :json))
 end
 
-When /^I retrieve the JSON for the last request in the study "([^\"]+)"$/ do |name|
+When /^I retrieve the JSON for the last request in the study "([^"]+)"$/ do |name|
   study = Study.find_by(name: name) or raise StandardError, "Cannot find the study #{name.inspect}"
   raise StandardError, "It appears there are no requests for study #{name.inspect}" if study.requests.empty?
 
@@ -154,7 +155,7 @@ Then /^show me the HTTP response body$/ do
   $stderr.puts('=' * 80)
 end
 
-Then /^ignoring "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
+Then /^ignoring "([^"]+)" the JSON should be:$/ do |key_list, serialised_json|
   regexp = Regexp.new(key_list)
   begin
     assert_json_equal(serialised_json, page.source) do |key|
@@ -195,14 +196,14 @@ Then /^the JSON should match the following for the specified fields:$/ do |seria
   assert_hash_equal(expected, received, "JSON #{page.source} differs in the specified fields")
 end
 
-Then /^the JSON "([^\"]+)" should be exactly:$/ do |path, serialised_json|
+Then /^the JSON "([^"]+)" should be exactly:$/ do |path, serialised_json|
   expected = decode_json(serialised_json, 'Expected')
   received = decode_json(page.source, 'Received')
   target   = path.split('.').inject(received) { |json, key| json[key] }
   assert_equal(expected, target, 'JSON differs in the specified key path')
 end
 
-Then /^the JSON "([^\"]+)" should not exist$/ do |path|
+Then /^the JSON "([^"]+)" should not exist$/ do |path|
   received = decode_json(page.source, 'Received')
   steps    = path.split('.')
   leaf     = steps.pop
@@ -230,7 +231,7 @@ Then 'the HTTP response should be {string}' do |status|
   end
 end
 
-Then /^the HTTP "([^\"]+)" should be "([^\"]+)"$/ do |header, value|
+Then /^the HTTP "([^"]+)" should be "([^"]+)"$/ do |header, value|
   assert_equal(value, page.driver.response_headers[header])
 end
 
@@ -238,7 +239,7 @@ Then /^the HTTP response body should be empty$/ do
   assert(page.source.blank?, 'The response body is not blank')
 end
 
-Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|
+Then /^the JSON should not contain "([^"]+)" within any element of "([^"]+)"$/ do |name, path|
   json = decode_json(page.source, 'Received')
   target = path.split('.').inject(json) { |s, p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"
   case target
@@ -255,16 +256,16 @@ end
 # TODO: These should be elsewhere!
 ##############################################################################
 # deprecated
-Given /^the sample named "([^\"]+)" exists with ID (\d+)$/ do |name, id|
+Given /^the sample named "([^"]+)" exists with ID (\d+)$/ do |name, id|
   step(%Q{a sample called "#{name}" with ID #{id}})
 end
 
 # deprecated
-Given /^(\d+) samples exist with the core name "([^\"]+)" and IDs starting at (\d+)$/ do |count, name, id|
+Given /^(\d+) samples exist with the core name "([^"]+)" and IDs starting at (\d+)$/ do |count, name, id|
   step(%Q{#{count} samples exist with names based on "#{name}" and IDs starting at #{id}})
 end
 
-Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate) "([^\"]+)"$/ do |child_model, child_name, parent_model, parent_name|
+Given /^the (library tube|plate) "([^"]+)" is a child of the (sample tube|plate) "([^"]+)"$/ do |child_model, child_name, parent_model, parent_name|
   parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by(name: parent_name) or raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
   child  = child_model.gsub(/\s+/, '_').classify.constantize.find_by(name: child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
   parent.children << child
@@ -275,7 +276,7 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
   end
 end
 
-Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, parent_name|
+Given /^the well "([^"]+)" is a child of the well "([^"]+)"$/ do |child_name, parent_name|
   parent = Uuid.find_by(external_id: parent_name).resource or raise StandardError, "Cannot find #{parent_name.inspect}"
   child  = Uuid.find_by(external_id: child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
   parent.children << child
@@ -284,7 +285,7 @@ Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, 
   child.save!
 end
 
-Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
+Given /^the sample "([^"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
     FactoryBot.create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1)).tap do |sample_tube|
@@ -329,12 +330,12 @@ Given /^the number of results returned by the API per page is (\d+)$/ do |count|
   ::Core::Endpoint::BasicHandler::Paged.results_per_page = count.to_i
 end
 
-Given /^the "([^\"]+)" action on samples requires authorisation$/ do |action|
+Given /^the "([^"]+)" action on samples requires authorisation$/ do |action|
   Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Model) }
   Core::Abilities::Application.full { can(action.to_sym, TestSampleEndpoint::Model) }
 end
 
-Given /^the "([^\"]+)" action on a sample requires authorisation$/ do |action|
+Given /^the "([^"]+)" action on a sample requires authorisation$/ do |action|
   Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Instance) }
   Core::Abilities::Application.full { can(action.to_sym, TestSampleEndpoint::Instance) }
 end

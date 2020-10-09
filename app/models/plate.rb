@@ -34,7 +34,7 @@ class Plate < Labware
 
   has_qc_files
 
-  belongs_to :plate_purpose, foreign_key: :plate_purpose_id, inverse_of: :plates
+  belongs_to :plate_purpose, inverse_of: :plates
   belongs_to :purpose, foreign_key: :plate_purpose_id
   has_many :wells, inverse_of: :plate, foreign_key: :labware_id do
     # Build empty wells for the plate.
@@ -60,17 +60,8 @@ class Plate < Labware
       @index_well_cache ||= index_by(&:map_description)
     end
   end
-
-  # Contained associations all look up through wells (Wells in turn delegate to aliquots)
-  has_many :contained_samples, through: :wells, source: :samples
-  has_many :conatined_aliquots, through: :wells, source: :aliquots
-
-  # We also look up studies and projects through wells
-  has_many :studies, -> { distinct }, through: :wells
-  has_many :projects, -> { distinct }, through: :wells
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
   has_many :well_requests_as_source, through: :wells, source: :requests_as_source
-  has_many :in_progress_requests, through: :conatined_aliquots, source: :request
   has_many :orders_as_target, -> { distinct }, through: :well_requests_as_target, source: :order
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
   has_many :stock_requests, -> { distinct }, through: :stock_well_associations, source: :requests
@@ -85,8 +76,10 @@ class Plate < Labware
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
 
-  def labware_type
-    super || PlateType.plate_default_type
+  # Used to unify interface with TubeRacks. Returns a list of all receptacles {Well wells}
+  # with position information included for aid performance
+  def receptacles_with_position
+    wells.includes(:map)
   end
 
   # The state of a plate loosely defines what has happened to it. In most cases it is determined
@@ -149,7 +142,6 @@ class Plate < Labware
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, to: :plate_purpose, allow_nil: true
   delegate :asset_shape, to: :plate_purpose, allow_nil: true
-  delegate :supports_multiple_submissions?, to: :plate_purpose
   delegate :dilution_factor, :dilution_factor=, to: :plate_metadata
 
   scope :include_for_show, -> {
@@ -165,10 +157,6 @@ class Plate < Labware
   # Submissions on requests out of the plate
   # May not have been started yet
   has_many :waiting_submissions, -> { distinct }, through: :well_requests_as_source, source: :submission
-  # The requests which were being processed to make the plate
-  # This should probably be switched to going through aliquots, but not 100% certain that it wont cause side effects
-  # Might just be safer to wait until we've moved off onto the new api
-  has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
 
   def submission_ids
     @submission_ids ||= in_progress_submissions.ids
@@ -312,7 +300,7 @@ class Plate < Labware
   end
 
   def plate_type
-    labware_type.name
+    labware_type&.name || Sequencescape::Application.config.plate_default_type
   end
 
   def plate_type=(plate_type)
@@ -379,12 +367,19 @@ class Plate < Labware
     wells.any?(&:buffer_required?)
   end
 
-  def valid_positions?(positions)
-    unique_positions_from_caller = positions.sort.uniq
-    unique_positions_on_plate = maps.where_description(unique_positions_from_caller)
-                                    .distinct
-                                    .pluck(:description).sort
-    unique_positions_on_plate == unique_positions_from_caller
+  #
+  # Given a list of well  map_descriptions (eg. A1), returns those not present on the plate
+  #
+  # @param [Array] positions Array of positions to test
+  #
+  # @return [Array] Array of invalid positions
+  #
+  def invalid_positions(positions)
+    (positions.uniq - unique_positions_on_plate).sort
+  end
+
+  def unique_positions_on_plate
+    maps.distinct.pluck(:description)
   end
 
   def name_for_label
@@ -492,6 +487,13 @@ class Plate < Labware
     else
       wells.in_column_major_order
     end
+  end
+
+  # When Cherrypicking, especially on the Hamilton, control plates get placed
+  # on a seperate bed. ControlPlates overide this.
+  # @return [false]
+  def pick_as_control?
+    false
   end
 
   private

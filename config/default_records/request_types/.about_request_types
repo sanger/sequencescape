@@ -1,0 +1,3 @@
+The yaml files contained in this folder are *NOT* exhaustive.
+Request types may be generated elsewhere in the seeds, and in
+other rake tasks, such as limber:setup

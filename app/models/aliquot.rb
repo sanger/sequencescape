@@ -24,7 +24,8 @@ class Aliquot < ApplicationRecord
 
   self.lazy_uuid_generation = true
 
-  TagClash = Class.new(ActiveRecord::RecordInvalid)
+  # TagClash = Class.new(ActiveRecord::RecordInvalid)
+  TagClash = Class.new(StandardError)
 
   # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it
   # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
@@ -43,8 +44,8 @@ class Aliquot < ApplicationRecord
   # An aliquot is held within a receptacle
   belongs_to :receptacle, inverse_of: :aliquots
 
-  belongs_to :tag
-  belongs_to :tag2, class_name: 'Tag'
+  belongs_to :tag, optional: true
+  belongs_to :tag2, class_name: 'Tag', optional: true
 
   # An aliquot can belong to a study and a project.
   belongs_to :study
@@ -93,6 +94,13 @@ class Aliquot < ApplicationRecord
       .joins('LEFT JOIN project_metadata ON project_metadata.project_id = projects.id')
       .group('project_metadata.project_cost_code')
       .count
+  end
+
+  # Returns a list of attributes which must be the same for two Aliquots to be considered
+  # {#equivalent?} Generated dynamically to avoid accidental introduction of false positives
+  # when new columns are added
+  def self.equivalent_attributes
+    @equivalent_attributes ||= attribute_names - %w[id receptacle_id created_at updated_at]
   end
 
   def aliquot_index_value
@@ -147,8 +155,13 @@ class Aliquot < ApplicationRecord
     super unless tag_id == UNASSIGNED_TAG
   end
 
-  def set_library
-    self.library = receptacle
+  def tag2
+    super unless tag2_id == UNASSIGNED_TAG
+  end
+
+  # Cop disabled as this isn't a setter
+  def set_library(force: false) # rubocop:disable Naming/AccessorMethodName
+    self.library = receptacle if library.nil? || force
   end
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
@@ -170,7 +183,7 @@ class Aliquot < ApplicationRecord
     # is checking the upstream aliquot
     case
     when sample_id != object.sample_id                                                   then false # The samples don't match
-    when object.library_id.present?      && (library_id      != object.library_id)       then false # Our librarys don't match.
+    when object.library_id.present?      && (library_id      != object.library_id)       then false # Our libraries don't match.
     when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)  then false # We have different bait libraries
     when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)                        then raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
     when object.no_tags? then true # The upstream aliquot was untagged, we don't need to check tags
@@ -181,10 +194,7 @@ class Aliquot < ApplicationRecord
   # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
   # only id, timestamps and receptacles are excluded
   def equivalent?(other)
-    %i[
-      sample_id tag_id tag2_id library_id bait_library_id
-      insert_size_from insert_size_to library_type project_id study_id
-    ].all? do |attrib|
+    Aliquot.equivalent_attributes.all? do |attrib|
       send(attrib) == other.send(attrib)
     end
   end

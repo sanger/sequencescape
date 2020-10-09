@@ -17,7 +17,7 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
 
   private
 
-  delegate :concat, :capture, :render, :content_tag, to: :@template
+  delegate :concat, :capture, :render, :content_tag, :tag, to: :@template
 
   #--
   # NOTE: Ripped directly from InstanceTag in form_helper.rb

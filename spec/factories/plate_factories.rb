@@ -8,8 +8,9 @@
 
 # The factories in here, at time of writing could do with a bit of TLC.
 FactoryBot.define do
-  # Allows a plate to automatically generate wells. Invluded in most plate factories already
+  # Allows a plate to automatically generate wells. Included in most plate factories already
   # If you inherit from the standard plate, you do not need to include this.
+
   trait :with_wells do
     transient do
       sample_count { 0 } # The number of wells to create [LEGACY: use well_count instead]
@@ -21,7 +22,10 @@ FactoryBot.define do
       # HELPERS: Generally you shouldn't need to use these transients
       studies_cycle { studies.cycle } # Allow us to rotate through listed studies when building out wells
       projects_cycle { projects.cycle } # Allow us to rotate through listed studies when building out wells
-      well_locations { maps.where(well_order => (0...well_count)) }
+      well_locations do
+        maps.where(well_order => occupied_well_index)
+      end
+      occupied_well_index { (0...well_count) }
     end
 
     after(:build) do |plate, evaluator|
@@ -76,6 +80,14 @@ FactoryBot.define do
           create :transfer_request, asset: well_hash[well.map_description], target_asset: well, outer_request: outer_request
         end
       end
+    end
+
+    factory :plate_with_untagged_wells_and_custom_name do
+      transient do
+        sample_count { 8 }
+        well_factory { :untagged_well }
+      end
+      sequence(:name) { |i| "Plate #{i}" }
     end
 
     factory :plate_with_untagged_wells do
@@ -136,6 +148,7 @@ FactoryBot.define do
         sample_count { 8 }
         well_factory { :tagged_well }
       end
+      plate_purpose { create(:fluidigm_192_purpose) }
       barcodes { build_list :fluidigm, 1 }
       size { 192 }
     end
@@ -203,9 +216,26 @@ FactoryBot.define do
     end
   end
 
-  factory :control_plate, traits: %i[plate_barcode with_wells] do
+  factory :control_plate, class: 'ControlPlate', traits: %i[plate_barcode with_wells] do
     plate_purpose
     name { 'Control Plate name' }
+    size { 96 }
+
+    transient do
+      well_factory { :untagged_well }
+    end
+
+    after(:create) do |plate, _evaluator|
+      plate.wells.each_with_index do |well, index|
+        next if well.aliquots.count == 0
+
+        if index.even?
+          well.aliquots.first.sample.update(control: true, control_type: 'positive')
+        else
+          well.aliquots.first.sample.update(control: true, control_type: 'negative')
+        end
+      end
+    end
   end
 
   factory :pico_assay_plate, traits: %i[plate_barcode with_wells] do

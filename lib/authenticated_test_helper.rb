@@ -65,8 +65,8 @@ module AuthenticatedTestHelper
 end
 
 class BaseLoginProxy
-  attr_reader :controller
-  attr_reader :options
+  attr_reader :controller, :options
+
   def initialize(controller, login)
     @controller = controller
     @login      = login

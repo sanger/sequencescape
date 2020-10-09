@@ -30,7 +30,7 @@ def replace_tag_layout_tags(template, index_to_oligo)
   end
 end
 
-Given /^the tag group for (tag layout template "([^\"]+)") contains the following tags:$/ do |template, table|
+Given /^the tag group for (tag layout template "([^"]+)") contains the following tags:$/ do |template, table|
   replace_tag_layout_tags(template, table.hashes)
 end
 

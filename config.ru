@@ -1,5 +1,5 @@
 # Rails.root/config.ru
-require ::File.expand_path('../config/environment', __FILE__)
+require ::File.expand_path('config/environment', __dir__)
 
 run Sequencescape::Application
 

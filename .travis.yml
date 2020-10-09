@@ -16,7 +16,7 @@ bundler_args: "--without warehouse deployment"
 env:
   global:
   - TZ=Europe/London
-  - CUCUMBER_FORMAT=DebugFormatter
+  - CUCUMBER_FORMAT=summary
 before_install:
 - mv config/aker.yml.example config/aker.yml
 - nvm install
@@ -46,7 +46,7 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    script: bundle exec rake test -f
+    script: bundle exec rake test
     name: Rake Test
   - if: type != cron AND tag IS blank
     env:

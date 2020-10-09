@@ -57,16 +57,6 @@ class PlateTemplateTask < Task
     attr_reader :requests, :plate_size, :csv_string
   end
 
-  # Presenter, seemingly used in DnaQCHandler
-  class PlateTemplateData < Task::RenderElement
-    attr_reader :testing
-    alias_attribute :well, :asset
-  end
-
-  def create_render_element(request)
-    request.asset && PlateTemplateData.new(request)
-  end
-
   def partial
     'plate_template_batches'
   end

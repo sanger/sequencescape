@@ -31,6 +31,7 @@ class Api::SampleIO < Api::Base
   map_attribute_to_json_attribute(:updated_at)
   map_attribute_to_json_attribute(:sanger_sample_id)
   map_attribute_to_json_attribute(:control)
+  map_attribute_to_json_attribute(:control_type)
   map_attribute_to_json_attribute(:sample_manifest_id)
   map_attribute_to_json_attribute(:empty_supplier_sample_name)
   map_attribute_to_json_attribute(:updated_by_manifest)
@@ -63,6 +64,7 @@ class Api::SampleIO < Api::Base
     end
     map_attribute_to_json_attribute(:supplier_name)
     map_attribute_to_json_attribute(:donor_id)
+    map_attribute_to_json_attribute(:phenotype)
   end
 
   extra_json_attributes do |_object, json_attributes|

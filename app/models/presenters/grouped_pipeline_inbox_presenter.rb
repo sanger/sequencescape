@@ -26,6 +26,7 @@ module Presenters
     add_field 'Submitted at',   :submitted_at
 
     attr_reader :pipeline, :user
+
     delegate :group_by_parent?, :group_by_submission?, :purpose_information?, :pick_to?, to: :pipeline
 
     def initialize(pipeline, user, show_held_requests = false)
@@ -125,7 +126,7 @@ module Presenters
     end
 
     def parent
-      @parent ||= Labware.find(group.first)
+      @parent ||= request.asset.labware || Labware.find(group.first)
     end
 
     def submission_name

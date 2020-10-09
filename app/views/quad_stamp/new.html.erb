@@ -1,0 +1,33 @@
+<% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
+<% add :menu, 'Status of Tube Rack Imports' => tube_rack_statuses_path %>
+
+<%= page_title 'Quadrant Stamping', 'Create' %>
+
+<%= error_messages_for(@quad_creator) %>
+
+<%= semantic_form_for(:quad_creator, url: quad_stamp_index_path) do |form| %>
+  <div class="columnize">
+  <%= panel do %>
+    <%= form.inputs name: "Sources" do %>
+      <%= form.input :user_barcode, input_html: { class: 'form-control' } %>
+      <p>Enter between 1 and 4 plate or tube rack barcodes in your chosen quadrants:</p>
+      <br>
+      <%= form.fields_for :parent_barcodes do |parent_barcodes| %>
+        <%= parent_barcodes.input :quad_1, label: 'Quadrant 1 - A1', required: false, input_html: { class: 'form-control' } %>
+        <%= parent_barcodes.input :quad_2, label: 'Quadrant 2 - B1', required: false, input_html: { class: 'form-control' } %>
+        <%= parent_barcodes.input :quad_3, label: 'Quadrant 3 - A2', required: false, input_html: { class: 'form-control' } %>
+        <%= parent_barcodes.input :quad_4, label: 'Quadrant 4 - B2', required: false, input_html: { class: 'form-control' } %>
+      <% end %>
+    <% end %>
+  <% end %>
+  <%= panel do %>
+    <%= form.inputs name: "Destination" do %>
+      <%= form.input :target_purpose_id, as: :select, collection: @plate_purposes, label: 'Plate purpose', prompt: 'Select a plate purpose...', input_html: { class: 'form-control select2'} %>
+      <%= semantic_fields_for :barcode_printer do |printer| %>
+        <%= printer.input :name, as: :select, collection: @barcode_printers.pluck(:name), required: false, prompt: 'Select a printer...', input_html: { class: 'form-control select2'}, label: 'Barcode printer' %>
+      <% end %>
+      <%= form.action(:submit, disable_with: 'Please wait...') %>
+    <% end %>
+  <% end %>
+  </div>
+<% end %>

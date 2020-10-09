@@ -18,8 +18,10 @@ module Api
       # Attributes
       attribute :uuid, readonly: true
       attribute :name, readonly: true
+      attribute :size, readonly: true
 
       # Filters
+      filter :name
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about

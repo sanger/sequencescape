@@ -1,7 +1,7 @@
 class ProductCriteria::Basic
   SUPPORTED_WELL_ATTRIBUTES = %i[gel_pass concentration rin current_volume pico_pass gender_markers measured_volume initial_volume molarity sequenom_count].freeze
   SUPPORTED_SAMPLE = [:sanger_sample_id].freeze
-  SUPPORTED_SAMPLE_METADATA = %i[gender sample_ebi_accession_number supplier_name].freeze
+  SUPPORTED_SAMPLE_METADATA = %i[gender sample_ebi_accession_number supplier_name phenotype sample_description].freeze
   EXTENDED_ATTRIBUTES = %i[total_micrograms conflicting_gender_markers sample_gender well_location plate_barcode concentration_from_normalization].freeze
 
   PASSSED_STATE = 'passed'.freeze
@@ -67,7 +67,7 @@ class ProductCriteria::Basic
   end
 
   def plate_barcode
-    @well_or_metric.plate.try(:human_barcode) || 'Unknown'
+    @well_or_metric.labware.try(:human_barcode) || 'Unknown'
   end
 
   # We sort in Ruby here as we've loaded the wells in bulk. Performing this selection in
@@ -106,6 +106,10 @@ class ProductCriteria::Basic
 
   def qc_decision
     passed? ? PASSSED_STATE : FAILED_STATE
+  end
+
+  def storage_location
+    @well_or_metric.labware.try(:storage_location) || 'Unknown'
   end
 
   private

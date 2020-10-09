@@ -213,7 +213,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
                 expect(subject.count).to eq(1)
               end
 
-              it 'is a multiplexed library tube' do
+              it 'is a multiplexed library tube' do # rubocop:todo RSpec/AggregateExamples
                 expect(subject.first).to be_a(MultiplexedLibraryTube)
               end
             end
@@ -269,7 +269,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               expect(labware.count).to eq(1)
             end
 
-            it 'is a library tube' do
+            it 'is a library tube' do # rubocop:todo RSpec/AggregateExamples
               expect(labware.first).to be_a(LibraryTube)
             end
           end
@@ -320,7 +320,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
                 expect(labware.count).to eq(count)
               end
 
-              it 'is a sample tube' do
+              it 'is a sample tube' do # rubocop:todo RSpec/AggregateExamples
                 expect(labware.first).to be_a(SampleTube)
               end
             end

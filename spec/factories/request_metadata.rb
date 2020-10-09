@@ -86,6 +86,11 @@ FactoryBot.define do
       primer_panel_name { create(:primer_panel).name }
       association(:owner, factory: :gbs_request)
     end
+
+    factory :request_metadata_for_heron, class: 'IlluminaHtp::Requests::HeronRequest::Metadata' do
+      primer_panel_name { create(:primer_panel).name }
+      association(:owner, factory: :heron_request)
+    end
   end
 
   # Bait libraries

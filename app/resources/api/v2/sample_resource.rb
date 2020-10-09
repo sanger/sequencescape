@@ -3,7 +3,7 @@
 module Api
   module V2
     class SampleResource < BaseResource
-      immutable
+      immutable # comment to make the resource mutable
 
       default_includes :uuid_object
 
@@ -12,6 +12,8 @@ module Api
       attribute :name
       attribute :sanger_sample_id
       attribute :uuid
+      attribute :control
+      attribute :control_type
     end
   end
 end

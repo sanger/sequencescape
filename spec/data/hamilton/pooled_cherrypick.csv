@@ -1,0 +1,7 @@
+SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
+10001,A1,KingFisher 96 2ml,10,DestinationBarcode,A1,Eppendorf Twin.Tec,10,0
+10001,B1,KingFisher 96 2ml,10,DestinationBarcode,A1,Eppendorf Twin.Tec,10,0
+10001,C1,KingFisher 96 2ml,10,DestinationBarcode,A1,Eppendorf Twin.Tec,10,0
+10001,D1,KingFisher 96 2ml,10,DestinationBarcode,A1,Eppendorf Twin.Tec,10,0
+10001,E1,KingFisher 96 2ml,10,DestinationBarcode,A1,Eppendorf Twin.Tec,10,0
+DN626424D,A1,ABgene_0800,10,DestinationBarcode,A12,Eppendorf Twin.Tec,10,0

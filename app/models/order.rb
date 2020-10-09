@@ -14,15 +14,9 @@
 #             requests may be shared between multiple orders.
 class Order < ApplicationRecord
   # Ensure order methods behave correctly
-  module InstanceMethods
-    def complete_building
-      # nothing just so mixin can use super
-    end
-  end
   AssetTypeError = Class.new(StandardError)
   DEFAULT_ASSET_INPUT_METHODS = ['select an asset group'].freeze
 
-  include InstanceMethods
   include Uuid::Uuidable
   include Submission::AssetGroupBehaviour
   include Submission::ProjectValidation
@@ -36,9 +30,9 @@ class Order < ApplicationRecord
   #  attributes which are not saved for a submission but can be pre-set via SubmissionTemplate
   # return a list of request_types lists  (a sequence of choices) to display in the new view
   attr_writer :request_type_ids_list, :input_field_infos
-  attr_accessor :info_differential # aggrement text to display when creating a new submission
-  attr_accessor :customize_partial # the name of a partial to render.
   attr_writer :asset_input_methods
+  # Unused. Maintained because some submission templates attempt to set the info
+  attr_writer :info_differential
 
   # Required at initial construction time ...
   belongs_to :study, optional: true
@@ -64,7 +58,7 @@ class Order < ApplicationRecord
 
   validate :study_is_active, on: :create
   validate :assets_are_appropriate
-  validate :no_consent_withdrawl
+  validate :no_consent_withdrawal
 
   before_destroy :building_submission?
   after_destroy :on_delete_destroy_submission
@@ -94,6 +88,11 @@ class Order < ApplicationRecord
     def render_class
       Api::OrderIO
     end
+  end
+
+  def complete_building
+    check_project_details!
+    complete_building_asset_group
   end
 
   def assets=(assets_to_add)
@@ -200,6 +199,22 @@ class Order < ApplicationRecord
     @asset_input_methods ||= DEFAULT_ASSET_INPUT_METHODS
   end
 
+  # request_type_ids_list is set for orders created by submission templates
+  # It is used by the input_field_infos section, which controls rendering
+  # form fields appropriate to each request type in the submission interface
+  # {request_type_ids} is calculated from this in the various sub-classes
+  # and gets persisted to the database, and used for the actual construction.
+  # TODO: Simplify this
+  # - There are a few attributes which all refer to loosely the same thing, a list of request type ids:
+  #   * request_type_ids_list - Set by submission templates, but also recalculated on the fly and used in various methods
+  #   * request_types_ids - Setter on order subclasses.
+  #   * request_types - Serialized version on order, persisted in the database
+  # - The request_types on the database should become the authoritative source.
+  # - request_type_ids_list should just be a setter, which populates request_types.
+  #   It may need to transform the input slightly. Ideally we eliminate this entirely, and be consistent between
+  #   templates and orders
+  # - There appear to be several methods which essentially do the same thing. They should be unified.
+  # - I'm not even 100% how request_types_ids factors in.
   def request_types_list
     request_type_ids_list.map { |ids| RequestType.find(ids) }
   end
@@ -268,7 +283,7 @@ class Order < ApplicationRecord
     request_type.asset_type == asset.asset_type_for_request_types.name
   end
 
-  def no_consent_withdrawl
+  def no_consent_withdrawal
     return true unless all_samples.any?(&:consent_withdrawn?)
 
     withdrawn_samples = all_samples.select(&:consent_withdrawn?).map(&:friendly_name)

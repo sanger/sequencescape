@@ -45,6 +45,9 @@ dna_storage_conditions:
 library_type:
   identifier: :name
   scope: :alphabetical
+primer_panel:
+  identifier: :name
+  scope: :alphabetical
 reference_genome:
   identifier: :name
   scope: :alphabetical
@@ -57,3 +60,7 @@ gc_content:
     - 'Neutral'
     - 'High AT'
     - 'High GC'
+control_type:
+  options:
+    - 'positive'
+    - 'negative'

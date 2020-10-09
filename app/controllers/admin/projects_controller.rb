@@ -87,9 +87,10 @@ class Admin::ProjectsController < ApplicationController
 
   def sort
     @projects = Project.all.sort_by(&:name)
-    if params[:sort] == 'date'
+    case params[:sort]
+    when 'date'
       @projects = @projects.sort_by(&:created_at)
-    elsif params[:sort] == 'owner'
+    when 'owner'
       @projects = @projects.sort_by(&:user_id)
     end
     render partial: 'projects'

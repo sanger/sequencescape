@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'well_range'
+
 ParameterType(
   name: 'plate_id',
   regexp: /the plate with ID (\d+)/,
@@ -14,14 +16,14 @@ ParameterType(
 
 ParameterType(
   name: 'plate_name',
-  regexp: /the plate "([^\"]+)"/,
+  regexp: /the plate "([^"]+)"/,
   type: Plate,
   transformer: ->(name) { Plate.find_by!(name: name) }
 )
 
 ParameterType(
   name: 'asset_name',
-  regexp: /the (plate|tube|sample tube|labware) "([^\"]+)"/,
+  regexp: /the (plate|tube|sample tube|labware) "([^"]+)"/,
   type: Asset,
   transformer: ->(_, name) { Labware.find_by!(name: name) }
 )
@@ -42,14 +44,14 @@ ParameterType(
 
 ParameterType(
   name: 'submitted_to',
-  regexp: /submitted to "([^\"]+)"/,
+  regexp: /submitted to "([^"]+)"/,
   type: SubmissionTemplate,
   transformer: ->(name) { SubmissionTemplate.find_by!(name: name) }
 )
 
 ParameterType(
   name: 'well_range',
-  regexp: /\"?([A-H]\d+)-([A-H]\d+)\"?/,
+  regexp: /"?([A-H]\d+)-([A-H]\d+)"?/,
   type: WellRange,
   transformer: ->(start, finish) { WellRange.new(start, finish) }
 )
@@ -84,7 +86,7 @@ ParameterType(
 
 ParameterType(
   name: 'tag_layout_template',
-  regexp: /tag layout template "([^\"]+)"/,
+  regexp: /tag layout template "([^"]+)"/,
   type: TagLayoutTemplate,
   transformer: ->(name) { TagLayoutTemplate.find_by!(name: name) }
 )
@@ -98,7 +100,7 @@ ParameterType(
 
 ParameterType(
   name: 'study_name',
-  regexp: /the study "([^\"]+)"/,
+  regexp: /the study "([^"]+)"/,
   type: Study,
   transformer: ->(name) { Study.find_by!(name: name) }
 )
@@ -132,7 +134,7 @@ ParameterType(
 
 ParameterType(
   name: 'asset_group',
-  regexp: /the asset group "([^\"]+)"/,
+  regexp: /the asset group "([^"]+)"/,
   type: AssetGroup,
   transformer: ->(name) { AssetGroup.find_by!(name: name) }
 )

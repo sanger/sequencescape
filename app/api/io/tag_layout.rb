@@ -13,5 +13,6 @@ class ::Io::TagLayout < ::Core::Io::Base
     direction <=> direction
     walking_by <=> walking_by
     initial_tag <=> initial_tag
+    enforce_uniqueness <= enforce_uniqueness
   ")
 end

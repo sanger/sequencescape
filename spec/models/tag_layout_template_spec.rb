@@ -31,7 +31,7 @@ describe TagLayoutTemplate do
 
       it { is_expected.to be_a TagLayout }
 
-      it 'passes in the correct properties' do
+      it 'passes in the correct properties' do # rubocop:todo RSpec/AggregateExamples
         expect(subject.plate).to eq(plate)
         expect(subject.direction).to eq('column')
         expect(subject.walking_by).to eq('wells of plate')
@@ -40,7 +40,7 @@ describe TagLayoutTemplate do
 
       it 'records itself against the submissions' do
         # First double check we have submissions
-        # otherwise out test is a false positive
+        # otherwise our test is a false positive
         subject
         submissions = plate.submissions.map(&:id)
         expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
@@ -56,7 +56,7 @@ describe TagLayoutTemplate do
 
         it { is_expected.to be_a TagLayout }
 
-        it 'passes in the correct properties' do
+        it 'passes in the correct properties' do # rubocop:todo RSpec/AggregateExamples
           expect(subject.plate).to eq(plate)
           expect(subject.tag2_group).to eq(tag2_group)
         end
@@ -64,6 +64,32 @@ describe TagLayoutTemplate do
         it 'records itself against the submissions' do
           # First double check we have submissions
           # otherwise out test is a false positive
+          subject
+          submissions = plate.submissions.map(&:id)
+          expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
+          TagLayout::TemplateSubmission.where(submission_id: submissions).each do |tlts|
+            expect(tlts.tag_layout_template).to eq(template)
+            expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
+          end
+        end
+      end
+
+      context 'with a tag2 group with uniqueness unenforced' do
+        subject { template.create!(plate: plate, user: user, enforce_uniqueness: enforce_uniqueness) }
+
+        let(:enforce_uniqueness) { nil }
+        let(:tag2_group) { create :tag_group_with_tags }
+
+        it { is_expected.to be_a TagLayout }
+
+        it 'passes in the correct properties' do # rubocop:todo RSpec/AggregateExamples
+          expect(subject.plate).to eq(plate)
+          expect(subject.tag2_group).to eq(tag2_group)
+        end
+
+        it 'records itself against the submissions' do
+          # First double check we have submissions
+          # otherwise our test is a false positive
           subject
           submissions = plate.submissions.map(&:id)
           expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
@@ -81,7 +107,7 @@ describe TagLayoutTemplate do
 
       it { is_expected.to be_a TagLayout }
 
-      it 'passes in the correct properties' do
+      it 'passes in the correct properties' do # rubocop:todo RSpec/AggregateExamples
         expect(subject.plate).to eq(plate)
         expect(subject.direction).to eq('row')
         expect(subject.walking_by).to eq('wells in pools')

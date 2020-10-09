@@ -3,7 +3,7 @@ class ExtractionAttribute < ApplicationRecord
 
   validates :created_by, presence: true
 
-  belongs_to :target, class_name: 'Labware', foreign_key: :target_id
+  belongs_to :target, class_name: 'Labware'
 
   validates :target, presence: true
 
@@ -72,7 +72,7 @@ class ExtractionAttribute < ApplicationRecord
     end
 
     disallow_wells_with_multiple_samples!(destination_well, samples)
-    samples.all? { |sample| !destination_well.samples.include?(sample) }
+    samples.all? { |sample| destination_well.samples.exclude?(sample) }
   end
 
   def rack_well(well_data)

@@ -16,40 +16,50 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v2 do
-      jsonapi_resources :transfer_requests
+      jsonapi_resources :pick_lists
+      jsonapi_resources :aliquots
+      jsonapi_resources :assets
+      jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
+      jsonapi_resources :labware
+      jsonapi_resources :lanes
       jsonapi_resources :lot_types
       jsonapi_resources :lots
-      jsonapi_resources :qcables
+      jsonapi_resources :orders
       jsonapi_resources :plate_templates
-      jsonapi_resources :tag_layout_templates
-      jsonapi_resources :tag_groups
-      jsonapi_resources :comments
+      jsonapi_resources :plates
       jsonapi_resources :pre_capture_pools
       jsonapi_resources :primer_panels
-      jsonapi_resources :request_types
-      jsonapi_resources :purposes
-      jsonapi_resources :submissions
-      jsonapi_resources :orders
-      jsonapi_resources :aliquots
-      jsonapi_resources :requests
-      jsonapi_resources :users
-      jsonapi_resources :tubes
-      jsonapi_resources :lanes
-      jsonapi_resources :wells
-      jsonapi_resources :plates
-      jsonapi_resources :receptacles
-      jsonapi_resources :samples
-      jsonapi_resources :work_orders
-      jsonapi_resources :studies
       jsonapi_resources :projects
-      jsonapi_resources :qc_results
-      jsonapi_resources :assets
+      jsonapi_resources :purposes
       jsonapi_resources :qc_assays
-      jsonapi_resources :labware
+      jsonapi_resources :qc_results
+      jsonapi_resources :qcables
+      jsonapi_resources :racked_tubes
+      jsonapi_resources :receptacles
+      jsonapi_resources :request_types
+      jsonapi_resources :requests
+      jsonapi_resources :samples
+      jsonapi_resources :studies
+      jsonapi_resources :submissions
+      jsonapi_resources :tag_groups
+      jsonapi_resources :tag_layout_templates
+      jsonapi_resources :transfer_requests
+      jsonapi_resources :tube_rack_statuses
+      jsonapi_resources :tube_racks
+      jsonapi_resources :tubes
+      jsonapi_resources :users
+      jsonapi_resources :wells
+      jsonapi_resources :work_orders
 
       namespace :aker do
         resources :jobs, only: [:create]
+      end
+
+      namespace :heron do
+        resources :tube_rack_statuses, only: [:create]
+        resources :tube_racks, only: [:create]
+        resources :plates, only: [:create]
       end
     end
   end
@@ -93,6 +103,7 @@ Rails.application.routes.draw do
   end
 
   resources :tube_rack_summaries, only: :show
+  resources :tube_rack_statuses, only: :index
 
   resources :reference_genomes
   resources :barcode_printers
@@ -125,13 +136,16 @@ Rails.application.routes.draw do
     resources :comments, controller: 'batches/comments'
     resources :stock_assets, only: %i[new create]
 
+    resources :robots do
+      resource :driver_file, only: :show
+    end
+
     member do
       get :print_labels
       get :print_stock_labels
       get :print_plate_labels
       get :filtered
       post :swap
-      get :gwl_file
       post :fail_items
       post :reset_batch
       get :download_spreadsheet
@@ -159,28 +173,28 @@ Rails.application.routes.draw do
   end
   resources :uuids, only: [:show]
 
-  match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch, :via => :get
-  match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch, :via => :get
+  get 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch
+  get 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch
 
   resources :events
   resources :sources
 
-  match '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup', :via => :get
-  match '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup', :via => :get
+  get '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup'
+  get '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup'
 
-  match '/studies/:study_id/information/summary_detailed/:id' => 'studies/information#summary_detailed', :via => :post
+  post '/studies/:study_id/information/summary_detailed/:id' => 'studies/information#summary_detailed'
 
-  match 'studies/accession/:id' => 'studies#accession', :via => :get
-  match 'studies/policy_accession/:id' => 'studies#policy_accession', :via => :get
-  match 'studies/dac_accession/:id' => 'studies#dac_accession', :via => :get
+  get 'studies/accession/:id' => 'studies#accession'
+  get 'studies/policy_accession/:id' => 'studies#policy_accession'
+  get 'studies/dac_accession/:id' => 'studies#dac_accession'
 
-  match 'studies/accession/show/:id' => 'studies#show_accession', :as => :study_show_accession, :via => :get
-  match 'studies/accession/dac/show/:id' => 'studies#show_dac_accession', :as => :study_show_dac_accession, :via => :get
-  match 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession, :via => :get
+  get 'studies/accession/show/:id' => 'studies#show_accession', :as => :study_show_accession
+  get 'studies/accession/dac/show/:id' => 'studies#show_dac_accession', :as => :study_show_dac_accession
+  get 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession
 
-  match 'samples/accession/:id' => 'samples#accession', :via => :get
-  match 'samples/accession/show/:id' => 'samples#show_accession', :via => :get
-  match 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession, :via => :get
+  get 'samples/accession/:id' => 'samples#accession'
+  get 'samples/accession/show/:id' => 'samples#show_accession'
+  get 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession
 
   resources :studies do
     collection do
@@ -290,8 +304,8 @@ Rails.application.routes.draw do
   resources :orders
   resources :documents
 
-  match 'requests/:id/change_decision' => 'requests#filter_change_decision', :as => :filter_change_decision_request, :via => 'get'
-  match 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request, :via => 'put'
+  get 'requests/:id/change_decision' => 'requests#filter_change_decision', :as => :filter_change_decision_request
+  put 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request
 
   resources :requests do
     resources :comments, controller: 'requests/comments'
@@ -621,4 +635,13 @@ Rails.application.routes.draw do
 
   # We removed workflows, which broke study links. Some customers may have their own studies bookmarked
   get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')
+
+  resources :quad_stamp, only: %i[new create]
+  resources :pick_lists, only: %i[index show]
+  resource :plate_picks, only: [:show] do
+    member do
+      get 'plates/:barcode', to: 'plate_picks#plates'
+      get 'batches/:id', to: 'plate_picks#batches'
+    end
+  end
 end

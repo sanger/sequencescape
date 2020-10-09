@@ -1,0 +1,123 @@
+---
+Hamilton STAR 6:
+  properties:
+    -
+      name: 'Max Number of plates'
+      value: '25'
+      key: 'max_plates'
+    -
+      name: Verification Behaviour
+      value: 'SourceDestControlBeds'
+      key: verification_behaviour
+    -
+      name: Generation Behaviour
+      value: 'Hamilton'
+      key: generation_behaviour
+    -
+      name: 'Source plate 1'
+      value: '1'
+      key: 'SCRC1'
+    -
+      name: 'Source plate 2'
+      value: '2'
+      key: 'SCRC2'
+    -
+      name: 'Source plate 3'
+      value: '3'
+      key: 'SCRC3'
+    -
+      name: 'Source plate 4'
+      value: '4'
+      key: 'SCRC4'
+    -
+      name: 'Source plate 5'
+      value: '5'
+      key: 'SCRC5'
+    -
+      name: 'Source plate 6'
+      value: '6'
+      key: 'SCRC6'
+    -
+      name: 'Source plate 7'
+      value: '7'
+      key: 'SCRC7'
+    -
+      name: 'Source plate 8'
+      value: '8'
+      key: 'SCRC8'
+    -
+      name: 'Source plate 9'
+      value: '9'
+      key: 'SCRC9'
+    -
+      name: 'Source plate 10'
+      value: '10'
+      key: 'SCRC10'
+    -
+      name: 'Source plate 11'
+      value: '11'
+      key: 'SCRC11'
+    -
+      name: 'Source plate 12'
+      value: '12'
+      key: 'SCRC12'
+    -
+      name: 'Source plate 13'
+      value: '13'
+      key: 'SCRC13'
+    -
+      name: 'Source plate 14'
+      value: '14'
+      key: 'SCRC14'
+    -
+      name: 'Source plate 15'
+      value: '15'
+      key: 'SCRC15'
+    -
+      name: 'Source plate 16'
+      value: '16'
+      key: 'SCRC16'
+    -
+      name: 'Source plate 17'
+      value: '17'
+      key: 'SCRC17'
+    -
+      name: 'Source plate 18'
+      value: '18'
+      key: 'SCRC18'
+    -
+      name: 'Source plate 19'
+      value: '19'
+      key: 'SCRC19'
+    -
+      name: 'Source plate 20'
+      value: '20'
+      key: 'SCRC20'
+    -
+      name: 'Source plate 21'
+      value: '21'
+      key: 'SCRC21'
+    -
+      name: 'Source plate 22'
+      value: '22'
+      key: 'SCRC22'
+    -
+      name: 'Source plate 23'
+      value: '23'
+      key: 'SCRC23'
+    -
+      name: 'Source plate 24'
+      value: '24'
+      key: 'SCRC24'
+    -
+      name: 'Water'
+      value: '25'
+      key: 'WATER'
+    -
+      name: 'Control Plate'
+      value: '26'
+      key: 'CTRL1'
+    -
+      name: 'Destination'
+      value: '27'
+      key: 'DEST1'

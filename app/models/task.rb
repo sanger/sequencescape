@@ -119,14 +119,6 @@ class Task < ApplicationRecord
 
   # END of subclass_to_attiribuet
 
-  class RenderElement
-    attr_reader :request, :asset
-    def initialize(request)
-      @request = request
-      @asset = request.asset
-    end
-  end
-
   def partial
   end
 
@@ -140,10 +132,6 @@ class Task < ApplicationRecord
 
   def render_task(controller, params)
     controller.render_task(self, params)
-  end
-
-  def create_render_element(request)
-    request && RenderElement.new(request)
   end
 
   def do_task(_controller, _params)

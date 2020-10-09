@@ -22,7 +22,13 @@ class Receptacle < Asset
   has_many :ancestors, through: :labware
   has_many :descendants, through: :labware
 
-  delegate :human_barcode, :machine_barcode, to: :labware, allow_nil: true
+  # We don't do a has_one through as not all receptacles are part of tubes and then
+  # we'd have to add racked_tube associations to labware. While we may eventually want to
+  # rack different kinds of labware, I'd prefer to avoid making it easier to inadvertently
+  # put a tube rack in a tube rack.
+  has_one :racked_tube, foreign_key: :tube_id, primary_key: :labware_id
+
+  delegate :human_barcode, :machine_barcode, :barcode_number, to: :labware, allow_nil: true
   delegate :asset_type_for_request_types, to: :labware, allow_nil: true
   delegate :has_stock_asset?, to: :labware, allow_nil: true
   delegate :children, to: :labware, allow_nil: true
@@ -70,12 +76,9 @@ class Receptacle < Asset
   has_many :upstream_plates, through: :upstream_wells, source: :plate
 
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id, dependent: :restrict_with_exception
-  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request',
-                                                                  foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
-  has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request',
-                                                                      foreign_key: :asset_id, dependent: :restrict_with_exception, inverse_of: :asset
-  has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request',
-                                                                      foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
+  has_one  :source_request, class_name: 'Request', foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
+  has_many :requests_as_source, class_name: 'Request', foreign_key: :asset_id, dependent: :restrict_with_exception, inverse_of: :asset
+  has_many :requests_as_target, class_name: 'Request', foreign_key: :target_asset_id, dependent: :restrict_with_exception, inverse_of: :target_asset
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
   has_many :source_batches, class_name: 'Batch', through: :requests_as_source, source: :batch
   has_many :source_receptacles, through: :requests_as_target, source: :asset
@@ -119,6 +122,7 @@ class Receptacle < Asset
   # Provide some named scopes that will fit with what we've used in the past
   scope :with_sample_id, ->(id)     { where(aliquots: { sample_id: Array(id)     }).joins(:aliquots) }
   scope :with_sample,    ->(sample) { where(aliquots: { sample_id: Array(sample) }).joins(:aliquots) }
+  scope :with_contents, -> { joins(:aliquots) }
 
   # Scope for caching the samples of the receptacle
   scope :for_bulk_submission, -> { includes(samples: :studies) }
@@ -192,9 +196,9 @@ class Receptacle < Asset
     aliquots.pluck(:library_type).uniq
   end
 
-  def set_as_library
+  def set_as_library(force: false)
     aliquots.each do |aliquot|
-      aliquot.set_library
+      aliquot.set_library(force: force)
       aliquot.save!
     end
   end
@@ -231,7 +235,7 @@ class Receptacle < Asset
 
   def name
     labware_name = labware.present? ? labware.try(:name) : '(not on a labware)'
-    labware_name ||= labware.display_name # In the even the labware is barcodeless (ie strip tubes) use its name
+    labware_name ||= labware.display_name # In the event the labware is barcode-less (ie strip tubes) use its name
     labware_name
   end
 
@@ -261,6 +265,12 @@ class Receptacle < Asset
 
   def friendly_name
     labware&.friendly_name || id
+  end
+
+  # Returns the name of the position (eg. A1) of the receptacle
+  # within the context of any tube-rack it may be contained within
+  def absolute_position_name
+    racked_tube&.coordinate
   end
 
   private

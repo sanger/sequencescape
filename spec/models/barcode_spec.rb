@@ -228,6 +228,35 @@ describe Barcode, type: :model do
     end
   end
 
+  context 'uk biocentre v3' do
+    let(:barcode) { build :external, barcode: barcode_value, format: barcode_format }
+
+    let(:barcode_value) { 'RNA12345' }
+    let(:barcode_format) { 'uk_biocentre_v3' }
+    let(:number) { 12345 }
+    let(:barcode_prefix) { 'RNA' }
+    let(:suffix) { nil }
+    let(:human_barcode) { 'RNA12345' }
+    let(:machine_barcode) { 'RNA12345' }
+    let(:code128_barcode) { 'RNA12345' }
+    let(:code39_barcode) { 'RNA12345' }
+    let(:prefix) { 'RNA' }
+
+    it_behaves_like 'a basic barcode'
+    it_behaves_like 'not an ean13 barcode'
+    it_behaves_like 'a composable barcode'
+    it_behaves_like 'a code128 barcode'
+    it_behaves_like 'a code39 barcode'
+
+    context 'with an incompatible format' do
+      let(:barcode_value) { 'notabarcode' }
+
+      it 'is not valid' do
+        expect(barcode).not_to be_valid
+      end
+    end
+  end
+
   context 'external' do
     let(:barcode) { build :external, barcode: barcode_value, format: barcode_format }
 

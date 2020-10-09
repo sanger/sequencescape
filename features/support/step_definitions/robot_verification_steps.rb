@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require './spec/support/download_helper'
+
 Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
@@ -84,16 +86,17 @@ Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode
   user.update!(barcode: user_barcode)
 end
 
-Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
-  batch = Batch.find_by(barcode: Barcode.number_to_human(batch_barcode)) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
-  plate = Plate.find_from_barcode(plate_barcode) or raise StandardError, "Cannot find plate with machine barcode #{plate_barcode.inspect}"
-  generated_file = batch.tecan_gwl_file_as_text(plate.human_barcode, batch.total_volume_to_cherrypick, 'ABgene 0765')
-  generated_lines = generated_file.split(/\n/)
+Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
+  batch = Batch.find_by_barcode(batch_barcode) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
+
+  generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_#{plate_barcode}_1.gwl")
+
+  generated_lines = generated_file.lines(chomp: true)
   generated_lines.shift(2)
   assert_not_nil generated_lines
-  tecan_file_lines = tecan_file.split(/\n/)
+  tecan_file_lines = tecan_file.lines(chomp: true)
   generated_lines.each_with_index do |line, index|
-    assert_equal tecan_file_lines[index], line
+    assert_equal tecan_file_lines[index], line, "Mismatch on line #{index + 2} in #{generated_file}"
   end
 end
 

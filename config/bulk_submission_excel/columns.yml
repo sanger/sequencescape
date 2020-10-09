@@ -117,6 +117,7 @@ library_type:
     is_error:
 bait_library:
   heading: Bait Library Name
+  attribute: bait_library_name
   unlocked: true
   validation:
     options:
@@ -212,6 +213,7 @@ priority:
     is_error:
 primer_panel:
   heading: Primer Panel
+  attribute: primer_panel_name
   unlocked: true
   validation:
     options:

@@ -47,7 +47,7 @@ request_information_types_data.each do |data|
   )
 end
 
-REQUEST_INFORMATION_TYPES = Hash[RequestInformationType.all.map { |t| [t.key, t] }].freeze
+REQUEST_INFORMATION_TYPES = RequestInformationType.all.index_by { |t| t.key }.freeze
 def create_request_information_types(pipeline, *keys)
   PipelineRequestInformationType.create!(keys.map { |k| { pipeline: pipeline, request_information_type: REQUEST_INFORMATION_TYPES[k] } })
 end
@@ -651,14 +651,7 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   pipeline.automated           = false
   pipeline.active              = true
 
-  pipeline.request_types << RequestType.create!(key: 'cherrypick', name: 'Cherrypick') do |request_type|
-    request_type.initial_state     = 'pending'
-    request_type.target_asset_type = 'Well'
-    request_type.asset_type        = 'Well'
-    request_type.order             = 2
-    request_type.request_class     = CherrypickForPulldownRequest
-    request_type.multiples_allowed = false
-  end
+  pipeline.request_types << RequestType.find_by!(key: 'cherrypick')
 
   pipeline.workflow = Workflow.create!(name: 'Cherrypick').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production

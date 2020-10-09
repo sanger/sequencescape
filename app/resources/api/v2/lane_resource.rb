@@ -7,7 +7,7 @@ module Api
     class LaneResource < BaseResource
       # Constants...
 
-      immutable # uncomment to make the resource immutable
+      immutable # comment to make the resource mutable
 
       # Associations:
       has_many :samples

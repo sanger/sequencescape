@@ -808,4 +808,49 @@ pacbio:
   conditional_formattings:
     empty_cell:
     is_error:
-
+primer_panel:
+  heading: PRIMER PANEL
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: true
+      showDropDown: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Primer panel"
+      error: "You must enter a primer panel from the list provided."
+      promptTitle: "Primer panel"
+      prompt: "Provide a primer panel from the approved list"
+    range_name: :primer_panel
+  conditional_formattings:
+    empty_cell:
+    is_error:
+control_type:
+  heading: CONTROL TYPE
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: true
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "What Type of Control is it?"
+      prompt: "Select from the list provided if the sample is a control."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "What Type of Control is it?"
+      error: "Select from the list provided if the sample is a control."
+    range_name: :control_type
+  conditional_formattings:
+    empty_cell:
+    is_error:
+priority:
+  heading: PRIORITY
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_zero:

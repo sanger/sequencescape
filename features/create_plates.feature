@@ -24,7 +24,7 @@ Feature: Printing new plate barcodes
     And I select "xyz" from "Barcode printer"
     Then Pmb is down
     And I press "Submit"
-    Then I should see "Failed to create plates"
+    Then I should see "Barcode labels failed to print"
 
   @javascript
   Scenario: Creating plates where the scanner appends a carriage return
@@ -36,11 +36,12 @@ Feature: Printing new plate barcodes
     """
     When I select "Stock Plate" from "Plate purpose"
     And I select "xyz" from "Barcode printer"
+    And I select "No" from "Group results for reprinting barcodes?"
     And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
-    Then I should see "Created plates and printed barcodes"
-    And I should be on the new plate page
+    Then I should see "Created plates successfully"
+    And I should be on the plate page
 
   Scenario Outline: Creating plates
     Given I am on the new plate page
@@ -51,8 +52,8 @@ Feature: Printing new plate barcodes
     And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
-    Then I should see "Created plates and printed barcodes"
-    And I should be on the new plate page
+    Then I should see "Created plates successfully"
+    And I should be on the plate page
 
     Examples:
       | plate_purpose       |
@@ -76,8 +77,8 @@ Feature: Printing new plate barcodes
     And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
-    Then I should see "Created plates and printed barcodes"
-    And I should be on the new plate page
+    Then I should see "Created plates successfully"
+    And I should be on the plate page
 
     When I select "<plate_purpose>" from "Plate purpose"
     And I fill in the field labeled "Source plates" with "1220001454858"
@@ -85,7 +86,7 @@ Feature: Printing new plate barcodes
     And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Scanned plate 1220001454858 has a purpose Cherrypicked not valid"
-    And I should be on the new plate page
+    And I should be on the plate page
 
     Examples:
       | plate_purpose         | parent_plate_purpose |
@@ -107,7 +108,7 @@ Feature: Printing new plate barcodes
     And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
-    Then I should see "Created plates and printed barcodes"
+    Then I should see "Created plates successfully"
 
     And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "1220001454858"
@@ -117,7 +118,7 @@ Feature: Printing new plate barcodes
     And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
-    Then I should see "Created plates and printed barcodes"
+    Then I should see "Created plates successfully"
 
     And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "1221234567841"
@@ -127,7 +128,7 @@ Feature: Printing new plate barcodes
     And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
-    Then I should see "Created plates and printed barcodes"
+    Then I should see "Created plates successfully"
 
     And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "6251234567836"
@@ -137,7 +138,7 @@ Feature: Printing new plate barcodes
     And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
-    Then I should see "Created plates and printed barcodes"
+    Then I should see "Created plates successfully"
 
     And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "4361234567667"
@@ -147,7 +148,7 @@ Feature: Printing new plate barcodes
     And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
-    Then I should see "Created plates and printed barcodes"
+    Then I should see "Created plates successfully"
 
     And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "6251234567836"
@@ -157,7 +158,7 @@ Feature: Printing new plate barcodes
     And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
-    Then I should see "Created plates and printed barcodes"
+    Then I should see "Created plates successfully"
     And plate with barcode "4331234567653" should exist
     And plate with barcode "4341234567737" should exist
     And plate with barcode "1931234567771" should exist

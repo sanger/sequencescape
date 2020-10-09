@@ -1,13 +1,14 @@
 
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
 <%= form_for :robot_verifications, url: {action: "finish"} do |f| %>
-<%= page_title 'Download TECAN File', 'Step 3 of 3' %>
-<center>
-  <%# TODO Get rid this fugly url_for link and replace with a custom tecan control and tecan_file_path type thing %>
-  <%= link_to 'Download TECAN file', url_for(controller: :batches, action: :gwl_file, id: @batch.id, barcode: @destination_plate_id) %>
-</center>
+<%= page_title "Download #{@robot.name} File", 'Step 3 of 3' %>
+<%= link_to icon('fas', 'file-download', "Download #{@robot.name} File"),
+            batch_robot_driver_file_path(@batch, @robot, barcode: @destination_plate_id, pick_number: @pick_number),
+            class: 'btn btn-success btn-lg'
+%>
 
 
-<%= link_to "Verify more plates", robot_verifications_path %>
+
+<%= link_to "Verify more plates", robot_verifications_path, class: 'btn btn-lg btn-secondary' %>
 
 <% end %>

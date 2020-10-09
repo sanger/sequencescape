@@ -21,6 +21,11 @@ FactoryBot.define do
     submission_parameters { { request_type_ids_list: request_type_ids_list } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
 
+    factory :cherrypick_submission_template do
+      name { 'Cherrypick' }
+      request_types { create_list :cherrypick_request_type, 1 }
+    end
+
     factory :limber_wgs_submission_template do
       transient do
         request_types { [create(:library_request_type)] }
@@ -30,6 +35,18 @@ FactoryBot.define do
     factory :libray_and_sequencing_template do
       transient do
         request_types { [create(:library_request_type), create(:sequencing_request_type)] }
+      end
+    end
+
+    factory :heron_libray_and_sequencing_template do
+      transient do
+        request_types { [create(:heron_request_type), create(:sequencing_request_type)] }
+      end
+    end
+
+    factory :isc_libray_and_sequencing_template do
+      transient do
+        request_types { [create(:isc_library_request_type), create(:sequencing_request_type)] }
       end
     end
   end

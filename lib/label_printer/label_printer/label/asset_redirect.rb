@@ -9,13 +9,14 @@ module LabelPrinter
       end
 
       def to_h
-        if assets.first.is_a? Plate
+        case assets.first
+        when Plate
           if @printer_type_class.double_label?
             AssetPlateDouble.new(assets).to_h
           else
             AssetPlate.new(assets).to_h
           end
-        elsif assets.first.is_a? Tube
+        when Tube
           AssetTube.new(assets).to_h
         end
       end

@@ -109,4 +109,44 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       expect(sample.sample_metadata.genome_size).to eq(1000)
     end
   end
+
+  describe '#control_formatted' do
+    it 'is nil when control is nil' do
+      sample = create(:sample, control: nil)
+      expect(sample.control_formatted).to be_nil
+    end
+
+    it 'shows something useful when control type is positive' do
+      sample = create(:sample, control: true, control_type: 'positive')
+      expect(sample.control_formatted).to eq 'Yes (positive)'
+    end
+
+    it 'shows something useful when control type is negative' do
+      sample = create(:sample, control: true, control_type: 'negative')
+      expect(sample.control_formatted).to eq 'Yes (negative)'
+    end
+
+    it 'shows something useful when control type is unspecified' do
+      sample = create(:sample, control: true, control_type: nil)
+      expect(sample.control_formatted).to eq 'Yes (type unspecified)'
+    end
+  end
+
+  context 'control_type validation' do
+    subject { build(:sample, control: false, control_type: 'positive') }
+
+    it { is_expected.not_to be_valid }
+  end
+
+  describe '#priority', :aggregate_failures do
+    it 'will have a default priority of nopriority - 0' do
+      expect(build(:sample).priority).to eq('no_priority')
+    end
+
+    it 'can have a priority' do
+      %w[backlog surveillance priority].each do |priority|
+        expect(build(:sample, priority: priority).priority).to eq(priority)
+      end
+    end
+  end
 end

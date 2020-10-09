@@ -35,6 +35,7 @@ plate_default:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :control_type
 plate_full:
   heading: "Full Plate"
   asset_type: "plate"
@@ -87,6 +88,7 @@ plate_full:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
+    - :control_type
 plate_rnachip:
   heading: "RNA/ChIP Plate"
   asset_type: "plate"
@@ -172,6 +174,7 @@ plate_library:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
+    - :primer_panel
 plate_chromium_library:
   heading: "Chromium Library Plate"
   asset_type: "library_plate"
@@ -386,6 +389,8 @@ tube_multiplexed_library:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :primer_panel
+    - :control_type
 tube_library_with_tag_sequences:
   heading: "Library Tube with Tag Sequences"
   asset_type: "library"
@@ -427,6 +432,7 @@ tube_library_with_tag_sequences:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :primer_panel
 tube_chromium_library:
   heading: "Chromium Library Tube"
   asset_type: "library"
@@ -509,6 +515,8 @@ tube_multiplexed_library_with_tag_sequences:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :primer_panel
+    - :control_type
 tube_multiplexed_chromium_library:
   heading: "Multiplexed Chromium Library Tube"
   asset_type: "multiplexed_library"
@@ -617,3 +625,56 @@ long_read:
     - :genome_size
     - :saphyr
     - :pacbio
+heron:
+  heading: "Heron"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_name
+    - :cohort
+    - :volume
+    - :concentration
+    - :gender
+    - :country_of_origin
+    - :geographical_region
+    - :ethnicity
+    - :dna_source
+    - :date_of_sample_collection
+    - :date_of_sample_extraction
+    - :sample_extraction_method
+    - :sample_purified
+    - :purification_method
+    - :concentration_determined_by
+    - :sample_storage_conditions
+    - :mother
+    - :father
+    - :sibling
+    - :gc_content
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
+    - :sample_strain_att
+    - :sample_type
+    - :genotype
+    - :phenotype
+    - :age
+    - :developmental_stage
+    - :cell_type
+    - :disease_state
+    - :compound
+    - :dose
+    - :immunoprecipitate
+    - :growth_condition
+    - :rnai
+    - :organism_part
+    - :time_point
+    - :treatment
+    - :subject
+    - :disease
+    - :sample_ebi_accession_number
+    - :donor_id2
+    - :control_type
+    - :priority

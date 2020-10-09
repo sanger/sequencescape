@@ -11,7 +11,7 @@ describe RequestEvent do
         expect(described_class.count).to eq 1
       end
 
-      it 'records a RequestEvent for each new Request' do
+      it 'records a RequestEvent for each new Request' do # rubocop:todo RSpec/AggregateExamples
         expect(request.request_events.count).to eq 1
         expect(request.current_request_event.from_state).to be_nil
         expect(request.current_request_event.to_state).to eq 'pending'

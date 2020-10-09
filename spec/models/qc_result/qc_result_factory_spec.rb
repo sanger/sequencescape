@@ -99,7 +99,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
         expect(no_blank_wells).not_to include(asset_3)
       end
 
-      it 'will save all of the assets with valid wells' do
+      it 'will save all of the assets with valid wells' do # rubocop:todo RSpec/AggregateExamples
         expect(factory.save).to be_truthy
         expect(QcResult.all.count).to eq(2)
       end

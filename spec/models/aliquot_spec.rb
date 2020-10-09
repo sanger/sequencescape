@@ -98,10 +98,11 @@ RSpec.describe Aliquot, type: :model do
     let(:receptacle) { create :empty_well }
 
     before do
-      subject.set_library
+      subject.set_library(force: force)
     end
 
     context 'when not set' do
+      let(:force) { false }
       let(:initial_library_id) { nil }
 
       it 'gets set to the receptacle id' do
@@ -109,11 +110,21 @@ RSpec.describe Aliquot, type: :model do
       end
     end
 
-    context 'when previously set' do
+    context 'when previously set and forced' do
+      let(:force) { true }
       let(:initial_library_id) { create(:empty_well).id }
 
       it 'gets set to the receptacle id' do
         expect(subject.library_id).to eq(receptacle.id)
+      end
+    end
+
+    context 'when previously set and not forced' do
+      let(:force) { false }
+      let(:initial_library_id) { create(:empty_well).id }
+
+      it 'gets set to the receptacle id' do
+        expect(subject.library_id).to eq(initial_library_id)
       end
     end
   end

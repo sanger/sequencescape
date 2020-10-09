@@ -24,7 +24,7 @@ class UatActions::GeneratePlates < UatActions
              :select,
              label: 'Study',
              help: 'The study under which samples begin. List includes all active studies.',
-             select_options: -> { Study.active.pluck(:name) }
+             select_options: -> { Study.active.alphabetical.pluck(:name) }
   form_field :well_layout,
              :select,
              label: 'Well layout',
@@ -48,8 +48,10 @@ class UatActions::GeneratePlates < UatActions
       plate_purpose.create!.tap do |plate|
         construct_wells(plate)
         report["plate_#{i}"] = plate.human_barcode
+        yield plate if block_given?
       end
     end
+    true
   end
 
   private
@@ -62,19 +64,29 @@ class UatActions::GeneratePlates < UatActions
   end
 
   def construct_wells(plate)
-    wells(plate).each_with_index do |well, index|
-      well.aliquots.create!(sample: Sample.create!(
-        name: "sample_#{plate.human_barcode}_#{well.map.description}", sanger_sample_id: "sanger sample id #{index}",
-        studies: [study], sample_metadata_attributes: { supplier_name: "sup name #{index}" }
-      ))
+    wells(plate).each do |well|
+      sample_name = "sample_#{plate.human_barcode}_#{well.map.description}"
+      sample = Sample.new(
+        name: sample_name,
+        sanger_sample_id: sample_name,
+        studies: [study],
+        sample_metadata_attributes: {
+          supplier_name: sample_name
+        }
+      )
+      sample.save!(validate: false)
+      well.aliquots.create!(
+        sample: sample,
+        study: study
+      )
     end
   end
 
   def wells(plate)
     case well_layout
-    when 'Column' then plate.wells.in_column_major_order.limit(well_count)
-    when 'Row' then plate.wells.in_row_major_order.limit(well_count)
-    when 'Random' then plate.wells.all.sample(well_count.to_i)
+    when 'Column' then plate.wells.in_column_major_order.includes(:map).limit(well_count)
+    when 'Row' then plate.wells.in_row_major_order.includes(:map).limit(well_count)
+    when 'Random' then plate.wells.includes(:map).all.sample(well_count.to_i)
     else
       raise StandardError, "Unknown layout: #{well_layout}"
     end

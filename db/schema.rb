@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_04_113944) do
+ActiveRecord::Schema.define(version: 2020_07_14_152350) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 2020_03_04_113944) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "witnessed_by"
+    t.json "metadata"
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
   end
 
@@ -717,6 +718,14 @@ ActiveRecord::Schema.define(version: 2020_03_04_113944) do
     t.integer "permissable_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "pick_lists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "state", default: 0, null: false
+    t.integer "submission_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["submission_id"], name: "index_pick_lists_on_submission_id"
   end
 
   create_table "pipeline_request_information_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1387,7 +1396,8 @@ ActiveRecord::Schema.define(version: 2020_03_04_113944) do
     t.boolean "updated_by_manifest", default: false
     t.integer "work_order_id"
     t.integer "container_id"
-    t.boolean "migrated_consent_withdrawn_to_metadata", default: false
+    t.integer "control_type"
+    t.integer "priority", default: 0
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"
@@ -1767,6 +1777,15 @@ ActiveRecord::Schema.define(version: 2020_03_04_113944) do
     t.integer "tube_id", null: false
   end
 
+  create_table "tube_rack_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "barcode", null: false
+    t.integer "status", null: false
+    t.text "messages"
+    t.integer "labware_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "login"
     t.string "email"
@@ -1909,6 +1928,7 @@ ActiveRecord::Schema.define(version: 2020_03_04_113944) do
   add_foreign_key "lot_types", "plate_purposes", column: "target_purpose_id", name: "fk_lot_types_to_plate_purposes"
   add_foreign_key "lots", "lot_types", name: "fk_lots_to_lot_types"
   add_foreign_key "messenger_creators", "plate_purposes", column: "purpose_id", name: "fk_messenger_creators_to_plate_purposes"
+  add_foreign_key "pick_lists", "submissions"
   add_foreign_key "pipelines_request_types", "pipelines", name: "pipelines_request_types_ibfk_1"
   add_foreign_key "pipelines_request_types", "request_types", name: "pipelines_request_types_ibfk_2"
   add_foreign_key "plate_purposes", "barcode_prefixes"

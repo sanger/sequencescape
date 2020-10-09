@@ -58,11 +58,174 @@ class PlatesControllerTest < ActionController::TestCase
           should 'change Plate.count by 1' do
             assert_equal 1, Plate.count - @plate_count, 'Expected Plate.count to change by 1'
           end
-          should respond_with :redirect
+          should respond_with :ok
           should set_flash.to(/Created/)
         end
 
         context 'Create a Plate' do
+          context 'from a group of plates' do
+            setup do
+              @purpose = create(:plate_purpose, name: 'A purpose', size: 96)
+
+              @asset_group_count = AssetGroup.count
+              @num_create = 2
+              @plates = Array.new(@num_create) { @purpose.create! }
+              @plate_barcodes = @plates.map(&:barcodes).flatten.map(&:barcode)
+              @create_params = { plates: { creator_id: @dilution_plates_creator.id,
+                                           source_plates: @plate_barcodes.join(','),
+                                           barcode_printer: @barcode_printer.id,
+                                           user_barcode: '1234567',
+                                           create_asset_group: 'Yes' } }
+              @plate_count = Plate.count
+              post :create, params: @create_params
+            end
+
+            should 'create the plates' do
+              assert_equal @plate_count + @num_create, Plate.count
+            end
+
+            should 'not display an error' do
+              should_not set_flash[:error].to(/Could not find plate/)
+            end
+
+            should 'display created barcodes' do
+              assert_equal(true, response.body.include?('Created labware'))
+            end
+
+            context 'when one of the scanned source plates do not exist' do
+              setup do
+                @missing_barcode_create_params = { plates: { creator_id: @dilution_plates_creator.id,
+                                                             source_plates: @plate_barcodes.concat(['missing']).join(','),
+                                                             barcode_printer: @barcode_printer.id,
+                                                             user_barcode: '1234567',
+                                                             create_asset_group: 'Yes' } }
+                @plates_already = Plate.count
+                post :create, params: @missing_barcode_create_params
+              end
+
+              should 'rollback all group created' do
+                assert_equal @plates_already, Plate.count, 'Expected Plate.count not to change'
+              end
+
+              should 'display an error' do
+                should set_flash[:error].to(/Could not find plate/)
+              end
+
+              should 'not display created barcodes' do
+                assert_equal(false, response.body.include?('Created labware'))
+              end
+            end
+          end
+          context 'from a Heron TubeRack' do
+            setup do
+              tube_rack_purpose = create(:tube_rack_purpose, target_type: 'TubeRack', size: 96)
+              study = create(:study)
+
+              params = {
+                purpose_uuid: tube_rack_purpose.uuid,
+                study_uuid: study.uuid,
+                barcode: '0000000001', size: 96, tubes: {
+                  'A1' => { barcode: 'FD00000001', content: { supplier_name: 'PHEC-nnnnnnn1' } },
+                  'A2' => { barcode: 'FD00000002', content: { supplier_name: 'PHEC-nnnnnnn2' } }
+                }
+              }
+              tube_rack_factory = ::Heron::Factories::TubeRack.new(params)
+              tube_rack_factory.save
+              @tube_rack = tube_rack_factory.tube_rack
+              @plate_count = Plate.count
+              @asset_group_count = AssetGroup.count
+              @create_params = { plates: { creator_id: @dilution_plates_creator.id,
+                                           source_plates: @tube_rack.barcodes.first.barcode,
+                                           barcode_printer: @barcode_printer.id,
+                                           user_barcode: '1234567',
+                                           create_asset_group: 'Yes' } }
+            end
+
+            context 'when printing and asset group creation are successful' do
+              setup do
+                post :create, params: @create_params
+              end
+
+              should 'change Plate.count by 1' do
+                assert_equal 1, Plate.count - @plate_count, 'Expected Plate.count to change by 1'
+              end
+              should respond_with :ok
+              should set_flash[:notice].to(/Created/)
+              should_not set_flash[:warning]
+
+              should 'display the created barcode' do
+                assert_equal(true, response.body.include?(@tube_rack.children.first.barcodes.first.barcode))
+              end
+
+              should 'have created an asset group' do
+                assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be created'
+              end
+            end
+
+            context 'when one of the scanned source plates do not exist' do
+              setup do
+                @missing_barcode_create_params = { plates: { creator_id: @dilution_plates_creator.id,
+                                                             source_plates: @tube_rack.barcodes.first.barcode + ',missing',
+                                                             barcode_printer: @barcode_printer.id,
+                                                             user_barcode: '1234567',
+                                                             create_asset_group: 'Yes' } }
+                @plates_already = Plate.count
+                post :create, params: @missing_barcode_create_params
+              end
+
+              should 'rollback all group created' do
+                assert_equal @plates_already, Plate.count, 'Expected Plate.count not to change'
+              end
+
+              should 'display an error' do
+                should set_flash[:error].to(/Could not find plate/)
+              end
+
+              should 'not display created barcodes' do
+                assert_equal(false, response.body.include?('Created labware'))
+              end
+            end
+
+            context 'when the printer fails to print' do
+              setup do
+                LabelPrinter::PrintJob.any_instance.stubs(:execute).returns(false)
+                post :create, params: @create_params
+              end
+
+              should 'still display the created barcode' do
+                assert_equal(true, response.body.include?(@tube_rack.children.first.barcodes.first.barcode))
+              end
+
+              should 'keep the created labware persisted' do
+                barcode = @tube_rack.children.first.barcodes.first.barcode
+                assert_equal(1, Plate.joins(:barcodes).where(barcodes: { barcode: barcode }).count)
+              end
+
+              should 'display a warning' do
+                should set_flash[:warning].to(/Barcode labels failed to print/)
+              end
+
+              should 'still have created an asset group' do
+                assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be created'
+              end
+            end
+
+            context 'when asset group creation fails' do
+              setup do
+                Plate::Creator.any_instance.stubs(:find_relevant_study).returns(nil)
+                post :create, params: @create_params
+              end
+
+              should 'display a warning' do
+                should set_flash[:warning].to(/Failed to create Asset Group/)
+              end
+
+              should 'not display a warning about barcode printing' do
+                should_not set_flash[:warning].to(/Barcode labels failed to print/)
+              end
+            end
+          end
+
           context 'with one source plate' do
             setup do
               @well = create :well
@@ -258,7 +421,7 @@ class PlatesControllerTest < ActionController::TestCase
                 assert_equal @pico_purposes.first, Plate.find(@parent_plate.id).children.first.plate_purpose
               end
 
-              should respond_with :redirect
+              should respond_with :ok
 
               should set_flash.to(/Created/)
             end
@@ -301,7 +464,7 @@ class PlatesControllerTest < ActionController::TestCase
                 assert_equal @pico_purposes.first, Plate.find(plate.id).children.first.plate_purpose
               end
             end
-            should respond_with :redirect
+            should respond_with :ok
             should set_flash.to(/Created/)
           end
         end

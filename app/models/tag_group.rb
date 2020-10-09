@@ -2,6 +2,7 @@ class TagGroup < ApplicationRecord
   CHROMIUM_ADAPTER_TYPE = 'Chromium'.freeze
 
   include Uuid::Uuidable
+  include SharedBehaviour::Named
 
   has_many :tags, ->() { order('map_id ASC') }
   belongs_to :adapter_type, class_name: 'TagGroup::AdapterType', optional: true

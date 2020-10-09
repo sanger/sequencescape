@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: true, sample_manifest: true do
   class ListItem
     attr_reader :attr_a, :attr_b, :attr_c, :attr_d
+
     def initialize(attr_a, attr_b, attr_c, attr_d, valid = true)
       @attr_a = attr_a
       @attr_b = attr_b
@@ -41,7 +42,7 @@ RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: tr
     expect(my_list.list_items.count).to eq(3)
   end
 
-  it 'each key has the correct number of items' do
+  it 'each key has the correct number of items' do # rubocop:todo RSpec/AggregateExamples
     expect(my_list.items.attr_a.count).to eq(3)
     expect(my_list.items.attr_b.count).to eq(3)
     expect(my_list.items.attr_c.count).to eq(3)
@@ -72,7 +73,7 @@ RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: tr
     expect(my_list.items.attr_c).to be_empty
   end
 
-  it 'each key should pull back the attributes for that key' do
+  it 'each key should pull back the attributes for that key' do # rubocop:todo RSpec/AggregateExamples
     expect(my_list.attr_as).to eq(%w[a e i])
     expect(my_list.attr_bs).to eq(%w[b f j])
     expect(my_list.attr_cs).to eq(%w[c g k])

@@ -2,32 +2,8 @@
 
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
-require 'support/lab_where_client_helper'
-
-RSpec.configure do |c|
-  c.include LabWhereClientHelper
-end
 
 describe Plate do
-  context 'labwhere' do
-    subject { plate.labwhere_location }
-
-    let(:plate) { create :plate, barcode: 1 }
-    let(:parentage) { 'Sanger / Ogilvie / AA316' }
-    let(:location) { 'Shelf 1' }
-
-    setup do
-      stub_lwclient_labware_find_by_bc(lw_barcode: plate.human_barcode,
-                                       lw_locn_name: location,
-                                       lw_locn_parentage: parentage)
-      stub_lwclient_labware_find_by_bc(lw_barcode: plate.machine_barcode,
-                                       lw_locn_name: location,
-                                       lw_locn_parentage: parentage)
-    end
-
-    it { is_expected.to eq "#{parentage} - #{location}" }
-  end
-
   describe '#comments' do
     let(:plate) { create :plate, well_count: 2 }
 
@@ -111,12 +87,6 @@ describe Plate do
       let(:prefix) { 'DN' }
       let(:barcode_prefix) { create :barcode_prefix, prefix: prefix }
       let(:plate) { create :plate, prefix: prefix, barcode: '12345' }
-
-      describe '#human_barcode' do
-        subject { plate.human_barcode }
-
-        it { is_expected.to eq 'DN12345U' }
-      end
 
       describe '#human_barcode' do
         subject { plate.human_barcode }

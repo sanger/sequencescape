@@ -8,6 +8,7 @@ group :default do
 
   # State machine
   gem 'aasm'
+  gem 'after_commit_everywhere', '~> 0.1', '>= 0.1.5' # aasm requirement
   gem 'configatron'
   gem 'formtastic'
   gem 'rest-client' # curb substitute.
@@ -19,6 +20,7 @@ group :default do
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'
+  gem 'record_loader'
 
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
@@ -109,10 +111,8 @@ end
 
 group :warehouse do
   # Used to connect to oracle databases for some data import
-  gem 'ruby-oci8', platforms: :mri
-  # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
-  # any newer version requires ruby-oci8 => 2.0.1
   gem 'activerecord-oracle_enhanced-adapter'
+  gem 'ruby-oci8', platforms: :mri
 end
 
 group :development do
@@ -144,6 +144,7 @@ end
 
 group :development, :test, :cucumber do
   gem 'pry'
+  gem 'pry-byebug'
   gem 'pry-stack_explorer'
   # Asset compilation, js and style libraries
   gem 'bootstrap'
@@ -151,8 +152,8 @@ group :development, :test, :cucumber do
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
   gem 'knapsack'
-  gem 'sass-rails'
   gem 'sassc', '2.1.0'
+  gem 'sass-rails'
   gem 'select2-rails'
   gem 'webmock'
 end
@@ -168,6 +169,7 @@ group :test do
   # Rails performance tests
   gem 'rails-perftest'
   gem 'rspec-collection_matchers' # Provides matchers for dealing with arrays
+  gem 'rspec-longrun' # Extends scenario logging for more verbose tracking
   gem 'test-prof'
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
@@ -192,7 +194,8 @@ group :test, :cucumber do
   gem 'nokogiri', require: false
   gem 'shoulda-context', require: false
   gem 'shoulda-matchers', require: false
-  gem 'simplecov', require: false
+  # Pin due to Code climate compatibility issues. Should be able to unpin soon.
+  gem 'simplecov', '~>0.17.0', require: false
   gem 'timecop', require: false
   # Simplifies shared transactions between server and test threads
   # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html

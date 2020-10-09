@@ -45,6 +45,9 @@ dna_storage_conditions:
 library_type:
   identifier: :name
   scope: :alphabetical
+primer_panel:
+  identifier: :name
+  scope: :alphabetical
 reference_genome:
   identifier: :name
   scope: :alphabetical
@@ -52,3 +55,12 @@ chromium_tag_groups:
   identifier: :name
   scope: :chromium
   scope_on: TagGroup
+gc_content:
+  options:
+    - 'Neutral'
+    - 'High AT'
+    - 'High GC'
+control_type:
+  options:
+    - 'positive'
+    - 'negative'

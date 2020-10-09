@@ -36,6 +36,20 @@ class Transfer < ApplicationRecord
     end
   end
 
+  #
+  # Given a list of well  map_descriptions (eg. A1) validates that all are present on the
+  # plate, otherwise generates a validation error. Also valid if the plate is not specified.
+  # Used by: {Transfer::BetweenPlates} and {Transfer::FromPlateToTube}
+  #
+  # @param [Array] positions Array of map_descriptions to test
+  #
+  def validate_transfers(positions, plate, plate_type)
+    invalid_positions = plate&.invalid_positions(positions)
+    return true if invalid_positions.blank? # We either have no plate, or all positions are valid
+
+    errors.add(:transfers, "#{invalid_positions.join(', ')} are not valid positions for the #{plate_type} plate")
+  end
+
   private
 
   def create_transfer_requests

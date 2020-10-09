@@ -15,7 +15,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList, type: :model, samp
     expect(conditional_formatting_list.count).to eq(rules.length)
   end
 
-  it '#options provides a list of conditional formatting options' do
+  it '#options provides a list of conditional formatting options' do # rubocop:todo RSpec/AggregateExamples
     expect(conditional_formatting_list.options.count).to eq(rules.length)
     expect(rules.values).to be_all { |rule| conditional_formatting_list.options.include? rule['options'] }
   end

@@ -4,10 +4,8 @@ require:
  - rubocop-performance
  - rubocop-rails
  - rubocop-rspec
-RSpec/AggregateFailures:
-  Enabled: true
-  Include:
-    - 'spec/**/*.rb'
+RSpec/AggregateExamples:
+  AddAggregateFailuresMetadata: false
 # Added exclude because api and feature specs do not have a specific class.
 RSpec/DescribeClass:
   Exclude:
@@ -16,14 +14,7 @@ RSpec/DescribeClass:
     - 'spec/features/**/*.rb'
     - 'spec/lib/warren/*.rb'
     - 'spec/models/billing/*.rb'
-# expect { foo }.to change { bar }
-# This pattern is an RSpec idiom, which fails this rule (https://github.com/substancelab/dotfiles/pull/3)
-# The following does not work as it clashed with the rubocop-todo.yml file somehow
-# Lint/AmbiguousBlockAssociation:
-#   Exclude:
-#     - 'spec/**/*.rb'
 AllCops:
-  TargetRubyVersion: 2.4
   Exclude:
     - db/schema.rb
     - db/views_schema.rb
@@ -130,3 +121,91 @@ Rails/UnknownEnv:
     - test
     - cucumber
     - profile
+
+# Pending Cops
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Style/ExponentialNotation:
+  Enabled: true
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+Style/SlicingWithRange:
+  Enabled: true
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+Style/RedundantFetchBlock:
+  Enabled: true
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+Style/RedundantRegexpEscape:
+  Enabled: true
+Lint/DuplicateElsifCondition:
+  Enabled: true
+Style/AccessorGrouping:
+  Enabled: true
+Style/ArrayCoercion:
+  Enabled: true
+Style/BisectedAttrAccessor:
+  Enabled: true
+Style/CaseLikeIf:
+  Enabled: true
+Style/HashAsLastArrayItem:
+  Enabled: true
+Style/HashLikeCase:
+  Enabled: true
+Style/RedundantAssignment:
+  Enabled: true
+Style/RedundantFileExtensionInRequire:
+  Enabled: true
+Performance/AncestorsInclude:
+  Enabled: true
+Performance/BigDecimalWithNumericArgument:
+  Enabled: true
+Performance/RedundantSortBlock:
+  Enabled: true
+Performance/RedundantStringChars:
+  Enabled: true
+Performance/ReverseFirst:
+  Enabled: true
+Performance/SortReverse:
+  Enabled: true
+Performance/Squeeze:
+  Enabled: true
+Performance/StringInclude:
+  Enabled: true
+Rails/ActiveRecordCallbacksOrder:
+  Enabled: true
+Rails/FindById:
+  Enabled: true
+Rails/Inquiry:
+  Enabled: true
+Rails/MailerName:
+  Enabled: true
+Rails/MatchRoute:
+  Enabled: true
+Rails/NegateInclude:
+  Enabled: true
+Rails/Pluck:
+  Enabled: true
+Rails/PluckInWhere:
+  Enabled: true
+Rails/RenderInline:
+  Enabled: true
+Rails/RenderPlainText:
+  Enabled: true
+Rails/ShortI18n:
+  Enabled: true
+Rails/WhereExists:
+  Enabled: true

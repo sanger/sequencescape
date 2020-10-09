@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'shared_contexts/limber_shared_context'
 
 describe PlatePurpose, type: :model do
   let(:plate_purpose) { create :plate_purpose, prefix: barcode_prefix, target_type: target_type, size: size }
@@ -9,6 +10,7 @@ describe PlatePurpose, type: :model do
     setup do
       expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
     end
+
     describe '#create!' do
       subject { plate_purpose.create! }
 
@@ -20,15 +22,15 @@ describe PlatePurpose, type: :model do
         expect(matched[:prefix]).to eq barcode_prefix
       end
 
-      it 'builds a plate of the correct size' do
+      it 'builds a plate of the correct size' do # rubocop:todo RSpec/AggregateExamples
         expect(subject.size).to eq size
       end
 
-      it 'sets itself as the purpose' do
+      it 'sets itself as the purpose' do # rubocop:todo RSpec/AggregateExamples
         expect(subject.purpose).to eq(plate_purpose)
       end
 
-      it 'creates wells' do
+      it 'creates wells' do # rubocop:todo RSpec/AggregateExamples
         expect(subject.wells.count).to eq size
       end
     end
@@ -62,5 +64,29 @@ describe PlatePurpose, type: :model do
     let(:size) { 384 }
 
     it_behaves_like 'a plate factory'
+  end
+
+  describe '#transition_to' do
+    let(:user) { create :user }
+
+    context 'when the plate is the initial plate in the pipeline' do
+      include_context 'a limber target plate with submissions', 'pending'
+      it 'starts the requests', :aggregate_failures do
+        # Requests are started and we create one event per order.
+        expect do
+          target_plate.plate_purpose.transition_to(target_plate, 'started', user)
+        end.to change(BroadcastEvent::LibraryStart, :count).by(1)
+        expect(library_requests).to all(be_started)
+      end
+    end
+
+    context 'when the plate is the initial plate in the pipeline but libraries are started' do
+      include_context 'a limber target plate with submissions'
+      it 'starts the requests', :aggregate_failures do
+        expect do
+          target_plate.plate_purpose.transition_to(target_plate, 'started', user)
+        end.to change(BroadcastEvent::LibraryStart, :count).by(0)
+      end
+    end
   end
 end

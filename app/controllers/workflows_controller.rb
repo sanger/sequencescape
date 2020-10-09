@@ -130,7 +130,7 @@ class WorkflowsController < ApplicationController
     end
   end
 
-  # Default render taks activity, eg. from {Task#render_task}
+  # Default render task activity, eg. from {Task#render_task}
   def render_task(task, params)
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.requests

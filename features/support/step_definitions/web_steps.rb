@@ -114,15 +114,15 @@ When /^(?:|I )choose "([^"]*)"(?: within "([^"]*)")?$/ do |field, selector|
   end
 end
 
-When /^(?:|I )attach the file "([^\"]*)" to "([^\"]*)"(?: within "([^\"]*)")?$/ do |path, field, selector|
+When /^(?:|I )attach the file "([^"]*)" to "([^"]*)"(?: within "([^"]*)")?$/ do |path, field, selector|
   with_scope(selector) do
     attach_file(field, path)
   end
 end
 
-Then /^(?:|I )should see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, selector|
+Then /^(?:|I )should see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
   with_scope(selector) do
-    assert page.has_content?(text), "Could not see #{text} on page."
+    assert page.has_content?(text), "Could not see #{text} on page (#{page.text})."
   end
 end
 
@@ -132,7 +132,7 @@ Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selecto
   end
 end
 
-Then /^(?:|I )should not see \/([^\/]*)\/(?: within "([^\"]*)")?$/ do |regexp, selector|
+Then /^(?:|I )should not see \/([^\/]*)\/(?: within "([^"]*)")?$/ do |regexp, selector|
   regexp = Regexp.new(regexp)
   with_scope(selector) do
     assert page.has_no_xpath?('//*', text: regexp)
@@ -172,7 +172,7 @@ Then /^show me the page$/ do
   Capybara.save_and_open_page("tmp/#{Time.zone.now.strftime('%Y%m%d%H%M%S')}.htm")
 end
 
-Given /^the "([^\"]*)" field is hidden$/ do |field_name|
+Given /^the "([^"]*)" field is hidden$/ do |field_name|
   assert find_field(field_name, visible: false).visible? == false
 end
 

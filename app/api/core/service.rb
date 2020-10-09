@@ -121,10 +121,9 @@ module Core
 
       initialized_attr_reader :service, :target, :path, :io, :json, :file, :filename
       attr_writer :io, :file, :filename
-      attr_reader :ability
+      attr_reader :ability, :identifier, :started_at
 
       delegate :user, to: :service
-      attr_reader :identifier, :started_at
 
       def initialize(identifier, *args, &block)
         @identifier, @started_at = identifier, Time.zone.now
@@ -202,6 +201,7 @@ module Core
       end
 
       attr_reader             :request
+
       initialized_attr_reader :handled_by, :object
 
       delegate :io, :identifier, :started_at, to: :request

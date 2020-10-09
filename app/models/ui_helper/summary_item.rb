@@ -1,11 +1,6 @@
 module UiHelper
   class SummaryItem
-    attr_accessor :message
-    attr_accessor :object
-    attr_accessor :timestamp
-
-    attr_accessor :external_link
-    attr_accessor :external_message
+    attr_accessor :message, :object, :timestamp, :external_link, :external_message
 
     def initialize(options = {})
       @message = options[:message]

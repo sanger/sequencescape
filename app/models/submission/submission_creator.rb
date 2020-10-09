@@ -50,6 +50,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   # Returns the either the first order associated with the submission or
   # creates a new blank order.
+  # @note Following the creation of an order, this will actually be the last order
+  # created.
   def order
     return @order if @order.present?
     return submission.orders.first if submission.present?

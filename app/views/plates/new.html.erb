@@ -2,11 +2,13 @@
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
 <%= page_title 'Plates', 'New' %>
 
+<%= render(partial: 'plates/creator/printed_barcodes') %>
+
 <%= semantic_form_for(:plates, url: plates_path) do |form| %>
   <div class="columnize">
   <%= panel do %>
     <%= form.inputs name: "Create Plates" do %>
-      <%= form.input :user_barcode, input_html: {onkeypress: "return disable_cr_and_change_focus(event,'user_barcode','plates_source_plates')",class: 'form-control' } %>
+      <%= form.input :user_barcode, input_html: {onkeypress: "return disable_cr_and_change_focus(event, 'plates_source_plates')",class: 'form-control' } %>
       <%= form.input :source_plates,   as: :text,   required: false, input_html: { class: 'form-control'} %>
     <% end %>
   <% end %>
@@ -15,46 +17,47 @@
       <%= form.input :creator_id, as: :select, collection: @plate_creators, label: 'Plate purpose', input_html: { class: 'form-control select2'} %>
       <%= form.input :dilution_factor, as: :select, label: 'Dilution factor', input_html: { class: 'form-control select2'} %>
       <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
+      <%= form.input :create_asset_group, as: :select, collection: ['Yes', 'No'], label: 'Group results for reprinting barcodes?', input_html: { class: 'form-control select2'} %>
       <%= form.action(:submit, disable_with: 'Please wait...') %>
     <% end %>
   <% end %>
   </div>
 <% end %>
 
-<script type="text/javascript">
+<%= javascript_tag nonce: true do %>
 (function($) {
-  var plate_creator_parameters = {
-    <% @plate_creators.each do |pc| %>
-      "<%= pc.name %>": <%= pc.valid_options.to_json.html_safe %>,
-    <% end %>
-  };
-  var dilutionFactorsNodes = $("#plates_dilution_factor");
-  var defaultOption = "<option value='1.0'>1.0</option>";
+  const defaultOption = ["1.0"]
+  const plate_creator_parameters = <%= raw json_escape(plate_creator_parameters_json(@plate_creators)) %>
 
-  dilutionFactorsNodes.html(defaultOption);
-
-  var updateFactorsFor = function(name) {
-    dilutionFactorsNodes.html("");
-    if (plate_creator_parameters[name] !== null) {
-      var validDilutionFactors = plate_creator_parameters[name].valid_dilution_factors;
-      for (var i=0; i<validDilutionFactors.length; i++) {
-        var val = validDilutionFactors[i]
-        dilutionFactorsNodes.append("<option value='"+val+"'>"+val+"</option>");
-      }
-    }
-    else {
-      dilutionFactorsNodes.append(defaultOption);
-    }
+  const validDilutionFactorsForName = (name) => {
+    return (plate_creator_parameters[name] || {}).valid_dilution_factors || defaultOption
   }
 
-  $("#plates_creator_id").change(function() {
-    updateFactorsFor(this.options[this.selectedIndex].text);
-  });
-  $("#plates_creator_id").change();
-})(jQuery)
+  const dataForName = (name) => {
+    return $.map(validDilutionFactorsForName(name), (val)=>{
+      return {id: val, text: val}
+    })
+  }
 
-$(document).ready(function () {
-  $('#plates_dilution_factor').select2({theme: "bootstrap",
-                                        minimumResultsForSearch: -1});
-});
-</script>
+  const updateFactorsFor = function(name) {
+    $('#plates_dilution_factor')[0].options.length = 0
+    $('#plates_dilution_factor').select2(
+      { data: dataForName(name) }
+    );
+  }
+
+  $(document).ready(function () {
+    const dilutionFactorSelect = $('#plates_dilution_factor')
+    const creatorSelect = $("#plates_creator_id")
+
+    dilutionFactorSelect.select2({
+      theme: "bootstrap",
+      minimumResultsForSearch: -1})
+
+    creatorSelect.change(function() {
+      updateFactorsFor($('option:selected', creatorSelect).text())
+    })
+    creatorSelect.change()
+  })
+})(jQuery)
+<% end %>

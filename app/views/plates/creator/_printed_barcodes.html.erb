@@ -1,0 +1,38 @@
+<% if @creator && @creator.created_plates && @creator.created_plates.length > 0 %>
+  <% if @creator.created_asset_group %>
+    <div class="alert alert-success" >
+      <p>
+        Created the following Asset Group:
+          <%= link_to @creator.created_asset_group.name,
+            print_study_asset_group_path(
+            id: @creator.created_asset_group.id,
+            study_id: @creator.created_asset_group.study_id) %>
+        (in Study '<%= @creator.created_asset_group.study.name %>')
+      </p>
+      <p>
+        Go to the Asset Group in future to reprint the barcode labels.
+      </p>
+    </div>
+  <% end %>
+  <table class="table table-sm table-success table-bordered">
+    <caption>Created labware</caption>
+    <thead>
+      <tr>
+        <th scope="col">Source  </th>
+        <% @creator.created_plates.first[:destinations].each do |dest| %>
+          <th scope="col"><%= dest.purpose.name %> </th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @creator.created_plates.each do |entry| %>
+        <tr>
+          <td scope="row"><%= entry[:source].barcodes.first.barcode unless entry[:source].nil? %> </td>
+          <% entry[:destinations].each do |destination| %>
+              <td><%= destination.barcodes.first.barcode %>  </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

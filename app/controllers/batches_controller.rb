@@ -1,24 +1,26 @@
 # frozen_string_literal: true
 
+# Batches represent collections of {Request requests} processed through a {Pipeline}
+# at the same time. They are created via selecting requests on the {PipelinesController#show pipelines show page}
 class BatchesController < ApplicationController
-  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behaviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
   before_action :evil_parameter_hack!
 
-  before_action :login_required, except: %i[released qc_criteria]
+  before_action :login_required, except: %i[released]
   before_action :find_batch_by_id, only: %i[
-    show edit update qc_information save fail
-    fail_batch print_labels print_plate_labels print_multiplex_labels
-    print verify verify_tube_layout reset_batch previous_qc_state filtered swap
-    download_spreadsheet gwl_file pacbio_sample_sheet sample_prep_worksheet
+    show edit update save fail print_labels
+    print_plate_labels print_multiplex_labels print verify verify_tube_layout
+    reset_batch previous_qc_state filtered swap download_spreadsheet
+    pacbio_sample_sheet sample_prep_worksheet
   ]
-  before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_pulldown_multiplex_tube_labels print_plate_barcodes print_barcodes]
+  before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_plate_barcodes print_barcodes]
 
   def index
     if logged_in?
-      @user = current_user
-      @batches = Batch.where(assignee_id: @user).or(Batch.where(user_id: @user))
+      @user = params.fetch(:user, current_user)
+      @batches = Batch.for_user(@user)
                       .order(id: :desc)
                       .includes(:user, :assignee, :pipeline)
                       .page(params[:page])
@@ -41,8 +43,16 @@ class BatchesController < ApplicationController
         @pipeline = @batch.pipeline
         @tasks    = @batch.tasks.sort_by(&:sorted)
         @rits = @pipeline.request_information_types
-        @input_labware = @batch.input_labware_group
-        @output_labware = @batch.output_labware_group
+        @input_labware = @batch.input_labware_report
+        @output_labware = @batch.output_labware_report
+
+        if @pipeline.pick_data
+          @robot = @batch.robot_id ? Robot.find(@batch.robot_id) : Robot.with_verification_behaviour.first
+          # In the event we have no robots with the correct behaviour, and none are specialised on the batch, fall-back
+          # to the first robot.
+          @robot ||= Robot.first
+          @robots = Robot.with_verification_behaviour
+        end
       end
       format.xml { render layout: false }
     end
@@ -76,15 +86,15 @@ class BatchesController < ApplicationController
   end
 
   def batch_parameters
-    @bp ||= params.require(:batch).permit(:assignee_id)
+    @batch_parameters ||= params.require(:batch).permit(:assignee_id)
   end
 
   def create
     @pipeline = Pipeline.find(params[:id])
 
-    # TODO: These should be different endpoints
-    requests = @pipeline.extract_requests_from_input_params(params.to_unsafe_h)
+    requests = @pipeline.extract_requests_from_input_params(request_parameters)
 
+    # TODO: These should be different endpoints
     case params[:action_on_requests]
     when 'cancel_requests'
       transition_requests(requests, :cancel_before_started!, 'Requests cancelled')
@@ -105,26 +115,26 @@ class BatchesController < ApplicationController
   end
 
   def pipeline
-    # All pipline batches routes should just direct to batches#index with pipeline and state as filter parameters
+    # All pipeline batches routes should just direct to batches#index with pipeline and state as filter parameters
     @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
   end
 
   def pending
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.pending.order(id: :desc).includes(%i[user pipeline]).page(params[:page])
   end
 
   def started
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.started.order(id: :desc).includes(%i[user pipeline]).page(params[:page])
   end
 
   def released
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
 
@@ -136,14 +146,14 @@ class BatchesController < ApplicationController
   end
 
   def completed
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.completed.order(id: :desc).includes(%i[user pipeline]).page(params[:page])
   end
 
   def failed
-    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # The params fall-back here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.failed.order(id: :desc).includes(%i[user pipeline]).page(params[:page])
@@ -162,9 +172,9 @@ class BatchesController < ApplicationController
       fail_params = params.permit(:id, requested_fail: {}, requested_remove: {}, failure: %i[reason comment fail_but_charge])
       fail_and_remover = Batch::RequestFailAndRemover.new(fail_params)
       if fail_and_remover.save
-        flash[:notice] = fail_and_remover.notice
+        flash[:notice] = truncate_flash(fail_and_remover.notice)
       else
-        flash[:error] = fail_and_remover.errors.full_messages.join(';')
+        flash[:error] = truncate_flash(fail_and_remover.errors.full_messages.join(';'))
       end
       redirect_to action: :fail, id: params[:id]
     end
@@ -199,10 +209,11 @@ class BatchesController < ApplicationController
       @output_barcodes << plate_barcode if plate_barcode.present?
     end
 
-    if @output_barcodes.blank?
-      flash[:error] = 'Output plates do not have barcodes to print'
-      redirect_to controller: 'batches', action: 'show', id: @batch.id
-    end
+    return if @output_barcodes.present?
+
+    # We have no output barcodes, which means a problem
+    flash[:error] = 'Output plates do not have barcodes to print'
+    redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
 
   def print_multiplex_labels
@@ -266,6 +277,12 @@ class BatchesController < ApplicationController
     @pipeline = @batch.pipeline
     @comments = @batch.comments
 
+    robot_id = params.fetch(:robot_id, @batch.robot_id)
+
+    @robot = robot_id ? Robot.find(robot_id) : Robot.with_verification_behaviour.first
+    # Fall-back
+    @robot ||= Robot.first
+
     if @pipeline.is_a?(CherrypickingPipeline)
       @plates = if params[:barcode]
                   Plate.with_barcode(params[:barcode])
@@ -325,21 +342,12 @@ class BatchesController < ApplicationController
     end
   end
 
+  # Used in Cherrypicking pipeline to generate the template for CSV driven picks
   def download_spreadsheet
     csv_string = Tasks::PlateTemplateHandler.generate_spreadsheet(@batch)
     send_data csv_string, type: 'text/plain',
                           filename: "#{@batch.id}_cherrypick_layout.csv",
                           disposition: 'attachment'
-  end
-
-  def gwl_file
-    @plate_barcode = @batch.plate_barcode(params[:barcode])
-    tecan_gwl_file_as_string = @batch.tecan_gwl_file_as_text(@plate_barcode,
-                                                             @batch.total_volume_to_cherrypick,
-                                                             params[:plate_type])
-    send_data tecan_gwl_file_as_string, type: 'text/plain',
-                                        filename: "#{@batch.id}_batch_#{@plate_barcode}.gwl",
-                                        disposition: 'attachment'
   end
 
   def find_batch_by_id
@@ -409,11 +417,12 @@ class BatchesController < ApplicationController
     end
   end
 
-  # This is the expected create behaviour, and is only in a seperate
+  # This is the expected create behaviour, and is only in a separate
   # method due to the overloading on the create endpoint.
   def standard_create(requests)
     return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
     return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
+    return pipeline_error_on_batch_creation('Batches must contain at least one request') if requests.empty?
 
     begin
       ActiveRecord::Base.transaction do
@@ -427,7 +436,7 @@ class BatchesController < ApplicationController
       # If this isn't the exception we're expecting, re-raise it.
       raise e unless /request_id/.match?(e.message)
 
-      # Find the requests which casued the clash.
+      # Find the requests which caused the clash.
       batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
       # Limit the length of the error message, otherwise big batches may generate errors which are too
       # big to pass back in the flash.
@@ -440,5 +449,9 @@ class BatchesController < ApplicationController
       format.html { redirect_to action: :show, id: @batch.id }
       format.xml  { head :created, location: batch_url(@batch) }
     end
+  end
+
+  def request_parameters
+    params.permit(request: {}, request_group: {}).to_h
   end
 end

@@ -1,0 +1,17 @@
+<%= page_title 'Pick-List', 'All' %>
+
+<p class="lead">Shows a list of all registered pick-lists, with the most recent first.</p>
+
+<%= pagination @pick_lists %>
+  <% if @pick_lists.blank? %>
+    <%= alert(:info) { 'No pick-lists found' } %>
+  <% else %>
+    <div class="pick-list-list">
+      <% @pick_lists.each do |pick_list| %>
+        <%= link_to pick_list_path(pick_list) do %>
+          <span>Pick <%= pick_list.id %></span> <%= time_tag(pick_list.created_at) %> <%= badge(pick_list.state) %>
+        <% end %>
+      <% end %>
+    </ol>
+  <% end%>
+<%= pagination @pick_lists %>

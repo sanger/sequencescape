@@ -141,8 +141,15 @@ class Sample < ApplicationRecord
     validates :sample_ebi_accession_number,
               format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII', allow_blank: true }
 
-    with_options(if: :validating_ena_required_fields?) do
-      validates :service_specific_fields, presence: true
+    with_options(on: [:EGA, :ENA]) do
+      validates :sample_taxon_id, presence: { message: 'is required' }
+      validates :sample_common_name, presence: { message: 'is required' }
+    end
+
+    with_options(on: :EGA) do
+      validates :gender, presence: { message: 'is required' }
+      validates :phenotype, presence: { message: 'is required' }
+      validates :donor_id, presence: { message: 'is required' }
     end
 
     # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
@@ -153,7 +160,7 @@ class Sample < ApplicationRecord
       dna_source: DNA_SOURCES,
       sample_sra_hold: SRA_HOLD_VALUES
     }.each_with_object({}) do |(k, v), h|
-      h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
+      h[k] = v.index_by { |b| b.downcase }
     end
 
     after_initialize do |record|
@@ -172,18 +179,14 @@ class Sample < ApplicationRecord
     end
   end
 
+  validates_associated :sample_metadata, on: %i[accession EGA ENA]
+
   include_tag(:sample_strain_att)
   include_tag(:sample_description)
 
   include_tag(:gender, services: :EGA, downcase: true)
   include_tag(:phenotype, services: :EGA)
   include_tag(:donor_id, services: :EGA, as: 'subject_id')
-
-  require_tag(:sample_taxon_id)
-  require_tag(:sample_common_name)
-  require_tag(:gender, :EGA)
-  require_tag(:phenotype, :EGA)
-  require_tag(:donor_id, :EGA)
 
   # Reopens the Sample::Metadata class which was defined by has_metadata above
   # Sample::Metadata tracks sample information, either for use in the lab, or passing to
@@ -267,10 +270,24 @@ class Sample < ApplicationRecord
 
   validates :name, presence: true
   validates :name, format: { with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create }
-  validates :name, format: { with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update }
+  validates :name, format: { with: /\A[()+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update }
   validates :name, uniqueness: { on: :create, message: 'already in use', unless: :sample_manifest_id?, case_sensitive: false }
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
+
+  validates :control_type, absence: { with: true, unless: :control?, message: 'should be blank if "control" is set to false' }
+
+  enum control_type: {
+    negative: 0,
+    positive: 1
+  }
+
+  enum priority: {
+    no_priority: 0,
+    backlog: 1,
+    surveillance: 2,
+    priority: 3
+  }
 
   # this method has to be before validation_guarded_by
   def rename_to!(new_name)
@@ -281,10 +298,10 @@ class Sample < ApplicationRecord
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
-  validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, _attr, value|
+  validates_each(:ena_study, on: %i[accession ENA EGA]) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
-  validates_associated(:ena_study, allow_blank: true, if: :validating_ena_required_fields?)
+  validates_associated(:ena_study, allow_blank: true, on: :accession)
 
   before_destroy :safe_to_destroy
   after_save :accession
@@ -348,7 +365,7 @@ class Sample < ApplicationRecord
     case sanger_sample_id
     when nil then sanger_sample_id
     when sanger_sample_id.size < 10 then sanger_sample_id
-    when /([\d]{7})$/ then Regexp.last_match(1)
+    when /(\d{7})$/ then Regexp.last_match(1)
     else
       sanger_sample_id
     end
@@ -400,31 +417,21 @@ class Sample < ApplicationRecord
     events.updated_using_sample_manifest!(user)
   end
 
-  attr_reader :ena_study
-
-  def validating_ena_required_fields_with_first_study=(state)
-    self.validating_ena_required_fields_without_first_study = state
-    @ena_study.try(:validating_ena_required_fields=, state)
+  def ena_study
+    studies.first
   end
-  alias validating_ena_required_fields_without_first_study= validating_ena_required_fields=
-  alias validating_ena_required_fields= validating_ena_required_fields_with_first_study=
 
   def validate_ena_required_fields!
-    # Do not alter the order of this line, otherwise @ena_study won't be set correctly!
-    @ena_study = studies.first
-    self.validating_ena_required_fields = true
-    valid? || raise(ActiveRecord::RecordInvalid, self)
+    valid?(:accession) &&
+      valid?(accession_service.provider) ||
+      raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
-    unless @ena_study.nil?
-      @ena_study.errors.full_messages.each do |message|
+    unless ena_study.nil?
+      ena_study.errors.full_messages.each do |message|
         errors.add(:base, "#{message} on study")
       end
     end
     raise e
-  ensure
-    # Do not alter the order of this line, otherwise the @ena_study won't be reset!
-    self.validating_ena_required_fields = false
-    @ena_study = nil
   end
 
   def sample_reference_genome
@@ -468,6 +475,15 @@ class Sample < ApplicationRecord
     else
       true
     end
+  end
+
+  def control_formatted
+    return nil if control.nil?
+
+    return 'No' if control == false
+
+    type_text = control_type || 'type unspecified'
+    "Yes (#{type_text})"
   end
 
   private

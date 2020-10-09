@@ -8,7 +8,7 @@ namespace :sequencing do
     desc 'Setting up NovaSeq 6000 PE pipeline'
     task setup: :environment do
       ActiveRecord::Base.transaction do
-        unless RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').exists?
+        unless RequestType.exists?(key: 'illumina_htp_novaseq_6000_paired_end_sequencing')
           RequestType.create!(key: 'illumina_htp_novaseq_6000_paired_end_sequencing',
                               name: 'Illumina-HTP NovaSeq 6000 Paired end sequencing',
                               asset_type: 'LibraryTube',
@@ -21,7 +21,7 @@ namespace :sequencing do
             RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150, 50, 75, 100])
           end
         end
-        unless SequencingPipeline.where(name: 'NovaSeq 6000 PE').exists?
+        unless SequencingPipeline.exists?(name: 'NovaSeq 6000 PE')
           SequencingPipeline.create!(
             name: 'NovaSeq 6000 PE',
             automated: false,
@@ -74,6 +74,28 @@ namespace :sequencing do
         unless RequestType.find_by(key: 'gbs_miseq_sequencing')
           rt = RequestType.create!(key: 'gbs_miseq_sequencing',
                                    name: 'GBS MiSeq sequencing',
+                                   asset_type: 'LibraryTube',
+                                   initial_state: 'pending',
+                                   order: 2,
+                                   request_class_name: 'MiSeqSequencingRequest',
+                                   billable: true,
+                                   request_purpose: :standard)
+          RequestType::Validator.create!(request_type: rt,
+                                         request_option: 'read_length',
+                                         valid_options: [25, 50, 130, 150, 250, 300])
+          SequencingPipeline.find_by(name: 'MiSeq sequencing').request_types << rt
+        end
+      end
+    end
+  end
+
+  namespace :heron_miseq do
+    desc 'Setting up Heron MiSeq Request Type'
+    task setup: :environment do
+      ActiveRecord::Base.transaction do
+        unless RequestType.find_by(key: 'heron_miseq_sequencing')
+          rt = RequestType.create!(key: 'heron_miseq_sequencing',
+                                   name: 'Heron MiSeq sequencing',
                                    asset_type: 'LibraryTube',
                                    initial_state: 'pending',
                                    order: 2,

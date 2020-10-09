@@ -13,7 +13,7 @@ Feature: RobotVerification
     """
     2470041440697
     """
-    When I fill in "Scan Tecan robot" with multiline text
+    When I fill in "Scan robot" with multiline text
     """
     4880000444853
     """
@@ -76,8 +76,9 @@ Feature: RobotVerification
 
     """
     And I press "Verify"
-    Then I should see "Download TECAN file"
-    Then the downloaded tecan file for batch "550000555760" and plate "DN99999F" is
+    Then I should see "Download Myrobot File"
+    Then I follow "Download myrobot File"
+    Then the downloaded robot file for batch "550000555760" and plate "DN99999F" is
     """
 C;
 A;BUFF;;96-TROUGH;1;;9.8
@@ -134,7 +135,7 @@ C; DEST1 = DN99999F
     """
     2470041440697
     """
-    When I fill in "Scan Tecan robot" with multiline text
+    When I fill in "Scan robot" with multiline text
     """
     4880000444853
     """
@@ -175,8 +176,9 @@ C; DEST1 = DN99999F
 
     """
     And I press "Verify"
-    Then I should see "Download TECAN file"
-    Then the downloaded tecan file for batch "550000555760" and plate "DN99999F" is
+    Then I should see "Download Myrobot File"
+    Then I follow "Download myrobot File"
+    Then the downloaded robot file for batch "550000555760" and plate "DN99999F" is
     """
 C;
 A;BUFF;;96-TROUGH;1;;8.0
@@ -207,7 +209,7 @@ Scenario: Source volumes should be updated once
     """
     2470041440697
     """
-    When I fill in "Scan Tecan robot" with multiline text
+    When I fill in "Scan robot" with multiline text
     """
     4880000444853
     """
@@ -258,7 +260,7 @@ Scenario: Source volumes should be updated once
     """
     2470041440697
     """
-    When I fill in "Scan Tecan robot" with multiline text
+    When I fill in "Scan robot" with multiline text
     """
     4880000444853
     """
@@ -315,7 +317,7 @@ Scenario: Source volumes should be updated once
     """
     2470041440697
     """
-    When I fill in "Scan Tecan robot" with multiline text
+    When I fill in "Scan robot" with multiline text
     """
     4880000444853
     """
@@ -356,8 +358,9 @@ Scenario: Source volumes should be updated once
 
     """
     And I press "Verify"
-    Then I should see "Download TECAN file"
-    Then the downloaded tecan file for batch "550000555760" and plate "DN99999F" is
+    Then I should see "Download Myrobot File"
+    Then I follow "Download myrobot File"
+    Then the downloaded robot file for batch "550000555760" and plate "DN99999F" is
     """
 C;
 A;BUFF;;96-TROUGH;1;;5.0
@@ -391,7 +394,7 @@ C; DEST1 = DN99999F
 
 
     """
-    When I fill in "Scan Tecan robot" with multiline text
+    When I fill in "Scan robot" with multiline text
     """
     4880000444853
 
@@ -422,8 +425,9 @@ C; DEST1 = DN99999F
     Then I should see "Scan Robot Beds And Plates"
 
     And I press "Verify"
-    Then I should see "Download TECAN file"
-    Then the downloaded tecan file for batch "550000555760" and plate "DN99999F" is
+    Then I should see "Download Myrobot File"
+    Then I follow "Download myrobot File"
+    Then the downloaded robot file for batch "550000555760" and plate "DN99999F" is
 """
 C;
 A;BUFF;;96-TROUGH;1;;9.8
@@ -1008,9 +1012,3 @@ C; SCRC1 = DN1234567T
 C;
 C; DEST1 = DN99999F
 """
-
-
-
-
-
-

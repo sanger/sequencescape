@@ -19,20 +19,16 @@ class LocationReport::LocationReportForm
                 :end_date,
                 :plate_purpose_ids
 
-  attr_reader :barcodes_text,
-              :name
-
-  attr_writer :location_report,
-              :barcodes
+  attr_accessor :barcodes_text
+  attr_reader :name
+  attr_writer :location_report, :barcodes
 
   # validations
   validate :check_labwhere_location_exists, :check_maxlength_of_barcodes, :check_for_valid_barcodes,
            :check_location_report
 
-  attr_writer :barcodes_text
-
   def name=(input_name)
-    @name = input_name.gsub(/[^A-Za-z0-9_\-\.\s]/, '').squish.gsub(/\s/, '_') if input_name.present?
+    @name = input_name.gsub(/[^A-Za-z0-9_\-.\s]/, '').squish.gsub(/\s/, '_') if input_name.present?
     @name = Time.current.to_formatted_s(:number) if input_name.blank?
   end
 
@@ -61,7 +57,7 @@ class LocationReport::LocationReportForm
   end
 
   def barcodes
-    @barcodes ||= barcodes_text&.squish&.split(/[\s\,]+/) || []
+    @barcodes ||= barcodes_text&.squish&.split(/[\s,]+/) || []
   end
 
   #######

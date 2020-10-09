@@ -4,11 +4,10 @@ class PlatesController < ApplicationController
   before_action :evil_parameter_hack!
   before_action :login_required, except: [:fluidigm_file]
 
-  def new
-    @plate_creators   = Plate::Creator.order(:name)
-    @barcode_printers = BarcodePrinterType96Plate.first.barcode_printers
-    @barcode_printers = BarcodePrinter.order('name asc') if @barcode_printers.blank?
+  before_action :set_plate_creators, only: [:new, :create]
+  before_action :set_barcode_printers, only: [:new, :create]
 
+  def new
     respond_to do |format|
       format.html
       format.xml  { render xml: @plate }
@@ -21,31 +20,66 @@ class PlatesController < ApplicationController
   end
 
   def create
-    ActiveRecord::Base.transaction do
-      plate_creator         = Plate::Creator.find(params[:plates][:creator_id])
-      barcode_printer       = BarcodePrinter.find(params[:plates][:barcode_printer])
-      source_plate_barcodes = params[:plates][:source_plates]
+    @creator = plate_creator = Plate::Creator.find(params[:plates][:creator_id])
+    barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
+    source_plate_barcodes = params[:plates][:source_plates]
+    create_asset_group = params[:plates][:create_asset_group] == 'Yes'
 
-      scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates][:user_barcode])
+    scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates][:user_barcode])
 
-      respond_to do |format|
-        if scanned_user.nil?
-          flash[:error] = 'Please scan your user barcode'
-          format.html { redirect_to(new_plate_path) }
-        elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user, Plate::CreatorParameters.new(params[:plates]))
-          flash[:notice] = 'Created plates and printed barcodes'
-          format.html { redirect_to(new_plate_path) }
-        else
-          flash[:error] = 'Failed to create plates'
-          format.html { redirect_to(new_plate_path) }
-        end
+    respond_to do |format|
+      if scanned_user.nil?
+        flash[:error] = 'Please scan your user barcode'
+      elsif tube_rack_sources?
+        plate_creator.create_plates_from_tube_racks!(
+          tube_racks,
+          barcode_printer,
+          scanned_user,
+          create_asset_group
+        )
+      else
+        plate_creator.execute(
+          source_plate_barcodes,
+          barcode_printer,
+          scanned_user,
+          create_asset_group,
+          Plate::CreatorParameters.new(params[:plates])
+        )
       end
+      flash[:notice] = 'Created plates successfully'
+      flash[:warning] = plate_creator.warnings if plate_creator.warnings.present?
+      format.html { render(new_plate_path) }
     end
-  rescue Plate::Creator::PlateCreationError, ActiveRecord::RecordNotFound => e
+  rescue StandardError => e
     respond_to do |format|
       flash[:error] = e.message
-      format.html { redirect_to(new_plate_path) }
+      format.html { render(new_plate_path) }
     end
+  end
+
+  def set_plate_creators
+    @plate_creators = Plate::Creator.order(:name)
+  end
+
+  def set_barcode_printers
+    @barcode_printers = BarcodePrinterType96Plate.first.barcode_printers
+    @barcode_printers = BarcodePrinter.order('name asc') if @barcode_printers.blank?
+  end
+
+  def tube_rack_barcodes
+    return [] unless params.dig(:plates).dig(:source_plates)
+
+    params[:plates][:source_plates].split(/[\s,]+/)
+  end
+
+  def tube_rack_sources?
+    return false if tube_rack_barcodes.empty?
+
+    tube_racks.count == tube_rack_barcodes.length
+  end
+
+  def tube_racks
+    @tube_racks ||= TubeRack.joins(:barcodes).where(barcodes: { barcode: tube_rack_barcodes })
   end
 
   def to_sample_tubes

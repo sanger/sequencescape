@@ -1,0 +1,64 @@
+<% add :menu, 'Create quad-stamped plates and print barcodes' => new_quad_stamp_path %>
+
+<div class="page-header">
+    <h1>Status of tube rack imports</h1>
+</div>
+
+<%= pagination @tube_rack_statuses %>
+
+<table class="table">
+  <thead>
+    <th>Tube rack</th>
+    <th>Status</th>
+    <th>Descendants</th>
+    <th>Messages</th>
+    <th>Created date</th>
+  </thead>
+  <tbody>
+  <% for status_record in @tube_rack_statuses %>
+    <tr>
+      <td>
+        <% if status_record.labware %>
+          <a href="<%= labware_path(status_record.labware.id) %>"><%= status_record.barcode %></a>
+        <% else %>
+          <%= status_record.barcode %>
+        <% end %>
+      </td>
+      <td><%= status_record.status %></td>
+      <td>
+        <% if status_record.labware && status_record.labware.descendants.any? %>
+          <% if status_record.labware.descendants.length > 1 %>
+            <ul>
+            <% for child in status_record.labware.descendants %>
+                <li>
+                  <a href="<%= labware_path(child) %>"><%= child.human_barcode %></a>
+                </li>
+            <% end %>
+            </ul>
+          <% else %>
+            <a href="<%= labware_path(status_record.labware.descendants.first.id) %>"><%= status_record.labware.descendants.first.human_barcode %></a>
+          <% end %>
+        <% end %>
+      </td>
+      <td>
+        <% if status_record.messages %>
+          <% if status_record.messages.length > 1 %>
+            <ul>
+              <% for message in status_record.messages %>
+                <li>
+                  <%= message %>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <%= status_record.messages.first %>
+          <% end %>
+        <% end %>
+      </td>
+      <td><%= status_record.created_at.strftime("%d %b %Y %k:%M") %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= pagination @tube_rack_statuses %>

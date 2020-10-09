@@ -29,11 +29,20 @@ module DownloadHelpers
   end
 
   def self.downloaded?(file)
-    !downloading? && path_to(file).exist?
+    # Lots of the code in this file seems to be using this source:
+    # <https://collectiveidea.com/blog/archives/2012/01/27/testing-file-downloads-with-capybara-and-chromedriver>
+    # Comment on November 25, 2013 at 16:26 PM seems to have the same problem that we have on getting an
+    # empty file and they seem to solve it by altering the order of this condition. For more info check
+    # original source.
+    path_to(file).exist? && !downloading?
   end
 
   def self.downloading?
-    downloads.grep(/\.part$/).any?
+    # if the folder has a file with a particular extension, we know it is still downloading
+    # convert from array of Pathname to array of strings, so can use grep successfully
+    downloads_strings = downloads.map(&:to_s)
+    downloads_strings.grep(/\.crdownload$/).any?
+    # downloads_strings.grep(/\.part$/).any? # uncomment if switch to using Firefox
   end
 
   def self.remove_downloads
@@ -42,6 +51,11 @@ module DownloadHelpers
 
   def self.create_directory
     PATH.parent.mkdir unless PATH.parent.exist?
-    PATH.mkdir
+    PATH.mkdir unless PATH.exist?
+  rescue Errno::EEXIST
+    # Saw this on travis, suggesting a race condition
+    # probably chrome creating the directory for the actual download.
+    # We retry, as we could potentially have failed creating the parent directory.
+    retry
   end
 end

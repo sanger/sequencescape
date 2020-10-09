@@ -14,6 +14,7 @@ class IlluminaHtp::FinalPlatePurposeTest < ActiveSupport::TestCase
         @child, @parent, @grandparent, @user = mock('PCR XP'), mock('PCR'), mock('PRE PCR'), mock('user')
         @child.stubs(:parent).returns(@parent)
         @parent.stubs(:parent).returns(@grandparent)
+        @child.stubs(:in_progress_requests).returns(Request.none)
 
         @child_wells = mock('PCR XP wells')
         @child.stubs(:wells).returns(@child_wells)

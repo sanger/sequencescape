@@ -605,4 +605,98 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
     end
   end
+
+  describe SequencescapeExcel::SpecialisedField::PrimerPanel do
+    let(:primer_panel) { create :primer_panel }
+
+    it 'will not be valid without a persisted primer panel' do
+      expect(described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: 'A new primer panel', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    end
+
+    it 'will be valid if blank' do
+      expect(described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)).to be_valid
+    end
+
+    it 'will add the the value to the aliquot' do
+      specialised_field = described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update(aliquot: aliquot)
+      expect(aliquot.primer_panel).to eq(primer_panel)
+    end
+
+    context 'with multiple aliquots' do
+      let(:asset) { create(:tagged_well, map: map, aliquot_count: 2) }
+
+      it 'will add the the value to all aliquots' do
+        specialised_field = described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)
+        specialised_field.update(aliquot: aliquot)
+        expect(asset.aliquots).to all(have_attributes(primer_panel: primer_panel))
+      end
+    end
+  end
+
+  describe SequencescapeExcel::SpecialisedField::Priority do
+    it 'will be valid if value blank string or nil' do
+      expect(described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)).to be_valid
+    end
+
+    it 'will be valid if value matches enum' do
+      expect(described_class.new(value: '0', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: '1', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: '2', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: '3', sample_manifest_asset: sample_manifest_asset)).to be_valid
+    end
+
+    it 'will not be valid if value does not match enum' do
+      sf = described_class.new(value: '5', sample_manifest_asset: sample_manifest_asset)
+      expect(sf).not_to be_valid
+      expect(sf.errors.full_messages).to include('the priority 5 was not recognised.')
+    end
+
+    it 'will update the priority on the sample when present' do
+      specialised_field = described_class.new(value: '1', sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update(aliquot: aliquot)
+      aliquot.save
+      expect(sample_manifest_asset.sample.priority).to eq('backlog')
+    end
+  end
+
+  describe SequencescapeExcel::SpecialisedField::ControlType do
+    it 'will be valid if value blank string or nil' do
+      expect(described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)).to be_valid
+    end
+
+    it 'will be valid if value matches enum' do
+      expect(described_class.new(value: 'positive', sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: 'negative', sample_manifest_asset: sample_manifest_asset)).to be_valid
+    end
+
+    it 'will not be valid if value does not match enum' do
+      sf = described_class.new(value: 'rubbish', sample_manifest_asset: sample_manifest_asset)
+      expect(sf).not_to be_valid
+      expect(sf.errors.full_messages).to include('the control type rubbish was not recognised.')
+    end
+
+    it 'will update the control and control type on the sample when present' do
+      specialised_field = described_class.new(value: 'positive', sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update(aliquot: aliquot)
+      aliquot.save
+      expect(sample_manifest_asset.sample.control).to eq(true)
+      expect(sample_manifest_asset.sample.control_type).to eq('positive')
+    end
+
+    # test to allow a re-upload to correct a previously set control to not a control
+    it 'will update the control and control type on the sample when blank' do
+      sample_manifest_asset.sample.control = true
+      sample_manifest_asset.sample.control_type = 'positive'
+      sample_manifest_asset.sample.save
+      specialised_field = described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)
+      specialised_field.update(aliquot: aliquot)
+      aliquot.save
+      expect(sample_manifest_asset.sample.control).to eq(false)
+      expect(sample_manifest_asset.sample.control_type).to eq(nil)
+    end
+  end
 end

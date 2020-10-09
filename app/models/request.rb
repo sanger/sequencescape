@@ -87,7 +87,7 @@ class Request < ApplicationRecord
   has_many :billing_items, class_name: 'Billing::Item'
 
   # Only actively used by poolable requests, but here to help with eager loading
-  has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
+  has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', inverse_of: :request
   has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
 
   delegate :position, to: :batch_request
@@ -236,7 +236,7 @@ class Request < ApplicationRecord
   # https://github.com/rails/rails/issues/15185
   scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies, { labware: :barcodes }] }]) }
   scope :loaded_for_sequencing_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) }, { request_type: :product_line }]) }
-  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: { labware: :barcodes } }, :target_asset]) }
+  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: { labware: [:purpose, :barcodes] } }, :target_asset, :order]) }
   scope :loaded_for_pacbio_inbox_display, -> { preload(:submission) }
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
@@ -381,9 +381,9 @@ class Request < ApplicationRecord
   end
 
   def get_value(request_information_type)
-    return '' unless request_metadata.respond_to?(request_information_type.key.to_sym)
+    return '' unless request_metadata.respond_to?(request_information_type.key)
 
-    value = request_metadata.send(request_information_type.key.to_sym)
+    value = request_metadata.send(request_information_type.key)
     return value.to_s if value.blank? or request_information_type.data_type != 'Date'
 
     value.to_date.strftime('%d %B %Y')
@@ -394,6 +394,10 @@ class Request < ApplicationRecord
     rit_value = get_value(rit) if rit.present?
     return rit_value if rit_value.present?
 
+    event_value_for(name, batch)
+  end
+
+  def event_value_for(name, batch = nil)
     list = (batch.present? ? lab_events_for_batch(batch) : lab_events)
     list.each { |event| desc = event.descriptor_value_for(name) and return desc }
     ''
@@ -404,7 +408,11 @@ class Request < ApplicationRecord
   end
 
   def lab_events_for_batch(batch)
-    lab_events.where(batch_id: batch.id)
+    if lab_events.loaded?
+      lab_events.select { |le| le.batch_id == batch.id }
+    else
+      lab_events.where(batch_id: batch.id)
+    end
   end
 
   def event_with_key_value(k, v = nil)
@@ -453,7 +461,7 @@ class Request < ApplicationRecord
     return [] if lab_events.empty?
 
     events.map do |event|
-      next if event.family.nil? or not %w[pass fail].include?(event.family.downcase)
+      next if event.family.nil? or %w[pass fail].exclude?(event.family.downcase)
 
       message = event.message || '(No message was specified)'
       { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message, 'created_at' => event.created_at }

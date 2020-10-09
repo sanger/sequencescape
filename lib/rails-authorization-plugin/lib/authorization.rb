@@ -32,7 +32,7 @@ module Authorization
         filter_keys = %i[only except]
         filter_args, eval_args = {}, {}
         if args.last.is_a? Hash
-          filter_args.merge!(args.last.reject { |k, _v| not filter_keys.include? k })
+          filter_args.merge!(args.last.reject { |k, _v| filter_keys.exclude?(k) })
           eval_args.merge!(args.last.reject { |k, _v| filter_keys.include? k })
         end
         before_action(filter_args) do |controller|
@@ -118,14 +118,15 @@ module Authorization
 
       # Try to find a model to query for permissions
       def get_model(str)
-        if str.match?(/\s*([A-Z]+\w*)\s*/)
+        case str
+        when /\s*([A-Z]+\w*)\s*/
           # Handle model class
           begin
             Module.const_get(str)
           rescue
             raise CannotObtainModelClass, "Couldn't find model class: #{str}"
           end
-        elsif str =~ /\s*:*(\w+)\s*/
+        when /\s*:*(\w+)\s*/
           # Handle model instances
           model_name = $1
           model_symbol = model_name.to_sym

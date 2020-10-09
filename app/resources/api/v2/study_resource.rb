@@ -3,10 +3,12 @@
 module Api
   module V2
     class StudyResource < BaseResource
-      immutable
+      immutable # comment to make the resource mutable
 
       attribute :name
       attribute :uuid
+
+      filter :name
 
       filter :state, apply: lambda { |records, value, _options|
         records.by_state(value)

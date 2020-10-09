@@ -6,7 +6,7 @@
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
 
 Sequencescape is a cloud based and highly extensible LIMS system for use in labs with large numbers
-of samples.
+of samples. 
 
 * Work order tracking
 * Sample and study management
@@ -153,7 +153,7 @@ Testing is done in three ways; using rspec, rails test and feature tests.
 1. To run the rspec tests (found in `rspec/` dir.):
 
     ```shell
-    RAILS_ENV=test bundle exec rspec --fail-fast
+    RAILS_ENV=test bundle exec rspec --fail-fast [<path_to_spec>]
     ```
 
 1. To run the rails tests (found in `tests/` dir.):

@@ -1,5 +1,4 @@
 require 'timeout'
-require 'tecan_file_generation'
 require 'aasm'
 
 # A {Batch} groups 1 or more {Request requests} together to enable processing in a
@@ -15,15 +14,14 @@ class Batch < ApplicationRecord
   include StandardNamedScopes
   include ::Batch::PipelineBehaviour
   include ::Batch::StateMachineBehaviour
-  include ::Batch::TecanBehaviour
   extend EventfulRecord
 
   DEFAULT_VOLUME = 13
 
   self.per_page = 500
 
-  belongs_to :user, foreign_key: 'user_id'
-  belongs_to :assignee, class_name: 'User', foreign_key: 'assignee_id'
+  belongs_to :user
+  belongs_to :assignee, class_name: 'User'
 
   has_many :failures, as: :failable
   has_many :messengers, as: :target, inverse_of: :target
@@ -39,6 +37,7 @@ class Batch < ApplicationRecord
   has_many :aliquots, -> { distinct }, through: :source_assets
   has_many :samples, -> { distinct }, through: :source_assets, source: :samples
   has_many :output_labware, -> { distinct }, through: :assets, source: :labware
+  has_many :input_labware, -> { distinct }, through: :source_assets, source: :labware
 
   has_many_events
   has_many_lab_events
@@ -51,7 +50,7 @@ class Batch < ApplicationRecord
   after_create :generate_target_assets_for_requests, if: :generate_target_assets_on_batch_create?
   after_commit :rebroadcast
 
-  # Named scope for search by query string behavior
+  # Named scope for search by query string behaviour
   scope :for_search_query, ->(query) {
     user = User.find_by(login: query)
     if user
@@ -78,8 +77,17 @@ class Batch < ApplicationRecord
     ])
   }
 
+  scope :from_labware_barcodes, ->(barcodes) {
+    joins(input_labware: :barcodes).where(barcodes: { barcode: barcodes }).distinct
+  }
+
   scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
+
+  # Returns batches owned or assigned to user. Not filter applied if passed :any
+  scope :for_user, ->(user) { user == 'all' ? all : where(assignee_id: user).or(where(user_id: user)) }
+
+  scope :for_pipeline, ->(pipeline) { where(pipeline_id: pipeline) }
 
   delegate :size, to: :requests
   delegate :sequencing?, :generate_target_assets_on_batch_create?, :min_size, to: :pipeline
@@ -87,7 +95,8 @@ class Batch < ApplicationRecord
   alias friendly_name id
 
   def all_requests_are_ready?
-    # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
+    # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed
+    # (as referred by #75102998)
     unless requests.all?(&:ready?)
       errors.add :base, 'All requests must be ready to be added to a batch'
     end
@@ -177,6 +186,14 @@ class Batch < ApplicationRecord
     lab_events.any? { |event| event_name.downcase == event.description.try(:downcase) }
   end
 
+  def event_with_description(name)
+    lab_events.order(id: :desc).find_by(description: name)
+  end
+
+  def robot_id
+    event_with_description('Cherrypick Layout Set')&.descriptor_value('robot_id')
+  end
+
   def underrun
     has_limit? ? (item_limit - batch_requests.size) : 0
   end
@@ -203,19 +220,6 @@ class Batch < ApplicationRecord
 
   alias_method :ordered_requests, :requests
 
-  def shift_item_positions(position, number)
-    return unless number
-
-    BatchRequest.transaction do
-      batch_requests.each do |batch_request|
-        next unless batch_request.position >= position
-        next if batch_request.request.asset.try(:resource?)
-
-        batch_request.move_to_position!(batch_request.position + number)
-      end
-    end
-  end
-
   def assigned_user
     assignee.try(:login) || ''
   end
@@ -224,11 +228,21 @@ class Batch < ApplicationRecord
     requests.with_assets_for_starting_requests.not_failed.map(&:start!)
   end
 
-  def input_labware_group
+  # Returns a list of input labware including their barcodes,
+  # purposes, and a count of the number of requests associated with the
+  # batch. Output depends on Pipeline. Some pipelines return an empty relationship
+  #
+  # @return [Labware::ActiveRecord_Relation] The associated labware
+  def input_labware_report
     pipeline.input_labware requests
   end
 
-  def output_labware_group
+  # Returns a list of output labware including their barcodes,
+  # purposes, and a count of the number of requests associated with the
+  # batch. Output depends on Pipeline. Some pipelines return an empty relationship
+  #
+  # @return [Labware::ActiveRecord_Relation] The associated labware
+  def output_labware_report
     pipeline.output_labware requests.with_target
   end
 
@@ -242,7 +256,13 @@ class Batch < ApplicationRecord
   end
 
   def output_plates
-    output_labware
+    # We use re-order here as batch_requests applies a default sort order to
+    # the relationship, which takes preference, even though we're has_many throughing
+    if output_labware.loaded?
+      return output_labware.sort_by(&:id)
+    end
+
+    output_labware.reorder(id: :asc)
   end
 
   def first_output_plate
@@ -286,9 +306,9 @@ class Batch < ApplicationRecord
     requests.map { |r| r.target_asset.children }.flatten.uniq
   end
 
-  # Source Labware returns the physical pieces of lawbare (ie. a plate for wells, but stubes for tubes)
+  # Source Labware returns the physical pieces of labware (ie. a plate for wells, but tubes for tubes)
   def source_labware
-    requests.map(&:asset).map(&:labware).uniq
+    input_labware
   end
 
   #
@@ -318,7 +338,7 @@ class Batch < ApplicationRecord
   end
 
   def release_pending_requests
-    # We set the unusued requests to pendind.
+    # We set the unused requests to pending.
     # this is to allow unused well to be cherry-picked again
     requests.each do |request|
       detach_request(request) if request.started?
@@ -445,7 +465,8 @@ class Batch < ApplicationRecord
 
   def self.valid_barcode?(code)
     begin
-      Barcode.barcode_to_human!(code, prefix)
+      split_code = barcode_without_pick_number(code)
+      Barcode.barcode_to_human!(split_code, prefix)
     rescue
       return false
     end
@@ -457,9 +478,23 @@ class Batch < ApplicationRecord
     true
   end
 
+  def self.barcode_without_pick_number(code)
+    code.split('-').first
+  end
+
+  def self.extract_pick_number(code)
+    # expecting format 550000555760-1 with pick number at end
+    split_code = code.split('-')
+    return Integer(split_code.last) if split_code.size > 1
+
+    # default to 1 if the pick number is not present
+    1
+  end
+
   class << self
     def find_by_barcode(code)
-      human_batch_barcode = Barcode.number_to_human(code)
+      split_code = barcode_without_pick_number(code)
+      human_batch_barcode = Barcode.number_to_human(split_code)
       batch = Batch.find_by(barcode: human_batch_barcode)
       batch ||= Batch.find_by(id: human_batch_barcode)
 
@@ -496,6 +531,10 @@ class Batch < ApplicationRecord
 
   def rebroadcast
     messengers.each(&:queue_for_broadcast)
+  end
+
+  def pick_information?
+    pipeline.pick_information?(self)
   end
 
   private

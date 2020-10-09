@@ -7,7 +7,7 @@ module Api
     class SubmissionResource < BaseResource
       # Constants...
 
-      immutable # uncomment to make the resource immutable
+      immutable # comment to make the resource mutable
 
       # model_name / model_hint if required
 

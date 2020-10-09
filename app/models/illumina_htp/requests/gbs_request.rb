@@ -9,14 +9,11 @@ module IlluminaHtp::Requests
   #
   class GbsRequest < StdLibraryRequest
     fragment_size_details(:no_default, :no_default)
-    delegate :primer_panel, :primer_panel_id, to: :request_metadata
 
-    Metadata.class_eval do
-      belongs_to :primer_panel
-      association(:primer_panel, :name)
-      # ON create, check our actual primer panel
-      validates :primer_panel, presence: true, on: :create
-    end
+    # @note This is included below fragment_size_details
+    # as fragment_size_details also invokes a {Request::Metadata} subclass
+    # We'll need to simplify this at some point.
+    include Request::HasPrimerPanel
 
     #
     # Passed into cloned aliquots at the beginning of a pipeline to set
@@ -34,11 +31,6 @@ module IlluminaHtp::Requests
         primer_panel_id: primer_panel_id,
         request_id: id
       }
-    end
-
-    def update_pool_information(pool_information)
-      super
-      pool_information[:primer_panel] = request_metadata.primer_panel.summary_hash
     end
   end
 end

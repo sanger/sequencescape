@@ -37,6 +37,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       @batch = mock('batch')
 
       @template = PlateTemplate.new(size: 12)
+
+      LabWhereClient::LabwareSearch.stubs(:find_locations_by_barcodes).returns(nil)
     end
 
     context '#pick_onto_partial_plate' do
@@ -209,31 +211,6 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         assert_raises(StandardError) do
           @task.pick_new_plate(nil, nil, robot, nil, PlatePurpose.new(asset_shape: @asset_shape, size: 12))
-        end
-      end
-
-      context 'with limited number of source beds' do
-        setup do
-          plates = (1..3).map { |_| @mini_plate_purpose.create!(barcode: (@barcode += 1)) }
-          @requests = plates.map { |p| create(:well_request, asset: p.wells.first) }
-          @expected = @requests.map do |request|
-            [request.id, request.asset.plate.human_barcode, request.asset.map.description]
-          end.in_groups_of(2).map do |group|
-            group.compact!
-            pad_expected_plate_with_empty_wells(@template, group)
-          end
-        end
-
-        should 'not generate a second plate if beds are not full' do
-          plates, source_plates = @task.pick_new_plate(@requests.slice(0, 2), @template, @robot, @target_purpose)
-          assert_equal(@expected.slice(0, 1), plates, 'Incorrect plate pick')
-          assert_equal(Set.new(@requests.slice(0, 2).map(&:asset).map(&:plate).map(&:human_barcode)), source_plates, 'Incorrect source plates used')
-        end
-
-        should 'generate new plate when all source beds are full' do
-          plates, source_plates = @task.pick_new_plate(@requests, @template, @robot, @target_purpose)
-          assert_equal(@expected, plates, 'Incorrect plate pick')
-          assert_equal(Set.new(@requests.map(&:asset).map(&:plate).map(&:human_barcode)), source_plates, 'Incorrect source plates used')
         end
       end
     end

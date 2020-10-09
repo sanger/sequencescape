@@ -14,7 +14,7 @@ table.table-dense-information {
   @extend .table-sm;
 }
 
-/* main-row encomasses the bulk of the application */
+/* main-row encompasses the bulk of the application */
 .main-row { margin-bottom:10px; }
 
 
@@ -131,6 +131,25 @@ dl.order-summary {
   dd { @extend .col-10; }
 }
 
+// Apply the standard spacing
+.ss-card {
+  @extend .card;
+  @extend .mb-3;
+}
+
+// Apply slight x-padding for badge separation from other badges
+// and content.
+.ss-badge {
+  @extend .badge;
+  @extend .mx-1;
+}
+
+.ss-badge-lg {
+  @extend .ss-badge;
+  font-size: 95%;
+  font-weight: 500;
+}
+
 // State-colour extensions
 // These extend the bootstrap classes to cover our states
 .badge-building { @extend .badge-info; }
@@ -146,6 +165,7 @@ dl.order-summary {
 .badge-released { @extend .badge-success; }
 .badge-started { @extend .badge-primary; }
 .badge-passed { @extend .badge-success; }
+.table-error { @extend .table-danger; }
 
 .btn-default { @extend .btn-primary; }
 
@@ -187,4 +207,18 @@ dl.order-summary {
   @extend .fas;
   @extend .fa-book;
   padding-right: 0.5em;
+}
+
+.asset-audit-details {
+  dl{ // Don't apply the styles to the top level.
+    dl {
+      @extend .row;
+      dt {
+        @extend .col-2;
+      }
+      dd {
+        @extend .col-10;
+      }
+    }
+  }
 }

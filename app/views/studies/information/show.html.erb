@@ -43,7 +43,8 @@
 <% add :admin_option, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
 <% add :menu, "Submissions" => url_for(controller: "/submissions", action: "study", id: @study.id) -%>
 
-<% add :menu, "Qc Reports" => study_reports_study_path(@study) -%>
+<% add :menu, "QC Reports" => qc_reports_path -%>
+<% add :menu, "Study QC Reports" => study_reports_study_path(@study) -%>
 
 <% add :menu, "Accession all Samples" => accession_all_samples_study_path(@study) -%>
 

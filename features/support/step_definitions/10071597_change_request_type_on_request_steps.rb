@@ -9,7 +9,7 @@ Given /^sequencescape is setup for 10071597$/ do
   project.update!(enforce_quotas: true)
 end
 
-Given /^last request the state "([^\"]*)"$/ do |state|
+Given /^last request the state "([^"]*)"$/ do |state|
   request = Request.last
   request.state = state
   request.save

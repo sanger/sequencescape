@@ -22,6 +22,7 @@ module NavigationHelpers
   #   end
   #
   # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/CyclomaticComplexity
   def path_to(page_name)
     case page_name
 
@@ -45,7 +46,7 @@ module NavigationHelpers
       gels_path
     when /the sample db homepage/
       '/sdb/'
-    when /the "([^\"]+)" pipeline page/
+    when /the "([^"]+)" pipeline page/
       pipeline = Pipeline.find_by!(name: $1)
       pipeline_path(pipeline)
     when /the last batch show page/
@@ -53,17 +54,17 @@ module NavigationHelpers
     when /the robot verification page/
       robot_verifications_path
 
-    when /the (show|edit) page for sample "([^\"]+)"/
+    when /the (show|edit) page for sample "([^"]+)"/
       page_for_model(Sample, $1, $2)
 
-    when /the (show|edit) page for project "([^\"]+)"/
+    when /the (show|edit) page for project "([^"]+)"/
       page_for_model(Project, $1, $2)
 
-    when /the (show|edit|related studies) page for study "([^\"]+)"/
+    when /the (show|edit|related studies) page for study "([^"]+)"/
       page, name = $1, $2
       page_for_model(Study, page.sub(' ', '_'), name)
 
-    when /the show accession page for study named "([^\"]+)"/
+    when /the show accession page for study named "([^"]+)"/
       study_name = $1
       study = Study.find_by!(name: study_name)
       study_show_accession_path(study)
@@ -71,17 +72,17 @@ module NavigationHelpers
     when /the page for editing the last request/
       edit_request_path(Request.last!)
 
-    when /the update page for sample "([^\"]+)"/
+    when /the update page for sample "([^"]+)"/
       sample_name = $1
       sample      = Sample.find_by!(name: sample_name)
       sample_path(sample)
 
-    when /the study information page for "([^\"]+)"/, /the information page for study "([^\"]+)"/
+    when /the study information page for "([^"]+)"/, /the information page for study "([^"]+)"/
       study_name = $1
       study      = Study.find_by!(name: study_name)
       study_information_path(study)
 
-    when /the study named "([^\"]+)"/
+    when /the study named "([^"]+)"/
       study_name = $1
       study      = Study.find_by!(name: study_name)
       study_path(study)
@@ -92,17 +93,20 @@ module NavigationHelpers
     when /the new plate page/
       new_plate_path
 
-    when /the show page for library tube "([^\"]+)"/
+    when /the plate page/
+      plates_path
+
+    when /the show page for library tube "([^"]+)"/
       tube_name = $1
       library_tube = LibraryTube.find_by!(name: tube_name)
       labware_path(library_tube)
 
-    when /^the show page for labware "([^\"]+)"$/
+    when /^the show page for labware "([^"]+)"$/
       asset_name = $1
       asset = Labware.find_by!(name: asset_name)
       labware_path(asset)
 
-    when /^the show page for receptacle "([^\"]+)"$/
+    when /^the show page for receptacle "([^"]+)"$/
       asset_name = $1
       asset = Labware.find_by!(name: asset_name).receptacle
       receptacle_path(asset)
@@ -110,13 +114,13 @@ module NavigationHelpers
     # Sample registration has a bit of an awkward flow.  'Sample registration' page is the one where people enter
     # the details of their samples, 'Sample creation' page is the same page, under a different path, and is
     # displayed if there is something wrong!  So it goes "choose how" -> "sample registration" -> "sample error".
-    when /the page for choosing how to register samples for study "([^\"]+)"$/,
-         /the sample error page for study "([^\"]+)"/
+    when /the page for choosing how to register samples for study "([^"]+)"$/,
+         /the sample error page for study "([^"]+)"/
       study_name = $1
       study      = Study.find_by!(name: study_name)
       study_sample_registration_index_path(study)
 
-    when /the spreadsheet sample registration page for study "([^\"]+)"/
+    when /the spreadsheet sample registration page for study "([^"]+)"/
       study_name = $1
       study      = Study.find_by!(name: study_name)
       spreadsheet_study_sample_registration_index_path(study)
@@ -171,10 +175,6 @@ module NavigationHelpers
       asset = Labware.find_from_barcode($1)
       history_labware_path(asset)
 
-    when /the events page for sample "([^"]+)"/
-      sample = Sample.find_by!(name: $1)
-      history_sample_path(sample)
-
     when /the sample move using spreadsheet page/
       move_spreadsheet_samples_path
 
@@ -185,15 +185,8 @@ module NavigationHelpers
       sample = Sample.find_by!(name: $1)
       history_sample_path(sample)
 
-    when /the events page for the last sequenom plate/
-      history_asset_path(SequenomQcPlate.last!)
-
     when /the tag changing page/
       change_tags_path
-
-    when /the events page for labware (\d+)/
-      asset = Labware.find($1)
-      history_labware_path(asset)
 
     when /the XML show page for request (\d+)/
       request = Request.find($1)
@@ -203,7 +196,7 @@ module NavigationHelpers
       request = Request.find($1)
       request_path(request)
 
-    when /^the new request page for "([^\"]+)"$/
+    when /^the new request page for "([^"]+)"$/
       asset = Asset.find_by!(name: $1)
       new_request_asset_path(id: asset)
 
@@ -219,6 +212,7 @@ module NavigationHelpers
     end
   end
   # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/CyclomaticComplexity
 end
 
 World(NavigationHelpers)

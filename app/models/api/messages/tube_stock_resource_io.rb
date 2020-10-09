@@ -1,6 +1,9 @@
 # Used to broadcast stock tubes to the UWH.
 # Wells have a separate template, as the information
 # is mapped slightly differently.
+# These messages are not broadcast automatically when database events happen, like some others
+# They are instead broadcast when importing samples, e.g. on sample manifest upload
+# See register_stock! in Asset model, and sample_manifest > core_behaviour class for where it's called
 class Api::Messages::TubeStockResourceIO < Api::Base
   renders_model(::Receptacle)
 
@@ -11,7 +14,7 @@ class Api::Messages::TubeStockResourceIO < Api::Base
   map_attribute_to_json_attribute(:subject_type, 'labware_type')
 
   with_association(:labware) do
-    map_attribute_to_json_attribute(:ean13_barcode, 'machine_barcode')
+    map_attribute_to_json_attribute(:machine_barcode, 'machine_barcode')
     map_attribute_to_json_attribute(:human_barcode, 'human_barcode')
   end
 

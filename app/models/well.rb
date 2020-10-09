@@ -79,9 +79,15 @@ class Well < Receptacle
               ]
             })
   }
-  scope :include_map, -> { includes(:map) }
   scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
   scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
+  # added version of scope with includes to avoid multiple calls to LabWhere in qc report when getting storage location
+  # for wells in the same plate
+  scope :on_plate_purpose_included, ->(purposes) {
+    includes(labware: :barcodes)
+      .references(:labware)
+      .where(labware: { plate_purpose_id: purposes })
+  }
 
   scope :for_study_through_aliquot, ->(study) {
     joins(:aliquots)
@@ -142,7 +148,6 @@ class Well < Receptacle
     joins(aliquots: :sample)
       .where(samples: { empty_supplier_sample_name: false })
   }
-  scope :with_contents, -> { joins(:aliquots) }
 
   delegate :location, :location_id, :location_id=, :printable_target, :source_plate, to: :plate, allow_nil: true
   delegate :column_order, :row_order, to: :map, allow_nil: true
@@ -176,7 +181,7 @@ class Well < Receptacle
   end
 
   def stock_wells_for_downstream_wells
-    plate&.stock_plate? ? [self] : stock_wells
+    labware&.stock_plate? ? [self] : stock_wells
   end
 
   def subject_type
@@ -289,6 +294,11 @@ class Well < Receptacle
   # def map_description
   delegate :description, to: :map, prefix: true, allow_nil: true
 
+  # Returns the name of the position (eg. A1) of the well
+  def absolute_position_name
+    map_description
+  end
+
   def qc_data
     { pico: get_pico_pass,
       gel: get_gel_pass,
@@ -301,8 +311,9 @@ class Well < Receptacle
   end
 
   def display_name
-    plate_name = plate.present? ? plate.human_barcode : '(not on a plate)'
-    plate_name ||= plate.display_name # In the even the plate is barcodeless (ie strip tubes) use its name
+    source = association_cached?(:plate) ? plate : labware
+    plate_name = source.present? ? source.human_barcode : '(not on a plate)'
+    plate_name ||= source.display_name # In the even the plate is barcodeless (ie strip tubes) use its name
     "#{plate_name}:#{map_description}"
   end
 

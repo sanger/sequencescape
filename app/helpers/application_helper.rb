@@ -21,7 +21,7 @@ module ApplicationHelper
   #
   # @param identifier [String] The id of the element
   def remote_error(identifier = 'remote_error')
-    content_tag('div', id: identifier, class: 'error', style: 'display:none;') do
+    tag.div(id: identifier, class: 'error', style: 'display:none;') do
       'An error has occurred and the results can not be shown at the moment'
     end
   end
@@ -37,7 +37,7 @@ module ApplicationHelper
     output = String.new.html_safe
     flash.each do |key, message|
       output << alert(key, id: "message_#{key}") do
-        Array(message).reduce(String.new.html_safe) { |buffer, m| buffer << content_tag(:div, m) }
+        Array(message).reduce(String.new.html_safe) { |buffer, m| buffer << tag.div(m) }
       end
     end
     output
@@ -90,7 +90,7 @@ module ApplicationHelper
   def badge(status, type: 'generic-badge', style: status)
     return if status.blank?
 
-    content_tag(:span, status, class: "#{type} badge badge-#{style}")
+    tag.span(status, class: "#{type} badge badge-#{style}")
   end
 
   #
@@ -174,11 +174,11 @@ module ApplicationHelper
     if count.zero?
       ''
     else
-      error_messages = objects.map { |object| object.errors.full_messages.map { |msg| content_tag(:div, msg) } }.join
-      [content_tag(:td, class: 'error item') do
+      error_messages = objects.map { |object| object.errors.full_messages.map { |msg| tag.div(msg) } }.join
+      [tag.td(class: 'error item') do
         "Your #{params.first} has not been created."
       end,
-       content_tag(:td, class: 'error') do
+       tag.td(class: 'error') do
          raw(error_messages)
        end].join.html_safe
     end
@@ -192,7 +192,7 @@ module ApplicationHelper
     target ||= name.parameterize
     active_class = active ? 'active' : ''
     id ||= "#{name}-tab".parameterize
-    content_tag(:li, class: 'nav-item') do
+    tag.li(class: 'nav-item') do
       link_to name, "##{target}", id: id, data: { toggle: 'tab' }, role: 'tab', aria_controls: target, class: ['nav-link', active_class]
     end
   end
@@ -204,15 +204,7 @@ module ApplicationHelper
     tab_id ||= "#{name}-tab".parameterize
     id ||= name.parameterize
     active_class = active ? 'active' : ''
-    content_tag(:div, class: ['tab-pane', 'fade', 'show', active_class], id: id, role: 'tabpanel', aria_labelledby: tab_id, &block)
-  end
-
-  def item_status(item)
-    if item.failures.empty?
-      ''
-    else
-      '<span style="color:red;">FAILED</span>'
-    end
+    tag.div(class: ['tab-pane', 'fade', 'show', active_class], id: id, role: 'tabpanel', aria_labelledby: tab_id, &block)
   end
 
   def display_request_information(request, rit, batch = nil)
@@ -243,7 +235,7 @@ module ApplicationHelper
   end
 
   def help_text(&block)
-    content_tag(:small, class: 'form-text text-muted col', &block)
+    tag.small(class: 'form-text text-muted col', &block)
   end
 
   def help_link(text, entry = '', options = {})
@@ -256,6 +248,39 @@ module ApplicationHelper
   def help_email_link
     admin_address = configatron.admin_email || 'admin@test.com'
     link_to admin_address.to_s, "mailto:#{admin_address}"
+  end
+
+  #
+  # Handles rendering of JSON to a series of nested lists. Does the following:
+  # String: Rendered as-is
+  # Array: Unordered list (Strictly speaking arrays are ordered, but we probably don't care.)
+  # Object: Descriptive list
+  # Other: Calls to_s
+  # Processes each in turn and called recursively
+  #
+  # @param [Hash, String, Array,, #to_s] json The Object to render
+  #
+  # @return [String] HTML formatted for rendering
+  #
+  def render_parsed_json(json)
+    case json
+    when String; then json
+    when Array
+      tag.ul do
+        json.each { |elem, _string| concat tag.li(render_parsed_json(elem)) }
+      end
+    when Hash
+      tag.dl do
+        json.each do |key, value|
+          # Strictly speaking json should only have strings as keys. But the same constraint doesn't apply to hashes,
+          # so we're a little more permissive here for flexibilities sake
+          concat tag.dt(render_parsed_json(key))
+          concat tag.dd(render_parsed_json(value))
+        end
+      end
+    else
+      json.to_s
+    end
   end
 
   # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.

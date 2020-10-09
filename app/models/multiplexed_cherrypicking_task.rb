@@ -3,18 +3,8 @@ class MultiplexedCherrypickingTask < Task
 
   belongs_to :purpose
 
-  class AssignTubesToWellsData < Task::RenderElement
-    def initialize(request)
-      super(request)
-    end
-  end
-
   def partial
     'assign_wells_to_wells'
-  end
-
-  def create_render_element(request)
-    request.asset && AssignTubesToWellsData.new(request)
   end
 
   def included_for_do_task
@@ -22,7 +12,7 @@ class MultiplexedCherrypickingTask < Task
   end
 
   def included_for_render_task
-    [requests: { asset: [:samples, { plate: :barcodes }, :map] }]
+    [{ requests: { asset: [:samples, { plate: :barcodes }, :map] } }]
   end
 
   def render_task(workflow, params)

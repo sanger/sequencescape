@@ -36,7 +36,9 @@ class MigrateOtherBarcodesToNewTables < ActiveRecord::Migration[5.1]
   end
 
   def down
+    # rubocop:todo Rails/PluckInWhere
     Barcode.where(asset_id: Plate::Metadata.where.not(infinium_barcode: nil).pluck(:plate_id), format: 1).destroy_all
     Barcode.where(asset_id: Plate::Metadata.where.not(fluidigm_barcode: nil).pluck(:plate_id), format: 2).destroy_all
+    # rubocop:enable Rails/PluckInWhere
   end
 end

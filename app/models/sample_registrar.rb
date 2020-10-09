@@ -33,7 +33,7 @@ class SampleRegistrar < ApplicationRecord
   # Looks up and caches asset group names
   class AssetGroupHelper
     def initialize
-      @asset_groups = Hash.new { |name_cache, name| name_cache[name] = AssetGroup.where(name: name).exists? }
+      @asset_groups = Hash.new { |name_cache, name| name_cache[name] = AssetGroup.exists?(name: name) }
     end
 
     def existing_asset_group?(name)

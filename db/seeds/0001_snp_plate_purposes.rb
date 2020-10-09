@@ -51,8 +51,6 @@ plate_purposes = <<~EOS
   - name: Gel Dilution Plates
   - name: Pulldown Aliquot
     prefix: FA
-  - name: Pre-Extracted Plate
-    stock_plate: true
 EOS
 
 YAML::load(plate_purposes).each do |plate_purpose|
