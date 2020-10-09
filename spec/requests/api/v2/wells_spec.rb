@@ -69,7 +69,6 @@ describe 'Wells API', with: :api_v2 do
           }
         }
       end
-      let(:updated_model) { Well.find(well.id) }
 
       before do
         api_patch "/api/v2/wells/#{well.id}", payload
@@ -87,8 +86,8 @@ describe 'Wells API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'diluent_volume')).to eq('34.0')
       end
 
-      it 'updates the well' do
-        # updated_model = Well.find(well.id)
+      it 'updates the well' do # rubocop:todo RSpec/ExampleLength
+        updated_model = Well.find(well.id)
         expect(updated_model.pcr_cycles).to eq 11
         expect(updated_model.submit_for_sequencing).to eq false
         expect(updated_model.sub_pool).to eq 2
