@@ -70,7 +70,7 @@ class UatActions::GeneratePlateConcentrations < UatActions
   end
 
   def decide_key
-    if conc_units == 'nM' ? 'molarity' : 'concentration'
+    conc_units == 'nM' ? 'molarity' : 'concentration'
   end
 
   def min_conc
