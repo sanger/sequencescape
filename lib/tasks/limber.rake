@@ -461,6 +461,11 @@ namespace :limber do
         chromium_library_types.each { |name| rt.library_types << LibraryType.find_or_create_by!(name: name) }
         rt.acceptable_plate_purposes = Purpose.where(name: 'LBC Stock')
       end
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'pWGS',
+        library_types: ['pWGS-384'],
+      ).build!
     end
   end
 
