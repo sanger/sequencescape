@@ -561,6 +561,9 @@ namespace :limber do
       },
       'GnT Picoplex' => {
         sequencing_list: base_without_hiseq
+      },
+      'pWGS' => {
+        sequencing_list: base_list
       }
     }
 
