@@ -158,6 +158,28 @@ RSpec.configure do |config|
     page.driver.browser.manage.window.resize_to(1024, 1024)
   end
 
+  config.after(:each, js: true) do |example|
+    if example.exception
+      name = example.full_description.gsub(/\s/,'_')
+      if page.respond_to?(:save_screenshot)
+        page.save_screenshot("#{name}.png")
+        puts "📸 Screenshot saved to #{Capybara.save_path}/#{name}.png"
+      end
+      if page.respond_to?(:save_page)
+        page.save_page("#{name}.html")
+        puts "📐 HTML saved to #{Capybara.save_path}/#{name}.html"
+      end
+      if page.driver.browser.respond_to?(:manage)
+        errors = page.driver.browser.manage.logs.get(:browser)
+        puts '== JS errors ============'
+        errors.each do |jserror|
+          puts jserror.message
+        end
+        puts '========================='
+      end
+    end
+  end
+
   # Seed global randomization in this process using the `--seed` CLI option.
   # Setting this allows you to use `--seed` to deterministically reproduce
   # test failures related to randomization by passing the same `--seed` value
