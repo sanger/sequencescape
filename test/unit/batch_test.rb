@@ -304,7 +304,7 @@ class BatchTest < ActiveSupport::TestCase
           # The event sender actually does the failures.
           EventSender.expects(:send_fail_event).with(@request1, @reason, @comment, @batch.id).returns(true).times(1)
           params = { @request1.id.to_s => 'on' }
-          @batch.fail_batch_items(params, @reason, @comment)
+          @batch.fail_requests(params, @reason, @comment)
         end
 
         should 'not fail the batch' do
@@ -318,7 +318,7 @@ class BatchTest < ActiveSupport::TestCase
 
       should 'not fail requests if value passed is not set to ON' do
         @requests = { (@request1.id).to_s => 'blue' }
-        @batch.fail_batch_items(@requests, @reason, @comment)
+        @batch.fail_requests(@requests, @reason, @comment)
         assert_equal 0, @batch.requests.first.failures.size
       end
 
@@ -329,7 +329,7 @@ class BatchTest < ActiveSupport::TestCase
           @request1.expects(:terminated?).returns(true).times(1)
           @request2.expects(:terminated?).returns(true).times(1)
           assert @batch.failures.empty?
-          @batch.fail_batch_items(@requests, @reason, @comment)
+          @batch.fail_requests(@requests, @reason, @comment)
         end
 
         should 'if all the requests within the batch are failing, fail the batch too' do

@@ -146,12 +146,11 @@ class Batch < ApplicationRecord
     save!
   end
 
-  # Fail specific items on this batch
-  def fail_batch_items(requests_to_fail, reason, comment, fail_but_charge = false)
-    checkpoint = true
-
+  # Fail specific requests on this batch
+  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false)
     requests_to_fail.each do |key, value|
-      if value == 'on'
+      next unless value == 'on'
+
         logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{id}, WITH REASON #{reason}"
         unless key == 'control'
           ActiveRecord::Base.transaction do
@@ -160,12 +159,9 @@ class Batch < ApplicationRecord
             request.failures.create(reason: reason, comment: comment, notify_remote: true)
           EventSender.send_fail_event(request, reason, comment, id)
         end
-      else
-        checkpoint = false
       end
     end
-
-    update_batch_state(reason, comment) if checkpoint
+    update_batch_state(reason, comment)
   end
 
   def update_batch_state(reason, comment)
@@ -534,6 +530,12 @@ class Batch < ApplicationRecord
 
   def pick_information?
     pipeline.pick_information?(self)
+  end
+
+  # Summarise the state encapsulated by state and production_state
+  # qc_state it kept separate as its a fairly distinct concept.
+  def displayed_status
+    failed? ? 'failed' : state
   end
 
   private

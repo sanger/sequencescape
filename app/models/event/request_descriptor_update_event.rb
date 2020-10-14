@@ -17,7 +17,6 @@ module Event::RequestDescriptorUpdateEvent
   end
 
   def update_metadata_for_request
-    request = eventful
     set_request_metadata unless pass_or_fail_event?
 
     if request.failed? or request.cancelled?

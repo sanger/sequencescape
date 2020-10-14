@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+require 'pry'
+
+describe 'Batches controller', js: true do
+  let(:request_count) { 3 }
+  let(:batch) do
+    create :cherrypick_batch, request_count: request_count,
+           state: 'released', request_factory: :passed_cherrypick_request
+  end
+  let(:user)  { create :admin  }
+
+  before do
+    create :robot
+  end
+
+  it 'failing passed cherrypick requests' do
+    request_ids = batch.batch_requests.map(&:request_id)
+    login_user user
+    visit batch_path(batch)
+    click_link('Fail batch or items')
+    check('Fail request 1')
+    check('Fail request 2')
+    check('Fail request 3')
+
+    select('Batch not needed', from: 'Select failure reason')
+    fill_in('Comment', with: 'Test')
+    click_on 'Fail selected requests'
+    expect(page).to have_text('3 requests failed')
+    # Limit ourselves to the table, as our request links can be a bit generic
+    within('form .table') do
+      request_ids.each do |id|
+        expect(find_link(id.to_s).ancestor('tr')).to have_text('failed')
+        request_window = window_opened_by { click_link(id.to_s) }
+        within_window(request_window) { expect(page).to have_text 'failed' }
+      end
+    end
+    visit batch_path(batch)
+    expect(page).to have_text 'failed'
+  end
+end

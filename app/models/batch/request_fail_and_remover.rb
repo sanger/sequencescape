@@ -40,7 +40,7 @@ class Batch::RequestFailAndRemover
   private
 
   def fail_requests
-    @batch.fail_batch_items(@requested_fail, reason, comment, fail_but_charge)
+    @batch.fail_requests(@requested_fail, reason, comment, fail_but_charge)
     notice << "#{requested_fail.length} requests failed#{charge_message}: #{requested_fail.to_sentence}."
   end
 
