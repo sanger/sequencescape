@@ -302,7 +302,7 @@ class BatchTest < ActiveSupport::TestCase
       context 'fail requests' do
         setup do
           # The event sender actually does the failures.
-          EventSender.expects(:send_fail_event).with(@request1.id, @reason, @comment, @batch.id).returns(true).times(1)
+          EventSender.expects(:send_fail_event).with(@request1, @reason, @comment, @batch.id).returns(true).times(1)
           params = { @request1.id.to_s => 'on' }
           @batch.fail_batch_items(params, @reason, @comment)
         end

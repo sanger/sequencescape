@@ -138,7 +138,7 @@ class Batch < ApplicationRecord
     requests.each do |request|
       request.failures.create(reason: reason, comment: comment, notify_remote: true)
       unless request.asset && request.asset.resource?
-        EventSender.send_fail_event(request.id, reason, comment, id)
+        EventSender.send_fail_event(request, reason, comment, id)
       end
     end
 
@@ -158,8 +158,7 @@ class Batch < ApplicationRecord
             request = requests.find(key)
             request.customer_accepts_responsibility! if fail_but_charge
             request.failures.create(reason: reason, comment: comment, notify_remote: true)
-            EventSender.send_fail_event(request.id, reason, comment, id)
-          end
+          EventSender.send_fail_event(request, reason, comment, id)
         end
       else
         checkpoint = false

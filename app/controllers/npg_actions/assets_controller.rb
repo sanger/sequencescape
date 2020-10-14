@@ -52,7 +52,7 @@ class NpgActions::AssetsController < ApplicationController
     @asset.events.create_state_update!(qc_information[:message] || 'No reason given')
 
     message = "#{state}ed manual QC".capitalize
-    EventSender.send_state_event(state, @request.id, '', message, '', 'npg')
+    EventSender.send_state_event(state, @request, '', message, '', 'npg')
 
     batch.npg_set_state
 
