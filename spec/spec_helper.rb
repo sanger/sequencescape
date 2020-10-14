@@ -160,7 +160,7 @@ RSpec.configure do |config|
 
   config.after(:each, js: true) do |example|
     if example.exception
-      name = example.full_description.gsub(/\s/,'_')
+      name = example.full_description.gsub(/\s/, '_')
       if page.respond_to?(:save_screenshot)
         page.save_screenshot("#{name}.png")
         puts "📸 Screenshot saved to #{Capybara.save_path}/#{name}.png"

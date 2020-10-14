@@ -158,20 +158,16 @@ class Batch < ApplicationRecord
 
   # Fail specific requests on this batch
   def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false)
-    requests_to_fail.each do |key, value|
-      next unless value == 'on'
+    ActiveRecord::Base.transaction do
+      requests.find(requests_to_fail).each do |request|
+        logger.debug "SENDING FAIL FOR REQUEST #{request.id}, BATCH #{id}, WITH REASON #{reason}"
 
-      logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{id}, WITH REASON #{reason}"
-      unless key == 'control'
-        ActiveRecord::Base.transaction do
-          request = requests.find(key)
-          request.customer_accepts_responsibility! if fail_but_charge
-          request.failures.create(reason: reason, comment: comment, notify_remote: true)
-          EventSender.send_fail_event(request, reason, comment, id)
-        end
+        request.customer_accepts_responsibility! if fail_but_charge
+        request.failures.create(reason: reason, comment: comment, notify_remote: true)
+        EventSender.send_fail_event(request, reason, comment, id)
       end
+      update_batch_state(reason, comment)
     end
-    update_batch_state(reason, comment)
   end
 
   def update_batch_state(reason, comment)
@@ -353,10 +349,7 @@ class Batch < ApplicationRecord
   # Remove the request from the batch and remove asset information
   def remove_request_ids(request_ids, reason = nil, comment = nil)
     ActiveRecord::Base.transaction do
-      request_ids.each do |request_id|
-        request = Request.find(request_id)
-        next if request.nil?
-
+      Request.find(request_ids).each do |request|
         request.failures.create(reason: reason, comment: comment, notify_remote: true)
         detach_request(request)
       end
