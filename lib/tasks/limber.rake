@@ -564,9 +564,9 @@ namespace :limber do
       },
       'pWGS' => {
         sequencing_list: %w(
-          illumina_b_hiseq_x_paired_end_sequencing,
+          illumina_b_hiseq_x_paired_end_sequencing
           illumina_htp_novaseq_6000_paired_end_sequencing
-          illumina_b_miseq_sequencing,
+          illumina_b_miseq_sequencing
         )
       }
     }
