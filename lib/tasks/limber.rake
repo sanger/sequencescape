@@ -563,7 +563,11 @@ namespace :limber do
         sequencing_list: base_without_hiseq
       },
       'pWGS' => {
-        sequencing_list: base_list
+        sequencing_list: %w(
+          illumina_b_hiseq_x_paired_end_sequencing,
+          illumina_htp_novaseq_6000_paired_end_sequencing
+          illumina_b_miseq_sequencing,
+        )
       }
     }
 
