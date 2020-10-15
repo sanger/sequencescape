@@ -258,7 +258,7 @@ namespace :limber do
   task create_request_types: [:environment, :create_plates] do
     puts 'Creating request types...'
     ActiveRecord::Base.transaction do
-      %w[WGS LCMB].each do |prefix|
+      %w[WGS LCMB pWGS].each do |prefix|
         Limber::Helper::RequestTypeConstructor.new(prefix).build!
       end
 
@@ -461,11 +461,6 @@ namespace :limber do
         chromium_library_types.each { |name| rt.library_types << LibraryType.find_or_create_by!(name: name) }
         rt.acceptable_plate_purposes = Purpose.where(name: 'LBC Stock')
       end
-
-      Limber::Helper::RequestTypeConstructor.new(
-        'pWGS',
-        library_types: ['pWGS-384'],
-      ).build!
     end
   end
 
