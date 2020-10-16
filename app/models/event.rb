@@ -3,7 +3,7 @@ class Event < ApplicationRecord
 
   self.per_page = 500
   belongs_to :eventful, polymorphic: true
-  after_create :update_request
+  after_create :update_request, if: :request?
 
   scope :family_pass_and_fail, -> { where(family: %w[pass fail]).order(id: :desc) }
   scope :npg_events, ->(request_id) { where(created_by: 'npg', eventful_id: request_id) }
@@ -12,18 +12,19 @@ class Event < ApplicationRecord
     eventful.is_a?(Request)
   end
 
+  def request
+    eventful if request?
+  end
+
   private
 
   include Event::RequestDescriptorUpdateEvent
 
   def update_request
-    if request?
-      request = eventful
-      if family == 'fail' && request.may_fail?
-        request.fail!
-      elsif family == 'pass' && request.may_pass?
-        request.pass!
-      end
+    if family == 'fail' && request.may_evented_fail?
+      request.evented_fail!
+    elsif family == 'pass' && request.may_evented_pass?
+      request.evented_pass!
     end
   end
 end

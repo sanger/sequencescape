@@ -126,6 +126,11 @@ FactoryBot.define do
     factory :cherrypick_request_for_pipeline do
       association :asset, factory: :well_with_sample_and_plate
       submission
+
+      factory :passed_cherrypick_request do
+        association :target_asset, factory: :well_with_sample_and_plate
+        state { 'passed' }
+      end
     end
   end
 

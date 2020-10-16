@@ -6,7 +6,6 @@ class Batch::RequestFailAndRemover
   include ActiveModel::Model
 
   attr_accessor :reason, :comment
-  attr_writer :requested_fail, :requested_remove
 
   validates :reason, presence: { message: 'Please specify a failure reason for this batch' }
   # The used can either remove or fail a request, not both.
@@ -17,9 +16,16 @@ class Batch::RequestFailAndRemover
   def save
     return false unless valid?
 
-    fail_requests if requested_fail.present?
-    remove_requests if requested_remove.present?
+    ActiveRecord::Base.transaction do
+      fail_requests if requested_fail.present?
+      remove_requests if requested_remove.present?
+    end
+
     true
+  rescue ActiveRecord::RecordNotFound => e
+    # Make the returned error a little more user friendly by stripping out the SQL
+    errors.add(:base, e.message.gsub(/\[[^\[]*\] /, ''))
+    false
   end
 
   def notice
@@ -37,10 +43,34 @@ class Batch::RequestFailAndRemover
     @batch = Batch.find(batch_id)
   end
 
+  # This input comes in via the controller. It represents a series of checkboxes
+  # which each have the value 'on' when checked. We filter out 'control' which is used
+  # in place of the request id for some older batches.
+  # We convert it to an array of the request_ids we care about
+  def requested_fail=(selected_fields)
+    @requested_fail = selected_fields.except('control').select { |_k, v| v == 'on' }.keys
+  end
+
+  # This input comes in via the controller. It represents a series of checkboxes
+  # which each have the value 'on' when checked. We filter out 'control' which is used
+  # in place of the request id for some older batches.
+  # We convert it to an array of the request_ids we care about
+  def requested_remove=(selected_fields)
+    @requested_remove = selected_fields.except('control').select { |_k, v| v == 'on' }.keys
+  end
+
   private
 
+  def requested_fail
+    @requested_fail || []
+  end
+
+  def requested_remove
+    @requested_remove || []
+  end
+
   def fail_requests
-    @batch.fail_batch_items(@requested_fail, reason, comment, fail_but_charge)
+    @batch.fail_requests(requested_fail, reason, comment, fail_but_charge)
     notice << "#{requested_fail.length} requests failed#{charge_message}: #{requested_fail.to_sentence}."
   end
 
@@ -51,14 +81,6 @@ class Batch::RequestFailAndRemover
 
   def charge_message
     fail_but_charge ? ', the customer will still be charged.' : ''
-  end
-
-  def requested_fail
-    (@requested_fail || {}).keys
-  end
-
-  def requested_remove
-    (@requested_remove || {}).keys
   end
 
   def clashing_requests

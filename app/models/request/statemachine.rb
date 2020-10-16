@@ -3,13 +3,14 @@
 require 'aasm'
 
 module Request::Statemachine
+  extend ActiveSupport::Concern
   COMPLETED_STATE = %w[passed failed].freeze
   OPENED_STATE    = %w[pending blocked started].freeze
   ACTIVE = %w(passed pending blocked started).freeze
   INACTIVE = %w[failed cancelled].freeze
   SORT_ORDER = %w[pending blocked hold started passed failed cancelled].freeze
 
-  module ClassMethods
+  class_methods do
     def redefine_aasm(options = {}, &block)
       destroy_aasm
       aasm(options, &block)
@@ -35,103 +36,109 @@ module Request::Statemachine
     end
   end
 
-  def self.included(base)
-    base.class_eval do
-      extend ClassMethods
+  included do
+    ## State machine
+    aasm column: :state, whiny_persistence: true do
+      state :pending,   initial: true
+      state :started,   after_enter: :on_started
+      state :failed,    after_enter: :on_failed
+      state :passed,    after_enter: :on_passed
+      state :cancelled, after_enter: :on_cancelled
+      state :blocked,   after_enter: :on_blocked
+      state :hold,      after_enter: :on_hold
 
-      ## State machine
-      aasm column: :state, whiny_persistence: true do
-        state :pending,   initial: true
-        state :started,   after_enter: :on_started
-        state :failed,    after_enter: :on_failed
-        state :passed,    after_enter: :on_passed
-        state :cancelled, after_enter: :on_cancelled
-        state :blocked,   after_enter: :on_blocked
-        state :hold,      after_enter: :on_hold
-
-        event :hold do
-          transitions to: :hold, from: [:pending]
-        end
-
-        # State Machine events
-        event :start do
-          transitions to: :started, from: %i[pending hold]
-        end
-
-        event :pass do
-          transitions to: :passed, from: [:started]
-        end
-
-        event :fail do
-          transitions to: :failed, from: [:started]
-        end
-
-        event :retrospective_pass do
-          transitions to: :passed, from: [:failed]
-        end
-
-        event :retrospective_fail do
-          transitions to: :failed, from: [:passed]
-        end
-
-        event :block do
-          transitions to: :blocked, from: [:pending]
-        end
-
-        event :unblock do
-          transitions to: :pending, from: [:blocked]
-        end
-
-        event :detach do
-          transitions to: :pending, from: [:cancelled]
-        end
-
-        event :reset do
-          transitions to: :pending, from: [:hold]
-        end
-
-        event :cancel do
-          transitions to: :cancelled, from: %i[started hold]
-        end
-
-        event :return do
-          transitions to: :pending, from: %i[failed passed]
-        end
-
-        event :cancel_completed do
-          transitions to: :cancelled, from: %i[failed passed]
-        end
-
-        event :cancel_from_upstream, manual_only?: true do
-          transitions to: :cancelled, from: [:pending]
-        end
-
-        event :cancel_before_started do
-          transitions to: :cancelled, from: %i[pending hold]
-        end
-
-        event :submission_cancelled, manual_only?: true do
-          transitions to: :cancelled, from: %i[pending cancelled]
-        end
-
-        event :fail_from_upstream, manual_only?: true do
-          transitions to: :cancelled, from: [:pending]
-          transitions to: :failed,    from: [:started]
-          transitions to: :failed,    from: [:passed]
-        end
+      event :hold do
+        transitions to: :hold, from: [:pending]
       end
 
-      scope :for_state, ->(state) { where(state: state) }
+      # State Machine events
+      event :start do
+        transitions to: :started, from: %i[pending hold]
+      end
 
-      scope :completed,        -> { where(state: COMPLETED_STATE) }
-      scope :pending,          -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
+      event :pass do
+        transitions to: :passed, from: [:started]
+      end
 
-      scope :started,          -> { where(state: 'started') }
-      scope :cancelled,        -> { where(state: 'cancelled') }
+      event :fail do
+        transitions to: :failed, from: [:started]
+      end
 
-      scope :opened,           -> { where(state: OPENED_STATE) }
-      scope :closed,           -> { where(state: %w[passed failed cancelled]) }
+      event :retrospective_pass do
+        transitions to: :passed, from: [:failed]
+      end
+
+      event :retrospective_fail do
+        transitions to: :failed, from: [:passed]
+      end
+
+      event :block do
+        transitions to: :blocked, from: [:pending]
+      end
+
+      event :unblock do
+        transitions to: :pending, from: [:blocked]
+      end
+
+      event :detach do
+        transitions to: :pending, from: [:cancelled]
+      end
+
+      event :reset do
+        transitions to: :pending, from: [:hold]
+      end
+
+      event :cancel do
+        transitions to: :cancelled, from: %i[started hold]
+      end
+
+      event :return do
+        transitions to: :pending, from: %i[failed passed]
+      end
+
+      event :cancel_completed do
+        transitions to: :cancelled, from: %i[failed passed]
+      end
+
+      event :cancel_from_upstream, manual_only?: true do
+        transitions to: :cancelled, from: [:pending]
+      end
+
+      event :cancel_before_started do
+        transitions to: :cancelled, from: %i[pending hold]
+      end
+
+      event :submission_cancelled, manual_only?: true do
+        transitions to: :cancelled, from: %i[pending cancelled]
+      end
+
+      # manual_only prevents the transition being detected by the transition_to methods
+      event :fail_from_upstream, manual_only?: true do
+        transitions to: :cancelled, from: [:pending]
+        transitions to: :failed,    from: [:started]
+        transitions to: :failed,    from: [:passed]
+      end
+
+      # Called by {Event} when the evented is a {Request} and the family is fail
+      # Can be triggered by NPG, or via the BatchesController::fail page
+      # manual_only prevents the transition being detected by the transition_to methods
+      event :evented_fail, manual_only?: true do
+        transitions to: :failed,    from: [:started, :passed]
+      end
+
+      # Called by {Event} when the evented is a {Request} and the family is pass
+      # manual_only prevents the transition being detected by the transition_to methods
+      event :evented_pass, manual_only?: true do
+        transitions to: :passed,    from: [:started, :failed]
+      end
     end
+
+    scope :for_state, ->(state) { where(state: state) }
+
+    scope :completed,        -> { where(state: COMPLETED_STATE) }
+    scope :pending,          -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
+    scope :opened,           -> { where(state: OPENED_STATE) }
+    scope :closed,           -> { where(state: %w[passed failed cancelled]) }
   end
 
   #--
