@@ -51,7 +51,9 @@ class Sprint < ApplicationRecord
     }
 
     # Example graphql query produced by SPrint client
-    # {"operationName":"Print","variables":{"printer":"cgaptestbc","printRequest":{"layouts":[{"textFields":[{"fontSize":2,"font":"proportional","rotation":"north","value":"This is a test","x":1,"y":7}],"barcodeFields":[{"x":1,"y":1,"value":"CGAP-B1ED91","cellWidth":0.1,"height":2,"rotation":"north","barcodeType":"code128"}]}]}},"query":"mutation Print($printRequest: PrintRequest!, $printer: String!) {\n  print(printRequest: $printRequest, printer: $printer) {\n    jobId\n    __typename\n  }\n}\n"}
+    # {"operationName":"Print","variables":{"printer":"cgaptestbc","printRequest":{"layouts":[{"textFields":[{"fontSize":2,"font":"proportional","rotation":"north","value":"This is a test","x":1,"y":7}],
+    # "barcodeFields":[{"x":1,"y":1,"value":"CGAP-B1ED91","cellWidth":0.1,"height":2,
+    # "rotation":"north","barcodeType":"code128"}]}]}},"query":"mutation Print($printRequest: PrintRequest!, $printer: String!) {\n  print(printRequest: $printRequest, printer: $printer) {\n    jobId\n    __typename\n  }\n}\n"}
 
     puts body
     # rubocop:enable Rails/Output
