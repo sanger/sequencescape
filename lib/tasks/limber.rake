@@ -263,7 +263,7 @@ namespace :limber do
       end
 
       Limber::Helper::RequestTypeConstructor.new(
-        'pWGS',
+        'pWGS-384',
         library_types: ['pWGS-384']
       ).build!
 
@@ -567,7 +567,7 @@ namespace :limber do
       'GnT Picoplex' => {
         sequencing_list: base_without_hiseq
       },
-      'pWGS' => {
+      'pWGS-384' => {
         sequencing_list: %w(
           illumina_b_hiseq_x_paired_end_sequencing
           illumina_htp_novaseq_6000_paired_end_sequencing
