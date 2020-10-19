@@ -1,11 +1,15 @@
+# frozen_string_literal: true
+
+# Class to test SPrint.
 class Sprint < ApplicationRecord
+  # rubocop:disable Rails/Output
   require 'uri'
 
   # Sends a POST print request to SPrint
   # Currently implementing a proof of concept
   # Using HTTP instead of GraphQL client, 'stub' printer and variable placeholders
   def self.print_request
-
+    
     # GraphQL print mutation
     query = "mutation Print($printRequest: PrintRequest!, $printer: String!) {
       print(printRequest: $printRequest, printer: $printer) {
@@ -67,5 +71,6 @@ class Sprint < ApplicationRecord
                 "Content-Type" => "application/json"
     
     puts reponse.body
+    # rubocop:enable Rails/Output
   end
 end
