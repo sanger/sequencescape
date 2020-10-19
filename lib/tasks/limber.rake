@@ -258,9 +258,14 @@ namespace :limber do
   task create_request_types: [:environment, :create_plates] do
     puts 'Creating request types...'
     ActiveRecord::Base.transaction do
-      %w[WGS LCMB pWGS].each do |prefix|
+      %w[WGS LCMB].each do |prefix|
         Limber::Helper::RequestTypeConstructor.new(prefix).build!
       end
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'pWGS',
+        library_types: ['pWGS-384']
+      ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'Duplex-Seq',
