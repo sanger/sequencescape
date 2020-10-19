@@ -6,7 +6,6 @@ class SprintController < ApplicationController
   end
 
   def action
-    print "****** action ******"
     Sprint.print_request
   end
 end

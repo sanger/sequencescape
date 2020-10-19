@@ -96,7 +96,7 @@ if Rails.env.development? || Rails.env.profile?
   # Feature toggles
   configatron.enable_report_fails = true
 
-  configatron.sprint_url = 'http://sprint.psd.sanger.ac.uk/'
+  configatron.sprint_url = 'http://localhost:8080/graphql'
 end
 
 if Rails.env.test? || Rails.env.cucumber?
