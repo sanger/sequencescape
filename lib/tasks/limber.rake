@@ -284,7 +284,7 @@ namespace :limber do
         'GBS',
         request_class: 'IlluminaHtp::Requests::GbsRequest',
         library_types: ['GBS'],
-        default_purposes: ['GBS Stock'],
+        default_purposes: ['GBS Stock', 'GBS-96 stock'],
         for_multiplexing: true
       ).build!
 
