@@ -16,6 +16,16 @@ class Batch < ApplicationRecord
   include ::Batch::StateMachineBehaviour
   extend EventfulRecord
 
+  # The three states of {Batch} Also @see {SequencingQcBatch}
+  # @!attribute state
+  #   The main state machine, used to track the batch through the pipeline. Handled by {Batch::StateMachineBehaviour}
+  # @!attribute production_state
+  #   Also referenced in {Batch::StateMachineBehaviour}. Either nil, or fail. This is updated in Batch#fail_requests and
+  #   Batch#fail. The former is used via BatchesController#fail_items, the latter seems to be unused.
+  #   Is intended to take precedence over both other states to track failures in-spite of QC results.
+  # @!attribute qc_state
+  #   Primarily for sequencing batches. See {SequencingQcBatch}. Holds the sequencing QC state
+
   DEFAULT_VOLUME = 13
 
   self.per_page = 500
@@ -138,7 +148,7 @@ class Batch < ApplicationRecord
     requests.each do |request|
       request.failures.create(reason: reason, comment: comment, notify_remote: true)
       unless request.asset && request.asset.resource?
-        EventSender.send_fail_event(request.id, reason, comment, id)
+        EventSender.send_fail_event(request, reason, comment, id)
       end
     end
 
@@ -146,27 +156,18 @@ class Batch < ApplicationRecord
     save!
   end
 
-  # Fail specific items on this batch
-  def fail_batch_items(requests_to_fail, reason, comment, fail_but_charge = false)
-    checkpoint = true
+  # Fail specific requests on this batch
+  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false)
+    ActiveRecord::Base.transaction do
+      requests.find(requests_to_fail).each do |request|
+        logger.debug "SENDING FAIL FOR REQUEST #{request.id}, BATCH #{id}, WITH REASON #{reason}"
 
-    requests_to_fail.each do |key, value|
-      if value == 'on'
-        logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{id}, WITH REASON #{reason}"
-        unless key == 'control'
-          ActiveRecord::Base.transaction do
-            request = requests.find(key)
-            request.customer_accepts_responsibility! if fail_but_charge
-            request.failures.create(reason: reason, comment: comment, notify_remote: true)
-            EventSender.send_fail_event(request.id, reason, comment, id)
-          end
-        end
-      else
-        checkpoint = false
+        request.customer_accepts_responsibility! if fail_but_charge
+        request.failures.create(reason: reason, comment: comment, notify_remote: true)
+        EventSender.send_fail_event(request, reason, comment, id)
       end
+      update_batch_state(reason, comment)
     end
-
-    update_batch_state(reason, comment) if checkpoint
   end
 
   def update_batch_state(reason, comment)
@@ -348,10 +349,7 @@ class Batch < ApplicationRecord
   # Remove the request from the batch and remove asset information
   def remove_request_ids(request_ids, reason = nil, comment = nil)
     ActiveRecord::Base.transaction do
-      request_ids.each do |request_id|
-        request = Request.find(request_id)
-        next if request.nil?
-
+      Request.find(request_ids).each do |request|
         request.failures.create(reason: reason, comment: comment, notify_remote: true)
         detach_request(request)
       end
@@ -535,6 +533,16 @@ class Batch < ApplicationRecord
 
   def pick_information?
     pipeline.pick_information?(self)
+  end
+
+  # Summarise the state encapsulated by state and production_state
+  # Essentially a 'fail' production_state over-rides the 'state'
+  # We don't use production_state directly as it it 'fail' rather than
+  # ' failed'
+  # qc_state it kept separate as its a fairly distinct concept and is
+  # summarised elsewhere in the interface.
+  def displayed_status
+    failed? ? 'failed' : state
   end
 
   private

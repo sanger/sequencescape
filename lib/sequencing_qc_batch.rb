@@ -24,7 +24,7 @@ module SequencingQcBatch
   #--
   # Batches have, in addition to the State Machine "state", two additional states: qc_state and production_state
   # qc_state is used to track QC process in pipelines and when the QC process is triggered from NPG and when it ends
-  # qc_production allows a whole batch, and its items, to fail or pass regardless of the QC state.
+  # production_state allows a whole batch, and its items, to fail or pass regardless of the QC state.
   # The last State Machine state that a batch can reach is "released"
   # A batch cannot be started once it fails or released
   # QC State ["qc_pending", "qc_manual", "qc_manual_in_progress","qc_completed"]

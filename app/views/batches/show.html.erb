@@ -7,7 +7,7 @@
 
 <%= page_title 'Batch', @batch.id %>
 <h2>
-  <%= badge(@batch.state, type: 'batch-state') -%>
+  <%= badge(@batch.displayed_status, type: 'batch-state') -%>
   <% if @batch.multiplexed? %>
     <%= badge('Multiplexed', type: 'batch-mx', style: 'primary') %>
   <% end %>
