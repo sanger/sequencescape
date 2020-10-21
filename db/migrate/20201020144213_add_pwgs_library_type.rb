@@ -1,3 +1,4 @@
+# Add the pWGS-384 library type and join to compatible request types
 class AddPwgsLibraryType < ActiveRecord::Migration[5.2]
   def self.up
     ActiveRecord::Base.transaction do |_t|
