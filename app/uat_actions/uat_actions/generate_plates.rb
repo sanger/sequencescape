@@ -68,6 +68,7 @@ class UatActions::GeneratePlates < UatActions
       sample_name = "sample_#{plate.human_barcode}_#{well.map.description}"
       sample = Sample.new(
         name: sample_name,
+        sanger_sample_id: sample_name,
         studies: [study],
         sample_metadata_attributes: {
           supplier_name: sample_name
