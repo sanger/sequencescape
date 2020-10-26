@@ -1,0 +1,50 @@
+{
+  "layouts": [
+    {
+      "labelSize": {
+        "width": 92,
+        "height": 8,
+        "displacement": 11
+      },
+      "barcodeFields": [
+        {
+          "x": 30,
+          "y": 1,
+          "cellWidth": 0.4,
+          "barcodeType": 'code39',
+          "value": <%= barcode %>
+        }
+      ],
+      "textFields": [
+        {
+          "x": 2,
+          "y": 3,
+          "value": <%= date %>,
+          "font": 'proportional',
+          "fontSize": 1.7
+        },
+        {
+          "x": 2,
+          "y": 7,
+          "value": <%= barcode_text %>,
+          "font": 'proportional',
+          "fontSize": 1.7
+        },
+        {
+          "x": 55,
+          "y": 3,
+          "value": <%= workline_identifier %>,
+          "font": 'proportional',
+          "fontSize": 1.7
+        },
+        {
+          "x": 55,
+          "y": 7,
+          "value": <%= order_role %>,
+          "font": 'proportional',
+          "fontSize": 1.7
+        }
+      ]
+    }
+  ]
+}

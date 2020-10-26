@@ -4,6 +4,7 @@
 class Sprint < ApplicationRecord
   # rubocop:disable Rails/Output
   require 'uri'
+  require 'erb'
 
   # Sends a POST print request to SPrint
   # Currently implementing a proof of concept
@@ -16,45 +17,39 @@ class Sprint < ApplicationRecord
       }
     }"
 
-    # Using heron-bc1 for proof of concept.
-    printer = 'heron-bc1'
+    # Using printer called stub which is a fake printer. 
+    # This will treat the request like a request to a printer, but not actually try and print anything.
+    printer = "stub" #heron-bc1
 
-    print_request = {
-      "layouts": [
-        {
-          "labelSize": {
-            "width": 23,
-            "height": 19,
-            "displacement": 22
-          },
-          "barcodeFields": [
-            {
-              "x": 15,
-              "y": 5,
-              "cellWidth": 0.4,
-              "barcodeType": 'datamatrix',
-              "value": '#barcode#'
-            }
-          ],
-          "textFields": [
-            {
-              "x": 1,
-              "y": 4,
-              "value": '#barcode_text#',
-              "font": 'proportional',
-              "fontSize": 2.9
-            },
-            {
-              "x": 1,
-              "y": 8,
-              "value": '#date#',
-              "font": 'proportional',
-              "fontSize": 1.8
-            }
-          ]
-        }
-      ]
-    }
+    # test_config variables
+    # date = "date placeholder"
+    # barcode = "barcode placeholder"
+    # barcode_text = "barcode_text placeholder"
+
+    # 384_config variables
+    # barcode
+    # barcode_text
+    # date
+    # workline_identifier
+    # order_role
+    # labware_purpose
+
+    # 96_config variables
+    barcode = "DN623748I"
+    date = "1-APR-2020"
+    barcode_text = "DN623748I"
+    workline_identifier = "DN623748I"
+    order_role = "Heron LHR PCR 2"
+
+    # tube_config variables
+    # barcode
+    # date
+    # plate_purpose
+    # barcode_number_and_pools_number
+    # labware_name
+
+    template = ERB.new File.read(File.join('config', 'sprint', '96_config.yml.erb'))
+    print_request = YAML.load template.result binding
 
     body = {
       "query": query,
@@ -64,6 +59,9 @@ class Sprint < ApplicationRecord
       }
     }
 
+    puts "body"
+    puts body
+    
     reponse = Net::HTTP.post URI(configatron.sprint_url),
                              body.to_json,
                              'Content-Type' => 'application/json'
