@@ -164,3 +164,6 @@ RequestType::Validator.create!(
   RequestType::Validator.create!(request_type: rt, request_option: 'fragment_size_required_to', valid_options: ['350'])
   RequestType::Validator.create!(request_type: rt, request_option: 'fragment_size_required_from', valid_options: ['350'])
 end
+
+pwgs_384_lt = LibraryType.find_or_create_by!(name: 'pWGS-384')
+RequestType.find_by!(key: 'illumina_b_hiseq_x_paired_end_sequencing').library_types << pwgs_384_lt
