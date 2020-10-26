@@ -8,11 +8,12 @@
       },
       "barcodeFields": [
         {
-            "x": 22,
+            "x": 16,
             "y": 1,
-            "cellWidth": 0.4,
-            "barcodeType": 'code39',
-            "value": <%= barcode %'
+            "cellWidth": 0.2,
+            "barcodeType": "code39",
+            "value": <%= barcode %',
+            "height": 5
         }
       ],
       "textFields": [
@@ -24,7 +25,7 @@
             "fontSize": 2
         },
         {
-            "x": 45,
+            "x": 55,
             "y": 4,
             "value": <%= workline_identifier %>,
             "font": 'proportional',
@@ -63,7 +64,7 @@
         {
             "x": 50,
             "y": 4,
-            "value": <%= labware_purpose %>,
+            "value": <%= plate_purpose %>,
             "font": 'proportional',
             "fontSize": 2
         }

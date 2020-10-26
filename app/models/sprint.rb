@@ -19,7 +19,7 @@ class Sprint < ApplicationRecord
 
     # Using printer called stub which is a fake printer. 
     # This will treat the request like a request to a printer, but not actually try and print anything.
-    printer = "stub" #heron-bc1
+    printer = "stub" #"heron-bc1" 
 
     # test_config variables
     # date = "date placeholder"
@@ -32,19 +32,20 @@ class Sprint < ApplicationRecord
     # date
     # workline_identifier
     # order_role
-    # labware_purpose
+    # plate_purpose
 
     # 96_config variables
     barcode = "DN623748I"
     date = "1-APR-2020"
     barcode_text = "DN623748I"
     workline_identifier = "DN623748I"
-    order_role = "Heron LHR PCR 2"
+    order_role = "Heron"
+    plate_purpose = "LHR PCR 2"
 
     # tube_config variables
     # barcode
     # date
-    # plate_purpose
+    # tube_purpose
     # barcode_number_and_pools_number
     # labware_name
 
