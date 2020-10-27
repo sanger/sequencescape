@@ -1,51 +1,48 @@
+
 {
-  "layouts": [
+  "labelSize": {
+    "width": 30,
+    "height": 40,
+    "displacement": 43
+  },
+  "barcodeFields": [
     {
-      "labelSize": {
-        "width": 30,
-        "height": 40,
-        "displacement": 43
-      },
-      "barcodeFields": [
-        {
-          "x": 2,
-          "y": 2,
-          "cellWidth": 0.2,
-          "barcodeType": "code39",
-          "value": <%= barcode %>,
-          "height": 5
-        }
-      ],
-      "textFields": [
-        {
-          "x": 2,
-          "y": 11,
-          "value": <%= date %>,
-          "font": 'proportional',
-          "fontSize": 2
-        },
-        {
-          "x": 10,
-          "y": 11,
-          "value": <%= tube_purpose %>,
-          "font": 'proportional',
-          "fontSize": 2
-        },
-        {
-          "x": 18,
-          "y": 11,
-          "value": <%= barcode_number_and_pools_number %>,
-          "font": 'proportional',
-          "fontSize": 2
-        },
-        {
-          "x": 26,
-          "y": 11,
-          "value": <%= labware_name %>,
-          "font": 'proportional',
-          "fontSize": 2
-        }
-      ]
+      "x": 2,
+      "y": 2,
+      "cellWidth": 0.2,
+      "barcodeType": "code39",
+      "value": <%= merge_fields[:barcode] %>,
+      "height": 5
+    }
+  ],
+  "textFields": [
+    {
+      "x": 2,
+      "y": 11,
+      "value": <%= merge_fields[:date] %>,
+      "font": 'proportional',
+      "fontSize": 2
+    },
+    {
+      "x": 10,
+      "y": 11,
+      "value": <%= merge_fields[:tube_purpose] %>,
+      "font": 'proportional',
+      "fontSize": 2
+    },
+    {
+      "x": 18,
+      "y": 11,
+      "value": <%= merge_fields[:barcode_number_and_pools_number] %>,
+      "font": 'proportional',
+      "fontSize": 2
+    },
+    {
+      "x": 26,
+      "y": 11,
+      "value": <%= merge_fields[:labware_name] %>,
+      "font": 'proportional',
+      "fontSize": 2
     }
   ]
 }

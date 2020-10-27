@@ -1,75 +1,54 @@
 {
-  "layouts": [
+  "labelSize": {
+    "width": 68,
+    "height": 6,
+    "displacement": 13
+  },
+  "barcodeFields": [
     {
-      "labelSize": {
-        "width": 68,
-        "height": 6,
-        "displacement": 13
-      },
-      "barcodeFields": [
-        {
-            "x": 16,
-            "y": 1,
-            "cellWidth": 0.2,
-            "barcodeType": "code39",
-            "value": <%= barcode %',
-            "height": 5
-        }
-      ],
-      "textFields": [
-        {
-            "x": 2,
-            "y": 4, 
-            "value": <%= barcode_text %>,
-            "font": 'proportional',
-            "fontSize": 2
-        },
-        {
-            "x": 55,
-            "y": 4,
-            "value": <%= workline_identifier %>,
-            "font": 'proportional',
-            "fontSize": 2
-        }
-      ]
+      "x": 16,
+      "y": 1,
+      "cellWidth": 0.2,
+      "barcodeType": "code39",
+      "value": <%= merge_fields[:barcode] %>,
+      "height": 5
+    }
+  ],
+  "textFields": [
+    {
+      "x": 2,
+      "y": 2.5, 
+      "value": <%= merge_fields[:barcode_text] %>,
+      "font": 'proportional',
+      "fontSize": 1.7
     },
     {
-      "labelSize": {
-        "width": 68,
-        "height": 6,
-        "displacement": 13
-      },
-      "textFields": [
-        {
-            "x": 2,
-            "y": 4,
-            "value": <%= date %>,
-            "font": 'proportional',
-            "fontSize": 2
-        },
-        {
-            "x": 17,
-            "y": 4,
-            "value": <%= workline_identifier %>,
-            "font": 'proportional',
-            "fontSize": 2
-        },
-        {
-            "x": 32,
-            "y": 4,
-            "value": <%= order_role %>,
-            "font": 'proportional',
-            "fontSize": 2
-        },
-        {
-            "x": 50,
-            "y": 4,
-            "value": <%= plate_purpose %>,
-            "font": 'proportional',
-            "fontSize": 2
-        }
-      ]
+      "x": 2,
+      "y": 4.5, 
+      "value": <%= merge_fields[:date] %>,
+      "font": 'proportional',
+      "fontSize": 1.7
+    },
+    {
+      "x": 45,
+      "y": 2.5,
+      "value": <%= merge_fields[:workline_identifier] %>,
+      "font": 'proportional',
+      "fontSize": 1.7
+    },
+    {
+      "x": 45,
+      "y": 4.5,
+      "value": <%= merge_fields[:order_role] %>,
+      "font": 'proportional',
+      "fontSize": 1.7
+    },
+    {
+      "x": 58,
+      "y": 4.5,
+      "value": <%= merge_fields[:plate_purpose] %>,
+      "font": 'proportional',
+      "fontSize": 1.7
     }
   ]
 }
-

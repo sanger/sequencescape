@@ -116,6 +116,8 @@ group :warehouse do
 end
 
 group :development do
+  gem 'sprint_client'
+
   gem 'rails-erd'
 
   gem 'flay', require: false

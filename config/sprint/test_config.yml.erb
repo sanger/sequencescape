@@ -1,36 +1,32 @@
 {
-  "layouts": [
+  "labelSize": {
+    "width": 23,
+    "height": 19,
+    "displacement": 22
+  },
+  "barcodeFields": [
     {
-      "labelSize": {
-        "width": 23,
-        "height": 19,
-        "displacement": 22
-      },
-      "barcodeFields": [
-        {
-          "x": 15,
-          "y": 5,
-          "cellWidth": 0.4,
-          "barcodeType": "datamatrix",
-          "value": <%= barcode %>
-        }
-      ],
-      "textFields": [
-        {
-          "x": 1,
-          "y": 4,
-          "value": <%= barcode_text %>,
-          "font": "proportional",
-          "fontSize": 2.9
-        },
-        {
-          "x": 1,
-          "y": 8,
-          "value": <%= date %>,
-          "font": "proportional",
-          "fontSize": 1.8
-        }
-      ]
-    }    
+      "x": 15,
+      "y": 5,
+      "cellWidth": 0.4,
+      "barcodeType": "datamatrix",
+      "value": <%= merge_fields[:barcode] %>
+    }
+  ],
+  "textFields": [
+    {
+      "x": 1,
+      "y": 4,
+      "value": <%= merge_fields[:barcode_text] %>,
+      "font": "proportional",
+      "fontSize": 2.9
+    },
+    {
+      "x": 1,
+      "y": 8,
+      "value": <%= merge_fields[:date] %>,
+      "font": "proportional",
+      "fontSize": 1.8
+    }
   ]
-}
+}    
