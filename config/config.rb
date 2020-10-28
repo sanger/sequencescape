@@ -22,6 +22,7 @@ configatron.ssr_emails = ['ssr@example.com']
 configatron.authentication = ENV.fetch('AUTH', 'local')
 
 configatron.pmb_api = 'http://localhost:9292/v1'
+configatron.sprint_uri = 'http://sprint.psd.sanger.ac.uk/graphql'
 configatron.register_printers_automatically = true
 
 configatron.default_policy_text = 'https://www.example.com/'
@@ -95,8 +96,6 @@ if Rails.env.development? || Rails.env.profile?
 
   # Feature toggles
   configatron.enable_report_fails = true
-
-  configatron.sprint_url = 'http://sprint.psd.sanger.ac.uk/graphql'
 end
 
 if Rails.env.test? || Rails.env.cucumber?
