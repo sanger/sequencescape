@@ -23,7 +23,7 @@ class BroadcastEvent::OrderMade < BroadcastEvent
   # or cross-project orders.
   #
   # A cross-study/cross-project order is currently generated if sequencing
-  # is requested *directly* on multiplexed library containing samples from
+  # is requested *directly* on multiplexed library tubes containing samples from
   # different studies/projects. This mostly occurs with re-sequencing, but
   # can also happen during GBS, custom-pooling, or situations in which the
   # sequencing request creation is deferred until after multiplexing.
