@@ -29,9 +29,9 @@ class BroadcastEvent::OrderMade < BroadcastEvent
   # sequencing request creation is deferred until after multiplexing.
   #
   # Currently these orders are not explicitly associated with *any* study/project
-  # (ie. study_id and project_id on order are nil), and this event uses this
-  # explicit link. As a result, these orders have no projects/studies associated
-  # as subjects.
+  # (ie. study_id and project_id on order are nil)
+  # The order_made event links projects/studies as subjects only if this explicit link is present.
+  # As a result, these orders have no projects/studies associated as subjects.
   #
   # If this behaviour changes in future to reference the *implicit* studies,
   # then please try to generate multiple Events per order. (Note you'll want
