@@ -14,6 +14,10 @@ module Api
       attribute :uuid
       attribute :control
       attribute :control_type
+
+      filter :uuid
+      filter :sanger_sample_id
+      filter :name
     end
   end
 end
