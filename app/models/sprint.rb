@@ -7,7 +7,7 @@ class Sprint < ApplicationRecord
   require 'erb'
 
   def self.send_print_request(printer_name, label_template_name, merge_fields_list)
-    response = SprintClient.send_print_request(printer_name, label_template_name, merge_fields_list)
+    response = SPrintClient.send_print_request(printer_name, label_template_name, merge_fields_list)
 
     puts 'response'
     puts response
