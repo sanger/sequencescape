@@ -34,8 +34,9 @@ class BroadcastEvent::OrderMade < BroadcastEvent
   # As a result, these orders have no projects/studies associated as subjects.
   #
   # If this behaviour changes in future to reference the *implicit* studies,
-  # then please try to generate multiple Events per order. (Note you'll want
-  # to filter the samples associated with the event as well)
+  # (those associated with the aliquots in the tube) then please try to generate
+  # multiple Events per order. (Note you'll want to filter the samples associated 
+  # with the event as well)
   has_subject(:study, :study)
   has_subject(:project, :project)
   has_subject(:submission, :submission)
