@@ -40,10 +40,12 @@ class BarcodePrinter < ApplicationRecord
   end
 
   def service
-    @service ||= self.class.service
+    # @service ||= self.class.service
+    'DEPRECATED'
   end
 
   def self.verify(number)
-    service.verify(number)
+    # service.verify(number)
+    'DEPRECATED'
   end
 end
