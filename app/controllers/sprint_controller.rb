@@ -11,9 +11,10 @@ class SprintController < ApplicationController
     # Using printer called stub which is a fake printer.
     # This will treat the request like a request to a printer, but not actually try and print anything.
 
-    set_tube_pmb_config
+    # set_tube_pmb_config
+    set_plate_384_config
 
-    @printer_name = 'stub' # comment out to do real tests
+    # @printer_name = 'heron-bc7' # comment out to do real tests
     Sprint.send_print_request(@printer_name, @label_template_name, @field_values)
   end
 
