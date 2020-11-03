@@ -11,7 +11,7 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object
+      default_includes :uuid_object, :barcodes
 
       # Associations:
       has_many :racked_tubes
