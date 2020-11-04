@@ -11,9 +11,7 @@ class SprintController < ApplicationController
     # Using printer called stub which is a fake printer.
     # This will treat the request like a request to a printer, but not actually try and print anything.
 
-    # set_tube_pmb_config
-    set_plate_384_config
-
+    set_tube_pmb_config
     # @printer_name = 'heron-bc7' # comment out to do real tests
     Sprint.send_print_request(@printer_name, @label_template_name, @field_values)
   end
@@ -77,8 +75,8 @@ class SprintController < ApplicationController
 
   def set_tube_pmb_config
     @field_values = [
-      { barcode: 'DN111111', first_line: '111111 A1:P24', second_line: '1111111, P384', third_line: 'LHR-384 Lib Pool', fourth_line: '1-APR-2020', round_label_top_line: 'NT', round_label_bottom_line: 'NT111111' },
-      { barcode: 'DN222222', first_line: '222222 A2:P24', second_line: '2222222, P384', third_line: 'LHR-384 Lib Pool', fourth_line: '2-APR-2020', round_label_top_line: 'NT', round_label_bottom_line: 'NT222222' }
+      { barcode: '3980000001795', first_line: '111111 A1:P24', second_line: '1111111, P384', third_line: 'LHR-384 Lib Pool', fourth_line: '1-APR-2020', round_label_top_line: 'NT', round_label_bottom_line: 'NT111111' },
+      { barcode: '3980000001795', first_line: '222222 A2:P24', second_line: '2222222, P384', third_line: 'LHR-384 Lib Pool', fourth_line: '2-APR-2020', round_label_top_line: 'NT', round_label_bottom_line: 'NT222222' }
     ]
     @printer_name = 'heron-bc7'
     @label_template_name = 'tube_pmb.yml.erb'
