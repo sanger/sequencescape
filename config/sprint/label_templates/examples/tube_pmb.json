@@ -5,7 +5,7 @@
             {
                 "barcodeFields": [
                     {
-                        "x": 5,
+                        "x": 3,
                         "y": 7,
                         "cellWidth": 0.2,
                         "barcodeType": "ean13",
@@ -47,19 +47,19 @@
                         "rotation": "east"
                     },
                     {
-                        "x": 26,
-                        "y": 18,
+                        "x": 27,
+                        "y": 17,
                         "value": "NT",
                         "font": "proportional",
-                        "fontSize": 2,
+                        "fontSize": 1.7,
                         "rotation": "east"
                     },
                     {
-                        "x": 24,
-                        "y": 21,
+                        "x": 25,
+                        "y": 17,
                         "value": "NT111111",
                         "font": "proportional",
-                        "fontSize": 2,
+                        "fontSize": 1.7,
                         "rotation": "east"
                     }
                 ]
