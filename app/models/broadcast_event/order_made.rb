@@ -35,7 +35,7 @@ class BroadcastEvent::OrderMade < BroadcastEvent
   #
   # If this behaviour changes in future to reference the *implicit* studies,
   # (those associated with the aliquots in the tube) then please try to generate
-  # multiple Events per order. (Note you'll want to filter the samples associated 
+  # multiple Events per order. (Note you'll want to filter the samples associated
   # with the event as well)
   has_subject(:study, :study)
   has_subject(:project, :project)
