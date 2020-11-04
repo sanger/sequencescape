@@ -1,0 +1,53 @@
+{
+  "printer": "heron-bc2",
+  "printRequest": {
+    "layouts": [
+      {
+        "barcodeFields": [
+          {
+            "x": 21,
+            "y": 0,
+            "cellWidth": 0.2,
+            "barcodeType": "code39",
+            "value": "DN111111",
+            "height": 5
+          }
+        ],
+        "textFields": [
+          {
+            "x": 1,
+            "y": 4,
+            "value": "DN111111",
+            "font": "proportional",
+            "fontSize": 1.7
+          },
+          {
+            "x": 50,
+            "y": 4,
+            "value": "DN111111",
+            "font": "proportional",
+            "fontSize": 1.7
+          }
+        ]
+      },
+      {
+        "textFields": [
+          {
+            "x": 1,
+            "y": 3,
+            "value": "1-APR-2020",
+            "font": "proportional",
+            "fontSize": 1.7
+          },
+          {
+            "x": 20,
+            "y": 3,
+            "value": "DN111111 Heron LHR PCR 1",
+            "font": "proportional",
+            "fontSize": 1.7
+          }
+        ]
+      }
+    ]
+  }
+}

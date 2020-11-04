@@ -1,0 +1,69 @@
+{
+    "printer": "heron-bc7",
+    "printRequest": {
+        "layouts": [
+            {
+                "barcodeFields": [
+                    {
+                        "x": 2,
+                        "y": 2,
+                        "cellWidth": 0.2,
+                        "barcodeType": "ean13",
+                        "value": "3980000001795",
+                        "height": 5
+                    }
+                ],
+                "textFields": [
+                    {
+                        "x": 2,
+                        "y": 9,
+                        "value": "1-APR-2020",
+                        "font": "proportional",
+                        "fontSize": 2,
+                        "rotation": "east"
+                    },
+                    {
+                        "x": 10,
+                        "y": 9,
+                        "value": "TPurpose1",
+                        "font": "proportional",
+                        "fontSize": 2,
+                        "rotation": "east"
+                    },
+                    {
+                        "x": 18,
+                        "y": 9,
+                        "value": "111111 1",
+                        "font": "proportional",
+                        "fontSize": 2,
+                        "rotation": "east"
+                    },
+                    {
+                        "x": 30,
+                        "y": 5,
+                        "value": "LName1",
+                        "font": "proportional",
+                        "fontSize": 2,
+                        "rotation": "east"
+                    },
+                    {
+                        "x": 28,
+                        "y": 9,
+                        "value": "NT",
+                        "font": "proportional",
+                        "fontSize": 2,
+                        "rotation": "east"
+                    },
+                    {
+                        "x": 20,
+                        "y": 16,
+                        "value": "NT111111",
+                        "font": "proportional",
+                        "fontSize": 2,
+                        "rotation": "east"
+                    }
+                ]
+            }
+        ]
+    }
+}
