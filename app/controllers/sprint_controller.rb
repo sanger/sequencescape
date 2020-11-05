@@ -12,6 +12,8 @@ class SprintController < ApplicationController
     # This will treat the request like a request to a printer, but not actually try and print anything.
 
     set_tube_pmb_config
+    # set_plate_384_pmb_1_config
+    # set_plate_384_pmb_2_config
     # @printer_name = 'heron-bc7' # comment out to do real tests
     Sprint.send_print_request(@printer_name, @label_template_name, @field_values)
   end
