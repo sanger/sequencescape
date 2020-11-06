@@ -425,7 +425,9 @@ namespace :limber do
         request_class: 'IlluminaHtp::Requests::HeronTailedRequest',
         library_types:  [
           'PCR amplicon tailed adapters 96',
-          'PCR amplicon tailed adapters 384'
+          'PCR amplicon tailed adapters 384',
+          'Sanger_tailed_artic_v1_96',
+          'Sanger_tailed_artic_v1_384'
         ],
         default_purposes: ['LTHR-384 RT', 'LTHR RT']
       ).build!
