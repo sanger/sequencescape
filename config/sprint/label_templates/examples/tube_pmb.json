@@ -5,7 +5,7 @@
             {
                 "barcodeFields": [
                     {
-                        "x": 3,
+                        "x": 2,
                         "y": 7,
                         "cellWidth": 0.2,
                         "barcodeType": "ean13",
