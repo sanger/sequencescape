@@ -5,6 +5,16 @@ require './lib/oligo_enumerator'
 
 namespace :limber do
   namespace :dev do
+    task env_check: :environment do
+      unless Rails.env.development?
+        puts "CAUTION! You are running this task in the #{Rails.env} environment."
+        puts 'This script is intended for the development environment only.'
+        puts 'Running this task in test WILL cause failures, and could cause issues in other environments.'
+        puts 'Are you sure you wish to continue? (Y for yes)'
+        exit unless STDIN.gets.chomp == 'Y'
+      end
+    end
+
     namespace :setup do
       desc 'Create all limber pre-requisite plates'
       task all: %i[standard scrna rna gbs heron]
@@ -64,7 +74,7 @@ namespace :limber do
       end
 
       desc 'Generate a mock GbS tag set if required'
-      task gbs_tag_set: ['working:env_check', :environment] do
+      task gbs_tag_set: ['limber:dev:env_check', :environment] do
         next if TagLayoutTemplate.find_by(name: 'GbS Tag Set A')
 
         ('A'..'D').each_with_index do |set, index|
@@ -81,7 +91,7 @@ namespace :limber do
       end
 
       desc 'Generate a mock PF-384 tag set if required'
-      task pf384_tag_set: ['working:env_check', :environment] do
+      task pf384_tag_set: ['limber:dev:env_check', :environment] do
         next if TagLayoutTemplate.find_by(name: 'IDT for Illumina v1 - 384 Quadrant')
 
         tg = TagGroup.create!(name: 'IDT for Illumina v1 - MOCK') do |group|
@@ -96,7 +106,7 @@ namespace :limber do
       end
 
       desc 'Generate a dummy primer panel'
-      task gbs_primer_panel: ['working:env_check', :environment] do
+      task gbs_primer_panel: ['limber:dev:env_check', :environment] do
         PrimerPanel.create_with(snp_count: 20, programs: {
                                   'pcr 1' => { 'name' => 'Dummy_1', 'duration' => 10 },
                                   'pcr 2' => { 'name' => 'Dummy_2', 'duration' => 20 }
@@ -104,7 +114,7 @@ namespace :limber do
       end
 
       desc 'Add tag platesfor GbS: dev only'
-      task gbs_tag_plates: ['working:env_check', :environment, 'limber:dev:setup:gbs_tag_set'] do
+      task gbs_tag_plates: ['limber:dev:env_check', :environment, 'limber:dev:setup:gbs_tag_set'] do
         seeder = WorkingSetup::StandardSeeder.new([])
         ('A'..'D').each do |set|
           seeder.tag_plates(lot_type: 'Pre Stamped Tags - 384', template: "GbS Tag Set #{set}")
@@ -112,7 +122,7 @@ namespace :limber do
       end
 
       desc 'Generate a mock WGS tag set if required'
-      task wgs_tag_set: ['working:env_check', :environment] do
+      task wgs_tag_set: ['limber:dev:env_check', :environment] do
         ('A'..'D').each_with_index do |set, index|
           ["pWGS UDI tag layout v2 #{set}", "TS_pWGS#{set}_UDI96"].each_with_index do |template_name, idx|
             next if TagLayoutTemplate.find_by(name: template_name)
@@ -131,7 +141,7 @@ namespace :limber do
       end
 
       desc 'Add tag plates for WGS: dev only'
-      task wgs_tag_plates: ['working:env_check', :environment, 'limber:dev:setup:wgs_tag_set'] do
+      task wgs_tag_plates: ['limber:dev:env_check', :environment, 'limber:dev:setup:wgs_tag_set'] do
         seeder = WorkingSetup::StandardSeeder.new([])
         ('A'..'D').each do |set|
           ["pWGS UDI tag layout v2 #{set}", "TS_pWGS#{set}_UDI96"].each do |template_name|

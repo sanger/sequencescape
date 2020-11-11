@@ -463,7 +463,7 @@ class Request < ApplicationRecord
     events.map do |event|
       next if event.family.nil? or %w[pass fail].exclude?(event.family.downcase)
 
-      message = event.message || '(No message was specified)'
+      message = event.message.presence || '(No message was specified)'
       { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message, 'created_at' => event.created_at }
     end.compact
   end

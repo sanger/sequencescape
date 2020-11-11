@@ -2,10 +2,10 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of receptacle
+    # Provides a JSON API representation of a receptacle
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class ReceptacleResource < BaseResource
-      immutable # comment to make the resource mutable
+      # immutable # uncomment to make the resource immutable
 
       default_includes :uuid_object
 
@@ -35,6 +35,7 @@ module Api
       # Attributes
       attribute :uuid, readonly: true
       attribute :name, delegate: :display_name, readonly: true
+      attributes :pcr_cycles, :submit_for_sequencing, :sub_pool, :coverage, :diluent_volume
 
       # Filters
 

@@ -317,6 +317,48 @@ class BatchesControllerTest < ActionController::TestCase
                 assert_equal 0, @batch_one.requests.last.failures.size
               end
             end
+
+            # Handful of edge cases that were tested in batch.rb, but the behaviour has moved. Covers:
+            # - Non 'on' values returned from the front-end (Which indicates something strange has happened with the checkboxes)
+            # - Filtering of 'control' ids. (Associated with some old batches)
+            context 'odd values' do
+              setup do
+                EventSender.expects(:send_fail_event).times(0)
+                post :fail_items, params: { id: @batch_one.id,
+                                            failure: { reason: 'PCR not completed', comment: '' },
+                                            requested_fail: { @request_one.id.to_s => 'blue', 'control' => 'on' } }
+              end
+              should 'not create a failure' do
+                assert_equal 0, @batch_one.failures.size
+                assert_equal 2, @batch_one.size
+
+                # First item
+                assert_equal 0, @batch_one.requests.first.failures.size
+                # Second item
+                assert_equal 0, @batch_one.requests.last.failures.size
+              end
+            end
+
+            # If request ids are missing we were previously throwing a 404, and failing half the batch
+            # Now we should abort the whole action with an error
+            context 'odd values' do
+              setup do
+                EventSender.expects(:send_fail_event).times(0)
+                post :fail_items, params: { id: @batch_one.id,
+                                            failure: { reason: 'PCR not completed', comment: '' },
+                                            requested_fail: { @request_one.id.to_s => 'on', 'not_a_request' => 'on' } }
+              end
+              should 'not create a failure' do
+                assert_equal 0, @batch_one.failures.size
+                assert_equal 2, @batch_one.size
+
+                # First item
+                assert_equal 0, @batch_one.requests.first.failures.size
+                # Second item
+                assert_equal 0, @batch_one.requests.last.failures.size
+                assert flash['error'].include?("Couldn't find all Requests with 'id'")
+              end
+            end
           end
         end
       end

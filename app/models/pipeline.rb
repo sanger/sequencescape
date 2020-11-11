@@ -119,11 +119,11 @@ class Pipeline < ApplicationRecord
   def completed_request_as_part_of_release_batch(request)
     if library_creation?
       unless request.failed?
-        EventSender.send_pass_event(request.id, '', "Passed #{name}.", id)
-        EventSender.send_request_update(request.id, 'complete', "Completed pipeline: #{name}")
+        EventSender.send_pass_event(request, '', "Passed #{name}.", id)
+        EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")
       end
     else
-      EventSender.send_request_update(request.id, 'complete', "Completed pipeline: #{name}")
+      EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")
     end
   end
 

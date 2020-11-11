@@ -263,6 +263,11 @@ namespace :limber do
       end
 
       Limber::Helper::RequestTypeConstructor.new(
+        'pWGS-384',
+        library_types: ['pWGS-384']
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
         'Duplex-Seq',
         library_types: ['Duplex-Seq'],
         default_purposes: ['LDS Stock', 'LDS Cherrypick']
@@ -284,7 +289,7 @@ namespace :limber do
         'GBS',
         request_class: 'IlluminaHtp::Requests::GbsRequest',
         library_types: ['GBS'],
-        default_purposes: ['GBS Stock'],
+        default_purposes: ['GBS Stock', 'GBS-96 stock'],
         for_multiplexing: true
       ).build!
 
@@ -420,7 +425,9 @@ namespace :limber do
         request_class: 'IlluminaHtp::Requests::HeronTailedRequest',
         library_types:  [
           'PCR amplicon tailed adapters 96',
-          'PCR amplicon tailed adapters 384'
+          'PCR amplicon tailed adapters 384',
+          'Sanger_tailed_artic_v1_96',
+          'Sanger_tailed_artic_v1_384'
         ],
         default_purposes: ['LTHR-384 RT', 'LTHR RT']
       ).build!
@@ -561,6 +568,14 @@ namespace :limber do
       },
       'GnT Picoplex' => {
         sequencing_list: base_without_hiseq
+      },
+      'pWGS-384' => {
+        sequencing_list: %w(
+          illumina_b_hiseq_x_paired_end_sequencing
+          illumina_htp_novaseq_6000_paired_end_sequencing
+          illumina_b_miseq_sequencing
+        ),
+        omit_library_templates: true
       }
     }
 
@@ -572,8 +587,10 @@ namespace :limber do
         Limber::Helper::TemplateConstructor.new(prefix: prefix,
                                                 catalogue: catalogue,
                                                 sequencing_keys: params[:sequencing_list]).build!
-        Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
-        Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
+        unless params[:omit_library_templates]
+          Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
+          Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
+        end
       end
 
       heron_catalogue = ProductCatalogue.find_or_create_by!(name: 'Heron')

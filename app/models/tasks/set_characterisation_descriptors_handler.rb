@@ -26,7 +26,7 @@ module Tasks::SetCharacterisationDescriptorsHandler
       request.lab_events << event
 
       unless request.asset.try(:resource)
-        EventSender.send_request_update(request.id, 'update', "Passed: #{@task.name}")
+        EventSender.send_request_update(request, 'update', "Passed: #{@task.name}")
       end
 
       if request.has_passed(@batch, @task) || request.failed?

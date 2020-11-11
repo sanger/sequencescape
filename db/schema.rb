@@ -1081,6 +1081,11 @@ ActiveRecord::Schema.define(version: 2020_10_30_154707) do
     t.integer "labware_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "pcr_cycles"
+    t.boolean "submit_for_sequencing"
+    t.integer "sub_pool"
+    t.integer "coverage"
+    t.decimal "diluent_volume", precision: 10, scale: 2
     t.index ["labware_id"], name: "fk_rails_2201f76983"
     t.index ["sti_type", "updated_at"], name: "index_receptacles_on_sti_type_and_updated_at"
     t.index ["updated_at"], name: "index_receptacles_on_updated_at"
@@ -1390,7 +1395,6 @@ ActiveRecord::Schema.define(version: 2020_10_30_154707) do
     t.boolean "control"
     t.boolean "empty_supplier_sample_name", default: false
     t.boolean "updated_by_manifest", default: false
-    t.boolean "migrated_consent_withdrawn_to_metadata", default: false, null: false
     t.integer "work_order_id"
     t.integer "container_id"
     t.integer "control_type"
