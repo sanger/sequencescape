@@ -22,7 +22,7 @@ class BarcodePrinter < ApplicationRecord
 
   delegate :printer_type_id, to: :barcode_printer_type
 
-  enum print_service: ['PMB', 'SPrint']
+  enum print_service: { 'PMB,' => 0, 'SPrint' => 1 }
 
   def plate384_printer?
     barcode_printer_type.name == '384 Well Plate'
@@ -44,7 +44,7 @@ class BarcodePrinter < ApplicationRecord
     'DEPRECATED'
   end
 
-  def self.verify(number)
+  def self.verify(_number)
     # service.verify(number)
     'DEPRECATED'
   end
