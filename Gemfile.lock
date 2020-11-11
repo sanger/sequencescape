@@ -479,7 +479,6 @@ GEM
     slack-notifier (2.3.2)
     spreadsheet (1.2.6)
       ruby-ole (>= 1.0)
-    sprint_client (0.0.9)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -640,7 +639,6 @@ DEPENDENCIES
   sinatra
   slack-notifier
   spreadsheet
-  sprint_client
   test-prof
   timecop
   traceroute

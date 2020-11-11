@@ -22,7 +22,6 @@ configatron.ssr_emails = ['ssr@example.com']
 configatron.authentication = ENV.fetch('AUTH', 'local')
 
 configatron.pmb_api = 'http://localhost:9292/v1'
-configatron.sprint_uri = 'http://sprint.psd.sanger.ac.uk/graphql'
 configatron.register_printers_automatically = true
 
 configatron.default_policy_text = 'https://www.example.com/'

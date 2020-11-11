@@ -644,7 +644,4 @@ Rails.application.routes.draw do
       get 'batches/:id', to: 'plate_picks#batches'
     end
   end
-
-  get 'sprint', to: 'sprint#show'
-  post 'sprint/action'
 end
