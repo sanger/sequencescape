@@ -43,4 +43,3 @@ sbin
 yarn-debug.log*
 .yarn-integrity
 *.json
-!config/sprint/label_templates/examples/*.json
