@@ -11,7 +11,7 @@ class BarcodePrinter < ApplicationRecord
   #   @return [String] The hostname of the printer, eg. d304bc
 
   belongs_to :barcode_printer_type
-  validates :barcode_printer_type, presence: true
+  validates :barcode_printer_type, :print_service, presence: true
   scope :include_barcode_printer_type, -> { includes(:barcode_printer_type) }
   scope :alphabetical, -> { order(:name) }
 
@@ -21,6 +21,8 @@ class BarcodePrinter < ApplicationRecord
   BarcodePrinterException = Class.new(ActiveRecord::RecordNotFound)
 
   delegate :printer_type_id, to: :barcode_printer_type
+
+  enum print_service: { 'PMB' => 0, 'SPrint' => 1 }
 
   def plate384_printer?
     barcode_printer_type.name == '384 Well Plate'
@@ -38,10 +40,12 @@ class BarcodePrinter < ApplicationRecord
   end
 
   def service
-    @service ||= self.class.service
+    # @service ||= self.class.service
+    'DEPRECATED'
   end
 
-  def self.verify(number)
-    service.verify(number)
+  def self.verify(_number)
+    # service.verify(number)
+    'DEPRECATED'
   end
 end
