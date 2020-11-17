@@ -161,11 +161,10 @@ class PlatePurpose < Purpose
     attributes[:size] ||= size
     attributes[:purpose] = self
     number = attributes.delete(:barcode)
-    construct_method = attributes.delete(:construct_method) || :construct!
     prefix = (attributes.delete(:barcode_prefix) || barcode_prefix).prefix
     attributes[:sanger_barcode] ||= { prefix: prefix, number: number }
     target_class.create_with_barcode!(attributes, &block).tap do |plate|
-      plate.wells.send(construct_method) unless do_not_create_wells
+      plate.wells.construct! unless do_not_create_wells
     end
   end
 
