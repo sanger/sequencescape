@@ -38,12 +38,45 @@ class Plate < Labware
   belongs_to :purpose, foreign_key: :plate_purpose_id
   has_many :wells, inverse_of: :plate, foreign_key: :labware_id do
     # Build empty wells for the plate.
-    def construct!
+    def legacy_construct!
       plate = proxy_association.owner
       plate.maps.in_row_major_order.ids.map do |location_id|
         { map_id: location_id }
       end.tap do |wells|
         plate.wells.create!(wells)
+      end
+    end
+
+    def intermediate_construct!
+      transaction do
+        plate = proxy_association.owner
+        plate.maps.in_row_major_order.ids.map do |location_id|
+          { map_id: location_id }
+        end.tap do |wells|
+          plate.wells.import(wells)
+          wells = plate.wells.select(:id)
+          well_type = Well.base_class.name
+          WellAttribute.import(wells.map { |well| { well_id: well.id } })
+          Uuid.import(wells.map { |well| { resource_id: well.id, resource_type: well_type, external_id: Uuid.generate_uuid } })
+          wells.map(&:add_to_transaction)
+        end
+      end
+    end
+
+    def construct!
+      transaction do
+        plate = proxy_association.owner
+        plate.maps.in_row_major_order.ids.map do |location_id|
+          { map_id: location_id }
+        end.tap do |wells|
+          plate.wells.import(wells)
+          ids = plate.wells.ids
+          well_type = Well.base_class.name
+          WellAttribute.import(ids.map { |well| { well_id: well } })
+          Uuid.import(ids.map { |well| { resource_id: well, resource_type: well_type, external_id: Uuid.generate_uuid } })
+          # wells.map(&:add_to_transaction)
+          ids.each { |id| Warren::QueueBroadcastMessage.new(class_name: 'Well', id: id).queue(Warren.handler) }
+        end
       end
     end
 
