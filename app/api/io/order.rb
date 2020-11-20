@@ -32,5 +32,7 @@ class ::Io::Order < ::Core::Io::Base
                      request_options_structured <=> request_options
 
                                            user <=  user
+
+                    autodetect_studies_projects <= autodetect_studies_projects
   ")
 end
