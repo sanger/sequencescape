@@ -10,7 +10,7 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
     }
   end
   
-  let(:uuids) { 6.length.times.map{ SecureRandom.uuid } }
+  let(:uuids) { 6.times.map{ SecureRandom.uuid } }
   let(:destination_plate) { create :plate }
   let(:plate1) { 
     subject_record('plate', BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, '000001', uuids[0]) 
@@ -28,7 +28,7 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
     subject_record('robot', BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, 'RB00001', uuids[4]) 
   }
   let(:plate3) {
-    subject_record('plate', BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, '000003', uuids[5]) 
+    subject_record('plate', BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE, '000003', uuids[5]) 
   }
   
   it 'is not directly instantiated' do
@@ -38,6 +38,25 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
   it 'cannot be created without robot' do
     props = {subjects: [plate1, plate2, sample1, sample2]}
     expect(described_class.new(seed: destination_plate, properties: props)).not_to be_valid
+  end
+
+  it 'can be created without destination plate' do
+    props = {subjects: [plate1, plate2, sample1, sample2, robot]}
+    instance = described_class.new(seed: destination_plate, properties: props)
+    expect(instance).to be_valid
+    expect(instance.subjects.size).to eq(6)
+    expect(instance.subjects.any?{|s| 
+      s.role_type == BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE
+    }).to be_truthy
+  end
+
+  it 'can be created with destination plate' do
+    props = {subjects: [plate1, plate2, sample1, sample2, robot, plate3]}
+    instance = described_class.new(seed: destination_plate, properties: props)
+    expect(instance.subjects.size).to eq(6)
+    expect(instance.subjects.any?{|s| 
+      s.role_type == BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE
+    }).to be_truthy
   end
   
   it 'cannot be created without source plates' do
@@ -75,6 +94,7 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
             }
           })
         end
+
         it 'includes all required subjects in the message' do
           event_info = JSON.parse(instance.to_json)
           expect(event_info['event'].has_key?('subjects')).to be_truthy
@@ -82,5 +102,6 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
         end
       end
     end
+
   end
 end
