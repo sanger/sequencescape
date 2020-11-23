@@ -101,6 +101,14 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
           expect(event_info['event']['subjects'].size).to eq(6)
         end
       end
+
+      context '#default_destination_plate_subject' do
+        it 'can generate a default destination plate subject' do
+          expect(instance.default_destination_plate_subject).to include({
+            uuid: destination_plate.uuid
+          })
+        end
+      end
     end
 
   end
