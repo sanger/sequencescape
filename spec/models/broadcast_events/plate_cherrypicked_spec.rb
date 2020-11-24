@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event: true do
+RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event: true, heron_events: true do
   def subject_record(subject_type, role_type, friendly_name, uuid)
     {
       "role_type": role_type,

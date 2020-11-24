@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Event, type: :model, heron: true do
+RSpec.describe Heron::Factories::Event, type: :model, heron: true, heron_events: true do
   let(:plate) { create :plate }
   let(:subjects) do
     [

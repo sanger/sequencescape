@@ -1,15 +1,13 @@
 require 'rails_helper'
 # require 'broadcast_event/helpers/external_subjects'
 
-RSpec.describe BroadcastEvent::Helpers::ExternalSubjects do
+RSpec.describe BroadcastEvent::Helpers::ExternalSubjects, heron_events: true do
   let(:testing_event_class) do
-    Class.new do
+    Class.new(BroadcastEvent) do
       include BroadcastEvent::Helpers::ExternalSubjects
     end
   end
-
   let(:labware) { create :labware }
-
   let(:sub1) do
     {
       "role_type": 'sender',
@@ -35,13 +33,17 @@ RSpec.describe BroadcastEvent::Helpers::ExternalSubjects do
     }
   end
   let(:subjects_definition) { [sub1, sub2, sub3] }
-
   let(:instance) do
     testing_event_class.new(seed: labware, properties: { subjects: subjects_definition })
   end
 
+  setup do
+    stub_const('TestingClass', testing_event_class)
+  end
+
   it 'can instantiate the class' do
-    expect(testing_event_class.new(seed: labware)).to be_valid
+    inst = testing_event_class.new(seed: labware)
+    expect(inst).to be_valid
   end
 
   it 'returns [] when no subject properties defined' do
