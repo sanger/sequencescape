@@ -43,9 +43,7 @@ module Heron
 
           if @params[:events]
             events = build_events(@plate)
-            events.each do |event|
-              event.save
-            end
+            events.each(&:save)
           end
         end
         true

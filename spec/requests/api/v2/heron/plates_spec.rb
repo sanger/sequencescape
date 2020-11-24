@@ -276,24 +276,25 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
           }
         }
       end
-      let(:subjects) {
+      let(:subjects) do
         [
-          build(:event_subject, 
-            role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, 
-            subject_type: 'plate'),
-          build(:event_subject, 
-            role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 
-            subject_type: 'sample'),
-          build(:event_subject, 
-            role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, 
-            subject_type: 'robot')                  
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+                subject_type: 'plate'),
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
+                subject_type: 'sample'),
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE,
+                subject_type: 'robot')
         ]
-      }
-      let(:events) {
-        [{'event': {
+      end
+      let(:events) do
+        [{ 'event': {
           'event_type': BroadcastEvent::PlateCherrypicked::EVENT_TYPE,
-          'subjects': subjects}}]
-      }
+          'subjects': subjects
+        } }]
+      end
 
       it_behaves_like 'a successful plate creation'
 

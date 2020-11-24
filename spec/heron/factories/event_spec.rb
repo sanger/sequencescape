@@ -4,25 +4,26 @@ require 'rails_helper'
 
 RSpec.describe Heron::Factories::Event, type: :model, heron: true do
   let(:plate) { create :plate }
-  let(:subjects) {
+  let(:subjects) do
     [
-      build(:event_subject, 
-        role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, 
-        subject_type: 'plate'),
-      build(:event_subject, 
-        role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 
-        subject_type: 'sample'),
-      build(:event_subject, 
-        role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, 
-        subject_type: 'robot')                  
+      build(:event_subject,
+            role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+            subject_type: 'plate'),
+      build(:event_subject,
+            role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
+            subject_type: 'sample'),
+      build(:event_subject,
+            role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE,
+            subject_type: 'robot')
     ]
-  }
+  end
   let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
-  let(:params) {
-    {'event': {
+  let(:params) do
+    { 'event': {
       'event_type': event_type,
-      'subjects': subjects}}
-  }
+      'subjects': subjects
+    } }
+  end
 
   it 'is valid with all relevant attributes' do
     event = described_class.new(params, plate)
@@ -39,33 +40,34 @@ RSpec.describe Heron::Factories::Event, type: :model, heron: true do
     expect(event).not_to be_valid
   end
 
-  context 'for event type BroadcastEvent::PlateCherrypicked::EVENT_TYPE' do
+  context 'with event type BroadcastEvent::PlateCherrypicked::EVENT_TYPE' do
     context 'when missing one of the required subjects' do
-      let(:subjects) {
+      let(:subjects) do
         [
-          build(:event_subject, 
-            role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, 
-            subject_type: 'plate'),
-          build(:event_subject, 
-            role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 
-            subject_type: 'sample'),
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+                subject_type: 'plate'),
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
+                subject_type: 'sample')
         ]
-      }    
+      end
+
       it 'is not valid' do
         event = described_class.new(params, plate)
-        expect(event).not_to be_valid  
+        expect(event).not_to be_valid
       end
     end
   end
 
-  context 'for any other event type' do
+  context 'when any other event type' do
     let(:event_type) { 'asdfasdf' }
+
     it 'is not valid' do
       event = described_class.new(params.except(:event), nil)
-      expect(event).not_to be_valid  
+      expect(event).not_to be_valid
     end
   end
-
 
   describe '#save' do
     it 'persists the event if it is valid' do
@@ -81,6 +83,5 @@ RSpec.describe Heron::Factories::Event, type: :model, heron: true do
         event.save
       end.not_to change(BroadcastEvent, :count)
     end
-
   end
 end

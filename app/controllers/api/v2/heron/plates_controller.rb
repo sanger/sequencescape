@@ -33,7 +33,7 @@ module Api
         def params_for_plate
           params.require(:data).require(:attributes).permit(
             :barcode, :purpose_uuid, :study_uuid,
-            events: [],
+            events: [{ event: {} }],
             wells: {}
           )
         end

@@ -1,41 +1,42 @@
 require 'rails_helper'
 RSpec.describe Heron::Factories::Concerns::Eventful do
-  class MyTest
-    include ActiveModel::Model
-    include Heron::Factories::Concerns::Eventful
+  let(:my_test_class) do
+    Class.new do
+      include ActiveModel::Model
+      include Heron::Factories::Concerns::Eventful
 
-    def initialize(params)
-      @params = params
+      def initialize(params)
+        @params = params
+      end
     end
   end
 
   let(:plate) { create :plate }
-  let(:subjects) {
+  let(:subjects) do
     [
-      build(:event_subject, 
-        role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, 
-        subject_type: 'plate'),
-      build(:event_subject, 
-        role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 
-        subject_type: 'sample'),
-      build(:event_subject, 
-        role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, 
-        subject_type: 'robot')                  
+      build(:event_subject,
+            role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+            subject_type: 'plate'),
+      build(:event_subject,
+            role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
+            subject_type: 'sample'),
+      build(:event_subject,
+            role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE,
+            subject_type: 'robot')
     ]
-  }
+  end
   let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
-  let(:event) {
-    {'event': {
+  let(:event) do
+    { 'event': {
       'event_type': event_type,
-      'subjects': subjects}}
-  }
+      'subjects': subjects
+    } }
+  end
 
-  
-  context '#build_events' do
+  describe '#build_events' do
     it 'returns a list of events' do
-      instance = MyTest.new({events: [event]})
+      instance = my_test_class.new({ events: [event] })
       expect(instance.build_events(plate).length).to eq(1)
     end
   end
-
 end

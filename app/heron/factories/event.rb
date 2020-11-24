@@ -5,8 +5,8 @@ module Heron
       include ActiveModel::Model
 
       EVENT_CLASSES = {
-        "#{BroadcastEvent::PlateCherrypicked::EVENT_TYPE}" => BroadcastEvent::PlateCherrypicked
-      }
+        BroadcastEvent::PlateCherrypicked::EVENT_TYPE.to_s => BroadcastEvent::PlateCherrypicked
+      }.freeze
       validates :broadcast_event, presence: true
       validate :check_broadcast_event
 
@@ -17,6 +17,7 @@ module Heron
 
       def broadcast_event
         return unless event_class
+
         @broadcast_event ||= event_class.new(seed: @seed, properties: @params.dig(:event))
       end
 
@@ -27,9 +28,8 @@ module Heron
       def check_broadcast_event
         return if errors.count.positive?
         return unless broadcast_event
-        unless broadcast_event.valid?
-          broadcast_event.errors.each {|k,v| errors.add(k,v) }
-        end
+
+        broadcast_event.errors.each { |k, v| errors.add(k, v) } unless broadcast_event.valid?
       end
 
       def save
@@ -41,8 +41,6 @@ module Heron
         end
         true
       end
-
-
     end
   end
 end

@@ -10,7 +10,6 @@ FactoryBot.define do
     subject_type { 'a_subject_type' }
     friendly_name { 'a_friendly_name' }
     uuid { SecureRandom.uuid }
-    initialize_with { attributes } 
+    initialize_with { attributes }
   end
-
 end
