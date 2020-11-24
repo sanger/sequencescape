@@ -149,5 +149,37 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
         end
       end
     end
+
+    context 'when declaring events' do
+      let(:params) do
+        { barcode: barcode, purpose_uuid: purpose.uuid, events: [event] }
+      end
+      let(:subjects) {
+        [
+          build(:event_subject, 
+            role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, 
+            subject_type: 'plate'),
+          build(:event_subject, 
+            role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 
+            subject_type: 'sample'),
+          build(:event_subject, 
+            role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, 
+            subject_type: 'robot')                  
+        ]
+      }
+      let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
+      let(:event) {
+        {'event': {
+          'event_type': event_type,
+          'subjects': subjects}}
+      }
+    
+      it 'can persist the events' do
+        expect do
+          plate_factory.save
+        end.to change(BroadcastEvent, :count).by(1)
+
+      end
+    end
   end
 end

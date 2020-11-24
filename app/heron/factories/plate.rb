@@ -9,6 +9,7 @@ module Heron
       include Concerns::CoordinatesSupport
       include Concerns::RecipientsCoordinates
       include Concerns::Contents
+      include Concerns::Eventful
 
       attr_accessor :plate, :purpose
 
@@ -39,6 +40,13 @@ module Heron
           Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
 
           create_contents!
+
+          if @params[:events]
+            events = build_events(@plate)
+            events.each do |event|
+              event.save
+            end
+          end
         end
         true
       end

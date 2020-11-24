@@ -252,5 +252,54 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
         end
       end
     end
+
+    context 'when providing events' do
+      let(:study) { create(:study) }
+      let!(:sample) { create(:sample) }
+      let(:wells) do
+        {
+          'A01': { 'content': { 'phenotype': 'A phenotype' } },
+          'B01': { 'content': { 'sample_uuid': sample.uuid } }
+        }
+      end
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'plates',
+            'attributes' => {
+              'barcode' => barcode,
+              'study_uuid' => study.uuid,
+              'purpose_uuid' => purpose.uuid,
+              'wells' => wells,
+              'events' => events
+            }
+          }
+        }
+      end
+      let(:subjects) {
+        [
+          build(:event_subject, 
+            role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, 
+            subject_type: 'plate'),
+          build(:event_subject, 
+            role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 
+            subject_type: 'sample'),
+          build(:event_subject, 
+            role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, 
+            subject_type: 'robot')                  
+        ]
+      }
+      let(:events) {
+        [{'event': {
+          'event_type': BroadcastEvent::PlateCherrypicked::EVENT_TYPE,
+          'subjects': subjects}}]
+      }
+
+      it_behaves_like 'a successful plate creation'
+
+      it 'creates the event for the plate provided' do
+        expect(BroadcastEvent::PlateCherrypicked.where(seed: plate).count).to eq(1)
+      end
+    end
   end
 end

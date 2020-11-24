@@ -1,4 +1,6 @@
 class BroadcastEvent::PlateCherrypicked < BroadcastEvent
+  EVENT_TYPE = 'lh_beckman_cp_destination_created'
+
   ROBOT_ROLE_TYPE = 'robot'
   SOURCE_PLATES_ROLE_TYPE = 'cherrypicking_source'
   SAMPLE_ROLE_TYPE = 'sample'
@@ -6,7 +8,7 @@ class BroadcastEvent::PlateCherrypicked < BroadcastEvent
 
   include BroadcastEvent::Helpers::ExternalSubjects
 
-  set_event_type 'lh_beckman_cp_destination_created'
+  set_event_type EVENT_TYPE
 
   seed_class Plate
   seed_subject :plate 
@@ -52,6 +54,7 @@ class BroadcastEvent::PlateCherrypicked < BroadcastEvent
 
   def _add_destination_plate
     return unless properties
+    return unless seed
     unless has_subjects_with_role_type?(DESTINATION_PLATE_ROLE_TYPE)
       properties[:subjects] = properties[:subjects].push(default_destination_plate_subject)
       @subjects = build_subjects

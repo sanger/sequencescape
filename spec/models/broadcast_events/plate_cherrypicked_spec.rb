@@ -30,6 +30,15 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
   let(:plate3) {
     subject_record('plate', BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE, '000003', uuids[5]) 
   }
+
+  def subject_record(subject_type, role_type, friendly_name, uuid)
+    {
+      "role_type": role_type,
+      "subject_type": subject_type,
+      "friendly_name": friendly_name,
+      "uuid": uuid
+    }
+  end
   
   it 'is not directly instantiated' do
     expect(described_class.new).not_to be_valid
