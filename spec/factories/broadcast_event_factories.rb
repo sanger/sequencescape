@@ -6,6 +6,7 @@ FactoryBot.define do
   end
 
   factory :event_subject, class: Hash do
+    skip_create
     role_type { 'a_role_type' }
     subject_type { 'a_subject_type' }
     friendly_name { 'a_friendly_name' }
