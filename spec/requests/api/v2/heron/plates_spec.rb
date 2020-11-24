@@ -301,6 +301,27 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true, heron
       it 'creates the event for the plate provided' do
         expect(BroadcastEvent::PlateCherrypicked.where(seed: plate).count).to eq(1)
       end
+
+      context 'when missing required subjects in the events part' do
+        let(:subjects) do
+          [
+            build(:event_subject,
+                  role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+                  subject_type: 'plate'),
+            build(:event_subject,
+                  role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE,
+                  subject_type: 'robot')
+          ]
+        end
+
+        it_behaves_like 'a failed plate creation'
+
+        it 'displays the error' do
+          expect(error_messages).to eq([
+            "Samples is a required subject needed for the event 'lh_beckman_cp_destination_created'"
+          ])
+        end
+      end
     end
   end
 end

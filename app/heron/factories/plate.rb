@@ -34,6 +34,7 @@ module Heron
       def save
         return false unless valid?
 
+        @output_result = true
         ActiveRecord::Base.transaction do
           @plate = purpose.create!
 
@@ -43,10 +44,13 @@ module Heron
 
           if @params[:events]
             events = build_events(@plate)
-            events.each(&:save)
+            events.each do |event|
+              rollback_for_events(events) unless event.valid?
+              event.save
+            end
           end
         end
-        true
+        @output_result
       end
 
       def sample_study_names

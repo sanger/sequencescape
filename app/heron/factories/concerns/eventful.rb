@@ -18,6 +18,20 @@ module Heron
 
           @params[:events]
         end
+
+        def add_all_errors_from_events(events)
+          events.each do |event|
+            event.errors.each do |k, v|
+              errors.add(k, v)
+            end
+          end
+        end
+
+        def rollback_for_events(events)
+          @output_result = false
+          add_all_errors_from_events(events)
+          raise ActiveRecord::Rollback
+        end
       end
     end
   end
