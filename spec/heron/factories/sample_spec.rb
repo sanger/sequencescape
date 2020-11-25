@@ -212,6 +212,27 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
         end
       end
 
+      context 'when providing replace_uuid' do
+        let(:replaced_uuid) { SecureRandom.uuid }
+
+        context 'when the uuid does not exist already' do
+          it 'creates a new sample using that uuid' do
+            factory = described_class.new(study: study, uuid: replaced_uuid)
+            sample = factory.create
+            expect(sample.uuid).to eq(replaced_uuid)
+          end
+        end
+
+        context 'when the uuid already exist' do
+          let(:sample) { create :sample }
+
+          it 'will be invalid if providing any other extra attributes' do
+            factory = described_class.new(study: study, uuid: sample.uuid)
+            expect { factory.create }.to raise_error(StandardError)
+          end
+        end
+      end
+
       context 'when providing other arguments' do
         it 'updates other sample attributes' do
           factory = described_class.new(study: study, control: true)

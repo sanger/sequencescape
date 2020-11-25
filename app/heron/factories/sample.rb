@@ -22,7 +22,7 @@ module Heron
       end
 
       def sample_keys
-        (@params.keys.map(&:to_sym) - %i[sample_uuid study study_uuid aliquot])
+        (@params.keys.map(&:to_sym) - %i[sample_uuid study study_uuid aliquot uuid])
       end
 
       ##
@@ -69,10 +69,23 @@ module Heron
       def create_sample!
         return sample if sample
 
-        @sample = ::Sample.create!(params_for_sample_creation) do |sample|
+        @sample = ::Sample.create!(params_for_sample_creation.merge(uuid_object: Uuid.new)) do |sample|
+          replace_uuid(sample) if @params[:uuid]
           sample.sample_metadata.update!(params_for_sample_metadata_table)
           sample.studies << study
         end
+      end
+
+      def replace_uuid(sample)
+        handle_uuid_duplication(@params[:uuid]) if Uuid.with_external_id(@params[:uuid]).count.positive?
+        sample.lazy_uuid_generation = true
+        sample.uuid_object.update!(resource: sample, external_id: @params[:uuid]) if @params[:uuid]
+      end
+
+      def handle_uuid_duplication(uuid)
+        msg = "Sample with uuid #{uuid} already exists"
+        errors.add(:uuid, msg)
+        raise StandardError, msg
       end
 
       def unexisting_column_keys
