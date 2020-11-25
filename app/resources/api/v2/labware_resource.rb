@@ -15,6 +15,8 @@ module Api
         records.joins(:purpose).where(plate_purposes: { name: value })
       end)
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
+      filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
     end
   end
 end
