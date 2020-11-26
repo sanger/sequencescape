@@ -13,8 +13,14 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
     expect(subject).to have_attribute :uuid
     expect(subject).to have_attribute :name
     expect(subject).to have_attribute :used_tags
+    expect(subject).to have_attribute :state
+    expect(subject).to have_attribute :created_at
+    expect(subject).to have_attribute :updated_at
     expect(subject).not_to have_updatable_field(:id)
     expect(subject).not_to have_updatable_field(:uuid)
+    expect(subject).not_to have_updatable_field(:state)
+    expect(subject).not_to have_updatable_field(:created_at)
+    expect(subject).not_to have_updatable_field(:updated_at)
     expect(subject).not_to have_updatable_field :used_tags
   end
 

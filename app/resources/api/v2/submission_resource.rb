@@ -16,8 +16,15 @@ module Api
       # Associations:
 
       # Attributes
+      # CAUTION:
+      # See app/controllers/api/v2/submissions_controller.rb
+      # for field filtering, otherwise newly added attributes
+      # will not show by default.
       attribute :uuid, readonly: true
       attribute :name, readonly: true
+      attribute :state, readonly: true
+      attribute :created_at, readonly: true
+      attribute :updated_at, readonly: true
       attribute :used_tags, readonly: true
 
       # Filters
