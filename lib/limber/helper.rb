@@ -41,10 +41,9 @@ module Limber::Helper
         product_line: ProductLine.find_or_create_by!(name: @product_line),
         request_purpose: :standard,
         for_multiplexing: @for_multiplexing
-      ).find_or_create_by!(key: key) do |rt|
-        rt.acceptable_plate_purposes = Purpose.where(name: @default_purposes)
-      end
+      ).find_or_create_by!(key: key)
 
+      rt.acceptable_plate_purposes = Purpose.where(name: @default_purposes)
       rt_lts = rt.library_types.pluck(:name)
       @library_types.each do |name|
         rt.library_types << LibraryType.find_or_create_by!(name: name) unless rt_lts.include?(name)
