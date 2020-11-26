@@ -135,6 +135,7 @@ module ModelExtensions::Order
         json['fragment_size_required', 'to']   = attributes[:fragment_size_required_to].try(:to_i)
         json['pcr_cycles']                     = attributes[:pcr_cycles].try(:to_i)
         json['bait_library']                   = attributes[:bait_library_name]
+        json['primer_panel_name']              = attributes[:primer_panel_name]
         json['sequencing_type']                = attributes[:sequencing_type]
         json['insert_size']                    = attributes[:insert_size].try(:to_i)
         request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
@@ -153,6 +154,7 @@ module ModelExtensions::Order
         attributes['fragment_size_required_to']   = json['fragment_size_required', 'to'] || json['fragment_size_required_to']
         attributes['pcr_cycles']                  = json['pcr_cycles']
         attributes[:bait_library_name]            = json['bait_library']
+        attributes[:primer_panel_name]            = json['primer_panel_name']
         attributes[:sequencing_type]              = json['sequencing_type']
         attributes[:insert_size]                  = json['insert_size']
         request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
