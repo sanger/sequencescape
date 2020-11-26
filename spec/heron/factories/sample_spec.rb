@@ -125,6 +125,17 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
         expect(sample).to eq(sample2)
       end
 
+      it 'creates one sample' do
+        factory = described_class.new(study: study)
+        expect { factory.create }.to change(Sample, :count).by(1)
+      end
+
+      it 'creates one uuid for the sample' do
+        factory = described_class.new(study: study)
+        sample = factory.create
+        expect(Uuid.where(resource: sample).count).to eq(1)
+      end
+
       context 'when providing sample_uuid' do
         let(:sample) { create(:sample) }
 
@@ -220,6 +231,12 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
             factory = described_class.new(study: study, uuid: replaced_uuid)
             sample = factory.create
             expect(sample.uuid).to eq(replaced_uuid)
+          end
+
+          it 'only creates one uuid' do
+            factory = described_class.new(study: study, uuid: replaced_uuid)
+            sample = factory.create
+            expect(Uuid.where(resource: sample).count).to eq(1)
           end
         end
 

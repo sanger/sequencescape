@@ -68,6 +68,7 @@ module Heron
 
       def create_sample!
         return sample if sample
+
         @sample = ::Sample.create!(params_for_sample_creation) do |sample|
           replace_uuid(sample) if @params[:uuid]
           sample.sample_metadata.update!(params_for_sample_metadata_table)
