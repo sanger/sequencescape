@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # This file was automatically generated via `rails g record_loader`
 
 # RecordLoader handles automatic population and updating of database records
