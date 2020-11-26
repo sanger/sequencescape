@@ -11,7 +11,7 @@ class BroadcastEvent::PlateCherrypicked < BroadcastEvent
   EVENT_TYPE = 'lh_beckman_cp_destination_created'.freeze
 
   ROBOT_ROLE_TYPE = 'robot'.freeze
-  SOURCE_PLATES_ROLE_TYPE = 'cherrypicking_source'.freeze
+  SOURCE_PLATES_ROLE_TYPE = 'cherrypicking_source_labware'.freeze
   SAMPLE_ROLE_TYPE = 'sample'.freeze
   DESTINATION_PLATE_ROLE_TYPE = 'cherrypicking_destination_labware'.freeze
 
