@@ -29,7 +29,16 @@ class Labware < Asset
   has_many :requests_as_target, through: :receptacles
   has_many :transfer_requests_as_source, through: :receptacles
   has_many :transfer_requests_as_target, through: :receptacles
+
+  # Submissions in progress for the labware. Found by looking at those associated
+  # with the transfer requests into the receptacles. Be a little cautious using this,
+  # as it will not handle cross-submission pools, but is better for historical
+  # data.
   has_many :submissions, through: :receptacles
+
+  # Direct submissions are those made on the plate itself, and are found via
+  # the orders associated with the well.s
+  has_many :direct_submissions, -> { distinct }, through: :receptacles
   has_many :asset_groups, through: :receptacles
 
   # The requests which were being processed to make the plate/tube

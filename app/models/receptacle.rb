@@ -95,9 +95,14 @@ class Receptacle < Asset
   has_many :submitted_assets, foreign_key: :asset_id # Created to associate an asset with an order
   has_many :orders, through: :submitted_assets
   has_many :ordered_studies, through: :orders, source: :study
+  has_many :direct_submissions, ->() { distinct }, through: :orders, source: :submission
 
   has_many :tags, through: :aliquots
 
+  # Historically this used to be the only way to jump up to the submission without
+  # going via stock-wells. However, newer aliquots are associated with the request.
+  # This newer approach better handles cross-submission pooling, such as that used
+  # in the GBS pipelines.
   has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
 
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
