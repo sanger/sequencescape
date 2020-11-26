@@ -9,6 +9,8 @@ class ProgramsValidator < ActiveModel::EachValidator
   PROGRAMS_PARAMS = %w[name duration].freeze
 
   def validate_each(record, attribute, value)
+    return unless check_hash(record, attribute, value)
+
     value.each do |program, params|
       record.errors.add attribute, "invalid label #{program}" unless program.in?(PROGRAMS_LABELS)
       params.each do |key, val|
@@ -19,6 +21,13 @@ class ProgramsValidator < ActiveModel::EachValidator
   end
 
   private
+
+  def check_hash(record, attribute, value)
+    return true if value.is_a?(Hash)
+
+    record.errors.add attribute, "is a #{value.class.name}, not a hash"
+    false
+  end
 
   def validate_duration(record, attribute, val)
     record.errors.add attribute, 'duration must be a number' if !val.nil? && !valid_number?(val)
