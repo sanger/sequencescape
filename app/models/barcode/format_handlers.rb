@@ -300,7 +300,7 @@ module Barcode::FormatHandlers
   # Expected formats:
   # HT-nnnnnn where n is a digit.
   # Numeric component will be at least 6 digits long, but may eventually hit more
-  class HighThroughputCherrypick < BaseRegExBarcode
+  class HeronTailed < BaseRegExBarcode
     self.format = /\A(?<prefix>HT)-(?<number>[0-9]{6,})\z/
   end
 end

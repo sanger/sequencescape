@@ -121,8 +121,8 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::HeronTailed do
-    it_has_a_valid_barcode 'HT-2107834', number: 2107834
-    it_has_a_valid_barcode 'HT-111111', number: 111111
+    it_has_a_valid_barcode 'HT-2107834', number: 2107834, prefix: 'HT'
+    it_has_a_valid_barcode 'HT-111111', number: 111111, prefix: 'HT'
     it_has_an_invalid_barcode '12345678912'
     it_has_an_invalid_barcode 'AB1234567'
     it_has_an_invalid_barcode '002107834 '
