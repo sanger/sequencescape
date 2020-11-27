@@ -120,7 +120,7 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode '002107834 '
   end
 
-  describe Barcode::FormatHandlers::HighThroughputCherrypick do
+  describe Barcode::FormatHandlers::HeronTailed do
     it_has_a_valid_barcode 'HT-2107834', number: 2107834
     it_has_a_valid_barcode 'HT-111111', number: 111111
     it_has_an_invalid_barcode '12345678912'
