@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# Validates the program attribute for PrimerPanel
+# A program identifies the PCR program that should be operated at different
+# stages of the pipeline (Stages listed in PROGRAMS_LABELS) and the expected
+# duration of that step.
 class ProgramsValidator < ActiveModel::EachValidator
   # attribute should be of the form:
   # {'pcr 1' => { 'name' => "pcr1 program", 'duration' => 45 },

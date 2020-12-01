@@ -30,19 +30,21 @@ class Labware < Asset
   has_many :transfer_requests_as_source, through: :receptacles
   has_many :transfer_requests_as_target, through: :receptacles
 
-  # Submissions in progress for the labware. Found by looking at those associated
-  # with the transfer requests into the receptacles. Be a little cautious using this,
-  # as it will not handle cross-submission pools, but is better for historical
-  # data.
+  # @deprecated in_progress_submissions maintains the same behaviour as this,
+  # while filtering out duplicate submissions. However, neither this association
+  # nor in_progress_submissions handle cross-submission pools
   has_many :submissions, through: :receptacles
 
   # Direct submissions are those made on the plate itself, and are found via
-  # the orders associated with the well.s
+  # the orders associated with the wells.
   has_many :direct_submissions, -> { distinct }, through: :receptacles
   has_many :asset_groups, through: :receptacles
 
-  # The requests which were being processed to make the plate/tube
-  # This should probably be switched to going through aliquots, but not 100% certain that it wont cause side effects
+  # The submissions which were being processed to make the plate/tube, in
+  # contrast to direct_submissions, which is work that the plate feeds into.
+  # This should probably be switched to going through aliquots, but not 100%
+  # certain that it wont cause side effects.
+  # History aliquots are currently lacking the request_id
   # Might just be safer to wait until we've moved off onto the new api
   has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
 

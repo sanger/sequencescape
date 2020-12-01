@@ -12,8 +12,8 @@ RSpec.describe RecordLoader::PrimerPanelLoader, type: :model, loader: true do
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/primer_panels') }
 
-  context 'with two_entry_example selected' do
-    let(:selected_files) { 'two_entry_example' }
+  context 'with primer_panels_basic selected' do
+    let(:selected_files) { 'primer_panels_basic' }
     let(:expected_attributes) do
       {
         name: 'Unique attribute',

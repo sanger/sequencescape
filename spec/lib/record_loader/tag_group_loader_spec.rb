@@ -16,8 +16,8 @@ RSpec.describe RecordLoader::TagGroupLoader, type: :model, loader: true do
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/tag_groups') }
 
-  context 'with two_entry_example selected' do
-    let(:selected_files) { 'two_entry_example' }
+  context 'with tag_groups_basic selected' do
+    let(:selected_files) { 'tag_groups_basic' }
     let(:expected_attributes) do
       {
         name: 'Tag Group 1',

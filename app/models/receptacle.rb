@@ -101,8 +101,12 @@ class Receptacle < Asset
 
   # Historically this used to be the only way to jump up to the submission without
   # going via stock-wells. However, newer aliquots are associated with the request.
-  # This newer approach better handles cross-submission pooling, such as that used
-  # in the GBS pipelines.
+  # This newer approach (going via aliquot) better handles cross-submission pooling,
+  # such as that used in the GBS pipelines.
+  # There is currently no direct replacement for this association using the new approach
+  # however if you wished to add one:
+  # has_many :aliquot_requests, through: :aliquots, source: :request
+  # has_many :aliquot_submissions, through: :aliquot_requests, source: :submission
   has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
 
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
