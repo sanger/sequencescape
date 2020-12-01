@@ -1,0 +1,25 @@
+---
+# Add entries to this file to generate them automatically upon running
+# rake record_loader:all or rake record_loader:<%= underscore %>
+# If you want entries which are only created in development mode then simply
+# create a file in this directory ending in '.dev.yml'
+# You can add as many additional .yml files to this directory as you wish.
+# Example:
+Dummy Panel:
+  snp_count: 20
+  programs:
+    pcr 1:
+      name: Dummy_1
+      duration: 10
+    pcr 2:
+      name: Dummy_2
+      duration: 20
+nCoV-2019/V3/B:
+  snp_count: 98
+  programs:
+    pcr 1:
+      name:
+      duration: '60'
+    pcr 2:
+      name:
+      duration: '60'

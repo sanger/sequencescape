@@ -1,0 +1,138 @@
+---
+'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)':
+  :tag_group_name: Sanger_168tags - 10 mer tags
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+Illumina pipeline tagging:
+  :tag_group_name: Sanger_168tags - 10 mer tags
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+'NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)':
+  :tag_group_name: NEXTflex-96 barcoded adapters
+  :direction_algorithm: TagLayout::InRows
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+PF_adapters_UDI_96_A:
+  :tag_group_name: PF_adapters_UDI_96_A_i7
+  :tag2_group_name: PF_adapters_UDI_96_A_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+PF_adapters_UDI_96_B:
+  :tag_group_name: PF_adapters_UDI_96_B_i7
+  :tag2_group_name: PF_adapters_UDI_96_B_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+PF_adapters_UDI_96_C:
+  :tag_group_name: PF_adapters_UDI_96_C_i7
+  :tag2_group_name: PF_adapters_UDI_96_C_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+PF_adapters_UDI_96_D:
+  :tag_group_name: PF_adapters_UDI_96_D_i7
+  :tag2_group_name: PF_adapters_UDI_96_D_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+hWGS and RNAseq UDI tag layout v3:
+  :tag_group_name: hWGS and RNAseq i7 UDI tag group v3
+  :tag2_group_name: hWGS and RNAseq i5 UDI tag group v3
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+pWGS UDI tag layout v2 A:
+  :tag_group_name: pWGS i7 UDI tag group v2 A
+  :tag2_group_name: pWGS i5 UDI tag group v2 A
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+pWGS UDI tag layout v2 B:
+  :tag_group_name: pWGS i7 UDI tag group v2 B
+  :tag2_group_name: pWGS i5 UDI tag group v2 B
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+pWGS UDI tag layout v2 C:
+  :tag_group_name: pWGS i7 UDI tag group v2 C
+  :tag2_group_name: pWGS i5 UDI tag group v2 C
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+pWGS UDI tag layout v2 D:
+  :tag_group_name: pWGS i7 UDI tag group v2 D
+  :tag2_group_name: pWGS i5 UDI tag group v2 D
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+GbS Tag Set A:
+  :tag_group_name: Sanger_168tags - 10 mer tags
+  :tag2_group_name: Dual Index Tag2 sequences
+  :direction_algorithm: TagLayout::InColumnsThenRows
+  :walking_algorithm: TagLayout::Quadrants
+GbS Tag Set B:
+  :tag_group_name: Sanger_168tags - 10 mer tags
+  :tag2_group_name: Dual Index Tag2 sequences set B
+  :direction_algorithm: TagLayout::InColumnsThenRows
+  :walking_algorithm: TagLayout::Quadrants
+GbS Tag Set C:
+  :tag_group_name: Sanger_168tags - 10 mer tags
+  :tag2_group_name: Dual Index Tag2 sequences set C
+  :direction_algorithm: TagLayout::InColumnsThenRows
+  :walking_algorithm: TagLayout::Quadrants
+GbS Tag Set D:
+  :tag_group_name: Sanger_168tags - 10 mer tags
+  :tag2_group_name: Dual Index Tag2 sequences set D
+  :direction_algorithm: TagLayout::InColumnsThenRows
+  :walking_algorithm: TagLayout::Quadrants
+384sc:
+  :tag_group_name: sc384_i7
+  :tag2_group_name: sc384_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TSRNAhWGS_UDI96:
+  :tag_group_name: TS_RNAhWGS_UDI96_i7
+  :tag2_group_name: TS_RNAhWGS_UDI96_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TSISC_UDI96:
+  :tag_group_name: TS_ISC_UDI96_i7
+  :tag2_group_name: TS_ISC_UDI96_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TSsc384:
+  :tag_group_name: TS_sc384_i7
+  :tag2_group_name: TS_sc384_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TS_pWGSA_UDI96:
+  :tag_group_name: TS_pWGSA_UDI96_i7
+  :tag2_group_name: TS_pWGSA_UDI96_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TS_pWGSB_UDI96:
+  :tag_group_name: TS_pWGSB_UDI96_i7
+  :tag2_group_name: TS_pWGSB_UDI96_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TS_pWGSC_UDI96:
+  :tag_group_name: TS_pWGSC_UDI96_i7
+  :tag2_group_name: TS_pWGSC_UDI96_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TS_pWGSD_UDI96:
+  :tag_group_name: TS_pWGSD_UDI96_i7
+  :tag2_group_name: TS_pWGSD_UDI96_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+IDT for Illumina UDI v1:
+  :tag_group_name: IDT for Illumina i7 UDI v1
+  :tag2_group_name: IDT for Illumina i5 UDI v1
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+PF_adapters_UDI_96_B_ROWS:
+  :tag_group_name: PF_adapters_UDI_96_B_i7
+  :tag2_group_name: PF_adapters_UDI_96_B_i5
+  :direction_algorithm: TagLayout::InRows
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TS_pWGSA_UDI96v2:
+  :tag_group_name: pWGSA_UDI_tempi7s
+  :tag2_group_name: pWGSA_UDI_tempi5s
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+IDT for Illumina v1 - 384 Quadrant:
+  :tag_group_name: IDT for Illumina i7 UDI v1
+  :tag2_group_name: IDT for Illumina i5 UDI v1
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::Quadrants

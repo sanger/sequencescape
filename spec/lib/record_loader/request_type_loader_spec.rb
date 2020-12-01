@@ -12,8 +12,8 @@ RSpec.describe RecordLoader::RequestTypeLoader, type: :model, loader: true do
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/request_types') }
 
-  context 'with two_entry_example selected' do
-    let(:selected_files) { 'two_entry_example' }
+  context 'with request_types_basic selected' do
+    let(:selected_files) { 'request_types_basic' }
 
     it 'creates two records' do
       expect { record_loader.create! }.to change(RequestType, :count).by(2)

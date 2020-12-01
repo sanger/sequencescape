@@ -429,7 +429,7 @@ namespace :limber do
           'Sanger_tailed_artic_v1_96',
           'Sanger_tailed_artic_v1_384'
         ],
-        default_purposes: ['LTHR-384 RT', 'LTHR RT']
+        default_purposes: ['LTHR-384 RT', 'LTHR RT', 'LTHR Cherrypick'],
       ).build!
 
 
@@ -602,6 +602,31 @@ namespace :limber do
       Limber::Helper::TemplateConstructor.new(prefix: 'Heron LTHR', catalogue: heron_lthr_catalogue, sequencing_keys: base_list, role: 'LTHR').build!
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'Heron LTHR', catalogue: heron_lthr_catalogue, role: 'LTHR').build!
       Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: 'Heron LTHR', catalogue: heron_lthr_catalogue, role: 'LTHR').build!
+
+      project_heron = if Rails.env.production?
+        Project.find_by!(name: 'Project Heron')
+      else
+        # In development mode or UAT we don't care so much
+        Project.find_by(name: 'Project Heron') || UatActions::StaticRecords.project
+      end
+
+      unless SubmissionTemplate.find_by(name: 'Limber - Heron LTHR - Automated')
+        SubmissionTemplate.create!(
+          name: 'Limber - Heron LTHR - Automated',
+          submission_class_name: 'LinearSubmission',
+          submission_parameters: {
+            request_type_ids_list: [
+              RequestType.where(key: 'limber_heron_lthr').pluck(:id),
+              RequestType.where(key: 'limber_multiplexing').pluck(:id),
+              RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').pluck(:id)
+            ],
+            project_id: project_heron.id,
+          },
+          product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
+          product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
+        )
+      end
+
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!

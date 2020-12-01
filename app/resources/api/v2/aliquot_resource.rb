@@ -15,6 +15,7 @@ module Api
 
       # Associations:
       has_one :study
+      has_one :project
       has_one :sample
       has_one :request
 

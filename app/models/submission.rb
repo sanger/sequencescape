@@ -72,10 +72,6 @@ class Submission < ApplicationRecord
     ])
   }
 
-  scope :building, -> { where(state: 'building') }
-  scope :pending,  -> { where(state: 'pending') }
-  scope :ready,    -> { where(state: 'ready') }
-
   scope :latest_first, -> { order('id DESC') }
 
   scope :for_search_query, ->(query) { where(name: query) }

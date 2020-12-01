@@ -44,6 +44,8 @@ FactoryBot.define do
     end
 
     after(:create) do |sample_tube, evaluator|
+      next unless sample_tube.aliquots.empty?
+
       sample_tube.aliquots = create_list(:untagged_aliquot, 1, sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study, project: evaluator.project)
     end
 

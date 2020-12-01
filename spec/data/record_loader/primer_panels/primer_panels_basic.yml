@@ -1,0 +1,21 @@
+---
+# This file was automatically generated via `rails g record_loader`
+# You should modify it to match your particular model.
+Unique attribute:
+  snp_count: 2
+  programs:
+    pcr 1:
+      name: example
+      duration: '225'
+    pcr 2:
+      name: example_2
+      duration: '120'
+Unique attribute 2:
+  snp_count: 2
+  programs:
+    pcr 1:
+      name: example
+      duration: '225'
+    pcr 2:
+      name: example_2
+      duration: '120'

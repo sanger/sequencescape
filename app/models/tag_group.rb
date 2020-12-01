@@ -23,6 +23,10 @@ class TagGroup < ApplicationRecord
     adapter_type.try(:name) || TagGroup::AdapterType::UNSPECIFIED
   end
 
+  def adapter_type_name=(name)
+    self.adapter_type = TagGroup::AdapterType.find_by!(name: name)
+  end
+
   # Returns a Hash that maps from the tag index in the group to the oligo sequence for the tag
   def indexed_tags
     Hash[tags.map { |tag| [tag.map_id, tag.oligo] }]

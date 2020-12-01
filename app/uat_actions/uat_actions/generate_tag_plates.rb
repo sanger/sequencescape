@@ -37,7 +37,7 @@ class UatActions::GenerateTagPlates < UatActions
 
   def lot
     @lot ||= lot_type.lots.create!(
-      lot_number: "UAT#{Time.current.to_i}",
+      lot_number: "UAT#{Time.current.to_f}",
       template: tag_layout_template,
       user: user,
       received_at: Time.current

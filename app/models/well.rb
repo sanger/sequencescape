@@ -79,7 +79,7 @@ class Well < Receptacle
               ]
             })
   }
-  scope :located_at, ->(location) { joins(:map).where(maps: { description: location }) }
+
   scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
   # added version of scope with includes to avoid multiple calls to LabWhere in qc report when getting storage location
   # for wells in the same plate
@@ -115,7 +115,6 @@ class Well < Receptacle
                                                   source_well_id: wells
                                                 })
   }
-  scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
   scope :pooled_as_target_by_transfer, ->() {
     joins("LEFT JOIN transfer_requests patb ON #{table_name}.id=patb.target_asset_id")
