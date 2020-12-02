@@ -169,7 +169,7 @@ RSpec.describe CherrypickTask, type: :model do
       let(:starting_offset_control_2) { (batch_id / number_of_potential_control_wells) % (number_of_potential_control_wells - 1) }
 
       # rubocop:todo RSpec/ExampleLength
-      it 'can generate the control positions of 384 plates of the same batch id with 96 wells' do
+      it 'can generate the control positions of 384 plates of the same batch id with 96 wells', aggregate_failures: true do
         384.times do |num_plate|
           expect(described_class.new.control_positions(batch_id, num_plate, plate_size, number_of_controls)).to eq([
             wells_to_keep_free + (starting_offset + num_plate) % number_of_potential_control_wells,
@@ -178,8 +178,13 @@ RSpec.describe CherrypickTask, type: :model do
         end
       end
 
-        Array.new(384) do |num_plate|
-          expect(described_class.new.control_positions(77321, num_plate, 96, 2)).to eq([24 + (val + num_plate) % 72, 24 + (val2 + num_plate) % 72])
+      xit 'produces a sensible distribution over multiple batches', aggregate_failures: true do
+        num_plate = 0
+        384.times do |batch_increment|
+          expect(described_class.new.control_positions(batch_id + batch_increment, num_plate, plate_size, number_of_controls)).to eq([
+            wells_to_keep_free + (starting_offset + batch_increment) % number_of_potential_control_wells,
+            wells_to_keep_free + (starting_offset_control_2 + batch_increment) % number_of_potential_control_wells
+          ])
         end
       end
       # rubocop:enable RSpec/ExampleLength
