@@ -157,22 +157,39 @@ RSpec.describe CherrypickTask, type: :model do
       expect(described_class.new.control_positions(0, 5, 5, 2)).to eq([0, 1])
     end
 
-    context 'with a plate that has 96 wells' do
-      it 'can generate the control positions of 384 plates of the same batch id with 96 wells (3 columns empty)' do
-        val = 65
-        val2 = 8
+    context 'with a plate that has 96 wells and three columns empty' do
+      let(:batch_id) { 77321 }
+      let(:number_of_controls) { 2 }
+      let(:plate_size) { 96 }
+      let(:expected_free_columns) { 3 }
+      let(:wells_to_keep_free) { expected_free_columns * 8 }
+      let(:number_of_potential_control_wells) { plate_size - wells_to_keep_free }
+      let(:starting_offset) { batch_id % number_of_potential_control_wells }
+      # This is the existing behaviour, and explains where it gets the number from
+      let(:starting_offset_control_2) { (batch_id / number_of_potential_control_wells) % (number_of_potential_control_wells - 1) }
+
+      # rubocop:todo RSpec/ExampleLength
+      it 'can generate the control positions of 384 plates of the same batch id with 96 wells' do
+        384.times do |num_plate|
+          expect(described_class.new.control_positions(batch_id, num_plate, plate_size, number_of_controls)).to eq([
+            wells_to_keep_free + (starting_offset + num_plate) % number_of_potential_control_wells,
+            wells_to_keep_free + (starting_offset_control_2 + num_plate) % number_of_potential_control_wells
+          ])
+        end
+      end
 
         Array.new(384) do |num_plate|
           expect(described_class.new.control_positions(77321, num_plate, 96, 2)).to eq([24 + (val + num_plate) % 72, 24 + (val2 + num_plate) % 72])
         end
       end
+      # rubocop:enable RSpec/ExampleLength
 
-      it 'can allocate right controls (excluding first 3 columns) when number of plate position exceeds wells' do
-        expect(described_class.new.control_positions(77321, 0, 96, 2)).to eq([89, 32])
-        expect(described_class.new.control_positions(77321, 1, 96, 2)).to eq([90, 33])
-        expect(described_class.new.control_positions(77321, 6, 96, 2)).to eq([95, 38])
-        expect(described_class.new.control_positions(77321, 7, 96, 2)).to eq([24, 39])
-        expect(described_class.new.control_positions(77321, 8, 96, 2)).to eq([25, 40])
+      it 'can allocate right controls when number of plate position exceeds wells' do
+        expect(described_class.new.control_positions(batch_id, 0, plate_size, number_of_controls)).to eq([89, 32])
+        expect(described_class.new.control_positions(batch_id, 1, plate_size, number_of_controls)).to eq([90, 33])
+        expect(described_class.new.control_positions(batch_id, 6, plate_size, number_of_controls)).to eq([95, 38])
+        expect(described_class.new.control_positions(batch_id, 7, plate_size, number_of_controls)).to eq([24, 39])
+        expect(described_class.new.control_positions(batch_id, 8, plate_size, number_of_controls)).to eq([25, 40])
       end
     end
 
