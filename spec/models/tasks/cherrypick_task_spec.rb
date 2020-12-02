@@ -167,15 +167,6 @@ RSpec.describe CherrypickTask, type: :model do
         end
       end
 
-      it 'can generate the control positions of 384 plates of the same batch id with 32 wells (all columns available)' do
-        val = 9
-        val2 = 30
-
-        Array.new(384) do |num_plate|
-          expect(described_class.new.control_positions(77321, num_plate, 32, 2)).to eq([(val + num_plate) % 32, (val2 + num_plate) % 32])
-        end
-      end
-
       it 'can allocate right controls (excluding first 3 columns) when number of plate position exceeds wells' do
         expect(described_class.new.control_positions(77321, 0, 96, 2)).to eq([89, 32])
         expect(described_class.new.control_positions(77321, 1, 96, 2)).to eq([90, 33])
