@@ -7,13 +7,12 @@ end
 RSpec.describe CherrypickTask, type: :model do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
   let(:control_plate) { create :control_plate, sample_count: 2 }
-  let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w) }.flatten }
+  let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission: submission) } }
   let(:template) { create(:plate_template, size: 6) }
   let(:robot) { double('robot', max_beds: 2) }
   let(:purpose) { create :purpose }
   let(:batch) { double('batch', id: 1235, requests: requests) }
   let(:submission) { create :submission }
-  let(:request_type) { create :request_type }
 
   def pick_without_request_id(plates)
     plates.map { |plate| plate.map { |_id, barcode, pos| [barcode, pos] } }
@@ -26,7 +25,6 @@ RSpec.describe CherrypickTask, type: :model do
   describe '#pick_new_plate' do
     context 'with control plate' do
       before do
-        requests.first.update(submission: submission, request_type: request_type)
         allow(requests.first).to receive(:batch).and_return(batch)
       end
 
@@ -49,6 +47,8 @@ RSpec.describe CherrypickTask, type: :model do
       end
 
       context 'when control positions clashes with templates' do
+        let(:wells) { build_stubbed_list(:well, 1, map_id: 6) }
+        let(:template) { build_stubbed(:plate_template, size: 6, wells: wells) }
         let(:destinations) do
           [
             [
@@ -70,11 +70,6 @@ RSpec.describe CherrypickTask, type: :model do
           ]
         end
 
-        before do
-          template.wells.create!
-          template.wells.first.update(map_id: 6)
-        end
-
         it 'places controls in a different position' do
           pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
           expect(pick_without_request_id(pick[0])).to eq(destinations)
@@ -93,7 +88,7 @@ RSpec.describe CherrypickTask, type: :model do
 
     context 'with controls' do
       before do
-        requests.first.update(submission: submission, request_type: request_type)
+        requests.first.update(submission: submission)
         allow(requests.first).to receive(:batch).and_return(batch)
       end
 
