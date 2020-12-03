@@ -221,13 +221,16 @@ class CherrypickTask < Task
     # Generation of the choice
     positions = []
     available_posns = available_control_positions(total_wells)
+    raise StandardError, 'More controls than free wells' if num_control_wells > available_posns.length
+
+    total_available_positions = available_posns.length
+    control_separation = available_posns.length / num_control_wells
 
     while positions.length < num_control_wells
-      current_size = available_posns.length
-      position = available_posns.slice!(unique_number % current_size)
+      position = available_posns[unique_number % total_available_positions]
       position_for_plate = position % total_wells
       positions.push(position_for_plate)
-      unique_number /= current_size
+      unique_number -= control_separation
     end
 
     if num_plate.positive?
