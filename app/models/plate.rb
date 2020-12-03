@@ -37,13 +37,24 @@ class Plate < Labware
   belongs_to :plate_purpose, inverse_of: :plates
   belongs_to :purpose, foreign_key: :plate_purpose_id
   has_many :wells, inverse_of: :plate, foreign_key: :labware_id do
-    # Build empty wells for the plate.
     def construct!
-      plate = proxy_association.owner
-      plate.maps.in_row_major_order.ids.map do |location_id|
-        { map_id: location_id }
-      end.tap do |wells|
-        plate.wells.create!(wells)
+      transaction do
+        plate = proxy_association.owner
+        plate.maps.in_row_major_order.ids.map do |location_id|
+          { map_id: location_id }
+        end.tap do |wells|
+          plate.wells.import(wells)
+          ids = plate.wells.ids
+          well_type = Well.base_class.name
+          # These would usually be handled in after create callbacks, however
+          # import does not fire these, and we want to create them in bulk anyway
+          WellAttribute.import(ids.map { |well| { well_id: well } })
+          Uuid.import(ids.map { |well| { resource_id: well, resource_type: well_type, external_id: Uuid.generate_uuid } })
+          # Warren::QueueBroadcastMessage keeps track of the class (Well) and id, and gets sent after
+          # the transaction completes. This avoids us needing to instantiate wells, keeping the memory footprint
+          # down.
+          ids.each { |id| Warren::QueueBroadcastMessage.new(class_name: 'Well', id: id).queue(Warren.handler) }
+        end
       end
     end
 

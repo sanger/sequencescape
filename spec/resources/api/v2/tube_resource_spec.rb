@@ -18,6 +18,7 @@ RSpec.describe Api::V2::TubeResource, type: :resource do
     expect(subject).not_to have_updatable_field(:labware_barcode)
     expect(subject).to have_many(:samples).with_class_name('Sample')
     expect(subject).to have_many(:projects).with_class_name('Project')
+    expect(subject).to have_many(:direct_submissions).with_class_name('Submission')
     expect(subject).to have_many(:studies).with_class_name('Study')
     expect(subject).to have_one(:purpose).with_class_name('Purpose')
   end

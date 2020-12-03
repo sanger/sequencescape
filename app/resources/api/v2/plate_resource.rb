@@ -29,6 +29,8 @@ module Api
       has_many :child_plates, readonly: true
       has_many :child_tubes, readonly: true
 
+      has_many :direct_submissions, readonly: true
+
       # Attributes
       attribute :uuid, readonly: true
       attribute :name, delegate: :display_name, readonly: true

@@ -39,13 +39,6 @@ ActiveRecord::Base.transaction do
 
   sanger_168_tag_group = TagGroup.find_by(name: 'Sanger_168tags - 10 mer tags')
 
-  TagLayoutTemplate.create!(
-    name: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)',
-    direction_algorithm: 'TagLayout::InColumns',
-    walking_algorithm: 'TagLayout::WalkWellsOfPlate',
-    tag_group: sanger_168_tag_group
-  )
-
   # Illumina B
   TagLayoutTemplate.create!(
     name: 'Illumina B tagging',
@@ -58,12 +51,6 @@ ActiveRecord::Base.transaction do
     direction_algorithm: 'TagLayout::InColumns',
     walking_algorithm: 'TagLayout::WalkWellsOfPlate',
     tag_group: sanger_168_tag_group
-  )
-  TagLayoutTemplate.create!(
-    name: 'Illumina pipeline tagging',
-    walking_algorithm: 'TagLayout::WalkWellsOfPlate',
-    tag_group: sanger_168_tag_group,
-    direction_algorithm: 'TagLayout::InColumns'
   )
 
   ['Sanger_168tags - 10 mer tags', 'TruSeq small RNA index tags - 6 mer tags', 'TruSeq mRNA Adapter Index Sequences'].each do |name|

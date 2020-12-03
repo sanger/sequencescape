@@ -230,7 +230,6 @@ class Request < ApplicationRecord
   scope :without_target, -> { where('target_asset_id is null') }
   scope :excluding_states, ->(states) { where.not(state: states) }
   scope :ordered, -> { order('id ASC') }
-  scope :hold, -> { where(state: 'hold') }
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185

@@ -34,6 +34,12 @@ class Order < ApplicationRecord
   # Unused. Maintained because some submission templates attempt to set the info
   attr_writer :info_differential
 
+  # When automating submission creation, it is really useful if we can
+  # auto-detect studies and projects based on their aliquots. However we
+  # don't want to trigger this behaviour accidentally if someone forgets to
+  # specify a study.
+  attribute :autodetect_studies_projects, :boolean, default: false
+
   # Required at initial construction time ...
   belongs_to :study, optional: true
   belongs_to :project, optional: true
@@ -51,6 +57,9 @@ class Order < ApplicationRecord
 
   serialize :request_types
   serialize :item_options
+
+  before_validation :set_study_from_aliquots, unless: :cross_study_allowed, if: :autodetect_studies_projects
+  before_validation :set_project_from_aliquots, unless: :cross_project_allowed, if: :autodetect_studies_projects
 
   validates :study, presence: true, unless: :cross_study_allowed
   validates :project, presence: true, unless: :cross_project_allowed
@@ -220,7 +229,7 @@ class Order < ApplicationRecord
   end
 
   def first_request_type
-    RequestType.find(request_types.first)
+    @first_request_type ||= RequestType.find(request_types.first)
   end
 
   # Return the list of input fields to edit when creating a new submission
@@ -298,5 +307,15 @@ class Order < ApplicationRecord
     return true if errors.empty?
 
     false
+  end
+
+  def set_study_from_aliquots
+    studies = assets.reduce(Set.new) { |set, asset| set.merge(asset.studies) }
+    self.study ||= studies.first if studies.one?
+  end
+
+  def set_project_from_aliquots
+    projects = assets.reduce(Set.new) { |set, asset| set.merge(asset.projects) }
+    self.project ||= projects.first if projects.one?
   end
 end
