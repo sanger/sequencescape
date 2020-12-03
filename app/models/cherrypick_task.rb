@@ -11,10 +11,6 @@
 class CherrypickTask < Task
   EMPTY_WELL          = [0, 'Empty', ''].freeze
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
-  # Leaving the first three columns (3 x 8) of a 96-well plate free of controls so when stamped into 384-well
-  # there are no controls in the first 6 columns, as in QC steps standards go into some of these wells on the reader plate
-  CONTROL_START_INDX_96 = 24
-  CONTROL_START_INDX_OTHER = 0
 
   # An instance of this class represents the target plate being picked onto.  It can have a template
   # and be a partial plate, and so when wells are picked into it we need to ensure that we don't hit
@@ -213,14 +209,28 @@ class CherrypickTask < Task
     end
   end
 
+  #
   # Returns a list with the destination positions for the control wells distributed by
   # using batch_id and num_plate as position generators.
-  def control_positions(batch_id, num_plate, total_wells, num_control_wells)
+  # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
+  # control wells being missed in cDNA quant QC. This requirement was removed in
+  # https://github.com/sanger/sequencescape/issues/2967 however I've avoided stripping out the behaviour
+  # completely in case controls are used in other pipelines.
+  #
+  # @param batch_id [Integer] The id of the batch, used to generate a starting position
+  # @param num_plate [Integer] The plate number within the batch
+  # @param total_wells [Integer] The total number of wells on the plate
+  # @param num_control_wells [Integer] The number of control wells to lay out
+  # @param wells_to_leave_free [Integer] The number of wells to leave free at the front of the plate
+  #
+  # @return [<Type>] <description>
+  #
+  def control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
     unique_number = batch_id
 
     # Generation of the choice
     positions = []
-    available_posns = available_control_positions(total_wells)
+    available_posns = (wells_to_leave_free...total_wells).to_a
     raise StandardError, 'More controls than free wells' if num_control_wells > available_posns.length
 
     total_available_positions = available_posns.length
@@ -237,7 +247,7 @@ class CherrypickTask < Task
       positions.map! do |pos|
         new_pos = pos + num_plate
         start_index = 0
-        start_index = CONTROL_START_INDX_96 if total_wells == 96
+        start_index = wells_to_leave_free
         new_pos = start_index + ((new_pos - total_wells) % (total_wells - start_index)) if new_pos > total_wells - 1
         new_pos
       end
@@ -356,18 +366,6 @@ class CherrypickTask < Task
 
     sorted_requests.map do |request|
       [request.id, request.asset.plate.human_barcode, request.asset.map_description]
-    end
-  end
-
-  private
-
-  # determines the range of available control positions
-  def available_control_positions(total_wells)
-    case total_wells
-    when 96
-      (CONTROL_START_INDX_96...total_wells).to_a
-    else
-      (CONTROL_START_INDX_OTHER...total_wells).to_a
     end
   end
 end

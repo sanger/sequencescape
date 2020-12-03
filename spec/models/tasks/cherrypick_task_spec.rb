@@ -161,7 +161,7 @@ RSpec.describe CherrypickTask, type: :model do
       let(:batch_id) { 77321 }
       let(:number_of_controls) { 2 }
       let(:plate_size) { 96 }
-      let(:expected_free_columns) { 3 }
+      let(:expected_free_columns) { 0 }
       let(:wells_to_keep_free) { expected_free_columns * 8 }
       let(:number_of_potential_control_wells) { plate_size - wells_to_keep_free }
       let(:starting_offset) { batch_id % number_of_potential_control_wells }
@@ -192,12 +192,12 @@ RSpec.describe CherrypickTask, type: :model do
       end
       # rubocop:enable RSpec/ExampleLength
 
-      it 'can allocate right controls when number of plate position exceeds wells' do
-        expect(described_class.new.control_positions(batch_id, 0, plate_size, number_of_controls)).to eq([89, 53])
-        expect(described_class.new.control_positions(batch_id, 1, plate_size, number_of_controls)).to eq([90, 54])
-        expect(described_class.new.control_positions(batch_id, 6, plate_size, number_of_controls)).to eq([95, 59])
-        expect(described_class.new.control_positions(batch_id, 7, plate_size, number_of_controls)).to eq([24, 60])
-        expect(described_class.new.control_positions(batch_id, 8, plate_size, number_of_controls)).to eq([25, 61])
+      it 'can allocate right controls when number of plate position exceeds wells', aggregate_failures: true do
+        expect(described_class.new.control_positions(batch_id, 0, plate_size, number_of_controls)).to eq([41, 89])
+        expect(described_class.new.control_positions(batch_id, 6, plate_size, number_of_controls)).to eq([47, 95])
+        expect(described_class.new.control_positions(batch_id, 7, plate_size, number_of_controls)).to eq([48, 0])
+        expect(described_class.new.control_positions(batch_id, 55, plate_size, number_of_controls)).to eq([0, 48])
+        expect(described_class.new.control_positions(batch_id, 56, plate_size, number_of_controls)).to eq([1, 49])
       end
     end
 
@@ -252,9 +252,9 @@ RSpec.describe CherrypickTask, type: :model do
 
     it 'does not place controls in the first three columns for a 96-well destination plate' do
       # positions 0 - 24
-      expect(described_class.new.control_positions(12345, 0, 96, 3)).to eq([57, 33, 81])
-      expect(described_class.new.control_positions(12345, 1, 96, 3)).to eq([58, 34, 82])
-      expect(described_class.new.control_positions(12345, 2, 96, 3)).to eq([59, 35, 83])
+      expect(described_class.new.control_positions(12345, 0, 96, 3, wells_to_leave_free: 24)).to eq([57, 33, 81])
+      expect(described_class.new.control_positions(12345, 1, 96, 3, wells_to_leave_free: 24)).to eq([58, 34, 82])
+      expect(described_class.new.control_positions(12345, 2, 96, 3, wells_to_leave_free: 24)).to eq([59, 35, 83])
     end
   end
 
