@@ -223,37 +223,26 @@ class CherrypickTask < Task
   # @param num_control_wells [Integer] The number of control wells to lay out
   # @param wells_to_leave_free [Integer] The number of wells to leave free at the front of the plate
   #
-  # @return [<Type>] <description>
+  # @return [Array<Integer>] The indexes of the control well positions
   #
   def control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
-    unique_number = batch_id
+    total_available_positions = total_wells - wells_to_leave_free
+    control_separation = total_available_positions / num_control_wells
 
-    # Generation of the choice
-    positions = []
-    available_posns = (wells_to_leave_free...total_wells).to_a
-    raise StandardError, 'More controls than free wells' if num_control_wells > available_posns.length
+    raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
 
-    total_available_positions = available_posns.length
-    control_separation = available_posns.length / num_control_wells
-
-    while positions.length < num_control_wells
-      position = available_posns[unique_number % total_available_positions]
-      position_for_plate = position % total_wells
-      positions.push(position_for_plate)
-      unique_number -= control_separation
+    Array.new(num_control_wells) do |control_well_index|
+      # The position of controls varies from batch to batch, and advances by one
+      # position for each plate in that batch. If we have multiple controls on a
+      # plate, we try to space them evenly. This establishes the relative
+      # positions for each control. We then take the modulo against the number
+      # of available wells to set the final position on the plate itself
+      position_index = batch_id + # We advance the control position as the batch_id increases
+                       num_plate - # Then once per plate in the batch
+                       (control_well_index * control_separation) # Finally we distribute the controls evenly
+      # Finally we layout the controls on the actual available positions on our plate
+      wells_to_leave_free + (position_index % total_available_positions)
     end
-
-    if num_plate.positive?
-      positions.map! do |pos|
-        new_pos = pos + num_plate
-        start_index = 0
-        start_index = wells_to_leave_free
-        new_pos = start_index + ((new_pos - total_wells) % (total_wells - start_index)) if new_pos > total_wells - 1
-        new_pos
-      end
-    end
-
-    positions
   end
 
   def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller = nil)
