@@ -23,7 +23,6 @@ group :default do
   gem 'record_loader'
 
   gem 'mysql2', platforms: :mri
-  gem 'spreadsheet'
   gem 'will_paginate'
 
   # CarrierWave 2.0.0-2.0.1 causes test/controllers/qc_files_controller_test.rb

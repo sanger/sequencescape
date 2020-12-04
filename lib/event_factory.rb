@@ -74,32 +74,6 @@ class EventFactory
     # EventfulMailer.deliver_confirm_event(User.all_administrators_emails, event.eventful, event.message, event.content, "No Milestone")
   end
 
-  ###############################
-  # Study related notifications #
-  ###############################
-
-  # creates an event and sends an email when samples are register to a study
-  def self.study_has_samples_registered(study, samples, user)
-    sample_names_string = samples.map(&:name).join("','")
-    content = "Samples '#{sample_names_string}' registered by user '#{user.login}' on #{Time.zone.now}"
-
-    study_event = Event.create(
-      eventful_id: study.id,
-      eventful_type: 'Study',
-      message: 'Sample(s) registered',
-      created_by: user.login,
-      content: content,
-      of_interest_to: 'users'
-    )
-
-    recipients = []
-    study.projects.each do |project|
-      recipients << project.manager.email if project.manager
-    end
-
-    EventfulMailer.confirm_event(recipients.reject(&:blank?), study_event.eventful, study_event.message, study_event.content, 'No Milestone').deliver_now
-  end
-
   #################################
   # request related notifications #
   #################################

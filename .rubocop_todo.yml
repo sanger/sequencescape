@@ -150,7 +150,6 @@ Lint/UselessAssignment:
     - 'app/controllers/pipelines_controller.rb'
     - 'app/controllers/projects_controller.rb'
     - 'app/controllers/samples_controller.rb'
-    - 'app/controllers/studies/sample_registration_controller.rb'
     - 'app/controllers/studies_controller.rb'
     - 'app/helpers/application_helper.rb'
     - 'app/middleware/api/endpoint_handler.rb'
@@ -1478,7 +1477,6 @@ Style/Documentation:
     - 'app/controllers/studies/comments_controller.rb'
     - 'app/controllers/studies/documents_controller.rb'
     - 'app/controllers/studies/events_controller.rb'
-    - 'app/controllers/studies/sample_registration_controller.rb'
     - 'app/controllers/studies/samples_controller.rb'
     - 'app/controllers/studies_controller.rb'
     - 'app/controllers/study_reports_controller.rb'
@@ -2059,7 +2057,6 @@ Style/EmptyMethod:
     - 'app/controllers/robot_verifications_controller.rb'
     - 'app/controllers/sdb/home_controller.rb'
     - 'app/controllers/sessions_controller.rb'
-    - 'app/controllers/studies/sample_registration_controller.rb'
     - 'app/controllers/users_controller.rb'
     - 'app/models/accessionable/base.rb'
     - 'app/models/asset_link.rb'
@@ -2622,7 +2619,6 @@ Style/ParallelAssignment:
     - 'test/unit/cherrypick_task_test.rb'
     - 'test/unit/illumina_htp/final_plate_purpose_test.rb'
     - 'test/unit/messaging/hash_generation_test.rb'
-    - 'test/unit/sample_registrar_test.rb'
     - 'test/unit/tag_qc/qcable_statemachine_checks.rb'
 
 # Offense count: 9
@@ -2841,7 +2837,6 @@ Style/RedundantParentheses:
 # Configuration parameters: AllowMultipleReturnValues.
 Style/RedundantReturn:
   Exclude:
-    - 'app/models/sample_registrar.rb'
     - 'lib/lab_where_client.rb'
 
 # Offense count: 9

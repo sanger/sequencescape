@@ -222,14 +222,6 @@ Rails.application.routes.draw do
 
     resources :assets, except: [:destroy]
 
-    resources :sample_registration, only: %i[index new create], controller: 'studies/sample_registration' do
-      collection do
-        post :spreadsheet
-        # get :new
-        get :upload
-      end
-    end
-
     resources :samples, controller: 'studies/samples'
     resources :events, controller: 'studies/events'
 

@@ -148,39 +148,6 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
     end
 
-    context '#study has samples added' do
-      setup do
-        @event_count = Event.count
-        ::ActionMailer::Base.deliveries = []
-        role = create :manager_role, authorizable: @project
-        role.users << @user
-        follower = create :role, name: 'follower'
-        @user1 = create :user, login: 'north'
-        @user1.roles << follower
-        @user2 = create :user, login: 'west'
-        @user2.roles << follower
-        @study = create :study, user: @user2
-        @submission = FactoryHelp::submission project: @project, study: @study, asset_group_name: 'to prevent asset errors'
-        @samples = []
-        @samples[0] = create :sample, name: 'NewSample-1'
-        @samples[1] = create :sample, name: 'NewSample-2'
-        EventFactory.study_has_samples_registered(@study, @samples, @user1)
-      end
-
-      should 'change Event.count by 1' do
-        assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
-      end
-
-      context 'send email to project manager' do
-        should 'Have sent an email' do
-          last_mail = ActionMailer::Base.deliveries.last
-          assert_match(/Sample/, last_mail.subject)
-          assert_match(/registered/, last_mail.subject)
-          assert last_mail.bcc.include?('south@example.com')
-        end
-      end
-    end
-
     context '#request update failed' do
       setup do
         @event_count = Event.count
