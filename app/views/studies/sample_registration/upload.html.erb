@@ -9,6 +9,7 @@
     The Reference Genome list is <%= link_to "here", reference_genomes_path %>
 </div>
 <%= deprecate_section(
+   date: Date.parse('2021-02-01'),
    message:'<p class="lead">The preferred method of registering samples is sample manifests.</p>
   <ul>
     <li>Sample manifests support both plates and tubes</li>
@@ -18,7 +19,7 @@
     in filling out the spreadsheet.</li>
   </ul>
   <p>If there is functionality you need that is not provided by sample manifests
-  then please let us know. The intent is to remove this page in future.</p>'.html_safe,
+  then please let us know. This page will be automatically removed at the end of January 2021.</p>'.html_safe,
    replaced_by: sample_manifests_study_path(@study)) do %>
     <%= form_tag spreadsheet_study_sample_registration_index_path, multipart: true do -%>
     <h2>1. Please select a spreadsheet to upload:</h2>
