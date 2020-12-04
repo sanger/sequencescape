@@ -16,20 +16,28 @@ class Pooling
   def execute
     return false unless valid?
 
-    @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)') if stock_mx_tube_required?
+    @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)', parents: source_assets) if stock_mx_tube_required?
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
+    @standard_mx_tube.parents = @stock_mx_tube ? [@stock_mx_tube] : source_assets
     transfer
     execute_print_job
     true
   end
 
   def transfer
-    target_assets.each do |target_asset|
-      source_assets.each do |source_asset|
-        TransferRequest.create!(asset: source_asset, target_asset: target_asset)
-      end
+    each_transfer do |source_asset, target_asset|
+      TransferRequest.create!(asset: source_asset, target_asset: target_asset)
     end
     message[:notice] = message[:notice] + success
+  end
+
+  def each_transfer
+    source_assets.each do |source_asset|
+      yield source_asset, @stock_mx_tube || @standard_mx_tube
+    end
+    return unless stock_mx_tube_required?
+
+    yield @stock_mx_tube, @standard_mx_tube
   end
 
   def source_assets
