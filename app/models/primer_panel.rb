@@ -17,7 +17,7 @@ class PrimerPanel < ApplicationRecord
   # The number of SNP sites targeted by the panel. Primarily used for reference, and to ensure
   # that SNP calls can be presented along with the expected number of hits.
   validates :snp_count, numericality: { greater_than: 0, only_integer: true }
-  validates :programs, programs: true
+  validates :programs, programs: true, presence: true
 
   #
   # A summary of the primer panel behaviour, suitable for embedding in

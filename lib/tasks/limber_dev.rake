@@ -56,7 +56,7 @@ namespace :limber do
       end
 
       desc 'Create 4 GBS stock plates with submissions'
-      task gbs_submission: ['limber:dev:setup:gbs', 'limber:dev:setup:gbs_primer_panel'] do
+      task gbs_submission: ['limber:dev:setup:gbs'] do
         plates = Purpose.find_by(name: 'GBS Stock').plates.order(id: :desc).limit(4)
         template = SubmissionTemplate.find_by!(name: 'Limber-Htp - GBS')
         plates.each do |plate|
@@ -105,15 +105,7 @@ namespace :limber do
         )
       end
 
-      desc 'Generate a dummy primer panel'
-      task gbs_primer_panel: ['limber:dev:env_check', :environment] do
-        PrimerPanel.create_with(snp_count: 20, programs: {
-                                  'pcr 1' => { 'name' => 'Dummy_1', 'duration' => 10 },
-                                  'pcr 2' => { 'name' => 'Dummy_2', 'duration' => 20 }
-                                }).find_or_create_by!(name: 'Dummy Panel')
-      end
-
-      desc 'Add tag platesfor GbS: dev only'
+      desc 'Add tag plates for GbS: dev only'
       task gbs_tag_plates: ['limber:dev:env_check', :environment, 'limber:dev:setup:gbs_tag_set'] do
         seeder = WorkingSetup::StandardSeeder.new([])
         ('A'..'D').each do |set|

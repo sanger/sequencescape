@@ -8,16 +8,8 @@
 # populate the field elsewhere. If someone manages to somehow mix multiple
 # assets in different single studies, we still throw validation errors
 class AutomatedOrder < FlexibleSubmission
-  before_validation :set_study_from_aliquots, unless: :cross_study_allowed
-  before_validation :set_project_from_aliquots, unless: :cross_project_allowed
-
-  def set_study_from_aliquots
-    studies = assets.reduce(Set.new) { |set, asset| set.merge(asset.studies) }
-    self.study = studies.first if studies.one?
-  end
-
-  def set_project_from_aliquots
-    projects = assets.reduce(Set.new) { |set, asset| set.merge(asset.projects) }
-    self.project = projects.first if projects.one?
-  end
+  # When automating submission creation, it is really useful if we can
+  # auto-detect studies and projects based on their aliquots. For automated
+  # orders this is enabled by default.
+  attribute :autodetect_studies_projects, :boolean, default: true
 end

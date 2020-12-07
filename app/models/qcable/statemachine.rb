@@ -48,7 +48,6 @@ module Qcable::Statemachine
       # new version of combinable named_scope
       scope :for_state, ->(state) { where(state: state) }
 
-      scope :available,   -> { where(state: :available) }
       scope :unavailable, -> { where(state: %i[created pending failed passed destroyed qc_in_progress exhausted]) }
     end
   end

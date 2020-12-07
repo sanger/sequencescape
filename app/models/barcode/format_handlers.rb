@@ -294,4 +294,13 @@ module Barcode::FormatHandlers
   class CambridgeAZ < BaseRegExBarcode
     self.format = /\A(?<number>[0-9]{9,10})\z/
   end
+
+  # Added to support destination plates for Beckman driven
+  # cherrypick process as part of project Heron.
+  # Expected formats:
+  # HT-nnnnnn where n is a digit.
+  # Numeric component will be at least 6 digits long, but may eventually hit more
+  class HeronTailed < BaseRegExBarcode
+    self.format = /\A(?<prefix>HT)-(?<number>[0-9]{6,})\z/
+  end
 end

@@ -10,6 +10,7 @@ module Api
 
       has_one :custom_metadatum_collection
       has_many :comments, readonly: true
+      has_many :direct_submissions, readonly: true
 
       filter :purpose_name, apply: (lambda do |records, value, _options|
         records.joins(:purpose).where(plate_purposes: { name: value })

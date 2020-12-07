@@ -32,6 +32,14 @@ class TagLayoutTemplate < ApplicationRecord
     end
   end
 
+  def tag_group_name=(name)
+    self.tag_group = TagGroup.find_by!(name: name)
+  end
+
+  def tag2_group_name=(name)
+    self.tag2_group = TagGroup.find_by!(name: name)
+  end
+
   private
 
   def direction_algorithm_class

@@ -6,7 +6,7 @@
 # across different environments
 # @see https://rubydoc.info/github/sanger/record_loader/
 module RecordLoader
-  # Creates the specified plate types if they are not present
+  # Creates the specified tag group adapter types if they are not present
   class TagGroupAdapterTypeLoader < ApplicationRecordLoader
     config_folder 'tag_group_adapter_types'
 

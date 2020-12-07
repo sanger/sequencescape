@@ -19,6 +19,7 @@ module Api
       has_many :studies, readonly: true
       has_many :projects, readonly: true
       has_many :aliquots, readonly: true
+      has_many :direct_submissions, readonly: true
 
       has_many :ancestors, readonly: true, polymorphic: true
       has_many :descendants, readonly: true, polymorphic: true
