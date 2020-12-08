@@ -14,16 +14,19 @@ module Heron
         end
 
         def params_for_event
-          return unless @params[:events]
-
-          @params[:events]
+          return unless @params
+          @params.dig(:events)
         end
 
         def add_all_errors_from_events(events)
           events.each do |event|
-            event.errors.each do |k, v|
-              errors.add(k, v)
-            end
+            add_all_errors_from_event(event)
+          end
+        end
+
+        def add_all_errors_from_event(event)
+          event.errors.each do |key, value|
+            errors.add(key, value)
           end
         end
 

@@ -77,10 +77,11 @@ module Heron
       end
 
       def replace_uuid(sample)
-        handle_uuid_duplication(@params[:uuid]) if Uuid.with_external_id(@params[:uuid]).count.positive?
+        uuid = @params[:uuid]
+        handle_uuid_duplication(uuid) if Uuid.with_external_id(uuid).count.positive?
         sample.lazy_uuid_generation = true
         sample.uuid_object = Uuid.new
-        sample.uuid_object.update!(resource: sample, external_id: @params[:uuid]) if @params[:uuid]
+        sample.uuid_object.update!(resource: sample, external_id: uuid) if uuid
       end
 
       def handle_uuid_duplication(uuid)

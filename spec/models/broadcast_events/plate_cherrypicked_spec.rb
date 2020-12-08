@@ -112,10 +112,15 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
                                                    })
         end
 
-        it 'includes all required subjects in the message' do
+        it 'has right size of subjects' do
           event_info = JSON.parse(instance.to_json)
           expect(event_info['event']).to have_key('subjects')
           expect(event_info['event']['subjects'].size).to eq(6)
+        end
+        it 'includes all required subjects in the message' do
+          event_info = JSON.parse(instance.to_json)
+          results = event_info['event']['subjects'].pluck(:subject_type).uniq
+          expect(results).to eq([])
         end
       end
 

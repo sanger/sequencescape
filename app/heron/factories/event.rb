@@ -1,6 +1,6 @@
 module Heron
   module Factories
-    # Factory class to create Heron tube racks
+    # Factory class to create Events (for the moment only PlateCherrypicked)
     class Event
       include ActiveModel::Model
 
@@ -28,8 +28,8 @@ module Heron
       def check_broadcast_event
         return if errors.count.positive?
         return unless broadcast_event
-
-        broadcast_event.errors.each { |k, v| errors.add(k, v) } unless broadcast_event.valid?
+        return if broadcast_event.valid?
+        broadcast_event.errors.each { |key, value| errors.add(key, value) }
       end
 
       def save
