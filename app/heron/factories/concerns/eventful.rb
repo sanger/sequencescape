@@ -15,6 +15,7 @@ module Heron
 
         def params_for_event
           return unless @params
+
           @params.dig(:events)
         end
 

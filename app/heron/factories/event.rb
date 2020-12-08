@@ -29,6 +29,7 @@ module Heron
         return if errors.count.positive?
         return unless broadcast_event
         return if broadcast_event.valid?
+
         broadcast_event.errors.each { |key, value| errors.add(key, value) }
       end
 

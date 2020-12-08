@@ -117,10 +117,11 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
           expect(event_info['event']).to have_key('subjects')
           expect(event_info['event']['subjects'].size).to eq(6)
         end
+
         it 'includes all required subjects in the message' do
           event_info = JSON.parse(instance.to_json)
-          results = event_info['event']['subjects'].pluck(:subject_type).uniq
-          expect(results).to eq([])
+          results = event_info['event']['subjects'].pluck('subject_type').sort.uniq
+          expect(results).to eq(%w[plate robot sample])
         end
       end
 
