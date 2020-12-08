@@ -39,6 +39,14 @@ one that uses that uuid. In this case we don't need to specify the study:
 ::Heron::Factories::Sample.new({sample_uuid: "existing_uuid"}).create
 ```
 
+We can create a new sample and enforce to use a uuid supplied as attribute by specifying
+the attribute ```uuid```:
+
+```ruby
+# This will create a new sample and assign to it the uuid 'uuid1':
+::Heron::Factories::Sample.new({study_uuid: "uuid", uuid: "uuid1"}).create
+```
+
 Once we have a factory we can use it to create aliquots in a recipient as well (inside a tube, or a well):
 
 ```ruby

@@ -125,6 +125,17 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
         expect(sample).to eq(sample2)
       end
 
+      it 'creates one sample' do
+        factory = described_class.new(study: study)
+        expect { factory.create }.to change(Sample, :count).by(1)
+      end
+
+      it 'creates one uuid for the sample' do
+        factory = described_class.new(study: study)
+        sample = factory.create
+        expect(Uuid.where(resource: sample).count).to eq(1)
+      end
+
       context 'when providing sample_uuid' do
         let(:sample) { create(:sample) }
 
@@ -209,6 +220,33 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
         it 'sets the new sanger_sample_id provided as sample name' do
           sample = factory.create
           expect(sample.name).to eq(sample.sanger_sample_id)
+        end
+      end
+
+      context 'when providing replace_uuid' do
+        let(:replaced_uuid) { SecureRandom.uuid }
+
+        context 'when the uuid does not exist already' do
+          it 'creates a new sample using that uuid' do
+            factory = described_class.new(study: study, uuid: replaced_uuid)
+            sample = factory.create
+            expect(sample.uuid).to eq(replaced_uuid)
+          end
+
+          it 'only creates one uuid' do
+            factory = described_class.new(study: study, uuid: replaced_uuid)
+            sample = factory.create
+            expect(Uuid.where(resource: sample).count).to eq(1)
+          end
+        end
+
+        context 'when the uuid already exist' do
+          let(:sample) { create :sample }
+
+          it 'will be invalid if providing any other extra attributes' do
+            factory = described_class.new(study: study, uuid: sample.uuid)
+            expect { factory.create }.to raise_error(StandardError)
+          end
         end
       end
 
