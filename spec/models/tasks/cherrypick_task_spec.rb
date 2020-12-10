@@ -156,33 +156,6 @@ RSpec.describe CherrypickTask, type: :model do
       let(:batch_id) { 77321 }
       let(:number_of_controls) { 2 }
       let(:plate_size) { 96 }
-      let(:expected_free_columns) { 0 }
-      let(:wells_to_keep_free) { expected_free_columns * 8 }
-      let(:number_of_potential_control_wells) { plate_size - wells_to_keep_free }
-      let(:starting_offset) { batch_id % number_of_potential_control_wells }
-      let(:starting_offset_control_2) { 67 }
-
-      # rubocop:todo RSpec/ExampleLength
-      it 'can generate the control positions of 384 plates of the same batch id', aggregate_failures: true do
-        384.times do |num_plate|
-          expect(described_class.new.control_positions(batch_id, num_plate, plate_size, number_of_controls)).to eq([
-            (wells_to_keep_free + (starting_offset + num_plate)) % (number_of_potential_control_wells / number_of_controls),
-            ((wells_to_keep_free + (starting_offset_control_2 + (num_plate * 2))) % (number_of_potential_control_wells / number_of_controls)) + (number_of_potential_control_wells / number_of_controls)
-          ])
-        end
-      end
-
-      it 'produces a sensible distribution over multiple batches', aggregate_failures: true do
-
-        num_plate = 0
-        10.times do |batch_increment|
-          expect(described_class.new.control_positions(batch_id + batch_increment, num_plate, plate_size, number_of_controls)).to eq([
-            (wells_to_keep_free + (starting_offset + batch_increment)) % (number_of_potential_control_wells / number_of_controls),
-            (((wells_to_keep_free + (starting_offset_control_2 + batch_increment))) % (number_of_potential_control_wells / number_of_controls)) + (number_of_potential_control_wells / number_of_controls)
-          ])
-        end
-      end
-      # rubocop:enable RSpec/ExampleLength
 
       it 'can allocate right controls when number of plate position exceeds wells', aggregate_failures: true do
         expect(described_class.new.control_positions(batch_id, 0, plate_size, number_of_controls)).to eq([41, 67])
