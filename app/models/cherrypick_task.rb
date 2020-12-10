@@ -39,7 +39,7 @@ class CherrypickTask < Task
 
     # Number of regions should equal number of controls, so sometimes last region is bigger than average
     if regions.length > num_control_wells
-      last_region = regions.slice!(regions.length - 1, 1)
+      last_region = regions.pop
       regions[regions.length - 1].concat(*last_region)
     end
 
