@@ -35,18 +35,18 @@ class CherrypickTask < Task
 
     quotient = batch_id
     size_region = (total_available_positions / num_control_wells)
-    regions = (wells_to_leave_free..(total_wells-1)).each_slice(size_region).to_a
+    regions = (wells_to_leave_free..(total_wells - 1)).each_slice(size_region).to_a
 
     # Number of regions should equal number of controls, so sometimes last region is bigger than average
     if regions.length > num_control_wells
-      last_region = regions.slice!(regions.length-1, 1)
-      regions[regions.length-1].concat(last_region)
+      last_region = regions.slice!(regions.length - 1, 1)
+      regions[regions.length - 1].concat(*last_region)
     end
 
     position = 0
-    regions.each_with_index.map do |region, num_region|
+    regions.each_with_index.map do |region, _num_region|
       quotient, remain = quotient.divmod(region.length)
-      # Feeding the new position with the old position seems to add more 
+      # Feeding the new position with the old position seems to add more
       # variability between the controls positions
       position = (remain + num_plate + position) % region.length
       region[position]

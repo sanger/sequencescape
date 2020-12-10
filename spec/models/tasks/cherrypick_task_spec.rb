@@ -33,10 +33,10 @@ RSpec.describe CherrypickTask, type: :model do
           [[
             [plate.human_barcode, 'A1'],
             [plate.human_barcode, 'B1'],
-            [control_plate.human_barcode, 'B1'],
+            [control_plate.human_barcode, 'A1'],
             [plate.human_barcode, 'C1'],
             [plate.human_barcode, 'D1'],
-            [control_plate.human_barcode, 'A1']
+            [control_plate.human_barcode, 'B1']
           ]]
         end
 
@@ -54,9 +54,9 @@ RSpec.describe CherrypickTask, type: :model do
             [
               [plate.human_barcode, 'A1'],
               [plate.human_barcode, 'B1'],
-              [control_plate.human_barcode, 'B1'],
+              [control_plate.human_barcode, 'A1'],
               [plate.human_barcode, 'C1'],
-              [control_plate.human_barcode, 'A1'], # This control well has moved forward
+              [control_plate.human_barcode, 'B1'], # This control well has moved forward
               ['---', '']
             ],
             [
@@ -98,8 +98,8 @@ RSpec.describe CherrypickTask, type: :model do
           [[
             [plate.human_barcode, 'A1'],
             [plate.human_barcode, 'B1'],
-            [control_plate.human_barcode, 'B1'],
             [control_plate.human_barcode, 'A1'],
+            [control_plate.human_barcode, 'B1'],
             ['Empty', ''],
             ['---', '']
           ]]
@@ -118,9 +118,9 @@ RSpec.describe CherrypickTask, type: :model do
             [
               [plate.human_barcode, 'A1'],
               [plate.human_barcode, 'B1'],
-              [control_plate.human_barcode, 'B1'],
-              [plate.human_barcode, 'C1'],
               [control_plate.human_barcode, 'A1'],
+              [plate.human_barcode, 'C1'],
+              [control_plate.human_barcode, 'B1'],
               ['---', '']
             ],
             [
@@ -145,11 +145,11 @@ RSpec.describe CherrypickTask, type: :model do
   describe '#control_positions' do
     it 'calculates the positions for the control wells', aggregate_failures: true do
       # Test batch id 0, plate 0 to 4, 5 free wells, 2 control wells
-      expect(described_class.new.control_positions(0, 0, 5, 2)).to eq([0, 3])
+      expect(described_class.new.control_positions(0, 0, 5, 2)).to eq([0, 2])
       expect(described_class.new.control_positions(0, 1, 5, 2)).to eq([1, 4])
-      expect(described_class.new.control_positions(0, 3, 5, 2)).to eq([3, 1])
-      expect(described_class.new.control_positions(0, 4, 5, 2)).to eq([4, 2])
-      expect(described_class.new.control_positions(0, 5, 5, 2)).to eq([0, 3])
+      expect(described_class.new.control_positions(0, 3, 5, 2)).to eq([1, 3])
+      expect(described_class.new.control_positions(0, 4, 5, 2)).to eq([0, 3])
+      expect(described_class.new.control_positions(0, 5, 5, 2)).to eq([1, 2])
     end
 
     context 'with a plate that has 96 wells and three columns empty' do
@@ -160,13 +160,13 @@ RSpec.describe CherrypickTask, type: :model do
       it 'can allocate right controls when number of plate position exceeds wells', aggregate_failures: true do
         expect(described_class.new.control_positions(batch_id, 0, plate_size, number_of_controls)).to eq([41, 67])
         expect(described_class.new.control_positions(batch_id, 6, plate_size, number_of_controls)).to eq([47, 79])
-        
-        # N.B. 
+
+        # N.B.
         # About following tests between plate 7th and plate 55th: although clashes don't occur with batches, it happens
         # with num_plate every {plate_size / num_controls} plates (55th - 7th = 48, which is equal to 96 / 2)
         # That's why these 2 tests controls are clashing
         expect(described_class.new.control_positions(batch_id, 7, plate_size, number_of_controls)).to eq([0, 81])
-        expect(described_class.new.control_positions(batch_id, 55, plate_size, number_of_controls)).to eq([0, 81]) 
+        expect(described_class.new.control_positions(batch_id, 55, plate_size, number_of_controls)).to eq([0, 81])
 
         expect(described_class.new.control_positions(batch_id, 56, plate_size, number_of_controls)).to eq([1, 83])
       end
@@ -184,35 +184,35 @@ RSpec.describe CherrypickTask, type: :model do
       end.to raise_error(StandardError, 'More controls than free wells')
     end
 
-    it 'does not clash with consecutive batches (1)' do
+    it 'does not clash with consecutive batches (1)', :aggregate_failures do
       # Test batch id 12345, plate 0 to 2, 100 free wells, 3 control wells
-      expect(described_class.new.control_positions(12345, 0, 100, 3)).to eq([45, 12, 79])
-      expect(described_class.new.control_positions(12345, 1, 100, 3)).to eq([46, 13, 80])
-      expect(described_class.new.control_positions(12345, 2, 100, 3)).to eq([47, 14, 81])
+      expect(described_class.new.control_positions(12345, 0, 100, 3)).to eq([3, 47, 91])
+      expect(described_class.new.control_positions(12345, 1, 100, 3)).to eq([4, 49, 94])
+      expect(described_class.new.control_positions(12345, 2, 100, 3)).to eq([5, 51, 97])
     end
 
-    it 'does not clash with consecutive batches (2)' do
+    it 'does not clash with consecutive batches (2)', :aggregate_failures do
       # Test batch id 12346, plate 0 to 2, 100 free wells, 3 control wells
-      expect(described_class.new.control_positions(12345 + 1, 0, 100, 3)).to eq([46, 13, 80])
-      expect(described_class.new.control_positions(12345 + 1, 1, 100, 3)).to eq([47, 14, 81])
-      expect(described_class.new.control_positions(12345 + 1, 2, 100, 3)).to eq([48, 15, 82])
+      expect(described_class.new.control_positions(12345 + 1, 0, 100, 3)).to eq([4, 48, 92])
+      expect(described_class.new.control_positions(12345 + 1, 1, 100, 3)).to eq([5, 50, 95])
+      expect(described_class.new.control_positions(12345 + 1, 2, 100, 3)).to eq([6, 52, 98])
     end
 
-    it 'does not clash with consecutive batches (3)' do
+    it 'does not clash with consecutive batches (3)', :aggregate_failures do
       # Test batch id 12445, plate 0 to 2, 100 free wells, 3 control wells
-      expect(described_class.new.control_positions(12345 + 100, 0, 100, 3)).to eq([45, 12, 79])
-      expect(described_class.new.control_positions(12345 + 100, 1, 100, 3)).to eq([46, 13, 80])
-      expect(described_class.new.control_positions(12345 + 100, 2, 100, 3)).to eq([47, 14, 81])
+      expect(described_class.new.control_positions(12345 + 100, 0, 100, 3)).to eq([4, 51, 95])
+      expect(described_class.new.control_positions(12345 + 100, 1, 100, 3)).to eq([5, 53, 98])
+      expect(described_class.new.control_positions(12345 + 100, 2, 100, 3)).to eq([6, 55, 67])
     end
 
-    it 'does not clash with consecutive batches (4)' do
+    it 'does not clash with consecutive batches (4)', :aggregate_failures do
       # Test batch id 12545, plate 0 to 2, 100 free wells, 3 control wells
-      expect(described_class.new.control_positions(12345 + 200, 0, 100, 3)).to eq([45, 12, 79])
-      expect(described_class.new.control_positions(12345 + 200, 1, 100, 3)).to eq([46, 13, 80])
-      expect(described_class.new.control_positions(12345 + 200, 2, 100, 3)).to eq([47, 14, 81])
+      expect(described_class.new.control_positions(12345 + 200, 0, 100, 3)).to eq([5, 55, 99])
+      expect(described_class.new.control_positions(12345 + 200, 1, 100, 3)).to eq([6, 57, 68])
+      expect(described_class.new.control_positions(12345 + 200, 2, 100, 3)).to eq([7, 59, 71])
     end
 
-    it 'also works with big batch id and small wells' do
+    it 'also works with big batch id and small wells', :aggregate_failures do
       # Test batch id 12545, plate 0 to 4, 3 free wells, 1 control wells
       expect(described_class.new.control_positions(12345, 0, 3, 1)).to eq([0])
       expect(described_class.new.control_positions(12345, 1, 3, 1)).to eq([1])
@@ -223,9 +223,9 @@ RSpec.describe CherrypickTask, type: :model do
 
     it 'does not place controls in the first three columns for a 96-well destination plate' do
       # positions 0 - 24
-      expect(described_class.new.control_positions(12345, 0, 96, 3, wells_to_leave_free: 24)).to eq([57, 33, 81])
-      expect(described_class.new.control_positions(12345, 1, 96, 3, wells_to_leave_free: 24)).to eq([58, 34, 82])
-      expect(described_class.new.control_positions(12345, 2, 96, 3, wells_to_leave_free: 24)).to eq([59, 35, 83])
+      expect(described_class.new.control_positions(12345, 0, 96, 3, wells_to_leave_free: 24)).to eq([33, 67, 88])
+      expect(described_class.new.control_positions(12345, 1, 96, 3, wells_to_leave_free: 24)).to eq([34, 69, 91])
+      expect(described_class.new.control_positions(12345, 2, 96, 3, wells_to_leave_free: 24)).to eq([35, 71, 94])
     end
   end
 
