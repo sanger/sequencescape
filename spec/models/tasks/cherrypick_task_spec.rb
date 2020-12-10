@@ -160,39 +160,42 @@ RSpec.describe CherrypickTask, type: :model do
       let(:wells_to_keep_free) { expected_free_columns * 8 }
       let(:number_of_potential_control_wells) { plate_size - wells_to_keep_free }
       let(:starting_offset) { batch_id % number_of_potential_control_wells }
-      # We want to space out our controls across the plate. We do this by shifting our starting position
-      # by half a plate (in the case of two controls). The logic here is a slight simplification of that used
-      # in the code, as we only need to handle the values used in this particular test. In practice we'll actually
-      # take a second modulo, to allow wrapping round.
-      let(:starting_offset_control_2) { starting_offset - (number_of_potential_control_wells / number_of_controls) }
+      let(:starting_offset_control_2) { 67 }
 
       # rubocop:todo RSpec/ExampleLength
       it 'can generate the control positions of 384 plates of the same batch id', aggregate_failures: true do
         384.times do |num_plate|
           expect(described_class.new.control_positions(batch_id, num_plate, plate_size, number_of_controls)).to eq([
-            wells_to_keep_free + (starting_offset + num_plate) % number_of_potential_control_wells,
-            wells_to_keep_free + (starting_offset_control_2 + num_plate) % number_of_potential_control_wells
+            (wells_to_keep_free + (starting_offset + num_plate)) % (number_of_potential_control_wells / number_of_controls),
+            ((wells_to_keep_free + (starting_offset_control_2 + (num_plate * 2))) % (number_of_potential_control_wells / number_of_controls)) + (number_of_potential_control_wells / number_of_controls)
           ])
         end
       end
 
       it 'produces a sensible distribution over multiple batches', aggregate_failures: true do
+
         num_plate = 0
-        384.times do |batch_increment|
+        10.times do |batch_increment|
           expect(described_class.new.control_positions(batch_id + batch_increment, num_plate, plate_size, number_of_controls)).to eq([
-            wells_to_keep_free + (starting_offset + batch_increment) % number_of_potential_control_wells,
-            wells_to_keep_free + (starting_offset_control_2 + batch_increment) % number_of_potential_control_wells
+            (wells_to_keep_free + (starting_offset + batch_increment)) % (number_of_potential_control_wells / number_of_controls),
+            (((wells_to_keep_free + (starting_offset_control_2 + batch_increment))) % (number_of_potential_control_wells / number_of_controls)) + (number_of_potential_control_wells / number_of_controls)
           ])
         end
       end
       # rubocop:enable RSpec/ExampleLength
 
       it 'can allocate right controls when number of plate position exceeds wells', aggregate_failures: true do
-        expect(described_class.new.control_positions(batch_id, 0, plate_size, number_of_controls)).to eq([41, 89])
-        expect(described_class.new.control_positions(batch_id, 6, plate_size, number_of_controls)).to eq([47, 95])
-        expect(described_class.new.control_positions(batch_id, 7, plate_size, number_of_controls)).to eq([48, 0])
-        expect(described_class.new.control_positions(batch_id, 55, plate_size, number_of_controls)).to eq([0, 48])
-        expect(described_class.new.control_positions(batch_id, 56, plate_size, number_of_controls)).to eq([1, 49])
+        expect(described_class.new.control_positions(batch_id, 0, plate_size, number_of_controls)).to eq([41, 67])
+        expect(described_class.new.control_positions(batch_id, 6, plate_size, number_of_controls)).to eq([47, 79])
+        
+        # N.B. 
+        # About following tests between plate 7th and plate 55th: although clashes don't occur with batches, it happens
+        # with num_plate every {plate_size / num_controls} plates (55th - 7th = 48, which is equal to 96 / 2)
+        # That's why these 2 tests controls are clashing
+        expect(described_class.new.control_positions(batch_id, 7, plate_size, number_of_controls)).to eq([0, 81])
+        expect(described_class.new.control_positions(batch_id, 55, plate_size, number_of_controls)).to eq([0, 81]) 
+
+        expect(described_class.new.control_positions(batch_id, 56, plate_size, number_of_controls)).to eq([1, 83])
       end
     end
 

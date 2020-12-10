@@ -30,21 +30,26 @@ class CherrypickTask < Task
   #
   def control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
     total_available_positions = total_wells - wells_to_leave_free
-    control_separation = total_available_positions / num_control_wells
 
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
 
-    Array.new(num_control_wells) do |control_well_index|
-      # The position of controls varies from batch to batch, and advances by one
-      # position for each plate in that batch. If we have multiple controls on a
-      # plate, we try to space them evenly. This establishes the relative
-      # positions for each control. We then take the modulo against the number
-      # of available wells to set the final position on the plate itself
-      position_index = batch_id + # We advance the control position as the batch_id increases
-                       num_plate - # Then once per plate in the batch
-                       (control_well_index * control_separation) # Finally we distribute the controls evenly
-      # Finally we layout the controls on the actual available positions on our plate
-      wells_to_leave_free + (position_index % total_available_positions)
+    quotient = batch_id
+    size_region = (total_available_positions / num_control_wells)
+    regions = (wells_to_leave_free..(total_wells-1)).each_slice(size_region).to_a
+
+    # Number of regions should equal number of controls, so sometimes last region is bigger than average
+    if regions.length > num_control_wells
+      last_region = regions.slice!(regions.length-1, 1)
+      regions[regions.length-1].concat(last_region)
+    end
+
+    position = 0
+    regions.each_with_index.map do |region, num_region|
+      quotient, remain = quotient.divmod(region.length)
+      # Feeding the new position with the old position seems to add more 
+      # variability between the controls positions
+      position = (remain + num_plate + position) % region.length
+      region[position]
     end
   end
 
