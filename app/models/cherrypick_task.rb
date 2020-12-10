@@ -13,8 +13,8 @@ class CherrypickTask < Task
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
 
   #
-  # Returns a list with the destination positions for the control wells distributed by
-  # using batch_id and num_plate as position generators.
+  # Returns a list with the destination positions for the control wells distributed randomly
+  # using batch_id as seed and num_plate to increase position with plates in same batch.
   # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
   # control wells being missed in cDNA quant QC. This requirement was removed in
   # https://github.com/sanger/sequencescape/issues/2967 however I've avoided stripping out the behaviour
@@ -33,23 +33,23 @@ class CherrypickTask < Task
 
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
 
-    quotient = batch_id
-    size_region = (total_available_positions / num_control_wells)
-    regions = (wells_to_leave_free..(total_wells - 1)).each_slice(size_region).to_a
+    available_positions = (wells_to_leave_free..(total_wells - 1)).to_a
+    # If num plate is equal to the available positions, the cycle is going to be repeated.
+    # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
+    seed = batch_id * ((num_plate / available_positions.length) + 1)
+    initial_positions = random_elements_from_list(available_positions, num_control_wells, seed)
+    control_positions_for_plate(num_plate, initial_positions, available_positions)
+  end
 
-    # Number of regions should equal number of controls, so sometimes last region is bigger than average
-    if regions.length > num_control_wells
-      last_region = regions.slice!(regions.length - 1, 1)
-      regions[regions.length - 1].concat(*last_region)
-    end
+  def random_elements_from_list(list, num_elems, seed)
+    list.sample(num_elems, random: Random.new(seed))
+  end
 
-    position = 0
-    regions.each_with_index.map do |region, _num_region|
-      quotient, remain = quotient.divmod(region.length)
-      # Feeding the new position with the old position seems to add more
-      # variability between the controls positions
-      position = (remain + num_plate + position) % region.length
-      region[position]
+  def control_positions_for_plate(num_plate, initial_positions, available_positions)
+    return initial_positions if num_plate.zero?
+
+    initial_positions.map do |pos|
+      available_positions[(available_positions.index(pos) + num_plate) % available_positions.length]
     end
   end
 
