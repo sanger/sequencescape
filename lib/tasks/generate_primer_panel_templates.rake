@@ -19,7 +19,7 @@ namespace :primer_panel_templates do
       end
       varieties.each do |variety|
         existing_template.dup.tap do |new_template|
-          new_template.name = "#{existing_template_name} - #{primer_panel_suffix} - #{variety}"
+          new_template.name = "#{existing_template_name}-#{variety}-#{primer_panel_suffix}"
           next if TagLayoutTemplate.find_by(name: new_template.name)
 
           new_template.save!

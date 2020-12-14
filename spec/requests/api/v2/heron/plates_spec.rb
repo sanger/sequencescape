@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
+describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true, heron_events: true do
   describe '#create' do
     include BarcodeHelper
 
@@ -249,6 +249,77 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true do
           expect(Aliquot.count).to eq(0)
           expect { request }.to raise_error(RuntimeError)
           expect(Aliquot.count).to eq(0)
+        end
+      end
+    end
+
+    context 'when providing events' do
+      let(:study) { create(:study) }
+      let!(:sample) { create(:sample) }
+      let(:wells) do
+        {
+          'A01': { 'content': { 'phenotype': 'A phenotype' } },
+          'B01': { 'content': { 'sample_uuid': sample.uuid } }
+        }
+      end
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'plates',
+            'attributes' => {
+              'barcode' => barcode,
+              'study_uuid' => study.uuid,
+              'purpose_uuid' => purpose.uuid,
+              'wells' => wells,
+              'events' => events
+            }
+          }
+        }
+      end
+      let(:subjects) do
+        [
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+                subject_type: 'plate'),
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
+                subject_type: 'sample'),
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE,
+                subject_type: 'robot')
+        ]
+      end
+      let(:events) do
+        [{ 'event': {
+          'event_type': BroadcastEvent::PlateCherrypicked::EVENT_TYPE,
+          'subjects': subjects
+        } }]
+      end
+
+      it_behaves_like 'a successful plate creation'
+
+      it 'creates the event for the plate provided' do
+        expect(BroadcastEvent::PlateCherrypicked.where(seed: plate).count).to eq(1)
+      end
+
+      context 'when missing required subjects in the events part' do
+        let(:subjects) do
+          [
+            build(:event_subject,
+                  role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+                  subject_type: 'plate'),
+            build(:event_subject,
+                  role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE,
+                  subject_type: 'robot')
+          ]
+        end
+
+        it_behaves_like 'a failed plate creation'
+
+        it 'displays the error' do
+          expect(error_messages).to eq([
+            "Samples is a required subject needed for the event 'lh_beckman_cp_destination_created'"
+          ])
         end
       end
     end
