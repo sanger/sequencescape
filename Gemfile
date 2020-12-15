@@ -124,11 +124,6 @@ group :development do
   gem 'bullet'
   # Automatically generate documentation
   gem 'yard', require: false
-  # Enforces coding styles and detects some bad practices
-  gem 'rubocop', require: false
-  gem 'rubocop-performance'
-  gem 'rubocop-rails'
-  gem 'rubocop-rspec', require: false
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
@@ -140,6 +135,18 @@ group :development do
   gem 'mini_racer'
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
+end
+
+group :development, :linting do
+  # Enforces coding styles and detects some bad practices
+  gem 'rubocop', require: false
+  gem 'rubocop-performance'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec', require: false
+end
+
+group :linting, :test do
+  gem 'test-prof'
 end
 
 group :development, :test, :cucumber do
@@ -170,7 +177,6 @@ group :test do
   gem 'rails-perftest'
   gem 'rspec-collection_matchers' # Provides matchers for dealing with arrays
   gem 'rspec-longrun' # Extends scenario logging for more verbose tracking
-  gem 'test-prof'
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
