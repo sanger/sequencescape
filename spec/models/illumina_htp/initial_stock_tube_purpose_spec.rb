@@ -26,9 +26,7 @@ describe IlluminaHtp::InitialStockTubePurpose do
     before do
       create :transfer_request, asset: parent_well, target_asset: tube, submission: current_submission
       library_request
-      if sibling_tube
-        create :transfer_request, asset: parents_sibling_well, target_asset: sibling_tube, submission: sibling_submission, state: sibling_state
-      end
+      create :transfer_request, asset: parents_sibling_well, target_asset: sibling_tube, submission: sibling_submission, state: sibling_state if sibling_tube
       create :multiplex_request, asset: parents_sibling_well, target_asset: target_tube, submission: sibling_submission, request_type: sibling_request_type
     end
 

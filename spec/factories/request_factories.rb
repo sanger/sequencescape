@@ -44,9 +44,7 @@ FactoryBot.define do
       # This is all a bit 'clever' and should be simplified
       # We could use the request class is removing it completely is tricky
       metadata_factory = :"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}"
-      if request.request_metadata.new_record? && FactoryBot.factories.registered?(metadata_factory)
-        request.request_metadata_attributes = attributes_for(metadata_factory)
-      end
+      request.request_metadata_attributes = attributes_for(metadata_factory) if request.request_metadata.new_record? && FactoryBot.factories.registered?(metadata_factory)
       request.sti_type = request.request_type.request_class_name
     end
 

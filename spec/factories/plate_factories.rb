@@ -230,7 +230,7 @@ FactoryBot.define do
 
     after(:create) do |plate, _evaluator|
       plate.wells.each_with_index do |well, index|
-        next if well.aliquots.count == 0
+        next if well.aliquots.empty?
 
         if index.even?
           well.aliquots.first.sample.update(control: true, control_type: 'positive')

@@ -211,7 +211,7 @@ shared_examples 'a cherrypicking procedure' do
 
               # fill in robot bed barcode for control if present
               if control_plate
-                if robot.robot_properties.where(key: 'CTRL1').count > 0
+                if robot.robot_properties.exists?(key: 'CTRL1')
                   # This is for Hamilton robots, which have a control specific bed
                   fill_in('CTRL 1', with: get_machine_barcode_for_bed('CTRL1'))
                 else

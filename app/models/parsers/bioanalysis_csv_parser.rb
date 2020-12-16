@@ -36,7 +36,7 @@ class Parsers::BioanalysisCsvParser
     type = content[starting_line][0]
     fields = content[starting_line + 1]
 
-    for pos in (starting_line + 2)..(ending_line) do
+    ((starting_line + 2)..(ending_line)).each do |pos|
       values = content[pos]
       unless values.nil? && (values.length != fields.length)
         content_hash.merge!(Hash[fields.zip(values)])

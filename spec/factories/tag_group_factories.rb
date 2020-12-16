@@ -43,11 +43,10 @@ FactoryBot.define do
     end
 
     after(:build) do |tag_group_form_object, evaluator|
-      if evaluator.oligos_count > 0
-        o_list = []
-        evaluator.oligos_count.times do |i|
+      if evaluator.oligos_count.positive?
+        o_list = Array.new(evaluator.oligos_count) do |i|
           # generates a series of 8-character oligos
-          o_list << (16384 + i).to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
+          (16384 + i).to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
         end
         tag_group_form_object.oligos_text = o_list.join(' ')
       end
