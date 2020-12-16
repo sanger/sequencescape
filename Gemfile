@@ -143,6 +143,7 @@ group :development, :linting do
   gem 'rubocop-performance'
   gem 'rubocop-rails'
   gem 'rubocop-rspec', require: false
+  gem 'yard-activerecord', '~> 0.0.16'
 end
 
 group :linting, :test do
@@ -210,7 +211,7 @@ group :test, :cucumber do
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
   # Keep webdriver in sync with chrome to prevent frustrating CI failures
-  gem 'webdrivers', require: false
+  gem 'webdrivers'
 end
 
 group :cucumber do
@@ -226,5 +227,3 @@ group :deployment do
   gem 'slack-notifier'
   gem 'whenever', require: false
 end
-
-gem 'yard-activerecord', '~> 0.0.16'

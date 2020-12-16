@@ -30,7 +30,7 @@ chdir APP_ROOT do
     system!('bundle config without warehouse')
   end
 
-  system('bundle check') || system!('bundle install')
+  system('bundle check') || system!('bundle install --jobs 4 --retry 3')
 
   # Install JavaScript dependencies if using Yarn
   system('bin/yarn')

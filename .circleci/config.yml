@@ -214,17 +214,6 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
-  upload-coverage:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/repo
-      - run:
-          name: Upload coverage results to Code Climate
-          command: |
-            ls ./tmp
-            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json -p 5 -o tmp/codeclimate.total.json
-            ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.total.json
 
 workflows:
   version: 2
@@ -244,8 +233,3 @@ workflows:
       - run-rubocop:
           requires:
             - build
-      - upload-coverage:
-          requires:
-            - run-specs
-            - run-tests
-            - run-cukes
