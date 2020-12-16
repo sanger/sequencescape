@@ -19,7 +19,7 @@ AllCops:
     - db/schema.rb
     - db/views_schema.rb
     - db/archived_migrations/*
-    # Travis installs gems in the vendor directory, which causes rubocop to try
+    # CI installs gems in the vendor directory, which causes rubocop to try
     # and cop our gems. We don't want it to.
     - vendor/**/*
     - bin/*
@@ -61,7 +61,7 @@ Metrics/BlockLength:
     - Gemfile
     - 'db/seeds/**/*'
     - '**/*.builder'
-  ExcludedMethods:
+  IgnoredMethods:
     - describe
     - context
     - background
@@ -124,89 +124,93 @@ Rails/UnknownEnv:
     - profile
 
 # Pending Cops
-Layout/EmptyLinesAroundAttributeAccessor:
+Lint/DuplicateBranch: # (new in 1.3)
   Enabled: true
-Layout/SpaceAroundMethodCallOperator:
+Lint/DuplicateRegexpCharacterClassElement: # (new in 1.1)
   Enabled: true
-Lint/DeprecatedOpenSSLConstant:
+Lint/EmptyBlock: # (new in 1.1)
   Enabled: true
-Lint/RaiseException:
+Lint/EmptyClass: # (new in 1.3)
   Enabled: true
-Lint/StructNewOverride:
+Lint/NoReturnInBeginEndBlocks: # (new in 1.2)
   Enabled: true
-Style/ExponentialNotation:
+Lint/ToEnumArguments: # (new in 1.1)
   Enabled: true
-Style/HashEachMethods:
+Lint/UnexpectedBlockArity: # (new in 1.5)
   Enabled: true
-Style/HashTransformKeys:
+Lint/UnmodifiedReduceAccumulator: # (new in 1.1)
   Enabled: true
-Style/HashTransformValues:
+Style/ArgumentsForwarding: # (new in 1.1)
   Enabled: true
-Style/SlicingWithRange:
+Style/CollectionCompact: # (new in 1.2)
   Enabled: true
-Lint/MixedRegexpCaptureTypes:
+Style/DocumentDynamicEvalDefinition: # (new in 1.1)
   Enabled: true
-Style/RedundantFetchBlock:
+Style/NegatedIfElseCondition: # (new in 1.2)
   Enabled: true
-Style/RedundantRegexpCharacterClass:
+Style/NilLambda: # (new in 1.3)
   Enabled: true
-Style/RedundantRegexpEscape:
+Style/RedundantArgument: # (new in 1.4)
   Enabled: true
-Lint/DuplicateElsifCondition:
+Style/SwapValues: # (new in 1.1)
   Enabled: true
-Style/AccessorGrouping:
+Performance/AncestorsInclude: # (new in 1.7)
   Enabled: true
-Style/ArrayCoercion:
+Performance/BigDecimalWithNumericArgument: # (new in 1.7)
   Enabled: true
-Style/BisectedAttrAccessor:
+Performance/RedundantSortBlock: # (new in 1.7)
   Enabled: true
-Style/CaseLikeIf:
+Performance/RedundantStringChars: # (new in 1.7)
   Enabled: true
-Style/HashAsLastArrayItem:
+Performance/ReverseFirst: # (new in 1.7)
   Enabled: true
-Style/HashLikeCase:
+Performance/SortReverse: # (new in 1.7)
   Enabled: true
-Style/RedundantAssignment:
+Performance/Squeeze: # (new in 1.7)
   Enabled: true
-Style/RedundantFileExtensionInRequire:
+Performance/StringInclude: # (new in 1.7)
   Enabled: true
-Performance/AncestorsInclude:
+Rails/ActiveRecordCallbacksOrder: # (new in 2.7)
   Enabled: true
-Performance/BigDecimalWithNumericArgument:
+Rails/FindById: # (new in 2.7)
   Enabled: true
-Performance/RedundantSortBlock:
+Rails/Inquiry: # (new in 2.7)
   Enabled: true
-Performance/RedundantStringChars:
+Rails/MailerName: # (new in 2.7)
   Enabled: true
-Performance/ReverseFirst:
+Rails/MatchRoute: # (new in 2.7)
   Enabled: true
-Performance/SortReverse:
+Rails/NegateInclude: # (new in 2.7)
   Enabled: true
-Performance/Squeeze:
+Rails/Pluck: # (new in 2.7)
   Enabled: true
-Performance/StringInclude:
+Rails/PluckInWhere: # (new in 2.7)
   Enabled: true
-Rails/ActiveRecordCallbacksOrder:
+Rails/RenderInline: # (new in 2.7)
   Enabled: true
-Rails/FindById:
+Rails/RenderPlainText: # (new in 2.7)
   Enabled: true
-Rails/Inquiry:
+Rails/ShortI18n: # (new in 2.7)
   Enabled: true
-Rails/MailerName:
+Rails/WhereExists: # (new in 2.7)
   Enabled: true
-Rails/MatchRoute:
+Performance/BlockGivenWithExplicitBlock: # (new in 1.9)
   Enabled: true
-Rails/NegateInclude:
+Performance/CollectionLiteralInLoop: # (new in 1.8)
   Enabled: true
-Rails/Pluck:
+Performance/ConstantRegexp: # (new in 1.9)
   Enabled: true
-Rails/PluckInWhere:
+Performance/MethodObjectAsBlock: # (new in 1.9)
   Enabled: true
-Rails/RenderInline:
+Performance/Sum: # (new in 1.8)
   Enabled: true
-Rails/RenderPlainText:
+Rails/AfterCommitOverride: # (new in 2.8)
   Enabled: true
-Rails/ShortI18n:
+Rails/AttributeDefaultBlockValue: # (new in 2.9)
   Enabled: true
-Rails/WhereExists:
+Rails/SquishedSQLHeredocs: # (new in 2.8)
+  Enabled: true
+Rails/WhereEquals: # (new in 2.9)
+  Enabled: true
+Rails/WhereNot: # (new in 2.8)
   Enabled: true
