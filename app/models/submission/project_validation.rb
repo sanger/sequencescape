@@ -9,7 +9,10 @@ module Submission::ProjectValidation
       end
 
       validates_each(:project, if: :validating?) do |record, _attr, project|
-        record.errors.add(:base, "Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}") unless project.submittable?
+        unless project.submittable?
+          record.errors.add(:base,
+                            "Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}")
+        end
       end
 
       before_create :confirm_validity!

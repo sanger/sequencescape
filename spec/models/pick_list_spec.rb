@@ -74,13 +74,19 @@ RSpec.describe PickList, type: :model, pick_list: true do
     context 'when asynchronous is true' do
       let(:asynchronous) { true }
 
-      it { is_expected.to include(name: "Pick-list #{pick_list.id}", url: pick_list_url(pick_list, host: configatron.site_url)) }
+      it {
+        expect(subject).to include(name: "Pick-list #{pick_list.id}",
+                                   url: pick_list_url(pick_list, host: configatron.site_url))
+      }
     end
 
     context 'when asynchronous is false' do
       let(:asynchronous) { false }
 
-      it { is_expected.to include(name: "Batch #{Batch.last.id}", url: batch_url(Batch.last, host: configatron.site_url)) }
+      it {
+        expect(subject).to include(name: "Batch #{Batch.last.id}",
+                                   url: batch_url(Batch.last, host: configatron.site_url))
+      }
     end
   end
 end

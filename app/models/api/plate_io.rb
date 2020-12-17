@@ -12,7 +12,10 @@ class Api::PlateIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :plate_metadata, :barcodes, { plate_purpose: :uuid_object }]) }
+        scope :including_associations_for_json, lambda {
+                                                  includes([:uuid_object, :plate_metadata, :barcodes,
+                                                            { plate_purpose: :uuid_object }])
+                                                }
       end
     end
 

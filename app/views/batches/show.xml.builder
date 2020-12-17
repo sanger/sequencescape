@@ -19,7 +19,8 @@ xml.batch do
         ]
       ).each do |batch_request|
         request = batch_request.request
-        xml.lane("position" => batch_request.position, 'id' => request.target_asset_id, 'priority' => request.priority) {
+        xml.lane("position" => batch_request.position, 'id' => request.target_asset_id,
+                 'priority' => request.priority) {
           # This batch seems very broken!
           if request.asset.nil?
             xml.comment!("The request #{request.id} has no source asset which is very bad!")
@@ -44,7 +45,9 @@ xml.batch do
           # If there are no aliquots in the target asset and the batch is not pending then we likely have
           # an error.  If the batch is pending then the aliquots are assumed to have not been transferred
           # so the lane is effectively empty.
-          raise StandardError, "Empty lane #{request.target_asset.id} in batch #{@batch.id}" if not @batch.pending? and target_asset_aliquots.empty?
+          if not @batch.pending? and target_asset_aliquots.empty?
+            raise StandardError, "Empty lane #{request.target_asset.id} in batch #{@batch.id}"
+          end
 
           if target_asset_aliquots.empty?
             # This is a batch that has yet to be started

@@ -12,7 +12,10 @@ class Api::SampleTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :barcodes, { primary_aliquot: { sample: :uuid_object } }, :scanned_into_lab_event]) }
+        scope :including_associations_for_json, lambda {
+                                                  includes([:uuid_object, :barcodes,
+                                                            { primary_aliquot: { sample: :uuid_object } }, :scanned_into_lab_event])
+                                                }
       end
     end
   end

@@ -124,7 +124,8 @@ class Well < Receptacle
 
   scope :pooled_as_source_by, ->(type) {
     joins("LEFT JOIN requests pasb ON #{table_name}.id=pasb.asset_id")
-      .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
+      .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)',
+              [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
       .select_table
       .select('pasb.submission_id AS pool_id').distinct
   }
@@ -132,10 +133,18 @@ class Well < Receptacle
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
   scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
   scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
-  scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC').select_table.select('column_order') }
+  scope :in_inverse_column_major_order, -> {
+                                          joins(:map).order('column_order DESC').select_table.select('column_order')
+                                        }
   scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select_table.select('row_order') }
-  scope :in_plate_column, ->(col, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size), asset_size: size }) }
-  scope :in_plate_row,    ->(row, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size), asset_size: size }) }
+  scope :in_plate_column, ->(col, size) {
+                            joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size),
+                                                      asset_size: size })
+                          }
+  scope :in_plate_row,    ->(row, size) {
+                            joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size),
+                                                      asset_size: size })
+                          }
   scope :with_blank_samples, -> {
     joins([
       'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id',

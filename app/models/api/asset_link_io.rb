@@ -12,7 +12,10 @@ class Api::AssetLinkIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, { ancestor: :uuid_object }, { descendant: :uuid_object }]) }
+        scope :including_associations_for_json, lambda {
+                                                  includes([:uuid_object, { ancestor: :uuid_object },
+                                                            { descendant: :uuid_object }])
+                                                }
       end
     end
   end

@@ -53,8 +53,12 @@ class BaitLibraryLayout < ApplicationRecord
 
   def each_bait_library_assignment
     plate.stock_wells.each do |well, stock_wells|
-      bait_library = stock_wells.map { |w| w.requests_as_source.for_submission_id(well.pool_id).first }.compact.map(&:request_metadata).map(&:bait_library).uniq
-      raise StandardError, "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.human_barcode}" if bait_library.size > 1
+      bait_library = stock_wells.map do |w|
+        w.requests_as_source.for_submission_id(well.pool_id).first
+      end.compact.map(&:request_metadata).map(&:bait_library).uniq
+      if bait_library.size > 1
+        raise StandardError, "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.human_barcode}"
+      end
 
       yield(well, bait_library.first)
     end

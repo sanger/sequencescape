@@ -19,7 +19,9 @@ class AssetsController < ApplicationController
         format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
-        format.xml { render xml: [{ 'relations' => { 'parents' => @asset.parents, 'children' => @asset.children } }].to_xml }
+        format.xml do
+          render xml: [{ 'relations' => { 'parents' => @asset.parents, 'children' => @asset.children } }].to_xml
+        end
       end
     end
   end
@@ -159,7 +161,8 @@ class AssetsController < ApplicationController
   end
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
+    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id),
+                                   request_type_id: @request_type.try(:id))
   end
 
   def discover_asset

@@ -149,13 +149,16 @@ class BulkSubmission
 
             begin
               orders_processed = orders.map(&method(:prepare_order)).compact
-              library_types = orders_processed.map { |order| order.request_options['library_type'] unless order.request_options.nil? }.uniq
+              library_types = orders_processed.map do |order|
+                order.request_options['library_type'] unless order.request_options.nil?
+              end.uniq
               if library_types.size > 1
                 errors.add :spreadsheet, "Submission #{submission_name} has multiple library types: #{library_types.join(', ')}."
                 next
               end
 
-              submission = Submission.create!(name: submission_name, user: user, orders: orders_processed, priority: max_priority(orders))
+              submission = Submission.create!(name: submission_name, user: user, orders: orders_processed,
+                                              priority: max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
@@ -221,7 +224,9 @@ class BulkSubmission
       csv_data_rows.each_with_index do |row, index|
         next if row.all?(&:nil?)
 
-        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header, pos, row, index + start_row) }].merge('row' => index + start_row)
+        details = Hash[headers.each_with_index.map do |header, pos|
+                         validate_entry(header, pos, row, index + start_row)
+                       end ].merge('row' => index + start_row)
         submission[details['submission name']] << details
       end
     end.map do |submission_name, rows|
@@ -246,7 +251,8 @@ class BulkSubmission
       option = rows.map { |r| r[field] }.uniq
       if option.count > 1
         provided_values = option.map { |o| "'#{o}'" }.to_sentence
-        errors.add(:spreadsheet, "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. Given values were: #{provided_values}.")
+        errors.add(:spreadsheet,
+                   "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. Given values were: #{provided_values}.")
       end
       [field, option.first]
     end
@@ -263,15 +269,25 @@ class BulkSubmission
       read_length: details['read length'],
       multiplier: {}
     }.tap do |request_options|
-      request_options['library_type']                  = details['library type']           if details['library type'].present?
-      request_options['fragment_size_required_from']   = details['fragment size from']     if details['fragment size from'].present?
-      request_options['fragment_size_required_to']     = details['fragment size to']       if details['fragment size to'].present?
-      request_options['pcr_cycles']                    = details['pcr cycles']             if details['pcr cycles'].present?
-      request_options[:bait_library_name]              = details['bait library name']      if details['bait library name'].present?
-      request_options[:bait_library_name]            ||= details['bait library']           if details['bait library'].present?
-      request_options['pre_capture_plex_level']        = details['pre-capture plex level'] if details['pre-capture plex level'].present?
-      request_options['gigabases_expected']            = details['gigabases expected']     if details['gigabases expected'].present?
-      request_options['primer_panel_name']             = details['primer panel']           if details['primer panel'].present?
+      request_options['library_type'] = details['library type'] if details['library type'].present?
+      if details['fragment size from'].present?
+        request_options['fragment_size_required_from']   = details['fragment size from']
+      end
+      if details['fragment size to'].present?
+        request_options['fragment_size_required_to']     = details['fragment size to']
+      end
+      request_options['pcr_cycles'] = details['pcr cycles'] if details['pcr cycles'].present?
+      if details['bait library name'].present?
+        request_options[:bait_library_name]              = details['bait library name']
+      end
+      request_options[:bait_library_name] ||= details['bait library'] if details['bait library'].present?
+      if details['pre-capture plex level'].present?
+        request_options['pre_capture_plex_level']        = details['pre-capture plex level']
+      end
+      if details['gigabases expected'].present?
+        request_options['gigabases_expected']            = details['gigabases expected']
+      end
+      request_options['primer_panel_name'] = details['primer panel'] if details['primer panel'].present?
     end
   end
 
@@ -305,7 +321,8 @@ class BulkSubmission
 
     # Deal with the asset group: either it's one we should be loading, or one we should be creating.
 
-    attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
+    attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'],
+                                                                     details['asset group name'])
     attributes[:asset_group_name] = details['asset group name'] if attributes[:asset_group].nil?
 
     ##
@@ -335,9 +352,15 @@ class BulkSubmission
                        raise StandardError, 'Please specify a barcode or name for each asset.'
                      end
 
-      assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
-      raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
-      raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}" if assets_found.size > expecting
+      assets_found, expecting = found_assets.map do |asset|
+                                  "#{asset.name}(#{asset.id})"
+                                end, asset_ids.size + asset_names.size
+      if assets_found.size < expecting
+        raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"
+      end
+      if assets_found.size > expecting
+        raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}"
+      end
 
     end
 

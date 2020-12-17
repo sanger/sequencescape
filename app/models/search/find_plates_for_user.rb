@@ -5,7 +5,10 @@ class Search::FindPlatesForUser < Search
     criteria = default_parameters.stringify_keys.merge(user_criteria)
 
     # External calls will probably use uuids not ids
-    criteria['plate_purpose_ids'] = Uuid.where(resource_type: 'Purpose', external_id: criteria['plate_purpose_uuids']).pluck(:id) if criteria['plate_purpose_uuids']
+    if criteria['plate_purpose_uuids']
+      criteria['plate_purpose_ids'] = Uuid.where(resource_type: 'Purpose',
+                                                 external_id: criteria['plate_purpose_uuids']).pluck(:id)
+    end
 
     Plate.with_purpose(criteria['plate_purpose_ids'])
          .for_user(Uuid.lookup_single_uuid(criteria['user_uuid']).resource)

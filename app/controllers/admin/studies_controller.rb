@@ -63,7 +63,10 @@ class Admin::StudiesController < ApplicationController
     @study = Study.find(params[:id])
     redirect_if_not_owner_or_admin(@study)
 
-    Document.create!(documentable: @study, uploaded_data: params[:study][:uploaded_data]) if params[:study][:uploaded_data].present?
+    if params[:study][:uploaded_data].present?
+      Document.create!(documentable: @study,
+                       uploaded_data: params[:study][:uploaded_data])
+    end
     params[:study].delete(:uploaded_data)
 
     ActiveRecord::Base.transaction do

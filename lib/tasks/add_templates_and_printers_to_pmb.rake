@@ -343,7 +343,9 @@ namespace :pmb do
         end
 
         def get_names_and_ids(res)
-          Hash[JSON.parse(res)['data'].map { |label_type| [label_type['attributes']['name'].downcase, label_type['id']] }]
+          Hash[JSON.parse(res)['data'].map do |label_type|
+                 [label_type['attributes']['name'].downcase, label_type['id']]
+               end ]
         end
 
         def register_label_template(template)
@@ -399,7 +401,8 @@ namespace :pmb do
 
   task add_printers: :environment do
     def register_printer(name)
-      RestClient.post(printer_url, { 'data' => { 'attributes' => { 'name' => name } } }, LabelPrinter::PmbClient.headers)
+      RestClient.post(printer_url, { 'data' => { 'attributes' => { 'name' => name } } },
+                      LabelPrinter::PmbClient.headers)
     end
 
     def get_pmb_printers_names

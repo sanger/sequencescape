@@ -19,6 +19,8 @@ module EventfulRecord
   end
 
   def has_one_event_with_family(event_family, &block)
-    has_one(:"#{event_family}_event", ->() { order(id: :desc).where(family: event_family) }, class_name: 'Event', as: :eventful, &block)
+    has_one(:"#{event_family}_event", lambda {
+                                        order(id: :desc).where(family: event_family)
+                                      }, class_name: 'Event', as: :eventful, &block)
   end
 end

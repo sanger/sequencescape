@@ -24,7 +24,10 @@ module SequencescapeExcel
         conditional_formatting.update(attributes)
       end
 
-      @saved = attributes[:worksheet].add_conditional_formatting(attributes[:reference], options) if attributes[:worksheet].present? && conditional_formattings.any?
+      if attributes[:worksheet].present? && conditional_formattings.any?
+        @saved = attributes[:worksheet].add_conditional_formatting(attributes[:reference],
+                                                                   options)
+      end
 
       self
     end

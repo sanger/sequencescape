@@ -5,7 +5,9 @@ Given /^study "([^"]+)" has an asset group called "([^"]+)" with (\d+) wells$/ d
 
   plate = FactoryBot.create(:plate)
   study.asset_groups.create!(name: group_name).tap do |asset_group|
-    asset_group.assets << (1..count.to_i).map { |index| FactoryBot.create(:well, plate: plate, map: Map.map_96wells[index - 1]) }
+    asset_group.assets << (1..count.to_i).map do |index|
+      FactoryBot.create(:well, plate: plate, map: Map.map_96wells[index - 1])
+    end
   end
 end
 
@@ -84,7 +86,9 @@ def build_batch_for(name, count)
   # step build a batch that will hold all of these requests, ensuring that it appears to be at least started
   # in some form.
   requests = pipeline.requests.ready_in_storage.all
-  raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}" if requests.size != count.to_i
+  if requests.size != count.to_i
+    raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}"
+  end
 
   batch = Batch.create!(pipeline: pipeline, user: user, requests: requests)
 end
@@ -131,7 +135,9 @@ end
 Then /^the (\d+) requests should be in the "(#{SEQUENCING_PIPELINES})" pipeline inbox$/ do |count, name|
   requests_for_pipeline(name, count.to_i) do |requests_in_inbox|
     requests_in_inbox.each do |request|
-      assert(request.comments.any? { |c| c.description =~ /^Automatically created clone of request/ }, "Request #{request.id} is not a clone!")
+      assert(request.comments.any? do |c|
+               c.description =~ /^Automatically created clone of request/
+             end, "Request #{request.id} is not a clone!")
     end
   end
 end

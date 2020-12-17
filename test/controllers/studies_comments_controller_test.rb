@@ -12,7 +12,8 @@ module Studies
 
       should_require_login(:index, resource: 'comment', parent: 'study')
 
-      resource_test('comment', actions: ['index'], ignore_actions: %w(new edit update show destroy create), formats: ['html'], parent: 'study', other_actions: ['add'])
+      resource_test('comment', actions: ['index'], ignore_actions: %w(new edit update show destroy create),
+                               formats: ['html'], parent: 'study', other_actions: ['add'])
     end
   end
 end

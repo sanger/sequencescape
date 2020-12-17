@@ -20,9 +20,13 @@ Then /^I have an ISC submission template$/ do
                             submission_class_name: 'LinearSubmission',
                             product_catalogue: 'Generic',
                             submission_parameters: { info_differential: 5,
-                                                     request_options: { 'fragment_size_required_to' => '400', 'fragment_size_required_from' => '100', 'library_type' => 'Agilent Pulldown', 'pre_capture_plex_level' => 8 },
-                                                     request_types: %w[pulldown_isc illumina_a_hiseq_paired_end_sequencing] } }
-  SubmissionSerializer.construct!(submission_parameters) unless SubmissionTemplate.find_by(name: 'Pulldown ISC - HiSeq Paired end sequencing')
+                                                     request_options: { 'fragment_size_required_to' => '400',
+                                                                        'fragment_size_required_from' => '100', 'library_type' => 'Agilent Pulldown', 'pre_capture_plex_level' => 8 },
+                                                     request_types: %w[pulldown_isc
+                                                                       illumina_a_hiseq_paired_end_sequencing] } }
+  unless SubmissionTemplate.find_by(name: 'Pulldown ISC - HiSeq Paired end sequencing')
+    SubmissionSerializer.construct!(submission_parameters)
+  end
 end
 
 Then /^I have a WGS submission template$/ do
@@ -34,7 +38,9 @@ Then /^I have a WGS submission template$/ do
                                                                        illumina_b_pool
                                                                        illumina_b_hiseq_paired_end_sequencing],
                                                      order_role: 'ILB PATH' } }
-  SubmissionSerializer.construct!(submission_parameters) unless SubmissionTemplate.find_by(name: 'Illumina-B - Pooled PATH - HiSeq Paired end sequencing')
+  unless SubmissionTemplate.find_by(name: 'Illumina-B - Pooled PATH - HiSeq Paired end sequencing')
+    SubmissionSerializer.construct!(submission_parameters)
+  end
 end
 
 Then /^the submission with UUID "([^"]+)" is ready$/ do |uuid|

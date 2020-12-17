@@ -22,7 +22,8 @@ Given /^project "([^"]*)" has enforced quotas$/ do |name|
 end
 
 Then /^I should see the project information:$/ do |expected_table|
-  expected_table.diff!(page.all(:xpath, '//div[@class="project_information"]//td').map(&:text).map(&:strip).in_groups_of(2))
+  expected_table.diff!(page.all(:xpath,
+                                '//div[@class="project_information"]//td').map(&:text).map(&:strip).in_groups_of(2))
 end
 
 Given /^the project "([^"]*)" a budget division "([^"]*)"$/ do |project_name, budget_division_name|

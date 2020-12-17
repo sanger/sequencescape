@@ -102,7 +102,8 @@ module Submission::FlexibleRequestGraph
             request_type,
             asset: source_asset, target_asset: target_asset
           ).tap do |request|
-            AssetLink.create_edge(source_asset.labware, target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
+            AssetLink.create_edge(source_asset.labware,
+                                  target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
 
             request.qc_metrics = qc_metrics.compact.uniq
             request.update_responsibilities!

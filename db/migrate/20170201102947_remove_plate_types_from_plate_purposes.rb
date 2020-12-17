@@ -12,11 +12,13 @@ class RemovePlateTypesFromPlatePurposes < ActiveRecord::Migration
     add_column :plate_purposes, :cherrypickable_source, :boolean
 
     ['ABgene_0800'].each do |name|
-      PlatePurpose.create!(name: name, type: 'PlatePurpose', barcode_printer_type_id: 2, cherrypickable_source: true, target_type: 'Plate')
+      PlatePurpose.create!(name: name, type: 'PlatePurpose', barcode_printer_type_id: 2, cherrypickable_source: true,
+                           target_type: 'Plate')
     end
 
     %w[ABgene_0765 FluidX075].each do |name|
-      PlatePurpose.create!(name: name, type: 'PlatePurpose', barcode_printer_type_id: 2, cherrypickable_source: true, target_type: 'Plate', cherrypickable_target: false)
+      PlatePurpose.create!(name: name, type: 'PlatePurpose', barcode_printer_type_id: 2, cherrypickable_source: true,
+                           target_type: 'Plate', cherrypickable_target: false)
     end
   end
 end

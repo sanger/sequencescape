@@ -52,7 +52,9 @@ module Authorization
           if authorizable_obj.is_a? Class
             !roles.detect { |role| role.authorizable_type == authorizable_obj.to_s }.nil?
           elsif authorizable_obj
-            !roles.detect { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable == authorizable_obj }.nil?
+            !roles.detect do |role|
+              role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable == authorizable_obj
+            end.nil?
           else
             !roles.detect { |role| role.authorizable.nil? }.nil?
           end
@@ -63,7 +65,9 @@ module Authorization
           if authorizable_obj.is_a? Class
             roles.select { |role| role.authorizable_type == authorizable_obj.to_s }
           elsif authorizable_obj
-            roles.select { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable.id == authorizable_obj.id }
+            roles.select do |role|
+              role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable.id == authorizable_obj.id
+            end
           else
             roles.select { |role| role.authorizable.nil? }
           end

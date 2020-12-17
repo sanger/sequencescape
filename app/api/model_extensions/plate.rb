@@ -3,7 +3,9 @@
 module ModelExtensions::Plate
   module NamedScopeHelpers
     def include_plate_named_scope(plate_association)
-      scope :"include_#{plate_association}", -> { includes(plate_association.to_sym => ::ModelExtensions::Plate::PLATE_INCLUDES) }
+      scope :"include_#{plate_association}", lambda {
+                                               includes(plate_association.to_sym => ::ModelExtensions::Plate::PLATE_INCLUDES)
+                                             }
     end
   end
 

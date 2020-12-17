@@ -52,12 +52,16 @@ class Api::Base
       associations.each do |_association, helper|
         value = helper.target(object)
         json_attributes.update(helper.to_hash(value))
-        helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
+        helper.newer_than(value, json_attributes['updated_at']) do |timestamp|
+          json_attributes['updated_at'] = timestamp
+        end
       end
       nested_has_many_associations.each do |_association, helper|
         values = helper.target(object)
         all_targets = values.map do |value|
-          helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
+          helper.newer_than(value, json_attributes['updated_at']) do |timestamp|
+            json_attributes['updated_at'] = timestamp
+          end
           helper.to_hash(value)
         end
         json_attributes.update(helper.alias.to_s => all_targets)
@@ -270,7 +274,9 @@ class Api::Base
         end
         json_attribute = associations[attribute_or_association.to_sym].json_attribute_for_attribute(*rest)
       end
-      raise StandardError, "Unexpected attribute #{attribute_or_association.inspect} does not appear to be mapped" if json_attribute.blank?
+      if json_attribute.blank?
+        raise StandardError, "Unexpected attribute #{attribute_or_association.inspect} does not appear to be mapped"
+      end
 
       json_attribute
     end

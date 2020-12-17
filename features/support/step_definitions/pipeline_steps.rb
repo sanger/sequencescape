@@ -28,7 +28,8 @@ end
 def create_request_for_pipeline(pipeline_name, options = {})
   pipeline = Pipeline.find_by(name: pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
   request_metadata = FactoryBot.create :"request_metadata_for_#{pipeline.request_types.first.key}"
-  request_parameters = options.merge(request_type: pipeline.request_types.last, asset: FactoryBot.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
+  request_parameters = options.merge(request_type: pipeline.request_types.last,
+                                     asset: FactoryBot.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
   FactoryBot.create(:request_with_submission, request_parameters).tap do |request|
     request.asset.labware.create_scanned_into_lab_event!(content: '2018-01-01')
   end

@@ -156,7 +156,10 @@ class TransferRequest < ApplicationRecord
     # or the correct request information being missing downstream. (Which is then tricky to diagnose and repair)
     asset.aliquots.reduce(true) do |valid, aliquot|
       compatible = next_request_index[aliquot.id].present?
-      errors.add(:outer_request, "not found for aliquot #{aliquot.id} with previous request #{aliquot.request}") unless compatible
+      unless compatible
+        errors.add(:outer_request,
+                   "not found for aliquot #{aliquot.id} with previous request #{aliquot.request}")
+      end
       valid && compatible
     end
   end
@@ -165,7 +168,9 @@ class TransferRequest < ApplicationRecord
 
   def next_request_index
     @next_request_index ||= asset.aliquots.each_with_object({}) do |aliquot, store|
-      store[aliquot.id] = outer_request_candidates.detect { |r| aliquot.request&.next_requests_via_submission&.include?(r) }
+      store[aliquot.id] = outer_request_candidates.detect do |r|
+        aliquot.request&.next_requests_via_submission&.include?(r)
+      end
     end
   end
 
@@ -181,7 +186,9 @@ class TransferRequest < ApplicationRecord
   # only one option then that is what is returned, otherwise an exception is raised.
   def suggested_transition_to(target)
     valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
-    raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
+    unless valid_events.size == 1
+      raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}"
+    end
 
     valid_events.first.name
   end

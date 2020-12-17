@@ -17,7 +17,9 @@ class MigratePlateTypeToNewColumn < ActiveRecord::Migration[5.1]
     self.table_name = 'plate_types'
 
     def self.id_for(name)
-      @id_store ||= Hash.new { |store, lookup_name| store[lookup_name] = LabwareType.find_or_create_by!(name: lookup_name).id }
+      @id_store ||= Hash.new do |store, lookup_name|
+        store[lookup_name] = LabwareType.find_or_create_by!(name: lookup_name).id
+      end
       @id_store[name]
     end
   end

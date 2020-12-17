@@ -29,7 +29,10 @@ class Qcable < ApplicationRecord
 
   scope :include_for_json, -> { includes(%i[asset lot stamp stamp_qcable]) }
 
-  scope :stamped, -> { includes(%i[stamp_qcable stamp]).where('stamp_qcables.id IS NOT NULL').order('stamps.created_at ASC, stamp_qcables.order ASC') }
+  scope :stamped, -> {
+                    includes(%i[stamp_qcable
+                                stamp]).where('stamp_qcables.id IS NOT NULL').order('stamps.created_at ASC, stamp_qcables.order ASC')
+                  }
 
   has_many :barcodes, through: :asset
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate

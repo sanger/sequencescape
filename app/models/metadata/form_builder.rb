@@ -27,7 +27,9 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   def select_by_association(association, options = {}, html_options = {})
     html_options[:class] ||= 'select2'
     association_target = association.to_s.classify.constantize
-    options[:selected] = association_target.default.for_select_dropdown.last if @object.send(association).nil? and association_target.default.present?
+    if @object.send(association).nil? and association_target.default.present?
+      options[:selected] = association_target.default.for_select_dropdown.last
+    end
     select(:"#{association}_id", association_target.for_select_association, options, html_options)
   end
 
@@ -107,7 +109,9 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   def related_fields(options, &block)
     options.symbolize_keys!
 
-    values  = (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map { |v| v.to_s.downcase.gsub(/[^a-z0-9]+/, '_') }
+    values = (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map do |v|
+      v.to_s.downcase.gsub(/[^a-z0-9]+/, '_')
+    end
     content = capture(&block)
     concat(tag.div(content, class: [:related_to, options[:to], values].flatten.join(' ')))
 

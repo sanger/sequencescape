@@ -31,7 +31,8 @@ Then /^the last report for "([^"]*)" should be:$/ do |study_name, expected_resul
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
-  plate = FactoryBot.create(:plate, barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'), well_count: 3, well_order: :row_order)
+  plate = FactoryBot.create(:plate, barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'),
+                                    well_count: 3, well_order: :row_order)
   samples = []
   plate.wells.each_with_index do |well, i|
     # well = Well.create!(plate: plate, map_id: i)

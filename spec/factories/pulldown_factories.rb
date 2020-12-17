@@ -5,7 +5,9 @@ FactoryBot.define do
   factory(:transfer_plate, class: 'Plate') do
     transient do
       well_count { 3 }
-      well_locations { Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count)) }
+      well_locations do
+        Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count))
+      end
     end
     plate_purpose
     size { 96 }
@@ -137,7 +139,8 @@ FactoryBot.define do
         submission = create :submission
         pool.each do |well|
           create :transfer_request, asset: stock_wells[i], target_asset: well, submission: submission
-          mock_request_type.create!(asset: stock_wells[i], target_asset: well, submission: submission, request_metadata_attributes: create(:request_metadata_for_library_creation).attributes)
+          mock_request_type.create!(asset: stock_wells[i], target_asset: well, submission: submission,
+                                    request_metadata_attributes: create(:request_metadata_for_library_creation).attributes)
           create :stock_well_link, target_well: well, source_well: stock_wells[i]
         end
       end

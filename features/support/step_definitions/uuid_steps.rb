@@ -55,14 +55,16 @@ PLURAL_MODELS_BASED_ON_NAME_REGEXP   = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_N
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
 Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/ do |model, name, uuid_value|
-  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
+  object = model.gsub(/\s+/,
+                      '_').classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object, uuid_value)
 end
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
 Given /^the UUID for the receptacle in (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/ do |model, name, uuid_value|
-  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
+  object = model.gsub(/\s+/,
+                      '_').classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object.receptacle, uuid_value)
 end
 
@@ -199,13 +201,15 @@ Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^"]+)"$/
 end
 
 Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^"]+)"$/ do |model, uuid_value|
-  target = model.gsub(/\s+/, '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
+  target = model.gsub(/\s+/,
+                      '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
   target.uuid_object.update!(external_id: uuid_value)
 end
 
 # TODO: It's 'UUID' not xxxing 'uuid'.
 Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model, uuid_value|
-  set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/, '_').camelize.constantize.create!(message: model), uuid_value)
+  set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/, '_').camelize.constantize.create!(message: model),
+               uuid_value)
 end
 
 Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model, uuid_value|

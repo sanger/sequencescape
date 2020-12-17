@@ -38,7 +38,8 @@ module SequencingQcBatch
   def qc_previous_state!(current_user)
     previous_state = qc_previous_state
     if previous_state
-      lab_events.create(description: 'QC Rollback', message: "Manual QC moved from #{qc_state} to #{previous_state}", user_id: current_user.id)
+      lab_events.create(description: 'QC Rollback', message: "Manual QC moved from #{qc_state} to #{previous_state}",
+                        user_id: current_user.id)
       self.qc_state = previous_state
     end
     self.state = 'started'
@@ -47,7 +48,9 @@ module SequencingQcBatch
 
   def self.adjacent_state_helper(direction, offset, delimiter)
     define_method(:"qc_#{direction}_state") do
-      raise StandardError, "Current QC state appears to be invalid: '#{qc_state}'" unless qc_states.include?(qc_state.to_s)
+      unless qc_states.include?(qc_state.to_s)
+        raise StandardError, "Current QC state appears to be invalid: '#{qc_state}'"
+      end
       return nil if qc_state.to_s == qc_states.send(delimiter)
 
       return qc_states[qc_states.index(qc_state.to_s) + offset]

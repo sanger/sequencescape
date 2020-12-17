@@ -42,7 +42,8 @@ end
 
 def assert_label_exists(label_text, required = false)
   selector = "label#{required ? '.required' : ':not(.required)'}"
-  assert(page.has_css?(selector, visible: :all, text: label_text), "The #{label_text.inspect} should #{required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
+  assert(page.has_css?(selector, visible: :all, text: label_text),
+         "The #{label_text.inspect} should #{required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
 end
 
 def locate_labeled_field_type(label_text, field_type)
@@ -65,29 +66,39 @@ Then /^I should see the (required )?select field "([^"]+)" with options "([^"]+(
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
   options.split('/').each do |option|
-    element.all('option').detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+    element.all('option').detect do |o|
+      o.text == option
+    end or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
   end
 end
 
 Then /^I should see the (required )?select field "([^"]+)" with the option "([^"]+)"$/ do |required, field, option|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
-  element.all('option').detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+  element.all('option').detect do |o|
+    o.text == option
+  end or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 Then /^I should see the (required )?select field "([^"]+)" without the option "([^"]+)"$/ do |required, field, option|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
-  element.all('option').none? { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
+  element.all('option').none? do |o|
+    o.text == option
+  end or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
 end
 
 Then /^the select field "([^"]+)" should have the option "([^"]+)"$/ do |field, option|
   element = page.find_field(field, visible: :all, disabled: true)
-  element.all('option').detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+  element.all('option').detect do |o|
+    o.text == option
+  end or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
 Then /^the select field "([^"]+)" should not have the option "([^"]+)"$/ do |field, option|
   element = page.find_field(field, visible: :all, disabled: true)
-  element.all('option').none? { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+  element.all('option').none? do |o|
+    o.text == option
+  end or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
 Then /^the "([^"]+)" field should be marked in error$/ do |field|

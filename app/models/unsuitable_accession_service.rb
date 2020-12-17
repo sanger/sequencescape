@@ -11,11 +11,13 @@ class UnsuitableAccessionService < AccessionService
   end
 
   def submit(_user, *_accessionables)
-    raise AccessionService::NumberNotGenerated, I18n.t(:no_suitable_study, scope: 'accession_service.unsuitable', study_ids: @study_ids.to_sentence)
+    raise AccessionService::NumberNotGenerated, I18n.t(:no_suitable_study, scope: 'accession_service.unsuitable',
+                                                                           study_ids: @study_ids.to_sentence)
   end
 
   def submit_sample_for_user(_sample, _user)
-    raise AccessionService::NumberNotGenerated, I18n.t(:no_suitable_study, scope: 'accession_service.unsuitable', study_ids: @study_ids.to_sentence)
+    raise AccessionService::NumberNotGenerated, I18n.t(:no_suitable_study, scope: 'accession_service.unsuitable',
+                                                                           study_ids: @study_ids.to_sentence)
   end
 
   def submit_study_for_user(_study, _user)

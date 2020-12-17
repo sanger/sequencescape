@@ -71,11 +71,15 @@ def given_fixed_study_metadata(attribute, value, regexp)
   end
 end
 
-given_fixed_study_metadata(:contaminated_human_dna,  Study::YES, /^the study "([^"]+)" has samples contaminated with human DNA$/)
-given_fixed_study_metadata(:remove_x_and_autosomes,  Study::YES, /^the study "([^"]+)" has samples which need x and autosome data removed$/)
+given_fixed_study_metadata(:contaminated_human_dna, Study::YES,
+                           /^the study "([^"]+)" has samples contaminated with human DNA$/)
+given_fixed_study_metadata(:remove_x_and_autosomes, Study::YES,
+                           /^the study "([^"]+)" has samples which need x and autosome data removed$/)
 given_fixed_study_metadata(:contains_human_dna,      Study::YES, /^the study "([^"]+)" contains human DNA$/)
-given_fixed_study_metadata(:commercially_available,  Study::YES, /^the study "([^"]+)" contains samples commercially available$/)
-given_fixed_study_metadata(:commercially_available,  Study::NO,  /^the study "([^"]+)" does not contain samples commercially available$/)
+given_fixed_study_metadata(:commercially_available,  Study::YES,
+                           /^the study "([^"]+)" contains samples commercially available$/)
+given_fixed_study_metadata(:commercially_available, Study::NO,
+                           /^the study "([^"]+)" does not contain samples commercially available$/)
 
 def given_study_metadata(attribute, regexp)
   Given(regexp) do |name, value|
@@ -126,7 +130,8 @@ end
 
 given_study_metadata(:dac_policy, /^the policy for study "([^"]+)" is "([^"]+)"$/)
 given_study_metadata(:ega_dac_accession_number, /^the dac accession number for study "([^"]+)" is "([^"]+)"$/)
-given_study_metadata(:array_express_accession_number, /^the Array Express accession number for study "([^"]+)" is "([^"]+)"$/)
+given_study_metadata(:array_express_accession_number,
+                     /^the Array Express accession number for study "([^"]+)" is "([^"]+)"$/)
 given_study_metadata(:ega_policy_accession_number, /^the EGA policy accession number for study "([^"]+)" is "([^"]+)"$/)
 
 Given /^the (abstract|description|title) of study "([^"]+)" is "([^"]*)"$/ do |attribute, name, description|
@@ -173,7 +178,8 @@ Given /^study "([^"]*)" has an accession number$/ do |name|
 end
 
 Given /^a study will appear in the study list "([^"]+)"$/ do |study_list|
-  FactoryBot.create(:"study_for_study_list_#{study_list.downcase.gsub(/[^a-z0-9]+/, '_')}", user: User.find_by(login: 'listing_studies_user'))
+  FactoryBot.create(:"study_for_study_list_#{study_list.downcase.gsub(/[^a-z0-9]+/, '_')}",
+                    user: User.find_by(login: 'listing_studies_user'))
 end
 
 Then /^I should see the study for study list "([^"]+)"$/ do |study_list|

@@ -161,7 +161,10 @@ class CherrypickTask < Task
       if control_posns # would be nil if no control plate selected
         add_any_consecutive_control_requests(control_posns, batch, control_assets)
         # This assumes that the template wells will fall at the end of the plate
-        add_remaining_control_requests(control_posns, batch, control_assets) if (@wells.length + remaining_wells(control_posns).length) == @size
+        if (@wells.length + remaining_wells(control_posns).length) == @size
+          add_remaining_control_requests(control_posns, batch,
+                                         control_assets)
+        end
       end
       add_any_wells_from_template_or_partial(@wells)
       self
@@ -302,7 +305,10 @@ class CherrypickTask < Task
     end
     # If there are any remaining control requests, we'll add all of them at the end of the last plate
     unless current_destination_plate.empty?
-      current_destination_plate.add_remaining_control_requests(control_posns, batch, control_assets) if auto_add_control_plate
+      if auto_add_control_plate
+        current_destination_plate.add_remaining_control_requests(control_posns, batch,
+                                                                 control_assets)
+      end
     end
 
     # Ensure that a non-empty plate is stored
@@ -348,7 +354,8 @@ class CherrypickTask < Task
 
     # sort by location in lab, followed by plate id, followed by well coordinate on plate
     sorted_requests = loaded_requests.sort_by do |request|
-      [barcodes_sorted_by_location.index(request.asset.plate.human_barcode), request.asset.plate.id, request.asset.map.column_order]
+      [barcodes_sorted_by_location.index(request.asset.plate.human_barcode), request.asset.plate.id,
+       request.asset.map.column_order]
     end
 
     sorted_requests.map do |request|

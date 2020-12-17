@@ -19,15 +19,22 @@ module SequencescapeExcel
         return unless valid? && attributes[:aliquot].present? && foreign_barcode_format.present?
 
         # if this tube's list of barcodes already contains a foreign barcode with the same format then update the existing one
-        foreign_barcode = attributes[:aliquot].receptacle.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
+        foreign_barcode = attributes[:aliquot].receptacle.barcodes.find do |item|
+          item[:format] == foreign_barcode_format.to_s
+        end
         if foreign_barcode.present?
           if foreign_barcode.barcode != value
             foreign_barcode.update(barcode: value)
-            attributes[:aliquot].sample.sample_manifest.update_barcodes if attributes[:aliquot].sample.sample_manifest.present?
+            if attributes[:aliquot].sample.sample_manifest.present?
+              attributes[:aliquot].sample.sample_manifest.update_barcodes
+            end
           end
         else
-          attributes[:aliquot].receptacle.labware.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
-          attributes[:aliquot].sample.sample_manifest.update_barcodes if attributes[:aliquot].sample.sample_manifest.present?
+          attributes[:aliquot].receptacle.labware.barcodes << Barcode.new(format: foreign_barcode_format,
+                                                                          barcode: value)
+          if attributes[:aliquot].sample.sample_manifest.present?
+            attributes[:aliquot].sample.sample_manifest.update_barcodes
+          end
         end
       end
 

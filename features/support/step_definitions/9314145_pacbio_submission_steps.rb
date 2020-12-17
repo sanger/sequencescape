@@ -25,7 +25,8 @@ Given /^I have a PacBio submission$/ do
     user: User.last,
     assets: Plate.find_from_barcode('DN1234567').wells.all,
     submission: FactoryBot.build(:submission),
-    request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'insert_size' => '500', 'sequencing_type' => 'Standard' }
+    request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'insert_size' => '500',
+                       'sequencing_type' => 'Standard' }
   )
   order.submission.built!
   step('1 pending delayed jobs are processed')
@@ -100,7 +101,8 @@ Given /^the sample tubes are part of the study$/ do
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 
   sample_tube = SampleTube.find_from_barcode('NT222')
-  sample_tube.primary_aliquot.sample.sample_metadata.update!(sample_common_name: 'Flu', sample_taxon_id: 123, sample_strain_att: 'H1N1')
+  sample_tube.primary_aliquot.sample.sample_metadata.update!(sample_common_name: 'Flu', sample_taxon_id: 123,
+                                                             sample_strain_att: 'H1N1')
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 end
 
@@ -111,7 +113,8 @@ end
 
 Then /^(\d+) PacBioSequencingRequests for "([^"]*)" should be "([^"]*)"$/ do |number_of_requests, asset_barcode, state|
   library_tube = PacBioLibraryTube.find_from_barcode(asset_barcode)
-  assert_equal number_of_requests.to_i, PacBioSequencingRequest.where(asset_id: library_tube.receptacle.id, state: state).count
+  assert_equal number_of_requests.to_i, PacBioSequencingRequest.where(asset_id: library_tube.receptacle.id,
+                                                                      state: state).count
 end
 
 Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asset_barcode, state|

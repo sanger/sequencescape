@@ -34,7 +34,8 @@ module SampleManifestExcel
 
           unless @tube_rack_information_previously_processed
             @rack_size = upload.sample_manifest.tube_rack_purpose.size
-            return unless retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
+            return unless retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size,
+                                                                                                         @rack_barcode_to_scan_results)
 
             success = create_tube_racks_and_link_tubes
 

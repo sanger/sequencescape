@@ -23,7 +23,9 @@ module Billing
     private
 
     def check_product_code
-      update!(billing_product_code: AgressoProduct.billing_product_code(billing_product_name)) if billing_product_code.blank?
+      if billing_product_code.blank?
+        update!(billing_product_code: AgressoProduct.billing_product_code(billing_product_name))
+      end
     end
   end
 end

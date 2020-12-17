@@ -10,7 +10,8 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
     shared_examples 'it generates layout information' do
       describe '#pick_number_to_expected_layout' do
         it 'generates a layout' do
-          expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)).to eq(expected_layout)
+          expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode,
+                                                         max_beds)).to eq(expected_layout)
         end
       end
 

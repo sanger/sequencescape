@@ -73,7 +73,10 @@ module Authorization
 
       def process_role_of_model(role_name, model_name)
         model = get_model(model_name)
-        raise(ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?") unless model.respond_to? :accepts_role?
+        unless model.respond_to? :accepts_role?
+          raise(ModelDoesntImplementRoles,
+                "Model (#{model_name}) doesn't implement #accepts_role?")
+        end
 
         model.send(:accepts_role?, role_name, @current_user)
       end
@@ -179,7 +182,10 @@ module Authorization
           role_name = $2 || $3
           model_name = $5
           model_obj = get_model(model_name)
-          raise(ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?") unless model_obj.respond_to? :accepts_role?
+          unless model_obj.respond_to? :accepts_role?
+            raise(ModelDoesntImplementRoles,
+                  "Model (#{model_name}) doesn't implement #accepts_role?")
+          end
 
           has_permission = model_obj.send(:accepts_role?, role_name, @current_user)
           @stack.push(has_permission)
@@ -196,7 +202,10 @@ module Authorization
           if @current_user.nil? || @current_user == :false
             @stack.push(false)
           else
-            raise(UserDoesntImplementRoles, "User doesn't implement #has_role?") unless @current_user.respond_to? :has_role?
+            unless @current_user.respond_to? :has_role?
+              raise(UserDoesntImplementRoles,
+                    "User doesn't implement #has_role?")
+            end
 
             @stack.push(@current_user.has_role?(role_name))
           end

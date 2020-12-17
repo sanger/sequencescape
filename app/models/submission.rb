@@ -198,7 +198,9 @@ class Submission < ApplicationRecord
     else
       multiplier = multiplier_for(request.next_request_type_id)
       index = sibling_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }.index(request)
-      next_possible_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }[index * multiplier, multiplier]
+      next_possible_requests.select do |npr|
+        npr.order_id.nil? || (npr.order_id == request.order_id)
+      end [index * multiplier, multiplier]
     end
   end
 
@@ -208,7 +210,11 @@ class Submission < ApplicationRecord
 
   def study_names
     # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
-    orders.map { |o| o.study.try(:name) || o.assets.map { |a| a.studies.pluck(:name) } }.flatten.compact.sort.uniq.join('|')
+    orders.map do |o|
+      o.study.try(:name) || o.assets.map do |a|
+        a.studies.pluck(:name)
+      end
+    end.flatten.compact.sort.uniq.join('|')
   end
 
   def cross_project?

@@ -49,4 +49,5 @@ require './lib/product_helpers'
   ProductCatalogue.construct!(param)
 end
 
-Product.find_by(name: 'MWGS').product_criteria.create!(stage: 'stock', behaviour: 'Basic', configuration: { total_micrograms: { greater_than: 50 } })
+Product.find_by(name: 'MWGS').product_criteria.create!(stage: 'stock', behaviour: 'Basic',
+                                                       configuration: { total_micrograms: { greater_than: 50 } })

@@ -7,11 +7,15 @@ RSpec.describe WorkingDilutionPlate, type: :model do
   describe 'update_qc_values_with_parser' do
     let(:readings) do
       {
-        'B1' => { 'concentration' => Unit.new('2 ng/ul'), 'molarity' => Unit.new('3 nM'), 'volume' => Unit.new('20 ul'), 'RIN' => Unit.new('6 RIN') },
-        'C1' => { 'concentration' => Unit.new('4 ng/ul'), 'molarity' => Unit.new('5 nM'), 'volume' => Unit.new('20 ul'), 'RIN' => Unit.new('6 RIN') }
+        'B1' => { 'concentration' => Unit.new('2 ng/ul'), 'molarity' => Unit.new('3 nM'),
+                  'volume' => Unit.new('20 ul'), 'RIN' => Unit.new('6 RIN') },
+        'C1' => { 'concentration' => Unit.new('4 ng/ul'), 'molarity' => Unit.new('5 nM'),
+                  'volume' => Unit.new('20 ul'), 'RIN' => Unit.new('6 RIN') }
       }
     end
-    let(:plate) { create :working_dilution_plate, well_count: 3, well_factory: :empty_well, parents: [parent], dilution_factor: 10 }
+    let(:plate) do
+      create :working_dilution_plate, well_count: 3, well_factory: :empty_well, parents: [parent], dilution_factor: 10
+    end
     let(:parent) { create :plate, well_count: 3 }
     let(:parser) { MockParser.new(readings) }
 

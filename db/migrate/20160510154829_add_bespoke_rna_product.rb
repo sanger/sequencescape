@@ -45,7 +45,8 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
   end
 
   def link_product_to_catalogue(product, selection_criterion)
-    ProductProductCatalogue.create!(product_catalogue: product_catalogue, product: product, selection_criterion: selection_criterion)
+    ProductProductCatalogue.create!(product_catalogue: product_catalogue, product: product,
+                                    selection_criterion: selection_criterion)
   end
 
   def unlink_product_from_catalogue(product, selection_criterion)

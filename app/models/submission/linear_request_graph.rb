@@ -89,7 +89,8 @@ module Submission::LinearRequestGraph
           # given that the request graph describes this relationship.
           # JG: Its removal only really makes sense if we can walk the request graph in a timely manner.
           # We use save not save! as AssetLink throws validation errors when the link already exists
-          AssetLink.create_edge(source_asset.labware, target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
+          AssetLink.create_edge(source_asset.labware,
+                                target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
 
           request.qc_metrics = qc_metrics.compact.uniq
           request.update_responsibilities!

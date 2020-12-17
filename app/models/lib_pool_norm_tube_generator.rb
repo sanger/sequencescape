@@ -45,7 +45,8 @@ class LibPoolNormTubeGenerator
             pass_and_complete(create_lib_pool_norm_tube(tube))
           end
 
-          @asset_group = AssetGroup.create!(assets: destination_tubes.map(&:receptacle), study: study, name: "#{plate.human_barcode}_qc_completed_tubes")
+          @asset_group = AssetGroup.create!(assets: destination_tubes.map(&:receptacle), study: study,
+                                            name: "#{plate.human_barcode}_qc_completed_tubes")
         end
         true
       rescue => e

@@ -5,7 +5,8 @@ class UnifyInitialDownstreamClasses < ActiveRecord::Migration
   end
 
   NEW_CLASS = 'TransferRequest::InitialDownstream'.freeze
-  OLD_CLASSES = ['IlluminaHtp::Requests::PcrXpToPoolPippin', 'IlluminaHtp::Requests::PcrXpToPool', 'Pulldown::Requests::PcrXpToIscLibPool'].freeze
+  OLD_CLASSES = ['IlluminaHtp::Requests::PcrXpToPoolPippin', 'IlluminaHtp::Requests::PcrXpToPool',
+                 'Pulldown::Requests::PcrXpToIscLibPool'].freeze
 
   STATE_MIGRATIONS = { 'Pulldown::Requests::PcrXpToIscLibPool' => {
     'nx_in_progress' => 'passed'

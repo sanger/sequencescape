@@ -132,7 +132,9 @@ class Uuid < ApplicationRecord
     return if resource_ids.empty?
 
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
-    uuids_to_create = ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid) }
+    uuids_to_create = ids_missing_uuids.map do |id|
+      create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid)
+    end
     # Uuid.import uuids_to_create unless uuids_to_create.empty?
 
     nil
@@ -168,7 +170,9 @@ class Uuid < ApplicationRecord
     def lookup_many_uuids(uuids)
       with_external_id(uuids).all.tap do |found|
         missing = uuids - found.map(&:external_id)
-        raise ActiveRecord::RecordNotFound, "Could not find UUIDs #{missing.map(&:inspect).join(',')}" unless missing.empty?
+        unless missing.empty?
+          raise ActiveRecord::RecordNotFound, "Could not find UUIDs #{missing.map(&:inspect).join(',')}"
+        end
       end
     end
   end

@@ -30,7 +30,8 @@ describe 'Plate QC display' do
     let!(:plate) do
       plate = create(:plate, sample_count: 3)
       plate.wells.each do |well|
-        well.qc_results << [build(:qc_result_concentration), build(:qc_result_volume), build(:qc_result_loci_passed), build(:qc_result_rin)]
+        well.qc_results << [build(:qc_result_concentration), build(:qc_result_volume), build(:qc_result_loci_passed),
+                            build(:qc_result_rin)]
       end
       plate
     end

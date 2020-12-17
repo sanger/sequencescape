@@ -8,7 +8,9 @@ class AddIlluminaCPlateSearch < ActiveRecord::Migration
                                           'ILC Lib PCR',
                                           'ILC Lib PCR-XP',
                                           'ILC AL Libs Tagged']).pluck(:id)
-    Search::FindPlatesForUser.create!(name: 'Find Illumina-C plates for user', default_parameters: { plate_purpose_ids: plate_purposes, limit: 30, include_used: true })
+    Search::FindPlatesForUser.create!(name: 'Find Illumina-C plates for user',
+                                      default_parameters: { plate_purpose_ids: plate_purposes, limit: 30,
+                                                            include_used: true })
   end
 
   def down

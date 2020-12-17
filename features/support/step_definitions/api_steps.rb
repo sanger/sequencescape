@@ -241,7 +241,9 @@ end
 
 Then /^the JSON should not contain "([^"]+)" within any element of "([^"]+)"$/ do |name, path|
   json = decode_json(page.source, 'Received')
-  target = path.split('.').inject(json) { |s, p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"
+  target = path.split('.').inject(json) do |s, p|
+    s.try(:[], p)
+  end or raise StandardError, "Could not find #{path.inspect} in JSON"
   case target
   when Array
     target.each_with_index do |record, index|
@@ -266,8 +268,10 @@ Given /^(\d+) samples exist with the core name "([^"]+)" and IDs starting at (\d
 end
 
 Given /^the (library tube|plate) "([^"]+)" is a child of the (sample tube|plate) "([^"]+)"$/ do |child_model, child_name, parent_model, parent_name|
-  parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by(name: parent_name) or raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
-  child  = child_model.gsub(/\s+/, '_').classify.constantize.find_by(name: child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
+  parent = parent_model.gsub(/\s+/,
+                             '_').classify.constantize.find_by(name: parent_name) or raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
+  child = child_model.gsub(/\s+/,
+                           '_').classify.constantize.find_by(name: child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
   parent.children << child
   if [parent, child].all? { |a| a.is_a?(Receptacle) }
     child.aliquots = []
@@ -288,7 +292,8 @@ end
 Given /^the sample "([^"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
-    FactoryBot.create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1)).tap do |sample_tube|
+    FactoryBot.create(:empty_sample_tube, name: "#{name} sample tube #{index}",
+                                          id: (base_id.to_i + index - 1)).tap do |sample_tube|
       sample_tube.aliquots.create!(sample: sample)
     end
   end

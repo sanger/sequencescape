@@ -6,8 +6,10 @@ class RemovePrepcrToPcr < ActiveRecord::Migration
 
   def up
     ActiveRecord::Base.transaction do
-      deprecate_class('IlluminaB::Requests::PrePcrToPcr', state_change: { 'started_fx' => 'started', 'started_mj' => 'passed' })
-      deprecate_class('IlluminaHtp::Requests::PrePcrToPcr', state_change: { 'started_fx' => 'started', 'started_mj' => 'passed' })
+      deprecate_class('IlluminaB::Requests::PrePcrToPcr',
+                      state_change: { 'started_fx' => 'started', 'started_mj' => 'passed' })
+      deprecate_class('IlluminaHtp::Requests::PrePcrToPcr',
+                      state_change: { 'started_fx' => 'started', 'started_mj' => 'passed' })
     end
   end
 

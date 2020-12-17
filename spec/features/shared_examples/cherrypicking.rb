@@ -238,7 +238,10 @@ shared_examples 'a cherrypicking procedure' do
 
             step 'optionally set custom destination plate type' do
               # optionally fill in custom plate type for the destination
-              select(custom_destination_type_name, from: "plate_types[#{destination_barcode}]") if custom_destination_type
+              if custom_destination_type
+                select(custom_destination_type_name,
+                       from: "plate_types[#{destination_barcode}]")
+              end
             end
 
             step 'verify bed layout' do
@@ -261,7 +264,9 @@ shared_examples 'a cherrypicking procedure' do
               # SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
               # DN1000001A,A1,ABgene 0765,15.85,DN20000001B,A1,ABgene 0800,15.85,49.15
               # DownloadHelpers.wait_for_download("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
-              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 10)
+              generated_file = DownloadHelpers.downloaded_file(
+                "#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 10
+              )
               generated_lines = generated_file.lines
 
               expect(generated_lines).not_to be_empty
@@ -294,7 +299,9 @@ shared_examples 'a cherrypicking procedure' do
               # but only in the first run, as controls should only be present in pick 1
               if control_plate
                 count_control_plate_entries = 0
-                generated_lines.each { |line| count_control_plate_entries += 1 if /#{control_plate.human_barcode}/.match?(line) }
+                generated_lines.each do |line|
+                  count_control_plate_entries += 1 if /#{control_plate.human_barcode}/.match?(line)
+                end
 
                 if pick_number_index == 1
                   expect(count_control_plate_entries).to eq(control_plate.contained_samples.count)
@@ -343,14 +350,18 @@ shared_examples 'a cherrypicking procedure' do
               # C; SCRC2 = DN2T
               # C;
               # C; DEST1 = DN3U
-              generated_file = DownloadHelpers.downloaded_file("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl", timeout: 10)
+              generated_file = DownloadHelpers.downloaded_file(
+                "#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl", timeout: 10
+              )
               generated_lines = generated_file.lines
 
               # check count of controls present in destination file lines is correct
               # NB. Tecan file has additional plate barcode lines at bottom of file for beds so add 1
               if control_plate
                 count_control_plate_entries = 0
-                generated_lines.each { |line| count_control_plate_entries += 1 if /#{control_plate.human_barcode}/.match?(line) }
+                generated_lines.each do |line|
+                  count_control_plate_entries += 1 if /#{control_plate.human_barcode}/.match?(line)
+                end
                 expect(count_control_plate_entries).to eq(control_plate.contained_samples.count + NUM_TECAN_EXTRA_BARCODE_LINES)
               end
 

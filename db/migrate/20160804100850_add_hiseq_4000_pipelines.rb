@@ -120,6 +120,7 @@ class AddHiseq4000Pipelines < ActiveRecord::Migration
 
   def add_information_types_to(pipeline)
     pipeline.request_information_types << RequestInformationType.where(label: 'Vol.', hide_in_inbox: false).first!
-    pipeline.request_information_types << RequestInformationType.where(label: 'Read length', hide_in_inbox: false).first!
+    pipeline.request_information_types << RequestInformationType.where(label: 'Read length',
+                                                                       hide_in_inbox: false).first!
   end
 end

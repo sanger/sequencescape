@@ -61,7 +61,8 @@ Given /^I have already made (\d+) "([^"]+)" requests? with IDs starting at (\d+)
 
   (0...count.to_i).each do |index|
     asset = FactoryBot.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset #{index + 1}")
-    target_asset = FactoryBot.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset #{index + 1}")
+    target_asset = FactoryBot.create(request_type.asset_type.underscore,
+                                     name: "#{study_name} - Target asset #{index + 1}")
     create_request(request_type, study, project, asset, target_asset, id: id.to_i + index)
   end
 end

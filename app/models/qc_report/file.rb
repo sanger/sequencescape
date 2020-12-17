@@ -42,8 +42,12 @@ class QcReport::File
 
   def valid?
     return invalid("#{filename} was not a csv file") unless is_a_csv?
-    return invalid("#{filename} does not appear to be a qc report file. Make sure the #{FILE_VERSION_KEY} line has not been removed.") unless is_a_report?
-    return invalid("Couldn't find the report #{report_identifier}. Check that the report identifier has not been modified.") unless qc_report
+    unless is_a_report?
+      return invalid("#{filename} does not appear to be a qc report file. Make sure the #{FILE_VERSION_KEY} line has not been removed.")
+    end
+    unless qc_report
+      return invalid("Couldn't find the report #{report_identifier}. Check that the report identifier has not been modified.")
+    end
 
     true
   end
@@ -105,7 +109,9 @@ class QcReport::File
   def process_group(group)
     asset_ids = group.keys
     assets = qc_report.qc_metrics.with_asset_ids(asset_ids)
-    raise DataError, "Could not find assets #{(asset_ids - assets.map(&:id)).to_sentence}" if asset_ids.count != assets.length
+    if asset_ids.count != assets.length
+      raise DataError, "Could not find assets #{(asset_ids - assets.map(&:id)).to_sentence}"
+    end
 
     assets.each do |metric|
       metric.human_proceed = group[metric.asset_id][:proceed]
@@ -146,7 +152,9 @@ class QcReport::File
     while (row = header_parser.shift) && is_header?(row) && header_parser.lineno < MAXIMUM_HEADER_SIZE
       headers[row[0]] = (row[1] || '').strip
     end
-    invalid('Please make sure there is an empty line before the column headers.') if header_parser.lineno >= MAXIMUM_HEADER_SIZE
+    if header_parser.lineno >= MAXIMUM_HEADER_SIZE
+      invalid('Please make sure there is an empty line before the column headers.')
+    end
     @start_line = header_parser.lineno
     @headers = headers
   end

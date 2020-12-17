@@ -37,7 +37,9 @@ describe Latin1Validator do
 
   context 'when containing chracters not supported by latin1' do
     let(:value) { 'hЗllo' }
-    let(:expected_error) { 'Validated contains unsupported characters (non-latin characters), remove or replace them: З' }
+    let(:expected_error) do
+      'Validated contains unsupported characters (non-latin characters), remove or replace them: З'
+    end
 
     it { is_expected.not_to be_valid }
 

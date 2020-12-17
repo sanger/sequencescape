@@ -15,7 +15,9 @@ module Cherrypick::VolumeByMicroLitre
   end
 
   def check_inputs_to_volume_to_cherrypick_by_micro_litre!(volume_required)
-    raise Cherrypick::VolumeError, "Volume required (#{volume_required.inspect}) is invalid for cherrypicking by micro litre" if volume_required.blank? || volume_required.to_f <= 0.0
+    if volume_required.blank? || volume_required.to_f <= 0.0
+      raise Cherrypick::VolumeError, "Volume required (#{volume_required.inspect}) is invalid for cherrypicking by micro litre"
+    end
   end
   private :check_inputs_to_volume_to_cherrypick_by_micro_litre!
 end

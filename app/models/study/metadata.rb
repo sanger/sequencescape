@@ -53,7 +53,10 @@ class Study
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
 
     def sanity_check_y_separation
-      errors.add(:separate_y_chromosome_data, 'cannot be selected with remove x and autosomes.') if remove_x_and_autosomes?
+      if remove_x_and_autosomes?
+        errors.add(:separate_y_chromosome_data,
+                   'cannot be selected with remove x and autosomes.')
+      end
       !remove_x_and_autosomes?
     end
 
@@ -82,7 +85,8 @@ class Study
       begin
         uri = URI.parse(dac_policy)
         if configatron.invalid_policy_url_domains.include?(uri.host)
-          errors.add(:dac_policy, ": #{dac_policy} is not an acceptable URL. Please ensure you haven't provided an internal URL.")
+          errors.add(:dac_policy,
+                     ": #{dac_policy} is not an acceptable URL. Please ensure you haven't provided an internal URL.")
         end
       rescue URI::InvalidURIError
         errors.add(:dac_policy, ": #{dac_policy} is not a valid URL")

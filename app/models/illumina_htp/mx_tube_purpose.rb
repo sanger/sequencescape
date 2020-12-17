@@ -54,7 +54,8 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       .joins(wells: :requests)
       .where(requests: {
                target_asset_id: tube.id,
-               sti_type: [Request::Multiplexing, Request::AutoMultiplexing, Request::LibraryCreation, *Request::LibraryCreation.descendants].map(&:name)
+               sti_type: [Request::Multiplexing, Request::AutoMultiplexing, Request::LibraryCreation,
+                          *Request::LibraryCreation.descendants].map(&:name)
              }).distinct
   end
 

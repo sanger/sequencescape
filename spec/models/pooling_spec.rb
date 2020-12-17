@@ -11,7 +11,10 @@ describe Pooling, type: :model, poolings: true do
   let(:mx_tube) { create :multiplexed_library_tube, barcode: 6 }
   let(:stock_mx_tube_required) { false }
   let(:barcode_printer_option) { nil }
-  let(:pooling) { described_class.new(barcodes: barcodes, stock_mx_tube_required: stock_mx_tube_required, barcode_printer: barcode_printer_option) }
+  let(:pooling) do
+    described_class.new(barcodes: barcodes, stock_mx_tube_required: stock_mx_tube_required,
+                        barcode_printer: barcode_printer_option)
+  end
 
   context 'without source assets' do
     let(:barcodes) { [] }
@@ -23,7 +26,9 @@ describe Pooling, type: :model, poolings: true do
   end
 
   context 'with a series of invalid assets' do
-    let(:barcodes) { ['-1', '-2', empty_lb_tube.ean13_barcode, untagged_lb_tube1.human_barcode, untagged_lb_tube2.ean13_barcode] }
+    let(:barcodes) do
+      ['-1', '-2', empty_lb_tube.ean13_barcode, untagged_lb_tube1.human_barcode, untagged_lb_tube2.ean13_barcode]
+    end
 
     it 'is not valid if tubes are not in sqsc, if tubes do not have at least one aliquot or if there is a tag clash' do
       expect(pooling).not_to be_valid
@@ -35,7 +40,10 @@ describe Pooling, type: :model, poolings: true do
   end
 
   describe '#execute' do
-    let(:barcodes) { [tagged_lb_tube1.ean13_barcode, tagged_lb_tube2.ean13_barcode, untagged_lb_tube1.ean13_barcode, mx_tube.ean13_barcode] }
+    let(:barcodes) do
+      [tagged_lb_tube1.ean13_barcode, tagged_lb_tube2.ean13_barcode, untagged_lb_tube1.ean13_barcode,
+       mx_tube.ean13_barcode]
+    end
 
     before do
       create_list(:single_tagged_aliquot, 2, receptacle: mx_tube)
@@ -78,7 +86,8 @@ describe Pooling, type: :model, poolings: true do
       it 'returns correct message if something is wrong with pmb' do
         expect(RestClient).to receive(:get).and_raise(Errno::ECONNREFUSED)
         expect(pooling.execute).to be true
-        expect(pooling.message).to eq(error: 'Printmybarcode service is down', notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} ")
+        expect(pooling.message).to eq(error: 'Printmybarcode service is down',
+                                      notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} ")
       end
     end
   end

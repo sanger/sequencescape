@@ -23,7 +23,9 @@ module Submission::AssetSubmissionFinder
 
     well_locations = well_list.map(&:strip)
     wells = plate.wells.for_bulk_submission.located_at(well_locations)
-    raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.length != well_locations.size
+    if wells.length != well_locations.size
+      raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}"
+    end
 
     wells
   end

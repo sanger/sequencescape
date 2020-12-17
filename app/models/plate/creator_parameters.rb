@@ -31,7 +31,9 @@ class Plate::CreatorParameters
     if params_has_dilution_factor?(params)
       # The dilution factor of the parent is propagated to the children taking the parent's dilution
       # as basis.
-      params[:dilution_factor] = (params[:dilution_factor].to_d * parent_dilution_factor) unless parent_dilution_factor.nil?
+      unless parent_dilution_factor.nil?
+        params[:dilution_factor] = (params[:dilution_factor].to_d * parent_dilution_factor)
+      end
     else
       # If not specified, I'll inherit the value of the source plate (if it has one)
       params[:dilution_factor] = parent_dilution_factor

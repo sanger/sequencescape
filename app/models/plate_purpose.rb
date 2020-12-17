@@ -136,7 +136,9 @@ class PlatePurpose < Purpose
       .select('pool_uuids.external_id AS pool_uuid')
       .readonly(false)
       .tap do |wells_with_pool|
-        raise StandardError, 'Cannot deal with a well in multiple pools' if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
+        raise StandardError, 'Cannot deal with a well in multiple pools' if wells_with_pool.group_by(&:id).any? do |_, multiple_pools|
+                                                                              multiple_pools.uniq.size > 1
+                                                                            end
       end
   end
 

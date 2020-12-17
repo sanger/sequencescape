@@ -200,7 +200,8 @@ class Sample < ApplicationRecord
     # 1) Understand what the actual constraints are for supplier_name
     # 2) Apply appropriate constraints
     # 3) Ensure the help text in sample manifest matches
-    validates :supplier_name, format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII' }, if: :supplier_name_changed?
+    validates :supplier_name, format: { with: /\A[[:ascii:]]+\z/,
+                                        message: 'only allows ASCII' }, if: :supplier_name_changed?
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
     # and the values can be easily remapped
@@ -269,13 +270,17 @@ class Sample < ApplicationRecord
   belongs_to :container, class_name: 'Aker::Container'
 
   validates :name, presence: true
-  validates :name, format: { with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create }
-  validates :name, format: { with: /\A[()+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update }
-  validates :name, uniqueness: { on: :create, message: 'already in use', unless: :sample_manifest_id?, case_sensitive: false }
+  validates :name, format: { with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format,
+                             on: :create }
+  validates :name, format: { with: /\A[()+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format,
+                             on: :update }
+  validates :name, uniqueness: { on: :create, message: 'already in use', unless: :sample_manifest_id?,
+                                 case_sensitive: false }
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
-  validates :control_type, absence: { with: true, unless: :control?, message: 'should be blank if "control" is set to false' }
+  validates :control_type, absence: { with: true, unless: :control?,
+                                      message: 'should be blank if "control" is set to false' }
 
   enum control_type: {
     negative: 0,
@@ -320,11 +325,13 @@ class Sample < ApplicationRecord
 
     # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
 
-    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact', left: "#{query}%", exact: query).pluck(:sample_id)
+    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact', left: "#{query}%",
+                                                                                                    exact: query).pluck(:sample_id)
 
     # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
     # of numbers seems to massively increase the query length.
-    where('name LIKE :wild OR id IN (:sm_ids) OR id = :qid', wild: "%#{query}%", sm_ids: md, query: query, qid: query.to_i)
+    where('name LIKE :wild OR id IN (:sm_ids) OR id = :qid', wild: "%#{query}%", sm_ids: md, query: query,
+                                                             qid: query.to_i)
   }
 
   scope :for_plate_and_order, lambda { |plate_id, order_id|
@@ -390,7 +397,8 @@ class Sample < ApplicationRecord
   end
 
   def sample_supplier_name_empty?(supplier_sample_name)
-    supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
+    supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available',
+                                    'none'].include?(supplier_sample_name.downcase)
   end
 
   # Return the highest priority accession service

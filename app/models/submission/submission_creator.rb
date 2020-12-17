@@ -123,10 +123,14 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   # this is more order_receptacles, asset_group is actually receptacle group
   def order_assets
-    input_methods = %i[asset_group_id sample_names_text barcodes_wells_text].select { |input_method| send(input_method).present? }
+    input_methods = %i[asset_group_id sample_names_text barcodes_wells_text].select do |input_method|
+      send(input_method).present?
+    end
 
     raise InvalidInputException, 'No Samples found' if input_methods.empty?
-    raise InvalidInputException, 'Samples cannot be added from multiple sources at the same time.' unless input_methods.size == 1
+    unless input_methods.size == 1
+      raise InvalidInputException, 'Samples cannot be added from multiple sources at the same time.'
+    end
 
     case input_methods.first
     when :asset_group_id then { asset_group: find_asset_group }

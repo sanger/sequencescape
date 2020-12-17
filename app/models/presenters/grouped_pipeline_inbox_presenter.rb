@@ -34,7 +34,9 @@ module Presenters
       @user = user
       @show_held_requests = show_held_requests
       # We shouldn't trigger this, as we explicitly detect the group by status
-      raise "Pipeline #{pipeline.name} is incompatible with GroupedPipelineInboxPresenter" unless pipeline.group_by_parent?
+      unless pipeline.group_by_parent?
+        raise "Pipeline #{pipeline.name} is incompatible with GroupedPipelineInboxPresenter"
+      end
     end
 
     def requests_waiting

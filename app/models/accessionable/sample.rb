@@ -2,7 +2,8 @@
 # It should have a 1 to 1 mapping with Sequencescape {Sample samples}.
 module Accessionable
   class Sample < Base
-    ARRAY_EXPRESS_FIELDS = %w[genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment].freeze
+    ARRAY_EXPRESS_FIELDS = %w[genotype phenotype strain_or_line developmental_stage sex cell_type disease_state
+                              compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment].freeze
 
     attr_reader :common_name, :taxon_id, :links, :tags
 

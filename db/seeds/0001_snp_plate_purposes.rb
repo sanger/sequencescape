@@ -126,4 +126,5 @@ PlatePurpose.create!(
   size: 96,
   asset_shape_id: AssetShape.default_id
 )
-MessengerCreator.create!(purpose: Purpose.find_by(name: 'Stock Plate'), root: 'stock_resource', template: 'WellStockResourceIO', target_finder_class: 'WellFinder')
+MessengerCreator.create!(purpose: Purpose.find_by(name: 'Stock Plate'), root: 'stock_resource',
+                         template: 'WellStockResourceIO', target_finder_class: 'WellFinder')

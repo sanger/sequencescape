@@ -75,10 +75,14 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
       generator.stubs(:lib_pool_tubes).returns(create_list(:lib_pool_tube, 3))
       mock_transfer(generator)
       assert generator.create!
-      assert generator.lib_pool_tubes.all? { |lpt| lpt.reload.state == 'qc_complete' }, "States were: #{generator.lib_pool_tubes.map(&:state)}"
+      assert generator.lib_pool_tubes.all? { |lpt|
+               lpt.reload.state == 'qc_complete'
+             }, "States were: #{generator.lib_pool_tubes.map(&:state)}"
       assert_not generator.destination_tubes.empty?
       assert_equal generator.lib_pool_tubes.length, generator.destination_tubes.length
-      assert generator.destination_tubes.all? { |dt| dt.reload.state == 'qc_complete' }, "States were: #{generator.destination_tubes.map(&:state)}"
+      assert generator.destination_tubes.all? { |dt|
+               dt.reload.state == 'qc_complete'
+             }, "States were: #{generator.destination_tubes.map(&:state)}"
       assert generator.asset_group.present?
       assert_equal generator.destination_tubes.length, generator.asset_group.assets.length
     end

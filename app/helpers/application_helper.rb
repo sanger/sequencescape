@@ -121,7 +121,9 @@ module ApplicationHelper
   end
 
   def request_count_link(study, asset, state, request_type)
-    matching_requests   = asset.requests.select { |request| (request.request_type_id == request_type.id) and request.state == state }
+    matching_requests = asset.requests.select do |request|
+      (request.request_type_id == request_type.id) and request.state == state
+    end
     html_options, count = { title: "#{asset.try(:human_barcode) || asset.id} #{state}" }, matching_requests.size
 
     # 0 requests => no link, just '0'
@@ -193,7 +195,9 @@ module ApplicationHelper
     active_class = active ? 'active' : ''
     id ||= "#{name}-tab".parameterize
     tag.li(class: 'nav-item') do
-      link_to name, "##{target}", id: id, data: { toggle: 'tab' }, role: 'tab', aria_controls: target, class: ['nav-link', active_class]
+      link_to name, "##{target}", id: id, data: { toggle: 'tab' }, role: 'tab', aria_controls: target, class: [
+        'nav-link', active_class
+      ]
     end
   end
 
@@ -204,7 +208,8 @@ module ApplicationHelper
     tab_id ||= "#{name}-tab".parameterize
     id ||= name.parameterize
     active_class = active ? 'active' : ''
-    tag.div(class: ['tab-pane', 'fade', 'show', active_class], id: id, role: 'tabpanel', aria_labelledby: tab_id, &block)
+    tag.div(class: ['tab-pane', 'fade', 'show', active_class], id: id, role: 'tabpanel', aria_labelledby: tab_id,
+            &block)
   end
 
   def display_request_information(request, rit, batch = nil)
@@ -285,7 +290,8 @@ module ApplicationHelper
 
   # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.
   def old_url
-    permitted_urls = ['http://sequencescape.psd.sanger.ac.uk', 'http://uat.sequencescape.psd.sanger.ac.uk', 'http://uat2.sequencescape.psd.sanger.ac.uk', 'http://training.sequencescape.psd.sanger.ac.uk']
+    permitted_urls = ['http://sequencescape.psd.sanger.ac.uk', 'http://uat.sequencescape.psd.sanger.ac.uk',
+                      'http://uat2.sequencescape.psd.sanger.ac.uk', 'http://training.sequencescape.psd.sanger.ac.uk']
     return true unless permitted_urls.include?(request.base_url)
   end
 end

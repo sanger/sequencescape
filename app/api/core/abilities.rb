@@ -151,7 +151,9 @@ module Core::Abilities
 
       # Every application is entitled to be able to lookup UUIDs and make searches
       can(:create, [Endpoints::Uuids::Model::Lookup, Endpoints::Uuids::Model::Bulk])
-      can(:create, [Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All, Endpoints::Searches::Instance::Last])
+      can(:create,
+          [Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All,
+           Endpoints::Searches::Instance::Last])
     end
 
     # Registered applications can manage all objects that allow it and can have unauthenicated users.

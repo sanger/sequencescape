@@ -10,9 +10,15 @@ class UatActions::GenerateTagPlates < UatActions
              :select,
              label: 'Tag Layout Template',
              help: 'Select the tag layout for the generated plates',
-             select_options: -> { TagLayoutTemplate.where.not(walking_algorithm: 'TagLayout::WalkWellsByPools').pluck(:name) }
-  form_field :lot_type_name, :select, label: 'Lot Type', help: 'The lot type to use.', select_options: -> { LotType.where(template_class: 'TagLayoutTemplate').pluck(:name) }
-  form_field :plate_count, :number_field, label: 'Plate Count', help: 'The number of plates to generate', options: { minimum: 1, maximum: 20 }
+             select_options: lambda {
+                               TagLayoutTemplate.where.not(walking_algorithm: 'TagLayout::WalkWellsByPools').pluck(:name)
+                             }
+  form_field :lot_type_name, :select, label: 'Lot Type', help: 'The lot type to use.', select_options: lambda {
+                                                                                                         LotType.where(template_class: 'TagLayoutTemplate').pluck(:name)
+                                                                                                       }
+  form_field :plate_count, :number_field, label: 'Plate Count', help: 'The number of plates to generate', options: {
+    minimum: 1, maximum: 20
+  }
 
   validates :tag_layout_template, presence: { message: 'could not be found' }
   validates :lot_type, presence: { message: 'could not be found' }

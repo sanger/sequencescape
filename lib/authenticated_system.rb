@@ -125,14 +125,18 @@ module AuthenticatedSystem
   def slf_manager_login_required
     setup_current_user
     respond_to do |accepts|
-      accepts.html   { logged_in? && authorized? && (current_user.slf_manager? || current_user.administrator?) ? true : access_denied }
+      accepts.html do
+        logged_in? && authorized? && (current_user.slf_manager? || current_user.administrator?) ? true : access_denied
+      end
     end
   end
 
   def slf_gel_login_required
     setup_current_user
     respond_to do |accepts|
-      accepts.html   { logged_in? && authorized? && (current_user.slf_manager? || current_user.slf_gel? || current_user.administrator?) ? true : access_denied }
+      accepts.html do
+        logged_in? && authorized? && (current_user.slf_manager? || current_user.slf_gel? || current_user.administrator?) ? true : access_denied
+      end
     end
   end
 
@@ -194,7 +198,8 @@ module AuthenticatedSystem
     if user && user.remember_token?
       user.remember_me
       self.current_user = user
-      cookies[:auth_token] = { value: self.current_user.remember_token, expires: self.current_user.remember_token_expires_at }
+      cookies[:auth_token] = { value: self.current_user.remember_token,
+                               expires: self.current_user.remember_token_expires_at }
       flash[:notice] = 'Logged in successfully'
     end
   end

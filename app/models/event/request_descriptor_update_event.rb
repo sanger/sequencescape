@@ -1,6 +1,8 @@
 module Event::RequestDescriptorUpdateEvent
   def self.included(base)
-    base.after_create(:update_metadata_for_request, if: ->(event) { event.eventful.is_a?(Request) and event.descriptor_key.present? })
+    base.after_create(:update_metadata_for_request, if: lambda { |event|
+                                                          event.eventful.is_a?(Request) and event.descriptor_key.present?
+                                                        })
   end
 
   def pass_or_fail_event?

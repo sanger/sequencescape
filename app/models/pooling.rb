@@ -94,11 +94,17 @@ class Pooling
   end
 
   def all_source_assets_are_in_sqsc
-    errors.add(:source_assets, "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in Sequencescape") if assets_not_in_sqsc.present?
+    if assets_not_in_sqsc.present?
+      errors.add(:source_assets,
+                 "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in Sequencescape")
+    end
   end
 
   def expected_numbers_found
-    errors.add(:source_assets, "found #{source_assets.length} assets, but #{barcodes.length} barcodes were scanned.") if source_assets.length != barcodes.length
+    if source_assets.length != barcodes.length
+      errors.add(:source_assets,
+                 "found #{source_assets.length} assets, but #{barcodes.length} barcodes were scanned.")
+    end
   end
 
   def source_assets_can_be_pooled
@@ -106,7 +112,10 @@ class Pooling
     source_assets.each do |asset|
       assets_with_no_aliquot << asset.machine_barcode if asset.aliquots.empty?
     end
-    errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") if assets_with_no_aliquot.present?
+    if assets_with_no_aliquot.present?
+      errors.add(:source_assets,
+                 "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots")
+    end
     errors.add(:tags_combinations, 'are not compatible and result in a tag clash') if tag_clash?
   end
 

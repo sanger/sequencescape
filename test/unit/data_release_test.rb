@@ -87,7 +87,8 @@ class DataReleaseTest < ActiveSupport::TestCase
           @study.enforce_accessioning = true
         end
 
-        ['transcriptomics', 'other sequencing-based assay', 'genotyping or cytogenetics'].each do |data_release_sort_of_study_value|
+        ['transcriptomics', 'other sequencing-based assay',
+         'genotyping or cytogenetics'].each do |data_release_sort_of_study_value|
           context "where sort of study is #{data_release_sort_of_study_value}" do
             setup do
               @study.study_metadata.data_release_study_type.name = data_release_sort_of_study_value

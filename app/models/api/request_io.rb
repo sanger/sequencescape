@@ -65,10 +65,18 @@ class Api::RequestIO < Api::Base
   map_attribute_to_json_attribute(:priority)
 
   extra_json_attributes do |object, json_attributes|
-    json_attributes['read_length']                 = object.request_metadata.read_length  if object.is_a?(SequencingRequest)
-    json_attributes['library_type']                = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
-    json_attributes['fragment_size_required_from'] = object.request_metadata.fragment_size_required_from   if object.request_metadata.respond_to?(:fragment_size_required_from)
-    json_attributes['fragment_size_required_to']   = object.request_metadata.fragment_size_required_to     if object.request_metadata.respond_to?(:fragment_size_required_to)
+    if object.is_a?(SequencingRequest)
+      json_attributes['read_length']                 = object.request_metadata.read_length
+    end
+    if object.is_a?(LibraryCreationRequest)
+      json_attributes['library_type']                = object.request_metadata.library_type
+    end
+    if object.request_metadata.respond_to?(:fragment_size_required_from)
+      json_attributes['fragment_size_required_from'] = object.request_metadata.fragment_size_required_from
+    end
+    if object.request_metadata.respond_to?(:fragment_size_required_to)
+      json_attributes['fragment_size_required_to']   = object.request_metadata.fragment_size_required_to
+    end
   end
 
   with_association(:user) do

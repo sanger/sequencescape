@@ -12,7 +12,9 @@ describe ExternalReleaseEvent do
     let(:expected_message) { 'Data to be released externally set true' }
 
     let!(:user_without_mail) { create :manager, email: '', roles: [study_a_managers] }
-    let!(:user_on_multiple_studies) { create :manager, email: 'test@example.com', roles: [study_a_managers, study_b_managers] }
+    let!(:user_on_multiple_studies) do
+      create :manager, email: 'test@example.com', roles: [study_a_managers, study_b_managers]
+    end
     let!(:user_on_single_study) { create :manager, email: 'test2@example.com', roles: [study_b_managers] }
 
     let(:study_a) { create :study }

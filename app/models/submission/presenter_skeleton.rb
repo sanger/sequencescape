@@ -49,7 +49,9 @@ class Submission::PresenterSkeleton
 
     sequencing_request = RequestType.find(order.request_types.last)
     multiplier_hash = order.request_options.fetch(:multiplier, {})
-    sequencing_multiplier = (multiplier_hash[sequencing_request.id.to_s] || multiplier_hash.fetch(sequencing_request.id, 1)).to_i
+    sequencing_multiplier = (multiplier_hash[sequencing_request.id.to_s] || multiplier_hash.fetch(
+      sequencing_request.id, 1
+    )).to_i
 
     if order.multiplexed?
       sequencing_multiplier
