@@ -61,7 +61,7 @@ class Pooling
   end
 
   def print_job_required?
-    barcode_printer.present? && count&.positive?
+    barcode_printer.present? && count.to_i.positive?
   end
 
   def print_job
