@@ -1,0 +1,20 @@
+name: Javascript testing
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  eslint:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install
+      uses: CultureHQ/actions-yarn@master
+      with:
+        args: install
+    - name: Lint
+      uses: CultureHQ/actions-yarn@master
+      with:
+        args: test
