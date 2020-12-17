@@ -16,20 +16,32 @@ class Pooling
   def execute
     return false unless valid?
 
-    @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)') if stock_mx_tube_required?
+    @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)', parents: source_assets) if stock_mx_tube_required?
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
+    @standard_mx_tube.parents = @stock_mx_tube ? [@stock_mx_tube] : source_assets
     transfer
     execute_print_job
     true
   end
 
   def transfer
-    target_assets.each do |target_asset|
-      source_assets.each do |source_asset|
-        TransferRequest.create!(asset: source_asset, target_asset: target_asset)
-      end
+    each_transfer do |source_asset, target_asset|
+      # These transfers are not being performed to fulfil a specific request, so we explicitly
+      # pass in a Request Null object. This will disable the attempt to detect an outer request.
+      # We don't use nil as its *far* to easy to end up with nil by accident, so basing key behaviour
+      # off it is risky.
+      TransferRequest.create!(asset: source_asset, target_asset: target_asset, outer_request: Request::None.new)
     end
     message[:notice] = message[:notice] + success
+  end
+
+  def each_transfer
+    source_assets.each do |source_asset|
+      yield source_asset, @stock_mx_tube || @standard_mx_tube
+    end
+    return unless stock_mx_tube_required?
+
+    yield @stock_mx_tube, @standard_mx_tube
   end
 
   def source_assets
@@ -49,7 +61,7 @@ class Pooling
   end
 
   def print_job_required?
-    barcode_printer.present?
+    barcode_printer.present? && count&.positive?
   end
 
   def print_job
