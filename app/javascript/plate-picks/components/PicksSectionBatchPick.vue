@@ -38,7 +38,10 @@
         }"
       >
         <i :class="`fas fa-${plate.scanned ? 'check' : ''}`" />
-        <i class="fas fa-vial" v-if="plate.control" />
+        <i
+          v-if="plate.control"
+          class="fas fa-vial"
+        />
         {{ plate.barcode }}
       </li>
     </ul>
