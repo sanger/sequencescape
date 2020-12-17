@@ -26,7 +26,11 @@ class Pooling
 
   def transfer
     each_transfer do |source_asset, target_asset|
-      TransferRequest.create!(asset: source_asset, target_asset: target_asset)
+      # These transfers are not being performed to fulfil a specific request, so we explicitly
+      # pass in a Request Null object. This will disable the attempt to detect an outer request.
+      # We don't use nil as its *far* to easy to end up with nil by accident, so basing key behaviour
+      # off it is risky.
+      TransferRequest.create!(asset: source_asset, target_asset: target_asset, outer_request: Request::None.new)
     end
     message[:notice] = message[:notice] + success
   end

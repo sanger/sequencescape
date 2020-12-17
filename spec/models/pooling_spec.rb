@@ -76,6 +76,23 @@ describe Pooling, type: :model, poolings: true do
       end
     end
 
+    # LibraryTubes created as part of an MX library manifest have two associated requests,
+    # the CreateAssetRequest and the ExternalLibraryCreationRequest. When the TransferRequest
+    # is created, it was attempting to associate itself with one of these requests, and then
+    # failing to disambiguate between them.
+    context 'when the source tubes are from an mx library manifest' do
+      before do
+        create :create_asset_request, asset: tagged_lb_tube1.receptacle
+        create(:external_multiplexed_library_tube_creation_request, asset: tagged_lb_tube1.receptacle)
+      end
+
+      let(:stock_mx_tube_required) { true }
+
+      it 'creates stock and standard mx tube' do
+        expect(pooling.execute).to be true
+      end
+    end
+
     context 'when a barcode printer is provided' do
       let(:barcode_printer) { create :barcode_printer }
       let(:barcode_printer_option) { barcode_printer.name }
