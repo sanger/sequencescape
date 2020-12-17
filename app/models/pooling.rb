@@ -16,7 +16,11 @@ class Pooling
   def execute
     return false unless valid?
 
-    @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)', parents: source_assets) if stock_mx_tube_required?
+    if stock_mx_tube_required?
+      @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)')
+      @stock_mx_tube.parents = source_assets
+    end
+
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
     @standard_mx_tube.parents = @stock_mx_tube ? [@stock_mx_tube] : source_assets
     transfer
