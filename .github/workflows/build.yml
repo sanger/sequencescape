@@ -1,0 +1,66 @@
+name: Build Project
+env:
+  TZ: Europe/London
+  CUCUMBER_FORMAT: summary
+
+on:
+  release:
+    types: published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Have a horrid feeling we need MySQL to build SS
+    # # Services
+    # # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
+    # services:
+    #   mysql:
+    #     # Use the Mysql docker image https://hub.docker.com/_/mysql
+    #     image: mysql:5.7 # Using 5.7 to map to what is used in production.
+    #     ports:
+    #      - 3306 # Default port mappings
+    #      # Monitor the health of the container to mesaure when it is ready
+    #     options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: '' # Set root PW to nothing
+    #       MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+    - name: Cache gems
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-build-${{ hashFiles('**/Gemfile.lock') }}
+        # If we don't find the specific cache we want, fallback to the last raketests
+        # cache, then finally any cache for this repo.
+        # Github looks for the newest cache beginning with the first entry, before
+        # falling back the the second if none is present.
+        restore-keys: |
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+    # Install only the gems needed for testing
+    # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
+    # in case bundler add an only flag
+    # We also set the install path to vendor/bundle to assist with out caching
+    - name: Setup environment
+      env:
+        DBPORT: ${{ job.services.mysql.ports[3306] }}
+      run: |
+        bundle config path vendor/bundle
+        bin/setup
+    # Actually run our build
+    - name: Compile Build
+      run: ./compile-build
+    # https://github.com/marketplace/actions/upload-a-release-asset
+    - name: Upload release.gz
+      id: upload-release-gz
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }} # Pull the URL from the event
+        asset_path: ./release.tar.gz
+        asset_name: gh-release.tar.gz
+        asset_content_type: application/gzip
