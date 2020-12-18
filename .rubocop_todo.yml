@@ -644,7 +644,7 @@ RSpec/FilePath:
     - 'spec/sequencescape_excel/formula_spec.rb'
     - 'spec/sequencescape_excel/manifest_type_list_spec.rb'
     - 'spec/models/broadcast_events/helpers/external_subjects_spec.rb'
-    - 'spec/models/broadcast_events/plate_cherrypicked_spec.rb'    
+    - 'spec/models/broadcast_events/plate_cherrypicked_spec.rb'
 
 # Offense count: 250
 # Configuration parameters: AssignmentOnly.
@@ -3028,5 +3028,3 @@ Style/ZeroLengthPredicate:
 # URISchemes: http, https
 Layout/LineLength:
   Max: 256
-
-

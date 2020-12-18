@@ -169,7 +169,7 @@ group :test do
   # Rails performance tests
   gem 'rails-perftest'
   gem 'rspec-collection_matchers' # Provides matchers for dealing with arrays
-  gem 'rspec-longrun' # Extends scenario logging for more verbose tracking
+  gem 'rspec-longrun', require: false # Extends scenario logging for more verbose tracking
   gem 'test-prof'
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
@@ -180,7 +180,6 @@ group :test do
   # with rails versions.
   gem 'minitest', '5.10.3'
   gem 'minitest-profiler'
-  gem 'rspec_junit_formatter'
 end
 
 group :test, :cucumber do
@@ -222,3 +221,8 @@ group :deployment do
 end
 
 gem 'yard-activerecord', '~> 0.0.16'
+
+# Can be removed once we don't use circle_ci
+group :circle_ci, optional: true do
+  gem 'rspec_junit_formatter', require: false
+end

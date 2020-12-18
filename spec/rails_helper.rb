@@ -21,6 +21,7 @@ require 'support/api_helper'
 require 'shared_contexts/it_requires_login'
 require 'shared_contexts/shared_io_examples'
 require 'shoulda/matchers'
+require 'rspec/longrun'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -80,6 +81,7 @@ RSpec.configure do |config|
   config.include Rails.application.routes.url_helpers
 
   config.include ApiV2Helper, with: :api_v2
+  config.include RSpec::Longrun::DSL
 
   Capybara.add_selector(:data_behavior) do
     xpath { |name| XPath.css("[data-behavior='#{name}']") }
