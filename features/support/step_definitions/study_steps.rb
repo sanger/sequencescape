@@ -27,13 +27,8 @@ end
 
 Given /^the following user records$/ do |table|
   table.hashes.each do |hash|
-    if usr = User.find_by(login: hash['login'])
-      usr.first_name = hash['first_name']
-      usr.last_name = hash['last_name']
-    else
-      usr = FactoryBot.create(:user, hash)
-    end
-    usr.save
+    User.create_with(FactoryBot.attributes_for(:user, hash))
+        .find_or_create_by(login: hash['login'])
   end
 end
 

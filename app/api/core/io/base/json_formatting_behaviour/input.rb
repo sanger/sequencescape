@@ -49,7 +49,8 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
         next_model, next_step =
           if model.nil?
             [nil, step]
-          elsif association = model.reflections[step]
+          # Brackets here indicate that assignment is intentional and make Rubocop happy
+          elsif (association = model.reflections[step])
             unless %i[belongs_to has_one].include?(association.macro.to_sym)
               raise StandardError, 'Nested attributes only works with belongs_to or has_one'
             end
