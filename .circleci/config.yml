@@ -102,7 +102,7 @@ jobs:
               --out /tmp/test-results/rspec.xml
       - run:
           name: Build coverage
-          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.specs.json coverage/.resultset.json
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.specs.json
 
       # collect reports
       - store_test_results:
@@ -139,7 +139,7 @@ jobs:
       # collect reports
       - run:
           name: Build coverage
-          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.tests.json coverage/.resultset.json
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.tests.json
 
       - store_test_results:
           path: /tmp/test-results
@@ -177,7 +177,7 @@ jobs:
             bundle exec rake knapsack:cucumber
       - run:
           name: Build coverage
-          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.cukes$CIRCLE_NODE_INDEX.json coverage/.resultset.json
+          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.cukes$CIRCLE_NODE_INDEX.json
       # collect reports
       - store_test_results:
           path: /tmp/test-results
