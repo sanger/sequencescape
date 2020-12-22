@@ -61,7 +61,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
-        path: coverage/.resultset.json
+        path: coverage/coverage.json
         retention-days: 1
   rspec_tests:
     runs-on: ubuntu-latest
@@ -127,7 +127,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
-        path: coverage/.resultset.json
+        path: coverage/coverage.json
         retention-days: 1
   cucumber_tests:
     runs-on: ubuntu-latest
@@ -194,7 +194,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
-        path: coverage/.resultset.json
+        path: coverage/coverage.json
         retention-days: 1
   end_coverage:
     runs-on: ubuntu-latest

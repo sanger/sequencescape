@@ -57,13 +57,6 @@ jobs:
           name: reinstall mysql2 temporary
           command: |
             bundle install --jobs=3 --retry=3 --path vendor/bundle
-      - run:
-         name:  Download cc-test-reporter
-         command: |
-           mkdir -p tmp/
-           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
-           chmod +x ./tmp/cc-test-reporter
-
       - save_cache:
           paths:
             - ./vendor/bundle
@@ -71,7 +64,6 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - tmp/cc-test-reporter
             - vendor/bundle
 
   run-specs:
@@ -100,10 +92,6 @@ jobs:
               --format documentation \
               --format RspecJunitFormatter \
               --out /tmp/test-results/rspec.xml
-      - run:
-          name: Build coverage
-          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.specs.json
-
       # collect reports
       - store_test_results:
           path: /tmp/test-results
@@ -136,11 +124,6 @@ jobs:
           command: |
             mkdir /tmp/test-results
             bundle exec rake test
-      # collect reports
-      - run:
-          name: Build coverage
-          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.tests.json
-
       - store_test_results:
           path: /tmp/test-results
       - store_artifacts:
@@ -175,9 +158,6 @@ jobs:
           command: |
             mkdir /tmp/test-results
             bundle exec rake knapsack:cucumber
-      - run:
-          name: Build coverage
-          command: ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.cukes$CIRCLE_NODE_INDEX.json
       # collect reports
       - store_test_results:
           path: /tmp/test-results
