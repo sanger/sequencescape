@@ -34,13 +34,14 @@ module ApplicationHelper
   end
 
   def render_flashes
-    output = String.new.html_safe
     flash.each do |key, message|
-      output << alert(key, id: "message_#{key}") do
-        Array(message).reduce(String.new.html_safe) { |buffer, m| buffer << tag.div(m) }
-      end
+      concat(
+        alert(key, id: "message_#{key}") do
+          Array(message).each { |m| concat tag.div(m) }
+        end
+      )
     end
-    output
+    nil
   end
 
   def api_data

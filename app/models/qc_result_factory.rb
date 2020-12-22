@@ -173,12 +173,11 @@ class QcResultFactory
     resources.each do |resource|
       next if resource.valid?
 
-      String.new.tap do |resource_errors|
-        resource.errors.each do |key, value|
-          resource_errors << "#{key} #{value} "
-        end
-        errors.add(resource.message_id, resource_errors)
-      end
+      resource_errors = resource.errors.map do |key, value|
+        "#{key} #{value}"
+      end.join(' ')
+
+      errors.add(resource.message_id, resource_errors)
     end
   end
 end
