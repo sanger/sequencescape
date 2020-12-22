@@ -14,7 +14,7 @@ jobs:
       uses: CultureHQ/actions-yarn@master
       with:
         args: install
-    - name: Lint
+    - name: Run yarn test
       uses: CultureHQ/actions-yarn@master
       with:
         args: test
