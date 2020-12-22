@@ -31,15 +31,6 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
     subject_record('plate', BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE, '000003', uuids[5])
   end
 
-  def subject_record(subject_type, role_type, friendly_name, uuid)
-    {
-      "role_type": role_type,
-      "subject_type": subject_type,
-      "friendly_name": friendly_name,
-      "uuid": uuid
-    }
-  end
-
   it 'is not directly instantiated' do
     expect(described_class.new).not_to be_valid
   end
@@ -90,7 +81,8 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
   end
 
   context 'with the right contents in properties and seed' do
-    let(:props) {  { subjects: [plate1, plate2, sample1, sample2, robot] } }
+    let(:props) { { user_identifier: 'jimmy', subjects: [plate1, plate2, sample1, sample2, robot] } }
+
     let(:instance) { described_class.new(seed: destination_plate, properties: props) }
 
     it 'can be created when all required subjects are defined' do
@@ -110,6 +102,32 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
                                                        event_type: 'lh_beckman_cp_destination_created'
                                                      }
                                                    })
+        end
+
+        it 'includes a user identifier' do
+          event_info = JSON.parse(instance.to_json)
+          expect(event_info['event']).to have_key('user_identifier')
+          expect(event_info['event']['user_identifier']).to eq('jimmy')
+        end
+
+        context 'when user identifier is missing' do
+          let(:props) { { subjects: [plate1, plate2, sample1, sample2, robot] } }
+
+          it 'includes the unknown user identifier' do
+            event_info = JSON.parse(instance.to_json)
+            expect(event_info['event']).to have_key('user_identifier')
+            expect(event_info['event']['user_identifier']).to eq('UNKNOWN')
+          end
+        end
+
+        context 'when user identifier is an empty string' do
+          let(:props) { { user_identifier: '', subjects: [plate1, plate2, sample1, sample2, robot] } }
+
+          it 'includes the unknown user identifier' do
+            event_info = JSON.parse(instance.to_json)
+            expect(event_info['event']).to have_key('user_identifier')
+            expect(event_info['event']['user_identifier']).to eq('UNKNOWN')
+          end
         end
 
         it 'has right size of subjects' do
