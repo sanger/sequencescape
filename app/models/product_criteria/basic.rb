@@ -12,7 +12,7 @@ class ProductCriteria::Basic
   UnknownSpecification = Class.new(StandardError)
 
   attr_reader :passed, :params, :comment, :values
-  alias_method :passed?, :passed
+  alias passed? passed
 
   Comparison = Struct.new(:method, :message)
 

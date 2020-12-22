@@ -82,13 +82,13 @@ end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^"]+)" and IDs starting at (\d+)$/ do |count, model, name, id|
   (0...count.to_i).each do |index|
-    step(%Q{a #{model.singularize} called "#{name}-#{index + 1}" with ID #{id.to_i + index}})
+    step(%{a #{model.singularize} called "#{name}-#{index + 1}" with ID #{id.to_i + index}})
   end
 end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^"]+)"$/ do |count, model, name|
   (0...count.to_i).each do |index|
-    step(%Q{a #{model.singularize} called "#{name}-#{index + 1}"})
+    step(%{a #{model.singularize} called "#{name}-#{index + 1}"})
   end
 end
 
@@ -234,7 +234,7 @@ end
 
 Given /^there are (\d+) "([^"]+)" requests with IDs starting at (\d+)$/ do |count, type, id|
   (0...count.to_i).each do |index|
-    step(%Q{a "#{type}" request with ID #{id.to_i + index}})
+    step(%{a "#{type}" request with ID #{id.to_i + index}})
   end
 end
 

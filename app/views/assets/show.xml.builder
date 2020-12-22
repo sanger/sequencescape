@@ -1,5 +1,5 @@
 xml.instruct!
-xml.asset(api_data) {
+xml.asset(api_data) do
   xml.comment! <<~COMMENT
     WARNING: This endpoint is maintained to allow legacy systems to transition away from it.
     Asset has been deprecated. This page shows the receptacle #{@asset.id}.
@@ -18,38 +18,38 @@ xml.asset(api_data) {
     @asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
   end
 
-  xml.children {
+  xml.children do
     @asset.children.each do |child_asset|
       xml.id child_asset.id
     end
-  }
-  xml.parents {
+  end
+  xml.parents do
     @asset.parents.each do |parent_asset|
       xml.id parent_asset.id
     end
-  }
+  end
   if @exclude_nested_resource # just send the ids
-    xml.request_ids {
+    xml.request_ids do
       @asset.request_ids.each do |request_id|
         xml.id request_id
       end
-    }
+    end
   else
-    xml.requests {
+    xml.requests do
       @asset.requests.each do |asset_request|
-        xml.request {
+        xml.request do
           xml.id asset_request.id
-          xml.properties {
+          xml.properties do
             asset_request.request_metadata.attribute_value_pairs.each do |attribute, value|
-              xml.property {
+              xml.property do
                 xml.key   attribute.name.to_s
                 xml.name  attribute.to_field_info.display_name
                 xml.value value
-              }
+              end
             end
-          }
-        }
+          end
+        end
       end
-    }
+    end
   end
-}
+end

@@ -311,14 +311,14 @@ class Sample < ApplicationRecord
   before_destroy :safe_to_destroy
   after_save :accession
 
-  # Note: Samples don't tend to get released through Sequencescape
+  # NOTE: Samples don't tend to get released through Sequencescape
   # so in reality these methods are usually misleading.
   delegate :released?, :release, to: :sample_metadata
 
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
   scope :for_search_query, lambda { |query|
-    # Note: This search is performed in two stages so that we can make best use of our indicies
+    # NOTE: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
     # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
     # problem rails side, and perform two queries instead.

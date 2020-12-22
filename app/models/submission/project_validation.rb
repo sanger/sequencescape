@@ -35,7 +35,7 @@ module Submission::ProjectValidation
   private :check_project_details!
 
   def multiplier_for(request_type)
-    return 1 if request_options.blank? or not request_options.key?(:multiplier)
+    return 1 if request_options.blank? || (not request_options.key?(:multiplier))
 
     request_options[:multiplier][request_type.id.to_i] || 1
   end

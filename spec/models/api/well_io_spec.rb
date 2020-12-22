@@ -11,7 +11,7 @@ RSpec.describe Api::WellIO, type: :model do
     let(:plate) { create :plate, barcode: 1 }
     let(:sample) { subject.samples.first }
 
-    let(:expected_json) {
+    let(:expected_json) do
       {
         'uuid' => subject.uuid,
         'internal_id' => subject.id,
@@ -34,7 +34,7 @@ RSpec.describe Api::WellIO, type: :model do
         'sample_internal_id' => sample.id,
         'sample_name' => sample.name
       }
-    }
+    end
 
     it_behaves_like('an IO object')
   end
@@ -48,7 +48,7 @@ RSpec.describe Api::WellIO, type: :model do
     let(:sample) { subject.samples.first }
 
     # We only send samples in the event we have just one
-    let(:expected_json) {
+    let(:expected_json) do
       {
         'uuid' => subject.uuid,
         'internal_id' => subject.id,
@@ -68,7 +68,7 @@ RSpec.describe Api::WellIO, type: :model do
         'plate_uuid' => plate.uuid,
         'plate_barcode_prefix' => 'DN'
       }
-    }
+    end
 
     it_behaves_like('an IO object')
   end

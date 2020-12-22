@@ -68,7 +68,7 @@ Given /^I have already made (\d+) "([^"]+)" requests? with IDs starting at (\d+)
 end
 
 Given /^I have already made a "([^"]+)" request with ID (\d+) within the study "([^"]+)" for the project "([^"]+)"$/ do |type, id, study_name, project_name|
-  step(%Q{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"})
+  step(%{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"})
 end
 
 Given '{study_name} has an asset group of {int} samples in SampleTubes called {string}' do |study, count, group_name|

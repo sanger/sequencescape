@@ -6,7 +6,7 @@ class Rails::Rack::Metal
   def call(env)
     @metals.keys.each do |app|
       result = app.call(env)
-      return result unless result[0].to_i == 404 and result[2].blank?
+      return result unless (result[0].to_i == 404) && result[2].blank?
     end
     @app.call(env)
   end

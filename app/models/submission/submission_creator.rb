@@ -62,7 +62,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   delegate :cross_compatible?, to: :order
 
   def order_params
-    @order_params = @order_params.to_hash if @order_params.class == HashWithIndifferentAccess
+    @order_params = @order_params.to_hash if @order_params.instance_of?(HashWithIndifferentAccess)
     @order_params[:multiplier] = HashWithIndifferentAccess.new if @order_params && @order_params[:multiplier].nil?
     @order_params
   end

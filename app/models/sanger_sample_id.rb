@@ -9,7 +9,7 @@ class SangerSampleId < ApplicationRecord
     end
   end
 
-  alias_method(:sample_id, :id)
+  alias sample_id id
 
   class << self
     def generate_sanger_sample_id!(study_abbreviation, sanger_id = nil)

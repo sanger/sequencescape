@@ -4,19 +4,19 @@
 # TODO: Remove these from the features and replace them with the new versions
 ########################################################################################
 Then /^the field labeled "([^"]+)" should contain "([^"]*)"$/ do |label, value|
-  step %Q{the "#{label}" field should contain "#{value}"}
+  step %{the "#{label}" field should contain "#{value}"}
 end
 
 When /^I fill in the field labeled "([^"]+)" with "([^"]*)"$/ do |label, value|
-  step(%Q{I fill in "#{label}" with "#{value}"})
+  step(%{I fill in "#{label}" with "#{value}"})
 end
 
 Then /^the checkbox labeled "([^"]+)" should not be checked$/ do |label|
-  step %Q{the "#{label}" checkbox should not be checked}
+  step %{the "#{label}" checkbox should not be checked}
 end
 
 Then /^the checkbox labeled "([^"]+)" should be checked$/ do |label|
-  step %Q{the "#{label}" checkbox should be checked}
+  step %{the "#{label}" checkbox should be checked}
 end
 
 Then /^the field labeled "([^"]*)" should be disabled$/ do |label|
@@ -33,9 +33,9 @@ end
 Then /^I should see the following (required )?fields:$/ do |required, table|
   table.hashes.each do |field|
     if field['type'].include?('/')
-      step %Q{I should see the #{required}select field "#{field['field']}" with options "#{field['type']}"}
+      step %{I should see the #{required}select field "#{field['field']}" with options "#{field['type']}"}
     else
-      step %Q{I should see the #{required}#{field['type']} field "#{field['field']}"}
+      step %{I should see the #{required}#{field['type']} field "#{field['field']}"}
     end
   end
 end

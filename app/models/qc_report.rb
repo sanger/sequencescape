@@ -155,7 +155,7 @@ class QcReport < ApplicationRecord
     report_identifier.nil?
   end
 
-  # Note: You won't be able to generate two reports for the
+  # NOTE: You won't be able to generate two reports for the
   # same product / study abbreviation combo within one second
   # of each other.
   def generate_report_identifier

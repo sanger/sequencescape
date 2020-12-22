@@ -21,7 +21,7 @@ module Accession
   # @see ftp://ftp.sra.ebi.ac.uk/meta/xsd/ Schema definitions
   module Helpers
     def load_file(folder, filename)
-      YAML::load_file(File.join(Rails.root, folder, "#{filename}.yml")).with_indifferent_access
+      YAML.load_file(File.join(Rails.root, folder, "#{filename}.yml")).with_indifferent_access
     end
   end
 

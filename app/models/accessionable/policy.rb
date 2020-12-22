@@ -28,15 +28,15 @@ class Accessionable::Policy < Accessionable::Base
   def xml
     xml = Builder::XmlMarkup.new
     xml.instruct!
-    xml.POLICY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
+    xml.POLICY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') do
       xml.POLICY(alias: self.alias,
                  accession: accession_number,
-                 center_name: center_name) {
+                 center_name: center_name) do
         xml.TITLE title
         xml.DAC_REF(accession: dac_accession_number)
         xml.POLICY_FILE policy_url
-      }
-    }
+      end
+    end
     xml.target!
   end
 

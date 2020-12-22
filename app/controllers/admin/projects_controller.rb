@@ -99,7 +99,7 @@ class Admin::ProjectsController < ApplicationController
   private
 
   def redirect_if_not_owner_or_admin(project)
-    unless current_user.owner?(project) or current_user.is_administrator?
+    unless current_user.owner?(project) || current_user.is_administrator?
       flash[:error] = "Project details can only be altered by the owner (#{project.user.login}) or an administrator"
       redirect_to project_path(project)
     end

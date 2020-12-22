@@ -36,7 +36,7 @@ RSpec.describe Studies::InformationController do
       get :show, params: { id: 'unused', study_id: study.id }
     end
 
-    # Note: This currently has some limitations when it comes to assigning requests to studies
+    # NOTE: This currently has some limitations when it comes to assigning requests to studies
     # This test has been added purely to cover existing behaviour, while the statistics are
     # refactored. It does not fix the study-requests scope
     it 'detects used request types' do

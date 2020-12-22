@@ -13,29 +13,29 @@ module BatchesHelper
       study_id: aliquot.study_id,
       project_id: aliquot.project_id,
       consent_withdrawn: aliquot.sample.consent_withdrawn?
-    ) {
+    ) do
       # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
-      xml.tag!(:tag, tag_id: aliquot.tag.id) {
+      xml.tag!(:tag, tag_id: aliquot.tag.id) do
         xml.index             aliquot.aliquot_index_value || aliquot.tag.map_id
         xml.expected_sequence aliquot.tag.oligo
         xml.tag_group_id      aliquot.tag.tag_group_id
-      } unless aliquot.tag.nil?
+      end unless aliquot.tag.nil?
 
-      xml.tag(tag2_id: aliquot.tag2.id) {
+      xml.tag(tag2_id: aliquot.tag2.id) do
         xml.expected_sequence aliquot.tag2.oligo
         xml.tag_group_id      aliquot.tag2.tag_group_id
-      } unless aliquot.tag2.nil?
+      end unless aliquot.tag2.nil?
 
-      xml.bait(id: aliquot.bait_library.id) {
+      xml.bait(id: aliquot.bait_library.id) do
         xml.name aliquot.bait_library.name
-      } if aliquot.bait_library.present?
+      end if aliquot.bait_library.present?
 
       xml.insert_size(from: aliquot.insert_size.from, to: aliquot.insert_size.to) if aliquot.insert_size.present?
-    }
+    end
   end
 
   def workflow_name(batch)
-    return unless batch and batch.workflow
+    return unless batch && batch.workflow
 
     batch.workflow.name.gsub(/Cluster formation | \([^)]*\)/, '')
   end

@@ -219,7 +219,7 @@ class Batch < ApplicationRecord
     end
   end
 
-  alias_method :ordered_requests, :requests
+  alias ordered_requests requests
 
   def assigned_user
     assignee.try(:login) || ''
@@ -356,7 +356,7 @@ class Batch < ApplicationRecord
       update_batch_state(reason, comment)
     end
   end
-  alias_method(:recycle_request_ids, :remove_request_ids)
+  alias recycle_request_ids remove_request_ids
 
   # Remove a request from the batch and reset it to a point where it can be put back into
   # the pending queue.
@@ -422,7 +422,7 @@ class Batch < ApplicationRecord
     batch_request_right = BatchRequest.find_by(batch_id: batch_info['batch_2']['id'],
                                                position: batch_info['batch_2']['lane']) or errors.add('Swap: ',
                                                                                                       'The second lane cannot be found')
-    return unless batch_request_left.present? and batch_request_right.present?
+    return unless batch_request_left.present? && batch_request_right.present?
 
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
@@ -516,7 +516,7 @@ class Batch < ApplicationRecord
 
       batch
     end
-    alias_method :find_from_barcode, :find_by_barcode
+    alias find_from_barcode find_by_barcode
   end
 
   def request_count

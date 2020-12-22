@@ -46,11 +46,11 @@ class Parsers::BioanalysisCsvParser
   end
 
   def build_range(range)
-    if range == nil
-      range = [0, content.length - 1]
-    else
-      range = range.dup
-    end
+    range = if range == nil
+              [0, content.length - 1]
+            else
+              range.dup
+            end
     range.push(content.length - 1) if (range.length == 1)
     range
   end
@@ -120,11 +120,11 @@ class Parsers::BioanalysisCsvParser
     groups = get_groups(/Sample Name/)
 
     groups.each_with_index.map do |group, pos|
-      if (pos == (groups.length - 1))
-        next_index = @content.length - 1
-      else
-        next_index = groups[pos + 1][0] - 1
-      end
+      next_index = if (pos == (groups.length - 1))
+                     @content.length - 1
+                   else
+                     groups[pos + 1][0] - 1
+                   end
       [group[0], next_index]
     end.reduce({}) do |memo, group|
       memo.merge(parse_sample group)

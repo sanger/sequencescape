@@ -31,7 +31,7 @@ class RequestsController < ApplicationController
     @subtitle = (@study&.name || @asset&.display_name)
 
     # Deprecated?: It would be great if we could remove this
-    if params[:request_type] and params[:workflow]
+    if params[:request_type] && params[:workflow]
       request_source = request_source.for_request_types(params[:request_type]).includes(:user)
     end
 
@@ -144,7 +144,7 @@ class RequestsController < ApplicationController
   end
 
   def redirect_if_not_owner_or_admin
-    unless current_user == @request.user or current_user.is_administrator? or current_user.is_manager?
+    unless (current_user == @request.user) || current_user.is_administrator? || current_user.is_manager?
       flash[:error] = 'Request details can only be altered by the owner or a manager'
       redirect_to request_path(@request)
       return true

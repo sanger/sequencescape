@@ -18,11 +18,11 @@ module Tasks::SetDescriptorsHandler
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
-    if params[:values].nil?
-      @values = {}
-    else
-      @values = params[:values]
-    end
+    @values = if params[:values].nil?
+                {}
+              else
+                params[:values]
+              end
 
     # Perform the necessary updates if we've passed batch creation
     unless params[:next_stage].nil?
@@ -103,10 +103,10 @@ module Tasks::SetDescriptorsHandler
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
-    if params[:values].nil?
-      @values = {}
-    else
-      @values = params[:values]
-    end
+    @values = if params[:values].nil?
+                {}
+              else
+                params[:values]
+              end
   end
 end

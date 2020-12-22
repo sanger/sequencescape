@@ -40,17 +40,17 @@ module Net
       end
 
       D "opening connection to #{conn_address}:#{conn_port}..."
-      s = Timeout.timeout(@open_timeout, Net::OpenTimeout) {
+      s = Timeout.timeout(@open_timeout, Net::OpenTimeout) do
         TCPSocket.open(conn_address, conn_port, @local_host, @local_port)
-      }
+      end
       s.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
       D 'opened'
       if use_ssl?
         ssl_parameters = Hash.new
         iv_list = instance_variables
         SSL_IVNAMES.each_with_index do |ivname, i|
-          if iv_list.include?(ivname) and
-             value = instance_variable_get(ivname)
+          if iv_list.include?(ivname) &&
+             (value = instance_variable_get(ivname))
             ssl_parameters[SSL_ATTRIBUTES[i]] = value if value
           end
         end
@@ -82,8 +82,8 @@ module Net
             @socket.write(buf)
             HTTPResponse.read_new(@socket).value
           end
-          if @ssl_session and
-             Process.clock_gettime(Process::CLOCK_REALTIME) < @ssl_session.time.to_f + @ssl_session.timeout
+          if @ssl_session &&
+             (Process.clock_gettime(Process::CLOCK_REALTIME) < @ssl_session.time.to_f + @ssl_session.timeout)
             s.session = @ssl_session if @ssl_session
           end
           # Server Name Indication (SNI) RFC 3546
@@ -95,7 +95,7 @@ module Net
           @ssl_session = s.session
         rescue => e
           D "Conn close because of connect error #{e}"
-          @socket.close if @socket and not @socket.closed?
+          @socket.close if @socket && (not @socket.closed?)
           raise e
         end
       end

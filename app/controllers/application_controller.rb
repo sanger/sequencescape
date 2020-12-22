@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
     new_hash = object.class.new
     to_nil = []
     object.each do |k, v|
-      if k == 'check' and v.is_a?(Hash)
+      if (k == 'check') && v.is_a?(Hash)
         v.each do |k, v|
           to_nil << k unless v == 'true'
         end

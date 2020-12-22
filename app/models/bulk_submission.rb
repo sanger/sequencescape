@@ -174,7 +174,7 @@ class BulkSubmission
       end
 
     end
-  end # process
+  end
 
   COMMON_FIELDS = [
     # Needed to construct the submission ...

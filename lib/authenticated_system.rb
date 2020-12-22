@@ -53,18 +53,18 @@ module AuthenticatedSystem
 
     if username && passwd
       user = User.authenticate(username, passwd)
-      if user.nil?
-        self.current_user = :false
-      else
-        self.current_user = user
-      end
+      self.current_user = if user.nil?
+                            :false
+                          else
+                            user
+                          end
     elsif params[:api_key]
       user = User.find_by(api_key: params[:api_key])
-      if user.nil?
-        self.current_user = :false
-      else
-        self.current_user = user
-      end
+      self.current_user = if user.nil?
+                            :false
+                          else
+                            user
+                          end
     end
 
     respond_to do |accepts|

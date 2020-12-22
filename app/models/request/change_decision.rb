@@ -18,7 +18,7 @@ class Request::ChangeDecision
   end
   validates_each(:checkboxes) do |record, attribute, list_of_checkbox_values|
     record.errors.add(attribute, 'at least one must be selected') if list_of_checkbox_values.all? do |v|
-                                                                       v.blank? or v == '0'
+                                                                       v.blank? || (v == '0')
                                                                      end
   end
 

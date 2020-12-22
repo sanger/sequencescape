@@ -12,6 +12,7 @@ class MigratePlateTypeToNewColumn < ActiveRecord::Migration[5.1]
       descriptors['Plate Type']
     end
   end
+
   # Pigration specific version of PlateType
   class LabwareType < ApplicationRecord
     self.table_name = 'plate_types'

@@ -37,7 +37,8 @@ class Api::Messages::FluidigmPlateIO < Api::Base
       primary_aliquot.study.uuid
     end
 
-    def qc_state # Untracked for the moment
+    # Untracked for the moment
+    def qc_state
       nil
     end
   end

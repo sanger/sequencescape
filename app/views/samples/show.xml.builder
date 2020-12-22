@@ -1,6 +1,6 @@
 require 'rexml/text'
 xml.instruct!
-xml.sample(api_data) {
+xml.sample(api_data) do
   xml.id @sample.id
   xml.name @sample.name
   # We're experiencing some significant performance issues with this page
@@ -12,17 +12,17 @@ xml.sample(api_data) {
   xml.consent_withdrawn @sample.consent_withdrawn?
   # Descriptors
 
-  xml.properties {
+  xml.properties do
     @sample.sample_metadata.attribute_value_pairs.each do |attribute, value|
       # puts attribute.name.to_s
-      xml.property {
+      xml.property do
         # NOTE: The display text is targeted at HTML, so contains escaped entities, which we must unescape for XML.
         xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
         xml.value(value)
-      }
+      end
     end
     @sample.sample_metadata.association_value_pairs.each do |attribute, value|
-      xml.property {
+      xml.property do
         # NOTE: The display text is targeted at HTML, so contains escaped entities, which we must unescape for XML.
         xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
         if (attribute.to_field_info.display_name == "Reference Genome") && (value.blank?)
@@ -30,11 +30,11 @@ xml.sample(api_data) {
         else
           xml.value(value)
         end
-      }
+      end
     end
-  }
+  end
 
   if study_id # Not sure why this appears twice.
     xml.study_id study_id
   end
-}
+end

@@ -1,6 +1,6 @@
 class LabSearchesController < ApplicationController
   include SearchBehaviour
-  alias_method(:new, :search)
+  alias new search
 
   def index
     redirect_to action: :new

@@ -3,7 +3,7 @@ module I18n
   module Backend
     module Base
       def load_yml(filename)
-        YAML::load(ERB.new(IO.read(filename)).result)
+        YAML.load(ERB.new(IO.read(filename)).result)
       end
     end
   end

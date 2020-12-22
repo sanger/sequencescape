@@ -129,9 +129,9 @@ class SubmissionTemplate < ApplicationRecord
     params.each_with_object({}) do |(k, v), cloned|
       cloned[k] = if v.is_a?(ActiveRecord::Base)
                     v
-                  elsif v.is_a?(Array) and v.first.is_a?(ActiveRecord::Base)
+                  elsif v.is_a?(Array) && v.first.is_a?(ActiveRecord::Base)
                     v.dup                           # Duplicate the array, but not the contents
-                  elsif v.is_a?(Array) or v.is_a?(Hash)
+                  elsif v.is_a?(Array) || v.is_a?(Hash)
                     Marshal.load(Marshal.dump(v))   # Make safe copies of arrays and hashes
                   else
                     v

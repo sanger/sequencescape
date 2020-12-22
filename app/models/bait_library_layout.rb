@@ -26,7 +26,7 @@ class BaitLibraryLayout < ApplicationRecord
 
   # Records the assignment of the bait library to a particular well
   def record_bait_library_assignment(well, bait_library)
-    # Note: The serialization of the hash prevents the use of a block
+    # NOTE: The serialization of the hash prevents the use of a block
     # to set default values etc.
     (layout[bait_library.name] ||= []).push(well.map.description)
   end

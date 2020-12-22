@@ -65,7 +65,7 @@ module Core::Endpoint::BasicHandler::Paged
       end
 
       attr_reader :page, :total_pages
-      alias_method(:current_page, :page)
+      alias current_page page
 
       def next_page
         page + 1

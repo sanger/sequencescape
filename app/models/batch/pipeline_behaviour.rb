@@ -33,7 +33,7 @@ module Batch::PipelineBehaviour
   def has_item_limit?
     item_limit.present?
   end
-  alias_method(:has_limit?, :has_item_limit?)
+  alias has_limit? has_item_limit?
 
   def last_completed_task
     pipeline.workflow.tasks.order(:sorted).where(id: completed_task_ids).last unless complete_events.empty?

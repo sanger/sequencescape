@@ -17,7 +17,7 @@ class ::Core::Registry
   end
 
   def lookup_target_class_through_model_hierarchy!(model_class, root_lookup_model_class = model_class)
-    if model_class.nil? or ActiveRecord::Base == model_class
+    if model_class.nil? || (ActiveRecord::Base == model_class)
       raise UnregisteredError, "Unable to locate for #{root_lookup_model_class.name.inspect} (#{inspect})"
     end
 
@@ -27,7 +27,7 @@ class ::Core::Registry
     register(model_class, lookup_target_class_through_model_hierarchy!(model_class.superclass, root_lookup_model_class))
   end
 
-  alias_method(:lookup, :lookup_target_class_through_model_hierarchy!)
+  alias lookup lookup_target_class_through_model_hierarchy!
   private :lookup_target_class_in_registry!
   private :lookup_target_class_through_model_hierarchy!
 

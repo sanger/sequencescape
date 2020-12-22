@@ -12,6 +12,7 @@ class Warren::Test
       @warren << message
     end
   end
+
   #
   # Creates a test warren with no messages.
   # Test warrens are shared across all threads.

@@ -16,9 +16,9 @@ class SequencingPipeline < Pipeline
       return true
     end
 
-    read_length_list = batch.requests.map { |request|
+    read_length_list = batch.requests.map do |request|
       request.request_metadata.read_length
-    }.compact
+    end.compact
 
     # The pipeline doen't contain the read_length attribute
     return true if read_length_list.size == 0

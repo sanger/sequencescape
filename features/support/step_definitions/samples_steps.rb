@@ -139,9 +139,9 @@ Given(/^the sample "([^"]+)" has the accession number "([^"]+)"$/) do |name, val
 end
 
 When /^I (create|update) an? accession number for sample "([^"]+)"$/ do |action_type, sample_name|
-  step %Q{I am on the show page for sample "#{sample_name}"}
+  step %{I am on the show page for sample "#{sample_name}"}
   action_str = action_type == 'create' ? 'Generate Accession Number' : 'Update EBI Sample data'
-  step(%Q{I follow "#{action_str}"})
+  step(%{I follow "#{action_str}"})
 end
 
 Then /^I (should|should not) have (sent|received) the attribute "([^"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, _dest|
@@ -157,13 +157,13 @@ end
 
 Given /^a sample named "([^"]+)" exists for accession/ do |sample_name|
   study_name = "study for sample #{sample_name}"
-  step(%Q{a study named "#{study_name}" exists for accession})
-  step(%Q{the sample named "#{sample_name}" exists with ID 200})
-  step(%Q{study "#{study_name}" has an accession number})
+  step(%{a study named "#{study_name}" exists for accession})
+  step(%{the sample named "#{sample_name}" exists with ID 200})
+  step(%{study "#{study_name}" has an accession number})
   step('I am the owner of sample "sample"')
-  step(%Q{the sample "#{sample_name}" belongs to the study "#{study_name}"})
-  step(%Q{the sample "#{sample_name}" has the Taxon ID "99999"})
-  step(%Q{the sample "#{sample_name}" has the common name "Human"})
+  step(%{the sample "#{sample_name}" belongs to the study "#{study_name}"})
+  step(%{the sample "#{sample_name}" has the Taxon ID "99999"})
+  step(%{the sample "#{sample_name}" has the common name "Human"})
 end
 
 Given /^the Sanger sample ID of the last sample is "([^"]+)"$/ do |id|

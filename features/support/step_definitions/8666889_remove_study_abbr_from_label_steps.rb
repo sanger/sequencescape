@@ -43,5 +43,5 @@ end
 
 Given /^the child asset of "([^"]*)" has a sanger_sample_id of "([^"]*)"$/ do |sample_tube_name, sanger_sample_id|
   sample_tube = SampleTube.find_by(name: sample_tube_name)
-  step(%Q{the asset called "#{sample_tube.child.name}" has a sanger_sample_id of "#{sanger_sample_id}"})
+  step(%{the asset called "#{sample_tube.child.name}" has a sanger_sample_id of "#{sanger_sample_id}"})
 end

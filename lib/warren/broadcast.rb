@@ -26,6 +26,7 @@ class Warren::Broadcast
       @exchange ||= @bun_channel.topic(@exchange_name, auto_delete: false, durable: true)
     end
   end
+
   #
   # Creates a warren but does not connect.
   #

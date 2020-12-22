@@ -23,7 +23,7 @@ describe '/api/1/work_completions' do
       }}
     end
 
-    let(:response_body) {
+    let(:response_body) do
       %{{
         "work_completion": {
           "actions": {},
@@ -41,7 +41,7 @@ describe '/api/1/work_completions' do
           }
         }
       }}
-    }
+    end
     let(:response_code) { 201 }
 
     it 'supports resource creation' do

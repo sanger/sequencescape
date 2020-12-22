@@ -68,11 +68,11 @@ Given '{well_range} of {plate_uuid} have been {submitted_to} with the following 
 end
 
 Given /^the plate (.+) has been submitted to "([^"]+)"$/ do |info, template|
-  step(%Q{"A1-H12" of the plate #{info} have been submitted to "#{template}"})
+  step(%{"A1-H12" of the plate #{info} have been submitted to "#{template}"})
 end
 
 Given /^the plate (.+) and (.+) have been submitted to "([^"]+)"$/ do |info, info2, template|
-  step(%Q{"A1-H12" of the plate #{info} and the plate #{info2} both been submitted to "#{template}"})
+  step(%{"A1-H12" of the plate #{info} and the plate #{info2} both been submitted to "#{template}"})
 end
 
 Given 'H12 on {asset_name} is empty' do |plate|

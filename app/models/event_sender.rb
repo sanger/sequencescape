@@ -19,7 +19,7 @@ class EventSender
   end
 
   def self.send_pick_event(well, purpose_name, message, options = nil)
-    hash = { eventful: well, family: PlatesHelper::event_family_for_pick(purpose_name), message: message,
+    hash = { eventful: well, family: PlatesHelper.event_family_for_pick(purpose_name), message: message,
              content: Date.today.to_s }
     create!(hash.merge(options || {}))
   end

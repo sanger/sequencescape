@@ -251,7 +251,7 @@ module Core
       def discard_all_references
         request.send(:discard_all_references)
         super
-        # Note: Previously we released our connection here, which prevented rails from
+        # NOTE: Previously we released our connection here, which prevented rails from
         # properly sweeping the query cache.
       end
       private :discard_all_references

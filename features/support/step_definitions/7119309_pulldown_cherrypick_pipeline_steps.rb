@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/) do |plate_barcode, number_of_samples, study_name|
-  step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
-  step(%Q{plate "#{plate_barcode}" has concentration results})
-  step(%Q{plate "#{plate_barcode}" has measured volume results})
+  step(%{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
+  step(%{plate "#{plate_barcode}" has concentration results})
+  step(%{plate "#{plate_barcode}" has measured volume results})
 end
 
 Given(/^plate "([^"]*)" has concentration results$/) do |plate_barcode|
@@ -14,7 +14,7 @@ Given(/^plate "([^"]*)" has concentration results$/) do |plate_barcode|
 end
 
 Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
-  step(%Q{plate "#{plate_barcode}" has concentration results})
+  step(%{plate "#{plate_barcode}" has concentration results})
 
   plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells.each_with_index do |well, _index|

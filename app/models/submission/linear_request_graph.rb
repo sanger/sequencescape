@@ -71,7 +71,7 @@ module Submission::LinearRequestGraph
         else
           source_data_set.map { |source_data| create_target_asset_for!(request_type, source_data.asset) }
         end
-      yield(target_assets) if block_given? and request_type.for_multiplexing?
+      yield(target_assets) if block_given? && request_type.for_multiplexing?
 
       # Now we can iterate over the source assets and target assets building the requests between them.
       # Ensure that the request has the correct comments on it, and that the aliquots of the source asset

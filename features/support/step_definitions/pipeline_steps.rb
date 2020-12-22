@@ -8,7 +8,7 @@ Given /^I have a pipeline called "([^"]*)"$/ do |name|
 end
 
 Given /^I have a batch in "([^"]*)"$/ do |pipeline|
-  step %Q{I have a "pending" batch in "#{pipeline}"}
+  step %{I have a "pending" batch in "#{pipeline}"}
 end
 
 Given /^I have a "([^"]*)" batch in "([^"]*)"$/ do |state, pipeline|

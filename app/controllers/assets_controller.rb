@@ -80,13 +80,6 @@ class AssetsController < ApplicationController
     end
   end
 
-  private def asset_params
-    permitted = %i[volume concentration]
-    permitted << :name if current_user.administrator?
-    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
-    params.require(:asset).permit(permitted)
-  end
-
   def summary
     @summary = UiHelper::Summary.new(per_page: 25, page: params[:page])
     @summary.load_asset(@asset)
@@ -154,6 +147,13 @@ class AssetsController < ApplicationController
   end
 
   private
+
+  def asset_params
+    permitted = %i[volume concentration]
+    permitted << :name if current_user.administrator?
+    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
+    params.require(:asset).permit(permitted)
+  end
 
   # Receptacle, as we're about to request some stuff
   def prepare_asset

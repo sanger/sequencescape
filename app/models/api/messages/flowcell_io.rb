@@ -25,7 +25,8 @@ class Api::Messages::FlowcellIO < Api::Base
     ]
   }
 
-  module LaneExtensions # Included in SequencingRequest
+  # Included in SequencingRequest
+  module LaneExtensions
     def self.included(base)
       base.class_eval do
         def mx_library
@@ -193,7 +194,7 @@ class Api::Messages::FlowcellIO < Api::Base
           requests.first&.request_metadata&.read_length
         end
         # We alias is as the json generator assumes each method is called only once.
-        alias :reverse_read_length :read_length
+        alias_method :reverse_read_length, :read_length
       end
     end
   end

@@ -3,7 +3,7 @@ class DbFile < ApplicationRecord
 
   # Polymorphic so that many models can use this class to store binary data
   belongs_to :owner, polymorphic: true
-  # Note: We are constrained by the database to split files into 200kbyte partitions
+  # NOTE: We are constrained by the database to split files into 200kbyte partitions
 
   # This module will set up all required associations and allow mounting "polymorphic uploaders"
   module Uploader

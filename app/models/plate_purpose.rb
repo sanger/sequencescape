@@ -45,12 +45,12 @@ class PlatePurpose < Purpose
   def source_plate(plate)
     source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
   end
-  alias_method :library_source_plate, :source_plate
+  alias library_source_plate source_plate
 
   def source_plates(plate)
     source_purpose_id.present? ? plate.ancestors_of_purpose(source_purpose_id) : [plate.stock_plate]
   end
-  alias_method :library_source_plates, :source_plates
+  alias library_source_plates source_plates
 
   def cherrypick_completed(plate)
     messenger_creators.each { |creator| creator.create!(plate) }

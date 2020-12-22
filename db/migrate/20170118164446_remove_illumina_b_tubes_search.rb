@@ -4,6 +4,7 @@ class RemoveIlluminaBTubesSearch < ActiveRecord::Migration
     self.table_name = 'searches'
     self.inheritance_column = nil
   end
+
   def up
     Search.find_by(name: 'Find Illumina-B tubes').try(:destroy)
   end

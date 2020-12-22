@@ -53,7 +53,7 @@ plate_purposes = <<~EOS
     prefix: FA
 EOS
 
-YAML::load(plate_purposes).each do |plate_purpose|
+YAML.load(plate_purposes).each do |plate_purpose|
   attributes = plate_purpose.reverse_merge(
     'type' => 'PlatePurpose',
     'cherrypickable_target' => false,

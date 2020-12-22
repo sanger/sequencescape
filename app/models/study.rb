@@ -231,7 +231,7 @@ class Study < ApplicationRecord
       custom_attribute(:data_release_prevention_reason_comment)
     end
 
-    # Note: Additional validation in Study::Metadata Class to validate_presence_of :data_access_group, if: :managed
+    # NOTE: Additional validation in Study::Metadata Class to validate_presence_of :data_access_group, if: :managed
     # Behaviour can't go here, as :if also toggles the saving of the required information.
     custom_attribute(:data_access_group, with: /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
 

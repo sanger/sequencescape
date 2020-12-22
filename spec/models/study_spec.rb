@@ -217,9 +217,9 @@ RSpec.describe Study, type: :model do
 
       context 'with submissions still unprocessed' do
         before do
-          FactoryHelp::submission study: study, state: 'building', assets: [asset]
-          FactoryHelp::submission study: study, state: 'pending', assets: [asset]
-          FactoryHelp::submission study: study, state: 'processing', assets: [asset]
+          FactoryHelp.submission study: study, state: 'building', assets: [asset]
+          FactoryHelp.submission study: study, state: 'pending', assets: [asset]
+          FactoryHelp.submission study: study, state: 'processing', assets: [asset]
         end
 
         it 'returns true' do
@@ -229,8 +229,8 @@ RSpec.describe Study, type: :model do
 
       context 'with no submissions unprocessed' do
         before do
-          FactoryHelp::submission study: study, state: 'ready', assets: [asset]
-          FactoryHelp::submission study: study, state: 'failed', assets: [asset]
+          FactoryHelp.submission study: study, state: 'ready', assets: [asset]
+          FactoryHelp.submission study: study, state: 'failed', assets: [asset]
         end
 
         it 'returns false' do

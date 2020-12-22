@@ -10,7 +10,7 @@ def recursive_diff(h1, h2)
       result[k] = diff if diff
     end
     return result.size ? result : nil
-  elsif h1.is_a?(Array) and h2.is_a?(Array)
+  elsif h1.is_a?(Array) && h2.is_a?(Array)
     result = []
     h1.zip(h2).each do |a, b|
       diff = recursive_diff(a, b)
@@ -80,8 +80,8 @@ def api_request(action, path, body)
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
 end
 
-def json_api_request(*args, &block)
-  api_request(*args, &block)
+def json_api_request(...)
+  api_request(...)
 end
 
 Given /^I am using version "(\d+)" of the API$/ do |version|
@@ -89,7 +89,7 @@ Given /^I am using version "(\d+)" of the API$/ do |version|
 end
 
 Given /^I am using the latest version of the API$/ do
-  step(%Q{I am using version "#{::Core::Service::API_VERSION}" of the API})
+  step(%{I am using version "#{::Core::Service::API_VERSION}" of the API})
 end
 
 When /^I (GET|PUT|POST|DELETE) the API path "(\/[^"]*)"$/ do |action, path|
@@ -129,7 +129,7 @@ Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, 
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
-  step(%Q{I GET the API path "/#{model}"})
+  step(%{I GET the API path "/#{model}"})
 end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^"]+)"$/ do |tube_type, name|
@@ -168,11 +168,11 @@ Then /^ignoring "([^"]+)" the JSON should be:$/ do |key_list, serialised_json|
 end
 
 def strip_extraneous_fields(left, right)
-  if left.is_a?(Hash) and right.is_a?(Hash)
+  if left.is_a?(Hash) && right.is_a?(Hash)
     right.delete_if { |k, _| not left.key?(k) }
     left.each { |key, value| strip_extraneous_fields(value, right[key]) }
     right
-  elsif left.is_a?(Array) and right.is_a?(Array)
+  elsif left.is_a?(Array) && right.is_a?(Array)
     left.each_with_index do |value, index|
       strip_extraneous_fields(value, right[index])
     end
@@ -259,12 +259,12 @@ end
 ##############################################################################
 # deprecated
 Given /^the sample named "([^"]+)" exists with ID (\d+)$/ do |name, id|
-  step(%Q{a sample called "#{name}" with ID #{id}})
+  step(%{a sample called "#{name}" with ID #{id}})
 end
 
 # deprecated
 Given /^(\d+) samples exist with the core name "([^"]+)" and IDs starting at (\d+)$/ do |count, name, id|
-  step(%Q{#{count} samples exist with names based on "#{name}" and IDs starting at #{id}})
+  step(%{#{count} samples exist with names based on "#{name}" and IDs starting at #{id}})
 end
 
 Given /^the (library tube|plate) "([^"]+)" is a child of the (sample tube|plate) "([^"]+)"$/ do |child_model, child_name, parent_model, parent_name|

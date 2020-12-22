@@ -61,9 +61,9 @@ class ProjectsController < ApplicationController
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Problems creating your new project'
     respond_to do |format|
-      format.html {
+      format.html do
         render action: 'new'
-      }
+      end
       format.xml  { render xml: @project.errors, status: :unprocessable_entity }
       format.json { render json: @project.errors, status: :unprocessable_entity }
     end

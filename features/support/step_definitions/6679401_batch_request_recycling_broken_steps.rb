@@ -13,7 +13,7 @@ end
 
 When /^I check "([^"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
   (start.to_i..finish.to_i).each do |i|
-    step(%Q{I check "#{label_root} #{i}"})
+    step(%{I check "#{label_root} #{i}"})
   end
 end
 

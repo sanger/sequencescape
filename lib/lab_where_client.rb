@@ -67,6 +67,7 @@ module LabWhereClient
         new(attrs) unless attrs.nil?
       end
     end
+
     def self.included(base)
       base.send(:extend, ClassMethods)
     end
@@ -79,6 +80,7 @@ module LabWhereClient
         new(attrs) unless attrs.nil?
       end
     end
+
     def self.included(base)
       base.send(:extend, ClassMethods)
     end

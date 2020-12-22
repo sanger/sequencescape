@@ -87,7 +87,7 @@ class Studies::AssetGroupsController < ApplicationController
   def search
     @study = Study.find(params[:study_id])
     query = params[:q]
-    if query.blank? or query.length < 2
+    if query.blank? || (query.length < 2)
       # We should not blame the user, we should instead help.
       # - By returning the X most recent ones together with an explanation.
       flash[:error] = 'Search too wide. Please make your query more specific.'
@@ -107,7 +107,7 @@ class Studies::AssetGroupsController < ApplicationController
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
     if params[:asset]
-      ids = params[:asset].map { |a| a[1] == '1' ? a[0] : nil }.select { |a| !a.nil? }
+      ids = params[:asset].select { |_asset_id, checked| checked == '1' }.keys
       @assets = Asset.find(ids)
       @asset_group.assets << @assets
     end

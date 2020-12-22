@@ -61,7 +61,7 @@ module Accession
     def add(tag)
       tags[tag.name] = tag
     end
-    alias_method :<<, :add
+    alias << add
 
     # Extract a new TagList based on an Accession::Sample
     # The TagList will consist of a tag for which the sample has attributes

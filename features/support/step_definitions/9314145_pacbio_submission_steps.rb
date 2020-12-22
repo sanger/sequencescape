@@ -135,11 +135,11 @@ end
 Given /^the UUID for well "([^"]*)" on plate "([^"]*)" is "([^"]*)"$/ do |well_position, plate_barcode, uuid|
   plate = Plate.find_from_barcode(plate_barcode)
   well = plate.find_well_by_name(well_position)
-  step(%Q{the UUID for the well with ID #{well.id} is "#{uuid}"})
+  step(%{the UUID for the well with ID #{well.id} is "#{uuid}"})
 end
 
 Given /^the UUID for Library "([^"]*)" is "([^"]*)"$/ do |barcode, uuid|
-  step(%Q{the UUID for the receptacle with ID #{Labware.find_by_barcode(barcode).receptacle.id} is "#{uuid}"})
+  step(%{the UUID for the receptacle with ID #{Labware.find_by_barcode(barcode).receptacle.id} is "#{uuid}"})
 end
 
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|
@@ -177,9 +177,9 @@ end
 
 Then /^I fill in the field for "(.*?)" with "(.*?)"$/ do |asset_name, content|
   request_id = Labware.find_by!(name: asset_name).requests_as_source.ids.first
-  step(%Q{I fill in the hidden field "locations_for_#{request_id}" with "#{content}"})
+  step(%{I fill in the hidden field "locations_for_#{request_id}" with "#{content}"})
 end
 
 When /^I drag the library tube to well "(.*?)"$/ do |well|
-  step %Q{I drag ".library_tube" to "#well_#{well}"}
+  step %{I drag ".library_tube" to "#well_#{well}"}
 end

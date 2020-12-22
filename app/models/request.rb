@@ -237,7 +237,7 @@ class Request < ApplicationRecord
   scope :excluding_states, ->(states) { where.not(state: states) }
   scope :ordered, -> { order('id ASC') }
 
-  # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
+  # NOTE: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
   scope :loaded_for_inbox_display, -> {
                                      preload([{ submission: { orders: :study },
@@ -403,7 +403,7 @@ class Request < ApplicationRecord
     return '' unless request_metadata.respond_to?(request_information_type.key)
 
     value = request_metadata.send(request_information_type.key)
-    return value.to_s if value.blank? or request_information_type.data_type != 'Date'
+    return value.to_s if value.blank? || (request_information_type.data_type != 'Date')
 
     value.to_date.strftime('%d %B %Y')
   end
@@ -483,7 +483,7 @@ class Request < ApplicationRecord
     return [] if lab_events.empty?
 
     events.map do |event|
-      next if event.family.nil? or %w[pass fail].exclude?(event.family.downcase)
+      next if event.family.nil? || %w[pass fail].exclude?(event.family.downcase)
 
       message = event.message.presence || '(No message was specified)'
       { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message,

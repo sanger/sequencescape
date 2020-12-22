@@ -11,9 +11,9 @@ module Submission::FlexibleRequestGraph
 
   class RequestChain
     attr_reader :order, :source_assets_qc_metrics, :preplexed, :built, :multiplexed
-    alias_method :built?, :built
-    alias_method :multiplexed?, :multiplexed
-    alias_method :preplexed?, :preplexed
+    alias built? built
+    alias multiplexed? multiplexed
+    alias preplexed? preplexed
 
     delegate :product, to: :order
 

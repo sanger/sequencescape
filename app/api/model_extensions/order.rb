@@ -37,7 +37,7 @@ module ModelExtensions::Order
   end
 
   def validate_new_record(assets)
-    if not new_record? and asset_group? and assets.present?
+    if (not new_record?) && asset_group? && assets.present?
       raise StandardError, 'requested action is not supported on this resource'
     end
 

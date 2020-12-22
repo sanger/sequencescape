@@ -76,9 +76,9 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
       code << if model.nil?
                 "    section[:#{leaf}] = value #nil"
-              elsif model.respond_to?(:reflections) and association = model.reflections[leaf]
+              elsif model.respond_to?(:reflections) && (association = model.reflections[leaf])
                 "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
-              elsif model.respond_to?(:klass) and association = model.klass.reflections[leaf]
+              elsif model.respond_to?(:klass) && (association = model.klass.reflections[leaf])
                 "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
               else
                 "    section[:#{leaf}] = value"
@@ -93,7 +93,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
     # Generate the code that the instance will actually use ...
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval(%{
       def self.map_parameters_to_attributes(params, object = nil, nested_in_another_model = false)
         #{initial_structure.inspect}.tap do |attributes|
           attributes.deep_merge!(super)

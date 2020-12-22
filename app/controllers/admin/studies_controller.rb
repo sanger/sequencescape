@@ -95,7 +95,7 @@ class Admin::StudiesController < ApplicationController
   private
 
   def redirect_if_not_owner_or_admin(study)
-    unless current_user.owner?(study) or current_user.is_administrator?
+    unless current_user.owner?(study) || current_user.is_administrator?
       flash[:error] = "Study details can only be altered by the owner (#{study.user.login}) or an administrator"
       redirect_to study_path(study)
     end

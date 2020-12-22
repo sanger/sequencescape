@@ -82,7 +82,7 @@ describe AssetsHelper do
     context 'with a manager' do
       let(:user) { create :manager }
       let(:asset) { create :sample_tube }
-      # Note: This feels wrong, but was the current behaviour
+      # NOTE: This feels wrong, but was the current behaviour
       # when I moved across the tests. Especially as we allow
       # creation if the user manages the matching study but goes to the correct
       # URL directly. That said, I'm not sure that page gets used all that

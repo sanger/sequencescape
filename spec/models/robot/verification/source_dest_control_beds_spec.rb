@@ -212,7 +212,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
         create :control_plate, well_count: 2
       end
       let(:expected_layout) do
-        # Note: This generates three picks.
+        # NOTE: This generates three picks.
         # In theory this should be possible to do in two, as the control bed
         # is separate from the source beds.
         {

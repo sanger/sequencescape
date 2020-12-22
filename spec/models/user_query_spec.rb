@@ -5,14 +5,14 @@ require 'timecop'
 
 describe UserQuery do
   let!(:user) { create :user, login: 'login', email: 'login@example.com' }
-  let!(:user_query_attributes) {
+  let!(:user_query_attributes) do
     { user_email: 'another_email@example.com',
       user: user,
       url: 'url',
       what_was_trying_to_do: 'create',
       what_happened: 'it did not work',
       what_expected: 'it to work' }
-  }
+  end
   let(:user_query) { described_class.new(user_query_attributes) }
   let(:user_query_with_no_email_provided) { described_class.new(user_query_attributes.except(:user_email)) }
 

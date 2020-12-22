@@ -178,7 +178,7 @@ module Core::Abilities
     # so we need to modify that too.
     def authenticate!(user_ability)
       single_sign_on_cookie = @request.authentication_code
-      if single_sign_on_cookie.blank? and cannot?(:authenticate, :nil)
+      if single_sign_on_cookie.blank? && cannot?(:authenticate, :nil)
         Core::Service::Authentication::UnauthenticatedError.no_cookie!
       elsif single_sign_on_cookie.present?
         user = ::User.find_by(api_key: single_sign_on_cookie) or Core::Service::Authentication::UnauthenticatedError.unauthenticated!

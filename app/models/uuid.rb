@@ -79,7 +79,7 @@ class Uuid < ApplicationRecord
   scope :limited_to_resource, ->(resource_type) { resource_type.nil? ? all : where(resource_type: resource_type) }
 
   before_validation do |record|
-    record.external_id = Uuid.generate_uuid if record.new_record? and record.external_id.blank?
+    record.external_id = Uuid.generate_uuid if record.new_record? && record.external_id.blank?
   end
 
   def uuid

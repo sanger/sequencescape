@@ -73,7 +73,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   def well_to_destination
     source.stock_wells.each_with_object({}) do |(well, stock_wells), store|
       tube = locate_mx_library_tube_for(well, stock_wells)
-      next if tube.nil? or should_well_not_be_transferred?(well)
+      next if tube.nil? || should_well_not_be_transferred?(well)
 
       store[well] = [tube, stock_wells]
     end

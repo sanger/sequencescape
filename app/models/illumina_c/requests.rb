@@ -22,6 +22,7 @@ module IlluminaC::Requests
   # By splitting this process over three releases we avoid the need for downtime during migrations
   class PcrLibraryRequest < LibraryRequest
   end
+
   class NoPcrLibraryRequest < LibraryRequest
   end
 

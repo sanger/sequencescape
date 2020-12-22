@@ -30,8 +30,8 @@ class Aliquot < ApplicationRecord
   # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it
   # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
   class InsertSize < Range
-    alias_method :from, :first
-    alias_method :to,   :last
+    alias from first
+    alias to last
   end
 
   TAG_COUNT_NAMES = %w[Untagged Single Dual].freeze
@@ -182,7 +182,7 @@ class Aliquot < ApplicationRecord
   end
 
   def matches?(object)
-    # Note: This function is directional, and assumes that the downstream aliquot
+    # NOTE: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot
     case
     when sample_id != object.sample_id                                                   then false # The samples don't match

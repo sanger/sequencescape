@@ -65,24 +65,24 @@ module Accessionable
     def xml
       xml = Builder::XmlMarkup.new
       xml.instruct!
-      xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-        xml.SAMPLE(sample_element_attributes) {
+      xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') do
+        xml.SAMPLE(sample_element_attributes) do
           xml.TITLE title unless title.nil?
-          xml.SAMPLE_NAME {
+          xml.SAMPLE_NAME do
             xml.COMMON_NAME  common_name
             xml.TAXON_ID     taxon_id
-          }
-          xml.SAMPLE_ATTRIBUTES {
+          end
+          xml.SAMPLE_ATTRIBUTES do
             tags.each do |tag|
-              xml.SAMPLE_ATTRIBUTE {
+              xml.SAMPLE_ATTRIBUTE do
                 tag.build(xml)
-              }
+              end
             end
-          } if tags.present?
+          end if tags.present?
 
           xml.SAMPLE_LINKS {} if links.present?
-        }
-      }
+        end
+      end
       xml.target!
     end
 

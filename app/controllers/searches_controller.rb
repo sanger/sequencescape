@@ -4,7 +4,7 @@ class SearchesController < ApplicationController
   before_action :evil_parameter_hack!
   include Informatics::Globals
   include SearchBehaviour
-  alias_method(:index, :search)
+  alias index search
 
   private
 
@@ -16,6 +16,6 @@ class SearchesController < ApplicationController
       [global_searchable_classes.detect do |klass|
          klass.name == params[:type]
        end]
-end
+    end
   end
 end

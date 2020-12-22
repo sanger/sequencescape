@@ -61,7 +61,7 @@ class FluidigmFile
     end
 
     def gender_marker?
-      /^GS/ === name
+      /^GS/.match?(name)
     end
 
     def gender
