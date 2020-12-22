@@ -58,7 +58,7 @@ jobs:
     name: EsLint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
     # These two commands essentially ensure yarn is setup and run yarn install and yarn lint respectively
     - name: Install
       uses: CultureHQ/actions-yarn@master
