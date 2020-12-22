@@ -81,7 +81,7 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
   end
 
   context 'with the right contents in properties and seed' do
-    let(:props) {  { user_identifier: 'jimmy', subjects: [plate1, plate2, sample1, sample2, robot] } }
+    let(:props) { { user_identifier: 'jimmy', subjects: [plate1, plate2, sample1, sample2, robot] } }
 
     let(:instance) { described_class.new(seed: destination_plate, properties: props) }
 
@@ -110,10 +110,10 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
           expect(event_info['event']['user_identifier']).to eq('jimmy')
         end
 
-        context 'where user identifier is missing' do
-          let(:props) {  { subjects: [plate1, plate2, sample1, sample2, robot] } }
+        context 'when user identifier is missing' do
+          let(:props) { { subjects: [plate1, plate2, sample1, sample2, robot] } }
 
-          it 'includes the unknown user identifier if one is not provided' do
+          it 'includes the unknown user identifier' do
             event_info = JSON.parse(instance.to_json)
             expect(event_info['event']).to have_key('user_identifier')
             expect(event_info['event']['user_identifier']).to eq('UNKNOWN')
