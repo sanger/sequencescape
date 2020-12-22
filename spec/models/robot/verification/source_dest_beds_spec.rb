@@ -152,7 +152,7 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
     it 'remap barcodes to start at 1' do
       expected_order.each do |source_barcode, _index|
         assert source_index[source_barcode].is_a?(Integer)
-        expect(source_index[source_barcode]).to be_between(1, barcodes.length)
+        expect(source_index[source_barcode]).to be_positive
       end
     end
 
