@@ -627,12 +627,6 @@ Performance/MethodObjectAsBlock:
     - 'features/support/step_definitions/transfer_steps.rb'
     - 'lib/tasks/report.rake'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Performance/Sum:
-  Exclude:
-    - 'app/models/request/statistics.rb'
-
 # Offense count: 6
 # Cop supports --auto-correct.
 Performance/UnfreezeString:

@@ -12,11 +12,11 @@ module Request::Statistics
     end
 
     def completed
-      %w[passed failed].map(&method(:[])).sum
+      %w[passed failed].sum(&method(:[]))
     end
 
     def pending
-      %w[pending blocked].map(&method(:[])).sum
+      %w[pending blocked].sum(&method(:[]))
     end
 
     %i[started passed failed cancelled].each do |direct_type|
