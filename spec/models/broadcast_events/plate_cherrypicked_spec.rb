@@ -120,6 +120,16 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
           end
         end
 
+        context 'when user identifier is an empty string' do
+          let(:props) { { user_identifier: '', subjects: [plate1, plate2, sample1, sample2, robot] } }
+
+          it 'includes the unknown user identifier' do
+            event_info = JSON.parse(instance.to_json)
+            expect(event_info['event']).to have_key('user_identifier')
+            expect(event_info['event']['user_identifier']).to eq('UNKNOWN')
+          end
+        end
+
         it 'has right size of subjects' do
           event_info = JSON.parse(instance.to_json)
           expect(event_info['event']).to have_key('subjects')

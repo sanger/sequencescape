@@ -34,9 +34,7 @@ class BroadcastEvent::PlateCherrypicked < BroadcastEvent
 
   def user_identifier
     # allows for user identifiers that aren't in the SS db
-    return properties[:user_identifier] if properties[:user_identifier]
-
-    super
+    properties[:user_identifier].presence || super
   end
 
   def robot_present
