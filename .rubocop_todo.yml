@@ -31,11 +31,6 @@ Lint/AmbiguousBlockAssociation:
     - 'test/controllers/admin_users_controller_test.rb'
     - 'test/unit/tasks/plate_transfer_task_test.rb'
 
-# Offense count: 2
-Lint/BinaryOperatorWithIdenticalOperands:
-  Exclude:
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
-
 # Offense count: 11
 # Cop supports --auto-correct.
 Lint/BooleanSymbol:

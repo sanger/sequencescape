@@ -148,6 +148,10 @@ module Authorization
         false
       end
 
+      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+      # pop mutates @stack, so these aren't the same. Still hard to follow.
+      # NOTE: This code is from an old rails-plugin, that miraculously still works.
+      # We should really replace it with something more modern, like devise
       def parse_or(str)
         if str =~ OR_REGEX
           can_parse = parse_expr($1) and parse_expr($8)
@@ -165,6 +169,7 @@ module Authorization
         end
         false
       end
+      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
       # Descend down parenthesis (allow up to 5 levels of nesting)
       def parse_parenthesis(str)
