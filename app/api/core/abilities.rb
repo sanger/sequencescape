@@ -74,7 +74,7 @@ module Core::Abilities
       end
 
       def record(recorder, &block)
-        recorder.tap { |recorder| recorder.record(&block) if block_given? }
+        recorder.tap { |recorder| recorder.record(&block) if block }
       end
       private :record
     end

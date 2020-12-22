@@ -586,17 +586,6 @@ Naming/VariableNumber:
     - 'test/unit/product_criteria_test.rb'
     - 'test/unit/tag_qc/stamp_test.rb'
 
-# Offense count: 6
-# Cop supports --auto-correct.
-Performance/BlockGivenWithExplicitBlock:
-  Exclude:
-    - 'app/api/core/abilities.rb'
-    - 'app/api/core/endpoint/basic_handler.rb'
-    - 'app/api/core/endpoint/basic_handler/actions.rb'
-    - 'app/api/core/endpoint/basic_handler/actions/guards.rb'
-    - 'app/api/core/endpoint/basic_handler/actions/inner_action.rb'
-    - 'app/models/submission/linear_request_graph.rb'
-
 # Offense count: 16
 # Configuration parameters: MinSize.
 Performance/CollectionLiteralInLoop:

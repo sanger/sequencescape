@@ -91,7 +91,7 @@ module Core::Endpoint::BasicHandler::Actions
   def declare_action(name, options, &block)
     action_implementation_method =
       case
-      when block_given?
+      when block
         singleton_class.class_eval { define_method(:"_#{name}_internal", &block) }
         :"_#{name}_internal"
 

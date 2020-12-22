@@ -55,7 +55,7 @@ class Core::Endpoint::BasicHandler
   def initialize(&block)
     @actions = self.class.standard_actions.dup
     super
-    instance_eval(&block) if block_given?
+    instance_eval(&block) if block
   end
 
   include Core::Endpoint::BasicHandler::Json

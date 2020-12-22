@@ -8,7 +8,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
             object.#{method}
           end
         ", __FILE__, line)
-      elsif block_given?
+      elsif block
         singleton_class.send(:define_method, :execute, &block)
       else
         raise StandardError, 'Either method name or block is required for guards'
