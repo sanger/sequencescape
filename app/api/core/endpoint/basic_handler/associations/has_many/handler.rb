@@ -1,4 +1,4 @@
-class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpoint::BasicHandler
+class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
   include Core::Endpoint::BasicHandler::Paged
 
   def initialize(association, options, &block)

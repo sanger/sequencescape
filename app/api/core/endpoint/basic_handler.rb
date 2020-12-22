@@ -1,5 +1,5 @@
-class Core::Endpoint::BasicHandler
-  module Json
+class Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
+  module Json # rubocop:todo Style/Documentation
     def actions(object, options)
       Hash[@actions.select do |_name, behaviour|
         accessible_action?(self, behaviour, options[:response].request, object)

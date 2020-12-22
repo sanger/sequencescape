@@ -8,7 +8,7 @@
 # state_change: Hash of from_state => to_state applied to affected requests
 # }
 module RequestClassDeprecator
-  class Request < ApplicationRecord
+  class Request < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'requests'
   end
 

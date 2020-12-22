@@ -3,7 +3,7 @@
 # Previously these classes handled some differences in business logic. This
 # complexity has been pushed outwards.
 class EliminateUnnecessaryPlatePurposeClasses < ActiveRecord::Migration
-  class Purpose < ApplicationRecord
+  class Purpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil
   end

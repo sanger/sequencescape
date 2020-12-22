@@ -1,4 +1,4 @@
-module AuthenticatedSystem
+module AuthenticatedSystem # rubocop:todo Style/Documentation
   protected
 
   # Returns true or false if the user is logged in.

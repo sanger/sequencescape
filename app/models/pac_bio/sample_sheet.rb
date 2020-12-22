@@ -1,4 +1,4 @@
-class PacBio::SampleSheet
+class PacBio::SampleSheet # rubocop:todo Style/Documentation
   def header_metadata(batch)
     [
       ['Version', '1.0.0', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],

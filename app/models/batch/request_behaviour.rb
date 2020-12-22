@@ -1,4 +1,4 @@
-module Batch::RequestBehaviour
+module Batch::RequestBehaviour # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       has_one :batch_request, inverse_of: :request, dependent: :destroy

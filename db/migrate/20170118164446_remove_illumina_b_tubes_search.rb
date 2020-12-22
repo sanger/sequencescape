@@ -1,6 +1,6 @@
 # Rails migration
 class RemoveIlluminaBTubesSearch < ActiveRecord::Migration
-  class Search < ApplicationRecord
+  class Search < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'searches'
     self.inheritance_column = nil
   end

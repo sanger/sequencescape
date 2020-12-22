@@ -1,4 +1,4 @@
-class LabSearchesController < ApplicationController
+class LabSearchesController < ApplicationController # rubocop:todo Style/Documentation
   include SearchBehaviour
   alias new search
 

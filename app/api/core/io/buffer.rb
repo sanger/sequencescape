@@ -1,4 +1,4 @@
-class ::Core::Io::Buffer
+class ::Core::Io::Buffer # rubocop:todo Style/Documentation
   def initialize(stream)
     @stream, @buffer = stream, StringIO.new
     return unless block_given?

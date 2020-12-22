@@ -1,4 +1,4 @@
-module Plate::FluidigmBehaviour
+module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
   class FluidigmError < StandardError; end
 
   def self.included(base)

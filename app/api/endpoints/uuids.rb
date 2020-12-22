@@ -4,7 +4,7 @@
 #++
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Uuids
 class ::Endpoints::Uuids < ::Core::Endpoint::Base
-  module Response
+  module Response # rubocop:todo Style/Documentation
     def redirect_to(path)
       @owner.request.service.status(301)
       @owner.request.service.headers('Location' => path)
@@ -24,8 +24,8 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     private :render_body_json_directly
   end
 
-  class Search
-    class CriteriaInvalid < ::Core::Service::Error
+  class Search # rubocop:todo Style/Documentation
+    class CriteriaInvalid < ::Core::Service::Error # rubocop:todo Style/Documentation
       def initialize(*args)
         super
         @errors = { lookup: [message] }

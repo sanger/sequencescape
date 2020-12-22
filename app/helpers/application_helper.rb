@@ -1,4 +1,4 @@
-module ApplicationHelper
+module ApplicationHelper # rubocop:todo Style/Documentation
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
     Rails.cache.fetch("#{identifier}-#{differential}") do

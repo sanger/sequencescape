@@ -1,4 +1,4 @@
-class BroadcastEvent::SequencingStart < BroadcastEvent
+class BroadcastEvent::SequencingStart < BroadcastEvent # rubocop:todo Style/Documentation
   set_event_type 'sequencing_start'
 
   seed_class Batch

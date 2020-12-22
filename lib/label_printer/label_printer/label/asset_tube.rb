@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class AssetTube < BaseTube
+    class AssetTube < BaseTube # rubocop:todo Style/Documentation
       attr_reader :tubes
 
       def initialize(tubes)

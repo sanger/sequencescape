@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Core::Initializable
-  class Initializer
+module Core::Initializable # rubocop:todo Style/Documentation
+  class Initializer # rubocop:todo Style/Documentation
     def initialize(owner)
       @owner = owner
     end
@@ -38,7 +38,7 @@ module Core::Initializable
     self::Initializer.delegate_to_owner(*names)
   end
 
-  module InstanceMethods
+  module InstanceMethods # rubocop:todo Style/Documentation
     def initialize
       yield(self.class::Initializer.new(self)) if block_given?
     end

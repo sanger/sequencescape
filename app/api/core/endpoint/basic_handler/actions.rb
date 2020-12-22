@@ -1,5 +1,5 @@
-module Core::Endpoint::BasicHandler::Actions
-  class UnsupportedAction < StandardError
+module Core::Endpoint::BasicHandler::Actions # rubocop:todo Style/Documentation
+  class UnsupportedAction < StandardError # rubocop:todo Style/Documentation
     def initialize(action, _request)
       super(action.to_s)
     end

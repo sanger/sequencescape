@@ -1,7 +1,7 @@
 require 'csv'
 require 'linefeed_fix'
 
-module Parsers
+module Parsers # rubocop:todo Style/Documentation
   ENCODINGS = %w[Windows-1252 iso-8859-1 utf-8 utf-16].freeze
   PARSERS = [QuantParser, BioanalysisCsvParser, PlateReaderParser].freeze
 

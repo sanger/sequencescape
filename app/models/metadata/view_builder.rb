@@ -1,4 +1,4 @@
-class Metadata::ViewBuilder < Metadata::BuilderBase
+class Metadata::ViewBuilder < Metadata::BuilderBase # rubocop:todo Style/Documentation
   def initialize(*args, &block)
     super
     view_for(:plain_value, 'shared/metadata/plain_field')

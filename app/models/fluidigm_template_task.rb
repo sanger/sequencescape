@@ -1,4 +1,4 @@
-class FluidigmTemplateTask < PlateTemplateTask
+class FluidigmTemplateTask < PlateTemplateTask # rubocop:todo Style/Documentation
   def partial
     'fluidigm_template_batches'
   end

@@ -1,6 +1,6 @@
 require 'aasm'
 
-module SampleManifest::StateMachine
+module SampleManifest::StateMachine # rubocop:todo Style/Documentation
   def self.extended(base)
     base.class_eval do
       include AASM

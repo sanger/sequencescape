@@ -1,4 +1,4 @@
-class StockStampersController < ApplicationController
+class StockStampersController < ApplicationController # rubocop:todo Style/Documentation
   def new
     @stock_stamper = StockStamper.new
   end

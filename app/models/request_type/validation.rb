@@ -21,7 +21,7 @@ module RequestType::Validation
     end
   end
 
-  class RequestTypeValidator < DelegateValidation::Validator
+  class RequestTypeValidator < DelegateValidation::Validator # rubocop:todo Style/Documentation
     class_attribute :request_type, instance_writer: false
     request_type =  nil
 

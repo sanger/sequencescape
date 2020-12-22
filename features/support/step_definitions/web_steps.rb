@@ -12,7 +12,7 @@ require_relative '../paths'
 require 'webmock/cucumber'
 WebMock.disable_net_connect!(allow_localhost: true)
 
-module WithinHelpers
+module WithinHelpers # rubocop:todo Style/Documentation
   def with_scope(locator)
     locator ? within(locator) { yield } : yield
   end

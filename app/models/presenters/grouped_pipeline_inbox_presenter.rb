@@ -1,5 +1,5 @@
 module Presenters
-  class GroupedPipelineInboxPresenter
+  class GroupedPipelineInboxPresenter # rubocop:todo Style/Documentation
     class << self
       def fields
         @fields ||= []
@@ -108,7 +108,7 @@ module Presenters
     end
   end
 
-  class GroupLinePresenter
+  class GroupLinePresenter # rubocop:todo Style/Documentation
     include PipelinesHelper
 
     attr_reader :group, :request, :index, :pipeline, :inbox

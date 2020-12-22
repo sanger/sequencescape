@@ -1,5 +1,5 @@
 module Accession
-  class Sample
+  class Sample # rubocop:todo Style/Documentation
     # Validate the sample to ensure that it can be accessioned
     # The sample must:
     # - not be accessioned

@@ -16,7 +16,7 @@
 require 'net/http'
 
 module Net
-  class HTTP
+  class HTTP # rubocop:todo Style/Documentation
     def self.set_proxy_header(name, value)
       additional_proxy_headers[name] = value
     end

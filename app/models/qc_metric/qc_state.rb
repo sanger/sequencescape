@@ -1,4 +1,4 @@
-module QcMetric::QcState
+module QcMetric::QcState # rubocop:todo Style/Documentation
   State = Struct.new(:name, :automatic, :passed, :proceedable)
 
   def new_state(name, options = {})

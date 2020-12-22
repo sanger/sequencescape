@@ -1,7 +1,7 @@
-class Request::ChangeDecision
+class Request::ChangeDecision # rubocop:todo Style/Documentation
   include ::Validateable
 
-  class ChangeDecisionError < ::StandardError
+  class ChangeDecisionError < ::StandardError # rubocop:todo Style/Documentation
     attr_reader :object
 
     def initialize(object)

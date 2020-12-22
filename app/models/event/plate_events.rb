@@ -1,4 +1,4 @@
-module Event::PlateEvents
+module Event::PlateEvents # rubocop:todo Style/Documentation
   def gel_qc_date
     event_date('gel_analysed')
   end

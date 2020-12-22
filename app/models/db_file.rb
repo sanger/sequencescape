@@ -1,4 +1,4 @@
-class DbFile < ApplicationRecord
+class DbFile < ApplicationRecord # rubocop:todo Style/Documentation
   # This is the model for database storage
 
   # Polymorphic so that many models can use this class to store binary data

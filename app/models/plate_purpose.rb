@@ -97,7 +97,7 @@ class PlatePurpose < Purpose
     self.type = 'PlatePurpose::Input' if is_input
   end
 
-  module Overrideable
+  module Overrideable # rubocop:todo Style/Documentation
     private
 
     def transition_state_requests(wells, state)

@@ -1,8 +1,8 @@
 # Despite name controls rendering of warehouse messages for {Batch}
 # Historically used to be v0.5 API
 class Api::BatchIO < Api::Base
-  module Extensions
-    module ClassMethods
+  module Extensions # rubocop:todo Style/Documentation
+    module ClassMethods # rubocop:todo Style/Documentation
       def render_class
         Api::BatchIO
       end

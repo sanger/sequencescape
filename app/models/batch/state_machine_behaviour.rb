@@ -1,5 +1,5 @@
 require 'aasm'
-module Batch::StateMachineBehaviour
+module Batch::StateMachineBehaviour # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       include AASM

@@ -1,5 +1,5 @@
-module ::Core::Endpoint::BasicHandler::Actions::Guards
-  class Guard
+module ::Core::Endpoint::BasicHandler::Actions::Guards # rubocop:todo Style/Documentation
+  class Guard # rubocop:todo Style/Documentation
     def initialize(method = nil, &block)
       if method.present?
         line = __LINE__ + 1
@@ -16,7 +16,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
     end
   end
 
-  class GuardChain
+  class GuardChain # rubocop:todo Style/Documentation
     def initialize
       @guards = []
     end
@@ -30,7 +30,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
     end
   end
 
-  class GuardProxy < ActiveSupport::ProxyObject
+  class GuardProxy < ActiveSupport::ProxyObject # rubocop:todo Style/Documentation
     def initialize(request, object)
       @request, @object = request, object
     end

@@ -1,4 +1,4 @@
-class Transfer::FromPlateToSpecificTubes < Transfer::BetweenPlateAndTubes
+class Transfer::FromPlateToSpecificTubes < Transfer::BetweenPlateAndTubes # rubocop:todo Style/Documentation
   # NOTE: This class appears to have been unused since July 2014.
   # We still have persistent models in the database, so need to make
   # sure records are updated when we strip this out. However, as

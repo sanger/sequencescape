@@ -1,4 +1,4 @@
-class ReRequestSubmission < Order
+class ReRequestSubmission < Order # rubocop:todo Style/Documentation
   include Submission::LinearRequestGraph
   include Submission::Crossable
 

@@ -38,7 +38,7 @@ class SampleManifest < ApplicationRecord
   # This limit sets a very comfortable safety margin.
   SAMPLES_PER_EVENT = 3000
 
-  module Associations
+  module Associations # rubocop:todo Style/Documentation
     def self.included(base)
       base.has_many(:sample_manifests)
     end

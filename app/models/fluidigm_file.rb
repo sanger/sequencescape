@@ -1,6 +1,6 @@
-class FluidigmFile
-  module Finder
-    class Directory
+class FluidigmFile # rubocop:todo Style/Documentation
+  module Finder # rubocop:todo Style/Documentation
+    class Directory # rubocop:todo Style/Documentation
       def initialize(barcode)
         @barcode = barcode
       end
@@ -18,7 +18,7 @@ class FluidigmFile
       end
     end
 
-    class Irods
+    class Irods # rubocop:todo Style/Documentation
       def initialize(barcode)
         @data = IrodsReader::DataObj.find('seq', 'dcterms:audience' => configatron.irods_audience,
                                                  :fluidigm_plate => barcode)
@@ -49,7 +49,7 @@ class FluidigmFile
 
   class InvalidFile < StandardError; end
 
-  class Assay
+  class Assay # rubocop:todo Style/Documentation
     attr_reader :name, :result
 
     @@valid_markers = %w[XX XY YY]
@@ -73,7 +73,7 @@ class FluidigmFile
     end
   end
 
-  class FluidigmWell
+  class FluidigmWell # rubocop:todo Style/Documentation
     attr_reader :description
 
     def initialize(description)

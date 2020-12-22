@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class LocationReport < ApplicationRecord
+class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
   # includes / extends
   extend DbFile::Uploader
 

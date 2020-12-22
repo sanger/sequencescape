@@ -1,5 +1,5 @@
-class SangerSampleId < ApplicationRecord
-  class Factory
+class SangerSampleId < ApplicationRecord # rubocop:todo Style/Documentation
+  class Factory # rubocop:todo Style/Documentation
     def self.instance
       @instance ||= new
     end

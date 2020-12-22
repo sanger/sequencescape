@@ -1,4 +1,4 @@
-module Tasks::StartBatchHandler
+module Tasks::StartBatchHandler # rubocop:todo Style/Documentation
   def do_start_batch_task(task, params)
     return unless task.lab_activity?
 

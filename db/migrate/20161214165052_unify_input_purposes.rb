@@ -1,6 +1,6 @@
 # Rails migration
 class UnifyInputPurposes < ActiveRecord::Migration
-  class Purpose < ApplicationRecord
+  class Purpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.inheritance_column = nil
     self.table_name = 'plate_purposes'
   end

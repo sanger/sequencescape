@@ -3,7 +3,7 @@
 # connection pool for use during development
 #
 class Warren::Test
-  class Channel
+  class Channel # rubocop:todo Style/Documentation
     def initialize(warren)
       @warren = warren
     end

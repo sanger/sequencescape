@@ -1,6 +1,6 @@
 require './lib/request_class_deprecator'
 
-class DeprecateQcCompletableTransferSubclasses < ActiveRecord::Migration
+class DeprecateQcCompletableTransferSubclasses < ActiveRecord::Migration # rubocop:todo Style/Documentation
   include RequestClassDeprecator
 
   def up

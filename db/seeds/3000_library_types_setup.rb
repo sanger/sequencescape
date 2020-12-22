@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SetupLibraryTypes
+module SetupLibraryTypes # rubocop:todo Style/Documentation
   def self.existing_associations_for(request_type)
     {
       'LibraryCreationRequest' => [

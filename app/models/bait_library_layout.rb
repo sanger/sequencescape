@@ -1,4 +1,4 @@
-class BaitLibraryLayout < ApplicationRecord
+class BaitLibraryLayout < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
   include ModelExtensions::BaitLibraryLayout
 

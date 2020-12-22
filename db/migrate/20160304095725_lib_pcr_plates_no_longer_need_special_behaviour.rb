@@ -1,6 +1,6 @@
 # Rails migration
 class LibPcrPlatesNoLongerNeedSpecialBehaviour < ActiveRecord::Migration
-  class PlatePurpose < ApplicationRecord
+  class PlatePurpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil
   end

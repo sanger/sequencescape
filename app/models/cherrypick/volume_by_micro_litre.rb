@@ -1,4 +1,4 @@
-module Cherrypick::VolumeByMicroLitre
+module Cherrypick::VolumeByMicroLitre # rubocop:todo Style/Documentation
   def volume_to_cherrypick_by_micro_litre(volume_required, robot_minimum_picking_volume = 0.0)
     robot_minimum_picking_volume ||= 0.0
     check_inputs_to_volume_to_cherrypick_by_micro_litre!(volume_required)

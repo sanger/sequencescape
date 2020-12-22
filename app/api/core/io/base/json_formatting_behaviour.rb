@@ -1,4 +1,4 @@
-module Core::Io::Base::JsonFormattingBehaviour
+module Core::Io::Base::JsonFormattingBehaviour # rubocop:todo Style/Documentation
   def self.extended(base)
     base.class_eval do
       extend ::Core::Io::Base::JsonFormattingBehaviour::Input

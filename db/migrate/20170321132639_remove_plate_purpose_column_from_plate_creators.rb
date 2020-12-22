@@ -1,10 +1,10 @@
 # Rails migration
 class RemovePlatePurposeColumnFromPlateCreators < ActiveRecord::Migration
-  class PlateCreators < ApplicationRecord
+  class PlateCreators < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'plate_creators'
   end
 
-  class PlatePurpose < ApplicationRecord
+  class PlatePurpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'plate_purposes'
   end
 

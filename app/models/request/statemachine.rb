@@ -2,7 +2,7 @@
 # It provides various callbacks that can be hooked in to by the derived classes.
 require 'aasm'
 
-module Request::Statemachine
+module Request::Statemachine # rubocop:todo Style/Documentation
   extend ActiveSupport::Concern
   COMPLETED_STATE = %w[passed failed].freeze
   OPENED_STATE    = %w[pending blocked started].freeze

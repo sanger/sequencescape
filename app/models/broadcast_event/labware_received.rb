@@ -1,4 +1,4 @@
-class BroadcastEvent::LabwareReceived < BroadcastEvent
+class BroadcastEvent::LabwareReceived < BroadcastEvent # rubocop:todo Style/Documentation
   set_event_type 'labware.received'
 
   seed_class Asset

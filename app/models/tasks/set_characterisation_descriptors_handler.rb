@@ -1,4 +1,4 @@
-module Tasks::SetCharacterisationDescriptorsHandler
+module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documentation
   def do_set_characterisation_descriptors_task(_task, params)
     @count = 0
     @values = if params[:values].nil?

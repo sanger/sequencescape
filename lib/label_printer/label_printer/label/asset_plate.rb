@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class AssetPlate < BasePlate
+    class AssetPlate < BasePlate # rubocop:todo Style/Documentation
       attr_reader :plates
 
       def initialize(plates)

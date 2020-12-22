@@ -1,5 +1,5 @@
 require 'eventful_mailer'
-class EventFactory
+class EventFactory # rubocop:todo Style/Documentation
   #################################
   # project related notifications #
   #################################

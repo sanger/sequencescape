@@ -3,12 +3,12 @@ require File.dirname(__FILE__) + '/identity'
 
 module Authorization
   module ObjectRolesTable
-    module UserExtensions
+    module UserExtensions # rubocop:todo Style/Documentation
       def self.included(recipient)
         recipient.extend(ClassMethods)
       end
 
-      module ClassMethods
+      module ClassMethods # rubocop:todo Style/Documentation
         def acts_as_authorized_user(roles_relationship_opts = {})
           has_many :user_role_bindings, class_name: 'Role::UserRole'
           has_many :roles, roles_relationship_opts.merge(through: :user_role_bindings, source: :role)
@@ -18,7 +18,7 @@ module Authorization
         end
       end
 
-      module InstanceMethods
+      module InstanceMethods # rubocop:todo Style/Documentation
         # If roles aren't explicitly defined in user class then check roles table
         def has_role?(role_name, authorizable_obj = nil)
           if authorizable_obj.nil?
@@ -128,12 +128,12 @@ module Authorization
       end
     end
 
-    module ModelExtensions
+    module ModelExtensions # rubocop:todo Style/Documentation
       def self.included(recipient)
         recipient.extend(ClassMethods)
       end
 
-      module ClassMethods
+      module ClassMethods # rubocop:todo Style/Documentation
         def acts_as_authorizable
           has_many :accepted_roles, as: :authorizable, class_name: 'Role', dependent: :destroy
 
@@ -169,7 +169,7 @@ module Authorization
         end
       end
 
-      module InstanceMethods
+      module InstanceMethods # rubocop:todo Style/Documentation
         # If roles aren't overriden in model then check roles table
         def accepts_role?(role_name, user)
           user.has_role? role_name, self

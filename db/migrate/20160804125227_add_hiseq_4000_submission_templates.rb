@@ -1,6 +1,6 @@
 require './lib/submission_serializer'
 
-class AddHiseq4000SubmissionTemplates < ActiveRecord::Migration
+class AddHiseq4000SubmissionTemplates < ActiveRecord::Migration # rubocop:todo Style/Documentation
   def up
     ActiveRecord::Base.transaction do
       each_template do |params|

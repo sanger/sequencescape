@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreatePrimerPanelsTable < ActiveRecord::Migration[5.1]
+class CreatePrimerPanelsTable < ActiveRecord::Migration[5.1] # rubocop:todo Style/Documentation
   def change
     create_table :primer_panels do |t|
       t.string :name, null: false

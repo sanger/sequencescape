@@ -1,4 +1,4 @@
-class ::Io::ActiveRecord::Relation
+class ::Io::ActiveRecord::Relation # rubocop:todo Style/Documentation
   extend ::Core::Io::Collection
 
   class << self

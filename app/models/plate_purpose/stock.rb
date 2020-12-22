@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module PlatePurpose::Stock
+module PlatePurpose::Stock # rubocop:todo Style/Documentation
   UNREADY_STATE  = 'pending'
   READY_STATE    = 'passed'
 

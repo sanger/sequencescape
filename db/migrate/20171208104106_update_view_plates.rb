@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UpdateViewPlates < ActiveRecord::Migration[5.1]
+class UpdateViewPlates < ActiveRecord::Migration[5.1] # rubocop:todo Style/Documentation
   def self.up
     ActiveRecord::Base.transaction do
       ViewsSchema.update_view('view_plates',

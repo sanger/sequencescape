@@ -1,4 +1,4 @@
-module Qcable::Statemachine
+module Qcable::Statemachine # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       ## State machine

@@ -1,4 +1,4 @@
-class Warren::Message
+class Warren::Message # rubocop:todo Style/Documentation
   attr_reader :record
 
   def initialize(record)

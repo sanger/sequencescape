@@ -1,4 +1,4 @@
-module StudyReport::WellDetails
+module StudyReport::WellDetails # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       scope :for_study_report, -> {

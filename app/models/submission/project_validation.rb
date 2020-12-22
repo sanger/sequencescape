@@ -1,4 +1,4 @@
-module Submission::ProjectValidation
+module Submission::ProjectValidation # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       # We probably want to move this validation

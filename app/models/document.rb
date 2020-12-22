@@ -1,9 +1,9 @@
 require 'carrierwave'
 
-class Document < ApplicationRecord
+class Document < ApplicationRecord # rubocop:todo Style/Documentation
   extend DbFile::Uploader
 
-  module Associations
+  module Associations # rubocop:todo Style/Documentation
     # Adds accessors for named fields and attaches documents to them
 
     def has_uploaded_document(field, differentiator: field.to_s)

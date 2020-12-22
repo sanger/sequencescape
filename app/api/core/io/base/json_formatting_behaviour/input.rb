@@ -1,5 +1,5 @@
-module ::Core::Io::Base::JsonFormattingBehaviour::Input
-  class ReadOnlyAttribute < ::Core::Service::Error
+module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Documentation
+  class ReadOnlyAttribute < ::Core::Service::Error # rubocop:todo Style/Documentation
     def initialize(attribute)
       super('is read-only')
       @attribute = attribute
@@ -119,7 +119,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
   end
   private :process_if_present
 
-  module AssociationHandling
+  module AssociationHandling # rubocop:todo Style/Documentation
     def association_class(association, object)
       object.try(association).try(:class) || model_for_input.reflections[association.to_s].klass
     end

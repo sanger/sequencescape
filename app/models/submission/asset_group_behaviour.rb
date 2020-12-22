@@ -1,4 +1,4 @@
-module Submission::AssetGroupBehaviour
+module Submission::AssetGroupBehaviour # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       belongs_to    :asset_group

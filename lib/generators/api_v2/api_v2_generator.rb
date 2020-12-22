@@ -1,4 +1,4 @@
-class ApiV2Generator < Rails::Generators::NamedBase
+class ApiV2Generator < Rails::Generators::NamedBase # rubocop:todo Style/Documentation
   source_root File.expand_path('../templates', __FILE__)
 
   def create_directories

@@ -18,7 +18,7 @@ class Api::Messages::FluidigmPlateIO < Api::Base
     ] }
   ]
 
-  module WellExtensions
+  module WellExtensions # rubocop:todo Style/Documentation
     def cost_code
       return nil if primary_aliquot.nil?
 

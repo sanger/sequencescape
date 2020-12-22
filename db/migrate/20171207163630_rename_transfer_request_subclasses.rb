@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class RenameTransferRequestSubclasses < ActiveRecord::Migration[5.1]
-  class TransferRequest < ApplicationRecord
+class RenameTransferRequestSubclasses < ActiveRecord::Migration[5.1] # rubocop:todo Style/Documentation
+  class TransferRequest < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'transfer_requests'
   end
 

@@ -1,4 +1,4 @@
-class HomesController < ApplicationController
+class HomesController < ApplicationController # rubocop:todo Style/Documentation
   before_action :login_required
 
   def show

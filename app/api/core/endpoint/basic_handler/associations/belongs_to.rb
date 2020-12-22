@@ -1,5 +1,5 @@
-module Core::Endpoint::BasicHandler::Associations::BelongsTo
-  class Handler
+module Core::Endpoint::BasicHandler::Associations::BelongsTo # rubocop:todo Style/Documentation
+  class Handler # rubocop:todo Style/Documentation
     include Core::Endpoint::BasicHandler::EndpointLookup
 
     def initialize(name, options)
@@ -20,7 +20,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     end
     private :endpoint_details
 
-    class Association
+    class Association # rubocop:todo Style/Documentation
       include Core::Io::Json::Grammar::Intermediate
       include Core::Io::Json::Grammar::Resource
 

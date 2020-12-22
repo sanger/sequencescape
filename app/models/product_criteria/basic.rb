@@ -1,4 +1,4 @@
-class ProductCriteria::Basic
+class ProductCriteria::Basic # rubocop:todo Style/Documentation
   SUPPORTED_WELL_ATTRIBUTES = %i[gel_pass concentration rin current_volume pico_pass gender_markers measured_volume
                                  initial_volume molarity sequenom_count].freeze
   SUPPORTED_SAMPLE = [:sanger_sample_id].freeze

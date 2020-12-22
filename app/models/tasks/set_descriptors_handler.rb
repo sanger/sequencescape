@@ -1,4 +1,4 @@
-module Tasks::SetDescriptorsHandler
+module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
   def do_set_descriptors_task(_task, params)
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types

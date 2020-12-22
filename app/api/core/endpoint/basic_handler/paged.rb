@@ -1,4 +1,4 @@
-module Core::Endpoint::BasicHandler::Paged
+module Core::Endpoint::BasicHandler::Paged # rubocop:todo Style/Documentation
   def self.page_accessor(action, will_paginate_method, default_value = nil)
     lambda do |object|
       page = object.send(will_paginate_method) || default_value
@@ -52,14 +52,14 @@ module Core::Endpoint::BasicHandler::Paged
   end
   private :page_of_results
 
-  class PagedTarget
+  class PagedTarget # rubocop:todo Style/Documentation
     def initialize(model)
       @model = model
     end
 
     delegate :count, to: :@model
 
-    class PageOfResults
+    class PageOfResults # rubocop:todo Style/Documentation
       def initialize(page, _total, per_page)
         @page, @total_pages = page, page / per_page
       end

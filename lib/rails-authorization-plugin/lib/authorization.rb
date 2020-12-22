@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/publishare/exceptions'
 require File.dirname(__FILE__) + '/publishare/parser'
 
 module Authorization
-  module Base
+  module Base # rubocop:todo Style/Documentation
     # Modify these constants in your environment.rb to tailor the plugin to
     # your authentication system
     unless Object.constants.include? 'LOGIN_REQUIRED_REDIRECTION'
@@ -25,7 +25,7 @@ module Authorization
       end
     end
 
-    module ControllerClassMethods
+    module ControllerClassMethods # rubocop:todo Style/Documentation
       # Allow class-level authorization check.
       # permit is used in a before_action fashion and passes arguments to the before_action.
       def permit(authorization_expression, *args)
@@ -41,7 +41,7 @@ module Authorization
       end
     end
 
-    module ControllerInstanceMethods
+    module ControllerInstanceMethods # rubocop:todo Style/Documentation
       include Authorization::Base::EvalParser # RecursiveDescentParser is another option
 
       # Permit? turns off redirection by default and takes no blocks

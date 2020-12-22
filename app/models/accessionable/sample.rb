@@ -1,7 +1,7 @@
 # Handles the submission of {Sample} information to the ENA or EGA
 # It should have a 1 to 1 mapping with Sequencescape {Sample samples}.
 module Accessionable
-  class Sample < Base
+  class Sample < Base # rubocop:todo Style/Documentation
     ARRAY_EXPRESS_FIELDS = %w[genotype phenotype strain_or_line developmental_stage sex cell_type disease_state
                               compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment].freeze
 
@@ -104,14 +104,14 @@ module Accessionable
 
   private
 
-  class ArrayExpressTag < Base::Tag
+  class ArrayExpressTag < Base::Tag # rubocop:todo Style/Documentation
     def label
       default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
       I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)
     end
   end
 
-  class EgaTag < Base::Tag
+  class EgaTag < Base::Tag # rubocop:todo Style/Documentation
     def label
       default_tag = "EGA-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
       I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)

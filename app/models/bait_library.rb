@@ -7,7 +7,7 @@
 class BaitLibrary < ApplicationRecord
   include SharedBehaviour::Named
 
-  module Associations
+  module Associations # rubocop:todo Style/Documentation
     def self.included(base)
       base.class_eval do
         belongs_to :bait_library

@@ -1,4 +1,4 @@
-class EgaAccessionService < AccessionService
+class EgaAccessionService < AccessionService # rubocop:todo Style/Documentation
   self.priority = 2
   self.operational = true
 

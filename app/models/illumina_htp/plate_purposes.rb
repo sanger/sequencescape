@@ -140,7 +140,7 @@ module IlluminaHtp::PlatePurposes
     'Illumina'
   end
 
-  module PurposeHelpers
+  module PurposeHelpers # rubocop:todo Style/Documentation
     def create_tube_purposes
       self::TUBE_PURPOSE_FLOWS.each do |flow|
         create_tube_flow(flow)

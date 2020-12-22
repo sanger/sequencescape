@@ -1,4 +1,4 @@
-class LibPoolNormTubeGenerator
+class LibPoolNormTubeGenerator # rubocop:todo Style/Documentation
   include ActiveModel::Validations
 
   attr_accessor :plate

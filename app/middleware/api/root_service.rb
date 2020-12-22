@@ -13,7 +13,7 @@ module Api
 
     use Api::EndpointHandler
 
-    module RootResponse
+    module RootResponse # rubocop:todo Style/Documentation
       def services(services)
         self.object = services
         def @owner.each(&block)

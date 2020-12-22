@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DuplicateRequestsTable < ActiveRecord::Migration[5.1]
+class DuplicateRequestsTable < ActiveRecord::Migration[5.1] # rubocop:todo Style/Documentation
   TRANSFER_REQUEST_CLASSES = '
     "TransferRequest",
     "CherrypickRequest",

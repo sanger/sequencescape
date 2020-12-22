@@ -1,4 +1,4 @@
-class AdminController < ApplicationController
+class AdminController < ApplicationController # rubocop:todo Style/Documentation
   before_action :admin_login_required
 
   def index

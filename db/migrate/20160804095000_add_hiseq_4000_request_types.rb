@@ -1,7 +1,7 @@
 # HiSeq400 Request Types
 # @note Avoid creating request types via migrations in future
 class AddHiseq4000RequestTypes < ActiveRecord::Migration
-  class SubmissionWorkflow < ApplicationRecord
+  class SubmissionWorkflow < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'submission_workflows'
   end
 

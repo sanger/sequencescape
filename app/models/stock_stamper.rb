@@ -1,4 +1,4 @@
-class StockStamper
+class StockStamper # rubocop:todo Style/Documentation
   include ActiveModel::Model
 
   attr_accessor :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :overage, :file_content

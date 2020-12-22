@@ -91,7 +91,7 @@ class Accessionable::Submission < Accessionable::Base
 
   private
 
-  class Contact
+  class Contact # rubocop:todo Style/Documentation
     attr_reader :inform_on_error, :inform_on_status, :name
 
     def initialize(user)

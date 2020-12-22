@@ -4,7 +4,7 @@ require_relative 'base_plate_double'
 
 module LabelPrinter
   module Label
-    class SampleManifestPlateDouble < BasePlateDouble
+    class SampleManifestPlateDouble < BasePlateDouble # rubocop:todo Style/Documentation
       attr_reader :sample_manifest, :only_first_label
 
       def initialize(options)

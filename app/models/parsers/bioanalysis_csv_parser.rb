@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Parsers::BioanalysisCsvParser
+class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
   class InvalidFile < StandardError; end
 
   class_attribute :assay_type, :assay_version

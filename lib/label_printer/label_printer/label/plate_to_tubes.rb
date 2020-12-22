@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class PlateToTubes < BaseTube
+    class PlateToTubes < BaseTube # rubocop:todo Style/Documentation
       attr_reader :tubes
 
       def initialize(options)

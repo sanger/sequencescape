@@ -1,5 +1,5 @@
 module RecordLoader
-  class PlatePurposeLoader < ApplicationRecordLoader
+  class PlatePurposeLoader < ApplicationRecordLoader # rubocop:todo Style/Documentation
     config_folder 'plate_purposes'
 
     DEFAULT_PRINTER_TYPE = '96 Well Plate'.freeze

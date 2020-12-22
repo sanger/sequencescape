@@ -14,7 +14,7 @@ class Well < Receptacle
   include Api::Messages::FluidigmPlateIO::WellExtensions
   include Api::Messages::QcResultIO::WellExtensions
 
-  class Link < ApplicationRecord
+  class Link < ApplicationRecord # rubocop:todo Style/Documentation
     # Caution! We are using delete_all and import to manage well links.
     # Any callbacks you add here will not be called in those circumstances.
     self.table_name = 'well_links'

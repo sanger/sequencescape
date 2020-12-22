@@ -1,4 +1,4 @@
-module Event::RequestDescriptorUpdateEvent
+module Event::RequestDescriptorUpdateEvent # rubocop:todo Style/Documentation
   def self.included(base)
     base.after_create(:update_metadata_for_request, if: lambda { |event|
                                                           event.eventful.is_a?(Request) and event.descriptor_key.present?

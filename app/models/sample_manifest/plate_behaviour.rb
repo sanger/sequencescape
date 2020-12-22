@@ -1,5 +1,5 @@
 module SampleManifest::PlateBehaviour
-  class Base
+  class Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::Shared
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 

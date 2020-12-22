@@ -1,4 +1,4 @@
-module AssetsHelper
+module AssetsHelper # rubocop:todo Style/Documentation
   def well_identifier(plate_layout, row, column)
     plate_layout.cell_name_for_well_at(row, column)
   end

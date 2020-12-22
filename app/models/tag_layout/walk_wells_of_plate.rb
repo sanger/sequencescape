@@ -1,4 +1,4 @@
-class TagLayout::WalkWellsOfPlate < TagLayout::Walker
+class TagLayout::WalkWellsOfPlate < TagLayout::Walker # rubocop:todo Style/Documentation
   self.walking_by = 'wells of plate'
 
   def walk_wells

@@ -1,4 +1,4 @@
-class SequencingPipeline < Pipeline
+class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
   self.batch_worksheet = 'simplified_worksheet'
   self.sequencing = true
   self.purpose_information = false

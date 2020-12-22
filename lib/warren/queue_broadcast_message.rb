@@ -1,4 +1,4 @@
-class Warren::QueueBroadcastMessage
+class Warren::QueueBroadcastMessage # rubocop:todo Style/Documentation
   include AfterCommitEverywhere
 
   attr_reader :record

@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class BatchRedirect
+    class BatchRedirect # rubocop:todo Style/Documentation
       attr_reader :options
 
       def initialize(options)

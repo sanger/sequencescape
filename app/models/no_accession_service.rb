@@ -1,4 +1,4 @@
-class NoAccessionService < AccessionService
+class NoAccessionService < AccessionService # rubocop:todo Style/Documentation
   self.no_study_accession_needed = true
 
   def initialize(study)

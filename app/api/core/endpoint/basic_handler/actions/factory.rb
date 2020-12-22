@@ -1,5 +1,5 @@
-module Core::Endpoint::BasicHandler::Actions::Factory
-  class Nested < Core::Endpoint::BasicHandler
+module Core::Endpoint::BasicHandler::Actions::Factory # rubocop:todo Style/Documentation
+  class Nested < Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
     def initialize(name, &block)
       super(&block)
       @name = name.to_s

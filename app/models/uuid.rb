@@ -4,7 +4,7 @@ class Uuid < ApplicationRecord
   # Allows tests to dictate the next UUID generted for a given class
   class_attribute :store_for_tests
 
-  module Uuidable
+  module Uuidable # rubocop:todo Style/Documentation
     def self.included(base)
       base.class_eval do
         # Lazy uuid generation disables uuid generation on record creation. For the most part this is

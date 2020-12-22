@@ -1,4 +1,4 @@
-class Admin::ProgramsController < ApplicationController
+class Admin::ProgramsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :admin_login_required
   before_action :discover_program, only: %i[show edit update destroy]
 

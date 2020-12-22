@@ -1,6 +1,6 @@
 # Multiple request classes have been combined into a single request, eliminating complexity
 class UnifyInitialDownstreamClasses < ActiveRecord::Migration
-  class Request < ApplicationRecord
+  class Request < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'requests'
   end
 

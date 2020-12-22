@@ -1,4 +1,4 @@
-module Accession
+module Accession # rubocop:todo Style/Documentation
   # Handles assigning of accessioning number to a Sequenescape sample.
   # Before accessioning:
   #  check configuration settings, in particular:
@@ -25,7 +25,7 @@ module Accession
     end
   end
 
-  module Equality
+  module Equality # rubocop:todo Style/Documentation
     include Comparable
 
     def to_a

@@ -1,6 +1,6 @@
 # Rails migration
 class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
-  class Purpose < ApplicationRecord
+  class Purpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil
   end

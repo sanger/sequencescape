@@ -1,4 +1,4 @@
-module StandardNamedScopes
+module StandardNamedScopes # rubocop:todo Style/Documentation
   def self.included(base)
     base.instance_eval do
       # Date ordering is better specified as "order_most_recently_created_first" or

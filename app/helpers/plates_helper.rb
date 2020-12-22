@@ -1,4 +1,4 @@
-module PlatesHelper
+module PlatesHelper # rubocop:todo Style/Documentation
   class AliquotError < StandardError; end
 
   def padded_wells_by_row(plate, overide = nil)

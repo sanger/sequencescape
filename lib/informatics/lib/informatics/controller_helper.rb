@@ -4,7 +4,7 @@ require_relative 'view/tabs/item'
 require_relative 'view/tabs/list'
 require_relative 'globals'
 
-module ApplicationHelper
+module ApplicationHelper # rubocop:todo Style/Documentation
   include Informatics::Globals
 
   def add(type, link, options = nil)

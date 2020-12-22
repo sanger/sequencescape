@@ -1,7 +1,7 @@
 # Rails migration
 # Clear up an unused tube class
 class RemoveUnusedTubeClass < ActiveRecord::Migration
-  class Purpose < ApplicationRecord
+  class Purpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil
     has_many :assets, foreign_key: 'plate_purpose_id'

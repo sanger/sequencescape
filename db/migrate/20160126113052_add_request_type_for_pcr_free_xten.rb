@@ -1,7 +1,7 @@
 # Buld request types for PCR Free pipeline
 # @note Creating request types through migrations is discouraged
 class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
-  class SubmissionWorkflow < ApplicationRecord
+  class SubmissionWorkflow < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'submission_workflows'
   end
 

@@ -1,4 +1,4 @@
-class PacBio::Worksheet
+class PacBio::Worksheet # rubocop:todo Style/Documentation
   def initialize
   end
 

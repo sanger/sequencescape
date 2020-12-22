@@ -1,4 +1,4 @@
-class Transfer::BetweenPlateAndTubes < Transfer
+class Transfer::BetweenPlateAndTubes < Transfer # rubocop:todo Style/Documentation
   DESTINATION_INCLUDES = {
     destination: %i[
       uuid_object
@@ -6,7 +6,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     ]
   }.freeze
 
-  class WellToTube < ApplicationRecord
+  class WellToTube < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('well_to_tube_transfers')
 
     belongs_to :transfer, class_name: 'Transfer::BetweenPlateAndTubes'

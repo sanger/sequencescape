@@ -2,7 +2,7 @@
 # This is part of the gatekeeper QC Pipeline.
 # Delegates state to the associated qc-able, rather than the transfer requests
 class QcableLibraryPlatePurpose < PlatePurpose
-  module ClassBehaviour
+  module ClassBehaviour # rubocop:todo Style/Documentation
     def state_of(plate)
       qcable_for(plate).state
     end

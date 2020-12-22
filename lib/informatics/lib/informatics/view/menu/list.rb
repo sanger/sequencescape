@@ -1,7 +1,7 @@
 module Informatics
   module View
     module Menu
-      class List
+      class List # rubocop:todo Style/Documentation
         attr_accessor :items
 
         def add_item(options = {})

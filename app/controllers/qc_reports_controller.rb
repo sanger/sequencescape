@@ -1,4 +1,4 @@
-class QcReportsController < ApplicationController
+class QcReportsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :login_required
   before_action :check_required, only: :create
 

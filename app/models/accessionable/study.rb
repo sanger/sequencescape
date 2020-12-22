@@ -5,7 +5,7 @@
 # A study can either be open (ENA) or managed (EGA) which determines which {AccessionService} it
 # uses.
 module Accessionable
-  class Study < Base
+  class Study < Base # rubocop:todo Style/Documentation
     attr_reader :study_title, :description, :center_study_name, :study_abstract, :existing_study_type, :tags
 
     def initialize(study)

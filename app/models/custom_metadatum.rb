@@ -1,4 +1,4 @@
-class CustomMetadatum < ApplicationRecord
+class CustomMetadatum < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :custom_metadatum_collection
 
   validates :value, presence: true

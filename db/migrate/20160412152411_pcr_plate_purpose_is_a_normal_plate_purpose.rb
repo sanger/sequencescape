@@ -1,6 +1,6 @@
 # We are consolidating plate purpose classes as we push custom behaviour outwards
 class PcrPlatePurposeIsANormalPlatePurpose < ActiveRecord::Migration
-  class Purpose < ApplicationRecord
+  class Purpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'plate_purposes'
   end
 

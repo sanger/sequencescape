@@ -1,4 +1,4 @@
-class Search::FindPulldownPlates < Search
+class Search::FindPulldownPlates < Search # rubocop:todo Style/Documentation
   def scope(criteria)
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked
     # for transfer) the destination plate becomes the end of the chain.

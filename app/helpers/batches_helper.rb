@@ -1,4 +1,4 @@
-module BatchesHelper
+module BatchesHelper # rubocop:todo Style/Documentation
   def purpose_for_labware(labware)
     labware.purpose&.name.presence || 'Unassigned'
   end

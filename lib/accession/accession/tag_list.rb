@@ -5,7 +5,7 @@ module Accession
   # Tags contain information about a sample, that should be provided to an external service to accession the sample
   # Tags are used to validate a sample and to create a correct xml file for accessioning request.
 
-  class TagList
+  class TagList # rubocop:todo Style/Documentation
     include Enumerable
     include Comparable
 

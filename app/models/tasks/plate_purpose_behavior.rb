@@ -1,5 +1,5 @@
 module Tasks
-  module PlatePurposeBehavior
+  module PlatePurposeBehavior # rubocop:todo Style/Documentation
     # Returns a list of valid plate purpose types based on the requests in the current batch.
     def plate_purpose_options(batch)
       requests       = batch.requests.flat_map(&:next_requests)

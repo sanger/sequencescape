@@ -1,6 +1,6 @@
 require 'aasm'
 
-class Project < ApplicationRecord
+class Project < ApplicationRecord # rubocop:todo Style/Documentation
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
   include Api::ProjectIO::Extensions

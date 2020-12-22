@@ -6,8 +6,8 @@
 # behaviour => the module that will be included in the validator, must respond to validate(submission)
 # options   => serialized hash for configuration
 
-class ExtendedValidator < ApplicationRecord
-  class RequestTypeExtendedValidator < ApplicationRecord
+class ExtendedValidator < ApplicationRecord # rubocop:todo Style/Documentation
+  class RequestTypeExtendedValidator < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('request_types_extended_validators')
 
     belongs_to :extended_validator

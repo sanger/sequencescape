@@ -1,7 +1,7 @@
 # SubmissionPools are designed to view submissions in the context of a particular asset
 class SubmissionPool < ApplicationRecord
   module Association
-    module Plate
+    module Plate # rubocop:todo Style/Documentation
       def self.included(base)
         base.class_eval do
           has_many :submission_pools, ->() { distinct }, through: :well_requests_as_target

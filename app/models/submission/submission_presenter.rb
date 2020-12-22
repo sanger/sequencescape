@@ -1,4 +1,4 @@
-class Submission::SubmissionPresenter < Submission::PresenterSkeleton
+class Submission::SubmissionPresenter < Submission::PresenterSkeleton # rubocop:todo Style/Documentation
   self.attributes = [:id]
 
   def submission

@@ -1,4 +1,4 @@
-module Batch::PipelineBehaviour
+module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       # The associations with the pipeline

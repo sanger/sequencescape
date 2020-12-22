@@ -1,4 +1,4 @@
-class PacBioSequencingRequest < CustomerRequest
+class PacBioSequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   self.sequencing = true
 
   delegate :pac_bio_library_tube_metadata, to: :source_tube, allow_nil: true

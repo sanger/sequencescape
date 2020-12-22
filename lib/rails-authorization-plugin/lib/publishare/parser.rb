@@ -4,7 +4,7 @@ module Authorization
     BOOLEAN_OPS = %w[not or and].freeze
     VALID_PREPOSITIONS_PATTERN = VALID_PREPOSITIONS.join('|')
 
-    module EvalParser
+    module EvalParser # rubocop:todo Style/Documentation
       # Parses and evaluates an authorization expression and returns <tt>true</tt> or <tt>false</tt>.
       #
       # The authorization expression is defined by the following grammar:

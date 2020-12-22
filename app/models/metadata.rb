@@ -1,6 +1,6 @@
 require_dependency 'attributable'
 
-module Metadata
+module Metadata # rubocop:todo Style/Documentation
   # @!macro [attach] has_metadata
   #   @!parse class Metadata < Metadata::Base; end
   def has_metadata(options = {}, &block)
@@ -64,7 +64,7 @@ module Metadata
     tags << AccessionedTag.new(tag, options[:as], options[:services], options[:downcase])
   end
 
-  class AccessionedTag
+  class AccessionedTag # rubocop:todo Style/Documentation
     attr_reader :tag, :name, :downcase
 
     def initialize(tag, as = nil, services = [], downcase = false)
@@ -95,7 +95,7 @@ module Metadata
     const_set(:Metadata, metadata)
   end
 
-  class Base < ApplicationRecord
+  class Base < ApplicationRecord # rubocop:todo Style/Documentation
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
 

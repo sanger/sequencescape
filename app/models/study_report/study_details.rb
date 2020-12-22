@@ -1,4 +1,4 @@
-module StudyReport::StudyDetails
+module StudyReport::StudyDetails # rubocop:todo Style/Documentation
   BATCH_SIZE = 1000
 
   # This will pull out all well ids from stock plates in the study
