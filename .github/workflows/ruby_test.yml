@@ -1,6 +1,7 @@
 name: Ruby Test
 env:
   TZ: Europe/London
+  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
 on:
   - push
@@ -206,8 +207,6 @@ jobs:
         path: tmp/
     - name: Publish code coverage
       uses: paambaati/codeclimate-action@v2.7.5
-      env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       with:
         coverageLocations: |
           tmp/codeclimate-rake_tests-
