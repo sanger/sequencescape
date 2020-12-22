@@ -10,12 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    # These two commands essentially ensure yarn is setup and run yarn install and yarn lint respectively
+    - name: Setup node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
     - name: Install
-      uses: CultureHQ/actions-yarn@master
-      with:
-        args: install
+      run: yarn install
     - name: Run yarn test
-      uses: CultureHQ/actions-yarn@master
-      with:
-        args: test
+      run: yarn test
