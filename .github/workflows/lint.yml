@@ -44,7 +44,7 @@ jobs:
     # Install only the gems needed for linting, keep things nice and fast
     # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
     # in case bundler add an only flag
-    # We also set the install path to vendor/bundle to assist with out caching
+    # We also set the install path to vendor/bundle to assist with our caching
     - name: Install dependencies
       run: |
         bundle config path vendor/bundle
