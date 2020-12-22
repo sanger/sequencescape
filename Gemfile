@@ -129,7 +129,6 @@ group :development do
   gem 'rack-mini-profiler'
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
-  gem 'travis'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'mini_racer'
