@@ -202,12 +202,12 @@ Given /^the SRA status of the sample called "([^"]+)" is (#{Sample::SRA_HOLD_VAL
   sample.update!(sample_metadata_attributes: { sample_sra_hold: sra_status })
 end
 
-Given /^the sample called "([^"]+)" is (#{Sample::AGE_REGEXP}) old$/ do |name, age|
+Given /^the sample called "([^"]+)" is (#{Sample::AGE_REGEXP}) old$/o do |name, age|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update!(sample_metadata_attributes: { age: age })
 end
 
-Given /^the dosage of the sample called "([^"]+)" is (#{Sample::DOSE_REGEXP})/ do |name, dose|
+Given /^the dosage of the sample called "([^"]+)" is (#{Sample::DOSE_REGEXP})/o do |name, dose|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update!(sample_metadata_attributes: { dose: dose })
 end

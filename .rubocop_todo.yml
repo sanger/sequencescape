@@ -605,16 +605,6 @@ Performance/CollectionLiteralInLoop:
     - 'spec/models/transfer_request_spec.rb'
     - 'test/unit/data_release_test.rb'
 
-# Offense count: 24
-# Cop supports --auto-correct.
-Performance/ConstantRegexp:
-  Exclude:
-    - 'app/sample_manifest_excel/sample_manifest_excel/upload/converters.rb'
-    - 'features/support/step_definitions/6679401_batch_request_recycling_broken_steps.rb'
-    - 'features/support/step_definitions/samples_steps.rb'
-    - 'features/support/step_definitions/transfer_steps.rb'
-    - 'features/support/step_definitions/uuid_steps.rb'
-
 # Offense count: 28
 Performance/MethodObjectAsBlock:
   Exclude:

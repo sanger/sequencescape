@@ -119,7 +119,7 @@ SEQUENCING_PIPELINES = [
   'HiSeq Cluster formation PE (no controls)'
 ].map(&Regexp.method(:escape)).join('|')
 
-Given /^I have a batch with (\d+) requests? for the "(#{SEQUENCING_PIPELINES})" pipeline$/ do |count, name|
+Given /^I have a batch with (\d+) requests? for the "(#{SEQUENCING_PIPELINES})" pipeline$/o do |count, name|
   build_batch_for(name, count.to_i) do |pipeline|
     {
       asset_type: :library_tube,
@@ -132,7 +132,7 @@ Given /^I have a batch with (\d+) requests? for the "(#{SEQUENCING_PIPELINES})" 
   end
 end
 
-Then /^the (\d+) requests should be in the "(#{SEQUENCING_PIPELINES})" pipeline inbox$/ do |count, name|
+Then /^the (\d+) requests should be in the "(#{SEQUENCING_PIPELINES})" pipeline inbox$/o do |count, name|
   requests_for_pipeline(name, count.to_i) do |requests_in_inbox|
     requests_in_inbox.each do |request|
       assert(request.comments.any? do |c|
@@ -151,7 +151,7 @@ LIBRARY_CREATION_PIPELINES = [
   'Illumina-B MX Library Preparation'
 ].map(&Regexp.method(:escape)).join('|')
 
-Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/ do |count, name|
+Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/o do |count, name|
   build_batch_for(name, count.to_i) do |_pipeline|
     {
       asset_type: :sample_tube,
@@ -170,7 +170,7 @@ GENOTYPING_PIPELINES = [
   'Genotyping'
 ].map(&Regexp.method(:escape)).join('|')
 
-Given /^I have a batch with (\d+) requests? for the "(#{GENOTYPING_PIPELINES})" pipeline$/ do |count, name|
+Given /^I have a batch with (\d+) requests? for the "(#{GENOTYPING_PIPELINES})" pipeline$/o do |count, name|
   build_batch_for(name, count.to_i) do |_pipeline|
     {
       asset_type: :well,
@@ -181,7 +181,7 @@ end
 
 # Even though the other test says that there is one request visible in the inbox and we have to look at
 # the wells, this one has 5 requests visible in the inbox because the wells are from different plates.
-Then /^the (\d+) requests should be in the "(#{GENOTYPING_PIPELINES})" pipeline inbox$/ do |count, name|
+Then /^the (\d+) requests should be in the "(#{GENOTYPING_PIPELINES})" pipeline inbox$/o do |count, name|
   requests_for_pipeline(name, count.to_i) do |requests_in_inbox|
     # Not really much else to check here, they should just appear!
   end
