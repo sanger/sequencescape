@@ -831,12 +831,9 @@ end
 set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines
+pulldown_variants = %w[WGS SC ISC]
 ['Pulldown', 'Illumina-A Pulldown'].each do |lab|
-  %w[
-    WGS
-    SC
-    ISC
-  ].each do |pipeline_type|
+  pulldown_variants.each do |pipeline_type|
     pipeline_name = "#{lab} #{pipeline_type}"
     Pipeline.create!(name: pipeline_name) do |pipeline|
       pipeline.sorter             = Pipeline.maximum(:sorter) + 1

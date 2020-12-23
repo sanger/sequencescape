@@ -230,11 +230,11 @@ module SampleManifestExcel
       end
 
       def create_tube_requests
+        return unless %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
+
         assets.each do |asset|
-          if %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
-            FactoryBot.create(:external_multiplexed_library_tube_creation_request, asset: asset,
-                                                                                   target_asset: multiplexed_library_tube)
-          end
+          FactoryBot.create(:external_multiplexed_library_tube_creation_request, asset: asset,
+                                                                                 target_asset: multiplexed_library_tube)
         end
       end
 

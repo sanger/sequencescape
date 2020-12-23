@@ -10,6 +10,8 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Doc
     end
   end
 
+  NESTED_SUPPORTING_RELATIONSHIPS = %i[belongs_to has_one].freeze
+
   def self.extended(base)
     base.class_eval do
       class_attribute :model_for_input, instance_writer: false
@@ -51,7 +53,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Doc
             [nil, step]
           # Brackets here indicate that assignment is intentional and make Rubocop happy
           elsif (association = model.reflections[step])
-            unless %i[belongs_to has_one].include?(association.macro.to_sym)
+            unless NESTED_SUPPORTING_RELATIONSHIPS.include?(association.macro.to_sym)
               raise StandardError, 'Nested attributes only works with belongs_to or has_one'
             end
 

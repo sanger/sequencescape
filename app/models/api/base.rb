@@ -4,6 +4,8 @@
 #       When the warehouse was switched to a queue based system the same JSON
 #       exposed via the API was used to form the message payload.
 class Api::Base
+  UNSERIALIZED_COLUMNS = [:descriptor_fields].freeze
+
   class_attribute :includes
   self.includes = []
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
@@ -97,9 +99,8 @@ class Api::Base
       # within the Class.new block above, so we have to do a separate instance_eval to get it to work.
       render_class.instance_eval do
         self.model_class = model
-
         model.column_names.each do |column|
-          map_attribute_to_json_attribute(column, column) unless [:descriptor_fields].include?(column.to_sym)
+          map_attribute_to_json_attribute(column, column) unless UNSERIALIZED_COLUMNS.include?(column.to_sym)
         end
 
         # TODO[xxx]: It's better that some of these are decided at generation, rather than execution, time.
