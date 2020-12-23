@@ -52,6 +52,10 @@ FactoryBot.define do
       sti_type { 'CustomerRequest' } # Oddly, this seems to be necessary!
       association(:request_type, factory: :customer_request_type)
     end
+
+    factory :create_asset_request do
+      sti_type { 'CreateAssetRequest' } # Oddly, this seems to be necessary!
+    end
   end
 
   factory :sequencing_request, class: 'SequencingRequest' do

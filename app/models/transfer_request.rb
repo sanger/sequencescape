@@ -113,9 +113,9 @@ class TransferRequest < ApplicationRecord
   # Set the outer request associated with this transfer request
   # the outer request is the {Request} which is currently being processed,
   # such as a {LibraryCreationRequest}. Setting this ensures that the
-  # transfered {Aliquots} are associated with the correct request, and that
+  # transferred {Aliquots} are associated with the correct request, and that
   # submission_id on transfer request is recorded correctly.
-  # @note This is particularly important when transfering out of the initial
+  # @note This is particularly important when transferring out of the initial
   # {Receptacle} when there may be multiple active {Receptacle#requests_as_source}
   # @param request [Request] The request which is being processed
   def outer_request=(request)

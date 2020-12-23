@@ -73,10 +73,9 @@ class Asset < ApplicationRecord
 
   scope :recent_first, -> { order(id: :desc) }
 
-  scope :include_for_show, lambda {
-                             includes({ requests_as_source: %i[request_type request_metadata] },
-                                      requests_as_target: %i[request_type request_metadata])
-                           }
+  # Includes are mostly handled in the views themselves, which allows us to be
+  # a bit more smart about what we load if necessary (Ie. different stuff for plates)
+  scope :include_for_show, -> { includes(:studies) }
 
   # The use of a sub-query here is a performance optimization. If we join onto the asset_links
   # table instead, rails is unable to paginate the results efficiently, as it needs to use DISTINCT
