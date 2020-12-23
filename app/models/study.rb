@@ -253,9 +253,7 @@ class Study < ApplicationRecord
       study_sra_hold: STUDY_SRA_HOLDS,
       contains_human_dna: YES_OR_NO,
       commercially_available: YES_OR_NO
-    }.each_with_object({}) do |(k, v), h|
-      h[k] = v.index_by { |b| b.downcase }
-    end
+    }.transform_values { |v| v.index_by { |b| b.downcase } }
 
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji

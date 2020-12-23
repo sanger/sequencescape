@@ -47,7 +47,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def duplicate
-      yield(Hash[@children.map { |k, v| [k, v.dup] }])
+      yield(@children.deep_dup)
     end
     private :duplicate
   end

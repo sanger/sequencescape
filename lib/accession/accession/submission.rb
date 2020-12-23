@@ -86,7 +86,7 @@ module Accession
       end
 
       def open
-        Hash[files.collect { |k, v| [k, v.open] }]
+        files.transform_values(&:open)
       end
 
       def close!

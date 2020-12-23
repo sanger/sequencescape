@@ -2922,19 +2922,6 @@ Style/HashSyntax:
     - 'lib/rails-authorization-plugin/Rakefile'
     - 'lib/volume_check.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-Style/HashTransformValues:
-  Exclude:
-    - 'app/api/core/endpoint/basic_handler.rb'
-    - 'app/api/core/endpoint/basic_handler/paged.rb'
-    - 'app/api/core/io/json/grammar.rb'
-    - 'app/models/sample.rb'
-    - 'app/models/study.rb'
-    - 'app/models/submission_template.rb'
-    - 'features/support/step_definitions/xml_steps.rb'
-    - 'lib/accession/accession/submission.rb'
-
 # Offense count: 5
 Style/IdenticalConditionalBranches:
   Exclude:

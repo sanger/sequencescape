@@ -29,8 +29,13 @@ module Core::Endpoint::BasicHandler::Paged # rubocop:todo Style/Documentation
   private :action_updates_for
 
   def pages_to_actions(object, options)
-    actions_to_details = [[:first, 1]] + ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
-    Hash[actions_to_details.map { |action, page| [action, core_path(page, options)] }]
+    first_page = { first: core_path(1, options) }
+    ACTION_NAME_TO_PAGE_METHOD.each_with_object(first_page) do |page_method, pages|
+      action, page = page_method.call(object)
+      next unless action
+
+      pages[action] = core_path(page, options)
+    end
   end
   private :pages_to_actions
 

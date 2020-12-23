@@ -159,9 +159,7 @@ class Sample < ApplicationRecord
       gender: GENDERS,
       dna_source: DNA_SOURCES,
       sample_sra_hold: SRA_HOLD_VALUES
-    }.each_with_object({}) do |(k, v), h|
-      h[k] = v.index_by { |b| b.downcase }
-    end
+    }.transform_values { |v| v.index_by { |b| b.downcase } }
 
     after_initialize do |record|
       record.consent_withdrawn = false if record.consent_withdrawn.nil?
