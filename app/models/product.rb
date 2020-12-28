@@ -6,7 +6,7 @@ class Product < ApplicationRecord
   validates :name, uniqueness: { scope: :deprecated_at, case_sensitive: false }
   has_many :product_product_catalogues, dependent: :destroy
   has_many :product_catalogues, through: :product_product_catalogues
-  has_many :submission_templates, inverse_of: :product, through: :product_catalogues
+  has_many :submission_templates, inverse_of: :products, through: :product_catalogues
   has_many :orders
   has_many :product_criteria, inverse_of: :product, class_name: 'ProductCriteria'
 

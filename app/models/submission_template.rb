@@ -20,6 +20,8 @@ class SubmissionTemplate < ApplicationRecord
   delegate :product_for, to: :product_catalogue
   validates :product_catalogue, presence: true
 
+  has_many :products, through: :product_catalogue
+
   LATEST_VERSION = -1
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
 
