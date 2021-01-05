@@ -52,6 +52,10 @@ class Purpose < ApplicationRecord
     source_purpose_id.present? ? asset.ancestor_of_purpose(source_purpose_id) : asset.stock_plate
   end
 
+  def source_purpose_name=(source_purpose_name)
+    self.source_purpose = Purpose.find_by!(name: source_purpose_name)
+  end
+
   def barcode_type
     barcode_printer_type&.printer_type_id
   end

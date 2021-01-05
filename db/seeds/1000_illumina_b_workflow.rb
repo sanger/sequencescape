@@ -3,7 +3,15 @@
 ActiveRecord::Base.transaction do
   pipeline_name = 'Illumina-B STD'
 
-  IlluminaB::PlatePurposes.create_tube_purposes
+  if Rails.env.cucumber?
+    RecordLoader::TubePurposeLoader.new(files: [
+      '002_illumina_b_legacy_purposes'
+    ]).create!
+    RecordLoader::PlatePurposeLoader.new(files: [
+      '002_illumina_b_legacy_purposes'
+    ]).create!
+  end
+
   IlluminaHtp::PlatePurposes.create_tube_purposes
 
   # For B
@@ -53,7 +61,6 @@ ActiveRecord::Base.transaction do
     RequestType.create!(shared_options_b.merge(request_type_options))
   end
 
-  IlluminaB::PlatePurposes.create_plate_purposes
   IlluminaHtp::PlatePurposes.create_plate_purposes
 
   Pulldown::PlatePurposes.create_purposes(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last)
