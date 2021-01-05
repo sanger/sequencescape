@@ -116,6 +116,10 @@ class User < ApplicationRecord
     name_incomplete? ? login : "#{first_name} #{last_name}"
   end
 
+  def name_and_login
+    "#{first_name} #{last_name} (#{login})".strip
+  end
+
   def projects
     return Project.all if is_administrator?
 
