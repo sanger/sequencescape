@@ -32,6 +32,11 @@ class BroadcastEvent::PlateCherrypicked < BroadcastEvent
     _add_destination_plate
   end
 
+  def user_identifier
+    # allows for user identifiers that aren't in the SS db
+    properties[:user_identifier].presence || super
+  end
+
   def robot_present
     check_subject_role_type(:robot, ROBOT_ROLE_TYPE)
   end

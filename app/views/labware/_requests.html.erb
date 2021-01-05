@@ -4,7 +4,7 @@
   <header>
     <a href='#requests-table-collapser' role="button" data-toggle='collapse'>
     <h3>Requests
-      <%= counter_badge asset.requests_as_source.length %>
+      <%= counter_badge asset.requests_as_source.size %>
       <small class='show-hide'>Click to toggle</small>
     </h3>
     </a>
@@ -28,7 +28,12 @@
         </tr>
       </thead>
       <tbody>
-        <% @asset.requests_as_source.includes(:submission, :request_type, :batch, target_asset: :map).each do |request| %>
+        <% @asset.requests_as_source.includes(
+          :submission,
+          :request_type,
+          :batch,
+          target_asset: [:map, { labware: :barcodes }]
+          ).each do |request| %>
         <tr>
           <td><%= link_to(request.id, request_url(request), title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
           <td><%= request.request_type&.name %></td>
@@ -86,7 +91,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @asset.requests_as_target.includes(:submission, :request_type, :batch, target_asset: :map).each do |request| %>
+        <% @asset.requests_as_target.includes(:request_type, :batch, asset: [:map, { labware: :barcodes }], submission: :orders).each do |request| %>
         <tr>
           <td><%= link_to(request.id, request_url(request), title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
           <td><%= request.request_type&.name  %></td>

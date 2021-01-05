@@ -1,0 +1,69 @@
+name: Linting
+on:
+  - push
+  - pull_request
+
+jobs:
+  rubocop:
+
+    runs-on: ubuntu-latest
+    env:
+      # Directory to cache Rubocop processing. Support added in 0.9.0 but
+      # preparing this in advance of upgrade as it is side effect free.
+      RUBOCOP_CACHE_ROOT: '.rubocop-cache'
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      # with:
+      #   bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      # Note: For smaller projects, you may be better off enabling this, as it will automatically
+      # handle the 'Cache gems and cops' and 'Install dependencies' sections. However:
+      # - It doesn't appear to offer a way to exclude gemsets
+      # - It shares a cache for all actions
+      # We *Need* the first in Sequencescape to avoid needing to install oracle drivers
+      # in CI. And also take advantage of excluding other gemsets for performance reasons.
+      # However without the first issue, simplicity may win out over speed.
+    # Establish a cache of downloaded gems to improve performance
+    # vendor/bundle and also of the rubocop cache ${{ env.RUBOCOP_CACHE_ROOT }}
+    - name: Cache gems and cops
+      uses: actions/cache@v2
+      with:
+        path: |
+          vendor/bundle
+          ${{ env.RUBOCOP_CACHE_ROOT }}
+        key: ${{ runner.os }}-rubocop-${{ hashFiles('**/Gemfile.lock') }}
+        # If we don't find the specific cache we want, fallback to the last rubocop
+        # cache, then finally any cache for this repo.
+        # Github looks for the newest cache beginning with the first entry, before
+        # falling back the the second if none is present.
+        restore-keys: |
+          ${{ runner.os }}-rubocop-
+          ${{ runner.os }}-
+    # Install only the gems needed for linting, keep things nice and fast
+    # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
+    # in case bundler add an only flag
+    # We also set the install path to vendor/bundle to assist with our caching
+    - name: Install dependencies
+      run: |
+        bundle config path vendor/bundle
+        bundle config set without 'warehouse cucumber deployment profile development default test'
+        bundle install --jobs 4 --retry 3
+    # Actually run our cops with flags to improve the details of lint errors
+    # and parallel to try and improve speed
+    - name: Run rubocop
+      run: bundle exec rubocop --extra-details --display-style-guide --parallel
+  eslint:
+    name: EsLint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - name: Install
+      run: yarn install
+    - name: Run yarn test
+      run: yarn lint

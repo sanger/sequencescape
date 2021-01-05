@@ -155,16 +155,6 @@ class Plate < Labware
   delegate :asset_shape, to: :plate_purpose, allow_nil: true
   delegate :dilution_factor, :dilution_factor=, to: :plate_metadata
 
-  scope :include_for_show, -> {
-    includes(
-      requests: :request_metadata,
-      wells: [
-        :map_id,
-        { aliquots: %i[samples tag tag2] }
-      ]
-    )
-  }
-
   # Submissions on requests out of the plate
   # May not have been started yet
   has_many :waiting_submissions, -> { distinct }, through: :well_requests_as_source, source: :submission

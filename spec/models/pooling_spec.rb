@@ -11,7 +11,14 @@ describe Pooling, type: :model, poolings: true do
   let(:mx_tube) { create :multiplexed_library_tube, barcode: 6 }
   let(:stock_mx_tube_required) { false }
   let(:barcode_printer_option) { nil }
-  let(:pooling) { described_class.new(barcodes: barcodes, stock_mx_tube_required: stock_mx_tube_required, barcode_printer: barcode_printer_option) }
+  let(:pooling) do
+    described_class.new(
+      barcodes: barcodes,
+      stock_mx_tube_required: stock_mx_tube_required,
+      barcode_printer: barcode_printer_option,
+      count: 1
+    )
+  end
 
   context 'without source assets' do
     let(:barcodes) { [] }
@@ -35,7 +42,7 @@ describe Pooling, type: :model, poolings: true do
   end
 
   describe '#execute' do
-    let(:barcodes) { [tagged_lb_tube1.ean13_barcode, tagged_lb_tube2.ean13_barcode, untagged_lb_tube1.ean13_barcode, mx_tube.ean13_barcode] }
+    let(:barcodes) { [tagged_lb_tube1.machine_barcode, tagged_lb_tube2.machine_barcode, untagged_lb_tube1.machine_barcode, mx_tube.machine_barcode] }
 
     before do
       create_list(:single_tagged_aliquot, 2, receptacle: mx_tube)
@@ -52,6 +59,11 @@ describe Pooling, type: :model, poolings: true do
       expect(pooling.message).to eq(notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} ")
     end
 
+    it 'sets up child relationships' do
+      expect(pooling.execute).to be true
+      expect(Labware.with_barcode(barcodes).all? { |l| l.children.include?(pooling.standard_mx_tube) }).to be true
+    end
+
     context 'when stock_mx_tube_required is true' do
       let(:stock_mx_tube_required) { true }
 
@@ -60,6 +72,31 @@ describe Pooling, type: :model, poolings: true do
         expect(pooling.stock_mx_tube.aliquots.count).to eq 5
         expect(pooling.standard_mx_tube.aliquots.count).to eq 5
         expect(pooling.message).to eq(notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} and stock_mx_tube #{Tube.last(2).first.human_barcode} ")
+      end
+
+      it 'sets up child relationships', aggregate_failures: true do
+        expect(pooling.execute).to be true
+        input_tubes = Labware.with_barcode(barcodes)
+        expect(input_tubes.all? { |l| l.children.include?(pooling.stock_mx_tube) }).to be true
+        expect(input_tubes.all? { |l| l.children.include?(pooling.standard_mx_tube) }).to be false
+        expect(pooling.stock_mx_tube.children).to include(pooling.standard_mx_tube)
+      end
+    end
+
+    # LibraryTubes created as part of an MX library manifest have two associated requests,
+    # the CreateAssetRequest and the ExternalLibraryCreationRequest. When the TransferRequest
+    # is created, it was attempting to associate itself with one of these requests, and then
+    # failing to disambiguate between them.
+    context 'when the source tubes are from an mx library manifest' do
+      before do
+        create :create_asset_request, asset: tagged_lb_tube1.receptacle
+        create(:external_multiplexed_library_tube_creation_request, asset: tagged_lb_tube1.receptacle)
+      end
+
+      let(:stock_mx_tube_required) { true }
+
+      it 'creates stock and standard mx tube' do
+        expect(pooling.execute).to be true
       end
     end
 
