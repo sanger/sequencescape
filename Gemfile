@@ -129,7 +129,6 @@ group :development do
   gem 'rack-mini-profiler'
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
-  gem 'travis'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'mini_racer'
@@ -177,7 +176,7 @@ group :test do
   # Rails performance tests
   gem 'rails-perftest'
   gem 'rspec-collection_matchers' # Provides matchers for dealing with arrays
-  gem 'rspec-longrun' # Extends scenario logging for more verbose tracking
+  gem 'rspec-longrun', require: false # Extends scenario logging for more verbose tracking
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
@@ -187,7 +186,6 @@ group :test do
   # with rails versions.
   gem 'minitest', '5.10.3'
   gem 'minitest-profiler'
-  gem 'rspec_junit_formatter'
 end
 
 group :test, :cucumber do
@@ -225,4 +223,9 @@ group :deployment do
   gem 'gmetric', '~>0.1.3'
   gem 'slack-notifier'
   gem 'whenever', require: false
+end
+
+# Can be removed once we don't use circle_ci
+group :circle_ci, optional: true do
+  gem 'rspec_junit_formatter', require: false
 end
