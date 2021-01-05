@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 describe 'Empty batch creation', type: :feature, js: true do
-  include RSpec::Longrun::DSL
-
   let(:user) { create :user }
   let(:pipeline) { create :cherrypick_pipeline }
   let(:pipeline_name) { pipeline.name }

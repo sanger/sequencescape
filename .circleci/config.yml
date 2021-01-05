@@ -74,7 +74,7 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run: gem update bundler --no-document
-      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle --without warehouse deployment --with circle_ci
       - run: cp ./.circleci/database.yml ./config/database.yml
       - run:
           name: Wait for DB

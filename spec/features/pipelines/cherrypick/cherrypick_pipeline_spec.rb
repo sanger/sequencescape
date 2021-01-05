@@ -4,7 +4,6 @@ require 'rails_helper'
 require './spec/features/shared_examples/cherrypicking'
 
 describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true do
-  include RSpec::Longrun::DSL
   include BarcodeHelper
 
   let(:swipecard_code) { '123456' }

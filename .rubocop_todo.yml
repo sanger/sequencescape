@@ -876,6 +876,8 @@ RSpec/FilePath:
     - 'spec/sequencescape_excel/configuration_spec.rb'
     - 'spec/sequencescape_excel/formula_spec.rb'
     - 'spec/sequencescape_excel/manifest_type_list_spec.rb'
+    - 'spec/models/broadcast_events/helpers/external_subjects_spec.rb'
+    - 'spec/models/broadcast_events/plate_cherrypicked_spec.rb'
 
 # Offense count: 236
 # Configuration parameters: AssignmentOnly.

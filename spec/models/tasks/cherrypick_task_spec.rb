@@ -7,13 +7,12 @@ end
 RSpec.describe CherrypickTask, type: :model do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
   let(:control_plate) { create :control_plate, sample_count: 2 }
-  let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w) }.flatten }
+  let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission: submission) } }
   let(:template) { create(:plate_template, size: 6) }
   let(:robot) { double('robot', max_beds: 2) }
   let(:purpose) { create :purpose }
   let(:batch) { double('batch', id: 1235, requests: requests) }
   let(:submission) { create :submission }
-  let(:request_type) { create :request_type }
 
   def pick_without_request_id(plates)
     plates.map { |plate| plate.map { |_id, barcode, pos| [barcode, pos] } }
@@ -26,43 +25,50 @@ RSpec.describe CherrypickTask, type: :model do
   describe '#pick_new_plate' do
     context 'with control plate' do
       before do
-        requests.first.update(submission: submission, request_type: request_type)
         allow(requests.first).to receive(:batch).and_return(batch)
       end
 
       context 'when controls and wells fit in one plate' do
+        before do
+          allow(instance).to receive(:control_positions).and_return([2, 5])
+        end
+
+        let(:instance) { described_class.new }
         let(:destinations) do
           [[
-            [control_plate.human_barcode, 'B1'],
             [plate.human_barcode, 'A1'],
             [plate.human_barcode, 'B1'],
+            [control_plate.human_barcode, 'A1'],
             [plate.human_barcode, 'C1'],
             [plate.human_barcode, 'D1'],
-            [control_plate.human_barcode, 'A1']
+            [control_plate.human_barcode, 'B1']
           ]]
         end
 
         it 'generates one plate' do
-          pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
+          pick = instance.pick_new_plate(requests, template, robot, purpose, control_plate)
           expect(pick_without_request_id(pick[0])).to eq(destinations)
         end
       end
 
       context 'when control positions clashes with templates' do
+        let(:instance) { described_class.new }
+        let(:wells) { build_stubbed_list(:well, 1, map_id: 6) }
+        let(:template) { build_stubbed(:plate_template, size: 6, wells: wells) }
         let(:destinations) do
           [
             [
-              [control_plate.human_barcode, 'B1'],
               [plate.human_barcode, 'A1'],
               [plate.human_barcode, 'B1'],
-              [plate.human_barcode, 'C1'],
               [control_plate.human_barcode, 'A1'],
+              [plate.human_barcode, 'C1'],
+              [control_plate.human_barcode, 'B1'], # This control well has moved forward
               ['---', '']
             ],
             [
               [control_plate.human_barcode, 'A1'],
-              [control_plate.human_barcode, 'B1'],
               [plate.human_barcode, 'D1'],
+              [control_plate.human_barcode, 'B1'],
               ['Empty', ''],
               ['Empty', ''],
               ['---', '']
@@ -71,12 +77,11 @@ RSpec.describe CherrypickTask, type: :model do
         end
 
         before do
-          template.wells.create!
-          template.wells.first.update(map_id: 6)
+          allow(instance).to receive(:control_positions).and_return([2, 5], [0, 2])
         end
 
         it 'places controls in a different position' do
-          pick = described_class.new.pick_new_plate(requests, template, robot, purpose, control_plate)
+          pick = instance.pick_new_plate(requests, template, robot, purpose, control_plate)
           expect(pick_without_request_id(pick[0])).to eq(destinations)
         end
       end
@@ -93,45 +98,55 @@ RSpec.describe CherrypickTask, type: :model do
 
     context 'with controls' do
       before do
-        requests.first.update(submission: submission, request_type: request_type)
+        requests.first.update(submission: submission)
         allow(requests.first).to receive(:batch).and_return(batch)
       end
 
       context 'when controls and wells fit in one plate' do
+        before do
+          allow(instance).to receive(:control_positions).and_return([2, 3])
+        end
+
+        let(:instance) { described_class.new }
         let!(:plate) { create :plate_with_untagged_wells, sample_count: 2 }
         let(:destinations) do
           [[
-            [control_plate.human_barcode, 'B1'],
             [plate.human_barcode, 'A1'],
             [plate.human_barcode, 'B1'],
             [control_plate.human_barcode, 'A1'],
+            [control_plate.human_barcode, 'B1'],
             ['Empty', ''],
             ['---', '']
           ]]
         end
 
         it 'generates one plate' do
-          pick = described_class.new.pick_onto_partial_plate(requests, template, robot, partial_plate, control_plate)
+          pick = instance.pick_onto_partial_plate(requests, template, robot, partial_plate, control_plate)
           expect(pick_without_request_id(pick[0])).to eq(destinations)
         end
       end
 
       context 'when control positions clashes with partial' do
+        before do
+          allow(instance).to receive(:control_positions).and_return([2, 4], [0, 2])
+        end
+
+        let(:instance) { described_class.new }
         let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
         let(:destinations) do
           [
             [
-              [control_plate.human_barcode, 'B1'],
               [plate.human_barcode, 'A1'],
               [plate.human_barcode, 'B1'],
-              [plate.human_barcode, 'C1'],
               [control_plate.human_barcode, 'A1'],
+              [plate.human_barcode, 'C1'],
+              [control_plate.human_barcode, 'B1'],
               ['---', '']
             ],
             [
               [control_plate.human_barcode, 'A1'],
-              [control_plate.human_barcode, 'B1'],
               [plate.human_barcode, 'D1'],
+              [control_plate.human_barcode, 'B1'],
               ['Empty', ''],
               ['Empty', ''],
               ['Empty', '']
@@ -140,107 +155,162 @@ RSpec.describe CherrypickTask, type: :model do
         end
 
         it 'places controls in a different position' do
-          pick = described_class.new.pick_onto_partial_plate(requests, template, robot, partial_plate, control_plate)
+          pick = instance.pick_onto_partial_plate(requests, template, robot, partial_plate, control_plate)
           expect(pick_without_request_id(pick[0])).to eq(destinations)
         end
       end
     end
   end
 
+  describe '#control_positions_for_plate' do
+    let(:available_positions) { [0, 1, 2, 3, 4, 5, 6] }
+    let(:initial_positions) { [0, 4, 2] }
+
+    context 'when is the initial plate' do
+      it 'returns the initial positions' do
+        expect(described_class.new.control_positions_for_plate(0, initial_positions, available_positions)).to eq(initial_positions)
+      end
+    end
+
+    context 'when is any other plate' do
+      it 'returns the subsequent position from all initial positions', aggregate_failures: true do
+        expect(described_class.new.control_positions_for_plate(1, initial_positions, available_positions)).to eq([1, 5, 3])
+        expect(described_class.new.control_positions_for_plate(2, initial_positions, available_positions)).to eq([2, 6, 4])
+        expect(described_class.new.control_positions_for_plate(3, initial_positions, available_positions)).to eq([3, 0, 5])
+      end
+    end
+  end
+
+  describe '#random_elements_from_list' do
+    let(:instance) { described_class.new }
+
+    context 'with same seed' do
+      it 'gets always the same result' do
+        expect(instance.random_elements_from_list((0..96).to_a, 3, 3)).to(
+          eq(instance.random_elements_from_list((0..96).to_a, 3, 3))
+        )
+      end
+    end
+
+    context 'with different seed' do
+      it 'gives a different result' do
+        expect(instance.random_elements_from_list((0..96).to_a, 3, 3)).not_to(
+          eq(instance.random_elements_from_list((0..96).to_a, 3, 4))
+        )
+      end
+    end
+  end
+
   describe '#control_positions' do
-    it 'calculates the positions for the control wells' do
-      # Test batch id 0, plate 0 to 4, 5 free wells, 2 control wells
-      expect(described_class.new.control_positions(0, 0, 5, 2)).to eq([0, 1])
-      expect(described_class.new.control_positions(0, 1, 5, 2)).to eq([1, 2])
-      expect(described_class.new.control_positions(0, 3, 5, 2)).to eq([3, 4])
-      expect(described_class.new.control_positions(0, 4, 5, 2)).to eq([4, 0])
-      expect(described_class.new.control_positions(0, 5, 5, 2)).to eq([0, 1])
-    end
+    let(:instance) { described_class.new }
 
-    context 'with a plate that has 96 wells' do
-      it 'can generate the control positions of 384 plates of the same batch id with 96 wells (3 columns empty)' do
-        val = 65
-        val2 = 8
+    context 'when all inputs are right' do
+      let(:random_list) { [25, 9, 95] }
 
-        Array.new(384) do |num_plate|
-          expect(described_class.new.control_positions(77321, num_plate, 96,
-                                                       2)).to eq([24 + (val + num_plate) % 72,
-                                                                  24 + (val2 + num_plate) % 72])
-        end
+      before do
+        allow(instance).to receive(:random_elements_from_list).and_return(random_list)
       end
 
-      it 'can generate the control positions of 384 plates of the same batch id with 32 wells (all columns available)' do
-        val = 9
-        val2 = 30
-
-        Array.new(384) do |num_plate|
-          expect(described_class.new.control_positions(77321, num_plate, 32,
-                                                       2)).to eq([(val + num_plate) % 32, (val2 + num_plate) % 32])
-        end
-      end
-
-      it 'can allocate right controls (excluding first 3 columns) when number of plate position exceeds wells' do
-        expect(described_class.new.control_positions(77321, 0, 96, 2)).to eq([89, 32])
-        expect(described_class.new.control_positions(77321, 1, 96, 2)).to eq([90, 33])
-        expect(described_class.new.control_positions(77321, 6, 96, 2)).to eq([95, 38])
-        expect(described_class.new.control_positions(77321, 7, 96, 2)).to eq([24, 39])
-        expect(described_class.new.control_positions(77321, 8, 96, 2)).to eq([25, 40])
+      it 'calculates the positions for the control wells', aggregate_failures: true do
+        # Test batch id 0, plate 0 to 4, 5 free wells, 2 control wells
+        expect(instance.control_positions(0, 0, 96, 3)).to eq(random_list)
+        expect(instance.control_positions(0, 1, 96, 3)).to eq([26, 10, 0])
+        expect(instance.control_positions(0, 2, 96, 3)).to eq([27, 11, 1])
       end
     end
 
-    it 'can allocate all controls in all wells' do
-      # Test batch id 0, plate 0, 2 free wells, 2 control wells
-      expect(described_class.new.control_positions(0, 0, 2, 2)).to eq([0, 1])
+    context 'when there are more controls than available positions' do
+      it 'raises an error' do
+        expect { instance.control_positions(0, 0, 2, 3) }.to raise_error(StandardError)
+        expect { instance.control_positions(0, 0, 96, 97) }.to raise_error(StandardError)
+        expect { instance.control_positions(0, 0, 96, 8, wells_to_leave_free: 89) }.to raise_error(StandardError)
+        expect { instance.control_positions(0, 0, 96, 8, wells_to_leave_free: 88) }.not_to raise_error
+      end
+    end
+
+    context 'with different arguments' do
+      let(:instance) { described_class.new }
+
+      context 'when checking the call for #random_elements_from_list' do
+        before do
+          allow(instance).to receive(:random_elements_from_list).and_return([0, 1, 2])
+        end
+
+        it 'uses the right arguments' do
+          expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 0)
+          instance.control_positions(0, 0, 5, 3)
+          expect(instance).to receive(:random_elements_from_list).with([2, 3, 4], 3, 0)
+          instance.control_positions(0, 0, 5, 3, wells_to_leave_free: 2)
+        end
+
+        context 'when num plate exceeds available positions' do
+          it 'changes the seed' do
+            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 66)
+            instance.control_positions(33, 5, 5, 3)
+            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 99)
+            instance.control_positions(33, 10, 5, 3)
+          end
+        end
+      end
+
+      context 'when checking the call for #control_positions_for_plate' do
+        before do
+          allow(instance).to receive(:random_elements_from_list).and_return([1, 4, 3])
+          allow(instance).to receive(:control_positions_for_plate)
+        end
+
+        it 'uses the right arguments' do
+          expect(instance).to receive(:control_positions_for_plate).with(0, [1, 4, 3], [0, 1, 2, 3, 4])
+          instance.control_positions(0, 0, 5, 3)
+          expect(instance).to receive(:control_positions_for_plate).with(3, [1, 4, 3], [1, 2, 3, 4])
+          instance.control_positions(0, 3, 5, 3, wells_to_leave_free: 1)
+        end
+      end
     end
 
     it 'fails when you try to put more controls than free wells' do
       # Test batch id 0, plate 0, 2 free wells, 3 control wells, so they dont fit
       expect do
         described_class.new.control_positions(0, 0, 2, 3)
-      end.to raise_error(ZeroDivisionError)
+      end.to raise_error(StandardError, 'More controls than free wells')
     end
 
-    it 'does not clash with consecutive batches (1)' do
-      # Test batch id 12345, plate 0 to 2, 100 free wells, 3 control wells
-      expect(described_class.new.control_positions(12345, 0, 100, 3)).to eq([45, 24, 1])
-      expect(described_class.new.control_positions(12345, 1, 100, 3)).to eq([46, 25, 2])
-      expect(described_class.new.control_positions(12345, 2, 100, 3)).to eq([47, 26, 3])
+    it 'gets the same result with same batch and num plate' do
+      expect(described_class.new.control_positions(12345, 0, 100, 3)).to(
+        eq(described_class.new.control_positions(12345, 0, 100, 3))
+      )
     end
 
-    it 'does not clash with consecutive batches (2)' do
-      # Test batch id 12346, plate 0 to 2, 100 free wells, 3 control wells
-      expect(described_class.new.control_positions(12345 + 1, 0, 100, 3)).to eq([46, 24, 1])
-      expect(described_class.new.control_positions(12345 + 1, 1, 100, 3)).to eq([47, 25, 2])
-      expect(described_class.new.control_positions(12345 + 1, 2, 100, 3)).to eq([48, 26, 3])
+    it 'does not get same result with a different plate in same batch' do
+      expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
+        eq(described_class.new.control_positions(12345, 1, 100, 3))
+      )
     end
 
-    it 'does not clash with consecutive batches (3)' do
-      # Test batch id 12445, plate 0 to 2, 100 free wells, 3 control wells
-      expect(described_class.new.control_positions(12345 + 100, 0, 100, 3)).to eq([45, 25, 1])
-      expect(described_class.new.control_positions(12345 + 100, 1, 100, 3)).to eq([46, 26, 2])
-      expect(described_class.new.control_positions(12345 + 100, 2, 100, 3)).to eq([47, 27, 3])
+    it 'does not get the same result with a different batch' do
+      expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
+        eq(described_class.new.control_positions(12346, 0, 100, 3))
+      )
     end
 
-    it 'does not clash with consecutive batches (4)' do
-      # Test batch id 12545, plate 0 to 2, 100 free wells, 3 control wells
-      expect(described_class.new.control_positions(12345 + 200, 0, 100, 3)).to eq([45, 26, 1])
-      expect(described_class.new.control_positions(12345 + 200, 1, 100, 3)).to eq([46, 27, 2])
-      expect(described_class.new.control_positions(12345 + 200, 2, 100, 3)).to eq([47, 28, 3])
-    end
+    context 'when num plate is higher than available positions' do
+      it 'does not get same result with a different plate in same batch' do
+        expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
+          eq(described_class.new.control_positions(12345, 100, 100, 3))
+        )
+      end
 
-    it 'also works with big batch id and small wells' do
-      # Test batch id 12545, plate 0 to 4, 3 free wells, 1 control wells
-      expect(described_class.new.control_positions(12345, 0, 3, 1)).to eq([0])
-      expect(described_class.new.control_positions(12345, 1, 3, 1)).to eq([1])
-      expect(described_class.new.control_positions(12345, 2, 3, 1)).to eq([2])
-      expect(described_class.new.control_positions(12345, 3, 3, 1)).to eq([0])
-      expect(described_class.new.control_positions(12345, 4, 3, 1)).to eq([1])
+      it 'does not get the same result with a different batch' do
+        expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
+          eq(described_class.new.control_positions(12346, 100, 100, 3))
+        )
+      end
     end
 
     it 'does not place controls in the first three columns for a 96-well destination plate' do
-      expect(described_class.new.control_positions(12345, 0, 96, 3)).to eq([57, 53, 26])
-      expect(described_class.new.control_positions(12345, 1, 96, 3)).to eq([58, 54, 27])
-      expect(described_class.new.control_positions(12345, 2, 96, 3)).to eq([59, 55, 28])
+      # positions 0 - 24
+      positions = described_class.new.control_positions(12345, 0, 96, 3, wells_to_leave_free: 24)
+      expect(positions).to(be_all { |p| p >= 24 })
     end
   end
 
