@@ -45,7 +45,7 @@ module Authorization
 
         def has_no_role(role_name, authorizable_obj = nil)
           role = get_role(role_name, authorizable_obj)
-          delete_role(role)
+          destroy_role(role)
         end
 
         def has_roles_for?(authorizable_obj)
@@ -70,11 +70,11 @@ module Authorization
         end
 
         def has_no_roles_for(authorizable_obj = nil)
-          roles_for(authorizable_obj).each { |role| delete_role(role) }
+          roles_for(authorizable_obj).each { |role| destroy_role(role) }
         end
 
         def has_no_roles
-          roles.each { |role| delete_role(role) }
+          roles.each { |role| destroy_role(role) }
         end
 
         def authorizables_for(authorizable_class)
@@ -94,30 +94,15 @@ module Authorization
         private
 
         def get_role(role_name, authorizable_obj)
-          if authorizable_obj.is_a? Class
-            Role.where(
-              name: role_name,
-              authorizable_type: authorizable_obj.to_s,
-              authorizable_id: nil
-            ).first
-          elsif authorizable_obj
-            Role.where(
-              name: role_name,
-              authorizable_type: authorizable_obj.class.base_class.to_s,
-              authorizable_id: authorizable_obj.id
-            ).first
-          else
-            Role.where(
-              name: role_name,
-              authorizable_type: nil,
-              authorizable_id: nil
-            ).first
-          end
+          Role.find_by(
+            name: role_name,
+            authorizable: authorizable_obj
+          )
         end
 
-        def delete_role(role)
+        def destroy_role(role)
           if role
-            roles.delete(role)
+            roles.destroy(role)
             role.destroy if role.users.empty?
           end
         end
@@ -143,23 +128,6 @@ module Authorization
             user.has_role role_name, self
           end
 
-          def accepts_no_role(role_name, user)
-            user.has_no_role role_name, self
-          end
-
-          def accepts_roles_by?(user)
-            user.has_roles_for? self
-          end
-          alias :accepts_role_by? :accepts_roles_by?
-
-          def accepted_roles_by(user)
-            user.roles_for self
-          end
-
-          def authorizables_by(user)
-            user.authorizables_for self
-          end
-
           include Authorization::ObjectRolesTable::ModelExtensions::InstanceMethods
           include Authorization::Identity::ModelExtensions::InstanceMethods # Provides all kinds of dynamic sugar via method_missing
         end
@@ -173,19 +141,6 @@ module Authorization
 
         def accepts_role(role_name, user)
           user.has_role role_name, self
-        end
-
-        def accepts_no_role(role_name, user)
-          user.has_no_role role_name, self
-        end
-
-        def accepts_roles_by?(user)
-          user.has_roles_for? self
-        end
-        alias :accepts_role_by? :accepts_roles_by?
-
-        def accepted_roles_by(user)
-          user.roles_for self
         end
       end
     end
