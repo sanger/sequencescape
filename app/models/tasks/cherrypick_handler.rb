@@ -15,7 +15,6 @@ module Tasks::CherrypickHandler
       return
     end
 
-    plate_template = nil
     plate_template = PlateTemplate.find(params[:plate_template]['0'].to_i) if params[:plate_template].present?
     if plate_template.nil?
       flash[:error] = 'Please select a template'
