@@ -3,37 +3,31 @@
 # production.
 ---
 ILB_STD_INPUT:
-  name: ILB_STD_INPUT::Input
+  type: PlatePurpose::Input
   stock_plate: true
   default_state: passed
   cherrypickable_target: true
 ILB_STD_COVARIS:
-  name: ILB_STD_COVARIS::InitialPurpose
+  type: PlatePurpose::InitialPurpose
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT
 ILB_STD_SH:
-  name: ILB_STD_SH
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT
 ILB_STD_PREPCR:
-  name: ILB_STD_PREPCR
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT
 ILB_STD_PCR:
-  name: ILB_STD_PCR
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT
 ILB_STD_PCRR:
-  name: ILB_STD_PCRR
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT
 ILB_STD_PCRXP:
-  name: ILB_STD_PCRXP
   type: IlluminaHtp::FinalPlatePurpose
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT
 ILB_STD_PCRRXP:
-  name: ILB_STD_PCRRXP
   type: IlluminaHtp::FinalPlatePurpose
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT

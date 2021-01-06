@@ -80,6 +80,8 @@ Given 'H12 on {asset_name} is empty' do |plate|
 end
 
 def work_pipeline_for(submissions, name, template = nil)
+  raise StandardError, 'No submissions to process' if submissions.empty?
+
   final_plate_type = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find #{name.inspect} plate type"
   template       ||= TransferTemplate.find_by(name: 'Pool wells based on submission') or raise StandardError, 'Cannot find pooling transfer template'
 
