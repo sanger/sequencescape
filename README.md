@@ -8,7 +8,7 @@
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
 
 Sequencescape is a cloud based and highly extensible LIMS system for use in labs with large numbers
-of samples. 
+of samples.
 
 * Work order tracking
 * Sample and study management
@@ -30,9 +30,10 @@ a organisation of 900 people.
 * [Requirements](#requirements)
 * [Getting started](#getting-started)
   * [Installing ruby](#installing-ruby)
-    * [RVM](#rvm)
     * [rbenv](#rbenv)
-  * [Installing gems](#installing-gems)
+  * [Automatic Sequencescape setup](#automatic-sequencescape-setup)
+  * [Manual Sequencescape setup](#manual-sequencescape-setup)
+    * [Installing gems](#installing-gems)
   * [Adjusting config](#adjusting-config)
   * [Default setup](#default-setup)
     * [Delayed job](#delayed-job)
@@ -82,15 +83,27 @@ helpful link.
 It is strongly recommended that you use a ruby version manager such as RVM or rbenv to manage the
 Ruby version you are using. The ruby version required should be found in `.ruby-version`.
 
-#### RVM
-
-...
-
 #### rbenv
 
-`rbenv install <ruby_version>`
+If you have the [rbenv ruby-build plugin](https://github.com/rbenv/ruby-build) it is as simple as:
 
-### Installing gems
+`rbenv install`
+
+It will pick up the version from the .ruby-version file automatically
+
+### Automatic Sequencescape setup
+
+To automatically install the required gems, set-up default configuration files, and set up your database run:
+
+```shell
+bin/setup
+```
+
+### Manual Sequencescape setup
+
+In the event you have trouble with the automatic process, you may wish to step through the various steps manually.
+
+#### Installing gems
 
 [Bundler](https://bundler.io) is used to install the required gems:
 
@@ -99,13 +112,21 @@ gem install bundler
 bundle install
 ```
 
-### Adjusting config
+If you experience `An error occurred while installing ruby-oci8` then disable the oracle gem installation:
+
+```shell
+bundle config without warehouse
+```
+
+The oracle adapters are not needed for development.
+
+#### Adjusting config
 
 Copy the `config/aker.example.yml` file to `config/aker.example.yml`.
 
 The `config/database.yml` file saves the list of databases.
 
-### Default setup
+#### Default setup
 
 1. Create the database tables
 
@@ -113,23 +134,17 @@ The `config/database.yml` file saves the list of databases.
     bundle exec rake db:setup
     ```
 
-1. Create an admin user account and a few example studies and plates
-
-    ```shell
-    bundle exec rake working:setup
-    ```
-
-1. Install webpacker and the required JS libraries
+2. Install webpacker and the required JS libraries
 
     ```shell
     bundle exec rails webpacker:install
     ```
 
-1. Start rails
+### Stating rails
 
-    ```shell
-    bundle exec rails server
-    ```
+```shell
+bundle exec rails s
+```
 
 Once setup, the default user/password is `admin/admin`.
 
@@ -155,13 +170,13 @@ Testing is done in three ways; using rspec, rails test and feature tests.
 1. To run the rspec tests (found in `rspec/` dir.):
 
     ```shell
-    RAILS_ENV=test bundle exec rspec --fail-fast [<path_to_spec>]
+    bundle exec rspec --fail-fast [<path_to_spec>]
     ```
 
 1. To run the rails tests (found in `tests/` dir.):
 
     ```shell
-    RAILS_ENV=test bundle exec rake test -f
+    bundle exec rake test -f
     ```
 
 ## Rake tasks
@@ -228,7 +243,7 @@ node module. To install it, make sure you have install the dev dependencies from
 the table of contents, run:
 
 ```shell
-./node_modules/.bin/markdown-toc -i README.md --bullets "*"
+yarn markdown-toc -i README.md --bullets "*"
 ```
 
 ### CI
