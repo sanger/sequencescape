@@ -224,8 +224,3 @@ group :deployment do
   gem 'slack-notifier'
   gem 'whenever', require: false
 end
-
-# Can be removed once we don't use circle_ci
-group :circle_ci, optional: true do
-  gem 'rspec_junit_formatter', require: false
-end

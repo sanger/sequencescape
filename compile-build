@@ -31,7 +31,6 @@ tar \
   --exclude='./knapsack_cucumber_report.json' \
   --exclude='./log/*' \
   --exclude='./node_modules' \
-  --exclude='./run_coverage' \
   --exclude='./sbin' \
   --exclude='./*.sublime-project' \
   --exclude='./spec' \
