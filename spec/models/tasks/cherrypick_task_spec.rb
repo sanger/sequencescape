@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'prime'
 
 RSpec.configure do |c|
   c.include LabWhereClientHelper
@@ -174,9 +175,21 @@ RSpec.describe CherrypickTask, type: :model do
 
     context 'when is any other plate' do
       it 'returns the subsequent position from all initial positions', aggregate_failures: true do
-        expect(described_class.new.control_positions_for_plate(1, initial_positions, available_positions)).to eq([1, 5, 3])
-        expect(described_class.new.control_positions_for_plate(2, initial_positions, available_positions)).to eq([2, 6, 4])
-        expect(described_class.new.control_positions_for_plate(3, initial_positions, available_positions)).to eq([3, 0, 5])
+        expect(described_class.new.control_positions_for_plate(1, initial_positions, available_positions)).to eq([4, 1, 6])
+        expect(described_class.new.control_positions_for_plate(2, initial_positions, available_positions)).to eq([1, 5, 3])
+        expect(described_class.new.control_positions_for_plate(3, initial_positions, available_positions)).to eq([5, 2, 0])
+      end
+    end
+  end
+
+  describe '#per_plate_offset' do
+    let(:instance) { described_class.new }
+
+    it 'always returns a number that is a prime (or 1), and not a factor of the plate size' do
+      1.upto(1536).all? do |i|
+        offset = instance.per_plate_offset(i)
+        offset == 1 ||
+          Prime.prime?(offset) && i % offset != 0
       end
     end
   end
@@ -214,8 +227,8 @@ RSpec.describe CherrypickTask, type: :model do
       it 'calculates the positions for the control wells', aggregate_failures: true do
         # Test batch id 0, plate 0 to 4, 5 free wells, 2 control wells
         expect(instance.control_positions(0, 0, 96, 3)).to eq(random_list)
-        expect(instance.control_positions(0, 1, 96, 3)).to eq([26, 10, 0])
-        expect(instance.control_positions(0, 2, 96, 3)).to eq([27, 11, 1])
+        expect(instance.control_positions(0, 1, 96, 3)).to eq([78, 62, 52])
+        expect(instance.control_positions(0, 2, 96, 3)).to eq([35, 19, 9])
       end
     end
 

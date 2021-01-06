@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A {Task} used in {CherrypickPipeline cherrypick pipelines}
 # Performs the main bulk of cherrypick action. Although a lot of the options
 # on this page are presented as part of the previous step, and get persisted on this
@@ -11,6 +13,16 @@
 class CherrypickTask < Task
   EMPTY_WELL          = [0, 'Empty', ''].freeze
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
+
+  # A cherrypick batch may contain multiple destination plates. In this case the control wells
+  # should be located at different locations on each destination. The positions on the first
+  # plate in a batch are determined randomly, and then the locations are advanced by
+  # BETWEEN_PLATE_OFFSET for each subsequent plate. This is done to avoid the risk of
+  # subsequent plates having the same negative control location, which would reduce the ability to
+  # detect plate swaps.
+  # WARNING! These needs to be a prime number (which isn't also a factor of the available well size)
+  # to avoid re-using wells prematurely. These offsets are prioritised in order
+  BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
   #
   # Returns a list with the destination positions for the control wells distributed randomly
@@ -33,7 +45,7 @@ class CherrypickTask < Task
 
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
 
-    available_positions = (wells_to_leave_free..(total_wells - 1)).to_a
+    available_positions = (wells_to_leave_free...total_wells).to_a
     # If num plate is equal to the available positions, the cycle is going to be repeated.
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
     seed = batch_id * ((num_plate / available_positions.length) + 1)
@@ -48,9 +60,21 @@ class CherrypickTask < Task
   def control_positions_for_plate(num_plate, initial_positions, available_positions)
     return initial_positions if num_plate.zero?
 
+    offset = num_plate * per_plate_offset(available_positions.length)
     initial_positions.map do |pos|
-      available_positions[(available_positions.index(pos) + num_plate) % available_positions.length]
+      available_positions[(available_positions.index(pos) + offset) % available_positions.length]
     end
+  end
+
+  # Works out which offset to use based on the number of available wells and ensures we use
+  # all wells before looping. Will select the first suitable value from BETWEEN_PLATE_OFFSETS
+  # excluding any numbers that are a factor of the available wells. In the incredibly unlikely
+  # chance nothing matches (essentially the plate size has all offsets as a factor) we fall back
+  # to 1, which isn't a prime, but will fulfil the base requirement.
+  # This may seem overly cautious, but its the kind of thing that would fail silently if we
+  # introduced a new plate size, and wouldn't get noticed for months.
+  def per_plate_offset(number_available_wells)
+    BETWEEN_PLATE_OFFSETS.detect { |offset| number_available_wells % offset != 0 } || 1
   end
 
   def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller = nil)
