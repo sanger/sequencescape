@@ -41,40 +41,17 @@ class CherrypickTask < Task
   # @return [Array<Integer>] The indexes of the control well positions
   #
   def control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
-    total_available_positions = total_wells - wells_to_leave_free
+    # total_available_positions = total_wells - wells_to_leave_free
 
-    raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
+    # raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
 
-    available_positions = (wells_to_leave_free...total_wells).to_a
-    # If num plate is equal to the available positions, the cycle is going to be repeated.
-    # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
-    seed = batch_id * ((num_plate / available_positions.length) + 1)
-    initial_positions = random_elements_from_list(available_positions, num_control_wells, seed)
-    control_positions_for_plate(num_plate, initial_positions, available_positions)
-  end
-
-  def random_elements_from_list(list, num_elems, seed)
-    list.sample(num_elems, random: Random.new(seed))
-  end
-
-  def control_positions_for_plate(num_plate, initial_positions, available_positions)
-    return initial_positions if num_plate.zero?
-
-    offset = num_plate * per_plate_offset(available_positions.length)
-    initial_positions.map do |pos|
-      available_positions[(available_positions.index(pos) + offset) % available_positions.length]
-    end
-  end
-
-  # Works out which offset to use based on the number of available wells and ensures we use
-  # all wells before looping. Will select the first suitable value from BETWEEN_PLATE_OFFSETS
-  # excluding any numbers that are a factor of the available wells. In the incredibly unlikely
-  # chance nothing matches (essentially the plate size has all offsets as a factor) we fall back
-  # to 1, which isn't a prime, but will fulfil the base requirement.
-  # This may seem overly cautious, but its the kind of thing that would fail silently if we
-  # introduced a new plate size, and wouldn't get noticed for months.
-  def per_plate_offset(number_available_wells)
-    BETWEEN_PLATE_OFFSETS.detect { |offset| number_available_wells % offset != 0 } || 1
+    # available_positions = (wells_to_leave_free...total_wells).to_a
+    # # If num plate is equal to the available positions, the cycle is going to be repeated.
+    # # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
+    # seed = batch_id * ((num_plate / available_positions.length) + 1)
+    # initial_positions = random_elements_from_list(available_positions, num_control_wells, seed)
+    # control_positions_for_plate(num_plate, initial_positions, available_positions)
+    CherrypickTask::ControlLocator.new(batch_id, 1).control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: wells_to_leave_free)
   end
 
   def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller = nil)
