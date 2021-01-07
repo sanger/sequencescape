@@ -182,9 +182,7 @@ group :test do
   gem 'rspec-json_expectations', require: false
   # It is needed to use #assigns(attribute) in controllers tests
   gem 'rails-controller-testing'
-  # Temporarily lock minitest to a specific version due to incompatibilities
-  # with rails versions.
-  gem 'minitest', '5.10.3'
+  gem 'minitest'
   gem 'minitest-profiler'
 end
 
