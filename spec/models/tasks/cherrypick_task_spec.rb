@@ -35,7 +35,7 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when controls and wells fit in one plate' do
         before do
-          allow(instance).to receive(:control_positions).and_return([2, 5])
+          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions).and_return([2, 5])
         end
 
         let(:instance) { described_class.new }
@@ -82,7 +82,7 @@ RSpec.describe CherrypickTask, type: :model do
         end
 
         before do
-          allow(instance).to receive(:control_positions).and_return([2, 5], [0, 2])
+          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions).and_return([2, 5], [0, 2])
         end
 
         it 'places controls in a different position' do
@@ -109,7 +109,7 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when controls and wells fit in one plate' do
         before do
-          allow(instance).to receive(:control_positions).and_return([2, 3])
+          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions).and_return([2, 3])
         end
 
         let(:instance) { described_class.new }
@@ -133,7 +133,7 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when control positions clashes with partial' do
         before do
-          allow(instance).to receive(:control_positions).and_return([2, 4], [0, 2])
+          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions).and_return([2, 4], [0, 2])
         end
 
         let(:instance) { described_class.new }
@@ -164,115 +164,6 @@ RSpec.describe CherrypickTask, type: :model do
           expect(pick_without_request_id(pick[0])).to eq(destinations)
         end
       end
-    end
-  end
-
-  describe '#control_positions' do
-    let(:instance) { described_class.new }
-
-    context 'when all inputs are right' do
-      let(:random_list) { [25, 9, 95] }
-
-      before do
-        allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).and_return(random_list)
-      end
-
-      it 'calculates the positions for the control wells', aggregate_failures: true do
-        # Test batch id 0, plate 0 to 4, 5 free wells, 2 control wells
-        expect(instance.control_positions(0, 0, 96, 3)).to eq(random_list)
-        expect(instance.control_positions(0, 1, 96, 3)).to eq([78, 62, 52])
-        expect(instance.control_positions(0, 2, 96, 3)).to eq([35, 19, 9])
-      end
-    end
-
-    context 'when there are more controls than available positions' do
-      it 'raises an error' do
-        expect { instance.control_positions(0, 0, 2, 3) }.to raise_error(StandardError)
-        expect { instance.control_positions(0, 0, 96, 97) }.to raise_error(StandardError)
-        expect { instance.control_positions(0, 0, 96, 8, wells_to_leave_free: 89) }.to raise_error(StandardError)
-        expect { instance.control_positions(0, 0, 96, 8, wells_to_leave_free: 88) }.not_to raise_error
-      end
-    end
-
-    context 'with different arguments' do
-      let(:instance) { described_class.new }
-
-      context 'when checking the call for #random_elements_from_list' do
-        it 'uses the right arguments' do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).with(0).and_return([0, 1, 2])
-          instance.control_positions(0, 0, 5, 3)
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).with(0).and_return([0, 1, 2])
-          instance.control_positions(0, 0, 5, 3, wells_to_leave_free: 2)
-        end
-
-        context 'when num plate exceeds available positions' do
-          it 'changes the seed' do
-            allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).with(66).and_return([0, 1, 2])
-            instance.control_positions(33, 5, 5, 3)
-            allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).with(99).and_return([0, 1, 2])
-            instance.control_positions(33, 10, 5, 3)
-          end
-        end
-      end
-
-      context 'when checking the call for #control_positions_for_plate' do
-        before do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).and_return([1, 4, 3])
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions_for_plate)
-        end
-
-        it 'uses the right arguments' do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions_for_plate).with(0, [1, 4, 3])
-          instance.control_positions(0, 0, 5, 3)
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions_for_plate).with(3, [1, 4, 3])
-          instance.control_positions(0, 3, 5, 3, wells_to_leave_free: 1)
-        end
-      end
-    end
-
-    it 'fails when you try to put more controls than free wells' do
-      # Test batch id 0, plate 0, 2 free wells, 3 control wells, so they dont fit
-      expect do
-        described_class.new.control_positions(0, 0, 2, 3)
-      end.to raise_error(StandardError, 'More controls than free wells')
-    end
-
-    it 'gets the same result with same batch and num plate' do
-      expect(described_class.new.control_positions(12345, 0, 100, 3)).to(
-        eq(described_class.new.control_positions(12345, 0, 100, 3))
-      )
-    end
-
-    it 'does not get same result with a different plate in same batch' do
-      expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
-        eq(described_class.new.control_positions(12345, 1, 100, 3))
-      )
-    end
-
-    it 'does not get the same result with a different batch' do
-      expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
-        eq(described_class.new.control_positions(12346, 0, 100, 3))
-      )
-    end
-
-    context 'when num plate is higher than available positions' do
-      it 'does not get same result with a different plate in same batch' do
-        expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
-          eq(described_class.new.control_positions(12345, 100, 100, 3))
-        )
-      end
-
-      it 'does not get the same result with a different batch' do
-        expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
-          eq(described_class.new.control_positions(12346, 100, 100, 3))
-        )
-      end
-    end
-
-    it 'does not place controls in the first three columns for a 96-well destination plate' do
-      # positions 0 - 24
-      positions = described_class.new.control_positions(12345, 0, 96, 3, wells_to_leave_free: 24)
-      expect(positions).to(be_all { |p| p >= 24 })
     end
   end
 

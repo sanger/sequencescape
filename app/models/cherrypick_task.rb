@@ -25,26 +25,6 @@ class CherrypickTask < Task
   BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
   #
-  # Returns a list with the destination positions for the control wells distributed randomly
-  # using batch_id as seed and num_plate to increase position with plates in same batch.
-  # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
-  # control wells being missed in cDNA quant QC. This requirement was removed in
-  # https://github.com/sanger/sequencescape/issues/2967 however I've avoided stripping out the behaviour
-  # completely in case controls are used in other pipelines.
-  #
-  # @param batch_id [Integer] The id of the batch, used to generate a starting position
-  # @param num_plate [Integer] The plate number within the batch
-  # @param total_wells [Integer] The total number of wells on the plate
-  # @param num_control_wells [Integer] The number of control wells to lay out
-  # @param wells_to_leave_free [Integer] The number of wells to leave free at the front of the plate
-  #
-  # @return [Array<Integer>] The indexes of the control well positions
-  #
-  def control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
-    control_locator(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: wells_to_leave_free).control_positions(num_plate)
-  end
-
-  #
   # Returns a {CherrypickTask::ControlLocator} which can generate control locations for plates
   # in a batch. It responds to #control_positions which takes a plate number as an argument
   #
