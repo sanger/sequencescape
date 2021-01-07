@@ -1,204 +1,148 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'prime'
 
 RSpec.describe CherrypickTask::ControlLocator, type: :model do
-  let(:batch_id) { 0 }
-  let(:available_positions) { [0, 1, 2, 3, 4, 5, 6] }
-  let(:number_available_wells) { available_positions.length }
-  let(:control_wells) { 3 }
-  let(:wells_to_leave_free) { 0 }
-
   let(:instance) do
     described_class.new(
       batch_id: batch_id,
-      total_wells: number_available_wells,
-      num_control_wells: control_wells,
+      total_wells: total_wells,
+      num_control_wells: num_control_wells,
       wells_to_leave_free: wells_to_leave_free
     )
   end
 
-  describe '#control_positions_for_plate' do
-    let(:available_positions) { [0, 1, 2, 3, 4, 5, 6] }
-    let(:initial_positions) { [0, 4, 2] }
+  shared_examples 'an invalid ControlLocator' do |plate_number|
+    it 'throws a "More controls than free wells" exception' do
+      expect { instance.control_positions(plate_number) }.to raise_error(StandardError, 'More controls than free wells')
+    end
+  end
 
-    context 'when is the initial plate' do
-      it 'returns the initial positions' do
-        expect(instance.control_positions_for_plate(0, initial_positions, available_positions)).to eq(initial_positions)
-      end
+  shared_examples 'a generator of valid positions' do |valid_range|
+    let(:generated_positions) do
+      # Generate positions for a range of plates. This should be equal to the number
+      # of wells we have available
+      Array.new(valid_range.size) { |plate_number| instance.control_positions(plate_number) }
     end
 
-    context 'when is any other plate' do
-      it 'returns the subsequent position from all initial positions', aggregate_failures: true do
-        expect(instance.control_positions_for_plate(1, initial_positions, available_positions)).to eq([4, 1, 6])
-        expect(instance.control_positions_for_plate(2, initial_positions, available_positions)).to eq([1, 5, 3])
-        expect(instance.control_positions_for_plate(3, initial_positions, available_positions)).to eq([5, 2, 0])
+    it 'generates positions within the range' do
+      expect(generated_positions.flatten).to all(
+        be_an(Integer) & be_between(valid_range.min, valid_range.max)
+      )
+    end
+
+    it 'generates a unique position for each control' do
+      # uniq! returns nil if there are no duplicate elements
+      expect(generated_positions).to all(satisfy { |x| x.uniq!.nil? })
+    end
+
+    it "does not reuse positions within the first #{valid_range.size} plates" do
+      expect(generated_positions.uniq!).to be_nil
+    end
+
+    it "resets the seed after #{valid_range.size} plates" do
+      # NOTE: In practice we will expect this assertion to fail in some cases by chance.
+      # The probability for any given batch is available_wells ^ number_of_controls.
+      # As we seed the randomization from the batch id, these tests are deterministic,
+      # but it is possible that future Ruby versions may change the behaviour of the prng
+      # and this test may begin failing. If it does, we could:
+      # * Just update this to ignore the problem batch
+      # * Adjust the tested batch ranges
+      # * Refactor this test to explicitly allow x% of tested batches to fail.
+      expect(instance.control_positions(0)).not_to eq instance.control_positions(valid_range.size)
+    end
+
+    it 'allows easy identification of plate swaps' do
+      # In order to allow identification of plate swaps we shift the control well location
+      # for each plate in the batch. We do so by more than one well at a time
+      generated_positions.each_cons(2) do |previous_plate, this_plate|
+        this_plate.each_with_index { |position, index| expect(position).not_to be_within(5).of(previous_plate[index]) }
       end
     end
   end
 
-  describe '#per_plate_offset' do
-    it 'always returns a number that is a prime (or 1), and not a factor of the plate size' do
-      1.upto(1536).all? do |i|
-        offset = instance.per_plate_offset(i)
-        offset == 1 ||
-          Prime.prime?(offset) && i % offset != 0
-      end
-    end
-  end
-
-  describe '#random_elements_from_list' do
-    context 'with same seed' do
-      it 'gets always the same result' do
-        expect(instance.random_elements_from_list((0..96).to_a, 3, 3)).to(
-          eq(instance.random_elements_from_list((0..96).to_a, 3, 3))
-        )
-      end
-    end
-
-    context 'with different seed' do
-      it 'gives a different result' do
-        expect(instance.random_elements_from_list((0..96).to_a, 3, 3)).not_to(
-          eq(instance.random_elements_from_list((0..96).to_a, 3, 4))
-        )
-      end
-    end
-  end
-
+  # Control positions will be our only public method, sand perhaps some attr_readers
+  # So we can focus on testing its behaviour, not implementation
   describe '#control_positions' do
-    context 'when all inputs are right' do
-      let(:random_list) { [25, 9, 95] }
-      let(:number_available_wells) { 96 }
+    # Invalid contexts
+    context 'when there are more control wells than total_wells' do
+      let(:batch_id) { 1 }
+      let(:total_wells) { 2 }
+      let(:num_control_wells) { 3 }
+      let(:wells_to_leave_free) { 0 }
 
-      before do
-        allow(instance).to receive(:random_elements_from_list).and_return(random_list)
+      it_behaves_like 'an invalid ControlLocator', 0
+    end
+
+    context 'when there are more control wells than available wells' do
+      let(:batch_id) { 1 }
+      let(:total_wells) { 96 }
+      let(:num_control_wells) { 8 }
+      let(:wells_to_leave_free) { 89 }
+
+      it_behaves_like 'an invalid ControlLocator', 0
+    end
+
+    context 'when there are more wells left free than available' do
+      let(:batch_id) { 1 }
+      let(:total_wells) { 96 }
+      let(:num_control_wells) { 0 }
+      let(:wells_to_leave_free) { 100 }
+
+      it_behaves_like 'an invalid ControlLocator', 0
+    end
+
+    # Test the basics for a range of batches
+    1.upto(100) do |batch_id|
+      context "when batch is #{batch_id} and we have a 96 well plate with no wells free" do
+        let(:batch_id) { batch_id }
+        let(:total_wells) { 96 }
+        let(:num_control_wells) { 2 }
+        let(:wells_to_leave_free) { 0 }
+
+        it_behaves_like 'a generator of valid positions', (0...96)
       end
 
-      it 'calculates the positions for the control wells', aggregate_failures: true do
-        # Test batch id 0, plate 0 to 4, 5 free wells, 2 control wells
-        expect(instance.control_positions(0)).to eq(random_list)
-        expect(instance.control_positions(1)).to eq([78, 62, 52])
-        expect(instance.control_positions(2)).to eq([35, 19, 9])
+      context "when batch is #{batch_id}  and we have a 96 well plate with 8 wells free" do
+        let(:batch_id) { batch_id }
+        let(:total_wells) { 96 }
+        let(:num_control_wells) { 2 }
+        let(:wells_to_leave_free) { 8 }
+
+        it_behaves_like 'a generator of valid positions', (8...96)
+      end
+
+      context "when batch is #{batch_id} and we have a 384 well plate with no wells free" do
+        let(:batch_id) { batch_id }
+        let(:total_wells) { 384 }
+        let(:num_control_wells) { 2 }
+        let(:wells_to_leave_free) { 0 }
+
+        it_behaves_like 'a generator of valid positions', (0...384)
       end
     end
 
-    context 'when there are more controls than available positions' do
-      it 'raises an error' do
-        expect { described_class.new(batch_id: 0, total_wells: 2, num_control_wells: 3).control_positions(0) }.to raise_error(StandardError)
-        expect { described_class.new(batch_id: 0, total_wells: 96, num_control_wells: 97).control_positions(0) }.to raise_error(StandardError)
-        expect { described_class.new(batch_id: 0, total_wells: 96, num_control_wells: 8, wells_to_leave_free: 89).control_positions(0) }.to raise_error(StandardError)
-        expect { described_class.new(batch_id: 0, total_wells: 96, num_control_wells: 8, wells_to_leave_free: 88).control_positions(0) }.not_to raise_error
-      end
-    end
-
-    context 'with different arguments' do
-      let(:batch_id) { 0 }
-      let(:number_available_wells) { 5 }
-
-      context 'when checking the call for #random_elements_from_list' do
-        before do
-          allow(instance).to receive(:random_elements_from_list).and_return([0, 1, 2])
-        end
-
-        context 'with no free wells' do
-          it 'uses the right arguments' do
-            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 0)
-            instance.control_positions(0)
-          end
-        end
-
-        context 'with two free wells' do
-          let(:wells_to_leave_free) { 2 }
-
-          it 'uses the right arguments' do
-            expect(instance).to receive(:random_elements_from_list).with([2, 3, 4], 3, 0)
-            instance.control_positions(0)
-          end
-        end
-
-        context 'when num plate exceeds available positions' do
-          let(:batch_id) { 33 }
-          let(:total_wells) { 5 }
-          let(:num_control_wells) { 3 }
-
-          it 'changes the seed' do
-            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 66)
-            instance.control_positions(5)
-            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 99)
-            instance.control_positions(10)
-          end
+    context 'over a range of batches' do
+      let(:range) { (1...1000) }
+      let(:control_positions) do
+        range.map do |batch_id|
+          described_class.new(
+            batch_id: batch_id, total_wells: 96, num_control_wells: 1
+          ).control_positions(0).first
         end
       end
 
-      context 'when checking the call for #control_positions_for_plate' do
-        before do
-          allow(instance).to receive(:random_elements_from_list).and_return([1, 4, 3])
-          allow(instance).to receive(:control_positions_for_plate)
-        end
-
-        context 'with no wells free' do
-          it 'uses the right arguments' do
-            expect(instance).to receive(:control_positions_for_plate).with(0, [1, 4, 3], [0, 1, 2, 3, 4])
-            instance.control_positions(0)
-          end
-        end
-
-        context 'with one well free' do
-          let(:wells_to_leave_free) { 1 }
-
-          it 'uses the right arguments' do
-            expect(instance).to receive(:control_positions_for_plate).with(3, [1, 4, 3], [1, 2, 3, 4])
-            instance.control_positions(3)
-          end
-        end
-      end
-    end
-
-    context 'with batch 12345 of 100 wells and 3 controls' do
-      let(:batch_id) { 12345 }
-      let(:number_available_wells) { 100 }
-      let(:next_batch_positioner) do
-        described_class.new(batch_id: batch_id + 1, total_wells: number_available_wells, num_control_wells: control_wells)
-      end
-
-      it 'gets the same result with same batch and num plate' do
-        expect(instance.control_positions(0)).to(
-          eq(instance.control_positions(0))
-        )
-      end
-
-      it 'does not get same result with a different plate in same batch' do
-        expect(instance.control_positions(0)).not_to(
-          eq(instance.control_positions(1))
-        )
-      end
-
-      it 'does not get the same result with a different batch' do
-        expect(instance.control_positions(0)).not_to(
-          eq(next_batch_positioner.control_positions(0))
-        )
-      end
-
-      context 'when num plate is higher than available positions' do
-        it 'does not get same result with a different plate in same batch' do
-          expect(instance.control_positions(0)).not_to eq(instance.control_positions(100))
-        end
-
-        it 'does not get the same result with a different batch' do
-          expect(instance.control_positions(0)).not_to eq(next_batch_positioner.control_positions(100))
-        end
-      end
-    end
-
-    context 'with the first three columns free' do
-      let(:wells_to_leave_free) { 24 }
-      let(:number_available_wells) { 96 }
-
-      it 'does not place controls in the first three columns for a 96-well destination plate' do
-        # positions 0 - 24
-        positions = instance.control_positions(0)
-        expect(positions).to(be_all { |p| p >= wells_to_leave_free })
+      it 'generates a reasonable control distribution' do
+        # Counts up how many times each well is used
+        tally = control_positions.tally
+        # We expect all wells to be used
+        expect(tally.length).to eq 96
+        # At a reasonable distribution
+        # Not sure how best to handle this one, we're effectively expecting
+        # a binomial distribution. 25 is actually a pretty extreme outlier, and
+        # 23 would be a more reasonable value. The actual data don't seem to smell
+        # to much though... its well 61 that it over-represented, not 0 or 96 for instance.
+        expect(tally.values).to all be_between(3, 25)
       end
     end
   end
