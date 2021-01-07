@@ -6,7 +6,9 @@ RSpec.configure do |c|
   c.include LabWhereClientHelper
 end
 
-# Only using this while I refactor
+# Need to look at a good way of injecting the control locator into pick_new_plate
+# to better allow mocking. But this is probably part of an even larger refactor
+# of cherrypicking.
 # rubocop:todo RSpec/AnyInstance
 RSpec.describe CherrypickTask, type: :model do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
