@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'prime'
 
 RSpec.configure do |c|
   c.include LabWhereClientHelper
