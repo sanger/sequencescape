@@ -12,9 +12,9 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
     )
   end
 
-  shared_examples 'an invalid ControlLocator' do |plate_number|
+  shared_examples 'an invalid ControlLocator' do |plate_number, error = 'More controls than free wells'|
     it 'throws a "More controls than free wells" exception' do
-      expect { instance.control_positions(plate_number) }.to raise_error(StandardError, 'More controls than free wells')
+      expect { instance.control_positions(plate_number) }.to raise_error(StandardError, error)
     end
   end
 
@@ -89,7 +89,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
       let(:num_control_wells) { 0 }
       let(:wells_to_leave_free) { 100 }
 
-      it_behaves_like 'an invalid ControlLocator', 0
+      it_behaves_like 'an invalid ControlLocator', 0, 'More wells left free than available'
     end
 
     # Test the basics for a range of batches
@@ -122,7 +122,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
       end
     end
 
-    context 'over a range of batches' do
+    context 'when over a range of batches' do
       let(:range) { (1...1000) }
       let(:control_positions) do
         range.map do |batch_id|
@@ -142,7 +142,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
         # a binomial distribution. 25 is actually a pretty extreme outlier, and
         # 23 would be a more reasonable value. The actual data don't seem to smell
         # to much though... its well 61 that it over-represented, not 0 or 96 for instance.
-        expect(tally.values).to all be_between(3, 25)
+        expect(tally.values).to all be_between(2, 25)
       end
     end
   end

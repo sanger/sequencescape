@@ -25,42 +25,50 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
 
     context 'when is the initial plate' do
       it 'returns the initial positions' do
-        expect(instance.control_positions_for_plate(0, initial_positions, available_positions)).to eq(initial_positions)
+        expect(instance.control_positions_for_plate(0, initial_positions)).to eq(initial_positions)
       end
     end
 
     context 'when is any other plate' do
       it 'returns the subsequent position from all initial positions', aggregate_failures: true do
-        expect(instance.control_positions_for_plate(1, initial_positions, available_positions)).to eq([4, 1, 6])
-        expect(instance.control_positions_for_plate(2, initial_positions, available_positions)).to eq([1, 5, 3])
-        expect(instance.control_positions_for_plate(3, initial_positions, available_positions)).to eq([5, 2, 0])
+        expect(instance.control_positions_for_plate(1, initial_positions)).to eq([4, 1, 6])
+        expect(instance.control_positions_for_plate(2, initial_positions)).to eq([1, 5, 3])
+        expect(instance.control_positions_for_plate(3, initial_positions)).to eq([5, 2, 0])
       end
     end
   end
 
+  # rubocop:todo RSpec/ExampleLength
+  # Will be removed as soon as refactoring complete
   describe '#per_plate_offset' do
     it 'always returns a number that is a prime (or 1), and not a factor of the plate size' do
       1.upto(1536).all? do |i|
-        offset = instance.per_plate_offset(i)
+        offset = described_class.new(
+          batch_id: batch_id,
+          total_wells: number_available_wells,
+          num_control_wells: control_wells,
+          wells_to_leave_free: wells_to_leave_free
+        ).per_plate_offset
         offset == 1 ||
           Prime.prime?(offset) && i % offset != 0
       end
     end
   end
+  # rubocop:enable RSpec/ExampleLength
 
-  describe '#random_elements_from_list' do
+  describe '#random_positions_from_available' do
     context 'with same seed' do
       it 'gets always the same result' do
-        expect(instance.random_elements_from_list((0..96).to_a, 3, 3)).to(
-          eq(instance.random_elements_from_list((0..96).to_a, 3, 3))
+        expect(instance.random_positions_from_available(3)).to(
+          eq(instance.random_positions_from_available(3))
         )
       end
     end
 
     context 'with different seed' do
       it 'gives a different result' do
-        expect(instance.random_elements_from_list((0..96).to_a, 3, 3)).not_to(
-          eq(instance.random_elements_from_list((0..96).to_a, 3, 4))
+        expect(instance.random_positions_from_available(3)).not_to(
+          eq(instance.random_positions_from_available(4))
         )
       end
     end
@@ -72,7 +80,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
       let(:number_available_wells) { 96 }
 
       before do
-        allow(instance).to receive(:random_elements_from_list).and_return(random_list)
+        allow(instance).to receive(:random_positions_from_available).and_return(random_list)
       end
 
       it 'calculates the positions for the control wells', aggregate_failures: true do
@@ -96,14 +104,14 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
       let(:batch_id) { 0 }
       let(:number_available_wells) { 5 }
 
-      context 'when checking the call for #random_elements_from_list' do
+      context 'when checking the call for #random_positions_from_available' do
         before do
-          allow(instance).to receive(:random_elements_from_list).and_return([0, 1, 2])
+          allow(instance).to receive(:random_positions_from_available).and_return([0, 1, 2])
         end
 
         context 'with no free wells' do
           it 'uses the right arguments' do
-            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 0)
+            expect(instance).to receive(:random_positions_from_available).with(0)
             instance.control_positions(0)
           end
         end
@@ -112,7 +120,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
           let(:wells_to_leave_free) { 2 }
 
           it 'uses the right arguments' do
-            expect(instance).to receive(:random_elements_from_list).with([2, 3, 4], 3, 0)
+            expect(instance).to receive(:random_positions_from_available).with(0)
             instance.control_positions(0)
           end
         end
@@ -123,9 +131,9 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
           let(:num_control_wells) { 3 }
 
           it 'changes the seed' do
-            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 66)
+            expect(instance).to receive(:random_positions_from_available).with(66)
             instance.control_positions(5)
-            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 99)
+            expect(instance).to receive(:random_positions_from_available).with(99)
             instance.control_positions(10)
           end
         end
@@ -133,13 +141,13 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
 
       context 'when checking the call for #control_positions_for_plate' do
         before do
-          allow(instance).to receive(:random_elements_from_list).and_return([1, 4, 3])
+          allow(instance).to receive(:random_positions_from_available).and_return([1, 4, 3])
           allow(instance).to receive(:control_positions_for_plate)
         end
 
         context 'with no wells free' do
           it 'uses the right arguments' do
-            expect(instance).to receive(:control_positions_for_plate).with(0, [1, 4, 3], [0, 1, 2, 3, 4])
+            expect(instance).to receive(:control_positions_for_plate).with(0, [1, 4, 3])
             instance.control_positions(0)
           end
         end
@@ -148,7 +156,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
           let(:wells_to_leave_free) { 1 }
 
           it 'uses the right arguments' do
-            expect(instance).to receive(:control_positions_for_plate).with(3, [1, 4, 3], [1, 2, 3, 4])
+            expect(instance).to receive(:control_positions_for_plate).with(3, [1, 4, 3])
             instance.control_positions(3)
           end
         end

@@ -25,55 +25,67 @@ class CherrypickTask::ControlLocator
   # to avoid re-using wells prematurely. These offsets are prioritised in order
   BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
-  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells
+  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions
 
-  def initialize(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free: 0)
-    @batch_id = batch_id
-    @total_wells = total_wells
-    @num_control_wells = num_control_wells
-    @wells_to_leave_free = wells_to_leave_free
-  end
-
-  #
-  # Returns a list with the destination positions for the control wells distributed randomly
-  # using batch_id as seed and num_plate to increase position with plates in same batch.
   # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
   # control wells being missed in cDNA quant QC. This requirement was removed in
   # https://github.com/sanger/sequencescape/issues/2967 however I've avoided stripping out the behaviour
   # completely in case controls are used in other pipelines.
   #
   # @param batch_id [Integer] The id of the batch, used to generate a starting position
-  # @param num_plate [Integer] The plate number within the batch
   # @param total_wells [Integer] The total number of wells on the plate
   # @param num_control_wells [Integer] The number of control wells to lay out
   # @param wells_to_leave_free [Integer] The number of wells to leave free at the front of the plate
+  def initialize(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free: 0)
+    @batch_id = batch_id
+    @total_wells = total_wells
+    @num_control_wells = num_control_wells
+    @wells_to_leave_free = wells_to_leave_free
+    @available_positions = (wells_to_leave_free...total_wells).to_a
+  end
+
+  #
+  # Returns a list with the destination positions for the control wells distributed randomly
+  # using batch_id as seed and num_plate to increase position with plates in same batch.
+  #
+  # @param num_plate [Integer] The plate number within the batch
   #
   # @return [Array<Integer>] The indexes of the control well positions
   #
   def control_positions(num_plate)
-    total_available_positions = total_wells - wells_to_leave_free
-
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
+    raise StandardError, 'More wells left free than available' if wells_to_leave_free > total_wells
+    return [] if num_control_wells.zero?
 
-    available_positions = (wells_to_leave_free...total_wells).to_a
     # If num plate is equal to the available positions, the cycle is going to be repeated.
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
-    seed = batch_id * ((num_plate / available_positions.length) + 1)
-    initial_positions = random_elements_from_list(available_positions, num_control_wells, seed)
-    control_positions_for_plate(num_plate, initial_positions, available_positions)
+    seed = seed_for(num_plate)
+    initial_positions = random_positions_from_available(seed)
+    control_positions_for_plate(num_plate, initial_positions)
   end
 
-  def control_positions_for_plate(num_plate, initial_positions, available_positions)
+  # If num plate is equal to the available positions, the cycle is going to be repeated.
+  # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
+  def seed_for(num_plate)
+    batch_id * ((num_plate / total_available_positions) + 1)
+  end
+
+  def total_available_positions
+    @available_positions.size
+  end
+
+  def control_positions_for_plate(num_plate, initial_positions)
     return initial_positions if num_plate.zero?
 
-    offset = num_plate * per_plate_offset(available_positions.length)
+    offset = num_plate * per_plate_offset
+
     initial_positions.map do |pos|
-      available_positions[(available_positions.index(pos) + offset) % available_positions.length]
+      available_positions[(available_positions.index(pos) + offset) % total_available_positions]
     end
   end
 
-  def random_elements_from_list(list, num_elems, seed)
-    list.sample(num_elems, random: Random.new(seed))
+  def random_positions_from_available(seed)
+    available_positions.sample(num_control_wells, random: Random.new(seed))
   end
 
   # Works out which offset to use based on the number of available wells and ensures we use
@@ -83,7 +95,7 @@ class CherrypickTask::ControlLocator
   # to 1, which isn't a prime, but will fulfil the base requirement.
   # This may seem overly cautious, but its the kind of thing that would fail silently if we
   # introduced a new plate size, and wouldn't get noticed for months.
-  def per_plate_offset(number_available_wells)
-    @per_plate_offset ||= BETWEEN_PLATE_OFFSETS.detect { |offset| number_available_wells % offset != 0 } || 1
+  def per_plate_offset
+    @per_plate_offset ||= BETWEEN_PLATE_OFFSETS.detect { |offset| total_available_positions % offset != 0 } || 1
   end
 end

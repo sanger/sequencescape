@@ -41,23 +41,24 @@ class CherrypickTask < Task
   # @return [Array<Integer>] The indexes of the control well positions
   #
   def control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
-    # total_available_positions = total_wells - wells_to_leave_free
+    control_locator(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: wells_to_leave_free).control_positions(num_plate)
+  end
 
-    # raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
-
-    # available_positions = (wells_to_leave_free...total_wells).to_a
-    # # If num plate is equal to the available positions, the cycle is going to be repeated.
-    # # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
-    # seed = batch_id * ((num_plate / available_positions.length) + 1)
-    # initial_positions = random_elements_from_list(available_positions, num_control_wells, seed)
-    # control_positions_for_plate(num_plate, initial_positions, available_positions)
+  #
+  # Returns a {CherrypickTask::ControlLocator} which can generate control locations for plates
+  # in a batch. It responds to #control_positions which takes a plate number as an argument
+  #
+  # @return [CherrypickTask::ControlLocator] A generator of control locations
+  #
+  def control_locator(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
     CherrypickTask::ControlLocator.new(
       batch_id: batch_id,
       total_wells: total_wells,
       num_control_wells: num_control_wells,
       wells_to_leave_free: wells_to_leave_free
-    ).control_positions(num_plate)
+    )
   end
+
 
   def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)
@@ -91,6 +92,7 @@ class CherrypickTask < Task
       num_plate = 0
       batch = requests.first.batch
       control_assets = auto_add_control_plate.wells.joins(:samples)
+      control_locator = control_locator(batch.id, num_plate, current_destination_plate.size, control_assets.count)
       control_posns = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the

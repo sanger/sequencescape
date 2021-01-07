@@ -172,7 +172,7 @@ RSpec.describe CherrypickTask, type: :model do
       let(:random_list) { [25, 9, 95] }
 
       before do
-        allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_elements_from_list).and_return(random_list)
+        allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).and_return(random_list)
       end
 
       it 'calculates the positions for the control wells', aggregate_failures: true do
@@ -197,17 +197,17 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when checking the call for #random_elements_from_list' do
         it 'uses the right arguments' do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 0).and_return([0, 1, 2])
+          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).with(0).and_return([0, 1, 2])
           instance.control_positions(0, 0, 5, 3)
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_elements_from_list).with([2, 3, 4], 3, 0).and_return([0, 1, 2])
+          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).with(0).and_return([0, 1, 2])
           instance.control_positions(0, 0, 5, 3, wells_to_leave_free: 2)
         end
 
         context 'when num plate exceeds available positions' do
           it 'changes the seed' do
-            allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 66).and_return([0, 1, 2])
+            allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).with(66).and_return([0, 1, 2])
             instance.control_positions(33, 5, 5, 3)
-            allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 99).and_return([0, 1, 2])
+            allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).with(99).and_return([0, 1, 2])
             instance.control_positions(33, 10, 5, 3)
           end
         end
@@ -215,14 +215,14 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when checking the call for #control_positions_for_plate' do
         before do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_elements_from_list).and_return([1, 4, 3])
+          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:random_positions_from_available).and_return([1, 4, 3])
           allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions_for_plate)
         end
 
         it 'uses the right arguments' do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions_for_plate).with(0, [1, 4, 3], [0, 1, 2, 3, 4])
+          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions_for_plate).with(0, [1, 4, 3])
           instance.control_positions(0, 0, 5, 3)
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions_for_plate).with(3, [1, 4, 3], [1, 2, 3, 4])
+          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions_for_plate).with(3, [1, 4, 3])
           instance.control_positions(0, 3, 5, 3, wells_to_leave_free: 1)
         end
       end
