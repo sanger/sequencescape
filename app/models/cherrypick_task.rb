@@ -50,7 +50,7 @@ class CherrypickTask < Task
   #
   # @return [CherrypickTask::ControlLocator] A generator of control locations
   #
-  def control_locator(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
+  def control_locator(batch_id, total_wells, num_control_wells, wells_to_leave_free: 0)
     CherrypickTask::ControlLocator.new(
       batch_id: batch_id,
       total_wells: total_wells,
@@ -58,7 +58,6 @@ class CherrypickTask < Task
       wells_to_leave_free: wells_to_leave_free
     )
   end
-
 
   def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)
@@ -92,8 +91,8 @@ class CherrypickTask < Task
       num_plate = 0
       batch = requests.first.batch
       control_assets = auto_add_control_plate.wells.joins(:samples)
-      control_locator = control_locator(batch.id, num_plate, current_destination_plate.size, control_assets.count)
-      control_posns = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
+      control_locator = control_locator(batch.id, current_destination_plate.size, control_assets.count)
+      control_posns = control_locator.control_positions(num_plate)
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the
       # beginning of the plate
@@ -106,7 +105,7 @@ class CherrypickTask < Task
       if auto_add_control_plate && (idx < (plates_array.length - 1))
         # when we start a new plate we rebuild the list of positions where the requests should be placed
         num_plate += 1
-        control_posns = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
+        control_posns = control_locator.control_positions(num_plate)
         current_destination_plate.add_any_initial_control_requests(control_posns, batch, control_assets)
       end
     end
@@ -119,9 +118,7 @@ class CherrypickTask < Task
       push_completed_plate.call(idx) if current_destination_plate.full?
     end
     # If there are any remaining control requests, we'll add all of them at the end of the last plate
-    unless current_destination_plate.empty?
-      current_destination_plate.add_remaining_control_requests(control_posns, batch, control_assets) if auto_add_control_plate
-    end
+    current_destination_plate.add_remaining_control_requests(control_posns, batch, control_assets) if !current_destination_plate.empty? && auto_add_control_plate
 
     # Ensure that a non-empty plate is stored
     push_completed_plate.call(plates_array.length) unless current_destination_plate.empty?

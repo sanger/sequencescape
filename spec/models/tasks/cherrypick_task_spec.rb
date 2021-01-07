@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'prime'
 
@@ -12,9 +14,9 @@ RSpec.describe CherrypickTask, type: :model do
   let(:control_plate) { create :control_plate, sample_count: 2 }
   let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission: submission) } }
   let(:template) { create(:plate_template, size: 6) }
-  let(:robot) { double('robot', max_beds: 2) }
+  let(:robot) { instance_double('Robot', max_beds: 2) }
   let(:purpose) { create :purpose }
-  let(:batch) { double('batch', id: 1235, requests: requests) }
+  let(:batch) { instance_double('Batch', id: 1235, requests: requests) }
   let(:submission) { create :submission }
 
   def pick_without_request_id(plates)
@@ -275,31 +277,31 @@ RSpec.describe CherrypickTask, type: :model do
   end
 
   describe '#build_plate_wells_from_requests' do
-    let!(:plate_1) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate1' }
-    let!(:plate_2) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate2' }
-    let!(:plate_3) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate3' }
-    let(:plates) { [plate_1, plate_2, plate_3] }
-    let(:requests_1) { requests_for_plate(plate_1) }
-    let(:requests_2) { requests_for_plate(plate_2) }
-    let(:requests_3) { requests_for_plate(plate_3) }
-    let(:requests) { requests_1 + requests_2 + requests_3 }
+    let!(:plate1) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate1' }
+    let!(:plate2) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate2' }
+    let!(:plate3) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate3' }
+    let(:plates) { [plate1, plate2, plate3] }
+    let(:requests1) { requests_for_plate(plate1) }
+    let(:requests2) { requests_for_plate(plate2) }
+    let(:requests3) { requests_for_plate(plate3) }
+    let(:requests) { requests1 + requests2 + requests3 }
 
-    let(:location_1) { 'Shelf 2' } # Expected order: 2nd
-    let(:parentage_1) { 'Sanger / Ogilvie / AA316' }
+    let(:location1) { 'Shelf 2' } # Expected order: 2nd
+    let(:parentage1) { 'Sanger / Ogilvie / AA316' }
 
-    let(:location_2) { 'Shelf 2' } # Expected order: 3rd
-    let(:parentage_2) { 'Sanger / Ogilvie / AA317' }
+    let(:location2) { 'Shelf 2' } # Expected order: 3rd
+    let(:parentage2) { 'Sanger / Ogilvie / AA317' }
 
-    let(:location_3) { 'Shelf 1' } # Expected order: 1st
-    let(:parentage_3) { 'Sanger / Ogilvie / AA316' }
+    let(:location3) { 'Shelf 1' } # Expected order: 1st
+    let(:parentage3) { 'Sanger / Ogilvie / AA316' }
 
     context 'with locations set' do
       # with locations set we expect requests to be ordered primarily by location parentage
       let(:expected_output) do
         output = []
-        requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
         output
       end
 
@@ -307,19 +309,19 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
-              lw_locn_name: location_1,
-              lw_locn_parentage: parentage_1
+              lw_barcode: plate1.human_barcode,
+              lw_locn_name: location1,
+              lw_locn_parentage: parentage1
             },
             {
-              lw_barcode: plate_2.human_barcode,
-              lw_locn_name: location_2,
-              lw_locn_parentage: parentage_2
+              lw_barcode: plate2.human_barcode,
+              lw_locn_name: location2,
+              lw_locn_parentage: parentage2
             },
             {
-              lw_barcode: plate_3.human_barcode,
-              lw_locn_name: location_3,
-              lw_locn_parentage: parentage_3
+              lw_barcode: plate3.human_barcode,
+              lw_locn_name: location3,
+              lw_locn_parentage: parentage3
             }
           ]
         )
@@ -334,9 +336,9 @@ RSpec.describe CherrypickTask, type: :model do
       # with no locations, they should just be in plate creation order
       let(:expected_output) do
         output = []
-        requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
         output
       end
 
@@ -344,17 +346,17 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
+              lw_barcode: plate1.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             },
             {
-              lw_barcode: plate_2.human_barcode,
+              lw_barcode: plate2.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             },
             {
-              lw_barcode: plate_3.human_barcode,
+              lw_barcode: plate3.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             }
@@ -371,9 +373,9 @@ RSpec.describe CherrypickTask, type: :model do
       # with a mixture we expect plates woth no locations to be sorted first then those with locations
       let(:expected_output) do
         output = []
-        requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] } # no location, should be first
-        requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] } # no location, should be first
+        requests3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
         output
       end
 
@@ -381,19 +383,19 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
+              lw_barcode: plate1.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             },
             {
-              lw_barcode: plate_2.human_barcode,
-              lw_locn_name: location_2,
-              lw_locn_parentage: parentage_2
+              lw_barcode: plate2.human_barcode,
+              lw_locn_name: location2,
+              lw_locn_parentage: parentage2
             },
             {
-              lw_barcode: plate_3.human_barcode,
-              lw_locn_name: location_3,
-              lw_locn_parentage: parentage_3
+              lw_barcode: plate3.human_barcode,
+              lw_locn_name: location3,
+              lw_locn_parentage: parentage3
             }
           ]
         )
@@ -408,9 +410,9 @@ RSpec.describe CherrypickTask, type: :model do
       # when multiple plates have the same location (e.g. a box) we expect order to be by plate creation
       let(:expected_output) do
         output = []
-        requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
         output
       end
 
@@ -418,19 +420,19 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
-              lw_locn_name: location_1,
-              lw_locn_parentage: parentage_1
+              lw_barcode: plate1.human_barcode,
+              lw_locn_name: location1,
+              lw_locn_parentage: parentage1
             },
             {
-              lw_barcode: plate_2.human_barcode,
-              lw_locn_name: location_1,
-              lw_locn_parentage: parentage_1
+              lw_barcode: plate2.human_barcode,
+              lw_locn_name: location1,
+              lw_locn_parentage: parentage1
             },
             {
-              lw_barcode: plate_3.human_barcode,
-              lw_locn_name: location_1,
-              lw_locn_parentage: parentage_1
+              lw_barcode: plate3.human_barcode,
+              lw_locn_name: location1,
+              lw_locn_parentage: parentage1
             }
           ]
         )
@@ -443,18 +445,18 @@ RSpec.describe CherrypickTask, type: :model do
 
     context 'with 1 plate' do
       # redefine requests so we can jumble them up in a different order
-      let(:request_1) { create(:cherrypick_request, asset: plate_1.wells[2]) } # C1
-      let(:request_2) { create(:cherrypick_request, asset: plate_1.wells[0]) } # A1
-      let(:request_3) { create(:cherrypick_request, asset: plate_1.wells[3]) } # D1
-      let(:request_4) { create(:cherrypick_request, asset: plate_1.wells[1]) } # B1
-      let!(:requests) { [request_1, request_2, request_3, request_4] }
+      let(:request1) { create(:cherrypick_request, asset: plate1.wells[2]) } # C1
+      let(:request2) { create(:cherrypick_request, asset: plate1.wells[0]) } # A1
+      let(:request3) { create(:cherrypick_request, asset: plate1.wells[3]) } # D1
+      let(:request4) { create(:cherrypick_request, asset: plate1.wells[1]) } # B1
+      let!(:requests) { [request1, request2, request3, request4] }
 
       let(:expected_output) do
         output = []
-        output << [request_2.id, request_2.asset.plate.human_barcode, request_2.asset.map_description]
-        output << [request_4.id, request_4.asset.plate.human_barcode, request_4.asset.map_description]
-        output << [request_1.id, request_1.asset.plate.human_barcode, request_1.asset.map_description]
-        output << [request_3.id, request_3.asset.plate.human_barcode, request_3.asset.map_description]
+        output << [request2.id, request2.asset.plate.human_barcode, request2.asset.map_description]
+        output << [request4.id, request4.asset.plate.human_barcode, request4.asset.map_description]
+        output << [request1.id, request1.asset.plate.human_barcode, request1.asset.map_description]
+        output << [request3.id, request3.asset.plate.human_barcode, request3.asset.map_description]
         output
       end
 
@@ -462,7 +464,7 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
+              lw_barcode: plate1.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             }

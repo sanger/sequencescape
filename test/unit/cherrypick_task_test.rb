@@ -43,9 +43,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
     context '#pick_onto_partial_plate' do
       setup do
-        plate = @mini_plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |plate|
-          plate.wells.build(maps_for(12).map { |m| { map: m } })
-        end
+        plate = @mini_plate_purpose.create!(barcode: (@barcode += 1))
         # TODO: This is very slow, and could do with improvements
         @requests = plate.wells.sort_by { |w| w.map.column_order }.map { |w| create(:well_request, asset: w) }
       end
@@ -54,8 +52,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         robot = mock('robot')
         robot.stubs(:max_beds).returns(0)
 
-        partial = @mini_plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |partial|
-          partial.wells.build(maps_for(6).map { |m| { map: m } })
+        partial = @mini_plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |plate|
+          plate.wells.build(maps_for(6).map { |m| { map: m } })
         end
 
         assert_raises(StandardError) do
@@ -87,7 +85,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         should 'fill plate with empty wells' do
-          expected, requests = [@expected_partial], @requests.slice(0, 5)
+          expected = [@expected_partial]
+          requests = @requests.slice(0, 5)
           expected.first.concat(requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] })
           pad_expected_plate_with_empty_wells(@template, expected.first)
 

@@ -286,7 +286,6 @@ Lint/ShadowingOuterLocalVariable:
     - 'test/unit/accession_service_test.rb'
     - 'test/unit/api/core/io/json/grammar_test.rb'
     - 'test/unit/api/core/io/json/stream_test.rb'
-    - 'test/unit/cherrypick_task_test.rb'
 
 # Offense count: 1
 Lint/StructNewOverride:
@@ -589,7 +588,6 @@ Naming/VariableNumber:
     - 'spec/models/study_spec.rb'
     - 'spec/models/submission_spec.rb'
     - 'spec/models/tag_group_spec.rb'
-    - 'spec/models/tasks/cherrypick_task_spec.rb'
     - 'spec/models/transfer_request_spec.rb'
     - 'spec/models/well_spec.rb'
     - 'spec/requests/api/v2/pick_lists_spec.rb'
@@ -1179,7 +1177,6 @@ RSpec/VerifiedDoubles:
     - 'spec/aker/models/material_spec.rb'
     - 'spec/lib/warren/broadcast_spec.rb'
     - 'spec/models/sample_manifest/generator_spec.rb'
-    - 'spec/models/tasks/cherrypick_task_spec.rb'
     - 'spec/sample_manifest_excel/download_spec.rb'
     - 'spec/sample_manifest_excel/worksheet_spec.rb'
     - 'spec/sequencescape_excel/worksheet_spec.rb'
@@ -2985,7 +2982,6 @@ Style/FrozenStringLiteralComment:
     - 'app/models/cherrypick_for_pulldown_pipeline.rb'
     - 'app/models/cherrypick_for_pulldown_request.rb'
     - 'app/models/cherrypick_pipeline.rb'
-    - 'app/models/cherrypick_task.rb'
     - 'app/models/cherrypicking_pipeline.rb'
     - 'app/models/comment.rb'
     - 'app/models/concerns/squishify.rb'
@@ -3657,7 +3653,6 @@ Style/FrozenStringLiteralComment:
     - 'spec/models/broadcast_events/plate_cherrypicked_spec.rb'
     - 'spec/models/pick_list_spec.rb'
     - 'spec/models/robot/pick_hash_tester_helper.rb'
-    - 'spec/models/tasks/cherrypick_task_spec.rb'
     - 'spec/requests/pick_lists_request_spec.rb'
     - 'spec/requests/plate_picks_request_spec.rb'
 
@@ -4158,7 +4153,6 @@ Style/ParallelAssignment:
     - 'test/unit/api/core/io/json/stream_test.rb'
     - 'test/unit/api/core/io/json_output_test.rb'
     - 'test/unit/batch_test.rb'
-    - 'test/unit/cherrypick_task_test.rb'
     - 'test/unit/illumina_htp/final_plate_purpose_test.rb'
     - 'test/unit/messaging/hash_generation_test.rb'
     - 'test/unit/sample_registrar_test.rb'
@@ -4488,7 +4482,6 @@ Style/SoleNestedConditional:
   Exclude:
     - 'app/controllers/admin/studies_controller.rb'
     - 'app/controllers/requests_controller.rb'
-    - 'app/models/cherrypick_task.rb'
     - 'app/models/order.rb'
     - 'app/models/parsers/plate_reader_parser.rb'
     - 'app/models/robot/verification/base.rb'

@@ -64,6 +64,8 @@ class CherrypickTask::ControlLocator
     control_positions_for_plate(num_plate, initial_positions)
   end
 
+  private
+
   # If num plate is equal to the available positions, the cycle is going to be repeated.
   # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
   def seed_for(num_plate)
