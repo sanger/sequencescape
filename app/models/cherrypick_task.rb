@@ -51,7 +51,12 @@ class CherrypickTask < Task
     # seed = batch_id * ((num_plate / available_positions.length) + 1)
     # initial_positions = random_elements_from_list(available_positions, num_control_wells, seed)
     # control_positions_for_plate(num_plate, initial_positions, available_positions)
-    CherrypickTask::ControlLocator.new(batch_id, 1).control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: wells_to_leave_free)
+    CherrypickTask::ControlLocator.new(
+      batch_id: batch_id,
+      total_wells: total_wells,
+      num_control_wells: num_control_wells,
+      wells_to_leave_free: wells_to_leave_free
+    ).control_positions(num_plate)
   end
 
   def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller = nil)

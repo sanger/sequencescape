@@ -25,11 +25,13 @@ class CherrypickTask::ControlLocator
   # to avoid re-using wells prematurely. These offsets are prioritised in order
   BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
-  attr_reader :batch_id, :number_available_wells
+  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells
 
-  def initialize(batch_id, number_available_wells)
+  def initialize(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free: 0)
     @batch_id = batch_id
-    @number_available_wells = number_available_wells
+    @total_wells = total_wells
+    @num_control_wells = num_control_wells
+    @wells_to_leave_free = wells_to_leave_free
   end
 
   #
@@ -48,7 +50,7 @@ class CherrypickTask::ControlLocator
   #
   # @return [Array<Integer>] The indexes of the control well positions
   #
-  def control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
+  def control_positions(num_plate)
     total_available_positions = total_wells - wells_to_leave_free
 
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
