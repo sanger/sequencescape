@@ -4,7 +4,7 @@ require 'authenticated_system'
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
-class ApplicationController < ActionController::Base
+class ApplicationController < ActionController::Base # rubocop:todo Style/Documentation
   # {FlashTruncation} provides the #truncate_flash method for automatically trimming
   # large flash messages to prevent cookie overflow.
   include FlashTruncation
@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
     new_hash = object.class.new
     to_nil = []
     object.each do |k, v|
-      if k == 'check' and v.is_a?(Hash)
+      if (k == 'check') && v.is_a?(Hash)
         v.each do |k, v|
           to_nil << k unless v == 'true'
         end

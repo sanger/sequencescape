@@ -63,7 +63,8 @@ class QcResultFactory
       super(attributes)
 
       @asset = build_asset
-      @qc_result = QcResult.new(asset: asset, key: key, value: value, units: units, cv: cv, assay_type: assay_type, assay_version: assay_version, qc_assay: qc_assay)
+      @qc_result = QcResult.new(asset: asset, key: key, value: value, units: units, cv: cv, assay_type: assay_type,
+                                assay_version: assay_version, qc_assay: qc_assay)
     end
 
     def message_id
@@ -133,7 +134,8 @@ class QcResultFactory
       return unless can_update_parent_well?
 
       well = parent_plate.find_well_by_map_description(well_location)
-      parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well, value: value.to_f * plate.dilution_factor))
+      parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well,
+                                                                 value: value.to_f * plate.dilution_factor))
       parent_qc_result.save!
     end
 
@@ -171,12 +173,11 @@ class QcResultFactory
     resources.each do |resource|
       next if resource.valid?
 
-      String.new.tap do |resource_errors|
-        resource.errors.each do |key, value|
-          resource_errors << "#{key} #{value} "
-        end
-        errors.add(resource.message_id, resource_errors)
-      end
+      resource_errors = resource.errors.map do |key, value|
+        "#{key} #{value}"
+      end.join(' ')
+
+      errors.add(resource.message_id, resource_errors)
     end
   end
 end

@@ -1,4 +1,4 @@
-class Admin::DelayedJobsController < ApplicationController
+class Admin::DelayedJobsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :admin_login_required
 
   def index

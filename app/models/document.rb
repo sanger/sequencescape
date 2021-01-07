@@ -1,9 +1,9 @@
 require 'carrierwave'
 
-class Document < ApplicationRecord
+class Document < ApplicationRecord # rubocop:todo Style/Documentation
   extend DbFile::Uploader
 
-  module Associations
+  module Associations # rubocop:todo Style/Documentation
     # Adds accessors for named fields and attaches documents to them
 
     def has_uploaded_document(field, differentiator: field.to_s)
@@ -12,7 +12,7 @@ class Document < ApplicationRecord
       #     for example, you can have both a "generated" and an "uploaded" document in one Sample Manifest
 
       line = __LINE__ + 1
-      class_eval(%Q{
+      class_eval(%{
         has_one(:#{field}_document, ->(){ where(:documentable_extended => differentiator) }, :class_name => "Document", :as => :documentable, :dependent => :destroy
           )
 

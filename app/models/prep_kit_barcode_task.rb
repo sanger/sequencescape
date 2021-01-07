@@ -1,4 +1,4 @@
-class PrepKitBarcodeTask < Task
+class PrepKitBarcodeTask < Task # rubocop:todo Style/Documentation
   def partial
     'prep_kit_barcode_batches'
   end

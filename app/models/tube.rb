@@ -56,7 +56,7 @@ class Tube < Labware
     primary_sample&.shorten_sanger_sample_id.presence || name
   end
 
-  alias_method :friendly_name, :human_barcode
+  alias friendly_name human_barcode
 
   # Delegates the provided methods to purpose, passing the tube as the first argument, and the remaining arguments as-is
   def self.delegate_to_purpose(*methods)

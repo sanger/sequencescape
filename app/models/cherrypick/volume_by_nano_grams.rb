@@ -1,4 +1,4 @@
-module Cherrypick::VolumeByNanoGrams
+module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
   def check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
     raise 'Source well not found' if source_well.nil?
 

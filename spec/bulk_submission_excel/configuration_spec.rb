@@ -42,12 +42,15 @@ RSpec.describe BulkSubmissionExcel::Configuration, type: :model, bulk_submission
     end
 
     it 'will load the columns' do
-      columns = SequencescapeExcel::ColumnList.new(configuration.load_file(folder, 'columns'), configuration.conditional_formattings)
+      columns = SequencescapeExcel::ColumnList.new(configuration.load_file(folder, 'columns'),
+                                                   configuration.conditional_formattings)
       expect(configuration.columns.all).to eq(columns)
     end
 
     it 'load the conditional formattings' do # rubocop:todo RSpec/AggregateExamples
-      expect(configuration.conditional_formattings).to eq(SequencescapeExcel::ConditionalFormattingDefaultList.new(configuration.load_file(folder, 'conditional_formattings')))
+      expect(configuration.conditional_formattings).to eq(SequencescapeExcel::ConditionalFormattingDefaultList.new(configuration.load_file(
+                                                                                                                     folder, 'conditional_formattings'
+                                                                                                                   )))
     end
 
     it 'load the ranges' do # rubocop:todo RSpec/AggregateExamples

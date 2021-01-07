@@ -1,4 +1,4 @@
-class CustomMetadatumCollection < ApplicationRecord
+class CustomMetadatumCollection < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
 
   belongs_to :user

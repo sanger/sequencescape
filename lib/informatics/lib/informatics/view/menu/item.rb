@@ -1,7 +1,7 @@
 module Informatics
   module View
     module Menu
-      class Item
+      class Item # rubocop:todo Style/Documentation
         attr_accessor :text, :link, :confirm, :method
 
         def initialize(options = {})

@@ -76,7 +76,7 @@ class Accessionable::Base
     @label_scope ||= "metadata.#{self.class.name.split("::").last.downcase}.metadata"
   end
 
-  class Tag
+  class Tag # rubocop:todo Style/Documentation
     attr_reader :value
 
     def initialize(label_scope, name, value, downcase = false)

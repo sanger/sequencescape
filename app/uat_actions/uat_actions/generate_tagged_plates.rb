@@ -38,7 +38,7 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
                    'are: \'wells of plate\' which uses a fixed tag layout '\
                    'across the plate. \'manual by plate\' which selects tags '\
                    'for each occupied well in turn.',
-             # Note: We filter out the 'by pool' options here as they are
+             # NOTE: We filter out the 'by pool' options here as they are
              # driven by submission information
              select_options: -> { TagLayout::WALKING_ALGORITHMS.keys - EXCLUDED_WALKING }
 

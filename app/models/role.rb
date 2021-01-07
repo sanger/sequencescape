@@ -3,7 +3,7 @@
 # "moderator" for an instance of a model (i.e., an object), a model class,
 # or without any specification at all.
 class Role < ApplicationRecord
-  class UserRole < ApplicationRecord
+  class UserRole < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('roles_users')
     belongs_to :role
     belongs_to :user
@@ -51,7 +51,7 @@ class Role < ApplicationRecord
       end
     end
 
-    module ClassMethods
+    module ClassMethods # rubocop:todo Style/Documentation
       def role_relation(name, role_name)
         scope name.to_sym, ->(user) {
           joins(:roles, :users)

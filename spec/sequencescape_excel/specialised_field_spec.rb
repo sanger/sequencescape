@@ -72,7 +72,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   describe SequencescapeExcel::SpecialisedField::LibraryType do
     it 'will not be valid without a persisted library type' do
       expect(described_class.new(value: library_type.name, sample_manifest_asset: sample_manifest_asset)).to be_valid
-      expect(described_class.new(value: 'A new library type', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+      expect(described_class.new(value: 'A new library type',
+                                 sample_manifest_asset: sample_manifest_asset)).not_to be_valid
     end
 
     it 'will add the the value to the aliquot' do
@@ -98,12 +99,15 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     end
 
     it 'will not be valid without a persisted reference genome if a value is provided' do
-      expect(described_class.new(value: reference_genome.name, sample_manifest_asset: sample_manifest_asset)).to be_valid
-      expect(described_class.new(value: 'A new reference genome', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+      expect(described_class.new(value: reference_genome.name,
+                                 sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: 'A new reference genome',
+                                 sample_manifest_asset: sample_manifest_asset)).not_to be_valid
     end
 
     it 'will add reference genome to sample_metadata' do
-      specialised_field = described_class.new(value: reference_genome.name, sample_manifest_asset: sample_manifest_asset)
+      specialised_field = described_class.new(value: reference_genome.name,
+                                              sample_manifest_asset: sample_manifest_asset)
       specialised_field.update
       expect(sample_manifest_asset.sample.sample_metadata.reference_genome).to eq(reference_genome)
     end
@@ -208,7 +212,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     let(:sample_manifest_asset_1) { create :sample_manifest_asset, asset: sample_1.primary_receptacle }
 
     it 'will be valid if the value matches the sanger human barcode' do
-      expect(described_class.new(value: sample_1_plate.human_barcode, sample_manifest_asset: sample_manifest_asset_1)).to be_valid
+      expect(described_class.new(value: sample_1_plate.human_barcode,
+                                 sample_manifest_asset: sample_manifest_asset_1)).to be_valid
       expect(described_class.new(value: '1234', sample_manifest_asset: sample_manifest_asset_1)).not_to be_valid
     end
 
@@ -222,7 +227,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'will not be valid if the value matches an already used cgap foreign barcode' do
         sample_1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
-        expect(described_class.new(value: 'CGAP-ABC011', sample_manifest_asset: sample_manifest_asset_2)).not_to be_valid
+        expect(described_class.new(value: 'CGAP-ABC011',
+                                   sample_manifest_asset: sample_manifest_asset_2)).not_to be_valid
       end
 
       it 'will be valid to overwrite a foreign barcode with a new foreign barcode of the same format' do
@@ -282,7 +288,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   describe SequencescapeExcel::SpecialisedField::Well do
     it 'will not be valid unless the value matches the well description' do
       expect(described_class.new(value: 'well', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
-      expect(described_class.new(value: sample_manifest_asset.asset.map_description, sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(value: sample_manifest_asset.asset.map_description,
+                                 sample_manifest_asset: sample_manifest_asset)).to be_valid
     end
   end
 
@@ -406,7 +413,10 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
 
       describe 'linking' do
-        let!(:sf_tag_group) { SequencescapeExcel::SpecialisedField::TagGroup.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset) }
+        let!(:sf_tag_group) do
+          SequencescapeExcel::SpecialisedField::TagGroup.new(value: tag_group_name,
+                                                             sample_manifest_asset: sample_manifest_asset)
+        end
         let!(:sf_tag_index) { described_class.new(value: tag_index, sample_manifest_asset: sample_manifest_asset) }
 
         before do
@@ -495,7 +505,10 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
 
       describe 'linking' do
-        let!(:sf_tag2_group) { SequencescapeExcel::SpecialisedField::Tag2Group.new(value: tag2_group_name, sample_manifest_asset: sample_manifest_asset) }
+        let!(:sf_tag2_group) do
+          SequencescapeExcel::SpecialisedField::Tag2Group.new(value: tag2_group_name,
+                                                              sample_manifest_asset: sample_manifest_asset)
+        end
         let!(:sf_tag2_index) { described_class.new(value: tag2_index, sample_manifest_asset: sample_manifest_asset) }
 
         before do
@@ -556,7 +569,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         let(:adapter_type) { create :adapter_type, name: 'Other' }
 
         it 'will not be valid' do
-          expect(described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+          expect(described_class.new(value: tag_group_name,
+                                     sample_manifest_asset: sample_manifest_asset)).not_to be_valid
         end
       end
 
@@ -579,7 +593,10 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
 
       describe 'linking' do
-        let(:sf_tag_group) { SequencescapeExcel::SpecialisedField::ChromiumTagGroup.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset) }
+        let(:sf_tag_group) do
+          SequencescapeExcel::SpecialisedField::ChromiumTagGroup.new(value: tag_group_name,
+                                                                     sample_manifest_asset: sample_manifest_asset)
+        end
         let(:sf_tag_well) { described_class.new(value: tag_well, sample_manifest_asset: sample_manifest_asset) }
 
         before do
@@ -611,7 +628,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
     it 'will not be valid without a persisted primer panel' do
       expect(described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)).to be_valid
-      expect(described_class.new(value: 'A new primer panel', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+      expect(described_class.new(value: 'A new primer panel',
+                                 sample_manifest_asset: sample_manifest_asset)).not_to be_valid
     end
 
     it 'will be valid if blank' do

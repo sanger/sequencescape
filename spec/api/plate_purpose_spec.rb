@@ -21,7 +21,7 @@ describe '/api/1/plate_purposes' do
       }}
     end
 
-    let(:response_body) {
+    let(:response_body) do
       %{{
         "plate_purpose": {
           "actions": {},
@@ -33,7 +33,7 @@ describe '/api/1/plate_purposes' do
           }
         }
       }}
-    }
+    end
     let(:response_code) { 201 }
 
     it 'supports resource creation' do
@@ -90,7 +90,7 @@ describe '/api/1/plate-purpose-uuid' do
 
     context 'when authorized' do
       let(:response_code) { 201 }
-      let(:response_body) {
+      let(:response_body) do
         '{ "plate": {
           "actions": {},
           "wells": {
@@ -98,7 +98,7 @@ describe '/api/1/plate-purpose-uuid' do
             "size": 96
           }
         }}'
-      }
+      end
 
       it 'supports resource creation' do
         expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
@@ -110,9 +110,9 @@ describe '/api/1/plate-purpose-uuid' do
 
     context 'when unuthorized' do
       let(:response_code) { 501 }
-      let(:response_body) {
+      let(:response_body) do
         '{"general": [ "requested action is not supported on this resource" ]}'
-      }
+      end
 
       it 'prevents resource creation' do
         user_api_request create(:user), :post, subject, payload

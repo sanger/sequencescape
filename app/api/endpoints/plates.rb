@@ -16,7 +16,8 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
       action(:create, to: :standard_create!)
     end
 
-    has_many(:wells,                     json: 'wells', to: 'wells', scoped: 'for_api_plate_json.in_row_major_order', per_page: 400)
+    has_many(:wells,                     json: 'wells', to: 'wells', scoped: 'for_api_plate_json.in_row_major_order',
+                                         per_page: 400)
     has_many(:submission_pools,          json: 'submission_pools', to: 'submission_pools')
     belongs_to(:plate_purpose,           json: 'plate_purpose')
 

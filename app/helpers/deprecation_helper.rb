@@ -58,7 +58,9 @@ module DeprecationHelper
         concat icon('fas', level.icon, title)
         concat tag.p(message)
         concat link_to 'See the alternative', replaced_by, class: %w[btn btn-block btn-outline-light] if replaced_by
-        concat mail_to configatron.admin_email, icon('far', 'envelope ', 'Let us know if you still need this'), class: %w[btn btn-block btn-outline-light]
+        concat mail_to configatron.admin_email, icon('far', 'envelope ',
+                                                     'Let us know if you still need this'), class: %w[btn btn-block
+                                                                                                      btn-outline-light]
       end)
       concat tag.div(class: 'card-body', &block)
     end

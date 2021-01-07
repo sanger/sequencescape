@@ -19,7 +19,8 @@ describe Billing::Report, billing: true do
     @request2.start!
     @request2.pass!
     fields = Billing.configuration.fields
-    @report = described_class.new(file_name: 'test_file', start_date: '06/04/2017', end_date: '08/04/2017', fields: fields)
+    @report = described_class.new(file_name: 'test_file', start_date: '06/04/2017', end_date: '08/04/2017',
+                                  fields: fields)
   end
 
   after do

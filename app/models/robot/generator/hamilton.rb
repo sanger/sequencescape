@@ -41,7 +41,8 @@ class Robot::Generator::Hamilton < Robot::Generator::Base
     data_object['destination'].each do |dest_plate_barcode, plate_details|
       mapping_by_well = Hash.new { |h, i| h[i] = [] }
       plate_details['mapping'].each do |mapping|
-        destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
+        destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'],
+                                                                                      plate_details['plate_size'])
         mapping_by_well[destination_position] << mapping
       end
 

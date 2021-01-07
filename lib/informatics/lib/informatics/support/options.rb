@@ -1,6 +1,6 @@
 module Informatics
   module Support
-    class Options
+    class Options # rubocop:todo Style/Documentation
       attr_reader :options
 
       def self.collect(*options)

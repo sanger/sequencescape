@@ -1,4 +1,4 @@
-class PulldownMultiplexedLibraryCreationRequest < CustomerRequest
+class PulldownMultiplexedLibraryCreationRequest < CustomerRequest # rubocop:todo Style/Documentation
   # override default behavior to not copy the aliquots
   def on_started
   end

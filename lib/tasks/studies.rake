@@ -8,7 +8,7 @@ namespace :studies do
       a << annotation
     end
 
-    for annotation in a
+    a.each do |annotation|
       puts "#{annotation.annotated.id}: Annotated to Q20: #{annotation.q20_yield}: run #{annotation.identifier}, lane #{annotation.location}"
       annotation.event_notification
     end

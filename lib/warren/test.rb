@@ -3,7 +3,7 @@
 # connection pool for use during development
 #
 class Warren::Test
-  class Channel
+  class Channel # rubocop:todo Style/Documentation
     def initialize(warren)
       @warren = warren
     end
@@ -12,6 +12,7 @@ class Warren::Test
       @warren << message
     end
   end
+
   #
   # Creates a test warren with no messages.
   # Test warrens are shared across all threads.

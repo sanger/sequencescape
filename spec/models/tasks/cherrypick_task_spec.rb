@@ -337,9 +337,15 @@ RSpec.describe CherrypickTask, type: :model do
       # with locations set we expect requests to be ordered primarily by location parentage
       let(:expected_output) do
         output = []
-        requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests_3.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
+        requests_1.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
+        requests_2.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
         output
       end
 
@@ -374,9 +380,15 @@ RSpec.describe CherrypickTask, type: :model do
       # with no locations, they should just be in plate creation order
       let(:expected_output) do
         output = []
-        requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests_1.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
+        requests_2.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
+        requests_3.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
         output
       end
 
@@ -411,9 +423,15 @@ RSpec.describe CherrypickTask, type: :model do
       # with a mixture we expect plates woth no locations to be sorted first then those with locations
       let(:expected_output) do
         output = []
-        requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] } # no location, should be first
-        requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests_1.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end # no location, should be first
+        requests_3.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
+        requests_2.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
         output
       end
 
@@ -448,9 +466,15 @@ RSpec.describe CherrypickTask, type: :model do
       # when multiple plates have the same location (e.g. a box) we expect order to be by plate creation
       let(:expected_output) do
         output = []
-        requests_1.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_2.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
-        requests_3.each { |request| output << [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
+        requests_1.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
+        requests_2.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
+        requests_3.each do |request|
+          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        end
         output
       end
 

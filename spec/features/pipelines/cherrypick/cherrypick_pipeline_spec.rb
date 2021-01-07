@@ -25,8 +25,12 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:destination_plate_barcode) { _destination_plate_barcode.barcode }
   let(:_destination_plate_barcode_2) { create(:plate_barcode) }
   let(:destination_plate_barcode_2) { _destination_plate_barcode_2.barcode }
-  let(:destination_plate_human_barcode_2) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode_2).human_barcode }
-  let(:destination_plate_human_barcode) { SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode }
+  let(:destination_plate_human_barcode_2) do
+    SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode_2).human_barcode
+  end
+  let(:destination_plate_human_barcode) do
+    SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode
+  end
   let(:target_purpose) { create :plate_purpose }
   let(:control_plate) { nil }
   let(:concentrations_required) { false }

@@ -116,7 +116,8 @@ end
 
 Given(/^a full plate called "([^"]*)" exists with purpose "([^"]*)" and barcode "([^"]*)"$/) do |name, purpose_name, barcode|
   purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
-  FactoryBot.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode, well_count: 16)
+  FactoryBot.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode,
+                                 well_count: 16)
 end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists with barcode "([^"]+)"$/ do |name, plate_name, barcode|
@@ -171,8 +172,10 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
   source = Plate.find_by(name: source_name)
   destination = Plate.find_by(name: dest_name)
   count.to_i.times do |i|
-    FactoryBot.create(:transfer_request, asset: source.wells.in_row_major_order[i], target_asset: destination.wells.in_row_major_order[i], state: state)
-    Well::Link.create!(source_well: source.wells.in_row_major_order[i], target_well: destination.wells.in_row_major_order[i], type: 'stock')
+    FactoryBot.create(:transfer_request, asset: source.wells.in_row_major_order[i],
+                                         target_asset: destination.wells.in_row_major_order[i], state: state)
+    Well::Link.create!(source_well: source.wells.in_row_major_order[i],
+                       target_well: destination.wells.in_row_major_order[i], type: 'stock')
   end
   AssetLink.create(ancestor: source, descendant: destination)
 end
@@ -192,7 +195,8 @@ Given /^I have a plate with uuid "([^"]*)" with the following wells:$/ do |uuid,
   plate = Uuid.find_by(external_id: uuid).resource
   well_details.hashes.each do |well_detail|
     well = Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: 96), plate: plate)
-    well.well_attribute.update!(concentration: well_detail[:measured_concentration], measured_volume: well_detail[:measured_volume])
+    well.well_attribute.update!(concentration: well_detail[:measured_concentration],
+                                measured_volume: well_detail[:measured_volume])
   end
 end
 

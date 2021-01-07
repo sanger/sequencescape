@@ -1,6 +1,8 @@
-module Event::RequestDescriptorUpdateEvent
+module Event::RequestDescriptorUpdateEvent # rubocop:todo Style/Documentation
   def self.included(base)
-    base.after_create(:update_metadata_for_request, if: ->(event) { event.eventful.is_a?(Request) and event.descriptor_key.present? })
+    base.after_create(:update_metadata_for_request, if: lambda { |event|
+                                                          event.eventful.is_a?(Request) and event.descriptor_key.present?
+                                                        })
   end
 
   def pass_or_fail_event?
@@ -19,7 +21,7 @@ module Event::RequestDescriptorUpdateEvent
   def update_metadata_for_request
     set_request_metadata unless pass_or_fail_event?
 
-    if request.failed? or request.cancelled?
+    if request.failed? || request.cancelled?
       set_request_metadata
       return
     end

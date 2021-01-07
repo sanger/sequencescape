@@ -12,5 +12,6 @@ class AliquotIndex < ApplicationRecord
 
   validates :aliquot, presence: true
   validates :lane, presence: true
-  validates :aliquot_index, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 9999, allow_blank?: false }
+  validates :aliquot_index, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 9999,
+                                            allow_blank?: false }
 end

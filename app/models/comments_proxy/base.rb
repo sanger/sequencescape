@@ -23,7 +23,8 @@ module CommentsProxy
                                  # We need to describe how we select values which aren't included in the group by
                                  # This is required with default configurations of MySQL 5.7 and ensures reproducible
                                  # queries with other set-ups.
-                                 ['MIN(id) AS id', :title, :user_id, :description, 'MIN(created_at) AS created_at', 'MIN(updated_at) AS updated_at']
+                                 ['MIN(id) AS id', :title, :user_id, :description, 'MIN(created_at) AS created_at',
+                                  'MIN(updated_at) AS updated_at']
                                ).group(:description, :title, :user_id)
     end
 
@@ -37,7 +38,9 @@ module CommentsProxy
     end
 
     def add_comment_to_submissions(comment)
-      Submission.where(id: submission_ids).find_each { |submission| submission.add_comment(comment.description, comment.user, comment.title) }
+      Submission.where(id: submission_ids).find_each do |submission|
+        submission.add_comment(comment.description, comment.user, comment.title)
+      end
     end
 
     private

@@ -13,7 +13,7 @@
 #   }
 # }
 
-module SubmissionSerializer
+module SubmissionSerializer # rubocop:todo Style/Documentation
   STRAIGHT_CLONE = %w[name submission_class_name].freeze
   SP_STRAIGHT_CLONE = %i[info_differential asset_input_methods request_options].freeze
 
@@ -25,9 +25,15 @@ module SubmissionSerializer
       new_attributes[key.to_sym] = attributes[key].duplicable? ? attributes[key].dup : attributes[key]
     end
 
-    new_attributes[:product_line] = ProductLine.find(attributes['product_line_id']).name if attributes['product_line_id']
-    new_attributes[:product_catalogue] = ProductCatalogue.find(attributes['product_catalogue_id']).name if attributes['product_catalogue_id']
-    new_attributes[:superceded_by] = SubmissionTemplate.find(attributes['superceded_by_id']).name if attributes['superceded_by_id'] > 0
+    if attributes['product_line_id']
+      new_attributes[:product_line] = ProductLine.find(attributes['product_line_id']).name
+    end
+    if attributes['product_catalogue_id']
+      new_attributes[:product_catalogue] = ProductCatalogue.find(attributes['product_catalogue_id']).name
+    end
+    if attributes['superceded_by_id'] > 0
+      new_attributes[:superceded_by] = SubmissionTemplate.find(attributes['superceded_by_id']).name
+    end
     new_attributes[:superceded_by_id] = attributes['superceded_by_id']
     new_attributes[:superceded_at] = attributes['superceded_at'].to_s if attributes['superceded_at']
 
@@ -57,7 +63,9 @@ module SubmissionSerializer
     end
 
     st[:product_line_id] = ProductLine.find_or_create_by(name: hash[:product_line]).id if hash[:product_line]
-    st[:product_catalogue_id] = ProductCatalogue.find_or_create_by(name: hash[:product_catalogue]).id if hash[:product_catalogue]
+    if hash[:product_catalogue]
+      st[:product_catalogue_id] = ProductCatalogue.find_or_create_by(name: hash[:product_catalogue]).id
+    end
     st[:superceded_by_id] = hash.has_key?(:superceded_by) ? SubmissionTemplate.find_by(name: hash[:superceded_by]).try(:id) || -2 : hash[:superceded_by_id] || -1
     st[:superceded_at] =  DateTime.parse(hash[:superceded_at]) if hash.has_key?(:superceded_at)
 
@@ -73,7 +81,9 @@ module SubmissionSerializer
       sp[:request_options][:initial_state] = new_initial
     end
 
-    sp[:request_type_ids_list] = ensp[:request_types].map { |rtk| [(RequestType.find_by(key: rtk).try(:id) || raise(StandardError, "Could not find #{rtk}"))] }
+    sp[:request_type_ids_list] = ensp[:request_types].map do |rtk|
+      [(RequestType.find_by(key: rtk).try(:id) || raise(StandardError, "Could not find #{rtk}"))]
+    end
     sp[:order_role_id] = OrderRole.find_or_create_by(role: ensp[:order_role]).id if ensp[:order_role]
 
     SubmissionTemplate.create!(st)

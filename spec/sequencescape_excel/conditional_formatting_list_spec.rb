@@ -39,12 +39,14 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList, type: :model, samp
   end
 
   # TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from worksheet is ugly.
+  # rubocop:todo Layout/LineLength
   it '#update with formula should correctly assign the formula to the worksheet' do
-    conditional_formatting_list = described_class.new(rule_1: FactoryBot.attributes_for(:conditional_formatting_with_formula))
+    conditional_formatting_list = described_class.new(rule_1: attributes_for(:conditional_formatting_with_formula))
     conditional_formatting_list.update(options)
     expect(conditional_formatting_list).to be_saved
-    expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(ERB::Util.html_escape(SequencescapeExcel::Formula.new(options.merge(FactoryBot.attributes_for(:conditional_formatting_with_formula)[:formula])).to_s))
+    expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(ERB::Util.html_escape(SequencescapeExcel::Formula.new(options.merge(attributes_for(:conditional_formatting_with_formula)[:formula])).to_s))
   end
+  # rubocop:enable Layout/LineLength
 
   it 'is comparable' do
     expect(described_class.new(rules)).to eq(conditional_formatting_list)

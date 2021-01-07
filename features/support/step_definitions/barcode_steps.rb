@@ -5,11 +5,11 @@ Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
 end
 
 Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
-  step(%Q{the plate barcode webservice returns "#{barcode}"})
+  step(%{the plate barcode webservice returns "#{barcode}"})
 end
 
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
-  (start.to_i..finish.to_i).each { |i| step(%Q{the plate barcode webservice returns "#{i}"}) }
+  (start.to_i..finish.to_i).each { |i| step(%{the plate barcode webservice returns "#{i}"}) }
 end
 
 Given /^the "([^"]+)" barcode printer "([^"]+)" exists$/ do |type_name, name|

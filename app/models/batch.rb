@@ -219,7 +219,7 @@ class Batch < ApplicationRecord
     end
   end
 
-  alias_method :ordered_requests, :requests
+  alias ordered_requests requests
 
   def assigned_user
     assignee.try(:login) || ''
@@ -356,20 +356,26 @@ class Batch < ApplicationRecord
       update_batch_state(reason, comment)
     end
   end
-  alias_method(:recycle_request_ids, :remove_request_ids)
+  alias recycle_request_ids remove_request_ids
 
   # Remove a request from the batch and reset it to a point where it can be put back into
   # the pending queue.
   def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{id} removed at #{Time.zone.now}", current_user) unless current_user.nil?
+      unless current_user.nil?
+        request.add_comment("Used to belong to Batch #{id} removed at #{Time.zone.now}",
+                            current_user)
+      end
       pipeline.detach_request_from_batch(self, request)
     end
   end
 
   def return_request_to_inbox(request, current_user = nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{id} returned to inbox unstarted at #{Time.zone.now}", current_user) unless current_user.nil?
+      unless current_user.nil?
+        request.add_comment("Used to belong to Batch #{id} returned to inbox unstarted at #{Time.zone.now}",
+                            current_user)
+      end
       request.return_pending_to_inbox!
     end
   end
@@ -410,25 +416,36 @@ class Batch < ApplicationRecord
     return false if batch_info.empty?
 
     # Find the two lanes that are to be swapped
-    batch_request_left  = BatchRequest.find_by(batch_id: batch_info['batch_1']['id'], position: batch_info['batch_1']['lane']) or errors.add('Swap: ', 'The first lane cannot be found')
-    batch_request_right = BatchRequest.find_by(batch_id: batch_info['batch_2']['id'], position: batch_info['batch_2']['lane']) or errors.add('Swap: ', 'The second lane cannot be found')
-    return unless batch_request_left.present? and batch_request_right.present?
+    batch_request_left = BatchRequest.find_by(batch_id: batch_info['batch_1']['id'],
+                                              position: batch_info['batch_1']['lane']) or errors.add('Swap: ',
+                                                                                                     'The first lane cannot be found')
+    batch_request_right = BatchRequest.find_by(batch_id: batch_info['batch_2']['id'],
+                                               position: batch_info['batch_2']['lane']) or errors.add('Swap: ',
+                                                                                                      'The second lane cannot be found')
+    return unless batch_request_left.present? && batch_request_right.present?
 
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
-      batch_request_left.request.lab_events.each  { |event| event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id  }
-      batch_request_right.request.lab_events.each { |event| event.update!(batch_id: batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id }
+      batch_request_left.request.lab_events.each do |event|
+        event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id
+      end
+      batch_request_right.request.lab_events.each do |event|
+        event.update!(batch_id: batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id
+      end
 
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but ensuring that the
       # two requests don't clash on position by removing one of them.
       original_left_batch_id, original_left_position, original_right_request_id = batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
       batch_request_right.destroy
       batch_request_left.update!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
-      batch_request_right = BatchRequest.create!(batch_id: original_left_batch_id, position: original_left_position, request_id: original_right_request_id)
+      batch_request_right = BatchRequest.create!(batch_id: original_left_batch_id, position: original_left_position,
+                                                 request_id: original_right_request_id)
 
       # Finally record the fact that the batch was swapped
-      batch_request_left.batch.lab_events.create!(description: 'Lane swap', message: "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}", user_id: current_user.id)
-      batch_request_right.batch.lab_events.create!(description: 'Lane swap', message: "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}", user_id: current_user.id)
+      batch_request_left.batch.lab_events.create!(description: 'Lane swap',
+                                                  message: "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}", user_id: current_user.id)
+      batch_request_right.batch.lab_events.create!(description: 'Lane swap',
+                                                   message: "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}", user_id: current_user.id)
     end
 
     true
@@ -454,7 +471,8 @@ class Batch < ApplicationRecord
     return if has_event('robot verified')
 
     pipeline.robot_verified!(self)
-    lab_events.create(description: 'Robot verified', message: 'Robot verification completed and source volumes updated.', user_id: user_id)
+    lab_events.create(description: 'Robot verified',
+                      message: 'Robot verification completed and source volumes updated.', user_id: user_id)
   end
 
   def self.prefix
@@ -498,7 +516,7 @@ class Batch < ApplicationRecord
 
       batch
     end
-    alias_method :find_from_barcode, :find_by_barcode
+    alias find_from_barcode find_by_barcode
   end
 
   def request_count

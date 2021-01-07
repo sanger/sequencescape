@@ -1,4 +1,4 @@
-module Pipeline::BatchValidation
+module Pipeline::BatchValidation # rubocop:todo Style/Documentation
   def validation_of_batch(batch)
     # Using throw and catch enables us to skip over the request validation without actually
     # having to know whether it was needed or not.
@@ -11,7 +11,7 @@ module Pipeline::BatchValidation
 
   def validation_of_requests(requests)
     throw :no_requests_in_batch if requests.blank?
-    yield('too many requests specified') if not max_size.nil? and requests.size > max_size
+    yield('too many requests specified') if (not max_size.nil?) && (requests.size > max_size)
     approved_request_types = request_types_including_controls.map(&:id)
     yield('has incorrect type') unless requests.all? { |r| approved_request_types.include?(r.request_type_id) }
   end

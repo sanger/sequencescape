@@ -1,4 +1,4 @@
-class GenotypingPipeline < Pipeline
+class GenotypingPipeline < Pipeline # rubocop:todo Style/Documentation
   include Pipeline::InboxGroupedBySubmission
   include Pipeline::GroupByParent
 

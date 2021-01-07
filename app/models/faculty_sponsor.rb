@@ -1,4 +1,4 @@
-class FacultySponsor < ApplicationRecord
+class FacultySponsor < ApplicationRecord # rubocop:todo Style/Documentation
   include SharedBehaviour::Named
   extend Attributable::Association::Target
 
@@ -15,7 +15,7 @@ class FacultySponsor < ApplicationRecord
     studies.count
   end
 
-  module Associations
+  module Associations # rubocop:todo Style/Documentation
     def self.included(base)
       base.validates_presence_of :faculty_sponsor
       base.belongs_to :faculty_sponsor

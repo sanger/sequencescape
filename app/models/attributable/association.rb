@@ -1,6 +1,6 @@
 module Attributable
-  class Association
-    module Target
+  class Association # rubocop:todo Style/Documentation
+    module Target # rubocop:todo Style/Documentation
       def self.extended(base)
         base.class_eval do
           include InstanceMethods
@@ -16,7 +16,7 @@ module Attributable
         nil
       end
 
-      module InstanceMethods
+      module InstanceMethods # rubocop:todo Style/Documentation
         def for_select_dropdown
           [name, id]
         end

@@ -1,4 +1,4 @@
-module Qcable::Statemachine
+module Qcable::Statemachine # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       ## State machine
@@ -93,7 +93,9 @@ module Qcable::Statemachine
     valid_events = aasm.events(permitted: true).select do |e|
       e.options[:allow_automated?] && e.transitions_to_state?(target&.to_sym)
     end
-    raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
+    unless valid_events.size == 1
+      raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}"
+    end
 
     valid_events.first.name
   end

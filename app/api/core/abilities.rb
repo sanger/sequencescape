@@ -25,7 +25,7 @@ module Core::Abilities
     CompositeAbility.new(request)
   end
 
-  module ActionBehaviour
+  module ActionBehaviour # rubocop:todo Style/Documentation
     # Modify the behaviour so that we can only access the action if the ability permits and the super
     # implementation permits it too.
     def accessible_action?(handler, action, request, object)
@@ -48,7 +48,7 @@ module Core::Abilities
     end
   end
 
-  class Base
+  class Base # rubocop:todo Style/Documentation
     class Recorder #:nodoc:
       def initialize
         @recorded = []
@@ -63,7 +63,7 @@ module Core::Abilities
       end
     end
 
-    module ClassMethods
+    module ClassMethods # rubocop:todo Style/Documentation
       def recorder_helper(name)
         line = __LINE__ + 1
         singleton_class.class_eval("
@@ -74,7 +74,7 @@ module Core::Abilities
       end
 
       def record(recorder, &block)
-        recorder.tap { |recorder| recorder.record(&block) if block_given? }
+        recorder.tap { |recorder| recorder.record(&block) if block }
       end
       private :record
     end
@@ -98,7 +98,7 @@ module Core::Abilities
     private :abilitise
   end
 
-  class User < Base
+  class User < Base # rubocop:todo Style/Documentation
     unregistered do
       # The API is designed to be read-only, at least.
       can(:read, :all)
@@ -133,7 +133,7 @@ module Core::Abilities
     end
   end
 
-  class Application < Base
+  class Application < Base # rubocop:todo Style/Documentation
     recorder_helper(:tag_plates)
 
     def initialize(request)
@@ -151,7 +151,9 @@ module Core::Abilities
 
       # Every application is entitled to be able to lookup UUIDs and make searches
       can(:create, [Endpoints::Uuids::Model::Lookup, Endpoints::Uuids::Model::Bulk])
-      can(:create, [Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All, Endpoints::Searches::Instance::Last])
+      can(:create,
+          [Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All,
+           Endpoints::Searches::Instance::Last])
     end
 
     # Registered applications can manage all objects that allow it and can have unauthenicated users.
@@ -176,7 +178,7 @@ module Core::Abilities
     # so we need to modify that too.
     def authenticate!(user_ability)
       single_sign_on_cookie = @request.authentication_code
-      if single_sign_on_cookie.blank? and cannot?(:authenticate, :nil)
+      if single_sign_on_cookie.blank? && cannot?(:authenticate, :nil)
         Core::Service::Authentication::UnauthenticatedError.no_cookie!
       elsif single_sign_on_cookie.present?
         user = ::User.find_by(api_key: single_sign_on_cookie) or Core::Service::Authentication::UnauthenticatedError.unauthenticated!

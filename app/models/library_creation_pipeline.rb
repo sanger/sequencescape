@@ -1,4 +1,4 @@
-class LibraryCreationPipeline < Pipeline
+class LibraryCreationPipeline < Pipeline # rubocop:todo Style/Documentation
   self.library_creation = true
   self.can_create_stock_assets = true
   self.generate_target_assets_on_batch_create = true

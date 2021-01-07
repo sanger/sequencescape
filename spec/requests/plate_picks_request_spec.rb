@@ -11,7 +11,9 @@ RSpec.describe 'PlatePicks', type: :request do
     ]
   end
   let(:released_other_batch) { build :batch, state: 'released', request_attributes: [{ asset: plate.wells[0] }] }
-  let(:pending_cherrypick_batch) { build :cherrypick_batch, state: 'pending', request_attributes: [{ asset: plate.wells[0] }] }
+  let(:pending_cherrypick_batch) do
+    build :cherrypick_batch, state: 'pending', request_attributes: [{ asset: plate.wells[0] }]
+  end
   # We exclude the pending batches here, as they don't have pick information.
   # Initially we still showed them, to improve visibility of pending work, but UAT feedback
   # was that this was confusing, and they'd prefer to hide them.

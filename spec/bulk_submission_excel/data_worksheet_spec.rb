@@ -88,14 +88,22 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
 
     it 'populates the data as expected' do
       [
-        [user_login, template_name, wells['A1'].projects.first.name, wells['A1'].studies.first.name, nil, plate.human_barcode, 'A1'],
-        [user_login, template_name, wells['B1'].projects.first.name, wells['B1'].studies.first.name, nil, plate.human_barcode, 'B1'],
-        [user_login, template_name, wells['C1'].projects.first.name, wells['C1'].studies.first.name, nil, plate.human_barcode, 'C1'],
-        [user_login, template_name, wells['D1'].projects.first.name, wells['D1'].studies.first.name, nil, plate.human_barcode, 'D1'],
-        [user_login, template_name, wells['E1'].projects.first.name, wells['E1'].studies.first.name, nil, plate.human_barcode, 'E1'],
-        [user_login, template_name, wells['F1'].projects.first.name, wells['F1'].studies.first.name, nil, plate.human_barcode, 'F1'],
-        [user_login, template_name, wells['G1'].projects.first.name, wells['G1'].studies.first.name, nil, plate.human_barcode, 'G1'],
-        [user_login, template_name, wells['H1'].projects.first.name, wells['H1'].studies.first.name, nil, plate.human_barcode, 'H1']
+        [user_login, template_name, wells['A1'].projects.first.name, wells['A1'].studies.first.name, nil,
+         plate.human_barcode, 'A1'],
+        [user_login, template_name, wells['B1'].projects.first.name, wells['B1'].studies.first.name, nil,
+         plate.human_barcode, 'B1'],
+        [user_login, template_name, wells['C1'].projects.first.name, wells['C1'].studies.first.name, nil,
+         plate.human_barcode, 'C1'],
+        [user_login, template_name, wells['D1'].projects.first.name, wells['D1'].studies.first.name, nil,
+         plate.human_barcode, 'D1'],
+        [user_login, template_name, wells['E1'].projects.first.name, wells['E1'].studies.first.name, nil,
+         plate.human_barcode, 'E1'],
+        [user_login, template_name, wells['F1'].projects.first.name, wells['F1'].studies.first.name, nil,
+         plate.human_barcode, 'F1'],
+        [user_login, template_name, wells['G1'].projects.first.name, wells['G1'].studies.first.name, nil,
+         plate.human_barcode, 'G1'],
+        [user_login, template_name, wells['H1'].projects.first.name, wells['H1'].studies.first.name, nil,
+         plate.human_barcode, 'H1']
       ].each_with_index do |row_info, row_offset|
         row = 3 + row_offset
         row_info.each_with_index do |value, column_offset|

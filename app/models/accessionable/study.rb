@@ -5,7 +5,7 @@
 # A study can either be open (ENA) or managed (EGA) which determines which {AccessionService} it
 # uses.
 module Accessionable
-  class Study < Base
+  class Study < Base # rubocop:todo Style/Documentation
     attr_reader :study_title, :description, :center_study_name, :study_abstract, :existing_study_type, :tags
 
     def initialize(study)
@@ -42,9 +42,9 @@ module Accessionable
     def xml
       xml = Builder::XmlMarkup.new
       xml.instruct!
-      xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-        xml.STUDY(alias: self.alias, accession: accession_number) {
-          xml.DESCRIPTOR {
+      xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') do
+        xml.STUDY(alias: self.alias, accession: accession_number) do
+          xml.DESCRIPTOR do
             xml.STUDY_TITLE         study_title
             xml.STUDY_DESCRIPTION   description
             xml.CENTER_PROJECT_NAME center_study_name
@@ -58,16 +58,16 @@ module Accessionable
             else
               xml.STUDY_TYPE(existing_study_type: ::Study::Other_type, new_study_type: study_type)
             end
-          }
-          xml.STUDY_ATTRIBUTES {
+          end
+          xml.STUDY_ATTRIBUTES do
             tags.each do |tag|
-              xml.STUDY_ATTRIBUTE {
+              xml.STUDY_ATTRIBUTE do
                 tag.build(xml)
-              }
+              end
             end
-          } if tags.present?
-        }
-      }
+          end if tags.present?
+        end
+      end
       xml.target!
     end
 

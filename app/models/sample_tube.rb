@@ -1,4 +1,4 @@
-class SampleTube < Tube
+class SampleTube < Tube # rubocop:todo Style/Documentation
   include Api::SampleTubeIO::Extensions
   include ModelExtensions::SampleTube
   include StandardNamedScopes

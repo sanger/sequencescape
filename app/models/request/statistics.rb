@@ -1,5 +1,5 @@
-module Request::Statistics
-  class Counter
+module Request::Statistics # rubocop:todo Style/Documentation
+  class Counter # rubocop:todo Style/Documentation
     def initialize(statistics = {})
       @statistics = Hash.new(0).merge(statistics)
     end
@@ -12,11 +12,11 @@ module Request::Statistics
     end
 
     def completed
-      %w[passed failed].map(&method(:[])).sum
+      %w[passed failed].sum(&method(:[]))
     end
 
     def pending
-      %w[pending blocked].map(&method(:[])).sum
+      %w[pending blocked].sum(&method(:[]))
     end
 
     %i[started passed failed cancelled].each do |direct_type|
@@ -52,7 +52,7 @@ module Request::Statistics
     end
   end
 
-  class Summary
+  class Summary # rubocop:todo Style/Documentation
     def initialize
       @counters = Hash.new { |h, k| h[k] = Counter.new }
     end

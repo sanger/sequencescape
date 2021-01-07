@@ -20,7 +20,9 @@ RSpec.describe SearchesController do
     let!(:ignore_submission) { create :submission, name: 'IgnoreMeSub' }
 
     let!(:sample_with_supplier_name) { create :sample, sample_metadata_attributes: { supplier_name: 'FindMe' } }
-    let!(:sample_with_accession_number) { create :sample, sample_metadata_attributes: { sample_ebi_accession_number: 'FindMe' } }
+    let!(:sample_with_accession_number) do
+      create :sample, sample_metadata_attributes: { sample_ebi_accession_number: 'FindMe' }
+    end
 
     describe '#index' do
       setup { get :index, params: { q: query }, session: { user: current_user.id } }

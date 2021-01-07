@@ -82,12 +82,14 @@ RSpec.describe Aliquot, type: :model do
     end
 
     it 'allows mixing different tags with a tag 2' do
-      asset.aliquots << build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) << build(:aliquot, tag: tag2, tag2: tag1, sample: sample2)
+      asset.aliquots << build(:aliquot, tag: tag1, tag2: tag1,
+                                        sample: sample1) << build(:aliquot, tag: tag2, tag2: tag1, sample: sample2)
       expect(asset.save).to be true
     end
 
     it 'allows mixing same tags with a different tag 2' do
-      asset.aliquots << build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) << build(:aliquot, tag: tag1, tag2: tag2, sample: sample2)
+      asset.aliquots << build(:aliquot, tag: tag1, tag2: tag1,
+                                        sample: sample1) << build(:aliquot, tag: tag1, tag2: tag2, sample: sample2)
       expect(asset.save).to be true
     end
   end
@@ -136,7 +138,8 @@ RSpec.describe Aliquot, type: :model do
       expect(aliquot.substitution_hash).to be nil
       aliquot.update!(tag_id: 42, insert_size_from: 5, insert_size_to: 15)
       expect(aliquot.other_attributes_for_substitution).to eq('insert_size_from' => 5, 'insert_size_to' => 15)
-      expect(aliquot.substitution_hash).to eq(sample_id: aliquot.sample_id, library_id: aliquot.library_id, original_tag_id: tag_id, substitute_tag_id: 42, 'insert_size_from' => 5, 'insert_size_to' => 15)
+      expect(aliquot.substitution_hash).to eq(sample_id: aliquot.sample_id, library_id: aliquot.library_id,
+                                              original_tag_id: tag_id, substitute_tag_id: 42, 'insert_size_from' => 5, 'insert_size_to' => 15)
     end
   end
 
@@ -147,6 +150,7 @@ RSpec.describe Aliquot, type: :model do
     default_project_cost_code = aliquots.last.project.project_metadata.project_cost_code
     receptacle = create :empty_well
     receptacle.aliquots << aliquots
-    expect(receptacle.aliquots.count_by_project_cost_code).to eq('new_cost_code' => 1, default_project_cost_code => 3, nil => 1)
+    expect(receptacle.aliquots.count_by_project_cost_code).to eq('new_cost_code' => 1, default_project_cost_code => 3,
+                                                                 nil => 1)
   end
 end

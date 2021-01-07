@@ -9,7 +9,9 @@ module Aliquot::Aliquotable
       has_many :aliquots
       has_many :receptacles, ->() { distinct }, through: :aliquots
       has_one :primary_aliquot, ->() { order('created_at ASC, aliquots.id ASC').readonly }, class_name: 'Aliquot'
-      has_one :primary_receptacle, ->() { order('aliquots.created_at ASC, aliquots.id ASC') }, through: :primary_aliquot, source: :receptacle
+      has_one :primary_receptacle, lambda {
+                                     order('aliquots.created_at ASC, aliquots.id ASC')
+                                   }, through: :primary_aliquot, source: :receptacle
 
       has_many :requests, through: :assets
       has_many :submissions, through: :requests
@@ -18,7 +20,7 @@ module Aliquot::Aliquotable
     end
   end
 
-  module ClassMethods
+  module ClassMethods # rubocop:todo Style/Documentation
     def receptacle_alias(name, options = {}, &block)
       has_many(name, ->() { distinct }, options.merge(through: :aliquots, source: :receptacle), &block)
     end

@@ -1,4 +1,4 @@
-module SharedBehaviour::Indestructable
+module SharedBehaviour::Indestructable # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       before_destroy :prevent_destruction

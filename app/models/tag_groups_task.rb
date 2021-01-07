@@ -1,4 +1,4 @@
-class TagGroupsTask < Task
+class TagGroupsTask < Task # rubocop:todo Style/Documentation
   def partial
     'tag_groups_batches'
   end

@@ -64,7 +64,10 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
   end
 
   it 'raises an error if sample manifest is not valid' do
-    expect { described_class.new(attributes.except(:study_id), user, configuration).execute }.to raise_error(ActiveRecord::RecordInvalid)
+    expect do
+      described_class.new(attributes.except(:study_id), user,
+                          configuration).execute
+    end.to raise_error(ActiveRecord::RecordInvalid)
   end
 
   it 'generates sample manifest to create details_array' do

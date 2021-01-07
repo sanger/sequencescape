@@ -48,7 +48,7 @@ FactoryBot.define do
   end
 
   factory :qcable do
-    # Note: We don't use the automatic association building here as
+    # NOTE: We don't use the automatic association building here as
     # we rely on attributes_for, which doesn't seem to handle it well.
     # Incidentally we use attributes_for here as factory_bot instantiates
     # the object before setting attributes, which messes up the state machine

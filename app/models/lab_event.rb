@@ -1,6 +1,6 @@
 require_dependency 'broadcast_event/lab_event'
 
-class LabEvent < ApplicationRecord
+class LabEvent < ApplicationRecord # rubocop:todo Style/Documentation
   include ActsAsDescriptable
 
   CHIP_BARCODE_STEPS = ['Cluster generation', 'Add flowcell chip barcode', 'Loading'].freeze

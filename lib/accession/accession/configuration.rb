@@ -1,5 +1,5 @@
 module Accession
-  class Configuration
+  class Configuration # rubocop:todo Style/Documentation
     include Accession::Helpers
     include Accession::Equality
 

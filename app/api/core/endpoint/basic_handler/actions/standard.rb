@@ -1,4 +1,4 @@
-module Core::Endpoint::BasicHandler::Actions::Standard
+module Core::Endpoint::BasicHandler::Actions::Standard # rubocop:todo Style/Documentation
   def self.extended(base)
     base.class_eval do
       include InstanceMethods
@@ -13,7 +13,7 @@ module Core::Endpoint::BasicHandler::Actions::Standard
     standard_actions.merge!(Hash[names.map { |a| [a.to_sym, a.to_sym] }])
   end
 
-  module InstanceMethods
+  module InstanceMethods # rubocop:todo Style/Documentation
     def standard_update!(request, _)
       request.update!
     end

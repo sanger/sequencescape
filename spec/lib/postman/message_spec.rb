@@ -41,7 +41,8 @@ RSpec.describe Postman::Message do
 
       it 'deadletters the message if an exception is raised' do
         allow(Sample).to receive(:find).with(1).and_return(sample)
-        allow(sample).to receive(:broadcast).and_raise(NameError, "undefined local variable or method `fasdgsf' for main:Object'")
+        allow(sample).to receive(:broadcast).and_raise(NameError,
+                                                       "undefined local variable or method `fasdgsf' for main:Object'")
         expect(main_exchange).to receive(:nack).with('delivery_tag')
         subject.process
       end

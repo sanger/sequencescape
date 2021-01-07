@@ -35,7 +35,8 @@ class OwnerTest < ActionController::TestCase
 
     should 'be updated when stuff happens' do
       @user2 = create :user
-      @tf_event = Transfer::BetweenPlates.create!(source: @parent_plate, destination: @child_plate, user: @user2, transfers: { 'A1' => 'A1' })
+      @tf_event = Transfer::BetweenPlates.create!(source: @parent_plate, destination: @child_plate, user: @user2,
+                                                  transfers: { 'A1' => 'A1' })
       assert_equal @child_plate.owner, @user2
       assert_equal @child_plate.plate_owner.eventable, @tf_event
     end

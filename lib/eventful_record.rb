@@ -1,4 +1,4 @@
-module EventfulRecord
+module EventfulRecord # rubocop:todo Style/Documentation
   def has_many_events(&block)
     has_many(:events, ->() { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy) do
       def self.event_constructor(name, event_class, event_class_method)
@@ -19,6 +19,8 @@ module EventfulRecord
   end
 
   def has_one_event_with_family(event_family, &block)
-    has_one(:"#{event_family}_event", ->() { order(id: :desc).where(family: event_family) }, class_name: 'Event', as: :eventful, &block)
+    has_one(:"#{event_family}_event", lambda {
+                                        order(id: :desc).where(family: event_family)
+                                      }, class_name: 'Event', as: :eventful, &block)
   end
 end

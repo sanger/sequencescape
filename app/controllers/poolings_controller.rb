@@ -19,6 +19,8 @@ class PoolingsController < ApplicationController
   end
 
   def pooling_params
-    params.require(:pooling).permit(:stock_mx_tube_required, :count, :barcode_printer, barcodes: []) if params[:pooling].present?
+    if params[:pooling].present?
+      params.require(:pooling).permit(:stock_mx_tube_required, :count, :barcode_printer, barcodes: [])
+    end
   end
 end

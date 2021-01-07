@@ -1,4 +1,4 @@
-class Endpoints::Orders < Core::Endpoint::Base
+class Endpoints::Orders < Core::Endpoint::Base # rubocop:todo Style/Documentation
   model do
   end
 

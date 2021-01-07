@@ -1,4 +1,4 @@
-class TagGroup < ApplicationRecord
+class TagGroup < ApplicationRecord # rubocop:todo Style/Documentation
   CHROMIUM_ADAPTER_TYPE = 'Chromium'.freeze
 
   include Uuid::Uuidable

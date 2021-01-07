@@ -1,4 +1,4 @@
-class Product < ApplicationRecord
+class Product < ApplicationRecord # rubocop:todo Style/Documentation
   include SharedBehaviour::Indestructable
   include SharedBehaviour::Deprecatable
 

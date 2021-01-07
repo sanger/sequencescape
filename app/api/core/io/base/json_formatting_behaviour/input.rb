@@ -1,5 +1,5 @@
-module ::Core::Io::Base::JsonFormattingBehaviour::Input
-  class ReadOnlyAttribute < ::Core::Service::Error
+module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Documentation
+  class ReadOnlyAttribute < ::Core::Service::Error # rubocop:todo Style/Documentation
     def initialize(attribute)
       super('is read-only')
       @attribute = attribute
@@ -9,6 +9,8 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       response.content_error(422, @attribute => [message])
     end
   end
+
+  NESTED_SUPPORTING_RELATIONSHIPS = %i[belongs_to has_one].freeze
 
   def self.extended(base)
     base.class_eval do
@@ -49,8 +51,11 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
         next_model, next_step =
           if model.nil?
             [nil, step]
-          elsif association = model.reflections[step]
-            raise StandardError, 'Nested attributes only works with belongs_to or has_one' unless %i[belongs_to has_one].include?(association.macro.to_sym)
+          # Brackets here indicate that assignment is intentional and make Rubocop happy
+          elsif (association = model.reflections[step])
+            unless NESTED_SUPPORTING_RELATIONSHIPS.include?(association.macro.to_sym)
+              raise StandardError, 'Nested attributes only works with belongs_to or has_one'
+            end
 
             [association.klass, :"#{step}_attributes"]
           else
@@ -74,9 +79,9 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
       code << if model.nil?
                 "    section[:#{leaf}] = value #nil"
-              elsif model.respond_to?(:reflections) and association = model.reflections[leaf]
+              elsif model.respond_to?(:reflections) && (association = model.reflections[leaf])
                 "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
-              elsif model.respond_to?(:klass) and association = model.klass.reflections[leaf]
+              elsif model.respond_to?(:klass) && (association = model.klass.reflections[leaf])
                 "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
               else
                 "    section[:#{leaf}] = value"
@@ -91,7 +96,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
     # Generate the code that the instance will actually use ...
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval(%{
       def self.map_parameters_to_attributes(params, object = nil, nested_in_another_model = false)
         #{initial_structure.inspect}.tap do |attributes|
           attributes.deep_merge!(super)
@@ -116,7 +121,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
   end
   private :process_if_present
 
-  module AssociationHandling
+  module AssociationHandling # rubocop:todo Style/Documentation
     def association_class(association, object)
       object.try(association).try(:class) || model_for_input.reflections[association.to_s].klass
     end

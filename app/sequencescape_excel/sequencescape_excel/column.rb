@@ -9,7 +9,8 @@ module SequencescapeExcel
   class Column
     include Helpers::Attributes
 
-    setup_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute, :range,
+    setup_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings,
+                     :attribute, :range,
                      defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
 
     validates_presence_of :name, :heading
@@ -144,7 +145,9 @@ module SequencescapeExcel
       end
 
       def inspect
-        "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, @validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, @conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
+        "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, "\
+        "@validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, "\
+        "@conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
       end
 
       private

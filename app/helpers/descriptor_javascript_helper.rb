@@ -1,4 +1,4 @@
-module DescriptorJavascriptHelper
+module DescriptorJavascriptHelper # rubocop:todo Style/Documentation
   def link_to_remove_asset(index, &block)
     link_to_with_onclick_only("removeAsset(#{index});return false;", &block)
   end

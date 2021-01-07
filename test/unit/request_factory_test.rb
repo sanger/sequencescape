@@ -9,7 +9,8 @@ class RequestcreateTest < ActiveSupport::TestCase
         @project = create(:project)
         @project.project_metadata.update!(budget_division: BudgetDivision.create!(name: 'Test'))
         @order = create(:order, project: @project)
-        @request = create(:request, request_type: create(:request_type), project: @project, asset: create(:sample_tube), target_asset: create(:well))
+        @request = create(:request, request_type: create(:request_type), project: @project,
+                                    asset: create(:sample_tube), target_asset: create(:well))
       end
 
       context 'without quotas' do
@@ -63,7 +64,9 @@ class RequestcreateTest < ActiveSupport::TestCase
     end
 
     should 'have the asset IDs' do
-      assert_equal @assets.map { |a| a.receptacle.id }.sort, RequestType.find_by(key: 'create_asset').requests.map(&:asset_id).sort
+      assert_equal @assets.map { |a|
+                     a.receptacle.id
+                   }.sort, RequestType.find_by(key: 'create_asset').requests.map(&:asset_id).sort
     end
   end
 end

@@ -72,7 +72,7 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
     context 'basic types' do
       teardown do
         @stream.open { |stream| stream.attribute('key', @value) }
-        assert_equal(%Q{{"key":#{@expected}}}, @buffer.string)
+        assert_equal(%{{"key":#{@expected}}}, @buffer.string)
       end
 
       should 'nil' do

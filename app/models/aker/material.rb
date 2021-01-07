@@ -33,8 +33,12 @@ module Aker
     def model_for_table(table_name)
       return sample if table_name == :sample
       return sample.sample_metadata if table_name == :sample_metadata
-      return sample.container.asset.well_attribute if table_name == :well_attribute && sample && sample.container && sample.container.a_well?
-      return sample.container.asset if table_name == :well_attribute && sample && sample.container && !sample.container.a_well?
+      if table_name == :well_attribute && sample && sample.container && sample.container.a_well?
+        return sample.container.asset.well_attribute
+      end
+      if table_name == :well_attribute && sample && sample.container && !sample.container.a_well?
+        return sample.container.asset
+      end
 
       nil
     end

@@ -145,10 +145,14 @@ class EventTest < ActiveSupport::TestCase
 
           @request_with_no_attempts = @requests.first
 
-          @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request', family: 'pass', content: '', message: 'test comment', identifier: 1234, descriptor_key: 'pass')
-          @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id, eventful_type: 'Request', family: 'pass', content: '', message: 'test comment', identifier: 1234, descriptor_key: 'pass')
-          @pe_sequencing_event = Event.create(eventful_id: @pe_sequencing_request.id, eventful_type: 'Request', family: 'pass', content: '', message: 'test comment', identifier: 1234, descriptor_key: 'pass')
-          @control_event = Event.create(eventful_id: @request_for_control.id, eventful_type: 'Request', family: 'pass', content: '', message: 'test comment', identifier: 1234, descriptor_key: 'pass')
+          @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request',
+                                         family: 'pass', content: '', message: 'test comment', identifier: 1234, descriptor_key: 'pass')
+          @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id,
+                                            eventful_type: 'Request', family: 'pass', content: '', message: 'test comment', identifier: 1234, descriptor_key: 'pass')
+          @pe_sequencing_event = Event.create(eventful_id: @pe_sequencing_request.id, eventful_type: 'Request',
+                                              family: 'pass', content: '', message: 'test comment', identifier: 1234, descriptor_key: 'pass')
+          @control_event = Event.create(eventful_id: @request_for_control.id, eventful_type: 'Request',
+                                        family: 'pass', content: '', message: 'test comment', identifier: 1234, descriptor_key: 'pass')
         end
 
         should 'create valid events' do
@@ -186,10 +190,14 @@ class EventTest < ActiveSupport::TestCase
           #          @failure_property_def = PropertyDefinition(:name => "Failure", :key => "failure", :relates_to => Request.to_s)
           #          @pass_property_def = PropertyDefinition(:name => "Pass", :key => "pass", :relates_to => Request.to_s)
 
-          @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request', family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234, descriptor_key: 'failure')
-          @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id, eventful_type: 'Request', family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234, descriptor_key: 'failure')
-          @pe_sequencing_event = Event.create(eventful_id: @pe_sequencing_request.id, eventful_type: 'Request', family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234, descriptor_key: 'failure')
-          @control_event = Event.create(eventful_id: @request_for_control.id, eventful_type: 'Request', family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234, descriptor_key: 'failure')
+          @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request',
+                                         family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234, descriptor_key: 'failure')
+          @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id, eventful_type: 'Request', family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234,
+                                            descriptor_key: 'failure')
+          @pe_sequencing_event = Event.create(eventful_id: @pe_sequencing_request.id, eventful_type: 'Request',
+                                              family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234, descriptor_key: 'failure')
+          @control_event = Event.create(eventful_id: @request_for_control.id, eventful_type: 'Request',
+                                        family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234, descriptor_key: 'failure')
         end
 
         # must create an event correctly
@@ -219,9 +227,12 @@ class EventTest < ActiveSupport::TestCase
           end
 
           # :eventful_id => request_id, :eventful_type => 'Request', :family => family, :message => message
-          @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request', family: 'complete', message: 'Completed pipeline')
-          @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id, eventful_type: 'Request', family: 'complete', message: 'Completed pipeline')
-          @pe_sequencing_event = Event.create(eventful_id: @pe_sequencing_request.id, eventful_type: 'Request', family: 'complete', message: 'Completed pipeline')
+          @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request',
+                                         family: 'complete', message: 'Completed pipeline')
+          @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id,
+                                            eventful_type: 'Request', family: 'complete', message: 'Completed pipeline')
+          @pe_sequencing_event = Event.create(eventful_id: @pe_sequencing_request.id, eventful_type: 'Request',
+                                              family: 'complete', message: 'Completed pipeline')
         end
 
         should 'correctly update the requests' do

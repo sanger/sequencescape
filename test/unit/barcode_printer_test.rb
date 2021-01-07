@@ -7,7 +7,8 @@ class BarcodePrinterTest < ActiveSupport::TestCase
 
   def setup
     @barcode_printer = create :barcode_printer, name: 'test_printer'
-    printer384 = BarcodePrinterType.find_by(name: '384 Well Plate') || create(:barcode_printer_type, name: '384 Well Plate')
+    printer384 = BarcodePrinterType.find_by(name: '384 Well Plate') || create(:barcode_printer_type,
+                                                                              name: '384 Well Plate')
     @printer_for_384_wells_plate = create :barcode_printer, barcode_printer_type: printer384
   end
 

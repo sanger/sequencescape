@@ -1,6 +1,6 @@
-class Event::ScannedIntoLabEvent < Event
+class Event::ScannedIntoLabEvent < Event # rubocop:todo Style/Documentation
   after_create :set_qc_state_pending, if: :qc_state_not_final?
-  alias_method :asset, :eventful
+  alias asset eventful
 
   def self.create_for_asset!(asset, location_barcode, created_by)
     create!(

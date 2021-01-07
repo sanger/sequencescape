@@ -1,4 +1,4 @@
-class MultiplexedLibraryCreationPipeline < LibraryCreationPipeline
+class MultiplexedLibraryCreationPipeline < LibraryCreationPipeline # rubocop:todo Style/Documentation
   include Pipeline::InboxGroupedBySubmission
 
   self.batch_worksheet = 'multiplexed_library_worksheet'

@@ -1,6 +1,6 @@
 require 'rexml/document'
 
-class StudiesController < ApplicationController
+class StudiesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -14,7 +14,7 @@ class StudiesController < ApplicationController
   around_action :rescue_validation, only: %i[close open]
 
   def setup_studies_from_scope(exclude_nested_resource = false)
-    if logged_in? and not exclude_nested_resource
+    if logged_in? && (not exclude_nested_resource)
       @alternatives = [
         'interesting', 'followed', 'managed & active', 'managed & inactive',
         'pending', 'pending ethical approval', 'contaminated with human dna',
@@ -310,7 +310,7 @@ class StudiesController < ApplicationController
   private
 
   def redirect_if_not_owner_or_admin
-    unless current_user.owner?(@study) or current_user.is_administrator? or current_user.is_manager?
+    unless current_user.owner?(@study) || current_user.is_administrator? || current_user.is_manager?
       flash[:error] = "Study details can only be altered by the owner (#{@study.user.login}) or an administrator or manager"
       redirect_to study_path(@study)
     end
