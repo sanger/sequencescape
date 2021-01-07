@@ -87,11 +87,14 @@ class CherrypickTask < Task
                                                    control_posns, batch, control_assets)
       push_completed_plate.call(idx) if current_destination_plate.full?
     end
-    # If there are any remaining control requests, we'll add all of them at the end of the last plate
-    current_destination_plate.add_remaining_control_requests(control_posns, batch, control_assets) if !current_destination_plate.empty? && control_source_plate
 
-    # Ensure that a non-empty plate is stored
-    push_completed_plate.call(plates_array.length) unless current_destination_plate.empty?
+    # If our plate isn't empty we'll add any controls, and push it to the array
+    unless current_destination_plate.empty?
+      # If there are any remaining control requests, we'll add all of them at the end of the last plate
+      current_destination_plate.add_remaining_control_requests(control_posns, batch, control_assets) if control_source_plate
+      # Ensure that a non-empty plate is stored
+      push_completed_plate.call(plates_array.length)
+    end
 
     [destination_plates, source_plates]
   end
