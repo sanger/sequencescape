@@ -14,16 +14,6 @@ class CherrypickTask < Task
   EMPTY_WELL          = [0, 'Empty', ''].freeze
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
 
-  # A cherrypick batch may contain multiple destination plates. In this case the control wells
-  # should be located at different locations on each destination. The positions on the first
-  # plate in a batch are determined randomly, and then the locations are advanced by
-  # BETWEEN_PLATE_OFFSET for each subsequent plate. This is done to avoid the risk of
-  # subsequent plates having the same negative control location, which would reduce the ability to
-  # detect plate swaps.
-  # WARNING! These needs to be a prime number (which isn't also a factor of the available well size)
-  # to avoid re-using wells prematurely. These offsets are prioritised in order
-  BETWEEN_PLATE_OFFSETS = [53, 59].freeze
-
   #
   # Returns a {CherrypickTask::ControlLocator} which can generate control locations for plates
   # in a batch. It responds to #control_positions which takes a plate number as an argument
