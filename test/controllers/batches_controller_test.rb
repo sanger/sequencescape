@@ -26,7 +26,8 @@ class BatchesControllerTest < ActionController::TestCase
           @submission = create :submission_without_order, priority: 3
 
           @library = create(:empty_library_tube).tap do |library_tube|
-            library_tube.aliquots.create!(sample: @sample, project: @project, study: @study, library: library_tube, library_type: 'Standard')
+            library_tube.aliquots.create!(sample: @sample, project: @project, study: @study, library: library_tube,
+                                          library_type: 'Standard')
           end
           @lane = create(:empty_lane, qc_state: 'failed')
           @request_one = pipeline.request_types.first.create!(
@@ -116,7 +117,8 @@ class BatchesControllerTest < ActionController::TestCase
           post :verify_tube_layout, params: { id: @batch.id,
                                               'barcode_0' => '3980123456878',
                                               'barcode_1' => '3980654321768' }
-          assert_equal ['The tube at position 1 is incorrect: expected NT654321L.', 'The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
+          assert_equal ['The tube at position 1 is incorrect: expected NT654321L.',
+                        'The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
         end
 
         should 'rejects missing tubes' do
@@ -170,9 +172,11 @@ class BatchesControllerTest < ActionController::TestCase
           @target_two = create(:sample_tube)
 
           # TODO: add a control_request_type to pipeline...
-          @request_one = @pipeline.request_types.first.create!(asset: @library1, target_asset: @target_one, project: create(:project))
+          @request_one = @pipeline.request_types.first.create!(asset: @library1, target_asset: @target_one,
+                                                               project: create(:project))
           @batch_one.batch_requests.create!(request: @request_one, position: 1)
-          @request_two = @pipeline.request_types.first.create!(asset: @library2, target_asset: @target_two, project: create(:project))
+          @request_two = @pipeline.request_types.first.create!(asset: @library2, target_asset: @target_two,
+                                                               project: create(:project))
           @batch_one.batch_requests.create!(request: @request_two, position: 2)
           @batch_one.reload
         end
@@ -194,8 +198,10 @@ class BatchesControllerTest < ActionController::TestCase
           setup do
             @old_count = Batch.count
 
-            @request_three = @pipeline.request_types.first.create!(asset: @library1, project: FactoryBot.create(:project))
-            @request_four  = @pipeline.request_types.first.create!(asset: @library2, project: FactoryBot.create(:project))
+            @request_three = @pipeline.request_types.first.create!(asset: @library1,
+                                                                   project: FactoryBot.create(:project))
+            @request_four = @pipeline.request_types.first.create!(asset: @library2,
+                                                                  project: FactoryBot.create(:project))
           end
 
           context 'redirect to #show new batch' do
@@ -420,7 +426,8 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_plate_barcodes, params: { printer: barcode_printer.name, count: '3', printable: { @batch.output_plates.first.human_barcode => 'on' }, batch_id: @batch.id.to_s }
+        post :print_plate_barcodes, params: { printer: barcode_printer.name, count: '3',
+                                              printable: { @batch.output_plates.first.human_barcode => 'on' }, batch_id: @batch.id.to_s }
       end
 
       should '#print_barcodes should send print request' do
@@ -431,7 +438,8 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable, batch_id: @batch.id.to_s }
+        post :print_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable,
+                                        batch_id: @batch.id.to_s }
       end
 
       should '#print_multiplex_barcodes should send print request' do
@@ -445,7 +453,8 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_multiplex_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable, batch_id: batch.id.to_s }
+        post :print_multiplex_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable,
+                                                  batch_id: batch.id.to_s }
       end
     end
   end

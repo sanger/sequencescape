@@ -23,7 +23,9 @@ shared_context 'a limber target plate with submissions' do |library_state = 'sta
     create :library_submission, assets: input_plate.wells, request_types: submission_request_types
   end
   # The target plate is the downstream plate we are going to be passing.
-  let(:target_plate) { create :target_plate, parent: input_plate, well_count: tested_wells, submission: target_submission }
+  let(:target_plate) do
+    create :target_plate, parent: input_plate, well_count: tested_wells, submission: target_submission
+  end
   # And now we have a few helpers to make the tests more readable
   let(:library_requests) { target_submission.requests.where(request_type_id: library_request_type.id) }
   let(:multiplex_requests) { target_submission.requests.where(request_type_id: multiplex_request_type.id) }

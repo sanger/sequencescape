@@ -1,6 +1,6 @@
 require_dependency 'attributable'
 
-module Metadata
+module Metadata # rubocop:todo Style/Documentation
   # @!macro [attach] has_metadata
   #   @!parse class Metadata < Metadata::Base; end
   def has_metadata(options = {}, &block)
@@ -21,11 +21,16 @@ module Metadata
     association_name = "#{as_name}_metadata".underscore.to_sym
     class_name = "#{name}::Metadata"
 
-    default_options = { class_name: class_name, dependent: :destroy, validate: true, autosave: true, inverse_of: :owner, foreign_key: "#{as_name}_id" }
+    default_options = { class_name: class_name, dependent: :destroy, validate: true, autosave: true,
+                        inverse_of: :owner, foreign_key: "#{as_name}_id" }
     has_one association_name, default_options.merge(options)
     accepts_nested_attributes_for(association_name, update_only: true)
 
-    scope :"include_#{association_name}", -> { includes(association_name) } unless respond_to?(:"include_#{association_name}")
+    unless respond_to?(:"include_#{association_name}")
+      scope :"include_#{association_name}", lambda {
+                                              includes(association_name)
+                                            }
+    end
 
     # We now ensure that, if the metadata is not already created, that a blank instance is built.  We cannot
     # do this through the initialization of our model because we use the ActiveRecord::Base#becomes method in
@@ -59,7 +64,7 @@ module Metadata
     tags << AccessionedTag.new(tag, options[:as], options[:services], options[:downcase])
   end
 
-  class AccessionedTag
+  class AccessionedTag # rubocop:todo Style/Documentation
     attr_reader :tag, :name, :downcase
 
     def initialize(tag, as = nil, services = [], downcase = false)
@@ -90,7 +95,7 @@ module Metadata
     const_set(:Metadata, metadata)
   end
 
-  class Base < ApplicationRecord
+  class Base < ApplicationRecord # rubocop:todo Style/Documentation
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
 

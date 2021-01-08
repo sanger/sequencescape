@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'singleton'
-class FakeBarcodeService
+class FakeBarcodeService # rubocop:todo Style/Documentation
   include Singleton
   # Ensure that the configuration is maintained, otherwise things start behaving badly
   # when it comes to the features.

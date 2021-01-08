@@ -1,4 +1,4 @@
-class PacBioLibraryTube < Tube
+class PacBioLibraryTube < Tube # rubocop:todo Style/Documentation
   include Api::PacBioLibraryTubeIO::Extensions
 
   extend Metadata

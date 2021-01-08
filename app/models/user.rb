@@ -40,9 +40,15 @@ class User < ApplicationRecord
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct }
+  scope :owners, lambda {
+                   where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct
+                 }
 
-  scope :with_user_code, ->(*codes) { where(barcode: codes.map { |code| Barcode.barcode_to_human(code) }.compact).or(with_swipecard_code(codes)) }
+  scope :with_user_code, lambda { |*codes|
+                           where(barcode: codes.map do |code|
+                                            Barcode.barcode_to_human(code)
+                                          end.compact).or(with_swipecard_code(codes))
+                         }
 
   attr_accessor :password
 

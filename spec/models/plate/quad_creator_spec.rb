@@ -48,7 +48,9 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
     context 'when a parent is not a plate or rack' do
       let(:tube) { create :tube }
-      let(:parent_barcodes_hash) { { 'quad_1' => tube.machine_barcode } } # this should pass in the tube, not the barcode
+      let(:parent_barcodes_hash) do
+        { 'quad_1' => tube.machine_barcode }
+      end       # this should pass in the tube, not the barcode
 
       it { is_expected.not_to be_valid }
 
@@ -60,7 +62,9 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
     context 'when a parent is the wrong size' do
       let(:plate) { create :plate, size: 384, barcode: 1 }
-      let(:parent_barcodes_hash) { { 'quad_1' => plate.machine_barcode } } # this should pass in the plate, not the barcode
+      let(:parent_barcodes_hash) do
+        { 'quad_1' => plate.machine_barcode }
+      end       # this should pass in the plate, not the barcode
 
       it { is_expected.not_to be_valid }
 
@@ -75,7 +79,9 @@ RSpec.describe Plate::QuadCreator, type: :model do
     context 'with 4 parents' do
       let(:occupied_wells) { [0, 95] }
       let(:number_of_parents) { 4 }
-      let(:parents) { create_list :plate_with_untagged_wells, number_of_parents, occupied_well_index: occupied_wells } # 2 wells in each, A1 & H12
+      let(:parents) do
+        create_list :plate_with_untagged_wells, number_of_parents, occupied_well_index: occupied_wells
+      end       # 2 wells in each, A1 & H12
       let(:parent_barcodes_hash) do
         {
           'quad_1' => parents[0].machine_barcode,
@@ -127,12 +133,14 @@ RSpec.describe Plate::QuadCreator, type: :model do
         it 'creates the correct transfer request collection' do
           expected_transfers = number_of_parents * occupied_wells.length
           expect { quad_creator.save }.to change(TransferRequestCollection, :count).by(1)
-                                                                                   .and change(TransferRequest, :count).by(expected_transfers)
+                                                                                   .and change(TransferRequest,
+                                                                                               :count).by(expected_transfers)
         end
 
         it 'creates a custom metadatum collection and custom metadata' do
           expect { quad_creator.save }.to change(CustomMetadatumCollection, :count).by(1)
-                                                                                   .and change(CustomMetadatum, :count).by(4)
+                                                                                   .and change(CustomMetadatum,
+                                                                                               :count).by(4)
         end
       end
     end
@@ -212,7 +220,9 @@ RSpec.describe Plate::QuadCreator, type: :model do
   end
 
   context 'with a mixture of parent plates and racks' do
-    let(:parents_plates) { create_list :plate_with_untagged_wells, 2, occupied_well_index: [0, 95] } # 2 wells in each, A1 & H12
+    let(:parents_plates) do
+      create_list :plate_with_untagged_wells, 2, occupied_well_index: [0, 95]
+    end # 2 wells in each, A1 & H12
     let(:parents_racks) { create_list :tube_rack_with_tubes, 2 }
 
     let(:parent_barcodes_hash) do

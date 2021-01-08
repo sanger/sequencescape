@@ -6,7 +6,7 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 module Sequencescape
-  class Application < Rails::Application
+  class Application < Rails::Application # rubocop:todo Style/Documentation
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.0
     # Default options which predate the Rails 5 switch

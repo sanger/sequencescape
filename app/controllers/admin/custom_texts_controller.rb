@@ -1,4 +1,4 @@
-class Admin::CustomTextsController < ApplicationController
+class Admin::CustomTextsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -58,11 +58,11 @@ class Admin::CustomTextsController < ApplicationController
 
   def destroy
     custom_text = CustomText.find(params[:id])
-    if custom_text.destroy
-      flash[:notice] = 'Custom text deleted'
-    else
-      flash[:notice] = 'Failed to destroy custom text'
-    end
+    flash[:notice] = if custom_text.destroy
+                       'Custom text deleted'
+                     else
+                       'Failed to destroy custom text'
+                     end
     redirect_to admin_custom_texts_url
   end
 end

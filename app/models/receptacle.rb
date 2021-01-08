@@ -85,7 +85,10 @@ class Receptacle < Asset
 
   # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
   # one aliquot.
-  has_many :aliquots, ->() { order(tag_id: :asc, tag2_id: :asc) }, foreign_key: :receptacle_id, autosave: true, dependent: :destroy, inverse_of: :receptacle
+  has_many :aliquots, lambda {
+                        order(tag_id: :asc,
+                              tag2_id: :asc)
+                      }, foreign_key: :receptacle_id, autosave: true, dependent: :destroy, inverse_of: :receptacle
   has_many :samples, through: :aliquots
   has_many :studies, ->() { distinct }, through: :aliquots
   has_many :projects, ->() { distinct }, through: :aliquots
@@ -110,7 +113,9 @@ class Receptacle < Asset
   has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
 
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
-  has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
+  has_one :most_tagged_aliquot, lambda {
+                                  order(tag2_id: :desc, tag_id: :desc).readonly
+                                }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
   has_many :external_library_creation_requests, foreign_key: :asset_id
   has_many :events_on_requests, through: :requests_as_source, source: :events, validate: false
@@ -123,7 +128,10 @@ class Receptacle < Asset
   scope :include_source_batches, ->() { includes(:source_batches) }
   scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }) }
 
-  scope :for_study_and_request_type, ->(study, request_type) { joins(:aliquots, :requests).where(aliquots: { study_id: study }).where(requests: { request_type_id: request_type }) }
+  scope :for_study_and_request_type, lambda { |study, request_type|
+                                       joins(:aliquots,
+                                             :requests).where(aliquots: { study_id: study }).where(requests: { request_type_id: request_type })
+                                     }
 
   # This is a lambda as otherwise the scope selects Receptacles
   scope :with_aliquots, -> { joins(:aliquots) }

@@ -6,7 +6,8 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
   let(:options) { %w[option1 option2 option3] }
 
   it 'is comparable' do
-    attributes = { options: options, first_column: 4, first_row: 5, last_column: 8, last_row: 10, worksheet_name: 'Sheet1' }
+    attributes = { options: options, first_column: 4, first_row: 5, last_column: 8, last_row: 10,
+                   worksheet_name: 'Sheet1' }
     expect(described_class.new(attributes)).to eq(described_class.new(attributes))
     expect(described_class.new(attributes.except(:last_row))).not_to eq(described_class.new(attributes))
   end
@@ -206,7 +207,9 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     context 'with worksheet name' do
-      let(:range) { described_class.new(first_row: 10, last_row: 15, first_column: 3, last_column: 60, worksheet_name: 'Sheet1') }
+      let(:range) do
+        described_class.new(first_row: 10, last_row: 15, first_column: 3, last_column: 60, worksheet_name: 'Sheet1')
+      end
 
       it 'set worksheet name' do
         expect(range.worksheet_name).to eq('Sheet1')

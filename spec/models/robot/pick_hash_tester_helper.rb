@@ -36,7 +36,8 @@ class PickHashTesterHelper
     locations.map do |location|
       source_plate = plate_for_dest_location(location)
       source_location = source_location_for_dest_location(location)
-      { 'src_well' => [source_plate.machine_barcode, source_location], 'dst_well' => location, 'volume' => nil, 'buffer_volume' => 0.0 }
+      { 'src_well' => [source_plate.machine_barcode, source_location], 'dst_well' => location, 'volume' => nil,
+        'buffer_volume' => 0.0 }
     end
   end
 

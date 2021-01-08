@@ -1,4 +1,4 @@
-class Robot < ApplicationRecord
+class Robot < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
   include ModelExtensions::Robot
 
@@ -15,7 +15,9 @@ class Robot < ApplicationRecord
                          where(barcode: Barcode.number_to_human(barcode))
                        }
   scope :include_properties, -> { includes(:robot_properties) }
-  scope :with_verification_behaviour, -> { includes(:robot_properties).where(robot_properties: { key: 'verification_behaviour' }) }
+  scope :with_verification_behaviour, -> {
+                                        includes(:robot_properties).where(robot_properties: { key: 'verification_behaviour' })
+                                      }
 
   #
   # Returns an array of all pick numbers associated with the corresponding batch and plate_barcode

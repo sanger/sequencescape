@@ -1,4 +1,4 @@
-class RobotProperty < ApplicationRecord
+class RobotProperty < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :robot
 
   scope :beds, ->() {

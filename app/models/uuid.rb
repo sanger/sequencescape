@@ -4,7 +4,7 @@ class Uuid < ApplicationRecord
   # Allows tests to dictate the next UUID generted for a given class
   class_attribute :store_for_tests
 
-  module Uuidable
+  module Uuidable # rubocop:todo Style/Documentation
     def self.included(base)
       base.class_eval do
         # Lazy uuid generation disables uuid generation on record creation. For the most part this is
@@ -79,7 +79,7 @@ class Uuid < ApplicationRecord
   scope :limited_to_resource, ->(resource_type) { resource_type.nil? ? all : where(resource_type: resource_type) }
 
   before_validation do |record|
-    record.external_id = Uuid.generate_uuid if record.new_record? and record.external_id.blank?
+    record.external_id = Uuid.generate_uuid if record.new_record? && record.external_id.blank?
   end
 
   def uuid
@@ -132,7 +132,9 @@ class Uuid < ApplicationRecord
     return if resource_ids.empty?
 
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
-    uuids_to_create = ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid) }
+    uuids_to_create = ids_missing_uuids.map do |id|
+      create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid)
+    end
     # Uuid.import uuids_to_create unless uuids_to_create.empty?
 
     nil
@@ -168,7 +170,9 @@ class Uuid < ApplicationRecord
     def lookup_many_uuids(uuids)
       with_external_id(uuids).all.tap do |found|
         missing = uuids - found.map(&:external_id)
-        raise ActiveRecord::RecordNotFound, "Could not find UUIDs #{missing.map(&:inspect).join(',')}" unless missing.empty?
+        unless missing.empty?
+          raise ActiveRecord::RecordNotFound, "Could not find UUIDs #{missing.map(&:inspect).join(',')}"
+        end
       end
     end
   end

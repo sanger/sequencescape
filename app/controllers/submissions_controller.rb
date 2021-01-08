@@ -50,7 +50,9 @@ class SubmissionsController < ApplicationController
 
     @presenter.build_submission!
 
-    flash[:error] = "The submission could not be built: #{@presenter.submission.errors.full_messages}" if @presenter.submission.errors.present?
+    if @presenter.submission.errors.present?
+      flash[:error] = "The submission could not be built: #{@presenter.submission.errors.full_messages}"
+    end
 
     redirect_to @presenter.submission
   end

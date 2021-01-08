@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Parsers::BioanalysisCsvParser
+class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
   class InvalidFile < StandardError; end
 
   class_attribute :assay_type, :assay_version
@@ -36,7 +36,7 @@ class Parsers::BioanalysisCsvParser
     type = content[starting_line][0]
     fields = content[starting_line + 1]
 
-    for pos in (starting_line + 2)..(ending_line) do
+    ((starting_line + 2)..(ending_line)).each do |pos|
       values = content[pos]
       unless values.nil? && (values.length != fields.length)
         content_hash.merge!(Hash[fields.zip(values)])
@@ -46,11 +46,11 @@ class Parsers::BioanalysisCsvParser
   end
 
   def build_range(range)
-    if range == nil
-      range = [0, content.length - 1]
-    else
-      range = range.dup
-    end
+    range = if range == nil
+              [0, content.length - 1]
+            else
+              range.dup
+            end
     range.push(content.length - 1) if (range.length == 1)
     range
   end
@@ -120,11 +120,11 @@ class Parsers::BioanalysisCsvParser
     groups = get_groups(/Sample Name/)
 
     groups.each_with_index.map do |group, pos|
-      if (pos == (groups.length - 1))
-        next_index = @content.length - 1
-      else
-        next_index = groups[pos + 1][0] - 1
-      end
+      next_index = if (pos == (groups.length - 1))
+                     @content.length - 1
+                   else
+                     groups[pos + 1][0] - 1
+                   end
       [group[0], next_index]
     end.reduce({}) do |memo, group|
       memo.merge(parse_sample group)

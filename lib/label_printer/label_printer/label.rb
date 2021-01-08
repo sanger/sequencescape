@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    module MultipleLabels
+    module MultipleLabels # rubocop:todo Style/Documentation
       attr_accessor :count
 
       def to_h

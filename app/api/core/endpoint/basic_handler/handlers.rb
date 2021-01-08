@@ -1,4 +1,4 @@
-module Core::Endpoint::BasicHandler::Handlers
+module Core::Endpoint::BasicHandler::Handlers # rubocop:todo Style/Documentation
   # Handler that behaves like it never deals with any URLs
   NullHandler = Object.new.tap do |handler|
     %i[create read update delete].each do |action|

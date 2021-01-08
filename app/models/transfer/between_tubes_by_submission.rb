@@ -1,4 +1,4 @@
-class Transfer::BetweenTubesBySubmission < Transfer
+class Transfer::BetweenTubesBySubmission < Transfer # rubocop:todo Style/Documentation
   include TransfersToKnownDestination
 
   before_validation :ensure_destination_setup

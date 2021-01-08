@@ -1,4 +1,4 @@
-class PlatesController < ApplicationController
+class PlatesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -94,7 +94,10 @@ class PlatesController < ApplicationController
     study = Study.find(params[:plates][:study])
 
     respond_to do |format|
-      if asset_group = Plate::SampleTubeFactory.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
+      asset_group = Plate::SampleTubeFactory.create_sample_tubes_asset_group_and_print_barcodes(plates,
+                                                                                                barcode_printer,
+                                                                                                study)
+      if asset_group
         flash[:notice] = 'Created tubes and printed barcodes'
         # makes request properties partial show
         format.html { redirect_to(new_submission_path(study_id: asset_group.study.id)) }

@@ -18,7 +18,8 @@ namespace :sequencing do
                               billable: true,
                               product_line: ProductLine.find_by(name: 'Illumina-HTP'),
                               request_purpose: :standard).tap do |rt|
-            RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150, 50, 75, 100])
+            RequestType::Validator.create!(request_type: rt, request_option: 'read_length',
+                                           valid_options: [150, 50, 75, 100])
           end
         end
         unless SequencingPipeline.exists?(name: 'NovaSeq 6000 PE')
@@ -38,7 +39,8 @@ namespace :sequencing do
               SetDescriptorsTask.create!(name: 'Loading', sorted: 1, lab_activity: true, workflow: wf) do |task|
                 task.descriptors.build([
                   { kind: 'Text', sorter: 2, name: 'Operator' },
-                  { kind: 'Selection', sorter: 3, name: 'Workflow (Standard or Xp)', selection: { 'Standard' => 'Standard', 'XP' => 'XP' }, value: 'Standard' },
+                  { kind: 'Selection', sorter: 3, name: 'Workflow (Standard or Xp)',
+                    selection: { 'Standard' => 'Standard', 'XP' => 'XP' }, value: 'Standard' },
                   { kind: 'Text', sorter: 4, name: 'DPX1' },
                   { kind: 'Text', sorter: 5, name: 'DPX2' },
                   { kind: 'Text', sorter: 6, name: 'DPX3' },
@@ -59,8 +61,10 @@ namespace :sequencing do
                 ])
               end
             end
-            pipeline.request_information_types << RequestInformationType.where(label: 'Vol.', hide_in_inbox: false).first!
-            pipeline.request_information_types << RequestInformationType.where(label: 'Read length', hide_in_inbox: false).first!
+            pipeline.request_information_types << RequestInformationType.where(label: 'Vol.',
+                                                                               hide_in_inbox: false).first!
+            pipeline.request_information_types << RequestInformationType.where(label: 'Read length',
+                                                                               hide_in_inbox: false).first!
           end
         end
       end

@@ -3,7 +3,7 @@ require 'rest-client'
 module LabWhereClient
   LabwhereException = Class.new(StandardError)
 
-  class LabWhere
+  class LabWhere # rubocop:todo Style/Documentation
     def base_url
       configatron.fetch(:labwhere_api)
     end
@@ -43,7 +43,7 @@ module LabWhereClient
     end
   end
 
-  class Endpoint
+  class Endpoint # rubocop:todo Style/Documentation
     def self.endpoint_name(name)
       @endpoint = name
     end
@@ -56,8 +56,8 @@ module LabWhereClient
     end
   end
 
-  module EndpointCreateActions
-    module ClassMethods
+  module EndpointCreateActions # rubocop:todo Style/Documentation
+    module ClassMethods # rubocop:todo Style/Documentation
       def creation_params(params)
         params
       end
@@ -67,24 +67,26 @@ module LabWhereClient
         new(attrs) unless attrs.nil?
       end
     end
+
     def self.included(base)
       base.send(:extend, ClassMethods)
     end
   end
 
-  module EndpointUpdateActions
-    module ClassMethods
+  module EndpointUpdateActions # rubocop:todo Style/Documentation
+    module ClassMethods # rubocop:todo Style/Documentation
       def update(target, params)
         attrs = LabWhere.new.put(self, target, params)
         new(attrs) unless attrs.nil?
       end
     end
+
     def self.included(base)
       base.send(:extend, ClassMethods)
     end
   end
 
-  class Labware < Endpoint
+  class Labware < Endpoint # rubocop:todo Style/Documentation
     endpoint_name 'labwares'
 
     attr_reader :barcode, :location
@@ -102,7 +104,7 @@ module LabWhereClient
     end
   end
 
-  class LabwareSearch < Endpoint
+  class LabwareSearch < Endpoint # rubocop:todo Style/Documentation
     endpoint_name 'labwares/searches'
 
     attr_reader :labwares
@@ -123,7 +125,7 @@ module LabWhereClient
     end
   end
 
-  class Scan < Endpoint
+  class Scan < Endpoint # rubocop:todo Style/Documentation
     include EndpointCreateActions
 
     attr_reader :message, :errors
@@ -154,7 +156,7 @@ module LabWhereClient
     end
   end
 
-  class Location < Endpoint
+  class Location < Endpoint # rubocop:todo Style/Documentation
     endpoint_name 'locations'
 
     attr_reader :name, :parentage, :barcode

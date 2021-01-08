@@ -217,9 +217,9 @@ RSpec.describe Study, type: :model do
 
       context 'with submissions still unprocessed' do
         before do
-          FactoryHelp::submission study: study, state: 'building', assets: [asset]
-          FactoryHelp::submission study: study, state: 'pending', assets: [asset]
-          FactoryHelp::submission study: study, state: 'processing', assets: [asset]
+          FactoryHelp.submission study: study, state: 'building', assets: [asset]
+          FactoryHelp.submission study: study, state: 'pending', assets: [asset]
+          FactoryHelp.submission study: study, state: 'processing', assets: [asset]
         end
 
         it 'returns true' do
@@ -229,8 +229,8 @@ RSpec.describe Study, type: :model do
 
       context 'with no submissions unprocessed' do
         before do
-          FactoryHelp::submission study: study, state: 'ready', assets: [asset]
-          FactoryHelp::submission study: study, state: 'failed', assets: [asset]
+          FactoryHelp.submission study: study, state: 'ready', assets: [asset]
+          FactoryHelp.submission study: study, state: 'failed', assets: [asset]
         end
 
         it 'returns false' do
@@ -287,7 +287,9 @@ RSpec.describe Study, type: :model do
       end
 
       it 'reject invalid domains' do
-        expect { study.study_metadata.update!(dac_policy: 'http://internal.example.com') }.to raise_error(ActiveRecord::RecordInvalid)
+        expect do
+          study.study_metadata.update!(dac_policy: 'http://internal.example.com')
+        end.to raise_error(ActiveRecord::RecordInvalid)
       end
 
       it 'add http:// before testing a url' do
@@ -402,11 +404,16 @@ RSpec.describe Study, type: :model do
 
       it 'will limit by passed plates purposes' do
         wells_count = 0
-        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA', [purpose_2.name, purpose_3.name, purpose_4.name]) { |wells| wells_count += wells.length }
+        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA',
+                                                 [purpose_2.name, purpose_3.name, purpose_4.name]) do |wells|
+          wells_count += wells.length
+        end
         expect(wells_count).to eq(3)
 
         wells_count = 0
-        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA', [purpose_2.name, purpose_3.name]) { |wells| wells_count += wells.length }
+        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA', [purpose_2.name, purpose_3.name]) do |wells|
+          wells_count += wells.length
+        end
         expect(wells_count).to eq(2)
       end
     end
@@ -602,7 +609,9 @@ RSpec.describe Study, type: :model do
     end
 
     context 'delayed release' do
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed'))) }
+      let(:study) do
+        create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed')))
+      end
 
       it 'will have a data_release_delay_reason' do
         expect(study.study_metadata.data_release_delay_reason).to eq(metadata[:data_release_delay_reason])
@@ -614,7 +623,9 @@ RSpec.describe Study, type: :model do
     end
 
     context 'managed study' do
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_strategy: 'managed'))) }
+      let(:study) do
+        create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_strategy: 'managed')))
+      end
 
       it 'will have a data_release_standard_agreement' do
         expect(study.study_metadata.data_release_standard_agreement).to eq(metadata[:data_release_standard_agreement])
@@ -630,7 +641,12 @@ RSpec.describe Study, type: :model do
     end
 
     context 'delayed for other reasons' do
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'other'))) }
+      let(:study) do
+        create(:study,
+               study_metadata: create(:study_metadata,
+                                      metadata.merge(data_release_timing: 'delayed',
+                                                     data_release_delay_reason: 'other')))
+      end
 
       it 'will have a data_release_delay_other_comment' do
         expect(study.study_metadata.data_release_delay_other_comment).to eq(metadata[:data_release_delay_other_comment])
@@ -642,7 +658,12 @@ RSpec.describe Study, type: :model do
     end
 
     context 'delayed for long time' do
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_period: '6 months'))) }
+      let(:study) do
+        create(:study,
+               study_metadata: create(:study_metadata,
+                                      metadata.merge(data_release_timing: 'delayed',
+                                                     data_release_delay_period: '6 months')))
+      end
 
       it 'will have a data_release_delay_approval' do
         expect(study.study_metadata.data_release_delay_approval).to eq(metadata[:data_release_delay_approval])
@@ -650,7 +671,9 @@ RSpec.describe Study, type: :model do
     end
 
     context 'never released' do
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'never'))) }
+      let(:study) do
+        create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'never')))
+      end
 
       it 'will have a data_release_prevention_reason' do
         expect(study.study_metadata.data_release_prevention_reason).to eq(metadata[:data_release_prevention_reason])

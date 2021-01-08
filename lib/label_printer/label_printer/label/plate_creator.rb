@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class PlateCreator < BasePlate
+    class PlateCreator < BasePlate # rubocop:todo Style/Documentation
       attr_reader :plates, :plate_purpose, :user_login
 
       def initialize(options)

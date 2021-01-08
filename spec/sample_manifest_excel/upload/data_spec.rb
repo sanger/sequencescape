@@ -47,7 +47,9 @@ RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_
     data = described_class.new(test_file)
     spreadsheet = Roo::Spreadsheet.open(test_file).sheet(0)
     expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1)).not_to be nil
-    expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1)).to eq(spreadsheet.cell(spreadsheet.last_row, spreadsheet.last_column - 1))
+    expect(data.cell(spreadsheet.last_row - 10,
+                     spreadsheet.last_column - 1)).to eq(spreadsheet.cell(spreadsheet.last_row,
+                                                                          spreadsheet.last_column - 1))
   end
 
   context 'when the file is invalid' do

@@ -181,11 +181,9 @@ group :test do
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
   # It is needed to use #assigns(attribute) in controllers tests
-  gem 'rails-controller-testing'
-  # Temporarily lock minitest to a specific version due to incompatibilities
-  # with rails versions.
-  gem 'minitest', '5.10.3'
+  gem 'minitest'
   gem 'minitest-profiler'
+  gem 'rails-controller-testing'
 end
 
 group :test, :cucumber do
@@ -220,12 +218,6 @@ end
 
 group :deployment do
   gem 'exception_notification'
-  gem 'gmetric', '~>0.1.3'
   gem 'slack-notifier'
   gem 'whenever', require: false
-end
-
-# Can be removed once we don't use circle_ci
-group :circle_ci, optional: true do
-  gem 'rspec_junit_formatter', require: false
 end

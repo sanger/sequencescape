@@ -14,14 +14,18 @@ namespace :benchmark do
 
     # Rubbish data we need
     study       = Study.new(name: 'Pulldown study', state: 'active').tap { |t| t.save(validate: false) }
-    project     = Project.create!(name: 'Pulldown project', enforce_quotas: false, project_metadata_attributes: { project_cost_code: '1111' })
-    user        = User.create!(login: 'Pulldown user', password: 'foobar', swipecard_code: 'abcdef', workflow_id: 1).tap do |u|
+    project     = Project.create!(name: 'Pulldown project', enforce_quotas: false,
+                                  project_metadata_attributes: { project_cost_code: '1111' })
+    user = User.create!(login: 'Pulldown user', password: 'foobar', swipecard_code: 'abcdef',
+                        workflow_id: 1).tap do |u|
       u.roles.create!(name: 'administrator')
     end
 
     # Plate that can be submitted for each pipeline
     stock_plate = PlatePurpose.find(2).create!.tap do |plate|
-      plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_stock_well_#{w.map.description}")) }
+      plate.wells.each do |w|
+        w.aliquots.create!(sample: Sample.create!(name: "sample_in_stock_well_#{w.map.description}"))
+      end
     end
 
     [

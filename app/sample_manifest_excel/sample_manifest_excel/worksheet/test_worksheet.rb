@@ -11,7 +11,8 @@ module SampleManifestExcel
 
       self.worksheet_name = 'DNA Collections Form'
 
-      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :partial, :cgap, :num_plates, :num_samples_per_plate
+      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns,
+                    :partial, :cgap, :num_plates, :num_samples_per_plate
       attr_reader :dynamic_attributes, :tags
       attr_writer :manifest_type
 
@@ -64,7 +65,9 @@ module SampleManifestExcel
 
       def create_sample_manifest
         if %w[plate_default plate_full plate_rnachip].include? manifest_type
-          FactoryBot.create(:pending_plate_sample_manifest, num_plates: num_plates, num_samples_per_plate: num_samples_per_plate)
+          FactoryBot.create(:pending_plate_sample_manifest,
+                            num_plates: num_plates,
+                            num_samples_per_plate: num_samples_per_plate)
         elsif %w[tube_library_with_tag_sequences].include? manifest_type
           FactoryBot.create(:sample_manifest, asset_type: 'library')
         elsif %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
@@ -135,6 +138,7 @@ module SampleManifestExcel
       def record_tube_samples
         tube_counter = 0
         first_to_last.each do |sheet_row|
+          row = dynamic_attributes[sheet_row]
           build_tube_sample_manifest_asset do |sample_manifest_asset|
             asset = sample_manifest_asset.asset
 
@@ -143,19 +147,19 @@ module SampleManifestExcel
               sample_manifest_asset.sample_manifest = sample_manifest
               sample_manifest_asset.save
             end
-            dynamic_attributes[sheet_row][:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
-            dynamic_attributes[sheet_row][:sanger_tube_id] = if cgap
-                                                               tube_row_num = (sheet_row - computed_first_row) + 1
-                                                               if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
-                                                                 'CGAP-99999'
-                                                               else
-                                                                 "CGAP-#{tube_row_num.to_s(16).upcase}#{(tube_row_num % 16).to_s(16).upcase}"
-                                                               end
-                                                             else
-                                                               asset.human_barcode
-                                                             end
+            row[:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
+            row[:sanger_tube_id] = if cgap
+                                     tube_row_num = (sheet_row - computed_first_row) + 1
+                                     if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
+                                       'CGAP-99999'
+                                     else
+                                       "CGAP-#{tube_row_num.to_s(16).upcase}#{(tube_row_num % 16).to_s(16).upcase}"
+                                     end
+                                   else
+                                     asset.human_barcode
+                                   end
           end
-          dynamic_attributes[sheet_row][:tube_barcode] = 'TB1111111' + tube_counter.to_s
+          row[:tube_barcode] = 'TB1111111' + tube_counter.to_s
           tube_counter += 1
         end
       end
@@ -214,7 +218,8 @@ module SampleManifestExcel
       end
 
       def build_tube_sample_manifest_asset
-        asset = if %w[tube_multiplexed_library tube_library_with_tag_sequences tube_multiplexed_library_with_tag_sequences].include? manifest_type
+        asset = if %w[tube_multiplexed_library tube_library_with_tag_sequences
+                      tube_multiplexed_library_with_tag_sequences].include? manifest_type
                   FactoryBot.create(:empty_library_tube)
                 else
                   FactoryBot.create(:empty_sample_tube)
@@ -225,8 +230,11 @@ module SampleManifestExcel
       end
 
       def create_tube_requests
+        return unless %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
+
         assets.each do |asset|
-          FactoryBot.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube) if %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
+          FactoryBot.create(:external_multiplexed_library_tube_creation_request, asset: asset,
+                                                                                 target_asset: multiplexed_library_tube)
         end
       end
 
@@ -249,7 +257,8 @@ module SampleManifestExcel
             dynamic_attributes[k].merge!(oligos[k])
           end
         elsif %w[tube_multiplexed_library].include? manifest_type
-          groups_and_indexes = Tags::ExampleData.new.take_as_groups_and_indexes(computed_first_row, last_row, validation_errors.include?(:tags))
+          groups_and_indexes = Tags::ExampleData.new.take_as_groups_and_indexes(computed_first_row, last_row,
+                                                                                validation_errors.include?(:tags))
           dynamic_attributes.each do |k, _v|
             dynamic_attributes[k].merge!(groups_and_indexes[k])
           end

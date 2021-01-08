@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class SampleManifestTube < BaseTube
+    class SampleManifestTube < BaseTube # rubocop:todo Style/Documentation
       attr_reader :sample_manifest, :only_first_label
 
       def initialize(options)

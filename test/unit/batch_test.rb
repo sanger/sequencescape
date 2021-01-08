@@ -37,7 +37,9 @@ class BatchTest < ActiveSupport::TestCase
         @batch.assign_positions_to_requests!(@requests.reverse.map(&:id))
 
         expected = Hash[@requests.reverse.each_with_index.map { |request, index| [request.id, index + 1] }]
-        actual   = @batch.batch_requests.each_with_object({}) { |batch_request, memo| memo[batch_request.request_id] = batch_request.position }
+        actual   = @batch.batch_requests.each_with_object({}) do |batch_request, memo|
+          memo[batch_request.request_id] = batch_request.position
+        end
         assert_equal(expected, actual, 'Positions of requests do not match')
       end
     end
@@ -535,8 +537,10 @@ class BatchTest < ActiveSupport::TestCase
             )
 
             # The two requests should have been swapped
-            assert_equal(@original_right_request.request, @left_batch.batch_requests.at_position(left_position).first.request)
-            assert_equal(@original_left_request.request,  @right_batch.batch_requests.at_position(right_position).first.request)
+            assert_equal(@original_right_request.request,
+                         @left_batch.batch_requests.at_position(left_position).first.request)
+            assert_equal(@original_left_request.request,
+                         @right_batch.batch_requests.at_position(right_position).first.request)
           end
         end
       end
@@ -695,7 +699,8 @@ class BatchTest < ActiveSupport::TestCase
   context 'ready? all requests before creating batch' do
     setup do
       @library_tube = create :library_tube, sample_count: 1
-      @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
+      @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests,
+                                         target_asset: @library_tube)
       @pipeline = create :sequencing_pipeline
 
       @library_tube.create_scanned_into_lab_event!(content: '2018-01-01')

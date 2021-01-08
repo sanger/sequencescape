@@ -1,4 +1,4 @@
-module Core::Endpoint::BasicHandler::Associations::HasMany
+module Core::Endpoint::BasicHandler::Associations::HasMany # rubocop:todo Style/Documentation
   #
   # Defines a has_many relationship which will be exposed via the v1 api
   # @param name [Symbol] The name of the association to expose via the api

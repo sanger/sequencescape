@@ -4,7 +4,7 @@
 # ruby classes as HasBehaviour::File for instance loads the global file
 # object.
 module HasBehaviour
-  module ClassMethods
+  module ClassMethods # rubocop:todo Style/Documentation
     def has_behaviour(klass, behaviour_name: nil)
       @registered_behaviours ||= {}
       @registered_behaviours[behaviour_name || klass.name] = klass

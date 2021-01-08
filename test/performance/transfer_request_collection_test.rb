@@ -36,7 +36,8 @@ class TransferRequestCollectionTest < ActionDispatch::PerformanceTest
     post '/api/1/transfer_request_collection', params: { transfer_request_collection: {
       user: @user.uuid,
       transfer_requests: @transfer_requests_attributes
-    } }, headers: { content_type: 'application/json', accept: 'application/json', 'HTTP_X_SEQUENCESCAPE_CLIENT_ID' => @api_key }, as: :json
+    } }, headers: { content_type: 'application/json', accept: 'application/json',
+                    'HTTP_X_SEQUENCESCAPE_CLIENT_ID' => @api_key }, as: :json
     p response.body
   end
 end

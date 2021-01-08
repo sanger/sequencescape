@@ -1,4 +1,4 @@
-module SearchBehaviour
+module SearchBehaviour # rubocop:todo Style/Documentation
   MINIMUM_QUERY_LENGTH = 3
 
   def self.included(base)

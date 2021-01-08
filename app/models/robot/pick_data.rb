@@ -113,7 +113,7 @@ class Robot::PickData
   end
 
   def populate_data_object!(data_object, request)
-    # Note: source includes control wells/plates
+    # NOTE: source includes control wells/plates
     source_plate = request.asset.plate
     target_plate = request.target_asset.plate
     source_well = request.asset

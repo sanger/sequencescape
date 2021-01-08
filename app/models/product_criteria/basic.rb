@@ -1,8 +1,10 @@
-class ProductCriteria::Basic
-  SUPPORTED_WELL_ATTRIBUTES = %i[gel_pass concentration rin current_volume pico_pass gender_markers measured_volume initial_volume molarity sequenom_count].freeze
+class ProductCriteria::Basic # rubocop:todo Style/Documentation
+  SUPPORTED_WELL_ATTRIBUTES = %i[gel_pass concentration rin current_volume pico_pass gender_markers measured_volume
+                                 initial_volume molarity sequenom_count].freeze
   SUPPORTED_SAMPLE = [:sanger_sample_id].freeze
   SUPPORTED_SAMPLE_METADATA = %i[gender sample_ebi_accession_number supplier_name phenotype sample_description].freeze
-  EXTENDED_ATTRIBUTES = %i[total_micrograms conflicting_gender_markers sample_gender well_location plate_barcode concentration_from_normalization].freeze
+  EXTENDED_ATTRIBUTES = %i[total_micrograms conflicting_gender_markers sample_gender well_location plate_barcode
+                           concentration_from_normalization].freeze
 
   PASSSED_STATE = 'passed'.freeze
   FAILED_STATE = 'failed'.freeze
@@ -10,7 +12,7 @@ class ProductCriteria::Basic
   UnknownSpecification = Class.new(StandardError)
 
   attr_reader :passed, :params, :comment, :values
-  alias_method :passed?, :passed
+  alias passed? passed
 
   Comparison = Struct.new(:method, :message)
 
@@ -98,7 +100,9 @@ class ProductCriteria::Basic
   # Return the sample gender, returns nil if it can't be determined
   # ie. mixed input, or not male/female
   def sample_gender
-    markers = @well_or_metric.samples.map { |s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
+    markers = @well_or_metric.samples.map do |s|
+      s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip
+    end.uniq
     return nil if markers.count > 1
 
     GENDER_MARKER_MAPS[markers.first]
@@ -182,6 +186,7 @@ class ProductCriteria::Basic
   private
 
   def comparison_for(comparison)
-    METHOD_ALIAS.fetch(comparison) || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
+    METHOD_ALIAS.fetch(comparison) || raise(UnknownSpecification,
+                                            "#{comparison} isn't a recognised means of comparison.")
   end
 end

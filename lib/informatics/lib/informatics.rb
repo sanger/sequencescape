@@ -1,2 +1,2 @@
-module Informatics
+module Informatics # rubocop:todo Style/Documentation
 end

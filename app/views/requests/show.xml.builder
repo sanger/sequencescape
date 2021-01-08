@@ -1,5 +1,5 @@
 xml.instruct!
-xml.request(api_data) {
+xml.request(api_data) do
   xml.id @request.id
   xml.created_at @request.created_at
   xml.updated_at @request.updated_at
@@ -10,23 +10,23 @@ xml.request(api_data) {
   xml.target_asset_id @request.target_asset_id if @request.target_asset
   xml.state @request.state
 
-  xml.properties {
+  xml.properties do
     @request.request_metadata.attribute_value_pairs.each do |attribute, value|
-      xml.property {
+      xml.property do
         xml.name(attribute.to_field_info.display_name)
         xml.value(value)
-      }
+      end
     end
-  }
+  end
 
   # Events
-  xml.events {
+  xml.events do
     @request.events.each do |event|
-      xml.event(id: event.id) {
+      xml.event(id: event.id) do
         xml.message event.message
         xml.content event.content
-      }
+      end
     end
-  } unless @request.events.empty?
+  end unless @request.events.empty?
   xml.user(@user.login) unless @user.nil?
-}
+end

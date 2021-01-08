@@ -1,4 +1,4 @@
-class BroadcastEvent::SampleManifestUpdated < BroadcastEvent
+class BroadcastEvent::SampleManifestUpdated < BroadcastEvent # rubocop:todo Style/Documentation
   set_event_type 'sample_manifest.updated'
 
   # Properties takes :updated_samples_ids

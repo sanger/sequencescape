@@ -1,4 +1,4 @@
-class Sdb::SuppliersController < Sdb::BaseController
+class Sdb::SuppliersController < Sdb::BaseController # rubocop:todo Style/Documentation
   # Show all suppliers
   def index
     @suppliers = Supplier.all

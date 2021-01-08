@@ -1,4 +1,4 @@
-module Submission::DelayedJobBehaviour
+module Submission::DelayedJobBehaviour # rubocop:todo Style/Documentation
   def default_priority
     configatron.delayed_job.fetch(:submission_process_priority, 0)
   end

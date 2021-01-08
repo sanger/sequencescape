@@ -21,10 +21,10 @@ module DelegateValidation
     end
   end
 
-  class Validator
+  class Validator # rubocop:todo Style/Documentation
     include Validateable
 
-    class DelegateError < ActiveModel::Errors
+    class DelegateError < ActiveModel::Errors # rubocop:todo Style/Documentation
       def initialize(base, target)
         @base     = base
         @messages = target.errors.messages

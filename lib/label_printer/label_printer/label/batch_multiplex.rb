@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class BatchMultiplex < BaseTube
+    class BatchMultiplex < BaseTube # rubocop:todo Style/Documentation
       attr_reader :count, :printable, :batch
 
       def initialize(options)

@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/globals'
 require File.dirname(__FILE__) + '/support/options'
 
 module Informatics
-  class Application
+  class Application # rubocop:todo Style/Documentation
     include Informatics::Globals
 
     attr_accessor :name, :description, :home_page, :title, :authentication

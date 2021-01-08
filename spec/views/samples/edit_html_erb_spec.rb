@@ -22,7 +22,8 @@ RSpec.describe 'samples/edit.html.erb', type: :view do
 
       it 'has the consent withdrawn selection selected' do
         render
-        expect(rendered).to have_tag('select', with: { name: 'sample[sample_metadata_attributes][consent_withdrawn]' }, text: 'Yes')
+        expect(rendered).to have_tag('select',
+                                     with: { name: 'sample[sample_metadata_attributes][consent_withdrawn]' }, text: 'Yes')
       end
     end
 
@@ -36,7 +37,8 @@ RSpec.describe 'samples/edit.html.erb', type: :view do
 
       it 'has the consent withdrawn selection unselected' do
         render
-        expect(rendered).to have_tag('select', with: { name: 'sample[sample_metadata_attributes][consent_withdrawn]' }, text: 'No')
+        expect(rendered).to have_tag('select',
+                                     with: { name: 'sample[sample_metadata_attributes][consent_withdrawn]' }, text: 'No')
       end
     end
   end

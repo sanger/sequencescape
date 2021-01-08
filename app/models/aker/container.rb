@@ -62,7 +62,9 @@ module Aker
     def put_sample_in_container(sample, study)
       save if asset.nil?
       sample.update(container: self)
-      raise 'The contents of this plate are not up to date with aker job message' if !contains_sample?(sample) && aliquots?
+      if !contains_sample?(sample) && aliquots?
+        raise 'The contents of this plate are not up to date with aker job message'
+      end
 
       asset.aliquots.create!(sample: sample, study: study) unless contains_sample?(sample)
     end

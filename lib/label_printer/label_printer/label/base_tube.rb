@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class BaseTube
+    class BaseTube # rubocop:todo Style/Documentation
       include Label::MultipleLabels
 
       def create_label(tube)

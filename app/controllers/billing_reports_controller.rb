@@ -1,4 +1,4 @@
-class BillingReportsController < ApplicationController
+class BillingReportsController < ApplicationController # rubocop:todo Style/Documentation
   def new
     @billing_report = Billing::Report.new(billing_report_params)
   end

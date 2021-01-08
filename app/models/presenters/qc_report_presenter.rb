@@ -1,4 +1,4 @@
-class Presenters::QcReportPresenter
+class Presenters::QcReportPresenter # rubocop:todo Style/Documentation
   REPORT_IDENTITY = 'Sequencescape QC Report'.freeze
   VERSION = '1.0.0'.freeze
   HEADER_FIELDS = {

@@ -1,4 +1,4 @@
-module Submission::Priorities
+module Submission::Priorities # rubocop:todo Style/Documentation
   def self.priorities
     %w(None Low Medium High)
   end

@@ -39,7 +39,8 @@ class StampTest < ActiveSupport::TestCase
 
       should 'clone the aliquots' do
         @qcable = create :qcable_with_asset, state: 'created'
-        @qcable_2 = @qcable.lot.qcables.create!(qcable_creator: @qcable.qcable_creator, asset: create(:full_plate), state: 'created')
+        @qcable_2 = @qcable.lot.qcables.create!(qcable_creator: @qcable.qcable_creator, asset: create(:full_plate),
+                                                state: 'created')
 
         sqc = Stamp::StampQcable.new(bed: '1', order: 1, qcable: @qcable)
         sqc_2 = Stamp::StampQcable.new(bed: '2', order: 2, qcable: @qcable_2)

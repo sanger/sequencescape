@@ -159,9 +159,7 @@ class Sample < ApplicationRecord
       gender: GENDERS,
       dna_source: DNA_SOURCES,
       sample_sra_hold: SRA_HOLD_VALUES
-    }.each_with_object({}) do |(k, v), h|
-      h[k] = v.index_by { |b| b.downcase }
-    end
+    }.transform_values { |v| v.index_by { |b| b.downcase } }
 
     after_initialize do |record|
       record.consent_withdrawn = false if record.consent_withdrawn.nil?
@@ -200,7 +198,8 @@ class Sample < ApplicationRecord
     # 1) Understand what the actual constraints are for supplier_name
     # 2) Apply appropriate constraints
     # 3) Ensure the help text in sample manifest matches
-    validates :supplier_name, format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII' }, if: :supplier_name_changed?
+    validates :supplier_name, format: { with: /\A[[:ascii:]]+\z/,
+                                        message: 'only allows ASCII' }, if: :supplier_name_changed?
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
     # and the values can be easily remapped
@@ -269,13 +268,17 @@ class Sample < ApplicationRecord
   belongs_to :container, class_name: 'Aker::Container'
 
   validates :name, presence: true
-  validates :name, format: { with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create }
-  validates :name, format: { with: /\A[()+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update }
-  validates :name, uniqueness: { on: :create, message: 'already in use', unless: :sample_manifest_id?, case_sensitive: false }
+  validates :name, format: { with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format,
+                             on: :create }
+  validates :name, format: { with: /\A[()+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format,
+                             on: :update }
+  validates :name, uniqueness: { on: :create, message: 'already in use', unless: :sample_manifest_id?,
+                                 case_sensitive: false }
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
-  validates :control_type, absence: { with: true, unless: :control?, message: 'should be blank if "control" is set to false' }
+  validates :control_type, absence: { with: true, unless: :control?,
+                                      message: 'should be blank if "control" is set to false' }
 
   enum control_type: {
     negative: 0,
@@ -306,25 +309,27 @@ class Sample < ApplicationRecord
   before_destroy :safe_to_destroy
   after_save :accession
 
-  # Note: Samples don't tend to get released through Sequencescape
+  # NOTE: Samples don't tend to get released through Sequencescape
   # so in reality these methods are usually misleading.
   delegate :released?, :release, to: :sample_metadata
 
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
   scope :for_search_query, lambda { |query|
-    # Note: This search is performed in two stages so that we can make best use of our indicies
+    # NOTE: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
     # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
     # problem rails side, and perform two queries instead.
 
     # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
 
-    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact', left: "#{query}%", exact: query).pluck(:sample_id)
+    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact', left: "#{query}%",
+                                                                                                    exact: query).pluck(:sample_id)
 
     # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
     # of numbers seems to massively increase the query length.
-    where('name LIKE :wild OR id IN (:sm_ids) OR id = :qid', wild: "%#{query}%", sm_ids: md, query: query, qid: query.to_i)
+    where('name LIKE :wild OR id IN (:sm_ids) OR id = :qid', wild: "%#{query}%", sm_ids: md, query: query,
+                                                             qid: query.to_i)
   }
 
   scope :for_plate_and_order, lambda { |plate_id, order_id|
@@ -390,7 +395,8 @@ class Sample < ApplicationRecord
   end
 
   def sample_supplier_name_empty?(supplier_sample_name)
-    supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
+    supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available',
+                                    'none'].include?(supplier_sample_name.downcase)
   end
 
   # Return the highest priority accession service

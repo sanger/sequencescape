@@ -3,12 +3,12 @@ require File.dirname(__FILE__) + '/identity'
 
 module Authorization
   module ObjectRolesTable
-    module UserExtensions
+    module UserExtensions # rubocop:todo Style/Documentation
       def self.included(recipient)
         recipient.extend(ClassMethods)
       end
 
-      module ClassMethods
+      module ClassMethods # rubocop:todo Style/Documentation
         def acts_as_authorized_user(roles_relationship_opts = {})
           has_many :user_role_bindings, class_name: 'Role::UserRole'
           has_many :roles, roles_relationship_opts.merge(through: :user_role_bindings, source: :role)
@@ -18,7 +18,7 @@ module Authorization
         end
       end
 
-      module InstanceMethods
+      module InstanceMethods # rubocop:todo Style/Documentation
         # If roles aren't explicitly defined in user class then check roles table
         def has_role?(role_name, authorizable_obj = nil)
           if authorizable_obj.nil?
@@ -52,7 +52,9 @@ module Authorization
           if authorizable_obj.is_a? Class
             !roles.detect { |role| role.authorizable_type == authorizable_obj.to_s }.nil?
           elsif authorizable_obj
-            !roles.detect { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable == authorizable_obj }.nil?
+            !roles.detect do |role|
+              role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable == authorizable_obj
+            end.nil?
           else
             !roles.detect { |role| role.authorizable.nil? }.nil?
           end
@@ -63,7 +65,9 @@ module Authorization
           if authorizable_obj.is_a? Class
             roles.select { |role| role.authorizable_type == authorizable_obj.to_s }
           elsif authorizable_obj
-            roles.select { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable.id == authorizable_obj.id }
+            roles.select do |role|
+              role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable.id == authorizable_obj.id
+            end
           else
             roles.select { |role| role.authorizable.nil? }
           end
@@ -109,12 +113,12 @@ module Authorization
       end
     end
 
-    module ModelExtensions
+    module ModelExtensions # rubocop:todo Style/Documentation
       def self.included(recipient)
         recipient.extend(ClassMethods)
       end
 
-      module ClassMethods
+      module ClassMethods # rubocop:todo Style/Documentation
         def acts_as_authorizable
           has_many :accepted_roles, as: :authorizable, class_name: 'Role', dependent: :destroy
 
@@ -133,7 +137,7 @@ module Authorization
         end
       end
 
-      module InstanceMethods
+      module InstanceMethods # rubocop:todo Style/Documentation
         # If roles aren't overriden in model then check roles table
         def accepts_role?(role_name, user)
           user.has_role? role_name, self

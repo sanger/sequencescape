@@ -34,12 +34,14 @@ module WorkflowsHelper
 
   def qc_select_box(request, status, html_options = {})
     select_options = %w[pass fail]
-    select_tag("#{request.id}[qc_state]", options_for_select(select_options, status), html_options.merge(class: 'qc_state'))
+    select_tag("#{request.id}[qc_state]", options_for_select(select_options, status),
+               html_options.merge(class: 'qc_state'))
   end
 
   def gel_qc_select_box(request, status, html_options = {})
     html_options.delete(:generate_blank)
     status = 'OK' if status.blank? || status == 'Pass'
-    select_tag("wells[#{request.id}][qc_state]", options_for_select({ 'Pass' => 'OK', 'Fail' => 'Fail', 'Weak' => 'Weak', 'No Band' => 'Band Not Visible', 'Degraded' => 'Degraded' }, status), html_options)
+    select_tag("wells[#{request.id}][qc_state]",
+               options_for_select({ 'Pass' => 'OK', 'Fail' => 'Fail', 'Weak' => 'Weak', 'No Band' => 'Band Not Visible', 'Degraded' => 'Degraded' }, status), html_options)
   end
 end

@@ -16,7 +16,8 @@ module SampleManifestExcel
         super
         @extra_rows_added = 0
         create_styles
-        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count)
+        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name,
+                                  sample_manifest.count)
         add_columns
         freeze_panes
       end

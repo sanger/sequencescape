@@ -1,4 +1,4 @@
-module Request::CustomerResponsibility
+module Request::CustomerResponsibility # rubocop:todo Style/Documentation
   def self.included(base)
     base::Metadata.class_eval do
       custom_attribute(:customer_accepts_responsibility, boolean: true)

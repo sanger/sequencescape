@@ -18,23 +18,32 @@ RSpec.describe LabwhereReception do
   end
 
   it 'scans the labware into the location' do
-    allow(LabWhereClient::Scan).to receive(:create).with(location_barcode: 'labwhere_location', user_code: '12345', labware_barcodes: [plate_1.human_barcode, plate_2.machine_barcode]).and_return(MockResponse.new(true, ''))
-    labwhere_reception = described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
+    allow(LabWhereClient::Scan).to receive(:create).with(location_barcode: 'labwhere_location', user_code: '12345',
+                                                         labware_barcodes: [plate_1.human_barcode, plate_2.machine_barcode]).and_return(MockResponse.new(
+                                                                                                                                          true, ''
+                                                                                                                                        ))
+    labwhere_reception = described_class.new('12345', 'labwhere_location',
+                                             [plate_1.human_barcode, plate_2.machine_barcode])
     expect(labwhere_reception.save).to be_truthy
   end
 
   it 'removes all the missing barcodes' do
-    labwhere_reception = described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
+    labwhere_reception = described_class.new('12345', 'labwhere_location',
+                                             [plate_1.human_barcode, plate_2.machine_barcode])
     expect(labwhere_reception.missing_barcodes).to be_empty
   end
 
   it 'detects all the missing barcodes' do
-    labwhere_reception = described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode, '11111111111111111'])
+    labwhere_reception = described_class.new('12345', 'labwhere_location',
+                                             [plate_1.human_barcode, plate_2.machine_barcode, '11111111111111111'])
     expect(labwhere_reception.missing_barcodes).to eq(['11111111111111111'])
   end
 
   it 'scans the labware into the location if the labware is not in ss' do
-    allow(LabWhereClient::Scan).to receive(:create).with(location_barcode: 'labwhere_location', user_code: '12345', labware_barcodes: %w[1 11111111111111]).and_return(MockResponse.new(true, ''))
+    allow(LabWhereClient::Scan).to receive(:create).with(location_barcode: 'labwhere_location', user_code: '12345',
+                                                         labware_barcodes: %w[1 11111111111111]).and_return(MockResponse.new(
+                                                                                                              true, ''
+                                                                                                            ))
     labwhere_reception = described_class.new('12345', 'labwhere_location', %w[1 11111111111111])
     expect(labwhere_reception.save).to be_truthy
   end
@@ -55,13 +64,15 @@ RSpec.describe LabwhereReception do
 
   it 'does not scan the labware into the location if scan was not created' do
     allow(LabWhereClient::Scan).to receive(:create).and_return(MockResponse.new(false, ''))
-    labwhere_reception = described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
+    labwhere_reception = described_class.new('12345', 'labwhere_location',
+                                             [plate_1.human_barcode, plate_2.machine_barcode])
     expect(labwhere_reception.save).to be_falsey
   end
 
   it 'does not scan the labware into the location if LabwhereException was raised' do
     allow(LabWhereClient::Scan).to receive(:create).and_raise(LabWhereClient::LabwhereException)
-    labwhere_reception = described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
+    labwhere_reception = described_class.new('12345', 'labwhere_location',
+                                             [plate_1.human_barcode, plate_2.machine_barcode])
     expect(labwhere_reception.save).to be_falsey
     expect(labwhere_reception.errors).not_to be_empty
   end

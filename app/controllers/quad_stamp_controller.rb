@@ -15,7 +15,8 @@ class QuadStampController < ApplicationController
   def create
     @user = User.find_with_barcode_or_swipecard_code(params[:quad_creator][:user_barcode])
     @target_purpose = Purpose.find(params[:quad_creator][:target_purpose_id])
-    @quad_creator = Plate::QuadCreator.new(parent_barcodes: parent_barcodes.to_hash, target_purpose: @target_purpose, user: @user)
+    @quad_creator = Plate::QuadCreator.new(parent_barcodes: parent_barcodes.to_hash, target_purpose: @target_purpose,
+                                           user: @user)
 
     if @quad_creator.save
       print_labels
@@ -48,7 +49,9 @@ class QuadStampController < ApplicationController
   # Attempts to first get 384-well label specific printers (384-well plates take narrow 6mm labels)
   def set_barcode_printers
     @barcode_printers = BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType384DoublePlate.all).order('name asc')
-    @barcode_printers = BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType96Plate.all).order('name asc') if @barcode_printers.blank?
+    if @barcode_printers.blank?
+      @barcode_printers = BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType96Plate.all).order('name asc')
+    end
   end
 
   def parent_barcodes

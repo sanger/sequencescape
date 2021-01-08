@@ -1,4 +1,4 @@
-class BroadcastEvent::LibraryStart < BroadcastEvent
+class BroadcastEvent::LibraryStart < BroadcastEvent # rubocop:todo Style/Documentation
   set_event_type 'library_start'
 
   # Properties takes :order_id

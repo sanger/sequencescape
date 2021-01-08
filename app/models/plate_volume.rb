@@ -1,6 +1,6 @@
 require 'carrierwave'
 
-class PlateVolume < ApplicationRecord
+class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
   ASSAY_TYPE = 'Volume Check'.freeze
   ASSAY_VERSION = '1.0'.freeze
   extend DbFile::Uploader
@@ -41,7 +41,8 @@ class PlateVolume < ApplicationRecord
       well = location_to_well[short_well_description]
       next if well.blank?
 
-      QcResult.create(asset: well, key: 'volume', value: volume, units: 'ul', assay_type: ASSAY_TYPE, assay_version: ASSAY_VERSION, qc_assay: qc_assay)
+      QcResult.create(asset: well, key: 'volume', value: volume, units: 'ul', assay_type: ASSAY_TYPE,
+                      assay_version: ASSAY_VERSION, qc_assay: qc_assay)
     end
   end
 
@@ -91,7 +92,9 @@ class PlateVolume < ApplicationRecord
 
     def find_for_filename(filename)
       find_by(uploaded_file_name: filename) or
-        ->(filename, file) { PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file) }
+        lambda { |filename, file|
+          PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
+        }
     end
   end
 end

@@ -13,11 +13,15 @@ RSpec.describe LinearSubmission do
   describe 'build (Submission factory)' do
     let(:sequencing_request_type) { create :sequencing_request_type }
     let(:purpose) { create :std_mx_tube_purpose }
-    let(:request_options) { { 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' } }
+    let(:request_options) do
+      { 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' }
+    end
 
     context 'when a multiplexed submission' do
       describe 'Customer decision propagation' do
-        let(:library_creation_request_type) { create :well_request_type, target_purpose: purpose, for_multiplexing: true }
+        let(:library_creation_request_type) do
+          create :well_request_type, target_purpose: purpose, for_multiplexing: true
+        end
         let(:product_criteria) { create :product_criteria }
         let(:current_report) { create :qc_report, product_criteria: product_criteria }
         let(:stock_well) { create :well }
@@ -27,7 +31,9 @@ RSpec.describe LinearSubmission do
           well.reload
           well
         end
-        let(:expected_metric) { create :qc_metric, asset: stock_well, qc_report: current_report, qc_decision: 'manually_failed', proceed: true }
+        let(:expected_metric) do
+          create :qc_metric, asset: stock_well, qc_report: current_report, qc_decision: 'manually_failed', proceed: true
+        end
         let(:mpx_submission) do
           create(
             :linear_submission,
@@ -57,7 +63,9 @@ RSpec.describe LinearSubmission do
 
       context 'with basic behaviour' do
         let(:mpx_assets) { create_list(:sample_tube, mx_asset_count) }
-        let(:library_creation_request_type) { create :multiplexed_library_creation_request_type, target_purpose: purpose }
+        let(:library_creation_request_type) do
+          create :multiplexed_library_creation_request_type, target_purpose: purpose
+        end
         let(:mpx_submission) do
           create(:linear_submission,
                  study: study,
@@ -92,7 +100,9 @@ RSpec.describe LinearSubmission do
 
           context 'when multiple requests after plexing' do
             let(:sequencing_request_type_2) { create :sequencing_request_type }
-            let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type_2.id, sequencing_request_type.id] }
+            let(:request_type_option) do
+              [library_creation_request_type.id, sequencing_request_type_2.id, sequencing_request_type.id]
+            end
 
             it 'create requests but not comments' do
               expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 2)
@@ -107,7 +117,9 @@ RSpec.describe LinearSubmission do
       let(:library_creation_stage1) { create :library_request_type }
       let(:library_creation_stage2) { create :library_request_type }
       let(:mx_request_type) { create :multiplex_request_type }
-      let(:request_type_option) { [library_creation_stage1.id, library_creation_stage2.id, mx_request_type.id, sequencing_request_type.id] }
+      let(:request_type_option) do
+        [library_creation_stage1.id, library_creation_stage2.id, mx_request_type.id, sequencing_request_type.id]
+      end
       let(:assets) { create_list(:untagged_well, 2) }
       let(:basic_options) do
         {
@@ -195,9 +207,27 @@ RSpec.describe LinearSubmission do
 
   context 'when we have a multiplier for request type' do
     let(:assets) { create_list :sample_tube, 2 }
-    let(:mx_request_type) { create :multiplexed_library_creation_request_type, asset_type: 'SampleTube', target_asset_type: 'LibraryTube', initial_state: 'pending', name: 'Multiplexed Library Creation', order: 1, key: 'multiplexed_library_creation' }
-    let(:lib_request_type) { create :library_creation_request_type, asset_type: 'SampleTube', target_asset_type: 'LibraryTube', initial_state: 'pending', name: 'Library Creation', order: 1, key: 'library_creation' }
-    let(:sequencing_request_type) { create :request_type, asset_type: 'LibraryTube', initial_state: 'pending', name: 'PE sequencing', order: 2, key: 'pe_sequencing' }
+    let(:mx_request_type) do
+      create :multiplexed_library_creation_request_type,
+             asset_type: 'SampleTube',
+             target_asset_type: 'LibraryTube',
+             initial_state: 'pending',
+             name: 'Multiplexed Library Creation',
+             order: 1,
+             key: 'multiplexed_library_creation'
+    end
+    let(:lib_request_type) do
+      create :library_creation_request_type,
+             asset_type: 'SampleTube',
+             target_asset_type: 'LibraryTube',
+             initial_state: 'pending',
+             name: 'Library Creation',
+             order: 1,
+             key: 'library_creation'
+    end
+    let(:sequencing_request_type) do
+      create :request_type, asset_type: 'LibraryTube', initial_state: 'pending', name: 'PE sequencing', order: 2, key: 'pe_sequencing'
+    end
 
     context 'when a multiplication factor of 5 is provided' do
       context 'with non multiplexed libraries and sequencing' do
@@ -208,16 +238,21 @@ RSpec.describe LinearSubmission do
                  user: user,
                  assets: assets,
                  request_types: [lib_request_type.id, sequencing_request_type.id],
-                 request_options: { :multiplier => { sequencing_request_type.id.to_s => '5', lib_request_type.id.to_s => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
+                 request_options: {
+                   :multiplier => { sequencing_request_type.id.to_s => '5', lib_request_type.id.to_s => '1' },
+                   'read_length' => '108',
+                   'fragment_size_required_from' => '150',
+                   'fragment_size_required_to' => '200'
+                 },
                  comments: '').submission
         end
 
         setup { submission.built! }
 
         it 'builds the requests' do
-          expect { submission.process! }.to change(Request, :count).by(12)
-                                                                   .and change { lib_request_type.requests.count }.by(2)
-                                                                                                                  .and change { sequencing_request_type.requests.count }.by(10)
+          expect { submission.process! }.to change(Request, :count).by(12) &
+                                            change { lib_request_type.requests.count }.by(2) &
+                                            change { sequencing_request_type.requests.count }.by(10)
         end
       end
 
@@ -229,16 +264,21 @@ RSpec.describe LinearSubmission do
                  user: user,
                  assets: assets,
                  request_types: [mx_request_type.id, sequencing_request_type.id],
-                 request_options: { :multiplier => { sequencing_request_type.id.to_s => '5', mx_request_type.id.to_s => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
+                 request_options: {
+                   :multiplier => { sequencing_request_type.id.to_s => '5', mx_request_type.id.to_s => '1' },
+                   'read_length' => '108',
+                   'fragment_size_required_from' => '150',
+                   'fragment_size_required_to' => '200'
+                 },
                  comments: '').submission
         end
 
         setup { submission.built! }
 
         it 'builds the requests' do
-          expect { submission.process! }.to change(Request, :count).by(7)
-                                                                   .and change { mx_request_type.requests.count }.by(2)
-                                                                                                                 .and change { sequencing_request_type.requests.count }.by(5)
+          expect { submission.process! }.to change(Request, :count).by(7) &
+                                            change { mx_request_type.requests.count }.by(2) &
+                                            change { sequencing_request_type.requests.count }.by(5)
         end
       end
     end

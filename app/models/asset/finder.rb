@@ -34,7 +34,9 @@ class Asset::Finder
       case map_description
       when /^[a-z,A-Z][0-9]+$/ # A well
         well = plate.find_well_by_name(map_description)
-        raise InvalidInputException, "Well #{map_description} on #{plate.human_barcode} does not exist or is empty." if well.nil? || well.aliquots.empty?
+        if well.nil? || well.aliquots.empty?
+          raise InvalidInputException, "Well #{map_description} on #{plate.human_barcode} does not exist or is empty."
+        end
 
         well
       when /^[a-z,A-Z]$/ # A row

@@ -1,4 +1,4 @@
-module StudyReport::WellDetails
+module StudyReport::WellDetails # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       scope :for_study_report, -> {
@@ -6,7 +6,8 @@ module StudyReport::WellDetails
           :map,
           :well_attribute,
           :events,
-          { plate: %i[plate_purpose events barcodes], primary_aliquot: { sample: [:sample_metadata, { sample_manifest: :supplier }] } }
+          { plate: %i[plate_purpose events barcodes],
+            primary_aliquot: { sample: [:sample_metadata, { sample_manifest: :supplier }] } }
         ])
       }
     end

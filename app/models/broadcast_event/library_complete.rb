@@ -1,4 +1,4 @@
-class BroadcastEvent::LibraryComplete < BroadcastEvent
+class BroadcastEvent::LibraryComplete < BroadcastEvent # rubocop:todo Style/Documentation
   set_event_type 'library_complete'
 
   # Properties takes :order_id

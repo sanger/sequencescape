@@ -15,11 +15,13 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
 
       describe '#mapped_setting_attributes_for_table' do
         it 'filters out the attributes that do not belong to the table' do
-          expect(mapping.send(:mapped_setting_attributes_for_table, :sample_metadata, gender: 'Male', volume: 33)).to eq(gender: 'Male')
+          expect(mapping.send(:mapped_setting_attributes_for_table, :sample_metadata, gender: 'Male',
+                                                                                      volume: 33)).to eq(gender: 'Male')
         end
 
         it 'translates the valid attribute to the SS nomenclature using the config ' do
-          expect(mapping.send(:mapped_setting_attributes_for_table, :well_attribute, gender: 'Male', volume: 33)).to eq(measured_volume: 33)
+          expect(mapping.send(:mapped_setting_attributes_for_table, :well_attribute, gender: 'Male',
+                                                                                     volume: 33)).to eq(measured_volume: 33)
         end
       end
 
@@ -37,7 +39,8 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
           end
 
           it 'returns the list with both colums' do
-            expect(mapping.send(:columns_for_table_from_field, :well_attribute, :volume)).to eq(%i[measured_volume current_volume])
+            expect(mapping.send(:columns_for_table_from_field, :well_attribute,
+                                :volume)).to eq(%i[measured_volume current_volume])
           end
         end
       end

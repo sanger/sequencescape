@@ -18,7 +18,8 @@ module Api
 
       def qc_results_params
         params.require(:data).require(:attributes).map do |p|
-          ActionController::Parameters.new(p.to_unsafe_h).permit(:barcode, :uuid, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version)
+          ActionController::Parameters.new(p.to_unsafe_h).permit(:barcode, :uuid, :well_location, :key, :value,
+                                                                 :units, :cv, :assay_type, :assay_version)
         end
       end
     end

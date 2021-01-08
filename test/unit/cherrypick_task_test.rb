@@ -14,10 +14,12 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
   context CherrypickTask do
     setup do
-      @asset_shape = AssetShape.create!(name: 'mini', horizontal_ratio: 4, vertical_ratio: 3, description_strategy: 'Map::Coordinate')
+      @asset_shape = AssetShape.create!(name: 'mini', horizontal_ratio: 4, vertical_ratio: 3,
+                                        description_strategy: 'Map::Coordinate')
 
       ('A'..'C').map { |r| (1..4).map { |c| "#{r}#{c}" } }.flatten.each_with_index do |m, i|
-        Map.create!(description: m, asset_size: 12, asset_shape_id: @asset_shape.id, location_id: i + 1, row_order: i, column_order: ((i / 4) + 3 * (i % 4)))
+        Map.create!(description: m, asset_size: 12, asset_shape_id: @asset_shape.id, location_id: i + 1, row_order: i,
+                    column_order: ((i / 4) + 3 * (i % 4)))
       end
 
       @mini_plate_purpose = PlatePurpose.stock_plate_purpose.clone.tap do |pp|
@@ -43,9 +45,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
     context '#pick_onto_partial_plate' do
       setup do
-        plate = @mini_plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |plate|
-          plate.wells.build(maps_for(12).map { |m| { map: m } })
-        end
+        plate = @mini_plate_purpose.create!(barcode: (@barcode += 1))
         # TODO: This is very slow, and could do with improvements
         @requests = plate.wells.sort_by { |w| w.map.column_order }.map { |w| create(:well_request, asset: w) }
       end
@@ -54,8 +54,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         robot = mock('robot')
         robot.stubs(:max_beds).returns(0)
 
-        partial = @mini_plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |partial|
-          partial.wells.build(maps_for(6).map { |m| { map: m } })
+        partial = @mini_plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |plate|
+          plate.wells.build(maps_for(6).map { |m| { map: m } })
         end
 
         assert_raises(StandardError) do
@@ -87,8 +87,11 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         should 'fill plate with empty wells' do
-          expected, requests = [@expected_partial], @requests.slice(0, 5)
-          expected.first.concat(requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] })
+          expected = [@expected_partial]
+          requests = @requests.slice(0, 5)
+          expected.first.concat(
+            requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] }
+          )
           pad_expected_plate_with_empty_wells(@template, expected.first)
 
           plates, _source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
@@ -159,10 +162,14 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
           expected_partial = []
           expected_partial.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 1
-          expected_partial.concat(requests.slice(0, 6).map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] })
+          expected_partial.concat(requests.slice(0, 6).map do |request|
+                                    [request.id, request.asset.plate.human_barcode, request.asset.map.description]
+                                  end)
           expected_partial.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 12
 
-          expected_second = requests.slice(6, 6).map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] }
+          expected_second = requests.slice(6, 6).map do |request|
+            [request.id, request.asset.plate.human_barcode, request.asset.map.description]
+          end
           pad_expected_plate_with_empty_wells(@template, expected_second)
 
           plates, _source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
@@ -187,7 +194,9 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         should 'pick vertically when the plate purpose says so' do
           @target_purpose.update!(cherrypick_direction: 'column')
-          @expected = @requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] }
+          @expected = @requests.map do |request|
+            [request.id, request.asset.plate.human_barcode, request.asset.map.description]
+          end
         end
 
         should 'pick horizontally when the plate purpose says so' do

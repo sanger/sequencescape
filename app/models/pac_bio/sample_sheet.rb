@@ -1,12 +1,14 @@
-class PacBio::SampleSheet
+class PacBio::SampleSheet # rubocop:todo Style/Documentation
   def header_metadata(batch)
     [
       ['Version', '1.0.0', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
       ['Unique ID', batch.id, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
       ['Type', 'Plate', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
       ['Owner', 'System', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
-      ['Created By', batch.user.login, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
-      ['Comments', "New plate created on #{Time.zone.now}", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
+      ['Created By', batch.user.login, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+       nil, nil],
+      ['Comments', "New plate created on #{Time.zone.now}", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+       nil, nil, nil, nil, nil, nil, nil],
       ['Output Path', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
       [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]
     ]

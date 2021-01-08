@@ -1,4 +1,4 @@
-module ProductHelpers
+module ProductHelpers # rubocop:todo Style/Documentation
   def self.single_template(name)
     {
       name: name,

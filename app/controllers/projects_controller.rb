@@ -1,5 +1,5 @@
 require 'event_factory'
-class ProjectsController < ApplicationController
+class ProjectsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -61,9 +61,9 @@ class ProjectsController < ApplicationController
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Problems creating your new project'
     respond_to do |format|
-      format.html {
+      format.html do
         render action: 'new'
-      }
+      end
       format.xml  { render xml: @project.errors, status: :unprocessable_entity }
       format.json { render json: @project.errors, status: :unprocessable_entity }
     end

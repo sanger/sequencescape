@@ -36,7 +36,9 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
 
       stock_wells(plate, contents).each do |source_well|
         # Only transitions from last submission
-        source_well.requests.select { |r| r.library_creation? && active_submissions.include?(r.submission_id) }.each do |request|
+        source_well.requests.select do |r|
+          r.library_creation? && active_submissions.include?(r.submission_id)
+        end.each do |request|
           request.transition_to(new_outer_state) if request.pending?
         end
       end

@@ -19,6 +19,7 @@ Given(/^plate "([^"]*)" has (\d+) blank samples$/) do |plate_barcode, number_of_
     break if index >= number_of_blanks.to_i
 
     well.aliquots.clear
-    well.aliquots.create!(sample: Sample.create!(name: "#{plate_barcode}_#{index}", empty_supplier_sample_name: true), study: study)
+    well.aliquots.create!(sample: Sample.create!(name: "#{plate_barcode}_#{index}", empty_supplier_sample_name: true),
+                          study: study)
   end
 end

@@ -1,4 +1,4 @@
-module BootstrapHelper
+module BootstrapHelper # rubocop:todo Style/Documentation
   def panel(type = :default, options = {}, &block)
     bs_custom_panel(type, :div, { class: 'card-body' }, options, &block)
   end
@@ -17,7 +17,7 @@ module BootstrapHelper
 
   def bs_custom_panel(type, body_type, body_options, options, &block)
     title = options.delete(:title)
-    options[:class] ||= String.new
+    options[:class] ||= []
     options[:class] << " ss-card card-style-#{type}"
     tag.div(options) do
       concat tag.h3(title, class: 'card-header-custom') unless title.nil?
@@ -29,7 +29,7 @@ module BootstrapHelper
   #  block_content
   # </div>
   def alert(type = :default, options = {}, &block)
-    options[:class] ||= String.new
+    options[:class] ||= []
     options[:role] ||= 'alert'
     options[:class] << " alert alert-#{type}"
     tag.div(options, &block)
@@ -49,12 +49,11 @@ module BootstrapHelper
   def summary(type = :default, options = {})
     options[:title] ||= 'Summary'
     bs_custom_panel(type, :table, { class: 'table table-summary' }, options) do
-      String.new.html_safe.tap do |rows|
-        yield.each do |key, value|
-          rows << tag.tr do
-            tag.th(key) << tag.td(value)
-          end
-        end
+      yield.each do |key, value|
+        concat(tag.tr do
+          concat tag.th(key)
+          concat tag.td(value)
+        end)
       end
     end
   end
@@ -104,7 +103,8 @@ module BootstrapHelper
                 end
     tag.span(count, style: 'display:none') <<
       tag.div(class: 'progress') do
-        tag.div("#{count}%", class: ['progress-bar', 'progress-bar-striped', css_class], role: 'progressbar', style: "width: #{count}%;")
+        tag.div("#{count}%", class: ['progress-bar', 'progress-bar-striped', css_class], role: 'progressbar',
+                             style: "width: #{count}%;")
       end
   end
 

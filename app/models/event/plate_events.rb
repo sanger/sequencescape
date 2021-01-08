@@ -1,4 +1,4 @@
-module Event::PlateEvents
+module Event::PlateEvents # rubocop:todo Style/Documentation
   def gel_qc_date
     event_date('gel_analysed')
   end
@@ -16,7 +16,7 @@ module Event::PlateEvents
   end
 
   def fluidigm_stamp_date
-    event_key = PlatesHelper::event_family_for_pick(configatron.fetch(:sta_plate_purpose_name))
+    event_key = PlatesHelper.event_family_for_pick(configatron.fetch(:sta_plate_purpose_name))
     event_date(event_key)
   end
 

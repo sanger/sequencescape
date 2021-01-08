@@ -1,4 +1,4 @@
-module Core::Service::ErrorHandling
+module Core::Service::ErrorHandling # rubocop:todo Style/Documentation
   def self.registered(app)
     app.instance_eval do
       helpers Helpers
@@ -22,8 +22,8 @@ module Core::Service::ErrorHandling
     end
   end
 
-  module Helpers
-    class JsonError
+  module Helpers # rubocop:todo Style/Documentation
+    class JsonError # rubocop:todo Style/Documentation
       def initialize(error)
         @error = error
       end
@@ -49,20 +49,20 @@ module Core::Service::ErrorHandling
   end
 end
 
-class ActiveRecord::ActiveRecordError
+class ActiveRecord::ActiveRecordError # rubocop:todo Style/Documentation
   include ::Core::Service::Error::Behaviour
   self.api_error_code = 500
 end
 
-class ActiveRecord::RecordNotFound
+class ActiveRecord::RecordNotFound # rubocop:todo Style/Documentation
   self.api_error_code = 404
 end
 
-class ActiveRecord::AssociationTypeMismatch
+class ActiveRecord::AssociationTypeMismatch # rubocop:todo Style/Documentation
   self.api_error_code = 422
 end
 
-class ActiveRecord::RecordInvalid
+class ActiveRecord::RecordInvalid # rubocop:todo Style/Documentation
   def api_error(response)
     io_handler = ::Core::Io::Registry.instance.lookup_for_object(record)
     response.content_error(422, errors_grouped_by_attribute { |attribute| io_handler.json_field_for(attribute) })
@@ -74,7 +74,7 @@ class ActiveRecord::RecordInvalid
   private :errors_grouped_by_attribute
 end
 
-class ActiveModel::ValidationError
+class ActiveModel::ValidationError # rubocop:todo Style/Documentation
   def api_error(response)
     io_handler = ::Core::Io::Registry.instance.lookup_for_object(model)
     response.content_error(422, errors_grouped_by_attribute { |attribute| io_handler.json_field_for(attribute) })
@@ -86,13 +86,13 @@ class ActiveModel::ValidationError
   private :errors_grouped_by_attribute
 end
 
-class ActiveRecord::RecordNotSaved
+class ActiveRecord::RecordNotSaved # rubocop:todo Style/Documentation
   def api_error(response)
     response.content_error(422, message)
   end
 end
 
-class IllegalOperation < RuntimeError
+class IllegalOperation < RuntimeError # rubocop:todo Style/Documentation
   include ::Core::Service::Error::Behaviour
   self.api_error_code    = 501
   self.api_error_message = 'requested action is not supported on this resource'

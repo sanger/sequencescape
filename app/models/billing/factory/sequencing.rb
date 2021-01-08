@@ -1,6 +1,6 @@
 module Billing
   module Factory
-    class Sequencing < Base
+    class Sequencing < Base # rubocop:todo Style/Documentation
       attr_reader :aliquots
 
       validates :aliquots, presence: true

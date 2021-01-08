@@ -123,7 +123,9 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
       end
 
       context 'duplicate cgap foreign barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns, validation_errors: [:sample_tube_id_duplicates]) }
+        let(:download) do
+          build(:test_download_tubes_cgap, columns: columns, validation_errors: [:sample_tube_id_duplicates])
+        end
 
         it 'validation errors' do
           login_user(user)
@@ -148,7 +150,9 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
     context 'valid' do
       context 'upload and reupload' do
-        let(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences') }
+        let(:download) do
+          build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
+        end
 
         it 'with override' do
           # upload
@@ -170,7 +174,9 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
           # reupload
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots).to be_all { |a| a.library_type == 'My personal library type' }
+          expect(download.worksheet.multiplexed_library_tube.aliquots).to be_all { |a|
+                                                                            a.library_type == 'My personal library type'
+                                                                          }
 
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
@@ -180,12 +186,17 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           expect(page).to have_content('Sample manifest successfully uploaded.')
 
           expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots.count { |a| a.library_type == new_library_type_name }).to eq 2
+          expect(download.worksheet.multiplexed_library_tube.aliquots.count do |a|
+                   a.library_type == new_library_type_name
+                 end).to eq 2
         end
       end
 
       context 'cgap foreign barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences') }
+        let(:download) do
+          build(:test_download_tubes_cgap, columns: columns,
+                                           manifest_type: 'tube_multiplexed_library_with_tag_sequences')
+        end
 
         it 'upload' do
           login_user(user)
@@ -199,7 +210,10 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
     context 'invalid' do
       context 'upload' do
-        let(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: %i[library_type tags]) }
+        let(:download) do
+          build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences',
+                                      validation_errors: %i[library_type tags])
+        end
 
         it 'validation errors' do
           login_user(user)
@@ -219,7 +233,10 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
       end
 
       context 'with cgap barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:library_type]) }
+        let(:download) do
+          build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences',
+                                           validation_errors: [:library_type])
+        end
 
         it 'validation errors' do
           login_user(user)
@@ -231,7 +248,10 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
       end
 
       context 'with cgap barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:sample_tube_id_duplicates]) }
+        let(:download) do
+          build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences',
+                                           validation_errors: [:sample_tube_id_duplicates])
+        end
 
         it 'duplicates' do
           login_user(user)
@@ -278,7 +298,9 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
           # reupload
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots).to be_all { |a| a.library_type == 'My personal library type' }
+          expect(download.worksheet.multiplexed_library_tube.aliquots).to be_all { |a|
+                                                                            a.library_type == 'My personal library type'
+                                                                          }
 
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
@@ -288,7 +310,9 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           expect(page).to have_content('Sample manifest successfully uploaded.')
 
           expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots.count { |a| a.library_type == new_library_type_name }).to eq 2
+          expect(download.worksheet.multiplexed_library_tube.aliquots.count do |a|
+                   a.library_type == new_library_type_name
+                 end).to eq 2
         end
       end
 
@@ -307,7 +331,10 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
     context 'invalid' do
       context 'upload' do
-        let(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library', validation_errors: %i[library_type tags]) }
+        let(:download) do
+          build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library',
+                                      validation_errors: %i[library_type tags])
+        end
 
         it 'validation errors' do
           login_user(user)
@@ -328,7 +355,10 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
       end
 
       context 'with cgap barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library', validation_errors: [:library_type]) }
+        let(:download) do
+          build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library',
+                                           validation_errors: [:library_type])
+        end
 
         it 'validation errors' do
           login_user(user)
@@ -340,7 +370,10 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
       end
 
       context 'with cgap barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library', validation_errors: [:sample_tube_id_duplicates]) }
+        let(:download) do
+          build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library',
+                                           validation_errors: [:sample_tube_id_duplicates])
+        end
 
         it 'duplicates' do
           login_user(user)
@@ -426,7 +459,10 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
       end
 
       context 'unrecognised cgap foreign barcodes' do
-        let(:download) { build(:test_download_plates_cgap, columns: columns, validation_errors: [:sample_plate_id_unrecognised_foreign]) }
+        let(:download) do
+          build(:test_download_plates_cgap, columns: columns,
+                                            validation_errors: [:sample_plate_id_unrecognised_foreign])
+        end
 
         it 'validation errors' do
           login_user(user)
@@ -438,7 +474,9 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
       end
 
       context 'duplicate cgap foreign barcodes' do
-        let(:download) { build(:test_download_plates_cgap, columns: columns, validation_errors: [:sample_plate_id_duplicates]) }
+        let(:download) do
+          build(:test_download_plates_cgap, columns: columns, validation_errors: [:sample_plate_id_duplicates])
+        end
 
         it 'validation errors' do
           login_user(user)

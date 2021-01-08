@@ -11,7 +11,7 @@ def transfer_model(name)
   "transfer/#{name}".gsub(/\s+/, '_').camelize.constantize
 end
 
-Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^"]+)"$/ do |model, id, uuid_value|
+Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^"]+)"$/o do |model, id, uuid_value|
   set_uuid_for(transfer_model(model).find(id), uuid_value)
 end
 
@@ -19,7 +19,7 @@ Given /^the transfer (between plates|from plate to tube) exists with ID (\d+)$/ 
   FactoryBot.create(:"transfer_#{name.gsub(/\s+/, '_')}", id: id)
 end
 
-Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^"]+)"$/ do |target, model, id, uuid_value|
+Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^"]+)"$/o do |target, model, id, uuid_value|
   set_uuid_for(transfer_model(model).find(id).send(target), uuid_value)
 end
 
@@ -33,7 +33,8 @@ Then 'the transfers from {plate_name} to {plate_name} should be:' do |source, de
 
     source_well      = source.wells.located_at(source_well_location).first           or raise StandardError, "Plate #{source.id} does not have well #{source_well_location.inspect}"
     destination_well = destination.wells.located_at(destination_well_location).first or raise StandardError, "Plate #{destination.id} does not have well #{destination_well_location.inspect}"
-    assert_not_nil(TransferRequest.find_by(asset_id: source_well, target_asset_id: destination_well), "No transfer between #{source_well_location.inspect} and #{destination_well_location.inspect}")
+    assert_not_nil(TransferRequest.find_by(asset_id: source_well, target_asset_id: destination_well),
+                   "No transfer between #{source_well_location.inspect} and #{destination_well_location.inspect}")
   end
 end
 
@@ -82,7 +83,9 @@ end
 
 def change_request_state(state, targets, direction, request_class)
   association = direction == 'to' ? :requests_as_target : :requests_as_source
-  Request.where(id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id)).update_all(state: state)
+  Request.where(id: Array(targets).map(&association).flatten.select do |r|
+                      r.is_a?(request_class)
+                    end.map(&:id)).update_all(state: state)
 end
 
 Then 'the state of all the {request_class} requests {direction} {uuid} should be {string}' do |request_class, direction, target, state|

@@ -1,5 +1,5 @@
-module IlluminaC::Requests
-  class LibraryRequest < Request::LibraryCreation
+module IlluminaC::Requests # rubocop:todo Style/Documentation
+  class LibraryRequest < Request::LibraryCreation # rubocop:todo Style/Documentation
     def role; "#{request_metadata.library_type} #{super}"; end
 
     # Pop the request type in the pool information
@@ -22,10 +22,11 @@ module IlluminaC::Requests
   # By splitting this process over three releases we avoid the need for downtime during migrations
   class PcrLibraryRequest < LibraryRequest
   end
+
   class NoPcrLibraryRequest < LibraryRequest
   end
 
-  module Helpers
+  module Helpers # rubocop:todo Style/Documentation
     def create_request_types
       each_request_type do |params|
         RequestType.create!(params)

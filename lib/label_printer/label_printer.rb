@@ -4,5 +4,5 @@ require_relative 'label_printer/label/base_tube'
 
 Dir["#{File.dirname(__FILE__)}/**/*.rb"].sort.each { |file| require file }
 
-module LabelPrinter
+module LabelPrinter # rubocop:todo Style/Documentation
 end

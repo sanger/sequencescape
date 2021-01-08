@@ -12,7 +12,7 @@ end
 Given(/^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |plate_barcode, study_name, number_of_samples, asset_group_name|
   purpose = FactoryBot.create :plate_purpose
   purpose_name = purpose.name
-  step(%Q{I have a "#{purpose_name}" plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "#{asset_group_name}"})
+  step(%{I have a "#{purpose_name}" plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "#{asset_group_name}"})
 end
 
 Given(/^I have a "([^"]*)" plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |purpose_name, plate_barcode, study_name, number_of_samples, asset_group_name|
@@ -33,7 +33,7 @@ Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples
   step('I am a "administrator" user logged in as "user"')
   step('I have a project called "Test project"')
   step('I have an active study called "Test study"')
-  step(%Q{I have a plate "1234567" in study "Test study" with #{number_of_samples} samples in asset group "Plate asset group"})
+  step(%{I have a plate "1234567" in study "Test study" with #{number_of_samples} samples in asset group "Plate asset group"})
 
   step('I have a Cherrypicking submission for asset group "Plate asset group"')
   step('I am on the show page for pipeline "Cherrypick"')
@@ -55,7 +55,7 @@ end
 When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/) do |plate_purpose_name|
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')
-  step(%Q{I select "#{plate_purpose_name}" from "Output plate purpose"})
+  step(%{I select "#{plate_purpose_name}" from "Output plate purpose"})
   step('I press "Next step"')
   step('I press "Next step"')
 end
@@ -66,8 +66,8 @@ Given(/^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([
   step('I check "Select DN1234567T for batch"')
   step('I select "Create Batch" from the first "action_on_requests"')
   step('I press the first "Submit"')
-  step(%Q{a plate barcode webservice is available and returns "#{plate_barcode}"})
-  step(%Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
+  step(%{a plate barcode webservice is available and returns "#{plate_barcode}"})
+  step(%{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
   Delayed::Worker.new.work_off # Build the asset links to clear the delayed job queue
 end
 
