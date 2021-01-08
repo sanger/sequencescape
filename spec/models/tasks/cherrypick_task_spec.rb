@@ -6,10 +6,6 @@ RSpec.configure do |c|
   c.include LabWhereClientHelper
 end
 
-# Need to look at a good way of injecting the control locator into pick_new_plate
-# to better allow mocking. But this is probably part of an even larger refactor
-# of cherrypicking.
-# rubocop:todo RSpec/AnyInstance
 RSpec.describe CherrypickTask, type: :model do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
   let(:control_plate) { create :control_plate, sample_count: 2 }
@@ -36,7 +32,8 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when controls and wells fit in one plate' do
         before do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions).and_return([2, 5])
+          locator = instance_double(CherrypickTask::ControlLocator, control_positions: [2, 5])
+          allow(instance).to receive(:control_locator).and_return(locator)
         end
 
         let(:instance) { described_class.new }
@@ -83,7 +80,9 @@ RSpec.describe CherrypickTask, type: :model do
         end
 
         before do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions).and_return([2, 5], [0, 2])
+          locator = instance_double(CherrypickTask::ControlLocator)
+          allow(locator).to receive(:control_positions).and_return([2, 5], [0, 2])
+          allow(instance).to receive(:control_locator).and_return(locator)
         end
 
         it 'places controls in a different position' do
@@ -110,7 +109,8 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when controls and wells fit in one plate' do
         before do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions).and_return([2, 3])
+          locator = instance_double(CherrypickTask::ControlLocator, control_positions: [2, 3])
+          allow(instance).to receive(:control_locator).and_return(locator)
         end
 
         let(:instance) { described_class.new }
@@ -134,7 +134,9 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when control positions clashes with partial' do
         before do
-          allow_any_instance_of(CherrypickTask::ControlLocator).to receive(:control_positions).and_return([2, 4], [0, 2])
+          locator = instance_double(CherrypickTask::ControlLocator)
+          allow(locator).to receive(:control_positions).and_return([2, 4], [0, 2])
+          allow(instance).to receive(:control_locator).and_return(locator)
         end
 
         let(:instance) { described_class.new }
@@ -370,6 +372,3 @@ RSpec.describe CherrypickTask, type: :model do
     end
   end
 end
-
-# Only using this while I refactor
-# rubocop:enable RSpec/AnyInstance

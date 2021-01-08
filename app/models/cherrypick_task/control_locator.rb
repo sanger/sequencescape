@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 # A cherrypick {Batch} can source one or more controls from a {ControlPlate}
-# For the initial plate in a batch these controls are distributed (pseudo)randomly
-# across available wells. (Two controls can't occupy the same wells)
-# Subsequent plates within the same batch will offset the controls by a fixed
-# amount to ensure plates in a batch have different control locations. This is
-# especially important for negative controls, as it allows plate swaps to be
-# identified (the negative control location can be thought of as a fingerprint).
+# For the initial destination plate in a batch these controls are distributed
+# (pseudo)randomly across available wells. (Two controls can't occupy the same
+# wells) Subsequent destination plates within the same batch will offset the
+# controls by a fixed amount to ensure destination plates in a batch have
+# different control locations.
+# This is especially important for negative controls, as it allows plate swaps
+# to be identified (the negative control location can be thought of as a
+# fingerprint).
 #
 # Once all well locations have been used, an new set of random locations will
 # be generated, and the cycle will begin again.
@@ -22,7 +24,9 @@ class CherrypickTask::ControlLocator
   # subsequent plates having the same negative control location, which would reduce the ability to
   # detect plate swaps.
   # WARNING! These needs to be a prime number (which isn't also a factor of the available well size)
-  # to avoid re-using wells prematurely. These offsets are prioritised in order
+  # to avoid re-using wells prematurely. These offsets are prioritised in order. Technically any
+  # number that only shares 1 as a common factor with the available well size would work, but we
+  # limit ourself to primes to simplify validation.
   BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
   attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions
