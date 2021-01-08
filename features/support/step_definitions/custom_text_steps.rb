@@ -18,15 +18,15 @@ Given /^there is a CustomText with identifier: "([^"]*)", differential: "([^"]*)
 end
 
 When /^I edit the custom text with identifier "([^"]*)" and differential "([^"]*)"$/ do |identifier, differential|
-  step(%Q{I follow "Edit" within "##{identifier}-#{differential}-details"})
+  step(%{I follow "Edit" within "##{identifier}-#{differential}-details"})
 end
 
 When /^I delete the custom text with identifier "([^"]*)" and differential "([^"]*)"$/ do |identifier, differential|
-  step(%Q{I follow "Delete" within "##{identifier}-#{differential}-details"})
+  step(%{I follow "Delete" within "##{identifier}-#{differential}-details"})
 end
 
 When /^I edit the CustomText$/ do
-  step(%Q{I follow "Edit" within "##{@current_custom_text.name}-details"})
+  step(%{I follow "Edit" within "##{@current_custom_text.name}-details"})
 end
 
 Given /^the application information box should contain "([^"]*)"$/ do |info_text|
@@ -55,7 +55,7 @@ end
 Then /^I should be able to (enter|edit) the following fields$/ do |action, table|
   # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    step(%Q{I fill in "#{hash[:label]}" with "#{hash[:value]}"})
+    step(%{I fill in "#{hash[:label]}" with "#{hash[:value]}"})
   end
 
   step 'I press "Save Custom text"'

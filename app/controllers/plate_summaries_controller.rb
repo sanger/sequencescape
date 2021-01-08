@@ -1,4 +1,4 @@
-class PlateSummariesController < ApplicationController
+class PlateSummariesController < ApplicationController # rubocop:todo Style/Documentation
   before_action :login_required
 
   def index

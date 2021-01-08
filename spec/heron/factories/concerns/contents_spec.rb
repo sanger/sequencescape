@@ -58,7 +58,8 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         factory = factory_klass.new(params)
         factory.validate
         expect(factory.errors.full_messages.uniq).to eq(
-          ['Coordinate The location "test1" has an invalid format', 'Coordinate The location "test2" has an invalid format']
+          ['Coordinate The location "test1" has an invalid format',
+           'Coordinate The location "test2" has an invalid format']
         )
       end
     end
@@ -96,8 +97,10 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         {
           wells:
         {
-          'A1': { content: [{ 'phenotype': 'Another phenotype', 'study_uuid': study.uuid }, { 'phenotype': 'A phenotype', 'study_uuid': study.uuid }] },
-          'B1': { content: [{ 'phenotype': 'Right', 'study_uuid': study.uuid }, { 'sample_uuid': sample.uuid, 'phenotype': 'wrong' }] },
+          'A1': { content: [{ 'phenotype': 'Another phenotype', 'study_uuid': study.uuid },
+                            { 'phenotype': 'A phenotype', 'study_uuid': study.uuid }] },
+          'B1': { content: [{ 'phenotype': 'Right', 'study_uuid': study.uuid },
+                            { 'sample_uuid': sample.uuid, 'phenotype': 'wrong' }] },
           'C1': { content: { 'phenotype': 'Right', 'asdf': 'wrong' } }
         }
         }

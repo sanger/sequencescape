@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-class SequencingRequest < CustomerRequest
+class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
 

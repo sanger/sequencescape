@@ -1,4 +1,4 @@
-module StudyReport::AssetDetails
+module StudyReport::AssetDetails # rubocop:todo Style/Documentation
   def qc_report
     qc_data = {
       supplier_volume: 0

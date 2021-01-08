@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Admin::PrimerPanelsController < ApplicationController
+class Admin::PrimerPanelsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :admin_login_required
   before_action :discover_primer_panel, only: %i[edit update]
 

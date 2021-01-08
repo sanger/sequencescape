@@ -10,7 +10,7 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
   batch       = FactoryBot.create :batch, pipeline: pipeline, state: 'pending'
   asset_group = FactoryBot.create(:asset_group)
 
-  submission =  FactoryHelp::submission(
+  submission =  FactoryHelp.submission(
     asset_group: asset_group,
     request_options: {
       read_length: 76,

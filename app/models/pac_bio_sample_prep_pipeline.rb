@@ -1,4 +1,4 @@
-class PacBioSamplePrepPipeline < Pipeline
+class PacBioSamplePrepPipeline < Pipeline # rubocop:todo Style/Documentation
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
   include Pipeline::GroupByParent

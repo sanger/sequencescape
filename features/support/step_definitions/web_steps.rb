@@ -9,7 +9,7 @@
 require 'uri'
 require 'cgi'
 require_relative '../paths'
-module WithinHelpers
+module WithinHelpers # rubocop:todo Style/Documentation
   def with_scope(locator)
     locator ? within(locator) { yield } : yield
   end
@@ -69,7 +69,7 @@ When(/^(?:|I )fill in the following(?: within "([^"]*)")?:$/) do |selector, fiel
   selector ||= 'body'
   with_scope(selector) do
     fields.rows_hash.each do |name, value|
-      step %Q{I fill in "#{name}" with "#{value}"}
+      step %{I fill in "#{name}" with "#{value}"}
     end
   end
 end

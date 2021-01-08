@@ -19,7 +19,9 @@ RSpec.describe 'samples/show.html.erb', type: :view do
       end
 
       it 'renders the withdrawn message' do
-        regexp = Regexp.new("Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_formatted_s(:db)}.*", Regexp::MULTILINE)
+        regexp = Regexp.new(
+          "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_formatted_s(:db)}.*", Regexp::MULTILINE
+        )
         render
         expect(rendered).to match(regexp)
       end
@@ -33,7 +35,9 @@ RSpec.describe 'samples/show.html.erb', type: :view do
       end
 
       it 'does not render the withdrawn message' do
-        regexp = Regexp.new("Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_formatted_s(:db)}.*", Regexp::MULTILINE)
+        regexp = Regexp.new(
+          "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_formatted_s(:db)}.*", Regexp::MULTILINE
+        )
         render
         expect(rendered).not_to match(regexp)
       end

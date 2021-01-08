@@ -66,7 +66,8 @@ module IlluminaHtp::PlatePurposes
   ].freeze
 
   BRANCHES = [
-    ['PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
+    ['PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2',
+     'PF EM Pool', 'PF Lib Norm'],
     ['PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
     ['PF MiSeq Stock', 'PF MiSeq QCR'],
     ['Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP', 'Lib Pool', 'Lib Pool Norm'],
@@ -139,7 +140,7 @@ module IlluminaHtp::PlatePurposes
     'Illumina'
   end
 
-  module PurposeHelpers
+  module PurposeHelpers # rubocop:todo Style/Documentation
     def create_tube_purposes
       self::TUBE_PURPOSE_FLOWS.each do |flow|
         create_tube_flow(flow)

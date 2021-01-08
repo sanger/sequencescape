@@ -3,7 +3,9 @@
 # A workflow describes a series of Tasks which are processed as
 # part of taking a Batch through a Pipeline
 class Workflow < ApplicationRecord
-  has_many :tasks, -> { order('sorted') }, dependent: :destroy, foreign_key: :pipeline_workflow_id, inverse_of: :workflow
+  has_many :tasks, lambda {
+                     order('sorted')
+                   }, dependent: :destroy, foreign_key: :pipeline_workflow_id, inverse_of: :workflow
 
   belongs_to :pipeline, inverse_of: :workflow
   validates :pipeline_id, uniqueness: { message: 'only one workflow per pipeline!' }

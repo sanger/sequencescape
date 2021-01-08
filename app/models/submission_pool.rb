@@ -1,7 +1,7 @@
 # SubmissionPools are designed to view submissions in the context of a particular asset
 class SubmissionPool < ApplicationRecord
   module Association
-    module Plate
+    module Plate # rubocop:todo Style/Documentation
       def self.included(base)
         base.class_eval do
           has_many :submission_pools, ->() { distinct }, through: :well_requests_as_target
@@ -16,7 +16,9 @@ class SubmissionPool < ApplicationRecord
 
   self.table_name = 'submissions'
 
-  has_one :outer_request, ->() { order(id: :asc).where(state: Request::Statemachine::ACTIVE) }, class_name: 'Request', foreign_key: :submission_id
+  has_one :outer_request, lambda {
+                            order(id: :asc).where(state: Request::Statemachine::ACTIVE)
+                          }, class_name: 'Request', foreign_key: :submission_id
   has_many :tag_layout_template_submissions, class_name: 'TagLayout::TemplateSubmission', foreign_key: 'submission_id'
   has_many :tag_layout_templates, through: :tag_layout_template_submissions
   has_many :tag2_layout_template_submissions, class_name: 'Tag2Layout::TemplateSubmission', foreign_key: 'submission_id'

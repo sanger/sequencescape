@@ -45,7 +45,7 @@ class DataReleaseStudyType < ApplicationRecord
     find_by(is_default: true)
   end
 
-  module Associations
+  module Associations # rubocop:todo Style/Documentation
     def self.included(base)
       base.validates_presence_of :data_release_study_type_id
       base.belongs_to :data_release_study_type

@@ -1,4 +1,4 @@
-class Transfer::FromPlateToSpecificTubesByPool < Transfer::BetweenPlateAndTubes
+class Transfer::FromPlateToSpecificTubesByPool < Transfer::BetweenPlateAndTubes # rubocop:todo Style/Documentation
   # Not used since 2017-07-24 10:32:21
   attr_reader :targets
 

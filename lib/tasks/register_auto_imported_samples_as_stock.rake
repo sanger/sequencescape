@@ -9,7 +9,8 @@ namespace :auto_imported_samples do
     # Add extra checks that sample_manifest is nil
     # And purpose is one of expected ones
 
-    relevant_study_names = ['Heron Project', 'Heron Project R & D', 'Heron Project ONT', 'Heron Project PacBio', 'Project Kestrel']
+    relevant_study_names = ['Heron Project', 'Heron Project R & D', 'Heron Project ONT', 'Heron Project PacBio',
+                            'Project Kestrel']
     relevant_study_ids = Study.where(name: relevant_study_names).map(&:id).join(',')
 
     # Some samples will be in more than one of these, but we think that's ok.
@@ -34,7 +35,8 @@ namespace :auto_imported_samples do
     # 78,507 in training 2020-07-08 (85,440 before join with aliquots)
     puts "receptacles count: #{receptacles.count}"
 
-    existing_stock_resource_messengers = Messenger.where(target: receptacles, root: 'stock_resource', target_type: 'Receptacle')
+    existing_stock_resource_messengers = Messenger.where(target: receptacles, root: 'stock_resource',
+                                                         target_type: 'Receptacle')
     # 0 in training 2020-07-08
     puts "existing_stock_resource_messengers count: #{existing_stock_resource_messengers.count}"
     receptacle_ids_with_messengers = existing_stock_resource_messengers.map(&:target_id).compact.uniq

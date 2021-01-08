@@ -3,7 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: true, sample_manifest: true do
-  let(:range_list)  { build(:range_list, ranges_data: { FactoryBot.attributes_for(:validation)[:range_name] => FactoryBot.attributes_for(:range) }) }
+  let(:range_list) do
+    build(:range_list,
+          ranges_data: { FactoryBot.attributes_for(:validation)[:range_name] => FactoryBot.attributes_for(:range) })
+  end
   let(:worksheet)   { Axlsx::Workbook.new.add_worksheet }
   let(:options)     do
     { heading: 'PUBLIC NAME', name: :public_name, type: :string, value: 10, number: 125, attribute: :barcode,
@@ -146,7 +149,9 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
 
     let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
     let(:columns) { load_file(folder, 'columns') }
-    let(:defaults) { SequencescapeExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings')) }
+    let(:defaults) do
+      SequencescapeExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings'))
+    end
 
     it 'inserts the name of the column' do
       arguments = described_class.build_arguments(columns.values.first, columns.keys.first, defaults)
@@ -162,7 +167,8 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
       arguments = described_class.build_arguments(columns[:gender], 'gender', defaults)
       expect(arguments[:conditional_formattings].length).to eq(columns[:gender][:conditional_formattings].length)
       arguments[:conditional_formattings].each do |k, _conditional_formatting|
-        expect(arguments[:conditional_formattings][k]).to eq(defaults.find_by(:type, k).combine(columns[:gender][:conditional_formattings][k]))
+        expect(arguments[:conditional_formattings][k]).to eq(defaults.find_by(:type,
+                                                                              k).combine(columns[:gender][:conditional_formattings][k]))
       end
     end
 

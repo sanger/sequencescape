@@ -1,5 +1,5 @@
 module UiHelper
-  class SummaryItem
+  class SummaryItem # rubocop:todo Style/Documentation
     attr_accessor :message, :object, :timestamp, :external_link, :external_message
 
     def initialize(options = {})

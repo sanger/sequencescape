@@ -1,4 +1,4 @@
-class RequestType::PoolingMethod < ApplicationRecord
+class RequestType::PoolingMethod < ApplicationRecord # rubocop:todo Style/Documentation
   has_many :request_types
   validates :pooling_behaviour, presence: true
   serialize :pooling_options

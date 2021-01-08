@@ -16,7 +16,7 @@ describe '/api/1/tube/purposes' do
     }}
   end
 
-  let(:response_body) {
+  let(:response_body) do
     %{{
       "tube_purpose":{
         "actions": { },
@@ -24,7 +24,7 @@ describe '/api/1/tube/purposes' do
         "name":"Test Purpose"
       }
     }}
-  }
+  end
   let(:response_code) { 201 }
 
   it 'supports resource creation' do

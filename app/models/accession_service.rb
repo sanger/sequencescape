@@ -69,12 +69,14 @@ class AccessionService
                                   file.puts(acc.xml)
                                   file.open # reopen for read
 
-                                  Rails::logger.debug { file.each_line.to_a.join("\n") }
+                                  Rails.logger.debug { file.each_line.to_a.join("\n") }
 
                                   { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
                                 end)
-        Rails::logger.debug { xml_result }
-        raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result.match?(/(Server error|Auth required|Login failed)/)
+        Rails.logger.debug { xml_result }
+        if xml_result.match?(/(Server error|Auth required|Login failed)/)
+          raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}"
+        end
 
         xmldoc  = Document.new(xml_result)
         success = xmldoc.root.attributes['success']
@@ -103,7 +105,9 @@ class AccessionService
 
         when 'false'
           errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
-          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
+          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{errors.map do |e|
+                                                                                                           "\n  - #{e}"
+                                                                                                         end }"
         else
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
         end
@@ -188,31 +192,31 @@ class AccessionService
       :broker_name => submission[:broker],
       :alias => submission[:submission_id],
       :submission_date => submission[:submission_date]
-    ) {
-      xml.CONTACTS {
+    ) do
+      xml.CONTACTS do
         xml.CONTACT(
           inform_on_error: submission[:contact_inform_on_error],
           inform_on_status: submission[:contact_inform_on_status],
           name: submission[:name]
         )
-      }
-      xml.ACTIONS {
-        xml.ACTION {
+      end
+      xml.ACTIONS do
+        xml.ACTION do
           if accession_number.blank?
             xml.ADD(source: submission[:source], schema: submission[:schema])
           else
             xml.MODIFY(source: submission[:source], target: '')
           end
-        }
-        xml.ACTION {
+        end
+        xml.ACTION do
           if submission[:hold] == AccessionService::Protect
             xml.PROTECT
           else
             xml.HOLD
           end
-        }
-      }
-    }
+        end
+      end
+    end
     xml.target!
   end
 
@@ -244,7 +248,9 @@ class AccessionService
     end
 
     payload = file_params.each_with_object({}) do |param, hash|
-      hash[param[:name]] = AccessionedFile.open(param[:local_name]).tap { |f| f.original_filename = param[:remote_name] }
+      hash[param[:name]] = AccessionedFile.open(param[:local_name]).tap do |f|
+        f.original_filename = param[:remote_name]
+      end
     end
 
     response = rc.post(payload)

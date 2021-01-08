@@ -1,4 +1,4 @@
-module Tasks::SamplePrepQcHandler
+module Tasks::SamplePrepQcHandler # rubocop:todo Style/Documentation
   def render_sample_prep_qc_task(task, params)
     @requests = task.find_batch_requests(params[:batch_id])
   end

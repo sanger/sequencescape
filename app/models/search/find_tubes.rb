@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Search::FindTubes < Search
+class Search::FindTubes < Search # rubocop:todo Style/Documentation
   def scope(user_criteria)
     criteria = default_parameters.stringify_keys.merge(user_criteria)
 

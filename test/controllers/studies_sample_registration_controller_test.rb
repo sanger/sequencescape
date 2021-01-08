@@ -54,7 +54,10 @@ module Studies
           context 'with attached file' do
             setup do
               session[:user] = @user.id
-              post :spreadsheet, params: { study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls', '') }
+              post :spreadsheet, params: { study_id: @study,
+                                           file: Rack::Test::UploadedFile.new(
+                                             Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls', ''
+                                           ) }
             end
 
             should 'respond successfully and render the new template' do
@@ -65,7 +68,10 @@ module Studies
 
           context 'with invalid file' do
             setup do
-              post :spreadsheet, params: { study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/config/environment.rb', 'text/csv') }
+              post :spreadsheet, params: { study_id: @study,
+                                           file: Rack::Test::UploadedFile.new(
+                                             Rails.root.to_s + '/config/environment.rb', 'text/csv'
+                                           ) }
             end
 
             should set_flash.to('Problems processing your file. Only Excel spreadsheets accepted')

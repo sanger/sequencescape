@@ -2,12 +2,13 @@
 
 module SampleManifestExcel
   module Upload
-    module Converters
+    module Converters # rubocop:todo Style/Documentation
       BLANK_CHARS = '[ \u00A0]'
+      BLANK_CHARS_REGEXP = /^(#{Converters::BLANK_CHARS}*)(.*?)(#{Converters::BLANK_CHARS}*)$/.freeze
 
       def strip_all_blanks(obj)
         if obj.respond_to?(:match)
-          obj.match(/^(#{Converters::BLANK_CHARS}*)(.*?)(#{Converters::BLANK_CHARS}*)$/)[2]
+          obj.match(BLANK_CHARS_REGEXP)[2]
         else
           obj
         end

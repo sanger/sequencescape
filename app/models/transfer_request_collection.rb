@@ -12,7 +12,8 @@ class TransferRequestCollection < ApplicationRecord
   class UuidCache
     def initialize(parameters)
       uuids = parameters.flat_map(&:values).select { |v| v.is_a?(String) && Uuid::ValidRegexp.match?(v) }
-      @cache = Uuid.where(external_id: uuids).pluck(:external_id, :resource_type, :resource_id).each_with_object({}) do |uuid_item, store|
+      @cache = Uuid.where(external_id: uuids).pluck(:external_id, :resource_type,
+                                                    :resource_id).each_with_object({}) do |uuid_item, store|
         store[uuid_item[0, 2]] = uuid_item[-1]
       end
       extract_receptacles_from_labware
@@ -58,11 +59,23 @@ class TransferRequestCollection < ApplicationRecord
     uuid_cache = UuidCache.new(parameters)
 
     updated_attributes = parameters.map do |parameter|
-      parameter['asset_id'] = uuid_cache.find(Receptacle, parameter.delete('source_asset')) if parameter['source_asset'].is_a?(String)
+      if parameter['source_asset'].is_a?(String)
+        parameter['asset_id'] = uuid_cache.find(Receptacle,
+                                                parameter.delete('source_asset'))
+      end
       parameter['asset'] = parameter.delete('source_asset') if parameter['source_asset'].present?
-      parameter['target_asset_id'] = uuid_cache.find(Receptacle, parameter.delete('target_asset')) if parameter['target_asset'].is_a?(String)
-      parameter['submission_id'] = uuid_cache.find(Submission, parameter.delete('submission')) if parameter['submission'].is_a?(String)
-      parameter['outer_request_id'] = uuid_cache.find(Request, parameter.delete('outer_request')) if parameter['outer_request'].is_a?(String)
+      if parameter['target_asset'].is_a?(String)
+        parameter['target_asset_id'] = uuid_cache.find(Receptacle,
+                                                       parameter.delete('target_asset'))
+      end
+      if parameter['submission'].is_a?(String)
+        parameter['submission_id'] = uuid_cache.find(Submission,
+                                                     parameter.delete('submission'))
+      end
+      if parameter['outer_request'].is_a?(String)
+        parameter['outer_request_id'] = uuid_cache.find(Request,
+                                                        parameter.delete('outer_request'))
+      end
       parameter
     end
 

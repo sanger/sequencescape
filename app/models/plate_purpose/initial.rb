@@ -1,4 +1,4 @@
-module PlatePurpose::Initial
+module PlatePurpose::Initial # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       include PlatePurpose::WorksOnLibraryRequests

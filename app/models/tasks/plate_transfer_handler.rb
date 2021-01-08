@@ -1,4 +1,4 @@
-module Tasks::PlateTransferHandler
+module Tasks::PlateTransferHandler # rubocop:todo Style/Documentation
   class InvalidBatch < StandardError; end
 
   def render_plate_transfer_task(task, _params)

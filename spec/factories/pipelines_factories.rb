@@ -61,7 +61,10 @@ FactoryBot.define do
     after(:build) do |pipeline, evaluator|
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
-      pipeline.build_workflow(name: pipeline.name, item_limit: evaluator.item_limit, locale: evaluator.locale, pipeline: pipeline) if pipeline.workflow.nil?
+      if pipeline.workflow.nil?
+        pipeline.build_workflow(name: pipeline.name, item_limit: evaluator.item_limit, locale: evaluator.locale,
+                                pipeline: pipeline)
+      end
     end
 
     factory :multiplexed_pipeline do
@@ -266,7 +269,9 @@ FactoryBot.define do
 
   factory :pipeline_request_information_type do
     pipeline                  { |pipeline| pipeline.association(:pipeline) }
-    request_information_type  { |request_information_type| request_information_type.association(:request_information_type) }
+    request_information_type  do |request_information_type|
+      request_information_type.association(:request_information_type)
+    end
   end
 
   factory :implement do

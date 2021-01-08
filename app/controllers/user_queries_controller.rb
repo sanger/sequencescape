@@ -1,4 +1,4 @@
-class UserQueriesController < ApplicationController
+class UserQueriesController < ApplicationController # rubocop:todo Style/Documentation
   def new
     @user_query = UserQuery.new(url: request.referer, user: current_user)
   end

@@ -12,12 +12,15 @@ class MigratePlateTypeToNewColumn < ActiveRecord::Migration[5.1]
       descriptors['Plate Type']
     end
   end
+
   # Pigration specific version of PlateType
   class LabwareType < ApplicationRecord
     self.table_name = 'plate_types'
 
     def self.id_for(name)
-      @id_store ||= Hash.new { |store, lookup_name| store[lookup_name] = LabwareType.find_or_create_by!(name: lookup_name).id }
+      @id_store ||= Hash.new do |store, lookup_name|
+        store[lookup_name] = LabwareType.find_or_create_by!(name: lookup_name).id
+      end
       @id_store[name]
     end
   end

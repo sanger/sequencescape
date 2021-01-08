@@ -1,5 +1,5 @@
 module Billing
-  class AgressoProduct < ApplicationRecord
+  class AgressoProduct < ApplicationRecord # rubocop:todo Style/Documentation
     establish_connection :agresso_test_db
 
     self.table_name = 'AGR55.UVIOPSPRODMAPPING'

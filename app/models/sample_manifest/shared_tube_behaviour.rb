@@ -1,5 +1,5 @@
 module SampleManifest::SharedTubeBehaviour
-  class Base
+  class Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::Shared
 
     def updated_by!(user, samples)

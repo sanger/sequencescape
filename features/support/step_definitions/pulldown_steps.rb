@@ -68,11 +68,11 @@ Given '{well_range} of {plate_uuid} have been {submitted_to} with the following 
 end
 
 Given /^the plate (.+) has been submitted to "([^"]+)"$/ do |info, template|
-  step(%Q{"A1-H12" of the plate #{info} have been submitted to "#{template}"})
+  step(%{"A1-H12" of the plate #{info} have been submitted to "#{template}"})
 end
 
 Given /^the plate (.+) and (.+) have been submitted to "([^"]+)"$/ do |info, info2, template|
-  step(%Q{"A1-H12" of the plate #{info} and the plate #{info2} both been submitted to "#{template}"})
+  step(%{"A1-H12" of the plate #{info} and the plate #{info2} both been submitted to "#{template}"})
 end
 
 Given 'H12 on {asset_name} is empty' do |plate|
@@ -86,7 +86,9 @@ def work_pipeline_for(submissions, name, template = nil)
   template       ||= TransferTemplate.find_by(name: 'Pool wells based on submission') or raise StandardError, 'Cannot find pooling transfer template'
 
   source_plates = submissions.map { |submission| submission.requests.first!.asset.plate }.uniq
-  raise StandardError, "Submissions appear to come from non-unique plates: #{source_plates.inspect}" unless source_plates.size == 1
+  unless source_plates.size == 1
+    raise StandardError, "Submissions appear to come from non-unique plates: #{source_plates.inspect}"
+  end
 
   source_plate = source_plates.first
 
@@ -187,6 +189,8 @@ end
 
 Then /^the user (should|should not) accept responsibility for pulldown library creation requests from the plate "(.*?)"$/ do |accept, plate_name|
   Plate.find_by(name: plate_name).wells.each do |well|
-    well.requests.where_is_a(Pulldown::Requests::LibraryCreation).each { |r| assert_equal accept == 'should', r.request_metadata.customer_accepts_responsibility }
+    well.requests.where_is_a(Pulldown::Requests::LibraryCreation).each do |r|
+      assert_equal accept == 'should', r.request_metadata.customer_accepts_responsibility
+    end
   end
 end

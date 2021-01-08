@@ -165,7 +165,9 @@ module Limber::Helper
     #
     # @return [String] A name for the request type
     def name_for(cherrypick, sequencing_request_type)
-      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{sequencing_request_type.name.gsub(PIPELINE_REGEX, '')}"
+      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{sequencing_request_type.name.gsub(
+        PIPELINE_REGEX, ''
+      )}"
     end
 
     # Construct a series of {SubmissionTemplate submission templates} according to the specified options.

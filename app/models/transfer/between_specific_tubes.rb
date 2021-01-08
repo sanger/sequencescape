@@ -1,4 +1,4 @@
-class Transfer::BetweenSpecificTubes < Transfer
+class Transfer::BetweenSpecificTubes < Transfer # rubocop:todo Style/Documentation
   include TransfersToKnownDestination
 
   belongs_to :source, class_name: 'Tube'

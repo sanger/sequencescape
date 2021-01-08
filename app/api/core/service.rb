@@ -1,10 +1,10 @@
 require 'sinatra/base'
 module Core
-  class Service < Sinatra::Base
+  class Service < Sinatra::Base # rubocop:todo Style/Documentation
     API_VERSION = 1
 
-    class Error < StandardError
-      module Behaviour
+    class Error < StandardError # rubocop:todo Style/Documentation
+      module Behaviour # rubocop:todo Style/Documentation
         def self.included(base)
           base.class_eval do
             class_attribute :api_error_code
@@ -22,17 +22,17 @@ module Core
       include Behaviour
     end
 
-    class UnsupportedAction < Error
+    class UnsupportedAction < Error # rubocop:todo Style/Documentation
       self.api_error_code    = 501
       self.api_error_message = 'requested action is not supported on this resource'
     end
 
-    class DeprecatedAction < Error
+    class DeprecatedAction < Error # rubocop:todo Style/Documentation
       self.api_error_code    = 410
       self.api_error_message = 'requested action is no longer supported'
     end
 
-    class MethodNotAllowed < Error
+    class MethodNotAllowed < Error # rubocop:todo Style/Documentation
       def initialize(allowed_http_verbs)
         super('HTTP verb was not allowed!')
         @allowed = Array(allowed_http_verbs).map(&:to_s).map(&:upcase).join(',')
@@ -113,7 +113,7 @@ module Core
     register Core::Service::Authentication
     register Core::Service::ContentFiltering
 
-    class Request
+    class Request # rubocop:todo Style/Documentation
       extend Core::Initializable
       include Core::References
       include Core::Benchmarking
@@ -184,7 +184,7 @@ module Core
       include Core::References
       include Core::Benchmarking
 
-      class Initializer
+      class Initializer # rubocop:todo Style/Documentation
         delegate :status, :headers, :api_path, to: '@owner.request.service'
 
         # Causes a response that will redirect the client to the specified UUID path.
@@ -251,7 +251,7 @@ module Core
       def discard_all_references
         request.send(:discard_all_references)
         super
-        # Note: Previously we released our connection here, which prevented rails from
+        # NOTE: Previously we released our connection here, which prevented rails from
         # properly sweeping the query cache.
       end
       private :discard_all_references

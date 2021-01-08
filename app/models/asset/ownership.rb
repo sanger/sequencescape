@@ -1,5 +1,5 @@
 module Asset::Ownership
-  module ChangesOwner
+  module ChangesOwner # rubocop:todo Style/Documentation
     # Included in events which change ownership of plates
     def self.included(base)
       base.class_eval do
@@ -14,20 +14,20 @@ module Asset::Ownership
     end
     private :assign_owner
 
-    module ClassMethods
+    module ClassMethods # rubocop:todo Style/Documentation
       def set_target_for_owner(target)
         alias_method(:target_for_ownership, target)
       end
     end
   end
 
-  module Unowned
+  module Unowned # rubocop:todo Style/Documentation
     def change_owner_to(owner, source_event)
       # Do nothing
     end
   end
 
-  module Owned
+  module Owned # rubocop:todo Style/Documentation
     # Currently only plates can be owned.
 
     def self.included(base)

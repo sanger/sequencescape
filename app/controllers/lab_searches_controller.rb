@@ -1,6 +1,6 @@
-class LabSearchesController < ApplicationController
+class LabSearchesController < ApplicationController # rubocop:todo Style/Documentation
   include SearchBehaviour
-  alias_method(:new, :search)
+  alias new search
 
   def index
     redirect_to action: :new

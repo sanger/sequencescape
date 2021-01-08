@@ -39,7 +39,8 @@ module SampleManifestExcel
 
         {}.tap do |hsh|
           (first..last).each_with_index do |n, i|
-            hsh[n] = { tag_group: tag_groups[0].name, tag_index: tag_groups[0].tags[i].map_id.to_s, tag2_group: tag_groups[1].name, tag2_index: tag_groups[1].tags[i].map_id.to_s }
+            hsh[n] = { tag_group: tag_groups[0].name, tag_index: tag_groups[0].tags[i].map_id.to_s,
+                       tag2_group: tag_groups[1].name, tag2_index: tag_groups[1].tags[i].map_id.to_s }
           end
           hsh[last] = hsh[first] if duplicate
         end

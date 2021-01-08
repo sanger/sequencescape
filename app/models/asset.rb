@@ -196,7 +196,9 @@ class Asset < ApplicationRecord
   # Called when importing samples, e.g. in sample_manifest > core_behaviour, on manifest upload
   def register_stock!
     class_name = self.class.name
-    raise StandardError, "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class." if stock_message_template.nil?
+    if stock_message_template.nil?
+      raise StandardError, "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class."
+    end
 
     Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
   end

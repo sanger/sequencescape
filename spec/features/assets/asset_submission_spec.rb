@@ -33,7 +33,9 @@ describe 'Asset submission', js: true do
       click_button 'Create'
       expect(page).to have_content 'Created request'
       expect(page).to have_current_path(receptacle_path(asset.receptacle))
-      expect { Delayed::Worker.new.work_off }.to change { asset.requests_as_source.where(request_type_id: selected_request_type).count }.by 1
+      expect { Delayed::Worker.new.work_off }.to change {
+                                                   asset.requests_as_source.where(request_type_id: selected_request_type).count
+                                                 }.by 1
     end
   end
 
@@ -49,7 +51,9 @@ describe 'Asset submission', js: true do
       click_button 'Create'
       expect(page).to have_content 'Created request'
       expect(page).to have_current_path(receptacle_path(asset.receptacle))
-      expect { Delayed::Worker.new.work_off }.to change { asset.requests_as_source.where(request_type_id: selected_request_type).count }.by 1
+      expect { Delayed::Worker.new.work_off }.to change {
+                                                   asset.requests_as_source.where(request_type_id: selected_request_type).count
+                                                 }.by 1
     end
 
     it 'request additional sequencing with override study' do
@@ -67,7 +71,9 @@ describe 'Asset submission', js: true do
       click_button 'Create'
       expect(page).to have_content 'Created request'
       expect(page).to have_current_path(receptacle_path(asset.receptacle))
-      expect { Delayed::Worker.new.work_off }.to change { asset.requests_as_source.where(request_type_id: selected_request_type).count }.by 1
+      expect { Delayed::Worker.new.work_off }.to change {
+                                                   asset.requests_as_source.where(request_type_id: selected_request_type).count
+                                                 }.by 1
     end
   end
 

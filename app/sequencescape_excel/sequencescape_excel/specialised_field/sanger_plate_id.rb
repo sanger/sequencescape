@@ -20,15 +20,21 @@ module SequencescapeExcel
 
         # checking if the plate this well belongs to already has this foreign barcode set in its list of barcodes.
         # or if it contains a foreign barcode with the same format, then update that existing one
-        foreign_barcode = attributes[:aliquot].receptacle.plate.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
+        foreign_barcode = attributes[:aliquot].receptacle.plate.barcodes.find do |item|
+          item[:format] == foreign_barcode_format.to_s
+        end
         if foreign_barcode.present?
           if foreign_barcode.barcode != value
             foreign_barcode.update(barcode: value)
-            attributes[:aliquot].sample.sample_manifest.update_barcodes if attributes[:aliquot].sample.sample_manifest.present?
+            if attributes[:aliquot].sample.sample_manifest.present?
+              attributes[:aliquot].sample.sample_manifest.update_barcodes
+            end
           end
         else
           attributes[:aliquot].receptacle.plate.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
-          attributes[:aliquot].sample.sample_manifest.update_barcodes if attributes[:aliquot].sample.sample_manifest.present?
+          if attributes[:aliquot].sample.sample_manifest.present?
+            attributes[:aliquot].sample.sample_manifest.update_barcodes
+          end
         end
       end
 

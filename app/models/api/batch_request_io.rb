@@ -1,8 +1,8 @@
 # Despite name controls rendering of warehouse messages for {BatchRequest}
 # Historically used to be v0.5 API
 class Api::BatchRequestIO < Api::Base
-  module Extensions
-    module ClassMethods
+  module Extensions # rubocop:todo Style/Documentation
+    module ClassMethods # rubocop:todo Style/Documentation
       def render_class
         Api::BatchRequestIO
       end
@@ -12,7 +12,10 @@ class Api::BatchRequestIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, { request: [:uuid_object, :request_type, { asset: :uuid_object }, { target_asset: :uuid_object }] }, { batch: :uuid_object }]) }
+        scope :including_associations_for_json, lambda {
+                                                  includes([:uuid_object,
+                                                            { request: [:uuid_object, :request_type, { asset: :uuid_object }, { target_asset: :uuid_object }] }, { batch: :uuid_object }])
+                                                }
       end
     end
   end

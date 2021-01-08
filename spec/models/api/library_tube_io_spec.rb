@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Api::LibraryTubeIO, type: :model do
-  subject { create :empty_library_tube, public_name: 'ABC', closed: false, aliquots: aliquots, volume: 12.0, concentration: 8.0 }
+  subject do
+    create :empty_library_tube, public_name: 'ABC', closed: false, aliquots: aliquots, volume: 12.0, concentration: 8.0
+  end
 
   let(:sample) { create :sample }
   let(:tag) { create :tag }

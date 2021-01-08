@@ -181,7 +181,9 @@ class Order < ApplicationRecord
       request.order                       = self
 
       if request.asset.present?
-        raise AssetTypeError, 'Asset type does not match that expected by request type.' unless asset_applicable_to_type?(request_type, request.asset)
+        raise AssetTypeError, 'Asset type does not match that expected by request type.' unless asset_applicable_to_type?(
+          request_type, request.asset
+        )
       end
     end
   end
@@ -302,7 +304,12 @@ class Order < ApplicationRecord
 
   def assets_are_appropriate
     all_assets.each do |asset|
-      errors.add(:asset, "'#{asset.display_name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless asset_applicable_to_type?(first_request_type, asset)
+      next if asset_applicable_to_type?(
+        first_request_type, asset
+      )
+
+      errors.add(:asset,
+                 "'#{asset.display_name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests")
     end
     return true if errors.empty?
 

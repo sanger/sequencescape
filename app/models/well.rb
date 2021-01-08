@@ -14,7 +14,7 @@ class Well < Receptacle
   include Api::Messages::FluidigmPlateIO::WellExtensions
   include Api::Messages::QcResultIO::WellExtensions
 
-  class Link < ApplicationRecord
+  class Link < ApplicationRecord # rubocop:todo Style/Documentation
     # Caution! We are using delete_all and import to manage well links.
     # Any callbacks you add here will not be called in those circumstances.
     self.table_name = 'well_links'
@@ -124,7 +124,8 @@ class Well < Receptacle
 
   scope :pooled_as_source_by, ->(type) {
     joins("LEFT JOIN requests pasb ON #{table_name}.id=pasb.asset_id")
-      .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
+      .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)',
+              [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
       .select_table
       .select('pasb.submission_id AS pool_id').distinct
   }
@@ -132,10 +133,18 @@ class Well < Receptacle
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
   scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
   scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
-  scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC').select_table.select('column_order') }
+  scope :in_inverse_column_major_order, -> {
+                                          joins(:map).order('column_order DESC').select_table.select('column_order')
+                                        }
   scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select_table.select('row_order') }
-  scope :in_plate_column, ->(col, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size), asset_size: size }) }
-  scope :in_plate_row,    ->(row, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size), asset_size: size }) }
+  scope :in_plate_column, ->(col, size) {
+                            joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size),
+                                                      asset_size: size })
+                          }
+  scope :in_plate_row,    ->(row, size) {
+                            joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size),
+                                                      asset_size: size })
+                          }
   scope :with_blank_samples, -> {
     joins([
       'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id',
@@ -237,14 +246,14 @@ class Well < Receptacle
   writer_for_well_attribute_as_float(:molarity)
 
   delegate_to_well_attribute(:current_volume)
-  alias_method(:get_volume, :get_current_volume)
+  alias get_volume get_current_volume
   writer_for_well_attribute_as_float(:current_volume)
 
   def update_volume(volume_change)
     value_current_volume = get_current_volume.nil? ? 0 : get_current_volume
     set_current_volume([0, value_current_volume + volume_change].max)
   end
-  alias_method(:set_volume, :set_current_volume)
+  alias set_volume set_current_volume
   delegate_to_well_attribute(:initial_volume)
   writer_for_well_attribute_as_float(:initial_volume)
 

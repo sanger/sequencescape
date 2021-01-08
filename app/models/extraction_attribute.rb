@@ -1,4 +1,4 @@
-class ExtractionAttribute < ApplicationRecord
+class ExtractionAttribute < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
 
   validates :created_by, presence: true

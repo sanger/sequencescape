@@ -3,7 +3,7 @@
 # threadsafe RabbitMQ channels for broadcasting messages
 #
 class Warren::Broadcast
-  class Channel
+  class Channel # rubocop:todo Style/Documentation
     def initialize(bun_channel, exchange: nil)
       @bun_channel = bun_channel
       @exchange_name = exchange
@@ -26,6 +26,7 @@ class Warren::Broadcast
       @exchange ||= @bun_channel.topic(@exchange_name, auto_delete: false, durable: true)
     end
   end
+
   #
   # Creates a warren but does not connect.
   #

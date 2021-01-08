@@ -3,7 +3,7 @@
 # connection pool for use during development
 #
 class Warren::Log
-  class Channel
+  class Channel # rubocop:todo Style/Documentation
     def <<(message)
       Rails.logger.info "Published: #{message.routing_key}"
       Rails.logger.debug "Payload: #{message.payload}"

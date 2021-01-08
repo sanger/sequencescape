@@ -16,8 +16,10 @@ RSpec.describe SequencescapeExcel::Download, type: :model, sample_manifest_excel
   end
 
   it 'produces the correct output for the LEN formula' do # rubocop:todo RSpec/AggregateExamples
-    expect(formula.update(references.merge(type: :len, operator: '>', operand: 999)).to_s).to eq("LEN(#{references[:first_cell_reference]})>999")
-    expect(formula.update(references.merge(type: :len, operator: '<', operand: 999)).to_s).to eq("LEN(#{references[:first_cell_reference]})<999")
+    expect(formula.update(references.merge(type: :len, operator: '>',
+                                           operand: 999)).to_s).to eq("LEN(#{references[:first_cell_reference]})>999")
+    expect(formula.update(references.merge(type: :len, operator: '<',
+                                           operand: 999)).to_s).to eq("LEN(#{references[:first_cell_reference]})<999")
   end
 
   it 'produces the correct output for the ISERROR formula' do # rubocop:todo RSpec/AggregateExamples

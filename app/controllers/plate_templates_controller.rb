@@ -1,4 +1,4 @@
-class PlateTemplatesController < ApplicationController
+class PlateTemplatesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -31,7 +31,8 @@ class PlateTemplatesController < ApplicationController
     end
 
     pattern = PlateTemplate.new
-    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], rows: params[:rows], cols: params[:cols])
+    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well],
+                           rows: params[:rows], cols: params[:cols])
     flash[:notice] = 'Template saved'
     redirect_to plate_templates_path
   end
@@ -44,7 +45,8 @@ class PlateTemplatesController < ApplicationController
 
   def update
     pattern = PlateTemplate.find(params[:id])
-    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], rows: params[:rows], cols: params[:cols])
+    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well],
+                           rows: params[:rows], cols: params[:cols])
     flash[:notice] = 'Template updated'
     redirect_to plate_templates_path
   end

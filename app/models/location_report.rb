@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class LocationReport < ApplicationRecord
+class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
   # includes / extends
   extend DbFile::Uploader
 
@@ -46,7 +46,9 @@ class LocationReport < ApplicationRecord
 
   def check_any_select_field_present
     attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes]
-    errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? { |attr| send(attr).blank? }
+    errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? do |attr|
+                                                                                         send(attr).blank?
+                                                                                       end
   end
 
   def check_both_dates_present_if_used

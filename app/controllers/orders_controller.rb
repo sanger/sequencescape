@@ -1,4 +1,4 @@
-class OrdersController < ApplicationController
+class OrdersController < ApplicationController # rubocop:todo Style/Documentation
   def destroy
     # Check for ajax request...
     if request.xhr?

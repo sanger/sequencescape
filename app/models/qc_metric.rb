@@ -1,4 +1,4 @@
-class QcMetric < ApplicationRecord
+class QcMetric < ApplicationRecord # rubocop:todo Style/Documentation
   extend QcMetric::QcState
 
   InvalidValue = Class.new(StandardError)

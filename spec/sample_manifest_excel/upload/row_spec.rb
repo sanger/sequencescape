@@ -46,7 +46,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it '#value returns value for specified key' do
-    expect(described_class.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id)
+    expect(described_class.new(number: 1, data: data,
+                               columns: columns).value(:sanger_sample_id)).to eq(sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id)
   end
 
   it '#at returns value at specified index (offset by 1)' do
@@ -191,7 +192,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       @rows = []
       library_tubes.each_with_index do |tube, i|
         sma = create(:sample_manifest_asset, sample_manifest: manifest, asset: tube.receptacle)
-        create(:external_multiplexed_library_tube_creation_request, asset: tube.receptacle, target_asset: mx_library_tube.receptacle)
+        create(:external_multiplexed_library_tube_creation_request, asset: tube.receptacle,
+                                                                    target_asset: mx_library_tube.receptacle)
         row_data = data.dup
         row_data[0] = tube.human_barcode
         row_data[1] = sma.sanger_sample_id
@@ -230,7 +232,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     before do
       @rows = []
       library_tubes.each_with_index do |tube, i|
-        create(:sample_manifest_asset, sample_manifest: manifest, asset: tube, sanger_sample_id: tube.samples.first.sanger_sample_id)
+        create(:sample_manifest_asset, sample_manifest: manifest, asset: tube,
+                                       sanger_sample_id: tube.samples.first.sanger_sample_id)
         rq = create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
         rq.manifest_processed!
         row_data = data.dup

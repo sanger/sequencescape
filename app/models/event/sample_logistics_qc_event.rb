@@ -1,4 +1,4 @@
-class Event::SampleLogisticsQcEvent < Event
+class Event::SampleLogisticsQcEvent < Event # rubocop:todo Style/Documentation
   def self.create_gel_qc_for_asset!(asset, result, user)
     case asset
     when Well

@@ -86,7 +86,8 @@ describe StockStamper do
     end
 
     it 'is not valid if user barcode or plate barcode are invalid' do
-      invalid_stock_stamper = described_class.new(@attributes.merge(source_plate_barcode: '123', destination_plate_barcode: '234', user_barcode: '345'))
+      invalid_stock_stamper = described_class.new(@attributes.merge(source_plate_barcode: '123',
+                                                                    destination_plate_barcode: '234', user_barcode: '345'))
       expect(invalid_stock_stamper.valid?).to be false
       expect(invalid_stock_stamper.errors.messages.length).to eq 3
       expect(invalid_stock_stamper.errors.full_messages).to include 'User is not registered in Sequencescape'
@@ -121,7 +122,8 @@ describe StockStamper do
 
     it 'creates correct message after execution' do
       @stock_stamper.execute
-      expect(@stock_stamper.message).to eq(notice: 'You can generate the TECAN file and print label now.', error: 'Required volume exceeds the maximum well volume for well(s) A1, B2, E6. Maximum well volume 180.0 will be used in tecan file')
+      expect(@stock_stamper.message).to eq(notice: 'You can generate the TECAN file and print label now.',
+                                           error: 'Required volume exceeds the maximum well volume for well(s) A1, B2, E6. Maximum well volume 180.0 will be used in tecan file')
     end
   end
 end

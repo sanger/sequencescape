@@ -24,7 +24,9 @@ module Admin
 
         context '#managed_update (without changes)' do
           setup do
-            get :managed_update, params: { id: @study.id, study: { name: @study.name, reference_genome_id: @study.reference_genome_id } }
+            get :managed_update, params: { id: @study.id,
+                                           study: { name: @study.name,
+                                                    reference_genome_id: @study.reference_genome_id } }
           end
 
           should 'not send an email' do

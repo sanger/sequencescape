@@ -1,4 +1,4 @@
-class TagLayout::WalkWellsByPools < TagLayout::Walker
+class TagLayout::WalkWellsByPools < TagLayout::Walker # rubocop:todo Style/Documentation
   self.walking_by = 'wells in pools'
 
   def walk_wells

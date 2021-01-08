@@ -142,12 +142,14 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       let(:plate) { create(:plate_with_empty_wells, well_count: 12) }
 
       it 'is valid if the well location is valid' do
-        expect(described_class.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: plate.wells.first.map.description))).to be_valid
+        expect(described_class.new(qc_result_attributes.merge(uuid: plate.uuid,
+                                                              well_location: plate.wells.first.map.description))).to be_valid
       end
 
       it 'is a blank well if the asset is a plate and the well does not exist' do
         expect(described_class.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: 'Z999'))).to be_valid
-        expect(described_class.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: 'Z999'))).to be_blank_well
+        expect(described_class.new(qc_result_attributes.merge(uuid: plate.uuid,
+                                                              well_location: 'Z999'))).to be_blank_well
       end
     end
 
@@ -155,11 +157,13 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       let(:plate) { create(:plate_with_empty_wells, well_count: 12) }
 
       it 'will create a valid resource with a valid barcode' do
-        expect(described_class.new(qc_result_attributes.merge(barcode: plate.barcodes.first.barcode, well_location: plate.wells.first.map.description))).to be_valid
+        expect(described_class.new(qc_result_attributes.merge(barcode: plate.barcodes.first.barcode,
+                                                              well_location: plate.wells.first.map.description))).to be_valid
       end
 
       it 'will not create a valid resource with an invalid barcode' do
-        expect(described_class.new(qc_result_attributes.merge(barcode: 'DODGY_BARCODE', well_location: plate.wells.first.map.description))).not_to be_valid
+        expect(described_class.new(qc_result_attributes.merge(barcode: 'DODGY_BARCODE',
+                                                              well_location: plate.wells.first.map.description))).not_to be_valid
       end
     end
 
@@ -173,12 +177,19 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
 
     context 'Working Dilution' do
       let!(:user) { create(:user) }
-      let(:attributes) { qc_result_attributes.merge(key: 'concentration', assay_type: 'Working dilution', value: '3.4567') }
+      let(:attributes) do
+        qc_result_attributes.merge(key: 'concentration', assay_type: 'Working dilution', value: '3.4567')
+      end
 
       context 'with dilution factor' do
         let!(:stock_plate) { create(:full_stock_plate, well_count: 3, dilution_factor: 10) }
-        let!(:working_dilution_plate) { create(:working_dilution_plate, parents: [stock_plate], well_count: 3, dilution_factor: 10) }
-        let(:working_dilution_attributes) { attributes.merge(uuid: working_dilution_plate.uuid, well_location: working_dilution_plate.wells.first.map.description) }
+        let!(:working_dilution_plate) do
+          create(:working_dilution_plate, parents: [stock_plate], well_count: 3, dilution_factor: 10)
+        end
+        let(:working_dilution_attributes) do
+          attributes.merge(uuid: working_dilution_plate.uuid,
+                           well_location: working_dilution_plate.wells.first.map.description)
+        end
 
         it 'resource indicates if it is a working dilution' do
           resource = described_class.new(working_dilution_attributes)
@@ -209,8 +220,13 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
 
       context 'with no dilution factor' do
         let!(:stock_plate) { create(:full_stock_plate, well_count: 3, dilution_factor: nil) }
-        let!(:working_dilution_plate) { create(:working_dilution_plate, parents: [stock_plate], well_count: 3, dilution_factor: nil) }
-        let(:working_dilution_attributes) { attributes.merge(uuid: working_dilution_plate.uuid, well_location: working_dilution_plate.wells.first.map.description) }
+        let!(:working_dilution_plate) do
+          create(:working_dilution_plate, parents: [stock_plate], well_count: 3, dilution_factor: nil)
+        end
+        let(:working_dilution_attributes) do
+          attributes.merge(uuid: working_dilution_plate.uuid,
+                           well_location: working_dilution_plate.wells.first.map.description)
+        end
 
         it '#save will not update the parent well if it is a working dilution' do
           resource = described_class.new(working_dilution_attributes)

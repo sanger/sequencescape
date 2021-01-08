@@ -5,13 +5,17 @@
 require 'rails_helper'
 
 RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
-  subject { described_class.create!(seed: lab_event, user: user, created_at: Time.zone.parse('2018-01-12T13:37:03+00:00')) }
+  subject do
+    described_class.create!(seed: lab_event, user: user, created_at: Time.zone.parse('2018-01-12T13:37:03+00:00'))
+  end
 
   let(:json) { JSON.parse(subject.to_json) }
   let(:eventful) { request }
   let(:batch) { create :sequencing_batch }
   let(:study) { create :study }
-  let!(:request) { create :sequencing_request_with_assets, batch: batch, request_type: batch.pipeline.request_types.first, study: study }
+  let!(:request) do
+    create :sequencing_request_with_assets, batch: batch, request_type: batch.pipeline.request_types.first, study: study
+  end
   let(:sample) { request.asset.samples.first }
   let(:stock_asset) { request.asset.labware }
 
@@ -47,7 +51,8 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
         { 'role_type' => 'flowcell', 'subject_type' => 'flowcell', 'uuid' => batch.uuid, 'friendly_name' => batch.id },
         { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
         { 'role_type' => 'sample', 'subject_type' => 'sample', 'uuid' => sample.uuid, 'friendly_name' => sample.name },
-        { 'role_type' => 'sequencing_source_labware', 'subject_type' => 'tube', 'uuid' => stock_asset.uuid, 'friendly_name' => stock_asset.human_barcode }
+        { 'role_type' => 'sequencing_source_labware', 'subject_type' => 'tube', 'uuid' => stock_asset.uuid,
+          'friendly_name' => stock_asset.human_barcode }
       ])
     end
   end
@@ -60,7 +65,8 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
         { 'role_type' => 'flowcell', 'subject_type' => 'flowcell', 'uuid' => batch.uuid, 'friendly_name' => batch.id },
         { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
         { 'role_type' => 'sample', 'subject_type' => 'sample', 'uuid' => sample.uuid, 'friendly_name' => sample.name },
-        { 'role_type' => 'sequencing_source_labware', 'subject_type' => 'tube', 'uuid' => stock_asset.uuid, 'friendly_name' => stock_asset.human_barcode }
+        { 'role_type' => 'sequencing_source_labware', 'subject_type' => 'tube', 'uuid' => stock_asset.uuid,
+          'friendly_name' => stock_asset.human_barcode }
       ])
     end
   end

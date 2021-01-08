@@ -1,12 +1,12 @@
-class QcReport < ApplicationRecord
+class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
   # :id => The primary key for internal use only
   # :report_identifier => A unique identifier exposed to customers
   # :state => Tracks report processing and return
 
   include AASM
 
-  module StateMachine
-    module ClassMethods
+  module StateMachine # rubocop:todo Style/Documentation
+    module ClassMethods # rubocop:todo Style/Documentation
       def available_states
         QcReport.aasm.states.map { |state| state.name.to_s }
       end
@@ -70,7 +70,7 @@ class QcReport < ApplicationRecord
     end
   end
 
-  module ReportBehaviour
+  module ReportBehaviour # rubocop:todo Style/Documentation
     # Generates the report.
     # Generally speaking this gets triggered automatically, and is handled by the delayed job.
     # Briefly, an after_create event creates a delayed job to call generate! on the report.
@@ -79,7 +79,8 @@ class QcReport < ApplicationRecord
     # You can trigger a synchronous report manually by calling #generate!
     def generate_report
       begin
-        study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria, (plate_purposes.empty? ? nil : plate_purposes)) do |assets|
+        study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria,
+                                                 (plate_purposes.empty? ? nil : plate_purposes)) do |assets|
           # If there are some wells of interest, we get them in a list
           connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
 
@@ -91,7 +92,8 @@ class QcReport < ApplicationRecord
           ActiveRecord::Base.transaction do
             assets.each do |asset|
               criteria = product_criteria.assess(asset, connected_wells[asset.id])
-              QcMetric.create!(asset: asset, qc_decision: criteria.qc_decision, metrics: criteria.metrics, qc_report: self)
+              QcMetric.create!(asset: asset, qc_decision: criteria.qc_decision, metrics: criteria.metrics,
+                               qc_report: self)
             end
           end
         end
@@ -153,7 +155,7 @@ class QcReport < ApplicationRecord
     report_identifier.nil?
   end
 
-  # Note: You won't be able to generate two reports for the
+  # NOTE: You won't be able to generate two reports for the
   # same product / study abbreviation combo within one second
   # of each other.
   def generate_report_identifier

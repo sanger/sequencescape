@@ -1,4 +1,4 @@
-module AssetsHelper
+module AssetsHelper # rubocop:todo Style/Documentation
   def well_identifier(plate_layout, row, column)
     plate_layout.cell_name_for_well_at(row, column)
   end
@@ -12,7 +12,10 @@ module AssetsHelper
     elsif plate_layout.bad_well_at?(row, column)
       ['Error', (well[:error]).to_s, '']
     else
-      raise StandardError, "Unknown well status ((#{plate_layout.location_for_well_at(row, column)}) = #{plate_layout.well_at(row, column).inspect})"
+      raise StandardError, "Unknown well status ((#{plate_layout.location_for_well_at(row,
+                                                                                      column)}) = #{plate_layout.well_at(
+                                                                                        row, column
+                                                                                      ).inspect})"
     end
   end
 
@@ -50,7 +53,8 @@ module AssetsHelper
       select_tag(
         field,
         options_for_select(select_options_source.sorted_by_name.pluck(:name, :id), selected.try(:to_i)),
-        options.merge(disabled: (selected.present? and not current_user.is_administrator?), class: 'form-control select2')
+        options.merge(disabled: (selected.present? and not current_user.is_administrator?),
+                      class: 'form-control select2')
       )
     end
   end
