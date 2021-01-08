@@ -27,12 +27,22 @@ module IlluminaC::Requests # rubocop:todo Style/Documentation
   end
 
   module Helpers # rubocop:todo Style/Documentation
+    STOCK_PLATE_PURPOSE = 'ILC Stock'.freeze
+    OUTER_REQUESTS = %w[
+      illumina_c_pcr
+      illumina_c_nopcr
+      illumina_c_pcr_no_pool
+      illumina_c_no_pcr_no_pool
+      illumina_c_chromium_library
+    ].freeze
+
     def create_request_types
       each_request_type do |params|
         RequestType.create!(params)
       end
-      IlluminaC::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose, request|
-        RequestType.find_by(key: request).acceptable_plate_purposes << Purpose.find_by(name: purpose)
+      stock = Purpose.find_by(name: STOCK_PLATE_PURPOSE)
+      OUTER_REQUESTS.each do |request|
+        RequestType.find_by(key: request).acceptable_plate_purposes << stock
       end
     end
 
