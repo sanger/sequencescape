@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A {Task} used in {CherrypickPipeline cherrypick pipelines}
 # Performs the main bulk of cherrypick action. Although a lot of the options
 # on this page are presented as part of the previous step, and get persisted on this
@@ -13,65 +15,39 @@ class CherrypickTask < Task
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
 
   #
-  # Returns a list with the destination positions for the control wells distributed randomly
-  # using batch_id as seed and num_plate to increase position with plates in same batch.
-  # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
-  # control wells being missed in cDNA quant QC. This requirement was removed in
-  # https://github.com/sanger/sequencescape/issues/2967 however I've avoided stripping out the behaviour
-  # completely in case controls are used in other pipelines.
+  # Returns a {CherrypickTask::ControlLocator} which can generate control locations for plates
+  # in a batch. It responds to #control_positions which takes a plate number as an argument
   #
-  # @param batch_id [Integer] The id of the batch, used to generate a starting position
-  # @param num_plate [Integer] The plate number within the batch
-  # @param total_wells [Integer] The total number of wells on the plate
-  # @param num_control_wells [Integer] The number of control wells to lay out
-  # @param wells_to_leave_free [Integer] The number of wells to leave free at the front of the plate
+  # @return [CherrypickTask::ControlLocator] A generator of control locations
   #
-  # @return [Array<Integer>] The indexes of the control well positions
-  #
-  def control_positions(batch_id, num_plate, total_wells, num_control_wells, wells_to_leave_free: 0)
-    total_available_positions = total_wells - wells_to_leave_free
-
-    raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
-
-    available_positions = (wells_to_leave_free..(total_wells - 1)).to_a
-    # If num plate is equal to the available positions, the cycle is going to be repeated.
-    # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
-    seed = batch_id * ((num_plate / available_positions.length) + 1)
-    initial_positions = random_elements_from_list(available_positions, num_control_wells, seed)
-    control_positions_for_plate(num_plate, initial_positions, available_positions)
+  def control_locator(batch_id, total_wells, num_control_wells, wells_to_leave_free: 0)
+    CherrypickTask::ControlLocator.new(
+      batch_id: batch_id,
+      total_wells: total_wells,
+      num_control_wells: num_control_wells,
+      wells_to_leave_free: wells_to_leave_free
+    )
   end
 
-  def random_elements_from_list(list, num_elems, seed)
-    list.sample(num_elems, random: Random.new(seed))
-  end
-
-  def control_positions_for_plate(num_plate, initial_positions, available_positions)
-    return initial_positions if num_plate.zero?
-
-    initial_positions.map do |pos|
-      available_positions[(available_positions.index(pos) + num_plate) % available_positions.length]
-    end
-  end
-
-  def pick_new_plate(requests, template, robot, plate_purpose, auto_add_control_plate = nil, workflow_controller = nil)
+  def pick_new_plate(requests, template, robot, plate_purpose, control_source_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)
-    perform_pick(requests, robot, auto_add_control_plate, workflow_controller) do
+    perform_pick(requests, robot, control_source_plate, workflow_controller) do
       target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
 
-  def pick_onto_partial_plate(requests, template, robot, partial_plate, auto_add_control_plate = nil, workflow_controller = nil)
+  def pick_onto_partial_plate(requests, template, robot, partial_plate, control_source_plate = nil, workflow_controller = nil)
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
-    perform_pick(requests, robot, auto_add_control_plate, workflow_controller) do
+    perform_pick(requests, robot, control_source_plate, workflow_controller) do
       target_type.new(template, purpose.try(:asset_shape), partial_plate).tap do
         partial_plate = nil # Ensure that subsequent calls have no partial plate
       end
     end
   end
 
-  def perform_pick(requests, robot, auto_add_control_plate, workflow_controller)
+  def perform_pick(requests, robot, control_source_plate, workflow_controller)
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
@@ -81,11 +57,12 @@ class CherrypickTask < Task
     plates_array = build_plate_wells_from_requests(requests, workflow_controller)
 
     # Initial settings needed for control requests addition
-    if auto_add_control_plate
+    if control_source_plate
       num_plate = 0
       batch = requests.first.batch
-      control_assets = auto_add_control_plate.wells.joins(:samples)
-      control_posns = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
+      control_assets = control_source_plate.wells.joins(:samples)
+      control_locator = control_locator(batch.id, current_destination_plate.size, control_assets.count)
+      control_posns = control_locator.control_positions(num_plate)
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the
       # beginning of the plate
@@ -95,10 +72,10 @@ class CherrypickTask < Task
     push_completed_plate = lambda do |idx|
       destination_plates << current_destination_plate.completed_view
       current_destination_plate = yield # reset to start picking to a fresh one
-      if auto_add_control_plate && (idx < (plates_array.length - 1))
+      if control_source_plate && (idx < (plates_array.length - 1))
         # when we start a new plate we rebuild the list of positions where the requests should be placed
         num_plate += 1
-        control_posns = control_positions(batch.id, num_plate, current_destination_plate.size, control_assets.count)
+        control_posns = control_locator.control_positions(num_plate)
         current_destination_plate.add_any_initial_control_requests(control_posns, batch, control_assets)
       end
     end
@@ -110,16 +87,14 @@ class CherrypickTask < Task
                                                    control_posns, batch, control_assets)
       push_completed_plate.call(idx) if current_destination_plate.full?
     end
-    # If there are any remaining control requests, we'll add all of them at the end of the last plate
-    unless current_destination_plate.empty?
-      if auto_add_control_plate
-        current_destination_plate.add_remaining_control_requests(control_posns, batch,
-                                                                 control_assets)
-      end
-    end
 
-    # Ensure that a non-empty plate is stored
-    push_completed_plate.call(plates_array.length) unless current_destination_plate.empty?
+    # If our plate isn't empty we'll add any controls, and push it to the array
+    unless current_destination_plate.empty?
+      # If there are any remaining control requests, we'll add all of them at the end of the last plate
+      current_destination_plate.add_remaining_control_requests(control_posns, batch, control_assets) if control_source_plate
+      # Ensure that a non-empty plate is stored
+      push_completed_plate.call(plates_array.length)
+    end
 
     [destination_plates, source_plates]
   end

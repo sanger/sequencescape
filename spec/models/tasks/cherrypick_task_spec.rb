@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.configure do |c|
@@ -9,9 +11,9 @@ RSpec.describe CherrypickTask, type: :model do
   let(:control_plate) { create :control_plate, sample_count: 2 }
   let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission: submission) } }
   let(:template) { create(:plate_template, size: 6) }
-  let(:robot) { double('robot', max_beds: 2) }
+  let(:robot) { instance_double('Robot', max_beds: 2) }
   let(:purpose) { create :purpose }
-  let(:batch) { double('batch', id: 1235, requests: requests) }
+  let(:batch) { instance_double('Batch', id: 1235, requests: requests) }
   let(:submission) { create :submission }
 
   def pick_without_request_id(plates)
@@ -30,7 +32,8 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when controls and wells fit in one plate' do
         before do
-          allow(instance).to receive(:control_positions).and_return([2, 5])
+          locator = instance_double(CherrypickTask::ControlLocator, control_positions: [2, 5])
+          allow(instance).to receive(:control_locator).and_return(locator)
         end
 
         let(:instance) { described_class.new }
@@ -77,7 +80,9 @@ RSpec.describe CherrypickTask, type: :model do
         end
 
         before do
-          allow(instance).to receive(:control_positions).and_return([2, 5], [0, 2])
+          locator = instance_double(CherrypickTask::ControlLocator)
+          allow(locator).to receive(:control_positions).and_return([2, 5], [0, 2])
+          allow(instance).to receive(:control_locator).and_return(locator)
         end
 
         it 'places controls in a different position' do
@@ -104,7 +109,8 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when controls and wells fit in one plate' do
         before do
-          allow(instance).to receive(:control_positions).and_return([2, 3])
+          locator = instance_double(CherrypickTask::ControlLocator, control_positions: [2, 3])
+          allow(instance).to receive(:control_locator).and_return(locator)
         end
 
         let(:instance) { described_class.new }
@@ -128,7 +134,9 @@ RSpec.describe CherrypickTask, type: :model do
 
       context 'when control positions clashes with partial' do
         before do
-          allow(instance).to receive(:control_positions).and_return([2, 4], [0, 2])
+          locator = instance_double(CherrypickTask::ControlLocator)
+          allow(locator).to receive(:control_positions).and_return([2, 4], [0, 2])
+          allow(instance).to receive(:control_locator).and_return(locator)
         end
 
         let(:instance) { described_class.new }
@@ -162,188 +170,36 @@ RSpec.describe CherrypickTask, type: :model do
     end
   end
 
-  describe '#control_positions_for_plate' do
-    let(:available_positions) { [0, 1, 2, 3, 4, 5, 6] }
-    let(:initial_positions) { [0, 4, 2] }
-
-    context 'when is the initial plate' do
-      it 'returns the initial positions' do
-        expect(described_class.new.control_positions_for_plate(0, initial_positions, available_positions)).to eq(initial_positions)
-      end
-    end
-
-    context 'when is any other plate' do
-      it 'returns the subsequent position from all initial positions', aggregate_failures: true do
-        expect(described_class.new.control_positions_for_plate(1, initial_positions, available_positions)).to eq([1, 5, 3])
-        expect(described_class.new.control_positions_for_plate(2, initial_positions, available_positions)).to eq([2, 6, 4])
-        expect(described_class.new.control_positions_for_plate(3, initial_positions, available_positions)).to eq([3, 0, 5])
-      end
-    end
-  end
-
-  describe '#random_elements_from_list' do
-    let(:instance) { described_class.new }
-
-    context 'with same seed' do
-      it 'gets always the same result' do
-        expect(instance.random_elements_from_list((0..96).to_a, 3, 3)).to(
-          eq(instance.random_elements_from_list((0..96).to_a, 3, 3))
-        )
-      end
-    end
-
-    context 'with different seed' do
-      it 'gives a different result' do
-        expect(instance.random_elements_from_list((0..96).to_a, 3, 3)).not_to(
-          eq(instance.random_elements_from_list((0..96).to_a, 3, 4))
-        )
-      end
-    end
-  end
-
-  describe '#control_positions' do
-    let(:instance) { described_class.new }
-
-    context 'when all inputs are right' do
-      let(:random_list) { [25, 9, 95] }
-
-      before do
-        allow(instance).to receive(:random_elements_from_list).and_return(random_list)
-      end
-
-      it 'calculates the positions for the control wells', aggregate_failures: true do
-        # Test batch id 0, plate 0 to 4, 5 free wells, 2 control wells
-        expect(instance.control_positions(0, 0, 96, 3)).to eq(random_list)
-        expect(instance.control_positions(0, 1, 96, 3)).to eq([26, 10, 0])
-        expect(instance.control_positions(0, 2, 96, 3)).to eq([27, 11, 1])
-      end
-    end
-
-    context 'when there are more controls than available positions' do
-      it 'raises an error' do
-        expect { instance.control_positions(0, 0, 2, 3) }.to raise_error(StandardError)
-        expect { instance.control_positions(0, 0, 96, 97) }.to raise_error(StandardError)
-        expect { instance.control_positions(0, 0, 96, 8, wells_to_leave_free: 89) }.to raise_error(StandardError)
-        expect { instance.control_positions(0, 0, 96, 8, wells_to_leave_free: 88) }.not_to raise_error
-      end
-    end
-
-    context 'with different arguments' do
-      let(:instance) { described_class.new }
-
-      context 'when checking the call for #random_elements_from_list' do
-        before do
-          allow(instance).to receive(:random_elements_from_list).and_return([0, 1, 2])
-        end
-
-        it 'uses the right arguments' do
-          expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 0)
-          instance.control_positions(0, 0, 5, 3)
-          expect(instance).to receive(:random_elements_from_list).with([2, 3, 4], 3, 0)
-          instance.control_positions(0, 0, 5, 3, wells_to_leave_free: 2)
-        end
-
-        context 'when num plate exceeds available positions' do
-          it 'changes the seed' do
-            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 66)
-            instance.control_positions(33, 5, 5, 3)
-            expect(instance).to receive(:random_elements_from_list).with([0, 1, 2, 3, 4], 3, 99)
-            instance.control_positions(33, 10, 5, 3)
-          end
-        end
-      end
-
-      context 'when checking the call for #control_positions_for_plate' do
-        before do
-          allow(instance).to receive(:random_elements_from_list).and_return([1, 4, 3])
-          allow(instance).to receive(:control_positions_for_plate)
-        end
-
-        it 'uses the right arguments' do
-          expect(instance).to receive(:control_positions_for_plate).with(0, [1, 4, 3], [0, 1, 2, 3, 4])
-          instance.control_positions(0, 0, 5, 3)
-          expect(instance).to receive(:control_positions_for_plate).with(3, [1, 4, 3], [1, 2, 3, 4])
-          instance.control_positions(0, 3, 5, 3, wells_to_leave_free: 1)
-        end
-      end
-    end
-
-    it 'fails when you try to put more controls than free wells' do
-      # Test batch id 0, plate 0, 2 free wells, 3 control wells, so they dont fit
-      expect do
-        described_class.new.control_positions(0, 0, 2, 3)
-      end.to raise_error(StandardError, 'More controls than free wells')
-    end
-
-    it 'gets the same result with same batch and num plate' do
-      expect(described_class.new.control_positions(12345, 0, 100, 3)).to(
-        eq(described_class.new.control_positions(12345, 0, 100, 3))
-      )
-    end
-
-    it 'does not get same result with a different plate in same batch' do
-      expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
-        eq(described_class.new.control_positions(12345, 1, 100, 3))
-      )
-    end
-
-    it 'does not get the same result with a different batch' do
-      expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
-        eq(described_class.new.control_positions(12346, 0, 100, 3))
-      )
-    end
-
-    context 'when num plate is higher than available positions' do
-      it 'does not get same result with a different plate in same batch' do
-        expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
-          eq(described_class.new.control_positions(12345, 100, 100, 3))
-        )
-      end
-
-      it 'does not get the same result with a different batch' do
-        expect(described_class.new.control_positions(12345, 0, 100, 3)).not_to(
-          eq(described_class.new.control_positions(12346, 100, 100, 3))
-        )
-      end
-    end
-
-    it 'does not place controls in the first three columns for a 96-well destination plate' do
-      # positions 0 - 24
-      positions = described_class.new.control_positions(12345, 0, 96, 3, wells_to_leave_free: 24)
-      expect(positions).to(be_all { |p| p >= 24 })
-    end
-  end
-
   describe '#build_plate_wells_from_requests' do
-    let!(:plate_1) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate1' }
-    let!(:plate_2) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate2' }
-    let!(:plate_3) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate3' }
-    let(:plates) { [plate_1, plate_2, plate_3] }
-    let(:requests_1) { requests_for_plate(plate_1) }
-    let(:requests_2) { requests_for_plate(plate_2) }
-    let(:requests_3) { requests_for_plate(plate_3) }
-    let(:requests) { requests_1 + requests_2 + requests_3 }
+    let!(:plate1) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate1' }
+    let!(:plate2) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate2' }
+    let!(:plate3) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate3' }
+    let(:plates) { [plate1, plate2, plate3] }
+    let(:requests1) { requests_for_plate(plate1) }
+    let(:requests2) { requests_for_plate(plate2) }
+    let(:requests3) { requests_for_plate(plate3) }
+    let(:requests) { requests1 + requests2 + requests3 }
 
-    let(:location_1) { 'Shelf 2' } # Expected order: 2nd
-    let(:parentage_1) { 'Sanger / Ogilvie / AA316' }
+    let(:location1) { 'Shelf 2' } # Expected order: 2nd
+    let(:parentage1) { 'Sanger / Ogilvie / AA316' }
 
-    let(:location_2) { 'Shelf 2' } # Expected order: 3rd
-    let(:parentage_2) { 'Sanger / Ogilvie / AA317' }
+    let(:location2) { 'Shelf 2' } # Expected order: 3rd
+    let(:parentage2) { 'Sanger / Ogilvie / AA317' }
 
-    let(:location_3) { 'Shelf 1' } # Expected order: 1st
-    let(:parentage_3) { 'Sanger / Ogilvie / AA316' }
+    let(:location3) { 'Shelf 1' } # Expected order: 1st
+    let(:parentage3) { 'Sanger / Ogilvie / AA316' }
 
     context 'with locations set' do
       # with locations set we expect requests to be ordered primarily by location parentage
       let(:expected_output) do
         output = []
-        requests_3.each do |request|
+        requests3.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
-        requests_1.each do |request|
+        requests1.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
-        requests_2.each do |request|
+        requests2.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
         output
@@ -353,19 +209,19 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
-              lw_locn_name: location_1,
-              lw_locn_parentage: parentage_1
+              lw_barcode: plate1.human_barcode,
+              lw_locn_name: location1,
+              lw_locn_parentage: parentage1
             },
             {
-              lw_barcode: plate_2.human_barcode,
-              lw_locn_name: location_2,
-              lw_locn_parentage: parentage_2
+              lw_barcode: plate2.human_barcode,
+              lw_locn_name: location2,
+              lw_locn_parentage: parentage2
             },
             {
-              lw_barcode: plate_3.human_barcode,
-              lw_locn_name: location_3,
-              lw_locn_parentage: parentage_3
+              lw_barcode: plate3.human_barcode,
+              lw_locn_name: location3,
+              lw_locn_parentage: parentage3
             }
           ]
         )
@@ -380,13 +236,13 @@ RSpec.describe CherrypickTask, type: :model do
       # with no locations, they should just be in plate creation order
       let(:expected_output) do
         output = []
-        requests_1.each do |request|
+        requests1.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
-        requests_2.each do |request|
+        requests2.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
-        requests_3.each do |request|
+        requests3.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
         output
@@ -396,17 +252,17 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
+              lw_barcode: plate1.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             },
             {
-              lw_barcode: plate_2.human_barcode,
+              lw_barcode: plate2.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             },
             {
-              lw_barcode: plate_3.human_barcode,
+              lw_barcode: plate3.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             }
@@ -423,13 +279,13 @@ RSpec.describe CherrypickTask, type: :model do
       # with a mixture we expect plates woth no locations to be sorted first then those with locations
       let(:expected_output) do
         output = []
-        requests_1.each do |request|
+        requests1.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end # no location, should be first
-        requests_3.each do |request|
+        requests3.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
-        requests_2.each do |request|
+        requests2.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
         output
@@ -439,19 +295,19 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
+              lw_barcode: plate1.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             },
             {
-              lw_barcode: plate_2.human_barcode,
-              lw_locn_name: location_2,
-              lw_locn_parentage: parentage_2
+              lw_barcode: plate2.human_barcode,
+              lw_locn_name: location2,
+              lw_locn_parentage: parentage2
             },
             {
-              lw_barcode: plate_3.human_barcode,
-              lw_locn_name: location_3,
-              lw_locn_parentage: parentage_3
+              lw_barcode: plate3.human_barcode,
+              lw_locn_name: location3,
+              lw_locn_parentage: parentage3
             }
           ]
         )
@@ -466,13 +322,13 @@ RSpec.describe CherrypickTask, type: :model do
       # when multiple plates have the same location (e.g. a box) we expect order to be by plate creation
       let(:expected_output) do
         output = []
-        requests_1.each do |request|
+        requests1.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
-        requests_2.each do |request|
+        requests2.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
-        requests_3.each do |request|
+        requests3.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
         output
@@ -482,19 +338,19 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
-              lw_locn_name: location_1,
-              lw_locn_parentage: parentage_1
+              lw_barcode: plate1.human_barcode,
+              lw_locn_name: location1,
+              lw_locn_parentage: parentage1
             },
             {
-              lw_barcode: plate_2.human_barcode,
-              lw_locn_name: location_1,
-              lw_locn_parentage: parentage_1
+              lw_barcode: plate2.human_barcode,
+              lw_locn_name: location1,
+              lw_locn_parentage: parentage1
             },
             {
-              lw_barcode: plate_3.human_barcode,
-              lw_locn_name: location_1,
-              lw_locn_parentage: parentage_1
+              lw_barcode: plate3.human_barcode,
+              lw_locn_name: location1,
+              lw_locn_parentage: parentage1
             }
           ]
         )
@@ -507,18 +363,18 @@ RSpec.describe CherrypickTask, type: :model do
 
     context 'with 1 plate' do
       # redefine requests so we can jumble them up in a different order
-      let(:request_1) { create(:cherrypick_request, asset: plate_1.wells[2]) } # C1
-      let(:request_2) { create(:cherrypick_request, asset: plate_1.wells[0]) } # A1
-      let(:request_3) { create(:cherrypick_request, asset: plate_1.wells[3]) } # D1
-      let(:request_4) { create(:cherrypick_request, asset: plate_1.wells[1]) } # B1
-      let!(:requests) { [request_1, request_2, request_3, request_4] }
+      let(:request1) { create(:cherrypick_request, asset: plate1.wells[2]) } # C1
+      let(:request2) { create(:cherrypick_request, asset: plate1.wells[0]) } # A1
+      let(:request3) { create(:cherrypick_request, asset: plate1.wells[3]) } # D1
+      let(:request4) { create(:cherrypick_request, asset: plate1.wells[1]) } # B1
+      let!(:requests) { [request1, request2, request3, request4] }
 
       let(:expected_output) do
         output = []
-        output << [request_2.id, request_2.asset.plate.human_barcode, request_2.asset.map_description]
-        output << [request_4.id, request_4.asset.plate.human_barcode, request_4.asset.map_description]
-        output << [request_1.id, request_1.asset.plate.human_barcode, request_1.asset.map_description]
-        output << [request_3.id, request_3.asset.plate.human_barcode, request_3.asset.map_description]
+        output << [request2.id, request2.asset.plate.human_barcode, request2.asset.map_description]
+        output << [request4.id, request4.asset.plate.human_barcode, request4.asset.map_description]
+        output << [request1.id, request1.asset.plate.human_barcode, request1.asset.map_description]
+        output << [request3.id, request3.asset.plate.human_barcode, request3.asset.map_description]
         output
       end
 
@@ -526,7 +382,7 @@ RSpec.describe CherrypickTask, type: :model do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             {
-              lw_barcode: plate_1.human_barcode,
+              lw_barcode: plate1.human_barcode,
               lw_locn_name: '',
               lw_locn_parentage: ''
             }
