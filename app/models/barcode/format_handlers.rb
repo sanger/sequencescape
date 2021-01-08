@@ -13,6 +13,7 @@ module Barcode::FormatHandlers
       nil
     end
   end
+
   #
   # Base Sequencescape barcode
   # This class mostly wraps the SBCF Gem

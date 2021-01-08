@@ -3,7 +3,7 @@
 def sort_arrays(xml_data)
   case xml_data
   when Hash
-    Hash[xml_data.map { |k, v| [k, sort_arrays(v)] }]
+    xml_data.transform_values { |v| sort_arrays(v) }
   when Array
     # Kind of a hack but works for the cases where Hash elements exist
     xml_data.map { |e| sort_arrays(e) }.sort_by(&:to_a)

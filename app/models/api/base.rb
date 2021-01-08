@@ -4,6 +4,8 @@
 #       When the warehouse was switched to a queue based system the same JSON
 #       exposed via the API was used to form the message payload.
 class Api::Base
+  UNSERIALIZED_COLUMNS = [:descriptor_fields].freeze
+
   class_attribute :includes
   self.includes = []
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
@@ -52,12 +54,16 @@ class Api::Base
       associations.each do |_association, helper|
         value = helper.target(object)
         json_attributes.update(helper.to_hash(value))
-        helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
+        helper.newer_than(value, json_attributes['updated_at']) do |timestamp|
+          json_attributes['updated_at'] = timestamp
+        end
       end
       nested_has_many_associations.each do |_association, helper|
         values = helper.target(object)
         all_targets = values.map do |value|
-          helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
+          helper.newer_than(value, json_attributes['updated_at']) do |timestamp|
+            json_attributes['updated_at'] = timestamp
+          end
           helper.to_hash(value)
         end
         json_attributes.update(helper.alias.to_s => all_targets)
@@ -93,9 +99,8 @@ class Api::Base
       # within the Class.new block above, so we have to do a separate instance_eval to get it to work.
       render_class.instance_eval do
         self.model_class = model
-
         model.column_names.each do |column|
-          map_attribute_to_json_attribute(column, column) unless [:descriptor_fields].include?(column.to_sym)
+          map_attribute_to_json_attribute(column, column) unless UNSERIALIZED_COLUMNS.include?(column.to_sym)
         end
 
         # TODO[xxx]: It's better that some of these are decided at generation, rather than execution, time.
@@ -148,7 +153,7 @@ class Api::Base
   self.nested_has_many_associations = {}
 
   def self.newer_than(object, timestamp)
-    return if object.nil? or timestamp.nil?
+    return if object.nil? || timestamp.nil?
 
     modified, object_timestamp = false, ((object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp)
     timestamp, modified = object_timestamp, true if object_timestamp > timestamp
@@ -262,7 +267,7 @@ class Api::Base
       if json_attribute.blank?
         # If we have reached the end of the line, and the attribute_or_association is for what looks like
         # an association, then we'll look it up without the '_id' and return that value.
-        if attribute_or_association.to_s =~ /_id$/ and rest.empty?
+        if attribute_or_association.to_s =~ (/_id$/) && rest.empty?
           association = associations[attribute_or_association.to_s.sub(/_id$/, '').to_sym]
           raise StandardError, "Unexpected association #{attribute_or_association.inspect}" if association.nil?
 
@@ -270,7 +275,9 @@ class Api::Base
         end
         json_attribute = associations[attribute_or_association.to_sym].json_attribute_for_attribute(*rest)
       end
-      raise StandardError, "Unexpected attribute #{attribute_or_association.inspect} does not appear to be mapped" if json_attribute.blank?
+      if json_attribute.blank?
+        raise StandardError, "Unexpected attribute #{attribute_or_association.inspect} does not appear to be mapped"
+      end
 
       json_attribute
     end

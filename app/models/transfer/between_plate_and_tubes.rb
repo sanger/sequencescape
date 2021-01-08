@@ -1,4 +1,4 @@
-class Transfer::BetweenPlateAndTubes < Transfer
+class Transfer::BetweenPlateAndTubes < Transfer # rubocop:todo Style/Documentation
   DESTINATION_INCLUDES = {
     destination: %i[
       uuid_object
@@ -6,7 +6,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     ]
   }.freeze
 
-  class WellToTube < ApplicationRecord
+  class WellToTube < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('well_to_tube_transfers')
 
     belongs_to :transfer, class_name: 'Transfer::BetweenPlateAndTubes'
@@ -73,7 +73,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   def well_to_destination
     source.stock_wells.each_with_object({}) do |(well, stock_wells), store|
       tube = locate_mx_library_tube_for(well, stock_wells)
-      next if tube.nil? or should_well_not_be_transferred?(well)
+      next if tube.nil? || should_well_not_be_transferred?(well)
 
       store[well] = [tube, stock_wells]
     end
@@ -106,7 +106,9 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells and
   # creating an appropriate range.
   def tube_name_for(stock_wells)
-    source_wells = source.plate_purpose.source_wells_for(stock_wells).sort { |w1, w2| w1.map.column_order <=> w2.map.column_order }
+    source_wells = source.plate_purpose.source_wells_for(stock_wells).sort do |w1, w2|
+      w1.map.column_order <=> w2.map.column_order
+    end
     stock_plates = source_wells.map(&:plate).uniq
     raise StandardError, 'There appears to be no stock plate!' if stock_plates.empty?
 

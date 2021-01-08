@@ -1,4 +1,4 @@
-module ::Core::Io::Collection
+module ::Core::Io::Collection # rubocop:todo Style/Documentation
   def as_json(options = {})
     results, base_stream = options[:object], options[:stream]
 

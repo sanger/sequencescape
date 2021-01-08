@@ -78,7 +78,8 @@ class PmbClientTest < ActiveSupport::TestCase
                     attributes: { name: 'test_template' },
                     relationships: {
                       label_type: { data: { id: '1', type: 'label_types' } },
-                      labels: { data: [{ id: '1', type: 'labels' }, { id: '2', type: 'labels' }, { id: '3', type: 'labels' }] }
+                      labels: { data: [{ id: '1', type: 'labels' }, { id: '2', type: 'labels' },
+                                       { id: '3', type: 'labels' }] }
                     }
                   }
                 ] }.to_json

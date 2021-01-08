@@ -1,4 +1,4 @@
-module Core::Service::EndpointHandling
+module Core::Service::EndpointHandling # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       attr_reader :endpoint

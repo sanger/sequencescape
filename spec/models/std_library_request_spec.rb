@@ -17,7 +17,9 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
   end
 
   describe '#request_metadata' do
-    subject { build :library_request, request_metadata_attributes: request_metadata_attributes, request_type: request_type }
+    subject do
+      build :library_request, request_metadata_attributes: request_metadata_attributes, request_type: request_type
+    end
 
     let(:fragment_size_required_from) { 1 }
     let(:fragment_size_required_to)   { 20 }

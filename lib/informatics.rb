@@ -1,5 +1,5 @@
 module Informatics
-  module Globals
+  module Globals # rubocop:todo Style/Documentation
     @@application = nil
     @@defaults = nil
 

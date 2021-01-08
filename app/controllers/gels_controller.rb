@@ -1,4 +1,4 @@
-class GelsController < ApplicationController
+class GelsController < ApplicationController # rubocop:todo Style/Documentation
   # JG 29/03/2019
   # The GelQC process is no longer actively performed, although we should be careful
   # of hiding access to historical data.

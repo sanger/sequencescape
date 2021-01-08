@@ -1,11 +1,8 @@
-class Core::Endpoint::BasicHandler
-  module Json
+class Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
+  module Json # rubocop:todo Style/Documentation
     def actions(object, options)
-      Hash[@actions.select do |_name, behaviour|
-        accessible_action?(self, behaviour, options[:response].request, object)
-      end.map do |name, _behaviour|
-        [name, core_path(options)]
-      end]
+      @actions.select { |_name, behaviour| accessible_action?(self, behaviour, options[:response].request, object) }
+              .transform_values { |_behaviour| core_path(options) }
     end
     private :actions
 
@@ -55,7 +52,7 @@ class Core::Endpoint::BasicHandler
   def initialize(&block)
     @actions = self.class.standard_actions.dup
     super
-    instance_eval(&block) if block_given?
+    instance_eval(&block) if block
   end
 
   include Core::Endpoint::BasicHandler::Json

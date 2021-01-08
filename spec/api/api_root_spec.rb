@@ -9,7 +9,7 @@ describe '/api/1/' do
   describe '#get' do
     let(:authorised_app) { create :api_application }
 
-    let(:response_body) {
+    let(:response_body) do
       %{{
         "revision": 2,
         "uuids": {
@@ -378,7 +378,7 @@ describe '/api/1/' do
           }
         }
       }}
-    }
+    end
     let(:response_code) { 200 }
 
     it 'lists the core actions' do
@@ -391,7 +391,7 @@ describe '/api/1/' do
   describe '#get unauthorized' do
     let(:user) { create :user }
 
-    let(:response_body) {
+    let(:response_body) do
       %{{
         "revision": 2,
 
@@ -723,7 +723,7 @@ describe '/api/1/' do
           }
         }
       }}
-    }
+    end
     let(:response_code) { 200 }
 
     it 'lists the core actions' do

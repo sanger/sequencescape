@@ -48,7 +48,9 @@ module Transfer::State
                              # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
                              # pulldown at least).
                              query_conditions = +'transfer_requests.state IN (?)'
-                             query_conditions << ' OR (transfer_requests.state IS NULL AND plate_purposes.stock_plate=TRUE)' if states.include?('pending')
+                             if states.include?('pending')
+                               query_conditions << ' OR (transfer_requests.state IS NULL AND plate_purposes.stock_plate=TRUE)'
+                             end
 
                              joins(:transfer_requests_as_target, :plate_purpose).where([query_conditions, states])
                            else
@@ -80,7 +82,8 @@ module Transfer::State
                            end
                          }
         scope :without_finished_tubes, lambda { |purpose|
-          where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'", purpose.map(&:id)])
+          where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'",
+                     purpose.map(&:id)])
         }
       end
     end

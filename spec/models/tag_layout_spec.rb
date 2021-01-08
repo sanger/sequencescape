@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-# Note: These tests JUST check the factory characteristic of layout
+# NOTE: These tests JUST check the factory characteristic of layout
 # templates. The actual layout of tags is carried out by the tag layouts themselves,
 # and is tested there.
 describe TagLayout do

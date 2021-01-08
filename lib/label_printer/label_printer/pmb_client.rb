@@ -3,7 +3,7 @@ require 'rest-client'
 module LabelPrinter
   PmbException = Class.new(StandardError)
 
-  class PmbClient
+  class PmbClient # rubocop:todo Style/Documentation
     def self.base_url
       configatron.pmb_api
     end

@@ -1,4 +1,4 @@
-class PlateTransferTask < Task
+class PlateTransferTask < Task # rubocop:todo Style/Documentation
   belongs_to :purpose
 
   def render_task(workflow, params)

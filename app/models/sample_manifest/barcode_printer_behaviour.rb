@@ -1,4 +1,4 @@
-module SampleManifest::BarcodePrinterBehaviour
+module SampleManifest::BarcodePrinterBehaviour # rubocop:todo Style/Documentation
   ASSET_TYPE_TO_PRINTER_TYPE = {
     '1dtube' => [BarcodePrinterType1DTube],
     'plate' => [BarcodePrinterType96Plate, BarcodePrinterType384DoublePlate]

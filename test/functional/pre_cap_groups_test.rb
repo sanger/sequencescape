@@ -55,7 +55,8 @@ class PreCapGroupsTest < ActiveSupport::TestCase
             source: @plate.reload,
             destination: @target_plate.reload,
             user: FactoryBot.create(:user),
-            transfers: { 'A1' => %w[A1 B1], 'B1' => ['A1'], 'C1' => ['A1'], 'D1' => %w[B1 C1], 'E1' => ['C1'], 'F1' => ['C1'] }
+            transfers: { 'A1' => %w[A1 B1], 'B1' => ['A1'], 'C1' => ['A1'], 'D1' => %w[B1 C1], 'E1' => ['C1'],
+                         'F1' => ['C1'] }
           )
         end
 

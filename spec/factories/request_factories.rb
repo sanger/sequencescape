@@ -233,12 +233,16 @@ FactoryBot.define do
     after(:build) do |request|
       next if request.request_type.nil?
 
-      request.request_metadata = build(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
+      if request.request_metadata.new_record?
+        request.request_metadata = build(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/,
+                                                                                                          '_')}")
+      end
       request.sti_type = request.request_type.request_class_name
     end
   end
 
-  factory(:request_library_creation, class: 'Request::LibraryCreation', aliases: [:library_creation_request_for_testing_sequencing_requests]) do
+  factory(:request_library_creation, class: 'Request::LibraryCreation',
+                                     aliases: [:library_creation_request_for_testing_sequencing_requests]) do
     association(:request_type, factory: :library_creation_request_type)
     request_purpose { :standard }
     asset        { |target| target.association(:well_with_sample_and_plate) }

@@ -19,7 +19,9 @@ describe IlluminaHtp::InitialStockTubePurpose do
 
     let(:target_tube) { create :multiplexed_library_tube }
     let(:sibling_state) { 'pending' }
-    let(:library_request) { create :multiplex_request, asset: parent_well, target_asset: target_tube, submission: current_submission }
+    let(:library_request) do
+      create :multiplex_request, asset: parent_well, target_asset: target_tube, submission: current_submission
+    end
 
     before do
       create :transfer_request, asset: parent_well, target_asset: tube, submission: current_submission
@@ -30,7 +32,10 @@ describe IlluminaHtp::InitialStockTubePurpose do
 
     context 'which has been created' do
       let(:sibling_tube) { create :stock_multiplexed_library_tube, purpose: tube_purpose, name: 'Sibling tube' }
-      let(:sibling_tube_hash) { { name: sibling_tube.name, uuid: sibling_tube.uuid, ean13_barcode: sibling_tube.ean13_barcode, state: sibling_state } }
+      let(:sibling_tube_hash) do
+        { name: sibling_tube.name, uuid: sibling_tube.uuid, ean13_barcode: sibling_tube.ean13_barcode,
+          state: sibling_state }
+      end
 
       context 'with siblings' do
         let(:sibling_request_type) { library_request.request_type }
@@ -70,7 +75,8 @@ describe IlluminaHtp::InitialStockTubePurpose do
           let(:sibling_request_type) { create :multiplex_request_type }
           let(:sibling_state) { 'passed' }
           let(:sibling_descendant_hash) do
-            { name: sibling_descendant.name, uuid: sibling_descendant.uuid, ean13_barcode: sibling_descendant.ean13_barcode, state: sibling_state }
+            { name: sibling_descendant.name, uuid: sibling_descendant.uuid,
+              ean13_barcode: sibling_descendant.ean13_barcode, state: sibling_state }
           end
 
           before do

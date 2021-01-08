@@ -18,12 +18,19 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project  = create :project
         @user     = create :user
 
-        @library_creation_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
+        @library_creation_request_type = create :well_request_type,
+                                                target_purpose: nil,
+                                                for_multiplexing: true,
+                                                pooling_method: @pooling
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
-        @request_options = { 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' }
+        @request_options = {
+          'read_length' => '108',
+          'fragment_size_required_from' => '150',
+          'fragment_size_required_to' => '200'
+        }
       end
 
       context 'multiplexed submission' do
@@ -192,7 +199,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
-        @request_options = { 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' }
+        @request_options = { 'read_length' => '108', 'fragment_size_required_from' => '150',
+                             'fragment_size_required_to' => '200' }
       end
 
       context 'multiplexed submission' do
@@ -259,8 +267,15 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                                                            user: @user,
                                                            assets: @assets,
                                                            request_types: @request_type_ids,
-                                                           request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '2', @mx_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150',
-                                                                              'fragment_size_required_to' => '200' },
+                                                           request_options: {
+                                                             :multiplier => {
+                                                               @pe_request_type.id.to_s.to_sym => '2',
+                                                               @mx_request_type.id.to_s.to_sym => '1'
+                                                             },
+                                                             'read_length' => '108',
+                                                             'fragment_size_required_from' => '150',
+                                                             'fragment_size_required_to' => '200'
+                                                           },
                                                            comments: '').submission
         @mx_submission_with_multiplication_factor.built!
       end
@@ -272,9 +287,11 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           end
 
           should 'create 16 library requests and 40 sequencing requests' do
-            lib_requests = Request.where(submission_id: @mx_submission_with_multiplication_factor, request_type_id: @mx_request_type.id)
+            lib_requests = Request.where(submission_id: @mx_submission_with_multiplication_factor,
+                                         request_type_id: @mx_request_type.id)
             assert_equal 16, lib_requests.count
-            seq_requests = Request.where(submission_id: @mx_submission_with_multiplication_factor, request_type_id: @pe_request_type.id)
+            seq_requests = Request.where(submission_id: @mx_submission_with_multiplication_factor,
+                                         request_type_id: @pe_request_type.id)
             assert_equal 16, seq_requests.count
           end
         end

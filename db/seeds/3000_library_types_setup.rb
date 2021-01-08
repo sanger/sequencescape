@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SetupLibraryTypes
+module SetupLibraryTypes # rubocop:todo Style/Documentation
   def self.existing_associations_for(request_type)
     {
       'LibraryCreationRequest' => [
@@ -101,7 +101,8 @@ RequestType.find_each do |request_type|
   }[request_type.key]
 
   if read_lengths.present?
-    RequestType::Validator.create!(request_type: request_type, request_option: 'read_length', valid_options: read_lengths)
+    RequestType::Validator.create!(request_type: request_type, request_option: 'read_length',
+                                   valid_options: read_lengths)
   end
 end
 
@@ -160,9 +161,11 @@ RequestType::Validator.create!(
   rt = RequestType.find_by!(key: "illumina_#{pipeline}_hiseq_x_paired_end_sequencing")
   RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150])
   rt.library_types << LibraryType.find_by(name: 'Standard')
-  RequestType::Validator.create!(request_type: rt, request_option: 'library_type', valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id))
+  RequestType::Validator.create!(request_type: rt, request_option: 'library_type',
+                                 valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id))
   RequestType::Validator.create!(request_type: rt, request_option: 'fragment_size_required_to', valid_options: ['350'])
-  RequestType::Validator.create!(request_type: rt, request_option: 'fragment_size_required_from', valid_options: ['350'])
+  RequestType::Validator.create!(request_type: rt, request_option: 'fragment_size_required_from',
+                                 valid_options: ['350'])
 end
 
 pwgs_384_lt = LibraryType.find_or_create_by!(name: 'pWGS-384')

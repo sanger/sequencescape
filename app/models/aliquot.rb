@@ -30,8 +30,8 @@ class Aliquot < ApplicationRecord
   # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it
   # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
   class InsertSize < Range
-    alias_method :from, :first
-    alias_method :to,   :last
+    alias from first
+    alias to last
   end
 
   TAG_COUNT_NAMES = %w[Untagged Single Dual].freeze
@@ -63,7 +63,8 @@ class Aliquot < ApplicationRecord
 
   belongs_to :request
 
-  composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
+  composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}],
+                            class_name: 'Aliquot::InsertSize', allow_nil: true
 
   has_one :aliquot_index, dependent: :destroy
 
@@ -88,7 +89,8 @@ class Aliquot < ApplicationRecord
 
   # returns a hash, where keys are cost_codes and values are number of aliquots related to particular cost code
   # {'cost_code_1' => 20, 'cost_code_2' => 3, 'cost_code_3' => 8 }
-  # this one does not work, as project is not always there: joins(project: :project_metadata).group("project_metadata.project_cost_code").count
+  # this one does not work, as project is not always there:
+  # joins(project: :project_metadata).group("project_metadata.project_cost_code").count
   def self.count_by_project_cost_code
     joins('LEFT JOIN projects ON aliquots.project_id = projects.id')
       .joins('LEFT JOIN project_metadata ON project_metadata.project_id = projects.id')
@@ -115,9 +117,10 @@ class Aliquot < ApplicationRecord
     }
   end
 
-  # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
-  # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
-  # would result in sample dropouts. (presumably because << triggers save not save!)
+  # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the
+  # preform_transfer_of_contents in transfer request to fail, without any visible sign that something had gone wrong.
+  # This essentially meant that tag clashes would result in sample dropouts.
+  # (presumably because << triggers save not save!)
   def no_tag1?
     tag_id == UNASSIGNED_TAG || tag.nil?
   end
@@ -179,13 +182,14 @@ class Aliquot < ApplicationRecord
   end
 
   def matches?(object)
-    # Note: This function is directional, and assumes that the downstream aliquot
+    # NOTE: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot
     case
     when sample_id != object.sample_id                                                   then false # The samples don't match
     when object.library_id.present?      && (library_id      != object.library_id)       then false # Our libraries don't match.
     when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)  then false # We have different bait libraries
-    when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)                        then raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
+    when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)
+      raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
     when object.no_tags? then true # The upstream aliquot was untagged, we don't need to check tags
     else (object.no_tag1? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
     end

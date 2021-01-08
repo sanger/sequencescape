@@ -1,4 +1,4 @@
-class ProductCatalogue::LibraryDriven
+class ProductCatalogue::LibraryDriven # rubocop:todo Style/Documentation
   attr_reader :product
 
   def initialize(catalogue, submission_attributes)

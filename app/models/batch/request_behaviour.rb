@@ -1,10 +1,12 @@
-module Batch::RequestBehaviour
+module Batch::RequestBehaviour # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       has_one :batch_request, inverse_of: :request, dependent: :destroy
       has_one :batch, through: :batch_request, inverse_of: :requests
 
-      scope :include_for_batch_view, -> { includes(:batch_request, :asset, :target_asset, :request_metadata, :comments) }
+      scope :include_for_batch_view, -> {
+                                       includes(:batch_request, :asset, :target_asset, :request_metadata, :comments)
+                                     }
 
       # For backwards compatibility
       def batch_requests; [batch_request].compact; end

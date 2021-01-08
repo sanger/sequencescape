@@ -2,8 +2,8 @@
 # A lot represents a received batch of consumables (eg. tag plates)
 # that can be assumed to share some level of QC.
 
-class Lot < ApplicationRecord
-  module Template
+class Lot < ApplicationRecord # rubocop:todo Style/Documentation
+  module Template # rubocop:todo Style/Documentation
     def self.included(base)
       base.class_eval do
         belongs_to :lot
@@ -17,7 +17,9 @@ class Lot < ApplicationRecord
   belongs_to :lot_type
   belongs_to :user
   belongs_to :template, polymorphic: true
-  belongs_to :tag_layout_template, ->(lot) { lot.template_type == 'TagLayoutTemplate' ? all : none }, foreign_key: :template_id, inverse_of: false
+  belongs_to :tag_layout_template, ->(lot) {
+                                     lot.template_type == 'TagLayoutTemplate' ? all : none
+                                   }, foreign_key: :template_id, inverse_of: false
 
   has_many :qcables, inverse_of: :lot
 
@@ -51,7 +53,8 @@ class Lot < ApplicationRecord
     return false if lot_type.blank?
     return true if template.is_a?(valid_template_class)
 
-    errors.add(:template, "is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")
+    errors.add(:template,
+               "is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")
     false
   end
 end

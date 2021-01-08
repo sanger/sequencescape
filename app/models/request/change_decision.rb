@@ -1,7 +1,7 @@
-class Request::ChangeDecision
+class Request::ChangeDecision # rubocop:todo Style/Documentation
   include ::Validateable
 
-  class ChangeDecisionError < ::StandardError
+  class ChangeDecisionError < ::StandardError # rubocop:todo Style/Documentation
     attr_reader :object
 
     def initialize(object)
@@ -17,7 +17,9 @@ class Request::ChangeDecision
     [change_decision_check_box, asset_qc_state_check_box]
   end
   validates_each(:checkboxes) do |record, attribute, list_of_checkbox_values|
-    record.errors.add(attribute, 'at least one must be selected') if list_of_checkbox_values.all? { |v| v.blank? or v == '0' }
+    record.errors.add(attribute, 'at least one must be selected') if list_of_checkbox_values.all? do |v|
+                                                                       v.blank? || (v == '0')
+                                                                     end
   end
 
   validates_each(:asset_qc_state, unless: :asset_qc_state_absent?) do |record, _attr, value|
@@ -82,7 +84,8 @@ class Request::ChangeDecision
       else
         raise InvalidDecision, self
       end
-      request.events.create!(message: "Change state from #{previous_state} to  #{state}", created_by: user.login, family: 'update')
+      request.events.create!(message: "Change state from #{previous_state} to  #{state}", created_by: user.login,
+                             family: 'update')
       request.comments.create!(description: comment, user_id: user.id)
     end
   end

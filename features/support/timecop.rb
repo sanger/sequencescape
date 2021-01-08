@@ -2,7 +2,7 @@
 
 require 'timecop'
 
-class Timecop
+class Timecop # rubocop:todo Style/Documentation
   class << self
     # Block the use of Timecop.freeze as it upsets the Capybara...
     def freeze_with_warning(_time)
@@ -13,18 +13,18 @@ end
 
 # Turning Timecop.freeze off for JavaScript Scenarios
 Before('@javascript') do
-  class Timecop
+  class Timecop # rubocop:todo Style/Documentation
     class << self
-      alias_method :freeze_without_warning, :freeze
-      alias_method :freeze, :freeze_with_warning
+      alias freeze_without_warning freeze
+      alias freeze freeze_with_warning
     end
   end
 end
 # ...and back on again.
 After('@javascript') do
-  class Timecop
+  class Timecop # rubocop:todo Style/Documentation
     class << self
-      alias_method :freeze, :freeze_without_warning
+      alias freeze freeze_without_warning
       undef :freeze_without_warning
     end
   end

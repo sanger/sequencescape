@@ -16,7 +16,7 @@ require File.dirname(__FILE__) + '/exceptions'
 module Authorization
   module Identity
     module UserExtensions
-      module InstanceMethods
+      module InstanceMethods # rubocop:todo Style/Documentation
         def method_missing(method_sym, *args)
           method_name = method_sym.to_s
           authorizable_object = args.empty? ? nil : args[0]
@@ -95,7 +95,7 @@ module Authorization
     end
 
     module ModelExtensions
-      module InstanceMethods
+      module InstanceMethods # rubocop:todo Style/Documentation
         # We we're using this. Clearing it up
       end
     end

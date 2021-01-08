@@ -5,7 +5,7 @@ Given /^I am using "(.*)" to authenticate$/ do |auth_method|
 end
 
 Given /^I am logged in as "(.*)"$/ do |login|
-  step(%Q{I am an "internal" user logged in as "#{login}"})
+  step(%{I am an "internal" user logged in as "#{login}"})
 end
 
 Given /^I am an? "([^"]*)" user logged in as "([^"]*)"$/ do |role_name, login|

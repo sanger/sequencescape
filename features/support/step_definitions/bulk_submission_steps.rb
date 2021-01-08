@@ -3,13 +3,14 @@
 def upload_submission_spreadsheet(name, encoding = nil)
   attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', "#{name}.csv"))
   if encoding
-    step(%Q{I select "#{encoding}" from 'Encoding'})
+    step(%{I select "#{encoding}" from 'Encoding'})
   end
   click_button 'Create Bulk submission'
 end
 
 def upload_custom_row_submission
-  attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', 'template_for_bulk_submission.csv'))
+  attach_file('bulk_submission_spreadsheet',
+              File.join(Rails.root, 'features', 'submission', 'csv', 'template_for_bulk_submission.csv'))
   click_button 'Create Bulk submission'
 end
 

@@ -13,7 +13,8 @@ module SampleManifestExcel
       attr_reader :sheet, :header_row, :data, :start_row, :file, :description_info
 
       validates_presence_of :start_row, :file
-      validates :file_extension, inclusion: { in: ['.csv', '.xlsx'].freeze, message: 'is unsupported; should be csv or xlsx' }
+      validates :file_extension, inclusion: { in: ['.csv', '.xlsx'].freeze,
+                                              message: 'is unsupported; should be csv or xlsx' }
       validate :file_errors_empty
 
       SANGER_SAMPLE_ID_COLUMN_LABEL = 'SANGER SAMPLE ID'

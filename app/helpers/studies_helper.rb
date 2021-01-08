@@ -1,4 +1,4 @@
-module StudiesHelper
+module StudiesHelper # rubocop:todo Style/Documentation
   def status_link_title(study)
     if study.inactive? || study.pending?
       'Open'

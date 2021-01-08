@@ -1,4 +1,4 @@
-module PlatePurpose::BroadcastLibraryComplete
+module PlatePurpose::BroadcastLibraryComplete # rubocop:todo Style/Documentation
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super
     prepare_library_complete(plate, user) if state == connect_on

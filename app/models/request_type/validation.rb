@@ -13,14 +13,15 @@ module RequestType::Validation
         message = "is '%{value}' should be #{validator.valid_options.to_sentence(last_word_connector: ' or ')}"
         vro = :"#{validator.request_option}"
         delegate_attribute(vro, to: :target, default: validator.default, type_cast: validator.type_cast)
-        validates vro, inclusion: { in: validator.valid_options, if: :"#{validator.request_option}_needs_checking?", message: message }
+        validates vro, inclusion: { in: validator.valid_options, if: :"#{validator.request_option}_needs_checking?",
+                                    message: message }
       end
     end.tap do |sub_class|
       sub_class.request_type = request_type
     end
   end
 
-  class RequestTypeValidator < DelegateValidation::Validator
+  class RequestTypeValidator < DelegateValidation::Validator # rubocop:todo Style/Documentation
     class_attribute :request_type, instance_writer: false
     request_type =  nil
 

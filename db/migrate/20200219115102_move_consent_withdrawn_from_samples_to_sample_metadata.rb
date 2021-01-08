@@ -42,7 +42,9 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     raise 'Nothing read' if data_in_file.nil?
     raise 'Not a list' unless data_in_file.is_a?(Array)
     raise 'Empty list' if data_in_file.empty?
-    raise 'Different set of samples than the one in database. Backup incorrect.' unless data_in_file.length == Sample.count
+    unless data_in_file.length == Sample.count
+      raise 'Different set of samples than the one in database. Backup incorrect.'
+    end
 
     data_in_file.each do |ident, value|
       raise "Value not an int #{ident}" unless ident.is_a?(Integer)

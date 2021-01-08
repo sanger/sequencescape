@@ -1,4 +1,4 @@
-class ProductCriteria < ApplicationRecord
+class ProductCriteria < ApplicationRecord # rubocop:todo Style/Documentation
   STAGE_STOCK = 'stock'.freeze
 
   # By default rails will try and name the table 'product_criterias'

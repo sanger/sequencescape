@@ -25,7 +25,8 @@ class Api::Messages::FlowcellIO < Api::Base
     ]
   }
 
-  module LaneExtensions # Included in SequencingRequest
+  # Included in SequencingRequest
+  module LaneExtensions
     def self.included(base)
       base.class_eval do
         def mx_library
@@ -107,7 +108,7 @@ class Api::Messages::FlowcellIO < Api::Base
     end
   end
 
-  module ControlLaneExtensions
+  module ControlLaneExtensions # rubocop:todo Style/Documentation
     def self.included(base)
       base.class_eval do
         def mx_library
@@ -161,7 +162,7 @@ class Api::Messages::FlowcellIO < Api::Base
     end
   end
 
-  module AliquotExtensions
+  module AliquotExtensions # rubocop:todo Style/Documentation
     def aliquot_type
       tags? ? 'library_indexed' : 'library'
     end
@@ -171,14 +172,14 @@ class Api::Messages::FlowcellIO < Api::Base
     end
   end
 
-  module ProjectExtensions
+  module ProjectExtensions # rubocop:todo Style/Documentation
     def project_cost_code_for_uwh
       project_cost_code.length > 20 ? 'Custom' : project_cost_code
     end
   end
 
-  module Extensions
-    module ClassMethods
+  module Extensions # rubocop:todo Style/Documentation
+    module ClassMethods # rubocop:todo Style/Documentation
     end
 
     def self.included(base)
@@ -193,7 +194,7 @@ class Api::Messages::FlowcellIO < Api::Base
           requests.first&.request_metadata&.read_length
         end
         # We alias is as the json generator assumes each method is called only once.
-        alias :reverse_read_length :read_length
+        alias_method :reverse_read_length, :read_length
       end
     end
   end

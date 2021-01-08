@@ -1,4 +1,4 @@
-class LabwhereReceptionsController < ApplicationController
+class LabwhereReceptionsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :login_required, except: %i[index create]
 
   def index

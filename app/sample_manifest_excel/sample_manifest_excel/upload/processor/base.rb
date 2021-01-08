@@ -119,7 +119,8 @@ module SampleManifestExcel
           duplicated_barcode_row = duplicate_barcodes
           return if duplicated_barcode_row.nil?
 
-          errors.add(:base, "Barcode duplicated at row: #{duplicated_barcode_row.number}. The barcode must be unique for each tube.")
+          errors.add(:base,
+                     "Barcode duplicated at row: #{duplicated_barcode_row.number}. The barcode must be unique for each tube.")
         end
 
         # Return the row of the first encountered barcode mismatch

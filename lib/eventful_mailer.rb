@@ -1,4 +1,4 @@
-class EventfulMailer < ActionMailer::Base
+class EventfulMailer < ActionMailer::Base # rubocop:todo Style/Documentation
   def confirm_event(receiver, eventful, message, content, _milestone, sent_at = Time.zone.now)
     @eventful = eventful
     @message = message

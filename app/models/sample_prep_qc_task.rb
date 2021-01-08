@@ -1,4 +1,4 @@
-class SamplePrepQcTask < Task
+class SamplePrepQcTask < Task # rubocop:todo Style/Documentation
   def partial
     'sample_prep_qc_batches'
   end

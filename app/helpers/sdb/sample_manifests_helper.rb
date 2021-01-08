@@ -1,4 +1,4 @@
-module Sdb::SampleManifestsHelper
+module Sdb::SampleManifestsHelper # rubocop:todo Style/Documentation
   def count_labels
     {
       '1dtube' => 'Tubes required',

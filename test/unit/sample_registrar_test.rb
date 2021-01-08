@@ -267,7 +267,8 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         end
 
         should 'put sample 2 into asset group 2' do
-          assert_contains(AssetGroup.find_by(name: 'asset_group_2').assets, SampleTube.find_by(name: 'valid_sample_2').receptacle)
+          assert_contains(AssetGroup.find_by(name: 'asset_group_2').assets,
+                          SampleTube.find_by(name: 'valid_sample_2').receptacle)
         end
 
         should 'not have created sample 3' do

@@ -73,20 +73,24 @@ Then /^the samples table should look like:$/ do |table|
       assert_nil sample, "#{sanger_sample_id} exists but should not be created"
     else
       assert sample.present?, "#{sanger_sample_id} does not exist, yet should be present"
-      assert_equal(expected_data[:supplier_name], sample.sample_metadata.supplier_name, "Supplier sample name invalid for #{sanger_sample_id}")
+      assert_equal(expected_data[:supplier_name], sample.sample_metadata.supplier_name,
+                   "Supplier sample name invalid for #{sanger_sample_id}")
     end
 
     if expected_data[:sample_taxon_id].blank?
       assert_nil(sample&.sample_metadata&.sample_taxon_id, "Sample taxon ID not nil for #{sanger_sample_id}")
     else
-      assert_equal(expected_data[:sample_taxon_id].to_i, sample.sample_metadata.sample_taxon_id, "Sample taxon ID invalid for #{sanger_sample_id}")
+      assert_equal(expected_data[:sample_taxon_id].to_i, sample.sample_metadata.sample_taxon_id,
+                   "Sample taxon ID invalid for #{sanger_sample_id}")
     end
 
     expected_data.each do |k, v|
       next if v.blank?
-      next if %i[sanger_sample_id empty_supplier_sample_name sample_absent supplier_name sample_taxon_id].include?(:"#{k}")
+      next if %i[sanger_sample_id empty_supplier_sample_name sample_absent supplier_name
+                 sample_taxon_id].include?(:"#{k}")
 
-      assert_equal(v, sample.sample_metadata.send(k), "Sample #{k} does not match the expected value for #{sanger_sample_id}")
+      assert_equal(v, sample.sample_metadata.send(k),
+                   "Sample #{k} does not match the expected value for #{sanger_sample_id}")
     end
   end
 end
@@ -108,7 +112,9 @@ Then /^the sample reference genomes should be:$/ do |table|
 end
 
 Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
-  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map { |a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id] }
+  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map do |a|
+    [a.sample.sanger_sample_id, a.tag.map_id, a.library_id]
+  end
   table.hashes.each do |expected_data|
     lt = LibraryTube.find_from_barcode(expected_data[:tube_barcode])
     assert_equal 1, lt.aliquots.count, 'Wrong number of aliquots'

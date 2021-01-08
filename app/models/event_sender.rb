@@ -1,4 +1,4 @@
-class EventSender
+class EventSender # rubocop:todo Style/Documentation
   def self.send_fail_event(request, reason, comment, batch_id)
     send_state_event('fail', request, reason, comment, batch_id)
   end
@@ -8,7 +8,8 @@ class EventSender
   end
 
   def self.send_state_event(state, request, reason, comment, batch_id, user = nil)
-    hash = { eventful: request, family: state, content: reason, message: comment, identifier: batch_id, created_by: user }
+    hash = { eventful: request, family: state, content: reason, message: comment, identifier: batch_id,
+             created_by: user }
     create!(hash)
   end
 
@@ -18,7 +19,8 @@ class EventSender
   end
 
   def self.send_pick_event(well, purpose_name, message, options = nil)
-    hash = { eventful: well, family: PlatesHelper::event_family_for_pick(purpose_name), message: message, content: Date.today.to_s }
+    hash = { eventful: well, family: PlatesHelper.event_family_for_pick(purpose_name), message: message,
+             content: Date.today.to_s }
     create!(hash.merge(options || {}))
   end
 

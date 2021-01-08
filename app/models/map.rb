@@ -24,7 +24,7 @@ class Map < ApplicationRecord
 
     # Seems to expect row to be zero-indexed but column to be 1 indexed
     def self.location_from_row_and_column(row, column, _ = nil, __ = nil)
-      "#{(?A.getbyte(0) + row).chr}#{column}"
+      "#{('A'.getbyte(0) + row).chr}#{column}"
     end
 
     def self.description_to_horizontal_plate_position(well_description, plate_size)
@@ -117,7 +117,7 @@ class Map < ApplicationRecord
         return nil unless Map.valid_well_position?(well_position)
 
         divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
-        return nil if divisor.nil? or multiplier.nil?
+        return nil if divisor.nil? || multiplier.nil?
 
         column, row = (well_position - 1).divmod(divisor)
         return nil unless (0...multiplier).cover?(column)
@@ -129,7 +129,7 @@ class Map < ApplicationRecord
     end
   end
 
-  module Sequential
+  module Sequential # rubocop:todo Style/Documentation
     def self.location_from_row_and_column(row, column, width, size)
       digit_count = Math.log10(size + 1).ceil
       "S%0#{digit_count}d" % [(row) * width + column]
@@ -265,7 +265,7 @@ class Map < ApplicationRecord
         yield(position, position.column_order)
       end
     end
-    alias_method(:walk_plate_vertically, :walk_plate_in_column_major_order)
+    alias walk_plate_vertically walk_plate_in_column_major_order
 
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
     def walk_plate_in_row_major_order(size, asset_shape = nil)

@@ -1,4 +1,4 @@
-class QcableCreator < ApplicationRecord
+class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
 
   belongs_to :user

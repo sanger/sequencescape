@@ -1,4 +1,4 @@
-class ::Io::Endpoints::Uuids::Search
+class ::Io::Endpoints::Uuids::Search # rubocop:todo Style/Documentation
   def self.model_for_input
     ::Uuids::Search
   end

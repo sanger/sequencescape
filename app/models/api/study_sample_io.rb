@@ -1,8 +1,8 @@
 # Despite name controls rendering of warehouse messages for {StudySample}
 # Historically used to be v0.5 API
 class Api::StudySampleIO < Api::Base
-  module Extensions
-    module ClassMethods
+  module Extensions # rubocop:todo Style/Documentation
+    module ClassMethods # rubocop:todo Style/Documentation
       def render_class
         Api::StudySampleIO
       end
@@ -12,7 +12,10 @@ class Api::StudySampleIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, { study: :uuid_object }, { sample: :uuid_object }]) }
+        scope :including_associations_for_json, lambda {
+                                                  includes([:uuid_object, { study: :uuid_object },
+                                                            { sample: :uuid_object }])
+                                                }
       end
     end
   end

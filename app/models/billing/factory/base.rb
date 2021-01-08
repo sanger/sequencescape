@@ -1,6 +1,6 @@
 module Billing
   module Factory
-    class Base
+    class Base # rubocop:todo Style/Documentation
       include ActiveModel::Model
 
       NO_PROJECT_COST_CODE = 'S0755'.freeze

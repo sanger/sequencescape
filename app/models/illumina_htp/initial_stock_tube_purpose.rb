@@ -25,7 +25,8 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
 
         new_outer_state = %w[started passed qc_complete].include?(state) ? 'started' : state
         request.outer_request.customer_accepts_responsibility! if customer_accepts_responsibility
-        request.outer_request.transition_to(new_outer_state)   if valid_transition?(request.outer_request, new_outer_state)
+        request.outer_request.transition_to(new_outer_state)   if valid_transition?(request.outer_request,
+                                                                                    new_outer_state)
       end
     end
   end
@@ -56,7 +57,9 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
     # Check if there are any requests we haven't found, so we know there are still some in-progress tubes.
     pending_requests = (sibling_requests - found_requests).present?
 
-    tube_array = sibling_tubes.map { |s| { name: s.name, uuid: s.uuid, ean13_barcode: s.ean13_barcode, state: s.state } }
+    tube_array = sibling_tubes.map do |s|
+      { name: s.name, uuid: s.uuid, ean13_barcode: s.ean13_barcode, state: s.state }
+    end
     tube_array << :no_tube if pending_requests
     tube_array
   end

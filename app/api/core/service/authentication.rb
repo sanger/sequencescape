@@ -1,5 +1,5 @@
-module Core::Service::Authentication
-  class UnauthenticatedError < Core::Service::Error
+module Core::Service::Authentication # rubocop:todo Style/Documentation
+  class UnauthenticatedError < Core::Service::Error # rubocop:todo Style/Documentation
     def self.no_cookie!
       raise self, 'no authentication provided'
     end
@@ -13,7 +13,7 @@ module Core::Service::Authentication
     end
   end
 
-  module Helpers
+  module Helpers # rubocop:todo Style/Documentation
     def user
       @user
     end

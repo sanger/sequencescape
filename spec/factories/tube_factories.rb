@@ -46,7 +46,8 @@ FactoryBot.define do
     after(:create) do |sample_tube, evaluator|
       next unless sample_tube.aliquots.empty?
 
-      sample_tube.aliquots = create_list(:untagged_aliquot, 1, sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study, project: evaluator.project)
+      sample_tube.aliquots = create_list(:untagged_aliquot, 1, sample: evaluator.sample, receptacle: sample_tube,
+                                                               study: evaluator.study, project: evaluator.project)
     end
 
     factory :sample_tube_with_sanger_sample_id do
@@ -77,7 +78,10 @@ FactoryBot.define do
     name { generate :asset_name }
     association(:purpose, factory: :mx_tube_purpose)
     after(:build) do |tube, evaluator|
-      tube.aliquots = build_list(:library_aliquot, evaluator.sample_count, study: evaluator.study) unless evaluator.sample_count == 0
+      unless evaluator.sample_count.zero?
+        tube.aliquots = build_list(:library_aliquot, evaluator.sample_count,
+                                   study: evaluator.study)
+      end
     end
   end
 
@@ -127,7 +131,8 @@ FactoryBot.define do
 
     factory(:library_tube_with_barcode) do
       after(:build) do |library_tube|
-        library_tube.aliquots.build(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard', library: library_tube)
+        library_tube.aliquots.build(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard',
+                                    library: library_tube)
       end
     end
   end
@@ -140,7 +145,8 @@ FactoryBot.define do
     end
 
     after(:build) do |library_tube, evaluator|
-      library_tube.aliquots << build(:tagged_aliquot, tag: evaluator.tag, receptacle: library_tube, sample: evaluator.sample, library: library_tube)
+      library_tube.aliquots << build(:tagged_aliquot, tag: evaluator.tag, receptacle: library_tube,
+                                                      sample: evaluator.sample, library: library_tube)
     end
   end
 

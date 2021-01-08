@@ -1,4 +1,4 @@
-module Submission::RequestOptionsBehaviour
+module Submission::RequestOptionsBehaviour # rubocop:todo Style/Documentation
   # Ensures the hash gets loaded with indifferent access.
   # Note: We can't just specify the class, as otherwise legacy
   # hashes throw an exception

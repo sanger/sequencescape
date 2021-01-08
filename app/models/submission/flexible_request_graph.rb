@@ -9,11 +9,11 @@ module Submission::FlexibleRequestGraph
 
   class RequestChainError < RuntimeError; end
 
-  class RequestChain
+  class RequestChain # rubocop:todo Style/Documentation
     attr_reader :order, :source_assets_qc_metrics, :preplexed, :built, :multiplexed
-    alias_method :built?, :built
-    alias_method :multiplexed?, :multiplexed
-    alias_method :preplexed?, :preplexed
+    alias built? built
+    alias multiplexed? multiplexed
+    alias preplexed? preplexed
 
     delegate :product, to: :order
 
@@ -102,7 +102,8 @@ module Submission::FlexibleRequestGraph
             request_type,
             asset: source_asset, target_asset: target_asset
           ).tap do |request|
-            AssetLink.create_edge(source_asset.labware, target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
+            AssetLink.create_edge(source_asset.labware,
+                                  target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
 
             request.qc_metrics = qc_metrics.compact.uniq
             request.update_responsibilities!
@@ -149,7 +150,7 @@ module Submission::FlexibleRequestGraph
     end
   end
 
-  class MultiplexedLink
+  class MultiplexedLink # rubocop:todo Style/Documentation
     include ChainLink
 
     def initialize(request_type, multiplier, assets, chain)
@@ -193,7 +194,7 @@ module Submission::FlexibleRequestGraph
     end
   end
 
-  class UnplexedLink
+  class UnplexedLink # rubocop:todo Style/Documentation
     include ChainLink
 
     def initialize(request_type, multiplier, assets, chain)
@@ -218,7 +219,7 @@ module Submission::FlexibleRequestGraph
     end
   end
 
-  module OrderMethods
+  module OrderMethods # rubocop:todo Style/Documentation
     def build_request_graph!(multiplexing_assets = nil)
       ActiveRecord::Base.transaction do
         chain = RequestChain.new(self, assets, multiplexing_assets)

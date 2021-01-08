@@ -4,7 +4,7 @@ require 'test_helper'
 require 'timecop'
 
 class QcReportPresenterTest < ActiveSupport::TestCase
-  EXPECTED_CSV = %Q{Sequencescape QC Report,1.0.0
+  EXPECTED_CSV = %{Sequencescape QC Report,1.0.0
 This section is for information only and cannot be changed
 Please place a Y in the proceed column for any samples you wish to proceed; use a N for samples you don't want to proceed.
 Study,Example study
@@ -31,7 +31,8 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
       end
       @asset_ids = []
       2.times do |i|
-        m = create :qc_metric, qc_report: @report, qc_decision: STATE_ARRAY[i], metrics: { total_micrograms: 10, comment: 'X', sanger_sample_id: 'EG' }
+        m = create :qc_metric, qc_report: @report, qc_decision: STATE_ARRAY[i], metrics: { total_micrograms: 10,
+                                                                                           comment: 'X', sanger_sample_id: 'EG' }
         @asset_ids << m.asset_id
       end
     end

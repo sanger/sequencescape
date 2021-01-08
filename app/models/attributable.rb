@@ -134,7 +134,9 @@ module Attributable
     #
     # @return [Attributable::Attribute] The matching attribute
     def attribute_details_for(attribute_name)
-      attribute_details.detect { |d| d.name.to_sym == attribute_name.to_sym } || raise(StandardError, "Unknown attribute #{attribute_name}")
+      attribute_details.detect do |d|
+        d.name.to_sym == attribute_name.to_sym
+      end || raise(StandardError, "Unknown attribute #{attribute_name}")
     end
   end
 end

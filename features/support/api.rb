@@ -37,7 +37,7 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
   end
 end
 
-module ::Core::Endpoint::BasicHandler::EndpointLookup
+module ::Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Documentation
   %i[object class].each do |name|
     line = __LINE__ + 1
     module_eval("

@@ -1,4 +1,4 @@
-module Submission::ProjectValidation
+module Submission::ProjectValidation # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       # We probably want to move this validation
@@ -9,7 +9,10 @@ module Submission::ProjectValidation
       end
 
       validates_each(:project, if: :validating?) do |record, _attr, project|
-        record.errors.add(:base, "Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}") unless project.submittable?
+        unless project.submittable?
+          record.errors.add(:base,
+                            "Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}")
+        end
       end
 
       before_create :confirm_validity!
@@ -32,7 +35,7 @@ module Submission::ProjectValidation
   private :check_project_details!
 
   def multiplier_for(request_type)
-    return 1 if request_options.blank? or not request_options.key?(:multiplier)
+    return 1 if request_options.blank? || (not request_options.key?(:multiplier))
 
     request_options[:multiplier][request_type.id.to_i] || 1
   end
