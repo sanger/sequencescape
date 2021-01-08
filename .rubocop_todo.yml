@@ -873,6 +873,7 @@ RSpec/FilePath:
     - 'spec/requests/api/v2/qc_assays_spec.rb'
     - 'spec/requests/api/v2/qc_results_spec.rb'
     - 'spec/resources/api/v2/project_resource_spec.rb'
+    - 'spec/sample_manifest_excel/upload/upload_spec.rb'
     - 'spec/sequencescape_excel/configuration_spec.rb'
     - 'spec/sequencescape_excel/formula_spec.rb'
     - 'spec/sequencescape_excel/manifest_type_list_spec.rb'
