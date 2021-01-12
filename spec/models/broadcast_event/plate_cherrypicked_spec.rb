@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event: true, heron_events: true do
@@ -92,7 +94,7 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
 
     context 'with a created instance' do
       before do
-        instance.save
+        instance.save!
       end
 
       describe '#to_json' do
