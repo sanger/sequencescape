@@ -88,7 +88,7 @@ RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
     expect(described_class.new).not_to be_valid
   end
 
-  context 'ExampleEvent' do
+  describe 'ExampleEvent' do
     it 'is instantiated' do
       expect(ExampleEvent.new).to be_present
     end

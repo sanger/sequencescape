@@ -1,5 +1,4 @@
 require 'rails_helper'
-# require 'broadcast_event/helpers/external_subjects'
 
 RSpec.describe BroadcastEvent::Helpers::ExternalSubjects, heron_events: true do
   let(:testing_event_class) do
