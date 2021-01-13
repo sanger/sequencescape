@@ -209,4 +209,4 @@ jobs:
       uses: paambaati/codeclimate-action@v2.7.5
       with:
         coverageLocations: |
-          ${{github.workspace}}/tmp/codeclimate-*
+          ${{github.workspace}}/tmp/codeclimate-*:simplecov
