@@ -209,9 +209,4 @@ jobs:
       uses: paambaati/codeclimate-action@v2.7.5
       with:
         coverageLocations: |
-          tmp/codeclimate-rake_tests-
-          tmp/codeclimate-rspec_tests-0
-          tmp/codeclimate-rspec_tests-1
-          tmp/codeclimate-rspec_tests-2
-          tmp/codeclimate-cucumber_tests-0
-          tmp/codeclimate-cucumber_tests-1
+          ${{github.workspace}}/tmp/codeclimate-*
