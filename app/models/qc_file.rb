@@ -1,8 +1,8 @@
-class QcFile < ApplicationRecord
+class QcFile < ApplicationRecord # rubocop:todo Style/Documentation
   extend DbFile::Uploader
   include Uuid::Uuidable
 
-  module Associations
+  module Associations # rubocop:todo Style/Documentation
     # Adds accessors for named fields and attaches documents to them
 
     def has_qc_files

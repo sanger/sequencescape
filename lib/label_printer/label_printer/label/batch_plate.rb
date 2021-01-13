@@ -4,7 +4,7 @@ require_relative '../batch_plates'
 
 module LabelPrinter
   module Label
-    class BatchPlate < BasePlate
+    class BatchPlate < BasePlate # rubocop:todo Style/Documentation
       include Label::BatchPlates
       attr_reader :count, :printable, :batch
 

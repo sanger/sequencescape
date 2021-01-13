@@ -1,5 +1,5 @@
 require 'eventful_mailer'
-class EventFactory
+class EventFactory # rubocop:todo Style/Documentation
   #################################
   # project related notifications #
   #################################
@@ -55,7 +55,8 @@ class EventFactory
       end
     end
 
-    EventfulMailer.confirm_event(recipients_email, event.eventful, event.message, event.content, 'No Milestone').deliver_now
+    EventfulMailer.confirm_event(recipients_email, event.eventful, event.message, event.content,
+                                 'No Milestone').deliver_now
   end
 
   def self.project_refund_request(project, user, reference)
@@ -97,7 +98,8 @@ class EventFactory
       recipients << project.manager.email if project.manager
     end
 
-    EventfulMailer.confirm_event(recipients.reject(&:blank?), study_event.eventful, study_event.message, study_event.content, 'No Milestone').deliver_now
+    EventfulMailer.confirm_event(recipients.reject(&:blank?), study_event.eventful, study_event.message,
+                                 study_event.content, 'No Milestone').deliver_now
   end
 
   #################################
@@ -122,6 +124,7 @@ class EventFactory
       recipients << project.manager.email if project && project.manager
     end
 
-    EventfulMailer.confirm_event(recipients.reject(&:blank?), request_event.eventful, request_event.message, request_event.content, 'No Milestone').deliver_now
+    EventfulMailer.confirm_event(recipients.reject(&:blank?), request_event.eventful, request_event.message,
+                                 request_event.content, 'No Milestone').deliver_now
   end
 end

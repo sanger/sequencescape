@@ -1,4 +1,4 @@
-class PacBio::Worksheet
+class PacBio::Worksheet # rubocop:todo Style/Documentation
   def initialize
   end
 
@@ -22,7 +22,8 @@ class PacBio::Worksheet
   end
 
   def column_headers
-    ['Well', 'Name', 'Required size', 'Complete?', 'Repaired?', 'Adapter ligated?', 'Clean up complete?', 'Exonnuclease cleanup', 'ng/ul', 'Fragment size', 'Volume']
+    ['Well', 'Name', 'Required size', 'Complete?', 'Repaired?', 'Adapter ligated?', 'Clean up complete?',
+     'Exonnuclease cleanup', 'ng/ul', 'Fragment size', 'Volume']
   end
 
   def row(request)

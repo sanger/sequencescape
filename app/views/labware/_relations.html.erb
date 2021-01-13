@@ -1,7 +1,6 @@
 <section id="relations-table-container" class='info-panel'>
   <header>
     <a href='#relations-table-collapser' role="button" data-toggle='collapse'>
-    <% t = Time.now; p 'START' %>
     <h3>Relations
       <%= counter_badge asset.parents.size, 'parent' %>
       <%= counter_badge asset.children.size, 'child' %>
@@ -47,5 +46,4 @@
       </tbody>
     </table>
   </div>
-  <% p "END #{Time.now-t}s" %>
 </section>

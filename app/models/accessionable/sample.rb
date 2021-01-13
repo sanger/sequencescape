@@ -1,8 +1,9 @@
 # Handles the submission of {Sample} information to the ENA or EGA
 # It should have a 1 to 1 mapping with Sequencescape {Sample samples}.
 module Accessionable
-  class Sample < Base
-    ARRAY_EXPRESS_FIELDS = %w[genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment].freeze
+  class Sample < Base # rubocop:todo Style/Documentation
+    ARRAY_EXPRESS_FIELDS = %w[genotype phenotype strain_or_line developmental_stage sex cell_type disease_state
+                              compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment].freeze
 
     attr_reader :common_name, :taxon_id, :links, :tags
 
@@ -64,24 +65,24 @@ module Accessionable
     def xml
       xml = Builder::XmlMarkup.new
       xml.instruct!
-      xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-        xml.SAMPLE(sample_element_attributes) {
+      xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') do
+        xml.SAMPLE(sample_element_attributes) do
           xml.TITLE title unless title.nil?
-          xml.SAMPLE_NAME {
+          xml.SAMPLE_NAME do
             xml.COMMON_NAME  common_name
             xml.TAXON_ID     taxon_id
-          }
-          xml.SAMPLE_ATTRIBUTES {
+          end
+          xml.SAMPLE_ATTRIBUTES do
             tags.each do |tag|
-              xml.SAMPLE_ATTRIBUTE {
+              xml.SAMPLE_ATTRIBUTE do
                 tag.build(xml)
-              }
+              end
             end
-          } if tags.present?
+          end if tags.present?
 
           xml.SAMPLE_LINKS {} if links.present?
-        }
-      }
+        end
+      end
       xml.target!
     end
 
@@ -103,14 +104,14 @@ module Accessionable
 
   private
 
-  class ArrayExpressTag < Base::Tag
+  class ArrayExpressTag < Base::Tag # rubocop:todo Style/Documentation
     def label
       default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
       I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)
     end
   end
 
-  class EgaTag < Base::Tag
+  class EgaTag < Base::Tag # rubocop:todo Style/Documentation
     def label
       default_tag = "EGA-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
       I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)

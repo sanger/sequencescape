@@ -38,7 +38,7 @@ class SampleManifest < ApplicationRecord
   # This limit sets a very comfortable safety margin.
   SAMPLES_PER_EVENT = 3000
 
-  module Associations
+  module Associations # rubocop:todo Style/Documentation
     def self.included(base)
       base.has_many(:sample_manifests)
     end
@@ -104,7 +104,9 @@ class SampleManifest < ApplicationRecord
         removed_errors += 1
       end
 
-      full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown." if removed_errors.positive?
+      if removed_errors.positive?
+        full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown."
+      end
 
       self.last_errors = full_last_errors
 
@@ -163,7 +165,8 @@ class SampleManifest < ApplicationRecord
     # We chunk samples into groups of 3000 to avoid issues with the column size in broadcast_events.properties
     # In practice we have 11 characters per sample with current id lengths. This allows for up to 21 characters
     updated_samples_ids.each_slice(SAMPLES_PER_EVENT) do |chunked_sample_ids|
-      BroadcastEvent::SampleManifestUpdated.create!(seed: self, user: user_updating_manifest, properties: { updated_samples_ids: chunked_sample_ids })
+      BroadcastEvent::SampleManifestUpdated.create!(seed: self, user: user_updating_manifest,
+                                                    properties: { updated_samples_ids: chunked_sample_ids })
     end
   end
 

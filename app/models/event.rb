@@ -1,4 +1,4 @@
-class Event < ApplicationRecord
+class Event < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
 
   self.per_page = 500

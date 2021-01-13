@@ -1,14 +1,14 @@
-class Plate::Creator < ApplicationRecord
+class Plate::Creator < ApplicationRecord # rubocop:todo Style/Documentation
   PlateCreationError = Class.new(StandardError)
 
-  class PurposeRelationship < ApplicationRecord
+  class PurposeRelationship < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('plate_creator_purposes')
 
     belongs_to :plate_purpose
     belongs_to :plate_creator, class_name: 'Plate::Creator'
   end
 
-  class ParentPurposeRelationship < ApplicationRecord
+  class ParentPurposeRelationship < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('plate_creator_parent_purposes')
 
     belongs_to :plate_purpose, class_name: 'Purpose'

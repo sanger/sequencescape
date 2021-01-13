@@ -1,4 +1,4 @@
-class AssetsController < ApplicationController
+class AssetsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -19,7 +19,9 @@ class AssetsController < ApplicationController
         format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
-        format.xml { render xml: [{ 'relations' => { 'parents' => @asset.parents, 'children' => @asset.children } }].to_xml }
+        format.xml do
+          render xml: [{ 'relations' => { 'parents' => @asset.parents, 'children' => @asset.children } }].to_xml
+        end
       end
     end
   end
@@ -76,13 +78,6 @@ class AssetsController < ApplicationController
         format.xml  { render xml: @asset.errors, status: :unprocessable_entity }
       end
     end
-  end
-
-  private def asset_params
-    permitted = %i[volume concentration]
-    permitted << :name if current_user.administrator?
-    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
-    params.require(:asset).permit(permitted)
   end
 
   def summary
@@ -153,13 +148,21 @@ class AssetsController < ApplicationController
 
   private
 
+  def asset_params
+    permitted = %i[volume concentration]
+    permitted << :name if current_user.administrator?
+    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
+    params.require(:asset).permit(permitted)
+  end
+
   # Receptacle, as we're about to request some stuff
   def prepare_asset
     @asset = Receptacle.find(params[:id])
   end
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
+    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id),
+                                   request_type_id: @request_type.try(:id))
   end
 
   def discover_asset

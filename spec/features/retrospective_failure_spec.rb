@@ -45,7 +45,7 @@ describe 'Retrospective failure' do
     end
 
     before do
-      # Note: These transfer requests automatically handle the transfer of our aliquot.
+      # NOTE: These transfer requests automatically handle the transfer of our aliquot.
       create :transfer_request, asset: target_well, target_asset: child_well_1
       # Apply tags to make sure that gets handled correctly
       child_well_1.aliquots.first.tap do |aliquot|
@@ -83,7 +83,7 @@ describe 'Retrospective failure' do
     end
 
     before do
-      # Note: These transfer requests automatically handle the transfer of our aliquot.
+      # NOTE: These transfer requests automatically handle the transfer of our aliquot.
       create :transfer_request, asset: target_well, target_asset: child_well_1
       create :transfer_request, asset: target_well, target_asset: qc_tube
       create :transfer_request, asset: qc_tube, target_asset: lane

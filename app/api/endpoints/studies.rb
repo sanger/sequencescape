@@ -1,4 +1,4 @@
-class Endpoints::Studies < Core::Endpoint::Base
+class Endpoints::Studies < Core::Endpoint::Base # rubocop:todo Style/Documentation
   model do
   end
 

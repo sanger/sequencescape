@@ -61,7 +61,9 @@ class SampleRegistrar < ApplicationRecord
     # Note that we're explicitly ignoring the ignored records here!
 
     helper     = AssetGroupHelper.new
-    registrars = registration_attributes.map { |attributes| new(attributes.merge(asset_group_helper: helper)) }.reject(&:ignore?)
+    registrars = registration_attributes.map do |attributes|
+      new(attributes.merge(asset_group_helper: helper))
+    end.reject(&:ignore?)
     raise NoSamplesError, registrars if registrars.empty?
 
     begin
@@ -114,7 +116,10 @@ class SampleRegistrar < ApplicationRecord
   attr_accessor :asset_group_name
 
   validates_each(:asset_group_name, if: :new_record?) do |record, _attr, value|
-    record.errors.add(:asset_group, "#{value} already exists, please enter another name") if record.asset_group_helper.existing_asset_group?(value)
+    if record.asset_group_helper.existing_asset_group?(value)
+      record.errors.add(:asset_group,
+                        "#{value} already exists, please enter another name")
+    end
   end
 
   before_create do |record|
@@ -158,16 +163,21 @@ class SampleRegistrar < ApplicationRecord
 
   # Columns that are required for the spreadsheet to be considered valid.
   REQUIRED_COLUMNS = ['Asset group', 'Sample name'].freeze
-  REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map { |w| "'#{w}'" }.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
+  REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map do |w|
+    "'#{w}'"
+  end.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
 
   def self.from_spreadsheet(file, study, user)
-    (workbook = Spreadsheet.open(file.path)) || raise(SpreadsheetError, 'Problems processing your file. Only Excel spreadsheets accepted')
+    (workbook = Spreadsheet.open(file.path)) || raise(SpreadsheetError,
+                                                      'Problems processing your file. Only Excel spreadsheets accepted')
     worksheet = workbook.worksheet(0)
 
     # Assume there is always 1 header row
     num_samples = worksheet.count - 1
 
-    raise TooManySamplesError, "You can only load #{configatron.uploaded_spreadsheet.max_number_of_samples} samples at a time. Please split the file into smaller groups of samples." if num_samples > configatron.uploaded_spreadsheet.max_number_of_samples
+    if num_samples > configatron.uploaded_spreadsheet.max_number_of_samples
+      raise TooManySamplesError, "You can only load #{configatron.uploaded_spreadsheet.max_number_of_samples} samples at a time. Please split the file into smaller groups of samples."
+    end
 
     # Map the header from the spreadsheet (the first row) to the attributes of the sample registrar.  Each column
     # has the same text as the label for the attribute, once it has been HTML unescaped.
@@ -178,7 +188,9 @@ class SampleRegistrar < ApplicationRecord
     # being the preferred decoding.
     definitions = Sample::Metadata.attribute_details.inject({}) do |hash, attribute|
       label   = attribute.to_field_info.display_name
-      handler = ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][attribute.name] = value }
+      handler = lambda { |attributes, value|
+        attributes[:sample_attributes][:sample_metadata_attributes][attribute.name] = value
+      }
       hash.tap do
         hash[CGI.unescapeHTML(label)]        = handler   # For the old spreadsheets
         hash[REXML::Text.unnormalize(label)] = handler   # For the new spreadsheets
@@ -187,7 +199,9 @@ class SampleRegistrar < ApplicationRecord
       'Asset group' => ->(attributes, value) { attributes[:asset_group_name] = value },
       'Sample name' => ->(attributes, value) { attributes[:sample_attributes][:name] = value },
       '2D barcode' => ->(attributes, value) { attributes[:sample_tube_attributes][:two_dimensional_barcode] = value },
-      'Reference Genome' => ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][:reference_genome_id] = ReferenceGenome.find_by(name: value).try(:id) || 0 }
+      'Reference Genome' => lambda { |attributes, value|
+                              attributes[:sample_attributes][:sample_metadata_attributes][:reference_genome_id] = ReferenceGenome.find_by(name: value).try(:id) || 0
+                            }
     )
 
     # Map the headers to their attribute handlers.  Ensure that the required headers are present.
@@ -207,7 +221,9 @@ class SampleRegistrar < ApplicationRecord
       column_name = worksheet.cell(0, column_index).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
     end
 
-    raise SpreadsheetError, "Please check that your spreadsheet is in the latest format: one of #{REQUIRED_COLUMNS_SENTENCE} is missing or in the wrong column." if (headers & REQUIRED_COLUMNS) != REQUIRED_COLUMNS
+    if (headers & REQUIRED_COLUMNS) != REQUIRED_COLUMNS
+      raise SpreadsheetError, "Please check that your spreadsheet is in the latest format: one of #{REQUIRED_COLUMNS_SENTENCE} is missing or in the wrong column."
+    end
 
     # Build a SampleRegistrar instance for each row of the spreadsheet, mapping the cells of the
     # spreadsheet to their appropriate attribute.

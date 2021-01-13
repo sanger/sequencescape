@@ -9,20 +9,18 @@
   <%= link_to "View status", study_path(@study) %>
 </div>
 
-<div class="page-header"><h1><%= @study.name %> : Contacts</h1></div>
-<div class='subtitle'>
-Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+<%= page_title @study.name, 'Contacts' %>
+<div class='lead'>
+Study <%= @study.id %> &middot; Created on <%= time_tag(@study.created_at) %> &middot; <%= @study.state.capitalize %>
 </div>
+
 <div id="role_list">
   <!-- renders all roles on this study -->
   <%= render partial: "roles" -%>
 </div>
 
 <% if current_user.administrator? -%>
-  <hr>
-  <!-- renders all available roles with all users form -->
-  <div style="text-align:center">
-    <h3 id="add_new_role">Assign roles to users</h3>
+  <%= panel :add_new_role, title: 'Assign roles to users' do %>
     <%= render partial: "role" -%>
-  </div>
+  <% end %>
 <% end -%>

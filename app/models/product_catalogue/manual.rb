@@ -1,4 +1,4 @@
-class ProductCatalogue::Manual
+class ProductCatalogue::Manual # rubocop:todo Style/Documentation
   attr_reader :product
 
   def initialize(catalogue, submission_attributes)

@@ -1,4 +1,4 @@
-class RequestFactory
+class RequestFactory # rubocop:todo Style/Documentation
   def self.copy_request(request)
     ActiveRecord::Base.transaction do
       request.class.create!(request.attributes.except('id', 'created_at', 'updated_at')) do |request_copy|

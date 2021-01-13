@@ -32,7 +32,8 @@ class TagSubstitution::Substitution
   #   aliquot: Provide an aliquot to act as a template. Useful for pre-populating forms
   # @param tag_substituter [TagSubstitution] The parent tag substituter
   def initialize(attributes, tag_substituter = nil)
-    super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id, :aliquot))
+    super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id,
+                              :substitute_tag2_id, :aliquot))
     @other_attributes = attributes
     @tag_substituter = tag_substituter
   end
@@ -109,8 +110,12 @@ class TagSubstitution::Substitution
     return '' unless updated?
 
     comment = +"Sample #{sample_id}:"
-    comment << " Tag changed from #{oligo_index[original_tag_id]} to #{oligo_index[substitute_tag_id]};" if substitute_tag?
-    comment << " Tag2 changed from #{oligo_index[original_tag2_id]} to #{oligo_index[substitute_tag2_id]};" if substitute_tag2?
+    if substitute_tag?
+      comment << " Tag changed from #{oligo_index[original_tag_id]} to #{oligo_index[substitute_tag_id]};"
+    end
+    if substitute_tag2?
+      comment << " Tag2 changed from #{oligo_index[original_tag2_id]} to #{oligo_index[substitute_tag2_id]};"
+    end
     @other_attributes.each do |k, v|
       comment << " #{k} changed to #{v};"
     end

@@ -1,4 +1,4 @@
-module Core::Io::Base::EagerLoadingBehaviour
+module Core::Io::Base::EagerLoadingBehaviour # rubocop:todo Style/Documentation
   def set_eager_loading
     singleton_class.class_eval do
       define_method(:eager_loading_for) do |loaded_class|

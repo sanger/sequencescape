@@ -58,7 +58,9 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
   context 'a sequencing work_order' do
     let(:number_of_requests) { 1 }
     let(:requests) { [create(:sequencing_request)] }
-    let(:expected_metadata) { { 'fragment_size_required_to' => '21', 'fragment_size_required_from' => '1', 'read_length' => 76 } }
+    let(:expected_metadata) do
+      { 'fragment_size_required_to' => '21', 'fragment_size_required_from' => '1', 'read_length' => 76 }
+    end
 
     it_behaves_like 'a work order resource'
   end

@@ -1,5 +1,5 @@
-class SpecificTubeCreation < TubeCreation
-  class ChildPurpose < ApplicationRecord
+class SpecificTubeCreation < TubeCreation # rubocop:todo Style/Documentation
+  class ChildPurpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = 'specific_tube_creation_purposes'
     belongs_to :specific_tube_creation
     belongs_to :tube_purpose, class_name: 'Purpose'

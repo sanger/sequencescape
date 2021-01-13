@@ -28,7 +28,7 @@ Then /^the sample "([^"]*)" should belong to the study named "([^"]*)" only once
 end
 
 Then /^(?:|I )should see one link with text "([^"]*)"$/ do |regexp|
-  step %Q{I should see 1 links with text "#{regexp}"}
+  step %{I should see 1 links with text "#{regexp}"}
 end
 
 Then /^(?:|I )should see (\d+) links with text "([^"]*)"$/ do |count, regexp|

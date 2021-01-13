@@ -53,7 +53,7 @@ class Transfer < ApplicationRecord
   private
 
   def create_transfer_requests
-    # Note: submission is optional. Unlike methods, blocks don't support default argument
+    # NOTE: submission is optional. Unlike methods, blocks don't support default argument
     # values, but any attributes not yielded will be nil. Apparently 1.9 is more consistent
     each_transfer do |source, destination, submission|
       TransferRequest.create!(

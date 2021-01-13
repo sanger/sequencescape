@@ -7,7 +7,9 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
 
   let(:folder)                  { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
   let(:yaml)                    { load_file(folder, 'columns') }
-  let(:conditional_formattings) { SequencescapeExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings')) }
+  let(:conditional_formattings) do
+    SequencescapeExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings'))
+  end
   let(:column_list)             { described_class.new(yaml, conditional_formattings) }
   let(:ranges)                  { build(:range_list, ranges_data: load_file(folder, 'ranges')) }
 
@@ -23,8 +25,10 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
   end
 
   it 'has some conditional formattings' do # rubocop:todo RSpec/AggregateExamples
-    expect(column_list.find_by(:name, :gender).conditional_formattings.count).to eq(yaml[:gender][:conditional_formattings].length)
-    expect(column_list.find_by(:name, :sibling).conditional_formattings.count).to eq(yaml[:sibling][:conditional_formattings].length)
+    expect(column_list.find_by(:name,
+                               :gender).conditional_formattings.count).to eq(yaml[:gender][:conditional_formattings].length)
+    expect(column_list.find_by(:name,
+                               :sibling).conditional_formattings.count).to eq(yaml[:sibling][:conditional_formattings].length)
   end
 
   it '#headings returns list of headings' do # rubocop:todo RSpec/AggregateExamples

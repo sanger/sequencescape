@@ -160,7 +160,7 @@ class EventFactoryTest < ActiveSupport::TestCase
         @user2 = create :user, login: 'west'
         @user2.roles << follower
         @study = create :study, user: @user2
-        @submission = FactoryHelp::submission project: @project, study: @study, asset_group_name: 'to prevent asset errors'
+        @submission = FactoryHelp.submission project: @project, study: @study, asset_group_name: 'to prevent asset errors'
         @samples = []
         @samples[0] = create :sample, name: 'NewSample-1'
         @samples[1] = create :sample, name: 'NewSample-2'
@@ -193,7 +193,7 @@ class EventFactoryTest < ActiveSupport::TestCase
         @user2 = create :user, login: 'west'
         @user2.roles << follower
         @study = create :study, user: @user2
-        @submission = FactoryHelp::submission(project: @project, study: @study, assets: [create(:sample_tube)])
+        @submission = FactoryHelp.submission(project: @project, study: @study, assets: [create(:sample_tube)])
         @request = create :request, study: @study, project: @project, submission: @submission
         @user3 = create :user, login: 'east'
         message = 'An error has occurred'

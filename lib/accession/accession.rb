@@ -1,4 +1,4 @@
-module Accession
+module Accession # rubocop:todo Style/Documentation
   # Handles assigning of accessioning number to a Sequenescape sample.
   # Before accessioning:
   #  check configuration settings, in particular:
@@ -21,11 +21,11 @@ module Accession
   # @see ftp://ftp.sra.ebi.ac.uk/meta/xsd/ Schema definitions
   module Helpers
     def load_file(folder, filename)
-      YAML::load_file(File.join(Rails.root, folder, "#{filename}.yml")).with_indifferent_access
+      YAML.load_file(File.join(Rails.root, folder, "#{filename}.yml")).with_indifferent_access
     end
   end
 
-  module Equality
+  module Equality # rubocop:todo Style/Documentation
     include Comparable
 
     def to_a

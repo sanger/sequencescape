@@ -29,39 +29,39 @@ class Accessionable::Submission < Accessionable::Base
       :broker_name => broker,
       :alias => self.alias,
       :submission_date => date
-    ) {
+    ) do
       xml.CONTACTS { contact.build(xml) }
-      xml.ACTIONS {
+      xml.ACTIONS do
         # You can only perform additions with protect or hold, or you can do a modification.  So separate the
         # accessionable instances into additions and modifications.
         additions, modifications = accessionables.partition { |accessionable| accessionable.accession_number.blank? }
 
         additions.each do |accessionable|
-          xml.ACTION {
+          xml.ACTION do
             xml.ADD(source: accessionable.file_name,  schema: accessionable.schema_type)
-          }
+          end
 
-          xml.ACTION {
+          xml.ACTION do
             xml.tag!(accessionable.protect?(@service) ? 'PROTECT' : 'HOLD')
-          }
+          end
         end
 
         modifications.each do |accessionable|
-          xml.ACTION {
+          xml.ACTION do
             xml.MODIFY(
               source: accessionable.file_name,
               schema: accessionable.schema_type
             )
-          }
+          end
 
           state_action(accessionable) do |action|
-            xml.ACTION {
+            xml.ACTION do
               xml.tag!(action)
-            }
+            end
           end
         end
-      }
-    }
+      end
+    end
     xml.target!
   end
 
@@ -91,7 +91,7 @@ class Accessionable::Submission < Accessionable::Base
 
   private
 
-  class Contact
+  class Contact # rubocop:todo Style/Documentation
     attr_reader :inform_on_error, :inform_on_status, :name
 
     def initialize(user)

@@ -82,7 +82,8 @@ module IlluminaC::PlatePurposes
 
   def self.create_qc_tubes
     ActiveRecord::Base.transaction do
-      qc_tube_purpose = purpose_for(self::QC_TUBE).create!(name: self::QC_TUBE, target_type: 'QcTube', barcode_printer_type: BarcodePrinterType1DTube.first)
+      qc_tube_purpose = purpose_for(self::QC_TUBE).create!(name: self::QC_TUBE, target_type: 'QcTube',
+                                                           barcode_printer_type: BarcodePrinterType1DTube.first)
       self::PLATE_PURPOSE_LEADING_TO_QC_TUBES.each do |name|
         plate_purpose = Purpose.find_by(name: name) or raise StandardError, "Cannot find purpose #{name.inspect}"
         plate_purpose.child_relationships.create!(child: qc_tube_purpose)

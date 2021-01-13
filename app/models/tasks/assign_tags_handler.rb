@@ -23,7 +23,8 @@ module Tasks::AssignTagsHandler
     @tag_group = TagGroup.find(params[:tag_group])
 
     ActiveRecord::Base.transaction do
-      multiplexed_library = Tube::Purpose.standard_mx_tube.create!(name: params[:mx_library_name], barcode: AssetBarcode.new_barcode)
+      multiplexed_library = Tube::Purpose.standard_mx_tube.create!(name: params[:mx_library_name],
+                                                                   barcode: AssetBarcode.new_barcode)
       @batch.requests.each do |request|
         tag_id = params[:tag][request.id.to_s] or next
         tag    = @tag_group.tags.find(tag_id)
@@ -35,7 +36,8 @@ module Tasks::AssignTagsHandler
           sequencing_request.update!(asset: multiplexed_library)
         end
 
-        TransferRequest.create!(asset: request.target_asset, target_asset: multiplexed_library.receptacle, state: 'passed')
+        TransferRequest.create!(asset: request.target_asset, target_asset: multiplexed_library.receptacle,
+                                state: 'passed')
       end
     end
 

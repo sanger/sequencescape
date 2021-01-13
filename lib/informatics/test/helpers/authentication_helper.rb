@@ -1,4 +1,4 @@
-module AuthenticatedTestHelper
+module AuthenticatedTestHelper # rubocop:todo Style/Documentation
   # Sets the current user in the session from the user fixtures.
   def login_as(user)
     @request.session[:user] = user ? users(user).id : nil
@@ -64,7 +64,7 @@ module AuthenticatedTestHelper
   end
 end
 
-class BaseLoginProxy
+class BaseLoginProxy # rubocop:todo Style/Documentation
   attr_reader :controller, :options
 
   def initialize(controller, login)
@@ -90,7 +90,7 @@ class BaseLoginProxy
   end
 end
 
-class HttpLoginProxy < BaseLoginProxy
+class HttpLoginProxy < BaseLoginProxy # rubocop:todo Style/Documentation
   protected
 
   def authenticate
@@ -102,7 +102,7 @@ class HttpLoginProxy < BaseLoginProxy
   end
 end
 
-class XmlLoginProxy < BaseLoginProxy
+class XmlLoginProxy < BaseLoginProxy # rubocop:todo Style/Documentation
   protected
 
   def authenticate

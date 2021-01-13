@@ -15,7 +15,6 @@ module Tasks::CherrypickHandler
       return
     end
 
-    plate_template = nil
     plate_template = PlateTemplate.find(params[:plate_template]['0'].to_i) if params[:plate_template].present?
     if plate_template.nil?
       flash[:error] = 'Please select a template'
@@ -123,7 +122,9 @@ module Tasks::CherrypickHandler
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
       # whole load of wells so that they can be retrieved quickly and easily.
       wells = Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).index_by(&:id)
-      request_and_well = Hash[@batch.requests.includes(:request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
+      request_and_well = Hash[@batch.requests.includes(:request_metadata).map do |r|
+                                [r.id.to_i, [r, wells[r.target_asset_id]]]
+                              end ]
       used_requests = []
       plates_and_wells = Hash.new { |h, k| h[k] = [] }
       plate_and_requests = Hash.new { |h, k| h[k] = [] }
@@ -131,7 +132,9 @@ module Tasks::CherrypickHandler
       # If we overflow the plate we create a new one, even if we subsequently clear the fields.
       plates_with_samples = plates.reject { |_pid, rows| rows.values.map(&:values).flatten.all?(&:empty?) }
 
-      raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.' if fluidigm_plate.present? && plates_with_samples.to_h.size > 1
+      if fluidigm_plate.present? && plates_with_samples.to_h.size > 1
+        raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
+      end
 
       plates_with_samples.each do |_id, plate_params|
         # The first time round this loop we'll either have a plate, from the partial_plate, or we'll
@@ -140,7 +143,8 @@ module Tasks::CherrypickHandler
         if plate.nil?
           barcode_number = PlateBarcode.create.barcode
           barcode = { prefix: plate_purpose.prefix, number: barcode_number }
-          plate   = plate_purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode_number}", size: size, sanger_barcode: barcode) do |new_plate|
+          plate   = plate_purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode_number}", size: size,
+                                                                sanger_barcode: barcode) do |new_plate|
             new_plate.fluidigm_barcode = fluidigm_plate if fluidigm_plate.present?
           end
         end
@@ -154,7 +158,9 @@ module Tasks::CherrypickHandler
           row_params.each do |col, request_id|
             next if request_id.blank?
 
-            request, well = request_and_well[request_id.gsub('well_', '').to_i] || raise(ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}")
+            request, well = request_and_well[request_id.gsub('well_',
+                                                             '').to_i] || raise(ActiveRecord::RecordNotFound,
+                                                                                "Cannot find request #{request_id.inspect}")
 
             # NOTE: Performance enhancement here
             # This collects the wells together for the plate they should be on, and modifies

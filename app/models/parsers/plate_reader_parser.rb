@@ -1,4 +1,4 @@
-class Parsers::PlateReaderParser
+class Parsers::PlateReaderParser # rubocop:todo Style/Documentation
   class InvalidFile < StandardError; end
 
   class_attribute :assay_type, :assay_version

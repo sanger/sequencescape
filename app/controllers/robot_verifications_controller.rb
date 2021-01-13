@@ -1,4 +1,4 @@
-class RobotVerificationsController < ApplicationController
+class RobotVerificationsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :find_barcodes, only: :submission
 
   # Step 1: Renders a form asking for user barcode, batch barcode, robot barcode and destination plate barcode

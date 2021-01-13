@@ -1,9 +1,9 @@
-module ApiTools
+module ApiTools # rubocop:todo Style/Documentation
   def self.included(base)
     base.extend(ClassMethods)
   end
 
-  module ClassMethods
+  module ClassMethods # rubocop:todo Style/Documentation
     def render_class
       @render_class ||= Api::Base.render_class_for_model(self)
     end

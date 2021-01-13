@@ -21,10 +21,12 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
     subject_record('plate', BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, '000002', uuids[1])
   end
   let(:sample1) do
-    subject_record('sample', BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 'ASDF001-000001_A01-AP-Positive', uuids[2])
+    subject_record('sample', BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 'ASDF001-000001_A01-AP-Positive',
+                   uuids[2])
   end
   let(:sample2) do
-    subject_record('sample', BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 'ASDF001-000001_B01-AP-Negative', uuids[3])
+    subject_record('sample', BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 'ASDF001-000001_B01-AP-Negative',
+                   uuids[3])
   end
   let(:robot) do
     subject_record('robot', BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, 'RB00001', uuids[4])

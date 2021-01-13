@@ -2,7 +2,7 @@
 # It provides various callbacks that can be hooked in to by the derived classes.
 require 'aasm'
 
-module Request::Statemachine
+module Request::Statemachine # rubocop:todo Style/Documentation
   extend ActiveSupport::Concern
   COMPLETED_STATE = %w[passed failed].freeze
   OPENED_STATE    = %w[pending blocked started].freeze
@@ -230,8 +230,12 @@ module Request::Statemachine
   # Determines the most likely event that should be fired when transitioning between the two states.  If there is
   # only one option then that is what is returned, otherwise an exception is raised.
   def suggested_transition_to(target)
-    valid_events = aasm.events(permitted: true).select { |e| !e.options[:manual_only?] && e.transitions_to_state?(target.to_sym) }
-    raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
+    valid_events = aasm.events(permitted: true).select do |e|
+      !e.options[:manual_only?] && e.transitions_to_state?(target.to_sym)
+    end
+    unless valid_events.size == 1
+      raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}"
+    end
 
     valid_events.first.name
   end

@@ -26,7 +26,9 @@ RSpec.describe Api::PlateIO, type: :model do
   it_behaves_like('an IO object')
 
   context 'with an infinium barcode' do
-    subject { create :plate, plate_purpose: purpose, barcode: barcode, prefix: prefix, infinium_barcode: 'WG1234567-DNA' }
+    subject do
+      create :plate, plate_purpose: purpose, barcode: barcode, prefix: prefix, infinium_barcode: 'WG1234567-DNA'
+    end
 
     let(:expected_json) do
       {

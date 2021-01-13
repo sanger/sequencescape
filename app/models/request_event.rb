@@ -1,4 +1,4 @@
-class RequestEvent < ApplicationRecord
+class RequestEvent < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :request, inverse_of: :request_events
 
   validates :request, :to_state, :current_from, :event_name, presence: true

@@ -83,24 +83,34 @@ module Aker
     def __parse_map_ss_columns_with_aker(token)
       return if token[:ss_model].nil?
 
-      config[:map_ss_columns_with_aker][token[:ss_model]] = {} if config[:map_ss_columns_with_aker][token[:ss_model]].nil?
-      config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]] = [] if config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].nil?
+      if config[:map_ss_columns_with_aker][token[:ss_model]].nil?
+        config[:map_ss_columns_with_aker][token[:ss_model]] = {}
+      end
+      if config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].nil?
+        config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]] = []
+      end
 
       attr_name = token[:aker_name]
 
-      config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].push(attr_name) unless config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].include?(attr_name)
+      unless config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].include?(attr_name)
+        config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].push(attr_name)
+      end
     end
 
     def __parse_updatable_attrs_from_aker_into_ss(token)
       return unless token[:aker_to_ss]
 
-      config[:updatable_attrs_from_aker_into_ss].push(token[:aker_name]) unless config[:updatable_attrs_from_aker_into_ss].include?(token[:aker_name])
+      unless config[:updatable_attrs_from_aker_into_ss].include?(token[:aker_name])
+        config[:updatable_attrs_from_aker_into_ss].push(token[:aker_name])
+      end
     end
 
     def __parse_updatable_columns_from_ss_into_aker(token)
       return unless token[:ss_to_aker]
 
-      config[:updatable_columns_from_ss_into_aker][token[:ss_model]] = [] if config[:updatable_columns_from_ss_into_aker][token[:ss_model]].nil?
+      if config[:updatable_columns_from_ss_into_aker][token[:ss_model]].nil?
+        config[:updatable_columns_from_ss_into_aker][token[:ss_model]] = []
+      end
       config[:updatable_columns_from_ss_into_aker][token[:ss_model]].push(token[:ss_name])
     end
   end

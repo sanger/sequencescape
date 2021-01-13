@@ -58,7 +58,10 @@ RSpec.describe Request do
     setup do
       @genotyping_request_type = create :request_type, name: 'genotyping'
       @cherrypick_request_type = create :request_type, name: 'cherrypick', target_asset_type: nil
-      @submission = FactoryHelp.submission(request_types: [@cherrypick_request_type, @genotyping_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
+      @submission = FactoryHelp.submission(
+        request_types: [@cherrypick_request_type,
+                        @genotyping_request_type].map(&:id), asset_group_name: 'to avoid asset errors'
+      )
 
       @genotype_pipeline = create :pipeline, name: 'genotyping pipeline', request_types: [@genotyping_request_type]
       @cherrypick_pipeline = create :pipeline, name: 'cherrypick pipeline', request_types: [@cherrypick_request_type], next_pipeline_id: @genotype_pipeline.id
@@ -99,8 +102,16 @@ RSpec.describe Request do
     let(:submission) { create :submission, orders: [order1, order2], state: 'pending' }
     let(:order1) { create(:linear_submission, request_types: order1_request_types, request_options: request_options) }
     let(:order2) { create(:linear_submission, request_types: order2_request_types, request_options: request_options) }
-    let(:order1_request1) { submission.requests.detect { |r| r.order == order1 && r.request_type_id == order1_request_types.first } }
-    let(:order2_request1) { submission.requests.detect { |r| r.order == order2 && r.request_type_id == order2_request_types.first } }
+    let(:order1_request1) do
+      submission.requests.detect do |r|
+        r.order == order1 && r.request_type_id == order1_request_types.first
+      end
+    end
+    let(:order2_request1) do
+      submission.requests.detect do |r|
+        r.order == order2 && r.request_type_id == order2_request_types.first
+      end
+    end
     let(:request_options) { {} }
 
     before do
@@ -133,7 +144,9 @@ RSpec.describe Request do
     end
 
     context 'for a multiplexed_submission' do
-      let(:order1_request_types) { [create(:request_type).id, create(:request_type, for_multiplexing: true).id, create(:request_type).id] }
+      let(:order1_request_types) do
+        [create(:request_type).id, create(:request_type, for_multiplexing: true).id, create(:request_type).id]
+      end
       let(:order2_request_types) { order1_request_types }
 
       it 'returns a merging request graph for each request post multiplexing' do
@@ -159,7 +172,9 @@ RSpec.describe Request do
 
     context 'for a multiplexed_submission with a multiplier' do
       let(:post_mx_request_type) { create(:request_type).id }
-      let(:order1_request_types) { [create(:request_type).id, create(:request_type, for_multiplexing: true).id, post_mx_request_type] }
+      let(:order1_request_types) do
+        [create(:request_type).id, create(:request_type, for_multiplexing: true).id, post_mx_request_type]
+      end
       let(:order2_request_types) { order1_request_types }
 
       let(:request_options) { { multiplier: { post_mx_request_type.to_s => 3 } } }
@@ -224,8 +239,10 @@ RSpec.describe Request do
     it 'return same properties' do
       @request.reload
       @new_request.reload
-      original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
-      copied_attributes   = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
+      original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil,
+                                                                       'updated_at' => nil)
+      copied_attributes = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil,
+                                                                         'updated_at' => nil)
       assert_equal original_attributes, copied_attributes
     end
 
@@ -439,7 +456,9 @@ RSpec.describe Request do
 
     it 'not update once a request is failed' do
       @request.fail!
-      expect { @request.request_metadata.update!(customer_accepts_responsibility: true) }.to raise_error ActiveRecord::RecordInvalid
+      expect do
+        @request.request_metadata.update!(customer_accepts_responsibility: true)
+      end.to raise_error ActiveRecord::RecordInvalid
     end
   end
 

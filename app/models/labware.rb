@@ -73,7 +73,10 @@ class Labware < Asset
       .or(with_safe_id(query))
       .includes(:barcodes)
   }
-  scope :for_lab_searches_display, -> { includes(:barcodes, requests_as_source: %i[pipeline batch]).order('requests.pipeline_id ASC') }
+  scope :for_lab_searches_display, lambda {
+                                     includes(:barcodes,
+                                              requests_as_source: %i[pipeline batch]).order('requests.pipeline_id ASC')
+                                   }
   scope :named, ->(name) { where(name: name) }
   scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
@@ -146,7 +149,9 @@ class Labware < Asset
     def labwhere_locations(labware_barcodes)
       info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
 
-      raise LabWhereClient::LabwhereException, 'Labwhere service did not return information' if info_from_labwhere.blank?
+      if info_from_labwhere.blank?
+        raise LabWhereClient::LabwhereException, 'Labwhere service did not return information'
+      end
 
       barcodes_to_parentage = info_from_labwhere.labwares.each_with_object({}) do |info, obj|
         obj[info.barcode] = info.location.location_info
@@ -207,6 +212,6 @@ class Labware < Asset
     rescue LabWhereClient::LabwhereException => e
       return "Not found (#{e.message})"
     end
-    return info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
+    info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
   end
 end

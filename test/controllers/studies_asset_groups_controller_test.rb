@@ -140,7 +140,8 @@ module Studies
 
           RestClient.expects(:post)
 
-          post :print_labels, params: { printables: { @asset.id.to_s => 'true' }, printer: barcode_printer.name, id: @asset_group.id, study_id: @study.id }
+          post :print_labels, params: { printables: { @asset.id.to_s => 'true' }, printer: barcode_printer.name,
+                                        id: @asset_group.id, study_id: @study.id }
         end
       end
     end

@@ -1,11 +1,12 @@
-class GetYourQcCompletedTubesHereController < ApplicationController
+class GetYourQcCompletedTubesHereController < ApplicationController # rubocop:todo Style/Documentation
   before_action :login_required
 
   def new
   end
 
   def create
-    @generator = LibPoolNormTubeGenerator.new(params[:barcode], current_user, Study.find_by(name: 'Lib PCR-XP QC Completed Tubes'))
+    @generator = LibPoolNormTubeGenerator.new(params[:barcode], current_user,
+                                              Study.find_by(name: 'Lib PCR-XP QC Completed Tubes'))
     if @generator.valid?
       if @generator.create!
         flash[:notice] = "QC Completed tubes successfully created for #{@generator.plate.human_barcode}. Go celebrate!"

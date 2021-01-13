@@ -1,11 +1,11 @@
-module Tasks::SetCharacterisationDescriptorsHandler
+module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documentation
   def do_set_characterisation_descriptors_task(_task, params)
     @count = 0
-    if params[:values].nil?
-      @values = {}
-    else
-      @values = params[:values]
-    end
+    @values = if params[:values].nil?
+                {}
+              else
+                params[:values]
+              end
 
     # Perform the necessary updates if we've passed batch creation
     updated = 0
@@ -57,10 +57,10 @@ module Tasks::SetCharacterisationDescriptorsHandler
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
-    if params[:values].nil?
-      @values = {}
-    else
-      @values = params[:values]
-    end
+    @values = if params[:values].nil?
+                {}
+              else
+                params[:values]
+              end
   end
 end

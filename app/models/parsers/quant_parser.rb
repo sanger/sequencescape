@@ -1,4 +1,4 @@
-class Parsers::QuantParser
+class Parsers::QuantParser # rubocop:todo Style/Documentation
   class InvalidFile < StandardError; end
 
   HEADER_IDENTIFIER = 'Headers'.freeze

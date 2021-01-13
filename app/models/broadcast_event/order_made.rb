@@ -1,4 +1,4 @@
-class BroadcastEvent::OrderMade < BroadcastEvent
+class BroadcastEvent::OrderMade < BroadcastEvent # rubocop:todo Style/Documentation
   set_event_type 'order_made'
 
   # Properties takes :order_id

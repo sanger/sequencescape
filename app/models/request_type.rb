@@ -18,7 +18,7 @@ class RequestType < ApplicationRecord
 
   class DeprecatedError < RuntimeError; end
 
-  class RequestTypePlatePurpose < ApplicationRecord
+  class RequestTypePlatePurpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('request_type_plate_purposes')
 
     belongs_to :request_type

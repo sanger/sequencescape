@@ -1,4 +1,4 @@
-module Tasks::PrepKitBarcodeHandler
+module Tasks::PrepKitBarcodeHandler # rubocop:todo Style/Documentation
   def render_prep_kit_barcode_task(task, params)
   end
 

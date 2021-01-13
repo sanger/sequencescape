@@ -65,7 +65,8 @@ namespace :limber do
             study: Study.first!,
             project: Project.first!,
             user: User.first,
-            request_options: { primer_panel_name: 'Dummy Panel', library_type: 'GBS', fragment_size_required_from: 100, fragment_size_required_to: 200 }
+            request_options: { primer_panel_name: 'Dummy Panel', library_type: 'GBS',
+                               fragment_size_required_from: 100, fragment_size_required_to: 200 }
           )
           sub = Submission.create!(name: plate.human_barcode, user: User.first, orders: [order])
           sub.built!
@@ -79,7 +80,9 @@ namespace :limber do
 
         ('A'..'D').each_with_index do |set, index|
           tg = TagGroup.create!(name: "GbS Test - #{set}") do |group|
-            group.tags.build(OligoEnumerator.new(384, index * 384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } })
+            group.tags.build(OligoEnumerator.new(384, index * 384).each_with_index.map do |oligo, map_id|
+                               { oligo: oligo, map_id: map_id + 1 }
+                             end)
           end
           TagLayoutTemplate.create!(
             name: "GbS Tag Set #{set}",
@@ -95,7 +98,9 @@ namespace :limber do
         next if TagLayoutTemplate.find_by(name: 'IDT for Illumina v1 - 384 Quadrant')
 
         tg = TagGroup.create!(name: 'IDT for Illumina v1 - MOCK') do |group|
-          group.tags.build(OligoEnumerator.new(384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } })
+          group.tags.build(OligoEnumerator.new(384).each_with_index.map do |oligo, map_id|
+                             { oligo: oligo, map_id: map_id + 1 }
+                           end)
         end
         TagLayoutTemplate.create!(
           name: 'IDT for Illumina v1 - 384 Quadrant',
@@ -120,7 +125,9 @@ namespace :limber do
             next if TagLayoutTemplate.find_by(name: template_name)
 
             tg = TagGroup.create!(name: "WGS Test #{idx} - #{set}") do |group|
-              group.tags.build(OligoEnumerator.new(384, index * 384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } })
+              group.tags.build(OligoEnumerator.new(384, index * 384).each_with_index.map do |oligo, map_id|
+                                 { oligo: oligo, map_id: map_id + 1 }
+                               end)
             end
             TagLayoutTemplate.create!(
               name: template_name,

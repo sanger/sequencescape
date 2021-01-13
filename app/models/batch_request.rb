@@ -16,7 +16,7 @@ class BatchRequest < ApplicationRecord
   # Ensure that any requests that are added have a position that is unique and incremental in the batch,
   # unless we're moving them around in the batch, in which case we assume it'll be valid.
   attr_accessor :sorting_requests_within_batch
-  alias_method(:sorting_requests_within_batch?, :sorting_requests_within_batch)
+  alias sorting_requests_within_batch? sorting_requests_within_batch
 
   delegate :requires_position?, to: :batch
 

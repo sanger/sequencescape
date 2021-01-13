@@ -129,7 +129,6 @@ group :development do
   gem 'rack-mini-profiler'
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
-  gem 'travis'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'mini_racer'
@@ -177,17 +176,14 @@ group :test do
   # Rails performance tests
   gem 'rails-perftest'
   gem 'rspec-collection_matchers' # Provides matchers for dealing with arrays
-  gem 'rspec-longrun' # Extends scenario logging for more verbose tracking
+  gem 'rspec-longrun', require: false # Extends scenario logging for more verbose tracking
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
   # It is needed to use #assigns(attribute) in controllers tests
-  gem 'rails-controller-testing'
-  # Temporarily lock minitest to a specific version due to incompatibilities
-  # with rails versions.
-  gem 'minitest', '5.10.3'
+  gem 'minitest'
   gem 'minitest-profiler'
-  gem 'rspec_junit_formatter'
+  gem 'rails-controller-testing'
 end
 
 group :test, :cucumber do
@@ -222,7 +218,6 @@ end
 
 group :deployment do
   gem 'exception_notification'
-  gem 'gmetric', '~>0.1.3'
   gem 'slack-notifier'
   gem 'whenever', require: false
 end

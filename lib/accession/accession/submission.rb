@@ -34,20 +34,20 @@ module Accession
         broker_name: service.broker,
         alias: sample.ebi_alias_datestamped,
         submission_date: date
-      ) {
-        xml.CONTACTS {
+      ) do
+        xml.CONTACTS do
           xml.CONTACT(contact.to_h)
-        }
+        end
 
-        xml.ACTIONS {
-          xml.ACTION {
+        xml.ACTIONS do
+          xml.ACTION do
             xml.ADD(source: sample.filename, schema: sample.schema_type)
-          }
-          xml.ACTION {
+          end
+          xml.ACTION do
             xml.tag!(service.visibility)
-          }
-        }
-      }
+          end
+        end
+      end
       xml.target!
     end
 
@@ -86,7 +86,7 @@ module Accession
       end
 
       def open
-        Hash[files.collect { |k, v| [k, v.open] }]
+        files.transform_values(&:open)
       end
 
       def close!

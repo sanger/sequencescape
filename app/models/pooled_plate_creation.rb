@@ -1,7 +1,7 @@
 # Creating an instance of this class causes a child plate, with the specified plate type, to be created from
 # the parent.
 class PooledPlateCreation < AssetCreation
-  class ParentAssociation < ApplicationRecord
+  class ParentAssociation < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('asset_creation_parents')
     belongs_to :asset_creation
     belongs_to :parent, class_name: 'Asset'

@@ -16,9 +16,11 @@ namespace :traction do
           billable: true,
           request_purpose: :standard
         ) do |rt|
-          LibraryTypesRequestType.create!(request_type: rt, library_type: LibraryType.find_or_create_by!(name: 'Rapid'), is_default: true)
+          LibraryTypesRequestType.create!(request_type: rt,
+                                          library_type: LibraryType.find_or_create_by!(name: 'Rapid'), is_default: true)
 
-          LibraryTypesRequestType.create!(request_type: rt, library_type: LibraryType.find_or_create_by!(name: 'Ligation'), is_default: false)
+          LibraryTypesRequestType.create!(request_type: rt,
+                                          library_type: LibraryType.find_or_create_by!(name: 'Ligation'), is_default: false)
 
           RequestType::Validator.create!(
             request_type: rt,
@@ -29,7 +31,8 @@ namespace :traction do
           RequestType::Validator.create!(
             request_type: rt,
             request_option: 'data_type',
-            valid_options: RequestType::Validator::ArrayWithDefault.new(['basecalls', 'basecalls and raw data'], 'basecalls')
+            valid_options: RequestType::Validator::ArrayWithDefault.new(['basecalls', 'basecalls and raw data'],
+                                                                        'basecalls')
           )
         end
       end

@@ -3,7 +3,7 @@
 require 'singleton'
 require 'rest-client'
 
-class FakeAccessionService
+class FakeAccessionService # rubocop:todo Style/Documentation
   include Singleton
 
   # Unfortunately Webmock doesn't handle multipart files, so we can't access
@@ -80,7 +80,7 @@ class FakeAccessionService
   end
 
   def failure(message)
-    bodies << %Q{<RECEIPT success="false"><ERROR>#{message}</ERROR></RECEIPT>}
+    bodies << %{<RECEIPT success="false"><ERROR>#{message}</ERROR></RECEIPT>}
   end
 
   def next!

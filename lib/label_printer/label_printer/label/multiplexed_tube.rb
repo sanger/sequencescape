@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class MultiplexedTube < BaseTube
+    class MultiplexedTube < BaseTube # rubocop:todo Style/Documentation
       attr_reader :tubes
 
       def initialize(options)

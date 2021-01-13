@@ -87,7 +87,10 @@ module Attributable
         object.validates_presence_of(name) if required? && !boolean?
         object.with_options(allow_nil: optional?, allow_blank: allow_blank) do |required|
           required.validates_inclusion_of(name, in: [true, false]) if boolean?
-          required.validates name, numericality: { only_integer: integer?, greater_than_or_equal_to: minimum } if integer? || float?
+          if integer? || float?
+            required.validates name, numericality: { only_integer: integer?,
+                                                     greater_than_or_equal_to: minimum }
+          end
           required.validates_inclusion_of(name, in: selection_values, allow_false: true) if fixed_selection?
           required.validates_format_of(name, with: valid_format) if valid_format?
           # Custom validators should handle nil explicitly.

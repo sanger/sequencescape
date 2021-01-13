@@ -48,7 +48,9 @@ module Tasks::AssignTubesToWellsHandler
       all_aliquots = requests.reduce([]) { |array, r| array.concat(r.asset.aliquots) }
       # Push each aliquot onto an array as long as it doesn't match an aliquot already on the array
       unique_aliquots = all_aliquots.each_with_object([]) do |candidate, selected_aliquots|
-        selected_aliquots << candidate unless selected_aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate) }
+        selected_aliquots << candidate unless selected_aliquots.any? do |existing_aliquot|
+                                                existing_aliquot.equivalent?(candidate)
+                                              end
       end
       # uniq! returns any duplicates, or nil if there are none
       next if unique_aliquots.map(&:tag_id).uniq!.nil?

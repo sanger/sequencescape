@@ -1,6 +1,6 @@
 # Create one tube per pool for the provided parent
 class TubeCreation < AssetCreation
-  class ChildTube < ApplicationRecord
+  class ChildTube < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('tube_creation_children')
     belongs_to :tube_creation
     belongs_to :tube

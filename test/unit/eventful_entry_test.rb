@@ -17,7 +17,8 @@ class EventfulEntryTest < ActiveSupport::TestCase
       @study = create :study
 
       @test_subject = EventfulEntry.create(request_type_id: @request_type.id, study_id: @study.id)
-      @event        = Event.new(eventful_id: @test_subject.id, eventful_type: @test_subject.class.to_s, family: 'Billing')
+      @event        = Event.new(eventful_id: @test_subject.id, eventful_type: @test_subject.class.to_s,
+                                family: 'Billing')
       @event.save
       assert @test_subject.valid?
     end

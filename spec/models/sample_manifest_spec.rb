@@ -67,13 +67,23 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
             it 'create sample and aliquots' do
               sma1 = manifest.sample_manifest_assets.first
-              expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count).by(1)
-                                                                                              .and change { study.samples.count }.by(1)
-                                                                                              .and change(Messenger, :count).by(1)
+              expect do
+                manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset)
+              end.to change(Sample, :count).by(1)
+                                                                                              .and change {
+                                                                                                     study.samples.count
+                                                                                                   }.by(1)
+                                                                                              .and change(Messenger,
+                                                                                                          :count).by(1)
               sma2 = manifest.sample_manifest_assets.last
-              expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(Sample, :count).by(1)
-                                                                                              .and change { study.samples.count }.by(1)
-                                                                                              .and change(Messenger, :count).by(1)
+              expect do
+                manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset)
+              end.to change(Sample, :count).by(1)
+                                                                                              .and change {
+                                                                                                     study.samples.count
+                                                                                                   }.by(1)
+                                                                                              .and change(Messenger,
+                                                                                                          :count).by(1)
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
             end
@@ -128,11 +138,19 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
         it 'create sample and aliquots' do
           sma1 = manifest.sample_manifest_assets.first
-          expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count).by(1)
-                                                                                          .and change { study.samples.count }.by(1)
+          expect do
+            manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset)
+          end.to change(Sample, :count).by(1)
+                                                                                          .and change {
+                                                                                                 study.samples.count
+                                                                                               }.by(1)
           sma2 = manifest.sample_manifest_assets.last
-          expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(Sample, :count).by(1)
-                                                                                          .and change { study.samples.count }.by(1)
+          expect do
+            manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset)
+          end.to change(Sample, :count).by(1)
+                                                                                          .and change {
+                                                                                                 study.samples.count
+                                                                                               }.by(1)
           expect(sma1.sample.primary_aliquot).to have_attributes(
             study_id: study.id,
             library_id: sma1.asset.id
@@ -199,8 +217,12 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
             it 'create sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
-              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count).by(1)
-                                                                                            .and change { study.samples.count }.by(1)
+              expect do
+                manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset)
+              end.to change(Sample, :count).by(1)
+                                                                                            .and change {
+                                                                                                   study.samples.count
+                                                                                                 }.by(1)
               expect(LibraryTube.last.aliquots.first.library).to eq(manifest.assets.last)
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
@@ -255,7 +277,9 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
           it 'create sample and aliquots' do
             sma = manifest.sample_manifest_assets.last
-            expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count).by(1)
+            expect do
+              manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset)
+            end.to change(Sample, :count).by(1)
               .and change { study.samples.count }.by(count)
             expect(LibraryTube.last.aliquots.first.library).to eq(manifest.assets.last)
             manifest.samples.reset

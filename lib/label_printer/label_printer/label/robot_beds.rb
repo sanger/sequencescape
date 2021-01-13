@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class RobotBeds < BasePlate
+    class RobotBeds < BasePlate # rubocop:todo Style/Documentation
       attr_reader :plates
 
       def initialize(beds)

@@ -1,5 +1,3 @@
-require File.dirname(__FILE__) + '/exceptions'
-
 # Provides the appearance of dynamically generated methods on the roles database.
 #
 # Examples:
@@ -15,88 +13,31 @@ require File.dirname(__FILE__) + '/exceptions'
 #
 module Authorization
   module Identity
+    VALID_PREPOSITIONS = %w[of for in on to at by].freeze
+    BOOLEAN_OPS = %w[not or and].freeze
+    VALID_PREPOSITIONS_PATTERN = VALID_PREPOSITIONS.join('|')
     module UserExtensions
-      module InstanceMethods
+      module InstanceMethods # rubocop:todo Style/Documentation
         def method_missing(method_sym, *args)
           method_name = method_sym.to_s
           authorizable_object = args.empty? ? nil : args[0]
 
           base_regex = 'is_(\\w+)'
-          fancy_regex = base_regex + "_(#{Authorization::Base::VALID_PREPOSITIONS_PATTERN})"
+          fancy_regex = base_regex + "_(#{Authorization::Identity::VALID_PREPOSITIONS_PATTERN})"
           is_either_regex = '^((' + fancy_regex + ')|(' + base_regex + '))'
-          base_not_regex = 'is_no[t]?_(\\w+)'
-          fancy_not_regex = base_not_regex + "_(#{Authorization::Base::VALID_PREPOSITIONS_PATTERN})"
-          is_not_either_regex = '^((' + fancy_not_regex + ')|(' + base_not_regex + '))'
 
-          if method_name =~ Regexp.new(is_either_regex + '_what$')
+          # matches is_role? and is_role_of?
+          if method_name =~ Regexp.new(is_either_regex + '\?$')
             role_name = $3 || $6
-            has_role_for_objects(role_name, authorizable_object)
-          elsif method_name =~ Regexp.new(is_not_either_regex + '\?$')
-            role_name = $3 || $6
-            not is_role?(role_name, authorizable_object)
-          elsif method_name =~ Regexp.new(is_either_regex + '\?$')
-            role_name = $3 || $6
-            is_role?(role_name, authorizable_object)
-          elsif method_name =~ Regexp.new(is_not_either_regex + '$')
-            role_name = $3 || $6
-            is_no_role(role_name, authorizable_object)
+            has_role?(role_name, authorizable_object)
+          # matches is_role and is_role_of
           elsif method_name =~ Regexp.new(is_either_regex + '$')
             role_name = $3 || $6
-            is_role(role_name, authorizable_object)
+            has_role(role_name, authorizable_object)
           else
             super
           end
         end
-
-        private
-
-        def is_role?(role_name, authorizable_object)
-          if authorizable_object.nil?
-            return has_role?(role_name)
-          elsif authorizable_object.respond_to?(:accepts_role?)
-            return has_role?(role_name, authorizable_object)
-          end
-
-          false
-        end
-
-        def is_no_role(role_name, authorizable_object = nil)
-          if authorizable_object.nil?
-            has_no_role role_name
-          else
-            has_no_role role_name, authorizable_object
-          end
-        end
-
-        def is_role(role_name, authorizable_object = nil)
-          if authorizable_object.nil?
-            has_role role_name
-          else
-            has_role role_name, authorizable_object
-          end
-        end
-
-        def has_role_for_objects(role_name, type)
-          roles = if type.nil?
-                    self.roles.where(name: role_name)
-                  else
-                    self.roles.where(authorizable_type: type.name, name: role_name)
-                  end
-          roles.collect do |role|
-            if role.authorizable_id.nil?
-              role.authorizable_type.nil? ?
-                nil : Module.const_get(role.authorizable_type) # Returns class
-            else
-              role.authorizable
-            end
-          end
-        end
-      end
-    end
-
-    module ModelExtensions
-      module InstanceMethods
-        # We we're using this. Clearing it up
       end
     end
   end

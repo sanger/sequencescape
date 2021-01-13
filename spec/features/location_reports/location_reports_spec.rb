@@ -162,7 +162,8 @@ describe 'Location reports' do
       # set up LabWhere stubs
       labwhere_locn_bc = 'lw-mylocn-123'
       p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Shelf 1', lw_locn_parentage: labwhere_locn_prefix }
-      stub_lwclient_locn_find_by_bc(locn_barcode: labwhere_locn_bc, locn_name: 'Shelf 1', locn_parentage: labwhere_locn_prefix)
+      stub_lwclient_locn_find_by_bc(locn_barcode: labwhere_locn_bc, locn_name: 'Shelf 1',
+                                    locn_parentage: labwhere_locn_prefix)
       stub_lwclient_locn_children(labwhere_locn_bc, [])
       stub_lwclient_locn_labwares(labwhere_locn_bc, [p1])
       stub_lwclient_labware_find_by_bc(p1)

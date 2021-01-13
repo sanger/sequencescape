@@ -116,7 +116,8 @@ class BatchesController < ApplicationController
 
   def pipeline
     # All pipeline batches routes should just direct to batches#index with pipeline and state as filter parameters
-    @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
+    @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user,
+                                                                                                       :pipeline).page(params[:page])
   end
 
   def pending
@@ -169,7 +170,8 @@ class BatchesController < ApplicationController
 
   def fail_items
     ActiveRecord::Base.transaction do
-      fail_params = params.permit(:id, requested_fail: {}, requested_remove: {}, failure: %i[reason comment fail_but_charge])
+      fail_params = params.permit(:id, requested_fail: {}, requested_remove: {},
+                                       failure: %i[reason comment fail_but_charge])
       fail_and_remover = Batch::RequestFailAndRemover.new(fail_params)
       if fail_and_remover.save
         flash[:notice] = truncate_flash(fail_and_remover.notice)
@@ -420,8 +422,12 @@ class BatchesController < ApplicationController
   # This is the expected create behaviour, and is only in a separate
   # method due to the overloading on the create endpoint.
   def standard_create(requests)
-    return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
-    return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
+    unless @pipeline.all_requests_from_submissions_selected?(requests)
+      return pipeline_error_on_batch_creation('All plates in a submission must be selected')
+    end
+    if @pipeline.max_size && requests.length > @pipeline.max_size
+      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}")
+    end
     return pipeline_error_on_batch_creation('Batches must contain at least one request') if requests.empty?
 
     begin

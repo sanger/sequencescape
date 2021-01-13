@@ -46,7 +46,10 @@ module WorkingSetup
       purpose = Purpose.find_by!(name: name)
       number.times do
         purpose.create!.tap do |plate|
-          plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{w.map.description}", studies: [study, study_b])) }
+          plate.wells.each do |w|
+            w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{w.map.description}",
+                                                      studies: [study, study_b]))
+          end
           puts "#{name}: #{plate.ean13_barcode}-#{plate.human_barcode}"
         end
       end
@@ -78,7 +81,8 @@ module WorkingSetup
     private
 
     def sample_registrar
-      SampleRegistrar.register!([sample_named('sample_a', study), sample_named('sample_b', study), sample_named('sample_c', study), sample_named('sample_d', study)])
+      SampleRegistrar.register!([sample_named('sample_a', study), sample_named('sample_b', study),
+                                 sample_named('sample_c', study), sample_named('sample_d', study)])
     end
 
     def create_or_find_user

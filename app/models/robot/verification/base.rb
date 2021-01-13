@@ -7,12 +7,20 @@ class Robot::Verification::Base
   attr_reader :errors
 
   def validate_barcode_params(barcode_hash)
-    return yield('No barcodes specified')      if barcode_hash.nil?
+    return yield('No barcodes specified') if barcode_hash.nil?
 
-    yield('Worksheet barcode invalid')         if barcode_hash[:batch_barcode].blank?             || !Batch.valid_barcode?(barcode_hash[:batch_barcode])
-    yield('Robot barcode invalid')             if barcode_hash[:robot_barcode].blank?             || !Robot.valid_barcode?(barcode_hash[:robot_barcode])
-    yield('User barcode invalid')              if barcode_hash[:user_barcode].blank?              || !User.find_with_barcode_or_swipecard_code(barcode_hash[:user_barcode])
-    yield('Destination plate barcode invalid') if barcode_hash[:destination_plate_barcode].blank? || !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
+    if barcode_hash[:batch_barcode].blank? || !Batch.valid_barcode?(barcode_hash[:batch_barcode])
+      yield('Worksheet barcode invalid')
+    end
+    if barcode_hash[:robot_barcode].blank? || !Robot.valid_barcode?(barcode_hash[:robot_barcode])
+      yield('Robot barcode invalid')
+    end
+    if barcode_hash[:user_barcode].blank? || !User.find_with_barcode_or_swipecard_code(barcode_hash[:user_barcode])
+      yield('User barcode invalid')
+    end
+    if barcode_hash[:destination_plate_barcode].blank? || !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
+      yield('Destination plate barcode invalid')
+    end
   end
 
   #
@@ -153,8 +161,10 @@ class Robot::Verification::Base
   end
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout)
-    return false unless valid_source_plates_on_robot?(params[:bed_barcodes], params[:plate_barcodes], robot, batch, expected_plate_layout)
-    return false unless valid_destination_plates_on_robot?(params[:destination_bed_barcodes], params[:destination_plate_barcodes], robot, batch, expected_plate_layout)
+    return false unless valid_source_plates_on_robot?(params[:bed_barcodes], params[:plate_barcodes], robot, batch,
+                                                      expected_plate_layout)
+    return false unless valid_destination_plates_on_robot?(params[:destination_bed_barcodes],
+                                                           params[:destination_plate_barcodes], robot, batch, expected_plate_layout)
 
     true
   end

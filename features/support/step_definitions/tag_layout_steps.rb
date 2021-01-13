@@ -107,7 +107,9 @@ Given /^the UUID for the plate associated with the tag layout with ID (\d+) is "
 end
 
 def pool_by_strategy(source, destination, pooling_strategy)
-  Rails.logger.info("Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}") unless pooling_strategy.sum == source.size
+  unless pooling_strategy.sum == source.size
+    Rails.logger.info("Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}")
+  end
   source_wells = source.wells.in_column_major_order.to_a
   destination_wells = destination.wells.in_column_major_order.to_a
 

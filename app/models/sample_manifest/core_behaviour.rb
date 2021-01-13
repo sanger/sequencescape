@@ -1,4 +1,4 @@
-module SampleManifest::CoreBehaviour
+module SampleManifest::CoreBehaviour # rubocop:todo Style/Documentation
   BEHAVIOURS = %w[1dtube plate multiplexed_library library library_plate tube_rack].freeze
 
   # Include in cores which exhibit the default behaviour
@@ -8,7 +8,7 @@ module SampleManifest::CoreBehaviour
     def specialized_fields(*_args); {}; end
   end
 
-  module Shared
+  module Shared # rubocop:todo Style/Documentation
     def self.included(base)
       base.class_eval do
         delegate :create_sample, to: :@manifest
@@ -28,7 +28,7 @@ module SampleManifest::CoreBehaviour
     end
   end
 
-  module StockAssets
+  module StockAssets # rubocop:todo Style/Documentation
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
         receptacle.aliquots.create!(sample: sample, study: study)
@@ -38,7 +38,7 @@ module SampleManifest::CoreBehaviour
     end
   end
 
-  module LibraryAssets
+  module LibraryAssets # rubocop:todo Style/Documentation
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
         receptacle.aliquots.create!(sample: sample, study: study, library: receptacle)

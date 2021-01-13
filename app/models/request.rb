@@ -166,7 +166,10 @@ class Request < ApplicationRecord
         ]
       end
 
-    select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+    select('min(uuids.external_id) AS group_id,
+      GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into,
+      MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id,
+      MIN(requests.request_type_id) AS request_type_id')
       .joins(add_joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
         'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
@@ -189,7 +192,8 @@ class Request < ApplicationRecord
   scope :for_order_including_submission_based_requests, ->(order) {
     # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
     # as a common element for any order in the submission)
-    where(['requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)', order.id, order.submission.id])
+    where(['requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)', order.id,
+           order.submission.id])
   }
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
@@ -205,7 +209,9 @@ class Request < ApplicationRecord
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
   scope :full_inbox, -> { where(state: %w[pending hold]) }
-  scope :pipeline_pending, ->(include_held = false) { include_held ? where(state: %w[pending hold]) : where(state: 'pending') }
+  scope :pipeline_pending, ->(include_held = false) {
+                             include_held ? where(state: %w[pending hold]) : where(state: 'pending')
+                           }
   scope :with_asset, -> { where.not(asset_id: nil) }
   # Ensures the actual record is present
   scope :with_present_asset, -> { joins(:asset).where.not(Receptacle.table_name => { id: nil }) }
@@ -231,11 +237,22 @@ class Request < ApplicationRecord
   scope :excluding_states, ->(states) { where.not(state: states) }
   scope :ordered, -> { order('id ASC') }
 
-  # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
+  # NOTE: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
-  scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies, { labware: :barcodes }] }]) }
-  scope :loaded_for_sequencing_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) }, { request_type: :product_line }]) }
-  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders, asset: { labware: [:purpose, :barcodes] } }, :target_asset, :order]) }
+  scope :loaded_for_inbox_display, -> {
+                                     preload([{ submission: { orders: :study },
+                                                asset: [:scanned_into_lab_event, :studies, { labware: :barcodes }] }])
+                                   }
+  scope :loaded_for_sequencing_inbox_display, -> {
+                                                preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) },
+                                                         { request_type: :product_line }])
+                                              }
+  scope :loaded_for_grouped_inbox_display, -> {
+                                             preload([
+                                               { submission: :orders,
+                                                 asset: { labware: [:purpose, :barcodes] } }, :target_asset, :order
+                                             ])
+                                           }
   scope :loaded_for_pacbio_inbox_display, -> { preload(:submission) }
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
@@ -254,7 +271,10 @@ class Request < ApplicationRecord
   scope :for_search_query, ->(query) { where(['id=?', query]) }
   scope :for_studies, ->(*studies) { where(initial_study_id: studies) }
 
-  scope :with_assets_for_starting_requests, -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
+  scope :with_assets_for_starting_requests, -> {
+                                              includes([:request_metadata, :request_events,
+                                                        { asset: :aliquots, target_asset: :aliquots }])
+                                            }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
 
   scope :multiplexed, -> { joins(:request_type).where(request_types: { for_multiplexing: true }) }
@@ -383,7 +403,7 @@ class Request < ApplicationRecord
     return '' unless request_metadata.respond_to?(request_information_type.key)
 
     value = request_metadata.send(request_information_type.key)
-    return value.to_s if value.blank? or request_information_type.data_type != 'Date'
+    return value.to_s if value.blank? || (request_information_type.data_type != 'Date')
 
     value.to_date.strftime('%d %B %Y')
   end
@@ -433,7 +453,10 @@ class Request < ApplicationRecord
 
   # CAUTION!: This may not behaves as expected. I'll be deprecating this soon.
   def next_requests_via_asset
-    target_asset.requests.where(submission_id: submission_id, request_type_id: next_request_type_id) if target_asset.present?
+    if target_asset.present?
+      target_asset.requests.where(submission_id: submission_id,
+                                  request_type_id: next_request_type_id)
+    end
   end
 
   def next_requests_via_submission
@@ -460,10 +483,11 @@ class Request < ApplicationRecord
     return [] if lab_events.empty?
 
     events.map do |event|
-      next if event.family.nil? or %w[pass fail].exclude?(event.family.downcase)
+      next if event.family.nil? || %w[pass fail].exclude?(event.family.downcase)
 
       message = event.message.presence || '(No message was specified)'
-      { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message, 'created_at' => event.created_at }
+      { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message,
+        'created_at' => event.created_at }
     end.compact
   end
 

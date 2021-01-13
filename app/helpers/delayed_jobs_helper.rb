@@ -1,4 +1,4 @@
-module DelayedJobsHelper
+module DelayedJobsHelper # rubocop:todo Style/Documentation
   def job_type(job)
     case job.name
     when /StudyReport/

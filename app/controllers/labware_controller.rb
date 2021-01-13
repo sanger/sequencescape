@@ -21,7 +21,9 @@ class LabwareController < ApplicationController
         format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Labware.find(params[:asset_id])
-        format.xml { render xml: [{ 'relations' => { 'parents' => @asset.parents, 'children' => @asset.children } }].to_xml }
+        format.xml do
+          render xml: [{ 'relations' => { 'parents' => @asset.parents, 'children' => @asset.children } }].to_xml
+        end
       end
     end
   end
@@ -167,7 +169,9 @@ class LabwareController < ApplicationController
       nil
     else
       @asset = Labware.find_from_barcode(barcode)
-      redirect_to action: 'find_by_barcode', error: "Unable to find anything with this barcode: #{barcode}" if @asset.nil?
+      if @asset.nil?
+        redirect_to action: 'find_by_barcode', error: "Unable to find anything with this barcode: #{barcode}"
+      end
     end
   end
 

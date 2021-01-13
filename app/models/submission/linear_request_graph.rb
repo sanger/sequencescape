@@ -71,7 +71,7 @@ module Submission::LinearRequestGraph
         else
           source_data_set.map { |source_data| create_target_asset_for!(request_type, source_data.asset) }
         end
-      yield(target_assets) if block_given? and request_type.for_multiplexing?
+      yield(target_assets) if block && request_type.for_multiplexing?
 
       # Now we can iterate over the source assets and target assets building the requests between them.
       # Ensure that the request has the correct comments on it, and that the aliquots of the source asset
@@ -89,7 +89,8 @@ module Submission::LinearRequestGraph
           # given that the request graph describes this relationship.
           # JG: Its removal only really makes sense if we can walk the request graph in a timely manner.
           # We use save not save! as AssetLink throws validation errors when the link already exists
-          AssetLink.create_edge(source_asset.labware, target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
+          AssetLink.create_edge(source_asset.labware,
+                                target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
 
           request.qc_metrics = qc_metrics.compact.uniq
           request.update_responsibilities!

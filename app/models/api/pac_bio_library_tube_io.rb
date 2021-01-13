@@ -1,8 +1,8 @@
 # Despite name controls rendering of warehouse messages for {PacBioLibraryTube}
 # Historically used to be v0.5 API
 class Api::PacBioLibraryTubeIO < Api::Base
-  module Extensions
-    module ClassMethods
+  module Extensions # rubocop:todo Style/Documentation
+    module ClassMethods # rubocop:todo Style/Documentation
       def render_class
         Api::PacBioLibraryTubeIO
       end

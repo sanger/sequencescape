@@ -1,6 +1,6 @@
 class Postman
   module StateMachine
-    module Helper
+    module Helper # rubocop:todo Style/Documentation
       def state(state_name)
         define_method(:"#{state_name}!") { @state = state_name }
         define_method(:"#{state_name}?") { @state == state_name }

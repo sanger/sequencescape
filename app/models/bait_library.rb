@@ -7,7 +7,7 @@
 class BaitLibrary < ApplicationRecord
   include SharedBehaviour::Named
 
-  module Associations
+  module Associations # rubocop:todo Style/Documentation
     def self.included(base)
       base.class_eval do
         belongs_to :bait_library
@@ -39,7 +39,8 @@ class BaitLibrary < ApplicationRecord
 
   # Within a supplier we have a unique identifier for each bait library.  Custom bait libraries
   # do not have this identifier, so nil is permitted.
-  validates :supplier_identifier, uniqueness: { scope: :bait_library_supplier_id, allow_nil: true, case_sensitive: false }
+  validates :supplier_identifier, uniqueness: { scope: :bait_library_supplier_id, allow_nil: true,
+                                                case_sensitive: false }
   before_validation :blank_as_nil
 
   # The names of the bait library are considered unique within the supplier

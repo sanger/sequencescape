@@ -45,9 +45,12 @@ namespace :billing do
       {
         name: :hiseq_2500_paired_end,
         billing_products_attributes: [
-          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 250 run', identifier: 250, category: 'sequencing' },
-          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 75 run', identifier: 75, category: 'sequencing' },
-          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 100 run', identifier: 100, category: 'sequencing' }
+          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 250 run', identifier: 250,
+            category: 'sequencing' },
+          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 75 run', identifier: 75,
+            category: 'sequencing' },
+          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 100 run', identifier: 100,
+            category: 'sequencing' }
         ]
       },
       {

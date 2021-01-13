@@ -1,6 +1,6 @@
 require_dependency 'tube/purpose'
 
-class LibraryTube < Tube
+class LibraryTube < Tube # rubocop:todo Style/Documentation
   include Api::LibraryTubeIO::Extensions
   include ModelExtensions::LibraryTube
   include Asset::SharedLibraryTubeBehaviour

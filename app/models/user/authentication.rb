@@ -1,4 +1,4 @@
-module User::Authentication
+module User::Authentication # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       extend ClassMethods
@@ -29,7 +29,7 @@ module User::Authentication
   end
   private :update_profile_via_ldap
 
-  module ClassMethods
+  module ClassMethods # rubocop:todo Style/Documentation
     # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
     def authenticate(login, password)
       case configatron.authentication
@@ -46,7 +46,7 @@ module User::Authentication
     end
   end
 
-  module Ldap
+  module Ldap # rubocop:todo Style/Documentation
     def authenticate_with_ldap(login, password)
       # TODO: - Extract LDAP specifics to configuration
       username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
@@ -86,7 +86,7 @@ module User::Authentication
     end
   end
 
-  module Local
+  module Local # rubocop:todo Style/Documentation
     def authenticate_by_local(login, password)
       u = find_by(login: login) # need to get the salt
       u && u.authenticated?(password) ? u : nil

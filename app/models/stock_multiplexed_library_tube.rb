@@ -1,4 +1,4 @@
-class StockMultiplexedLibraryTube < Tube
+class StockMultiplexedLibraryTube < Tube # rubocop:todo Style/Documentation
   include Asset::Stock
 
   def stock_wells

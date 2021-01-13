@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddLocationReportsTable < ActiveRecord::Migration[5.1]
+class AddLocationReportsTable < ActiveRecord::Migration[5.1] # rubocop:todo Style/Documentation
   def change
     create_table :location_reports do |t|
       t.references  :user,              null: false

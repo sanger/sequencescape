@@ -1,4 +1,4 @@
-class Event::PlateCreationEvent < Event
+class Event::PlateCreationEvent < Event # rubocop:todo Style/Documentation
   def self.create_for_asset!(asset, plate_purpose, child_plate, user)
     create!(
       eventful: asset,

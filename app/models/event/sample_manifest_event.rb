@@ -1,4 +1,4 @@
-class Event::SampleManifestEvent < Event
+class Event::SampleManifestEvent < Event # rubocop:todo Style/Documentation
   def self.created_sample!(sample, user)
     create!(
       eventful: sample,

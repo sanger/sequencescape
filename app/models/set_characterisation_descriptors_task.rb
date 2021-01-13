@@ -1,4 +1,4 @@
-class SetCharacterisationDescriptorsTask < Task
+class SetCharacterisationDescriptorsTask < Task # rubocop:todo Style/Documentation
   def partial
     'set_characterisation_descriptors'
   end
