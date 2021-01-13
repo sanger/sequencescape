@@ -54,7 +54,6 @@ group :default do
       github: 'sanger/irods_reader'
 
   # For the API level
-  gem 'cancan'
   gem 'json'
   gem 'multi_json'
   gem 'rack-acceptable', require: 'rack/acceptable'
@@ -107,6 +106,9 @@ group :default do
 
   # Compile js
   gem 'webpacker'
+
+  # Authorization
+  gem "cancancan"
 end
 
 group :warehouse do
