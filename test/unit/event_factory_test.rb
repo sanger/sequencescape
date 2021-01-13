@@ -31,20 +31,10 @@ class EventFactoryTest < ActiveSupport::TestCase
         assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
       end
 
-      context 'send 1 email to 1 recipient' do
-        should 'send email' do
-          assert_equal 1, emails.count
-          assert_match "Project #{@project.id}: Project registered\n\nProject registered by south", emails.first.parts.first.body.to_s
-        end
-
-        should 'Have sent an email' do
-          assert_equal 1, emails.count
-          last_mail = ActionMailer::Base.deliveries.last
-          assert_match(/Project/, last_mail.subject)
-          assert last_mail.bcc.include?('abc123@example.com')
-          assert_match(/Project registered/, last_mail.text_part.body.to_s)
-          assert_equal 1, last_mail.bcc.size
-        end
+      # History: Projects had to be approved post creation. Now approval is done pre generation.
+      # Therefore function not required
+      should 'not send email any more' do
+        assert_equal 0, emails.count
       end
     end
 

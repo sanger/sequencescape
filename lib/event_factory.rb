@@ -16,16 +16,6 @@ class EventFactory # rubocop:todo Style/Documentation
       of_interest_to: 'administrators'
     )
     event.save
-
-    admin_emails = User.all_administrators_emails.reject(&:blank?)
-
-    EventfulMailer.confirm_event(
-      admin_emails,
-      event.eventful,
-      event.message,
-      event.content,
-      'No Milestone'
-    ).deliver_now unless admin_emails.empty?
   end
 
   # Creates an event and sends an email or emails when a project is approved
