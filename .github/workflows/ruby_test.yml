@@ -213,4 +213,4 @@ jobs:
         workingDirectory: ./
         prefix: ${{github.workspace}}
         coverageLocations: |
-          ${{github.workspace}}/tmp/codeclimate-*:simplecov
+          ${{github.workspace}}/tmp/codeclimate-*/coverage.json:simplecov
