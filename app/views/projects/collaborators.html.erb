@@ -1,7 +1,7 @@
 
 <% add :about, "Contacts for project." -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_project") => project_path(@project) -%>
-<% if current_user.is_administrator? || current_user.is_manager?(@project) %>
+<% if current_user.administrator? || current_user.manager?(@project) %>
   <% add :menu, "Edit" => edit_project_path(@project) -%>
 <% end %>
 

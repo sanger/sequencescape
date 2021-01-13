@@ -274,7 +274,7 @@ RSpec.describe Request do
     setup do
       @request = create :request_suitable_for_starting, study: study
       @user = create :admin
-      @user.has_role 'owner', study
+      @user.grant_owner study
     end
 
     context 'when a new request is created' do

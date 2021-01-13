@@ -48,7 +48,7 @@ class EventFactory # rubocop:todo Style/Documentation
       project_manager_email = (project.manager.email).to_s
       recipients_email << project_manager_email
     end
-    if user.is_administrator?
+    if user.administrator?
       administrators_email = User.all_administrators_emails
       administrators_email.each do |email|
         recipients_email << email unless email == project_manager_email

@@ -1,7 +1,7 @@
 
 <% add :about, I18n.t("studies.about") -%>
 <% add :menu, "Study history" => study_events_path(@study) -%>
-<% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+<% if current_user.administrator? || current_user.manager?(@study) %>
   <% add :menu, "Edit" => edit_study_path(@study) -%>
 <% end %>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
@@ -32,4 +32,3 @@
 <div id="template_form_body">
   <%= render partial: 'shared/metadata/show/study', locals: { study: @study } %>
 </div>
-

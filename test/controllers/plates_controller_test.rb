@@ -32,7 +32,7 @@ class PlatesControllerTest < ActionController::TestCase
     context 'with a logged in user' do
       setup do
         @user = FactoryBot.create :user, barcode: 'ID100I', swipecard_code: '1234567'
-        @user.is_administrator
+        @user.grant_administrator
         session[:user] = @user.id
 
         @parent_plate = FactoryBot.create :plate, barcode: '5678'

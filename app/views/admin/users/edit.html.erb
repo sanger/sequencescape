@@ -24,35 +24,36 @@
     <%= panel :info, title:"Roles" do %>
       <%= form_group do %>
         <label for="role_administrator">Administrator</label>?
-        <%= check_box_tag "role[administrator]", "checked", @user.has_role?("administrator") %>
+        <%= check_box_tag "role[administrator]", "checked", @user.administrator? %>
       <% end %>
       <%= form_group do %>
         <label for="role_manager">Manager</label>?
-        <%= check_box_tag "role[manager]", "checked", @user.has_role?("manager") %>
+        <%= check_box_tag "role[manager]", "checked", @user.manager? %>
       <% end %>
       <%= form_group do %>
         <label for="role_internal">Internal</label>?
-        <%= check_box_tag "role[internal]", "checked", @user.has_role?("internal") %>
+        <%# TODO: Remove this in later commit, as the role is unused %>
+        <%= check_box_tag "role[internal]", "checked", @user.role?("internal") %>
       <% end %>
       <%= form_group do %>
         <label for="role_lab">Lab</label>?
-        <%= check_box_tag "role[lab]", "checked", @user.has_role?("lab") %>
+        <%= check_box_tag "role[lab]", "checked", @user.lab? %>
       <% end %>
       <%= form_group do %>
         <label for="role_lab_manager">Lab manager</label>?
-        <%= check_box_tag "role[lab_manager]", "checked", @user.has_role?("lab_manager") %>
+        <%= check_box_tag "role[lab_manager]", "checked", @user.lab_manager? %>
       <% end %>
       <%= form_group do %>
         <label for="role_owner">Owner</label>?
-        <%= check_box_tag "role[owner]", "checked", @user.has_role?("owner") %>
+        <%= check_box_tag "role[owner]", "checked", @user.owner? %>
       <% end %>
       <%= form_group do %>
         <label for="role_slf_manager">SLF lab manager</label>?
-        <%= check_box_tag "role[slf_manager]", "checked", @user.has_role?("slf_manager") %>
+        <%= check_box_tag "role[slf_manager]", "checked", @user.slf_manager? %>
       <% end %>
       <%= form_group do %>
         <label for="role_slf_gel">SLF Gels</label>?</td>
-        <%= check_box_tag "role[slf_gel]", "checked", @user.has_role?("slf_gel") %>
+        <%= check_box_tag "role[slf_gel]", "checked", @user.slf_gel? %>
        <% end %>
     <% end %>
   </div>

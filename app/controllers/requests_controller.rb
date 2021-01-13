@@ -46,7 +46,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
   def edit
     @request = Request.find(params[:id])
     @request_types = RequestType.where(asset_type: @request.request_type.asset_type)
-    if current_user.is_administrator?
+    if current_user.administrator?
       respond_to do |format|
         format.html
       end
@@ -144,7 +144,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
   end
 
   def redirect_if_not_owner_or_admin
-    unless (current_user == @request.user) || current_user.is_administrator? || current_user.is_manager?
+    unless (current_user == @request.user) || current_user.administrator? || current_user.manager?
       flash[:error] = 'Request details can only be altered by the owner or a manager'
       redirect_to request_path(@request)
       return true
