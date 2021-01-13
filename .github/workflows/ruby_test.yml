@@ -208,5 +208,7 @@ jobs:
     - name: Publish code coverage
       uses: paambaati/codeclimate-action@v2.7.5
       with:
+        workingDirectory: ./sequencescape
+        prefix: ${{github.workspace}}
         coverageLocations: |
           ${{github.workspace}}/tmp/codeclimate-*:simplecov
