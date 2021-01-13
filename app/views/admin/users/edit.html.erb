@@ -31,11 +31,6 @@
         <%= check_box_tag "role[manager]", "checked", @user.manager? %>
       <% end %>
       <%= form_group do %>
-        <label for="role_internal">Internal</label>?
-        <%# TODO: Remove this in later commit, as the role is unused %>
-        <%= check_box_tag "role[internal]", "checked", @user.role?("internal") %>
-      <% end %>
-      <%= form_group do %>
         <label for="role_lab">Lab</label>?
         <%= check_box_tag "role[lab]", "checked", @user.lab? %>
       <% end %>
