@@ -3,7 +3,9 @@ class EventFactory # rubocop:todo Style/Documentation
   #################################
   # project related notifications #
   #################################
-  # Creates an event and sends an email when a new project is created
+
+  # Creates an event when a new project is created
+  # This used to send a notification using EventfulMailer, but it is no longer required
   def self.new_project(project, user)
     content = "Project registered by #{user.login}"
 
@@ -18,7 +20,8 @@ class EventFactory # rubocop:todo Style/Documentation
     event.save
   end
 
-  # Creates an event and sends an email or emails when a project is approved
+  # Creates an event or emails when a project is approved
+  # This used to send a notification using EventfulMailer, but it is no longer required
   def self.project_approved(project, user)
     content = "Project approved by #{user.login}"
 
@@ -31,22 +34,6 @@ class EventFactory # rubocop:todo Style/Documentation
       of_interest_to: 'administrators'
     )
     event.save
-
-    recipients_email = []
-    project_manager_email = ''
-    if project.manager.present?
-      project_manager_email = (project.manager.email).to_s
-      recipients_email << project_manager_email
-    end
-    if user.is_administrator?
-      administrators_email = User.all_administrators_emails
-      administrators_email.each do |email|
-        recipients_email << email unless email == project_manager_email
-      end
-    end
-
-    EventfulMailer.confirm_event(recipients_email, event.eventful, event.message, event.content,
-                                 'No Milestone').deliver_now
   end
 
   def self.project_refund_request(project, user, reference)

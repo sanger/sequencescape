@@ -49,92 +49,14 @@ class EventFactoryTest < ActiveSupport::TestCase
         EventFactory.project_approved(@project, @user)
       end
 
-      should 'send email' do
-        assert_equal 1, emails.count
-        assert_match "Project approved\n\nProject approved by south", emails.first.parts.first.body.to_s
+      # History: Projects had to be approved post creation. Now approval is done pre generation.
+      # Therefore function not required
+      should 'not send email any more' do
+        assert_equal 0, emails.count
       end
 
       should 'change Event.count by 1' do
         assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
-      end
-
-      context 'send email to project manager' do
-        should 'Have sent an email' do
-          last_mail = ActionMailer::Base.deliveries.last
-          assert_match(/Project approved/, last_mail.subject)
-          assert last_mail.bcc.include?('south@example.com')
-          assert_not last_mail.bcc.include?('')
-          assert_match(/Project approved/, last_mail.text_part.body.to_s)
-        end
-      end
-    end
-
-    context '#project_approved by administrator' do
-      setup do
-        @event_count = Event.count
-        ::ActionMailer::Base.deliveries = [] # reset the queue
-        admin = create :role, name: 'administrator'
-        @user1 = create :user, login: 'west'
-        @user1.roles << admin
-        @user2 = create :user, login: 'north'
-        @user2.roles << admin
-        role = create :manager_role, authorizable: @project
-        role.users << @user
-        EventFactory.project_approved(@project, @user2)
-      end
-
-      should 'change Event.count by 1' do
-        assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
-      end
-
-      context ': send emails to everyone administrators' do
-        should 'Have sent an email' do
-          last_mail = ActionMailer::Base.deliveries.last
-          assert_match(/Project approved/, last_mail.subject)
-          assert last_mail.bcc.include?('north@example.com')
-          assert last_mail.bcc.include?('south@example.com')
-          assert last_mail.bcc.include?('west@example.com')
-          assert_not last_mail.bcc.include?('')
-          assert_match(/Project approved/, last_mail.text_part.body.to_s)
-        end
-      end
-    end
-
-    context '#project_approved but not by administrator' do
-      setup do
-        @event_count = Event.count
-        ActionMailer::Base.deliveries.clear
-        admin = create :role, name: 'administrator'
-        @user1 = create :user, login: 'west'
-        @user1.roles << admin
-        follower = create :role, name: 'follower'
-        @user2 = create :user, login: 'north'
-        @user2.roles << follower
-        role = create :manager_role, authorizable: @project
-        role.users << @user
-        EventFactory.project_approved(@project, @user2)
-      end
-
-      should 'change Event.count by 1' do
-        assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
-      end
-
-      context ': send email to project manager' do
-        should 'Have sent an email' do
-          last_mail = ActionMailer::Base.deliveries.last
-          assert_match(/Project approved/, last_mail.subject)
-          assert last_mail.bcc.include?('south@example.com')
-          assert_not last_mail.bcc.include?('')
-          assert_match(/Project approved/, last_mail.text_part.body.to_s)
-        end
-      end
-
-      context 'send no email to adminstrator nor to approver' do
-        ActionMailer::Base.deliveries.each do |d|
-          assert_not d.bcc.include?('west@example.com')
-          assert_not d.bcc.include?('north@example.com')
-          assert_not d.bcc.include?('')
-        end
       end
     end
 
