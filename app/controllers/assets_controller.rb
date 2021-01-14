@@ -63,23 +63,6 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
     end
   end
 
-  def update
-    respond_to do |format|
-      if @asset.update(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
-        flash[:notice] = 'Asset was successfully updated.'
-        if params[:lab_view]
-          format.html { redirect_to(action: :lab_view, barcode: @asset.human_barcode) }
-        else
-          format.html { redirect_to(action: :show, id: @asset.id) }
-          format.xml  { head :ok }
-        end
-      else
-        format.html { render action: 'edit' }
-        format.xml  { render xml: @asset.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
   def summary
     @summary = UiHelper::Summary.new(per_page: 25, page: params[:page])
     @summary.load_asset(@asset)
@@ -147,13 +130,6 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
   end
 
   private
-
-  def asset_params
-    permitted = %i[volume concentration]
-    permitted << :name if current_user.administrator?
-    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
-    params.require(:asset).permit(permitted)
-  end
 
   # Receptacle, as we're about to request some stuff
   def prepare_asset
