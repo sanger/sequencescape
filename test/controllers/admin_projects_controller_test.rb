@@ -53,16 +53,10 @@ module Admin
             assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
           end
 
-          should 'send an email' do
-            assert_equal 1, emails.count
-            assert_match "Project #{@project.id}: Project approved\n\nProject approved by #{@user.login}", emails.first.parts.first.body.to_s
-          end
-
-          should 'Have sent an email' do
-            last_mail = ActionMailer::Base.deliveries.last
-            assert_match(/[TEST].*Project/, last_mail.subject)
-            assert last_mail.bcc.include? 'project.owner@example.com'
-            assert_match(/Project approved by/, last_mail.text_part.body.to_s)
+          # History: Projects had to be approved post creation. Now approval is done pre generation.
+          # Therefore function not required
+          should 'not send email any more' do
+            assert_equal 0, emails.count
           end
         end
       end
