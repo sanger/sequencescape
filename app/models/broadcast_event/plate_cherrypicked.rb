@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Declares the event of a destination plate created from
 # a list of source plates. It requires the following subjects:
 #   - Robot - the robot that acted in the cherrypicking process (Beckman)
@@ -8,12 +10,12 @@
 # The destination plate subject, if not specified, will be generated from the seed
 # as the seed is considered the destination plate.
 class BroadcastEvent::PlateCherrypicked < BroadcastEvent
-  EVENT_TYPE = 'lh_beckman_cp_destination_created'.freeze
+  EVENT_TYPE = 'lh_beckman_cp_destination_created'
 
-  ROBOT_ROLE_TYPE = 'robot'.freeze
-  SOURCE_PLATES_ROLE_TYPE = 'cherrypicking_source_labware'.freeze
-  SAMPLE_ROLE_TYPE = 'sample'.freeze
-  DESTINATION_PLATE_ROLE_TYPE = 'cherrypicking_destination_labware'.freeze
+  ROBOT_ROLE_TYPE = 'robot'
+  SOURCE_PLATES_ROLE_TYPE = 'cherrypicking_source_labware'
+  SAMPLE_ROLE_TYPE = 'sample'
+  DESTINATION_PLATE_ROLE_TYPE = 'cherrypicking_destination_labware'
 
   include BroadcastEvent::Helpers::ExternalSubjects
 
@@ -56,12 +58,7 @@ class BroadcastEvent::PlateCherrypicked < BroadcastEvent
   # Default destination plate subject definition using the seeding plate. It won't be used
   # if another subject is provided on initialization
   def default_destination_plate_subject
-    {
-      'uuid': seed.uuid,
-      'role_type': DESTINATION_PLATE_ROLE_TYPE,
-      'subject_type': 'plate',
-      'friendly_name': seed.barcodes.first.human_barcode
-    }
+    BroadcastEvent::SubjectHelpers::Subject.new(DESTINATION_PLATE_ROLE_TYPE, seed).as_json
   end
 
   private
@@ -71,7 +68,7 @@ class BroadcastEvent::PlateCherrypicked < BroadcastEvent
     return unless seed
     return if subjects_with_role_type?(DESTINATION_PLATE_ROLE_TYPE)
 
-    properties[:subjects] = properties[:subjects].push(default_destination_plate_subject)
+    properties[:subjects].push(default_destination_plate_subject)
     @subjects = build_subjects
   end
 end

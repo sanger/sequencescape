@@ -21,7 +21,7 @@ module BroadcastEvent::Helpers
     end
 
     def subjects_with_role_type?(role_type)
-      subjects_with_role_type(role_type).length.positive?
+      subjects.any? { |sub| sub.role_type == role_type }
     end
 
     def check_subject_role_type(property, role_type)
