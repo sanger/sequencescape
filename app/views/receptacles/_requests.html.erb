@@ -18,8 +18,10 @@
           <th>State</th>
           <th>Batches</th>
           <th>Target</th>
-          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+          <% if can? :copy, Request %>
             <th>Copy</th>
+          <% end %>
+          <% if can? :cancel, Request %>
             <th>Cancel</th>
           <% end %>
           <th>Created at</th>
@@ -51,8 +53,10 @@
           <% else %>
             <td></td>
           <% end %>
-          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
-            <td><%= link_to 'Copy', copy_request_url(request)   %></td>
+          <% if can? :copy, request %>
+            <td><%= link_to 'Copy', copy_request_url(request) %></td>
+          <% end %>
+          <% if can? :cancel, request%>
             <td>
               <% if request.try(:may_cancel_before_started?) %>
                 <%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %>
@@ -76,8 +80,10 @@
           <th>State</th>
           <th>Batches</th>
           <th>Source</th>
-          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+          <% if can? :copy, Request %>
             <th>Copy</th>
+          <% end %>
+          <% if can? :cancel, Request %>
             <th>Cancel</th>
           <% end %>
           <th>Created at</th>
@@ -109,8 +115,10 @@
           <% else %>
             <td></td>
           <% end %>
-          <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
-            <td><%= link_to 'Copy', copy_request_url(request)   %></td>
+          <% if can? :copy, request %>
+            <td><%= link_to 'Copy', copy_request_url(request) %></td>
+          <% end %>
+          <% if can? :cancel, request%>
             <td>
               <% if request.try(:may_cancel_before_started?) %>
                 <%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %>

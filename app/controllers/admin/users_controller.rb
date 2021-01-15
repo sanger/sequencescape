@@ -10,7 +10,6 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
   end
 
   def edit
-    @user_roles = @user.roles.where(name: %w[administrator manager])
     @all_roles = Role.distinct.pluck(:name)
     @users_roles = @user.study_and_project_roles.order(name: :asc)
     @studies = Study.order(:id)

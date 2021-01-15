@@ -108,7 +108,7 @@ group :default do
   gem 'webpacker'
 
   # Authorization
-  gem "cancancan"
+  gem 'cancancan'
 end
 
 group :warehouse do

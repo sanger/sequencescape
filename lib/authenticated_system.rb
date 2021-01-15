@@ -131,15 +131,6 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
     end
   end
 
-  def slf_gel_login_required
-    setup_current_user
-    respond_to do |accepts|
-      accepts.html do
-        logged_in? && authorized? && (current_user.slf_manager? || current_user.slf_gel? || current_user.administrator?) ? true : access_denied
-      end
-    end
-  end
-
   def setup_current_user
     username, passwd = get_auth_data
     self.current_user ||= User.authenticate(username, passwd) || :false if username && passwd

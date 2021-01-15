@@ -15,7 +15,7 @@
 <% add(:menu, 'Request additional sequencing' => new_request_receptacle_path_in_context(@asset)) if current_user_can_request_additional_sequencing_on?(@asset) -%>
 <% add(:menu, 'Request a new library' => new_request_receptacle_path_in_context(@asset)) if current_user_can_request_additional_library_on?(@asset) -%>
 
-<% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
+<% if can? :edit, @asset %>
   <% add :menu, "Edit" => edit_receptacle_path(@asset) -%>
 <% end %>
 

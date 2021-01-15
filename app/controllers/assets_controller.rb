@@ -2,27 +2,13 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :discover_asset, only: %i[edit update summary print_assets print history]
   before_action :prepare_asset, only: %i[new_request create_request]
 
   def index
     if params[:study_id]
       redirect_to study_information_receptacles_path(params[:study_id])
-      return
     else
-      @assets = Asset.page(params[:page])
-    end
-
-    respond_to do |format|
-      format.html
-      if params[:sample_id]
-        format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
-      elsif params[:asset_id]
-        @asset = Asset.find(params[:asset_id])
-        format.xml do
-          render xml: [{ 'relations' => { 'parents' => @asset.parents, 'children' => @asset.children } }].to_xml
-        end
-      end
+      redirect_to labware_index
     end
   end
 
@@ -51,23 +37,6 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
     end
   end
 
-  def edit
-    @valid_purposes_options = @asset.compatible_purposes.pluck(:name, :id)
-  end
-
-  def history
-    respond_to do |format|
-      format.html
-      format.xml  { @request.events.to_xml }
-      format.json { @request.events.to_json }
-    end
-  end
-
-  def summary
-    @summary = UiHelper::Summary.new(per_page: 25, page: params[:page])
-    @summary.load_asset(@asset)
-  end
-
   def print
     if @asset.printable?
       @printable = @asset.printable_target
@@ -89,18 +58,6 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
     end
 
     redirect_to phi_x_url
-  end
-
-  def print_assets
-    print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                           LabelPrinter::Label::AssetRedirect,
-                                           printables: @asset)
-    if print_job.execute
-      flash[:notice] = print_job.success
-    else
-      flash[:error] = print_job.errors.full_messages.join('; ')
-    end
-    redirect_to asset_url(@asset)
   end
 
   def show_plate
@@ -134,14 +91,5 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
   # Receptacle, as we're about to request some stuff
   def prepare_asset
     @asset = Receptacle.find(params[:id])
-  end
-
-  def new_request_for_current_asset
-    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id),
-                                   request_type_id: @request_type.try(:id))
-  end
-
-  def discover_asset
-    @asset = Asset.include_for_show.find(params[:id])
   end
 end

@@ -34,7 +34,7 @@
         This study is <%= @study.study_status %> for processing.
       </td>
       <td class='setup_item'>
-      <% if current_user.manager_or_administrator? %>
+      <% if can? :activate, @study %>
         <%= link_to status_link_title(@study), study_status_study_path(@study), method: :get %>
       <% end %>
       </td>
@@ -57,7 +57,7 @@
         This study is <%= @study.study_status %> for processing.
       </td>
       <td class='setup_item'>
-      <% if current_user.manager_or_administrator? %>
+      <% if can? :activate, @study %>
         <%= link_to status_link_title(@study), study_status_study_path(@study), method: :get %>
       <% end %>
       </td>

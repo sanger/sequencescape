@@ -51,6 +51,8 @@ class User < ApplicationRecord
   # Other DSL
   # See {Role::UserRoleHelper::has_role}
   # Provides methods like: user.administrator?, user.grant_administrator
+  # @note Where possible use permissions, not roles to define abilities.
+  # @see Ability
   has_role :administrator
   has_role :manager
   has_role :lab_manager
@@ -120,27 +122,6 @@ class User < ApplicationRecord
     "#{first_name} #{last_name} (#{login})".strip
   end
 
-  def projects
-    return Project.all if administrator?
-
-    atuhorized = authorized_projects
-    return Project.all if ((atuhorized.blank?) && (privileged?))
-
-    atuhorized
-  end
-
-  def authorized_projects
-    Project.for_user(self)
-  end
-
-  def sorted_project_names_and_ids
-    projects.alphabetical.pluck(:name, :id)
-  end
-
-  def sorted_valid_project_names_and_ids
-    valid_projects.pluck(:name, :id)
-  end
-
   def valid_projects
     projects.valid.alphabetical
   end
@@ -150,7 +131,7 @@ class User < ApplicationRecord
   end
 
   def privileged?(item = nil)
-    manager_or_administrator? || owner?(item)
+    manager_or_administrator? || (item && owner?(item))
   end
 
   def manager_or_administrator?

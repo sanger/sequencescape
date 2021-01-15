@@ -3,17 +3,15 @@
 <% add :menu, "View event history" => history_request_path(@request) -%>
 <% add :menu, (pluralize @request.comments.size, "comment") => request_comments_path(@request) -%>
 
-<% if current_user.manager_or_administrator? || current_user.owner?(@request) %>
-  <% if @request.try(:may_cancel_before_started?) %>
-    <% add :menu, { "Cancel" => cancel_request_url(@request) }, { confirm: "Are you sure you want to cancel this request?" }  -%>
-  <% end %>
-  <% add :menu, "Edit" => edit_request_path(@request) -%>
+<% if can?(:cancel, @request) && @request.try(:may_cancel_before_started?) %>
+  <% add :menu, { "Cancel" => cancel_request_url(@request) }, { confirm: "Are you sure you want to cancel this request?" }  -%>
 <% end %>
-<% if current_user.manager_or_administrator? && @request.finished? %>
+<% add :menu, "Edit" => edit_request_path(@request) if can? :update, @request -%>
+<% if can?(:change_decision, @request) && @request.finished? %>
   <% add :menu, "Change decision" => filter_change_decision_request_path(@request) -%>
 <% end %>
 
-<%- add :back_menu, "Back to asset" => receptacle_path(@request.asset) if @request.asset %>
+<%- add :back_menu, "Back to receptacle" => receptacle_path(@request.asset) if @request.asset %>
 
 <%= page_title @request.request_type_name, @request.id, badges: [@request.state] %>
 
@@ -88,4 +86,3 @@
     <p>There is no qc information at the moment</p>
   <% end %>
 <% end %>
-

@@ -247,6 +247,8 @@ class Sample < ApplicationRecord
   has_many :studies, through: :study_samples, inverse_of: :samples
 
   has_many :roles, as: :authorizable, dependent: :destroy, inverse_of: :authorizable
+  has_many :owners, -> { where(roles: { name: 'owner' }) }, through: :roles, source: :users
+
   has_many :asset_groups, through: :receptacles
 
   has_many :requests, through: :assets

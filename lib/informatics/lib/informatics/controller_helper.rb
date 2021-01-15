@@ -19,10 +19,6 @@ module ApplicationHelper # rubocop:todo Style/Documentation
       @back_menu.add_item text: l.first_key, link: l.first_value
     when :about, :title # Replaces :title
       @about = link
-    when :lab_option
-      @lab_menu = add_link(@lab_menu, l, o, options)
-    when :lab_manager_option
-      @lab_manager_menu = add_link(@lab_manager_menu, l, o, options)
     when :admin_option
       @admin_menu = add_link(@admin_menu, l, o, options)
     when :manager_option

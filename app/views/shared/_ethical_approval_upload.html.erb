@@ -20,7 +20,7 @@
           <div id='<%= document.filename.underscore %>_listing' class="ListingDocuments">
             <%= display_file_icon(document) %>
             <%= link_to document.filename, study_document_path(study, document) %>
-            <% if current_user.administrator? %>
+            <% if can? :delete, document %>
               <%= link_to(icon('fas', 'trash-alt', id: "delete_file_#{document.id}", class: 'text-danger'), [study, document], method: :delete, title: "Delete #{ document.filename }", alt: "Delete") %>
             <% end %>
           </div>

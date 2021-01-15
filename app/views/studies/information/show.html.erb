@@ -4,7 +4,9 @@
   <% add :manager_option, "Create Submission" => new_submission_path(study_id: @study.id) -%>
   <% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
 <% end -%>
-<% if current_user.administrator? || current_user.manager?(@study) %>
+<%# Merge conflict? Select the version that deletes this. This is only
+  # due to live another few days %>
+<% if can? :create, SampleManifest %>
   <% add :manager_option, "Register samples" => study_sample_registration_index_path(@study) -%>
 <% end %>
 <% add :menu, "Samples" => study_samples_path(@study) -%>
@@ -13,14 +15,14 @@
 <% add :menu, "Receptacles (Formerly Assets)" => study_information_receptacles_path(@study) -%>
 <% add :menu, "Asset groups" => study_asset_groups_path(@study) -%>
 <% add :menu, "Projects" => projects_study_path(@study) -%>
-<% if current_user.administrator? || current_user.manager?(@study) || current_user.owner?(@study) || current_user.lab? %>
+<% if can? :print_asset_group_labels, @study %>
   <% add :menu, "Print Labels" => printing_study_asset_groups_path(@study) -%>
 <% end %>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, "Contacts" => collaborators_study_path(@study) -%>
 <% add :menu, "History" => summary_study_information_path(@study) -%>
 <% add :menu, "&nbsp;" => '' -%>
-<% if current_user.administrator? || current_user.manager?(@study) %>
+<% if can? :activate, @study %>
   <% if @study.active? -%>
     <% add :manager_option, { 'Deactivate Study' => state_study_path(@study) }   -%>
   <% else -%>
@@ -31,16 +33,20 @@
 <% add :menu, display_follow(@study, current_user, "Study") => follow_study_path(@study) -%>
 <% add :menu, pluralize(@study.comments.size, "comment") => study_comments_path(@study) -%>
 
-<% if current_user.administrator? || current_user.manager?(@study) %>
+<% if can? :accession?, @study %>
   <% add :manager_option, @study.accession_number? ? "Update EBI Study data" : "Generate Accession Number" => url_for(controller: '/studies', action: 'accession', id: @study.id) -%>
   <% add :manager_option, "Generate DAC Accession Number" => url_for(controller: '/studies', action: 'dac_accession', id: @study.id) -%>
   <% add :manager_option, "Generate Policy Accession Number" => url_for(controller: '/studies', action: 'policy_accession', id: @study.id) -%>
 <% end -%>
 
-<% if current_user.administrator? || current_user.manager?(@study) %>
+<% if can? :edit, @study %>
   <% add :menu, "Edit" => edit_study_url(@study) -%>
 <% end %>
-<% add :admin_option, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
+
+<% if can? :administer, @study %>
+  <% add :admin_option, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
+<% end %>
+
 <% add :menu, "Submissions" => url_for(controller: "/submissions", action: "study", id: @study.id) -%>
 
 <% add :menu, "QC Reports" => qc_reports_path -%>
@@ -70,34 +76,37 @@
 </div>
 
 <div class="content mt-3">
-  <% if current_user.administrator? || current_user.manager?(@study) %>
-    <% unless @study.approved? -%>
-      <%= display_user_guide(I18n.t('studies.status.not_approved')) %>
-      <% if @study.samples.empty? -%>
-        <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), study_sample_registration_index_path(@study)) %>
-      <% else -%>
-        <%= display_user_guide(I18n.t('studies.submissions.unable_to_create_submission')) %>
-      <% end -%>
-    <% else -%>
-      <% if @study.samples.empty? -%>
-        <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), study_sample_registration_index_path(@study)) %>
-      <% else -%>
-        <% if (@submissions.exists?) || (@study.requests.count > 0) -%>
-          <%= render partial: "submission_warning" %>
-          <%= render partial: "study_summary", locals: { request_types: @request_types } %>
-          <%= render partial: "items", locals: {summary: @summary} %>
-        <% else -%>
-          <% if @study.active? %>
-            <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path(study_id: @study.id)) %>
-          <% else %>
-            <%= display_user_guide(I18n.t('studies.status.not_active')) %>
-          <% end %>
-        <% end -%>
-      <% end -%>
-    <% end %>
-  <% else %>
-    <%= render partial: "submission_warning" %>
-    <%= render partial: "study_summary", locals: { request_types: @request_types } %>
-    <%= render partial: "items", locals: {summary: @summary} %>
+  <%#
+    # This section is supposed to guide the user through generating their first
+    # submission on the study. It tries to avoid asking the user to do something
+    # that they don't have permission to do, or that the study isn't ready to
+    # support. Essentially the pattern looks like this:
+    # - If the study isn't approved, warn the user.
+    # - If the study has no samples, link to the sample manifests.
+    # - If the study is approved, and has samples, link to the submisison page.
+    # These links only show if the user has permission to create the appropriate
+    # records.
+    # JG: I've made some modifications to this section to DRY out a nested
+    #     if statement. As a result, there have been some slight modifications
+    #     to the behaviour. (Most notably we alwyas show the study summary
+    #     infomrmation)
+    #%>
+
+  <%= display_user_guide(I18n.t('studies.status.not_approved')) unless @study.approved? %>
+
+  <% if @study.samples.empty? && can? :create, SampleManifest -%>
+    <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), sample_manifests_study_path(@study)) %>
   <% end -%>
+
+  <%= display_user_guide(I18n.t('studies.status.not_active')) unless @study.active? %>
+
+  <%# Only show the prompt to create a submission if the study is not approved and has no
+    # submissions or requests %>
+  <% if @study.approved? && !(@submissions.exists? || @study.requests.exists?)  %>
+    <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path(study_id: @study.id)) if can? :create, Order.new(study: @study) %>
+  <% end %>
+
+  <%= render partial: "submission_warning" %>
+  <%= render partial: "study_summary", locals: { request_types: @request_types } %>
+  <%= render partial: "items", locals: {summary: @summary} %>
 </div>

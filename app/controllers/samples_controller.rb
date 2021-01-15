@@ -56,47 +56,47 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
 
   def release
     @sample = Sample.find(params[:id])
-    redirect_if_not_owner_or_admin_otherwise do
-      if @sample.released?
-        flash[:notice] = "Sample '#{@sample.name}' already publically released"
-      else
-        @sample.release
-        flash[:notice] = "Sample '#{@sample.name}' publically released"
-      end
-      redirect_to sample_path(@sample)
+    authorize! :release, @sample
+
+    if @sample.released?
+      flash[:notice] = "Sample '#{@sample.name}' already publically released"
+    else
+      @sample.release
+      flash[:notice] = "Sample '#{@sample.name}' publically released"
     end
+    redirect_to sample_path(@sample)
   end
 
   def edit
     @sample = Sample.find(params[:id])
-    redirect_if_not_owner_or_admin_otherwise do
-      if @sample.released? && !current_user.administrator?
-        flash[:error] = 'Cannot edit publically released sample'
-        redirect_to sample_path(@sample)
-        return
-      end
+    authorize! :update, @sample
 
-      respond_to do |format|
-        format.html
-        format.xml  { render xml: @samples.to_xml }
-        format.json { render json: @samples.to_json }
-      end
+    if @sample.released? && cannot?(:update_released, @sample)
+      flash[:error] = 'Cannot edit publicly released sample'
+      redirect_to sample_path(@sample)
+      return
+    end
+
+    respond_to do |format|
+      format.html
+      format.xml  { render xml: @samples.to_xml }
+      format.json { render json: @samples.to_json }
     end
   end
 
   def update
     @sample = Sample.find(params[:id])
-    redirect_if_not_owner_or_admin_otherwise do
-      cleaned_params = clean_params_from_check(params[:sample]).permit(default_permitted_metadata_fields)
-      cleaned_params[:date_of_consent_withdrawn] = DateTime.now
-      cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
-      if @sample.update(cleaned_params)
-        flash[:notice] = 'Sample details have been updated'
-        redirect_to sample_path(@sample)
-      else
-        flash[:error] = 'Failed to update attributes for sample'
-        render action: 'edit', id: @sample.id
-      end
+    authorize! :update, @sample
+
+    cleaned_params = clean_params_from_check(params[:sample]).permit(default_permitted_metadata_fields)
+    cleaned_params[:date_of_consent_withdrawn] = DateTime.now
+    cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
+    if @sample.update(cleaned_params)
+      flash[:notice] = 'Sample details have been updated'
+      redirect_to sample_path(@sample)
+    else
+      flash[:error] = 'Failed to update attributes for sample'
+      render action: 'edit', id: @sample.id
     end
   end
 
@@ -195,12 +195,5 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
       developmental_stage cell_type disease_state compound dose immunoprecipitate growth_condition
       rnai organism_part time_point disease subject treatment donor_id
     ] }
-  end
-
-  def redirect_if_not_owner_or_admin_otherwise
-    return yield if current_user.owner?(@sample) || current_user.administrator? || current_user.manager?
-
-    flash[:error] = 'Sample details can only be altered by the owner or an administrator or manager'
-    redirect_to sample_path(@sample)
   end
 end

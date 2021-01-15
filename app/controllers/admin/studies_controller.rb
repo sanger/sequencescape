@@ -2,7 +2,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :admin_login_required
+  authorize_resource :study, parent: true, parent_action: :administer
 
   def index
     @studies = Study.alphabetical
@@ -61,7 +61,6 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
 
   def managed_update
     @study = Study.find(params[:id])
-    redirect_if_not_owner_or_admin(@study)
 
     if params[:study][:uploaded_data].present?
       Document.create!(documentable: @study,
@@ -90,14 +89,5 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
       @studies = @studies.sort_by(&:user_id)
     end
     render partial: 'studies'
-  end
-
-  private
-
-  def redirect_if_not_owner_or_admin(study)
-    unless current_user.owner?(study) || current_user.administrator?
-      flash[:error] = "Study details can only be altered by the owner (#{study.user.login}) or an administrator"
-      redirect_to study_path(study)
-    end
   end
 end

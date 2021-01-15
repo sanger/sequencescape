@@ -6,7 +6,7 @@
     <fieldset class="col-md-12">
       <legend>Common attributes</legend>
       <%= metadata_fields.text_field(:project_cost_code) %>
-      <% if current_user.administrator? %>
+      <% if can? :administer, project %>
         <%= metadata_fields.select_by_association(:budget_division)%>
         <%= metadata_fields.text_field(:sequencing_budget_cost_centre) %>
       <% end %>
@@ -16,7 +16,7 @@
       <legend>Sequencing projects</legend>
       <%= metadata_fields.text_field(:funding_comments) %>
       <%= metadata_fields.text_field(:collaborators) %>
-      <% if current_user.administrator? %>
+      <% if can? :administer, project %>
         <%= metadata_fields.select_by_association(:project_manager)%>
         <%= metadata_fields.text_field(:external_funding_source) %>
       <% end %>

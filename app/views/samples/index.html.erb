@@ -18,7 +18,6 @@
     </tr>
   </thead>
   <tbody>
-    <% admin = current_user.administrator? %>
     <% @samples.each do |sample| -%>
       <tr class="<%= " withdrawn" if sample.consent_withdrawn? %>">
         <td width="5%"><%= link_to sample.id, sample_path(sample) %></td>
@@ -28,7 +27,7 @@
           <% end %>
         </td>
         <td><%= sample.created_at.to_formatted_s(:day_full_with_time) %></td>
-        <% if admin -%>
+        <% if can? :edit, sample -%>
           <td><%= link_to "Edit", edit_sample_path(sample) -%></td>
         <% end -%>
       </tr>

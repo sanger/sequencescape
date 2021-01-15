@@ -9,12 +9,10 @@
 </dl>
 
 <%= render partial: "shared/tags_list", locals: { tag_group: @tag_group, tags: @tag_group.tags } %>
-<%= javascript_tag nonce: true do %>
-$('table tbody > tr:nth-child(even)').addClass('roweven');
-<% end %>
+
 <br>
-<% if current_user.administrator? %>
-<%= link_to 'Create a new tag layout template from this tag group', new_tag_layout_template_path(tag_group_id: @tag_group.id) %>
+<% if can? :create, TagLayoutTemplate %>
+  <%= link_to 'Create a new tag layout template from this tag group', new_tag_layout_template_path(tag_group_id: @tag_group.id) %>
 <br>
 <% end %>
 <%= link_to 'Back to tag groups list', tag_groups_path %>

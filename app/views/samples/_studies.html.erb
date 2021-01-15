@@ -12,14 +12,14 @@
         <% @sample.studies.each do |study| %>
           <tr>
             <td><%= link_to study.name, study_path(study) %></td>
-            <% if current_user.administrator? || current_user.manager?(@study) %>
+            <% if can? :unlink_sample, @study %>
               <td><%= link_to("Unlink", url_for({controller: "samples", id: @sample.id, action: :remove_from_study, study_id: study.id}), confirm: "Are you sure you want to unlink this sample from the '#{study.name}' study?\n\nThere is no undo.") -%></td>
             <% end %>
           </tr>
         <% end %>
       </tbody>
     </table>
-    <% if current_user.administrator? || current_user.manager?(@study) %>
+    <% if can? :link_sample, @study %>
       <%= label("study", "id", 'Add to study', style: 'display:none') %>
       <%= collection_select("study", :id, @studies, :id, :name, {prompt: "Add to study"}, class: "custom-select") %>
       <%= form.submit "Add" %>
