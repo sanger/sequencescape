@@ -150,7 +150,7 @@ class User < ApplicationRecord
   end
 
   def privileged?(item = nil)
-    manager_or_administrator? || owner?(item)
+    manager_or_administrator? || (item && owner?(item))
   end
 
   def manager_or_administrator?
