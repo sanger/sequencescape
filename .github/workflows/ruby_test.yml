@@ -200,7 +200,9 @@ jobs:
   end_coverage:
     runs-on: ubuntu-latest
     needs: [rake_tests, rspec_tests, cucumber_tests]
+    continue-on-error: true
     steps:
+    - uses: actions/checkout@v2
     - name: Fetch coverage results
       uses: actions/download-artifact@v2
       with:
@@ -209,9 +211,4 @@ jobs:
       uses: paambaati/codeclimate-action@v2.7.5
       with:
         coverageLocations: |
-          tmp/codeclimate-rake_tests-
-          tmp/codeclimate-rspec_tests-0
-          tmp/codeclimate-rspec_tests-1
-          tmp/codeclimate-rspec_tests-2
-          tmp/codeclimate-cucumber_tests-0
-          tmp/codeclimate-cucumber_tests-1
+          ${{github.workspace}}/tmp/codeclimate-*/coverage.json:simplecov
