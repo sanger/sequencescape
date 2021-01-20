@@ -201,6 +201,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [rake_tests, rspec_tests, cucumber_tests]
     continue-on-error: true
+    if: ${{ github.secrets.CC_TEST_REPORTER_ID }}
     steps:
     - uses: actions/checkout@v2
     - name: Fetch coverage results
