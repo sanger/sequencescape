@@ -1,5 +1,5 @@
 class Admin::DelayedJobsController < ApplicationController # rubocop:todo Style/Documentation
-  before_action :admin_login_required
+  authorize_resource
 
   def index
     @jobs = Delayed::Job.all

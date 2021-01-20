@@ -2,7 +2,7 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :slf_manager_login_required
+  authorize_resource
 
   def index
     @patterns = PlateTemplate.paginate(page: params[:page], per_page: 50)

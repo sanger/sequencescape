@@ -8,7 +8,7 @@
   ) %>
   <%= render(partial: 'shared/metadata/edit/study', locals: { study: study, form: form }) %>
 
-  <% if logged_in? && current_user.privileged? %>
+  <% if can? :administer, study %>
      <%= render partial: "shared/ethical_approval_upload", locals: { study: study, form: form } -%>
      <%= render partial: "shared/data_release_enforce",     locals: { study: study, form: form } -%>
   <% end %>

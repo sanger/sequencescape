@@ -1,13 +1,17 @@
 
 <%- add :about, "This page displays details of a asset" %>
+
+<% if can? :close, @asset %>
+  <% if @asset.closed? %>
+    <% add :menu, { "Open" => close_receptacle_path(@asset) },  { confirm: "Do you really want to open this #{@asset.label}?" }  -%>
+  <% else %>
+    <% add :menu, {  "Close" => close_receptacle_path(@asset) }, { confirm: "Do you really want to close this #{@asset.label}?" } -%>
+  <% end %>
+<% end %>
+
 <% add :menu, (pluralize @asset.total_comment_count, "comment") => receptacle_comments_path(@asset) -%>
 <% if @asset.printable? %>
   <% add :menu, "Print label" => print_labware_path(@asset.labware) -%>
-<% end %>
-<% if @asset.closed? %>
-  <% add :manager_option, { "Open" => close_receptacle_path(@asset) },  { confirm: "Do you really want to open this #{@asset.label}?" }  -%>
-<% else %>
-  <% add :manager_option, {  "Close" => close_receptacle_path(@asset) }, { confirm: "Do you really want to close this #{@asset.label}?" } -%>
 <% end %>
 
 <% add :menu, "Event history" => history_receptacle_path(@asset) -%>

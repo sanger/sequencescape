@@ -17,7 +17,7 @@ end %>
 <div class='priority_changer alert alert-info'>
   <h3>Priority</h3>
   <%= image_tag("icon_#{@presenter.submission.priority}_flag.png", size: "64x64", class: 'sub_flag') if @presenter.submission.priority > 0 %>
-  <% if current_user.lab_manager? %>
+  <% if can? :change_priority, @presenter.submission %>
     <%= form_for( @presenter, as: :submission, url: {id: @presenter.submission.id, action: :change_priority }) do |f| %>
 
       <p>The priority of a submission applies to all requests in the submission. If it is changed, request priority will be updated automatically.</p>
@@ -72,4 +72,3 @@ end %>
 
 
 <%= javascript_include_tag 'submissions' %>
-

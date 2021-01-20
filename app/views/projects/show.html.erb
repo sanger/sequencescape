@@ -1,14 +1,16 @@
 
-<% if can? :administer, Project %>
-  <% add :admin_option, "Manage" => url_for(controller: "admin/projects", action: "show", id: @project.id) -%>
-<% end %>
-<% add :manager_option, "Edit" => edit_project_path(@project) -%>
+
+<% add :menu, "Edit" => edit_project_path(@project) if can?(:edit,@project) -%>
 <% add :menu, "Studies" => related_studies_project_path(@project) -%>
 <% add :menu, "Contacts" => collaborators_project_path(@project) %>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, display_follow(@project, current_user, "Project") => follow_project_path(@project) -%>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, "Back to projects" => projects_path -%>
+
+<% if can? :administer, Project %>
+  <% add :menu, "Manage" => url_for(controller: "admin/projects", action: "show", id: @project.id) -%>
+<% end %>
 
 <div class="page-header"><h1><%=h @project.name %></h1></div>
 

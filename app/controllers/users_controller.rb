@@ -3,12 +3,7 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :find_user, except: [:index]
-  before_action :validate_user, except: %i[index projects study_reports]
-
-  def index
-    @users = User.all
-  end
+  authorize_resource
 
   def show
     @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all)
@@ -54,14 +49,20 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
 
   private
 
-  def validate_user
-    return true if can? :manage, @user
-
-    redirect_to profile_path(current_user),
-                alert: "You don't have permission to view or edit that profile: here is yours instead."
-  end
-
   def find_user
     @user = User.find(params[:id])
+  end
+
+  rescue_from CanCan::AccessDenied do |exception|
+    respond_to do |format|
+      format.html do
+        if current_user
+          redirect_to profile_path(current_user),
+                      alert: "You don't have permission to view or edit that profile: here is yours instead."
+        else
+          redirect_back fallback_location: main_app.root_url, alert: exception.message
+        end
+      end
+    end
   end
 end

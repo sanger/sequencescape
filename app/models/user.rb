@@ -130,10 +130,6 @@ class User < ApplicationRecord
     interesting_studies.alphabetical.pluck(:name, :id)
   end
 
-  def privileged?(item = nil)
-    manager_or_administrator? || (item && owner?(item))
-  end
-
   def manager_or_administrator?
     administrator? || manager?
   end

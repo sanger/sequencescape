@@ -3,8 +3,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :admin_login_required, only: %i[administer destroy]
-
   def index
     @samples = Sample.order(created_at: :desc).page(params[:page])
     respond_to do |format|

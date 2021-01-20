@@ -9,7 +9,7 @@
 </div>
 
 <%= render partial: "list", locals: {study: @study } %>
-<% if current_user.privileged? @study %>
+<% if can? :create, Comment.new(commentable: @study) %>
   <div>
     <%= form_tag(study_comments_path(@study), data: { update: "#study_annotations_#{@study.id}", remote: true }, class:'remote-form') do %>
       <label for='comment'>Type your comment</label>

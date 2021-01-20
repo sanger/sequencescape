@@ -3,6 +3,7 @@ class Admin::RobotPropertiesController < ApplicationController # rubocop:todo St
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_robot_by_id
+  authorize_resource
 
   def index
     @robot_properties = @robot.robot_properties

@@ -80,57 +80,6 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
     end
   end
 
-  def admin_login_required
-    setup_current_user
-    respond_to do |accepts|
-      accepts.html { logged_in? && authorized? && current_user.administrator? ? true : access_denied }
-      if configatron.disable_api_authentication == true
-        accepts.xml  { true }
-        accepts.json { true }
-      else
-        accepts.xml  { logged_in? && authorized? && current_user.administrator? ? true : access_denied }
-        accepts.json { logged_in? && authorized? && current_user.administrator? ? true : access_denied }
-      end
-    end
-  end
-
-  def manager_login_required
-    setup_current_user
-    respond_to do |accepts|
-      accepts.html { logged_in? && authorized? && current_user.manager_or_administrator? ? true : access_denied }
-      if configatron.disable_api_authentication == true
-        accepts.xml  { true }
-        accepts.json { true }
-      else
-        accepts.xml  { logged_in? && authorized? && current_user.manager_or_administrator? ? true : access_denied }
-        accepts.json { logged_in? && authorized? && current_user.manager_or_administrator? ? true : access_denied }
-      end
-    end
-  end
-
-  def lab_manager_login_required
-    setup_current_user
-    respond_to do |accepts|
-      accepts.html { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
-      if configatron.disable_api_authentication == true
-        accepts.xml  { true }
-        accepts.json { true }
-      else
-        accepts.xml  { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
-        accepts.json { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
-      end
-    end
-  end
-
-  def slf_manager_login_required
-    setup_current_user
-    respond_to do |accepts|
-      accepts.html do
-        logged_in? && authorized? && (current_user.slf_manager? || current_user.administrator?) ? true : access_denied
-      end
-    end
-  end
-
   def setup_current_user
     username, passwd = get_auth_data
     self.current_user ||= User.authenticate(username, passwd) || :false if username && passwd

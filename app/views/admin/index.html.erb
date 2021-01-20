@@ -38,7 +38,7 @@
     <% end %>
   <% end %>
 
-  <% if can? :administer, BarcodePrinter %>
+  <% if can? :manage, BarcodePrinter %>
     <%= panel do %>
       <h4 class="card-title"><%= link_to "Printer management", barcode_printers_url %></h4>
       Add and remove printers.

@@ -8,7 +8,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
   include Informatics::Globals
 
   before_action :login_required
-  before_action :admin_login_required, only: %i[settings administer manage managed_update grant_role remove_role]
+  authorize_resource only: %i[grant_role remove_role update edit]
 
   around_action :rescue_validation, only: %i[close open]
 
@@ -88,14 +88,12 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   def edit
     @study = Study.find(params[:id])
-    authorize! :update, @study
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     @users = User.all
   end
 
   def update
     @study = Study.find(params[:id])
-    authorize! :update, @study
 
     ActiveRecord::Base.transaction do
       @study.update!(params[:study])
