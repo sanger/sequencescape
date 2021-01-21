@@ -92,7 +92,7 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     PlateMapGeneration.generate!
-    FactoryBot.find_definitions
+    FactoryBot.reload
   end
 
   # The settings below are suggested to provide a good initial experience
