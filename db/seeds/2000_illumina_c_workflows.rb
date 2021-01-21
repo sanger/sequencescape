@@ -8,6 +8,8 @@ ActiveRecord::Base.transaction do
     RecordLoader::PlatePurposeLoader.new(files: [
       '003_illumina_c_legacy_purposes'
     ]).create!
+    RecordLoader::RequestTypeLoader.new(files: [
+      '003_illumina_c_legacy_request_types'
+    ]).create!
   end
-  IlluminaC::Requests.create_request_types
 end

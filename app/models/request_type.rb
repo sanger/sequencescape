@@ -152,6 +152,14 @@ class RequestType < ApplicationRecord
     self.request_class_name = request_class.name
   end
 
+  def product_line_name=(product_line_name)
+    self.product_line = ProductLine.find_or_create_by!(name: product_line_name)
+  end
+
+  def target_purpose_name=(target_purpose_name)
+    self.target_purpose = Purpose.find_by!(name: target_purpose_name)
+  end
+
   def extract_metadata_from_hash(request_options)
     # WARNING: we need a copy of the options (we delete stuff from attributes)
     return {} unless request_options

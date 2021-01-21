@@ -1,4 +1,4 @@
-module IlluminaC::Requests # rubocop:todo Style/Documentation
+module IlluminaC::Requests
   class LibraryRequest < Request::LibraryCreation # rubocop:todo Style/Documentation
     def role; "#{request_metadata.library_type} #{super}"; end
 
@@ -25,93 +25,4 @@ module IlluminaC::Requests # rubocop:todo Style/Documentation
 
   class NoPcrLibraryRequest < LibraryRequest
   end
-
-  module Helpers # rubocop:todo Style/Documentation
-    STOCK_PLATE_PURPOSE = 'ILC Stock'.freeze
-    OUTER_REQUESTS = %w[
-      illumina_c_pcr
-      illumina_c_nopcr
-      illumina_c_pcr_no_pool
-      illumina_c_no_pcr_no_pool
-      illumina_c_chromium_library
-    ].freeze
-
-    def create_request_types
-      each_request_type do |params|
-        RequestType.create!(params)
-      end
-      stock = Purpose.find_by(name: STOCK_PLATE_PURPOSE)
-      OUTER_REQUESTS.each do |request|
-        RequestType.find_by(key: request).acceptable_plate_purposes << stock
-      end
-    end
-
-    def update_request_types
-      each_request_type do |params|
-        key = params.delete(:key)
-        RequestType.find_by(key: key).update!(params)
-      end
-    end
-
-    def destroy_request_types
-      each_request_type do |params|
-        RequestType.find_by(name: params[:name]).destroy
-      end
-    end
-
-    def each_request_type
-      [
-        {
-          name: 'Illumina-C Library Creation PCR',
-          key: 'illumina_c_pcr',
-          for_multiplexing: true,
-          request_class_name: 'IlluminaC::Requests::PcrLibraryRequest',
-          target_purpose: Purpose.find_by(name: 'ILC Lib Pool Norm')
-        },
-        {
-          name: 'Illumina-C Library Creation No PCR',
-          key: 'illumina_c_nopcr',
-          for_multiplexing: true,
-          request_class_name: 'IlluminaC::Requests::NoPcrLibraryRequest',
-          target_purpose: Purpose.find_by(name: 'ILC Lib Pool Norm')
-        },
-        {
-          name: 'Illumina-C Library Creation PCR No Pooling',
-          key: 'illumina_c_pcr_no_pool',
-          request_class_name: 'IlluminaC::Requests::PcrLibraryRequest',
-          for_multiplexing: false
-        },
-        {
-          name: 'Illumina-C Library Creation No PCR No Pooling',
-          key: 'illumina_c_no_pcr_no_pool',
-          request_class_name: 'IlluminaC::Requests::NoPcrLibraryRequest',
-          for_multiplexing: false
-        },
-        {
-          name: 'Illumina-C Chromium library creation',
-          key: 'illumina_c_chromium_library',
-          request_class_name: 'IlluminaC::Requests::LibraryRequest', # See class deprecation notice above
-          for_multiplexing: true,
-          target_purpose: Purpose.find_by(name: 'ILC Lib Pool Norm')
-        },
-        {
-          name: 'Illumina-C Multiplexing',
-          key: 'illumina_c_multiplexing',
-          request_class_name: 'Request::AutoMultiplexing',
-          for_multiplexing: true,
-          target_purpose: Purpose.find_by(name: 'ILC Lib Pool Norm')
-        }
-      ].each do |params|
-        params.merge!(
-          asset_type: 'Well',
-          order: 1,
-          initial_state: 'pending',
-          billable: true,
-          product_line: ProductLine.find_by(name: 'Illumina-C')
-        )
-        yield(params)
-      end
-    end
-  end
-  extend Helpers
 end
