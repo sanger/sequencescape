@@ -79,8 +79,8 @@ module Core::Abilities
       private :record
     end
 
-    require 'cancan'
-    include ::CanCan::Ability
+    require 'cancancan'
+    include CanCan::Ability
     extend ClassMethods
 
     recorder_helper(:full)

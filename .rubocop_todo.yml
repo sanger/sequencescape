@@ -37,8 +37,6 @@ Lint/BooleanSymbol:
   Exclude:
     - 'app/models/qc_file.rb'
     - 'lib/authenticated_system.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
     - 'test/controllers/batches_controller_test.rb'
 
 # Offense count: 20
@@ -216,7 +214,6 @@ Lint/NestedMethodDefinition:
     - 'app/api/endpoints/uuids.rb'
     - 'app/middleware/api/root_service.rb'
     - 'lib/eventful_record.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
 
 # Offense count: 6
 Lint/NonLocalExitFromIterator:
@@ -269,11 +266,6 @@ Lint/ShadowingOuterLocalVariable:
 Lint/StructNewOverride:
   Exclude:
     - 'app/models/product_criteria/basic.rb'
-
-# Offense count: 1
-Lint/UnreachableCode:
-  Exclude:
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
 
 # Offense count: 6
 # Cop supports --auto-correct.
@@ -411,7 +403,6 @@ Naming/AccessorMethodName:
     - 'app/models/well.rb'
     - 'db/seeds/0001_workflows.rb'
     - 'lib/authenticated_system.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
 
 # Offense count: 6
@@ -507,9 +498,6 @@ Naming/PredicateName:
     - 'lib/eventful_record.rb'
     - 'lib/has_behaviour.rb'
     - 'lib/manifest_util.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/identity.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
 
 # Offense count: 8
 # Configuration parameters: EnforcedStyle.
@@ -1234,7 +1222,6 @@ Rails/HasManyOrHasOneDependent:
     - 'app/models/request_type.rb'
     - 'app/models/request_type/pooling_method.rb'
     - 'app/models/robot.rb'
-    - 'app/models/role.rb'
     - 'app/models/sample.rb'
     - 'app/models/sample_manifest.rb'
     - 'app/models/specific_tube_creation.rb'
@@ -1322,7 +1309,6 @@ Rails/LexicallyScopedActionFilter:
 # Include: app/**/*.rb, config/**/*.rb, db/**/*.rb, lib/**/*.rb
 Rails/Output:
   Exclude:
-    - 'lib/rails-authorization-plugin/install.rb'
     - 'lib/views_schema.rb'
 
 # Offense count: 6
@@ -1378,7 +1364,6 @@ Rails/UniqueValidationWithoutIndex:
 Rails/WhereEquals:
   Exclude:
     - 'app/models/request.rb'
-    - 'app/models/role.rb'
     - 'app/models/sample_manifest.rb'
     - 'app/models/study.rb'
     - 'app/models/transfer/associations.rb'
@@ -1412,22 +1397,6 @@ Security/YAMLLoad:
     - 'config/initializers/failure_reasons.rb'
     - 'config/initializers/process_locale_files_with_erb.rb'
     - 'db/seeds/0001_snp_plate_purposes.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: prefer_alias, prefer_alias_method
-Style/Alias:
-  Exclude:
-    - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, conditionals
-Style/AndOr:
-  Exclude:
-    - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
 
 # Offense count: 4
 # Cop supports --auto-correct.
@@ -2344,7 +2313,6 @@ Style/FrozenStringLiteralComment:
     - 'app/models/robot.rb'
     - 'app/models/robot/verification/source_dest_control_beds.rb'
     - 'app/models/robot_property.rb'
-    - 'app/models/role.rb'
     - 'app/models/sample_manifest/barcode_printer_behaviour.rb'
     - 'app/models/sample_manifest/core_behaviour.rb'
     - 'app/models/sample_manifest/multiplexed_library_behaviour.rb'
@@ -2634,14 +2602,6 @@ Style/FrozenStringLiteralComment:
     - 'lib/postman/message.rb'
     - 'lib/postman/state_machine.rb'
     - 'lib/product_helpers.rb'
-    - 'lib/rails-authorization-plugin/Rakefile'
-    - 'lib/rails-authorization-plugin/doc/authorization_example.rb'
-    - 'lib/rails-authorization-plugin/install.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/exceptions.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/identity.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
     - 'lib/record_loader/plate_purpose_loader.rb'
     - 'lib/request_class_deprecator.rb'
     - 'lib/request_type_purpose_creation.rb'
@@ -2751,9 +2711,6 @@ Style/GuardClause:
     - 'lib/label_printer/label_printer/label/batch_multiplex.rb'
     - 'lib/label_printer/label_printer/pmb_client.rb'
     - 'lib/migration_extensions/db_table_archiver.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/identity.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
     - 'lib/validateable.rb'
 
@@ -2776,7 +2733,6 @@ Style/HashSyntax:
   Exclude:
     - 'lib/cron_scripts/import_fluidigm_data.rb'
     - 'lib/informatics/Rakefile'
-    - 'lib/rails-authorization-plugin/Rakefile'
     - 'lib/volume_check.rb'
 
 # Offense count: 5
@@ -2899,8 +2855,6 @@ Style/IfUnlessModifier:
     - 'lib/informatics/lib/informatics/view/menu/list.rb'
     - 'lib/label_printer/label_printer/pmb_client.rb'
     - 'lib/migration_extensions/db_table_archiver.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
     - 'lib/sequencing_qc_batch.rb'
     - 'lib/submission_serializer.rb'
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
@@ -2958,7 +2912,6 @@ Style/Lambda:
     - 'app/models/request.rb'
     - 'app/models/robot.rb'
     - 'app/models/robot_property.rb'
-    - 'app/models/role.rb'
     - 'app/models/sample_manifest.rb'
     - 'app/models/study.rb'
     - 'app/models/study_report/well_details.rb'
@@ -2982,7 +2935,6 @@ Style/MissingRespondToMissing:
     - 'app/models/submission/presenter_skeleton.rb'
     - 'lib/authenticated_test_helper.rb'
     - 'lib/informatics/test/helpers/authentication_helper.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/identity.rb'
     - 'lib/validateable.rb'
 
 # Offense count: 62
@@ -3030,12 +2982,6 @@ Style/MultilineIfModifier:
 Style/MultilineIfThen:
   Exclude:
     - 'config/initializers/ruby_net_http_proxy_hack.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/MultilineTernaryOperator:
-  Exclude:
-    - 'lib/rails-authorization-plugin/lib/publishare/identity.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -3105,9 +3051,6 @@ Style/Not:
     - 'app/views/batches/show.xml.builder'
     - 'config/initializers/ruby_net_http_proxy_hack.rb'
     - 'features/support/step_definitions/api_steps.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/identity.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
 
 # Offense count: 33
 # Cop supports --auto-correct.
@@ -3229,7 +3172,6 @@ Style/ParallelAssignment:
     - 'features/support/step_definitions/4560014_refactoring_properties_descriptors_etc_to_table_columns_steps.rb'
     - 'features/support/step_definitions/tag_layout_steps.rb'
     - 'features/support/step_definitions/transfer_steps.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
     - 'test/unit/api/core/io/json/grammar_test.rb'
     - 'test/unit/api/core/io/json/stream_test.rb'
     - 'test/unit/api/core/io/json_output_test.rb'
@@ -3307,7 +3249,6 @@ Style/PercentLiteralDelimiters:
     - 'features/support/step_definitions/web_steps.rb'
     - 'lib/authenticated_system.rb'
     - 'lib/illumina_c/helper.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
     - 'lib/sequencing_qc_batch.rb'
     - 'lib/tasks/add_traction_records.rake'
     - 'lib/tasks/billing_setup.rake'
@@ -3345,9 +3286,6 @@ Style/PerlBackrefs:
     - 'features/support/paths.rb'
     - 'features/support/step_definitions/submission_steps.rb'
     - 'features/support/step_definitions/tag_layout_steps.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/identity.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
     - 'lib/validateable.rb'
 
 # Offense count: 4
@@ -3483,8 +3421,6 @@ Style/RescueStandardError:
     - 'app/models/submission/delayed_job_behaviour.rb'
     - 'config/initializers/ruby_net_http_proxy_hack.rb'
     - 'features/support/step_definitions/api_steps.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
     - 'test/shoulda_macros/sanger_macros.rb'
 
 # Offense count: 22
@@ -3610,10 +3546,6 @@ Style/StringConcatenation:
     - 'lib/control_request_type_creation.rb'
     - 'lib/informatics/lib/informatics/application.rb'
     - 'lib/label_printer/label_printer/pmb_client.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/identity.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
     - 'lib/tasks/cucumber.rake'
     - 'script/dbconsole'
     - 'script/performance/benchmarker'

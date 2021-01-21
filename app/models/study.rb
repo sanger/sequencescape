@@ -147,9 +147,6 @@ class Study < ApplicationRecord
   before_validation :set_default_ethical_approval
   after_touch :rebroadcast
 
-  # Other class methods / DSL
-  acts_as_authorizable
-
   aasm column: :state, whiny_persistence: true do
     state :pending, initial: true
     state :active, enter: :mark_active
@@ -345,6 +342,8 @@ class Study < ApplicationRecord
   scope :by_user, ->(login) {
                     joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } })
                   }
+
+  scope :with_related_owners_included, -> { includes(:owners) }
 
   # Delegations
   alias_attribute :friendly_name, :name

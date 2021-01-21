@@ -72,7 +72,6 @@ class Order < ApplicationRecord
   before_destroy :building_submission?
   after_destroy :on_delete_destroy_submission
 
-  acts_as_authorizable
   broadcast_via_warren
 
   scope :include_for_study_view, -> { includes(:submission) }

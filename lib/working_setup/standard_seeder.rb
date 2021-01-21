@@ -89,7 +89,7 @@ module WorkingSetup
       existing = User.find_by(login: 'admin')
       return existing if existing
 
-      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:is_administrator)
+      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:grant_administrator)
     end
 
     def faculty_sponsor
@@ -130,7 +130,7 @@ module WorkingSetup
         }
       ) do |study|
         study.activate!
-        user.is_owner(study)
+        user.grant_owner(study)
       end
     end
 

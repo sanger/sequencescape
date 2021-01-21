@@ -33,10 +33,10 @@ module Presenters
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
     end
 
-    def is_manager?
+    def manager?
       # The logic below is strange. It seems to block actions from owners who aren't also lab managers
       # however still allows those without any role access.
-      !@current_user.is_owner? || @current_user.is_manager?
+      !@current_user.owner? || @current_user.manager?
     end
 
     def is_multiplexed?
@@ -80,7 +80,7 @@ module Presenters
     end
 
     def load_pipeline_options
-      add_submenu_option 'Edit batch', edit_batch_path(@batch) if is_manager?
+      add_submenu_option 'Edit batch', edit_batch_path(@batch) if manager?
 
       # Printing of labels is enabled for anybody
       add_submenu_option 'Print labels', :print_labels # The test for this was ridiculously slow,
@@ -92,7 +92,7 @@ module Presenters
       add_submenu_option 'Print stock labels', :print_stock_labels if has_stock_labels?
 
       # Other options are enabled only for managers
-      if is_manager?
+      if manager?
         add_submenu_option 'Create stock tubes', new_batch_stock_asset_path(@batch) if can_create_stock_assets?
         add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet if pacbio_sample_pipeline?
 

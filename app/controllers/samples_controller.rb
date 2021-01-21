@@ -70,7 +70,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
   def edit
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
-      if @sample.released? && !current_user.is_administrator?
+      if @sample.released? && !current_user.administrator?
         flash[:error] = 'Cannot edit publically released sample'
         redirect_to sample_path(@sample)
         return
@@ -198,7 +198,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
   end
 
   def redirect_if_not_owner_or_admin_otherwise
-    return yield if current_user.owner?(@sample) || current_user.is_administrator? || current_user.is_manager?
+    return yield if current_user.owner?(@sample) || current_user.administrator? || current_user.manager?
 
     flash[:error] = 'Sample details can only be altered by the owner or an administrator or manager'
     redirect_to sample_path(@sample)

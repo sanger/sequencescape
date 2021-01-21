@@ -109,10 +109,10 @@ class Plate::QuadCreator
     #
     # Calculate the target coordinate for a source coordinate and quadrant number
     #
-    # @param [<String>] Location name of the well or tube. Eg. H12
-    # @param [<int>] Quadrant index 1-4 e.g. 4
+    # @param source_coordinate_name [String] Location name of the well or tube. Eg. H12
+    # @param quadrant_index [int] Quadrant index 1-4 e.g. 4
     #
-    # @return [<String>] The target coordinate in the destination 384-well plate, e.g. P24
+    # @return [String] The target coordinate in the destination 384-well plate, e.g. P24
     #
     def target_coordinate_for(source_coordinate_name, quadrant_index)
       row_offset = quadrant_index % 2 # q0 -> 0, q1 -> 1, q2 -> 0, q3 -> 1

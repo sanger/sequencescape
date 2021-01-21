@@ -95,10 +95,7 @@ class SampleRegistrar < ApplicationRecord
   end
 
   after_create do |record|
-    # NOTE: this looks like it should be 'record.user.is_owner_of(record.sample)' but ActiveRecord and the
-    # dynamic methods associated with User and Role causes that not to work.  So you have to be explicit
-    # and send the request for the method!
-    record.user.send(:is_owner_of, record.sample)
+    record.user.grant_owner(record.sample)
     record.study.samples.concat(record.sample)
     RequestFactory.create_assets_requests([record.sample_tube], record.study)
     sample_tube.register_stock!
