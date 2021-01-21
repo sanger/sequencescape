@@ -126,7 +126,7 @@ jobs:
         CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         DBPORT: ${{ job.services.mysql.ports[3306] }}
-      run: bundle exec rake "knapsack_pro:rspec[--fail-fast]"
+      run: bundle exec rake "knapsack_pro:queue:rspec[--fail-fast]"
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:
@@ -193,7 +193,7 @@ jobs:
         CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         DBPORT: ${{ job.services.mysql.ports[3306] }}
-      run: bundle exec rake knapsack_pro:cucumber
+      run: bundle exec rake knapsack_pro:queue:cucumber
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:
