@@ -67,7 +67,7 @@ class Ability
     # Can change plate purpose (admin, lab_manager)
     grant_administrator_privileges if user.administrator?
     grant_lab_manager_privileges if user.lab_manager?
-    grant_manager_privileges if user.manager?
+    grant_manager_privileges if user.manager? # Can easily get this role by creating a project
     grant_sample_management_privileges if user.slf_manager? || user.slf_gel?
     grant_slf_manager_privileges if user.slf_manager?
     grant_qa_privileges if user.qa_manager?

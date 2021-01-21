@@ -1,13 +1,13 @@
 
 <% add :about, "This page details the current status of a study." -%>
-<% if @study.approved? && @study.active? -%>
-  <% add :manager_option, "Create Submission" => new_submission_path(study_id: @study.id) -%>
-  <% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
+<% if @study.approved? && @study.active? && can?(:create, Submission) -%>
+  <% add :menu, "Create Submission" => new_submission_path(study_id: @study.id) -%>
+  <% add :menu, "Start a Bulk Submission" => new_bulk_submission_path -%>
 <% end -%>
 <%# Merge conflict? Select the version that deletes this. This is only
   # due to live another few days %>
 <% if can? :create, SampleManifest %>
-  <% add :manager_option, "Register samples" => study_sample_registration_index_path(@study) -%>
+  <% add :menu, "Register samples" => study_sample_registration_index_path(@study) -%>
 <% end %>
 <% add :menu, "Samples" => study_samples_path(@study) -%>
 <% add :menu, "Sample Manifests" => sample_manifests_study_path(@study) %>
@@ -24,9 +24,9 @@
 <% add :menu, "&nbsp;" => '' -%>
 <% if can? :activate, @study %>
   <% if @study.active? -%>
-    <% add :manager_option, { 'Deactivate Study' => state_study_path(@study) }   -%>
+    <% add :menu, { 'Deactivate Study' => state_study_path(@study) }   -%>
   <% else -%>
-    <% add :manager_option, { 'Activate Study' => state_study_path(@study) } -%>
+    <% add :menu, { 'Activate Study' => state_study_path(@study) } -%>
   <% end -%>
 <% end -%>
 
@@ -34,9 +34,9 @@
 <% add :menu, pluralize(@study.comments.size, "comment") => study_comments_path(@study) -%>
 
 <% if can? :accession?, @study %>
-  <% add :manager_option, @study.accession_number? ? "Update EBI Study data" : "Generate Accession Number" => url_for(controller: '/studies', action: 'accession', id: @study.id) -%>
-  <% add :manager_option, "Generate DAC Accession Number" => url_for(controller: '/studies', action: 'dac_accession', id: @study.id) -%>
-  <% add :manager_option, "Generate Policy Accession Number" => url_for(controller: '/studies', action: 'policy_accession', id: @study.id) -%>
+  <% add :menu, @study.accession_number? ? "Update EBI Study data" : "Generate Accession Number" => url_for(controller: '/studies', action: 'accession', id: @study.id) -%>
+  <% add :menu, "Generate DAC Accession Number" => url_for(controller: '/studies', action: 'dac_accession', id: @study.id) -%>
+  <% add :menu, "Generate Policy Accession Number" => url_for(controller: '/studies', action: 'policy_accession', id: @study.id) -%>
 <% end -%>
 
 <% if can? :edit, @study %>
@@ -44,7 +44,7 @@
 <% end %>
 
 <% if can? :administer, @study %>
-  <% add :admin_option, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
+  <% add :menu, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
 <% end %>
 
 <% add :menu, "Submissions" => url_for(controller: "/submissions", action: "study", id: @study.id) -%>

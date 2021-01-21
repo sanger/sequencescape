@@ -1,7 +1,9 @@
 
 <% add :about, I18n.t("studies.about") -%>
 <% add :back_menu,I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
-<% add :admin_option, "Administer studies" => studies_path -%>
+<% if can? :administer, Study %>
+  <% add :menu, "Administer studies" => admin_studies_path -%>
+<% end %>
 
 <%= page_title @study.name, 'Comments' %>
 <div class='subtitle'>

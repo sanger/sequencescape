@@ -1,6 +1,8 @@
 
 <%- add :about, "Study specification and management." %>
-<% add :admin_option, "Study manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
+<% if can? :administer, @study %>
+  <% add :menu, "Study manage" => admin_study_path(@study) -%>
+<% end %>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_information_path(@study) -%>
 
 <div id='content-links'>

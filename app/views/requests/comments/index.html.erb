@@ -4,7 +4,9 @@
 <% @request.associated_studies.each do |study| %>
   <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(study) -%>
 <% end %>
-<% add :admin_option, "Administer studies" => admin_studies_path -%>
+<% if can? :administer, Study %>
+  <% add :menu, "Administer studies" => admin_studies_path -%>
+<% end %>
 
 <%= page_title("Request #{@request.id}",'Comments') %>
 <div class='subtitle'>

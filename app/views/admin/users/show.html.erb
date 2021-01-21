@@ -1,8 +1,8 @@
 
 <%- add :about, "User profile." %>
-<%- add :admin_option, "Manage accounts" => admin_users_url %>
-<%- add :admin_option, "Back to roles management" => url_for(controller: "admin/roles", action: :index) %>
-<%- add :admin_option, "Back to Admin Panel" => admin_path %>
+<%- add :menu, "Manage accounts" => admin_users_path if can?(:administer, User) %>
+<%- add :menu, "Back to roles management" => admin_roles_path if can?(:administer, Role) %>
+<%- add :menu, "Back to Admin Panel" => admin_path if can?(:administer, Sequencescape) %>
 
 <div class="page-header"><h1><% unless @user.name.empty? %><%= @user.name %><% end %> : <%=h @user.login %></h1></div>
 
