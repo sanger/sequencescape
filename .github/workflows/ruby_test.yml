@@ -2,6 +2,9 @@ name: Ruby Test
 env:
   TZ: Europe/London
   CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+  KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+  KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER }}
+  KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
 
 on:
   - push
@@ -123,7 +126,7 @@ jobs:
         CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         DBPORT: ${{ job.services.mysql.ports[3306] }}
-      run: bundle exec rake "knapsack:rspec[--fail-fast]"
+      run: bundle exec rake "knapsack_pro:rspec[--fail-fast]"
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:
@@ -190,7 +193,7 @@ jobs:
         CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         DBPORT: ${{ job.services.mysql.ports[3306] }}
-      run: bundle exec rake knapsack:cucumber
+      run: bundle exec rake knapsack_pro:cucumber
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:
