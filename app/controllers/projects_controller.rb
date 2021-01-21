@@ -45,7 +45,7 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     @project = Project.new(params[:project])
     @project.save!
 
-    current_user.has_role('manager', @project)
+    current_user.grant_manager(@project)
 
     # Creates an event when a new Project is created
     EventFactory.new_project(@project, current_user)
@@ -110,11 +110,11 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
 
   def follow
     @project = Project.find(params[:id])
-    if current_user.has_role? 'follower', @project
-      current_user.has_no_role 'follower', @project
+    if current_user.follower_of?(@project)
+      current_user.remove_role 'follower', @project
       flash[:notice] = "You have stopped following the '#{@project.name}' project."
     else
-      current_user.has_role 'follower', @project
+      current_user.grant_follower(@project)
       flash[:notice] = "You are now following the '#{@project.name}' project."
     end
     redirect_to project_path(@project)
@@ -127,7 +127,7 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
 
     if request.xhr?
       if params[:role]
-        @user.has_role(params[:role][:authorizable_type].to_s, @project)
+        @user.grant_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
         flash[:notice] = 'Role added'
         render partial: 'roles', status: 200
@@ -150,7 +150,7 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
 
     if request.xhr?
       if params[:role]
-        @user.has_no_role(params[:role][:authorizable_type].to_s, @project)
+        @user.remove_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
         flash[:error] = 'Role was removed'
         render partial: 'roles', status: 200

@@ -18,8 +18,6 @@ class ProjectsControllerTest < ActionController::TestCase
       @controller = ProjectsController.new
       @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryBot.create :user
-
-      @user.has_role('owner')
       session[:user] = @user.id
     end
 
@@ -101,7 +99,6 @@ class ProjectsControllerTest < ActionController::TestCase
     context 'with JSON data' do
       setup do
         @user = FactoryBot.create :user, api_key: 'abc'
-        @user.has_role('owner')
         session[:user] = @user.id
 
         @json_data = <<-END_OF_JSON_DATA

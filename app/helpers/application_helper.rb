@@ -157,7 +157,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   end
 
   def display_follow(item, user, msg)
-    if user.following?(item)
+    if user.follower_of?(item)
       'Unfollow ' + msg
     else
       'Follow ' + msg

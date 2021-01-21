@@ -42,6 +42,7 @@ class Sample < ApplicationRecord
   include SharedBehaviour::Named
   include Aliquot::Aliquotable
   include Commentable
+  include Role::Authorized
 
   extend EventfulRecord
   extend ValidationStateGuard
@@ -259,7 +260,6 @@ class Sample < ApplicationRecord
   has_one :sample_manifest_asset, foreign_key: :sanger_sample_id, primary_key: :sanger_sample_id, inverse_of: :sample
 
   has_many_lab_events
-  acts_as_authorizable
   broadcast_via_warren
 
   # Aker

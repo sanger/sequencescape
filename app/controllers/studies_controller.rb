@@ -58,8 +58,8 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     ActiveRecord::Base.transaction do
       @study = Study.new(params['study'].merge(user: current_user))
       @study.save!
-      current_user.has_role('manager', @study)
-      User.find(params[:study_owner_id]).has_role('owner', @study) if params[:study_owner_id].present?
+      current_user.grant_manager(@study)
+      User.find(params[:study_owner_id]).grant_owner(@study) if params[:study_owner_id].present?
     end
 
     flash[:notice] = 'Your study has been created'
@@ -102,9 +102,9 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       @study.update!(params[:study])
       if params[:study_owner_id].present?
         owner = User.find(params[:study_owner_id])
-        unless owner.is_owner?(@study)
-          @study.owners.first.has_no_role('owner', @study) if @study.owners.size == 1
-          owner.has_role('owner', @study)
+        unless owner.owner_of?(@study)
+          @study.owners.first.remove_role('owner', @study) if @study.owners.size == 1
+          owner.grant_owner(@study)
         end
       end
 
@@ -151,11 +151,11 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   def follow
     @study = Study.find(params[:id])
-    if current_user.has_role? 'follower', @study
-      current_user.has_no_role 'follower', @study
+    if current_user.follower_of?(@study)
+      current_user.remove_role 'follower', @study
       flash[:notice] = "You have stopped following the '#{@study.name}' study."
     else
-      current_user.has_role 'follower', @study
+      current_user.follower_of?(@study)
       flash[:notice] = "You are now following the '#{@study.name}' study."
     end
     redirect_to study_information_path(@study)
@@ -284,8 +284,8 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
-  role_helper(:grant, 'added', 'adding')     { |user, study, name| user.has_role(name, study) }
-  role_helper(:remove, 'remove', 'removing') { |user, study, name| user.has_no_role(name, study) }
+  role_helper(:grant, 'added', 'adding')     { |user, study, name| user.grant_role(name, study) }
+  role_helper(:remove, 'remove', 'removing') { |user, study, name| user.remove_role(name, study) }
 
   def projects
     @study = Study.find(params[:id])
@@ -310,7 +310,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
   private
 
   def redirect_if_not_owner_or_admin
-    unless current_user.owner?(@study) || current_user.is_administrator? || current_user.is_manager?
+    unless current_user.owner?(@study) || current_user.administrator? || current_user.manager?
       flash[:error] = "Study details can only be altered by the owner (#{@study.user.login}) or an administrator or manager"
       redirect_to study_path(@study)
     end

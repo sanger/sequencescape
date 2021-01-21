@@ -42,7 +42,7 @@ RSpec.describe SubmissionsController, type: :controller do
 
     context 'when a submission exists' do
       setup do
-        @user.is_lab_manager
+        @user.grant_lab_manager
         @submission = Submission.create!(priority: 1, user: @user)
         post :change_priority, params: { id: @submission.id, submission: { priority: 3 } }
       end

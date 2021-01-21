@@ -1,7 +1,7 @@
 name: Ruby Test
 env:
   TZ: Europe/London
-  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID || '9c624e5d90c5b319d678e06d66c7671f1661fda826436d475f9679b54be63e26' }}
 
 on:
   - push
@@ -200,6 +200,7 @@ jobs:
   end_coverage:
     runs-on: ubuntu-latest
     needs: [rake_tests, rspec_tests, cucumber_tests]
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2
     - name: Fetch coverage results
