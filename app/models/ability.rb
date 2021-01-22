@@ -11,6 +11,7 @@ class Ability
 
   def initialize(user)
     @user = user
+    Rails.logger.debug { "Auth: #{user}, roles: #{user.try(:roles)&.map(&:name)}" }
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)
@@ -95,6 +96,7 @@ class Ability
     can :print_asset_group_labels, Study, managers: { id: user.id }
     can %i[read create], Submission
     can :create, Comment, commentable_type: %w[Study Sample], commentable: { owners: { id: user.id } }
+    grant_advanced_batch_operation_privileges
   end
 
   def grant_administrator_privileges
@@ -104,7 +106,6 @@ class Ability
 
     # Requests
     can :update, Request
-    can :create_additional, Request
     # Lets the user request additional sequencing/libraries
     # under a different study/project than the original
     can :edit_additional, Request
@@ -125,7 +126,7 @@ class Ability
     can :unlink_sample, Study
     can :link_sample, Study
     can :accession, Study
-    can :grant_role, :remove_role, Study
+    can %i[grant_role remove_role], Study
 
     # Projects
     # Administer covers update of the projects via the
@@ -191,7 +192,6 @@ class Ability
     # shown in the dropdown.
     can :request_additional_with, Study, managers: { id: user.id }
     # Slight changes to behaviour, selects most permissive route
-    can :create_additional, Request
     can :unlink_sample, Study, managers: { id: user.id }
     can :accession, Study, managers: { id: user.id }
     can :link_sample, Study, managers: { id: user.id }
@@ -215,6 +215,7 @@ class Ability
     can :cancel, Request
     can :copy, Request
     can :change_decision, Request
+    can :create_additional, Request
     can :update, Sample
     can :release, Sample
     can :accession, Sample

@@ -5,7 +5,7 @@ module Presenters
   # a variety of options depending on properties of the batch. The {BatchSubmenuPresenter}
   # encapsulates the logic which was previously in the view itself.
   class BatchSubmenuPresenter
-    attr_reader :options, :ability, :pipeline
+    attr_reader :options, :ability, :pipeline, :batch
 
     # Provide access to url_for and other Rails URL helpers {ActionDispatch::Routing::UrlFor}
     # Included directly as Rails.application.routes.url_helpers itself generates a
@@ -15,7 +15,16 @@ module Presenters
     include ActionView::Helpers::TextHelper
 
     delegate :multiplexed?, to: :batch
-    delegate :genotyping?, to: :pipeline
+    delegate :genotyping?, :sequencing?, to: :pipeline
+
+    def initialize(current_user, batch)
+      @current_user = current_user
+      @ability = Ability.new(current_user)
+      @batch = batch
+      @pipeline = @batch.pipeline
+
+      @defaults = { controller: :batches, id: @batch.id, only_path: true }
+    end
 
     def add_submenu_option(text, action_params)
       @options ||= []
@@ -45,15 +54,6 @@ module Presenters
       ability.can? permission, object
     end
 
-    def initialize(current_user, batch)
-      @current_user = current_user
-      @ability = Ability.new(current_user)
-      @batch = batch
-      @pipeline = @batch.pipeline
-
-      @defaults = { controller: :batches, id: @batch.id, only_path: true }
-    end
-
     def build_submenu
       add_submenu_option 'View summary', controller: :pipelines, action: :summary
       add_submenu_option pluralize(@batch.comments.size, 'comment'), batch_comments_path(@batch)
@@ -67,10 +67,6 @@ module Presenters
 
     def pacbio?
       @pipeline.is_a?(PacBioSequencingPipeline)
-    end
-
-    def not_sequencing?
-      !@pipeline.is_a?(SequencingPipeline)
     end
 
     def can_create_stock_assets?
@@ -90,7 +86,7 @@ module Presenters
     end
 
     def stock_labels?
-      [not_sequencing?, can_create_stock_assets?, !multiplexed?].all?
+      [!sequencing?, can_create_stock_assets?, !multiplexed?].all?
     end
 
     def load_pipeline_options
@@ -119,7 +115,7 @@ module Presenters
         end
       end
 
-      add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can(:verify?)
+      add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify?)
     end
   end
 end

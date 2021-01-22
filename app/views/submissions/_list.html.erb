@@ -23,7 +23,7 @@
         <td><%= link_to "View", submission_path(submission) %></td>
         <% if can? :edit, Submission %> <%# Render the cell if you can edit *any* submission %>
           <td>
-            <% if can?(:delete, submision) && submission.editable? %> <%# But only show the link if you can edit THIS submission%>
+            <% if can?(:delete, submission) && submission.editable? %> <%# But only show the link if you can edit THIS submission%>
               <%= link_to("Edit", edit_submission_path(submission)) %>
             <% end %>
           </td>
@@ -31,7 +31,7 @@
         <% if can?(:delete, Submission) %> <%# Render the cell if you can delete *any* submission %>
           <td>
             <% if can?(:delete, submission) & submission.destroyable? %> <%# But only show the link if you can delete THIS submission%>
-              <%= link_to("Delete", submission_path(submission), method: :delete, confirm: "Are you sure?")
+              <%= link_to("Delete", submission_path(submission), method: :delete, confirm: "Are you sure?") %>
             <% end %>
           </td>
         <% end %>
