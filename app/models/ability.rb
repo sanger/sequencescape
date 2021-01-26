@@ -9,6 +9,16 @@ class Ability
 
   attr_reader :user
 
+  ROLE_CLASSES = {
+    'administrator' => Ability::Administrator,
+    'lab_manager' => Ability::LabManager,
+    'manager' => Ability::Manager,
+    'slf_gel' => Ability::SampleManagementGel,
+    'slf_manager' => Ability::SampleManagementManager,
+    'qa_manager' => Ability::QaManager,
+    'data_access_coordinator' => Ability::DataAccessCoordinator
+  }.freeze
+
   def initialize(user)
     @user = user
     Rails.logger.debug { "Auth: #{user}, roles: #{user.try(:roles)&.map(&:name)}" }
@@ -57,21 +67,10 @@ class Ability
     # Privileges granted to any logged in users
     grant_basic_privileges
 
-    # Eager load roles to avoid lots of queries
-    user.roles.load
-
-    # TODO
-    # These actions have been extracted from the existing role driven permission system
-
-    # LabwareController:182
-    # Can rename labware (admin)
-    # Can change plate purpose (admin, lab_manager)
-    grant_administrator_privileges if user.administrator?
-    grant_lab_manager_privileges if user.lab_manager?
-    grant_manager_privileges if user.manager? # Can easily get this role by creating a project
-    grant_sample_management_privileges if user.slf_manager? || user.slf_gel?
-    grant_slf_manager_privileges if user.slf_manager?
-    grant_qa_privileges if user.qa_manager?
+    user.role_names.each do |role|
+      role_class = ROLE_CLASSES[role]
+      merge(role_class.new(user)) unless role_class.nil?
+    end
   end
 
   # Global privileges are those granted
@@ -81,213 +80,6 @@ class Ability
   # Permissions granted to all users following
   # authentication
   def grant_basic_privileges
-    can %i[update release accession], Sample, owners: { id: user.id }
-    can %i[read update], User, { id: user.id }
-    can %i[projects study_reports], User
-    can :delete, Comment, { user_id: user.id }
-    # There isn't really much reason to stop users seeing this
-    can :read, Delayed::Job
-    can :read, ReferenceGenome
-    can :read, [TagGroup, TagLayoutTemplate]
-    can :read, Robot
-    can :read, Labware
-    # Basic users can only create submissions using projects they own.
-    can :create_submission, Project, owners: { id: user.id }
-    can :print_asset_group_labels, Study, owners: { id: user.id }
-    can :print_asset_group_labels, Study, managers: { id: user.id }
-    can %i[read create], Submission
-    can :create, Comment, commentable_type: %w[Study Sample], commentable: { owners: { id: user.id } }
-    grant_advanced_batch_operation_privileges
-  end
-
-  def grant_administrator_privileges
-    # Labware
-    can :edit, Labware
-    can :rename, Labware
-    can :change_purpose, Labware
-
-    # Requests
-    can :update, Request
-    # Lets the user request additional sequencing/libraries
-    # under a different study/project than the original
-    can :edit_additional, Request
-    # For old pipelines, removes QC events
-    can :reset_qc_information, Request
-
-    # If a sample has been released to the ENA, we need
-    # to be careful about releasing it.
-    can :update_released, Sample
-
-    # Administer covers update of the studies via the
-    # admin/studies controller. It mostly adds the ability
-    # to activate/deactivate a study and change ethical approval
-    # or data-release fields
-    can :administer, Study
-    # If the user is an administrator show all studies.
-    can :request_additional_with, Study
-    can :unlink_sample, Study
-    can :link_sample, Study
-    can :accession, Study
-    can %i[grant_role remove_role], Study
-
-    # Projects
-    # Administer covers update of the projects via the
-    # admin/projects controller. It mostly adds the ability
-    # to disable enforced validation, and add financial approval
-    can :administer, Project
-    # Manage is actually more powerful than administer.
-    can :manage, Project
-
-    can :rollback, Batch
-
-    can :delete, Comment
-
-    can :manage, BarcodePrinter
-    can :create, [Purpose, PlatePurpose]
-    can :manage, Program
-    can :manage, [BaitLibrary, BaitLibrary::Supplier, BaitLibraryType]
-    can :manage, PrimerPanel
-
-    can :manage, Role
-    can :delete, Document
-
-    can :manage, AssetGroup
-    can :create, Order
-
-    can :print_asset_group_labels, Study
-    # Edit and delete submissions
-    can :manage, Submission
-
-    grant_power_user_privileges
-    grant_super_user_privileges
-    grant_sample_management_privileges
-    grant_tag_privileges
-  end
-
-  # Grants the ability to create tag_groups
-  def grant_tag_privileges
-    can :manage, TagGroup
-    can :manage, TagLayoutTemplate
-  end
-
-  def grant_lab_privileges
-    can :print_asset_group_labels, Study
-  end
-
-  def grant_lab_manager_privileges
-    can :edit, Labware
-    can :change_purpose, Labware
-    can :change_priority, [Request, Submission]
-    can :update_priority, [Pipeline] # Really should be on request
-    # Whether the inbox shows if a request is previously failed
-    can :see_previously_failed, Request
-    grant_lab_privileges
-  end
-
-  # Mainly granted to SSRs because they manage studies
-  # Really this role should *NOT* contain generic permissions
-  # only those associated with specific studies
-  def grant_manager_privileges
-    # Can update and edit projects they manage
-    can :update, Project, managers: { id: user.id }
-    # If a user is a manager, this is the list of studies
-    # shown in the dropdown.
-    can :request_additional_with, Study, managers: { id: user.id }
-    # Slight changes to behaviour, selects most permissive route
-    can :unlink_sample, Study, managers: { id: user.id }
-    can :accession, Study, managers: { id: user.id }
-    can :link_sample, Study, managers: { id: user.id }
-
-    # Includes ability to add labware to asset group
-    can :create, AssetGroup, study: { managers: { id: user.id } }
-    can :create, Order, study: { managers: { id: user.id } }
-
-    grant_power_user_privileges
-    grant_sample_management_privileges
-  end
-
-  # These are the privileges shared by administrators and managers
-  def grant_power_user_privileges
-    Rails.logger.debug { 'Granting power_user_privileges' }
-    # Admin link will appear
-    can :administer, Sequencescape
-    can :edit, Labware
-    can :manage, PlateTemplate
-    can :close, Receptacle
-    can :manage, Receptacle
-    can :cancel, Request
-    can :copy, Request
-    can :change_decision, Request
-    can :create_additional, Request
-    can :update, Sample
-    can :release, Sample
-    can :accession, Sample
-    can %i[activate deactivate], Study
-    can :update, Study
-    can :create, SampleManifest
-    can :create, Supplier
-    can :create, Comment
-    # Slight difference here from before. Previously managers
-    # could use any study/project until they were owner,
-    # manager or follows of a project, as which point they were
-    # limited to that one.
-    can :create_submission, Project
-  end
-
-  # Contains the privileges which should really be
-  # restricted to a small subset of users. Currently
-  # awarded to all admins.
-  def grant_super_user_privileges
-    # More advanced user administration, such as the ability to add
-    # and remove roles
-    can :manage, User
-    # Changing help text
-    can :manage, CustomText
-    # Can edit existing plate purposes
-    can :manage, [Purpose, PlatePurpose]
-    can :manage, [Robot, RobotProperty]
-    can :manage, FacultySponsor
-    can :manage, ReferenceGenome
-    can :manage, Role
-    can :convert_to_tube, Plate
-    can %i[activate deactivate], Pipeline
-  end
-
-  def grant_sample_management_privileges
-    # Index page of a few sample management tasks
-    can :read, SampleLogisticsController
-    # Old gels controller.
-    can :manage, GelsController
-  end
-
-  def grant_slf_manager_privileges
-    Rails.logger.debug { 'Granting slf_manager_privileges' }
-    can :create, SampleManifest
-    can :create, Supplier
-    can :manage, PlateTemplate
-    can :convert_to_tube, Plate
-  end
-
-  def grant_qa_privileges
-    Rails.logger.debug { 'Granting qa_privileges' }
-    can :create, QcDecision
-  end
-
-  # Before this was granted to anyone, unless they
-  # were an owner of anything, in which case they also
-  # had to be a manager, possibly of something
-  # This is silly. So we'll just grant them to everyone
-  # now, but pop them in a separate section so its easy to
-  # revisit
-  def grant_advanced_batch_operation_privileges
-    can :create_stock_asset, Batch
-    can :sample_prep_worksheet, Batch
-    can :print, Batch
-    can :verify, Batch
-    can :edit, Batch
-  end
-
-  def grant_data_access_coordinator_privileges
-    can :change_ethically_approved, Study
+    merge(Ability::BaseUser.new(user))
   end
 end

@@ -10,6 +10,9 @@ RSpec.describe Ability do
   let(:user) { nil }
 
   let(:global_permissions) do
+    # This is a list of all possible permissions. It is used to generate the tests.
+    # We check each permission in turn. If it is in the granted_permissions hash,
+    # we check it is granted, otherwise we check it is forbidden.
     {
       AssetGroup => %i[create edit read delete new],
       BaitLibrary => %i[create edit read delete],
