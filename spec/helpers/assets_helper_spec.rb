@@ -3,6 +3,7 @@
 require 'spec_helper'
 require 'rails_helper'
 require './app/helpers/assets_helper'
+
 describe AssetsHelper do
   before do
     helper.extend(AuthenticatedSystem)

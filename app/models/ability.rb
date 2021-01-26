@@ -90,6 +90,7 @@ class Ability
     can :read, ReferenceGenome
     can :read, [TagGroup, TagLayoutTemplate]
     can :read, Robot
+    can :read, Labware
     # Basic users can only create submissions using projects they own.
     can :create_submission, Project, owners: { id: user.id }
     can :print_asset_group_labels, Study, owners: { id: user.id }
@@ -101,6 +102,7 @@ class Ability
 
   def grant_administrator_privileges
     # Labware
+    can :edit, Labware
     can :rename, Labware
     can :change_purpose, Labware
 
@@ -173,7 +175,7 @@ class Ability
   end
 
   def grant_lab_manager_privileges
-    can :manage, Labware
+    can :edit, Labware
     can :change_purpose, Labware
     can :change_priority, [Request, Submission]
     can :update_priority, [Pipeline] # Really should be on request
@@ -206,9 +208,10 @@ class Ability
 
   # These are the privileges shared by administrators and managers
   def grant_power_user_privileges
+    Rails.logger.debug { 'Granting power_user_privileges' }
     # Admin link will appear
     can :administer, Sequencescape
-    can :manage, Labware
+    can :edit, Labware
     can :manage, PlateTemplate
     can :close, Receptacle
     can :manage, Receptacle
@@ -258,6 +261,7 @@ class Ability
   end
 
   def grant_slf_manager_privileges
+    Rails.logger.debug { 'Granting slf_manager_privileges' }
     can :create, SampleManifest
     can :create, Supplier
     can :manage, PlateTemplate
@@ -265,6 +269,7 @@ class Ability
   end
 
   def grant_qa_privileges
+    Rails.logger.debug { 'Granting qa_privileges' }
     can :create, QcDecision
   end
 
