@@ -183,53 +183,58 @@ RSpec.describe Ability do
 
   context 'when the user has the role "follower"' do
     let(:user) { build :user, :with_role, role_name: 'follower' }
-    let(:authorized_project) { build :project, :with_follower, follower: user }
-    let(:unauthorized_project) { build :project }
-    let(:authorized_study) { build :study, :with_follower, follower: user }
-    let(:unauthorized_study) { build :study }
 
     let(:granted_permissions) { basic_permissions }
 
     it_behaves_like 'it grants only granted_permissions'
 
-    # Project
-    it { is_expected.not_to be_able_to(:administer, authorized_project) }
-    it { is_expected.not_to be_able_to(:administer, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:edit, authorized_project) }
-    it { is_expected.not_to be_able_to(:edit, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:create, authorized_project) }
-    it { is_expected.not_to be_able_to(:create, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:create_submission, authorized_project) }
-    it { is_expected.not_to be_able_to(:create_submission, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:read, authorized_project) }
-    it { is_expected.not_to be_able_to(:read, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:delete, authorized_project) }
-    it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
-    # Study
-    it { is_expected.not_to be_able_to(:administer, authorized_study) }
-    it { is_expected.not_to be_able_to(:administer, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:unlink_sample, authorized_study) }
-    it { is_expected.not_to be_able_to(:unlink_sample, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:link_sample, authorized_study) }
-    it { is_expected.not_to be_able_to(:link_sample, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:edit, authorized_study) }
-    it { is_expected.not_to be_able_to(:edit, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:create, authorized_study) }
-    it { is_expected.not_to be_able_to(:create, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:activate, authorized_study) }
-    it { is_expected.not_to be_able_to(:activate, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:deactivate, authorized_study) }
-    it { is_expected.not_to be_able_to(:deactivate, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:print_asset_group_labels, authorized_study) }
-    it { is_expected.not_to be_able_to(:print_asset_group_labels, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:accession, authorized_study) }
-    it { is_expected.not_to be_able_to(:accession, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:request_additional_with, authorized_study) }
-    it { is_expected.not_to be_able_to(:request_additional_with, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:grant_role, authorized_study) }
-    it { is_expected.not_to be_able_to(:grant_role, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:remove_role, authorized_study) }
-    it { is_expected.not_to be_able_to(:remove_role, unauthorized_study) }
+    context 'with specific studies and projects' do
+      let(:user) { create :user, :with_role, role_name: 'follower' }
+      let(:authorized_project) { create :project, :with_follower, follower: user }
+      let(:unauthorized_project) { create :project }
+      let(:authorized_study) { create :study, :with_follower, follower: user }
+      let(:unauthorized_study) { create :study }
+
+      # Project
+      it { is_expected.not_to be_able_to(:administer, authorized_project) }
+      it { is_expected.not_to be_able_to(:administer, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:edit, authorized_project) }
+      it { is_expected.not_to be_able_to(:edit, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:create, authorized_project) }
+      it { is_expected.not_to be_able_to(:create, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:create_submission, authorized_project) }
+      it { is_expected.not_to be_able_to(:create_submission, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:read, authorized_project) }
+      it { is_expected.not_to be_able_to(:read, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:delete, authorized_project) }
+      it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
+
+      # Study
+      it { is_expected.not_to be_able_to(:administer, authorized_study) }
+      it { is_expected.not_to be_able_to(:administer, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:unlink_sample, authorized_study) }
+      it { is_expected.not_to be_able_to(:unlink_sample, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:link_sample, authorized_study) }
+      it { is_expected.not_to be_able_to(:link_sample, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:edit, authorized_study) }
+      it { is_expected.not_to be_able_to(:edit, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:create, authorized_study) }
+      it { is_expected.not_to be_able_to(:create, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:activate, authorized_study) }
+      it { is_expected.not_to be_able_to(:activate, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:deactivate, authorized_study) }
+      it { is_expected.not_to be_able_to(:deactivate, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:print_asset_group_labels, authorized_study) }
+      it { is_expected.not_to be_able_to(:print_asset_group_labels, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:accession, authorized_study) }
+      it { is_expected.not_to be_able_to(:accession, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:request_additional_with, authorized_study) }
+      it { is_expected.not_to be_able_to(:request_additional_with, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:grant_role, authorized_study) }
+      it { is_expected.not_to be_able_to(:grant_role, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:remove_role, authorized_study) }
+      it { is_expected.not_to be_able_to(:remove_role, unauthorized_study) }
+    end
   end
 
   context 'when the user has the role "lab"' do
@@ -258,10 +263,6 @@ RSpec.describe Ability do
 
   context 'when the user has the role "manager"' do
     let(:user) { build :user, :with_role, role_name: 'manager' }
-    let(:authorized_project) { build :project, :with_manager, manager: user }
-    let(:unauthorized_project) { build :project }
-    let(:authorized_study) { build :study, :with_manager, manager: user }
-    let(:unauthorized_study) { build :study }
 
     let(:granted_permissions) do
       merge_permissions(basic_permissions, {
@@ -284,106 +285,119 @@ RSpec.describe Ability do
 
     it_behaves_like 'it grants only granted_permissions'
 
-    # Project
-    it { is_expected.not_to be_able_to(:administer, authorized_project) }
-    it { is_expected.not_to be_able_to(:administer, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:edit, authorized_project) }
-    it { is_expected.not_to be_able_to(:edit, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:create, authorized_project) }
-    it { is_expected.not_to be_able_to(:create, unauthorized_project) }
-    it { is_expected.to be_able_to(:create_submission, authorized_project) }
-    it { is_expected.to be_able_to(:create_submission, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:read, authorized_project) }
-    it { is_expected.not_to be_able_to(:read, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:delete, authorized_project) }
-    it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
-    # Study
-    it { is_expected.not_to be_able_to(:administer, authorized_study) }
-    it { is_expected.not_to be_able_to(:administer, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:unlink_sample, authorized_study) }
-    it { is_expected.not_to be_able_to(:unlink_sample, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:link_sample, authorized_study) }
-    it { is_expected.not_to be_able_to(:link_sample, unauthorized_study) }
-    it { is_expected.to be_able_to(:edit, authorized_study) }
-    it { is_expected.to be_able_to(:edit, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:create, authorized_study) }
-    it { is_expected.not_to be_able_to(:create, unauthorized_study) }
-    it { is_expected.to be_able_to(:activate, authorized_study) }
-    it { is_expected.to be_able_to(:activate, unauthorized_study) }
-    it { is_expected.to be_able_to(:deactivate, authorized_study) }
-    it { is_expected.to be_able_to(:deactivate, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:print_asset_group_labels, authorized_study) }
-    it { is_expected.not_to be_able_to(:print_asset_group_labels, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:accession, authorized_study) }
-    it { is_expected.not_to be_able_to(:accession, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:request_additional_with, authorized_study) }
-    it { is_expected.not_to be_able_to(:request_additional_with, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:grant_role, authorized_study) }
-    it { is_expected.not_to be_able_to(:grant_role, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:remove_role, authorized_study) }
-    it { is_expected.not_to be_able_to(:remove_role, unauthorized_study) }
+    context 'with specific studies and projects' do
+      let(:user) { create :user, :with_role, role_name: 'manager' }
+      let(:authorized_project) { create :project, :with_manager, manager: user }
+      let(:unauthorized_project) { create :project }
+      let(:authorized_study) { create :study, :with_manager, manager: user }
+      let(:unauthorized_study) { create :study }
+
+      # Project
+      it { is_expected.not_to be_able_to(:administer, authorized_project) }
+      it { is_expected.not_to be_able_to(:administer, unauthorized_project) }
+      it { is_expected.to be_able_to(:edit, authorized_project) }
+      it { is_expected.not_to be_able_to(:edit, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:create, authorized_project) }
+      it { is_expected.not_to be_able_to(:create, unauthorized_project) }
+      it { is_expected.to be_able_to(:create_submission, authorized_project) }
+      it { is_expected.to be_able_to(:create_submission, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:read, authorized_project) }
+      it { is_expected.not_to be_able_to(:read, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:delete, authorized_project) }
+      it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
+
+      # Study
+      it { is_expected.not_to be_able_to(:administer, authorized_study) }
+      it { is_expected.not_to be_able_to(:administer, unauthorized_study) }
+      it { is_expected.to be_able_to(:unlink_sample, authorized_study) }
+      it { is_expected.not_to be_able_to(:unlink_sample, unauthorized_study) }
+      it { is_expected.to be_able_to(:link_sample, authorized_study) }
+      it { is_expected.not_to be_able_to(:link_sample, unauthorized_study) }
+      it { is_expected.to be_able_to(:edit, authorized_study) }
+      it { is_expected.to be_able_to(:edit, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:create, authorized_study) }
+      it { is_expected.not_to be_able_to(:create, unauthorized_study) }
+      it { is_expected.to be_able_to(:activate, authorized_study) }
+      it { is_expected.to be_able_to(:activate, unauthorized_study) }
+      it { is_expected.to be_able_to(:deactivate, authorized_study) }
+      it { is_expected.to be_able_to(:deactivate, unauthorized_study) }
+      it { is_expected.to be_able_to(:print_asset_group_labels, authorized_study) }
+      it { is_expected.not_to be_able_to(:print_asset_group_labels, unauthorized_study) }
+      it { is_expected.to be_able_to(:accession, authorized_study) }
+      it { is_expected.not_to be_able_to(:accession, unauthorized_study) }
+      it { is_expected.to be_able_to(:request_additional_with, authorized_study) }
+      it { is_expected.not_to be_able_to(:request_additional_with, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:grant_role, authorized_study) }
+      it { is_expected.not_to be_able_to(:grant_role, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:remove_role, authorized_study) }
+      it { is_expected.not_to be_able_to(:remove_role, unauthorized_study) }
+    end
   end
 
   context 'when the user has the role "owner"' do
     let(:user) { build :user, :with_role, role_name: 'owner' }
-    let(:authorized_project) { build :project, :with_owner, owner: user }
-    let(:unauthorized_project) { build :project }
-    let(:authorized_sample) { build :sample, :with_owner, owner: user }
-    let(:unauthorized_sample) { build :sample }
-    let(:authorized_study) { build :study, :with_owner, owner: user }
-    let(:unauthorized_study) { build :study }
 
     let(:granted_permissions) { basic_permissions }
 
     it_behaves_like 'it grants only granted_permissions'
 
-    # Project
-    it { is_expected.not_to be_able_to(:administer, authorized_project) }
-    it { is_expected.not_to be_able_to(:administer, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:edit, authorized_project) }
-    it { is_expected.not_to be_able_to(:edit, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:create, authorized_project) }
-    it { is_expected.not_to be_able_to(:create, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:create_submission, authorized_project) }
-    it { is_expected.not_to be_able_to(:create_submission, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:read, authorized_project) }
-    it { is_expected.not_to be_able_to(:read, unauthorized_project) }
-    it { is_expected.not_to be_able_to(:delete, authorized_project) }
-    it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
-    # Sample
-    it { is_expected.not_to be_able_to(:edit, authorized_sample) }
-    it { is_expected.not_to be_able_to(:edit, unauthorized_sample) }
-    it { is_expected.not_to be_able_to(:release, authorized_sample) }
-    it { is_expected.not_to be_able_to(:release, unauthorized_sample) }
-    it { is_expected.not_to be_able_to(:accession, authorized_sample) }
-    it { is_expected.not_to be_able_to(:accession, unauthorized_sample) }
-    it { is_expected.not_to be_able_to(:update_released, authorized_sample) }
-    it { is_expected.not_to be_able_to(:update_released, unauthorized_sample) }
-    # Study
-    it { is_expected.not_to be_able_to(:administer, authorized_study) }
-    it { is_expected.not_to be_able_to(:administer, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:unlink_sample, authorized_study) }
-    it { is_expected.not_to be_able_to(:unlink_sample, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:link_sample, authorized_study) }
-    it { is_expected.not_to be_able_to(:link_sample, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:edit, authorized_study) }
-    it { is_expected.not_to be_able_to(:edit, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:create, authorized_study) }
-    it { is_expected.not_to be_able_to(:create, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:activate, authorized_study) }
-    it { is_expected.not_to be_able_to(:activate, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:deactivate, authorized_study) }
-    it { is_expected.not_to be_able_to(:deactivate, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:print_asset_group_labels, authorized_study) }
-    it { is_expected.not_to be_able_to(:print_asset_group_labels, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:accession, authorized_study) }
-    it { is_expected.not_to be_able_to(:accession, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:request_additional_with, authorized_study) }
-    it { is_expected.not_to be_able_to(:request_additional_with, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:grant_role, authorized_study) }
-    it { is_expected.not_to be_able_to(:grant_role, unauthorized_study) }
-    it { is_expected.not_to be_able_to(:remove_role, authorized_study) }
-    it { is_expected.not_to be_able_to(:remove_role, unauthorized_study) }
+    context 'with specific studies and projects' do
+      let(:user) { create :user, :with_role, role_name: 'owner' }
+      let(:authorized_project) { create :project, :with_owner, owner: user }
+      let(:unauthorized_project) { create :project }
+      let(:authorized_sample) { create :sample, :with_owner, owner: user }
+      let(:unauthorized_sample) { create :sample }
+      let(:authorized_study) { create :study, :with_owner, owner: user }
+      let(:unauthorized_study) { create :study }
+
+      # Project
+      it { is_expected.not_to be_able_to(:administer, authorized_project) }
+      it { is_expected.not_to be_able_to(:administer, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:edit, authorized_project) }
+      it { is_expected.not_to be_able_to(:edit, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:create, authorized_project) }
+      it { is_expected.not_to be_able_to(:create, unauthorized_project) }
+      it { is_expected.to be_able_to(:create_submission, authorized_project) }
+      it { is_expected.not_to be_able_to(:create_submission, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:read, authorized_project) }
+      it { is_expected.not_to be_able_to(:read, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:delete, authorized_project) }
+      it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
+      # Sample
+      it { is_expected.to be_able_to(:edit, authorized_sample) }
+      it { is_expected.not_to be_able_to(:edit, unauthorized_sample) }
+      it { is_expected.to be_able_to(:release, authorized_sample) }
+      it { is_expected.not_to be_able_to(:release, unauthorized_sample) }
+      it { is_expected.to be_able_to(:accession, authorized_sample) }
+      it { is_expected.not_to be_able_to(:accession, unauthorized_sample) }
+      it { is_expected.not_to be_able_to(:update_released, authorized_sample) }
+      it { is_expected.not_to be_able_to(:update_released, unauthorized_sample) }
+      # Study
+      it { is_expected.not_to be_able_to(:administer, authorized_study) }
+      it { is_expected.not_to be_able_to(:administer, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:unlink_sample, authorized_study) }
+      it { is_expected.not_to be_able_to(:unlink_sample, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:link_sample, authorized_study) }
+      it { is_expected.not_to be_able_to(:link_sample, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:edit, authorized_study) }
+      it { is_expected.not_to be_able_to(:edit, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:create, authorized_study) }
+      it { is_expected.not_to be_able_to(:create, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:activate, authorized_study) }
+      it { is_expected.not_to be_able_to(:activate, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:deactivate, authorized_study) }
+      it { is_expected.not_to be_able_to(:deactivate, unauthorized_study) }
+      it { is_expected.to be_able_to(:print_asset_group_labels, authorized_study) }
+      it { is_expected.not_to be_able_to(:print_asset_group_labels, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:accession, authorized_study) }
+      it { is_expected.not_to be_able_to(:accession, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:request_additional_with, authorized_study) }
+      it { is_expected.not_to be_able_to(:request_additional_with, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:grant_role, authorized_study) }
+      it { is_expected.not_to be_able_to(:grant_role, unauthorized_study) }
+      it { is_expected.not_to be_able_to(:remove_role, authorized_study) }
+      it { is_expected.not_to be_able_to(:remove_role, unauthorized_study) }
+    end
   end
 
   context 'when the user has the role "qa_manager"' do
