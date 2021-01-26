@@ -69,7 +69,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     params[:study].delete(:uploaded_data)
 
     ActiveRecord::Base.transaction do
-      params[:study].delete(:ethically_approved) unless current_user.data_access_coordinator?
+      params[:study].delete(:ethically_approved) unless can? :change_ethically_approved, @study
       @study.update!(params[:study])
       flash[:notice] = 'Your study has been updated'
       redirect_to controller: 'admin/studies', action: 'update', id: @study.id

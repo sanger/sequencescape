@@ -3,7 +3,7 @@
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
     <td width="40%" class="item"><%= form.label :ethically_approved, "HMDMC approved" %></td>
-    <td width="60%"><%= form.check_box :ethically_approved, disabled: !current_user.data_access_coordinator? %></td>
+    <td width="60%"><%= form.check_box :ethically_approved, disabled: !can?(:change_ethically_approved, @study) %></td>
   </tr>
 </table>
 <%= fields_for(@study) do |f| %>

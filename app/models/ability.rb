@@ -286,4 +286,8 @@ class Ability
     can :verify, Batch
     can :edit, Batch
   end
+
+  def grant_data_access_coordinator_privileges
+    can :change_ethically_approved, Study
+  end
 end
