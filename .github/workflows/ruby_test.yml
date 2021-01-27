@@ -1,7 +1,7 @@
 name: Ruby Test
 env:
   TZ: Europe/London
-  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID || '9c624e5d90c5b319d678e06d66c7671f1661fda826436d475f9679b54be63e26' }}
   KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
   KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER }}
   KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
@@ -206,7 +206,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [rake_tests, rspec_tests, cucumber_tests]
     continue-on-error: true
-    if: ${{ github.secrets.CC_TEST_REPORTER_ID }}
     steps:
     - uses: actions/checkout@v2
     - name: Fetch coverage results
