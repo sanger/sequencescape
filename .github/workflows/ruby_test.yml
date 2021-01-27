@@ -128,7 +128,7 @@ jobs:
         CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         DBPORT: ${{ job.services.mysql.ports[3306] }}
-      run: bin/knapsack_pro_rspec"
+      run: bin/knapsack_pro_rspec
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:
