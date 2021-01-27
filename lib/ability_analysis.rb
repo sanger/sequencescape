@@ -4,6 +4,8 @@
 class AbilityAnalysis
   attr_reader :permissions, :roles, :ability
 
+  UserStub = Struct.new(:id, :role_names)
+
   ALIAS = {
     update: [:edit],
     show: [:read],
@@ -57,13 +59,12 @@ class AbilityAnalysis
     'User' => [:administer]
   }.freeze
 
-  def initialize(permissions: BASE_ABILITIES, roles: Role.keys, ability: Ability, output: $stdout)
+  def initialize(permissions: BASE_ABILITIES, roles: Role.keys, ability: Ability)
     @roles = roles
     @permissions = permissions.deep_dup
     @ability = ability
     populate_permissions
     @permissions.freeze
-    @output = output
   end
 
   def generate_spec(output = $stdout)
@@ -74,15 +75,79 @@ class AbilityAnalysis
     ability.new(user)
   end
 
+  # Returns an array of arrays in the format:
+  # [[Model, [:permissions]]]
   def sorted_permissions
     permissions.sort_by(&:first)
   end
 
-  def user_with_role(role_name)
-    User.new(roles: [Role.new(name: role_name)])
+  def all_roles
+    ['Logged Out', 'Basic User', *roles]
+  end
+
+  #
+  # Returns a matrix of permission in the format
+  # [ ModelClass, [
+  #  [:action, [*permissions_for_each_role]]
+  # ]]
+  #
+  # @return [Array] Nested array of each model and their permissions
+  #
+  def permission_matrix
+    abilities = [
+      abilities_for(nil),
+      abilities_for(user_with_roles),
+      *roles.map { |role| ability_for_role(role) }
+    ]
+    sorted_permissions.map do |model, actions|
+      [
+        model,
+        actions.map do |action|
+          [
+            action,
+            abilities.map { |ability| check_ability?(ability, action, model) }
+          ]
+        end
+      ]
+    end
+  end
+
+  def user_with_roles(*role_names)
+    UserStub.new('user_id', role_names)
+  end
+
+  #
+  # Returns an {Ability} for a user with a role named role_name
+  #
+  # @param role_name [String] The name of a role
+  #
+  # @return [Ability] An ability covering the role
+  #
+  def ability_for_role(role_name)
+    abilities_for(user_with_roles(role_name))
   end
 
   private
+
+  # Checks the action for the given ability
+  # Indicates if always permissible (true) never permissible (false)
+  # or determined by conditions (Hash of conditions)
+  #
+  # @return [Boolean,Hash] Indicates the level of permissions
+  def check_ability?(user_ability, action, model_name)
+    model = model_name.constantize
+    if user_ability.can? action, model
+      begin
+        user_ability.model_adapter(model, action).try(:conditions).presence || true
+      rescue ArgumentError
+        # The polymorphic association for comments is causing problems here, but
+        # works fine where actually needed.
+        { error: 'Rule could not be read automatically' }
+      end
+    else
+      false
+    end
+  end
 
   def translate(action)
     ALIAS[action] || [action]
@@ -102,7 +167,7 @@ class AbilityAnalysis
 
   def populate_permissions
     roles.each do |role_name|
-      user = user_with_role(role_name)
+      user = user_with_roles(role_name)
       extract_permissions(abilities_for(user))
     end
   end

@@ -1,0 +1,44 @@
+<%= page_title 'User Privileges' %>
+
+<p class="lead">
+This page summarises the various privileges that exist within Sequencescape,
+and which groups have been granted them.</p>
+<dl>
+<dt>Yes</dt><dd>Global permission on all incidents of this class</dd>
+<dt>No</dt><dd>Forbidden in all cases</dd>
+<dt>Maybe</dt><dd>Conditional. Usually based on ownership.
+                  Hovering over the table cell will give more information, but this
+                  is auto-generated and may not make sense to non-developers.</dd>
+</dl>
+<table class="table table-dense-information">
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>Action</th>
+      <% @roles.each do |role| %>
+        <th><%= role %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @permissions.each do |model, action_permissions| %>
+      <% action_permissions.each_with_index do |(action, permissions), index| %>
+        <tr>
+          <% if index.zero? %>
+            <th rowspan=<%= action_permissions.length %> ><%= model %></th>
+          <% end %>
+          <td><%= action %></td>
+          <% permissions.each do |permission| %>
+            <% if permission.is_a? Hash %>
+              <td class="table-warning" title="<%= permission %>">Maybe</td>
+            <% elsif permission %>
+              <td class="table-success">Yes</td>
+            <% else %>
+              <td class="table-danger">No</td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

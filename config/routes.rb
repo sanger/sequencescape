@@ -322,6 +322,7 @@ Rails.application.routes.draw do
   resources :searches
 
   namespace :admin do
+    resources :abilities, only: :index
     resources :custom_texts
 
     resources :primer_panels, except: :destroy

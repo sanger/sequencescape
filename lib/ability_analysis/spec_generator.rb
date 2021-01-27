@@ -11,7 +11,7 @@ class AbilityAnalysis::SpecGenerator
   end
 
   delegate :ability, :roles, :sorted_permissions, :abilities_for,
-           :user_with_role, to: :ability_analysis
+           :user_with_roles, to: :ability_analysis
 
   def generate
     output <<~HEADER
@@ -109,7 +109,7 @@ class AbilityAnalysis::SpecGenerator
     output "let(:user) { build :user, :with_role, role_name: '#{role}' }", indent: 4
     generate_authorized_models(role)
     output
-    user = user_with_role(role)
+    user = user_with_roles(role)
     generate_tests(user, role: role)
     output 'end', indent: 2
   end

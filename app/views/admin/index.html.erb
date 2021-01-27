@@ -100,4 +100,11 @@
       Manage the primer panels.
     <% end %>
   <% end %>
+
+  <% if can? :read, Ability %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Abilities", admin_abilities_path %></h4>
+      Overview of granted abilities.
+    <% end %>
+  <% end %>
 </div>
