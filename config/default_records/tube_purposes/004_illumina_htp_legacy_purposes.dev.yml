@@ -1,0 +1,45 @@
+---
+Lib Pool Norm:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false
+Lib Pool:
+  type: IlluminaHtp::InitialStockTubePurpose
+  target_type: StockMultiplexedLibraryTube
+  stock_plate: false
+Lib Pool SS-XP-Norm:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false
+Lib Pool Pippin:
+  type: IlluminaHtp::InitialStockTubePurpose
+  target_type: StockMultiplexedLibraryTube
+  stock_plate: false
+Lib Pool Conc:
+  type: IlluminaHtp::StockTubePurpose
+  target_type: StockMultiplexedLibraryTube
+  stock_plate: false
+Lib Pool SS:
+  type: IlluminaHtp::StockTubePurpose
+  target_type: StockMultiplexedLibraryTube
+  stock_plate: false
+Lib Pool SS-XP:
+  type: IlluminaHtp::StockTubePurpose
+  target_type: StockMultiplexedLibraryTube
+  stock_plate: false
+Cap Lib Pool Norm:
+  type: IlluminaHtp::MxTubeNoQcPurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false
+PF MiSeq Stock:
+  type: IlluminaHtp::StockTubePurpose
+  target_type: QcTube
+  stock_plate: false
+PF MiSeq QC:
+  type: IlluminaC::QcPoolPurpose
+  target_type: QcTube
+  stock_plate: false
+PF MiSeq QCR:
+  type: IlluminaC::QcPoolPurpose
+  target_type: QcTube
+  stock_plate: false
