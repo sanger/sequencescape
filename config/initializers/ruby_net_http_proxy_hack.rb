@@ -30,7 +30,7 @@ module Net
     end
 
     # Adapted from https://raw.githubusercontent.com/jruby/jruby/9.0.5.0/lib/ruby/stdlib/net/http.rb
-    def connect
+    def connect # rubocop:todo Metrics/CyclomaticComplexity
       if proxy? then
         conn_address = proxy_address
         conn_port    = proxy_port

@@ -155,7 +155,7 @@ module Sanger
                     end
                   end
                 end
-              end unless untested_actions.empty?
+              end
 
               context 'SequenceScape actions' do
                 if other_actions.include?('status')

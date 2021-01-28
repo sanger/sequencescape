@@ -89,7 +89,7 @@ module Presenters
       [!sequencing?, can_create_stock_assets?, !multiplexed?].all?
     end
 
-    def load_pipeline_options
+    def load_pipeline_options # rubocop:todo Metrics/CyclomaticComplexity
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
 
       # Printing of labels is enabled for anybody
