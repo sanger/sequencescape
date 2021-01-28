@@ -129,7 +129,11 @@ class UatActions::TestSubmission < UatActions
   def generate_plate
     generator = UatActions::GeneratePlates.default
     generator.plate_purpose_name = plate_purpose_name.presence || default_purpose_name
-    generator.well_count = 90
+    if partial_number_of_wells.blank? || partial_number_of_wells.to_i.zero?
+      generator.well_count = 90
+    else
+      generator.well_count = partial_number_of_wells.to_i
+    end
     generator.well_layout = 'Random'
     generator.perform
     Plate.find_by_barcode(generator.report['plate_0'])
