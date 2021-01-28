@@ -2,6 +2,10 @@ name: Ruby Test
 env:
   TZ: Europe/London
   CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID || '9c624e5d90c5b319d678e06d66c7671f1661fda826436d475f9679b54be63e26' }}
+  KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+  KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER }}
+  KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+  KNAPSACK_PRO_LOG_LEVEL: info
 
 on:
   - push
@@ -123,7 +127,7 @@ jobs:
         CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         DBPORT: ${{ job.services.mysql.ports[3306] }}
-      run: bundle exec rake "knapsack:rspec[--fail-fast]"
+      run: bin/knapsack_pro_rspec
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:
@@ -185,12 +189,12 @@ jobs:
         bundle exec rails webdrivers:chromedriver:update
         bundle exec rake assets:precompile
     # Actually run our tests
-    - name: Run rspec tests
+    - name: Run cucumber tests
       env:
         CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         DBPORT: ${{ job.services.mysql.ports[3306] }}
-      run: bundle exec rake knapsack:cucumber
+      run: bin/knapsack_pro_cucumber
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:

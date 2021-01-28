@@ -11,6 +11,9 @@ require 'shoulda/matchers'
 require 'rails/test_help'
 require 'factory_bot'
 require 'webmock/minitest'
+require 'knapsack_pro'
+knapsack_pro_adapter = KnapsackPro::Adapters::MinitestAdapter.bind
+knapsack_pro_adapter.set_test_helper_path(__FILE__)
 
 begin
   require 'pry'

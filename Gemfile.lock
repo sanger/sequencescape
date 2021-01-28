@@ -241,7 +241,7 @@ GEM
       railties (>= 4.1)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
-    knapsack (1.20.0)
+    knapsack_pro (2.11.0)
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
@@ -557,7 +557,7 @@ DEPENDENCIES
   json
   jsonapi-resources (= 0.9.0)
   jsonapi-resources-matchers
-  knapsack
+  knapsack_pro
   launchy
   mime-types
   mini_racer
