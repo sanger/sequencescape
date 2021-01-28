@@ -84,7 +84,6 @@ PF Cherrypicked:
   default_state: passed
   cherrypickable_target: true
   size: 96
-  source_purpose_name: PF Cherrypicked
 # Note: Other PF plate purposes are homed in Limber
 PF EM Pool:
   type: PlatePurpose

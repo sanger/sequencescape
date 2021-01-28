@@ -1,7 +1,4 @@
 # frozen_string_literal: true
 
-require 'knapsack'
-
-# CUSTOM_CONFIG_GOES_HERE
-
-Knapsack::Adapters::CucumberAdapter.bind
+require 'knapsack_pro'
+KnapsackPro::Adapters::CucumberAdapter.bind
