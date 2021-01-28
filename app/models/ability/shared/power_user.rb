@@ -9,7 +9,6 @@ module Ability::Shared::PowerUser
     # Admin link will appear
     can :administer, Sequencescape
     can :edit, Labware
-    can :manage, PlateTemplate
     can :close, Receptacle
     can :manage, Receptacle
     can :cancel, Request
@@ -20,7 +19,7 @@ module Ability::Shared::PowerUser
     can :release, Sample
     can :accession, Sample
     can %i[activate deactivate], Study
-    can :update, Study
+    can %i[create update], Study
     can :create, SampleManifest
     can :create, Supplier
     can :create, Comment

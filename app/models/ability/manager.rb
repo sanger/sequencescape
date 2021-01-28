@@ -10,7 +10,6 @@ class Ability::Manager
 
   # These should be extracted to a different class
   prepend Ability::Shared::PowerUser
-  prepend Ability::Shared::SampleManagementUser
 
   attr_reader :user
 

@@ -50,6 +50,5 @@ Feature: Show/update samples
 
      And the sample named "sample_3958121" exists
      And I am on the edit page for sample "sample_3958121"
-    Then I should be on the show page for sample "sample_3958121"
-     And I should see "Sample details can only be altered by the owner or an administrator or manager"
-
+    Then I should be on the homepage
+    And I should see "Sorry, you are not authorized to update this Sample"

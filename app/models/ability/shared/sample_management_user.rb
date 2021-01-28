@@ -7,8 +7,7 @@ module Ability::Shared::SampleManagementUser
     super
     Rails.logger.debug { 'Granting SampleManagementUser privileges' }
     # Index page of a few sample management tasks
-    can :read, SampleLogisticsController
-    # Old gels controller.
     can :manage, GelsController
+    can :read, SampleLogisticsController
   end
 end

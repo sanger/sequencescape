@@ -15,6 +15,7 @@ module Ability::Shared::SuperUser
     can :manage, CustomText
     # Can edit existing plate purposes
     can :manage, [Purpose, PlatePurpose]
+    can :manage, PlateTemplate
     can :manage, [Robot, RobotProperty]
     can :manage, FacultySponsor
     can :manage, ReferenceGenome

@@ -2,7 +2,7 @@
 Feature: The submissions page should only autosuggests active and approved projects
 
   Background:
-    Given I am an "Manager" user logged in as "abc123"
+    Given I am an "manager" user logged in as "abc123"
     And I have an active study called "study A"
     Given I am visiting study "study A" homepage
 
@@ -14,4 +14,3 @@ Feature: The submissions page should only autosuggests active and approved proje
     Then the select field "Project Name" should have the option "Project A"
     Then the select field "Project Name" should not have the option "Project B"
     Then the select field "Project Name" should not have the option "Project C"
-

@@ -4,7 +4,6 @@ Feature: Project management
  Scenario: Create a Next-gen sequencing project as a non-administrator
    Given I am a "manager" user logged in as "user"
 
-
    When I follow "Create Project"
    Then I should see "Projects New"
    And I should not see "External funding source"

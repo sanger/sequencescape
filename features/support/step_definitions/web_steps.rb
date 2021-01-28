@@ -122,13 +122,13 @@ end
 
 Then /^(?:|I )should see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
   with_scope(selector) do
-    assert page.has_content?(text), "Could not see #{text} on page (#{page.text})."
+    expect(page).to have_text(text)
   end
 end
 
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
   with_scope(selector) do
-    assert page.has_no_content?(text)
+    expect(page).not_to have_text(text)
   end
 end
 

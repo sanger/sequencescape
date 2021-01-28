@@ -21,11 +21,13 @@ class Ability::BaseUser
     # There isn't really much reason to stop users seeing this
     can :read, Delayed::Job
     can :read, Labware
+    can %i[read create], Project
     # Basic users can only create submissions using projects they own.
     can :create_submission, Project, owners: { id: user.id }
     can :read, ReferenceGenome
     can :read, Robot
     can %i[update release accession], Sample, owners: { id: user.id }
+    can %i[read create], Study
     can :print_asset_group_labels, Study, owners: { id: user.id }
     can :print_asset_group_labels, Study, managers: { id: user.id }
     can %i[read create], Submission

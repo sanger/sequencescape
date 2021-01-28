@@ -88,4 +88,5 @@ Feature: Set roles for SLF functionality
     And I should see "Gel"
     And I should not see "Sample Registration"
     And I should not see "Suppliers"
-    And I should not see "Cherrypicking plate templates"
+    When I follow "Cherrypicking plate templates"
+    Then I should not see "New 96 Template"

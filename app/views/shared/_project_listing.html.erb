@@ -1,5 +1,5 @@
 
-<% add :menu, "New Project" => new_project_path if can?(create: Project) -%>
+<% add :menu, "New Project" => new_project_path if can?(:create, Project) -%>
 <table class="sortable table table-striped" id="summary" data-paging="true">
   <thead>
     <tr>
