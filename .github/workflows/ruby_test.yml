@@ -128,6 +128,13 @@ jobs:
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         DBPORT: ${{ job.services.mysql.ports[3306] }}
       run: bin/knapsack_pro_rspec
+    - name: Upload capybara artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ failure() }}
+      with:
+        name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
+        path: tmp/capybara/
+        retention-days: 5
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:
@@ -195,6 +202,13 @@ jobs:
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         DBPORT: ${{ job.services.mysql.ports[3306] }}
       run: bin/knapsack_pro_cucumber
+    - name: Upload capybara artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ failure() }}
+      with:
+        name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
+        path: tmp/capybara/
+        retention-days: 5
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:
