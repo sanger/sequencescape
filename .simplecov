@@ -1,4 +1,4 @@
-SimpleCov.configure do
+SimpleCov.start 'rails' do
   add_filter '/test/'
   add_filter '/config/'
   add_filter '/coverage/'
@@ -12,10 +12,10 @@ SimpleCov.configure do
   add_filter '/vendor/'
   add_filter '/tmp/'
 
+  enable_coverage :branch
+
   # You can add_filter here to add anything else you don't want to cover
 
   # Mainly here for reference, and wont be running it again
   add_filter '/lib/ability_analysis/spec_generator.rb'
 end
-
-SimpleCov.start 'rails'

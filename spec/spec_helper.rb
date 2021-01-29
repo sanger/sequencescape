@@ -18,9 +18,15 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
-require 'simplecov' # Simple cov should be loaded as early as possible
 
 require 'knapsack_pro'
+require 'simplecov'
+
+# https://knapsackpro.com/faq/question/how-to-use-simplecov-in-queue-mode
+KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
+  SimpleCov.command_name("rspec_ci_node_#{KnapsackPro::Config::Env.ci_node_index}")
+end
+
 KnapsackPro::Adapters::RSpecAdapter.bind
 
 require 'webdrivers/chromedriver'
