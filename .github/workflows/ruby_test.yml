@@ -145,7 +145,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: cucumber
-      CUCUMBER_FORMAT: summary
+      CUCUMBER_FORMAT: pretty
     # Services
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
     services:
