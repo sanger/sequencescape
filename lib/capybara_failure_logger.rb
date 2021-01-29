@@ -53,17 +53,17 @@ module CapybaraFailureLogger
     block.call '========================='
   end
 
-  def self.output_image(filename)
+  def self.output_image(filename, &block)
     return unless ENV['TERM_PROGRAM'] == 'iTerm.app'
 
     case ENV['INLINE_ERROR_SCREENSHOTS']
     when 'enabled'
       encoded_image = Base64.encode64(File.read(filename))
       name = Base64.encode64(filename)
-      log "\e]1337;File=inline=1;name=#{name}:#{encoded_image}\a"
+      block.call "\e]1337;File=inline=1;name=#{name}:#{encoded_image}\a"
     when nil
-      log 'Want inline images? Set the env INLINE_ERROR_SCREENSHOTS to enabled,'
-      log 'or set INLINE_ERROR_SCREENSHOTS to anything else to disable this message.'
+      block.call 'Want inline images? Set the env INLINE_ERROR_SCREENSHOTS to enabled,'
+      block.call 'or set INLINE_ERROR_SCREENSHOTS to anything else to disable this message.'
     end
   end
 end
