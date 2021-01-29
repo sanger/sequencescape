@@ -19,7 +19,7 @@
         <% end %>
       </tbody>
     </table>
-    <% if can? :link_sample, any: @studies %>
+    <% if can? :link_sample, any: @sample.studies %>
       <%= label("study", "id", 'Add to study', style: 'display:none') %>
       <%= collection_select("study", :id, @studies, :id, :name, {prompt: "Add to study"}, class: "custom-select") %>
       <%= form.submit "Add" %>
