@@ -1,4 +1,4 @@
-module Cherrypick::Task::PickHelpers
+module Cherrypick::Task::PickHelpers # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       include Cherrypick::Task::PickByNanoGramsPerMicroLitre

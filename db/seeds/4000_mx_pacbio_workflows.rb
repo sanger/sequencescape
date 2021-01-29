@@ -5,7 +5,8 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipelin
   pipeline.automated            = false
   pipeline.active               = true
 
-  pipeline.request_types << RequestType.create!(key: 'pacbio_tagged_library_prep', name: 'PacBio Tagged Library Prep') do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'pacbio_tagged_library_prep',
+                                                name: 'PacBio Tagged Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 1
@@ -15,11 +16,14 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipelin
 
   pipeline.workflow = Workflow.create!(name: 'PacBio Tagged Library Prep').tap do |workflow|
     [
-      { class: PrepKitBarcodeTask,    name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true, lab_activity: true },
-      { class: PlateTransferTask,     name: 'Transfer to plate',                    sorted: 2, batched: nil,  lab_activity: true, purpose: Purpose.find_by(name: 'PacBio Sheared') },
+      { class: PrepKitBarcodeTask,    name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true,
+        lab_activity: true },
+      { class: PlateTransferTask,     name: 'Transfer to plate',                    sorted: 2, batched: nil,
+        lab_activity: true, purpose: Purpose.find_by(name: 'PacBio Sheared') },
       { class: TagGroupsTask,         name: 'Tag Groups',                           sorted: 3, lab_activity: true },
       { class: AssignTagsToTubesTask, name: 'Assign Tags',                          sorted: 4, lab_activity: true },
-      { class: SamplePrepQcTask,      name: 'Sample Prep QC',                       sorted: 5, batched: true, lab_activity: true }
+      { class: SamplePrepQcTask,      name: 'Sample Prep QC',                       sorted: 5, batched: true,
+        lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -28,7 +32,9 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, 'sequencing_type', 'insert_size')
 end
 
-PacBioSequencingPipeline.find_by(name: 'PacBio Sequencing').request_types << RequestType.create!(key: 'pacbio_multiplexed_sequencing', name: 'PacBio Multiplexed Sequencing') do |request_type|
+PacBioSequencingPipeline.find_by(name: 'PacBio Sequencing').request_types << RequestType.create!(
+  key: 'pacbio_multiplexed_sequencing', name: 'PacBio Multiplexed Sequencing'
+) do |request_type|
   request_type.initial_state     = 'pending'
   request_type.asset_type        = 'PacBioLibraryTube'
   request_type.morphology        = RequestType::CONVERGENT
@@ -41,7 +47,9 @@ PacBioSequencingPipeline.find_by(name: 'PacBio Sequencing').request_types << Req
       valid_options: RequestType::Validator::ArrayWithDefault.new([500, 1000, 2000, 5000, 10000, 20000], 500),
       request_type: request_type },
     { request_option: 'sequencing_type',
-      valid_options: RequestType::Validator::ArrayWithDefault.new(['Standard', 'MagBead', 'MagBead OneCellPerWell v1'], 'Standard'),
+      valid_options: RequestType::Validator::ArrayWithDefault.new(
+        ['Standard', 'MagBead', 'MagBead OneCellPerWell v1'], 'Standard'
+      ),
       request_type: request_type }
   ])
 end

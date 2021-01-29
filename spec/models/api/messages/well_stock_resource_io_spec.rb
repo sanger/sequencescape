@@ -11,7 +11,10 @@ RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
   after { Timecop.return }
 
   let(:sample) { create :sample }
-  let(:well) { create :well, map: Map.find_by!(description: 'A1'), plate: create(:plate, barcode: '12345'), well_attribute: create(:complete_well_attribute) }
+  let(:well) do
+    create :well, map: Map.find_by!(description: 'A1'), plate: create(:plate,
+                                                                      barcode: '12345'), well_attribute: create(:complete_well_attribute)
+  end
   let(:study) { create :study }
   let(:aliquot) { create :aliquot, study: study, sample: sample, receptacle: well }
 

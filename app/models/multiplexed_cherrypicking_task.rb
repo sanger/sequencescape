@@ -1,4 +1,4 @@
-class MultiplexedCherrypickingTask < Task
+class MultiplexedCherrypickingTask < Task # rubocop:todo Style/Documentation
   include Tasks::PlatePurposeBehavior
 
   belongs_to :purpose

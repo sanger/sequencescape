@@ -1,4 +1,4 @@
-class Failure < ApplicationRecord
+class Failure < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :failable, polymorphic: true
   after_create :notify_remote
 

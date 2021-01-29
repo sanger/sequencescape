@@ -9,6 +9,7 @@ module Heron
       include Concerns::CoordinatesSupport
       include Concerns::RecipientsCoordinates
       include Concerns::Contents
+      include Concerns::Eventful
 
       attr_accessor :plate, :purpose
 
@@ -33,14 +34,23 @@ module Heron
       def save
         return false unless valid?
 
+        @output_result = true
         ActiveRecord::Base.transaction do
           @plate = purpose.create!
 
           Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
 
           create_contents!
+
+          if @params[:events]
+            events = build_events(@plate)
+            events.each do |event|
+              rollback_for_events(events) unless event.valid?
+              event.save
+            end
+          end
         end
-        true
+        @output_result
       end
 
       def sample_study_names

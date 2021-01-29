@@ -1,4 +1,4 @@
-module Tasks::ValidateSampleSheetHandler
+module Tasks::ValidateSampleSheetHandler # rubocop:todo Style/Documentation
   def render_validate_sample_sheet_task(task, params)
   end
 

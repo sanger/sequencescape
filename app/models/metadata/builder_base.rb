@@ -1,4 +1,4 @@
-class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
+class Metadata::BuilderBase < ActionView::Helpers::FormBuilder # rubocop:todo Style/Documentation
   attr_writer :locals
 
   def initialize(*args, &block)

@@ -32,7 +32,7 @@ class PlatesControllerTest < ActionController::TestCase
     context 'with a logged in user' do
       setup do
         @user = FactoryBot.create :user, barcode: 'ID100I', swipecard_code: '1234567'
-        @user.is_administrator
+        @user.grant_administrator
         session[:user] = @user.id
 
         @parent_plate = FactoryBot.create :plate, barcode: '5678'
@@ -52,7 +52,8 @@ class PlatesControllerTest < ActionController::TestCase
         context 'with no source plates' do
           setup do
             @plate_count = Plate.count
-            post :create, params: { plates: { creator_id: @dilution_plates_creator.id, barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
+            post :create, params: { plates: { creator_id: @dilution_plates_creator.id,
+                                              barcode_printer: @barcode_printer.id, user_barcode: '1234567' } }
           end
 
           should 'change Plate.count by 1' do

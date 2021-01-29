@@ -64,7 +64,8 @@ class Study < ApplicationRecord
   DATA_RELEASE_STRATEGY_OPEN = 'open'.freeze
   DATA_RELEASE_STRATEGY_MANAGED = 'managed'.freeze
   DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'.freeze
-  DATA_RELEASE_STRATEGIES = [DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED, DATA_RELEASE_STRATEGY_NOT_APPLICABLE].freeze
+  DATA_RELEASE_STRATEGIES = [DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED,
+                             DATA_RELEASE_STRATEGY_NOT_APPLICABLE].freeze
 
   DATA_RELEASE_TIMING_STANDARD = 'standard'.freeze
   DATA_RELEASE_TIMING_NEVER    = 'never'.freeze
@@ -108,7 +109,9 @@ class Study < ApplicationRecord
 
   belongs_to :user
 
-  has_many :data_access_contacts, ->() { where(roles: { name: 'Data Access Contact' }) }, through: :roles, source: :users
+  has_many :data_access_contacts, ->() {
+                                    where(roles: { name: 'Data Access Contact' })
+                                  }, through: :roles, source: :users
   has_many :followers, ->() { where(roles: { name: 'follower' }) }, through: :roles, source: :users
   has_many :managers, ->() { where(roles: { name: 'manager' }) }, through: :roles, source: :users
   has_many :owners, ->() { where(roles: { name: 'owner' }) }, through: :roles, source: :users
@@ -136,15 +139,13 @@ class Study < ApplicationRecord
   # Validations
   validates :name, uniqueness: { case_sensitive: false }, presence: true, latin1: true
   validates :name, length: { maximum: 200 }
-  validates :abbreviation, format: { with: /\A[\w_-]+\z/i, allow_blank: false, message: 'cannot contain spaces or be blank' }
+  validates :abbreviation, format: { with: /\A[\w_-]+\z/i, allow_blank: false,
+                                     message: 'cannot contain spaces or be blank' }
   validate :validate_ethically_approved
 
   # Callbacks
   before_validation :set_default_ethical_approval
   after_touch :rebroadcast
-
-  # Other class methods / DSL
-  acts_as_authorizable
 
   aasm column: :state, whiny_persistence: true do
     state :pending, initial: true
@@ -195,11 +196,14 @@ class Study < ApplicationRecord
     custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
     custom_attribute(:study_name_abbreviation)
 
-    custom_attribute(:data_release_strategy, required: true, in: DATA_RELEASE_STRATEGIES, default: DATA_RELEASE_STRATEGY_MANAGED)
+    custom_attribute(:data_release_strategy, required: true, in: DATA_RELEASE_STRATEGIES,
+                                             default: DATA_RELEASE_STRATEGY_MANAGED)
     custom_attribute(:data_release_standard_agreement, default: YES, in: YES_OR_NO, if: :managed?)
 
-    custom_attribute(:data_release_timing, required: true, default: DATA_RELEASE_TIMING_STANDARD, in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER])
-    custom_attribute(:data_release_delay_reason, required: true, in: DATA_RELEASE_DELAY_REASONS_ASSAY, if: :delayed_release?)
+    custom_attribute(:data_release_timing, required: true, default: DATA_RELEASE_TIMING_STANDARD,
+                                           in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER])
+    custom_attribute(:data_release_delay_reason, required: true, in: DATA_RELEASE_DELAY_REASONS_ASSAY,
+                                                 if: :delayed_release?)
     custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
     custom_attribute(:bam, default: true)
 
@@ -224,7 +228,7 @@ class Study < ApplicationRecord
       custom_attribute(:data_release_prevention_reason_comment)
     end
 
-    # Note: Additional validation in Study::Metadata Class to validate_presence_of :data_access_group, if: :managed
+    # NOTE: Additional validation in Study::Metadata Class to validate_presence_of :data_access_group, if: :managed
     # Behaviour can't go here, as :if also toggles the saving of the required information.
     custom_attribute(:data_access_group, with: /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
 
@@ -246,9 +250,7 @@ class Study < ApplicationRecord
       study_sra_hold: STUDY_SRA_HOLDS,
       contains_human_dna: YES_OR_NO,
       commercially_available: YES_OR_NO
-    }.each_with_object({}) do |(k, v), h|
-      h[k] = v.index_by { |b| b.downcase }
-    end
+    }.transform_values { |v| v.index_by { |b| b.downcase } }
 
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji
@@ -275,7 +277,8 @@ class Study < ApplicationRecord
 
   # Scopes
   scope :for_search_query, ->(query) {
-                             joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
+                             joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%",
+                                                           query, query])
                            }
 
   scope :with_no_ethical_approval, -> { where(ethically_approved: false) }
@@ -298,7 +301,10 @@ class Study < ApplicationRecord
   scope :for_sample_accessioning, ->() {
     joins(:study_metadata)
       .where("study_metadata.study_ebi_accession_number <> ''")
-      .where(study_metadata: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS })
+      .where(study_metadata: {
+               data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN,
+                                       Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS
+             })
   }
 
   scope :awaiting_ethical_approval, ->() {
@@ -333,7 +339,11 @@ class Study < ApplicationRecord
 
   scope :by_state, ->(state) { where(state: state) }
 
-  scope :by_user, ->(login) { joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } }) }
+  scope :by_user, ->(login) {
+                    joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } })
+                  }
+
+  scope :with_related_owners_included, -> { includes(:owners) }
 
   # Delegations
   alias_attribute :friendly_name, :name

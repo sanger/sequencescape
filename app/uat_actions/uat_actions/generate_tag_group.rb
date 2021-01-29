@@ -44,7 +44,9 @@ class UatActions::GenerateTagGroup < UatActions
     return true if existing_tag_group
 
     tag_group = TagGroup.create!(name: name)
-    tag_group.tags.build(OligoEnumerator.new(size.to_i).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } })
+    tag_group.tags.build(OligoEnumerator.new(size.to_i).each_with_index.map do |oligo, map_id|
+                           { oligo: oligo, map_id: map_id + 1 }
+                         end)
     tag_group.save
   end
 

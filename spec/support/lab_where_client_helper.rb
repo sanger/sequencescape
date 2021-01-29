@@ -28,7 +28,10 @@ module LabWhereClientHelper
   def create_labware_search(lw_params_list)
     lw_params_list_with_locs = lw_params_list.select { |lw_params| lw_params[:lw_locn_name].present? }
 
-    LabWhereClient::LabwareSearch.new(lw_params_list_with_locs.map { |lw_params| format_labware_params(lw_params[:lw_barcode], lw_params[:lw_locn_name], lw_params[:lw_locn_parentage]) })
+    LabWhereClient::LabwareSearch.new(lw_params_list_with_locs.map do |lw_params|
+                                        format_labware_params(lw_params[:lw_barcode], lw_params[:lw_locn_name],
+                                                              lw_params[:lw_locn_parentage])
+                                      end)
   end
 
   def stub_lwclient_labware_find_by_bc(lw_params)

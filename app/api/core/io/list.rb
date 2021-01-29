@@ -1,4 +1,4 @@
-class Core::Io::List
+class Core::Io::List # rubocop:todo Style/Documentation
   include Core::Benchmarking
 
   def initialize(command, objects)

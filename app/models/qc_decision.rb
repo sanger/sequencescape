@@ -1,7 +1,7 @@
-class QcDecision < ApplicationRecord
+class QcDecision < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
 
-  class QcDecisionQcable < ApplicationRecord
+  class QcDecisionQcable < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('qc_decision_qcables')
 
     belongs_to :qcable

@@ -49,7 +49,9 @@ class Plate < Labware
           # These would usually be handled in after create callbacks, however
           # import does not fire these, and we want to create them in bulk anyway
           WellAttribute.import(ids.map { |well| { well_id: well } })
-          Uuid.import(ids.map { |well| { resource_id: well, resource_type: well_type, external_id: Uuid.generate_uuid } })
+          Uuid.import(ids.map do |well|
+                        { resource_id: well, resource_type: well_type, external_id: Uuid.generate_uuid }
+                      end)
           # Warren::QueueBroadcastMessage keeps track of the class (Well) and id, and gets sent after
           # the transaction completes. This avoids us needing to instantiate wells, keeping the memory footprint
           # down.
@@ -154,16 +156,6 @@ class Plate < Labware
   delegate :barcode_type, to: :plate_purpose, allow_nil: true
   delegate :asset_shape, to: :plate_purpose, allow_nil: true
   delegate :dilution_factor, :dilution_factor=, to: :plate_metadata
-
-  scope :include_for_show, -> {
-    includes(
-      requests: :request_metadata,
-      wells: [
-        :map_id,
-        { aliquots: %i[samples tag tag2] }
-      ]
-    )
-  }
 
   # Submissions on requests out of the plate
   # May not have been started yet
@@ -359,7 +351,8 @@ class Plate < Labware
   end
 
   def self.safe_sanger_barcode(sanger_barcode)
-    if sanger_barcode[:number].blank? || Barcode.sanger_barcode(sanger_barcode[:prefix], sanger_barcode[:number]).exists?
+    if sanger_barcode[:number].blank? || Barcode.sanger_barcode(sanger_barcode[:prefix],
+                                                                sanger_barcode[:number]).exists?
       { number: PlateBarcode.create.barcode, prefix: sanger_barcode[:prefix] }
     else
       sanger_barcode
@@ -443,7 +436,8 @@ class Plate < Labware
         # We might have a nil well if a plate was only partially cherrypicked
         well = well_hash[position] || next
         well_updates.each do |attribute, value|
-          QcResult.create!(asset: well, key: attribute, unit_value: value, assay_type: parser.assay_type, assay_version: parser.assay_version, qc_assay: qc_assay)
+          QcResult.create!(asset: well, key: attribute, unit_value: value, assay_type: parser.assay_type,
+                           assay_version: parser.assay_version, qc_assay: qc_assay)
         end
       end
     end

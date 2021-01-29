@@ -7,7 +7,7 @@
         <th>Name</th>
         <th>Created at</th>
         <th></th>
-        <% if @current_user.is_administrator? %>
+        <% if @current_user.administrator? %>
         <th></th>
         <th></th>
         <% end %>
@@ -19,7 +19,7 @@
         <td><%= submission.name %></td>
         <td><%= submission.created_at.to_formatted_s(:day_full_with_time) %></td>
         <td><%= link_to "View", submission_path(submission) %></td>
-        <% if @current_user.is_administrator? %>
+        <% if @current_user.administrator? %>
           <td><%= link_to("Edit", edit_submission_path(submission)) unless submission.ready? || submission.pending? %></td>
           <td><%= link_to("Delete", submission_path(submission), method: :delete, confirm: "Are you sure?") if current_user.administrator? && submission.building? %></td>
         <% end %>

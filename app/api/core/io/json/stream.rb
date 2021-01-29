@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ::Core::Io::Json
-  class Stream
+  class Stream # rubocop:todo Style/Documentation
     # An interface matches object who respond to the provided method
     class Interface
       def initialize(interface)

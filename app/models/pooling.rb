@@ -16,20 +16,36 @@ class Pooling
   def execute
     return false unless valid?
 
-    @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)') if stock_mx_tube_required?
+    if stock_mx_tube_required?
+      @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)')
+      @stock_mx_tube.parents = source_assets
+    end
+
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
+    @standard_mx_tube.parents = @stock_mx_tube ? [@stock_mx_tube] : source_assets
     transfer
     execute_print_job
     true
   end
 
   def transfer
-    target_assets.each do |target_asset|
-      source_assets.each do |source_asset|
-        TransferRequest.create!(asset: source_asset, target_asset: target_asset)
-      end
+    each_transfer do |source_asset, target_asset|
+      # These transfers are not being performed to fulfil a specific request, so we explicitly
+      # pass in a Request Null object. This will disable the attempt to detect an outer request.
+      # We don't use nil as its *far* to easy to end up with nil by accident, so basing key behaviour
+      # off it is risky.
+      TransferRequest.create!(asset: source_asset, target_asset: target_asset, outer_request: Request::None.new)
     end
     message[:notice] = message[:notice] + success
+  end
+
+  def each_transfer
+    source_assets.each do |source_asset|
+      yield source_asset, @stock_mx_tube || @standard_mx_tube
+    end
+    return unless stock_mx_tube_required?
+
+    yield @stock_mx_tube, @standard_mx_tube
   end
 
   def source_assets
@@ -49,7 +65,7 @@ class Pooling
   end
 
   def print_job_required?
-    barcode_printer.present?
+    barcode_printer.present? && count.to_i.positive?
   end
 
   def print_job
@@ -94,11 +110,17 @@ class Pooling
   end
 
   def all_source_assets_are_in_sqsc
-    errors.add(:source_assets, "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in Sequencescape") if assets_not_in_sqsc.present?
+    if assets_not_in_sqsc.present?
+      errors.add(:source_assets,
+                 "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in Sequencescape")
+    end
   end
 
   def expected_numbers_found
-    errors.add(:source_assets, "found #{source_assets.length} assets, but #{barcodes.length} barcodes were scanned.") if source_assets.length != barcodes.length
+    if source_assets.length != barcodes.length
+      errors.add(:source_assets,
+                 "found #{source_assets.length} assets, but #{barcodes.length} barcodes were scanned.")
+    end
   end
 
   def source_assets_can_be_pooled
@@ -106,7 +128,10 @@ class Pooling
     source_assets.each do |asset|
       assets_with_no_aliquot << asset.machine_barcode if asset.aliquots.empty?
     end
-    errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") if assets_with_no_aliquot.present?
+    if assets_with_no_aliquot.present?
+      errors.add(:source_assets,
+                 "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots")
+    end
     errors.add(:tags_combinations, 'are not compatible and result in a tag clash') if tag_clash?
   end
 

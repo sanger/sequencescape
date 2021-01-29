@@ -30,7 +30,8 @@ RSpec.describe Submission, type: :model do
     let!(:request_type_for_multiplexing) { create(:request_type, for_multiplexing: true) }
 
     it 'are compatible if all request types after multiplexing requests are the same and all read lengths are the same' do
-      request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id, request_type_4.id]
+      request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id,
+                       request_type_4.id]
       order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
       order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
       order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
@@ -39,10 +40,13 @@ RSpec.describe Submission, type: :model do
     end
 
     it 'are compatible if there are no request types for multiplexing' do
-      order1 = create(:order, request_types: [request_type_1.id, request_type_2.id], request_options: { read_length: 100 })
-      order2 = create(:order, request_types: [request_type_3.id, request_type_1.id, request_type_4.id], request_options: { read_length: 100 })
+      order1 = create(:order, request_types: [request_type_1.id, request_type_2.id],
+                              request_options: { read_length: 100 })
+      order2 = create(:order, request_types: [request_type_3.id, request_type_1.id, request_type_4.id],
+                              request_options: { read_length: 100 })
       order3 = create(:order, request_types: [request_type_1.id], request_options: { read_length: 100 })
-      order4 = create(:order, request_types: [request_type_4.id, request_type_3.id], request_options: { read_length: 100 })
+      order4 = create(:order, request_types: [request_type_4.id, request_type_3.id],
+                              request_options: { read_length: 100 })
       expect(build(:submission, orders: [order1, order2, order3, order4])).to be_valid
     end
 

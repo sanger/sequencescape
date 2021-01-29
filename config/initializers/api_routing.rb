@@ -1,5 +1,5 @@
 # TODO: Fix these
-module ApiRouting
+module ApiRouting # rubocop:todo Style/Documentation
   # Assets have a couple of extra actions that are always present: namely 'parents' and 'children'
   def asset(*entities, &block)
     options = entities.extract_options!

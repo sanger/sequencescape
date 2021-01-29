@@ -10,6 +10,7 @@ class User < ApplicationRecord
   extend EventfulRecord
   include Uuid::Uuidable
   include Swipecardable
+  include Role::UserRoleHelper
   has_many_events
 
   has_many :lab_events
@@ -20,9 +21,6 @@ class User < ApplicationRecord
   has_many :user_role_bindings, class_name: 'Role::UserRole'
   has_many :roles, through: :user_role_bindings
   has_many :submissions
-  has_many :project_roles, ->() { where(authorizable_type: 'Project') }, class_name: 'Role'
-  has_many :study_roles,   ->() { where(authorizable_type: 'Study') },   class_name: 'Role'
-  has_many :study_roles
   has_many :batches
   has_many :assigned_batches, class_name: 'Batch', foreign_key: :assignee_id, inverse_of: :assignee
   has_many :pipelines, ->() { order('batches.id DESC').distinct }, through: :batches
@@ -38,13 +36,31 @@ class User < ApplicationRecord
   scope :with_login, ->(*logins) { where(login: logins.flatten) }
   scope :all_administrators, -> { joins(:roles).where(roles: { name: 'administrator' }) }
 
-  acts_as_authorized_user
+  scope :owners, lambda {
+                   where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct
+                 }
 
-  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct }
-
-  scope :with_user_code, ->(*codes) { where(barcode: codes.map { |code| Barcode.barcode_to_human(code) }.compact).or(with_swipecard_code(codes)) }
+  scope :with_user_code, lambda { |*codes|
+                           where(barcode: codes.map do |code|
+                                            Barcode.barcode_to_human(code)
+                                          end.compact).or(with_swipecard_code(codes))
+                         }
 
   attr_accessor :password
+
+  # Other DSL
+  # See {Role::UserRoleHelper::has_role}
+  # Provides methods like: user.administrator?, user.grant_administrator
+  has_role :administrator
+  has_role :manager
+  has_role :lab_manager
+  has_role :lab
+  has_role :owner
+  has_role :slf_manager
+  has_role :qa_manager
+  has_role :slf_gel
+  has_role :follower
+  has_role :data_access_coordinator
 
   def self.prefix
     'ID'
@@ -68,24 +84,8 @@ class User < ApplicationRecord
     find_or_create_by!(login: configatron.sequencescape_email, email: configatron.sequencescape_email)
   end
 
-  def study_roles
-    user_roles('Study')
-  end
-
-  def project_roles
-    user_roles('Project')
-  end
-
   def study_and_project_roles
     roles.where(authorizable_type: %w[Study Project])
-  end
-
-  def user_roles(authorizable_class_name)
-    roles.where(authorizable_type: authorizable_class_name)
-  end
-
-  def following?(item)
-    has_role? 'follower', item
   end
 
   def logout_path
@@ -97,7 +97,7 @@ class User < ApplicationRecord
   end
 
   def profile_incomplete?
-    name_incomplete? or email.blank? or swipecard_code.blank?
+    name_incomplete? || email.blank? || swipecard_code.blank?
   end
 
   def profile_complete?
@@ -105,7 +105,7 @@ class User < ApplicationRecord
   end
 
   def name_incomplete?
-    first_name.blank? or last_name.blank?
+    first_name.blank? || last_name.blank?
   end
 
   def name_complete?
@@ -116,8 +116,12 @@ class User < ApplicationRecord
     name_incomplete? ? login : "#{first_name} #{last_name}"
   end
 
+  def name_and_login
+    "#{first_name} #{last_name} (#{login})".strip
+  end
+
   def projects
-    return Project.all if is_administrator?
+    return Project.all if administrator?
 
     atuhorized = authorized_projects
     return Project.all if ((atuhorized.blank?) && (privileged?))
@@ -145,60 +149,12 @@ class User < ApplicationRecord
     interesting_studies.alphabetical.pluck(:name, :id)
   end
 
-  def has_preference_for(key)
-    setting_for?(key)
-  end
-
   def privileged?(item = nil)
-    manager_or_administrator? || owner?(item)
-  end
-
-  def internal?
-    has_role? 'internal'
-  end
-
-  def qa_manager?
-    has_role? 'qa_manager'
-  end
-
-  def lab_manager?
-    return @lab_manager if instance_variable_defined?('@lab_manager')
-
-    @lab_manager = has_role? 'lab_manager'
-  end
-
-  def slf_manager?
-    has_role? 'slf_manager'
-  end
-
-  def slf_gel?
-    has_role? 'slf_gel'
-  end
-
-  def lab?
-    has_role? 'lab'
-  end
-
-  def owner?(item)
-    return false if item.nil?
-
-    has_role? 'owner', item
-  end
-
-  def data_access_coordinator?
-    has_role? 'data_access_coordinator'
+    manager_or_administrator? || (item && owner?(item))
   end
 
   def manager_or_administrator?
-    is_administrator? || is_manager?
-  end
-
-  def manager?
-    is_manager?
-  end
-
-  def administrator?
-    is_administrator?
+    administrator? || manager?
   end
 
   def new_api_key(length = 32)

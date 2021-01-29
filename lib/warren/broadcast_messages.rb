@@ -5,7 +5,7 @@ require_relative 'queue_broadcast_message'
 # setting up message broadcast
 #
 module Warren::BroadcastMessages
-  module ClassMethods
+  module ClassMethods # rubocop:todo Style/Documentation
     attr_reader :associated_to_broadcast
 
     #

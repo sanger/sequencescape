@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
-# Note: These tests JUST check the factory characteristic of layout
+# NOTE: These tests JUST check the factory characteristic of layout
 # templates. The actual layout of tags is carried out by the tag layouts themselves,
 # and is tested there.
 describe TagLayoutTemplate do

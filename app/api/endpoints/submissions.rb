@@ -1,4 +1,4 @@
-class Endpoints::Submissions < Core::Endpoint::Base
+class Endpoints::Submissions < Core::Endpoint::Base # rubocop:todo Style/Documentation
   model do
     action(:create) do |request, _|
       attributes = ::Io::Submission.map_parameters_to_attributes(request.json)

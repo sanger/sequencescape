@@ -4,7 +4,10 @@ require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
-  let(:rule) { { name: :rule1, style: { bg_color: '82CAFA', type: :dxf }, options: { option1: 'some_value', option2: 'another_value' } }.with_indifferent_access }
+  let(:rule) do
+    { name: :rule1, style: { bg_color: '82CAFA', type: :dxf },
+      options: { option1: 'some_value', option2: 'another_value' } }.with_indifferent_access
+  end
 
   it 'is comparable' do
     expect(described_class.new(rule)).to eq(described_class.new(rule))

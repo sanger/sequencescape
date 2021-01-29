@@ -2,7 +2,7 @@
 
 require 'formtastic'
 
-class BulkSubmissionsController < ApplicationController
+class BulkSubmissionsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -41,6 +41,8 @@ class BulkSubmissionsController < ApplicationController
   private
 
   def find_submission_template_groups
-    @submission_template_groups = SubmissionTemplate.visible.include_product_line.group_by { |t| t.product_line.try(:name) || DEFAULT_SUBMISSION_TEMPLATE_GROUP }
+    @submission_template_groups = SubmissionTemplate.visible.include_product_line.group_by do |t|
+      t.product_line.try(:name) || DEFAULT_SUBMISSION_TEMPLATE_GROUP
+    end
   end
 end

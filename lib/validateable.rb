@@ -1,4 +1,4 @@
-module Validateable
+module Validateable # rubocop:todo Style/Documentation
   %i[save save! update_attribute].each { |attr| define_method(attr) {} }
 
   def method_missing(symbol, *_params)
@@ -17,7 +17,7 @@ module Validateable
     raise(ActiveRecord::RecordInvalid, self) unless valid?
   end
 
-  module ClassMethods
+  module ClassMethods # rubocop:todo Style/Documentation
     def self_and_descendants_from_active_record
       [self]
     end

@@ -46,7 +46,8 @@ class Robot::Generator::Tecan < Robot::Generator::Base
     data_object['destination'].each do |dest_plate_barcode, plate_details|
       mapping_by_well = Hash.new { |h, i| h[i] = [] }
       plate_details['mapping'].each do |mapping|
-        destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
+        destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'],
+                                                                                      plate_details['plate_size'])
         mapping_by_well[destination_position] << mapping
       end
 
@@ -63,8 +64,10 @@ class Robot::Generator::Tecan < Robot::Generator::Base
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
       source_barcode = (mapping['src_well'][0]).to_s
       source_name = data_object['source'][(mapping['src_well'][0]).to_s]['name']
-      source_position = Map::Coordinate.description_to_vertical_plate_position(mapping['src_well'][1], data_object['source'][(mapping['src_well'][0]).to_s]['plate_size'])
-      destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
+      source_position = Map::Coordinate.description_to_vertical_plate_position(mapping['src_well'][1],
+                                                                               data_object['source'][(mapping['src_well'][0]).to_s]['plate_size'])
+      destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'],
+                                                                                    plate_details['plate_size'])
       temp = [
         "A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}",
         "D;#{dest_plate_barcode};;#{plate_details['name']};#{destination_position};;#{tecan_precision_value(mapping['volume'])}",
@@ -86,7 +89,8 @@ class Robot::Generator::Tecan < Robot::Generator::Base
 
       dest_name = data_object['destination'][dest_plate_barcode]['name']
       volume = mapping['buffer_volume']
-      vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
+      vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'],
+                                                                           plate_details['plate_size'])
       buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
     end
     buffer.join("\n")

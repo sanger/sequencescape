@@ -103,7 +103,8 @@ RSpec.describe 'Bug research' do
           before do
             # We create the pool requests from the first Lib PCR-XP plate into the new empty Lb Lib Prepool
             # getting wells in groups of 3 and setting submission 4,5 and 6 for the pools (at A1, B1, C1)
-            create_pool_requests(pcr_xp_plate1, pooling_definition1, pool_instances1, [submission_c, submission_d, submission_e])
+            create_pool_requests(pcr_xp_plate1, pooling_definition1, pool_instances1,
+                                 [submission_c, submission_d, submission_e])
           end
 
           it 'will create the transfer requests using the submissions ids from the Repooling requests' do
@@ -182,7 +183,8 @@ RSpec.describe 'Bug research' do
 
             before do
               # Now we create another repooling
-              create_pool_requests(pcr_xp_plate1, pooling_definition3, pool_instances3, [submission_h, submission_i, submission_j])
+              create_pool_requests(pcr_xp_plate1, pooling_definition3, pool_instances3,
+                                   [submission_h, submission_i, submission_j])
             end
 
             it 'raises an error when creating the transfer because it does not know which one is the right submission id' do

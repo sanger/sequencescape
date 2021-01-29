@@ -46,7 +46,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
     assets = [tube.transfer_requests_as_target.first.asset]
     until assets.empty?
       asset = assets.shift
-      return asset.plate if asset.is_a?(Well) and asset.plate.stock_plate?
+      return asset.plate if asset.is_a?(Well) && asset.plate.stock_plate?
 
       assets.push(asset.transfer_requests_as_target.first.asset).compact
     end

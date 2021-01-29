@@ -1,5 +1,5 @@
 inherit_from:
-  - ../../.rubocop.yml
+  - ../.rubocop.yml
 RSpec/ExampleLength:
   # Disable for features, as we might want to step through long processes
   Enabled: false

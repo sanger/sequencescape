@@ -24,7 +24,8 @@ class QcReportTest < ActiveSupport::TestCase
             attribute = create :well_attribute, current_volume: 500, concentration: 200
             sample = create(:study_sample, study: study).sample
             sample.update!(sanger_sample_id: 'TEST1')
-            well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: i), well_attribute: attribute
+            well = create :well, samples: [sample], plate: @stock_plate, map: create(:map,
+                                                                                     location_id: i), well_attribute: attribute
             well.aliquots.each { |a| a.update!(study: study) }
           end
         end
@@ -41,7 +42,8 @@ class QcReportTest < ActiveSupport::TestCase
 
       should 'assign a report identifier' do
         assert @qc_report.report_identifier.present?, 'No identifier assigned'
-        assert_match(/wtccc_product[0-9]+_[0-9]{12}/, @qc_report.report_identifier, "Unexpected identifier: #{@qc_report.report_identifier}")
+        assert_match(/wtccc_product[0-9]+_[0-9]{12}/, @qc_report.report_identifier,
+                     "Unexpected identifier: #{@qc_report.report_identifier}")
       end
 
       should 'record the result of each qc' do
@@ -71,21 +73,25 @@ class QcReportTest < ActiveSupport::TestCase
         @attribute = create :well_attribute, current_volume: 500, concentration: 200
 
         sample = create(:study_sample, study: @study).sample
-        @unreported_sample = well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: 1), well_attribute: @attribute
+        @unreported_sample = well = create :well, samples: [sample], plate: @stock_plate, map: create(:map,
+                                                                                                      location_id: 1), well_attribute: @attribute
         well.aliquots.each { |a| a.update!(study: @study) }
 
         sample = create(:study_sample, study: @study).sample
-        well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: 2), well_attribute: @attribute
+        well = create :well, samples: [sample], plate: @stock_plate, map: create(:map,
+                                                                                 location_id: 2), well_attribute: @attribute
         well.aliquots.each { |a| a.update!(study: @study) }
         create :qc_metric, asset: well, qc_report: @matching_report
 
         sample = create(:study_sample, study: @study).sample
-        @other_reported_sample = well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: 3), well_attribute: @attribute
+        @other_reported_sample = well = create :well, samples: [sample], plate: @stock_plate, map: create(:map,
+                                                                                                          location_id: 3), well_attribute: @attribute
         well.aliquots.each { |a| a.update!(study: @study) }
         create :qc_metric, asset: well, qc_report: @other_report
 
         sample = create(:study_sample, study: @study).sample
-        well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: 4), well_attribute: @attribute
+        well = create :well, samples: [sample], plate: @stock_plate, map: create(:map,
+                                                                                 location_id: 4), well_attribute: @attribute
         well.aliquots.each { |a| a.update!(study: @study) }
         create :qc_metric, asset: well, qc_report: @matching_report
         create :qc_metric, asset: well, qc_report: @other_report

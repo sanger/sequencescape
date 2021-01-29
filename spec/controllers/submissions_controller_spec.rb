@@ -34,14 +34,15 @@ RSpec.describe SubmissionsController, type: :controller do
                                    submission_class_name: 'LinearSubmission',
                                    product_catalogue: 'Generic',
                                    submission_parameters: { info_differential: 5,
-                                                            asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
+                                                            asset_input_methods: ['select an asset group',
+                                                                                  'enter a list of sample names found on plates'],
                                                             request_types: [request_type.key] } }
       @submission_template = SubmissionSerializer.construct!(submission_template_hash)
     end
 
     context 'when a submission exists' do
       setup do
-        @user.is_lab_manager
+        @user.grant_lab_manager
         @submission = Submission.create!(priority: 1, user: @user)
         post :change_priority, params: { id: @submission.id, submission: { priority: 3 } }
       end

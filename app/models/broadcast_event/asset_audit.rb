@@ -1,4 +1,4 @@
-class BroadcastEvent::AssetAudit < BroadcastEvent
+class BroadcastEvent::AssetAudit < BroadcastEvent # rubocop:todo Style/Documentation
   seed_class AssetAudit
 
   def event_type

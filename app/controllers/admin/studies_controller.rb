@@ -1,4 +1,4 @@
-class Admin::StudiesController < ApplicationController
+class Admin::StudiesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -63,7 +63,10 @@ class Admin::StudiesController < ApplicationController
     @study = Study.find(params[:id])
     redirect_if_not_owner_or_admin(@study)
 
-    Document.create!(documentable: @study, uploaded_data: params[:study][:uploaded_data]) if params[:study][:uploaded_data].present?
+    if params[:study][:uploaded_data].present?
+      Document.create!(documentable: @study,
+                       uploaded_data: params[:study][:uploaded_data])
+    end
     params[:study].delete(:uploaded_data)
 
     ActiveRecord::Base.transaction do
@@ -92,7 +95,7 @@ class Admin::StudiesController < ApplicationController
   private
 
   def redirect_if_not_owner_or_admin(study)
-    unless current_user.owner?(study) or current_user.is_administrator?
+    unless current_user.owner?(study) || current_user.administrator?
       flash[:error] = "Study details can only be altered by the owner (#{study.user.login}) or an administrator"
       redirect_to study_path(study)
     end

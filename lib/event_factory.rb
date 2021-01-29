@@ -1,9 +1,11 @@
 require 'eventful_mailer'
-class EventFactory
+class EventFactory # rubocop:todo Style/Documentation
   #################################
   # project related notifications #
   #################################
-  # Creates an event and sends an email when a new project is created
+
+  # Creates an event when a new project is created
+  # This used to send a notification using EventfulMailer, but it is no longer required
   def self.new_project(project, user)
     content = "Project registered by #{user.login}"
 
@@ -16,19 +18,10 @@ class EventFactory
       of_interest_to: 'administrators'
     )
     event.save
-
-    admin_emails = User.all_administrators_emails.reject(&:blank?)
-
-    EventfulMailer.confirm_event(
-      admin_emails,
-      event.eventful,
-      event.message,
-      event.content,
-      'No Milestone'
-    ).deliver_now unless admin_emails.empty?
   end
 
-  # Creates an event and sends an email or emails when a project is approved
+  # Creates an event or emails when a project is approved
+  # This used to send a notification using EventfulMailer, but it is no longer required
   def self.project_approved(project, user)
     content = "Project approved by #{user.login}"
 
@@ -41,21 +34,6 @@ class EventFactory
       of_interest_to: 'administrators'
     )
     event.save
-
-    recipients_email = []
-    project_manager_email = ''
-    if project.manager.present?
-      project_manager_email = (project.manager.email).to_s
-      recipients_email << project_manager_email
-    end
-    if user.is_administrator?
-      administrators_email = User.all_administrators_emails
-      administrators_email.each do |email|
-        recipients_email << email unless email == project_manager_email
-      end
-    end
-
-    EventfulMailer.confirm_event(recipients_email, event.eventful, event.message, event.content, 'No Milestone').deliver_now
   end
 
   def self.project_refund_request(project, user, reference)
@@ -96,6 +74,7 @@ class EventFactory
       recipients << project.manager.email if project && project.manager
     end
 
-    EventfulMailer.confirm_event(recipients.reject(&:blank?), request_event.eventful, request_event.message, request_event.content, 'No Milestone').deliver_now
+    EventfulMailer.confirm_event(recipients.reject(&:blank?), request_event.eventful, request_event.message,
+                                 request_event.content, 'No Milestone').deliver_now
   end
 end

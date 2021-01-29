@@ -1,5 +1,5 @@
 module SampleManifest::SampleTubeBehaviour
-  class Core < SampleManifest::SharedTubeBehaviour::Base
+  class Core < SampleManifest::SharedTubeBehaviour::Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
     include SampleManifest::CoreBehaviour::StockAssets
 

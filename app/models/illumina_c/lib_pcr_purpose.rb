@@ -12,7 +12,7 @@
 class IlluminaC::LibPcrPurpose < PlatePurpose
   include PlatePurpose::Library
 
-  alias_method(:default_transition_to, :transition_to)
+  alias default_transition_to transition_to
 
   # Updates the state of plate to state
   # @param plate [Plate] The plate being updated

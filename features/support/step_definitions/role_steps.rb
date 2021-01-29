@@ -1,15 +1,11 @@
 # frozen_string_literal: true
 
 Given /^I have administrative role$/ do
-  @current_user.is_administrator
-end
-
-Given /^I have lab role$/ do
-  @current_user.is_lab
+  @current_user.grant_administrator
 end
 
 Given /^I have lab manager role$/ do
-  @current_user.is_lab_manager
+  @current_user.grant_lab_manager
 end
 
 Given /^the role "([^"]*)" exists$/ do |role_name|

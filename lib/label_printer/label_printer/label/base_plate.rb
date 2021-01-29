@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class BasePlate
+    class BasePlate # rubocop:todo Style/Documentation
       include Label::MultipleLabels
 
       def create_label(plate)

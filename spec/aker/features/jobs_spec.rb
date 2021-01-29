@@ -21,8 +21,9 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
   context 'existing job' do
     context 'active' do
       before do
-        allow(RestClient::Request).to receive(:execute).with(verify_ssl: false, method: :get, url: get_url, headers: { content_type: :json }, proxy: nil).and_return(RestClient::Response.create(job_json, Net::HTTPResponse.new('1.1', 200, ''),
-                                                                                                                                                                                                 request))
+        allow(RestClient::Request).to receive(:execute).with(verify_ssl: false, method: :get, url: get_url, headers: { content_type: :json },
+                                                             proxy: nil).and_return(RestClient::Response.create(job_json, Net::HTTPResponse.new('1.1', 200, ''),
+                                                                                                                request))
       end
 
       it 'view a job' do

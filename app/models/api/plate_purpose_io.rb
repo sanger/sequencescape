@@ -1,8 +1,8 @@
 # Despite name controls rendering of warehouse messages for {PlatePurpose}
 # Historically used to be v0.5 API
 class Api::PlatePurposeIO < Api::Base
-  module Extensions
-    module ClassMethods
+  module Extensions # rubocop:todo Style/Documentation
+    module ClassMethods # rubocop:todo Style/Documentation
       def render_class
         Api::PlatePurposeIO
       end

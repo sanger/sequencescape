@@ -1,4 +1,4 @@
-module Tasks::SetDescriptorsHandler
+module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
   def do_set_descriptors_task(_task, params)
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
@@ -6,8 +6,10 @@ module Tasks::SetDescriptorsHandler
 
     # if qc_state is qc_manual then update it
     if @batch.qc_state == 'qc_manual'
-      @batch.lab_events.create(description: 'Manual QC', message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
-      @batch.lab_events.create(description: 'Manual QC', message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
+      @batch.lab_events.create(description: 'Manual QC', message: "Manual QC started for batch #{@batch.id}",
+                               user_id: current_user.id)
+      @batch.lab_events.create(description: 'Manual QC', message: "Manual QC started for batch #{@batch.id}",
+                               user_id: current_user.id)
       @batch.qc_state = @batch.qc_next_state
       @batch.save
     end
@@ -16,11 +18,11 @@ module Tasks::SetDescriptorsHandler
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
-    if params[:values].nil?
-      @values = {}
-    else
-      @values = params[:values]
-    end
+    @values = if params[:values].nil?
+                {}
+              else
+                params[:values]
+              end
 
     # Perform the necessary updates if we've passed batch creation
     unless params[:next_stage].nil?
@@ -101,10 +103,10 @@ module Tasks::SetDescriptorsHandler
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
-    if params[:values].nil?
-      @values = {}
-    else
-      @values = params[:values]
-    end
+    @values = if params[:values].nil?
+                {}
+              else
+                params[:values]
+              end
   end
 end

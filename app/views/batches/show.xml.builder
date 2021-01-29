@@ -4,7 +4,7 @@ xml.batch do
   xml.status @batch.state
 
   if @batch.sequencing?
-    xml.lanes {
+    xml.lanes do
       @batch.batch_requests.ordered.includes(
         request: [
           { target_asset: {
@@ -19,7 +19,8 @@ xml.batch do
         ]
       ).each do |batch_request|
         request = batch_request.request
-        xml.lane("position" => batch_request.position, 'id' => request.target_asset_id, 'priority' => request.priority) {
+        xml.lane("position" => batch_request.position, 'id' => request.target_asset_id,
+                 'priority' => request.priority) do
           # This batch seems very broken!
           if request.asset.nil?
             xml.comment!("The request #{request.id} has no source asset which is very bad!")
@@ -33,9 +34,9 @@ xml.batch do
               "id" => request.asset.id,
               "name" => request.asset.library_name,
               "request_id" => request.id
-            ) {
+            ) do
               request.asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
-            }
+            end
             next # Loop as there will never be a spiked in buffer on this.
           end
 
@@ -44,7 +45,9 @@ xml.batch do
           # If there are no aliquots in the target asset and the batch is not pending then we likely have
           # an error.  If the batch is pending then the aliquots are assumed to have not been transferred
           # so the lane is effectively empty.
-          raise StandardError, "Empty lane #{request.target_asset.id} in batch #{@batch.id}" if not @batch.pending? and target_asset_aliquots.empty?
+          if (not @batch.pending?) && target_asset_aliquots.empty?
+            raise StandardError, "Empty lane #{request.target_asset.id} in batch #{@batch.id}"
+          end
 
           if target_asset_aliquots.empty?
             # This is a batch that has yet to be started
@@ -56,11 +59,11 @@ xml.batch do
               "name" => request.asset.library_name, # TODO: remove
               "request_id" => request.id,
               "qc_state" => request.target_asset.compatible_qc_state
-            ) {
+            ) do
               target_asset_aliquots.each do |aliquot|
                 output_aliquot(xml, aliquot)
               end
-            }
+            end
           else
             # This is a lane that is not multiplexed.
             xml.library(
@@ -68,11 +71,11 @@ xml.batch do
               "name" => request.asset.library_name, # TODO: remove
               "request_id" => request.id,
               "qc_state" => request.target_asset.compatible_qc_state
-            ) {
+            ) do
               target_asset_aliquots.each do |aliquot|
                 output_aliquot(xml, aliquot)
               end
-            }
+            end
           end
 
           # Deal with spiked in buffers
@@ -82,14 +85,14 @@ xml.batch do
             index = hybridisation_buffer.index
             aliquot = hybridisation_buffer.primary_aliquot
 
-            xml.hyb_buffer("id" => hybridisation_buffer.id) {
+            xml.hyb_buffer("id" => hybridisation_buffer.id) do
               xml.control("id" => index.id, "name" => index.name) if index.present?
               output_aliquot(xml, aliquot)
-            }
+            end
           end
-        }
+        end
       end
-    }
+    end
   else
     # XML generation assumes that it is operating on a sequencing request, and tags like 'lane' make
     # little sense in other contexts. We used to generate the xml regardless, which just resulted in

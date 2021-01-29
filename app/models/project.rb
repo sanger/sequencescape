@@ -1,6 +1,6 @@
 require 'aasm'
 
-class Project < ApplicationRecord
+class Project < ApplicationRecord # rubocop:todo Style/Documentation
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
   include Api::ProjectIO::Extensions
@@ -12,6 +12,7 @@ class Project < ApplicationRecord
   include AASM
   include Uuid::Uuidable
   include SharedBehaviour::Named
+  include Role::Authorized
   extend EventfulRecord
 
   def self.states
@@ -48,7 +49,6 @@ class Project < ApplicationRecord
                         .where(aliquots: { receptacle_id: assets })
   }
 
-  has_many :roles, as: :authorizable
   has_many :studies, ->() { distinct }, class_name: 'Study', through: :orders, source: :study
   has_many :submissions,  ->() { distinct }, through: :orders, source: :submission
   has_many :sample_manifests
@@ -160,5 +160,7 @@ class Project < ApplicationRecord
     'project'
   end
 
-  scope :with_unallocated_budget_division, -> { joins(:project_metadata).where(project_metadata: { budget_division_id: BudgetDivision.find_by(name: 'Unallocated') }) }
+  scope :with_unallocated_budget_division, -> {
+                                             joins(:project_metadata).where(project_metadata: { budget_division_id: BudgetDivision.find_by(name: 'Unallocated') })
+                                           }
 end

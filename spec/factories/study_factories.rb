@@ -32,7 +32,8 @@ FactoryBot.define do
     state { 'active' }
 
     after(:create) do |study, evaluator|
-      study.study_metadata.update!(data_release_strategy: 'managed', study_ebi_accession_number: evaluator.accession_number)
+      study.study_metadata.update!(data_release_strategy: 'managed',
+                                   study_ebi_accession_number: evaluator.accession_number)
     end
   end
 
@@ -45,7 +46,8 @@ FactoryBot.define do
     state { 'active' }
 
     after(:create) do |study, evaluator|
-      study.study_metadata.update!(data_release_strategy: 'open', study_ebi_accession_number: evaluator.accession_number)
+      study.study_metadata.update!(data_release_strategy: 'open',
+                                   study_ebi_accession_number: evaluator.accession_number)
     end
   end
 
@@ -76,7 +78,7 @@ FactoryBot.define do
     end
 
     after(:build) do |study, evaluator|
-      evaluator.user.has_role(evaluator.role_name, study)
+      evaluator.user.grant_role(evaluator.role_name, study)
     end
 
     # The fairly obvious ones ;)

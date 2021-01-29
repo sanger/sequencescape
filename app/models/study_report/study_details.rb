@@ -1,4 +1,4 @@
-module StudyReport::StudyDetails
+module StudyReport::StudyDetails # rubocop:todo Style/Documentation
   BATCH_SIZE = 1000
 
   # This will pull out all well ids from stock plates in the study
@@ -15,7 +15,8 @@ module StudyReport::StudyDetails
     handle_wells(
       :aliquots,
       { aliquots: { study_id: id } },
-      PlatePurpose.where(name: ['Aliquot 1', 'Aliquot 2', 'Aliquot 3', 'Aliquot 4', 'Aliquot 1', 'Pre-Extracted Plate']).pluck(:id),
+      PlatePurpose.where(name: ['Aliquot 1', 'Aliquot 2', 'Aliquot 3', 'Aliquot 4', 'Aliquot 1',
+                                'Pre-Extracted Plate']).pluck(:id),
       &block
     )
   end

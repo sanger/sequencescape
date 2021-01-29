@@ -1,12 +1,16 @@
 # ![logo](https://github.com/sanger/sequencescape/raw/master/app/assets/images/sequencescape.gif) Sequencescape
 
-[![Build Status](https://travis-ci.org/sanger/sequencescape.svg?branch=next_release)](https://travis-ci.org/sanger/sequencescape)
+![Ruby Test](https://github.com/sanger/sequencescape/workflows/Ruby%20Test/badge.svg)
+![Javascript testing](https://github.com/sanger/sequencescape/workflows/Javascript%20testing/badge.svg)
+![Linting](https://github.com/sanger/sequencescape/workflows/Linting/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/maintainability)](https://codeclimate.com/github/sanger/sequencescape/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/test_coverage)](https://codeclimate.com/github/sanger/sequencescape/test_coverage)
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
+[![Knapsack Pro Parallel CI builds for RSpec Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20RSpec%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1880/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1880&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
+[![Knapsack Pro Parallel CI builds for Cucumber Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20Cucumber%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1881/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1881&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
 
 Sequencescape is a cloud based and highly extensible LIMS system for use in labs with large numbers
-of samples. 
+of samples.
 
 * Work order tracking
 * Sample and study management
@@ -28,11 +32,13 @@ a organisation of 900 people.
 * [Requirements](#requirements)
 * [Getting started](#getting-started)
   * [Installing ruby](#installing-ruby)
-    * [RVM](#rvm)
     * [rbenv](#rbenv)
-  * [Installing gems](#installing-gems)
-  * [Adjusting config](#adjusting-config)
-  * [Default setup](#default-setup)
+  * [Automatic Sequencescape setup](#automatic-sequencescape-setup)
+  * [Manual Sequencescape setup](#manual-sequencescape-setup)
+    * [Installing gems](#installing-gems)
+    * [Adjusting config](#adjusting-config)
+    * [Default setup](#default-setup)
+  * [Stating rails](#stating-rails)
     * [Delayed job](#delayed-job)
 * [Testing](#testing)
 * [Rake tasks](#rake-tasks)
@@ -80,15 +86,27 @@ helpful link.
 It is strongly recommended that you use a ruby version manager such as RVM or rbenv to manage the
 Ruby version you are using. The ruby version required should be found in `.ruby-version`.
 
-#### RVM
-
-...
-
 #### rbenv
 
-`rbenv install <ruby_version>`
+If you have the [rbenv ruby-build plugin](https://github.com/rbenv/ruby-build) it is as simple as:
 
-### Installing gems
+`rbenv install`
+
+It will pick up the version from the .ruby-version file automatically
+
+### Automatic Sequencescape setup
+
+To automatically install the required gems, set-up default configuration files, and set up your database run:
+
+```shell
+bin/setup
+```
+
+### Manual Sequencescape setup
+
+In the event you have trouble with the automatic process, you may wish to step through the various steps manually.
+
+#### Installing gems
 
 [Bundler](https://bundler.io) is used to install the required gems:
 
@@ -97,13 +115,21 @@ gem install bundler
 bundle install
 ```
 
-### Adjusting config
+If you experience `An error occurred while installing ruby-oci8` then disable the oracle gem installation:
+
+```shell
+bundle config without warehouse
+```
+
+The oracle adapters are not needed for development.
+
+#### Adjusting config
 
 Copy the `config/aker.example.yml` file to `config/aker.example.yml`.
 
 The `config/database.yml` file saves the list of databases.
 
-### Default setup
+#### Default setup
 
 1. Create the database tables
 
@@ -111,23 +137,17 @@ The `config/database.yml` file saves the list of databases.
     bundle exec rake db:setup
     ```
 
-1. Create an admin user account and a few example studies and plates
-
-    ```shell
-    bundle exec rake working:setup
-    ```
-
-1. Install webpacker and the required JS libraries
+2. Install webpacker and the required JS libraries
 
     ```shell
     bundle exec rails webpacker:install
     ```
 
-1. Start rails
+### Stating rails
 
-    ```shell
-    bundle exec rails server
-    ```
+```shell
+bundle exec rails s
+```
 
 Once setup, the default user/password is `admin/admin`.
 
@@ -153,13 +173,13 @@ Testing is done in three ways; using rspec, rails test and feature tests.
 1. To run the rspec tests (found in `rspec/` dir.):
 
     ```shell
-    RAILS_ENV=test bundle exec rspec --fail-fast [<path_to_spec>]
+    bundle exec rspec --fail-fast [<path_to_spec>]
     ```
 
 1. To run the rails tests (found in `tests/` dir.):
 
     ```shell
-    RAILS_ENV=test bundle exec rake test -f
+    bundle exec rake test -f
     ```
 
 ## Rake tasks
@@ -226,16 +246,11 @@ node module. To install it, make sure you have install the dev dependencies from
 the table of contents, run:
 
 ```shell
-./node_modules/.bin/markdown-toc -i README.md --bullets "*"
+yarn markdown-toc -i README.md --bullets "*"
 ```
 
 ### CI
 
-The Travis builds use the Knapsack gem to reduce build time by parallelizing the RSpec and Cucumber tests. When a Travis build runs, Knapsack uses the knapsack_rspec_report.json and knapsack_cucumber_report.json files, which list out test run times, to split the tests into equal length jobs. These report files don't need to be regenerated if tests are deleted or added unless the tests in question are particularly slow and will therefore impact the build times significantly. To regenerate a report file, run one of the following, and commit the resulting changes to the report files:
+The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec and Cucumber tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
 
-```shell
-KNAPSACK_GENERATE_REPORT=true bundle exec rspec
-KNAPSACK_GENERATE_REPORT=true bundle exec cucumber
-```
-
-Copyright (c) 2007, 2010-2019  Genome Research Ltd.
+Copyright (c) 2007, 2010-2021  Genome Research Ltd.

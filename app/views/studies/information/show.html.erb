@@ -10,14 +10,14 @@
 <% add :menu, "Receptacles (Formerly Assets)" => study_information_receptacles_path(@study) -%>
 <% add :menu, "Asset groups" => study_asset_groups_path(@study) -%>
 <% add :menu, "Projects" => projects_study_path(@study) -%>
-<% if current_user.is_administrator? || current_user.is_manager?(@study) || current_user.owner?(@study) || current_user.lab? %>
+<% if current_user.administrator? || current_user.manager?(@study) || current_user.owner?(@study) || current_user.lab? %>
   <% add :menu, "Print Labels" => printing_study_asset_groups_path(@study) -%>
 <% end %>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, "Contacts" => collaborators_study_path(@study) -%>
 <% add :menu, "History" => summary_study_information_path(@study) -%>
 <% add :menu, "&nbsp;" => '' -%>
-<% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+<% if current_user.administrator? || current_user.manager?(@study) %>
   <% if @study.active? -%>
     <% add :manager_option, { 'Deactivate Study' => state_study_path(@study) }   -%>
   <% else -%>
@@ -28,13 +28,13 @@
 <% add :menu, display_follow(@study, current_user, "Study") => follow_study_path(@study) -%>
 <% add :menu, pluralize(@study.comments.size, "comment") => study_comments_path(@study) -%>
 
-<% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+<% if current_user.administrator? || current_user.manager?(@study) %>
   <% add :manager_option, @study.accession_number? ? "Update EBI Study data" : "Generate Accession Number" => url_for(controller: '/studies', action: 'accession', id: @study.id) -%>
   <% add :manager_option, "Generate DAC Accession Number" => url_for(controller: '/studies', action: 'dac_accession', id: @study.id) -%>
   <% add :manager_option, "Generate Policy Accession Number" => url_for(controller: '/studies', action: 'policy_accession', id: @study.id) -%>
 <% end -%>
 
-<% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+<% if current_user.administrator? || current_user.manager?(@study) %>
   <% add :menu, "Edit" => edit_study_url(@study) -%>
 <% end %>
 <% add :admin_option, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
@@ -67,7 +67,7 @@
 </div>
 
 <div class="content mt-3">
-  <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+  <% if current_user.administrator? || current_user.manager?(@study) %>
     <% unless @study.approved? -%>
       <%= display_user_guide(I18n.t('studies.status.not_approved')) %>
       <% if @study.samples.empty? -%>

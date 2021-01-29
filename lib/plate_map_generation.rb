@@ -41,7 +41,7 @@ class PlateMapGeneration
   # Idempotent method of generating required asset shapes and maps
   def self.generate!
     ActiveRecord::Base.transaction do
-      maps.each { |config| new(config).save! }
+      maps.each { |config| new(**config).save! }
     end
   end
 

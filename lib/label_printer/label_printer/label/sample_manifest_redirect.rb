@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class SampleManifestRedirect
+    class SampleManifestRedirect # rubocop:todo Style/Documentation
       attr_reader :options, :sample_manifest
 
       def initialize(options)

@@ -1,4 +1,4 @@
-module Submission::AssetGroupBehaviour
+module Submission::AssetGroupBehaviour # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
       belongs_to    :asset_group
@@ -18,7 +18,7 @@ module Submission::AssetGroupBehaviour
   private :assets_need_validating?
 
   def complete_building_asset_group
-    create_our_asset_group unless asset_group? or assets.blank?
+    create_our_asset_group unless asset_group? || assets.blank?
   end
 
   def asset_group?

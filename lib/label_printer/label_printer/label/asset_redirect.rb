@@ -1,6 +1,6 @@
 module LabelPrinter
   module Label
-    class AssetRedirect
+    class AssetRedirect # rubocop:todo Style/Documentation
       attr_reader :printables
 
       def initialize(options)

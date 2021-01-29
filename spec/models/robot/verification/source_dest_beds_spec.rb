@@ -15,7 +15,8 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
     shared_examples 'it generates layout information' do
       describe '#pick_number_to_expected_layout' do
         it 'generates a layout' do
-          expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)).to eq(expected_layout)
+          expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode,
+                                                         max_beds)).to eq(expected_layout)
         end
       end
 
@@ -123,8 +124,7 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
     it 'remaps barcode ids to start at 1' do
       barcodes.each do |key, _value|
         assert plate_index_lookup[key].is_a?(Integer)
-        assert plate_index_lookup[key] > 0
-        assert plate_index_lookup[key] <= barcodes.length
+        expect(plate_index_lookup[key]).to be_between(1, barcodes.length)
       end
     end
 
@@ -152,8 +152,7 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
     it 'remap barcodes to start at 1' do
       expected_order.each do |source_barcode, _index|
         assert source_index[source_barcode].is_a?(Integer)
-        assert source_index[source_barcode] > 0
-        assert source_index[source_barcode] <= expected_order.length
+        expect(source_index[source_barcode]).to be_positive
       end
     end
 

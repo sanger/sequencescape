@@ -5,7 +5,7 @@ module ModelExtensions::Order
     delegate :errors, :include_unset_values?, to: :owner
   end
 
-  module Validations
+  module Validations # rubocop:todo Style/Documentation
     def self.included(base)
       base.class_eval do
         extend DelegateValidation
@@ -37,7 +37,9 @@ module ModelExtensions::Order
   end
 
   def validate_new_record(assets)
-    raise StandardError, 'requested action is not supported on this resource' if not new_record? and asset_group? and assets.present?
+    if (not new_record?) && asset_group? && assets.present?
+      raise StandardError, 'requested action is not supported on this resource'
+    end
 
     true
   end
@@ -83,7 +85,7 @@ module ModelExtensions::Order
     end
   end
 
-  class NonNilHash
+  class NonNilHash # rubocop:todo Style/Documentation
     def initialize(key_style_operation = :symbolize_keys)
       @key_style_operation = key_style_operation
       @store = ActiveSupport::HashWithIndifferentAccess.new

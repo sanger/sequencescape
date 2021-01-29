@@ -36,7 +36,8 @@ class PlateTemplateTask < Task
     def mapped_plate_wells
       (Hash.new { |h, k| h[k] = {} }).tap do |parsed_plates|
         CSV.parse(csv_string, headers: :first_row) do |row|
-          parse_spreadsheet_row(row['Request ID'], row['Plate'], row['Destination Well']) do |plate_key, request_id, location|
+          parse_spreadsheet_row(row['Request ID'], row['Plate'],
+                                row['Destination Well']) do |plate_key, request_id, location|
             parsed_plates[plate_key][location.column_order] = request_id
           end
         end
@@ -74,7 +75,8 @@ class PlateTemplateTask < Task
                  else
                    PlateTemplate.find(params[:plate_template]['0'].to_i).size
                  end
-    workflows_controller.spreadsheet_layout = SpreadsheetReader.new(params[:file].read, workflows_controller.batch, plate_size).layout
+    workflows_controller.spreadsheet_layout = SpreadsheetReader.new(params[:file].read, workflows_controller.batch,
+                                                                    plate_size).layout
     true
   end
 end

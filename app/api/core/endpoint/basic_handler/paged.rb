@@ -1,4 +1,4 @@
-module Core::Endpoint::BasicHandler::Paged
+module Core::Endpoint::BasicHandler::Paged # rubocop:todo Style/Documentation
   def self.page_accessor(action, will_paginate_method, default_value = nil)
     lambda do |object|
       page = object.send(will_paginate_method) || default_value
@@ -29,8 +29,13 @@ module Core::Endpoint::BasicHandler::Paged
   private :action_updates_for
 
   def pages_to_actions(object, options)
-    actions_to_details = [[:first, 1]] + ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
-    Hash[actions_to_details.map { |action, page| [action, core_path(page, options)] }]
+    first_page = { first: core_path(1, options) }
+    ACTION_NAME_TO_PAGE_METHOD.each_with_object(first_page) do |page_method, pages|
+      action, page = page_method.call(object)
+      next unless action
+
+      pages[action] = core_path(page, options)
+    end
   end
   private :pages_to_actions
 
@@ -52,20 +57,20 @@ module Core::Endpoint::BasicHandler::Paged
   end
   private :page_of_results
 
-  class PagedTarget
+  class PagedTarget # rubocop:todo Style/Documentation
     def initialize(model)
       @model = model
     end
 
     delegate :count, to: :@model
 
-    class PageOfResults
+    class PageOfResults # rubocop:todo Style/Documentation
       def initialize(page, _total, per_page)
         @page, @total_pages = page, page / per_page
       end
 
       attr_reader :page, :total_pages
-      alias_method(:current_page, :page)
+      alias current_page page
 
       def next_page
         page + 1

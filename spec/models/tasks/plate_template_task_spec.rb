@@ -75,7 +75,10 @@ RSpec.describe PlateTemplateTask, type: :model do
   end
 
   describe '#do_task' do
-    let(:params) { ActionController::Parameters.new(workflow_id: workflow.id, file: file, plate_purpose_id: create(:plate_purpose).id) }
+    let(:params) do
+      ActionController::Parameters.new(workflow_id: workflow.id, file: file,
+                                       plate_purpose_id: create(:plate_purpose).id)
+    end
 
     it 'does stuff' do
       expect(workflow_controller).to receive(:spreadsheet_layout=).with(spreadsheet_layout)

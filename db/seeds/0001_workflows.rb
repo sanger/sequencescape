@@ -19,7 +19,9 @@ ProductLine.create(name: 'Illumina-HTP')
 # Besides, whey are you adding new pipelines to Sequencescape, this interface is incredibly clunky.
 def set_pipeline_flow_to(sequence)
   sequence.each do |current_name, next_name|
-    current_pipeline, next_pipeline = [current_name, next_name].map { |name| Pipeline.find_by(name: name) or raise "Cannot find pipeline '#{name}'" }
+    current_pipeline, next_pipeline = [current_name, next_name].map do |name|
+      Pipeline.find_by(name: name) or raise "Cannot find pipeline '#{name}'"
+    end
     current_pipeline.update!(next_pipeline_id: next_pipeline.id)
     next_pipeline.update!(previous_pipeline_id: current_pipeline.id)
   end
@@ -49,7 +51,10 @@ end
 
 REQUEST_INFORMATION_TYPES = RequestInformationType.all.index_by { |t| t.key }.freeze
 def create_request_information_types(pipeline, *keys)
-  PipelineRequestInformationType.create!(keys.map { |k| { pipeline: pipeline, request_information_type: REQUEST_INFORMATION_TYPES[k] } })
+  PipelineRequestInformationType.create!(keys.map do |k|
+                                           { pipeline: pipeline,
+                                             request_information_type: REQUEST_INFORMATION_TYPES[k] }
+                                         end)
 end
 
 ##################################################################################################################
@@ -61,7 +66,8 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.request_types << RequestType.create!(key: 'library_creation', name: 'Library creation', deprecated: true) do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'library_creation', name: 'Library creation',
+                                                deprecated: true) do |request_type|
     request_type.billable           = true
     request_type.initial_state      = 'pending'
     request_type.asset_type         = 'SampleTube'
@@ -83,7 +89,8 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
   end.tap do |workflow|
     [
       { class: SetDescriptorsTask, name: 'Initial QC',       sorted: 1, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Characterisation', sorted: 3, batched: true, interactive: false, per_item: false, lab_activity: true }
+      { class: SetDescriptorsTask, name: 'Characterisation', sorted: 3, batched: true, interactive: false,
+        per_item: false, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -139,8 +146,10 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparat
     end
   end
 end.tap do |pipeline|
-  create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Concentration'))
+  create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to',
+                                   'read_length', 'library_type')
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Concentration'))
 end
 
 MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparation') do |pipeline|
@@ -217,7 +226,8 @@ end << RequestType.create!(
          request_type.request_class = SequencingRequest
        end
 
-SequencingPipeline.create!(name: 'Cluster formation SE (spiked in controls)', request_types: cluster_formation_se_request_type) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE (spiked in controls)',
+                           request_types: cluster_formation_se_request_type) do |pipeline|
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -231,17 +241,23 @@ SequencingPipeline.create!(name: 'Cluster formation SE (spiked in controls)', re
       { class: SetDescriptorsTask,     name: 'Specify Dilution Volume ',  sorted: 1, batched: true },
       { class: AddSpikedInControlTask, name: 'Add Spiked in Control',     sorted: 2, batched: true },
 
-      { class: SetDescriptorsTask,     name: 'Cluster generation',        sorted: 4, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Quality control',           sorted: 5, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Lin/block/hyb/load',        sorted: 6, batched: true, interactive: false, per_item: false, lab_activity: true }
+      { class: SetDescriptorsTask,     name: 'Cluster generation',        sorted: 4, batched: true,
+        interactive: false, per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Quality control',           sorted: 5, batched: true,
+        interactive: false, per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Lin/block/hyb/load',        sorted: 6, batched: true,
+        interactive: false, per_item: false, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(key: 'read_length'))
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(key: 'library_type'))
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(key: 'read_length'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(key: 'library_type'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
 SequencingPipeline.create!(name: 'Cluster formation SE', request_types: cluster_formation_se_request_type) do |pipeline|
@@ -257,19 +273,24 @@ SequencingPipeline.create!(name: 'Cluster formation SE', request_types: cluster_
       # NOTE: Yes, there's a typo in the name here:
       { class: SetDescriptorsTask, name: 'Specify Dilution Volume ', sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask, name: 'Cluster generation',       sorted: 3, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Quality control',          sorted: 4, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Lin/block/hyb/load',       sorted: 5, batched: true, interactive: false, per_item: false, lab_activity: true }
+      { class: SetDescriptorsTask, name: 'Cluster generation',       sorted: 3, batched: true, interactive: false,
+        per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Quality control',          sorted: 4, batched: true, interactive: false,
+        per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Lin/block/hyb/load',       sorted: 5, batched: true, interactive: false,
+        per_item: false, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-SequencingPipeline.create!(name: 'Cluster formation SE (no controls)', request_types: cluster_formation_se_request_type) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE (no controls)',
+                           request_types: cluster_formation_se_request_type) do |pipeline|
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -282,20 +303,25 @@ SequencingPipeline.create!(name: 'Cluster formation SE (no controls)', request_t
       # NOTE: Yes, there's a typo in the name here:
       { class: SetDescriptorsTask, name: 'Specify Dilution Volume ', sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask, name: 'Cluster generation',       sorted: 3, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Quality control',          sorted: 4, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Lin/block/hyb/load',       sorted: 5, batched: true, interactive: false, per_item: false, lab_activity: true }
+      { class: SetDescriptorsTask, name: 'Cluster generation',       sorted: 3, batched: true, interactive: false,
+        per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Quality control',          sorted: 4, batched: true, interactive: false,
+        per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Lin/block/hyb/load',       sorted: 5, batched: true, interactive: false,
+        per_item: false, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
 single_ended_hi_seq_sequencing = %w[a b c].map do |pl|
-  RequestType.create!(key: "illumina_#{pl}_single_ended_hi_seq_sequencing", name: "Illumina-#{pl.upcase} Single ended hi seq sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
+  RequestType.create!(key: "illumina_#{pl}_single_ended_hi_seq_sequencing",
+                      name: "Illumina-#{pl.upcase} Single ended hi seq sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -316,7 +342,8 @@ end << RequestType.create!(
          request_type.request_class = HiSeqSequencingRequest
        end
 
-SequencingPipeline.create!(name: 'Cluster formation SE HiSeq', request_types: single_ended_hi_seq_sequencing) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE HiSeq',
+                           request_types: single_ended_hi_seq_sequencing) do |pipeline|
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -329,19 +356,24 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq', request_types: si
       # NOTE: Yes, there's a typo in the name here:
       { class: SetDescriptorsTask, name: 'Specify Dilution Volume ', sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask, name: 'Cluster generation',       sorted: 3, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Quality control',          sorted: 4, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Lin/block/hyb/load',       sorted: 5, batched: true, interactive: false, per_item: false, lab_activity: true }
+      { class: SetDescriptorsTask, name: 'Cluster generation',       sorted: 3, batched: true, interactive: false,
+        per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Quality control',          sorted: 4, batched: true, interactive: false,
+        per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Lin/block/hyb/load',       sorted: 5, batched: true, interactive: false,
+        per_item: false, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (no controls)', request_types: single_ended_hi_seq_sequencing) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (no controls)',
+                           request_types: single_ended_hi_seq_sequencing) do |pipeline|
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
@@ -354,20 +386,25 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (no controls)', req
       # NOTE: Yes, there's a typo in the name here:
       { class: SetDescriptorsTask, name: 'Specify Dilution Volume ', sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask, name: 'Cluster generation',       sorted: 3, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Quality control',          sorted: 4, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Lin/block/hyb/load',       sorted: 5, batched: true, interactive: false, per_item: false, lab_activity: true }
+      { class: SetDescriptorsTask, name: 'Cluster generation',       sorted: 3, batched: true, interactive: false,
+        per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Quality control',          sorted: 4, batched: true, interactive: false,
+        per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Lin/block/hyb/load',       sorted: 5, batched: true, interactive: false,
+        per_item: false, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
 cluster_formation_pe_request_types = %w[a b c].map do |pl|
-  RequestType.create!(key: "illumina_#{pl}_paired_end_sequencing", name: "Illumina-#{pl.upcase} Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
+  RequestType.create!(key: "illumina_#{pl}_paired_end_sequencing",
+                      name: "Illumina-#{pl.upcase} Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -416,7 +453,8 @@ hiseq_2500_se_request_types = %w[a b c].map do |pl|
   )
 end
 
-SequencingPipeline.create!(name: 'Cluster formation PE', request_types: cluster_formation_pe_request_types) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation PE',
+                           request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.sorter     = 3
   pipeline.automated  = false
   pipeline.active     = true
@@ -428,20 +466,26 @@ SequencingPipeline.create!(name: 'Cluster formation PE', request_types: cluster_
     [
       { class: SetDescriptorsTask, name: 'Specify Dilution Volume',           sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask, name: 'Cluster generation',                sorted: 3, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Quality control',                   sorted: 4, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Read 1 Lin/block/hyb/load',         sorted: 5, batched: true, interactive: true, per_item: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true }
+      { class: SetDescriptorsTask, name: 'Cluster generation',                sorted: 3, batched: true,
+        interactive: false, per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Quality control',                   sorted: 4, batched: true,
+        interactive: false, per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Read 1 Lin/block/hyb/load',         sorted: 5, batched: true,
+        interactive: true, per_item: true, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 6, batched: true,
+        interactive: true, per_item: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-SequencingPipeline.create!(name: 'Cluster formation PE (no controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation PE (no controls)',
+                           request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.sorter          = 8
   pipeline.automated       = false
   pipeline.active          = true
@@ -453,10 +497,14 @@ SequencingPipeline.create!(name: 'Cluster formation PE (no controls)', request_t
     [
       { class: SetDescriptorsTask, name: 'Specify Dilution Volume',           sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask, name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Quality control',                   sorted: 4, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Read 1 Lin/block/hyb/load',         sorted: 5, batched: true, interactive: true, per_item: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true }
+      { class: SetDescriptorsTask, name: 'Cluster generation',                sorted: 3, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Quality control',                   sorted: 4, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Read 1 Lin/block/hyb/load',         sorted: 5, batched: true,
+        interactive: true, per_item: true, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 6, batched: true,
+        interactive: true, per_item: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -465,7 +513,8 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
 end
 
-SequencingPipeline.create!(name: 'Cluster formation PE (spiked in controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation PE (spiked in controls)',
+                           request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.sorter          = 8
   pipeline.automated       = false
   pipeline.active          = true
@@ -477,21 +526,28 @@ SequencingPipeline.create!(name: 'Cluster formation PE (spiked in controls)', re
     [
       { class: SetDescriptorsTask,     name: 'Specify Dilution Volume',           sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-      { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
+      { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true,
+        lab_activity: true },
+      { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true,
+        interactive: true, per_item: true, lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true,
+        interactive: true, per_item: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (spiked in controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
+SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (spiked in controls)',
+                           request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.sorter          = 9
   pipeline.automated       = false
   pipeline.active          = true
@@ -503,21 +559,28 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (spiked in controls
     [
       { class: SetDescriptorsTask,     name: 'Specify Dilution Volume',           sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-      { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
+      { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true,
+        lab_activity: true },
+      { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true,
+        interactive: true, per_item: true, lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true,
+        interactive: true, per_item: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-SequencingPipeline.create!(name: 'HiSeq 2500 PE (spiked in controls)', request_types: hiseq_2500_request_types) do |pipeline|
+SequencingPipeline.create!(name: 'HiSeq 2500 PE (spiked in controls)',
+                           request_types: hiseq_2500_request_types) do |pipeline|
   pipeline.sorter          = 9
   pipeline.max_size        = 2
   pipeline.automated       = false
@@ -531,19 +594,24 @@ SequencingPipeline.create!(name: 'HiSeq 2500 PE (spiked in controls)', request_t
       { class: SetDescriptorsTask,     name: 'Specify Dilution Volume', sorted: 1, batched: true },
 
       { class: AddSpikedInControlTask, name: 'Add Spiked in Control',   sorted: 3, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 4, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 5, batched: true, interactive: true, per_item: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true }
+      { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 4, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 5, batched: true,
+        interactive: true, per_item: true, lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 6, batched: true,
+        interactive: true, per_item: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-SequencingPipeline.create!(name: 'HiSeq 2500 SE (spiked in controls)', request_types: hiseq_2500_se_request_types) do |pipeline|
+SequencingPipeline.create!(name: 'HiSeq 2500 SE (spiked in controls)',
+                           request_types: hiseq_2500_se_request_types) do |pipeline|
   pipeline.sorter          = 9
   pipeline.max_size        = 2
   pipeline.automated       = false
@@ -557,18 +625,22 @@ SequencingPipeline.create!(name: 'HiSeq 2500 SE (spiked in controls)', request_t
       { class: SetDescriptorsTask,     name: 'Specify Dilution Volume', sorted: 1, batched: true },
 
       { class: AddSpikedInControlTask, name: 'Add Spiked in Control',   sorted: 3, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Quality control',         sorted: 4, batched: true, interactive: false, per_item: false, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Lin/block/hyb/load',      sorted: 5, batched: true, interactive: false, per_item: false, lab_activity: true }
+      { class: SetDescriptorsTask,     name: 'Quality control',         sorted: 4, batched: true, interactive: false,
+        per_item: false, lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Lin/block/hyb/load',      sorted: 5, batched: true, interactive: false,
+        per_item: false, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
-SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (spiked in controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (spiked in controls)',
+                           request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.sorter          = 8
   pipeline.automated       = false
   pipeline.active          = true
@@ -580,17 +652,22 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (spiked in controls
     [
       { class: SetDescriptorsTask,     name: 'Specify Dilution Volume',           sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-      { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true }
+      { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true,
+        lab_activity: true },
+      { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true,
+        interactive: true, per_item: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
 # TODO: This pipeline has been cloned from the 'Cluster formation PE (no controls)'.  Needs checking
@@ -600,7 +677,8 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
   pipeline.active          = true
 
   %w[a b c].each do |pl|
-    pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
+    pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_hiseq_paired_end_sequencing",
+                                                  name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
       request_type.billable          = true
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
@@ -629,17 +707,22 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
     [
       { class: SetDescriptorsTask, name: 'Specify Dilution Volume',           sorted: 1, batched: true },
 
-      { class: SetDescriptorsTask, name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Quality control',                   sorted: 4, batched: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Read 1 Lin/block/hyb/load',         sorted: 5, batched: true, interactive: true, per_item: true, lab_activity: true },
-      { class: SetDescriptorsTask, name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true }
+      { class: SetDescriptorsTask, name: 'Cluster generation',                sorted: 3, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Quality control',                   sorted: 4, batched: true,
+        lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Read 1 Lin/block/hyb/load',         sorted: 5, batched: true,
+        interactive: true, per_item: true, lab_activity: true },
+      { class: SetDescriptorsTask, name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 6, batched: true,
+        interactive: true, per_item: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'read_length', 'library_type')
-  PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by(label: 'Vol.'))
+  PipelineRequestInformationType.create!(pipeline: pipeline,
+                                         request_information_type: RequestInformationType.find_by(label: 'Vol.'))
 end
 
 ##################################################################################################################
@@ -656,8 +739,10 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   pipeline.workflow = Workflow.create!(name: 'Cherrypick').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
-      { class: PlateTemplateTask,      name: 'Select Plate Template',              sorted: 1, batched: true, lab_activity: true },
-      { class: CherrypickTask,         name: 'Approve Plate Layout',               sorted: 2, batched: true, lab_activity: true }
+      { class: PlateTemplateTask,      name: 'Select Plate Template',              sorted: 1, batched: true,
+        lab_activity: true },
+      { class: CherrypickTask,         name: 'Approve Plate Layout',               sorted: 2, batched: true,
+        lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -669,7 +754,8 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.automated            = false
   pipeline.active               = true
 
-  pipeline.request_types << RequestType.create!(key: 'pacbio_sample_prep', name: 'PacBio Library Prep') do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'pacbio_sample_prep',
+                                                name: 'PacBio Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 1
@@ -679,9 +765,12 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
 
   pipeline.workflow = Workflow.create!(name: 'PacBio Library Prep').tap do |workflow|
     [
-      { class: PrepKitBarcodeTask, name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true, lab_activity: true },
-      { class: PlateTransferTask,  name: 'Transfer to plate',                    sorted: 2, batched: nil,  lab_activity: true, purpose: Purpose.find_by(name: 'PacBio Sheared') },
-      { class: SamplePrepQcTask,   name: 'Sample Prep QC',                       sorted: 3, batched: true, lab_activity: true }
+      { class: PrepKitBarcodeTask, name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true,
+        lab_activity: true },
+      { class: PlateTransferTask,  name: 'Transfer to plate',                    sorted: 2, batched: nil,
+        lab_activity: true, purpose: Purpose.find_by(name: 'PacBio Sheared') },
+      { class: SamplePrepQcTask,   name: 'Sample Prep QC',                       sorted: 3, batched: true,
+        lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -707,17 +796,23 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
         valid_options: RequestType::Validator::ArrayWithDefault.new([500, 1000, 2000, 5000, 10000, 20000], 500),
         request_type: request_type },
       { request_option: 'sequencing_type',
-        valid_options: RequestType::Validator::ArrayWithDefault.new(['Standard', 'MagBead', 'MagBead OneCellPerWell v1'], 'Standard'),
+        valid_options: RequestType::Validator::ArrayWithDefault.new(
+          ['Standard', 'MagBead', 'MagBead OneCellPerWell v1'], 'Standard'
+        ),
         request_type: request_type }
     ])
   end
 
   pipeline.workflow = Workflow.create!(name: 'PacBio Sequencing').tap do |workflow|
     [
-      { class: BindingKitBarcodeTask,              name: 'Binding Kit Box Barcode', sorted: 1, batched: true, lab_activity: true },
-      { class: MovieLengthTask,                    name: 'Movie Lengths',           sorted: 2, batched: true, lab_activity: true },
-      { class: AssignTubesToMultiplexedWellsTask,  name: 'Layout tubes on a plate', sorted: 4, batched: true, lab_activity: true },
-      { class: ValidateSampleSheetTask,            name: 'Validate Sample Sheet',   sorted: 5, batched: true, lab_activity: true }
+      { class: BindingKitBarcodeTask,              name: 'Binding Kit Box Barcode', sorted: 1, batched: true,
+        lab_activity: true },
+      { class: MovieLengthTask,                    name: 'Movie Lengths',           sorted: 2, batched: true,
+        lab_activity: true },
+      { class: AssignTubesToMultiplexedWellsTask,  name: 'Layout tubes on a plate', sorted: 4, batched: true,
+        lab_activity: true },
+      { class: ValidateSampleSheetTask,            name: 'Validate Sample Sheet',   sorted: 5, batched: true,
+        lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -736,12 +831,9 @@ end
 set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines
+pulldown_variants = %w[WGS SC ISC]
 ['Pulldown', 'Illumina-A Pulldown'].each do |lab|
-  %w[
-    WGS
-    SC
-    ISC
-  ].each do |pipeline_type|
+  pulldown_variants.each do |pipeline_type|
     pipeline_name = "#{lab} #{pipeline_type}"
     Pipeline.create!(name: pipeline_name) do |pipeline|
       pipeline.sorter             = Pipeline.maximum(:sorter) + 1
@@ -780,7 +872,8 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
   end
 
   %w[a b c].each do |pl|
-    pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_miseq_sequencing", name: "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
+    pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_miseq_sequencing",
+                                                  name: "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
       request_type.order             = 1
@@ -802,7 +895,8 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
     Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
   end
 end.tap do |pipeline|
-  create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')
+  create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to',
+                                   'library_type', 'read_length')
 end
 
 # ADD ILC Cherrypick
@@ -966,11 +1060,16 @@ end << RequestType.create!(key: 'bespoke_hiseq_x_paired_end_sequencing',
     end.tap do |workflow|
       [
         { class: SetDescriptorsTask,     name: 'Specify Dilution Volume',           sorted: 1, batched: true },
-        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
+        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true,
+          lab_activity: true },
+        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true,
+          lab_activity: true },
+        { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true,
+          lab_activity: true },
+        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true,
+          interactive: true, per_item: true, lab_activity: true },
+        { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true,
+          interactive: true, per_item: true, lab_activity: true }
       ].select do |task|
         type ==  '(spiked in controls)' || task[:name] != 'Add Spiked in Control'
       end.each do |details|
@@ -997,10 +1096,14 @@ end << RequestType.create!(key: 'bespoke_hiseq_x_paired_end_sequencing',
     end.tap do |workflow|
       [
         { class: SetDescriptorsTask,     name: 'Specify Dilution Volume',           sorted: 1, batched: true },
-        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true }
+        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true,
+          lab_activity: true },
+        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true,
+          lab_activity: true },
+        { class: SetDescriptorsTask,     name: 'Quality control',                   sorted: 5, batched: true,
+          lab_activity: true },
+        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true,
+          interactive: true, per_item: true, lab_activity: true }
       ].select do |task|
         type ==  '(spiked in controls)' || task[:name] != 'Add Spiked in Control'
       end.each do |details|
@@ -1029,10 +1132,14 @@ end
     end.tap do |workflow|
       [
         { class: SetDescriptorsTask, name: 'Specify Dilution Volume', sorted: 1, batched: true },
-        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
+        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true,
+          lab_activity: true },
+        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true,
+          lab_activity: true },
+        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true,
+          interactive: true, per_item: true, lab_activity: true },
+        { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true,
+          interactive: true, per_item: true, lab_activity: true }
       ].select do |task|
         type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control'
       end.each do |details|
@@ -1183,5 +1290,8 @@ RequestType.find_each do |request_type|
     'SequencingRequest' => [37, 54, 76, 108]
   }[request_type.request_class_name]
 
-  RequestType::Validator.create!(request_type: request_type, request_option: 'read_length', valid_options: read_lengths) if read_lengths.present?
+  if read_lengths.present?
+    RequestType::Validator.create!(request_type: request_type, request_option: 'read_length',
+                                   valid_options: read_lengths)
+  end
 end

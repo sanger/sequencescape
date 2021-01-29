@@ -1,4 +1,4 @@
-class Search::FindLotByLotNumber < Search
+class Search::FindLotByLotNumber < Search # rubocop:todo Style/Documentation
   def scope(criteria)
     Lot.with_lot_number(criteria['lot_number'])
   end

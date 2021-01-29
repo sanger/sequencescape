@@ -45,12 +45,12 @@ class PlatePurpose < Purpose
   def source_plate(plate)
     source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
   end
-  alias_method :library_source_plate, :source_plate
+  alias library_source_plate source_plate
 
   def source_plates(plate)
     source_purpose_id.present? ? plate.ancestors_of_purpose(source_purpose_id) : [plate.stock_plate]
   end
-  alias_method :library_source_plates, :source_plates
+  alias library_source_plates source_plates
 
   def cherrypick_completed(plate)
     messenger_creators.each { |creator| creator.create!(plate) }
@@ -74,7 +74,7 @@ class PlatePurpose < Purpose
   # relate to all wells of the plate, otherwise only the selected ones are updated.
   # @param plate [Plate] The plate being updated
   # @param state [String] The desired target state
-  # @param _user [User] The person to associate with the action
+  # @param user [User] The person to associate with the action
   # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
   # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
   #                                                  in the the event of a failure
@@ -97,7 +97,7 @@ class PlatePurpose < Purpose
     self.type = 'PlatePurpose::Input' if is_input
   end
 
-  module Overrideable
+  module Overrideable # rubocop:todo Style/Documentation
     private
 
     def transition_state_requests(wells, state)
@@ -136,7 +136,9 @@ class PlatePurpose < Purpose
       .select('pool_uuids.external_id AS pool_uuid')
       .readonly(false)
       .tap do |wells_with_pool|
-        raise StandardError, 'Cannot deal with a well in multiple pools' if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
+        raise StandardError, 'Cannot deal with a well in multiple pools' if wells_with_pool.group_by(&:id).any? do |_, multiple_pools|
+                                                                              multiple_pools.uniq.size > 1
+                                                                            end
       end
   end
 

@@ -1,4 +1,4 @@
-module Plate::FluidigmBehaviour
+module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
   class FluidigmError < StandardError; end
 
   def self.included(base)
@@ -43,8 +43,10 @@ module Plate::FluidigmBehaviour
         gender_markers = fluidigm_file.well_at(well.map_description).gender_markers.join('')
         loci_passed = fluidigm_file.well_at(well.map_description).count
         QcResult.create!([
-          { asset: sw, key: 'gender_markers', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: gender_markers, units: 'bases', qc_assay: qc_assay },
-          { asset: sw, key: 'loci_passed', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: loci_passed, units: 'bases', qc_assay: qc_assay }
+          { asset: sw, key: 'gender_markers', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: gender_markers,
+            units: 'bases', qc_assay: qc_assay },
+          { asset: sw, key: 'loci_passed', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: loci_passed,
+            units: 'bases', qc_assay: qc_assay }
         ])
       end
     end

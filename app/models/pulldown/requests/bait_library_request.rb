@@ -32,7 +32,10 @@ module Pulldown::Requests
       end
 
       def bait_library_valid
-        errors.add(:bait_library_id, 'Validation failed: Bait library is no longer available.') unless bait_library.visible?
+        unless bait_library.visible?
+          errors.add(:bait_library_id,
+                     'Validation failed: Bait library is no longer available.')
+        end
       end
       private :bait_library_valid
     end

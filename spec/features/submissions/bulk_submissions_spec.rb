@@ -105,7 +105,9 @@ describe 'Bulk submission', js: false do
         let(:template_name) { 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' }
         let(:deprecated) { true }
         let(:file_name) { '1_deprecated_rows.csv' }
-        let(:expected_content) { "Template: 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' is deprecated and no longer in use." }
+        let(:expected_content) do
+          "Template: 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' is deprecated and no longer in use."
+        end
 
         it_behaves_like 'bulk submission file upload'
       end

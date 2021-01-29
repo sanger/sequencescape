@@ -1,5 +1,5 @@
 module SampleManifest::PlateBehaviour
-  class Base
+  class Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::Shared
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
@@ -72,7 +72,8 @@ module SampleManifest::PlateBehaviour
     end
 
     def details_array
-      @details_array ||= sample_manifest_assets.includes(asset: [:map, :aliquots, { plate: :barcodes }]).map do |sample_manifest_asset|
+      @details_array ||= sample_manifest_assets.includes(asset: [:map, :aliquots,
+                                                                 { plate: :barcodes }]).map do |sample_manifest_asset|
         {
           barcode: sample_manifest_asset.asset.plate.human_barcode,
           position: sample_manifest_asset.asset.map_description,

@@ -61,13 +61,14 @@ Given /^I have already made (\d+) "([^"]+)" requests? with IDs starting at (\d+)
 
   (0...count.to_i).each do |index|
     asset = FactoryBot.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset #{index + 1}")
-    target_asset = FactoryBot.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset #{index + 1}")
+    target_asset = FactoryBot.create(request_type.asset_type.underscore,
+                                     name: "#{study_name} - Target asset #{index + 1}")
     create_request(request_type, study, project, asset, target_asset, id: id.to_i + index)
   end
 end
 
 Given /^I have already made a "([^"]+)" request with ID (\d+) within the study "([^"]+)" for the project "([^"]+)"$/ do |type, id, study_name, project_name|
-  step(%Q{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"})
+  step(%{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"})
 end
 
 Given '{study_name} has an asset group of {int} samples in SampleTubes called {string}' do |study, count, group_name|

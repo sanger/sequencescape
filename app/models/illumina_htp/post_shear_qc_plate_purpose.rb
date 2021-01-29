@@ -9,7 +9,7 @@
 #           app/models/illumina_htp/plate_purposes.rb
 #         By either replacing with PlatePurpose, or removing the factories entirely
 class IlluminaHtp::PostShearQcPlatePurpose < PlatePurpose
-  alias_method(:default_transition_to, :transition_to)
+  alias default_transition_to transition_to
 
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     nudge_parent_plate(plate, state, user, contents)

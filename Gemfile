@@ -53,7 +53,6 @@ group :default do
       github: 'sanger/irods_reader'
 
   # For the API level
-  gem 'cancan'
   gem 'json'
   gem 'multi_json'
   gem 'rack-acceptable', require: 'rack/acceptable'
@@ -106,6 +105,9 @@ group :default do
 
   # Compile js
   gem 'webpacker'
+
+  # Authorization
+  gem 'cancancan'
 end
 
 group :warehouse do
@@ -123,17 +125,11 @@ group :development do
   gem 'bullet'
   # Automatically generate documentation
   gem 'yard', require: false
-  # Enforces coding styles and detects some bad practices
-  gem 'rubocop', require: false
-  gem 'rubocop-performance'
-  gem 'rubocop-rails'
-  gem 'rubocop-rspec', require: false
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
-  gem 'travis'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'mini_racer'
@@ -141,16 +137,29 @@ group :development do
   gem 'uglifier', '>= 1.0.3'
 end
 
+group :development, :linting do
+  # Enforces coding styles and detects some bad practices
+  gem 'rubocop', require: false
+  gem 'rubocop-performance'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec', require: false
+  gem 'yard-activerecord', '~> 0.0.16'
+end
+
+group :linting, :test do
+  gem 'test-prof'
+end
+
 group :development, :test, :cucumber do
-  gem 'pry'
   gem 'pry-byebug'
+  gem 'pry-rails'
   gem 'pry-stack_explorer'
   # Asset compilation, js and style libraries
   gem 'bootstrap'
   gem 'font-awesome-sass'
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
-  gem 'knapsack'
+  gem 'knapsack_pro'
   gem 'sassc', '2.1.0'
   gem 'sass-rails'
   gem 'select2-rails'
@@ -168,18 +177,14 @@ group :test do
   # Rails performance tests
   gem 'rails-perftest'
   gem 'rspec-collection_matchers' # Provides matchers for dealing with arrays
-  gem 'rspec-longrun' # Extends scenario logging for more verbose tracking
-  gem 'test-prof'
+  gem 'rspec-longrun', require: false # Extends scenario logging for more verbose tracking
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
   # It is needed to use #assigns(attribute) in controllers tests
-  gem 'rails-controller-testing'
-  # Temporarily lock minitest to a specific version due to incompatibilities
-  # with rails versions.
-  gem 'minitest', '5.10.3'
+  gem 'minitest'
   gem 'minitest-profiler'
-  gem 'rspec_junit_formatter'
+  gem 'rails-controller-testing'
 end
 
 group :test, :cucumber do
@@ -193,8 +198,7 @@ group :test, :cucumber do
   gem 'nokogiri', require: false
   gem 'shoulda-context', require: false
   gem 'shoulda-matchers', require: false
-  # Pin due to Code climate compatibility issues. Should be able to unpin soon.
-  gem 'simplecov', '~>0.17.0', require: false
+  gem 'simplecov', require: false
   gem 'timecop', require: false
   # Simplifies shared transactions between server and test threads
   # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
@@ -203,7 +207,7 @@ group :test, :cucumber do
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
   # Keep webdriver in sync with chrome to prevent frustrating CI failures
-  gem 'webdrivers', require: false
+  gem 'webdrivers'
 end
 
 group :cucumber do
@@ -215,9 +219,6 @@ end
 
 group :deployment do
   gem 'exception_notification'
-  gem 'gmetric', '~>0.1.3'
   gem 'slack-notifier'
   gem 'whenever', require: false
 end
-
-gem 'yard-activerecord', '~> 0.0.16'

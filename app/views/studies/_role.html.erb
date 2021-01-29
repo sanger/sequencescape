@@ -1,8 +1,14 @@
 
-<div style="text-align:center">
+<div>
   <%= form_tag grant_role_study_path(@study), remote: true, data: { update: "#role_list"}, class: 'form-inline remote-form' do -%>
-    <label for="role_user">Select a user</label> <%= select "role", "user", @users.map {|r| [r.name, r.id]}, { prompt: true } %>&nbsp;
-    <label for="role_authorizable_type">then assign a role</label> <%= select "role", "authorizable_type", @all_roles, { prompt: true,  } %>
+    <div class="form-group">
+      <label for="role_user" class="m-2">Select a user</label>
+      <%= select "role", "user", @users.map {|r| [r.name_and_login, r.id]}, { prompt: true }, { class: 'select2 mx-2' } %>
+    </div>
+    <div class="form-group">
+      <label for="role_authorizable_type" class="m-2">then assign a role</label>
+      <%= select "role", "authorizable_type", @all_roles, { prompt: true }, { class: 'select2 mx-2' }  %>
+    </div>
     <%= submit_tag "Add role" %>
   <% end -%>
 </div>

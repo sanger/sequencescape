@@ -1,5 +1,5 @@
 require 'eventful_mailer'
-class ExternalReleaseEvent < Event
+class ExternalReleaseEvent < Event # rubocop:todo Style/Documentation
   after_create :physically_send_email, if: :send_email
 
   attr_accessor :send_email

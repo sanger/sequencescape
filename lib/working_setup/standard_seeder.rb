@@ -45,7 +45,10 @@ module WorkingSetup
       purpose = Purpose.find_by!(name: name)
       number.times do
         purpose.create!.tap do |plate|
-          plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{w.map.description}", studies: [study, study_b])) }
+          plate.wells.each do |w|
+            w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{w.map.description}",
+                                                      studies: [study, study_b]))
+          end
           puts "#{name}: #{plate.ean13_barcode}-#{plate.human_barcode}"
         end
       end
@@ -80,7 +83,7 @@ module WorkingSetup
       existing = User.find_by(login: 'admin')
       return existing if existing
 
-      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:is_administrator)
+      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:grant_administrator)
     end
 
     def faculty_sponsor
@@ -121,7 +124,7 @@ module WorkingSetup
         }
       ) do |study|
         study.activate!
-        user.is_owner(study)
+        user.grant_owner(study)
       end
     end
 

@@ -53,16 +53,24 @@ FactoryBot.define do
   end
 
   ('a'..'c').each do |p|
-    factory(:"request_metadata_for_illumina_#{p}_single_ended_sequencing", parent: :request_metadata_for_standard_sequencing) {}
-    factory(:"request_metadata_for_illumina_#{p}_paired_end_sequencing", parent: :request_metadata_for_standard_sequencing) {}
+    factory(:"request_metadata_for_illumina_#{p}_single_ended_sequencing",
+            parent: :request_metadata_for_standard_sequencing) do
+    end
+    factory(:"request_metadata_for_illumina_#{p}_paired_end_sequencing",
+            parent: :request_metadata_for_standard_sequencing) do
+    end
     # HiSeq sequencing
     factory :"request_metadata_for_illumina_#{p}_hiseq_sequencing", parent: :request_metadata do
       fragment_size_required_from   { 1 }
       fragment_size_required_to     { 21 }
       read_length                   { 100 }
     end
-    factory(:"request_metadata_for_illumina_#{p}_hiseq_paired_end_sequencing", parent: :request_metadata_for_hiseq_sequencing) {}
-    factory(:"request_metadata_for_illumina_#{p}_single_ended_hi_seq_sequencing", parent: :request_metadata_for_hiseq_sequencing) {}
+    factory(:"request_metadata_for_illumina_#{p}_hiseq_paired_end_sequencing",
+            parent: :request_metadata_for_hiseq_sequencing) do
+    end
+    factory(:"request_metadata_for_illumina_#{p}_single_ended_hi_seq_sequencing",
+            parent: :request_metadata_for_hiseq_sequencing) do
+    end
   end
 
   # Library manufacture

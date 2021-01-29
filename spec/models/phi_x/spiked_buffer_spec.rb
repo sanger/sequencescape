@@ -96,7 +96,8 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
 
       it 'generates an aliquot which match the parent' do
         phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
-          expect(tube.aliquots).to all have_attributes(sample: parent.aliquots.first.sample, tag: parent.aliquots.first.tag)
+          expect(tube.aliquots).to all have_attributes(sample: parent.aliquots.first.sample,
+                                                       tag: parent.aliquots.first.tag)
         end
       end
 

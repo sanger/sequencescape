@@ -1,5 +1,5 @@
 module Accession
-  class Sample
+  class Sample # rubocop:todo Style/Documentation
     # Validate the sample to ensure that it can be accessioned
     # The sample must:
     # - not be accessioned
@@ -42,32 +42,32 @@ module Accession
       tag_groups = tags.by_group
       xml = Builder::XmlMarkup.new
       xml.instruct!
-      xml.SAMPLE_SET(XML_NAMESPACE) {
-        xml.SAMPLE(alias: ebi_alias) {
+      xml.SAMPLE_SET(XML_NAMESPACE) do
+        xml.SAMPLE(alias: ebi_alias) do
           xml.TITLE title if title.present?
-          xml.SAMPLE_NAME {
+          xml.SAMPLE_NAME do
             tag_groups[:sample_name].each do |_k, tag|
               xml.tag!(tag.label, tag.value)
             end
-          }
-          xml.SAMPLE_ATTRIBUTES {
+          end
+          xml.SAMPLE_ATTRIBUTES do
             tag_groups[:sample_attributes].each do |_k, tag|
-              xml.SAMPLE_ATTRIBUTE {
+              xml.SAMPLE_ATTRIBUTE do
                 xml.TAG tag.label
                 xml.VALUE tag.value
-              }
+              end
             end
             if service.ena?
               tag_groups[:array_express].each do |_k, tag|
-                xml.SAMPLE_ATTRIBUTE {
+                xml.SAMPLE_ATTRIBUTE do
                   xml.TAG tag.array_express_label
                   xml.VALUE tag.value
-                }
+                end
               end
             end
-          }
-        }
-      }
+          end
+        end
+      end
       xml.target!
     end
 

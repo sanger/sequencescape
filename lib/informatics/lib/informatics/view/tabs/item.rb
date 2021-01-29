@@ -1,7 +1,7 @@
 module Informatics
   module View
     module Tabs
-      class Item
+      class Item # rubocop:todo Style/Documentation
         attr_accessor :text, :link
 
         def initialize(options = {})

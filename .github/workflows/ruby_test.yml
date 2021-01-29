@@ -1,0 +1,218 @@
+name: Ruby Test
+env:
+  TZ: Europe/London
+  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID || '9c624e5d90c5b319d678e06d66c7671f1661fda826436d475f9679b54be63e26' }}
+  KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+  KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER }}
+  KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+  KNAPSACK_PRO_LOG_LEVEL: info
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  rake_tests:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+    # Services
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
+    services:
+      mysql:
+        # Use the Mysql docker image https://hub.docker.com/_/mysql
+        image: mysql:5.7 # Using 5.7 to map to what is used in production.
+        ports:
+         - 3306 # Default port mappings
+         # Monitor the health of the container to mesaure when it is ready
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: '' # Set root PW to nothing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+    - name: Cache gems
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-tests-${{ hashFiles('**/Gemfile.lock') }}
+        # If we don't find the specific cache we want, fallback to the last raketests
+        # cache, then finally any cache for this repo.
+        # Github looks for the newest cache beginning with the first entry, before
+        # falling back the the second if none is present.
+        restore-keys: |
+          ${{ runner.os }}-tests-
+          ${{ runner.os }}-
+    # Install only the gems needed for testing
+    # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
+    # in case bundler add an only flag
+    # We also set the install path to vendor/bundle to assist with out caching
+    # bin/setup handles the rest of the configuration for us.
+    - name: Setup environment
+      env:
+        DBPORT: ${{ job.services.mysql.ports[3306] }}
+      run: |
+        bundle config path vendor/bundle
+        bundle config set without 'warehouse deployment profile development cucumber'
+        bin/setup
+    # Actually run our tests
+    - name: Run rake tests
+      env:
+        DBPORT: ${{ job.services.mysql.ports[3306] }}
+      run: bundle exec rake test
+    - name: Upload coverage artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
+        path: coverage/coverage.json
+        retention-days: 1
+  rspec_tests:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+    # Services
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
+    services:
+      mysql:
+        # Use the Mysql docker image https://hub.docker.com/_/mysql
+        image: mysql:5.7 # Using 5.7 to map to what is used in production.
+        ports:
+         - 3306 # Default port mappings
+         # Monitor the health of the container to mesaure when it is ready
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: '' # Set root PW to nothing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    # Sets up the matrix for knapsack builds
+    strategy:
+      matrix:
+        ci_node_total: [3]
+        ci_node_index: [0,1,2]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+    # Establish a cache of downloaded gems to improve performance
+    - name: Cache gems
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-tests-${{ hashFiles('**/Gemfile.lock') }}
+        # If we don't find the specific cache we want, fallback to the last raketests
+        # cache, then finally any cache for this repo.
+        # Github looks for the newest cache beginning with the first entry, before
+        # falling back the the second if none is present.
+        restore-keys: |
+          ${{ runner.os }}-tests-
+          ${{ runner.os }}-
+    # Install only the gems needed for testing
+    # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
+    # in case bundler add an only flag
+    # We also set the install path to vendor/bundle to assist with out caching
+    # bin/setup handles the rest of the configuration for us.
+    - name: Setup environment
+      env:
+        DBPORT: ${{ job.services.mysql.ports[3306] }}
+      run: |
+        bundle config path vendor/bundle
+        bundle config set without 'warehouse deployment profile development cucumber'
+        bin/setup
+        bundle exec rails webdrivers:chromedriver:update
+        bundle exec rake assets:precompile
+    # Actually run our tests
+    - name: Run rspec tests
+      env:
+        CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+        CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+        DBPORT: ${{ job.services.mysql.ports[3306] }}
+      run: bin/knapsack_pro_rspec
+    - name: Upload coverage artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
+        path: coverage/coverage.json
+        retention-days: 1
+  cucumber_tests:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: cucumber
+      CUCUMBER_FORMAT: summary
+    # Services
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
+    services:
+      mysql:
+        # Use the Mysql docker image https://hub.docker.com/_/mysql
+        image: mysql:5.7 # Using 5.7 to map to what is used in production.
+        ports:
+         - 3306 # Default port mappings
+         # Monitor the health of the container to mesaure when it is ready
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: '' # Set root PW to nothing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    # Sets up the matrix for knapsack builds
+    strategy:
+      matrix:
+        ci_node_total: [2]
+        ci_node_index: [0,1]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+    # Establish a cache of downloaded gems to improve performance
+    - name: Cache gems
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-cucumber-${{ hashFiles('**/Gemfile.lock') }}
+        # If we don't find the specific cache we want, fallback to the last raketests
+        # cache, then finally any cache for this repo.
+        # Github looks for the newest cache beginning with the first entry, before
+        # falling back the the second if none is present.
+        restore-keys: |
+          ${{ runner.os }}-cucumber-
+          ${{ runner.os }}-
+    # Install only the gems needed for testing
+    # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
+    # in case bundler add an only flag
+    # We also set the install path to vendor/bundle to assist with out caching
+    # bin/setup handles the rest of the configuration for us.
+    - name: Setup environment
+      env:
+        DBPORT: ${{ job.services.mysql.ports[3306] }}
+      run: |
+        bundle config path vendor/bundle
+        bundle config set without 'warehouse deployment profile development test'
+        bin/setup
+        bundle exec rails webdrivers:chromedriver:update
+        bundle exec rake assets:precompile
+    # Actually run our tests
+    - name: Run cucumber tests
+      env:
+        CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+        CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+        DBPORT: ${{ job.services.mysql.ports[3306] }}
+      run: bin/knapsack_pro_cucumber
+    - name: Upload coverage artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
+        path: coverage/coverage.json
+        retention-days: 1
+  end_coverage:
+    runs-on: ubuntu-latest
+    needs: [rake_tests, rspec_tests, cucumber_tests]
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch coverage results
+      uses: actions/download-artifact@v2
+      with:
+        path: tmp/
+    - name: Publish code coverage
+      uses: paambaati/codeclimate-action@v2.7.5
+      with:
+        coverageLocations: |
+          ${{github.workspace}}/tmp/codeclimate-*/coverage.json:simplecov

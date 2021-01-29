@@ -1,4 +1,4 @@
-class SequencingPipeline < Pipeline
+class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
   self.batch_worksheet = 'simplified_worksheet'
   self.sequencing = true
   self.purpose_information = false
@@ -16,9 +16,9 @@ class SequencingPipeline < Pipeline
       return true
     end
 
-    read_length_list = batch.requests.map { |request|
+    read_length_list = batch.requests.map do |request|
       request.request_metadata.read_length
-    }.compact
+    end.compact
 
     # The pipeline doen't contain the read_length attribute
     return true if read_length_list.size == 0

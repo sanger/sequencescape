@@ -34,7 +34,8 @@ Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*
     project: project,
     user: User.last,
     assets: sample_tubes,
-    request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '76', 'fragment_size_required_to' => '300', 'fragment_size_required_from' => '250', 'library_type' => 'Illumina cDNA protocol' }
+    request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '76',
+                       'fragment_size_required_to' => '300', 'fragment_size_required_from' => '250', 'library_type' => 'Illumina cDNA protocol' }
   )
   order.submission.built!
   step('1 pending delayed jobs are processed')
@@ -42,5 +43,5 @@ end
 
 Given /^the child asset of "([^"]*)" has a sanger_sample_id of "([^"]*)"$/ do |sample_tube_name, sanger_sample_id|
   sample_tube = SampleTube.find_by(name: sample_tube_name)
-  step(%Q{the asset called "#{sample_tube.child.name}" has a sanger_sample_id of "#{sanger_sample_id}"})
+  step(%{the asset called "#{sample_tube.child.name}" has a sanger_sample_id of "#{sanger_sample_id}"})
 end

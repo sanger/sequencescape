@@ -1,4 +1,4 @@
-class EnaAccessionService < AccessionService
+class EnaAccessionService < AccessionService # rubocop:todo Style/Documentation
   self.priority = 1
   self.operational = true
 

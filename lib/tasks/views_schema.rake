@@ -20,7 +20,8 @@ namespace :db do
 
     desc 'Reload the dumped schema'
     task :schema_load do # rubocop:disable Rails/RakeEnvironment
-      ActiveRecord::Tasks::DatabaseTasks.send(:each_current_configuration, ActiveRecord::Tasks::DatabaseTasks.env) do |config|
+      ActiveRecord::Tasks::DatabaseTasks.send(:each_current_configuration,
+                                              ActiveRecord::Tasks::DatabaseTasks.env) do |config|
         ActiveRecord::Base.establish_connection(config)
         load Rails.root.join('db/views_schema.rb')
       end

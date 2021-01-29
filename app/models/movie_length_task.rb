@@ -1,4 +1,4 @@
-class MovieLengthTask < Task
+class MovieLengthTask < Task # rubocop:todo Style/Documentation
   def partial
     'movie_length_batches'
   end

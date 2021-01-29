@@ -1,4 +1,4 @@
-class Descriptor < ApplicationRecord
+class Descriptor < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :task
   serialize :selection
 

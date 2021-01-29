@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: true do
+RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: true, heron_events: true do
   let(:purpose) do
     create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
   end
@@ -147,6 +147,38 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
             'Content c1, pos: 1 Phenotype No other params can be added when sample uuid specified'
           ])
         end
+      end
+    end
+
+    context 'when declaring events' do
+      let(:params) do
+        { barcode: barcode, purpose_uuid: purpose.uuid, events: [event] }
+      end
+      let(:subjects) do
+        [
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+                subject_type: 'plate'),
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
+                subject_type: 'sample'),
+          build(:event_subject,
+                role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE,
+                subject_type: 'robot')
+        ]
+      end
+      let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
+      let(:event) do
+        { 'event': {
+          'event_type': event_type,
+          'subjects': subjects
+        } }
+      end
+
+      it 'can persist the events' do
+        expect do
+          plate_factory.save
+        end.to change(BroadcastEvent, :count).by(1)
       end
     end
   end

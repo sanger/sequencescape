@@ -1,5 +1,5 @@
 module SampleManifest::MultiplexedLibraryBehaviour
-  class Core < SampleManifest::SharedTubeBehaviour::Base
+  class Core < SampleManifest::SharedTubeBehaviour::Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::LibraryAssets
     # for #multiplexed_library_tube
     MxLibraryTubeException = Class.new(ActiveRecord::RecordNotFound)

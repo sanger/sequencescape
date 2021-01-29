@@ -4,6 +4,8 @@
     <h3>Relations
       <%= counter_badge asset.parents.size, 'parent' %>
       <%= counter_badge asset.children.size, 'child' %>
+      <%= counter_badge asset.links_as_descendant.indirect.size, 'ancestors' %>
+      <%= counter_badge asset.links_as_ancestor.indirect.size, 'descendants' %>
       <small class='show-hide'>Click to toggle</small>
     </h3>
     </a>
@@ -14,32 +16,32 @@
         <tr>
           <th>Asset</th>
           <th>Relationship type</th>
-          <th>Map</th>
         </tr>
       </thead>
       <tbody>
-        <% asset.parents.each do |parent| %>
-        <tr>
-          <td><%= link_to "#{(parent.label or "").titleize}: #{parent.display_name}", labware_path(parent) %></td>
-          <td>Parent</td>
-          <td>
-            <% if parent.is_a?(Well) && parent.map %>
-              <%= parent.map.description %>
-            <% end %>
-          </td>
-        </tr>
+        <% asset.parents.find_each do |parent| %>
+          <tr>
+            <td><%= link_to "#{(parent.label or "").titleize}: #{parent.display_name}", labware_path(parent) %></td>
+            <td>Parent</td>
+          </tr>
         <% end %>
-
-        <% asset.children.each do |child| %>
-        <tr>
-          <td><%= link_to "#{child.label&.titleize}: #{child.display_name}", labware_path(child) %></td>
-          <td>Child</td>
-          <td>
-          <% if child.is_a?(Well) && child.map %>
-            <%= child.map.description %>
-          <% end %>
-          </td>
-        </tr>
+        <% asset.children.find_each do |child| %>
+          <tr>
+            <td><%= link_to "#{child.label&.titleize}: #{child.display_name}", labware_path(child) %></td>
+            <td>Child</td>
+          </tr>
+        <% end %>
+        <% asset.links_as_descendant.indirect.includes(:ancestor).find_each do |link| %>
+          <tr>
+            <td><%= link_to "#{(link.ancestor.label or "").titleize}: #{link.ancestor.display_name}", labware_path(link.ancestor) %></td>
+            <td>Ancestor</td>
+          </tr>
+        <% end %>
+        <% asset.links_as_ancestor.indirect.includes(:descendant).find_each do |link| %>
+          <tr>
+            <td><%= link_to "#{link.descendant.label&.titleize}: #{link.descendant.display_name}", labware_path(link.descendant) %></td>
+            <td>Descendant</td>
+          </tr>
         <% end %>
       </tbody>
     </table>

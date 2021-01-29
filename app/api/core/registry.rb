@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ::Core::Registry
+class ::Core::Registry # rubocop:todo Style/Documentation
   include ::Singleton
   include ::Core::Logging
 
@@ -17,7 +17,9 @@ class ::Core::Registry
   end
 
   def lookup_target_class_through_model_hierarchy!(model_class, root_lookup_model_class = model_class)
-    raise UnregisteredError, "Unable to locate for #{root_lookup_model_class.name.inspect} (#{inspect})" if model_class.nil? or ActiveRecord::Base == model_class
+    if model_class.nil? || (ActiveRecord::Base == model_class)
+      raise UnregisteredError, "Unable to locate for #{root_lookup_model_class.name.inspect} (#{inspect})"
+    end
 
     target_class = lookup_target_class_in_registry(model_class)
     return target_class unless target_class.nil?
@@ -25,7 +27,7 @@ class ::Core::Registry
     register(model_class, lookup_target_class_through_model_hierarchy!(model_class.superclass, root_lookup_model_class))
   end
 
-  alias_method(:lookup, :lookup_target_class_through_model_hierarchy!)
+  alias lookup lookup_target_class_through_model_hierarchy!
   private :lookup_target_class_in_registry!
   private :lookup_target_class_through_model_hierarchy!
 
@@ -47,7 +49,9 @@ class ::Core::Registry
   private :is_already_registered?
 
   def register(model_class, io_class)
-    raise StandardError, "Weird class (#{model_class.name.inspect} => #{model_class.inspect})" unless model_class.name.match?(/^[A-Z][A-Za-z0-9:]+$/)
+    unless model_class.name.match?(/^[A-Z][A-Za-z0-9:]+$/)
+      raise StandardError, "Weird class (#{model_class.name.inspect} => #{model_class.inspect})"
+    end
 
     @model_class_to_target[model_class.name] = io_class
   end

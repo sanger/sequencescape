@@ -1,4 +1,4 @@
-class Admin::UsersController < ApplicationController
+class Admin::UsersController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -10,7 +10,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def edit
-    @user_roles = @user.roles.where(name: %w[administrator manager internal])
+    @user_roles = @user.roles.where(name: %w[administrator manager])
     @all_roles = Role.distinct.pluck(:name)
     @users_roles = @user.study_and_project_roles.order(name: :asc)
     @studies = Study.order(:id)
@@ -34,9 +34,9 @@ class Admin::UsersController < ApplicationController
     @user = User.find(params[:id])
     Role.general_roles.each do |role|
       if params[:role] && params[:role][role.name]
-        @user.has_role(role.name)
+        @user.grant_role(role.name)
       else
-        @user.has_no_role(role.name)
+        @user.remove_role(role.name)
       end
     end
 
@@ -59,7 +59,7 @@ class Admin::UsersController < ApplicationController
                               else
                                 Study.find(params[:role][:authorizable_id])
                               end
-        @user.has_role(params[:role][:authorizable_name].to_s, authorizable_object)
+        @user.grant_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
         flash[:notice] = 'Role added'
@@ -84,7 +84,7 @@ class Admin::UsersController < ApplicationController
                               else
                                 Study.find(params[:role][:authorizable_id])
                               end
-        @user.has_no_role(params[:role][:authorizable_name].to_s, authorizable_object)
+        @user.remove_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
         flash[:error] = 'Role was removed'
@@ -103,7 +103,8 @@ class Admin::UsersController < ApplicationController
 
   def filter
     if params[:q]
-      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query', query: "%#{params[:q].downcase}%")
+      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query',
+                                        query: "%#{params[:q].downcase}%")
     end
 
     render partial: 'users', locals: { users: @users }
