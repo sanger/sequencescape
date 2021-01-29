@@ -20,7 +20,6 @@ module Ability::Shared::SuperUser
     can :manage, FacultySponsor
     can :manage, ReferenceGenome
     can :manage, Role
-    can :convert_to_tube, Plate
     can %i[activate deactivate], Pipeline
     can :read, Ability
   end

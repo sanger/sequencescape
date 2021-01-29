@@ -23,8 +23,16 @@ class Ability::Manager
   def grant_privileges
     Rails.logger.debug { 'Granting Manager privileges' }
 
+    can(:edit, Labware) { |lw| !lw.is_a?(PlateTemplate) }
+    cannot :edit, PlateTemplate
     # Can update and edit projects they manage
     can :update, Project, managers: { id: user.id }
+    # Slight difference here from before. Previously managers
+    # could use any study/project until they were owner,
+    # manager or follows of a project, as which point they were
+    # limited to that one. Now we always limit. The alternative
+    # is far too permissive.
+    can :create_submission, Project, managers: { id: user.id }
     # If a user is a manager, this is the list of studies
     # shown in the dropdown.
     can :request_additional_with, Study, managers: { id: user.id }

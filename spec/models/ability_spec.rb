@@ -70,11 +70,11 @@ RSpec.describe Ability do
       Delayed::Job => %i[read],
       Labware => %i[read],
       PlateTemplate => %i[read],
-      Project => %i[create_submission],
+      Project => %i[create read create_submission],
       ReferenceGenome => %i[read],
       Robot => %i[read],
       Sample => %i[edit release accession],
-      Study => %i[print_asset_group_labels],
+      Study => %i[create read print_asset_group_labels],
       Submission => %i[create read new],
       TagGroup => %i[read],
       TagLayoutTemplate => %i[read],
@@ -200,12 +200,10 @@ RSpec.describe Ability do
       it { is_expected.not_to be_able_to(:administer, unauthorized_project) }
       it { is_expected.not_to be_able_to(:edit, authorized_project) }
       it { is_expected.not_to be_able_to(:edit, unauthorized_project) }
-      it { is_expected.not_to be_able_to(:create, authorized_project) }
-      it { is_expected.not_to be_able_to(:create, unauthorized_project) }
       it { is_expected.not_to be_able_to(:create_submission, authorized_project) }
       it { is_expected.not_to be_able_to(:create_submission, unauthorized_project) }
-      it { is_expected.not_to be_able_to(:read, authorized_project) }
-      it { is_expected.not_to be_able_to(:read, unauthorized_project) }
+      it { is_expected.to be_able_to(:read, authorized_project) }
+      it { is_expected.to be_able_to(:read, unauthorized_project) }
       it { is_expected.not_to be_able_to(:delete, authorized_project) }
       it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
 
@@ -218,8 +216,6 @@ RSpec.describe Ability do
       it { is_expected.not_to be_able_to(:link_sample, unauthorized_study) }
       it { is_expected.not_to be_able_to(:edit, authorized_study) }
       it { is_expected.not_to be_able_to(:edit, unauthorized_study) }
-      it { is_expected.not_to be_able_to(:create, authorized_study) }
-      it { is_expected.not_to be_able_to(:create, unauthorized_study) }
       it { is_expected.not_to be_able_to(:activate, authorized_study) }
       it { is_expected.not_to be_able_to(:activate, unauthorized_study) }
       it { is_expected.not_to be_able_to(:deactivate, authorized_study) }
@@ -267,15 +263,12 @@ RSpec.describe Ability do
     let(:granted_permissions) do
       merge_permissions(basic_permissions, {
                           AssetGroup => %i[create new],
-                          GelsController => %i[create edit read delete],
                           Labware => %i[edit],
                           Order => %i[create new],
                           Plate => %i[convert_to_tube],
-                          PlateTemplate => %i[create edit delete],
                           Project => %i[edit],
                           Receptacle => %i[edit close create read delete],
                           Request => %i[create_additional copy cancel change_decision],
-                          SampleLogisticsController => %i[read],
                           SampleManifest => %i[create new],
                           Sequencescape => %i[administer],
                           Study => %i[unlink_sample link_sample edit activate deactivate accession request_additional_with],
@@ -297,12 +290,10 @@ RSpec.describe Ability do
       it { is_expected.not_to be_able_to(:administer, unauthorized_project) }
       it { is_expected.to be_able_to(:edit, authorized_project) }
       it { is_expected.not_to be_able_to(:edit, unauthorized_project) }
-      it { is_expected.not_to be_able_to(:create, authorized_project) }
-      it { is_expected.not_to be_able_to(:create, unauthorized_project) }
       it { is_expected.to be_able_to(:create_submission, authorized_project) }
-      it { is_expected.to be_able_to(:create_submission, unauthorized_project) }
-      it { is_expected.not_to be_able_to(:read, authorized_project) }
-      it { is_expected.not_to be_able_to(:read, unauthorized_project) }
+      it { is_expected.not_to be_able_to(:create_submission, unauthorized_project) }
+      it { is_expected.to be_able_to(:read, authorized_project) }
+      it { is_expected.to be_able_to(:read, unauthorized_project) }
       it { is_expected.not_to be_able_to(:delete, authorized_project) }
       it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
 
@@ -315,8 +306,6 @@ RSpec.describe Ability do
       it { is_expected.not_to be_able_to(:link_sample, unauthorized_study) }
       it { is_expected.to be_able_to(:edit, authorized_study) }
       it { is_expected.to be_able_to(:edit, unauthorized_study) }
-      it { is_expected.not_to be_able_to(:create, authorized_study) }
-      it { is_expected.not_to be_able_to(:create, unauthorized_study) }
       it { is_expected.to be_able_to(:activate, authorized_study) }
       it { is_expected.to be_able_to(:activate, unauthorized_study) }
       it { is_expected.to be_able_to(:deactivate, authorized_study) }
@@ -355,12 +344,10 @@ RSpec.describe Ability do
       it { is_expected.not_to be_able_to(:administer, unauthorized_project) }
       it { is_expected.not_to be_able_to(:edit, authorized_project) }
       it { is_expected.not_to be_able_to(:edit, unauthorized_project) }
-      it { is_expected.not_to be_able_to(:create, authorized_project) }
-      it { is_expected.not_to be_able_to(:create, unauthorized_project) }
       it { is_expected.to be_able_to(:create_submission, authorized_project) }
       it { is_expected.not_to be_able_to(:create_submission, unauthorized_project) }
-      it { is_expected.not_to be_able_to(:read, authorized_project) }
-      it { is_expected.not_to be_able_to(:read, unauthorized_project) }
+      it { is_expected.to be_able_to(:read, authorized_project) }
+      it { is_expected.to be_able_to(:read, unauthorized_project) }
       it { is_expected.not_to be_able_to(:delete, authorized_project) }
       it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
       # Sample
@@ -381,8 +368,6 @@ RSpec.describe Ability do
       it { is_expected.not_to be_able_to(:link_sample, unauthorized_study) }
       it { is_expected.not_to be_able_to(:edit, authorized_study) }
       it { is_expected.not_to be_able_to(:edit, unauthorized_study) }
-      it { is_expected.not_to be_able_to(:create, authorized_study) }
-      it { is_expected.not_to be_able_to(:create, unauthorized_study) }
       it { is_expected.not_to be_able_to(:activate, authorized_study) }
       it { is_expected.not_to be_able_to(:activate, unauthorized_study) }
       it { is_expected.not_to be_able_to(:deactivate, authorized_study) }

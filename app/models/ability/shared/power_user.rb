@@ -8,7 +8,7 @@ module Ability::Shared::PowerUser
     Rails.logger.debug { 'Granting PowerUser privileges' }
     # Admin link will appear
     can :administer, Sequencescape
-    can :edit, Labware
+    can :convert_to_tube, Plate
     can :close, Receptacle
     can :manage, Receptacle
     can :cancel, Request
@@ -23,10 +23,5 @@ module Ability::Shared::PowerUser
     can :create, SampleManifest
     can :create, Supplier
     can :create, Comment
-    # Slight difference here from before. Previously managers
-    # could use any study/project until they were owner,
-    # manager or follows of a project, as which point they were
-    # limited to that one.
-    can :create_submission, Project
   end
 end

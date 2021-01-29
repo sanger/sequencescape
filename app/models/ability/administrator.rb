@@ -32,7 +32,7 @@ class Ability::Administrator
     can :reset_qc_information, Request
 
     # If a sample has been released to the ENA, we need
-    # to be careful about releasing it.
+    # to be careful about editing it.
     can :update_released, Sample
 
     # Administer covers update of the studies via the
@@ -54,6 +54,9 @@ class Ability::Administrator
     can :administer, Project
     # Manage is actually more powerful than administer.
     can :manage, Project
+    # Previously granted to managers who weren't specifically managers of a
+    # particular study
+    can :create_submission, Project
 
     can :rollback, Batch
 
