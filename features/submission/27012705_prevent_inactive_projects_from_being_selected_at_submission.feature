@@ -2,7 +2,7 @@
 Feature: The submissions page should only autosuggests active and approved projects
 
   Background:
-    Given I am an "manager" user logged in as "abc123"
+    Given I am an "administrator" user logged in as "abc123"
     And I have an active study called "study A"
     Given I am visiting study "study A" homepage
 

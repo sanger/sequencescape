@@ -36,7 +36,7 @@ require 'aasm/rspec'
 require 'rspec/collection_matchers'
 
 require './lib/plate_map_generation'
-
+require './lib/capybara_failure_logger'
 require 'pry'
 
 Capybara.register_driver :headless_chrome do |app|
@@ -159,22 +159,7 @@ RSpec.configure do |config|
   config.after(:each, js: true) do |example|
     if example.exception
       name = example.full_description.gsub(/\s/, '_')
-      if page.respond_to?(:save_screenshot)
-        page.save_screenshot("#{name}.png")
-        puts "📸 Screenshot saved to #{Capybara.save_path}/#{name}.png"
-      end
-      if page.respond_to?(:save_page)
-        page.save_page("#{name}.html")
-        puts "📐 HTML saved to #{Capybara.save_path}/#{name}.html"
-      end
-      if page.driver.browser.respond_to?(:manage)
-        errors = page.driver.browser.manage.logs.get(:browser)
-        puts '== JS errors ============'
-        errors.each do |jserror|
-          puts jserror.message
-        end
-        puts '========================='
-      end
+      CapybaraFailureLogger.log_failure(name, page)
     end
   end
 
