@@ -304,4 +304,15 @@ module Barcode::FormatHandlers
   class HeronTailed < BaseRegExBarcode
     self.format = /\A(?<prefix>HT)-(?<number>[0-9]{6,})\z/
   end
+
+  # Added to support plates from Randox
+  # as part of project Heron
+  # Expected formats:
+  # DDMMMYY-TTTTs
+  # where DDMMMYY is the date e.g. 23JAN21
+  # TTTT is the time e.g. 1431
+  # and s is an upper case letter e.g. Q
+  class Randox < BaseRegExBarcode
+    self.format = /\A(?<prefix>\d{2}[A-Z]{3}\d{2})-(?<number>\d{4})(?<suffix>[A-Z])\z/
+  end
 end
