@@ -310,7 +310,7 @@ module Barcode::FormatHandlers
   # Expected formats:
   # DDMMMYY-TTTTs
   # where DDMMMYY is the date e.g. 23JAN21
-  # TTTT is the time e.g. 1431
+  # TTTT is the time e.g. 1431
   # and s is an upper case letter e.g. Q
   class Randox < BaseRegExBarcode
     self.format = /\A(?<prefix>\d{2}[A-Z]{3}\d{2})-(?<number>\d{4})(?<suffix>[A-Z])\z/
