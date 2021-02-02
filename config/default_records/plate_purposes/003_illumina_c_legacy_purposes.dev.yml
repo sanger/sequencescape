@@ -4,38 +4,32 @@
 ---
 ILC Stock:
   type: PlatePurpose::Input
-  target_type: Plate
   stock_plate: true
   default_state: passed
   cherrypickable_target: true
   size: 96
 ILC AL Libs:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: ILC Stock
 ILC Lib PCR:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: ILC Stock
 ILC Lib PCR-XP:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: ILC Stock
 ILC AL Libs Tagged:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: ILC Stock
 ILC Lib Chromium:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: ILC Stock

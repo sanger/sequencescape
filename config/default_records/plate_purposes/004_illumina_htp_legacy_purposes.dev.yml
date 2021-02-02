@@ -4,82 +4,69 @@
 ---
 Cherrypicked:
   type: PlatePurpose::Input
-  target_type: Plate
   stock_plate: true
   default_state: passed
   cherrypickable_target: true
   size: 96
 Shear:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Post Shear:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 AL Libs:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib PCR:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib PCRR:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib PCR-XP:
   type: PlatePurpose
-  target_type: Plate
   stock_plate: true
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib PCRR-XP:
   type: PlatePurpose
-  target_type: Plate
   stock_plate: true
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Post Shear XP:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib Norm:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib Norm 2:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib Norm 2 Pool:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 PF Cherrypicked:
   type: PlatePurpose::Input
-  target_type: Plate
   stock_plate: true
   default_state: passed
   cherrypickable_target: true
@@ -87,13 +74,11 @@ PF Cherrypicked:
 # Note: Other PF plate purposes are homed in Limber
 PF EM Pool:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: PF Cherrypicked
 PF Lib Norm:
   type: PlatePurpose
-  target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: PF Cherrypicked

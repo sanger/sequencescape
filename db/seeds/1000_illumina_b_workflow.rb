@@ -55,8 +55,6 @@ ActiveRecord::Base.transaction do
     }
   ].each { |request_type_options| RequestType.create!(shared_options_b.merge(request_type_options)) }
 
-  Pulldown::PlatePurposes.create_purposes(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last)
-
   [
     {
       key: 'illumina_a_shared',

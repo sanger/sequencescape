@@ -1,0 +1,100 @@
+# These purposes reflect the old pulldown pipeline, which was originally in the
+# pulldown pipeline app, before some of the plates here were merged with the
+# illumina_b app to for the high-throughput app. These were finally superseded
+# when the ISC pipeline moved into Limber
+---
+Lib PCR-XP:
+  stock_plate: true
+  cherrypickable_target: false
+  source_purpose_name: Cherrypicked
+WGS stock DNA:
+  type: PlatePurpose::Input
+  stock_plate: true
+  default_state: passed
+  barcode_printer_type_id: 2
+  cherrypickable_target: true
+WGS Covaris:
+  cherrypickable_target: false
+WGS post-Cov:
+  cherrypickable_target: false
+WGS post-Cov-XP:
+  cherrypickable_target: false
+WGS lib:
+  cherrypickable_target: false
+WGS lib PCR:
+  cherrypickable_target: false
+WGS lib PCR-XP:
+  cherrypickable_target: false
+WGS lib pool:
+  cherrypickable_target: false
+SC stock DNA:
+  stock_plate: true
+  default_state: passed
+  barcode_printer_type_id: 2
+  cherrypickable_target: true
+SC Covaris:
+  cherrypickable_target: false
+SC post-Cov:
+  cherrypickable_target: false
+SC post-Cov-XP:
+  cherrypickable_target: false
+SC lib:
+  cherrypickable_target: false
+SC lib PCR:
+  cherrypickable_target: false
+SC lib PCR-XP:
+  cherrypickable_target: false
+SC hyb:
+  cherrypickable_target: false
+SC cap lib:
+  cherrypickable_target: false
+SC cap lib PCR:
+  cherrypickable_target: false
+SC cap lib PCR-XP:
+  cherrypickable_target: false
+SC cap lib pool:
+  cherrypickable_target: false
+ISC stock DNA:
+  type: PlatePurpose::Input
+  stock_plate: true
+  default_state: passed
+  barcode_printer_type_id: 2
+  cherrypickable_target: true
+ISC Covaris:
+  cherrypickable_target: false
+ISC post-Cov:
+  cherrypickable_target: false
+ISC post-Cov-XP:
+  cherrypickable_target: false
+ISC lib:
+  cherrypickable_target: false
+ISC lib PCR:
+  cherrypickable_target: false
+ISC lib PCR-XP:
+  cherrypickable_target: false
+ISC lib pool:
+  cherrypickable_target: false
+ISC hyb:
+  cherrypickable_target: false
+ISC cap lib:
+  cherrypickable_target: false
+ISC cap lib PCR:
+  cherrypickable_target: false
+ISC cap lib PCR-XP:
+  cherrypickable_target: false
+ISC cap lib pool:
+  cherrypickable_target: false
+ISCH lib pool:
+  cherrypickable_target: true
+ISCH hyb:
+  cherrypickable_target: true
+ISCH cap lib:
+  cherrypickable_target: true
+ISCH cap lib PCR:
+  cherrypickable_target: true
+ISCH cap lib PCR-XP:
+  cherrypickable_target: true
+ISCH cap lib pool:
+  cherrypickable_target: true
+Pulldown QC plate:
+  cherrypickable_target: false
