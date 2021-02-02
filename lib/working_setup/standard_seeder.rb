@@ -33,7 +33,6 @@ module WorkingSetup
     end
 
     def seed
-      sample_registrar
       Sample.all.each { |s| study_b.samples << s }
       create_purposes
 
@@ -80,16 +79,11 @@ module WorkingSetup
 
     private
 
-    def sample_registrar
-      SampleRegistrar.register!([sample_named('sample_a', study), sample_named('sample_b', study),
-                                 sample_named('sample_c', study), sample_named('sample_d', study)])
-    end
-
     def create_or_find_user
       existing = User.find_by(login: 'admin')
       return existing if existing
 
-      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:is_administrator)
+      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:grant_administrator)
     end
 
     def faculty_sponsor
@@ -130,7 +124,7 @@ module WorkingSetup
         }
       ) do |study|
         study.activate!
-        user.is_owner(study)
+        user.grant_owner(study)
       end
     end
 

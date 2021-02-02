@@ -12,6 +12,7 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
   include AASM
   include Uuid::Uuidable
   include SharedBehaviour::Named
+  include Role::Authorized
   extend EventfulRecord
 
   def self.states
@@ -48,7 +49,6 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
                         .where(aliquots: { receptacle_id: assets })
   }
 
-  has_many :roles, as: :authorizable
   has_many :studies, ->() { distinct }, class_name: 'Study', through: :orders, source: :study
   has_many :submissions,  ->() { distinct }, through: :orders, source: :submission
   has_many :sample_manifests

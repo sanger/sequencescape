@@ -86,6 +86,5 @@ Feature: Set roles for SLF functionality
     And I am on the sample logistics homepage
     Then I should see "Sample Management"
     And I should see "Gel"
-    And I should not see "Sample Registration"
     And I should not see "Suppliers"
     And I should not see "Cherrypicking plate templates"

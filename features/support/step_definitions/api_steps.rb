@@ -316,7 +316,7 @@ end
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|
   project = Project.find_by(name: project_name)
   user = FactoryBot.create :user, login: login_name, first_name: 'John', last_name: 'Doe', email: "#{login_name}@example.com"
-  user.is_owner_of(project)
+  user.grant_owner(project)
 end
 
 Given /^the sanger sample id for sample "([^"]*)" is "([^"]*)"$/ do |uuid_value, sanger_sample_id|

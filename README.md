@@ -6,6 +6,8 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/maintainability)](https://codeclimate.com/github/sanger/sequencescape/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/test_coverage)](https://codeclimate.com/github/sanger/sequencescape/test_coverage)
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
+[![Knapsack Pro Parallel CI builds for RSpec Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20RSpec%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1880/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1880&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
+[![Knapsack Pro Parallel CI builds for Cucumber Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20Cucumber%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1881/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1881&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
 
 Sequencescape is a cloud based and highly extensible LIMS system for use in labs with large numbers
 of samples.
@@ -249,11 +251,6 @@ yarn markdown-toc -i README.md --bullets "*"
 
 ### CI
 
-The Travis builds use the Knapsack gem to reduce build time by parallelizing the RSpec and Cucumber tests. When a Travis build runs, Knapsack uses the knapsack_rspec_report.json and knapsack_cucumber_report.json files, which list out test run times, to split the tests into equal length jobs. These report files don't need to be regenerated if tests are deleted or added unless the tests in question are particularly slow and will therefore impact the build times significantly. To regenerate a report file, run one of the following, and commit the resulting changes to the report files:
+The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec and Cucumber tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
 
-```shell
-KNAPSACK_GENERATE_REPORT=true bundle exec rspec
-KNAPSACK_GENERATE_REPORT=true bundle exec cucumber
-```
-
-Copyright (c) 2007, 2010-2019  Genome Research Ltd.
+Copyright (c) 2007, 2010-2021  Genome Research Ltd.

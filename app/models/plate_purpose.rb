@@ -74,7 +74,7 @@ class PlatePurpose < Purpose
   # relate to all wells of the plate, otherwise only the selected ones are updated.
   # @param plate [Plate] The plate being updated
   # @param state [String] The desired target state
-  # @param _user [User] The person to associate with the action
+  # @param user [User] The person to associate with the action
   # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
   # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
   #                                                  in the the event of a failure

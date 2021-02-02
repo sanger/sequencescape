@@ -2,7 +2,7 @@
 
 Given /^I am the owner of sample "([^"]+)"$/ do |name|
   sample = Sample.find_by!(name: name)
-  @current_user.is_owner_of(sample)
+  @current_user.grant_owner(sample)
 end
 
 Given /^I am an administrator$/ do

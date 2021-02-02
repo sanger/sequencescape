@@ -64,10 +64,10 @@ RSpec.describe Study, type: :model do
     let!(:user2)          { create(:user) }
 
     before do
-      user1.has_role('owner', study)
-      user1.has_role('follower', study)
-      user2.has_role('follower', study)
-      user2.has_role('manager', study)
+      user1.grant_owner(study)
+      user1.grant_follower(study)
+      user2.grant_follower(study)
+      user2.grant_manager(study)
     end
 
     it 'deals with followers' do

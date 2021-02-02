@@ -1,5 +1,5 @@
 
-<% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+<% if current_user.administrator? || current_user.manager?(@study) %>
   <%- add :menu, "New asset group" => new_study_asset_group_path(@study) -%>
   <% if @study.approved? && @study.active? -%>
     <% add :menu, "Create Submission" => new_submission_path -%>

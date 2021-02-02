@@ -78,7 +78,7 @@ FactoryBot.define do
     end
 
     after(:build) do |study, evaluator|
-      evaluator.user.has_role(evaluator.role_name, study)
+      evaluator.user.grant_role(evaluator.role_name, study)
     end
 
     # The fairly obvious ones ;)

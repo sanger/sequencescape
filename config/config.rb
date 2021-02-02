@@ -75,7 +75,6 @@ if Rails.env.development? || Rails.env.profile?
   configatron.tecan_precision = 2
   configatron.beckman_precision = 2
   configatron.hamilton_precision = 2
-  configatron.uploaded_spreadsheet.max_number_of_samples = 384
 
   configatron.data_sharing_contact.name = 'John Doe'
   configatron.data_sharing_contact.email = 'foo'
@@ -118,7 +117,6 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.tecan_precision = 1
   configatron.beckman_precision = 2
   configatron.hamilton_precision = 2
-  configatron.uploaded_spreadsheet.max_number_of_samples = 380
 
   configatron.data_sharing_contact.name = 'John Doe'
   configatron.data_sharing_contact.email = 'foo'

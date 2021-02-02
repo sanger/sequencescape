@@ -12,7 +12,6 @@ class Robot::PickData
   # @param [Batch] batch The batch being picked
   # @param [User] user The user generating the file (defaults to batch owner)
   # @param [Integer] max_beds The maximum number of source plates in any one pick
-  # @param [Boolean] include_mapping Set to false to disable generation of extra pick information
   #
   def initialize(batch, user: batch.user, max_beds: nil)
     @batch = batch

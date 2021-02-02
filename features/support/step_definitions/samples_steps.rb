@@ -1,22 +1,5 @@
 # frozen_string_literal: true
 
-Then /^a "([^"]*)" number of "([^"]*)" should be created$/ do |num, records|
-  assert_equal num.to_i, records.humanize.constantize.count
-end
-
-Then /^the following samples should be in the sample registration fields:$/ do |table|
-  number = table.rows.count
-  approved_heads = table.headers
-  heads = find('table#samples_to_register').find_all('thead th').map(&:text)
-  rows = find('table#samples_to_register').find_all("tbody tr:nth-child(-n+#{number})")
-
-  hashes = rows.map do |tr|
-    hash = Hash[heads.zip(tr.find_all('td').map { |td| td.first('input,select').try(:value) })]
-    hash.slice(*approved_heads)
-  end
-  assert_equal table.hashes, hashes
-end
-
 Given /^the sample "([^"]+)" has the Taxon ID "([^"]+)"$/ do |name, id|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.sample_taxon_id = id
