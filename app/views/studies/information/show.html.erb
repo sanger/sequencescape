@@ -4,9 +4,6 @@
   <% add :manager_option, "Create Submission" => new_submission_path(study_id: @study.id) -%>
   <% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
 <% end -%>
-<% if current_user.administrator? || current_user.manager?(@study) %>
-  <% add :manager_option, "Register samples" => study_sample_registration_index_path(@study) -%>
-<% end %>
 <% add :menu, "Samples" => study_samples_path(@study) -%>
 <% add :menu, "Sample Manifests" => sample_manifests_study_path(@study) %>
 <% add :menu, "Suppliers" => suppliers_study_path(@study) %>
@@ -74,13 +71,13 @@
     <% unless @study.approved? -%>
       <%= display_user_guide(I18n.t('studies.status.not_approved')) %>
       <% if @study.samples.empty? -%>
-        <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), study_sample_registration_index_path(@study)) %>
+        <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), sample_manifests_study_path(@study)) %>
       <% else -%>
         <%= display_user_guide(I18n.t('studies.submissions.unable_to_create_submission')) %>
       <% end -%>
     <% else -%>
       <% if @study.samples.empty? -%>
-        <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), study_sample_registration_index_path(@study)) %>
+        <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), sample_manifests_study_path(@study)) %>
       <% else -%>
         <% if (@submissions.exists?) || (@study.requests.count > 0) -%>
           <%= render partial: "submission_warning" %>
