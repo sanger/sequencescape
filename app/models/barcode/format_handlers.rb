@@ -315,4 +315,13 @@ module Barcode::FormatHandlers
   class Randox < BaseRegExBarcode
     self.format = /\A(?<prefix>\d{2}[A-Z]{3}\d{2})-(?<number>\d{4})(?<suffix>[A-Z])\z/
   end
+
+  # Added to support 'Operation Eagle' plates from UK Biocentre
+  # as part of project Heron
+  # Expected formats:
+  # EGLnnnnnn
+  # where n is a digit
+  class UkBiocentreV4 < BaseRegExBarcode
+    self.format = /\A(?<prefix>EGL)(?<number>\d{6})\z/
+  end
 end

@@ -138,5 +138,11 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode '23JAN211212Q'
     it_has_an_invalid_barcode '23JAN21-Q'
   end
+
+  describe Barcode::FormatHandlers::UkBiocentreV4 do
+    it_has_a_valid_barcode 'EGL000002', prefix: 'EGL', number: 2
+    it_has_an_invalid_barcode 'EGL-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end
