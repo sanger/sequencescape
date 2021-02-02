@@ -17,12 +17,7 @@ require 'rexml/text'
 # - {SampleManifest}: Large spreadsheets of sample information are generated.
 #                     When uploaded samples are created in the corresponding
 #                     {Receptacle}.
-# - {SampleRegistrar}: Largely superseded by {SampleManifest} provides a web form
-#                      and spreadsheet upload providing similar functionality to
-#                      SampleManifest
-# - S2 Bridge: A handful of samples are injected directly into the database via
-#              the S2 bridge application.
-# - {Aker::Factories::Material}: Samples imported from Aker
+# - Heron: Heron samples get registered via the Api::V2::Heron::PlatesController
 # - Special samples: Samples such as {PhiX} are generated internally
 class Sample < ApplicationRecord
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC'].freeze
@@ -465,8 +460,9 @@ class Sample < ApplicationRecord
     can_rename_sample
   end
 
-  # sample can either be registered through sample manifest
-  # or through studies/:id/sample_registration
+  # sample can either be registered through sample manifest,
+  # historically through studies/:id/sample_registration
+  # or via external services like Heron
   def registered_through_manifest?
     sample_manifest.present?
   end
