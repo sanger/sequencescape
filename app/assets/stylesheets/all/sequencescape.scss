@@ -1308,13 +1308,6 @@ form#new_labwhere_reception ul li a {
   margin-right: 1em;
 }
 
-/* Table for manual sample registration was inheriting white color for text from bootstrap-sass */
-table#samples_to_register .label {
-  font-size: inherit;
-  color: inherit;
-}
-
-
 ul#orders li.order { text-align: left;}
 
 .nav.nav-tabs li:hover {
