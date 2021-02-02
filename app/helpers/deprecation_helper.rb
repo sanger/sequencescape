@@ -30,7 +30,7 @@ module DeprecationHelper
   #       once the removal date has been hit. While on one level this acts as a nice reminder,
   #       it also unexpectedly breaks the build. Please make sure the tests also get disabled
   #       on the target date. But feel free to spit out a load of warnings to make sure the next
-  #       steps actually happen.
+  #       code-removal steps actually happen.
   #
   # @example sample_registration.html.erb
   #  <%= deprecate_section(
