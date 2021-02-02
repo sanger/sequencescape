@@ -44,16 +44,24 @@ class UatActions::TestSubmission < UatActions
                    'Currently only used in GBS and Heron pipelines.',
              select_options: -> { PrimerPanel.alphabetical.pluck(:name) },
              options: { include_blank: 'Primer panel selection...' }
-  form_field :partial_number_of_wells,
+  form_field :number_of_wells_with_samples,
              :number_field,
-             label: 'Partial number of wells',
+             label: 'Number of wells with samples',
+             help: 'Use this option to create a partial plate of samples. Enter '\
+                   'the number of wells with samples. '\
+                   'Leave blank to use all wells.',
+             options: { minimum: 1 }
+  form_field :number_of_wells_to_submit,
+             :number_field,
+             label: 'Number of wells to submit',
              help: 'Use this option to create a partial submission. Enter the '\
                    'number of randomly sampled wells to be submitted. '\
                    'Leave blank to use all wells.',
              options: { minimum: 1 }
 
   validates :submission_template, presence: { message: 'could not be found' }
-  validates :partial_number_of_wells, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
+  validates :number_of_wells_with_samples, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
+  validates :number_of_wells_to_submit, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
 
   #
   # Returns a default copy of the UatAction which will be used to fill in the form
@@ -73,7 +81,7 @@ class UatActions::TestSubmission < UatActions
 
   #
   # Generates a plate submission for the given template.
-  # A partial submission is possible if the partial_number_of_wells form field has been set.
+  # A partial submission is possible if the number_of_wells_to_submit form field has been set.
   #
   # @return [Boolean] Returns true if the action was successful, false otherwise
   def perform
@@ -88,6 +96,8 @@ class UatActions::TestSubmission < UatActions
     report['submission_id'] = order.submission.id
     report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
     report['primer_panel'] = order.request_options[:primer_panel] if order.request_options[:primer_panel].present?
+    report['number_of_wells_with_samples'] = labware.wells.with_aliquots.size
+    report['number_of_wells_to_submit'] = assets.size
     order.submission.built!
     true
   end
@@ -104,12 +114,13 @@ class UatActions::TestSubmission < UatActions
 
   # take a sample of the wells to go into the submission
   def select_assets
-    if partial_number_of_wells.blank? || partial_number_of_wells.to_i.zero?
+    num_subm_wells = number_of_wells_to_submit.to_i
+    if num_subm_wells.zero?
       # default option, take all wells with aliquots
       labware.wells.with_aliquots
     else
       # take the number entered in the form
-      reqd_num_samples = partial_number_of_wells.to_i
+      reqd_num_samples = num_subm_wells
 
       # check the number is less than the total wells with aliquots
       # N.B. sort the array after random sampling to get back into original well order
@@ -129,10 +140,14 @@ class UatActions::TestSubmission < UatActions
   def generate_plate
     generator = UatActions::GeneratePlates.default
     generator.plate_purpose_name = plate_purpose_name.presence || default_purpose_name
-    generator.well_count = if partial_number_of_wells.blank? || partial_number_of_wells.to_i.zero?
-                             90
+
+    num_sample_wells = number_of_wells_with_samples.to_i
+    generator.well_count = if num_sample_wells.zero?
+                             # default option, create a full plate
+                             96
                            else
-                             partial_number_of_wells.to_i
+                             # take the number entered in the form
+                             num_sample_wells
                            end
     generator.well_layout = 'Random'
     generator.perform
