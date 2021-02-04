@@ -107,6 +107,7 @@ jobs:
       env:
         DBPORT: ${{ job.services.mysql.ports[3306] }}
       run: |
+        bin/setup
         bundle exec rails webdrivers:chromedriver:update
         bundle exec rake assets:precompile
     # Actually run our tests

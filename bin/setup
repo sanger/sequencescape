@@ -24,7 +24,7 @@ chdir APP_ROOT do
   puts '== Installing dependencies =='
 
   # Set SKIP_AUTOMATIC_GEM_INSTALLATION to disable bundle install here on the CI
-  # suite as we've already done it.
+  # suite as we've already done it, and this section gets a little clever.
   unless ENV['SKIP_AUTOMATIC_GEM_INSTALLATION']
     system! 'gem install bundler --conservative'
 
