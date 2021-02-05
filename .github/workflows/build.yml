@@ -5,6 +5,8 @@ on:
 
 jobs:
   build:
+    env:
+      BUNDLE_WITHOUT: 'warehouse'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
