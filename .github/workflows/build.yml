@@ -20,13 +20,13 @@ jobs:
           public/assets
           tmp/cache/assets/sprockets
           node_modules
-        key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
-        # If we don't find the specific cache we want, fallback to the last raketests
+        key: ${{ runner.os }}-build-${{ hashFiles('yarn.lock') }}
+        # If we don't find the specific cache we want, fallback to the last build
         # cache, then finally any cache for this repo.
         # Github looks for the newest cache beginning with the first entry, before
         # falling back the the second if none is present.
         restore-keys: |
-          ${{ runner.os }}-tests-
+          ${{ runner.os }}-build-
           ${{ runner.os }}-
     # Install only the gems needed for testing
     # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
