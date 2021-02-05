@@ -26,6 +26,12 @@ module DeprecationHelper
   # Once date has been reached, the section will be automatically hidden. It will also log
   # every-time it gets hit to allow for removal.
   #
+  # @note When using this feature, tests relying on the deprecated behaviour will begin failing
+  #       once the removal date has been hit. While on one level this acts as a nice reminder,
+  #       it also unexpectedly breaks the build. Please make sure the tests also get disabled
+  #       on the target date. But feel free to spit out a load of warnings to make sure the next
+  #       code-removal steps actually happen.
+  #
   # @example sample_registration.html.erb
   #  <%= deprecate_section(
   #     date: Date.parse('20190708'),

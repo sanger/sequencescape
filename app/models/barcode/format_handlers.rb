@@ -324,4 +324,13 @@ module Barcode::FormatHandlers
   class UkBiocentreV4 < BaseRegExBarcode
     self.format = /\A(?<prefix>EGL)(?<number>\d{6})\z/
   end
+
+  # Added to support 'Operation Eagle' plates from Cambridge AZ
+  # as part of project Heron
+  # Expected formats:
+  # EGCnnnnnn
+  # where n is a digit
+  class CambridgeAZV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>EGC)(?<number>\d{6})\z/
+  end
 end
