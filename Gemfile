@@ -29,7 +29,7 @@ group :default do
   # to fail due to mime-type detection failing due to the newly introduces
   # mime-magic. Pinning to 1.3.1 for the time being.
   # https://github.com/sanger/sequencescape/issues/2349
-  gem 'carrierwave', '~>1.3.1'
+  gem 'carrierwave', '~>1.3.2'
   gem 'net-ldap'
   # Will paginate clashes awkwardly with bootstrap
   gem 'will_paginate-bootstrap'
