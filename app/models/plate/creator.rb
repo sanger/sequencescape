@@ -197,7 +197,12 @@ class Plate::Creator < ApplicationRecord
         plate = Plate.with_barcode(scanned).eager_load(wells: :aliquots).find_by_barcode(scanned) ||
                 fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
 
-        fail_with_error("Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]") unless can_create_plates?(plate)
+        unless can_create_plates?(plate)
+          target_purposes = plate_purposes.map(&:name).join(',')
+          fail_with_error(
+            "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{target_purposes}]"
+          )
+        end
 
         create_child_plates_from(plate, current_user, creator_parameters).tap do |destinations|
           add_created_plates(plate, destinations)
