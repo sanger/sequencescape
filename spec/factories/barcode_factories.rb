@@ -81,5 +81,13 @@ FactoryBot.define do
         end
       end
     end
+
+    factory :heron_tailed do
+      transient do
+        sequence(:number) { |i| i + 100000 }
+      end
+      format { 'heron_tailed' }
+      barcode { "HT-#{number}" }
+    end
   end
 end

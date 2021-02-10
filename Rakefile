@@ -15,5 +15,3 @@ Sequencescape::Application.load_tasks
 
 #   task run: ['test:_run']
 # end
-
-Knapsack.load_tasks if defined?(Knapsack)

@@ -19,11 +19,15 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require 'knapsack'
-
-Knapsack::Adapters::RSpecAdapter.bind
-
+require 'knapsack_pro'
 require 'simplecov'
+
+# https://knapsackpro.com/faq/question/how-to-use-simplecov-in-queue-mode
+KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
+  SimpleCov.command_name("rspec_ci_node_#{KnapsackPro::Config::Env.ci_node_index}")
+end
+
+KnapsackPro::Adapters::RSpecAdapter.bind
 
 require 'webdrivers/chromedriver'
 Webdrivers::Chromedriver.update
@@ -56,7 +60,7 @@ end
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
 Capybara.default_max_wait_time = 10
 
-WebMock.disable_net_connect!(allow_localhost: true)
+WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
 
 RSpec.configure do |config|
   config.bisect_runner = :shell # Forking doesn't seem to work
@@ -94,7 +98,7 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     PlateMapGeneration.generate!
-    FactoryBot.find_definitions
+    FactoryBot.reload
   end
 
   # The settings below are suggested to provide a good initial experience

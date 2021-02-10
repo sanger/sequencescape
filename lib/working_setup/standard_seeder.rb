@@ -33,7 +33,6 @@ module WorkingSetup
     end
 
     def seed
-      sample_registrar
       Sample.all.each { |s| study_b.samples << s }
       create_purposes
 
@@ -79,11 +78,6 @@ module WorkingSetup
     end
 
     private
-
-    def sample_registrar
-      SampleRegistrar.register!([sample_named('sample_a', study), sample_named('sample_b', study),
-                                 sample_named('sample_c', study), sample_named('sample_d', study)])
-    end
 
     def create_or_find_user
       existing = User.find_by(login: 'admin')
