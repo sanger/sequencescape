@@ -119,7 +119,7 @@ GEM
       amq-protocol (~> 2.3, >= 2.3.1)
     byebug (11.1.3)
     cancancan (3.2.1)
-    capybara (3.35.0)
+    capybara (3.35.3)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
