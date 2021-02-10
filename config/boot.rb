@@ -4,8 +4,6 @@ require 'bundler/setup' # Set up gems listed in the Gemfile.
 
 if ENV['RAILS_ENV'] == 'test' || ENV['RAILS_ENV'] == 'cucumber'
   require 'simplecov'
-  SimpleCov.start 'rails'
-  puts "required simplecov"
 end
 
 
