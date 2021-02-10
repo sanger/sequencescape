@@ -2,10 +2,7 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 
 require 'bundler/setup' # Set up gems listed in the Gemfile.
 
-if ENV['RAILS_ENV'] == 'test' || ENV['RAILS_ENV'] == 'cucumber'
-  require 'simplecov'
-end
-
+require 'simplecov' if ENV['RAILS_ENV'] == 'test' || ENV['RAILS_ENV'] == 'cucumber'
 
 # Bootsnap does not purge its cache, which can cause boot-times to increase
 # over time. This change will purge the cache every 30 days. In development
