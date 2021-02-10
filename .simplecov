@@ -18,7 +18,7 @@ SimpleCov.start 'rails' do
 
   at_exit do
     result = SimpleCov.result
-    result.command_name =  "#{result.command_name}.#{$PID}"
+    result.command_name = "#{result.command_name}.#{$PID}"
     result.format!
   end
 end
