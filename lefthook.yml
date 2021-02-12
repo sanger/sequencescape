@@ -10,7 +10,7 @@ pre-commit:
       run: rubocop --display-style-guide --extra-details --force-exclusion --parallel {staged_files} || (echo 'Run `lefthook run fix` to run autocrrect on staged files only'; exit 1)
     eslint:
       glob: 'app/javascript/**/*.{vue,js}'
-      run: yarn lintOnly {staged_files} || echo 'Run `lefthook run fix` to run autocrrect on staged files only'; exit 1
+      run: yarn lintOnly {staged_files} || (echo 'Run `lefthook run fix` to run autocrrect on staged files only'; exit 1)
 
 fix:
   parallel: true
