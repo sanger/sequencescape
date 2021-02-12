@@ -342,4 +342,15 @@ module Barcode::FormatHandlers
   class GlasgowV2 < BaseRegExBarcode
     self.format = /\A(?<prefix>EGG)(?<number>\d{6})\z/
   end
+
+  # Added to support 'Operation Eagle' plates
+  # except the ones already categorised (MK, CM and GLS)
+  # as part of project Heron
+  # Expected formats:
+  # EG?nnnnnn
+  # where n is a digit
+  # and ? is any uppercase letter
+  class Eagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>EG(?![LCG])[A-Z])(?<number>\d{6})\z/
+  end
 end

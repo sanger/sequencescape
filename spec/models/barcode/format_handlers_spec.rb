@@ -156,5 +156,17 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'EGG-000002'
     it_has_an_invalid_barcode 'ABC000002'
   end
+
+  describe Barcode::FormatHandlers::Eagle do
+    it_has_a_valid_barcode 'EGX000002', prefix: 'EGX', number: 2
+    it_has_a_valid_barcode 'EGT000002', prefix: 'EGT', number: 2
+    it_has_an_invalid_barcode 'EGL000002' # This is covered by UkBiocentreV4
+    it_has_an_invalid_barcode 'EGC000002' # This is covered by CambridgeAZV2
+    it_has_an_invalid_barcode 'EGG000002' # This is covered by GlasgowV2
+    it_has_an_invalid_barcode 'EGx000002' # lowercase 3rd character
+    it_has_an_invalid_barcode 'EG6000002' # numeric 3rd character
+    it_has_an_invalid_barcode 'EGX-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end
