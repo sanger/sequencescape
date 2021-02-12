@@ -150,5 +150,11 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'EGC-000002'
     it_has_an_invalid_barcode 'ABC000002'
   end
+
+  describe Barcode::FormatHandlers::GlasgowV2 do
+    it_has_a_valid_barcode 'EGG000002', prefix: 'EGG', number: 2
+    it_has_an_invalid_barcode 'EGG-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end
