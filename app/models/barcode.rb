@@ -44,7 +44,7 @@ class Barcode < ApplicationRecord
     eagle: 23,
     cambridge_a_z_eagle: 24,
     glasgow_eagle: 25,
-    uk_biocentre_eagle: 26,
+    uk_biocentre_eagle: 26
   }
 
   # Barcode formats which may be submitted via sample manifests
