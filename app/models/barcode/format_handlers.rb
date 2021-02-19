@@ -353,4 +353,31 @@ module Barcode::FormatHandlers
   class Eagle < BaseRegExBarcode
     self.format = /\A(?<prefix>EG(?![LCG])[A-Z])(?<number>\d{6})\z/
   end
+
+  # Added to support Cambridge 'Operation Eagle' plates
+  # as part of project Heron
+  # Expected formats:
+  # CBEnnnnnn
+  # where n is a digit
+  class CambridgeAZEagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>CBE)(?<number>\d{6})\z/
+  end
+
+  # Added to support Glasgow 'Operation Eagle' plates
+  # as part of project Heron
+  # Expected formats:
+  # GLSnnnnnn
+  # where n is a digit
+  class GlasgowEagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>GLS)(?<number>\d{6})\z/
+  end
+
+  # Added to support UkBiocentre 'Operation Eagle' plates
+  # as part of project Heron
+  # Expected formats:
+  # EMKnnnnnn
+  # where n is a digit
+  class UkBiocentreEagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>EMK)(?<number>\d{6})\z/
+  end
 end
