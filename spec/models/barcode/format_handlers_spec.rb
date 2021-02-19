@@ -168,5 +168,23 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'EGX-000002'
     it_has_an_invalid_barcode 'ABC000002'
   end
+
+  describe Barcode::FormatHandlers::CambridgeAZEagle do
+    it_has_a_valid_barcode 'CBE000002', prefix: 'CBE', number: 2
+    it_has_an_invalid_barcode 'CBE-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::GlasgowEagle do
+    it_has_a_valid_barcode 'GLS000002', prefix: 'GLS', number: 2
+    it_has_an_invalid_barcode 'GLS-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::UkBiocentreEagle do
+    it_has_a_valid_barcode 'EMK000002', prefix: 'EMK', number: 2
+    it_has_an_invalid_barcode 'EMK-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end
