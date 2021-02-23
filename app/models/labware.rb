@@ -108,6 +108,12 @@ class Labware < Asset
     end
   }
 
+  # The use of a sub-query here is a performance optimization. If we join onto the asset_links
+  # table instead, rails is unable to paginate the results efficiently, as it needs to use DISTINCT
+  # when working out offsets. This is substantially slower.
+  scope :without_children, -> { where.not(id: AssetLink.where(direct: true).select(:ancestor_id)) }
+  scope :include_labware_with_children, ->(filter) { filter ? all : without_children }
+
   def human_barcode
     'UNKNOWN'
   end

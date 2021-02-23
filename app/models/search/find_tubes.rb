@@ -12,7 +12,7 @@ class Search::FindTubes < Search # rubocop:todo Style/Documentation
                   end
 
     Tube.with_purpose(purpose_ids)
-        .include_plates_with_children(criteria['include_used'])
+        .include_labware_with_children(criteria['include_used'])
         .includes(:transfer_requests_as_target, aliquots: Io::Aliquot::PRELOADS)
         .page(criteria['page']).limit(criteria['limit']).order(id: :desc)
   end

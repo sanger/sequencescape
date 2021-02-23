@@ -22,8 +22,6 @@ module SingleReceptacleLabware
     delegate :aliquots, :aliquots=, to: :receptacle
     delegate :concentration, :concentration=, to: :receptacle
     # Delegate for the moment, update once things are working
-    delegate :transfer_requests_as_target, :transfer_requests_as_source, to: :receptacle
-    # Delegate for the moment, update once things are working
     delegate :qc_results, to: :receptacle
     # And a few more basic delegations
     delegate  :qc_state, :qc_state=,
