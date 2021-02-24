@@ -1,5 +1,5 @@
 <tr>
-  <th class='{sorter: false}'>&nbsp;</th>
+  <th data-orderable="false"></th>
   <th id="priority_flag"  style='text-align: center'><%= image_tag("icon_0_flag.png", size: "16x16") %></th>
   <% if current_user.lab_manager? %>
     <th>Previous requests</th>
@@ -8,9 +8,8 @@
   <th>Submission ID</th>
   <th>Request ID</th>
   <th>Name</th>
-  <th>Request comments</th>
+  <th>All comments</th>
   <th>Asset</th>
-  <th>Asset comments</th>
   <th>Num. Samples</th>
   <th>Conc</th>
   <th>Scanned in (Y-M-D)</th>

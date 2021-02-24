@@ -45,8 +45,7 @@ class PipelinesController < ApplicationController # rubocop:todo Style/Documenta
       @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
       requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
       @grouped_requests = requests.group_by(&:submission_id)
-      @requests_comment_count = Comment.counts_for(requests)
-      @assets_comment_count = Comment.counts_for(requests.map(&:asset))
+      @requests_comment_count = Comment.counts_for_requests(requests)
     else
       Rails.logger.info('Pipeline fallback behaviour')
       @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
@@ -54,8 +53,7 @@ class PipelinesController < ApplicationController # rubocop:todo Style/Documenta
       # We convert to an array here as otherwise rails tries to be smart
       # and use the scope. Not only does it fail, but we may as well cache
       # the result now anyway.
-      @requests_comment_count = Comment.counts_for(@requests)
-      @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
+      @requests_comment_count = Comment.counts_for_requests(@requests)
       @requests_samples_count = Request.where(id: @requests).joins(:samples).group(:id).count
     end
   end

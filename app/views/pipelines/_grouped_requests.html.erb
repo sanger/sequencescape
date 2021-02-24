@@ -2,15 +2,14 @@
 <table class="table table-striped sortable table-dense-information" id="pipeline_inbox">
   <thead>
     <tr>
-      <th>&nbsp;</th>
-      <th>&nbsp;</th>
+      <th></th>
+      <th></th>
       <th id="priority_flag"><%= image_tag("icon_0_flag.png", size: "16x16") %></th>
       <th>Submission</th>
       <th>Request ID</th>
       <th>Name</th>
-      <th>Request comments</th>
+      <th>All comments</th>
       <th>Asset</th>
-      <th>Asset comments</th>
       <% if @pipeline.multiplexed? %>
         <th>Scanned in (Y-M-D)</th>
       <% end %>
@@ -38,11 +37,11 @@
             <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{current_user.lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
           </td>
           <td><%= link_to request.submission_id,submission_path(request.submission) %></td>
-          <td>&nbsp;</td>
+          <td></td>
           <td><%= h(request.asset.display_name) %></td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
+          <td></td>
+          <td></td>
+          <td></td>
           <% if @pipeline.multiplexed? %>
             <td style='text-align: left'><%= request.asset.scanned_in_date %></td>
           <% end %>
@@ -54,18 +53,17 @@
         </tr>
 
       <tr class="nested" id="<%= request.submission_id %>_0" style="display:none">
-         <td>&nbsp;</td>
-         <td>&nbsp;</td>
-        <td>&nbsp;</td>
+         <td></td>
+         <td></td>
+        <td></td>
         <td colspan=12><%= requests.size %> out of <%= Request.number_expected_for_submission_id_and_request_type_id(request.submission_id, request.request_type_id) %> scanned in.</td>
       </tr>
         <%- requests.each_with_index do |request, indice| -%>
           <% request_comments_count = @requests_comment_count.fetch(request.id,0) -%>
           <% request_asset = request.asset -%>
-          <% asset_comments_count = @assets_comment_count.fetch(request.asset_id,0)-%>
           <% progr = indice + 1 %>
         <tr class="nested" id="<%= request.submission_id %>_<%= progr.to_s %>" style="display:none">
-          <td width='2%'>&nbsp;</td>
+          <td width='2%'></td>
           <td>
           <%= label(:request, request.id, 'Select Request', style: 'display:none') %>
             <% if request.ready? %>
@@ -82,16 +80,11 @@
           <td><%= link_to(h(request_asset.display_name), receptacle_path(request.asset)) %></td>
           <%= render partial: "request_comments", locals: { request: request, comments_count: request_comments_count } %>
           <td><%=  link_to "#{request_asset.sti_type} #{request_asset.try(:human_barcode)}", receptacle_path(request.asset) %></td>
-          <% unless asset_comments_count.zero? -%>
-            <%= render partial: "asset_comments", locals: { request: request, comments_count: asset_comments_count } %>
-          <% else -%>
-            <td>&nbsp;</td>
-          <% end -%>
-          <td>&nbsp;</td>
+          <td></td>
           <% @information_types.each do |information_type| %>
             <td><%= h(request.request_metadata[information_type.key]) %></td>
           <% end %>
-          <td><%= request.asset.concentration || "&nbsp;".html_safe -%></td>
+          <td><%= request.asset.concentration || "".html_safe -%></td>
           <td><%= request.submission.study_names %></td>
         </tr>
         <% end -%>

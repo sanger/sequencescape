@@ -19,6 +19,30 @@ class Comment < ApplicationRecord
     where(commentable: commentables).group(:commentable_id).count
   end
 
+  #
+  # We don't want to load comments upfront, as it can result in a lot of data
+  # in some cases. However, we do want to display counts. However when it
+  # comes to requests, there are three places we may wish to look:
+  # - The request itself
+  # - The receptacle (source receptacle)
+  # - The labware associated with the receptacle
+  # Rather than having three separate columns, we instead reduce it down to
+  # a single place. This method lets us aggregate those counts
+  # @param requests [Array<Request>] Requests to get counts for. Preferably with preloaded assets
+  #
+  # @return [Hash] Hash of counts indexed by request_id
+  #
+  def self.counts_for_requests(requests)
+    all_commentables = requests.flat_map { |request| [request, request.asset, request.asset&.labware] }
+    counts = where(commentable: all_commentables.compact).group(:commentable_type, :commentable_id).count
+    requests.each_with_object({}) do |request, counter_cache|
+      request_count = counts.fetch(['Request', request.id], 0)
+      receptacle_count = counts.fetch(['Receptacle', request.asset_id], 0)
+      labware_count = counts.fetch(['Labware', request.asset.labware_id], 0)
+      counter_cache[request.id] = request_count + receptacle_count + labware_count
+    end
+  end
+
   def can_be_deleted_by?(deleting_user)
     user == deleting_user || deleting_user.administrator?
   end
