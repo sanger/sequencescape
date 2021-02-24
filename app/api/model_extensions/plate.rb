@@ -27,14 +27,6 @@ module ModelExtensions::Plate
     end
   end
 
-  def source_plate
-    plate_purpose.source_plate(self)
-  end
-
-  def source_plates
-    plate_purpose.source_plates(self)
-  end
-
   def library_source_plate
     plate_purpose.library_source_plate(self)
   end

@@ -108,8 +108,22 @@ class Labware < Asset
     end
   }
 
+  scope :stock_plates, -> { where(plate_purpose_id: PlatePurpose.considered_stock_plate) }
+
   def human_barcode
     'UNKNOWN'
+  end
+
+  def role
+    (requests_as_source.first || in_progress_requests.first)&.role
+  end
+
+  def source_plate
+    @source_plate ||= purpose&.source_plate(self)
+  end
+
+  def source_plates
+    @source_plates ||= purpose&.source_plates(self)
   end
 
   # Assigns name
