@@ -139,7 +139,7 @@ class AbilityAnalysis
     if user_ability.can? action, model
       begin
         user_ability.model_adapter(model, action).try(:conditions).presence || true
-      rescue ArgumentError
+      rescue ArgumentError, CanCan::Error
         # The polymorphic association for comments is causing problems here, but
         # works fine where actually needed.
         { error: 'Rule could not be read automatically' }
