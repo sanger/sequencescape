@@ -304,4 +304,80 @@ module Barcode::FormatHandlers
   class HeronTailed < BaseRegExBarcode
     self.format = /\A(?<prefix>HT)-(?<number>[0-9]{6,})\z/
   end
+
+  # Added to support plates from Randox
+  # as part of project Heron
+  # Expected formats:
+  # DDMMMYY-TTTTs
+  # where DDMMMYY is the date e.g. 23JAN21
+  # TTTT is the time e.g. 1431
+  # and s is an upper case letter e.g. Q
+  class Randox < BaseRegExBarcode
+    self.format = /\A(?<prefix>\d{2}[A-Z]{3}\d{2})-(?<number>\d{4})(?<suffix>[A-Z])\z/
+  end
+
+  # Added to support 'Operation Eagle' plates from UK Biocentre
+  # as part of project Heron
+  # Expected formats:
+  # EGLnnnnnn
+  # where n is a digit
+  class UkBiocentreV4 < BaseRegExBarcode
+    self.format = /\A(?<prefix>EGL)(?<number>\d{6})\z/
+  end
+
+  # Added to support 'Operation Eagle' plates from Cambridge AZ
+  # as part of project Heron
+  # Expected formats:
+  # EGCnnnnnn
+  # where n is a digit
+  class CambridgeAZV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>EGC)(?<number>\d{6})\z/
+  end
+
+  # Added to support 'Operation Eagle' plates from Glasgow
+  # as part of project Heron
+  # Expected formats:
+  # EGGnnnnnn
+  # where n is a digit
+  class GlasgowV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>EGG)(?<number>\d{6})\z/
+  end
+
+  # Added to support 'Operation Eagle' plates
+  # except the ones already categorised (MK, CM and GLS)
+  # as part of project Heron
+  # Expected formats:
+  # EG?nnnnnn
+  # where n is a digit
+  # and ? is any uppercase letter
+  class Eagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>EG(?![LCG])[A-Z])(?<number>\d{6})\z/
+  end
+
+  # Added to support Cambridge 'Operation Eagle' plates
+  # as part of project Heron
+  # Expected formats:
+  # CBEnnnnnn
+  # where n is a digit
+  class CambridgeAZEagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>CBE)(?<number>\d{6})\z/
+  end
+
+  # Added to support Glasgow 'Operation Eagle' plates
+  # as part of project Heron
+  # Expected formats:
+  # GLSnnnnnn
+  # where n is a digit
+  class GlasgowEagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>GLS)(?<number>\d{6})\z/
+  end
+
+  # Added to support UkBiocentre 'Operation Eagle' plates
+  # as part of project Heron
+  # Expected formats:
+  # EMKnnnnnn
+  # where n is a digit
+  class UkBiocentreEagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>EMK)(?<number>\d{6})\z/
+  end
 end

@@ -4,11 +4,6 @@
   <% add :menu, "Create Submission" => new_submission_path(study_id: @study.id) -%>
   <% add :menu, "Start a Bulk Submission" => new_bulk_submission_path -%>
 <% end -%>
-<%# Merge conflict? Select the version that deletes this. This is only
-  # due to live another few days %>
-<% if can? :create, SampleManifest %>
-  <% add :menu, "Register samples" => study_sample_registration_index_path(@study) -%>
-<% end %>
 <% add :menu, "Samples" => study_samples_path(@study) -%>
 <% add :menu, "Sample Manifests" => sample_manifests_study_path(@study) %>
 <% add :menu, "Suppliers" => suppliers_study_path(@study) %>

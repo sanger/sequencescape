@@ -33,7 +33,8 @@
   },
   "scripts": {
     "test": "jest",
-    "lint": "eslint --ext .js --ext .vue app/javascript"
+    "lint": "eslint --ext .js --ext .vue app/javascript",
+    "lintOnly": "eslint --ext .js --ext .vue"
   },
   "jest": {
     "roots": [

@@ -5,17 +5,25 @@ on:
 
 jobs:
   build:
+    env:
+      BUNDLE_WITHOUT: 'warehouse'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
-    - name: Cache gems
+      with:
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    # Establish a cache of js modules to improve performance
+    - name: Cache js
       uses: actions/cache@v2
       with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-build-${{ hashFiles('**/Gemfile.lock') }}
-        # If we don't find the specific cache we want, fallback to the last raketests
+        path: |
+          public/assets
+          tmp/cache/assets/sprockets
+          node_modules
+        key: ${{ runner.os }}-build-${{ hashFiles('yarn.lock') }}
+        # If we don't find the specific cache we want, fallback to the last build
         # cache, then finally any cache for this repo.
         # Github looks for the newest cache beginning with the first entry, before
         # falling back the the second if none is present.

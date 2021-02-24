@@ -72,6 +72,37 @@ describe UatActions::TestSubmission do
         expect(uat_action.report['primer_panel']).to eq 'Primer Panel 1'
       end
     end
+
+    context 'with optional number of wells with samples supplied' do
+      let(:parameters) do
+        {
+          submission_template_name: submission_template.name,
+          number_of_wells_with_samples: '2'
+        }
+      end
+
+      it 'can be performed' do
+        expect(uat_action.perform).to eq true
+        expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
+        expect(uat_action.report['submission_id']).to be_a Integer
+        expect(uat_action.report['number_of_wells_with_samples']).to be_a Integer
+      end
+    end
+
+    context 'with optional number of wells to submit supplied' do
+      let(:parameters) do
+        {
+          submission_template_name: submission_template.name,
+          number_of_wells_to_submit: '2'
+        }
+      end
+
+      it 'can be performed' do
+        expect(uat_action.perform).to eq true
+        expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
+        expect(uat_action.report['number_of_wells_to_submit']).to be_a Integer
+      end
+    end
   end
 
   it 'returns a default' do
