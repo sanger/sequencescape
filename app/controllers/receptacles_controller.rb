@@ -28,7 +28,7 @@ class ReceptaclesController < ApplicationController
   end
 
   def show
-    @source_plate = @asset.source_plate
+    @source_plates = @asset.source_plates
     respond_to do |format|
       format.html
       format.xml

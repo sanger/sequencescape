@@ -1,0 +1,15 @@
+<%= page_title("plate summary", "results") %>
+<%= form_tag(search_plate_summaries_path, method: :get) do %>
+  <%= label_tag :plate_barcode, "Plate barcode" %>
+  <%= search_field_tag :plate_barcode, nil, class: "form-control" %>
+<% end %>
+
+<h2>Multiple Plates</h2>
+<p><%= @barcode %> has multiple source plates</p>
+<ul class="list-group">
+<% @plates.each do |plate| %>
+  <li class="list_group-item">
+    <%= link_to plate.human_barcode, plate_summary_path(plate.human_barcode) %>
+  </li>
+<% end %>
+</ul>

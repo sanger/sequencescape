@@ -105,10 +105,6 @@ class Asset < ApplicationRecord
     RequestType.where(asset_type: label)
   end
 
-  def role
-    stock_plate&.stock_role
-  end
-
   def external_identifier
     "#{sti_type}#{id}"
   end
@@ -166,10 +162,6 @@ class Asset < ApplicationRecord
 
   def contained_samples
     Sample.none
-  end
-
-  def source_plate
-    nil
   end
 
   def printable?
