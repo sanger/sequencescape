@@ -77,12 +77,6 @@ class Asset < ApplicationRecord
   # a bit more smart about what we load if necessary (Ie. different stuff for plates)
   scope :include_for_show, -> { includes(:studies) }
 
-  # The use of a sub-query here is a performance optimization. If we join onto the asset_links
-  # table instead, rails is unable to paginate the results efficiently, as it needs to use DISTINCT
-  # when working out offsets. This is substantially slower.
-  scope :without_children, -> { where.not(id: AssetLink.where(direct: true).select(:ancestor_id)) }
-  scope :include_plates_with_children, ->(filter) { filter ? all : without_children }
-
   def summary_hash
     {
       asset_id: id
