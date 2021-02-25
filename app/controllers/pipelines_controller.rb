@@ -1,7 +1,25 @@
-class PipelinesController < ApplicationController # rubocop:todo Style/Documentation
-  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
+# The pipelines controller is concerned with {Pipeline pipelines} lab processes
+# that handle the processing of {Request requests}. This controller is concerned
+# with those piplines that are handled internally by Sequencescape directly,
+# not those processed by apps such as Limber.
+# In general we have been trying to move this behaviour out of Sequencescape,
+# but some legacy pipelines remain.
+# = Endpoints
+# Some of these endpoints should probably be moved elsewhere
+# == CRUD
+# - Showing a list of available pipelines to the users (index)
+# - Displaying the Pipeline inbox to users, from which they can create {Batch batches} (show)
+# == Extra
+# - Activation and deactivation of the pipeline (activate/deactivate) I'm not aware of any links to this
+# - Listing batches associated with a pipeline (batches) [Move to Pipelines::Batches?]
+# == Move to RequestsController?
+# - Change the priority of a request via clicking the flag in the inbox (Update priority)
+# == Move to BatchesController?
+# The batches controller is already very large, but these definitely don't belong here
+# - Finish a batch (finish)
+# - Release a batch (release)
+# - Show a batch summary (summary)
+class PipelinesController < ApplicationController
   before_action :find_pipeline_by_id, only: %i[show activate deactivate destroy batches]
   before_action :lab_manager_login_required, only: %i[update_priority deactivate activate]
   before_action :prepare_batch_and_pipeline, only: %i[summary finish]
@@ -38,7 +56,7 @@ class PipelinesController < ApplicationController # rubocop:todo Style/Documenta
       @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
       @requests_waiting = @inbox_presenter.requests_waiting
     elsif @pipeline.group_by_submission?
-      Rails.logger.info('Pipeline grouped by submision')
+      Rails.logger.info('Pipeline grouped by submission')
       # Convert to an array now as otherwise the comments counter attempts to be too clever
       # and treats the requests like a scope. Not only does this result in a more complicated
       # query, but also an invalid one
@@ -50,9 +68,9 @@ class PipelinesController < ApplicationController # rubocop:todo Style/Documenta
       Rails.logger.info('Pipeline fallback behaviour')
       @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
       @requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
-      # We convert to an array here as otherwise rails tries to be smart
-      # and use the scope. Not only does it fail, but we may as well cache
-      # the result now anyway.
+      # We convert to an array here as otherwise rails tries to be smart and use
+      # the scope in subsequent queries. Not only does it fail, but we may as
+      # well fetch the result now anyway.
       @requests_comment_count = Comment.counts_for_requests(@requests)
       @requests_samples_count = Request.where(id: @requests).joins(:samples).group(:id).count
     end

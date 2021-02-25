@@ -1,11 +1,11 @@
-
-<td class='request' style='text-align: left' width='15%'><%= link_to (pluralize comments_count, 'comment'), request_comments_path(request.id) %>
-  <%= link_to '+', request_comments_path(request.id), remote: true, class: 'show-comment', data: {
+<%# Note: This shows ALL comments relevant to the request, not just those on the request itself %>
+<td class='comments'>
+  <%= link_to (pluralize comments_count, 'comment'), request_comments_path(request.id) %>
+  <%= link_to '+', request_comments_path(request.id), remote: true, class: 'show-comment badge badge-active', data: {
     :'comment-field' => "#comment_for_#{request.id}",
     update: "#comment_for_#{request.id}",
     throbber: "#loader_for_request_#{request.id}"
-  } %>/
-  <%= content_tag :a, '-', class: 'hide-comment', data: { :'comment-field' => "#comment_for_#{request.id}" } %>
+  } %><%= content_tag :a, '-', class: 'hide-comment badge badge-danger', data: { :'comment-field' => "#comment_for_#{request.id}" } %>
   <%= loading_bar("loader_for_request_#{request.id}") %>
-  <div id="<%= "comment_for_#{request.id}" %>" style="display:none;"></div>
+  <div id="comment_for_<%= request.id %>" style="display:none;"></div>
 </td>
