@@ -70,8 +70,12 @@ After do |scenario|
   if scenario.failed?
     name = scenario.name.parameterize
     if page.respond_to?(:save_screenshot)
-      page.save_screenshot("#{name}.png")
-      log "📸 Screenshot saved to #{Capybara.save_path}/#{name}.png"
+      begin
+        page.save_screenshot("#{name}.png")
+        log "📸 Screenshot saved to #{Capybara.save_path}/#{name}.png"
+      rescue Capybara::NotSupportedByDriverError
+        # Do nothing
+      end
     end
     if page.respond_to?(:save_page)
       page.save_page("#{name}.html")

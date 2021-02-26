@@ -3,8 +3,16 @@
 ActiveRecord::Base.transaction do
   pipeline_name = 'Illumina-B STD'
 
-  IlluminaB::PlatePurposes.create_tube_purposes
-  IlluminaHtp::PlatePurposes.create_tube_purposes
+  if Rails.env.cucumber?
+    RecordLoader::TubePurposeLoader.new(files: %w[
+      002_illumina_b_legacy_purposes
+      004_illumina_htp_legacy_purposes
+    ]).create!
+    RecordLoader::PlatePurposeLoader.new(files: %w[
+      002_illumina_b_legacy_purposes
+      004_illumina_htp_legacy_purposes
+    ]).create!
+  end
 
   # For B
   shared_options_b = {
@@ -52,9 +60,6 @@ ActiveRecord::Base.transaction do
   ].each do |request_type_options|
     RequestType.create!(shared_options_b.merge(request_type_options))
   end
-
-  IlluminaB::PlatePurposes.create_plate_purposes
-  IlluminaHtp::PlatePurposes.create_plate_purposes
 
   Pulldown::PlatePurposes.create_purposes(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last)
 
@@ -179,10 +184,8 @@ ActiveRecord::Base.transaction do
       submission.request_type_ids  = [pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
     end
   end
-  IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose, request|
-    RequestType.find_by(key: request).acceptable_plate_purposes << Purpose.find_by(name: purpose)
-  end
 
+  RequestType.find_by(key: 'illumina_b_shared').acceptable_plate_purposes << Purpose.find_by(name: 'Cherrypicked')
   RequestType.create!(
     key: 'illumina_a_re_isc',
     name: 'Illumina-A ReISC',

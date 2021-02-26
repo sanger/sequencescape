@@ -1,0 +1,9 @@
+---
+ILC Lib Pool Norm:
+  type: IlluminaC::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false
+ILC QC Pool:
+  type: IlluminaC::QcPoolPurpose
+  target_type: QcTube
+  stock_plate: false

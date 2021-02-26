@@ -1,6 +1,6 @@
-class Search::FindPulldownStockPlates < Search::FindPulldownPlates # rubocop:todo Style/Documentation
-  def pulldown_plate_purposes
-    PlatePurpose.where(name: Pulldown::PlatePurposes::STOCK_PLATE_PURPOSES)
-  end
-  private :pulldown_plate_purposes
+# frozen_string_literal: true
+
+# Deprecated search endpoint for legacy pulldown (SC ISC) pipelines
+# Can be remove once database updated
+class Search::FindPulldownStockPlates < Search::DeprecatedSearch
 end

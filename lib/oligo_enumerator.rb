@@ -28,6 +28,6 @@ class OligoEnumerator
   end
 
   def tag(i)
-    i.to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
+    i.to_s(4).tr('0123', 'ATCG')
   end
 end
