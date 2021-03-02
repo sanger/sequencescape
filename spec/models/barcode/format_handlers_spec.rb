@@ -186,5 +186,17 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'EMK-000002'
     it_has_an_invalid_barcode 'ABC000002'
   end
+
+  describe Barcode::FormatHandlers::AlderleyParkEagle do
+    it_has_a_valid_barcode 'APE000002', prefix: 'APE', number: 2
+    it_has_an_invalid_barcode 'APE-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::RandoxEagle do
+    it_has_a_valid_barcode 'RXE000002', prefix: 'RXE', number: 2
+    it_has_an_invalid_barcode 'RXE-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end

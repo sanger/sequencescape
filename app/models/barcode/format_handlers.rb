@@ -380,4 +380,22 @@ module Barcode::FormatHandlers
   class UkBiocentreEagle < BaseRegExBarcode
     self.format = /\A(?<prefix>EMK)(?<number>\d{6})\z/
   end
+
+  # Added to support Alderley Park 'Operation Eagle' plates
+  # as part of project Heron
+  # Expected formats:
+  # APEnnnnnn
+  # where n is a digit
+  class AlderleyParkEagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>APE)(?<number>\d{6})\z/
+  end
+
+  # Added to support Randox 'Operation Eagle' plates
+  # as part of project Heron
+  # Expected formats:
+  # RXEnnnnnn
+  # where n is a digit
+  class RandoxEagle < BaseRegExBarcode
+    self.format = /\A(?<prefix>RXE)(?<number>\d{6})\z/
+  end
 end
