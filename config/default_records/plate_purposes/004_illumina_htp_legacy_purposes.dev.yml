@@ -1,0 +1,99 @@
+# These purposes reflect the old WGS Lims pipelines that existed before Limber
+# The file is marked as dev as we should have no need to update the pipelines in
+# production.
+---
+Cherrypicked:
+  type: PlatePurpose::Input
+  target_type: Plate
+  stock_plate: true
+  default_state: passed
+  cherrypickable_target: true
+  size: 96
+Shear:
+  type: PlatePurpose::InitialPurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+Post Shear:
+  type: PlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+AL Libs:
+  type: PlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+Lib PCR:
+  type: PlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+Lib PCRR:
+  type: PlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+Lib PCR-XP:
+  type: IlluminaHtp::TransferablePlatePurpose
+  target_type: Plate
+  stock_plate: true
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+Lib PCRR-XP:
+  type: IlluminaHtp::TransferablePlatePurpose
+  target_type: Plate
+  stock_plate: true
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+Post Shear XP:
+  type: PlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+Lib Norm:
+  type: IlluminaHtp::InitialDownstreamPlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+Lib Norm 2:
+  type: IlluminaHtp::NormalizedPlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+Lib Norm 2 Pool:
+  type: IlluminaHtp::PooledPlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: Cherrypicked
+PF Cherrypicked:
+  type: PlatePurpose::Input
+  target_type: Plate
+  stock_plate: true
+  default_state: passed
+  cherrypickable_target: true
+  size: 96
+# Note: Other PF plate purposes are homed in Limber
+PF EM Pool:
+  type: PlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: PF Cherrypicked
+PF Lib Norm:
+  type: IlluminaHtp::PooledPlatePurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: PF Cherrypicked
