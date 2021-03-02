@@ -35,6 +35,12 @@ FactoryBot.define do
       aliquot_count { 1 }
     end
     aliquots { build_list(:tagged_aliquot, aliquot_count, aliquot_options) }
+
+    factory :passed_well do
+      stock_wells { [association(:well)] }
+      requests_as_target { [association(:well_request, state: 'passed', asset: stock_wells.first)] }
+      transfer_requests_as_target { [association(:transfer_request, state: 'passed', submission: requests_as_target.first.submission)] }
+    end
   end
 
   factory :well_with_sample_and_plate, parent: :tagged_well do

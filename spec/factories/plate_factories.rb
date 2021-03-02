@@ -105,6 +105,12 @@ FactoryBot.define do
         sample_count { 8 }
         well_factory { :tagged_well }
       end
+
+      factory :final_plate do
+        transient do
+          well_factory { :passed_well }
+        end
+      end
     end
 
     factory :plate_with_empty_wells do

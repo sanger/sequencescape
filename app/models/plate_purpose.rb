@@ -95,14 +95,12 @@ class PlatePurpose < Purpose
 
     def transition_state_requests(wells, state)
       wells = wells.includes(
-        requests_as_target: [:request_type, :request_events],
         transfer_requests_as_target: [
           { associated_requests: [:request_type, :request_events] },
           :target_aliquot_requests
         ]
       )
       wells.each do |w|
-        w.requests_as_target.each { |r| r.transition_to(state) }
         w.transfer_requests_as_target.each { |r| r.transition_to(state) }
       end
     end

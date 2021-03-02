@@ -88,5 +88,24 @@ describe PlatePurpose, type: :model do
         end.to change(BroadcastEvent::LibraryStart, :count).by(0)
       end
     end
+
+    context 'when the plate is at the end of the pipeline' do
+      let(:target_plate) { create :final_plate }
+      let(:library_requests) { target_plate.wells.flat_map(&:requests_as_target) }
+
+      it 'does not cancel the requests', :aggregate_failures do
+        expect do
+          target_plate.plate_purpose.transition_to(target_plate, 'cancelled', user)
+        end.to change(BroadcastEvent::LibraryStart, :count).by(0)
+        expect(library_requests.each(&:reload)).to all(be_passed)
+      end
+
+      it 'does allow failure of the requests', :aggregate_failures do
+        expect do
+          target_plate.plate_purpose.transition_to(target_plate, 'failed', user)
+        end.to change(BroadcastEvent::LibraryStart, :count).by(0)
+        expect(library_requests.each(&:reload)).to all(be_failed)
+      end
+    end
   end
 end
