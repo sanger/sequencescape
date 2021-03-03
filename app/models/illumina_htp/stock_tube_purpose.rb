@@ -40,19 +40,35 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
   private :terminated_states
 
+  #
+  # Attempts to find the 'stock_plate' for a given tube. However this is a fairly
+  # nebulous concept. Often it means the plate that first entered a pipeline,
+  # but in other cases it can be the XP plate part way through the process. Further
+  # complication comes from tubes which pool across multiple plates, where identifying
+  # a single stock plate is meaningless. In other scenarios, you split plates out again
+  # and the asset link graph is insufficient.
+  #
+  # JG: 2021-02-11: Previously this code attempted to walk the request graph, but this
+  # is slow, and failed with a no method error if it reached the end of the graph without
+  # finding a stock plate. This change *does* change the behaviour of this method for some
+  # tubes, most notably those in the PF and GBS pipelines. However an audit determined
+  # that we're not really using that code in those contexts. I've decided to unify the behaviour
+  # with that in plate, and deprecate it.
+  # See https://github.com/sanger/sequencescape/issues/3040 for more information
+  #
+  # @deprecate Do not use this for new behaviour.
+  #
+  # @param tube [Tube] The tube for which to find the stock_plate
+  #
+  # @return [Plate, nil] The stock plate if found
+  #
   def stock_plate(tube)
-    return nil if tube.transfer_requests_as_target.empty?
-
-    assets = [tube.transfer_requests_as_target.first.asset]
-    until assets.empty?
-      asset = assets.shift
-      return asset.plate if asset.is_a?(Well) && asset.plate.stock_plate?
-
-      assets.push(asset.transfer_requests_as_target.first.asset).compact
-    end
-
-    raise "Cannot locate stock plate for #{tube.display_name.inspect}"
+    tube.ancestors
+        .stock_plates
+        .order(id: :desc)
+        .first
   end
+  deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour'
 
   def stock_wells(tube)
     tube.requests_as_target.map do |request|

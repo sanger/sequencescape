@@ -1,0 +1,41 @@
+# These purposes reflect the old Generic Lims pipelines that existed before Limber
+# The file is marked as dev as we should have no need to update the pipelines in
+# production.
+---
+ILC Stock:
+  type: IlluminaC::StockPurpose
+  target_type: Plate
+  stock_plate: true
+  default_state: passed
+  cherrypickable_target: true
+  size: 96
+ILC AL Libs:
+  type: PlatePurpose::InitialPurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: ILC Stock
+ILC Lib PCR:
+  type: IlluminaC::LibPcrPurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: ILC Stock
+ILC Lib PCR-XP:
+  type: IlluminaC::LibPcrXpPurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: ILC Stock
+ILC AL Libs Tagged:
+  type: IlluminaC::AlLibsTaggedPurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: ILC Stock
+ILC Lib Chromium:
+  type: IlluminaC::AlLibsTaggedPurpose
+  target_type: Plate
+  cherrypickable_target: false
+  size: 96
+  source_purpose_name: ILC Stock

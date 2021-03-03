@@ -1,5 +1,6 @@
-class Search::FindPulldownPlatesForUser < Search::FindPulldownPlates # rubocop:todo Style/Documentation
-  def scope(criteria)
-    super.for_user(Uuid.lookup_single_uuid(criteria['user_uuid']).resource)
-  end
+# frozen_string_literal: true
+
+# Deprecated search endpoint for legacy pulldown (SC ISC) pipelines
+# Can be remove once database updated
+class Search::FindPulldownPlatesForUser < Search::DeprecatedSearch
 end

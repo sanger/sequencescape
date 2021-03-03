@@ -33,6 +33,7 @@ class Receptacle < Asset
   delegate :has_stock_asset?, to: :labware, allow_nil: true
   delegate :children, to: :labware, allow_nil: true
   delegate :sequenceable?, to: :labware, allow_nil: true
+  delegate :source_plate, :source_plates, to: :labware, allow_nil: true
   # Keeps event behaviour consistent
   delegate :subject_type, to: :labware
   delegate :public_name, to: :labware
@@ -92,6 +93,7 @@ class Receptacle < Asset
   has_many :samples, through: :aliquots
   has_many :studies, ->() { distinct }, through: :aliquots
   has_many :projects, ->() { distinct }, through: :aliquots
+  has_many :aliquot_requests, through: :aliquots, source: :request
   has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot'
   has_one :primary_sample, through: :primary_aliquot, source: :sample
 
@@ -288,6 +290,10 @@ class Receptacle < Asset
   # within the context of any tube-rack it may be contained within
   def absolute_position_name
     racked_tube&.coordinate
+  end
+
+  def role
+    (requests_as_source.first || aliquot_requests.first).role
   end
 
   private

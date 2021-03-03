@@ -1,17 +1,20 @@
-class AssetsController < ApplicationController # rubocop:todo Style/Documentation
-  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
-  before_action :prepare_asset, only: %i[new_request create_request]
-
-  def index
-    if params[:study_id]
-      redirect_to study_information_receptacles_path(params[:study_id])
-    else
-      redirect_to labware_index
-    end
-  end
-
+# {Labware} and {Receptacle} used to both be grouped under {Asset} and this
+# controller handled them. Now the majority of the behaviour has moved off into
+# the respective controllers. This remains to handle a few legacy endpoints:
+#
+# show: Kept in place for CGP who were supposed to migrate off, but as of 23/12/2020
+#       I'm (JG) still seeing activity. It might be we have another user who hasn't
+#       migrated. Currently it just mimics the receptacle show behaviour for xml requests.
+#       We also have a disambiguation page to handle links in from NPG, until they update
+#       to use the receptacles endpoint. Again, we're still getting activity here, so
+#       it looks like that hasn't happened yet.
+# print_labels: This is used by the PhiX tubes created in the  PhiX::SpikedBuffersController
+#               and PhiX::StocksController. It doesn't belong here.
+# lookup: I can't find any links to this page, and it doesn't appear to have been used recently.
+#         However our logs don't go back all that far. Provides a page for scanning in barcodes.
+#         It appears to be supposed to redirect to the labware page, but it blows up for tubes
+#         and shows the qc information for plates.
+class AssetsController < ApplicationController
   def show
     # LEGACY API FOR CGP to allow switch-over
     # In future they will use the recpetacles/:id/parent
@@ -22,6 +25,7 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
       return
     end
 
+    # Disambiguation page for legacy NPG links
     @labware = Labware.find_by(id: params[:id])
     @receptacle = Receptacle.find_by(id: params[:id])
 
@@ -37,16 +41,8 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
     end
   end
 
-  def print
-    if @asset.printable?
-      @printable = @asset.printable_target
-      @direct_printing = (@asset.printable_target == @asset)
-    else
-      flash[:error] = "#{@asset.display_name} does not have a barcode so a label can not be printed."
-      redirect_to asset_path(@asset)
-    end
-  end
-
+  # TODO: This is currently used from the PhiX::SpikedBuffersController and
+  # PhiX::StocksController show pages. It doesn't really belong here.
   def print_labels
     print_job = LabelPrinter::PrintJob.new(params[:printer],
                                            LabelPrinter::Label::AssetRedirect,
@@ -60,10 +56,7 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
     redirect_to phi_x_url
   end
 
-  def show_plate
-    @asset = Plate.find(params[:id])
-  end
-
+  # JG 23/12/2020: I can't find any links to this page, and think we can probably lose it.
   def lookup
     if params[:asset] && params[:asset][:barcode]
       @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
@@ -84,12 +77,5 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
         end
       end
     end
-  end
-
-  private
-
-  # Receptacle, as we're about to request some stuff
-  def prepare_asset
-    @asset = Receptacle.find(params[:id])
   end
 end

@@ -56,8 +56,8 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
             'friendly_name' => sample2.name },
           { 'role_type' => 'assayed_labware', 'subject_type' => 'plate', 'uuid' => plate.uuid,
             'friendly_name' => plate.human_barcode },
-          { 'role_type' => 'stock_plate', 'subject_type' => 'plate', 'uuid' => plate.stock_plate.uuid,
-            'friendly_name' => plate.stock_plate.human_barcode }
+          { 'role_type' => 'stock_plate', 'subject_type' => 'plate', 'uuid' => stock_plate.uuid,
+            'friendly_name' => stock_plate.human_barcode }
         ])
       end
     end
@@ -103,8 +103,8 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
             'friendly_name' => sample1.name },
           { 'role_type' => 'assayed_labware', 'subject_type' => 'plate', 'uuid' => plate.uuid,
             'friendly_name' => plate.human_barcode },
-          { 'role_type' => 'stock_plate', 'subject_type' => 'plate', 'uuid' => plate.stock_plate.uuid,
-            'friendly_name' => plate.stock_plate.human_barcode }
+          { 'role_type' => 'stock_plate', 'subject_type' => 'plate', 'uuid' => stock_plate.uuid,
+            'friendly_name' => stock_plate.human_barcode }
         ])
       end
     end

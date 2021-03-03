@@ -189,7 +189,7 @@ jobs:
         bundle exec rails webdrivers:chromedriver:update
         bundle exec rake assets:precompile
     # Actually run our tests
-    - name: Run cucumber tests
+    - name: Run Cucumber tests
       env:
         CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         CI_NODE_INDEX: ${{ matrix.ci_node_index }}

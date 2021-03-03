@@ -1,0 +1,65 @@
+# These request types were used by the generic lims pipeline
+# before the migration into Limber
+---
+illumina_c_pcr:
+  name: Illumina-C Library Creation PCR
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaC::Requests::PcrLibraryRequest
+  for_multiplexing: true
+  billable: true
+  product_line_name: Illumina-C
+  target_purpose_name: ILC Lib Pool Norm
+  acceptable_plate_purposes:
+    - ILC Stock
+illumina_c_nopcr:
+  name: Illumina-C Library Creation No PCR
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaC::Requests::NoPcrLibraryRequest
+  for_multiplexing: true
+  billable: true
+  product_line_name: Illumina-C
+  target_purpose_name: ILC Lib Pool Norm
+  acceptable_plate_purposes:
+    - ILC Stock
+illumina_c_pcr_no_pool:
+  name: Illumina-C Library Creation PCR No Pooling
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaC::Requests::PcrLibraryRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Illumina-C
+  acceptable_plate_purposes:
+    - ILC Stock
+illumina_c_no_pcr_no_pool:
+  name: Illumina-C Library Creation No PCR No Pooling
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaC::Requests::NoPcrLibraryRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Illumina-C
+  acceptable_plate_purposes:
+    - ILC Stock
+illumina_c_chromium_library:
+  name: Illumina-C Chromium library creation
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaC::Requests::LibraryRequest
+  for_multiplexing: true
+  billable: true
+  product_line_name: Illumina-C
+  target_purpose_name: ILC Lib Pool Norm
+  acceptable_plate_purposes:
+    - ILC Stock
+illumina_c_multiplexing:
+  name: Illumina-C Multiplexing
+  asset_type: Well
+  order: 1
+  request_class_name: Request::AutoMultiplexing
+  for_multiplexing: true
+  billable: true
+  product_line_name: Illumina-C
+  target_purpose_name: ILC Lib Pool Norm

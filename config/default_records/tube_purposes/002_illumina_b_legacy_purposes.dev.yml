@@ -1,0 +1,12 @@
+# These purposes reflect the old WGS pipelines that existed before Limber
+# The file is marked as dev as we should have no need to update the pipelines in
+# production.
+---
+ILB_STD_MX:
+  type: IlluminaB::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false
+ILB_STD_STOCK:
+  type: IlluminaHtp::StockTubePurpose
+  target_type: StockMultiplexedLibraryTube
+  stock_plate: false

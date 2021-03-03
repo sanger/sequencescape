@@ -1,0 +1,7 @@
+---
+# This file was automatically generated via `rails g record_loader`
+# You should modify it to match your particular model.
+Tube Purpose Name:
+  target_type: LibraryTube
+Tube Purpose Name 2:
+  target_type: MultiplexedLibraryTube

@@ -12,7 +12,7 @@ class Search::FindPlatesForUser < Search # rubocop:todo Style/Documentation
 
     Plate.with_purpose(criteria['plate_purpose_ids'])
          .for_user(Uuid.lookup_single_uuid(criteria['user_uuid']).resource)
-         .include_plates_with_children(criteria['include_used'])
+         .include_labware_with_children(criteria['include_used'])
          .page(criteria['page']).limit(criteria['limit']).order('plate_owners.id DESC')
   end
 end

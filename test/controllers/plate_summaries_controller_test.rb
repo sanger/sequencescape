@@ -14,8 +14,9 @@ class PlateSummariesControllerTest < ActionController::TestCase
 
     context 'with some plates' do
       setup do
-        @source_plate_a = create :source_plate
-        @source_plate_b = create :source_plate
+        purpose = create :source_plate_purpose
+        @source_plate_a = create :source_plate, purpose: purpose
+        @source_plate_b = create :source_plate, purpose: purpose
         @child_plate_a  = create :child_plate, parent: @source_plate_a
         @child_plate_b  = create :child_plate, parent: @source_plate_b
       end
@@ -64,6 +65,20 @@ class PlateSummariesControllerTest < ActionController::TestCase
 
           should redirect_to 'back'
           should set_flash.to 'No suitable plates found for barcode abcd'
+        end
+
+        context 'render the search page with a list of plates if multiple found' do
+          setup do
+            @child_plate_a.parents << @source_plate_b
+            get :search, params: { plate_barcode: @child_plate_a.human_barcode }
+          end
+
+          should render_template 'search'
+
+          should 'list the possible plates' do
+            assert_includes assigns(:plates), @source_plate_a
+            assert_includes assigns(:plates), @source_plate_b
+          end
         end
       end
 

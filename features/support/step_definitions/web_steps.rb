@@ -9,9 +9,6 @@
 require 'uri'
 require 'cgi'
 require_relative '../paths'
-require 'webmock/cucumber'
-require 'rspec/expectations'
-WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
 
 module WithinHelpers # rubocop:todo Style/Documentation
   def with_scope(locator)
