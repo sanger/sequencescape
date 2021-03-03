@@ -3,6 +3,7 @@ class Admin::RobotsController < ApplicationController # rubocop:todo Style/Docum
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_robot_by_id, only: %i[show edit update destroy]
+  authorize_resource
 
   def index
     @robots = Robot.all

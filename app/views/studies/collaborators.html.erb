@@ -1,7 +1,7 @@
 
 <% add :about, "Contacts for study." -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
-<% if current_user.administrator? || current_user.manager?(@study) %>
+<% if can? :edit, @study %>
   <% add :menu, "Edit" => edit_study_path(@study) -%>
 <% end %>
 
@@ -19,7 +19,7 @@ Study <%= @study.id %> &middot; Created on <%= time_tag(@study.created_at) %> &m
   <%= render partial: "roles" -%>
 </div>
 
-<% if current_user.administrator? -%>
+<% if can? :create, Role, { authorizable: @study } -%>
   <%= panel :add_new_role, title: 'Assign roles to users' do %>
     <%= render partial: "role" -%>
   <% end %>

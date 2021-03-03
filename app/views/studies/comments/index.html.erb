@@ -1,7 +1,9 @@
 
 <% add :about, I18n.t("studies.about") -%>
 <% add :back_menu,I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
-<% add :admin_option, "Administer studies" => studies_path -%>
+<% if can? :administer, Study %>
+  <% add :menu, "Administer studies" => admin_studies_path -%>
+<% end %>
 
 <%= page_title @study.name, 'Comments' %>
 <div class='subtitle'>
@@ -9,7 +11,7 @@
 </div>
 
 <%= render partial: "list", locals: {study: @study } %>
-<% if current_user.privileged? @study %>
+<% if can? :create, Comment.new(commentable: @study) %>
   <div>
     <%= form_tag(study_comments_path(@study), data: { update: "#study_annotations_#{@study.id}", remote: true }, class:'remote-form') do %>
       <label for='comment'>Type your comment</label>

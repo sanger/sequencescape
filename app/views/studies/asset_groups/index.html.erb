@@ -1,6 +1,8 @@
 
-<% if current_user.administrator? || current_user.manager?(@study) %>
+<% if can? :create, AssetGroup.new(study: @study) %>
   <%- add :menu, "New asset group" => new_study_asset_group_path(@study) -%>
+<% end %>
+<% if can? :create, Order.new(study: @study) %>
   <% if @study.approved? && @study.active? -%>
     <% add :menu, "Create Submission" => new_submission_path -%>
   <% end -%>
@@ -20,7 +22,7 @@
     <tr>
       <td><%= link_to asset_group.name, study_asset_group_path(@study, asset_group) %></td>
       <td><%= link_to 'Print labels', print_study_asset_group_path(@study, asset_group) %></td>
-      <% if @current_user.administrator? %>
+      <% if can? :manage, asset_group %>
         <td><%= link_to 'Edit', edit_study_asset_group_path(@study, asset_group) %></td>
         <td><%= link_to 'Destroy', study_asset_group_path(@study, asset_group), confirm: 'Are you sure?', method: :delete %></td>
       <% end %>

@@ -5,9 +5,13 @@
 
 <% add :back_menu, "Back to STUDIES" => studies_path -%>
 
-<% if current_user.manager_or_administrator? || current_user.owner?(@sample) -%>
+<% if can? :edit, @sample -%>
   <% add :menu, "Edit" => edit_sample_path(@sample) -%>
+<% end %>
+<% if can? :release, @sample %>
   <% add :menu, { "Flag for public release" => url_for({controller: "samples", action: "release", id: @sample.id }) }, { confirm: "Do you want to flag this sample for public release?" }   -%>
+<% end %>
+<% if can? :accession, @sample %>
   <% add :menu, { @sample.accession_number? ? "Update EBI Sample data" : "Generate Accession Number" => url_for({controller: 'samples', action: 'accession', id: @sample.id}) }, { confirm: "Do you want to request an accession for this sample?" }  -%>
 <% end %>
 

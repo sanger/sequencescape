@@ -53,7 +53,7 @@ class AccessionService
   self.no_study_accession_needed = false
   self.operational = false
 
-  def submit(user, *accessionables)
+  def submit(user, *accessionables) # rubocop:todo Metrics/CyclomaticComplexity
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
 

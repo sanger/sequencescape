@@ -8,8 +8,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
   include Informatics::Globals
 
   before_action :login_required
-  before_action :admin_login_required, only: %i[settings administer manage managed_update grant_role remove_role]
-  before_action :manager_login_required, only: %i[close open]
+  authorize_resource only: %i[grant_role remove_role update edit]
 
   around_action :rescue_validation, only: %i[close open]
 
@@ -91,12 +90,10 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     @study = Study.find(params[:id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     @users = User.all
-    redirect_if_not_owner_or_admin
   end
 
   def update
     @study = Study.find(params[:id])
-    redirect_if_not_owner_or_admin
 
     ActiveRecord::Base.transaction do
       @study.update!(params[:study])
@@ -121,7 +118,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   def study_status
     @study = Study.find(params[:id])
-    redirect_if_not_owner_or_admin
+    authorize! :activate, @study
 
     if @study.inactive? || @study.pending?
       @study.activate!
@@ -163,6 +160,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   def close
     @study = Study.find(params[:id])
+    authorize! :activate, @study
     comment = params[:comment]
     @study.comments.create(description: comment, user_id: current_user.id)
     @study.deactivate!
@@ -173,6 +171,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   def open
     @study = Study.find(params[:id])
+    authorize! :activate, @study
     @study.activate!
     @study.save
     flash[:notice] = 'This study has been activated'
@@ -308,13 +307,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
   end
 
   private
-
-  def redirect_if_not_owner_or_admin
-    unless current_user.owner?(@study) || current_user.administrator? || current_user.manager?
-      flash[:error] = "Study details can only be altered by the owner (#{@study.user.login}) or an administrator or manager"
-      redirect_to study_path(@study)
-    end
-  end
 
   def studies_from_scope(scope)
     studies = case scope

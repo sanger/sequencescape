@@ -1,5 +1,5 @@
 class Admin::ProgramsController < ApplicationController # rubocop:todo Style/Documentation
-  before_action :admin_login_required
+  authorize_resource
   before_action :discover_program, only: %i[show edit update destroy]
 
   def index

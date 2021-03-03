@@ -1,7 +1,7 @@
 
 <% add :about, I18n.t("studies.about") -%>
 <% add :menu, "Study history" => study_events_path(@study) -%>
-<% if current_user.administrator? || current_user.manager?(@study) %>
+<% if can? :edit, @study %>
   <% add :menu, "Edit" => edit_study_path(@study) -%>
 <% end %>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>

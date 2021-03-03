@@ -38,7 +38,7 @@ class QcDecision < ApplicationRecord # rubocop:todo Style/Documentation
   private
 
   def user_has_permission
-    return true if user.qa_manager?
+    return true if Ability.new(user).can? :create, self
 
     errors.add(:user, 'does not have permission to make qc decisions.')
     false

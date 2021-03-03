@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Presenters
   # The {Batch} show page in the {BatchesController} has a side menu which displays
   # a variety of options depending on properties of the batch. The {BatchSubmenuPresenter}
   # encapsulates the logic which was previously in the view itself.
   class BatchSubmenuPresenter
-    attr_reader :options
+    attr_reader :options, :ability, :pipeline, :batch
 
     # Provide access to url_for and other Rails URL helpers {ActionDispatch::Routing::UrlFor}
     # Included directly as Rails.application.routes.url_helpers itself generates a
@@ -12,18 +14,44 @@ module Presenters
     include Rails.application.routes.url_helpers
     include ActionView::Helpers::TextHelper
 
-    private
-
-    def set_defaults(defaults)
-      @defaults = defaults
-    end
+    delegate :multiplexed?, to: :batch
+    delegate :genotyping?, :sequencing?, to: :pipeline
 
     def initialize(current_user, batch)
       @current_user = current_user
+      @ability = Ability.new(current_user)
       @batch = batch
       @pipeline = @batch.pipeline
 
-      set_defaults(controller: :batches, id: @batch.id, only_path: true)
+      @defaults = { controller: :batches, id: @batch.id, only_path: true }
+    end
+
+    def add_submenu_option(text, action_params)
+      @options ||= []
+
+      # If it is a string, it will be an url
+      unless action_params.is_a?(String)
+        # If it is a symbol, it will be the action
+        # If not, it will be a Hash with the new content (controller, action, ...)
+        action_params = { action: action_params } if action_params.is_a?(Symbol)
+        action_config = @defaults.dup
+        action_params.each_pair do |key, value|
+          action_config[key] = value
+        end
+        action_params = url_for(action_config)
+      end
+      @options += [{ label: text, url: action_params }]
+    end
+
+    def each_option(&block)
+      build_submenu if @options.nil?
+      @options.each(&block)
+    end
+
+    private
+
+    def can?(permission, object = @batch)
+      ability.can? permission, object
     end
 
     def build_submenu
@@ -33,34 +61,16 @@ module Presenters
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
     end
 
-    def manager?
-      # The logic below is strange. It seems to block actions from owners who aren't also lab managers
-      # however still allows those without any role access.
-      !@current_user.owner? || @current_user.manager?
-    end
-
-    def is_multiplexed?
-      @batch.multiplexed?
-    end
-
     def cherrypicking?
       @pipeline.is_a?(CherrypickingPipeline)
-    end
-
-    def genotyping?
-      @pipeline.genotyping?
     end
 
     def pacbio?
       @pipeline.is_a?(PacBioSequencingPipeline)
     end
 
-    def not_sequencing?
-      !@pipeline.is_a?(SequencingPipeline)
-    end
-
     def can_create_stock_assets?
-      @batch.pipeline.can_create_stock_assets?
+      @pipeline.can_create_stock_assets?
     end
 
     def pacbio_sample_pipeline?
@@ -71,31 +81,31 @@ module Presenters
       @batch.has_limit? and !@batch.has_event('Tube layout verified')
     end
 
-    def has_plate_labels?
+    def plate_labels?
       [cherrypicking?, genotyping?, pacbio?, pacbio_sample_pipeline?].any?
     end
 
-    def has_stock_labels?
-      [not_sequencing?, can_create_stock_assets?, !is_multiplexed?].all?
+    def stock_labels?
+      [!sequencing?, can_create_stock_assets?, !multiplexed?].all?
     end
 
-    def load_pipeline_options
-      add_submenu_option 'Edit batch', edit_batch_path(@batch) if manager?
+    def load_pipeline_options # rubocop:todo Metrics/CyclomaticComplexity
+      add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
 
       # Printing of labels is enabled for anybody
       add_submenu_option 'Print labels', :print_labels # The test for this was ridiculously slow,
       # and would be always true anyway. I've removed the conditional to give a quick performance boost, with no
       # changes in behaviour. This whole section needs refactoring anyway.
-      add_submenu_option 'Print pool label', :print_multiplex_labels if is_multiplexed?
-      add_submenu_option 'Print stock pool label', :print_stock_multiplex_labels if is_multiplexed?
-      add_submenu_option 'Print plate labels', :print_plate_labels if has_plate_labels?
-      add_submenu_option 'Print stock labels', :print_stock_labels if has_stock_labels?
+      add_submenu_option 'Print pool label', :print_multiplex_labels if multiplexed?
+      add_submenu_option 'Print stock pool label', :print_stock_multiplex_labels if multiplexed?
+      add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
+      add_submenu_option 'Print stock labels', :print_stock_labels if stock_labels?
 
-      # Other options are enabled only for managers
-      if manager?
-        add_submenu_option 'Create stock tubes', new_batch_stock_asset_path(@batch) if can_create_stock_assets?
-        add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet if pacbio_sample_pipeline?
+      add_submenu_option 'Create stock tubes', new_batch_stock_asset_path(@batch) if can_create_stock_assets? && can?(:create_stock_asset)
 
+      add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet if pacbio_sample_pipeline? && can?(:sample_prep_worksheet)
+
+      if can? :print
         if @pipeline.prints_a_worksheet_per_task? && !pacbio_sample_pipeline?
           @tasks.each do |task|
             add_submenu_option "Print worksheet for #{task.name}", action: :print, task_id: task.id
@@ -103,37 +113,9 @@ module Presenters
         else
           add_submenu_option 'Print worksheet', :print
         end
-
-        add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified?
       end
-    end
 
-    public
-
-    def add_submenu_option(text, action_params)
-      @options ||= Array.new
-
-      # If it is a string, it will be an url
-      unless action_params.is_a?(String)
-        # If it is a symbol, it will be the action
-        # If not, it will be a Hash with the new content (controller, action, ...)
-        if (action_params.is_a?(Symbol))
-          action_params = { action: action_params }
-        end
-        actionConfig = @defaults.dup
-        action_params.each_pair do |key, value|
-          actionConfig[key] = value
-        end
-        action_params = url_for(actionConfig)
-      end
-      @options += [{ label: text, url: action_params }]
-    end
-
-    def each_option
-      build_submenu if @options.nil?
-      @options.each do |option|
-        yield option
-      end
+      add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify?)
     end
   end
 end

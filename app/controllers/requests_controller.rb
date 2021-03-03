@@ -3,8 +3,6 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-
-  before_action :admin_login_required, only: %i[describe undescribe destroy]
   before_action :set_permitted_params, only: [:update]
 
   def set_permitted_params
@@ -45,22 +43,17 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
   def edit
     @request = Request.find(params[:id])
+    authorize! :update, @request
+
     @request_types = RequestType.where(asset_type: @request.request_type.asset_type)
-    if current_user.administrator?
-      respond_to do |format|
-        format.html
-      end
-    else
-      flash[:error] = "You cannot update a request unless you're an administrator"
-      redirect_to request_path(@request)
+    respond_to do |format|
+      format.html
     end
   end
 
   def update
     @request = Request.find(params[:id])
-    if redirect_if_not_owner_or_admin
-      return
-    end
+    authorize! :update, @request
 
     unless params[:request][:request_type_id].nil?
       unless @request.request_type_updatable?(params[:request][:request_type_id])
@@ -141,15 +134,6 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
   def list_inboxes
     @tasks = Task.all
-  end
-
-  def redirect_if_not_owner_or_admin
-    unless (current_user == @request.user) || current_user.administrator? || current_user.manager?
-      flash[:error] = 'Request details can only be altered by the owner or a manager'
-      redirect_to request_path(@request)
-      return true
-    end
-    false
   end
 
   def copy

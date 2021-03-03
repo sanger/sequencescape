@@ -1,5 +1,5 @@
 module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
-  def do_set_descriptors_task(_task, params)
+  def do_set_descriptors_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests

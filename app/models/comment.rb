@@ -43,10 +43,6 @@ class Comment < ApplicationRecord
     end
   end
 
-  def can_be_deleted_by?(deleting_user)
-    user == deleting_user || deleting_user.administrator?
-  end
-
   private
 
   ##

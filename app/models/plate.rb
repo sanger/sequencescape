@@ -148,10 +148,6 @@ class Plate < Labware
     plate_purpose.cherrypick_completed(self)
   end
 
-  def source_plate
-    purpose&.source_plate(self)
-  end
-
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, to: :plate_purpose, allow_nil: true
   delegate :asset_shape, to: :plate_purpose, allow_nil: true
@@ -314,10 +310,6 @@ class Plate < Labware
     purpose.try(:name) || 'Unknown plate purpose'
   end
 
-  def stock_role
-    well_requests_as_source.first&.role
-  end
-
   def self.plate_ids_from_requests(requests)
     with_requests(requests).pluck(:id)
   end
@@ -328,9 +320,26 @@ class Plate < Labware
     plate_purpose.stock_plate? && plate_purpose.attatched?(self)
   end
 
+  #
+  # Attempts to find the 'stock_plate' for the plate. However this is a fairly
+  # nebulous concept. Often it means the plate that first entered a pipeline,
+  # but in other cases it can be the XP plate part way through the process. Further
+  # complication comes from tubes which pool across multiple plates, where identifying
+  # a single stock plate is meaningless. In other scenarios, you split plates out again
+  # and the asset link graph is insufficient.
+  #
+  # JG: 2021-02-11:
+  # See https://github.com/sanger/sequencescape/issues/3040 for more information
+  #
+  # @deprecate Do not use this for new behaviour.
+  #
+  #
+  # @return [Plate, nil] The stock plate if found
+  #
   def stock_plate
     @stock_plate ||= stock_plate? ? self : lookup_stock_plate
   end
+  deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour'
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id

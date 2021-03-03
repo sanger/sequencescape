@@ -1,6 +1,6 @@
 
 <%- add :about, "Editing a saved Submission" -%>
-<%- add :manager_option, "Submissions Inbox" => submissions_path -%>
+<%- add :menu, "Submissions Inbox" => submissions_path if can?(:read, Submission) -%>
 
 
 <div class="page-header"><h1>Edit Submission</h1></div>

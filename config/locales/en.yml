@@ -240,3 +240,7 @@ en:
     show_page_custom_message:
       default: ""
       pacbio_sample_prep: "You can only batch together wells from the same plate."
+
+  unauthorized:
+    manage:
+      all: "Sorry, you are not authorized to %{action} this %{subject}"

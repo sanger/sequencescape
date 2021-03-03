@@ -1,7 +1,7 @@
 <tr>
   <th data-orderable="false"></th>
   <th id="priority_flag"  style='text-align: center'><%= image_tag("icon_0_flag.png", size: "16x16") %></th>
-  <% if current_user.lab_manager? %>
+  <% if can? :see_previously_failed, Request %>
     <th>Previous requests</th>
   <% end %>
   <th>Product Line</th>

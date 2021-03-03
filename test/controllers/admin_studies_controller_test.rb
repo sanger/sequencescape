@@ -36,15 +36,26 @@ module Admin
           should redirect_to('admin studies path') { "/admin/studies/#{@study.id}" }
         end
 
-        should "change 'ethically_approved' only if user has data_access_coordinator role" do
-          put :managed_update, params: { id: @study.id, study: { name: @study.name, ethically_approved: '1' } }
-          @study.reload
-          assert_not @study.ethically_approved
+        context 'without a data_access_coordinator role' do
+          should "not change 'ethically_approved'" do
+            Rails.logger.info '******** First Request'
+            put :managed_update, params: { id: @study.id, study: { name: @study.name, ethically_approved: '1' } }
+            @study.reload
+            assert_not @study.ethically_approved
+          end
+        end
 
-          @user.roles << (create :data_access_coordinator_role)
-          put :managed_update, params: { id: @study.id, study: { name: @study.name, ethically_approved: '1' } }
-          @study.reload
-          assert @study.ethically_approved
+        context 'with a data_access_coordinator role' do
+          setup do
+            @user.roles << (create :data_access_coordinator_role)
+          end
+
+          should "change 'ethically_approved'" do
+            Rails.logger.info '******** First Request'
+            put :managed_update, params: { id: @study.id, study: { name: @study.name, ethically_approved: '1' } }
+            @study.reload
+            assert @study.ethically_approved
+          end
         end
       end
     end

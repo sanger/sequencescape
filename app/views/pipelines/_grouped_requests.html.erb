@@ -34,7 +34,7 @@
           </td>
           <td><a href="javascript:void(0)" onclick="showElement(<%=  request.submission_id %>,<%= requests.size %>); return false;"><%= icon('fas', 'info-circle', class: 'text-info') %></a></td>
           <td>
-            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{current_user.lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
+            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{can?(:change_priority, request) ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
           </td>
           <td><%= link_to request.submission_id,submission_path(request.submission) %></td>
           <td></td>

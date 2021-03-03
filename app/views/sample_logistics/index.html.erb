@@ -3,42 +3,47 @@
 <div id="slf">
 <%= page_title "Sample Management" %>
 
-<% if current_user.slf_manager? || current_user.manager_or_administrator? %>
-
 <div class="card-columns">
-  <%= link_panel(:default,title:"Studies") do %>
-    <%= link_to "Create", new_study_path  %>
-    <%= link_to "View All", studies_path  %>
-    <%= link_to "Manage", url_for(controller: "admin/studies", action: "index") %>
+  <% if can? :administer, Study %>
+    <%= link_panel(:default,title:"Studies") do %>
+      <%= link_to "Create", new_study_path  %>
+      <%= link_to "View All", studies_path  %>
+      <%= link_to "Manage", url_for(controller: "admin/studies", action: "index") %>
+    <% end %>
   <% end %>
 
-  <%= link_panel(:default,title:"Projects") do %>
-    <%= link_to "Create", new_project_path  %>
-    <%= link_to "View All", projects_path  %>
-    <%= link_to "Manage", url_for(controller: "admin/projects", action: "index") %>
+  <% if can? :administer, Project %>
+    <%= link_panel(:default,title:"Projects") do %>
+      <%= link_to "Create", new_project_path  %>
+      <%= link_to "View All", projects_path  %>
+      <%= link_to "Manage", url_for(controller: "admin/projects", action: "index") %>
+    <% end %>
   <% end %>
 
-  <%= link_panel(:default,title:"Sample Registration") do %>
-    <%= link_to "Create", new_sample_manifest_path  %>
-    <%= link_to "View All", sample_manifests_path  %>
+  <% if can? :create, SampleManifest %>
+    <%= link_panel(:default,title:"Sample Registration") do %>
+      <%= link_to "Create", new_sample_manifest_path  %>
+      <%= link_to "View All", sample_manifests_path  %>
+    <% end %>
   <% end %>
 
-  <%= link_panel(:default,title:"Suppliers") do %>
-    <%= link_to "Create", new_supplier_path  %>
-    <%= link_to "View All", suppliers_path  %>
+  <% if can? :create, Supplier %>
+    <%= link_panel(:default,title:"Suppliers") do %>
+      <%= link_to "Create", new_supplier_path  %>
+      <%= link_to "View All", suppliers_path  %>
+    <% end %>
   <% end %>
-
-
-<% end %>
 
   <%= link_panel(:default,title:"QC") do %>
-      <% if current_user.slf_manager? || current_user.slf_gel? || current_user.manager_or_administrator? %>
-    <%= link_to "Gel", gels_path %>
-      <% end %>
-      <% if current_user.slf_manager? || current_user.manager_or_administrator? %>
-    <%= link_to "Cherrypicking plate templates", plate_templates_path %>
-    <%= link_to "Convert Plates to Tubes", to_sample_tubes_plates_path  %>
-      <% end %>
+    <% if can? :manage, GelsController %>
+      <%= link_to "Gel", gels_path %>
+    <% end %>
+    <% if can? :show, PlateTemplate %>
+      <%= link_to "Cherrypicking plate templates", plate_templates_path %>
+    <% end %>
+    <% if can? :convert_to_tube, Plate %>
+      <%= link_to "Convert Plates to Tubes", to_sample_tubes_plates_path  %>
+    <% end %>
   <% end %>
 
 

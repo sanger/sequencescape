@@ -28,7 +28,7 @@ class ReceptaclesController < ApplicationController
   end
 
   def show
-    @source_plate = @asset.source_plate
+    @source_plates = @asset.source_plates
     respond_to do |format|
       format.html
       format.xml
@@ -200,10 +200,7 @@ class ReceptaclesController < ApplicationController
   private
 
   def asset_params
-    permitted = %i[volume concentration]
-    permitted << :name if current_user.administrator?
-    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
-    params.require(:asset).permit(permitted)
+    params.require(:asset).permit(%i[volume concentration])
   end
 
   # Receptacle, as we're about to request some stuff

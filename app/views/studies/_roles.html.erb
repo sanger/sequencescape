@@ -4,7 +4,7 @@
       <% role.users.each do |user| %>
         <li class="list-group-item d-flex justify-content-between align-items-center">
           <span><%= link_to user.name, profile_path(user) %> (<%= user.login %>)</span>
-          <% if current_user.administrator? %>
+          <% if can? :delete, role %>
             <%= remote_button "Remove", remove_role_study_path(id: @study, role: {user: user.id, authorizable_type: role.name}), {update: "#role_list"}, {class: 'btn btn-danger'} %>
           <% end %>
         </li>

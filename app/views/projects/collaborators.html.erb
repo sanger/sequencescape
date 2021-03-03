@@ -1,7 +1,7 @@
 
 <% add :about, "Contacts for project." -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_project") => project_path(@project) -%>
-<% if current_user.administrator? || current_user.manager?(@project) %>
+<% if can? :edit, @project %>
   <% add :menu, "Edit" => edit_project_path(@project) -%>
 <% end %>
 
@@ -15,7 +15,7 @@ Project <%= @project.id %> &middot; Created on <%= @project.created_at.to_format
   <%= render partial: "roles" -%>
 </div>
 
-<% if current_user.administrator? -%>
+<% if can? :create, Role -%>
   <hr>
   <!-- renders all available roles with all users form -->
   <div style="text-align:center">

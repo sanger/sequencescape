@@ -1,7 +1,7 @@
 
 
 <% add :menu, "Create Plate Barcodes" => new_plate_path -%>
-<% if current_user.slf_manager? || current_user.slf_gel?|| current_user.manager_or_administrator? %>
+<% if can? :read, SampleLogisticsController %>
   <% add :menu, "Sample Management" => sample_logistics_path -%>
 <% end %>
 <% add :menu, "Create PhiX controls" => phi_x_path -%>

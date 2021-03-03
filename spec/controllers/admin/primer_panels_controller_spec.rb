@@ -63,28 +63,28 @@ describe Admin::PrimerPanelsController do
     describe '#index' do
       it 'redirects' do
         get :index
-        expect(response).to redirect_to('/login')
+        expect(response).to redirect_to('/')
       end
     end
 
     describe '#new' do
       it 'redirects' do
         get :new
-        expect(response).to redirect_to('/login')
+        expect(response).to redirect_to('/')
       end
     end
 
     describe '#edit' do
       it 'redirects' do
         get :edit, params: { id: primer_panel.id }
-        expect(response).to redirect_to('/login')
+        expect(response).to redirect_to('/')
       end
     end
 
     describe '#create' do
       it 'redirects' do
         post :create, params: attributes_for(:primer_panel)
-        expect(response).to redirect_to('/login')
+        expect(response).to redirect_to('/')
       end
     end
   end

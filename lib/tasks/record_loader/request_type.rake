@@ -3,7 +3,7 @@
 # This file was automatically generated via `rails g record_loader`
 namespace :record_loader do
   desc 'Automatically generate RequestType through RequestTypeLoader'
-  task request_type: :environment do
+  task request_type: [:environment, 'record_loader:plate_purpose', 'record_loader:tube_purpose'] do
     RecordLoader::RequestTypeLoader.new.create!
   end
 end
