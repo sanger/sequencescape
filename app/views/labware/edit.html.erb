@@ -6,7 +6,7 @@
     <%= f.error_messages %>
   <% end %>
 
-  <% if @current_user.administrator? %>
+  <% if can? :rename, @asset %>
     <div class="form-group">
       <%= f.label :name %>
       <%= f.text_field :name, class: 'form-control' %>
@@ -18,7 +18,7 @@
     </div>
   <% end %>
 
-  <% if (@current_user.lab_manager?) && (@asset.respond_to? :plate_purpose) %>
+  <% if can? :change_purpose, @asset %>
     <div class="form-group">
       <%= f.label :plate_purpose_id %>
       <%= f.select(:plate_purpose_id, options_for_select(@valid_purposes_options, @asset.purpose.try(:id)), {}, class: 'select2' ) %>

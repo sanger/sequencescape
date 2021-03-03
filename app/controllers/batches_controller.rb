@@ -116,8 +116,10 @@ class BatchesController < ApplicationController
 
   def pipeline
     # All pipeline batches routes should just direct to batches#index with pipeline and state as filter parameters
-    @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user,
-                                                                                                       :pipeline).page(params[:page])
+    @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id])
+                    .order(id: :desc)
+                    .includes(:user, :pipeline)
+                    .page(params[:page])
   end
 
   def pending

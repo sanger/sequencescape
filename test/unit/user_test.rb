@@ -33,10 +33,6 @@ class UserTest < ActiveSupport::TestCase
       should 'be able to access manager functions' do
         assert @user.manager_or_administrator?
       end
-
-      should 'have access to privileged functions' do
-        assert @user.privileged?
-      end
     end
 
     context 'is a manager' do
@@ -55,10 +51,6 @@ class UserTest < ActiveSupport::TestCase
       should 'have be manager' do
         assert @user.manager?
       end
-
-      should 'have access to privileged functions' do
-        assert @user.privileged?
-      end
     end
 
     context 'is an owner' do
@@ -72,10 +64,6 @@ class UserTest < ActiveSupport::TestCase
 
       should 'not be able to access manager functions' do
         assert_not @user.manager_or_administrator?
-      end
-
-      should 'not have access to privileged functions generally' do
-        assert_not @user.privileged?
       end
     end
 

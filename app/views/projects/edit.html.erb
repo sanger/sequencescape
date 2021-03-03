@@ -1,6 +1,6 @@
 
-<% if current_user.administrator? %>
-  <% add :admin_option, "Manage" => url_for(controller: "admin/projects", action: "show", id: @project.id) -%>
+<% if can? :administer, @project %>
+  <% add :menu, "Manage" => admin_project_path(@project) -%>
 <% end %>
 <% add :menu, "Back to projects" => projects_path -%>
 <div class="page-header"><h1>Editing project</h1></div>

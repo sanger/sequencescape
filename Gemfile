@@ -173,10 +173,9 @@ end
 
 group :test do
   gem 'rspec-html-matchers'
-  gem 'rspec-rails', require: false
   # Rails performance tests
   gem 'rails-perftest'
-  gem 'rspec-collection_matchers' # Provides matchers for dealing with arrays
+  gem 'rspec-collection_matchers', require: false # Provides matchers for dealing with arrays
   gem 'rspec-longrun', require: false # Extends scenario logging for more verbose tracking
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
@@ -196,8 +195,8 @@ group :test, :cucumber do
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
-  gem 'shoulda-context', require: false
-  gem 'shoulda-matchers', require: false
+  gem 'rspec-rails', require: false
+  gem 'shoulda'
   gem 'simplecov', require: false
   gem 'timecop', require: false
   # Simplifies shared transactions between server and test threads

@@ -55,7 +55,7 @@ module SubmissionSerializer # rubocop:todo Style/Documentation
     new_attributes
   end
 
-  def self.construct!(hash)
+  def self.construct!(hash) # rubocop:todo Metrics/CyclomaticComplexity
     st = {}
 
     STRAIGHT_CLONE.each do |key|

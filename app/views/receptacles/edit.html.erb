@@ -1,28 +1,9 @@
 
-<%= page_title('Asset',"Edit #{@asset.display_name}") %>
+<%= page_title('Receptacle',"Edit #{@asset.display_name}") %>
 
 <%= form_for(@asset,url: receptacle_path(@asset),as:'asset') do |f| %>
   <%= alert do %>
     <%= f.error_messages %>
-  <% end %>
-
-  <% if @current_user.administrator? %>
-    <div class="form-group">
-      <%= f.label :name %>
-      <%= f.text_field :name, class: 'form-control' %>
-    </div>
-  <% else %>
-    <div class="form-group">
-      <%= f.label :name %>
-      <%= h(@asset.display_name) %>
-    </div>
-  <% end %>
-
-  <% if (@current_user.lab_manager?) && (@asset.respond_to? :plate_purpose) %>
-    <div class="form-group">
-      <%= f.label :plate_purpose_id %>
-      <%= f.select(:plate_purpose_id, options_for_select(@valid_purposes_options, @asset.purpose.try(:id)), {}, class: 'select2' ) %>
-    </div>
   <% end %>
 
   <% if @asset.is_a?(Lane) %>

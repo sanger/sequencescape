@@ -292,7 +292,7 @@ class BulkSubmission
   end
 
   # Returns an order for the given details
-  def prepare_order(details)
+  def prepare_order(details) # rubocop:todo Metrics/CyclomaticComplexity
     # Retrieve common attributes
     study   = Study.find_by_id_or_name!(details['study id'], details['study name'])
     project = Project.find_by_id_or_name!(details['project id'], details['project name'])

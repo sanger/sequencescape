@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::PrimerPanelsController < ApplicationController # rubocop:todo Style/Documentation
-  before_action :admin_login_required
+  authorize_resource
   before_action :discover_primer_panel, only: %i[edit update]
 
   def index

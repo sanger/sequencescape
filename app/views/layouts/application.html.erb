@@ -1,7 +1,7 @@
 
 <% add(:tab, I18n.t('navigation.tabs.studies')              => studies_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.projects')             => projects_path) -%>
-<% add(:tab, I18n.t('navigation.tabs.admin')                => admin_path) if logged_in? && current_user.administrator? -%>
+<% add(:tab, I18n.t('navigation.tabs.admin')                => admin_path) if can? :administer, Sequencescape -%>
 <% add(:tab, I18n.t('navigation.tabs.uat_actions')          => uat_actions_path) unless Rails.env.production? -%>
 <% add(:tab, I18n.t('navigation.tabs.pipelines')            => pipelines_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.batches')              => batches_path) -%>

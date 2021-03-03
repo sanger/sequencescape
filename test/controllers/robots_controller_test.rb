@@ -7,7 +7,7 @@ class RobotsControllerTest < ActionController::TestCase
 
   context 'Robots' do
     setup do
-      @user = FactoryBot.create :user
+      @user = FactoryBot.create :admin
       session[:user] = @user
       @robot = FactoryBot.create :robot
     end

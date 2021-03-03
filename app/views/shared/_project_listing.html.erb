@@ -1,6 +1,5 @@
 
-<% add :manager_option, "New Project" => new_project_path -%>
-
+<% add :menu, "New Project" => new_project_path if can?(:create, Project) -%>
 <table class="sortable table table-striped" id="summary" data-paging="true">
   <thead>
     <tr>
