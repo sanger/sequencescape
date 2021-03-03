@@ -15,4 +15,7 @@ SimpleCov.start 'rails' do
   enable_coverage :branch
 
   # You can add_filter here to add anything else you don't want to cover
+
+  # Mainly here for reference, and wont be running it again
+  add_filter '/lib/ability_analysis/spec_generator.rb'
 end

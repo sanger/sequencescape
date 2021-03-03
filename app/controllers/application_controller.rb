@@ -48,8 +48,6 @@ class ApplicationController < ActionController::Base # rubocop:todo Style/Docume
     new_hash
   end
 
-  public
-
   def block_api_access(message = nil, format = :xml)
     content = { error: 'Unsupported API access' }
     content[:message] = message unless message.nil?
@@ -73,5 +71,14 @@ class ApplicationController < ActionController::Base # rubocop:todo Style/Docume
     # not circumstances get used in new code, and should be removed from
     # existing controllers as soon as humanly possible.
     params.permit!
+  end
+
+  rescue_from CanCan::AccessDenied do |exception|
+    respond_to do |format|
+      format.json { head :forbidden, content_type: 'text/html' }
+      format.html do
+        redirect_back fallback_location: main_app.root_url, alert: exception.message
+      end
+    end
   end
 end

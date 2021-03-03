@@ -23,7 +23,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Doc
     self.model_for_input = model
   end
 
-  def generate_json_to_object_mapping(json_to_attribute)
+  def generate_json_to_object_mapping(json_to_attribute) # rubocop:todo Metrics/CyclomaticComplexity
     code = []
 
     # Split the mappings into two to make things easier.  Read only attributes are easily

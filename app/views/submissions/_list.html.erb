@@ -7,9 +7,11 @@
         <th>Name</th>
         <th>Created at</th>
         <th></th>
-        <% if @current_user.administrator? %>
-        <th></th>
-        <th></th>
+        <% if can? :edit, Submission %>
+          <th></th>
+        <% end %>
+        <% if can? :delete, Submission %>
+          <th></th>
         <% end %>
       </tr>
     </thead>
@@ -19,9 +21,19 @@
         <td><%= submission.name %></td>
         <td><%= submission.created_at.to_formatted_s(:day_full_with_time) %></td>
         <td><%= link_to "View", submission_path(submission) %></td>
-        <% if @current_user.administrator? %>
-          <td><%= link_to("Edit", edit_submission_path(submission)) unless submission.ready? || submission.pending? %></td>
-          <td><%= link_to("Delete", submission_path(submission), method: :delete, confirm: "Are you sure?") if current_user.administrator? && submission.building? %></td>
+        <% if can? :edit, Submission %> <%# Render the cell if you can edit *any* submission %>
+          <td>
+            <% if can?(:delete, submission) && submission.editable? %> <%# But only show the link if you can edit THIS submission%>
+              <%= link_to("Edit", edit_submission_path(submission)) %>
+            <% end %>
+          </td>
+        <% end %>
+        <% if can?(:delete, Submission) %> <%# Render the cell if you can delete *any* submission %>
+          <td>
+            <% if can?(:delete, submission) & submission.destroyable? %> <%# But only show the link if you can delete THIS submission%>
+              <%= link_to("Delete", submission_path(submission), method: :delete, confirm: "Are you sure?") %>
+            <% end %>
+          </td>
         <% end %>
       </tr>
     <% end %>

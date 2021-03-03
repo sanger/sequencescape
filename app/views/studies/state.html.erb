@@ -18,7 +18,7 @@
     </div>
   <% end %>
 
-  <% if current_user.privileged?() -%>
+  <% if can? :deactivate, Study -%>
     <% if @study.active? -%>
 
       <%= form_for :study, url: close_study_path(@study), html: { class: "form-inline form-group" } do %>

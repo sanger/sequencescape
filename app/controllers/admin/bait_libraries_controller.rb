@@ -2,8 +2,9 @@ class Admin::BaitLibrariesController < ApplicationController # rubocop:todo Styl
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :admin_login_required
   before_action :discover_bait_library, only: %i[edit update destroy]
+
+  authorize_resource
 
   def index
     @bait_libraries = BaitLibrary.visible

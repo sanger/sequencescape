@@ -85,9 +85,7 @@ class PlatesControllerTest < ActionController::TestCase
               assert_equal @plate_count + @num_create, Plate.count
             end
 
-            should 'not display an error' do
-              should_not set_flash[:error].to(/Could not find plate/)
-            end
+            should_not set_flash[:error].to(/Could not find plate/)
 
             should 'display created barcodes' do
               assert_equal(true, response.body.include?('Created labware'))
@@ -108,9 +106,7 @@ class PlatesControllerTest < ActionController::TestCase
                 assert_equal @plates_already, Plate.count, 'Expected Plate.count not to change'
               end
 
-              should 'display an error' do
-                should set_flash[:error].to(/Could not find plate/)
-              end
+              should set_flash[:error].to(/Could not find plate/)
 
               should 'not display created barcodes' do
                 assert_equal(false, response.body.include?('Created labware'))
@@ -178,9 +174,7 @@ class PlatesControllerTest < ActionController::TestCase
                 assert_equal @plates_already, Plate.count, 'Expected Plate.count not to change'
               end
 
-              should 'display an error' do
-                should set_flash[:error].to(/Could not find plate/)
-              end
+              should set_flash[:error].to(/Could not find plate/)
 
               should 'not display created barcodes' do
                 assert_equal(false, response.body.include?('Created labware'))
@@ -202,9 +196,7 @@ class PlatesControllerTest < ActionController::TestCase
                 assert_equal(1, Plate.joins(:barcodes).where(barcodes: { barcode: barcode }).count)
               end
 
-              should 'display a warning' do
-                should set_flash[:warning].to(/Barcode labels failed to print/)
-              end
+              should set_flash[:warning].to(/Barcode labels failed to print/)
 
               should 'still have created an asset group' do
                 assert_equal 1, AssetGroup.count - @asset_group_count, 'Expected an Asset Group to be created'
@@ -217,13 +209,8 @@ class PlatesControllerTest < ActionController::TestCase
                 post :create, params: @create_params
               end
 
-              should 'display a warning' do
-                should set_flash[:warning].to(/Failed to create Asset Group/)
-              end
-
-              should 'not display a warning about barcode printing' do
-                should_not set_flash[:warning].to(/Barcode labels failed to print/)
-              end
+              should set_flash[:warning].to(/Failed to create Asset Group/)
+              should_not set_flash[:warning].to(/Barcode labels failed to print/)
             end
           end
 

@@ -1,7 +1,7 @@
 
 <%- add :about, "User Management" %>
-<%- add :admin_option, "Add new role" => new_admin_role_path %>
-<%- add :admin_option, "Back to Admin Panel" => admin_path %>
+<%- add :menu, "Add new role" => new_admin_role_path if can?(:create, Role) %>
+<%- add :menu, "Back to Admin Panel" => admin_path if can?(:administer, Sequencescape) %>
 
 <div class="page-header"><h1>Listing Roles</h1></div>
 

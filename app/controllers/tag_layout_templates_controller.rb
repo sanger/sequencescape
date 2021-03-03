@@ -14,7 +14,7 @@ class TagLayoutTemplatesController < ApplicationController
     'InInverseRows (H12,H11,H10...)': 'TagLayout::InInverseRows'
   }.freeze
 
-  before_action :admin_login_required, only: %i[new create]
+  authorize_resource
 
   def index
     @tag_layout_templates = TagLayoutTemplate.all

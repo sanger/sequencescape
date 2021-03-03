@@ -205,7 +205,11 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns an array of all the names of active projects associated with the
   # current user.
   def user_valid_projects
-    @user_valid_projects ||= @user.valid_projects
+    @user_valid_projects ||= Project.accessible_by(current_ability, :create_submission).valid
+  end
+
+  def current_ability
+    @current_ability ||= Ability.new(@user)
   end
 
   def url(view)

@@ -2,8 +2,8 @@
 <% add :about, "Your user profile." -%>
 <% add :menu, "Edit profile" => edit_profile_path(@user) -%>
 <% add :menu, "View Projects" => projects_profile_path(@user) -%>
-<% add :menu, "Qc Reports" => study_reports_profile_path(@user) -%>
-<% add :admin_option, "Administer users" => admin_users_path -%>
+<% add :menu, "Qc Reports" => study_reports_profile_path(@user)  -%>
+<% add :menu, "Administer users" => admin_users_path if can? :administer, User -%>
 
 <%= page_title @user.name, @user.login %>
 

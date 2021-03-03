@@ -3,10 +3,11 @@ class PipelinesController < ApplicationController # rubocop:todo Style/Documenta
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_pipeline_by_id, only: %i[show activate deactivate destroy batches]
-  before_action :lab_manager_login_required, only: %i[update_priority deactivate activate]
   before_action :prepare_batch_and_pipeline, only: %i[summary finish]
 
   after_action :set_cache_disabled!, only: [:show]
+
+  authorize_resource only: %i[update_priority deactivate activate]
 
   def index
     @pipelines = Pipeline.active.internally_managed.alphabetical
