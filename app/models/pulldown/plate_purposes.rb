@@ -75,7 +75,3 @@ module Pulldown::PlatePurposes
     end
   end
 end
-
-%w(initial_downstream_plate initial_plate library_plate).each do |type|
-  require_dependency "app/models/pulldown/#{type}_purpose"
-end
