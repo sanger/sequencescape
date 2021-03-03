@@ -3,7 +3,7 @@
 # production.
 ---
 ILC Stock:
-  type: IlluminaC::StockPurpose
+  type: PlatePurpose::Input
   target_type: Plate
   stock_plate: true
   default_state: passed
@@ -16,25 +16,25 @@ ILC AL Libs:
   size: 96
   source_purpose_name: ILC Stock
 ILC Lib PCR:
-  type: IlluminaC::LibPcrPurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: ILC Stock
 ILC Lib PCR-XP:
-  type: IlluminaC::LibPcrXpPurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: ILC Stock
 ILC AL Libs Tagged:
-  type: IlluminaC::AlLibsTaggedPurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: ILC Stock
 ILC Lib Chromium:
-  type: IlluminaC::AlLibsTaggedPurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96

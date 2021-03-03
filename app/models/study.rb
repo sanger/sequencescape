@@ -431,9 +431,7 @@ class Study < ApplicationRecord
       # however in this case we've actually already loaded the samples. If we do try passing in the
       # samples themselves, then things top working as intended. (Performance tanks in some places, and
       # we generate invalid SQL in others)
-      # rubocop:disable Rails/PluckInWhere
       yield(requests.where(aliquots: { sample_id: samples.pluck(:id) }).sample_statistics_new)
-      # rubocop:enable Rails/PluckInWhere
     end
   end
 

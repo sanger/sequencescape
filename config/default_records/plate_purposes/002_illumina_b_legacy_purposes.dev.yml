@@ -24,10 +24,10 @@ ILB_STD_PCRR:
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT
 ILB_STD_PCRXP:
-  type: IlluminaHtp::FinalPlatePurpose
+  type: PlatePurpose
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT
 ILB_STD_PCRRXP:
-  type: IlluminaHtp::FinalPlatePurpose
+  type: PlatePurpose
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT

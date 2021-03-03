@@ -4,6 +4,6 @@ ILC Lib Pool Norm:
   target_type: MultiplexedLibraryTube
   stock_plate: false
 ILC QC Pool:
-  type: IlluminaC::QcPoolPurpose
+  type: Tube::Purpose
   target_type: QcTube
   stock_plate: false

@@ -8,19 +8,12 @@ FactoryBot.define do
 
     factory :stock_purpose do
       stock_plate { true }
-
-      factory :illumina_c_stock_purpose, class: 'IlluminaC::StockPurpose' do
-      end
     end
 
     factory(:new_stock_tube_purpose, class: 'IlluminaHtp::StockTubePurpose') do
       target_type { 'StockMultiplexedLibraryTube' }
 
       factory :illumina_htp_initial_stock_tube_purpose, class: 'IlluminaHtp::InitialStockTubePurpose'
-    end
-
-    factory(:mixed_submission_mx, class: 'Tube::MixedSubmissionMx') do
-      target_type { 'StockMultiplexedLibraryTube' }
     end
   end
 
@@ -131,11 +124,6 @@ FactoryBot.define do
     prefix { 'DN' }
     sequence(:name) { |i| "Pooling purpose #{i}" }
     stock_plate { true }
-  end
-
-  factory(:initial_downstream_plate_purpose, class: 'Pulldown::InitialDownstreamPlatePurpose') do
-    prefix { 'DN' }
-    name { generate :pipeline_name }
   end
 
   # Tube creations

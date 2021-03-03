@@ -96,7 +96,7 @@ class PlatePurpose < Purpose
     def transition_state_requests(wells, state)
       wells = wells.includes(
         transfer_requests_as_target: [
-          { associated_requests: [:request_type, :request_events] },
+          { associated_requests: %i[request_type request_events] },
           :target_aliquot_requests
         ]
       )
@@ -235,7 +235,6 @@ require_dependency 'illumina_c/lib_pcr_xp_purpose'
 require_dependency 'illumina_c/stock_purpose'
 require_dependency 'illumina_htp/downstream_plate_purpose'
 require_dependency 'illumina_htp/final_plate_purpose'
-require_dependency 'illumina_htp/library_complete_on_qc_purpose'
 require_dependency 'illumina_htp/normalized_plate_purpose'
 require_dependency 'illumina_htp/pooled_plate_purpose'
 require_dependency 'illumina_htp/post_shear_qc_plate_purpose'

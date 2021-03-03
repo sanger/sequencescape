@@ -18,14 +18,13 @@ ActiveRecord::Base.transaction do
     request_type.acceptable_plate_purposes << stock_plate_purpose
 
     # Now we can build from the stock plate through to the end
-    Pulldown::InitialPlatePurpose.create!(
+    PlatePurpose.create!(
       name: flow.shift,
       cherrypickable_target: false
     )
 
     flow.each do |child_plate_name|
       options = { name: child_plate_name, cherrypickable_target: false }
-      options[:type] = 'Pulldown::LibraryPlatePurpose' if child_plate_name.match?(/^(WGS|SC|ISC) library plate$/)
       PlatePurpose.create!(options)
     end
   end

@@ -25,7 +25,7 @@ describe WorkCompletion do
       end
 
       let(:upstream_tube) do
-        ut = create :new_stock_multiplexed_library_tube, purpose: create(:mixed_submission_mx)
+        ut = create :new_stock_multiplexed_library_tube
         [target_plate, target_plate2].each do |plate|
           plate.wells.each do |well|
             create :transfer_request, asset: well, target_asset: ut

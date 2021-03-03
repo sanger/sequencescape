@@ -6,18 +6,11 @@
 #
 # @todo #2396 Remove this class. This will require:
 #
-#       - Update any purposes using this class to use PlatePurpose instead
-#       - Update:
-#           app/models/illumina_htp/plate_purposes.rb
-#         By either replacing with PlatePurpose, or removing the factories entirely
-class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
-  include PlatePurpose::RequestAttachment
-  include PlatePurpose::WorksOnLibraryRequests
-
-  self.connect_on = 'qc_complete'
-  self.connect_downstream = true
-
-  def source_wells_for(wells)
-    Well.in_column_major_order.stock_wells_for(wells)
-  end
+#      - Update any purposes using this class by running `bundle exec rake remove:deprecated_purposes`
+#         Ensure that this class is listed in the reported output before removing this file. You should also be safe to remove this class
+#         from  lib/tasks/remove_deprecated_purposes.rake
+class IlluminaHtp::TransferablePlatePurpose < PlatePurpose
+  # This class is empty and is maintained to prevent us
+  # breaking existing database records until they have been
+  # migrated to PlatePurpose
 end
