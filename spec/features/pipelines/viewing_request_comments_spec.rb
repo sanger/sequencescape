@@ -13,7 +13,7 @@ describe 'Viewing request comments', type: :feature, js: true do
   end
 
   before do
-    create :comment, commentable: tube, description: 'A excellent tube'
+    create :comment, commentable: tube, description: 'An excellent tube'
     create :comment, commentable: tube.receptacle, description: 'A good receptacle'
     create :comment, commentable: request, description: 'A reasonable request'
   end
@@ -24,7 +24,7 @@ describe 'Viewing request comments', type: :feature, js: true do
     within('#pending-requests') do
       expect(page).to have_text('3 comments')
       click_link('+')
-      expect(page).to have_text('A excellent tube')
+      expect(page).to have_text('An excellent tube')
       expect(page).to have_text('A good receptacle')
       expect(page).to have_text('A reasonable request')
     end

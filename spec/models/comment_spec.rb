@@ -22,7 +22,7 @@ RSpec.describe Comment, type: :model do
     let(:tube) { create :multiplexed_library_tube }
 
     setup do
-      create :comment, commentable: tube, description: 'A excellent tube'
+      create :comment, commentable: tube, description: 'An excellent tube'
       create :comment, commentable: tube.receptacle, description: 'A good receptacle'
       create :comment, commentable: request, description: 'A reasonable request'
     end
