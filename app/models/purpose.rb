@@ -29,6 +29,7 @@ class Purpose < ApplicationRecord
   self.table_name = ('plate_purposes')
 
   class_attribute :default_prefix
+  class_attribute :state_changer
 
   # There's a barcode printer type that has to be used to print the labels for this type of plate.
   belongs_to :barcode_printer_type

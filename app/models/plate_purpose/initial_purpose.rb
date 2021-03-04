@@ -20,5 +20,5 @@
 #           app/models/illumina_htp/plate_purposes.rb
 #         By either replacing with PlatePurpose, or removing the factories entirely
 class PlatePurpose::InitialPurpose < PlatePurpose
-  include PlatePurpose::Initial
+  self.state_changer = StateChanger::InitialPlate
 end
