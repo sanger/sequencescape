@@ -10,7 +10,7 @@ Cherrypicked:
   cherrypickable_target: true
   size: 96
 Shear:
-  type: PlatePurpose::InitialPurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96

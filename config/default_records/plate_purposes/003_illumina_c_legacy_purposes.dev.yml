@@ -10,7 +10,7 @@ ILC Stock:
   cherrypickable_target: true
   size: 96
 ILC AL Libs:
-  type: PlatePurpose::InitialPurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96

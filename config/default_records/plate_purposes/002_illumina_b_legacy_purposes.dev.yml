@@ -8,7 +8,7 @@ ILB_STD_INPUT:
   default_state: passed
   cherrypickable_target: true
 ILB_STD_COVARIS:
-  type: PlatePurpose::InitialPurpose
+  type: PlatePurpose
   cherrypickable_target: false
   source_purpose_name: ILB_STD_INPUT
 ILB_STD_SH:
