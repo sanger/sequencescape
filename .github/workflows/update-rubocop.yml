@@ -39,7 +39,7 @@ jobs:
     - name: Update Rubocop
       run: |
         bundle config --local deployment false
-        bundle update --group=lint
+        bundle update --group=linting
     - name: Correcting and ignoring
       run: bundle exec rubocop --auto-correct --disable-uncorrectable
       # https://github.com/marketplace/actions/create-pull-request
