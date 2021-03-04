@@ -5,6 +5,7 @@
 class TransferRequest < ApplicationRecord
   include Uuid::Uuidable
   include AASM
+  include AASM::Extensions
   extend Request::Statemachine::ClassMethods
 
   # Determines if we attempt to filter out {Aliquot#equivalent? equivalent} aliquots
@@ -102,14 +103,6 @@ class TransferRequest < ApplicationRecord
     false
   end
 
-  # Attempts to transition the transfer request to target_state by
-  # detecting any valid state_machine transitions
-  #
-  # @param target_state [String] A string matching the state name to transition to
-  def transition_to(target_state)
-    aasm.fire!(suggested_transition_to(target_state))
-  end
-
   # Set the outer request associated with this transfer request
   # the outer request is the {Request} which is currently being processed,
   # such as a {LibraryCreationRequest}. Setting this ensures that the
@@ -180,17 +173,6 @@ class TransferRequest < ApplicationRecord
 
   def one_or_fewer_outer_requests?
     outer_request_candidates.length <= 1
-  end
-
-  # Determines the most likely event that should be fired when transitioning between the two states.  If there is
-  # only one option then that is what is returned, otherwise an exception is raised.
-  def suggested_transition_to(target)
-    valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
-    unless valid_events.size == 1
-      raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}"
-    end
-
-    valid_events.first.name
   end
 
   # after_create callback method

@@ -10,7 +10,7 @@ module StateChanger
     def update_labware_state
       broadcast_library_start unless %w[failed cancelled].include?(target_state)
       update_transfer_requests
-      fail_stock_well_requests if target_state == 'failed'
+      fail_associated_requests if target_state == 'failed'
     end
 
     private
@@ -46,7 +46,7 @@ module StateChanger
       end
     end
 
-    def fail_stock_well_requests
+    def fail_associated_requests
       # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
       # their state, we have to actually use the statemachine method to do this to get the correct behaviour.
       queries = []

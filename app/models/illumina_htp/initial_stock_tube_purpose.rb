@@ -1,36 +1,10 @@
+# frozen_string_literal: true
+
 # Class initially used to represent the first tube in a pipeline following pooling
 # from a plate. However appears to be a little more widespread in Limber pipelines.
 # eg. LB Custom Pool Norm
 class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
-  def valid_transition?(outer_request, target_state)
-    target_state != 'started' || outer_request.pending?
-  end
-
-  # Called via Tube#transition_to
-  # Updates the state of tube to state
-  # @param tube [Tube] The tube being updated
-  # @param state [String] The desired target state
-  # @param _user [User] Provided for interface compatibility (The user performing the action)
-  # @param _ [nil, Array] Provided for interface compatibility
-  # @param customer_accepts_responsibility [Boolean] The customer has proceeded against
-  #                                                  advice and will be charged for failures
-  #
-  # @return [Void]
-  def transition_to(tube, state, _user, _ = nil, customer_accepts_responsibility = false)
-    ActiveRecord::Base.transaction do
-      tube.transfer_requests_as_target.where.not(state: terminated_states).find_each do |request|
-        request.transition_to(state)
-        next if request.outer_request.blank?
-        next if state == 'cancelled'
-
-        new_outer_state = %w[started passed qc_complete].include?(state) ? 'started' : state
-        request.outer_request.customer_accepts_responsibility! if customer_accepts_responsibility
-        request.outer_request.transition_to(new_outer_state)   if valid_transition?(request.outer_request,
-                                                                                    new_outer_state)
-      end
-    end
-  end
-
+  self.state_changer = StateChanger::InitialStockTube
   # Returns a summary of all related tube in the submission.
   # Limitation: doesn't understand pipelines, so just returns the tube at the head of the graph.
   # This isn't necessarily the one the users actually want, but we CAN validate that in Limber.

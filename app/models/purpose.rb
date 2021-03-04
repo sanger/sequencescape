@@ -88,6 +88,28 @@ class Purpose < ApplicationRecord
   def set_default_barcode_prefix
     self.prefix ||= default_prefix
   end
+
+  # Updates the state of the specified labware to the specified state.  The basic implementation does this by updating
+  # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
+  # relate to all wells of the labware, otherwise only the selected ones are updated.
+  # @param labware [Labware] The labware being updated
+  # @param state [String] The desired target state
+  # @param user [User] The person to associate with the action
+  # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
+  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
+  #                                                  in the the event of a failure
+  # rubocop:todo Style/OptionalBooleanParameter
+  # @return [Void]
+  def transition_to(labware, state, user, contents = nil, customer_accepts_responsibility = false)
+    state_changer.new(
+      labware: labware,
+      target_state: state,
+      user: user,
+      contents: contents,
+      customer_accepts_responsibility: customer_accepts_responsibility
+    ).update_labware_state
+  end
+  # rubocop:enable Style/OptionalBooleanParameter
 end
 
 require_dependency 'tube/purpose'

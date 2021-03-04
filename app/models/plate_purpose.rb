@@ -64,27 +64,6 @@ class PlatePurpose < Purpose
     plate.state_from(plate.transfer_requests)
   end
 
-  # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
-  # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
-  # relate to all wells of the plate, otherwise only the selected ones are updated.
-  # @param plate [Plate] The plate being updated
-  # @param state [String] The desired target state
-  # @param user [User] The person to associate with the action
-  # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
-  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
-  #                                                  in the the event of a failure
-  #
-  # @return [Void]
-  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
-    state_changer.new(
-      labware: plate,
-      target_state: state,
-      user: user,
-      contents: contents,
-      customer_accepts_responsibility: customer_accepts_responsibility
-    ).update_labware_state
-  end
-
   # Set the class to PlatePurpose::Input is set to true.
   # Allows creation of the input plate purposes through the API
   # without directly exposing our class names.

@@ -8,34 +8,7 @@ require_dependency 'tube/purpose'
 #       As of 2019-10-01 only used directly by 'Lib Pool Norm' and 'Lib Pool SS-XP-Norm' which haven't been
 #       used since 2017-04-28 14:16:03 +0100
 class IlluminaHtp::MxTubePurpose < Tube::Purpose
-  # Called via Tube#transition_to
-  # Updates the state of tube to state
-  # @param tube [Tube] The tube being updated
-  # @param state [String] The desired target state
-  # @param user [User] Provided for interface compatibility (The user performing the action)
-  # @param _ [nil, Array] Provided for interface compatibility
-  # @param customer_accepts_responsibility [Boolean] The customer has proceeded against
-  #                                                  advice and will be charged for failures
-  #
-  # @return [Void]
-  def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
-    transition_customer_requests(tube, mappings[state], user, customer_accepts_responsibility) if mappings[state]
-    tube.transfer_requests_as_target.each { |request| request.transition_to(state) }
-  end
-
-  def transition_customer_requests(tube, state, user, customer_accepts_responsibility)
-    orders = Set.new
-    customer_requests(tube).each do |request|
-      request.customer_accepts_responsibility! if customer_accepts_responsibility
-      request.transition_to(state)
-      orders << request.order.id
-    end
-    generate_events_for(tube, orders, user) if state == 'passed'
-  end
-
-  def customer_requests(tube)
-    tube.requests_as_target.for_billing.where(state: Request::Statemachine::OPENED_STATE)
-  end
+  self.state_changer = StateChanger::MxTube
 
   #
   # Attempts to find the 'stock_plate' for a given tube. However this is a fairly
@@ -81,18 +54,6 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
                           *Request::LibraryCreation.descendants].map(&:name)
              }).distinct
   end
-
-  def mappings
-    { 'cancelled' => 'cancelled', 'failed' => 'failed', 'qc_complete' => 'passed' }
-  end
-  private :mappings
-
-  def generate_events_for(tube, orders, user)
-    orders.each do |order_id|
-      BroadcastEvent::LibraryComplete.create!(seed: tube, user: user, properties: { order_id: order_id })
-    end
-  end
-  private :generate_events_for
 end
 require_dependency 'illumina_c/mx_tube_purpose'
 require_dependency 'illumina_b/mx_tube_purpose'

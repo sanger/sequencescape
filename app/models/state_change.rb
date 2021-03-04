@@ -1,4 +1,6 @@
-# Performs a change of state on an asset.
+# frozen_string_literal: true
+
+# Performs a change of state on a {Labware}.
 #
 #--
 # This code assumes that there is no statemachine on the requests.  Whilst this is not true it will be in the
