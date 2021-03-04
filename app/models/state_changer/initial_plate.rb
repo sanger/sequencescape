@@ -9,8 +9,8 @@ module StateChanger
 
     def pending_orders
       orders = Set.new
-      each_well_and_its_library_request do |_, request|
-        orders << request.order_id if request.pending?
+      each_well_and_its_library_request do |order_id|
+        orders << order_id
       end
       orders
     end
@@ -27,7 +27,7 @@ module StateChanger
         stock_request  = stock_requests.detect { |request| request.submission_id == well.submission_ids.first }
 
         stock_request or raise "No requests for stock well #{stock_id.inspect} with matching submission (#{requests.inspect})"
-        yield(well, stock_request)
+        yield(stock_request.order_id) if request.pending?
       end
     end
   end
