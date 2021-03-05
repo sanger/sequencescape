@@ -25,13 +25,7 @@ module AASM
 
       return valid_events.first.name if valid_events.one?
 
-      error = if valid_events.empty?
-                "No permitted transition from '#{state}' to '#{target}'"
-              else
-                "Multiple permitted transitions from '#{state}' to '#{target}'"
-              end
-
-      raise StandardError, error
+      raise StandardError, "#{valid_events.length} permitted transitions from '#{state}' to '#{target}'"
     end
 
     def permit_automatic_transition?(event)
