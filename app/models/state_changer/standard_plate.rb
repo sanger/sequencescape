@@ -15,8 +15,18 @@ module StateChanger
 
     private
 
+    def _receptacles
+      labware.wells.includes(
+        :aliquot_requests,
+        transfer_requests_as_target: [
+          { associated_requests: %i[request_type request_events] },
+          :target_aliquot_requests
+        ]
+      )
+    end
+
     def receptacles
-      contents.present? ? labware.wells.located_at(contents) : labware.wells
+      @receptacles ||= contents.present? ? _receptacles.located_at(contents) : _receptacles
     end
 
     # Record the start of library creation for the plate
@@ -25,7 +35,7 @@ module StateChanger
     end
 
     def pending_orders
-      labware.in_progress_requests.pending.distinct.pluck(:order_id)
+      associated_requests.select(&:pending?).pluck(:order_id)
     end
 
     def generate_events_for(orders)
@@ -35,47 +45,23 @@ module StateChanger
     end
 
     def update_transfer_requests
-      wells = receptacles.includes(
-        transfer_requests_as_target: [
-          { associated_requests: %i[request_type request_events] },
-          :target_aliquot_requests
-        ]
-      )
-      wells.each do |w|
+      receptacles.each do |w|
         w.transfer_requests_as_target.each { |r| r.transition_to(target_state) }
       end
     end
 
     def fail_associated_requests
-      # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
-      # their state, we have to actually use the statemachine method to do this to get the correct behaviour.
-      queries = []
-
-      # Build a query per well
-      fail_request_details_for do |submission_ids, stock_wells|
-        queries << Request.where(asset_id: stock_wells, submission_id: submission_ids)
-      end
-      raise 'Apparently there are not requests on these wells?' if queries.empty?
-
-      # Here we chain together our various request scope using or, allowing us to retrieve them in a single query.
-      request_scope = queries.reduce(queries.pop) { |scope, query| scope.or(query) }
-      request_scope.each do |request|
+      associated_requests.each do |request|
         request.customer_accepts_responsibility! if customer_accepts_responsibility
         request.passed? ? request.retrospective_fail! : request.fail!
       end
     end
 
-    # Override this method to control the requests that should be failed for the given wells.
-    def fail_request_details_for
-      receptacles.each do |well|
-        submission_ids = well.transfer_requests_as_target.map(&:submission_id)
-        next if submission_ids.empty?
-
-        stock_wells = well.stock_wells.map(&:id)
-        next if stock_wells.empty?
-
-        yield(submission_ids, stock_wells)
-      end
+    # Pulls out the customer requests associated with the wells.
+    # Note: Do *NOT* go through labware here, as you'll pull out all requests
+    # not just those associated with the wells in the 'contents' array
+    def associated_requests
+      receptacles.flat_map(&:aliquot_requests)
     end
   end
 end
