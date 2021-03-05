@@ -20,7 +20,9 @@ namespace :remove do
       'Pulldown::InitialPlatePurpose' => 'PlatePurpose',
       'Pulldown::LibraryPlatePurpose' => 'PlatePurpose',
       'IlluminaB::MxTubePurpose' => 'Tube::StandardMx',
-      'IlluminaHtp::DownstreamPlatePurpose' => 'PlatePurpose'
+      'IlluminaHtp::DownstreamPlatePurpose' => 'PlatePurpose',
+      'IlluminaHtp::MxTubeNoQcPurpose' => 'IlluminaHtp::MxTubePurpose',
+      'IlluminaC::MxTubePurpose' => 'IlluminaHtp::MxTubePurpose'
     }.each do |from, to|
       puts "Migrating from #{from} to #{to}"
       purposes = Purpose.where(type: from)

@@ -36,7 +36,7 @@ module StateChanger
     end
 
     def customer_request_target_state
-      { 'cancelled' => 'cancelled', 'failed' => 'failed', 'qc_complete' => 'passed' }[target_state]
+      { 'cancelled' => 'cancelled', 'failed' => 'failed', 'passed' => 'passed' }[target_state]
     end
 
     def generate_events_for(orders)
