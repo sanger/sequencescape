@@ -26,9 +26,9 @@ module AASM
       return valid_events.first.name if valid_events.one?
 
       error = if valid_events.empty?
-                "No permitted transition from #{state.inspect} to #{target.inspect}"
+                "No permitted transition from '#{state}' to '#{target}'"
               else
-                "Multiple permitted transitions from #{state.inspect} to #{target.inspect}"
+                "Multiple permitted transitions from '#{state}' to '#{target}'"
               end
 
       raise StandardError, error
