@@ -335,13 +335,13 @@ class Plate < Labware
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id
 
-    ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
+    ancestors.order(id: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
   def ancestors_of_purpose(ancestor_purpose_id)
     return [self] if plate_purpose_id == ancestor_purpose_id
 
-    ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id)
+    ancestors.order(id: :desc).where(plate_purpose_id: ancestor_purpose_id)
   end
 
   def self.create_with_barcode!(*args, &block)
@@ -505,7 +505,7 @@ class Plate < Labware
 
   def lookup_stock_plate
     spp = PlatePurpose.considered_stock_plate.pluck(:id)
-    ancestors.order('created_at DESC').find_by(plate_purpose_id: spp)
+    ancestors.order(id: :desc).find_by(plate_purpose_id: spp)
   end
 
   def set_plate_name_and_size
