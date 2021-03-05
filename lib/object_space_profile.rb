@@ -31,7 +31,7 @@ class ObjectSpaceProfile
     ObjectSpace.each_object do |o|
       # This handles ALL objects, including anything that inherits from
       # BasicObject, or redefines class. (Ie. configatron)
-      name = Kernel.instance_method(:class).bind(o).call.name
+      name = Kernel.instance_method(:class).bind_call(o).name
       profile[name] += 1
     end
     @data << profile
