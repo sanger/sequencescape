@@ -38,14 +38,23 @@ class Barcode < ApplicationRecord
     cambridge_a_z: 17,
     heron_tailed: 18,
     randox: 19,
-    uk_biocentre_v4: 20
+    uk_biocentre_v4: 20,
+    cambridge_a_z_v2: 21,
+    glasgow_v2: 22,
+    eagle: 23,
+    cambridge_a_z_eagle: 24,
+    glasgow_eagle: 25,
+    uk_biocentre_eagle: 26,
+    alderley_park_eagle: 27,
+    randox_eagle: 28
   }
 
   # Barcode formats which may be submitted via sample manifests
   FOREIGN_BARCODE_FORMATS = %i[cgap fluidx_barcode fluidigm
                                uk_biocentre_v1 uk_biocentre_v2 uk_biocentre_unid
                                alderly_park_v1 alderly_park_v2 uk_biocentre_v3 cgap_plate cgap_rack
-                               glasgow cambridge_a_z heron_tailed randox uk_biocentre_v4].freeze
+                               glasgow cambridge_a_z heron_tailed randox uk_biocentre_v4 cambridge_a_z_v2 glasgow_v2
+                               eagle cambridge_a_z_eagle glasgow_eagle uk_biocentre_eagle alderley_park_eagle randox_eagle].freeze
 
   validate :barcode_valid?
   validates :barcode, uniqueness: { scope: :format, case_sensitive: false }

@@ -8,6 +8,7 @@ class UsersControllerTest < ActionController::TestCase
     setup do
       @controller = UsersController.new
       @request    = ActionController::TestRequest.create(@controller)
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     end
 
     should_require_login :edit, :show, :update, resource: 'user'

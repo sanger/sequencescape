@@ -1,5 +1,5 @@
 class AdminController < ApplicationController # rubocop:todo Style/Documentation
-  before_action :admin_login_required
+  authorize_resource :sequencescape, parent: true, parent_action: :administer
 
   def index
   end

@@ -48,8 +48,28 @@ class Purpose < ApplicationRecord
 
   delegate :prefix, to: :barcode_prefix, allow_nil: true
 
-  def source_plate(asset)
-    source_purpose_id.present? ? asset.ancestor_of_purpose(source_purpose_id) : asset.stock_plate
+  def source_plate(labware)
+    # Stock_plate is deprecated, but we still have some tubes with special behaviour
+    # We'll allow its usage here to support existing code.
+    ActiveSupport::Deprecation.silence do
+      # Rails 6 lets us do this:
+      # ActiveSupport::Deprecation.allow(:stock_plate) do
+      source_purpose_id.present? ? labware.ancestor_of_purpose(source_purpose_id) : labware.stock_plate
+    end
+  end
+
+  def source_plates(labware)
+    # Stock_plate is deprecated, but we still have some tubes with special behaviour
+    # We'll allow its usage here
+    ActiveSupport::Deprecation.silence do
+      # Rails 6 lets us do this:
+      # ActiveSupport::Deprecation.allow(:stock_plate) do
+      source_purpose_id.present? ? labware.ancestors_of_purpose(source_purpose_id) : [labware.stock_plate].compact
+    end
+  end
+
+  def source_purpose_name=(source_purpose_name)
+    self.source_purpose = Purpose.find_by!(name: source_purpose_name)
   end
 
   def barcode_type

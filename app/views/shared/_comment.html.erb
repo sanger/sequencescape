@@ -6,7 +6,7 @@
   </div>
   <div  class="comment-metadata">
     Added by <%= comment.user.try(:login)||"Unknown user" %> <%= comment.created_at.to_formatted_s(:short)%>
-    <% if comment.can_be_deleted_by? current_user %>
+    <% if can? :delete, comment %>
       <%= button_to 'Remove',
                     url_for([commentable, comment]),
                     form:{ data: { update: update_target }, class:'remote-form'},

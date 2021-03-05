@@ -29,7 +29,7 @@ class LabwareController < ApplicationController
   end
 
   def show
-    @source_plate = @asset.source_plate
+    @source_plates = @asset.source_plates
     respond_to do |format|
       format.html
       format.xml
@@ -119,25 +119,6 @@ class LabwareController < ApplicationController
     @asset = Plate.find(params[:id])
   end
 
-  def new_request
-    @request_types = RequestType.standard.active.applicable_for_asset(@asset)
-    # In rare cases the user links in to the 'new request' page
-    # with a specific study specified. In even rarer cases this may
-    # conflict with the assets primary study.
-    # ./features/7711055_new_request_links_broken.feature:29
-    # This resolves the issue, but the code could do with a significant
-    # refactor. I'm delaying this currently as we NEED to get SS434 completed.
-    # 1. This should probably be RequestsController::new
-    # 2. We should use Request.new(...) and form helpers
-    # 3. This will allow us to instance_variable_or_id_param helpers.
-    @study = if params[:study_id]
-               Study.find(params[:study_id])
-             else
-               @asset.studies.first
-             end
-    @project = @asset.projects.first || @asset.studies.first&.projects&.first
-  end
-
   def lookup
     return unless params[:asset] && params[:asset][:barcode]
 
@@ -179,8 +160,8 @@ class LabwareController < ApplicationController
 
   def labware_params
     permitted = %i[volume concentration]
-    permitted << :name if current_user.administrator?
-    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
+    permitted << :name if can? :rename, Labware
+    permitted << :plate_purpose_id if can? :change_purpose, Labware
     params.require(:labware).permit(permitted)
   end
 

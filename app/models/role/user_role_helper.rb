@@ -32,6 +32,10 @@ module Role::UserRoleHelper
     role.each(&:destroy_if_empty)
   end
 
+  def role_names
+    roles.uniq.pluck(:name)
+  end
+
   class_methods do
     # Defines a potential role for the user. Provides the following methods
     # - role_name? - Returns true if the user has the role

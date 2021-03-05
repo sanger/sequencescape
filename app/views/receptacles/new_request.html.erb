@@ -1,6 +1,6 @@
 
 <%= page_title "New request", "#{@asset.label} - #{@asset.display_name}" %>
-
+<% can_edit = can? :edit_additional, Request %>
 <%= form_for(@asset, url: create_request_receptacle_url(@asset), html: {method: :post}) do |f| %>
   <%= f.error_messages %>
 
@@ -9,7 +9,7 @@
     <% instance_variable_or_id_param(:request_type) do |field_name, value| %>
       <div class="form-group  col-xs-12">
         <%= label_tag(field_name, 'Request type', class: 'col-md-4') %>
-        <%= select_field_sorted_by_name(field_name, @request_types, value) %>
+        <%= select_field_sorted_by_name(field_name, @request_types, value, can_edit) %>
       </div>
     <% end %>
     <% if @asset.studies.uniq.count > 1 -%>
@@ -21,7 +21,7 @@
     <% instance_variable_or_id_param(:study) do |field_name, value| %>
       <div class="form-group col-xs-12">
         <%= label_tag(field_name, 'Study', class: 'col-md-4') %>
-        <%= select_field_sorted_by_name(field_name, current_user_studies_from(@asset), value, prompt: 'Select a study') %>
+        <%= select_field_sorted_by_name(field_name, current_user_studies, value, can_edit, prompt: 'Select a study') %>
       </div>
     <% end %>
     <% if @asset.projects.uniq.count > 1 -%>
@@ -33,7 +33,7 @@
     <% instance_variable_or_id_param(:project) do |field_name, value| %>
       <div class="form-group col-xs-12">
         <%= label_tag(field_name, 'Project', class: 'col-md-4') %>
-        <%= select_field_sorted_by_name(field_name, Project, value, prompt: 'Select a project') %>
+        <%= select_field_sorted_by_name(field_name, Project, value, can_edit, prompt: 'Select a project') %>
       </div>
     <% end %>
     <div class="form-group col-xs-12">

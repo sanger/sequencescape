@@ -30,4 +30,25 @@ FactoryBot.define do
       name { 'slf_manager' }
     end
   end
+
+  trait :with_owner do
+    transient do
+      owner { build :user }
+    end
+    roles { |role| [role.association(:role, name: 'owner', users: [owner])] }
+  end
+
+  trait :with_manager do
+    transient do
+      manager { build :user }
+    end
+    roles { |role| [role.association(:role, name: 'manager', users: [manager])] }
+  end
+
+  trait :with_follower do
+    transient do
+      follower { build :user }
+    end
+    roles { |role| [role.association(:role, name: 'follower', users: [follower])] }
+  end
 end

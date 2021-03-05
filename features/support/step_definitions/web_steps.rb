@@ -9,8 +9,6 @@
 require 'uri'
 require 'cgi'
 require_relative '../paths'
-require 'webmock/cucumber'
-WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
 
 module WithinHelpers # rubocop:todo Style/Documentation
   def with_scope(locator)
@@ -122,13 +120,13 @@ end
 
 Then /^(?:|I )should see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
   with_scope(selector) do
-    assert page.has_content?(text), "Could not see #{text} on page (#{page.text})."
+    expect(page).to have_text(text)
   end
 end
 
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
   with_scope(selector) do
-    assert page.has_no_content?(text)
+    expect(page).not_to have_text(text)
   end
 end
 

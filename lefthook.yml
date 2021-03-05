@@ -1,0 +1,59 @@
+# https://github.com/Arkweid/lefthook
+# Rubocop globs built based on https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml With globbing support povided by
+# https://pkg.go.dev/github.com/gobwas/glob#section-documentation
+# Has the advantage of quicker commits when no rubocop files
+pre-commit:
+  parallel: true
+  commands:
+    rubocop:
+      glob: '{*.{rb,arb,axlsx,builder,fcgi,gemfile,gemspec,god,jb,jbuilder,mspec,opal,pluginspec,podspec,rabl,rake,rbuild,rbw,rbx,ru,ruby,spec,thor,watchr},.irbrc,.pryrc,.simplecov,buildfile,Appraisals,Berksfile,Brewfile,Buildfile,Capfile,Cheffile,Dangerfile,Deliverfile,Fastfile,*Fastfile,Gemfile,Guardfile,Jarfile,Mavenfile,Podfile,Puppetfile,Rakefile,rakefile,Snapfile,Steepfile,Thorfile,Vagabondfile,Vagrantfile}'
+      run: rubocop --display-style-guide --extra-details --force-exclusion --parallel {staged_files} || (echo 'Run `lefthook run fix` to run autocrrect on staged files only'; exit 1)
+    eslint:
+      glob: 'app/javascript/**/*.{vue,js}'
+      run: yarn lintOnly {staged_files} || (echo 'Run `lefthook run fix` to run autocrrect on staged files only'; exit 1)
+
+fix:
+  parallel: true
+  commands:
+    rubocop:
+      glob: '{*.{rb,arb,axlsx,builder,fcgi,gemfile,gemspec,god,jb,jbuilder,mspec,opal,pluginspec,podspec,rabl,rake,rbuild,rbw,rbx,ru,ruby,spec,thor,watchr},.irbrc,.pryrc,.simplecov,buildfile,Appraisals,Berksfile,Brewfile,Buildfile,Capfile,Cheffile,Dangerfile,Deliverfile,Fastfile,*Fastfile,Gemfile,Guardfile,Jarfile,Mavenfile,Podfile,Puppetfile,Rakefile,rakefile,Snapfile,Steepfile,Thorfile,Vagabondfile,Vagrantfile}'
+      run: rubocop --display-style-guide --extra-details --auto-correct --force-exclusion {staged_files}
+    eslint:
+      glob: 'app/javascript/**/*.{vue,js}'
+      run: yarn lintOnly {staged_files} --fix
+
+
+# EXAMPLE USAGE
+# Refer for explanation to following link:
+# https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md
+#
+# pre-push:
+#   commands:
+#     packages-audit:
+#       tags: frontend security
+#       run: yarn audit
+#     gems-audit:
+#       tags: backend security
+#       run: bundle audit
+#
+# pre-commit:
+#   parallel: true
+#   commands:
+#     eslint:
+#       glob: "*.{js,ts}"
+#       run: yarn eslint {staged_files}
+#     rubocop:
+#       tags: backend style
+#       glob: "*.rb"
+#       exclude: "application.rb|routes.rb"
+#       run: bundle exec rubocop --force-exclusion {all_files}
+#     govet:
+#       tags: backend style
+#       files: git ls-files -m
+#       glob: "*.go"
+#       run: go vet {files}
+#   scripts:
+#     "hello.js":
+#       runner: node
+#     "any.go":
+#       runner: go run

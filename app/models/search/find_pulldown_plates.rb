@@ -1,12 +1,6 @@
-class Search::FindPulldownPlates < Search # rubocop:todo Style/Documentation
-  def scope(criteria)
-    # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked
-    # for transfer) the destination plate becomes the end of the chain.
-    Plate.include_plate_metadata.include_plate_purpose.with_purpose(pulldown_plate_purposes).with_no_outgoing_transfers.in_state(criteria['state'])
-  end
+# frozen_string_literal: true
 
-  def pulldown_plate_purposes
-    PlatePurpose.where(name: Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
-  end
-  private :pulldown_plate_purposes
+# Deprecated search endpoint for legacy pulldown (SC ISC) pipelines
+# Can be remove once database updated
+class Search::FindPulldownPlates < Search::DeprecatedSearch
 end

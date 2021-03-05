@@ -30,7 +30,7 @@
           </td>
           <td  style='text-align: center'>
             <!-- TODO: Restore priority toggle for grouped submissions -->
-            <%= image_tag "icon_#{line.priority}_flag.png", 'alt' => line.priority, size: '16x16', class: "flag_image #{current_user.lab_manager? ? 'as_manager' : ''}", "data-priority" => line.priority %>
+            <%= image_tag "icon_#{line.priority}_flag.png", 'alt' => line.priority, size: '16x16', class: "flag_image", "data-priority" => line.priority %>
           </td>
 
           <!-- Custom fields -->

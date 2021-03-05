@@ -363,7 +363,7 @@ Metrics/ClassLength:
 # Offense count: 72
 # Configuration parameters: IgnoredMethods.
 Metrics/CyclomaticComplexity:
-  Max: 21
+  Max: 15
 
 # Offense count: 415
 # Configuration parameters: CountComments, CountAsOne, ExcludedMethods, IgnoredMethods.
@@ -394,7 +394,6 @@ Naming/AccessorMethodName:
     - 'app/models/asset/ownership.rb'
     - 'app/models/broadcast_event.rb'
     - 'app/models/lib_pool_norm_tube_generator.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/receptacle.rb'
     - 'app/models/specific_tube_creation.rb'
     - 'app/models/task.rb'
@@ -485,7 +484,6 @@ Naming/PredicateName:
     - 'app/models/extraction_attribute.rb'
     - 'app/models/metadata.rb'
     - 'app/models/pipeline.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/qc_file.rb'
     - 'app/models/qc_report/file.rb'
     - 'app/models/request.rb'
@@ -501,7 +499,6 @@ Naming/PredicateName:
 Naming/VariableName:
   Exclude:
     - 'app/models/pac_bio/sample_sheet.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'test/unit/import_fluidigm_data_test.rb'
 
 # Offense count: 243
@@ -1255,7 +1252,6 @@ Rails/InverseOf:
     - 'app/models/bait_library.rb'
     - 'app/models/billing/product_catalogue.rb'
     - 'app/models/plate.rb'
-    - 'app/models/plate/creator.rb'
     - 'app/models/plate_creation.rb'
     - 'app/models/pooled_plate_creation.rb'
     - 'app/models/purpose/relationship.rb'
@@ -1534,7 +1530,6 @@ Style/EmptyLiteral:
     - 'app/models/api/base.rb'
     - 'app/models/bulk_submission.rb'
     - 'app/models/metadata.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/submission/presenter_skeleton.rb'
     - 'app/models/transfer/from_plate_to_specific_tubes_by_pool.rb'
     - 'config/initializers/ruby_net_http_proxy_hack.rb'
@@ -1630,7 +1625,6 @@ Style/ExpandPathArguments:
 Style/ExplicitBlockArgument:
   Exclude:
     - 'app/models/messenger_creator.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/study.rb'
     - 'app/models/submission/flexible_request_graph.rb'
     - 'features/support/step_definitions/web_steps.rb'
@@ -2210,7 +2204,6 @@ Style/FrozenStringLiteralComment:
     - 'app/models/pipeline/inbox_grouped_by_submission.rb'
     - 'app/models/pipeline/requests_in_storage.rb'
     - 'app/models/pipeline_request_information_type.rb'
-    - 'app/models/plate/creator.rb'
     - 'app/models/plate/creator_parameters.rb'
     - 'app/models/plate/fluidigm_behaviour.rb'
     - 'app/models/plate_barcode.rb'
@@ -2231,7 +2224,6 @@ Style/FrozenStringLiteralComment:
     - 'app/models/pooled_cherrypick_request.rb'
     - 'app/models/pooled_plate_creation.rb'
     - 'app/models/prep_kit_barcode_task.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/presenters/grouped_pipeline_inbox_presenter.rb'
     - 'app/models/presenters/qc_report_presenter.rb'
     - 'app/models/product.rb'
@@ -2674,7 +2666,6 @@ Style/GuardClause:
     - 'app/models/lib_pool_norm_tube_generator.rb'
     - 'app/models/plate_template.rb'
     - 'app/models/pooling.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/presenters/grouped_pipeline_inbox_presenter.rb'
     - 'app/models/pulldown/requests/bait_library_request.rb'
     - 'app/models/qc_file.rb'
@@ -2791,9 +2782,7 @@ Style/IfUnlessModifier:
     - 'app/models/metadata/form_builder.rb'
     - 'app/models/pac_bio_sample_prep_pipeline.rb'
     - 'app/models/parsers/bioanalysis_csv_parser.rb'
-    - 'app/models/plate/creator.rb'
     - 'app/models/plate/creator_parameters.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/presenters/grouped_pipeline_inbox_presenter.rb'
     - 'app/models/qc_report/file.rb'
     - 'app/models/qcable/statemachine.rb'
@@ -2929,7 +2918,6 @@ Style/MultilineBlockChain:
     - 'app/models/illumina_htp/initial_downstream_plate_purpose.rb'
     - 'app/models/parsers/bioanalysis_csv_parser.rb'
     - 'app/models/plate.rb'
-    - 'app/models/plate/creator.rb'
     - 'app/models/pooled_cherrypick_request.rb'
     - 'app/models/request_type/validation.rb'
     - 'app/models/submission/flexible_request_graph.rb'
@@ -3170,7 +3158,6 @@ Style/ParenthesesAroundCondition:
     - 'app/models/illumina_htp/pooled_plate_purpose.rb'
     - 'app/models/movie_length_task.rb'
     - 'app/models/parsers/bioanalysis_csv_parser.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/user.rb'
 
 # Offense count: 177
@@ -3333,7 +3320,6 @@ Style/RedundantParentheses:
     - 'app/models/map.rb'
     - 'app/models/parsers/bioanalysis_csv_parser.rb'
     - 'app/models/plate/creator_parameters.rb'
-    - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/qc_result_factory.rb'
     - 'app/models/sequencing_pipeline.rb'
     - 'app/models/study.rb'
@@ -3411,7 +3397,6 @@ Style/SafeNavigation:
     - 'app/controllers/qc_reports_controller.rb'
     - 'app/helpers/batches_helper.rb'
     - 'app/models/batch.rb'
-    - 'app/models/plate/creator.rb'
     - 'app/models/product_criteria/basic.rb'
     - 'app/models/project.rb'
     - 'app/models/request/statemachine.rb'

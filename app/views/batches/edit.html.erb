@@ -51,21 +51,21 @@
     </div>
   </div>
   <% end %>
-  <% if current_user.administrator? -%>
-  <h2>ROLLBACK QC</h2>
-  <div class="content">
-    <div class="info">
-      This will move the batch to it's previous QC state.
-    </div>
-    <div>
-      <%= form_tag(controller: :batches, action: :previous_qc_state, id: @batch.id) do -%>
-        <table width="100%" cellspacing="0" cellpadding="0">
-          <tr>
-            <td width="45%" class="item"><%= submit_tag "Move to previous state", confirm: 'Do you really want to do this?' %></td><td width="55%"></td>
-          </tr>
-        </table>
-      <% end %>
-    </div>
-  </div>
 
-<% end %>
+  <% if can? :rollback, @batch -%>
+    <h2>ROLLBACK QC</h2>
+    <div class="content">
+      <div class="info">
+        This will move the batch to it's previous QC state.
+      </div>
+      <div>
+        <%= form_tag(controller: :batches, action: :previous_qc_state, id: @batch.id) do -%>
+          <table width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="45%" class="item"><%= submit_tag "Move to previous state", confirm: 'Do you really want to do this?' %></td><td width="55%"></td>
+            </tr>
+          </table>
+        <% end %>
+      </div>
+    </div>
+  <% end %>

@@ -62,6 +62,14 @@ module Submission::StateMachine
       (pending? || ready?) && requests_cancellable?
     end
 
+    def destroyable?
+      building?
+    end
+
+    def editable?
+      building? || failed?
+    end
+
     def requests_cancellable?
       # Default behaviour, overidden in the model itself
       false

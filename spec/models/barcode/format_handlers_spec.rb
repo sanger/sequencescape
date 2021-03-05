@@ -144,5 +144,59 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'EGL-000002'
     it_has_an_invalid_barcode 'ABC000002'
   end
+
+  describe Barcode::FormatHandlers::CambridgeAZV2 do
+    it_has_a_valid_barcode 'EGC000002', prefix: 'EGC', number: 2
+    it_has_an_invalid_barcode 'EGC-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::GlasgowV2 do
+    it_has_a_valid_barcode 'EGG000002', prefix: 'EGG', number: 2
+    it_has_an_invalid_barcode 'EGG-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::Eagle do
+    it_has_a_valid_barcode 'EGX000002', prefix: 'EGX', number: 2
+    it_has_a_valid_barcode 'EGT000002', prefix: 'EGT', number: 2
+    it_has_an_invalid_barcode 'EGL000002' # This is covered by UkBiocentreV4
+    it_has_an_invalid_barcode 'EGC000002' # This is covered by CambridgeAZV2
+    it_has_an_invalid_barcode 'EGG000002' # This is covered by GlasgowV2
+    it_has_an_invalid_barcode 'EGx000002' # lowercase 3rd character
+    it_has_an_invalid_barcode 'EG6000002' # numeric 3rd character
+    it_has_an_invalid_barcode 'EGX-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::CambridgeAZEagle do
+    it_has_a_valid_barcode 'CBE000002', prefix: 'CBE', number: 2
+    it_has_an_invalid_barcode 'CBE-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::GlasgowEagle do
+    it_has_a_valid_barcode 'GLS000002', prefix: 'GLS', number: 2
+    it_has_an_invalid_barcode 'GLS-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::UkBiocentreEagle do
+    it_has_a_valid_barcode 'EMK000002', prefix: 'EMK', number: 2
+    it_has_an_invalid_barcode 'EMK-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::AlderleyParkEagle do
+    it_has_a_valid_barcode 'APE000002', prefix: 'APE', number: 2
+    it_has_an_invalid_barcode 'APE-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
+
+  describe Barcode::FormatHandlers::RandoxEagle do
+    it_has_a_valid_barcode 'RXE000002', prefix: 'RXE', number: 2
+    it_has_an_invalid_barcode 'RXE-000002'
+    it_has_an_invalid_barcode 'ABC000002'
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end

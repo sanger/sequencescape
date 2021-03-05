@@ -57,7 +57,7 @@ module Submission::LinearRequestGraph
   # that need creating.
   # @yieldreturn [Array<Asset>] For orders with multiplexed request types, yields the target asset of
   #                             the multiplexing, such as a {MultiplexedLibraryTube}.
-  def create_request_chain!(request_type_and_multiplier_pairs, source_data_set, multiplexing_assets, &block)
+  def create_request_chain!(request_type_and_multiplier_pairs, source_data_set, multiplexing_assets, &block) # rubocop:todo Metrics/CyclomaticComplexity
     raise StandardError, 'No request types specified!' if request_type_and_multiplier_pairs.empty?
 
     request_type, multiplier = request_type_and_multiplier_pairs.shift

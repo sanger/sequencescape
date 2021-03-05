@@ -20,11 +20,6 @@
   </tbody>
 </table>
 
-<br />
-<%= javascript_tag nonce: true do %>
-$('table tbody > tr:nth-child(even)').addClass('roweven');
-<% end %>
-
-<% if current_user.administrator? %>
-<%= link_to 'Create a new Tag Group', new_tag_group_path %>
+<% if can? :create, TagGroup %>
+  <%= link_to 'Create a new Tag Group', new_tag_group_path %>
 <% end %>

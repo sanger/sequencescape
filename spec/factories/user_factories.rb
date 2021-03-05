@@ -2,6 +2,13 @@
 
 FactoryBot.define do
   factory :user do
+    trait :with_role do
+      transient do
+        role_name { 'role' }
+      end
+      roles { |role| [role.association(:role, name: role_name)] }
+    end
+
     first_name        { 'first_name' }
     last_name         { 'last_name' }
     login

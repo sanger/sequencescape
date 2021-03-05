@@ -18,6 +18,6 @@ module ModelExtensions::Well
 
   # Compatibility for v1 API maintains legacy 'type' for assets
   def legacy_asset_type
-    labware.sti_type
+    sti_type
   end
 end

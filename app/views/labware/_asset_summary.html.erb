@@ -58,10 +58,12 @@
         tube_rack_summary_path(asset.human_barcode) %></td>
     </tr>
   <% end %>
-  <% if  @source_plate&.human_barcode %>
+  <% if  @source_plates.present? %>
     <tr>
       <th>Summary page</th>
-      <td><%= link_to "Summary for #{@source_plate.human_barcode}", plate_summary_path(@source_plate.human_barcode) %></td>
+      <% @source_plates.each do |source_plate| %>
+        <td><%= link_to "Summary for #{source_plate.human_barcode}", plate_summary_path(source_plate.human_barcode) %></td>
+      <% end %>
     </tr>
   <% end %>
 

@@ -281,15 +281,6 @@ shared_examples 'a cherrypicking procedure' do
                 # Assuming there is only one asset for the TransferRequest,
                 # As pooling is not supported in cherrypicking,
                 # ie. a well can only have one input sample
-
-                r.each do |request|
-                  puts "DEBUG: well.id: #{request.asset.id}"
-                  puts "DEBUG: request.asset.plate: #{request.asset.plate}"
-                  puts "DEBUG: well plate: #{Well.find(request.asset.id).plate}"
-                  puts "DEBUG labware_id: #{request.asset.labware_id}"
-                  puts "DEBUG: request.inspect: #{request.inspect}"
-                  puts "DEBUG: request.asset.inspect: #{request.asset.inspect}"
-                end
                 plates_and_controls_barcodes.include?(Labware.find(r.first.asset.labware_id).human_barcode)
               end
               expected_num_lines = input_wells_requests_for_current_pick.count + NUM_HAMILTON_HEADER_LINES

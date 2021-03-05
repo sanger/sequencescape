@@ -2,16 +2,15 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :admin_login_required
   before_action :setup_user, only: %i[edit show grant_user_role remove_user_role]
+  authorize_resource
 
   def index
     @users = User.order(:login)
   end
 
   def edit
-    @user_roles = @user.roles.where(name: %w[administrator manager])
-    @all_roles = Role.distinct.pluck(:name)
+    @all_roles = Role.keys
     @users_roles = @user.study_and_project_roles.order(name: :asc)
     @studies = Study.order(:id)
     @projects = Project.order(:id)

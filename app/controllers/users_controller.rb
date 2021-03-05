@@ -2,26 +2,23 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-
-  before_action :validate_user, except: %i[index projects study_reports]
-  before_action :find_user, except: [:index]
-
-  def index
-    @users = User.all
-  end
+  before_action :find_user
+  authorize_resource
 
   def show
-    barcode_printers = BarcodePrinter.alphabetical.includes(:barcode_printer_type)
-    @printer_list = barcode_printers.select { |printer| printer.barcode_printer_type.name == '96 Well Plate' }
+    @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all)
+
     begin
-      label_template = LabelPrinter::PmbClient.get_label_template_by_name(configatron.swipecard_pmb_template).fetch('data').first
+      label_template = LabelPrinter::PmbClient.get_label_template_by_name(configatron.swipecard_pmb_template)
+                                              .fetch('data')
+                                              .first
       @label_template_id ||= label_template['id']
     rescue LabelPrinter::PmbException => e
       @label_template_id = nil
-      flash[:error] = "Print My Barcode: #{e}"
+      flash.now[:error] = "Print My Barcode: #{e}"
     rescue NoMethodError
       @label_template_id = nil
-      flash[:error] = 'Wrong PMB Label Template'
+      flash.now[:error] = 'Wrong PMB Label Template'
     end
   end
 
@@ -43,7 +40,7 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   end
 
   def projects
-    @projects = @user.projects.page(params[:page])
+    @projects = Project.for_user(@user).page(params[:page])
   end
 
   def study_reports
@@ -52,16 +49,20 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
 
   private
 
-  def validate_user
-    if current_user.administrator? || current_user.id == params[:id].to_i
-      true
-    else
-      flash[:error] = "You don't have permission to view or edit that profile: here is yours instead."
-      redirect_to action: :show, id: current_user.id
-    end
-  end
-
   def find_user
     @user = User.find(params[:id])
+  end
+
+  rescue_from CanCan::AccessDenied do |exception|
+    respond_to do |format|
+      format.html do
+        if current_user
+          redirect_to profile_path(current_user),
+                      alert: "You don't have permission to view or edit that profile: here is yours instead."
+        else
+          redirect_back fallback_location: main_app.root_url, alert: exception.message
+        end
+      end
+    end
   end
 end

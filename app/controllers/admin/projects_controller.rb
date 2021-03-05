@@ -3,11 +3,7 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
-
-  before_action :admin_login_required
+  authorize_resource :project, parent: true, parent_action: :administer
 
   BY_SCOPES = {
     'not approved' => :unapproved,
@@ -31,12 +27,11 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
   end
 
   def edit
-    @request_types = RequestType.order(name: :asc)
-    if params[:id] != '0'
+    if params[:id] == '0'
+      render nothing: true
+    else
       @project = Project.find(params[:id])
       render partial: 'edit', locals: { project: @project }
-    else
-      render nothing: true
     end
   end
 
@@ -58,7 +53,7 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
 
   def managed_update
     @project = Project.find(params[:id])
-    redirect_if_not_owner_or_admin(@project)
+    authorize! :managed_update, @project
 
     if params[:project][:uploaded_data].present?
       document_settings = {}
@@ -94,14 +89,5 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
       @projects = @projects.sort_by(&:user_id)
     end
     render partial: 'projects'
-  end
-
-  private
-
-  def redirect_if_not_owner_or_admin(project)
-    unless current_user.owner?(project) || current_user.administrator?
-      flash[:error] = "Project details can only be altered by the owner (#{project.user.login}) or an administrator"
-      redirect_to project_path(project)
-    end
   end
 end

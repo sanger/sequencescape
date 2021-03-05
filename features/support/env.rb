@@ -19,6 +19,7 @@ require 'factory_bot_rails'
 
 require_relative 'capybara'
 require_relative 'parameter_types'
+require './lib/capybara_failure_logger'
 # Capybara defaults to CSS3 selectors rather than XPath.
 # If you'd prefer to use XPath, just uncomment this line and adjust any
 # selectors in your step definitions to use the XPath syntax.
@@ -69,21 +70,6 @@ end
 After do |scenario|
   if scenario.failed?
     name = scenario.name.parameterize
-    if page.respond_to?(:save_screenshot)
-      page.save_screenshot("#{name}.png")
-      log "📸 Screenshot saved to #{Capybara.save_path}/#{name}.png"
-    end
-    if page.respond_to?(:save_page)
-      page.save_page("#{name}.html")
-      log "📐 HTML saved to #{Capybara.save_path}/#{name}.html"
-    end
-    if page.driver.browser.respond_to?(:manage)
-      errors = page.driver.browser.manage.logs.get(:browser)
-      log '== JS errors ============'
-      errors.each do |jserror|
-        log jserror.message
-      end
-      log '========================='
-    end
+    CapybaraFailureLogger.log_failure(name, page) { |message| warn message }
   end
 end

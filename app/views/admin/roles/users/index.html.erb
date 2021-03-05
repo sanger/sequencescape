@@ -1,7 +1,7 @@
 
 <%- add :about, "Role: #{@role_name.pluralize.humanize}" %>
-<%- add :admin_option, "Back to roles management" => admin_roles_path %>
-<%- add :admin_option, "Back to Admin Panel" => admin_path %>
+<%- add :menu, "Back to roles management" => admin_roles_path if can?(:administer, Role) %>
+<%- add :menu, "Back to Admin Panel" => admin_path if can?(:administer, Sequencescape)  %>
 
 <%= page_title 'Users', @role_name.pluralize.upcase %>
 

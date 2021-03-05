@@ -1,10 +1,14 @@
 
 <%- add :about, I18n.t("studies.about") %>
-<%- add :manager_option, "Create Study" => new_study_path %>
-<%- add :manager_option, "Create Project" => new_project_path %>
-<%- add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} %>
-<%- add :manager_option, "Start a New Submission" => new_submission_path %>
-<%- add :manager_option, "Submissions Inbox" => submissions_path %>
+<%- add :menu, "Create Study" => new_study_path if can?(:create, Study) %>
+<%- add :menu, "Create Project" => new_project_path if can?(:create, Project) %>
+<% if can?(:create, Submission) %>
+  <%- add :menu, "Start a Bulk Submission" => new_bulk_submission_path %>
+  <%- add :menu, "Start a New Submission" => new_submission_path %>
+<% end %>
+<% if can?(:read, Submission) %>
+  <%- add :menu, "Submissions Inbox" => submissions_path %>
+<% end %>
 
 <% if params[:scope] %>
   <%= page_title 'Studies', @alternatives[params[:scope].to_i] %>

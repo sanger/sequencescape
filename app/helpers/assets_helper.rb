@@ -48,40 +48,36 @@ module AssetsHelper # rubocop:todo Style/Documentation
 
   # Returns a select tag that has it's options ordered by name (assumes present of sorted_by_name function)
   # and disabled if a value has been pre-selected.
-  def select_field_sorted_by_name(field, select_options_source, selected, options = {})
+  def select_field_sorted_by_name(field, select_options_source, selected, can_edit, options = {})
+    disabled = selected.present? && !can_edit
+
     tag.div(class: 'col-md-5') do
       select_tag(
         field,
         options_for_select(select_options_source.sorted_by_name.pluck(:name, :id), selected.try(:to_i)),
-        options.merge(disabled: (selected.present? and not current_user.administrator?),
-                      class: 'form-control select2')
+        options.merge(disabled: disabled, class: 'form-control select2')
       )
     end
   end
 
   # Returns true if the current user can request additional sequencing on the given asset, otherwise false
   def current_user_can_request_additional_sequencing_on?(asset)
-    asset.sequenceable? && # Asset must be sequenceable ...
-      (current_user.administrator? || # ... user could be an administrator ...
-        current_user.manager?) # ... or a manager
+    asset.sequenceable? && can?(:create_additional, Request)
   end
 
   # Returns true if the current user can request an additional library on the asset, otherwise false
   def current_user_can_request_additional_library_on?(asset)
-    asset.is_a?(SampleTube) && current_user.administrator?
+    asset.is_a?(SampleTube) && can?(:create_additional, Request)
   end
 
   def current_user_can_make_additional_requests_on?(_asset, study)
     return false if study.blank? # Study must be specified ...
-    return true if current_user.administrator?   # ... user could be an administrator ...
 
-    current_user.manager?(study)                 # ... or the manager of the specified study
+    can?(:create_additional, Request)
   end
 
-  def current_user_studies_from(_asset)
-    return Study if current_user.administrator?
-
-    Study.managed_by(current_user)
+  def current_user_studies
+    Study.accessible_by(current_ability, :request_additional_with)
   end
 
   def labware_types
