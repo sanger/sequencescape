@@ -26,7 +26,7 @@ class Purpose < ApplicationRecord
   include Relationship::Associations
   include Uuid::Uuidable
 
-  self.table_name = ('plate_purposes')
+  self.table_name = 'plate_purposes'
 
   class_attribute :default_prefix
   class_attribute :state_changer
@@ -41,7 +41,9 @@ class Purpose < ApplicationRecord
 
   before_validation :set_default_barcode_prefix
 
+  # rubocop:todo Rails/UniqueValidationWithoutIndex
   validates :name, format: { with: /\A\w[\s\w.\-]+\w\z/i }, presence: true, uniqueness: { case_sensitive: false }
+  # rubocop:enable Rails/UniqueValidationWithoutIndex
 
   # NOTE: We should validate against valid asset subclasses, but running into some issues with
   # subclass loading while seeding.
@@ -88,28 +90,6 @@ class Purpose < ApplicationRecord
   def set_default_barcode_prefix
     self.prefix ||= default_prefix
   end
-
-  # Updates the state of the specified labware to the specified state.  The basic implementation does this by updating
-  # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
-  # relate to all wells of the labware, otherwise only the selected ones are updated.
-  # @param labware [Labware] The labware being updated
-  # @param state [String] The desired target state
-  # @param user [User] The person to associate with the action
-  # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
-  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
-  #                                                  in the the event of a failure
-  # rubocop:todo Style/OptionalBooleanParameter
-  # @return [Void]
-  def transition_to(labware, state, user, contents = nil, customer_accepts_responsibility = false)
-    state_changer.new(
-      labware: labware,
-      target_state: state,
-      user: user,
-      contents: contents,
-      customer_accepts_responsibility: customer_accepts_responsibility
-    ).update_labware_state
-  end
-  # rubocop:enable Style/OptionalBooleanParameter
 end
 
 require_dependency 'tube/purpose'

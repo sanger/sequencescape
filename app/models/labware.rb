@@ -115,6 +115,8 @@ class Labware < Asset
   scope :include_labware_with_children, ->(filter) { filter ? all : without_children }
   scope :stock_plates, -> { where(plate_purpose_id: PlatePurpose.considered_stock_plate) }
 
+  delegate :state_changer, to: :purpose, allow_nil: true
+
   def human_barcode
     'UNKNOWN'
   end
@@ -208,20 +210,6 @@ class Labware < Asset
   def child
     children.last
   end
-
-  #
-  # Delegate the change of state to our purpose.
-  # @param state [String] The desired target state
-  # @param user [User] The person to associate with the action (Will take ownership of the plate)
-  # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
-  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
-  #                                                  in the the event of a failure
-  # rubocop:todo Style/OptionalBooleanParameter
-  # @return [Void]
-  def transition_to(state, user, contents = nil, customer_accepts_responsibility = false)
-    purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
-  end
-  # rubocop:enable Style/OptionalBooleanParameter
 
   private
 
