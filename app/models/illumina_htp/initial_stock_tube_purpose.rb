@@ -3,6 +3,8 @@
 # Class initially used to represent the first tube in a pipeline following pooling
 # from a plate. However appears to be a little more widespread in Limber pipelines.
 # eg. LB Custom Pool Norm
+# In fact, in the limber pipeline it appears to be responsible for any intermediate
+# tubes.
 class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
   self.state_changer = StateChanger::InitialStockTube
   # Returns a summary of all related tube in the submission.

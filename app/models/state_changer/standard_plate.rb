@@ -10,7 +10,7 @@ module StateChanger
     def update_labware_state
       broadcast_library_start unless %w[failed cancelled].include?(target_state)
       update_transfer_requests
-      fail_associated_requests if target_state == 'failed'
+      update_associated_requests if target_state == 'failed'
     end
 
     private
@@ -50,7 +50,7 @@ module StateChanger
       end
     end
 
-    def fail_associated_requests
+    def update_associated_requests
       raise_request_error if associated_requests.empty? && associated_submission?
 
       associated_requests.each do |request|
