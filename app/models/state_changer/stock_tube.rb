@@ -2,7 +2,7 @@
 
 module StateChanger
   # Handles the basic transitions of stock tubes within the library prep process
-  class StockTube < StateChanger::Base
+  class StockTube < StateChanger::TubeBase
     TERMINATED_STATES = %w[cancelled failed].freeze
     # Updates the state of the labware to the target state.  The basic implementation does this by updating
     # all of the TransferRequest instances to the state specified.
@@ -23,7 +23,7 @@ module StateChanger
     private
 
     # TODO: This is a migration of the current logic, but this is not correct!
-    # * It assumes the tube is already fully pooled (which to be fair, will eb valid given)
+    # * It assumes the tube is already fully pooled (which to be fair, will be valid given)
     # * It fails the LibraryCompletion but these aren't used any more!
     def outer_requests_for
       labware.requests_as_target.map do |r|

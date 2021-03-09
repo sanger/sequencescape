@@ -3,7 +3,7 @@
 module StateChanger
   # Handles the basic transitions of the high throughput multiplexed library tube
   # {IlluminaHtp::MxTubePurpose} this is the tube at the end of the pipelines
-  class MxTube < StateChanger::Base
+  class MxTube < StateChanger::TubeBase
     private
 
     def transfer_requests

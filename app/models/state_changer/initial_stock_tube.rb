@@ -2,7 +2,7 @@
 
 module StateChanger
   # Handles the basic transitions of initial stock tubes within the library prep process
-  class InitialStockTube < StateChanger::Base
+  class InitialStockTube < StateChanger::TubeBase
     TERMINATED_STATES = %w[cancelled failed].freeze
 
     def update_associated_requests
@@ -10,7 +10,7 @@ module StateChanger
 
       associated_requests.each do |request|
         request.customer_accepts_responsibility! if customer_accepts_responsibility
-        request.transition_to(associated_request_target_state) if valid_transition?(request.outer_request)
+        request.transition_to(associated_request_target_state) if valid_transition?(request)
       end
     end
 
