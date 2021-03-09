@@ -1,7 +1,9 @@
 
 <% add :about, "Submission Inbox" -%>
-<% add :manager_option, "Start a new Submission" => new_submission_path -%>
-<% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
+<% if can? :create, Submission %>
+  <% add :menu, "Start a new Submission" => new_submission_path -%>
+  <% add :menu, "Start a Bulk Submission" => new_bulk_submission_path -%>
+<% end %>
 <%= page_title("Submissions", current_user.name) %>
 
 <%= panel do %>
@@ -22,4 +24,3 @@
   <p class="lead">The most recent submissions which have finished processing and are ready for work.</p>
   <%= render partial: "list", locals: { submissions: @ready } %>
 <% end %>
-

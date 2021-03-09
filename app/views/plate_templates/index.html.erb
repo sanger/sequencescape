@@ -1,11 +1,13 @@
 
 <div class="page-header"><h1>Plate Templates</h1></div>
-<div class="newtemplate">
-  <ul>
-    <li><%= link_to "New 96 Template", new_plate_template_path(rows: 8, cols: 12) %></li>
-    <li><%= link_to "New 384 Template", new_plate_template_path(rows: 16, cols: 24) %></li>
-  </ul>
-</div>
+<% if can? :create, PlateTemplate %>
+  <div class="newtemplate">
+    <ul>
+      <li><%= link_to "New 96 Template", new_plate_template_path(rows: 8, cols: 12) %></li>
+      <li><%= link_to "New 384 Template", new_plate_template_path(rows: 16, cols: 24) %></li>
+    </ul>
+  </div>
+<% end %>
 
 <table width=100%>
   <thead>
@@ -15,9 +17,15 @@
   </thead>
 <% @patterns.each do |pattern| %>
 <tr>
-  <td><%= link_to pattern.name, edit_plate_template_path(pattern.id) %></td>
+  <td>
+    <% if can? :edit, pattern %>
+      <%= link_to pattern.name, edit_plate_template_path(pattern.id) %>
+    <% else %>
+      <%= pattern.name %>
+    <% end %>
+  </td>
   <td><%= pattern.size %></td>
-  <td><%= link_to 'Delete', pattern, confirm: 'Are you sure?', method: :delete %></td>
+  <td><%= link_to('Delete', pattern, confirm: 'Are you sure?', method: :delete) if can?(:delete, pattern) %></td>
 </tr>
 <% end %>
 </table>

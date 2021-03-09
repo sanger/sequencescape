@@ -1,6 +1,8 @@
 
 <%- add :about, "Starting a new Submission" -%>
-<%- add :manager_option, "Submissions Inbox" => submissions_path -%>
+<% if can? :create, Submission %>
+  <%- add :menu, "Submissions Inbox" => submissions_path -%>
+<% end %>
 
 
 <%= page_title 'Submission', 'New' %>

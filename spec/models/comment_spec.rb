@@ -17,6 +17,21 @@ RSpec.describe Comment, type: :model do
     end
   end
 
+  describe '#counts_for_requests' do
+    let(:request) { create :sequencing_request, asset: tube }
+    let(:tube) { create :multiplexed_library_tube }
+
+    setup do
+      create :comment, commentable: tube, description: 'An excellent tube'
+      create :comment, commentable: tube.receptacle, description: 'A good receptacle'
+      create :comment, commentable: request, description: 'A reasonable request'
+    end
+
+    it 'counts comments on requests, their assets and receptacles' do
+      expect(described_class.counts_for_requests([request])).to eq({ request.id => 3 })
+    end
+  end
+
   context 'while adding comments to requests' do
     let(:user) { create :user }
     let(:study) { create :study }

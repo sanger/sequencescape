@@ -83,7 +83,7 @@ class Submission < ApplicationRecord
 
   # Once submissions progress beyond building, destruction is a risky action and should be prevented.
   def prevent_destruction_unless_building?
-    return if building?
+    return if destroyable?
 
     errors.add(:base, "can only be destroyed when in the 'building' stage. Later submissions should be cancelled.")
     throw :abort

@@ -1,5 +1,5 @@
 class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationController # rubocop:todo Style/Documentation
-  before_action :admin_login_required
+  authorize_resource class: BaitLibrary::Supplier
   before_action :discover_bait_library_supplier, only: %i[edit update destroy]
 
   def new

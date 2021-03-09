@@ -2,7 +2,7 @@ class Admin::PlatePurposesController < ApplicationController # rubocop:todo Styl
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :admin_login_required
+  authorize_resource
   before_action :discover_plate_purpose, only: %i[show edit update destroy]
 
   def index

@@ -1,6 +1,5 @@
 
 <% request_comments_count = @requests_comment_count.fetch(request.id, 0) -%>
-<% asset_comments_count = @assets_comment_count.fetch(request.asset_id, 0)-%>
 <% request_samples_count = @requests_samples_count.fetch(request.id, 0)-%>
 <tr>
   <td class="request center">
@@ -8,9 +7,9 @@
     <%= check_box :request, request.id, value: request.id, class: 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
   </td>
   <td data-order="<%= request.priority %>">
-    <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{current_user.lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
+    <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{can?(:change_priority, request) ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
   </td>
-  <% if current_user.lab_manager? %>
+  <% if can? :see_previously_failed, request %>
     <td><%= render partial: "previous_failed_requests", locals: { request: request } %></td>
   <% end %>
   <td><%= request.request_type.product_line.try(:name) %></td>
@@ -25,11 +24,6 @@
   <% end -%>
   <% if request.asset %>
     <td><%=  link_to "#{request.asset.human_barcode}", receptacle_path(request.asset) %></td>
-    <% unless asset_comments_count.zero? -%>
-      <%= render partial: "asset_comments", locals: { request: request, comments_count: asset_comments_count } %>
-    <% else -%>
-      <td>&nbsp;</td>
-    <% end -%>
     <td><%= request_samples_count %></td>
     <td><%= request.asset.concentration %></td>
     <td><%= request.asset.scanned_in_date %></td>

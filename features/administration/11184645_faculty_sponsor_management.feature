@@ -93,7 +93,7 @@ Feature: Manage a list of faculty sponsors
   Scenario Outline: Only admins can manage faculty sponsors
     Given I am a "<role>" user logged in as "user"
       And I am on the faculty sponsor homepage
-    Then I should see "Please use your Sanger username and password to login"
+    Then I should see "Sorry, you are not authorized to index this Faculty sponsor"
     Examples:
       | role          |
       | follower      |

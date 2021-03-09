@@ -1,11 +1,9 @@
 class Requests::CommentsController < ApplicationController # rubocop:todo Style/Documentation
-  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
   before_action :discover_request
 
   def index
-    @comments = @request.comments.order('created_at ASC')
+    commentables = [@request, @request.asset, @request.asset&.labware].compact
+    @comments = Comment.where(commentable: commentables).order('created_at ASC')
     if request.xhr?
       render partial: 'simple_list', locals: { descriptions: @comments.pluck(:description) }
     else

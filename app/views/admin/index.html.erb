@@ -5,63 +5,106 @@
 <%= page_title 'Sequencescape', 'Administration' %>
 <div class="card-columns">
 
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Study management", url_for(controller: "admin/studies", action: "index") %></h4>
-  Make changes to studies.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Project management", url_for(controller: "admin/projects", action: "index") %></h4>
-  Make changes to projects.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "User management", admin_users_path %></h4>
-  View current users in the system.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Role management", admin_roles_path %></h4>
-  Add new roles to users.
-<% end %>
+  <% if can? :administer, Study %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Study management", url_for(controller: "admin/studies", action: "index") %></h4>
+      Make changes to studies.
+    <% end %>
+  <% end %>
 
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Help text management", admin_custom_texts_url %></h4>
-  Update help texts used in the application.
-<% end %>
+  <% if can? :administer, Project %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Project management", url_for(controller: "admin/projects", action: "index") %></h4>
+      Make changes to projects.
+    <% end %>
+  <% end %>
 
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Printer management", barcode_printers_url %></h4>
-  Add and remove printers.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Plate purpose management", admin_plate_purposes_url %></h4>
-  Add and remove plate purposes.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Robot management", admin_robots_url %></h4>
-  Add and remove robots.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Delayed jobs queue", url_for(controller: "admin/delayed_jobs", action: "index") %></h4>
-  See the delayed jobs queue
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Reference genome management", reference_genomes_path %></h4>
-  Add and remove reference genomes.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Faculty Sponsors", admin_faculty_sponsors_path %></h4>
-  Manage the faculty sponsors for studies.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Programs", admin_programs_path %></h4>
-  Manage the programs for studies.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Bait library management", admin_bait_libraries_path %></h4>
-  Manage the bait libraries.
-<% end %>
-<%= panel do %>
-  <h4 class="card-title"><%= link_to "Primer Panels", admin_primer_panels_path %></h4>
-  Manage the primer panels.
-<% end %>
+  <% if can? :administer, User %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "User management", admin_users_path %></h4>
+      View current users in the system.
+    <% end %>
 
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Role management", admin_roles_path %></h4>
+      Add new roles to users.
+    <% end %>
+  <% end %>
+
+  <% if can? :manage, CustomText %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Help text management", admin_custom_texts_url %></h4>
+      Update help texts used in the application.
+    <% end %>
+  <% end %>
+
+  <% if can? :manage, BarcodePrinter %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Printer management", barcode_printers_url %></h4>
+      Add and remove printers.
+    <% end %>
+  <% end %>
+
+  <% if can? :manage, Purpose %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Plate purpose management", admin_plate_purposes_url %></h4>
+      Add and remove plate purposes.
+    <% end %>
+  <% end %>
+
+  <% if can? :manage, Robot %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Robot management", admin_robots_url %></h4>
+      Add and remove robots.
+    <% end %>
+  <% end %>
+
+  <% if can? :read, Delayed::Job %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Delayed jobs queue", url_for(controller: "admin/delayed_jobs", action: "index") %></h4>
+      See the delayed jobs queue
+    <% end %>
+  <% end %>
+
+  <% if can? :manage, ReferenceGenome %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Reference genome management", reference_genomes_path %></h4>
+      Add and remove reference genomes.
+    <% end %>
+  <% end %>
+
+  <% if can? :manage, FacultySponsor %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Faculty Sponsors", admin_faculty_sponsors_path %></h4>
+      Manage the faculty sponsors for studies.
+    <% end %>
+  <% end %>
+
+  <% if can? :manage, Program %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Programs", admin_programs_path %></h4>
+      Manage the programs for studies.
+    <% end %>
+  <% end %>
+
+  <% if can? :manage, BaitLibrary %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Bait library management", admin_bait_libraries_path %></h4>
+      Manage the bait libraries.
+    <% end %>
+  <% end %>
+
+  <% if can? :manage, PrimerPanel %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Primer Panels", admin_primer_panels_path %></h4>
+      Manage the primer panels.
+    <% end %>
+  <% end %>
+
+  <% if can? :read, Ability %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Abilities", admin_abilities_path %></h4>
+      Overview of granted abilities.
+    <% end %>
+  <% end %>
 </div>

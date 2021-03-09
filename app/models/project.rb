@@ -54,6 +54,9 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
   has_many :sample_manifests
   has_many :aliquots
 
+  has_many :owners, -> { where(roles: { name: 'owner' }) }, through: :roles, source: :users
+  has_many :managers, ->() { where(roles: { name: 'manager' }) }, through: :roles, source: :users
+
   validates :name, :state, presence: true
   validates :name, uniqueness: { on: :create, message: "already in use (#{name})", case_sensitive: false }
 
@@ -79,27 +82,12 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
 
   squishify :name
 
-  def owners
-    role = roles.detect { |r| r.name == 'owner' }
-    if role.nil?
-      []
-    else
-      role.users
-    end
-  end
-
   def owner
-    owners_ = owners
-    owners_ and owners_.first
+    owners.first
   end
 
   def manager
-    role = roles.detect { |r| r.name == 'manager' }
-    if role.nil?
-      nil
-    else
-      role.users.first
-    end
+    managers.first
   end
 
   def actionable?

@@ -23,7 +23,7 @@
           <td><%= custom_text.differential %></td>
           <td><%= custom_text.content_type %></td>
           <td><%= custom_text.content %></td>
-          <% if current_user.administrator? %>
+          <% if can? :manage, CustomText %>
             <td>
             <%= link_to "Edit", edit_admin_custom_text_path(custom_text) %>
             </td>

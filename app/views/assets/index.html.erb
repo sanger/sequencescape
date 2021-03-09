@@ -1,9 +1,0 @@
-
-<% add(:menu, "Back to study" => study_path(@study)) if @study.present? -%>
-
-<%= page_title "Listing assets", @study.try(:name) %>
-
-<%= pagination @assets %>
-      <%= render(partial: 'table_of_assets', locals: { assets: @assets, study: @study }) %>
-<%= pagination @assets %>
-<br />
