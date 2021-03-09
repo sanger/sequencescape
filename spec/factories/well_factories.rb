@@ -37,6 +37,11 @@ FactoryBot.define do
     aliquots { build_list(:tagged_aliquot, aliquot_count, aliquot_options) }
 
     factory :passed_well do
+      transient do
+        aliquot_options do |_e, well|
+          { study: study, project: project, receptacle: well, sample: sample, request: requests_as_target.first }
+        end
+      end
       stock_wells { [association(:well)] }
       requests_as_target { [association(:well_request, state: 'passed', asset: stock_wells.first)] }
       transfer_requests_as_target { [association(:transfer_request, state: 'passed', submission: requests_as_target.first.submission)] }

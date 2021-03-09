@@ -8,12 +8,17 @@ module StateChanger
   class InputPlate < StandardPlate
     private
 
+    def _receptacles
+      labware.wells.includes(:requests_as_source)
+    end
+
     def associated_requests
       receptacles.flat_map(&:requests_as_source)
     end
 
-    def update_transfer_requests(*args)
-      # Does nothing, we'll do it in a moment!
+    def transfer_requests
+      # We don't want to update any transfer requests
+      []
     end
   end
 end

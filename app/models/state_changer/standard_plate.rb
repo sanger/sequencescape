@@ -35,7 +35,7 @@ module StateChanger
     end
 
     def pending_orders
-      associated_requests.select(&:pending?).pluck(:order_id)
+      associated_requests.select(&:pending?).pluck(:order_id).uniq
     end
 
     def generate_events_for(orders)
@@ -45,17 +45,22 @@ module StateChanger
     end
 
     def update_transfer_requests
-      receptacles.each do |w|
-        w.transfer_requests_as_target.each { |r| r.transition_to(target_state) }
+      transfer_requests.each do |request|
+        request.transition_to(target_state)
       end
     end
 
     def fail_associated_requests
+      raise_request_error if associated_requests.empty? && associated_submission?
+
       associated_requests.each do |request|
-        throw_aliquot_error if request.nil?
         request.customer_accepts_responsibility! if customer_accepts_responsibility
         request.passed? ? request.retrospective_fail! : request.fail!
       end
+    end
+
+    def transfer_requests
+      receptacles.flat_map(&:transfer_requests_as_target)
     end
 
     # Pulls out the customer requests associated with the wells.
@@ -65,11 +70,19 @@ module StateChanger
       receptacles.flat_map(&:aliquot_requests)
     end
 
+    # Checks if the transfer requests have an associated submission, and thus
+    # we could expect to find outer requests. This check is purely to support
+    # the assertion below, and blow up noisily if something looks suspect.
+    def associated_submission?
+      transfer_requests.any?(&:submission_id)
+    end
+
     # Older aliquots do not have request set. Failing them should be a rare
     # scenario. We'll blow up noisily for now, and will consider automatic
     # repair if we run into this more often then we are expecting.
-    def throw_aliquot_error
-      raise StandardError, 'Aliquots in target well do not have request set.'
+    # This also covers other scenarios where we don't find the outer requests
+    def raise_request_error
+      raise StandardError, 'Could not find requests for wells.'
     end
   end
 end

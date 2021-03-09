@@ -2,6 +2,13 @@
 
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
+#
+# @note The setting of submission_id and outer_request is quite complicated, and depends
+# on the exact route by which the transfer request has been created. The preferred route
+# is by setting outer_request explicitly. However much of the historic code handles it
+# via submission_id, either set explicitly, (eg Transfer::BetweenPlates#calculate_location_submissions)
+# or extracted from the pool_id attribute on well, which itself if populated as part of an
+# sql query. (See #with_pool_id on the well association in {Plate})
 class TransferRequest < ApplicationRecord
   include Uuid::Uuidable
   include AASM

@@ -61,5 +61,28 @@ RSpec.describe StateChanger::StandardPlate do
         expect(library_requests.each(&:reload)).to all(be_failed)
       end
     end
+
+    context 'when the plate is failed in the middle of the pipeline' do
+      include_context 'a limber target plate with submissions'
+      let(:target_state) { 'failed' }
+
+      it 'does allow failure of the requests', :aggregate_failures do
+        expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(0)
+        expect(library_requests.each(&:reload)).to all(be_failed)
+      end
+    end
+
+    context 'when the customer accepts responsibility' do
+      include_context 'a limber target plate with submissions'
+      let(:target_state) { 'failed' }
+      let(:customer_accepts_responsibility) { true }
+
+      it 'does allow failure of the requests', :aggregate_failures do
+        expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(0)
+        reloaded_library_requests = library_requests.each(&:reload)
+        expect(reloaded_library_requests).to all(be_failed)
+        expect(reloaded_library_requests).to all(be_customer_accepts_responsibility)
+      end
+    end
   end
 end
