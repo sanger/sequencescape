@@ -171,7 +171,7 @@ class UatActions::TestSubmission < UatActions
   def custom_request_options
     options = {}
     options[:library_type] = library_type_name if library_type_name.present?
-    options[:primer_panel] = primer_panel_name if primer_panel_name.present?
+    options[:primer_panel_name] = primer_panel_name if primer_panel_name.present?
     options
   end
 
