@@ -139,6 +139,18 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode '23JAN21-Q'
   end
 
+  # XXX-AA-NNNNNNNN (where X = letter character A-Z, A = alphanumeric character A-Z/0-9, N = number character 0-9)
+  describe Barcode::FormatHandlers::RandoxV2 do
+    it_has_a_valid_barcode 'ABC-B1-97346572', prefix: 'ABC-B1', number: 97346572
+    it_has_a_valid_barcode 'BYG-1X-11122233', prefix: 'BYG-1X', number: 11122233
+    it_has_an_invalid_barcode 'BY-B1-97346572'
+    it_has_an_invalid_barcode 'aBC-B1-97346572'
+    it_has_an_invalid_barcode '8DS-1X-11122233'
+    it_has_an_invalid_barcode 'ABC-a1-97346572'
+    it_has_an_invalid_barcode 'ABC-B1-9734657'
+    it_has_an_invalid_barcode 'ABC-B1-x9734657'
+  end
+
   describe Barcode::FormatHandlers::UkBiocentreV4 do
     it_has_a_valid_barcode 'EGL000002', prefix: 'EGL', number: 2
     it_has_an_invalid_barcode 'EGL-000002'
