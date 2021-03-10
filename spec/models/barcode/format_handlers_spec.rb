@@ -141,14 +141,14 @@ describe Barcode::FormatHandlers do
 
   # XXX-AA-NNNNNNNN (where X = letter character A-Z, A = alphanumeric character A-Z/0-9, N = number character 0-9)
   describe Barcode::FormatHandlers::RandoxV2 do
-    it_has_a_valid_barcode 'ABC-B1-97346572', prefix: 'ABC-B1', number: 97346572
-    it_has_a_valid_barcode 'BYG-1X-11122233', prefix: 'BYG-1X', number: 11122233
-    it_has_an_invalid_barcode 'BY-B1-97346572'
-    it_has_an_invalid_barcode 'aBC-B1-97346572'
-    it_has_an_invalid_barcode '8DS-1X-11122233'
-    it_has_an_invalid_barcode 'ABC-a1-97346572'
-    it_has_an_invalid_barcode 'ABC-B1-9734657'
-    it_has_an_invalid_barcode 'ABC-B1-x9734657'
+    it_has_a_valid_barcode 'ABC-B1-973465', prefix: 'ABC-B1', number: 973465
+    it_has_a_valid_barcode 'BYG-1X-111222', prefix: 'BYG-1X', number: 111222
+    it_has_an_invalid_barcode 'BY-B1-973465'
+    it_has_an_invalid_barcode 'aBC-B1-973465'
+    it_has_an_invalid_barcode '8DS-1X-111222'
+    it_has_an_invalid_barcode 'ABC-a1-973465'
+    it_has_an_invalid_barcode 'ABC-B1-97346'
+    it_has_an_invalid_barcode 'ABC-B1-x97346'
   end
 
   describe Barcode::FormatHandlers::UkBiocentreV4 do
