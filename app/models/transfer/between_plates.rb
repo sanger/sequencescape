@@ -28,15 +28,12 @@ class Transfer::BetweenPlates < Transfer
   #--
   # Transfers between plates may encounter empty source wells, in which case we don't bother
   # making that transfer.  In the case of the pulldown pipeline this could happen after the
-  # plate has been put on the robot, as the number of columns transfered could be less than
+  # plate has been put on the robot, as the number of columns transferred could be less than
   # an entire plate.  Subsequent plates are therefore only partially complete.
   #++
   def each_transfer
-    # Partition the source plate wells into ones that are good and others that are bad.  The
-    # bad wells will be eliminated after we've done the transfers for the good ones.
-    bad_wells, good_wells = source.wells.located_at_position(transfers.keys).with_pool_id.partition(&method(:should_well_not_be_transferred?))
-    source_wells          = good_wells.index_by(&:map_description)
-    destination_locations = source_wells.keys.map { |p| transfers[p] }.flatten
+    source_wells          = valid_source_wells.index_by(&:map_description)
+    destination_locations = transfers.values_at(*source_wells.keys).flatten
     destination_wells     = destination.wells.located_at_position(destination_locations).index_by(&:map_description)
 
     source_wells.each do |location, source_well|
@@ -46,8 +43,16 @@ class Transfer::BetweenPlates < Transfer
     end
 
     # Eliminate any of the transfers that were not made because of the bad source wells
-    transfers_we_did_not_make = bad_wells.map(&:map_description)
-    transfers.delete_if { |k, _| transfers_we_did_not_make.include?(k) }
+    transfers.keep_if { |k, _| source_wells.key?(k) }
+  end
+
+  # Retrieves the source wells, and filters out those associated with wells which
+  # shouldn't be transferred (ie. empty wells, or those which are cancelled)
+  def valid_source_wells
+    source.wells
+          .located_at_position(transfers.keys)
+          .with_pool_id
+          .reject { |well| should_well_not_be_transferred?(well) }
   end
 
   #
@@ -77,9 +82,10 @@ class Transfer::BetweenPlates < Transfer
 
       found_pre_cap_groups = pre_cap_groups.select { |_uuid, group_details| group_details[:wells].sort == sources.sort }
 
-      if found_pre_cap_groups.keys.length > 1
+      if found_pre_cap_groups.length > 1
         errors.add(:base,
-                   "Found #{found_pre_cap_groups.keys.length} different pools matching the condition for #{sources} to #{dest_loc} with requests in state start or pending. Please cancel the requests not needed.")
+                   "Found #{found_pre_cap_groups.length} different pools matching the condition for #{sources} to "\
+                   "#{dest_loc} with requests in state start or pending. Please cancel the requests not needed.")
         raise ActiveRecord::RecordInvalid, self
       end
 

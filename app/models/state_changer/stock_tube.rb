@@ -26,8 +26,8 @@ module StateChanger
     # * It assumes the tube is already fully pooled (which to be fair, will be valid given)
     # * It fails the LibraryCompletion but these aren't used any more!
     def outer_requests_for
-      labware.requests_as_target.map do |r|
-        r.submission.requests.where_is_a(LibraryCompletion)
+      labware.requests_as_target.map do |request|
+        request.submission.requests.where_is_a(LibraryCompletion)
       end.uniq
     end
   end
