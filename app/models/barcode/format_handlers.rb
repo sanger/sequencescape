@@ -316,6 +316,15 @@ module Barcode::FormatHandlers
     self.format = /\A(?<prefix>\d{2}[A-Z]{3}\d{2})-(?<number>\d{4})(?<suffix>[A-Z])\z/
   end
 
+  # XXX-AA-NNNNNN
+  # where:
+  #  X = letter character A-Z
+  #  A = alphanumeric character A-Z/0-9
+  #  N = number character 0-9
+  class RandoxV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>[A-Z]{3}-[A-Z0-9]{2})-(?<number>\d{6})\z/
+  end
+
   # Added to support 'Operation Eagle' plates from UK Biocentre
   # as part of project Heron
   # Expected formats:
