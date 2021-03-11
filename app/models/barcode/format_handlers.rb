@@ -316,7 +316,7 @@ module Barcode::FormatHandlers
     self.format = /\A(?<prefix>\d{2}[A-Z]{3}\d{2})-(?<number>\d{4})(?<suffix>[A-Z])\z/
   end
 
-  # XXX-AA-NNNNNNNN
+  # XXX-AA-NNNNNN
   # where:
   #  X = letter character A-Z
   #  A = alphanumeric character A-Z/0-9
