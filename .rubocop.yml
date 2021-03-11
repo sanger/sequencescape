@@ -32,6 +32,11 @@ Rails/SkipsModelValidations:
     - 'db/migrate_asset_refactor/*.rb'
     - 'features/support/step_definitions/*.rb'
 
+Style/Documentation:
+  Exclude:
+    - 'test/**/*'
+    - 'spec/**/*'
+
 Rails:
   Enabled: true
 # Step definitions are defined with Given /regex/ do ...
