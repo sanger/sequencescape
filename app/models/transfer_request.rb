@@ -38,6 +38,7 @@ class TransferRequest < ApplicationRecord
 
   scope :for_request, ->(request) { where(asset_id: request.asset_id) }
   scope :include_submission, -> { includes(submission: :uuid_object) }
+  scope :include_for_request_state_change, -> { includes(:target_aliquot_requests, associated_requests: :request_type) }
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
   validate :outer_request_candidates_length, on: :create

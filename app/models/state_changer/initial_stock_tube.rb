@@ -19,6 +19,7 @@ module StateChanger
     def transfer_requests
       @transfer_requests ||= labware.transfer_requests_as_target
                                     .where.not(state: TERMINATED_STATES)
+                                    .include_for_request_state_change
     end
 
     def associated_requests
