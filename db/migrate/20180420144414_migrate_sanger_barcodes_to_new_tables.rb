@@ -4,7 +4,7 @@
 class MigrateSangerBarcodesToNewTables < ActiveRecord::Migration[5.1]
   def up
     say 'Building prefix cache'
-    @prefixes = Hash[BarcodePrefix.all.pluck(:id, :prefix)]
+    @prefixes = BarcodePrefix.all.pluck(:id, :prefix).to_h
     say 'Migrating Sanger Barcodes'
     Barcode.transaction do
       Asset.where.not(barcode_bkp: nil).in_batches.each_with_index do |batch, i|

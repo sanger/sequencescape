@@ -56,15 +56,15 @@ describe 'Wells API', with: :api_v2 do
     describe '#update' do
       let(:payload) do
         {
-          'data': {
-            'id': well.id,
-            'type': 'wells',
-            'attributes': {
-              'pcr_cycles': 11,
-              'submit_for_sequencing': false,
-              'sub_pool': 2,
-              'coverage': 50,
-              'diluent_volume': 34.0
+          data: {
+            id: well.id,
+            type: 'wells',
+            attributes: {
+              pcr_cycles: 11,
+              submit_for_sequencing: false,
+              sub_pool: 2,
+              coverage: 50,
+              diluent_volume: 34.0
             }
           }
         }

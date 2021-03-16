@@ -32,7 +32,7 @@ module LabelPrinter
       end
 
       def round_label_bottom_line(tube)
-        tube.is_a?(PacBioLibraryTube) ? source_plate_barcode(tube).split(//).last(4).join : super
+        tube.is_a?(PacBioLibraryTube) ? source_plate_barcode(tube).split('').last(4).join : super
       end
 
       def tubes

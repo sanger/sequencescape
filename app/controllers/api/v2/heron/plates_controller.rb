@@ -19,7 +19,7 @@ module Api
                   study_names: factory.sample_study_names
                 },
                 links: {
-                  'self': api_v2_plate_url(factory.plate)
+                  self: api_v2_plate_url(factory.plate)
                 }
               }
             }, status: :created

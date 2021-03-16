@@ -112,7 +112,7 @@ module LabWhereClient
     def self.find_locations_by_barcodes(barcodes)
       return nil if barcodes.blank?
 
-      payload = { "barcodes": barcodes }
+      payload = { barcodes: barcodes }
 
       attrs = LabWhere.new.post(self, '', payload)
       new(attrs) unless attrs.nil?

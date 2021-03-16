@@ -7,17 +7,17 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
 
   let(:params) do
     {
-      "barcode": '0000000001',
-      "purpose_uuid": purpose_96.uuid,
-      "study_uuid": study.uuid,
-      "tubes": {
+      barcode: '0000000001',
+      purpose_uuid: purpose_96.uuid,
+      study_uuid: study.uuid,
+      tubes: {
         'A01' => {
-          "barcode": 'FD00000001',
-          "content": { "supplier_name": 'PHEC-nnnnnnn1' }
+          barcode: 'FD00000001',
+          content: { supplier_name: 'PHEC-nnnnnnn1' }
         },
         'A02' => {
-          "barcode": 'FD00000002',
-          "content": { "supplier_name": 'PHEC-nnnnnnn2' }
+          barcode: 'FD00000002',
+          content: { supplier_name: 'PHEC-nnnnnnn2' }
         }
       }
     }

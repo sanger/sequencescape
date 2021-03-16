@@ -40,7 +40,7 @@ class ::Core::Registry # rubocop:todo Style/Documentation
   end
 
   def inspect
-    Hash[@model_class_to_target.map { |k, v| [k.to_s, v.to_s] }].inspect
+    @model_class_to_target.map { |k, v| [k.to_s, v.to_s] }.to_h.inspect
   end
 
   def is_already_registered?(model_class)

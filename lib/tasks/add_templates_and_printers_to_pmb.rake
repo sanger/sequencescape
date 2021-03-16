@@ -343,9 +343,9 @@ namespace :pmb do
         end
 
         def get_names_and_ids(res)
-          Hash[JSON.parse(res)['data'].map do |label_type|
-                 [label_type['attributes']['name'].downcase, label_type['id']]
-               end ]
+          JSON.parse(res)['data'].map do |label_type|
+            [label_type['attributes']['name'].downcase, label_type['id']]
+          end.to_h
         end
 
         def register_label_template(template)

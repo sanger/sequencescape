@@ -6,10 +6,10 @@ module Api
   # handled by {Api::EndpointHandler}
   class RootService < ::Core::Service
     # @note This is partly a hack but it suffices to keep the dynamic ability to write endpoints.
-    ALL_SERVICES_AVAILABLE = Hash[Dir.glob(File.join(Rails.root, %w{app api endpoints ** *.rb})).map do |file|
+    ALL_SERVICES_AVAILABLE = Dir.glob(File.join(Rails.root, %w{app api endpoints ** *.rb})).map do |file|
       handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
       [handler.root.tr('/', '_'), handler]
-    end]
+    end.to_h
 
     use Api::EndpointHandler
 

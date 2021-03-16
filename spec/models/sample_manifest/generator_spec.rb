@@ -26,8 +26,8 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
   let(:configuration)     { SampleManifestExcel.configuration }
 
   let(:attributes) do
-    { "template": 'plate_full', "study_id": study.id, "supplier_id": supplier.id,
-      "count": '4' }.with_indifferent_access
+    { template: 'plate_full', study_id: study.id, supplier_id: supplier.id,
+      count: '4' }.with_indifferent_access
   end
 
   after(:all) do

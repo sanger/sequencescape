@@ -1,6 +1,6 @@
 module PlatePurpose::WorksOnLibraryRequests # rubocop:todo Style/Documentation
   def each_well_and_its_library_request(plate)
-    well_to_stock_id = Hash[plate.stock_wells.map { |well, stock_wells| [well.id, stock_wells.first.id] }]
+    well_to_stock_id = plate.stock_wells.map { |well, stock_wells| [well.id, stock_wells.first.id] }.to_h
     requests         = Request::LibraryCreation.for_asset_id(well_to_stock_id.values).include_request_metadata.group_by(&:asset_id)
 
     plate.wells.includes({ aliquots: :library }, :requests_as_target).find_each do |well|

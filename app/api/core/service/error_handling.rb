@@ -69,7 +69,7 @@ class ActiveRecord::RecordInvalid # rubocop:todo Style/Documentation
   end
 
   def errors_grouped_by_attribute
-    Hash[record.errors.map { |k, v| [yield(k), [v].flatten.uniq] }]
+    record.errors.map { |k, v| [yield(k), [v].flatten.uniq] }.to_h
   end
   private :errors_grouped_by_attribute
 end
@@ -81,7 +81,7 @@ class ActiveModel::ValidationError # rubocop:todo Style/Documentation
   end
 
   def errors_grouped_by_attribute
-    Hash[model.errors.map { |k, v| [yield(k), [v].flatten.uniq] }]
+    model.errors.map { |k, v| [yield(k), [v].flatten.uniq] }.to_h
   end
   private :errors_grouped_by_attribute
 end
