@@ -28,7 +28,10 @@ class Labware < Asset
     # we used to delegate the aliquots association directs (eg. delegate :aliquots, to: :receptacle)
     # but this messes up eager-loading, especially via the API.
     def receptacle_proxy
-      proxy_association.owner.respond_to?(:receptacle) ? proxy_association.owner.receptacle.aliquots : self
+      return self unless proxy_association.owner.respond_to?(:receptacle)
+
+      reset # We're about to modify the association indirectly, so any existing records are invalid
+      proxy_association.owner.receptacle.aliquots
     end
 
     delegate :<<, :build, :create, :create!, to: :receptacle_proxy
