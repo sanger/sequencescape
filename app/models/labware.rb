@@ -68,6 +68,9 @@ class Labware < Asset
   has_many :batches_as_source, -> { distinct }, through: :requests_as_source, source: :batch
 
   scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }) }
+
+  has_many :qc_results, through: :receptacles
+
   scope :for_search_query, lambda { |query|
     where('labware.name LIKE :name', name: "%#{query}%")
       .or(with_safe_id(query))

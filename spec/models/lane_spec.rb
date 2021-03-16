@@ -17,8 +17,8 @@ RSpec.describe Lane do
     # lanes containing requested aliquots
     lane1 = create :lane
     lane2 = create :lane
-    lane1.aliquots << requested_aliquots.first
-    lane2.aliquots << requested_aliquots.last
+    lane1.receptacle.aliquots << requested_aliquots.first
+    lane2.receptacle.aliquots << requested_aliquots.last
     lanes_to_be_found = [lane1, lane2]
 
     expect(described_class.with_required_aliquots(requested_aliquots_ids)).to match_array(lanes_to_be_found)

@@ -15,14 +15,14 @@ module SingleReceptacleLabware
     # Ensure we generate the receptacle automatically when the labware is created
     before_validation :receptacle, on: :create
 
-    # Using a has_many through here complicates attempts to build aliquots
-    # through the association, as it results in a
-    # HasManyThroughCantAssociateThroughHasOneOrManyReflection exception
-    # Although I think I might actually be doing something stupid
-    delegate :aliquots, :aliquots=, to: :receptacle
+    # Previously we used to delegate all aliquot activity to the relationship
+    # on receptacle, but this massively disrupted eager-loading, causing major
+    # performance issues on the API. Without this delegation attempts to set
+    # aliquots on a labware fail, as Rails can't set receptacle_id.
+    delegate :aliquots=, to: :receptacle
+
     delegate :concentration, :concentration=, to: :receptacle
-    # Delegate for the moment, update once things are working
-    delegate :qc_results, to: :receptacle
+
     # And a few more basic delegations
     delegate  :qc_state, :qc_state=,
               :external_release, :external_release=,
