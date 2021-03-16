@@ -71,6 +71,15 @@ class Ability
       role_class = ROLE_CLASSES[role]
       merge(role_class.new(user)) unless role_class.nil?
     end
+
+    ## Aliases
+    # @note Alias need to be set up at the *end* of this method, as otherwise
+    #       they get blown away when we merge in the other roles
+
+    # Submissions controller uses these actions as part of submission creation
+    # It doesn't appear that CanCanCan lets us scope an alias to a particular
+    # resource, so these aliases *will* apply globally.
+    alias_action :order_fields, :study_assets, to: :create
   end
 
   # Global privileges are those granted
