@@ -115,7 +115,7 @@ module Presenters
         end
       end
 
-      add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify?)
+      add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
     end
   end
 end

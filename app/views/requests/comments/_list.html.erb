@@ -1,10 +1,10 @@
 
 <ul id="request_annotations_<%= @request.id %>" class="list-group">
-  <% if @request.comments.size > 0 %>
+  <% if @comments.present? %>
     <% @comments.each do |comment| %>
       <li class="list-group-item">
         <%= render partial: "shared/comment" ,
-                   locals: { comment: comment, commentable: @request.becomes(Request), update_target: "request_annotations_#{@request.id}" }%>
+                   locals: { comment: comment, update_target: "request_annotations_#{@request.id}" }%>
       </li>
     <% end %>
   <% else %>
