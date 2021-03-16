@@ -212,6 +212,7 @@ class BulkSubmission
     return [translate(header), row[pos].try(:strip)] unless header.nil? && row[pos].present?
 
     errors.add(:spreadsheet, "Row #{index}, column #{pos + 1} contains data but no heading.")
+    nil
   end
   private :validate_entry
 
@@ -224,7 +225,7 @@ class BulkSubmission
       csv_data_rows.each_with_index do |row, index|
         next if row.all?(&:nil?)
 
-        details = headers.each_with_index.map do |header, pos|
+        details = headers.each_with_index.filter_map do |header, pos|
           validate_entry(header, pos, row, index + start_row)
         end.to_h.merge('row' => index + start_row)
         submission[details['submission name']] << details
