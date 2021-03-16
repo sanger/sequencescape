@@ -21,7 +21,18 @@ class Labware < Asset
   has_many :messengers, as: :target, inverse_of: :target, dependent: :destroy
 
   # The following are all through receptacles
-  has_many :aliquots, through: :receptacles
+  has_many :aliquots, through: :receptacles do
+    # This is mostly to handle legacy code which predates the labware-receptacle split.
+    # In many cases we were directly associating aliquots via the association on labware,
+    # but rails is not able to handle this with a has_many through. Prior to adding this
+    # we used to delegate the aliquots association directs (eg. delegate :aliquots, to: :receptacle)
+    # but this messes up eager-loading, especially via the API.
+    def receptacle_proxy
+      proxy_association.owner.respond_to?(:receptacle) ? proxy_association.owner.receptacle.aliquots : self
+    end
+
+    delegate :<<, :build, :create, :create!, to: :receptacle_proxy
+  end
   has_many :samples, through: :receptacles
   has_many :studies, -> { distinct }, through: :receptacles
   has_many :projects, -> { distinct }, through: :receptacles
