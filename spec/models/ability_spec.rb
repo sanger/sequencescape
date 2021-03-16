@@ -160,7 +160,7 @@ RSpec.describe Ability do
                           SampleManifest => %i[create new],
                           Sequencescape => %i[administer],
                           Study => %i[administer unlink_sample link_sample edit activate deactivate accession request_additional_with grant_role remove_role],
-                          Submission => %i[edit delete change_priority],
+                          Submission => %i[delete change_priority],
                           Supplier => %i[create new],
                           TagGroup => %i[create edit delete],
                           TagLayoutTemplate => %i[create edit delete],
