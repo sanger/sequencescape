@@ -53,7 +53,7 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
   end
 
   it 'has the correct subjects' do
-    lane.receptacle.aliquots << aliquot
+    lane.aliquots << aliquot
     subject_role_types = json['event']['subjects'].collect { |subject| subject['role_type'] }
     expect(subject_role_types).to include('sequencing_source_labware')
     expect(subject_role_types).to include('project')
