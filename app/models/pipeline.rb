@@ -100,8 +100,7 @@ class Pipeline < ApplicationRecord
     request.save!
   end
 
-  def update_detached_request(_batch, request)
-  end
+  def update_detached_request(_batch, _request); end
 
   # Overridden in group-by parent pipelines to display input plates
   def input_labware(_requests)
@@ -113,8 +112,7 @@ class Pipeline < ApplicationRecord
     Labware.none
   end
 
-  def post_finish_batch(batch, user)
-  end
+  def post_finish_batch(batch, user); end
 
   def completed_request_as_part_of_release_batch(request)
     if library_creation?
