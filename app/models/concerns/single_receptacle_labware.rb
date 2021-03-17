@@ -34,7 +34,7 @@ module SingleReceptacleLabware
               :register_stock!,
               to: :receptacle
 
-    scope :include_aliquots_for_api, -> { includes(receptacle: { aliquots: Io::Aliquot::PRELOADS }) }
+    scope :include_aliquots_for_api, -> { includes(aliquots: Io::Aliquot::PRELOADS) }
   end
 
   def receptacle
