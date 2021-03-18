@@ -2,7 +2,7 @@
 
 module StateChanger
   # Handles the basic transitions of the {Tube::StockMx} purpose tubes
-  # @note As of 201-10-01 only used for 'Standard MX' and 'Tag Stock-MX' tubes (Gatekeeper)
+  # @note As of 2019-10-01 only used for 'Standard MX' and 'Tag Stock-MX' tubes (Gatekeeper)
   class StockMxTube < StateChanger::TubeBase
     private
 
