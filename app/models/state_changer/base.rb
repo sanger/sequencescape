@@ -14,7 +14,7 @@ module StateChanger
     # @return [Labware] The labware to update the state of
     attr_accessor :labware
     # The user performing the action that led to the state change
-    # @return [Labware] The user performing the action that led to the state change
+    # @return [User] The user performing the action that led to the state change
     attr_accessor :user
 
     #  @!attribute rw target_state
