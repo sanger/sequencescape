@@ -17,19 +17,18 @@ module StateChanger
     # @return [User] The user performing the action that led to the state change
     attr_accessor :user
 
-    #  @!attribute rw target_state
-    #    @return [String] String representing the state to transition to
+    # @return [String] String representing the state to transition to
     attribute :target_state, :string
-    #  @!attribute rw contents
-    #    @return [nil, Array<String>] Array of well locations to update, leave nil or empty for ALL wells
+
+    # @return [nil, Array<String>] Array of well locations to update, leave nil or empty for ALL wells
     attribute :contents, default: nil
-    #  @!attribute rw customer_accepts_responsibility
-    #    @return  [Boolean] The customer proceeded against advice and will still
-    #                       be charged in the the event of a failure
+
+    # @return  [Boolean] The customer proceeded against advice and will still
+    #                    be charged in the the event of a failure
     attribute :customer_accepts_responsibility, :boolean, default: false
 
     # Updates the state of the labware to the target state.  The basic implementation does this by updating
-    # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
+    # all of the TransferRequest instances to the state specified.  If {#contents} is blank then the change is assumed to
     # relate to all wells of the plate, otherwise only the selected ones are updated.
     # @return [Void]
     def update_labware_state
