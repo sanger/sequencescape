@@ -6,6 +6,7 @@ module StateChanger
   # {Labware} from one state to another. Typically this involved:
   # - Updating the transfer request into and out of the {Receptacle receptacles}
   # - Potentially failing the associated {Request requests}
+  # @abstract This class should not be used directly
   class Base
     include ActiveModel::Model
     include ActiveModel::Attributes

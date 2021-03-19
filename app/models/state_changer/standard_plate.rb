@@ -4,7 +4,7 @@ module StateChanger
   # Handles the basic transitions of a standard plate
   class StandardPlate < StateChanger::Base
     # Updates the state of the labware to the target state.  The basic implementation does this by updating
-    # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
+    # all of the TransferRequest instances to the state specified.  If {#contents} is blank then the change is assumed to
     # relate to all wells of the plate, otherwise only the selected ones are updated.
     # @return [Void]
     def update_labware_state
