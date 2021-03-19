@@ -5,14 +5,15 @@ module StateChanger
   class InitialStockTube < StateChanger::TubeBase
     TERMINATED_STATES = %w[cancelled failed].freeze
 
-    # This behaviour is actually wrong. Doing refactor first, will fix in later commit
-    self.map_target_state_to_associated_request_state = (Hash.new { |_h, i| i }).merge({
-                                                                                         'failed' => 'failed',
-                                                                                         'cancelled' => nil,
-                                                                                         'started' => 'started',
-                                                                                         'passed' => 'started',
-                                                                                         'qc_complete' => 'started'
-                                                                                       })
+    # Most activity should start the outer request, with the exception of 'fail'
+    # which should fail it, and cancel, which should do nothing. We don't expect
+    # to see a transition to pending, but in the unlikely case we do, this should
+    # also be ignored.
+    self.map_target_state_to_associated_request_state = {
+      'failed' => 'failed',
+      'cancelled' => nil,
+      'pending' => nil
+    }.tap { |h| h.default = 'started' }
 
     def update_associated_requests
       associated_requests.each do |request|
