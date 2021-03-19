@@ -11,6 +11,14 @@ module StateChanger
     include ActiveModel::Model
     include ActiveModel::Attributes
 
+    # Maps the {#target_state} of the {StateChanger} to the target state of
+    # the associated requests. By default, StateChangers will not transition outer
+    # requests if the result of this mapping is nil.
+    # @return [Hash<String,String>] Hash indexed by target state, mapping to the
+    #                               desired transition of outer requests.
+    class_attribute :map_target_state_to_associated_request_state
+    self.map_target_state_to_associated_request_state = {}
+
     # The labware to update the state of
     # @return [Labware] The labware to update the state of
     attr_accessor :labware
@@ -34,6 +42,12 @@ module StateChanger
     # @return [Void]
     def update_labware_state
       raise NotImplementedError
+    end
+
+    # Returns the state to transition associated requests to. If this returns nil
+    # the state changer should not transition the outer requests
+    def associated_request_target_state
+      map_target_state_to_associated_request_state[target_state]
     end
   end
 end

@@ -8,7 +8,7 @@ module StateChanger
     # all of the TransferRequest instances to the state specified.
     # @return [Void]
     def update_labware_state
-      update_associated_requests
+      update_associated_requests if associated_request_target_state
       update_transfer_requests
     end
 

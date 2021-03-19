@@ -3,6 +3,12 @@
 module StateChanger
   # Handles the basic transitions of a standard plate
   class StandardPlate < StateChanger::Base
+    # Target_state of failed will fail associated requests only.
+    # All other transitions will be ignored.
+    self.map_target_state_to_associated_request_state = {
+      'failed' => 'failed'
+    }
+
     # Updates the state of the labware to the target state.  The basic implementation does this by updating
     # all of the TransferRequest instances to the state specified.  If {#contents} is blank then the change is assumed to
     # relate to all wells of the plate, otherwise only the selected ones are updated.
@@ -10,7 +16,7 @@ module StateChanger
     def update_labware_state
       broadcast_library_start unless %w[failed cancelled].include?(target_state)
       update_transfer_requests
-      update_associated_requests if target_state == 'failed'
+      update_associated_requests if associated_request_target_state
     end
 
     private
@@ -55,7 +61,7 @@ module StateChanger
 
       associated_requests.each do |request|
         request.customer_accepts_responsibility! if customer_accepts_responsibility
-        request.passed? ? request.retrospective_fail! : request.fail!
+        request.transition_to(associated_request_target_state)
       end
     end
 

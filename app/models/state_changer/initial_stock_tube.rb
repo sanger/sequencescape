@@ -5,9 +5,16 @@ module StateChanger
   class InitialStockTube < StateChanger::TubeBase
     TERMINATED_STATES = %w[cancelled failed].freeze
 
-    def update_associated_requests
-      return if target_state == 'cancelled'
+    # This behaviour is actually wrong. Doing refactor first, will fix in later commit
+    self.map_target_state_to_associated_request_state = (Hash.new { |_h, i| i }).merge({
+                                                                                         'failed' => 'failed',
+                                                                                         'cancelled' => nil,
+                                                                                         'started' => 'started',
+                                                                                         'passed' => 'started',
+                                                                                         'qc_complete' => 'started'
+                                                                                       })
 
+    def update_associated_requests
       associated_requests.each do |request|
         request.customer_accepts_responsibility! if customer_accepts_responsibility
         request.transition_to(associated_request_target_state) if valid_transition?(request)
@@ -16,22 +23,14 @@ module StateChanger
 
     private
 
+    def associated_requests
+      transfer_requests.filter_map(&:outer_request)
+    end
+
     def transfer_requests
       @transfer_requests ||= labware.transfer_requests_as_target
                                     .where.not(state: TERMINATED_STATES)
                                     .include_for_request_state_change
-    end
-
-    def associated_requests
-      transfer_requests.filter_map do |transfer_request|
-        next if transfer_request.outer_request.blank?
-
-        transfer_request.outer_request
-      end
-    end
-
-    def associated_request_target_state
-      %w[started passed qc_complete].include?(target_state) ? 'started' : target_state
     end
 
     def valid_transition?(outer_request)

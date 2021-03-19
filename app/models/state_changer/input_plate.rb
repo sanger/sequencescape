@@ -8,12 +8,12 @@ module StateChanger
   class InputPlate < StandardPlate
     private
 
-    def _receptacles
-      labware.wells.includes(:requests_as_source)
-    end
-
     def associated_requests
       receptacles.flat_map(&:requests_as_source)
+    end
+
+    def _receptacles
+      labware.wells.includes(:requests_as_source)
     end
 
     def transfer_requests
