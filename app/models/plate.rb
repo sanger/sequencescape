@@ -61,6 +61,14 @@ class Plate < Labware
     end
 
     # Returns the wells with their pool identifier included
+    # @note This is a method defined on the well association, and can be considered a scope.
+    # Ie. You can do plate.wells.with_pool_id.located_at(['A1'])
+    # It is a little special in that its behaviour is dependent on the {PlatePurpose#pool_wells plate purpose}.
+    # In practice this lets wells on PlatePurpose::Initial to pull their information from the requests, whereas
+    # other purposes jump back to the stock wells.
+    # Given this is usually called by the transfers themselves, prior to the transfer of the aliquots
+    # it can't be replaced purely by using request on aliquot (as it is partly responsible for setting that)
+    # however we can almost certainly simplify this whole process somewhat.
     def with_pool_id
       proxy_association.owner.plate_purpose.pool_wells(self)
     end
@@ -182,19 +190,6 @@ class Plate < Labware
            .count(:id) # count the siblings.
 
     iter.zero? ? nil : iter # Maintains compatibility with legacy version
-  end
-
-  #
-  # Delegate the change of state to our plate purpose.
-  # @param state [String] The desired target state
-  # @param user [User] The person to associate with the action (Will take ownership of the plate)
-  # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
-  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
-  #                                                  in the the event of a failure
-  #
-  # @return [Void]
-  def transition_to(state, user, contents = nil, customer_accepts_responsibility = false)
-    purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
   end
 
   def comments

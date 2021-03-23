@@ -80,23 +80,11 @@ module Qcable::Statemachine # rubocop:todo Style/Documentation
 
   def on_used; end
 
-  def transition_to(target_state)
-    aasm.fire!(suggested_transition_to(target_state))
-  end
-
   private
 
-  # Determines the most likely event that should be fired when transitioning between the two states.  If there is
-  # only one option then that is what is returned, otherwise an exception is raised.
-  # A little more sensitive than the request state machine as only some events can be automated
-  def suggested_transition_to(target)
-    valid_events = aasm.events(permitted: true).select do |e|
-      e.options[:allow_automated?] && e.transitions_to_state?(target&.to_sym)
-    end
-    unless valid_events.size == 1
-      raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}"
-    end
-
-    valid_events.first.name
+  # Only events explicitly declared as automated can be used by
+  # transition_to
+  def permit_automatic_transition?(event)
+    event.options[:allow_automated?]
   end
 end

@@ -114,7 +114,7 @@ describe Tube, type: :model do
       before do
         submission = create :submission
         request = create :well_request, submission: submission
-        tube.aliquots << create(:aliquot, request: request)
+        tube.receptacle.aliquots << create(:aliquot, request: request)
         create :transfer_request, target_asset: tube, submission: submission
         create :comment, commentable: request, description: 'Comment on request'
         tube.reload

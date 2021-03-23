@@ -103,34 +103,11 @@ def work_pipeline_for(submissions, name, template = nil)
   end
 end
 
-def finalise_pipeline_for(plate)
-  plate.purpose.connect_requests(plate, 'qc_complete')
-  plate.wells.each do |well|
-    well.requests_as_target.each do |r|
-      r.update!(state: 'passed')
-    end
-    well.transfer_requests_as_target.each do |r|
-      r.update!(state: 'qc_complete')
-    end
-  end
-end
-
-# A bit of a fudge but it'll work for the moment.  We essentially link the last plate of the different
-# pipelines back to the stock plate directly.  Eventually these can grow into a proper work through of
-# a pipeline.
-Given /^(all submissions) have been worked until the last plate of the "Pulldown WGS" pipeline$/ do |submissions|
-  work_pipeline_for(submissions, 'WGS lib pool')
-end
-
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ISC cap lib pool')
 end
 Given /^(all submissions) have been worked until the last plate of the "Illumina-B STD" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ILB_STD_PCRXP')
-end
-Given /^(all submissions) have been worked until the last plate of the "Illumina-B HTP" pipeline$/ do |submissions|
-  plate = work_pipeline_for(submissions, 'Lib PCR-XP', TransferTemplate.find_by!(name: 'Transfer columns 1-1'))
-  finalise_pipeline_for(plate)
 end
 
 Then 'the state of {uuid} should be {string}' do |target, state|

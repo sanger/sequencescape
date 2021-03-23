@@ -131,8 +131,8 @@ FactoryBot.define do
 
     factory(:library_tube_with_barcode) do
       after(:build) do |library_tube|
-        library_tube.aliquots.build(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard',
-                                    library: library_tube)
+        library_tube.receptacle.aliquots.build(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard',
+                                               library: library_tube)
       end
     end
   end
@@ -145,8 +145,8 @@ FactoryBot.define do
     end
 
     after(:build) do |library_tube, evaluator|
-      library_tube.aliquots << build(:tagged_aliquot, tag: evaluator.tag, receptacle: library_tube,
-                                                      sample: evaluator.sample, library: library_tube)
+      library_tube.receptacle.aliquots << build(:tagged_aliquot, tag: evaluator.tag, receptacle: library_tube,
+                                                                 sample: evaluator.sample, library: library_tube)
     end
   end
 
@@ -163,7 +163,7 @@ FactoryBot.define do
       }
     end
     after(:build) do |t, evaluator|
-      t.aliquots << evaluator.aliquot
+      t.receptacle.aliquots << evaluator.aliquot
     end
   end
 
@@ -180,6 +180,7 @@ FactoryBot.define do
   factory :spiked_buffer do
     transient do
       tag_option { 'Single' } # The PhiX Tag option to use, eg. Single/Dual
+      aliquot_attributes { { tag_option: tag_option } }
     end
 
     name { generate :asset_name }
@@ -187,7 +188,7 @@ FactoryBot.define do
     volume { 50 }
 
     after(:build) do |tube, evaluator|
-      tube.receptacle.aliquots << build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option)
+      tube.receptacle.aliquots << build(:phi_x_aliquot, evaluator.aliquot_attributes.merge(library: tube))
     end
   end
 
@@ -200,7 +201,7 @@ FactoryBot.define do
     concentration { 12.0 }
 
     after(:build) do |tube, evaluator|
-      tube.aliquots << build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option)
+      tube.receptacle.aliquots << build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option)
     end
   end
 end

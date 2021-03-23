@@ -7,7 +7,7 @@ class CustomerRequest < Request
   after_save :generate_request_event, if: :saved_change_to_state?
   after_save :create_billing_events, if: :can_be_billed?
 
-  delegate :customer_accepts_responsibility, :customer_accepts_responsibility=, to: :request_metadata
+  delegate :customer_accepts_responsibility, :customer_accepts_responsibility=, :customer_accepts_responsibility?, to: :request_metadata
 
   def update_responsibilities!
     return if qc_metrics.stock_metric.empty?

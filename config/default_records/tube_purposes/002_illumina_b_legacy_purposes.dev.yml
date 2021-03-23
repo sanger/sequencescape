@@ -3,7 +3,7 @@
 # production.
 ---
 ILB_STD_MX:
-  type: IlluminaB::MxTubePurpose
+  type: Tube::StandardMx
   target_type: MultiplexedLibraryTube
   stock_plate: false
 ILB_STD_STOCK:

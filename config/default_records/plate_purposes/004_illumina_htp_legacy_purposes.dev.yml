@@ -10,7 +10,7 @@ Cherrypicked:
   cherrypickable_target: true
   size: 96
 Shear:
-  type: PlatePurpose::InitialPurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96
@@ -40,14 +40,14 @@ Lib PCRR:
   size: 96
   source_purpose_name: Cherrypicked
 Lib PCR-XP:
-  type: IlluminaHtp::TransferablePlatePurpose
+  type: PlatePurpose
   target_type: Plate
   stock_plate: true
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib PCRR-XP:
-  type: IlluminaHtp::TransferablePlatePurpose
+  type: PlatePurpose
   target_type: Plate
   stock_plate: true
   cherrypickable_target: false
@@ -60,19 +60,19 @@ Post Shear XP:
   size: 96
   source_purpose_name: Cherrypicked
 Lib Norm:
-  type: IlluminaHtp::InitialDownstreamPlatePurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib Norm 2:
-  type: IlluminaHtp::NormalizedPlatePurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96
   source_purpose_name: Cherrypicked
 Lib Norm 2 Pool:
-  type: IlluminaHtp::PooledPlatePurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96
@@ -92,7 +92,7 @@ PF EM Pool:
   size: 96
   source_purpose_name: PF Cherrypicked
 PF Lib Norm:
-  type: IlluminaHtp::PooledPlatePurpose
+  type: PlatePurpose
   target_type: Plate
   cherrypickable_target: false
   size: 96

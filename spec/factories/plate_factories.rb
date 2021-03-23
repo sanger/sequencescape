@@ -80,6 +80,7 @@ FactoryBot.define do
           outer_request = well_hash[well.map_description].requests.detect do |r|
             r.submission_id == evaluator.submission.id
           end
+
           create :transfer_request, asset: well_hash[well.map_description], target_asset: well, outer_request: outer_request
         end
       end
@@ -104,6 +105,12 @@ FactoryBot.define do
       transient do
         sample_count { 8 }
         well_factory { :tagged_well }
+      end
+
+      factory :final_plate do
+        transient do
+          well_factory { :passed_well }
+        end
       end
     end
 

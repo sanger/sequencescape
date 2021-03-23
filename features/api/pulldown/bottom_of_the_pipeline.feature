@@ -150,7 +150,6 @@ Feature: The bottom of the pulldown pipeline
         }
       }
       """
-
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And the state of all the transfer requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And the state of all the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"

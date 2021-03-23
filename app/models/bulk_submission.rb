@@ -149,13 +149,6 @@ class BulkSubmission
 
             begin
               orders_processed = orders.map(&method(:prepare_order)).compact
-              library_types = orders_processed.map do |order|
-                order.request_options['library_type'] unless order.request_options.nil?
-              end.uniq
-              if library_types.size > 1
-                errors.add :spreadsheet, "Submission #{submission_name} has multiple library types: #{library_types.join(', ')}."
-                next
-              end
 
               submission = Submission.create!(name: submission_name, user: user, orders: orders_processed,
                                               priority: max_priority(orders))
@@ -170,7 +163,7 @@ class BulkSubmission
         end
 
         # If there are any errors then the transaction needs to be rolled back.
-        raise ActiveRecord::Rollback if errors.count > 0
+        raise ActiveRecord::Rollback if errors.present?
       end
 
     end

@@ -8,12 +8,14 @@
 # THe main difference of this class over the parent is that it passes the library
 # creation requests on 'pass' not 'qc_complete'
 #
-# @note Most current activity is on subclasses of this purpose, especially IlluminaHtp::MxTubeNoQcPurpose
-#       As of 2019-10-01 only used directly by 'Lib Pool Norm' and 'Lib Pool SS-XP-Norm' which haven't been
-#       used since 2017-04-28 14:16:03 +0100
+# @deprecated While this class was actively used, its parent class IlluminaHtp::MxTubePurpose
+#             was not. The original behaviour of this class has been move out into the
+#             parent, allowing us to use the better named parent class.
+#
+# @todo #2396 Remove this class. This will require:
+#
+#      - Update any purposes using this class by running `bundle exec rake remove:deprecated_purposes`
+#         Ensure that this class is listed in the reported output before removing this file. You should also be safe to remove this class
+#         from  lib/tasks/remove_deprecated_purposes.rake
 class IlluminaHtp::MxTubeNoQcPurpose < IlluminaHtp::MxTubePurpose
-  def mappings
-    { 'cancelled' => 'cancelled', 'failed' => 'failed', 'passed' => 'passed' }
-  end
-  private :mappings
 end
