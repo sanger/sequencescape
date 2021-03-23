@@ -15,7 +15,7 @@ RSpec.describe StateChanger::QcableLibraryPlate do
   end
   let(:labware) { instance_double('Plate', wells: [well]) }
   let(:well) { instance_double('Well', aliquots: [aliquot]) }
-  let(:user) { create :user }
+  let(:user) { build_stubbed :user }
   let(:contents) { [] }
   let(:customer_accepts_responsibility) { false }
   let(:aliquot) do

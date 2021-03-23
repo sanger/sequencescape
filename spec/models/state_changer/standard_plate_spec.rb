@@ -13,7 +13,7 @@ RSpec.describe StateChanger::StandardPlate do
       customer_accepts_responsibility: customer_accepts_responsibility
     )
   end
-  let(:user) { create :user }
+  let(:user) { build_stubbed :user }
   let(:contents) { [] }
   let(:customer_accepts_responsibility) { false }
 

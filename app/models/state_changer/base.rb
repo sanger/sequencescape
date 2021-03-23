@@ -6,6 +6,22 @@ module StateChanger
   # {Labware} from one state to another. Typically this involved:
   # - Updating the transfer request into and out of the {Receptacle receptacles}
   # - Potentially failing the associated {Request requests}
+  # @note This initial StateChanger classes have been derived from the
+  #       behaviour originally in the corresponding PlatePurpose. This
+  #       has built up organically over time, and I (JG) don't believe
+  #       we actually depend on a lot of the differences in behaviour.
+  #
+  # Usage as of 2021-03-21
+  # Class                            Used   Last used
+  # StateChanger::MxTube             43758  2021-03-23
+  # StateChanger::StandardPlate      121793 2021-03-23
+  # StateChanger::InputPlate         14     2021-03-02
+  # StateChanger::InitialStockTube   30823  2021-03-23
+  # StateChanger::StockTube          5650   2021-03-11
+  # StateChanger::QcableLibraryPlate 213    2018-08-16
+  # StateChanger::QcableLabware      3020   2021-03-21
+  # StateChanger::StockMxTube        111    2018-08-20 # Removed
+  #
   # @abstract This class should not be used directly
   class Base
     include ActiveModel::Model

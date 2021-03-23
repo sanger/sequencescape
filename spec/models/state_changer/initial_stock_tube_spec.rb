@@ -13,10 +13,10 @@ RSpec.describe StateChanger::InitialStockTube do
     )
   end
 
-  let(:user) { create :user }
+  let(:user) { build_stubbed :user }
   let(:customer_accepts_responsibility) { false }
   let(:labware) { create :tube }
-  let(:submission) { create :submission }
+  let(:submission) { build_stubbed :submission }
   let(:well) { create :well }
   let!(:transfer_request) do
     create :transfer_request, asset: well, target_asset: labware.receptacle,
@@ -29,6 +29,11 @@ RSpec.describe StateChanger::InitialStockTube do
     state_changer.update_labware_state
   end
 
+  # @mote These tests aren't exhaustive, as the sheer variety of combinations is huge.
+  # Exhaustive tests were available in commit 7b788b1f9d01a59c7c042676e2f27a39ccd8b74c
+  # Limitations on exhaustive tests are:
+  # 1) We should probably generate the tests dynamically.
+  # 2) Current behaviour relies on persistence to the database. This will need to change.
   context 'when the tube is: "pending"' do
     let(:transfer_request_state) { 'pending' }
 
@@ -92,46 +97,6 @@ RSpec.describe StateChanger::InitialStockTube do
       end
     end
 
-    context 'when transitioning to "processed_1" with "started" requests' do
-      let(:target_state) { 'processed_1' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "processed_1" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('processed_1')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "processed_1" with "failed" requests' do
-      let(:target_state) { 'processed_1' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "processed_1" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('processed_1')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "processed_1" with "passed" requests' do
-      let(:target_state) { 'processed_1' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "processed_1" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('processed_1')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "processed_1" with "cancelled" requests' do
-      let(:target_state) { 'processed_1' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "processed_1" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('processed_1')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
-
     context 'when transitioning to "passed" with "pending" requests' do
       let(:target_state) { 'passed' }
       let(:request_state) { 'pending' }
@@ -139,36 +104,6 @@ RSpec.describe StateChanger::InitialStockTube do
       it 'updates the tube to "passed" with "started" requests', aggregate_failures: true do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "passed" with "started" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "passed" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "passed" with "failed" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "passed" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "passed" with "passed" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "passed" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('passed')
       end
     end
 
@@ -211,110 +146,10 @@ RSpec.describe StateChanger::InitialStockTube do
         expect(request.reload.state).to eq('pending')
       end
     end
-
-    context 'when transitioning to "cancelled" with "started" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "cancelled" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "failed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "cancelled" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "passed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "cancelled" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "cancelled" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "cancelled" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
-
-    context 'when transitioning to "pending" with "pending" requests' do
-      let(:target_state) { 'pending' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "pending" with "pending" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('pending')
-        expect(request.reload.state).to eq('pending')
-      end
-    end
-
-    context 'when transitioning to "pending" with "started" requests' do
-      let(:target_state) { 'pending' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "pending" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('pending')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "pending" with "failed" requests' do
-      let(:target_state) { 'pending' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "pending" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('pending')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "pending" with "passed" requests' do
-      let(:target_state) { 'pending' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "pending" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('pending')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "pending" with "cancelled" requests' do
-      let(:target_state) { 'pending' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "pending" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('pending')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
   end
 
   context 'when the tube is: "processed_1"' do
     let(:transfer_request_state) { 'processed_1' }
-
-    context 'when transitioning to "processed_2" with "pending" requests' do
-      let(:target_state) { 'processed_2' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "processed_2" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('processed_2')
-        expect(request.reload.state).to eq('started')
-      end
-    end
 
     context 'when transitioning to "processed_2" with "started" requests' do
       let(:target_state) { 'processed_2' }
@@ -325,120 +160,10 @@ RSpec.describe StateChanger::InitialStockTube do
         expect(request.reload.state).to eq('started')
       end
     end
-
-    context 'when transitioning to "processed_2" with "failed" requests' do
-      let(:target_state) { 'processed_2' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "processed_2" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('processed_2')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "processed_2" with "passed" requests' do
-      let(:target_state) { 'processed_2' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "processed_2" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('processed_2')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "processed_2" with "cancelled" requests' do
-      let(:target_state) { 'processed_2' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "processed_2" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('processed_2')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
-
-    context 'when transitioning to "failed" with "started" requests' do
-      let(:target_state) { 'failed' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "failed" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('failed')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "failed" with "passed" requests' do
-      let(:target_state) { 'failed' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "failed" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('failed')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "pending" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "cancelled" with "pending" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('pending')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "started" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "cancelled" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "failed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "cancelled" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "passed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "cancelled" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "cancelled" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "cancelled" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
   end
 
   context 'when the tube is: "started"' do
     let(:transfer_request_state) { 'started' }
-
-    context 'when transitioning to "passed" with "pending" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "passed" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('started')
-      end
-    end
 
     context 'when transitioning to "passed" with "started" requests' do
       let(:target_state) { 'passed' }
@@ -450,36 +175,6 @@ RSpec.describe StateChanger::InitialStockTube do
       end
     end
 
-    context 'when transitioning to "passed" with "failed" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "passed" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "passed" with "passed" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "passed" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "passed" with "cancelled" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "passed" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
-
     context 'when transitioning to "failed" with "started" requests' do
       let(:target_state) { 'failed' }
       let(:request_state) { 'started' }
@@ -499,59 +194,11 @@ RSpec.describe StateChanger::InitialStockTube do
         expect(request.reload.state).to eq('failed')
       end
     end
-
-    context 'when transitioning to "cancelled" with "pending" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "cancelled" with "pending" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('pending')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "started" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "cancelled" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "failed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "cancelled" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "passed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "cancelled" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "cancelled" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "cancelled" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
   end
 
   context 'when the tube is: "failed"' do
+    # Failed is supposed to be a terminal step, so I've removed most of the tests here.
+    # I've left the transition to passed, as the current behaviour is a little unexpected
     let(:transfer_request_state) { 'failed' }
 
     context 'when transitioning to "passed" with "pending" requests' do
@@ -563,49 +210,9 @@ RSpec.describe StateChanger::InitialStockTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'pending' }
 
-      it 'updates the tube to "passed" with "started" requests', aggregate_failures: true do
+      it 'updates the tube to "failed" with "started" requests', aggregate_failures: true do
         expect(transfer_request.reload.state).to eq('failed')
         expect(request.reload.state).to eq('pending')
-      end
-    end
-
-    context 'when transitioning to "passed" with "started" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "passed" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('failed')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "passed" with "failed" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "passed" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('failed')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "passed" with "passed" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "passed" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('failed')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "passed" with "cancelled" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "passed" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('failed')
-        expect(request.reload.state).to eq('cancelled')
       end
     end
   end
@@ -613,16 +220,6 @@ RSpec.describe StateChanger::InitialStockTube do
   context 'when the tube is: "processed_2"' do
     let(:transfer_request_state) { 'processed_2' }
 
-    context 'when transitioning to "passed" with "pending" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "passed" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
     context 'when transitioning to "passed" with "started" requests' do
       let(:target_state) { 'passed' }
       let(:request_state) { 'started' }
@@ -630,106 +227,6 @@ RSpec.describe StateChanger::InitialStockTube do
       it 'updates the tube to "passed" with "started" requests', aggregate_failures: true do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "passed" with "failed" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "passed" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "passed" with "passed" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "passed" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "passed" with "cancelled" requests' do
-      let(:target_state) { 'passed' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "passed" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('passed')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
-
-    context 'when transitioning to "failed" with "started" requests' do
-      let(:target_state) { 'failed' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "failed" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('failed')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "failed" with "passed" requests' do
-      let(:target_state) { 'failed' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "failed" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('failed')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "pending" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "cancelled" with "pending" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('pending')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "started" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "cancelled" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "failed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "cancelled" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "passed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "cancelled" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "cancelled" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "cancelled" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('cancelled')
       end
     end
   end
@@ -757,66 +254,6 @@ RSpec.describe StateChanger::InitialStockTube do
       end
     end
 
-    context 'when transitioning to "cancelled" with "pending" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "cancelled" with "pending" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('pending')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "started" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'started' }
-
-      it 'updates the tube to "cancelled" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "failed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "cancelled" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "passed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "cancelled" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "cancelled" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "cancelled" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
-
-    context 'when transitioning to "qc_complete" with "pending" requests' do
-      let(:target_state) { 'qc_complete' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "qc_complete" with "started" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('qc_complete')
-        expect(request.reload.state).to eq('started')
-      end
-    end
-
     context 'when transitioning to "qc_complete" with "started" requests' do
       let(:target_state) { 'qc_complete' }
       let(:request_state) { 'started' }
@@ -826,50 +263,11 @@ RSpec.describe StateChanger::InitialStockTube do
         expect(request.reload.state).to eq('started')
       end
     end
-
-    context 'when transitioning to "qc_complete" with "failed" requests' do
-      let(:target_state) { 'qc_complete' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "qc_complete" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('qc_complete')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "qc_complete" with "passed" requests' do
-      let(:target_state) { 'qc_complete' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "qc_complete" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('qc_complete')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "qc_complete" with "cancelled" requests' do
-      let(:target_state) { 'qc_complete' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "qc_complete" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('qc_complete')
-        expect(request.reload.state).to eq('cancelled')
-      end
-    end
   end
 
   context 'when the tube is: "qc_complete"' do
+    # QC complete is an end state, but does allow a transition to cancelled
     let(:transfer_request_state) { 'qc_complete' }
-
-    context 'when transitioning to "cancelled" with "pending" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'pending' }
-
-      it 'updates the tube to "cancelled" with "pending" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('pending')
-      end
-    end
 
     context 'when transitioning to "cancelled" with "started" requests' do
       let(:target_state) { 'cancelled' }
@@ -878,36 +276,6 @@ RSpec.describe StateChanger::InitialStockTube do
       it 'updates the tube to "cancelled" with "started" requests', aggregate_failures: true do
         expect(transfer_request.reload.state).to eq('cancelled')
         expect(request.reload.state).to eq('started')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "failed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'failed' }
-
-      it 'updates the tube to "cancelled" with "failed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('failed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "passed" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'passed' }
-
-      it 'updates the tube to "cancelled" with "passed" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('passed')
-      end
-    end
-
-    context 'when transitioning to "cancelled" with "cancelled" requests' do
-      let(:target_state) { 'cancelled' }
-      let(:request_state) { 'cancelled' }
-
-      it 'updates the tube to "cancelled" with "cancelled" requests', aggregate_failures: true do
-        expect(transfer_request.reload.state).to eq('cancelled')
-        expect(request.reload.state).to eq('cancelled')
       end
     end
   end

@@ -13,7 +13,7 @@ RSpec.describe StateChanger::QcableLabware do
   end
   let!(:qcable) { create :qcable, asset: labware, state: 'available' }
   let(:labware) { create :plate }
-  let(:user) { create :user }
+  let(:user) { build_stubbed :user }
 
   it 'sets library type on aliquots' do
     state_changer.update_labware_state

@@ -6,5 +6,5 @@ require_dependency 'tube/purpose'
 # for Sequencing.
 # @note As of 2019-10-01 only used for 'Standard MX' and 'Tag MX' tubes (Gatekeeper)
 class Tube::StandardMx < Tube::Purpose
-  self.state_changer = StateChanger::StandardMxTube
+  self.state_changer = StateChanger::MxTube
 end

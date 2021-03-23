@@ -3,5 +3,5 @@
 # either not been normalised for sequencing, or are being held in reserve.
 # @note As of 2019-10-01 only used for 'Standard MX' and 'Tag Stock-MX' tubes (Gatekeeper)
 class Tube::StockMx < Tube::Purpose
-  self.state_changer = StateChanger::StockMxTube
+  self.state_changer = StateChanger::StockTube
 end
