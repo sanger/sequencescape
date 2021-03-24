@@ -3,7 +3,7 @@
 class Messenger < ApplicationRecord
   belongs_to :target, ->(messenger) { includes(messenger.render_class.includes) }, polymorphic: true
   validates :target, :root, :template, presence: true
-  broadcast_via_warren
+  broadcast_with_warren
 
   def shoot
     raise StandardErrror, "Hey, don't shoot the messenger"

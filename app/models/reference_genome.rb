@@ -9,7 +9,7 @@ class ReferenceGenome < ApplicationRecord # rubocop:todo Style/Documentation
   validates :name, uniqueness: { message: 'of reference genome already present in database',
                                  allow_blank: true,
                                  case_sensitive: false }
-  broadcast_via_warren
+  broadcast_with_warren
 
   module Associations # rubocop:todo Style/Documentation
     def self.included(base)

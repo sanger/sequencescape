@@ -18,7 +18,7 @@ class PlatePurpose < Purpose
 
   self.state_changer = StateChanger::StandardPlate
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   scope :compatible_with_purpose, ->(purpose) {
     if purpose.nil?

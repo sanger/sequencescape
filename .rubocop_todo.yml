@@ -636,7 +636,6 @@ RSpec/ContextWording:
     - 'spec/lib/label_printer/sample_manifest_plate_double_spec.rb'
     - 'spec/lib/postman/message_spec.rb'
     - 'spec/lib/record_loader/plate_purpose_loader_spec.rb'
-    - 'spec/lib/warren/auto_broadcast_spec.rb'
     - 'spec/models/aliquot_spec.rb'
     - 'spec/models/api/messages/qc_result_io_spec.rb'
     - 'spec/models/api/request_io_spec.rb'
@@ -805,7 +804,6 @@ RSpec/ExpectInHook:
     - 'spec/features/admin/changing_user_roles_spec.rb'
     - 'spec/features/retrospective_failure_spec.rb'
     - 'spec/features/submissions/bulk_submissions_spec.rb'
-    - 'spec/lib/warren/broadcast_spec.rb'
     - 'spec/models/external_release_event_spec.rb'
     - 'spec/models/specific_tube_creations_spec.rb'
     - 'spec/models/transfer_request_collection_spec.rb'
@@ -951,7 +949,6 @@ RSpec/NamedSubject:
     - 'spec/lib/accession/contact_spec.rb'
     - 'spec/lib/label_printer/sample_manifest_plate_double_spec.rb'
     - 'spec/lib/postman/message_spec.rb'
-    - 'spec/lib/warren/auto_broadcast_spec.rb'
     - 'spec/models/aliquot_spec.rb'
     - 'spec/models/api/library_tube_io_spec.rb'
     - 'spec/models/api/messages/flowcell_io_spec.rb'
@@ -1066,7 +1063,6 @@ RSpec/StubbedMock:
     - 'spec/features/sample_manifests/create_manifest_spec.rb'
     - 'spec/features/sample_manifests/track_sample_manifest_updates_spec.rb'
     - 'spec/lib/postman/message_spec.rb'
-    - 'spec/lib/warren/broadcast_spec.rb'
     - 'spec/models/plate/sample_tube_factory_spec.rb'
     - 'spec/models/plate_purpose_spec.rb'
     - 'spec/models/pooling_spec.rb'
@@ -1078,7 +1074,6 @@ RSpec/VerifiedDoubles:
   Exclude:
     - 'spec/aker/models/mapping_spec.rb'
     - 'spec/aker/models/material_spec.rb'
-    - 'spec/lib/warren/broadcast_spec.rb'
     - 'spec/models/sample_manifest/generator_spec.rb'
     - 'spec/sample_manifest_excel/download_spec.rb'
     - 'spec/sample_manifest_excel/worksheet_spec.rb'
@@ -2461,7 +2456,6 @@ Style/FrozenStringLiteralComment:
     - 'config/initializers/session_store.rb'
     - 'config/initializers/time_formats.rb'
     - 'config/initializers/versionstrings.rb'
-    - 'config/initializers/warren.rb'
     - 'config/initializers/wrap_parameters.rb'
     - 'config/messaging.rb'
     - 'config/puma.rb'
@@ -2566,13 +2560,6 @@ Style/FrozenStringLiteralComment:
     - 'lib/validateable.rb'
     - 'lib/views_schema.rb'
     - 'lib/volume_check.rb'
-    - 'lib/warren.rb'
-    - 'lib/warren/broadcast.rb'
-    - 'lib/warren/broadcast_messages.rb'
-    - 'lib/warren/log.rb'
-    - 'lib/warren/message.rb'
-    - 'lib/warren/queue_broadcast_message.rb'
-    - 'lib/warren/test.rb'
     - 'script/autospec'
     - 'script/cucumber'
     - 'script/dbconsole'
@@ -2808,7 +2795,6 @@ Style/InverseMethods:
 # Cop supports --auto-correct.
 Style/KeywordParametersOrder:
   Exclude:
-    - 'lib/warren/broadcast.rb'
 
 # Offense count: 92
 # Cop supports --auto-correct.

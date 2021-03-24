@@ -257,7 +257,7 @@ class Sample < ApplicationRecord
   has_one :sample_manifest_asset, foreign_key: :sanger_sample_id, primary_key: :sanger_sample_id, inverse_of: :sample
 
   has_many_lab_events
-  broadcast_via_warren
+  broadcast_with_warren
 
   # Aker
   has_many :sample_jobs

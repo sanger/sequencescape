@@ -64,7 +64,7 @@ class Asset < ApplicationRecord
 
   delegate :last_qc_result_for, to: :qc_results
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
