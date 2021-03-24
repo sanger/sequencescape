@@ -173,13 +173,19 @@ must have RabbitMQ installed. It may be easiest to use the docker image (https:/
 
     ```docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 -p 5672:5672 rabbitmq:3-management```
 
-Execute the worker to pick up messages in the queue and process them into the
-database:
+It can be useful to follow the rabbitmq logs, to look for broken connections or other problems. To do this using the docker image,
+get the container id using `docker ps`, and then:
+
+    ```docker logs -f <container id>```
+
+To start the consumer off listening for messages:
 
     ```bundle exec ./bin/amqp_client start```
 
 where `start` instructs it to start. You can also stop a worker by calling `stop`
 or restart it with `restart`.
+
+Logs can be found in `tmp/pids`.
 
 You will also have to change the config in config/warren.yml from `type: log` to `type: broadcast` to get
 it to actually send messages in development mode.
