@@ -166,6 +166,25 @@ OR
 bundle exec ./script/delayed_job start
 ```
 
+### Message broker
+
+Sequencescape has its own message broker and consumer. To develop this or run it locally, you
+must have RabbitMQ installed. It may be easiest to use the docker image (https://hub.docker.com/_/rabbitmq).
+
+    ```docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 -p 5672:5672 rabbitmq:3-management```
+
+Execute the worker to pick up messages in the queue and process them into the
+database:
+
+    ```bundle exec ./bin/amqp_client start```
+
+where `start` instructs it to start. You can also stop a worker by calling `stop`
+or restart it with `restart`.
+
+You will also have to change the config in config/warren.yml from `type: log` to `type: broadcast` to get
+it to actually send messages in development mode.
+
+
 ## Testing
 
 Testing is done in three ways; using rspec, rails test and feature tests.
@@ -209,7 +228,7 @@ webservice for supplying numbers for plates with a simple service.
 There is a client application for building a data warehouse based on the information in
 Sequencescape. This is driven asynchronously via RabbitMQ.
 
-See out various clients on GitHub:
+See our various clients on GitHub:
 
 [sanger/unified\_warehouse](https://github.com/sanger/unified_warehouse)
 
