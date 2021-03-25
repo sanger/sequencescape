@@ -9,22 +9,8 @@
 #
 # @todo #2396 Remove this class. This will require:
 #
-#       - Update any purposes using this class to use PlatePurpose instead
-#       - Remove the IlluminaHtp::InitialDownstreamPlatePurpose class as well
-#       - Update:
-#           app/models/illumina_htp/plate_purposes.rb
-#           app/models/pulldown/plate_purposes.rb
-#         By either replacing with PlatePurpose, or removing the factories entirely
+#      - Update any purposes using this class by running `bundle exec rake remove:deprecated_purposes`
+#         Ensure that this class is listed in the reported output before removing this file. You should also be safe to remove this class
+#         from  lib/tasks/remove_deprecated_purposes.rake
 class IlluminaHtp::DownstreamPlatePurpose < PlatePurpose
-  def source_wells_for(stock_wells)
-    Well.in_column_major_order.stock_wells_for(stock_wells)
-  end
-
-  def library_source_plates(plate)
-    super.map(&:source_plates).flatten.uniq
-  end
-
-  def library_source_plate(plate)
-    super.source_plate
-  end
 end

@@ -65,28 +65,4 @@ describe PlatePurpose, type: :model do
 
     it_behaves_like 'a plate factory'
   end
-
-  describe '#transition_to' do
-    let(:user) { create :user }
-
-    context 'when the plate is the initial plate in the pipeline' do
-      include_context 'a limber target plate with submissions', 'pending'
-      it 'starts the requests', :aggregate_failures do
-        # Requests are started and we create one event per order.
-        expect do
-          target_plate.plate_purpose.transition_to(target_plate, 'started', user)
-        end.to change(BroadcastEvent::LibraryStart, :count).by(1)
-        expect(library_requests).to all(be_started)
-      end
-    end
-
-    context 'when the plate is the initial plate in the pipeline but libraries are started' do
-      include_context 'a limber target plate with submissions'
-      it 'starts the requests', :aggregate_failures do
-        expect do
-          target_plate.plate_purpose.transition_to(target_plate, 'started', user)
-        end.to change(BroadcastEvent::LibraryStart, :count).by(0)
-      end
-    end
-  end
 end

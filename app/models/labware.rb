@@ -21,7 +21,21 @@ class Labware < Asset
   has_many :messengers, as: :target, inverse_of: :target, dependent: :destroy
 
   # The following are all through receptacles
-  has_many :aliquots, through: :receptacles
+  has_many :aliquots, through: :receptacles do
+    # This is mostly to handle legacy code which predates the labware-receptacle split.
+    # In many cases we were directly associating aliquots via the association on labware,
+    # but rails is not able to handle this with a has_many through. Prior to adding this
+    # we used to delegate the aliquots association directs (eg. delegate :aliquots, to: :receptacle)
+    # but this messes up eager-loading, especially via the API.
+    def receptacle_proxy
+      return self unless proxy_association.owner.respond_to?(:receptacle)
+
+      reset # We're about to modify the association indirectly, so any existing records are invalid
+      proxy_association.owner.receptacle.aliquots
+    end
+
+    delegate :<<, :build, :create, :create!, to: :receptacle_proxy
+  end
   has_many :samples, through: :receptacles
   has_many :studies, -> { distinct }, through: :receptacles
   has_many :projects, -> { distinct }, through: :receptacles
@@ -68,6 +82,9 @@ class Labware < Asset
   has_many :batches_as_source, -> { distinct }, through: :requests_as_source, source: :batch
 
   scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }) }
+
+  has_many :qc_results, through: :receptacles
+
   scope :for_search_query, lambda { |query|
     where('labware.name LIKE :name', name: "%#{query}%")
       .or(with_safe_id(query))
@@ -114,6 +131,8 @@ class Labware < Asset
   scope :without_children, -> { where.not(id: AssetLink.where(direct: true).select(:ancestor_id)) }
   scope :include_labware_with_children, ->(filter) { filter ? all : without_children }
   scope :stock_plates, -> { where(plate_purpose_id: PlatePurpose.considered_stock_plate) }
+
+  delegate :state_changer, to: :purpose, allow_nil: true
 
   def human_barcode
     'UNKNOWN'

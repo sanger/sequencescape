@@ -4,23 +4,11 @@
 # - Post Shear QC
 #
 # @todo #2396 Remove this class. This will require:
-#       - Update any purposes using this class to use PlatePurpose instead
-#       - Update:
-#           app/models/illumina_htp/plate_purposes.rb
-#         By either replacing with PlatePurpose, or removing the factories entirely
+#      - Update any purposes using this class by running `bundle exec rake remove:deprecated_purposes`
+#         Ensure that this class is listed in the reported output before removing this file. You should also be safe to remove this class
+#         from  lib/tasks/remove_deprecated_purposes.rake
 class IlluminaHtp::PostShearQcPlatePurpose < PlatePurpose
-  alias default_transition_to transition_to
-
-  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
-    nudge_parent_plate(plate, state, user, contents)
-    default_transition_to(plate, state, user, contents, customer_accepts_responsibility)
-  end
-
-  def nudge_parent_plate(plate, state, contents)
-    case state
-    when 'started' then plate.parent.transition_to('started', user, contents)
-    when 'passed' then plate.parent.transition_to('passed', user, contents)
-    end
-  end
-  private :nudge_parent_plate
+  # This class is empty and is maintained to prevent us
+  # breaking existing database records until they have been
+  # migrated to PlatePurpose
 end

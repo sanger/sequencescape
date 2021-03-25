@@ -95,7 +95,7 @@ class UatActions::TestSubmission < UatActions
     report['plate_barcode_0'] = labware.human_barcode
     report['submission_id'] = order.submission.id
     report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
-    report['primer_panel'] = order.request_options[:primer_panel] if order.request_options[:primer_panel].present?
+    report['primer_panel'] = order.request_options[:primer_panel_name] if order.request_options[:primer_panel_name].present?
     report['number_of_wells_with_samples'] = labware.wells.with_aliquots.size
     report['number_of_wells_to_submit'] = assets.size
     order.submission.built!
@@ -171,7 +171,7 @@ class UatActions::TestSubmission < UatActions
   def custom_request_options
     options = {}
     options[:library_type] = library_type_name if library_type_name.present?
-    options[:primer_panel] = primer_panel_name if primer_panel_name.present?
+    options[:primer_panel_name] = primer_panel_name if primer_panel_name.present?
     options
   end
 

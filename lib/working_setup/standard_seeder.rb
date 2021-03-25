@@ -83,7 +83,8 @@ module WorkingSetup
       existing = User.find_by(login: 'admin')
       return existing if existing
 
-      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:grant_administrator)
+      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A')
+          .tap(&:grant_administrator)
     end
 
     def faculty_sponsor

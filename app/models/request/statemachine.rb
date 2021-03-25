@@ -220,23 +220,4 @@ module Request::Statemachine # rubocop:todo Style/Documentation
   def cancellable?
     %w(pending cancelled).include?(state)
   end
-
-  def transition_to(target_state)
-    aasm.fire!(suggested_transition_to(target_state))
-  end
-
-  private
-
-  # Determines the most likely event that should be fired when transitioning between the two states.  If there is
-  # only one option then that is what is returned, otherwise an exception is raised.
-  def suggested_transition_to(target)
-    valid_events = aasm.events(permitted: true).select do |e|
-      !e.options[:manual_only?] && e.transitions_to_state?(target.to_sym)
-    end
-    unless valid_events.size == 1
-      raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}"
-    end
-
-    valid_events.first.name
-  end
 end

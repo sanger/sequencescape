@@ -54,7 +54,9 @@ module Tasks::PlateTransferHandler # rubocop:todo Style/Documentation
   private :unsuitable_wells?
 
   def do_plate_transfer_task(_task, _params)
-    target_plate.transition_to('passed', current_user) unless target_plate.state == 'passed'
-    true
+    return if target_plate.state == 'passed'
+
+    StateChange.create(target: target_plate, target_state: 'passed',
+                       user: current_user)
   end
 end

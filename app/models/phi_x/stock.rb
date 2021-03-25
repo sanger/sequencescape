@@ -52,8 +52,8 @@ class PhiX::Stock
   def generate_stocks
     Array.new(number.to_i) do |index|
       PhiX.stock_purpose.create!(name: "#{name} ##{index + 1}") do |tube|
-        tube.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
-        tube.aliquots.build(sample: phi_x_sample, tag: i7_tag, tag2: i5_tag, library: tube)
+        tube.receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
+        tube.receptacle.aliquots.build(sample: phi_x_sample, tag: i7_tag, tag2: i5_tag, library: tube)
       end
     end
   end

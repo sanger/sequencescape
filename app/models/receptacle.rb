@@ -6,7 +6,6 @@
 class Receptacle < Asset
   include Uuid::Uuidable
   include Commentable
-  include Asset::ReceptacleAssociations
   include Transfer::State
   include Aliquot::Remover
   include StudyReport::AssetDetails
@@ -27,6 +26,16 @@ class Receptacle < Asset
   # rack different kinds of labware, I'd prefer to avoid making it easier to inadvertently
   # put a tube rack in a tube rack.
   has_one :racked_tube, foreign_key: :tube_id, primary_key: :labware_id
+
+  belongs_to :map
+
+  has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset, foreign_key: :asset_id
+  has_many :asset_groups, through: :asset_group_assets
+  has_many :qc_results, dependent: :destroy, foreign_key: :asset_id, inverse_of: :asset
+  has_many :sample_manifest_assets, dependent: :destroy, foreign_key: :asset_id, inverse_of: :asset
+  has_many :sample_manifests, through: :sample_manifest_assets
+
+  delegate :description, to: :map, prefix: true, allow_nil: true
 
   delegate :human_barcode, :machine_barcode, :barcode_number, to: :labware, allow_nil: true
   delegate :asset_type_for_request_types, to: :labware, allow_nil: true

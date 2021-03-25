@@ -10,6 +10,7 @@ class Request < ApplicationRecord
   include Api::RequestIO::Extensions
   include Uuid::Uuidable
   include AASM
+  include AASM::Extensions
   include Commentable
   include StandardNamedScopes
   include Request::Statemachine

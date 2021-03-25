@@ -16,4 +16,8 @@ class CherrypickingPipeline < GenotypingPipeline
   def pick_information?(batch)
     PICKED_STATES.include?(batch.state)
   end
+
+  def update_detached_request(batch, request)
+    batch.remove_link(request)
+  end
 end

@@ -33,6 +33,11 @@ Rails/SkipsModelValidations:
     - 'db/migrate_asset_refactor/*.rb'
     - 'features/support/step_definitions/*.rb'
 
+Style/Documentation:
+  Exclude:
+    - 'test/**/*'
+    - 'spec/**/*'
+
 Rails:
   Enabled: true
 # Step definitions are defined with Given /regex/ do ...
@@ -123,3 +128,11 @@ Rails/UnknownEnv:
     - test
     - cucumber
     - profile
+
+RSpec/ExampleLength:
+  inherit_mode:
+    merge:
+      - Exclude
+  # Disable for features, as we might want to step through long processes
+  Exclude:
+    - 'spec/features/**/*'

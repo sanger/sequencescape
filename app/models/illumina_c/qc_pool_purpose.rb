@@ -12,30 +12,11 @@
 #
 # @todo #2396 Remove this class. This will required:
 #
-#       - Update any purposes using this class to use Tube::Purpose instead
-#       - Update:
-#           app/models/illumina_c/plate_purposes.rb
-#           illumina_htp/plate_purposes.rb
-#         By either replacing with Tube::Purpose, or removing the factories entirely
+#      - Update any purposes using this class by running `bundle exec rake remove:deprecated_purposes`
+#         Ensure that this class is listed in the reported output before removing this file. You should also be safe to remove this class
+#         from  lib/tasks/remove_deprecated_purposes.rake
 class IlluminaC::QcPoolPurpose < Tube::Purpose
-  # Updates the state of tube to state
-  # @param tube [Tube] The tube being updated
-  # @param state [String] The desired target state
-  # @param _user [User] Provided for interface compatibility
-  # @param _ [nil, Array] Provided for interface compatibility
-  # @param _customer_accepts_responsibility [Boolean] Provided for interface compatibility
-  #
-  # @return [Void]
-  def transition_to(tube, state, _user, _ = nil, _customer_accepts_responsibility = false)
-    ActiveRecord::Base.transaction do
-      tube.transfer_requests_as_target.where.not(state: terminated_states).find_each do |request|
-        request.transition_to(state)
-      end
-    end
-  end
-
-  def terminated_states
-    %w[cancelled failed]
-  end
-  private :terminated_states
+  # This class is empty and is maintained to prevent us
+  # breaking existing database records until they have been
+  # migrated to Tube::Purpose
 end

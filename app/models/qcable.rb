@@ -9,6 +9,7 @@ require 'aasm'
 class Qcable < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
   include AASM
+  include AASM::Extensions
   include Qcable::Statemachine
 
   attr_accessor :barcode

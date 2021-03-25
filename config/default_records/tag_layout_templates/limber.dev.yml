@@ -136,3 +136,13 @@ IDT for Illumina v1 - 384 Quadrant:
   :tag2_group_name: IDT for Illumina i5 UDI v1
   :direction_algorithm: TagLayout::InColumns
   :walking_algorithm: TagLayout::Quadrants
+TSsc384-PCR1-nCoV-2019/V3/B:
+  :tag_group_name: TS_sc384_i7
+  :tag2_group_name: TS_sc384_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TSsc384-PCR2-nCoV-2019/V3/B:
+  :tag_group_name: TS_sc384_i7
+  :tag2_group_name: TS_sc384_i5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
