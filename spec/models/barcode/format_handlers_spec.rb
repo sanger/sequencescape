@@ -65,6 +65,18 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode " 1234567890NBC\na"
   end
 
+  describe Barcode::FormatHandlers::UkBiocentreV4 do
+    it_has_a_valid_barcode 'cpRNA123456', prefix: 'cpRNA', number: 123456, suffix: nil
+    it_has_an_invalid_barcode '123456789ANBC'
+    it_has_an_invalid_barcode 'INVALID'
+    it_has_an_invalid_barcode '123456789NCB'
+    it_has_an_invalid_barcode '123456789MBC'
+    it_has_an_invalid_barcode '1234567890ANBC'
+    it_has_an_invalid_barcode 'RNA_1234'
+    it_has_an_invalid_barcode ' 1234567890NBC'
+    it_has_an_invalid_barcode " 1234567890NBC\na"
+  end
+
   describe Barcode::FormatHandlers::UkBiocentreUnid do
     it_has_a_valid_barcode 'RNADWP004', prefix: 'RNADWP', number: 4, suffix: nil
     it_has_an_invalid_barcode 'DNADWP004'
@@ -87,6 +99,7 @@ describe Barcode::FormatHandlers do
     it_has_a_valid_barcode 'AP-rna-12345678', prefix: 'AP-rna', number: 12345678
     it_has_a_valid_barcode 'AP-rna-00110029', prefix: 'AP-rna', number: 110029
     it_has_a_valid_barcode 'AP-kfr-00090016', prefix: 'AP-kfr', number: 90016
+    it_has_a_valid_barcode 'AP-chp-00090016', prefix: 'AP-chp', number: 12345678
     it_has_an_invalid_barcode 'SD-rna-1234567'
     it_has_an_invalid_barcode 'AP-rna-123456789'
     it_has_an_invalid_barcode 'AP-cdna-1234567'
@@ -110,6 +123,15 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'GLA123456S'
     it_has_an_invalid_barcode 'GLE123456R'
     it_has_an_invalid_barcode 'GLA1234567R'
+  end
+
+  describe Barcode::FormatHandlers::GlasgowV3 do
+    it_has_a_valid_barcode 'GLS-GP-123456', prefix: 'GLS-GP', number: 123456, suffix: nil
+    it_has_an_invalid_barcode 'GLS-GP-123456-R'
+    it_has_an_invalid_barcode 'GLS-GP123456R '
+    it_has_an_invalid_barcode "GLS-GP-123456R\n1"
+    it_has_an_invalid_barcode 'GLS-GP-123456S'
+    it_has_an_invalid_barcode 'GLS-GP1234567R'
   end
 
   describe Barcode::FormatHandlers::CambridgeAZ do

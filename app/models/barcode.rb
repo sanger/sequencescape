@@ -55,7 +55,8 @@ class Barcode < ApplicationRecord
                                uk_biocentre_v1 uk_biocentre_v2 uk_biocentre_unid
                                alderly_park_v1 alderly_park_v2 uk_biocentre_v3 cgap_plate cgap_rack
                                glasgow cambridge_a_z heron_tailed randox uk_biocentre_v4 cambridge_a_z_v2 glasgow_v2
-                               eagle cambridge_a_z_eagle glasgow_eagle uk_biocentre_eagle alderley_park_eagle randox_eagle randox_v2].freeze
+                               eagle cambridge_a_z_eagle glasgow_eagle uk_biocentre_eagle alderley_park_eagle randox_eagle
+                               randox_v2 glasgow_v3 uk_biocentre_v4].freeze
 
   validate :barcode_valid?
   validates :barcode, uniqueness: { scope: :format, case_sensitive: false }
