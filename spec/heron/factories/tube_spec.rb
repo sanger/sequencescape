@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Heron::Factories::Tube, type: :model, heron: true do
   let(:params) do
     {
-      "barcode": 'FD00000001'
+      barcode: 'FD00000001'
     }
   end
 

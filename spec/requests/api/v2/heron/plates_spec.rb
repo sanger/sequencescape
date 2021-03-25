@@ -96,7 +96,7 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true, heron
           'data' => {
             'type' => 'plates',
             'attributes' => {
-              'barcode': barcode,
+              barcode: barcode,
               'purpose_uuid' => purpose.uuid
             }
           }
@@ -159,8 +159,8 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true, heron
       let!(:sample) { create(:sample) }
       let(:wells) do
         {
-          'A01': { 'content': { 'phenotype': 'A phenotype' } },
-          'B01': { 'content': { 'sample_uuid': sample.uuid } }
+          A01: { content: { phenotype: 'A phenotype' } },
+          B01: { content: { sample_uuid: sample.uuid } }
         }
       end
       let(:payload) do
@@ -190,8 +190,8 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true, heron
       context 'when wells is wrong' do
         let(:wells) do
           {
-            'A01': { 'content': { 'asdf': 'A phenotype' } },
-            'B01': { 'content': { 'phenotype': 'wrong', 'sample_uuid': sample.uuid } }
+            A01: { content: { asdf: 'A phenotype' } },
+            B01: { content: { phenotype: 'wrong', sample_uuid: sample.uuid } }
           }
         end
 
@@ -258,8 +258,8 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true, heron
       let!(:sample) { create(:sample) }
       let(:wells) do
         {
-          'A01': { 'content': { 'phenotype': 'A phenotype' } },
-          'B01': { 'content': { 'sample_uuid': sample.uuid } }
+          A01: { content: { phenotype: 'A phenotype' } },
+          B01: { content: { sample_uuid: sample.uuid } }
         }
       end
       let(:payload) do
@@ -290,9 +290,9 @@ describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true, heron
         ]
       end
       let(:events) do
-        [{ 'event': {
-          'event_type': BroadcastEvent::PlateCherrypicked::EVENT_TYPE,
-          'subjects': subjects
+        [{ event: {
+          event_type: BroadcastEvent::PlateCherrypicked::EVENT_TYPE,
+          subjects: subjects
         } }]
       end
 

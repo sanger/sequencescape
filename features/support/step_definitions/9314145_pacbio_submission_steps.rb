@@ -125,7 +125,7 @@ end
 
 Then /^the PacBio manifest for the last batch should look like:$/ do |expected_results_table|
   pac_bio_run_file = PacBio::SampleSheet.new.create_csv_from_batch(Batch.last)
-  csv_rows = pac_bio_run_file.split(/\r\n/)
+  csv_rows = pac_bio_run_file.split("\r\n")
   csv_rows.shift(8)
   expected_results_table.column_names.each { |c| expected_results_table.map_column!(c, &:presence) }
   actual_table = CSV.parse(csv_rows.map { |c| "#{c}\r\n" }.join(''))
@@ -144,7 +144,7 @@ end
 
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|
   worksheet = page.source
-  csv_rows = worksheet.split(/\r\n/)
+  csv_rows = worksheet.split("\r\n")
   csv_rows.shift(2)
   actual_table = CSV.parse(csv_rows.map { |c| "#{c}\r\n" }.join(''))
   expected_results_table.diff!(actual_table)
@@ -168,7 +168,7 @@ end
 
 Then /^the PacBio manifest should be:$/ do |expected_results_table|
   pac_bio_run_file = page.source
-  csv_rows = pac_bio_run_file.split(/\r\n/)
+  csv_rows = pac_bio_run_file.split("\r\n")
   csv_rows.shift(8)
   actual_table = CSV.parse(csv_rows.map { |c| "#{c}\r\n" }.join(''))
   expected_results_table.column_names.each { |c| expected_results_table.map_column!(c, &:presence) }

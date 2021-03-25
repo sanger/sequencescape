@@ -67,12 +67,12 @@ describe 'Receptacles API', with: :api_v2 do
       let(:updated_submit_for_sequencing) { false }
       let(:payload) do
         {
-          'data': {
-            'id': receptacle.id,
-            'type': 'receptacles',
-            'attributes': {
-              'pcr_cycles': 11,
-              'submit_for_sequencing': false
+          data: {
+            id: receptacle.id,
+            type: 'receptacles',
+            attributes: {
+              pcr_cycles: 11,
+              submit_for_sequencing: false
             }
           }
         }

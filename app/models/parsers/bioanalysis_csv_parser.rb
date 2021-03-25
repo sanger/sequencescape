@@ -39,7 +39,7 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
     ((starting_line + 2)..(ending_line)).each do |pos|
       values = content[pos]
       unless values.nil? && (values.length != fields.length)
-        content_hash.merge!(Hash[fields.zip(values)])
+        content_hash.merge!(fields.zip(values).to_h)
       end
     end
     content_hash

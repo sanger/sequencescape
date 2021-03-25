@@ -176,7 +176,7 @@ class TagSubstitution
   end
 
   def oligo_index
-    @oligo_index ||= Hash[Tag.find(all_tags).pluck(:id, :oligo)]
+    @oligo_index ||= Tag.find(all_tags).pluck(:id, :oligo).to_h
   end
 
   def all_tags

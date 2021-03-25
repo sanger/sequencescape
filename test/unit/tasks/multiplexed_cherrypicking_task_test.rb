@@ -43,9 +43,9 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
   # Generate the request mapping according to the well array
   def request_location_hash
-    Hash[@requests.each_with_index.map do |request, index|
+    @requests.each_with_index.map do |request, index|
       [request.id.to_s, @well_array[index]]
-    end]
+    end.to_h
   end
 
   # Generate the parameters

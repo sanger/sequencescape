@@ -9,10 +9,8 @@ module ModelExtensions::Project
   end
 
   def roles_as_json
-    Hash[
-      roles.map do |role|
-        [role.name.underscore, role.users.map { |user| { login: user.login, email: user.email, name: user.name } }]
-      end
-    ]
+    roles.map do |role|
+      [role.name.underscore, role.users.map { |user| { login: user.login, email: user.email, name: user.name } }]
+    end.to_h
   end
 end

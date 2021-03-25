@@ -529,7 +529,7 @@ tags = { 'TruSeq small RNA index tags - 6 mer tags' =>
    [10, '']] }
 
 TagGroup.import(tag_group_names.map { |n| { name: n } })
-groups = Hash[TagGroup.pluck(:name, :id)]
+groups = TagGroup.pluck(:name, :id).to_h
 tag_options = tags.flat_map do |tag_group_name, tags_in_group|
   tag_group_id = groups[tag_group_name]
   tags_in_group.map { |m, o| { map_id: m, oligo: o, tag_group_id: tag_group_id } }

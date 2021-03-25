@@ -27,9 +27,9 @@ RSpec.describe Heron::Factories::Concerns::Eventful, heron_events: true do
   end
   let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
   let(:event) do
-    { 'event': {
-      'event_type': event_type,
-      'subjects': subjects
+    { event: {
+      event_type: event_type,
+      subjects: subjects
     } }
   end
 

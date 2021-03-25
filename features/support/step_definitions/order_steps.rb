@@ -10,7 +10,7 @@ Given /^I have an order created with the following details based on the template
     v =
       case k
       when 'asset_group_name' then v
-      when 'request_options' then Hash[v.split(',').map { |p| p.split(':').map(&:strip) }]
+      when 'request_options' then v.split(',').map { |p| p.split(':').map(&:strip) }.to_h
       when 'assets' then Uuid.lookup_many_uuids(v.split(',').map(&:strip)).map(&:resource)
       when 'pre_cap_group' then v
       else Uuid.include_resource.lookup_single_uuid(v).resource
@@ -18,7 +18,7 @@ Given /^I have an order created with the following details based on the template
     [k.to_sym, v]
   end
   user = User.find_by(login: 'abc123') || FactoryBot.create(:user, login: 'abc123')
-  order = template.create_order!({ user: user }.merge(Hash[order_attributes]))
+  order = template.create_order!({ user: user }.merge(order_attributes.to_h))
 end
 
 Given /^an order template called "([^"]+)" with UUID "([^"]+)"$/ do |name, uuid_value|

@@ -41,13 +41,13 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
             'type' => 'plates',
             'attributes' => {
             },
-            'relationships': {
-              'purpose': {
-                'data': { 'id': purpose.id.to_s, 'type': 'purposes' }
+            relationships: {
+              purpose: {
+                data: { id: purpose.id.to_s, type: 'purposes' }
               },
-              'wells': {
-                'data': [
-                  { 'type': 'wells', 'id': well.id }, { 'type': 'wells', 'id': well2.id }
+              wells: {
+                data: [
+                  { type: 'wells', id: well.id }, { type: 'wells', id: well2.id }
                 ]
               }
             }

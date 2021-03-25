@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 describe LabwhereReceptionsController do
-  MockResponse ||= Struct.new(:valid?, :error)
-
   context 'Sample Reception' do
     let(:user) { create :user, barcode: 'ID48601I', swipecard_code: '02face' }
     let(:plate) { create :plate, barcode: 1 }
@@ -17,7 +15,7 @@ describe LabwhereReceptionsController do
           location_barcode: location_barcode, user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode.to_s, labware_barcodes: [
             plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode
           ]
-        ).and_return(MockResponse.new(true, ''))
+        ).and_return(instance_double(LabWhereClient::Scan, valid?: true, error: ''))
 
         post :create, params: { labwhere_reception: {
           barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],

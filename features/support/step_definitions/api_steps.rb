@@ -273,7 +273,7 @@ Given /^the (library tube|plate) "([^"]+)" is a child of the (sample tube|plate)
   child = child_model.gsub(/\s+/,
                            '_').classify.constantize.find_by(name: child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
   parent.children << child
-  if [parent, child].all? { |a| a.is_a?(Receptacle) }
+  if [parent, child].all?(Receptacle)
     child.aliquots = []
     FactoryBot.create(:transfer_request, asset: parent, target_asset: child)
     child.save!

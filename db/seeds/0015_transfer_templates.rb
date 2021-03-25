@@ -29,7 +29,7 @@ ActiveRecord::Base.transaction do
     TransferTemplate.create!(
       name: "Transfer columns #{range.first}-#{range.last}",
       transfer_class_name: Transfer::BetweenPlates.name,
-      transfers: Hash[locations_for(('A'..'H'), range).map { |location| [location, location] }]
+      transfers: locations_for(('A'..'H'), range).map { |location| [location, location] }.to_h
     )
   end
   TransferTemplate.create!(
@@ -78,7 +78,7 @@ ActiveRecord::Base.transaction do
   TransferTemplate.create!(
     name: 'Flip Plate',
     transfer_class_name: 'Transfer::BetweenPlates',
-    transfers: Hash[wells.zip(wells.reverse)]
+    transfers: wells.zip(wells.reverse).to_h
   )
 
   TransferTemplate.create!(

@@ -92,7 +92,7 @@ module DelegateValidation
 
     def valid?
       # We have to run over all validators to get all error messages, then we can check they're all valid
-      return true if @validators.map(&:valid?).all? { |v| v == true }
+      return true if @validators.map(&:valid?).all?(true)
 
       @validators.each do |validator|
         errors.messages.merge!(validator.errors.messages)

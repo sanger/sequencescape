@@ -205,6 +205,7 @@ class BulkSubmission
     return [translate(header), row[pos].try(:strip)] unless header.nil? && row[pos].present?
 
     errors.add(:spreadsheet, "Row #{index}, column #{pos + 1} contains data but no heading.")
+    nil
   end
   private :validate_entry
 
@@ -217,16 +218,16 @@ class BulkSubmission
       csv_data_rows.each_with_index do |row, index|
         next if row.all?(&:nil?)
 
-        details = Hash[headers.each_with_index.map do |header, pos|
-                         validate_entry(header, pos, row, index + start_row)
-                       end ].merge('row' => index + start_row)
+        details = headers.each_with_index.filter_map do |header, pos|
+          validate_entry(header, pos, row, index + start_row)
+        end.to_h.merge('row' => index + start_row)
         submission[details['submission name']] << details
       end
     end.map do |submission_name, rows|
       order = rows.group_by do |details|
         details['asset group name']
       end.map do |_group_name, rows|
-        Hash[shared_options!(rows)].tap do |details|
+        shared_options!(rows).to_h.tap do |details|
           details['rows']          = rows.comma_separate_field_list_for_display('row')
           details['asset ids']     = rows.field_list('asset id', 'asset ids')
           details['asset names']   = rows.field_list('asset name', 'asset names')
@@ -234,7 +235,7 @@ class BulkSubmission
           details['barcode']       = rows.field_list('barcode')
         end.delete_if { |_, v| v.blank? }
       end
-      Hash[submission_name, order]
+      { submission_name => order }
     end
   end
 
