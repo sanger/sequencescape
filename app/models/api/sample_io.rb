@@ -104,6 +104,11 @@ class Api::SampleIO < Api::Base
     if json_attributes['reference_genome'].blank?
       json_attributes['reference_genome'] = nil
     end
+
+    user_id = json_attributes['user_id_of_consent_withdrawn']
+    if user_id.present? && User.find(user_id)
+      json_attributes['user_id_of_consent_withdrawn'] = User.find(user_id)&.login
+    end
   end
 
   # Whenever we create samples through the API we also need to register a sample tube too.  The user

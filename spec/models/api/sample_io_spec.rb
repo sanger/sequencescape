@@ -44,9 +44,11 @@ RSpec.describe Api::SampleIO, type: :model do
              saphyr: 'example',
              pacbio: 'example',
              date_of_consent_withdrawn: DateTime.new(2021, 3, 19, 13, 36, 51),
-             user_id_of_consent_withdrawn: 157
+             user_id_of_consent_withdrawn: user.id
            }
   end
+
+  let(:user) { create :user }
 
   let(:expected_json) do
     {
@@ -108,7 +110,7 @@ RSpec.describe Api::SampleIO, type: :model do
       'saphyr' => 'example',
       'pacbio' => 'example',
       'date_of_consent_withdrawn' => '2021-03-19 13:36:51',
-      'user_id_of_consent_withdrawn' => 157
+      'user_id_of_consent_withdrawn' => user.login
     }
   end
 
