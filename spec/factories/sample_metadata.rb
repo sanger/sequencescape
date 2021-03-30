@@ -22,7 +22,6 @@ FactoryBot.define do
       sample_description { 'sample_description' }
       sample_strain_att { 'sample_strain_att' }
       sample_ebi_accession_number { 'sample_ebi_accession_number' }
-      sample_reference_genome_old { 'sample_reference_genome_old' }
       sibling { 'sibling' }
       date_of_sample_collection { 'date_of_sample_collection' }
       date_of_sample_extraction { 'date_of_sample_extraction' }

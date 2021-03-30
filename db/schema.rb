@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_30_153640) do
+ActiveRecord::Schema.define(version: 2021_03_30_155357) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1331,7 +1331,6 @@ ActiveRecord::Schema.define(version: 2021_03_30_153640) do
     t.integer "sample_taxon_id"
     t.string "sample_ebi_accession_number"
     t.string "sample_sra_hold"
-    t.string "sample_reference_genome_old"
     t.text "sample_description", limit: 16777215
     t.string "sibling"
     t.boolean "is_resubmitted"
