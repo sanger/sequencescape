@@ -127,11 +127,12 @@ describe Barcode::FormatHandlers do
 
   describe Barcode::FormatHandlers::GlasgowV3 do
     it_has_a_valid_barcode 'GLS-GP-123456', prefix: 'GLS-GP', number: 123456
+    it_has_a_valid_barcode 'GLS-GP-1234567', prefix: 'GLS-GP', number: 1234567
+    it_has_a_valid_barcode 'GLS-GP-12345678', prefix: 'GLS-GP', number: 12345678
     it_has_an_invalid_barcode 'GLS-GP-123456-R'
     it_has_an_invalid_barcode 'GLS-GP123456R '
     it_has_an_invalid_barcode "GLS-GP-123456R\n1"
     it_has_an_invalid_barcode 'GLS-GP-123456S'
-    it_has_an_invalid_barcode 'GLS-GP-1234567'
   end
 
   describe Barcode::FormatHandlers::CambridgeAZ do
