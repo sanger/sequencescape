@@ -110,7 +110,7 @@ RSpec.describe Api::SampleIO, type: :model do
       'saphyr' => 'example',
       'pacbio' => 'example',
       'date_of_consent_withdrawn' => '2021-03-19 13:36:51',
-      'user_id_of_consent_withdrawn' => user.login
+      'marked_as_consent_withdrawn_by' => user.login
     }
   end
 

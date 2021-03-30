@@ -97,7 +97,7 @@ class Api::SampleIO < Api::Base
     map_attribute_to_json_attribute(:saphyr)
     map_attribute_to_json_attribute(:pacbio)
     map_attribute_to_json_attribute(:date_of_consent_withdrawn)
-    map_attribute_to_json_attribute(:user_id_of_consent_withdrawn)
+    map_attribute_to_json_attribute(:user_id_of_consent_withdrawn, 'marked_as_consent_withdrawn_by')
   end
 
   extra_json_attributes do |_object, json_attributes|
@@ -105,9 +105,9 @@ class Api::SampleIO < Api::Base
       json_attributes['reference_genome'] = nil
     end
 
-    user_id = json_attributes['user_id_of_consent_withdrawn']
-    if user_id.present? && User.find(user_id)
-      json_attributes['user_id_of_consent_withdrawn'] = User.find(user_id)&.login
+    user_id = json_attributes['marked_as_consent_withdrawn_by']
+    if user_id.present?
+      json_attributes['marked_as_consent_withdrawn_by'] = User.find_by(id: user_id)&.login
     end
   end
 
