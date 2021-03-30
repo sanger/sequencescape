@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_30_154707) do
+ActiveRecord::Schema.define(version: 2021_03_30_153640) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -1322,7 +1322,6 @@ ActiveRecord::Schema.define(version: 2020_10_30_154707) do
     t.string "ethnicity"
     t.string "dna_source"
     t.string "volume"
-    t.string "supplier_plate_id"
     t.string "mother"
     t.string "father"
     t.string "replicate"

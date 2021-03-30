@@ -64,7 +64,6 @@ class Sample < ApplicationRecord
     custom_attribute(:geographical_region)
     custom_attribute(:ethnicity)
     custom_attribute(:volume)
-    custom_attribute(:supplier_plate_id)
     custom_attribute(:mother)
     custom_attribute(:father)
     custom_attribute(:replicate)
@@ -129,7 +128,7 @@ class Sample < ApplicationRecord
     # This excludes supplementary characters, which include emoji and rare kanji
     # @note phenotype isn't currently broadcast but has a field waiting in the warehouse
     validates :organism, :cohort, :country_of_origin, :geographical_region,
-              :ethnicity, :supplier_plate_id, :mother, :father, :replicate, :donor_id,
+              :ethnicity, :mother, :father, :replicate, :donor_id,
               :sample_public_name, :sample_common_name, :sample_strain_att,
               :sample_description, :developmental_stage, :phenotype,
               utf8mb3: true

@@ -156,9 +156,6 @@ en:
         volume:
           label: "Volume (µl)"
 
-        supplier_plate_id:
-          label: Plate
-
         mother:
           label: Mother
 
