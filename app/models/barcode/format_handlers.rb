@@ -363,7 +363,7 @@ module Barcode::FormatHandlers
   # GLS-GP-nnnnnn
   # where n is a digit
   class GlasgowV3 < BaseRegExBarcode
-    self.format = /\A(?<prefix>GLS-GP)-(?<number>\d{6})\z/
+    self.format = /\A(?<prefix>GLS-GP)-(?<number>\d)\z/
   end
 
   # Added to support 'Operation Eagle' plates
