@@ -32,7 +32,15 @@ module LabelPrinter
       end
 
       def round_label_bottom_line(tube)
-        tube.is_a?(PacBioLibraryTube) ? source_plate_barcode(tube)[-4..] : super
+        if tube.is_a?(PacBioLibraryTube)
+          source_plate = source_plate_barcode(tube)
+          # Return the last 4 characters. The fallback handles scenarios where
+          # we have fewer than 4 characters in the string, as:
+          #     'abc'[-4..] # => nil
+          source_plate[-4..] || source_plate
+        else
+          super
+        end
       end
 
       def tubes
