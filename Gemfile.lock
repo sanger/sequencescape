@@ -232,7 +232,7 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (1.8.9)
+    i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     jquery-rails (4.4.0)
       rails-dom-testing (>= 1, < 3)
