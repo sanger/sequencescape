@@ -93,6 +93,7 @@ module Sequencescape
     config.cherrypickable_default_type = 'ABgene_0800'
     config.plate_default_type = 'ABgene_0800'
     config.plate_default_max_volume = 180
+    config.plate_default_control_wells_to_leave_free = [19, 79].freeze
 
     config.aker = config_for(:aker).with_indifferent_access
     config.phi_x = config_for(:phi_x).with_indifferent_access

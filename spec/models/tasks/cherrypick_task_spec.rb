@@ -15,6 +15,7 @@ RSpec.describe CherrypickTask, type: :model do
   let(:purpose) { create :purpose }
   let(:batch) { instance_double('Batch', id: 1235, requests: requests) }
   let(:submission) { create :submission }
+  let(:wells_to_leave_free) { Rails.application.config.plate_default_control_wells_to_leave_free }
 
   def pick_without_request_id(plates)
     plates.map { |plate| plate.map { |_id, barcode, pos| [barcode, pos] } }
@@ -33,7 +34,12 @@ RSpec.describe CherrypickTask, type: :model do
       context 'when controls and wells fit in one plate' do
         before do
           locator = instance_double(CherrypickTask::ControlLocator, control_positions: [2, 5])
-          allow(instance).to receive(:control_locator).and_return(locator)
+          allow(CherrypickTask::ControlLocator).to receive(:new).with(
+            batch_id: 1235,
+            total_wells: 6,
+            num_control_wells: 2,
+            wells_to_leave_free: wells_to_leave_free
+          ).and_return(locator)
         end
 
         let(:instance) { described_class.new }
@@ -82,7 +88,7 @@ RSpec.describe CherrypickTask, type: :model do
         before do
           locator = instance_double(CherrypickTask::ControlLocator)
           allow(locator).to receive(:control_positions).and_return([2, 5], [0, 2])
-          allow(instance).to receive(:control_locator).and_return(locator)
+          allow(CherrypickTask::ControlLocator).to receive(:new).and_return(locator)
         end
 
         it 'places controls in a different position' do
@@ -110,7 +116,7 @@ RSpec.describe CherrypickTask, type: :model do
       context 'when controls and wells fit in one plate' do
         before do
           locator = instance_double(CherrypickTask::ControlLocator, control_positions: [2, 3])
-          allow(instance).to receive(:control_locator).and_return(locator)
+          allow(CherrypickTask::ControlLocator).to receive(:new).and_return(locator)
         end
 
         let(:instance) { described_class.new }
@@ -136,7 +142,7 @@ RSpec.describe CherrypickTask, type: :model do
         before do
           locator = instance_double(CherrypickTask::ControlLocator)
           allow(locator).to receive(:control_positions).and_return([2, 4], [0, 2])
-          allow(instance).to receive(:control_locator).and_return(locator)
+          allow(CherrypickTask::ControlLocator).to receive(:new).and_return(locator)
         end
 
         let(:instance) { described_class.new }
