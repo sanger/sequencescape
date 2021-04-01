@@ -36,10 +36,10 @@ PF MiSeq Stock:
   target_type: QcTube
   stock_plate: false
 PF MiSeq QC:
-  type: IlluminaC::QcPoolPurpose
+  type: Tube::Purpose
   target_type: QcTube
   stock_plate: false
 PF MiSeq QCR:
-  type: IlluminaC::QcPoolPurpose
+  type: Tube::Purpose
   target_type: QcTube
   stock_plate: false

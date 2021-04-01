@@ -101,9 +101,9 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       let!(:sample) { create(:sample) }
       let(:wells) do
         {
-          'A01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-          'B01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-          'C01': { content: { sample_uuid: sample.uuid } }
+          A01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+          B01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+          C01: { content: { sample_uuid: sample.uuid } }
         }
       end
       let(:params) do
@@ -131,8 +131,8 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       context 'when there is an error in the sample info' do
         let(:wells) do
           {
-            'A01': { content: { 'wrong': 'wrong', study_uuid: study.uuid } },
-            'C01': { content: [{ 'phenotype': 'right' }, { sample_uuid: sample.uuid, 'phenotype': 'wrong' }] }
+            A01: { content: { wrong: 'wrong', study_uuid: study.uuid } },
+            C01: { content: [{ phenotype: 'right' }, { sample_uuid: sample.uuid, phenotype: 'wrong' }] }
           }
         end
 
@@ -169,9 +169,9 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       end
       let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
       let(:event) do
-        { 'event': {
-          'event_type': event_type,
-          'subjects': subjects
+        { event: {
+          event_type: event_type,
+          subjects: subjects
         } }
       end
 

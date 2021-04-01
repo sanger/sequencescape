@@ -53,7 +53,7 @@ module Core::Io::Base::JsonFormattingBehaviour # rubocop:todo Style/Documentatio
 
   def define_attribute_and_json_mapping(mapping)
     parse_mapping_rules(mapping) do |attribute_to_json, json_to_attribute|
-      attribute_to_json_field.merge!(Hash[attribute_to_json])
+      attribute_to_json_field.merge!(attribute_to_json.to_h)
       generate_object_to_json_mapping(attribute_to_json)
       generate_json_to_object_mapping(json_to_attribute)
     end

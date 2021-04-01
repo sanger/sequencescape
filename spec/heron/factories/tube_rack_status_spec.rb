@@ -9,9 +9,9 @@ RSpec.describe Heron::Factories::TubeRackStatus, type: :model, heron: true do
 
   let(:params) do
     {
-      "barcode": '0000000001',
-      "status": 'validation_failed',
-      "messages": [
+      barcode: '0000000001',
+      status: 'validation_failed',
+      messages: [
         'message 1',
         'message 2'
       ]

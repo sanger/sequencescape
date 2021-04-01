@@ -26,9 +26,10 @@ class Purpose < ApplicationRecord
   include Relationship::Associations
   include Uuid::Uuidable
 
-  self.table_name = ('plate_purposes')
+  self.table_name = 'plate_purposes'
 
   class_attribute :default_prefix
+  class_attribute :state_changer
 
   # There's a barcode printer type that has to be used to print the labels for this type of plate.
   belongs_to :barcode_printer_type
@@ -40,7 +41,9 @@ class Purpose < ApplicationRecord
 
   before_validation :set_default_barcode_prefix
 
+  # rubocop:todo Rails/UniqueValidationWithoutIndex
   validates :name, format: { with: /\A\w[\s\w.\-]+\w\z/i }, presence: true, uniqueness: { case_sensitive: false }
+  # rubocop:enable Rails/UniqueValidationWithoutIndex
 
   # NOTE: We should validate against valid asset subclasses, but running into some issues with
   # subclass loading while seeding.

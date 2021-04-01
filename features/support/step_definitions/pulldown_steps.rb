@@ -55,7 +55,7 @@ Given '{well_range} of {plate_name} have been {submitted_to} with the following 
   create_submission_of_assets(
     template,
     plate.wells.select(&range.method(:include?)),
-    Hash[table.raw]
+    table.raw.to_h
   )
 end
 
@@ -63,7 +63,7 @@ Given '{well_range} of {plate_uuid} have been {submitted_to} with the following 
   create_submission_of_assets(
     template,
     plate.wells.select(&range.method(:include?)),
-    Hash[table.raw]
+    table.raw.to_h
   )
 end
 
@@ -103,34 +103,11 @@ def work_pipeline_for(submissions, name, template = nil)
   end
 end
 
-def finalise_pipeline_for(plate)
-  plate.purpose.connect_requests(plate, 'qc_complete')
-  plate.wells.each do |well|
-    well.requests_as_target.each do |r|
-      r.update!(state: 'passed')
-    end
-    well.transfer_requests_as_target.each do |r|
-      r.update!(state: 'qc_complete')
-    end
-  end
-end
-
-# A bit of a fudge but it'll work for the moment.  We essentially link the last plate of the different
-# pipelines back to the stock plate directly.  Eventually these can grow into a proper work through of
-# a pipeline.
-Given /^(all submissions) have been worked until the last plate of the "Pulldown WGS" pipeline$/ do |submissions|
-  work_pipeline_for(submissions, 'WGS lib pool')
-end
-
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ISC cap lib pool')
 end
 Given /^(all submissions) have been worked until the last plate of the "Illumina-B STD" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ILB_STD_PCRXP')
-end
-Given /^(all submissions) have been worked until the last plate of the "Illumina-B HTP" pipeline$/ do |submissions|
-  plate = work_pipeline_for(submissions, 'Lib PCR-XP', TransferTemplate.find_by!(name: 'Transfer columns 1-1'))
-  finalise_pipeline_for(plate)
 end
 
 Then 'the state of {uuid} should be {string}' do |target, state|
@@ -150,14 +127,14 @@ Then /^all "([^"]+)" requests should have the following details:$/ do |name, tab
   raise StandardError, "No requests of type #{name.inspect}" if request_type.requests.empty?
 
   results = request_type.requests.all.map do |request|
-    Hash[table.raw.map do |attribute, _|
+    table.raw.map do |attribute, _|
       [attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) }]
-    end]
+    end.to_h
   end.uniq!
-  expected = Hash[table.raw.map do |attribute, value|
+  expected = table.raw.map do |attribute, value|
     value = value.to_i if %w[fragment_size_required_from fragment_size_required_to].include?(attribute)
     [attribute, value]
-  end]
+  end.to_h
   assert_equal([expected], results, 'Request details are not identical')
 end
 

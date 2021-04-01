@@ -16,6 +16,8 @@ class PlatePurpose < Purpose
   include SharedBehaviour::Named
   include Purpose::Relationship::Associations
 
+  self.state_changer = StateChanger::StandardPlate
+
   broadcast_via_warren
 
   scope :compatible_with_purpose, ->(purpose) {
@@ -62,25 +64,6 @@ class PlatePurpose < Purpose
     plate.state_from(plate.transfer_requests)
   end
 
-  # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
-  # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
-  # relate to all wells of the plate, otherwise only the selected ones are updated.
-  # @param plate [Plate] The plate being updated
-  # @param state [String] The desired target state
-  # @param user [User] The person to associate with the action
-  # @param contents [nil, Array] Array of well locations to update, leave nil for ALL wells
-  # @param customer_accepts_responsibility [Boolean] The customer proceeded against advice and will still be charged
-  #                                                  in the the event of a failure
-  #
-  # @return [Void]
-  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
-    wells = plate.wells
-    wells = wells.located_at(contents) if contents.present?
-    broadcast_library_start(plate, user) unless %w[failed cancelled].include?(state)
-    transition_state_requests(wells, state)
-    fail_stock_well_requests(wells, customer_accepts_responsibility) if state == 'failed'
-  end
-
   # Set the class to PlatePurpose::Input is set to true.
   # Allows creation of the input plate purposes through the API
   # without directly exposing our class names.
@@ -89,39 +72,6 @@ class PlatePurpose < Purpose
   def input_plate=(is_input)
     self.type = 'PlatePurpose::Input' if is_input
   end
-
-  module Overrideable # rubocop:todo Style/Documentation
-    private
-
-    def transition_state_requests(wells, state)
-      wells = wells.includes(
-        requests_as_target: [:request_type, :request_events],
-        transfer_requests_as_target: [
-          { associated_requests: [:request_type, :request_events] },
-          :target_aliquot_requests
-        ]
-      )
-      wells.each do |w|
-        w.requests_as_target.each { |r| r.transition_to(state) }
-        w.transfer_requests_as_target.each { |r| r.transition_to(state) }
-      end
-    end
-
-    # Override this method to control the requests that should be failed for the given wells.
-    def fail_request_details_for(wells)
-      wells.each do |well|
-        submission_ids = well.transfer_requests_as_target.map(&:submission_id)
-        next if submission_ids.empty?
-
-        stock_wells = well.stock_wells.map(&:id)
-        next if stock_wells.empty?
-
-        yield(submission_ids, stock_wells)
-      end
-    end
-  end
-
-  include Overrideable
 
   def pool_wells(wells)
     _pool_wells(wells)
@@ -181,25 +131,6 @@ class PlatePurpose < Purpose
 
   private
 
-  def fail_stock_well_requests(wells, customer_accepts_responsibility)
-    # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
-    # their state, we have to actually use the statemachine method to do this to get the correct behaviour.
-    queries = []
-
-    # Build a query per well
-    fail_request_details_for(wells) do |submission_ids, stock_wells|
-      queries << Request.where(asset_id: stock_wells, submission_id: submission_ids)
-    end
-    raise 'Apparently there are not requests on these wells?' if queries.empty?
-
-    # Here we chain together our various request scope using or, allowing us to retrieve them in a single query.
-    request_scope = queries.reduce(queries.pop) { |scope, query| scope.or(query) }
-    request_scope.each do |request|
-      request.customer_accepts_responsibility! if customer_accepts_responsibility
-      request.passed? ? request.retrospective_fail! : request.fail!
-    end
-  end
-
   def _pool_wells(wells)
     wells.pooled_as_target_by_transfer
   end
@@ -210,18 +141,6 @@ class PlatePurpose < Purpose
 
   def set_default_printer_type
     self.barcode_printer_type ||= BarcodePrinterType96Plate.first
-  end
-
-  # Record the start of library creation for the plate
-  def broadcast_library_start(plate, user)
-    orders = plate.in_progress_requests.pending.distinct.pluck(:order_id)
-    generate_events_for(plate, orders, user)
-  end
-
-  def generate_events_for(plate, orders, user)
-    orders.each do |order_id|
-      BroadcastEvent::LibraryStart.create!(seed: plate, user: user, properties: { order_id: order_id })
-    end
   end
 end
 
@@ -237,7 +156,6 @@ require_dependency 'illumina_c/lib_pcr_xp_purpose'
 require_dependency 'illumina_c/stock_purpose'
 require_dependency 'illumina_htp/downstream_plate_purpose'
 require_dependency 'illumina_htp/final_plate_purpose'
-require_dependency 'illumina_htp/library_complete_on_qc_purpose'
 require_dependency 'illumina_htp/normalized_plate_purpose'
 require_dependency 'illumina_htp/pooled_plate_purpose'
 require_dependency 'illumina_htp/post_shear_qc_plate_purpose'

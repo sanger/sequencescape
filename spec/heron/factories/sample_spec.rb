@@ -7,7 +7,7 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
 
   describe '#valid?' do
     context 'when receiving a study instance' do
-      let(:params) { { "study": study } }
+      let(:params) { { study: study } }
 
       it 'is valid' do
         factory = described_class.new(params)
@@ -16,7 +16,7 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
     end
 
     context 'when receiving a column that does not exist in sample or sample metadata' do
-      let(:params) { { "study": study, 'asdf': 'wrong' } }
+      let(:params) { { study: study, asdf: 'wrong' } }
 
       it 'is not valid' do
         factory = described_class.new(params)
@@ -32,7 +32,7 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
 
     context 'when receiving other fields and sample_uuid' do
       let(:sample) { create(:sample) }
-      let(:params) { { "study": study, 'phenotype': 'A phenotype', 'sample_uuid': sample.uuid } }
+      let(:params) { { study: study, phenotype: 'A phenotype', sample_uuid: sample.uuid } }
 
       it 'is not valid' do
         factory = described_class.new(params)
@@ -50,7 +50,7 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
 
     context 'when receiving a study uuid' do
       context 'when the study uuid exists' do
-        let(:params) { { "study_uuid": study.uuid } }
+        let(:params) { { study_uuid: study.uuid } }
 
         it 'is valid' do
           factory = described_class.new(params)
@@ -59,7 +59,7 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
       end
 
       context 'when it does not exist' do
-        let(:params) { { "study_uuid": SecureRandom.uuid } }
+        let(:params) { { study_uuid: SecureRandom.uuid } }
 
         it 'is valid' do
           factory = described_class.new(params)

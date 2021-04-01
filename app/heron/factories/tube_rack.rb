@@ -97,7 +97,7 @@ module Heron
 
       def containers_for_locations
         @tube_rack.racked_tubes.each_with_object({}) do |racked_tube, memo|
-          memo[unpad_coordinate(racked_tube.coordinate)] = racked_tube.tube
+          memo[unpad_coordinate(racked_tube.coordinate)] = racked_tube.tube.receptacle
         end
       end
     end

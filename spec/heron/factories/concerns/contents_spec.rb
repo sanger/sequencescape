@@ -47,7 +47,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
 
   context 'with invalid params' do
     context 'when keys are not valid coordinates' do
-      let(:params) { { wells: { 'test1': [], 'B01': [], 'test2': [] }, study_uuid: study.uuid } }
+      let(:params) { { wells: { test1: [], B01: [], test2: [] }, study_uuid: study.uuid } }
 
       it 'is not valid' do
         factory = factory_klass.new(params)
@@ -71,7 +71,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         {
           wells:
         {
-          'A1': { content: {} }
+          A1: { content: {} }
         }
         }
       end
@@ -97,11 +97,11 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         {
           wells:
         {
-          'A1': { content: [{ 'phenotype': 'Another phenotype', 'study_uuid': study.uuid },
-                            { 'phenotype': 'A phenotype', 'study_uuid': study.uuid }] },
-          'B1': { content: [{ 'phenotype': 'Right', 'study_uuid': study.uuid },
-                            { 'sample_uuid': sample.uuid, 'phenotype': 'wrong' }] },
-          'C1': { content: { 'phenotype': 'Right', 'asdf': 'wrong' } }
+          A1: { content: [{ phenotype: 'Another phenotype', study_uuid: study.uuid },
+                          { phenotype: 'A phenotype', study_uuid: study.uuid }] },
+          B1: { content: [{ phenotype: 'Right', study_uuid: study.uuid },
+                          { sample_uuid: sample.uuid, phenotype: 'wrong' }] },
+          C1: { content: { phenotype: 'Right', asdf: 'wrong' } }
         }
         }
       end
@@ -137,9 +137,9 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         let!(:sample) { create(:sample) }
         let(:params) do
           { wells: {
-            'A01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-            'B01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-            'C01': { content: { sample_uuid: sample.uuid } }
+            A01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+            B01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+            C01: { content: { sample_uuid: sample.uuid } }
           }, study_uuid: study.uuid }
         end
 
@@ -156,10 +156,10 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         context 'when it creates more than one aliquot in the same location' do
           let(:params) do
             { wells: {
-              'A01': { content: [{ phenotype: 'A phenotype', aliquot: { tag_id: 1 }, study_uuid: study.uuid },
-                                 { sample_uuid: sample.uuid, aliquot: { tag_id: 2 } }] },
-              'B01': { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-              'C01': { content: { sample_uuid: sample.uuid } }
+              A01: { content: [{ phenotype: 'A phenotype', aliquot: { tag_id: 1 }, study_uuid: study.uuid },
+                               { sample_uuid: sample.uuid, aliquot: { tag_id: 2 } }] },
+              B01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
+              C01: { content: { sample_uuid: sample.uuid } }
             }, study_uuid: study.uuid }
           end
 

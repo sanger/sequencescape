@@ -33,11 +33,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
 
       context 'when phix is added' do
         setup do
-          @phix = create :spiked_buffer do |sb|
-            sb.aliquots { |a| a.association(:aliquot, receptacle: sb, tag: @tags[2]) }
-          end
-          a = create :aliquot, receptacle: @phix, tag: @tags[2]
-          @phix.aliquots = [a]
+          @phix = create :spiked_buffer, aliquot_attributes: { tag: @tags[2], tag2: nil }
           @lane.labware.parents << @phix
           @aliquot_index = [1, 5, 3, 4]
         end
@@ -88,11 +84,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
 
       context 'when phix is added' do
         setup do
-          @phix = create :spiked_buffer do |sb|
-            sb.aliquots { |a| a.association(:aliquot, receptacle: sb, tag: @tags[2]) }
-          end
-          a = create :aliquot, receptacle: @phix, tag: @tags[2]
-          @phix.aliquots = [a]
+          @phix = create :spiked_buffer, aliquot_attributes: { tag: @tags[2], tag2: nil }
           @lane.labware.parents << @phix
           @aliquot_index = [1, 5, 3, 4]
         end
@@ -143,11 +135,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
 
       context 'when phix is added' do
         setup do
-          @phix = create :spiked_buffer do |sb|
-            sb.aliquots { |a| a.association(:aliquot, receptacle: sb, tag: @tags[2]) }
-          end
-          a = create :aliquot, receptacle: @phix, tag: @tags[2]
-          @phix.aliquots = [a]
+          @phix = create :spiked_buffer, aliquot_attributes: { tag: @tags[2], tag2: nil }
           @lane.labware.parents << @phix
           @aliquot_index = [1, 5, 3, 4]
         end

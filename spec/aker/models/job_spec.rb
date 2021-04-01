@@ -17,6 +17,6 @@ RSpec.describe Aker::Job, type: :model, aker: true do
 
   it '#as_json should include id and aker_job_id only' do
     job = create(:aker_job)
-    expect(job.as_json).to eq('job': { 'id': job.id, 'aker_job_id': job.aker_job_id })
+    expect(job.as_json).to eq(job: { id: job.id, aker_job_id: job.aker_job_id })
   end
 end

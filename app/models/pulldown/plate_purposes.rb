@@ -62,45 +62,16 @@ module Pulldown::PlatePurposes
     ], ISCH_PURPOSE_FLOWS.first
   ].freeze
 
-  PLATE_PURPOSE_TYPE = {
-    'ISCH lib pool' => Pulldown::InitialDownstreamPlatePurpose,
-    'ISCH hyb' => IlluminaHtp::DownstreamPlatePurpose,
-    'ISCH cap lib' => IlluminaHtp::DownstreamPlatePurpose,
-    'ISCH cap lib PCR' => IlluminaHtp::DownstreamPlatePurpose,
-    'ISCH cap lib PCR-XP' => IlluminaHtp::DownstreamPlatePurpose,
-    'ISCH cap lib pool' => IlluminaHtp::DownstreamPlatePurpose
-  }.freeze
-
-  PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
-    'WGS post-Cov',
-    'WGS post-Cov-XP',
-    'WGS lib PCR-XP',
-
-    'SC post-Cov',
-    'SC post-Cov-XP',
-    'SC lib PCR-XP',
-    'SC cap lib PCR-XP',
-
-    'ISC post-Cov',
-    'ISC post-Cov-XP',
-    'ISC lib PCR-XP',
-    'ISC cap lib PCR-XP'
-  ].freeze
-
   STOCK_PLATE_PURPOSES = ['WGS stock DNA', 'SC stock DNA', 'ISC stock DNA'].freeze
 
   class << self
     def create_purposes(branch)
       initial = Purpose.find_by!(name: branch.first)
       branch[1..].inject(initial) do |parent, new_purpose_name|
-        Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(name: new_purpose_name).tap do |child_purpose|
+        PlatePurpose.create!(name: new_purpose_name).tap do |child_purpose|
           parent.child_relationships.create!(child: child_purpose)
         end
       end
     end
   end
-end
-
-%w(initial_downstream_plate initial_plate library_plate).each do |type|
-  require_dependency "app/models/pulldown/#{type}_purpose"
 end

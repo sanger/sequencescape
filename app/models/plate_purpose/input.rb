@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Input Plate purposes are the initial stock plates passing into
 # external piplines. They have special behaviour governing their state.
 # This essentially makes sure that all non-empty wells on a plate have requests
@@ -10,9 +12,45 @@
 #       flexibility, such as by allowing library-manifest plates to pass straight in to the
 #       pipeline.
 class PlatePurpose::Input < PlatePurpose
-  include PlatePurpose::Stock
+  self.state_changer = StateChanger::InputPlate
 
+  UNREADY_STATE  = 'pending'
+  READY_STATE    = 'passed'
   WELL_STATE_PRIORITY = %w[pending started passed failed cancelled].freeze
+
+  def state_of(plate)
+    # If there are no wells with aliquots we're pending
+    ids_of_wells_with_aliquots = plate.wells.with_aliquots.ids
+    return UNREADY_STATE if ids_of_wells_with_aliquots.empty?
+
+    # All of the wells with aliquots must have customer requests for us to consider the plate passed
+    well_requests = CustomerRequest.where(asset_id: ids_of_wells_with_aliquots)
+
+    wells_states = well_requests.group_by(&:asset_id).values.map do |requests|
+      calculate_state_of_well(requests.map(&:state))
+    end
+
+    return UNREADY_STATE unless wells_states.count == ids_of_wells_with_aliquots.count
+
+    calculate_state_of_plate(wells_states)
+  end
+
+  private
+
+  def calculate_state_of_plate(wells_states)
+    unique_states = wells_states.uniq
+    return UNREADY_STATE if unique_states.include?(:unready)
+
+    case unique_states.sort
+    when ['failed'], %w[cancelled failed] then 'failed'
+    when ['cancelled'] then 'cancelled'
+    else READY_STATE
+    end
+  end
+
+  def _pool_wells(wells)
+    wells.pooled_as_source_by(Request::LibraryCreation)
+  end
 
   # Unlike other stock purposes
   def calculate_state_of_well(wells_states)

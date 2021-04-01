@@ -76,7 +76,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
       raise CriteriaInvalid, 'should be an array of tuples' if     list_of_attributes.nil?
       raise CriteriaInvalid, 'should be an array of tuples' unless list_of_attributes.is_a?(Array)
       raise CriteriaInvalid, "can't be blank"               if     list_of_attributes.blank?
-      raise CriteriaInvalid, 'should be a tuple'            unless list_of_attributes.all? { |a| a.is_a?(Hash) }
+      raise CriteriaInvalid, 'should be a tuple'            unless list_of_attributes.all?(Hash)
 
       list_of_attributes.map(&method(:create!))
     end

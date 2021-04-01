@@ -2,12 +2,12 @@ module SharedBehaviour
   # Include in classes which have an associated
   # qcable which handles their QC state.
   module QcableAsset
-    def state_of(plate)
-      qcable_for(plate).state
+    def self.included(base)
+      base.state_changer = StateChanger::QcableLabware
     end
 
-    def transition_to(plate, state, *_ignored)
-      qcable_for(plate).transition_to(state)
+    def state_of(plate)
+      qcable_for(plate).state
     end
 
     private

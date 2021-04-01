@@ -122,9 +122,9 @@ module Tasks::CherrypickHandler
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
       # whole load of wells so that they can be retrieved quickly and easily.
       wells = Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).index_by(&:id)
-      request_and_well = Hash[@batch.requests.includes(:request_metadata).map do |r|
-                                [r.id.to_i, [r, wells[r.target_asset_id]]]
-                              end ]
+      request_and_well = @batch.requests.includes(:request_metadata).map do |r|
+        [r.id.to_i, [r, wells[r.target_asset_id]]]
+      end.to_h
       used_requests = []
       plates_and_wells = Hash.new { |h, k| h[k] = [] }
       plate_and_requests = Hash.new { |h, k| h[k] = [] }

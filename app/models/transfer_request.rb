@@ -2,9 +2,17 @@
 
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
+#
+# @note The setting of submission_id and outer_request is quite complicated, and depends
+# on the exact route by which the transfer request has been created. The preferred route
+# is by setting outer_request explicitly. However much of the historic code handles it
+# via submission_id, either set explicitly, (eg Transfer::BetweenPlates#calculate_location_submissions)
+# or extracted from the pool_id attribute on well, which itself is populated as part of an
+# sql query. (See #with_pool_id on the well association in {Plate})
 class TransferRequest < ApplicationRecord
   include Uuid::Uuidable
   include AASM
+  include AASM::Extensions
   extend Request::Statemachine::ClassMethods
 
   # Determines if we attempt to filter out {Aliquot#equivalent? equivalent} aliquots
@@ -30,6 +38,7 @@ class TransferRequest < ApplicationRecord
 
   scope :for_request, ->(request) { where(asset_id: request.asset_id) }
   scope :include_submission, -> { includes(submission: :uuid_object) }
+  scope :include_for_request_state_change, -> { includes(:target_aliquot_requests, associated_requests: :request_type) }
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
   validate :outer_request_candidates_length, on: :create
@@ -102,14 +111,6 @@ class TransferRequest < ApplicationRecord
     false
   end
 
-  # Attempts to transition the transfer request to target_state by
-  # detecting any valid state_machine transitions
-  #
-  # @param target_state [String] A string matching the state name to transition to
-  def transition_to(target_state)
-    aasm.fire!(suggested_transition_to(target_state))
-  end
-
   # Set the outer request associated with this transfer request
   # the outer request is the {Request} which is currently being processed,
   # such as a {LibraryCreationRequest}. Setting this ensures that the
@@ -180,17 +181,6 @@ class TransferRequest < ApplicationRecord
 
   def one_or_fewer_outer_requests?
     outer_request_candidates.length <= 1
-  end
-
-  # Determines the most likely event that should be fired when transitioning between the two states.  If there is
-  # only one option then that is what is returned, otherwise an exception is raised.
-  def suggested_transition_to(target)
-    valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
-    unless valid_events.size == 1
-      raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}"
-    end
-
-    valid_events.first.name
   end
 
   # after_create callback method
