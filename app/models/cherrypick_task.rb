@@ -13,14 +13,14 @@
 class CherrypickTask < Task
   EMPTY_WELL          = [0, 'Empty', ''].freeze
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
-
+  DEFAULT_WELLS_TO_LEAVE_FREE = Rails.application.config.plate_default_control_wells_to_leave_free
   #
   # Returns a {CherrypickTask::ControlLocator} which can generate control locations for plates
   # in a batch. It responds to #control_positions which takes a plate number as an argument
   #
   # @return [CherrypickTask::ControlLocator] A generator of control locations
   #
-  def control_locator(batch_id, total_wells, num_control_wells, wells_to_leave_free: 0)
+  def new_control_locator(batch_id, total_wells, num_control_wells, wells_to_leave_free: DEFAULT_WELLS_TO_LEAVE_FREE)
     CherrypickTask::ControlLocator.new(
       batch_id: batch_id,
       total_wells: total_wells,
@@ -61,7 +61,7 @@ class CherrypickTask < Task
       num_plate = 0
       batch = requests.first.batch
       control_assets = control_source_plate.wells.joins(:samples)
-      control_locator = control_locator(batch.id, current_destination_plate.size, control_assets.count)
+      control_locator = new_control_locator(batch.id, current_destination_plate.size, control_assets.count)
       control_posns = control_locator.control_positions(num_plate)
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the
