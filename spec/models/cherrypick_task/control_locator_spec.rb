@@ -27,7 +27,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
 
     it 'generates positions within the range' do
       expect(generated_positions.flatten).to all(
-        be_an(Integer) & be_between(valid_range.min, valid_range.max)
+        be_an(Integer) & be_in(valid_range)
       )
     end
 
@@ -69,7 +69,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
       let(:batch_id) { 1 }
       let(:total_wells) { 2 }
       let(:num_control_wells) { 3 }
-      let(:wells_to_leave_free) { 0 }
+      let(:wells_to_leave_free) { [] }
 
       it_behaves_like 'an invalid ControlLocator', 0
     end
@@ -78,7 +78,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
       let(:batch_id) { 1 }
       let(:total_wells) { 96 }
       let(:num_control_wells) { 8 }
-      let(:wells_to_leave_free) { 89 }
+      let(:wells_to_leave_free) { (0...89) }
 
       it_behaves_like 'an invalid ControlLocator', 0
     end
@@ -87,7 +87,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
       let(:batch_id) { 1 }
       let(:total_wells) { 96 }
       let(:num_control_wells) { 0 }
-      let(:wells_to_leave_free) { 100 }
+      let(:wells_to_leave_free) { (0...100) }
 
       it_behaves_like 'an invalid ControlLocator', 0, 'More wells left free than available'
     end
@@ -98,7 +98,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
         let(:batch_id) { batch_id }
         let(:total_wells) { 96 }
         let(:num_control_wells) { 2 }
-        let(:wells_to_leave_free) { 0 }
+        let(:wells_to_leave_free) { [] }
 
         it_behaves_like 'a generator of valid positions', (0...96)
       end
@@ -107,16 +107,25 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
         let(:batch_id) { batch_id }
         let(:total_wells) { 96 }
         let(:num_control_wells) { 2 }
-        let(:wells_to_leave_free) { 8 }
+        let(:wells_to_leave_free) { (0...8) }
 
         it_behaves_like 'a generator of valid positions', (8...96)
+      end
+
+      context "when batch is #{batch_id}  and we have a 96 well plate with arbitary wells free" do
+        let(:batch_id) { batch_id }
+        let(:total_wells) { 96 }
+        let(:num_control_wells) { 2 }
+        let(:wells_to_leave_free) { [19, 79] }
+
+        it_behaves_like 'a generator of valid positions', (0...96).to_a - [19, 79]
       end
 
       context "when batch is #{batch_id} and we have a 384 well plate with no wells free" do
         let(:batch_id) { batch_id }
         let(:total_wells) { 384 }
         let(:num_control_wells) { 2 }
-        let(:wells_to_leave_free) { 0 }
+        let(:wells_to_leave_free) { [] }
 
         it_behaves_like 'a generator of valid positions', (0...384)
       end
