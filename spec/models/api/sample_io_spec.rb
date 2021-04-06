@@ -38,9 +38,6 @@ RSpec.describe Api::SampleIO, type: :model do
              disease: 'Tumour Growing',
              subject: '19',
              treatment: '10uM lomitapide in 0.1% ethanol',
-             genome_size: 4,
-             saphyr: 'example',
-             pacbio: 'example',
              date_of_consent_withdrawn: DateTime.new(2021, 3, 19, 13, 36, 51),
              user_id_of_consent_withdrawn: user.id
            }
@@ -102,9 +99,6 @@ RSpec.describe Api::SampleIO, type: :model do
       'disease' => 'Tumour Growing',
       'subject' => '19',
       'treatment' => '10uM lomitapide in 0.1% ethanol',
-      'genome_size' => 4,
-      'saphyr' => 'example',
-      'pacbio' => 'example',
       'date_of_consent_withdrawn' => '2021-03-19 13:36:51',
       'marked_as_consent_withdrawn_by' => user.login
     }

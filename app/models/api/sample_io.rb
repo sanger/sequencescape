@@ -91,9 +91,6 @@ class Api::SampleIO < Api::Base
     map_attribute_to_json_attribute(:disease)
     map_attribute_to_json_attribute(:subject)
     map_attribute_to_json_attribute(:treatment)
-    map_attribute_to_json_attribute(:genome_size)
-    map_attribute_to_json_attribute(:saphyr)
-    map_attribute_to_json_attribute(:pacbio)
     map_attribute_to_json_attribute(:date_of_consent_withdrawn)
     map_attribute_to_json_attribute(:user_id_of_consent_withdrawn, 'marked_as_consent_withdrawn_by')
   end
