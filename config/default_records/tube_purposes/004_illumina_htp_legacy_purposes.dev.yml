@@ -28,7 +28,7 @@ Lib Pool SS-XP:
   target_type: StockMultiplexedLibraryTube
   stock_plate: false
 Cap Lib Pool Norm:
-  type: IlluminaHtp::MxTubeNoQcPurpose
+  type: IlluminaHtp::MxTubePurpose
   target_type: MultiplexedLibraryTube
   stock_plate: false
 PF MiSeq Stock:
