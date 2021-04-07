@@ -21,7 +21,7 @@ of samples.
 * Labware and freezer tracking
 * API support for 3rd party applications
 
-Current installation supports a million samples and 1.3 million pieces of labware and is used in
+Current installation supports over 5 million samples and 1.8 million pieces of labware and is used in
 a organisation of 900 people.
 
 ## Contents
