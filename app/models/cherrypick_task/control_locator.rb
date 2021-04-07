@@ -39,13 +39,13 @@ class CherrypickTask::ControlLocator
   # @param batch_id [Integer] The id of the batch, used to generate a starting position
   # @param total_wells [Integer] The total number of wells on the plate
   # @param num_control_wells [Integer] The number of control wells to lay out
-  # @param wells_to_leave_free [Integer] The number of wells to leave free at the front of the plate
-  def initialize(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free: 0)
+  # @param wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
+  def initialize(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free: [])
     @batch_id = batch_id
     @total_wells = total_wells
     @num_control_wells = num_control_wells
-    @wells_to_leave_free = wells_to_leave_free
-    @available_positions = (wells_to_leave_free...total_wells).to_a
+    @wells_to_leave_free = wells_to_leave_free.to_a
+    @available_positions = (0...total_wells).to_a - @wells_to_leave_free
   end
 
   #
@@ -58,7 +58,8 @@ class CherrypickTask::ControlLocator
   #
   def control_positions(num_plate)
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
-    raise StandardError, 'More wells left free than available' if wells_to_leave_free > total_wells
+    # Check that all elements in wells_to_leave_free fall within the acceptable range
+    raise StandardError, 'More wells left free than available' unless wells_to_leave_free.all?(0...total_wells)
     return [] if num_control_wells.zero?
 
     # If num plate is equal to the available positions, the cycle is going to be repeated.

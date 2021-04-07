@@ -75,7 +75,7 @@ namespace :limber do
     # request type later. Otherwise request type has target purpose nil
     # and Limber Submissions fail to create final tubes for pipelines.
     unless Purpose.where(name: 'LB Lib Pool Norm').exists?
-      IlluminaHtp::MxTubeNoQcPurpose.create!(
+      IlluminaHtp::MxTubePurpose.create!(
         name: 'LB Lib Pool Norm',
         target_type: 'MultiplexedLibraryTube',
         default_state: 'pending',

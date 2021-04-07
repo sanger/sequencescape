@@ -52,6 +52,3 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
              }).distinct
   end
 end
-require_dependency 'illumina_c/mx_tube_purpose'
-require_dependency 'illumina_b/mx_tube_purpose'
-require_dependency 'illumina_htp/mx_tube_no_qc_purpose'
