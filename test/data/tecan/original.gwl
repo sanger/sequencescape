@@ -1,16 +1,16 @@
 C;
 C; This file created by xyz987 on Tue Sep 29 11:00:42 2009
 C;
-A;BUFF;;96-TROUGH;7;;6.2
+A;BUFF;;Trough 100ml;7;;6.2
 D;DN12345U;;ABgene 0800;7;;6.2
 W;
-A;BUFF;;96-TROUGH;19;;3.5
+A;BUFF;;Trough 100ml;19;;3.5
 D;DN12345U;;ABgene 0800;19;;3.5
 W;
-A;BUFF;;96-TROUGH;23;;6.1
+A;BUFF;;Trough 100ml;23;;6.1
 D;DN12345U;;ABgene 0800;23;;6.1
 W;
-A;BUFF;;96-TROUGH;28;;5.2
+A;BUFF;;Trough 100ml;28;;5.2
 D;DN12345U;;ABgene 0800;28;;5.2
 W;
 C;

@@ -91,7 +91,7 @@ class Robot::Generator::Tecan < Robot::Generator::Base
       volume = mapping['buffer_volume']
       vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'],
                                                                            plate_details['plate_size'])
-      buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
+      buffer << "A;BUFF;;Trough 100ml;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
     end
     buffer.join("\n")
   end
