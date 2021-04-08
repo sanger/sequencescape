@@ -40,12 +40,6 @@ class Tube < Labware
     submissions.ids.first
   end
 
-  def ancestor_of_purpose(ancestor_purpose_id)
-    return self if plate_purpose_id == ancestor_purpose_id
-
-    ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
-  end
-
   def name_for_label
     primary_sample&.shorten_sanger_sample_id.presence || name
   end
