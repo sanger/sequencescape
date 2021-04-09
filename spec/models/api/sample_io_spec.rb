@@ -74,7 +74,7 @@ RSpec.describe Api::SampleIO, type: :model do
       'name' => 'sample_testing_messages',
       'sanger_sample_id' => subject.sanger_sample_id,
       'control' => true,
-      control_type: 'positive',
+      'control_type' => 'positive',
       'replicate' => 'yes',
       'organism' => 'rat',
       'strain' => 'stuff about strain',
@@ -124,10 +124,10 @@ RSpec.describe Api::SampleIO, type: :model do
       'treatment' => '10uM lomitapide in 0.1% ethanol',
       'date_of_consent_withdrawn' => '2021-03-19 13:36:51',
       'marked_as_consent_withdrawn_by' => user.login,
-      consent_withdrawn: false,
-      developmental_stage: 'thing',
-      donor_id: '2',
-      reference_genome: 'ReferenceGenome1'
+      'consent_withdrawn' => false,
+      'developmental_stage' => 'thing',
+      'donor_id' => '2',
+      'reference_genome' => 'ReferenceGenome1'
     }
   end
 
