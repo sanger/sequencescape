@@ -146,7 +146,6 @@ module WorkingSetup
             'gc_content' => 'Neutral',
             'compound' => '',
             'dna_source' => 'Genomic',
-            'supplier_plate_id' => '',
             'mother' => '',
             'sample_public_name' => '',
             'sample_common_name' => '',

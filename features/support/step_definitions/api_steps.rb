@@ -80,10 +80,6 @@ def api_request(action, path, body)
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
 end
 
-def json_api_request(...)
-  api_request(...)
-end
-
 Given /^I am using version "(\d+)" of the API$/ do |version|
   @api_path = "/api/#{version.to_i}"
 end
@@ -93,11 +89,11 @@ Given /^I am using the latest version of the API$/ do
 end
 
 When /^I (GET|PUT|POST|DELETE) the API path "(\/[^"]*)"$/ do |action, path|
-  json_api_request(action, path, nil)
+  api_request(action, path, nil)
 end
 
 When /^I (POST|PUT) the following JSON to the API path "(\/[^"]*)":$/ do |action, path, serialized_json|
-  json_api_request(action, path, serialized_json)
+  api_request(action, path, serialized_json)
 end
 
 When /^I GET the "([^"]+)" from the API path "(\/[^"]*)"$/ do |content_type, path|

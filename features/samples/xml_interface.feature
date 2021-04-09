@@ -35,7 +35,6 @@ Feature: The XML interface to the samples
           <property><name>Is re-submitted?</name><value/></property>
           <property><name>Mother</name><value/></property>
           <property><name>Organism</name><value/></property>
-          <property><name>Plate</name><value/></property>
           <property><name>Volume (&#181;l)</name><value/></property>
           <property><name>TAXON ID</name><value/></property>
           <property><name>Public Name</name><value/></property>
@@ -53,28 +52,23 @@ Feature: The XML interface to the samples
           <property><name>Genome Size</name><value/></property>
           <property><name>Saphyr</name><value/></property>
           <property><name>Pacbio</name><value/></property>
-
-
-
-<property><name>Genotype</name><value></value></property>
-<property><name>Phenotype</name><value></value></property>
-<property><name>Age</name><value></value></property>
-<property><name>Developmental Stage</name><value></value></property>
-<property><name>Cell Type</name><value></value></property>
-<property><name>Subject</name><value></value></property>
-<property><name>Disease</name><value></value></property>
-<property><name>Disease State</name><value></value></property>
-<property><name>Treatment</name><value></value></property>
-<property><name>Compound</name><value></value></property>
-<property><name>Dose</name><value></value></property>
-<property><name>Immunoprecipitate</name><value></value></property>
-<property><name>Growth Condition</name><value></value></property>
-<property><name>RNAi</name><value></value></property>
-<property><name>Organism Part</name><value></value></property>
-<property><name>Time Point</name><value></value></property>
-
-<property><name>Donor Id</name><value></value></property>
-
+          <property><name>Genotype</name><value></value></property>
+          <property><name>Phenotype</name><value></value></property>
+          <property><name>Age</name><value></value></property>
+          <property><name>Developmental Stage</name><value></value></property>
+          <property><name>Cell Type</name><value></value></property>
+          <property><name>Subject</name><value></value></property>
+          <property><name>Disease</name><value></value></property>
+          <property><name>Disease State</name><value></value></property>
+          <property><name>Treatment</name><value></value></property>
+          <property><name>Compound</name><value></value></property>
+          <property><name>Dose</name><value></value></property>
+          <property><name>Immunoprecipitate</name><value></value></property>
+          <property><name>Growth Condition</name><value></value></property>
+          <property><name>RNAi</name><value></value></property>
+          <property><name>Organism Part</name><value></value></property>
+          <property><name>Time Point</name><value></value></property>
+          <property><name>Donor Id</name><value></value></property>
         </properties>
       </sample>
       """
