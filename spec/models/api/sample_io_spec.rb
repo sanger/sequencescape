@@ -6,8 +6,9 @@ RSpec.describe Api::SampleIO, type: :model do
   subject do
     create :sample,
            name: 'sample_testing_messages',
-           empty_supplier_sample_name: false,
            updated_by_manifest: true,
+           control: true,
+           control_type: 'positive',
            sample_metadata_attributes: {
              supplier_name: 'A name',
              phenotype: 'positive',
@@ -39,35 +40,57 @@ RSpec.describe Api::SampleIO, type: :model do
              subject: '19',
              treatment: '10uM lomitapide in 0.1% ethanol',
              date_of_consent_withdrawn: DateTime.new(2021, 3, 19, 13, 36, 51),
-             user_id_of_consent_withdrawn: user.id
+             user_id_of_consent_withdrawn: user.id,
+             reference_genome_id: reference_genome.id,
+             organism: 'rat',
+             sample_ebi_accession_number: 18374739430,
+             sample_common_name: 'mouse',
+             sample_description: 'desc',
+             sample_taxon_id: 2,
+             father: 'fred',
+             mother: 'frieda',
+             replicate: 'yes',
+             ethnicity: 'stuff',
+             gender: 'female',
+             cohort: 'this one',
+             country_of_origin: 'uk',
+             geographical_region: 'cambridge',
+             sample_public_name: 'public_name',
+             sample_sra_hold: 'Hold',
+             sample_strain_att: 'stuff about strain',
+             consent_withdrawn: false,
+             donor_id: 2,
+             developmental_stage: 'thing'
            }
   end
 
   let(:user) { create :user }
+  let(:reference_genome) { create :reference_genome }
 
   let(:expected_json) do
     {
       'uuid' => subject.uuid,
       'id' => subject.id,
       'name' => 'sample_testing_messages',
-      'replicate' => nil,
-      'organism' => nil,
-      'strain' => nil,
-      'ethnicity' => nil,
-      'mother' => nil,
-      'public_name' => nil,
-      'accession_number' => nil,
-      'common_name' => nil,
-      'taxon_id' => nil,
-      'country_of_origin' => nil,
-      'gender' => nil,
-      'sample_visibility' => nil,
-      'geographical_region' => nil,
-      'description' => nil,
-      'father' => nil,
-      'cohort' => nil,
       'sanger_sample_id' => subject.sanger_sample_id,
-      'control' => nil,
+      'control' => true,
+      control_type: 'positive',
+      'replicate' => 'yes',
+      'organism' => 'rat',
+      'strain' => 'stuff about strain',
+      'ethnicity' => 'stuff',
+      'mother' => 'frieda',
+      'public_name' => 'public_name',
+      'accession_number' => '18374739430',
+      'common_name' => 'mouse',
+      'taxon_id' => 2,
+      'country_of_origin' => 'uk',
+      'gender' => 'Female',
+      'sample_visibility' => 'Hold',
+      'geographical_region' => 'cambridge',
+      'description' => 'desc',
+      'father' => 'fred',
+      'cohort' => 'this one',
       'empty_supplier_sample_name' => false,
       'supplier_name' => 'A name',
       'updated_by_manifest' => true,
@@ -100,7 +123,11 @@ RSpec.describe Api::SampleIO, type: :model do
       'subject' => '19',
       'treatment' => '10uM lomitapide in 0.1% ethanol',
       'date_of_consent_withdrawn' => '2021-03-19 13:36:51',
-      'marked_as_consent_withdrawn_by' => user.login
+      'marked_as_consent_withdrawn_by' => user.login,
+      consent_withdrawn: false,
+      developmental_stage: 'thing',
+      donor_id: '2',
+      reference_genome: 'ReferenceGenome1'
     }
   end
 
