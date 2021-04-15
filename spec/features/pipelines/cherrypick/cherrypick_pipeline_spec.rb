@@ -107,22 +107,22 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
         C;
         C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
         C;
-        A;BUFF;;Trough 100ml;1;;49.1
+        A;BUFF Trough;;Trough 100ml;1;;49.1
         D;#{destination_plate_human_barcode};;Custom Type;1;;49.1
         W;
-        A;BUFF;;Trough 100ml;2;;49.2
+        A;BUFF Trough;;Trough 100ml;2;;49.2
         D;#{destination_plate_human_barcode};;Custom Type;2;;49.2
         W;
-        A;BUFF;;Trough 100ml;3;;49.1
+        A;BUFF Trough;;Trough 100ml;3;;49.1
         D;#{destination_plate_human_barcode};;Custom Type;3;;49.1
         W;
-        A;BUFF;;Trough 100ml;4;;49.2
+        A;BUFF Trough;;Trough 100ml;4;;49.2
         D;#{destination_plate_human_barcode};;Custom Type;4;;49.2
         W;
-        A;BUFF;;Trough 100ml;5;;49.1
+        A;BUFF Trough;;Trough 100ml;5;;49.1
         D;#{destination_plate_human_barcode};;Custom Type;5;;49.1
         W;
-        A;BUFF;;Trough 100ml;6;;49.2
+        A;BUFF Trough;;Trough 100ml;6;;49.2
         D;#{destination_plate_human_barcode};;Custom Type;6;;49.2
         W;
         C;
