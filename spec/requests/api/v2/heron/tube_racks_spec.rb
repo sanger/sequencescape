@@ -25,24 +25,24 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
     let(:tubes) do
       {
         "#{tubes_coordinates[0]}": {
-          "barcode": tubes_barcodes[0],
-          "content": { "supplier_name": supplier_sample_ids[0] }
+          barcode: tubes_barcodes[0],
+          content: { supplier_name: supplier_sample_ids[0] }
         },
         "#{tubes_coordinates[1]}": {
-          "barcode": tubes_barcodes[1],
-          "content": { "supplier_name": supplier_sample_ids[1] }
+          barcode: tubes_barcodes[1],
+          content: { supplier_name: supplier_sample_ids[1] }
         }
       }
     end
     let(:payload) do
       {
-        "data": {
+        data: {
           'type' => 'tube_rack',
-          "attributes": {
-            "purpose_uuid": purpose_uuid,
-            "study_uuid": study.uuid,
-            "barcode": tube_rack_barcode,
-            "tubes": tubes
+          attributes: {
+            purpose_uuid: purpose_uuid,
+            study_uuid: study.uuid,
+            barcode: tube_rack_barcode,
+            tubes: tubes
           }
         }
       }
@@ -105,12 +105,12 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
         let(:tubes) do
           {
             "#{tubes_coordinates[0]}": {
-              "barcode": tubes_barcodes[0],
-              "content": { "control": true, "control_type": 'positive' }
+              barcode: tubes_barcodes[0],
+              content: { control: true, control_type: 'positive' }
             },
             "#{tubes_coordinates[1]}": {
-              "barcode": tubes_barcodes[1],
-              "content": { "control": false, "control_type": nil }
+              barcode: tubes_barcodes[1],
+              content: { control: false, control_type: nil }
             }
           }
         end

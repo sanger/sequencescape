@@ -80,10 +80,6 @@ def api_request(action, path, body)
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
 end
 
-def json_api_request(...)
-  api_request(...)
-end
-
 Given /^I am using version "(\d+)" of the API$/ do |version|
   @api_path = "/api/#{version.to_i}"
 end
@@ -93,11 +89,11 @@ Given /^I am using the latest version of the API$/ do
 end
 
 When /^I (GET|PUT|POST|DELETE) the API path "(\/[^"]*)"$/ do |action, path|
-  json_api_request(action, path, nil)
+  api_request(action, path, nil)
 end
 
 When /^I (POST|PUT) the following JSON to the API path "(\/[^"]*)":$/ do |action, path, serialized_json|
-  json_api_request(action, path, serialized_json)
+  api_request(action, path, serialized_json)
 end
 
 When /^I GET the "([^"]+)" from the API path "(\/[^"]*)"$/ do |content_type, path|
@@ -273,7 +269,7 @@ Given /^the (library tube|plate) "([^"]+)" is a child of the (sample tube|plate)
   child = child_model.gsub(/\s+/,
                            '_').classify.constantize.find_by(name: child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
   parent.children << child
-  if [parent, child].all? { |a| a.is_a?(Receptacle) }
+  if [parent, child].all?(Receptacle)
     child.aliquots = []
     FactoryBot.create(:transfer_request, asset: parent, target_asset: child)
     child.save!

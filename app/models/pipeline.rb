@@ -134,7 +134,7 @@ class Pipeline < ApplicationRecord
   end
 
   def has_controls?
-    controls.empty? ? false : true
+    !controls.empty?
   end
 
   # Extracts the request ids from the selected requests. Overidden in pipleines

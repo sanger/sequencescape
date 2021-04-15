@@ -41,10 +41,10 @@ describe '/api/1/asset_audits' do
     context 'without a key' do
       let(:payload) do
         {
-          "asset_audit": {
-            "message": 'My message',
-            "created_by": 'john',
-            "asset": labware.uuid
+          asset_audit: {
+            message: 'My message',
+            created_by: 'john',
+            asset: labware.uuid
 
           }
         }.to_json
@@ -69,11 +69,11 @@ describe '/api/1/asset_audits' do
     context 'with an invalid key' do
       let(:payload) do
         {
-          "asset_audit": {
-            "message": 'My message',
-            "key": '<key>',
-            "created_by": 'john',
-            "asset": labware.uuid
+          asset_audit: {
+            message: 'My message',
+            key: '<key>',
+            created_by: 'john',
+            asset: labware.uuid
 
           }
         }.to_json
@@ -98,28 +98,28 @@ describe '/api/1/asset_audits' do
     context 'with valid options' do
       let(:payload) do
         {
-          "asset_audit": {
-            "message": 'My message',
-            "key": 'some_key',
-            "created_by": 'john',
-            "asset": labware.uuid,
-            "witnessed_by": 'jane'
+          asset_audit: {
+            message: 'My message',
+            key: 'some_key',
+            created_by: 'john',
+            asset: labware.uuid,
+            witnessed_by: 'jane'
           }
         }.to_json
       end
 
       let(:response_body) do
         {
-          "asset_audit": {
-            "actions": {},
-            "created_by": 'john',
-            "key": 'some_key',
-            "message": 'My message',
-            "witnessed_by": 'jane',
+          asset_audit: {
+            actions: {},
+            created_by: 'john',
+            key: 'some_key',
+            message: 'My message',
+            witnessed_by: 'jane',
 
-            "asset": {
-              "actions": {},
-              "uuid": labware.uuid
+            asset: {
+              actions: {},
+              uuid: labware.uuid
             }
           }
         }
@@ -136,14 +136,14 @@ describe '/api/1/asset_audits' do
     context 'with valid options and metadata' do
       let(:payload) do
         {
-          "asset_audit": {
-            "message": 'My message',
-            "key": 'some_key',
-            "created_by": 'john',
-            "asset": labware.uuid,
-            "witnessed_by": 'jane',
-            "metadata": {
-              'bed_1': 'plate_1'
+          asset_audit: {
+            message: 'My message',
+            key: 'some_key',
+            created_by: 'john',
+            asset: labware.uuid,
+            witnessed_by: 'jane',
+            metadata: {
+              bed_1: 'plate_1'
             }
           }
         }.to_json
@@ -151,19 +151,19 @@ describe '/api/1/asset_audits' do
 
       let(:response_body) do
         {
-          "asset_audit": {
-            "actions": {},
-            "created_by": 'john',
-            "key": 'some_key',
-            "message": 'My message',
-            "witnessed_by": 'jane',
-            "metadata": {
-              'bed_1': 'plate_1'
+          asset_audit: {
+            actions: {},
+            created_by: 'john',
+            key: 'some_key',
+            message: 'My message',
+            witnessed_by: 'jane',
+            metadata: {
+              bed_1: 'plate_1'
             },
 
-            "asset": {
-              "actions": {},
-              "uuid": labware.uuid
+            asset: {
+              actions: {},
+              uuid: labware.uuid
             }
           }
         }
@@ -185,15 +185,15 @@ describe '/api/1/asset_audits' do
 
     let(:response_body) do
       {
-        "asset_audit": {
-          "actions": {
-            "read": "http://www.example.com/api/1/#{asset_audit.uuid}"
+        asset_audit: {
+          actions: {
+            read: "http://www.example.com/api/1/#{asset_audit.uuid}"
           },
-          "uuid": asset_audit.uuid,
-          "created_by": 'abc123',
-          "key": 'some_key',
-          "message": 'Some message',
-          "witnessed_by": 'jane'
+          uuid: asset_audit.uuid,
+          created_by: 'abc123',
+          key: 'some_key',
+          message: 'Some message',
+          witnessed_by: 'jane'
         }
       }
     end

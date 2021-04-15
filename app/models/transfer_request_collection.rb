@@ -29,7 +29,7 @@ class TransferRequestCollection < ApplicationRecord
     # a receptacle to be looked up via its labware with just one additional query for transfer collection
     def extract_receptacles_from_labware
       labware_entries = @cache.select { |uuid_class, _| uuid_class.last == 'Labware' }
-      labware_receptacles = Hash[Receptacle.where(labware_id: labware_entries.values).pluck(:labware_id, :id)]
+      labware_receptacles = Receptacle.where(labware_id: labware_entries.values).pluck(:labware_id, :id).to_h
       labware_entries.each do |uuid_klass, labware_id|
         @cache[[uuid_klass.first, 'Receptacle']] = labware_receptacles[labware_id]
       end

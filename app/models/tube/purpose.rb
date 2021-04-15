@@ -72,7 +72,6 @@ class Tube::Purpose < ::Purpose
 end
 
 require_dependency 'qcable_tube_purpose'
-require_dependency 'illumina_c/qc_pool_purpose'
 require_dependency 'illumina_htp/mx_tube_purpose'
 require_dependency 'illumina_htp/stock_tube_purpose'
 require_dependency 'tube/standard_mx'

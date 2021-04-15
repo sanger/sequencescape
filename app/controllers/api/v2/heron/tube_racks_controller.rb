@@ -19,7 +19,7 @@ module Api
                   study_names: rack_factory.sample_study_names
                 },
                 links: {
-                  'self': api_v2_tube_rack_url(rack_factory.tube_rack)
+                  self: api_v2_tube_rack_url(rack_factory.tube_rack)
                 }
               }
             }, status: :created

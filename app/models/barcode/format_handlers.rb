@@ -278,6 +278,13 @@ module Barcode::FormatHandlers
     self.format = /\A(?<prefix>RNA)(?<number>\d+)\z/
   end
 
+  # Expected formats:
+  # cpRNAnnnnnn
+  # where n is a digit
+  class UkBiocentreV5 < BaseRegExBarcode
+    self.format = /\A(?<prefix>cpRNA)(?<number>\d+)\z/
+  end
+
   # Added to support plates from Queen Elizabeth University Hospital
   # as part of project Heron
   # Expected formats:
@@ -350,6 +357,13 @@ module Barcode::FormatHandlers
   # where n is a digit
   class GlasgowV2 < BaseRegExBarcode
     self.format = /\A(?<prefix>EGG)(?<number>\d{6})\z/
+  end
+
+  # Expected formats:
+  # GLS-GP-nnnnnn
+  # where n is a digit
+  class GlasgowV3 < BaseRegExBarcode
+    self.format = /\A(?<prefix>GLS-GP)-(?<number>\d{6,})\z/
   end
 
   # Added to support 'Operation Eagle' plates

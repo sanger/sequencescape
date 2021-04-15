@@ -134,6 +134,18 @@ class Labware < Asset
 
   delegate :state_changer, to: :purpose, allow_nil: true
 
+  def ancestor_of_purpose(ancestor_purpose_id)
+    return self if plate_purpose_id == ancestor_purpose_id
+
+    ancestors.order(id: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
+  end
+
+  def ancestors_of_purpose(ancestor_purpose_id)
+    return [self] if plate_purpose_id == ancestor_purpose_id
+
+    ancestors.order(id: :desc).where(plate_purpose_id: ancestor_purpose_id)
+  end
+
   def human_barcode
     'UNKNOWN'
   end

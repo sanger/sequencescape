@@ -10,7 +10,7 @@ module Core::Endpoint::BasicHandler::Actions::Standard # rubocop:todo Style/Docu
 
   def standard_action(*names)
     self.standard_actions = {} if standard_actions.empty?
-    standard_actions.merge!(Hash[names.map { |a| [a.to_sym, a.to_sym] }])
+    standard_actions.merge!(names.map { |a| [a.to_sym, a.to_sym] }.to_h)
   end
 
   module InstanceMethods # rubocop:todo Style/Documentation

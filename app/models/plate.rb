@@ -336,18 +336,6 @@ class Plate < Labware
   end
   deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour'
 
-  def ancestor_of_purpose(ancestor_purpose_id)
-    return self if plate_purpose_id == ancestor_purpose_id
-
-    ancestors.order(id: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
-  end
-
-  def ancestors_of_purpose(ancestor_purpose_id)
-    return [self] if plate_purpose_id == ancestor_purpose_id
-
-    ancestors.order(id: :desc).where(plate_purpose_id: ancestor_purpose_id)
-  end
-
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     attributes[:sanger_barcode] = safe_sanger_barcode(attributes[:sanger_barcode] || {})

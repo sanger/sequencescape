@@ -16,7 +16,6 @@ Feature: The various sample views should not be filtered by the users workflow
       |Ethnicity           |
       |DNA source          |
       |Volume (µl)         |
-      |Plate               |
       |Mother              |
       |Father              |
       |Replicate           |

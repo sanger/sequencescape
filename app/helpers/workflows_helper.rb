@@ -26,10 +26,9 @@ module WorkflowsHelper
   end
 
   def batch_tag_index
-    @tag_hash ||= Hash[
-      Tag.joins(:aliquots)
-         .where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id) })
-         .pluck(:receptacle_id, :map_id)].tap { |th| th.default = '-' }
+    @tag_hash ||= Tag.joins(:aliquots)
+                     .where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id) })
+                     .pluck(:receptacle_id, :map_id).to_h.tap { |th| th.default = '-' }
   end
 
   def qc_select_box(request, status, html_options = {})

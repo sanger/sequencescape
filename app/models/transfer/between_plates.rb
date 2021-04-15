@@ -116,7 +116,7 @@ class Transfer::BetweenPlates < Transfer
   # @return [<type>] <description>
   #
   def simple_stamp?
-    transfers.values.none? { |destination| destination.is_a?(Array) }
+    transfers.values.none?(Array)
   end
 
   #

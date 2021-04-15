@@ -9,26 +9,26 @@ RSpec.describe BroadcastEvent::Helpers::ExternalSubjects, heron_events: true do
   let(:labware) { create :labware }
   let(:sub1) do
     {
-      "role_type": 'sender',
-      "subject_type": 'person',
-      "friendly_name": 'alice@example.com',
-      "uuid": '00000000-1111-2222-3333-555555555555'
+      role_type: 'sender',
+      subject_type: 'person',
+      friendly_name: 'alice@example.com',
+      uuid: '00000000-1111-2222-3333-555555555555'
     }
   end
   let(:sub2) do
     {
-      "role_type": 'recipient',
-      "subject_type": 'person',
-      "friendly_name": 'bob@example.com',
-      "uuid": '00000000-1111-2222-3333-666666666666'
+      role_type: 'recipient',
+      subject_type: 'person',
+      friendly_name: 'bob@example.com',
+      uuid: '00000000-1111-2222-3333-666666666666'
     }
   end
   let(:sub3) do
     {
-      "role_type": 'package',
-      "subject_type": 'plant',
-      "friendly_name": 'Chuck',
-      "uuid": '00000000-1111-2222-3333-777777777777'
+      role_type: 'package',
+      subject_type: 'plant',
+      friendly_name: 'Chuck',
+      uuid: '00000000-1111-2222-3333-777777777777'
     }
   end
   let(:subjects_definition) { [sub1, sub2, sub3] }

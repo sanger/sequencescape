@@ -24,8 +24,8 @@ RSpec.describe Api::V2::Heron::PlatesController, type: :request, heron: true do
           attributes: {
             barcode: barcode,
             wells: {
-              'A01': { 'content': { supplier_name: 'xyz123' } },
-              'A02': { 'content': { supplier_name: 'xyz456' } }
+              A01: { content: { supplier_name: 'xyz123' } },
+              A02: { content: { supplier_name: 'xyz456' } }
             },
             purpose_uuid: purpose_uuid,
             study_uuid: study_uuid

@@ -15,7 +15,7 @@ namespace :benchmark do
     end
     puts ''
 
-    all_wells = Hash[('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.map { |w| [w, w] }]
+    all_wells = ('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.map { |w| [w, w] }.to_h
 
     $stdout.puts 'Warming up...'
     15.times do
