@@ -364,7 +364,8 @@ namespace :limber do
           'Ribozero RNA-seq (HMR)',
           'TraDIS',
           'Chromium Visium',
-          'Hi-C'
+          'Hi-C',
+          'Haplotagging'
         ],
         product_line: 'Bespoke',
         default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
