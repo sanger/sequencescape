@@ -259,8 +259,10 @@ class Labware < Asset
   def lookup_labwhere(barcode)
     begin
       info_from_labwhere = LabWhereClient::Labware.find_by_barcode(barcode)
-    rescue LabWhereClient::LabwhereException => e
-      return "Not found (#{e.message})"
+    rescue StandardError => e
+      # rescue LabWhereClient::LabwhereException => e
+      Rails.logger.error { e }
+      return 'Not found - There is a problem with Labwhere'
     end
     info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
   end
