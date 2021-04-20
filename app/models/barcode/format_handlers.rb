@@ -421,4 +421,11 @@ module Barcode::FormatHandlers
   class RandoxEagle < BaseRegExBarcode
     self.format = /\A(?<prefix>RXE)(?<number>\d{6})\z/
   end
+
+  # Expected formats:
+  # HSLnnnnnn
+  # where n is a digit
+  class HealthServicesLaboratories < BaseRegExBarcode
+    self.format = /\A(?<prefix>HSL)(?<number>\d+)\z/
+  end
 end
