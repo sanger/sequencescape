@@ -425,7 +425,7 @@ module Barcode::FormatHandlers
   # Expected formats:
   # HSLnnnnnn
   # where n is a digit
-  class HealthServicesLaboratories < BaseRegExBarcode
+  class HealthServicesLaboratoriesV1 < BaseRegExBarcode
     self.format = /\A(?<prefix>HSL)(?<number>\d+)\z/
   end
 end

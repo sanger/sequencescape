@@ -234,7 +234,7 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'ABC000002'
   end
 
-  describe Barcode::FormatHandlers::HealthServicesLaboratories do
+  describe Barcode::FormatHandlers::HealthServicesLaboratoriesV1 do
     it_has_a_valid_barcode 'HSL123456', prefix: 'HSL', number: 123456, suffix: nil
     it_has_a_valid_barcode 'HSL12345678', prefix: 'HSL', number: 12345678, suffix: nil
     it_has_an_invalid_barcode 'HSL_123456'
