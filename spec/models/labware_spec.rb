@@ -202,4 +202,13 @@ RSpec.describe Labware, type: :model do
       it { is_expected.to eq expected }
     end
   end
+
+  describe 'labwhere_location' do
+    it 'returns not found when a LabWhereClient error is raised' do
+      allow(LabWhereClient::Labware).to receive(:find_by_barcode).and_raise(StandardError, 'Timed out reading data from server')
+
+      plate = create(:plate, barcode: 1)
+      expect(plate.storage_location).to eq('Not found - There is a problem with Labwhere')
+    end
+  end
 end
