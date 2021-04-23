@@ -1,0 +1,30 @@
+---
+queue_broadcast_consumer:
+  desc: Handles the rebroadcast of short format message into their long form equivalent
+  queue:
+    name: psd.queue_broadcast
+    options:
+      :durable: true
+      :arguments:
+        x-dead-letter-exchange: queue_broadcast_consumer.dead-letters
+    bindings:
+    - exchange:
+        name: psd.sequencescape
+        options:
+          :type: topic
+          :durable: true
+      options:
+        :routing_key: development.queue_broadcast.#
+  subscribed_class: Warren::Subscriber::QueueBroadcastConsumer
+  dead_letters:
+    name: queue_broadcast_consumer.dead-letters
+    options:
+      :durable: true
+      :arguments: {}
+    bindings:
+    - exchange:
+        name: queue_broadcast_consumer.dead-letters
+        options:
+          :type: fanout
+          :durable: true
+      options: {}

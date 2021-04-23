@@ -36,6 +36,7 @@ Rails.application.configure do
   if ENV['RAILS_LOG_TO_FILE'].blank?
     config.logger = ActiveSupport::Logger.new(STDOUT)
   end
+  config.log_level = ENV.fetch('LOG_LEVEL', :debug).to_sym
 
   # Raise an error on page load if there are pending migrations.
   custom_db = ENV.fetch('DATABASE_URL', nil).present?

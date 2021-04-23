@@ -420,7 +420,6 @@ Naming/MemoizedInstanceVariableName:
     - 'app/models/user_query.rb'
     - 'app/uat_actions/uat_actions/generate_tag_group.rb'
     - 'config/initializers/ruby_net_http_proxy_hack.rb'
-    - 'lib/postman.rb'
 
 # Offense count: 15
 # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
@@ -623,7 +622,6 @@ RSpec/ContextWording:
     - 'spec/lib/label_printer/asset_redirect_spec.rb'
     - 'spec/lib/label_printer/batch_plate_spec.rb'
     - 'spec/lib/label_printer/sample_manifest_plate_double_spec.rb'
-    - 'spec/lib/postman/message_spec.rb'
     - 'spec/lib/record_loader/plate_purpose_loader_spec.rb'
     - 'spec/models/aliquot_spec.rb'
     - 'spec/models/api/messages/qc_result_io_spec.rb'
@@ -935,7 +933,6 @@ RSpec/NamedSubject:
     - 'spec/controllers/studies_controller_spec.rb'
     - 'spec/lib/accession/contact_spec.rb'
     - 'spec/lib/label_printer/sample_manifest_plate_double_spec.rb'
-    - 'spec/lib/postman/message_spec.rb'
     - 'spec/models/aliquot_spec.rb'
     - 'spec/models/api/library_tube_io_spec.rb'
     - 'spec/models/api/messages/flowcell_io_spec.rb'
@@ -1049,7 +1046,6 @@ RSpec/StubbedMock:
     - 'spec/features/sample_logistics/lab/stock_stamping_spec.rb'
     - 'spec/features/sample_manifests/create_manifest_spec.rb'
     - 'spec/features/sample_manifests/track_sample_manifest_updates_spec.rb'
-    - 'spec/lib/postman/message_spec.rb'
     - 'spec/models/plate/sample_tube_factory_spec.rb'
     - 'spec/models/plate_purpose_spec.rb'
     - 'spec/models/pooling_spec.rb'
@@ -2490,10 +2486,6 @@ Style/FrozenStringLiteralComment:
     - 'lib/linefeed_fix.rb'
     - 'lib/manifest_util.rb'
     - 'lib/object_space_profile.rb'
-    - 'lib/postman.rb'
-    - 'lib/postman/channel.rb'
-    - 'lib/postman/message.rb'
-    - 'lib/postman/state_machine.rb'
     - 'lib/product_helpers.rb'
     - 'lib/record_loader/plate_purpose_loader.rb'
     - 'lib/request_class_deprecator.rb'
@@ -2545,7 +2537,6 @@ Style/GlobalStdStream:
   Exclude:
     - 'config/environments/development.rb'
     - 'config/environments/production.rb'
-    - 'lib/postman.rb'
     - 'lib/tasks/limber_dev.rake'
 
 # Offense count: 59

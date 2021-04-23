@@ -66,7 +66,7 @@ group :default do
 
   # Bunny is a RabbitMQ client.
   gem 'bunny'
-  gem 'sanger_warren'
+  gem 'sanger_warren', path: '../warren'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
