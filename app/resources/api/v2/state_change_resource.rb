@@ -11,7 +11,6 @@ module Api
       attribute :updated_at
 
       has_one :labware
-
     end
   end
 end
