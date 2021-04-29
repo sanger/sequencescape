@@ -233,5 +233,19 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'RXE-000002'
     it_has_an_invalid_barcode 'ABC000002'
   end
+
+  describe Barcode::FormatHandlers::HealthServicesLaboratoriesV1 do
+    it_has_a_valid_barcode 'HSL123456', prefix: 'HSL', number: 123456, suffix: nil
+    it_has_a_valid_barcode 'HSL12345678', prefix: 'HSL', number: 12345678, suffix: nil
+    it_has_an_invalid_barcode 'HSL_123456'
+    it_has_an_invalid_barcode 'INVALID'
+    it_has_an_invalid_barcode '12HSL123456'
+    it_has_an_invalid_barcode '123456789HSL'
+    it_has_an_invalid_barcode 'RNA_1234'
+    it_has_an_invalid_barcode ' HSL_123456'
+    it_has_an_invalid_barcode 'HSL_123456  '
+    it_has_an_invalid_barcode " 1234567890NBC\na"
+  end
+
   # rubocop:enable RSpec/EmptyExampleGroup
 end

@@ -49,7 +49,8 @@ class Barcode < ApplicationRecord
     randox_eagle: 28,
     randox_v2: 29,
     glasgow_v3: 30,
-    uk_biocentre_v5: 31
+    uk_biocentre_v5: 31,
+    health_services_laboratories_v1: 32
   }
 
   # Barcode formats which may be submitted via sample manifests
@@ -58,7 +59,7 @@ class Barcode < ApplicationRecord
                                alderly_park_v1 alderly_park_v2 uk_biocentre_v3 cgap_plate cgap_rack
                                glasgow cambridge_a_z heron_tailed randox uk_biocentre_v4 cambridge_a_z_v2 glasgow_v2
                                eagle cambridge_a_z_eagle glasgow_eagle uk_biocentre_eagle alderley_park_eagle randox_eagle
-                               randox_v2 glasgow_v3 uk_biocentre_v5].freeze
+                               randox_v2 glasgow_v3 uk_biocentre_v5 health_services_laboratories_v1].freeze
 
   validate :barcode_valid?
   validates :barcode, uniqueness: { scope: :format, case_sensitive: false }
