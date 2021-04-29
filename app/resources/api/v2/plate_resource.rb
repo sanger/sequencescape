@@ -30,6 +30,7 @@ module Api
       has_many :child_tubes, readonly: true
 
       has_many :direct_submissions, readonly: true
+      has_many :state_changes, readonly: true
 
       # Attributes
       attribute :uuid, readonly: true
