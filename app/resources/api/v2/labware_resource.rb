@@ -5,6 +5,7 @@ module Api
     # LabwareResource
     class LabwareResource < BaseResource
       attributes :uuid
+      attribute :created_at
 
       default_includes :uuid_object, :barcodes
 
