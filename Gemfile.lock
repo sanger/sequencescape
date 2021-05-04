@@ -30,15 +30,6 @@ GIT
   specs:
     sanger_barcode_format (0.2.0)
 
-PATH
-  remote: ../warren
-  specs:
-    sanger_warren (0.2.0)
-      bunny (~> 2.17.0)
-      connection_pool (~> 2.2.0)
-      multi_json (~> 1.0)
-      thor (~> 1.1.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -435,6 +426,11 @@ GEM
       ffi (~> 1.12)
     ruby2_keywords (0.0.4)
     rubyzip (2.3.0)
+    sanger_warren (0.2.0.rc1)
+      bunny (~> 2.17.0)
+      connection_pool (~> 2.2.0)
+      multi_json (~> 1.0)
+      thor (~> 1.1.0)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.1.0)
@@ -541,13 +537,11 @@ DEPENDENCIES
   bootstrap
   builder
   bullet
-  bunny
   cancancan
   capybara
   capybara-selenium
   carrierwave
   configatron
-  connection_pool
   cucumber
   cucumber-rails
   daemons
@@ -604,7 +598,7 @@ DEPENDENCIES
   ruby-units
   rubyzip
   sanger_barcode_format!
-  sanger_warren!
+  sanger_warren (= 0.2.0.rc1)
   sass-rails
   sassc (= 2.1.0)
   select2-rails
