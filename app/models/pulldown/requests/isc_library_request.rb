@@ -18,10 +18,5 @@ module Pulldown::Requests
       super
       pool_information[:request_type] = request_type.key
     end
-
-    def billing_product_identifier
-      bait_library = request_metadata.try(:bait_library)
-      bait_library.category if bait_library.present?
-    end
   end
 end

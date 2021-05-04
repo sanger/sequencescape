@@ -84,9 +84,6 @@ class Request < ApplicationRecord
   delegate :flowcell, to: :batch, allow_nil: true
   delegate :for_multiplexing?, to: :request_type
 
-  belongs_to :billing_product, class_name: 'Billing::Product'
-  has_many :billing_items, class_name: 'Billing::Item'
-
   # Only actively used by poolable requests, but here to help with eager loading
   has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', inverse_of: :request
   has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
@@ -199,7 +196,6 @@ class Request < ApplicationRecord
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
   scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
-  scope :for_billing, -> { includes([:initial_project, :request_type, { target_asset: :aliquots }]) }
 
   scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids) }
 
@@ -546,8 +542,6 @@ class Request < ApplicationRecord
   end
 
   def manifest_processed!; end
-
-  def billing_product_identifier; end
 
   private
 

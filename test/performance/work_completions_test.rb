@@ -20,11 +20,9 @@ class WorkCompletionsTest < ActionDispatch::PerformanceTest
     # The target plate is the downstream plate we are going to be passing.
     @target_plate = create :target_plate, parent: input_plate, well_count: tested_wells
 
-    product = create :billing_product
-
     input_plate.wells.each do |well|
-      create :library_request, request_type: library_request_type, asset: well, submission: @target_submission, state: 'started', billing_product: product
-      create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: 'started', billing_product: product
+      create :library_request, request_type: library_request_type, asset: well, submission: @target_submission, state: 'started'
+      create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: 'started'
     end
     submission_request_types[1..].each do |downstream_type|
       input_plate.wells.count.times do

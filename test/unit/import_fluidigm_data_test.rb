@@ -3,25 +3,25 @@
 require 'test_helper'
 require 'csv'
 class ImportFluidigmDataTest < ActiveSupport::TestCase
-  def create_fluidigm_file
-    @XY = 'M'
-    @XX = 'F'
-    @YY = 'F'
-    @NC = 'Unknown'
+  XY = 'M'
+  XX = 'F'
+  YY = 'F'
+  NC = 'Unknown'
 
+  def create_fluidigm_file
     @file = File.open("#{Rails.root}/test/data/fluidigm.csv")
     @fluidigm = FluidigmFile.new(@file.read)
     @well_maps = {
       'S06' => {
-        markers: [@XY, @XY, @XY],
+        markers: [XY, XY, XY],
         count: 94
       },
       'S04' => {
-        markers: [@NC, @XX, @XX],
+        markers: [NC, XX, XX],
         count: 92
       },
       'S43' => {
-        markers: [@XX, @XX, @XX],
+        markers: [XX, XX, XX],
         count: 94
       }
     }
