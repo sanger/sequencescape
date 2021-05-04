@@ -43,7 +43,7 @@ module Billing
 
       # billing_product_code will be received from Agresso based on billing_product name
       def billing_product_code
-        # this is been disabled because of Agresso performance issues
+        # this functionality has been entirely removed
         # AgressoProduct.billing_product_code(billing_product.name)
       rescue
         nil

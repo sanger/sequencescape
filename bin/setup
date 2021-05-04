@@ -28,12 +28,6 @@ chdir APP_ROOT do
   unless ENV['SKIP_AUTOMATIC_GEM_INSTALLATION']
     system! 'gem install bundler --conservative'
 
-    # Check to see if we can install the oracle gems
-    unless ENV['DYLD_LIBRARY_PATH'] || ENV['DYLD_FALLBACK_LIBRARY_PATH'] || ENV['OCI_DIR']
-      puts "No Oracle configuration detected disabling associated gems"
-      system!('bundle config set --local without warehouse')
-    end
-
     system('bundle check') || system!('bundle install --jobs 4 --retry 3')
   end
   # Install JavaScript dependencies if using Yarn
