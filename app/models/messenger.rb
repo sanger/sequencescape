@@ -5,10 +5,6 @@ class Messenger < ApplicationRecord
   validates :target, :root, :template, presence: true
   broadcast_with_warren
 
-  def shoot
-    raise StandardErrror, "Hey, don't shoot the messenger"
-  end
-
   def render_class
     "Api::Messages::#{template}".constantize
   end
@@ -20,6 +16,10 @@ class Messenger < ApplicationRecord
   def as_json(_options = {})
     { root => render_class.to_hash(target),
       'lims' => configatron.amqp.lims_id! }
+  end
+
+  def queue_for_broadcast
+    add_to_transaction
   end
 
   def resend
