@@ -2,7 +2,7 @@
 queue_broadcast_consumer:
   desc: Handles the rebroadcast of short format message into their long form equivalent
   queue:
-    name: psd.queue_broadcast
+    name: psd.queue_broadcast_consumer
     options:
       :durable: true
       :arguments:
