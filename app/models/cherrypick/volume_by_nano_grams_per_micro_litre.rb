@@ -25,18 +25,31 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required, concentration_required,
                                                                         source_concentration)
 
+    # @note Here we appear to set the concentration based on the required concentration, regardless of whether we hit it
+    # it or not. Checking if this behaviour is desired RT#719205
     well_attribute.concentration    = concentration_required
     well_attribute.requested_volume = volume_required
+    # Similarly we set current volume based on required. This is only untrue in rare edge cases though
+    # (When you have almost all your required volume from your source, then add more buffer than intended
+    #  due to minimum robot picks)
     well_attribute.current_volume   = volume_required
 
-    volume_to_pick = if source_concentration.zero?
-                       [[volume_required, robot_minimum_picking_volume].max, source_volume].compact.min
-                     else
-                       volume_needed = ((volume_required * concentration_required) / source_concentration)
-                       vtp = [[volume_required, volume_needed].min,
-                              robot_minimum_picking_volume].max
-                       [source_volume, vtp].compact.min
-                     end
+    # The minimum picking volume is usually determined by the robot, but if the
+    # source volume is lower than this, we don't want to try to pick more.
+    minimum_picking_volume = [robot_minimum_picking_volume, source_volume].compact.min
+
+    # The maximum picking volume is limited by the source volume, and the volume
+    # required.
+    maximum_picking_volume = [volume_required, source_volume].compact.min
+
+    volume_needed = if source_concentration.zero?
+                      volume_required # If we have no material, then transfer everything
+                    else
+                      (volume_required * concentration_required) / source_concentration
+                    end
+
+    # clamp applies maximum and minimum values to volume_needed
+    volume_to_pick = volume_needed.clamp(minimum_picking_volume..maximum_picking_volume)
 
     well_attribute.picked_volume  = volume_to_pick
     well_attribute.buffer_volume  = buffer_volume_required(volume_required, volume_to_pick, robot_minimum_picking_volume)
@@ -45,12 +58,11 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     volume_to_pick
   end
 
+  private
+
   def check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required, concentration_required, source_concentration)
-    raise Cherrypick::VolumeError, "Volume required (#{volume_required.inspect}) is invalid for cherrypick by nano grams per micro litre" if volume_required.blank? || volume_required.to_f <= 0.0
-    if concentration_required.blank? || concentration_required.to_f <= 0.0
-      raise Cherrypick::ConcentrationError, "Concentration required (#{concentration_required.inspect}) is invalid for cherrypick by nano grams per micro litre"
-    end
+    raise Cherrypick::VolumeError, "Volume required (#{volume_required.inspect}) should be greater than zero" if volume_required.to_f <= 0.0
+    raise Cherrypick::ConcentrationError, "Concentration required (#{concentration_required.inspect}) should be greater than zero" if concentration_required.to_f <= 0.0
     raise Cherrypick::ConcentrationError, "Source concentration (#{source_concentration.inspect}) is invalid for cherrypick by nano grams per micro litre" if source_concentration.blank? || source_concentration.to_f < 0.0
   end
-  private :check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!
 end
