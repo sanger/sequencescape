@@ -133,8 +133,8 @@ end
 group :development, :linting do
   # Enforces coding styles and detects some bad practices
   gem 'rubocop', require: false
-  gem 'rubocop-performance'
-  gem 'rubocop-rails'
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
   gem 'yard-activerecord', '~> 0.0.16'
 end
