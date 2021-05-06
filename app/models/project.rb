@@ -23,7 +23,7 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
   has_many_events
   has_many_lab_events
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   aasm column: :state, whiny_persistence: true do
     state :pending, initial: true

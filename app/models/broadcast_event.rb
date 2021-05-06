@@ -21,7 +21,7 @@ class BroadcastEvent < ApplicationRecord
   serialize :properties
   self.inheritance_column = 'sti_type'
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   # Prefer email, fall back to login if missing
   def user_identifier

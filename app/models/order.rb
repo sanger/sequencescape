@@ -72,7 +72,7 @@ class Order < ApplicationRecord
   before_destroy :building_submission?
   after_destroy :on_delete_destroy_submission
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   scope :include_for_study_view, -> { includes(:submission) }
   scope :containing_samples, ->(samples) { joins(assets: :samples).where(samples: { id: samples }) }

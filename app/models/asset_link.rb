@@ -25,7 +25,7 @@ class AssetLink < ApplicationRecord
   include Uuid::Uuidable
 
   acts_as_dag_links node_class_name: 'Labware'
-  broadcast_via_warren
+  broadcast_with_warren
 
   self.per_page = 500
   self.lazy_uuid_generation = true

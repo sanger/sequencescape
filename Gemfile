@@ -64,8 +64,8 @@ group :default do
   # due to not correctly eager loading dependencies on nested resources.
   gem 'jsonapi-resources', '0.9.0'
 
-  # Bunny is a RabbitMQ client.
-  gem 'bunny'
+  # Wraps bunny with connection pooling ad consumer process handling
+  gem 'sanger_warren'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
@@ -85,11 +85,6 @@ group :default do
   # Provides null db adapter, that blocks access to remote database
   # (in our case used for Agresso db in non-production environments)
   gem 'activerecord-nulldb-adapter', require: false
-
-  # Allow simple connection pooling on non-database connections
-  # Using it to maintain our warren's of bunnies.
-  # Or the connection pool of RabbitMQ channels to get technical
-  gem 'connection_pool'
 
   gem 'rack-cors', require: 'rack/cors'
 
