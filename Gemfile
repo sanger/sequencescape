@@ -65,7 +65,7 @@ group :default do
   gem 'jsonapi-resources', '0.9.0'
 
   # Wraps bunny with connection pooling ad consumer process handling
-  gem 'sanger_warren', '0.2.0.rc2'
+  gem 'sanger_warren'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
