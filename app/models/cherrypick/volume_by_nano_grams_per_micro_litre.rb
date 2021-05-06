@@ -1,4 +1,24 @@
-module Cherrypick::VolumeByNanoGramsPerMicroLitre # rubocop:todo Style/Documentation
+# Included in {Well} to provide calculations for cherrypicking
+module Cherrypick::VolumeByNanoGramsPerMicroLitre
+  #
+  # Used in the cherrypicking process to calculate the relative volumes of source
+  # and buffer required to reach the target volume and concentration.
+  #
+  # - Ideally will aim for a target well containing volume_required at concentration_required
+  # - This will be made by combining material from the source well (picked_volume) and
+  #   buffer (buffer_volume)
+  # - Maximum picked_volume is limited by source_volume and volume_required
+  # - If source_volume < volume_required then buffer will be added to make up volume_required
+  #   even if it reduces the target concentration below concentration_required
+  #
+  # @param volume_required [Float] The volume to aim for in the target well (self)
+  # @param concentration_required [Float] The concentration to aim for in the target well (self)
+  # @param source_concentration [Float] The concentration (ng/ul) in the source well
+  # @param source_volume [Float] The volume (ul) in the source well (ie. the maximum pick)
+  # @param robot_minimum_picking_volume [Float] (ul) the minimum volume the robot can pick
+  #
+  # @return [Float] The total volume that will be picked from the source well
+  #
   def volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required, concentration_required, source_concentration, source_volume, robot_minimum_picking_volume = 0.0)
     robot_minimum_picking_volume ||= 0
 
@@ -9,17 +29,17 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre # rubocop:todo Style/Documenta
     well_attribute.requested_volume = volume_required
     well_attribute.current_volume   = volume_required
 
-    volume_to_pick = [[volume_required, robot_minimum_picking_volume].max, source_volume].compact.min
-    buffer_volume  = 0.0
-    unless source_concentration.zero?
-      volume_to_pick = [[volume_required, ((volume_required * concentration_required) / source_concentration)].min,
-                        robot_minimum_picking_volume].max
-      volume_to_pick = [source_volume, volume_to_pick].compact.min
-      buffer_volume  = buffer_volume_required(volume_required, volume_to_pick, robot_minimum_picking_volume)
-    end
+    volume_to_pick = if source_concentration.zero?
+                       [[volume_required, robot_minimum_picking_volume].max, source_volume].compact.min
+                     else
+                       volume_needed = ((volume_required * concentration_required) / source_concentration)
+                       vtp = [[volume_required, volume_needed].min,
+                              robot_minimum_picking_volume].max
+                       [source_volume, vtp].compact.min
+                     end
 
     well_attribute.picked_volume  = volume_to_pick
-    well_attribute.buffer_volume  = buffer_volume
+    well_attribute.buffer_volume  = buffer_volume_required(volume_required, volume_to_pick, robot_minimum_picking_volume)
     well_attribute.robot_minimum_picking_volume = robot_minimum_picking_volume
 
     volume_to_pick
