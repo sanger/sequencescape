@@ -6,7 +6,7 @@ queue_broadcast_consumer:
     options:
       :durable: true
       :arguments:
-        x-dead-letter-exchange: queue_broadcast_consumer.dead-letters
+        x-dead-letter-exchange: psd.queue_broadcast_consumer.dead-letters
     bindings:
     - exchange:
         name: psd.sequencescape
@@ -17,13 +17,13 @@ queue_broadcast_consumer:
         :routing_key: "%{routing_key_prefix}.queue_broadcast.#"
   subscribed_class: Warren::Subscriber::QueueBroadcastConsumer
   dead_letters:
-    name: queue_broadcast_consumer.dead-letters
+    name: psd.queue_broadcast_consumer.dead-letters
     options:
       :durable: true
       :arguments: {}
     bindings:
     - exchange:
-        name: queue_broadcast_consumer.dead-letters
+        name: psd.queue_broadcast_consumer.dead-letters
         options:
           :type: fanout
           :durable: true
