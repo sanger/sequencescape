@@ -53,7 +53,7 @@ class Batch < ApplicationRecord
   has_many_lab_events
 
   accepts_nested_attributes_for :requests
-  broadcast_via_warren
+  broadcast_with_warren
 
   validate :requests_have_same_read_length, :batch_meets_minimum_size, :all_requests_are_ready?, on: :create, if: :pipeline
 

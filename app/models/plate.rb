@@ -52,10 +52,10 @@ class Plate < Labware
           Uuid.import(ids.map do |well|
                         { resource_id: well, resource_type: well_type, external_id: Uuid.generate_uuid }
                       end)
-          # Warren::QueueBroadcastMessage keeps track of the class (Well) and id, and gets sent after
+          # Warren::Message::Short keeps track of the class (Well) and id, and gets sent after
           # the transaction completes. This avoids us needing to instantiate wells, keeping the memory footprint
           # down.
-          ids.each { |id| Warren::QueueBroadcastMessage.new(class_name: 'Well', id: id).queue(Warren.handler) }
+          ids.each { |id| Warren::Message::Short.new(class_name: 'Well', id: id).queue(Warren.handler) }
         end
       end
     end

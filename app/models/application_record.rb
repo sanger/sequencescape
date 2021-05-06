@@ -5,7 +5,8 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
-  include Warren::BroadcastMessages
+  # include Warren::BroadcastMessages
+  include Warren::Callback
   # Provides {Squishify} which allows attributes to automatically have their whitespace compressed before validation
   # @example Squishifying a study title
   #  class Study < ApplicationRecord
