@@ -4,9 +4,11 @@ require 'rails_helper'
 require 'record_loader/plate_purpose_loader'
 
 RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
-  subject do
+  def a_new_record_loader
     described_class.new(directory: test_directory, files: selected_files)
   end
+
+  subject(:record_loader) { a_new_record_loader }
 
   let(:test_directory) { Rails.root.join('spec/data/record_loader/plate_purposes') }
   let(:created_purposes) { ['Basic Plate', 'Other Plate', 'Type with creator'] }

@@ -5,9 +5,11 @@ require 'record_loader/tag_group_loader'
 
 # This file was initially generated via `rails g record_loader`
 RSpec.describe RecordLoader::TagGroupLoader, type: :model, loader: true do
-  subject(:record_loader) do
+  def a_new_record_loader
     described_class.new(directory: test_directory, files: selected_files)
   end
+
+  subject(:record_loader) { a_new_record_loader }
 
   before do
     create :adapter_type, name: 'Sanger 168'
@@ -30,11 +32,17 @@ RSpec.describe RecordLoader::TagGroupLoader, type: :model, loader: true do
       expect { record_loader.create! }.to change(TagGroup, :count).by(2)
     end
 
+    it 'creates two tags' do
+      expect { record_loader.create! }.to change(Tag, :count).by(2)
+    end
+
     # It is important that multiple runs of a RecordLoader do not create additional
     # copies of existing records.
     it 'is idempotent' do
       record_loader.create!
-      expect { record_loader.create! }.not_to change(TagGroup, :count)
+      expect { described_class.new(directory: test_directory, files: selected_files).create! }.not_to(
+        change(TagGroup, :count) && change(Tag, :count)
+      )
     end
 
     it 'sets attributes on the created records' do
