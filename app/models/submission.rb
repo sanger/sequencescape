@@ -276,7 +276,7 @@ class Submission < ApplicationRecord
   def request_cache
     @request_cache ||= Hash.new do |cache, ids|
       cache[ids] = requests.with_request_type_id(ids)
-                           .includes(:asset, :billing_product)
+                           .includes(:asset)
                            .order(id: :asc)
                            .group_by(&:request_type_id)
     end

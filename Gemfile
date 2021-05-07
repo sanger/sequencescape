@@ -82,10 +82,6 @@ group :default do
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
 
-  # Provides null db adapter, that blocks access to remote database
-  # (in our case used for Agresso db in non-production environments)
-  gem 'activerecord-nulldb-adapter', require: false
-
   gem 'rack-cors', require: 'rack/cors'
 
   # Adds easy conversions between units
@@ -99,12 +95,6 @@ group :default do
 
   # Authorization
   gem 'cancancan'
-end
-
-group :warehouse do
-  # Used to connect to oracle databases for some data import
-  gem 'activerecord-oracle_enhanced-adapter'
-  gem 'ruby-oci8', platforms: :mri
 end
 
 group :development do

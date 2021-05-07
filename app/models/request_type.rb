@@ -73,8 +73,6 @@ class RequestType < ApplicationRecord
   # The target asset can either be described by a purpose, or by the target asset type.
   belongs_to :target_purpose, class_name: 'Purpose'
 
-  belongs_to :billing_product_catalogue, class_name: 'Billing::ProductCatalogue'
-
   validates :request_purpose, presence: true
   # Order in this case is merely a means of sorting lists of request types to ensure that
   # those earlier in the typical process appear first.
@@ -103,7 +101,6 @@ class RequestType < ApplicationRecord
       request.request_type = self
       request.request_purpose ||= request_purpose
       yield(request) if block_given?
-      request.billing_product = find_product_for_request(request)
     end
     # Prevent us caching all our requests
     requests.reset
@@ -180,10 +177,6 @@ class RequestType < ApplicationRecord
 
   def default_library_type
     library_types.find_by(library_types_request_types: { is_default: true })
-  end
-
-  def find_product_for_request(request)
-    billing_product_catalogue.find_product_for_request(request) if billing_product_catalogue.present?
   end
 
   # Returns the validator for a given option.

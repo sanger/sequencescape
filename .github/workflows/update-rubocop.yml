@@ -33,7 +33,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       env:
-        BUNDLE_WITHOUT: 'warehouse cucumber deployment profile development default test'
+        BUNDLE_WITHOUT: 'cucumber deployment profile development default test'
       with:
         bundler-cache: true
     - name: Update Rubocop

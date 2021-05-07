@@ -90,11 +90,6 @@ RSpec.describe SequencingRequest, type: :model do
         it { is_expected.to be false }
       end
     end
-
-    it 'knows #billing_product_identifier' do
-      sequencing_request.request_metadata.update(read_length: 150)
-      expect(sequencing_request.billing_product_identifier).to eq 150
-    end
   end
 
   describe '#loading_concentration' do

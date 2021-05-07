@@ -615,8 +615,6 @@ Rails.application.routes.draw do
 
   resources :uat_actions
 
-  resources :billing_reports, only: %i[new create]
-
   resources :location_reports, only: %i[index show create]
 
   # this is for test only test/functional/authentication_controller_test.rb

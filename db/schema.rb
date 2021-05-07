@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_30_155357) do
+ActiveRecord::Schema.define(version: 2021_05_04_153704) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -272,36 +272,6 @@ ActiveRecord::Schema.define(version: 2021_03_30_155357) do
     t.string "barcode"
     t.index ["pipeline_id", "state", "created_at"], name: "index_batches_on_pipeline_id_and_state_and_created_at"
     t.index ["updated_at"], name: "index_batches_on_updated_at"
-  end
-
-  create_table "billing_items", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.integer "request_id"
-    t.string "project_cost_code"
-    t.string "units"
-    t.string "billing_product_code"
-    t.string "billing_product_name"
-    t.string "billing_product_description"
-    t.string "request_passed_date"
-    t.timestamp "reported_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["request_id"], name: "index_billing_items_on_request_id"
-  end
-
-  create_table "billing_product_catalogues", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "billing_products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name"
-    t.string "identifier"
-    t.integer "category"
-    t.integer "billing_product_catalogue_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["billing_product_catalogue_id"], name: "fk_rails_01eabb683d"
   end
 
   create_table "broadcast_events", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1918,8 +1888,6 @@ ActiveRecord::Schema.define(version: 2021_03_30_155357) do
   add_foreign_key "aliquots", "requests"
   add_foreign_key "assets_deprecated", "plate_types", column: "labware_type_id"
   add_foreign_key "barcodes", "labware", column: "asset_id"
-  add_foreign_key "billing_items", "requests"
-  add_foreign_key "billing_products", "billing_product_catalogues"
   add_foreign_key "labware", "plate_purposes"
   add_foreign_key "labware", "plate_types", column: "labware_type_id"
   add_foreign_key "library_types_request_types", "library_types", name: "fk_library_types_request_types_to_library_types"
@@ -1946,10 +1914,8 @@ ActiveRecord::Schema.define(version: 2021_03_30_155357) do
   add_foreign_key "qcables", "labware", column: "asset_id"
   add_foreign_key "qcables", "lots", name: "fk_qcables_to_lots"
   add_foreign_key "receptacles", "labware"
-  add_foreign_key "request_types", "billing_product_catalogues"
   add_foreign_key "request_types_extended_validators", "extended_validators", name: "fk_request_types_extended_validators_to_extended_validators"
   add_foreign_key "request_types_extended_validators", "request_types", name: "fk_request_types_extended_validators_to_request_types"
-  add_foreign_key "requests", "billing_products"
   add_foreign_key "requests", "work_orders"
   add_foreign_key "roles_users", "roles", name: "fk_roles_users_to_roles"
   add_foreign_key "roles_users", "users", name: "fk_roles_users_to_users"

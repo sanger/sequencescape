@@ -462,11 +462,6 @@ RSpec.describe Request do
     end
   end
 
-  it 'responds to #billing_product_identifier' do
-    request = described_class.new
-    expect(request.billing_product_identifier).to be nil
-  end
-
   describe '::progress_statistics' do
     subject { described_class.progress_statistics }
 
