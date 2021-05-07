@@ -1,5 +1,16 @@
+# By default the development environment just logs the message and
+# payload. If you wish to enable broadcasting in development mode,
+# the easiest way to do so is to set the ENV WARREN_TYPE.
+# For example
+# `WARREN_TYPE=broadcast bundle exec rails s`
+# This will override the setting in warren.yml
 development:
   type: log
+  # Log mode does not actually use this configuration, but
+  # it is provided for convenience when broadcast mode is enabled.
+  # The provided settings are the default options of RabbitMQ
+  # DO NOT commit sensitive information in this file. Instead you may
+  # use the WARREN_CONNECTION_URI environmental variable
   config:
     server:
       host: localhost
@@ -10,18 +21,21 @@ development:
       frame_max: 0
       heartbeat: 30
     exchange: psd.sequencescape
-  subscriptions:
-    queue_broadcast_consumer:
-      exchange: psd.sequencescape
-      queue: psd.queue_broadcast
-      routing_keys:
-        - development.queue_broadcast.#
-      deadletter_exchange: psd.deadletters
-profile:
-  type: log
+    routing_key_prefix: development
+# The test environment sets up a test message handler, which lets
+# you make assertions about which messages have been sent.
+# See: https://rubydoc.info/gems/sanger_warren/Warren/Handler/Test
 test:
   type: test
+  config:
+    routing_key_prefix: test
+# The test environment sets up a test message handler, which lets
+# you make assertions about which messages have been sent.
+# See: https://rubydoc.info/gems/sanger_warren/Warren/Handler/Test
 cucumber:
   type: test
-production:
-  type: log
+  config:
+    routing_key_prefix: test
+# You are encouraged to use the WARREN_CONNECTION_URI environmental
+# variable to configure your production environment. Under no
+# circumstances should you commit sensitive information in the file.

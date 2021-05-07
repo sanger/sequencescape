@@ -57,7 +57,7 @@ class Submission < ApplicationRecord
   before_destroy :prevent_destruction_unless_building?
 
   accepts_nested_attributes_for :orders, update_only: true
-  broadcast_via_warren
+  broadcast_with_warren
 
   # Used in the v1 API
   scope :including_associations_for_json, -> {

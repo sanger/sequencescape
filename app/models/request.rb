@@ -109,7 +109,7 @@ class Request < ApplicationRecord
   # On create we perform a full and complete validation.
   validates :request_purpose, presence: true
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {

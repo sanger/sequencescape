@@ -73,7 +73,7 @@ class Aliquot < ApplicationRecord
   before_validation { |record| record.tag_id ||= UNASSIGNED_TAG unless tag }
   before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG unless tag2 }
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   scope :include_summary, -> { includes([:sample, { tag: :tag_group }, { tag2: :tag_group }]) }
   scope :in_tag_order, -> {

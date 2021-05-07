@@ -22,7 +22,7 @@ class Tag < ApplicationRecord
   has_many :assets, through: :aliquots, source: :receptacle
   has_many :requests, ->() { distinct }, through: :assets
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   scope :sorted, ->() { order('map_id ASC') }
 
