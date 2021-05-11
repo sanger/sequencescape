@@ -70,8 +70,4 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
     rsb = lab_events_for_batch(batch).first.descriptor_value('RSB Volume')
     "#{dna}μl DNA in #{rsb}μl RSB"
   end
-
-  def billing_product_identifier
-    request_metadata.read_length
-  end
 end

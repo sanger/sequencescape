@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test
-      BUNDLE_WITHOUT: 'warehouse cucumber deployment profile development'
+      BUNDLE_WITHOUT: 'cucumber deployment profile development'
     # Services
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
     services:
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test
-      BUNDLE_WITHOUT: 'warehouse cucumber deployment profile development'
+      BUNDLE_WITHOUT: 'cucumber deployment profile development'
     # Services
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
     services:
@@ -135,7 +135,7 @@ jobs:
     env:
       RAILS_ENV: cucumber
       CUCUMBER_FORMAT: pretty
-      BUNDLE_WITHOUT: 'warehouse deployment profile development test'
+      BUNDLE_WITHOUT: 'deployment profile development test'
     # Services
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
     services:

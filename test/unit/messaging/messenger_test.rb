@@ -22,7 +22,7 @@ class MessengerTest < ActiveSupport::TestCase
     end
 
     should 'provide a routing key' do
-      assert_equal @messenger.routing_key, "test.message.example.#{@messenger.id}"
+      assert_equal @messenger.routing_key, "message.example.#{@messenger.id}"
     end
   end
 end

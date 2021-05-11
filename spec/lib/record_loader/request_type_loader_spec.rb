@@ -5,9 +5,11 @@ require 'record_loader/request_type_loader'
 
 # This file was initially generated via `rails g record_loader`
 RSpec.describe RecordLoader::RequestTypeLoader, type: :model, loader: true do
-  subject(:record_loader) do
+  def a_new_record_loader
     described_class.new(directory: test_directory, files: selected_files)
   end
+
+  subject(:record_loader) { a_new_record_loader }
 
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/request_types') }
