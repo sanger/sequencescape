@@ -10,7 +10,7 @@ class Messenger < ApplicationRecord
   end
 
   def routing_key
-    "#{Rails.env}.message.#{root}.#{id}"
+    "message.#{root}.#{id}"
   end
 
   def as_json(_options = {})
