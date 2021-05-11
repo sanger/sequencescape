@@ -382,8 +382,10 @@ describe Well do
       [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  5.0,
        'Lowish concentration, non zero, but less than robot buffer required'],
       [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'Less DNA than robot minimum pick, fall back to DNA'],
-      [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer']
-    ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, volume_obtained, buffer_volume_obtained, scenario|
+      [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer'],
+      [120.0, 50.0, 0,      60.0,   5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
+      [120.0, 50.0, 0,      3.0,    5.0, 3.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
+    ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
       context "when testing #{scenario}" do
         setup do
           @result_volume = format('%.1f', well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,
@@ -391,7 +393,7 @@ describe Well do
           @result_buffer_volume = format('%.1f', well.get_buffer_volume).to_f
         end
         it 'gets correct volume quantity' do
-          assert_equal volume_obtained, @result_volume
+          assert_equal source_volume_obtained, @result_volume
         end
 
         it 'gets correct buffer volume measures' do

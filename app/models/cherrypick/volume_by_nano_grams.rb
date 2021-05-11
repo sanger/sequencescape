@@ -38,12 +38,13 @@ module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
     requested_volume
   end
 
+  private
+
   def buffer_volume_required(minimum_volume, requested_volume, robot_minimum_picking_volume)
-    val = [minimum_volume - requested_volume, 0.0].max
-    if val > 0.0
-      val = [val, robot_minimum_picking_volume].max
-    end
-    val
+    shortfall = minimum_volume - requested_volume
+    return 0 if shortfall <= 0
+
+    # If we're adding buffer, it needs to be at least the robot_minimum_picking_volume
+    shortfall.clamp(robot_minimum_picking_volume..)
   end
-  private :buffer_volume_required
 end
