@@ -183,6 +183,12 @@ RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
         assert_equal({ 'data_a' => value_a, 'data_b' => value_b, 'data_c' => 'value_c' }, event.metadata)
       end
 
+      describe '#routing_key' do
+        it 'includes the event type and id' do
+          expect(event.routing_key).to eq "event.example_event.#{event.id}"
+        end
+      end
+
       it 'generates the expected json' do
         event.save!
 

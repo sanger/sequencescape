@@ -115,14 +115,6 @@ gem install bundler
 bundle install
 ```
 
-If you experience `An error occurred while installing ruby-oci8` then disable the oracle gem installation:
-
-```shell
-bundle config without warehouse
-```
-
-The oracle adapters are not needed for development.
-
 #### Adjusting config
 
 Copy the `config/aker.example.yml` file to `config/aker.example.yml`.

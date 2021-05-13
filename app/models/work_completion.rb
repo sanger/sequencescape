@@ -17,8 +17,6 @@ class WorkCompletion < ApplicationRecord
                       { target_asset: :aliquots },
                       :order,
                       :request_events,
-                      :billing_product,
-                      :billing_items,
                       :request_metadata].freeze
   # The user who performed the state change
   belongs_to :user, optional: false

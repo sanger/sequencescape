@@ -65,7 +65,7 @@ describe QcResult, warren: true do
 
   setup { warren.clear_messages }
   let(:resource) { build :qc_result }
-  let(:routing_key) { 'test.message.qc_result.' }
+  let(:routing_key) { 'message.qc_result.' }
 
   it 'broadcasts the resource' do
     resource.save!

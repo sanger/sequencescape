@@ -24,28 +24,26 @@ class WorkCompletionTubesTest < ActionDispatch::PerformanceTest
     target_submission_4 = create :library_submission, assets: input_plate_4.wells, request_types: submission_request_types
     decoy_submission = create :library_submission, assets: input_plate_1.wells, request_types: submission_request_types
 
-    product = create :library_creation_billing_product
-
     input_plate_1.wells.each do |well|
       next if well.aliquots.empty?
 
-      create :library_request, request_type: library_request_type, asset: well, submission: target_submission_1, state: 'started', billing_product: product
-      create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: 'started', billing_product: product
+      create :library_request, request_type: library_request_type, asset: well, submission: target_submission_1, state: 'started'
+      create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: 'started'
     end
     input_plate_2.wells.each do |well|
       next if well.aliquots.empty?
 
-      create :library_request, request_type: library_request_type, asset: well, submission: target_submission_2, state: 'started', billing_product: product
+      create :library_request, request_type: library_request_type, asset: well, submission: target_submission_2, state: 'started'
     end
     input_plate_3.wells.each do |well|
       next if well.aliquots.empty?
 
-      create :library_request, request_type: library_request_type, asset: well, submission: target_submission_3, state: 'started', billing_product: product
+      create :library_request, request_type: library_request_type, asset: well, submission: target_submission_3, state: 'started'
     end
     input_plate_4.wells.each do |well|
       next if well.aliquots.empty?
 
-      create :library_request, request_type: library_request_type, asset: well, submission: target_submission_4, state: 'started', billing_product: product
+      create :library_request, request_type: library_request_type, asset: well, submission: target_submission_4, state: 'started'
     end
 
     # The decoy submission represents a submission which we don't care about

@@ -64,8 +64,8 @@ group :default do
   # due to not correctly eager loading dependencies on nested resources.
   gem 'jsonapi-resources', '0.9.0'
 
-  # Bunny is a RabbitMQ client.
-  gem 'bunny'
+  # Wraps bunny with connection pooling ad consumer process handling
+  gem 'sanger_warren'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
@@ -82,15 +82,6 @@ group :default do
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
 
-  # Provides null db adapter, that blocks access to remote database
-  # (in our case used for Agresso db in non-production environments)
-  gem 'activerecord-nulldb-adapter', require: false
-
-  # Allow simple connection pooling on non-database connections
-  # Using it to maintain our warren's of bunnies.
-  # Or the connection pool of RabbitMQ channels to get technical
-  gem 'connection_pool'
-
   gem 'rack-cors', require: 'rack/cors'
 
   # Adds easy conversions between units
@@ -104,12 +95,6 @@ group :default do
 
   # Authorization
   gem 'cancancan'
-end
-
-group :warehouse do
-  # Used to connect to oracle databases for some data import
-  gem 'activerecord-oracle_enhanced-adapter'
-  gem 'ruby-oci8', platforms: :mri
 end
 
 group :development do
@@ -133,8 +118,8 @@ end
 group :development, :linting do
   # Enforces coding styles and detects some bad practices
   gem 'rubocop', require: false
-  gem 'rubocop-performance'
-  gem 'rubocop-rails'
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
   gem 'yard-activerecord', '~> 0.0.16'
 end

@@ -19,10 +19,4 @@ describe Pulldown::Requests do
       end
     end
   end
-
-  it 'knows its #billing_product_identifier' do
-    request = Pulldown::Requests::IscLibraryRequest.new
-    request.request_metadata.bait_library = bait_library
-    expect(request.billing_product_identifier).to eq 'standard'
-  end
 end

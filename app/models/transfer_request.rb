@@ -149,6 +149,33 @@ class TransferRequest < ApplicationRecord
     # Its a simple scenario, we avoid doing anything fancy and just give the thumbs up
     return true if one_or_fewer_outer_requests?
 
+    # @todo The code below assumes that if we've got multiple outer requests then
+    #       we must be at the multiplexing stage further down the pipeline. While
+    #       this seems to be true in practice, it could result in some strange behaviour
+    #       if triggered in other circumstances. One example was when the PacBio Library
+    #       prep pipeline had multiple requests in the same submission out of each well.
+    #       In this case the source aliquots didn't have a submission id set, so we couldn't
+    #       find a next request to select.
+    #
+    #       The code currently:
+    #       - For each aliquot in the receptacle detects an 'outer request' that is the next request in
+    #         the submission after the request associated with the aliquot.
+    #       - Ensures that this works for all aliquots in the receptacle
+    #       - Creates an error for any that don't have a next request
+    #
+    #       In the example above, this was failing because the aliquot wasn't associated with a request,
+    #       so it made no sense to find a 'next request in the submission'. It should still have failed,
+    #       as the outer_request is ambiguous, but its kind of failing by accident.
+    #
+    #      = Fixing this
+    #
+    #      Firstly, I *think* this code is currently doing the right things, for the wrong reasons. So I
+    #      believe it falls under general maintenance, rather than a bug fix. But all that could change.
+    #
+    #      This should probably be addressed as part of #3100 (https://github.com/sanger/sequencescape/issues/3100)
+    #      The main aim here should probably to aim for explicitness and simplicity, rather than making
+    #      this code more complicated to handle further cases.
+    #
     # If we're a bit more complicated attempt to match up requests
     # This operation is a bit expensive, but needs to handle scenarios where:
     # 1) We've already done some pooling, and have multiple requests in and out

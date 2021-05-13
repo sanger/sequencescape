@@ -12,7 +12,7 @@ module StateChanger
     private
 
     def associated_requests
-      labware.requests_as_target.for_billing.opened
+      labware.requests_as_target.opened
     end
 
     def generate_events_for(orders)

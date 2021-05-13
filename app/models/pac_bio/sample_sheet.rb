@@ -40,9 +40,9 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
     protocol.gsub(/[^\w]/, '_')
   end
 
-  @@CONCAT_SEPARATOR = ';'
+  CONCAT_SEPARATOR = ';'.freeze
 
-  def concat(list, sym, separator = @@CONCAT_SEPARATOR)
+  def concat(list, sym, separator = CONCAT_SEPARATOR)
     list.map(&sym).uniq.join(separator)
   end
 
