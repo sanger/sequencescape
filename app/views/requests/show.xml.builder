@@ -11,22 +11,27 @@ xml.request(api_data) do
   xml.state @request.state
 
   xml.properties do
-    @request.request_metadata.attribute_value_pairs.each do |attribute, value|
-      xml.property do
-        xml.name(attribute.to_field_info.display_name)
-        xml.value(value)
+    @request
+      .request_metadata
+      .attribute_value_pairs
+      .each do |attribute, value|
+        xml.property do
+          xml.name(attribute.to_field_info.display_name)
+          xml.value(value)
+        end
       end
-    end
   end
 
   # Events
-  xml.events do
-    @request.events.each do |event|
-      xml.event(id: event.id) do
-        xml.message event.message
-        xml.content event.content
+  unless @request.events.empty?
+    xml.events do
+      @request.events.each do |event|
+        xml.event(id: event.id) do
+          xml.message event.message
+          xml.content event.content
+        end
       end
     end
-  end unless @request.events.empty?
+  end
   xml.user(@user.login) unless @user.nil?
 end

@@ -13,27 +13,9 @@ require './lib/product_helpers'
   ProductHelpers.single_template('Fluidigm'),
   ProductHelpers.single_template('SC'),
   ProductHelpers.single_template('InternalQC'),
-  {
-    name: 'GenericPCR',
-    selection_behaviour: 'LibraryDriven',
-    products: {
-      nil => 'Generic'
-    }
-  },
-  {
-    name: 'GenericNoPCR',
-    selection_behaviour: 'LibraryDriven',
-    products: {
-      nil => 'Generic'
-    }
-  },
-  {
-    name: 'ClassicMultiplexed',
-    selection_behaviour: 'LibraryDriven',
-    products: {
-      nil => 'Generic'
-    }
-  },
+  { name: 'GenericPCR', selection_behaviour: 'LibraryDriven', products: { nil => 'Generic' } },
+  { name: 'GenericNoPCR', selection_behaviour: 'LibraryDriven', products: { nil => 'Generic' } },
+  { name: 'ClassicMultiplexed', selection_behaviour: 'LibraryDriven', products: { nil => 'Generic' } },
   {
     name: 'Manual',
     selection_behaviour: 'Manual',
@@ -45,9 +27,9 @@ require './lib/product_helpers'
       'HSqX' => 'HSqX'
     }
   }
-].each do |param|
-  ProductCatalogue.construct!(param)
-end
+].each { |param| ProductCatalogue.construct!(param) }
 
-Product.find_by(name: 'MWGS').product_criteria.create!(stage: 'stock', behaviour: 'Basic',
-                                                       configuration: { total_micrograms: { greater_than: 50 } })
+Product
+  .find_by(name: 'MWGS')
+  .product_criteria
+  .create!(stage: 'stock', behaviour: 'Basic', configuration: { total_micrograms: { greater_than: 50 } })

@@ -6,7 +6,7 @@ class PoolingsController < ApplicationController
     @pooling = Pooling.new(pooling_params)
   end
 
-  def create
+  def create # rubocop:todo Metrics/AbcSize
     @pooling = Pooling.new(pooling_params.merge(barcode_printer: params[:printer]))
     if @pooling.valid?
       @pooling.execute

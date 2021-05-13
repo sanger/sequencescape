@@ -5,14 +5,24 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController # r
     prepare_manifest_pagination
   end
 
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     if params[:upload].present?
-      @uploader = SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user,
-                                               params[:override])
+      @uploader =
+        SampleManifest::Uploader.new(
+          params[:upload],
+          SampleManifestExcel.configuration,
+          current_user,
+          params[:override]
+        )
       if @uploader.valid?
         if @uploader.run!
           flash[:notice] = 'Sample manifest successfully uploaded.'
-          redirect_target = (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
+          redirect_target =
+            # rubocop:todo Metrics/BlockNesting
+            (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
+
+          # rubocop:enable Metrics/BlockNesting
           redirect_to redirect_target
         else
           flash.now[:error] = 'Your sample manifest couldn\'t be uploaded.'
@@ -31,11 +41,19 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController # r
     end
   end
 
-  def prepare_manifest_pagination
-    pending_sample_manifests = SampleManifest.pending_manifests.includes(:study, :supplier, :user,
-                                                                         :uploaded_document).paginate(page: params[:page])
-    completed_sample_manifests = SampleManifest.completed_manifests.includes(:study, :supplier, :user,
-                                                                             :uploaded_document).paginate(page: params[:page])
+  # rubocop:enable Metrics/MethodLength
+
+  def prepare_manifest_pagination # rubocop:todo Metrics/MethodLength
+    pending_sample_manifests =
+      SampleManifest
+        .pending_manifests
+        .includes(:study, :supplier, :user, :uploaded_document)
+        .paginate(page: params[:page])
+    completed_sample_manifests =
+      SampleManifest
+        .completed_manifests
+        .includes(:study, :supplier, :user, :uploaded_document)
+        .paginate(page: params[:page])
     @display_manifests = pending_sample_manifests | completed_sample_manifests
     @sample_manifests = SampleManifest.paginate(page: params[:page])
   end

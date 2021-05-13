@@ -1,7 +1,7 @@
 (function ($, undefined) {
   var attachEvents;
 
-  attachEvents = function(){
+  attachEvents = function () {
     $('[data-toggle="tooltip"]').tooltip();
   };
 

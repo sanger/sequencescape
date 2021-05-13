@@ -1,11 +1,7 @@
 module Endpoints
   class TransferRequestCollections < ::Core::Endpoint::Base
-    model do
-      action(:create, to: :standard_create!)
-    end
+    model { action(:create, to: :standard_create!) }
 
-    instance do
-      belongs_to(:user, json: 'user')
-    end
+    instance { belongs_to(:user, json: 'user') }
   end
 end

@@ -5,11 +5,9 @@ require 'mocha/api'
 
 World(Mocha::API)
 
-Before do
-  mocha_setup
-end
+Before() { mocha_setup }
 
-After do
+After() do
   mocha_verify
 ensure
   mocha_teardown

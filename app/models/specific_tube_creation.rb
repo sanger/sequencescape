@@ -37,11 +37,12 @@ class SpecificTubeCreation < TubeCreation # rubocop:todo Style/Documentation
   end
 
   def create_children!
-    self.children = child_purposes.each_with_index.map do |child_purpose, index|
-      # For each tube purpose listed in the child_purposes array
-      # create a tube via the tube purpose factory, passing in our
-      # custom attributes.
-      child_purpose.create!(tube_attributes[index])
-    end
+    self.children =
+      child_purposes.each_with_index.map do |child_purpose, index|
+        # For each tube purpose listed in the child_purposes array
+        # create a tube via the tube purpose factory, passing in our
+        # custom attributes.
+        child_purpose.create!(tube_attributes[index])
+      end
   end
 end

@@ -11,6 +11,7 @@ describe 'Wells API', with: :api_v2 do
 
     it 'sends a list of wells' do
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end
@@ -35,9 +36,7 @@ describe 'Wells API', with: :api_v2 do
     end
 
     describe '#get' do
-      before do
-        api_get "/api/v2/wells/#{well.id}"
-      end
+      before { api_get "/api/v2/wells/#{well.id}" }
 
       it 'sends an individual well' do
         expect(response).to have_http_status(:success)
@@ -70,9 +69,7 @@ describe 'Wells API', with: :api_v2 do
         }
       end
 
-      before do
-        api_patch "/api/v2/wells/#{well.id}", payload
-      end
+      before { api_patch "/api/v2/wells/#{well.id}", payload }
 
       it 'returns successful response' do
         expect(response).to have_http_status(:success)
@@ -86,7 +83,8 @@ describe 'Wells API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'diluent_volume')).to eq('34.0')
       end
 
-      it 'updates the well' do # rubocop:todo RSpec/ExampleLength
+      it 'updates the well' do
+        # rubocop:todo RSpec/ExampleLength
         updated_model = Well.find(well.id)
         expect(updated_model.pcr_cycles).to eq 11
         expect(updated_model.submit_for_sequencing).to eq false

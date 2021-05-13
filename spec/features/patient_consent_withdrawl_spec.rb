@@ -13,9 +13,7 @@ describe 'Sample#consent_withdrawn', js: false do
   let(:sample) { create :sample_with_gender, consent_withdrawn: consent_withdrawn }
   let(:study) { create :study }
 
-  before do
-    study.samples << sample
-  end
+  before { study.samples << sample }
 
   shared_examples 'an order' do
     it 'validates patient consent' do
@@ -46,9 +44,7 @@ describe 'Sample#consent_withdrawn', js: false do
       let(:batch) { create :sequencing_batch, state: 'started' }
       let(:lane) { create :lane, samples: [sample] }
 
-      before do
-        batch.requests << create(:sequencing_request_with_assets, target_asset: lane)
-      end
+      before { batch.requests << create(:sequencing_request_with_assets, target_asset: lane) }
 
       it 'and a user visits the batch.xml show page' do
         visit batch_path(batch, format: :xml)
@@ -110,9 +106,7 @@ describe 'Sample#consent_withdrawn', js: false do
     it 'a user visit the study sample page' do
       login_user user
       visit study_samples_path(study)
-      within('.withdrawn') do
-        expect(page).to have_content "#{sample.name} - Consent withdrawn"
-      end
+      within('.withdrawn') { expect(page).to have_content "#{sample.name} - Consent withdrawn" }
     end
 
     it 'a user visit the sample show page' do

@@ -24,8 +24,8 @@ RSpec.describe ReportFail, type: :model do
   end
 
   it 'detects all the missing barcodes' do
-    report_fail = described_class.new('12345', '1',
-                                      [plate_1.human_barcode, plate_2.machine_barcode, '11111111111111111'])
+    report_fail =
+      described_class.new('12345', '1', [plate_1.human_barcode, plate_2.machine_barcode, '11111111111111111'])
     expect(report_fail.missing_barcodes).to eq(['11111111111111111'])
   end
 

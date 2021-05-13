@@ -12,15 +12,14 @@ RSpec.describe Accession::Contact, type: :model, accession: true do
 
   let!(:user) { create(:user, login: 'user1', first_name: 'Santa', last_name: 'Claus') }
 
-  after(:all) do
-    configatron.default_email_domain = @email
-  end
+  after(:all) { configatron.default_email_domain = @email }
 
   it 'has a name' do
     expect(subject.name).to eq('Santa Claus')
   end
 
-  it 'has an email' do # rubocop:todo RSpec/AggregateExamples
+  it 'has an email' do
+    # rubocop:todo RSpec/AggregateExamples
     expect(subject.email).to eq('user1@example.com')
   end
 

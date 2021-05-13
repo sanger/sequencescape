@@ -42,75 +42,82 @@ class Robot::Generator::Tecan < Robot::Generator::Base
     value.to_f.round(configatron.tecan_precision)
   end
 
-  def each_mapping(data_object)
+  # rubocop:todo Metrics/MethodLength
+  def each_mapping(data_object) # rubocop:todo Metrics/AbcSize
     data_object['destination'].each do |dest_plate_barcode, plate_details|
       mapping_by_well = Hash.new { |h, i| h[i] = [] }
       plate_details['mapping'].each do |mapping|
-        destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'],
-                                                                                      plate_details['plate_size'])
+        destination_position =
+          Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
         mapping_by_well[destination_position] << mapping
       end
 
       mapping_by_well.sort_by { |a| a[0] }.each do |_dest_position, mappings|
-        mappings.each do |mapping|
-          yield(mapping, dest_plate_barcode, plate_details)
-        end
+        mappings.each { |mapping| yield(mapping, dest_plate_barcode, plate_details) }
       end
     end
   end
 
-  def dyn_mappings(data_object)
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def dyn_mappings(data_object) # rubocop:todo Metrics/AbcSize
     dyn_mappings = ''
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
       source_barcode = (mapping['src_well'][0]).to_s
       source_name = data_object['source'][(mapping['src_well'][0]).to_s]['name']
-      source_position = Map::Coordinate.description_to_vertical_plate_position(mapping['src_well'][1],
-                                                                               data_object['source'][(mapping['src_well'][0]).to_s]['plate_size'])
-      destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'],
-                                                                                    plate_details['plate_size'])
-      temp = [
-        "A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}",
-        "D;#{dest_plate_barcode};;#{plate_details['name']};#{destination_position};;#{tecan_precision_value(mapping['volume'])}",
-        "W;\n"
-      ].join("\n")
+      source_position =
+        Map::Coordinate.description_to_vertical_plate_position(
+          mapping['src_well'][1],
+          data_object['source'][(mapping['src_well'][0]).to_s]['plate_size']
+        )
+      destination_position =
+        Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
+      temp =
+        [
+          "A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}",
+          "D;#{dest_plate_barcode};;#{plate_details['name']};#{destination_position};;#{tecan_precision_value(mapping['volume'])}",
+          "W;\n"
+        ].join("\n")
       dyn_mappings += temp
     end
     dyn_mappings
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def buffer_seperator
     'C;'
   end
 
-  def buffers(data_object, total_volume)
+  def buffers(data_object, total_volume) # rubocop:todo Metrics/MethodLength
     buffer = []
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
       next unless total_volume > mapping['volume']
 
       dest_name = data_object['destination'][dest_plate_barcode]['name']
       volume = mapping['buffer_volume']
-      vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'],
-                                                                           plate_details['plate_size'])
-      buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
+      vert_map_id =
+        Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
+      buffer <<
+        "A;BUFF;;96-TROUGH;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
     end
     buffer.join("\n")
   end
 
-  def footer
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/AbcSize
+  def footer # rubocop:todo Metrics/CyclomaticComplexity
     footer = "C;\n"
-    source_barcode_index.sort_by { |a| a[1] }.each do |barcode, index|
-      footer += "C; SCRC#{index} = #{barcode}\n"
-    end
+    source_barcode_index.sort_by { |a| a[1] }.each { |barcode, index| footer += "C; SCRC#{index} = #{barcode}\n" }
     if ctrl_barcode_index.present?
       footer = "C;\n"
-      ctrl_barcode_index&.sort_by { |a| a[1] }&.each do |barcode, index|
-        footer += "C; CTRL#{index} = #{barcode}\n"
-      end
+      ctrl_barcode_index&.sort_by { |a| a[1] }&.each { |barcode, index| footer += "C; CTRL#{index} = #{barcode}\n" }
     end
     footer += "C;\n"
-    dest_barcode_index.sort_by { |a| a[1] }.each do |barcode, index|
-      footer += "C; DEST#{index} = #{barcode}\n"
-    end
+    dest_barcode_index.sort_by { |a| a[1] }.each { |barcode, index| footer += "C; DEST#{index} = #{barcode}\n" }
     footer
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/PerceivedComplexity
 end

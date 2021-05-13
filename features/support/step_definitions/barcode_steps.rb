@@ -5,11 +5,11 @@ Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
 end
 
 Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
-  step(%{the plate barcode webservice returns "#{barcode}"})
+  step("the plate barcode webservice returns \"#{barcode}\"")
 end
 
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
-  (start.to_i..finish.to_i).each { |i| step(%{the plate barcode webservice returns "#{i}"}) }
+  (start.to_i..finish.to_i).each { |i| step("the plate barcode webservice returns \"#{i}\"") }
 end
 
 Given /^the "([^"]+)" barcode printer "([^"]+)" exists$/ do |type_name, name|
@@ -38,17 +38,21 @@ Given /^the barcode of the last sample tube is "([^"]+)"$/ do |barcode|
 end
 
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|
-  SampleTube.order(:id).each_with_index do |asset, index|
-    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: index + initial).human_barcode
-    Barcode.find_by(barcode: bc)&.update(barcode: "XX#{index + initial}")
-    asset.primary_barcode.update!(barcode: bc)
-  end
+  SampleTube
+    .order(:id)
+    .each_with_index do |asset, index|
+      bc = SBCF::SangerBarcode.new(prefix: 'NT', number: index + initial).human_barcode
+      Barcode.find_by(barcode: bc)&.update(barcode: "XX#{index + initial}")
+      asset.primary_barcode.update!(barcode: bc)
+    end
 end
 
 Given /^library tubes are barcoded sequentially from (\d+)$/ do |initial|
-  LibraryTube.order(:id).each_with_index do |asset, index|
-    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: index + initial).human_barcode
-    Barcode.find_by(barcode: bc)&.update(barcode: "XX#{index + initial}")
-    asset.primary_barcode.update!(barcode: bc)
-  end
+  LibraryTube
+    .order(:id)
+    .each_with_index do |asset, index|
+      bc = SBCF::SangerBarcode.new(prefix: 'NT', number: index + initial).human_barcode
+      Barcode.find_by(barcode: bc)&.update(barcode: "XX#{index + initial}")
+      asset.primary_barcode.update!(barcode: bc)
+    end
 end

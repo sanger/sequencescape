@@ -31,9 +31,7 @@ class ProductCatalogueTest < ActiveSupport::TestCase
 
     context 'with global constants for behaviour' do
       should 'reject behaviours' do
-        assert_raise(ActiveRecord::RecordInvalid) do
-          create :product_catalogue, selection_behaviour: 'File'
-        end
+        assert_raise(ActiveRecord::RecordInvalid) { create :product_catalogue, selection_behaviour: 'File' }
       end
     end
   end

@@ -2,9 +2,7 @@ module Validateable # rubocop:todo Style/Documentation
   %i[save save! update_attribute].each { |attr| define_method(attr) {} }
 
   def method_missing(symbol, *_params)
-    if symbol.to_s =~ /(.*)_before_type_cast$/
-      send($1)
-    end
+    send($1) if symbol.to_s =~ /(.*)_before_type_cast$/
   end
 
   def self.append_features(base)
@@ -22,10 +20,12 @@ module Validateable # rubocop:todo Style/Documentation
       [self]
     end
 
-    def human_attribute_name(attribute_key_name, options = {})
-      defaults = self_and_descendants_from_active_record.map do |klass|
-        "#{klass.name.underscore}.#{attribute_key_name}""#{klass.name.underscore}.#{attribute_key_name}"
-      end
+    def human_attribute_name(attribute_key_name, options = {}) # rubocop:todo Metrics/AbcSize
+      defaults =
+        self_and_descendants_from_active_record.map do |klass|
+          "#{klass.name.underscore}.#{attribute_key_name}" \
+            "#{klass.name.underscore}.#{attribute_key_name}"
+        end
       defaults << options[:default] if options[:default]
       defaults.flatten!
       defaults << attribute_key_name.to_s.humanize
@@ -34,9 +34,11 @@ module Validateable # rubocop:todo Style/Documentation
     end
 
     def human_name(options = {})
-      defaults = self_and_descendants_from_active_record.map do |klass|
-        "#{klass.name.underscore}""#{klass.name.underscore}"
-      end
+      defaults =
+        self_and_descendants_from_active_record.map do |klass|
+          "#{klass.name.underscore}" \
+            "#{klass.name.underscore}"
+        end
       defaults << name.humanize
       I18n.t(defaults.shift, { scope: %i[activerecord models], count: 1, default: defaults }.merge(options))
     end

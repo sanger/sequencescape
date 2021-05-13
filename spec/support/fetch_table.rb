@@ -2,10 +2,6 @@
 
 module FetchTable
   def fetch_table(selector)
-    find(selector).all('tr').map do |row|
-      row.all('th,td').map do |cell|
-        cell.text.squish
-      end
-    end
+    find(selector).all('tr').map { |row| row.all('th,td').map { |cell| cell.text.squish } }
   end
 end

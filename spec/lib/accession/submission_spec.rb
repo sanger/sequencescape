@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Submission, type: :model, accession: true do
-  let!(:user)     { create(:user) }
-  let!(:sample)   { build(:accession_sample) }
+  let!(:user) { create(:user) }
+  let!(:sample) { build(:accession_sample) }
 
   it 'is not valid without a user' do
     expect(described_class.new(user, nil)).not_to be_valid
@@ -29,9 +29,7 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
     expect(submission_xml.attribute('submission_date').value).to eq(submission.date)
 
     contact_xml = xml.at('CONTACT')
-    submission.contact.to_h.each do |attribute, value|
-      expect(contact_xml.attribute(attribute.to_s).value).to eq(value)
-    end
+    submission.contact.to_h.each { |attribute, value| expect(contact_xml.attribute(attribute.to_s).value).to eq(value) }
 
     expect(xml.at(submission.service.visibility)).to be_present
 

@@ -9,9 +9,7 @@ class Api::ReferenceGenomeIO < Api::Base
     end
 
     def self.included(base)
-      base.class_eval do
-        extend ClassMethods
-      end
+      base.class_eval { extend ClassMethods }
     end
 
     def json_root

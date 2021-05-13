@@ -7,13 +7,13 @@ class Tag2LayoutTemplate < ApplicationRecord
   validates :tag, presence: true
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
-  scope :include_tag, ->() { includes(:tag) }
+  scope :include_tag, -> { includes(:tag) }
 
   # Create a TagLayout instance that does the actual work of laying out the tags.
   def create!(attributes = {}, &block)
-    Tag2Layout.create!(attributes.merge(default_attributes), &block).tap do |t2layout|
-      record_template_use(t2layout.plate)
-    end
+    Tag2Layout
+      .create!(attributes.merge(default_attributes), &block)
+      .tap { |t2layout| record_template_use(t2layout.plate) }
   end
 
   def stamp_to(_)

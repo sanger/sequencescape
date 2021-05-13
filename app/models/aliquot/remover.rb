@@ -5,18 +5,12 @@
 module Aliquot::Remover
   def remove_downstream_aliquots
     # On the target asset of the failed request.
-    ActiveRecord::Base.transaction do
-      on_downstream_aliquots(aliquots)
-    end
+    ActiveRecord::Base.transaction { on_downstream_aliquots(aliquots) }
   end
 
   def on_downstream_aliquots(aliquots_to_remove)
-    transfer_requests_as_source.each do |request|
-      request.target_asset.process_aliquots(aliquots_to_remove)
-    end
-    requests_as_source.with_target.each do |request|
-      request.target_asset.process_aliquots(aliquots_to_remove)
-    end
+    transfer_requests_as_source.each { |request| request.target_asset.process_aliquots(aliquots_to_remove) }
+    requests_as_source.with_target.each { |request| request.target_asset.process_aliquots(aliquots_to_remove) }
   end
 
   def process_aliquots(aliquots_to_remove)

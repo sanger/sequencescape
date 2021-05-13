@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Given /^all of this is happening at exactly "([^"]+)"$/ do |time_as_string|
-  step(%{I freeze time at "#{time_as_string}"})
+  step("I freeze time at \"#{time_as_string}\"")
 end
 
 Given /^I freeze time at "([^"]*)"$/ do |freeze_point|
@@ -9,9 +9,7 @@ Given /^I freeze time at "([^"]*)"$/ do |freeze_point|
   travel_to freeze_time
 end
 
-After do
-  travel_back
-end
+After() { travel_back }
 
 Given /^I travel through time to "([^"]*)"$/ do |destination_time|
   travel_to Time.zone.parse(destination_time)

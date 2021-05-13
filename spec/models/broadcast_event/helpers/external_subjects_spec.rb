@@ -1,11 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe BroadcastEvent::Helpers::ExternalSubjects, heron_events: true do
-  let(:testing_event_class) do
-    Class.new(BroadcastEvent) do
-      include BroadcastEvent::Helpers::ExternalSubjects
-    end
-  end
+  let(:testing_event_class) { Class.new(BroadcastEvent) { include BroadcastEvent::Helpers::ExternalSubjects } }
   let(:labware) { create :labware }
   let(:sub1) do
     {
@@ -32,13 +28,9 @@ RSpec.describe BroadcastEvent::Helpers::ExternalSubjects, heron_events: true do
     }
   end
   let(:subjects_definition) { [sub1, sub2, sub3] }
-  let(:instance) do
-    testing_event_class.new(seed: labware, properties: { subjects: subjects_definition })
-  end
+  let(:instance) { testing_event_class.new(seed: labware, properties: { subjects: subjects_definition }) }
 
-  setup do
-    stub_const('TestingClass', testing_event_class)
-  end
+  setup { stub_const('TestingClass', testing_event_class) }
 
   it 'can instantiate the class' do
     inst = testing_event_class.new(seed: labware)
@@ -80,6 +72,7 @@ RSpec.describe BroadcastEvent::Helpers::ExternalSubjects, heron_events: true do
   describe '#subjects_with_role_type?' do
     it 'can detect if a role type is present' do
       expect(instance).to be_subjects_with_role_type('sender')
+
       # can detect if a role type is not present
       expect(instance).not_to be_subjects_with_role_type('bubidu')
     end

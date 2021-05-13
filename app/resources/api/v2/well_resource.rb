@@ -46,9 +46,7 @@ module Api
       # Custom methods
 
       def position
-        {
-          'name' => _model.map_description
-        }
+        { 'name' => _model.map_description }
       end
 
       # Class method overrides

@@ -47,9 +47,7 @@ module CapybaraFailureLogger
 
     errors = page.driver.browser.manage.logs.get(:browser)
     block.call '== JS errors ============'
-    errors.each do |jserror|
-      block.call jserror.message
-    end
+    errors.each { |jserror| block.call jserror.message }
     block.call '========================='
   end
 

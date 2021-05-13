@@ -41,9 +41,7 @@ class PlateCreation < AssetCreation
 
   module CreationChild # rubocop:todo Style/Documentation
     def self.included(base)
-      base.class_eval do
-        has_many :plate_creations, foreign_key: :child_id
-      end
+      base.class_eval { has_many :plate_creations, foreign_key: :child_id }
     end
   end
 end

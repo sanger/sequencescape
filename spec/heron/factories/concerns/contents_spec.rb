@@ -33,9 +33,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
 
   include BarcodeHelper
 
-  before do
-    mock_plate_barcode_service
-  end
+  before { mock_plate_barcode_service }
 
   context 'with valid params' do
     let(:params) { { wells: {}, study_uuid: study.uuid } }
@@ -58,8 +56,10 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         factory = factory_klass.new(params)
         factory.validate
         expect(factory.errors.full_messages.uniq).to eq(
-          ['Coordinate The location "test1" has an invalid format',
-           'Coordinate The location "test2" has an invalid format']
+          [
+            'Coordinate The location "test1" has an invalid format',
+            'Coordinate The location "test2" has an invalid format'
+          ]
         )
       end
     end
@@ -67,14 +67,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
     context 'when the samples do not have a study' do
       let(:study) { create(:study) }
       let(:sample) { create(:sample) }
-      let(:params) do
-        {
-          wells:
-        {
-          A1: { content: {} }
-        }
-        }
-      end
+      let(:params) { { wells: { A1: { content: {} } } } }
 
       it 'is not valid' do
         factory = factory_klass.new(params)
@@ -95,14 +88,26 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
       let(:sample) { create(:sample) }
       let(:params) do
         {
-          wells:
-        {
-          A1: { content: [{ phenotype: 'Another phenotype', study_uuid: study.uuid },
-                          { phenotype: 'A phenotype', study_uuid: study.uuid }] },
-          B1: { content: [{ phenotype: 'Right', study_uuid: study.uuid },
-                          { sample_uuid: sample.uuid, phenotype: 'wrong' }] },
-          C1: { content: { phenotype: 'Right', asdf: 'wrong' } }
-        }
+          wells: {
+            A1: {
+              content: [
+                { phenotype: 'Another phenotype', study_uuid: study.uuid },
+                { phenotype: 'A phenotype', study_uuid: study.uuid }
+              ]
+            },
+            B1: {
+              content: [
+                { phenotype: 'Right', study_uuid: study.uuid },
+                { sample_uuid: sample.uuid, phenotype: 'wrong' }
+              ]
+            },
+            C1: {
+              content: {
+                phenotype: 'Right',
+                asdf: 'wrong'
+              }
+            }
+          }
         }
       end
 
@@ -112,11 +117,13 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
       end
 
       it 'gets an error message about it for each wrong sample' do
-        expect(factory_klass.new(params).tap(&:validate).errors.full_messages.uniq).to eq([
-          'Content b1, pos: 1 Phenotype No other params can be added when sample uuid specified',
-          "Content c1 Study can't be blank",
-          'Content c1 Asdf Unexisting field for sample or sample_metadata'
-        ])
+        expect(factory_klass.new(params).tap(&:validate).errors.full_messages.uniq).to eq(
+          [
+            'Content b1, pos: 1 Phenotype No other params can be added when sample uuid specified',
+            "Content c1 Study can't be blank",
+            'Content c1 Asdf Unexisting field for sample or sample_metadata'
+          ]
+        )
       end
     end
   end
@@ -127,20 +134,35 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         let(:params) { {} }
 
         it 'does nothing' do
-          expect do
-            factory.add_aliquots_into_locations(containers_for_locations)
-          end.not_to change(Aliquot, :count)
+          expect { factory.add_aliquots_into_locations(containers_for_locations) }.not_to change(Aliquot, :count)
         end
       end
 
       context 'when providing samples information' do
         let!(:sample) { create(:sample) }
         let(:params) do
-          { wells: {
-            A01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-            B01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-            C01: { content: { sample_uuid: sample.uuid } }
-          }, study_uuid: study.uuid }
+          {
+            wells: {
+              A01: {
+                content: {
+                  phenotype: 'A phenotype',
+                  study_uuid: study.uuid
+                }
+              },
+              B01: {
+                content: {
+                  phenotype: 'A phenotype',
+                  study_uuid: study.uuid
+                }
+              },
+              C01: {
+                content: {
+                  sample_uuid: sample.uuid
+                }
+              }
+            },
+            study_uuid: study.uuid
+          }
         end
 
         it 'is valid' do
@@ -148,19 +170,35 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
         end
 
         it 'creates the new aliquots' do
-          expect do
-            factory.add_aliquots_into_locations(containers_for_locations)
-          end.to change(Sample, :count).by(2).and(change(Aliquot, :count).by(3))
+          expect { factory.add_aliquots_into_locations(containers_for_locations) }.to change(Sample, :count)
+            .by(2)
+            .and(change(Aliquot, :count).by(3))
         end
 
         context 'when it creates more than one aliquot in the same location' do
           let(:params) do
-            { wells: {
-              A01: { content: [{ phenotype: 'A phenotype', aliquot: { tag_id: 1 }, study_uuid: study.uuid },
-                               { sample_uuid: sample.uuid, aliquot: { tag_id: 2 } }] },
-              B01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-              C01: { content: { sample_uuid: sample.uuid } }
-            }, study_uuid: study.uuid }
+            {
+              wells: {
+                A01: {
+                  content: [
+                    { phenotype: 'A phenotype', aliquot: { tag_id: 1 }, study_uuid: study.uuid },
+                    { sample_uuid: sample.uuid, aliquot: { tag_id: 2 } }
+                  ]
+                },
+                B01: {
+                  content: {
+                    phenotype: 'A phenotype',
+                    study_uuid: study.uuid
+                  }
+                },
+                C01: {
+                  content: {
+                    sample_uuid: sample.uuid
+                  }
+                }
+              },
+              study_uuid: study.uuid
+            }
           end
 
           it 'is valid' do
@@ -168,9 +206,9 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
           end
 
           it 'creates the right number of elements' do
-            expect do
-              factory.add_aliquots_into_locations(containers_for_locations)
-            end.to change(Sample, :count).by(2).and(change(Aliquot, :count).by(4))
+            expect { factory.add_aliquots_into_locations(containers_for_locations) }.to change(Sample, :count)
+              .by(2)
+              .and(change(Aliquot, :count).by(4))
           end
 
           it 'creates the right aliquots for A1' do
@@ -195,12 +233,8 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
     end
 
     context 'with a tube rack' do
-      let(:purpose) do
-        create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
-      end
-      let(:tube_rack) do
-        ::TubeRack.create!(size: '96', purpose: purpose)
-      end
+      let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
+      let(:tube_rack) { ::TubeRack.create!(size: '96', purpose: purpose) }
       let(:plate) { tube_rack }
       let(:tubes) do
         %w[A1 B1 C1].map do |coordinate|
@@ -209,21 +243,13 @@ RSpec.describe Heron::Factories::Concerns::Contents, type: :model, lighthouse: t
           tube
         end
       end
-      let(:containers_for_locations) do
-        {
-          'A1' => tubes[0],
-          'B1' => tubes[1],
-          'C1' => tubes[2]
-        }
-      end
+      let(:containers_for_locations) { { 'A1' => tubes[0], 'B1' => tubes[1], 'C1' => tubes[2] } }
 
       it_behaves_like 'I can add aliquots into each location'
     end
 
     context 'with a plate' do
-      let(:purpose) do
-        create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
-      end
+      let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
       let(:plate) { purpose.create! }
       let(:containers_for_locations) do
         {

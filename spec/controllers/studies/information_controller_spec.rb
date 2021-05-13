@@ -8,14 +8,10 @@ RSpec.describe Studies::InformationController do
 
   it_behaves_like 'it requires login', 'show', parent: :study
 
-  setup do
-    session[:user] = user.id
-  end
+  setup { session[:user] = user.id }
 
   describe '#show' do
-    setup do
-      get :show, params: { id: 'unused', study_id: study.id }
-    end
+    setup { get :show, params: { id: 'unused', study_id: study.id } }
 
     it 'renders a successful show template', :aggregate_failures do
       expect(subject).to respond_with :success

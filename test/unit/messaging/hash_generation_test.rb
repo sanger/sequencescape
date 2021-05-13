@@ -24,9 +24,7 @@ class HashGenerationTest < ActiveSupport::TestCase
 
     map_attribute_to_json_attribute(:name)
 
-    with_association(:association) do
-      map_attribute_to_json_attribute(:assn_var, 'association_value')
-    end
+    with_association(:association) { map_attribute_to_json_attribute(:assn_var, 'association_value') }
 
     with_nested_has_many_association(:has_many_association) do
       map_attribute_to_json_attribute(:ham_assn_var, 'nested_value')
@@ -64,30 +62,36 @@ class HashGenerationTest < ActiveSupport::TestCase
     context 'A simple model' do
       should 'generate the expected hash' do
         hash = ExampleApi.to_hash(@example_model)
-        assert_equal({
-                       'name' => 'example',
-                       'association_value' => 'example_2',
-                       'has_many_association' => [{ 'nested_value' => 'example_3',
-                                                    'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
-                       'updated_at' => Date.new(2013, 1, 4)
-                     }, hash)
+        assert_equal(
+          {
+            'name' => 'example',
+            'association_value' => 'example_2',
+            'has_many_association' => [
+              { 'nested_value' => 'example_3', 'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }
+            ],
+            'updated_at' => Date.new(2013, 1, 4)
+          },
+          hash
+        )
       end
     end
 
     context 'With newer sub_nested models' do
-      setup do
-        @test_has_many_more.stubs(:updated_at).returns(Date.new(2013, 1, 6))
-      end
+      setup { @test_has_many_more.stubs(:updated_at).returns(Date.new(2013, 1, 6)) }
 
       should 'record an updated timestamp' do
         hash = ExampleApi.to_hash(@example_model)
-        assert_equal({
-                       'name' => 'example',
-                       'association_value' => 'example_2',
-                       'has_many_association' => [{ 'nested_value' => 'example_3',
-                                                    'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
-                       'updated_at' => Date.new(2013, 1, 6)
-                     }, hash)
+        assert_equal(
+          {
+            'name' => 'example',
+            'association_value' => 'example_2',
+            'has_many_association' => [
+              { 'nested_value' => 'example_3', 'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }
+            ],
+            'updated_at' => Date.new(2013, 1, 6)
+          },
+          hash
+        )
       end
     end
   end

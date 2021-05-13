@@ -15,11 +15,11 @@ module AuthenticatedTestHelper # rubocop:todo Style/Documentation
   def authorize_as(user)
     if user
       @request.env['HTTP_AUTHORIZATION'] = "Basic #{Base64.encode64("#{users(user).login}:test")}"
-      accept       'application/xml'
+      accept 'application/xml'
       content_type 'application/xml'
     else
       @request.env['HTTP_AUTHORIZATION'] = nil
-      accept       nil
+      accept nil
       content_type nil
     end
   end
@@ -58,9 +58,7 @@ module AuthenticatedTestHelper # rubocop:todo Style/Documentation
   def reset!(*instance_vars)
     instance_vars = %i[controller request response] unless instance_vars.any?
     instance_vars.collect! { |v| "@#{v}".to_sym }
-    instance_vars.each do |var|
-      instance_variable_set(var, instance_variable_get(var).class.new)
-    end
+    instance_vars.each { |var| instance_variable_set(var, instance_variable_get(var).class.new) }
   end
 end
 
@@ -69,7 +67,7 @@ class BaseLoginProxy # rubocop:todo Style/Documentation
 
   def initialize(controller, login)
     @controller = controller
-    @login      = login
+    @login = login
   end
 
   private

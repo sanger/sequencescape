@@ -3,9 +3,7 @@ module Pipeline::BatchValidation # rubocop:todo Style/Documentation
     # Using throw and catch enables us to skip over the request validation without actually
     # having to know whether it was needed or not.
     catch(:no_requests_in_batch) do
-      validation_of_requests(batch.requests) do |message|
-        batch.errors.add(:requests, message)
-      end
+      validation_of_requests(batch.requests) { |message| batch.errors.add(:requests, message) }
     end
   end
 
@@ -19,6 +17,5 @@ module Pipeline::BatchValidation # rubocop:todo Style/Documentation
 
   # Overridden by pipeline implementations to ensure that the batch is valid for completion.  By
   # default this does nothing.
-  def validation_of_batch_for_completion(batch)
-  end
+  def validation_of_batch_for_completion(batch); end
 end

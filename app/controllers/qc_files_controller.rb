@@ -1,8 +1,8 @@
 class QcFilesController < ApplicationController # rubocop:todo Style/Documentation
   def show
-    QcFile.find(params[:id]).retrieve_file do |file|
-      send_file file.path, content_type: file.content_type, filename: file.filename
-    end
+    QcFile
+      .find(params[:id])
+      .retrieve_file { |file| send_file file.path, content_type: file.content_type, filename: file.filename }
   end
 
   def create

@@ -24,9 +24,9 @@ module StateChanger
     def assign_library_information_to_wells
       labware.wells.each do |well|
         well.aliquots.each do |aliquot|
-          aliquot.library      ||= well
+          aliquot.library ||= well
           aliquot.library_type ||= LIBRARY_TYPE
-          aliquot.insert_size  ||= INSERT_SIZE
+          aliquot.insert_size ||= INSERT_SIZE
           aliquot.save!
         end
       end

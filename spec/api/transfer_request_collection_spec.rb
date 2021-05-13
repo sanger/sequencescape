@@ -17,45 +17,45 @@ describe '/api/1/transfer_request_collection', transfer_request_collection: true
 
   describe '#post' do
     let(:payload) do
-      %({
-        "transfer_request_collection":{
-          "user": "#{user.uuid}",
-          "transfer_requests": [
+      "{
+        \"transfer_request_collection\":{
+          \"user\": \"#{user.uuid}\",
+          \"transfer_requests\": [
             {
-              "source_asset":"#{asset.uuid}",
-              "target_asset": "#{target_asset.uuid}",
-              "submission": "#{submission.uuid}",
-              "volume": 10
+              \"source_asset\":\"#{asset.uuid}\",
+              \"target_asset\": \"#{target_asset.uuid}\",
+              \"submission\": \"#{submission.uuid}\",
+              \"volume\": 10
             }
           ]
         }
-      })
+      }"
     end
 
     let(:response_body) do
-      %({
-        "transfer_request_collection": {
-          "actions": {},
-          "transfer_requests": [{
-              "source_asset": { "uuid": "#{asset.uuid}"},
-              "target_asset": { "uuid": "#{target_asset.receptacle.uuid}" },
-              "submission": { "uuid": "#{submission.uuid}" }
+      "{
+        \"transfer_request_collection\": {
+          \"actions\": {},
+          \"transfer_requests\": [{
+              \"source_asset\": { \"uuid\": \"#{asset.uuid}\"},
+              \"target_asset\": { \"uuid\": \"#{target_asset.receptacle.uuid}\" },
+              \"submission\": { \"uuid\": \"#{submission.uuid}\" }
           }],
-          "target_tubes": [{
-            "name": "#{target_asset.name}",
-            "state": "pending",
-            "barcode": {
-              "prefix": "NT",
-              "number": "898",
-              "ean13": "#{target_asset.ean13_barcode}"
+          \"target_tubes\": [{
+            \"name\": \"#{target_asset.name}\",
+            \"state\": \"pending\",
+            \"barcode\": {
+              \"prefix\": \"NT\",
+              \"number\": \"898\",
+              \"ean13\": \"#{target_asset.ean13_barcode}\"
             }
           }],
-          "user": {
-            "uuid": "#{user.uuid}",
-            "actions": {}
+          \"user\": {
+            \"uuid\": \"#{user.uuid}\",
+            \"actions\": {}
           }
         }
-      })
+      }"
     end
     let(:response_code) { 201 }
 

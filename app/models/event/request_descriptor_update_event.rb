@@ -1,8 +1,9 @@
 module Event::RequestDescriptorUpdateEvent # rubocop:todo Style/Documentation
   def self.included(base)
-    base.after_create(:update_metadata_for_request, if: lambda { |event|
-                                                          event.eventful.is_a?(Request) and event.descriptor_key.present?
-                                                        })
+    base.after_create(
+      :update_metadata_for_request,
+      if: lambda { |event| event.eventful.is_a?(Request) and event.descriptor_key.present? }
+    )
   end
 
   def pass_or_fail_event?
@@ -28,10 +29,6 @@ module Event::RequestDescriptorUpdateEvent # rubocop:todo Style/Documentation
 
     return if pass_or_fail_event?
 
-    if library_creation_descriptor?
-      request.pass!
-    else
-      request.start!
-    end
+    library_creation_descriptor? ? request.pass! : request.start!
   end
 end

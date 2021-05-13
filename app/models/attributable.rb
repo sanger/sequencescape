@@ -41,28 +41,24 @@ module Attributable
   # If we've eager loaded metadata, then we may be using the base class, rather than
   # subclass specific forms. We can override the details used here
   def attribute_value_pairs(details = attribute_details)
-    details.each_with_object({}) do |attribute, hash|
-      hash[attribute] = attribute.from(self)
-    end
+    details.each_with_object({}) { |attribute, hash| hash[attribute] = attribute.from(self) }
   end
 
   # If we've eager loaded metadata, then we may be using the base class, rather than
   # subclass specific forms. We can override the details used here
   def association_value_pairs(details = association_details)
-    details.each_with_object({}) do |attribute, hash|
-      hash[attribute] = attribute.from(self)
-    end
+    details.each_with_object({}) { |attribute, hash| hash[attribute] = attribute.from(self) }
   end
 
   def field_infos
-    attribute_details.map do |detail|
-      detail.to_field_info(self)
-    end
+    attribute_details.map { |detail| detail.to_field_info(self) }
   end
 
   def required?(field)
-    field_details = attribute_details.detect { |attribute| attribute.name == field } ||
-                    association_details.detect { |association| field == :"#{association.name}_id" }
+    field_details =
+      attribute_details.detect { |attribute| attribute.name == field } || association_details.detect do |association|
+        field == :"#{association.name}_id"
+      end
     field_details.try(:required?)
   end
 
@@ -118,9 +114,8 @@ module Attributable
     #
     # @return [Hash<String,Object>] Hash of each attribute and its default
     def defaults
-      @defaults ||= attribute_details.each_with_object({}) do |attribute, hash|
-        hash[attribute.name] = attribute.default
-      end
+      @defaults ||=
+        attribute_details.each_with_object({}) { |attribute, hash| hash[attribute.name] = attribute.default }
     end
 
     # @return [Array<String>] An array of all attribute names
@@ -134,9 +129,8 @@ module Attributable
     #
     # @return [Attributable::Attribute] The matching attribute
     def attribute_details_for(attribute_name)
-      attribute_details.detect do |d|
-        d.name.to_sym == attribute_name.to_sym
-      end || raise(StandardError, "Unknown attribute #{attribute_name}")
+      attribute_details.detect { |d| d.name.to_sym == attribute_name.to_sym } ||
+        raise(StandardError, "Unknown attribute #{attribute_name}")
     end
   end
 end

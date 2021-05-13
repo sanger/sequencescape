@@ -18,11 +18,7 @@ describe PlatePurpose::Input do
     end
 
     context 'with two pending requests' do
-      before do
-        plate.wells.each do |well|
-          create :request_library_creation, asset: well
-        end
-      end
+      before { plate.wells.each { |well| create :request_library_creation, asset: well } }
 
       it 'is passed' do
         expect(state_of).to eq('passed')
@@ -30,11 +26,7 @@ describe PlatePurpose::Input do
     end
 
     context 'with two failed requests' do
-      before do
-        plate.wells.each do |well|
-          create :request_library_creation, asset: well, state: 'failed'
-        end
-      end
+      before { plate.wells.each { |well| create :request_library_creation, asset: well, state: 'failed' } }
 
       it 'is failed' do
         expect(state_of).to eq('failed')
@@ -42,11 +34,7 @@ describe PlatePurpose::Input do
     end
 
     context 'with two cancelled requests' do
-      before do
-        plate.wells.each do |well|
-          create :request_library_creation, asset: well, state: 'cancelled'
-        end
-      end
+      before { plate.wells.each { |well| create :request_library_creation, asset: well, state: 'cancelled' } }
 
       it 'is cancelled' do
         expect(state_of).to eq('cancelled')
@@ -65,11 +53,7 @@ describe PlatePurpose::Input do
     end
 
     context 'with two active requests' do
-      before do
-        plate.wells.each do |well|
-          create_list :request_library_creation, 2, asset: well
-        end
-      end
+      before { plate.wells.each { |well| create_list :request_library_creation, 2, asset: well } }
 
       it 'is passed' do
         expect(state_of).to eq('passed')

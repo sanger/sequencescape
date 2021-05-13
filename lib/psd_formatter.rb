@@ -23,10 +23,6 @@ class PsdFormatter < Syslog::Logger::Formatter # rubocop:todo Style/Documentatio
   SEV_LABEL = %w[DEBUG INFO WARN ERROR FATAL ANY].each(&:freeze).freeze
 
   def format_severity(severity)
-    if severity.is_a?(Integer)
-      SEV_LABEL[severity] || 'ANY'
-    else
-      severity
-    end
+    severity.is_a?(Integer) ? SEV_LABEL[severity] || 'ANY' : severity
   end
 end

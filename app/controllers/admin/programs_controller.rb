@@ -6,15 +6,13 @@ class Admin::ProgramsController < ApplicationController # rubocop:todo Style/Doc
     @programs = Program.all
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @program = Program.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @program = Program.new(program_params)
@@ -22,7 +20,7 @@ class Admin::ProgramsController < ApplicationController # rubocop:todo Style/Doc
     respond_to do |format|
       if @program.save
         flash[:notice] = 'Program was successfully created.'
-        format.html {  redirect_to(admin_program_path(@program)) }
+        format.html { redirect_to(admin_program_path(@program)) }
       else
         format.html { render action: 'new' }
       end

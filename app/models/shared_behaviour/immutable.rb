@@ -2,9 +2,7 @@ module SharedBehaviour::Immutable # rubocop:todo Style/Documentation
   MUTABLE = %w[deprecated_at updated_at].freeze
 
   def self.included(base)
-    base.class_eval do
-      before_update :save_allowed?
-    end
+    base.class_eval { before_update :save_allowed? }
   end
 
   private

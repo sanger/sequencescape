@@ -25,9 +25,7 @@ describe WorkOrder do
       before { work_order.state = 'passed' }
 
       it 'update the associated requests' do
-        requests.each do |request|
-          expect(request.state).to eq('passed')
-        end
+        requests.each { |request| expect(request.state).to eq('passed') }
       end
     end
   end
@@ -57,9 +55,7 @@ describe WorkOrder do
 
       it 'sets the work_order_type on each work order' do
         work_orders = subject.create_work_orders!
-        work_orders.each do |work_order|
-          expect(work_order.work_order_type.name).to eq(request_type.key)
-        end
+        work_orders.each { |work_order| expect(work_order.work_order_type.name).to eq(request_type.key) }
       end
 
       it 'sets the state on each work order' do

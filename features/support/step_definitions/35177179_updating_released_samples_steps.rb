@@ -10,7 +10,7 @@ When /^ignoring "([^"]+)" the XML submission for the sample "([^"]*)" should be:
   accessionable_sample = Accessionable::Sample.new(sample)
   submission = Accessionable::Submission.new(accession_service, User.find_by(login: 'me'), accessionable_sample)
   regexp = Regexp.new(key_regexp)
-  block  = ->(key) { key.to_s =~ regexp }
+  block = ->(key) { key.to_s =~ regexp }
   assert_hash_equal(
     sort_arrays(walk_hash_structure(Hash.from_xml(serialized_xml), &block)),
     sort_arrays(walk_hash_structure(Hash.from_xml(submission.xml), &block)),

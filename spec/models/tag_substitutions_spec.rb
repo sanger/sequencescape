@@ -57,22 +57,47 @@ describe TagSubstitution do
     let(:sample_b_new_tag) { sample_a_orig_tag }
 
     let!(:library_aliquot_a) do
-      create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: library_tube_a
+      create :aliquot,
+             sample: sample_a,
+             tag: sample_a_orig_tag,
+             tag2: sample_a_orig_tag2,
+             library: library_tube_a,
+             receptacle: library_tube_a
     end
     let!(:library_aliquot_b) do
-      create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: library_tube_b
+      create :aliquot,
+             sample: sample_b,
+             tag: sample_b_orig_tag,
+             tag2: sample_b_orig_tag2,
+             library: library_tube_b,
+             receptacle: library_tube_b
     end
     let!(:mx_aliquot_a) do
-      create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: mx_library_tube
+      create :aliquot,
+             sample: sample_a,
+             tag: sample_a_orig_tag,
+             tag2: sample_a_orig_tag2,
+             library: library_tube_a,
+             receptacle: mx_library_tube
     end
     let!(:mx_aliquot_b) do
-      create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: mx_library_tube
+      create :aliquot,
+             sample: sample_b,
+             tag: sample_b_orig_tag,
+             tag2: sample_b_orig_tag2,
+             library: library_tube_b,
+             receptacle: mx_library_tube
     end
     let!(:mx_aliquot_c) { create :tagged_aliquot, library: library_tube_b, receptacle: mx_library_tube }
 
     let!(:lane) { create :lane }
     let!(:lane_aliquot_a) do
-      create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: lane
+      create :aliquot,
+             sample: sample_a,
+             tag: sample_a_orig_tag,
+             tag2: sample_a_orig_tag2,
+             library: library_tube_a,
+             receptacle: lane
     end
 
     context 'with only tag 1' do
@@ -81,22 +106,32 @@ describe TagSubstitution do
 
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag.id,
-            substitute_tag_id: sample_a_new_tag.id },
-          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag.id,
-            substitute_tag_id: sample_b_new_tag.id },
-          { sample_id: mx_aliquot_c.sample_id, library_id: library_tube_b.receptacle.id,
-            original_tag_id: mx_aliquot_c.tag_id, substitute_tag_id: mx_aliquot_c.tag_id }
+          {
+            sample_id: sample_a.id,
+            library_id: library_tube_a.receptacle.id,
+            original_tag_id: sample_a_orig_tag.id,
+            substitute_tag_id: sample_a_new_tag.id
+          },
+          {
+            sample_id: sample_b.id,
+            library_id: library_tube_b.receptacle.id,
+            original_tag_id: sample_b_orig_tag.id,
+            substitute_tag_id: sample_b_new_tag.id
+          },
+          {
+            sample_id: mx_aliquot_c.sample_id,
+            library_id: library_tube_b.receptacle.id,
+            original_tag_id: mx_aliquot_c.tag_id,
+            substitute_tag_id: mx_aliquot_c.tag_id
+          }
         ]
       end
 
-      let(:comment) do
-        <<~COMMENT
+      let(:comment) { <<~COMMENT }
           Tag substitution performed.
           Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
           Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
         COMMENT
-      end
 
       it_behaves_like 'tag substitution'
 
@@ -104,15 +139,13 @@ describe TagSubstitution do
         let(:additional_parameters) do
           { user: create(:user), ticket: '12345', comment: 'I wanted my tags to spell CAT TAG' }
         end
-        let(:comment) do
-          <<~COMMENT
+        let(:comment) { <<~COMMENT }
             Tag substitution performed.
             Referenced ticket no: 12345
             Reason: I wanted my tags to spell CAT TAG
             Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
             Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
           COMMENT
-        end
       end
     end
 
@@ -124,20 +157,30 @@ describe TagSubstitution do
 
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag.id,
-            substitute_tag_id: sample_a_new_tag.id, original_tag2_id: -1, substitute_tag2_id: -1 },
-          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag.id,
-            substitute_tag_id: sample_b_new_tag.id, original_tag2_id: -1, substitute_tag2_id: -1 }
+          {
+            sample_id: sample_a.id,
+            library_id: library_tube_a.receptacle.id,
+            original_tag_id: sample_a_orig_tag.id,
+            substitute_tag_id: sample_a_new_tag.id,
+            original_tag2_id: -1,
+            substitute_tag2_id: -1
+          },
+          {
+            sample_id: sample_b.id,
+            library_id: library_tube_b.receptacle.id,
+            original_tag_id: sample_b_orig_tag.id,
+            substitute_tag_id: sample_b_new_tag.id,
+            original_tag2_id: -1,
+            substitute_tag2_id: -1
+          }
         ]
       end
 
-      let(:comment) do
-        <<~COMMENT
+      let(:comment) { <<~COMMENT }
           Tag substitution performed.
           Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
           Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
         COMMENT
-      end
 
       it_behaves_like 'tag substitution'
 
@@ -145,15 +188,13 @@ describe TagSubstitution do
         let(:additional_parameters) do
           { user: create(:user), ticket: '12345', comment: 'I wanted my tags to spell CAT TAG' }
         end
-        let(:comment) do
-          <<~COMMENT
+        let(:comment) { <<~COMMENT }
             Tag substitution performed.
             Referenced ticket no: 12345
             Reason: I wanted my tags to spell CAT TAG
             Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
             Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
           COMMENT
-        end
       end
     end
 
@@ -161,20 +202,30 @@ describe TagSubstitution do
       let(:sample_a_new_tag2) { sample_b_orig_tag2 }
       let(:sample_b_new_tag2) { sample_a_orig_tag2 }
 
-      let(:comment) do
-        <<~COMMENT
+      let(:comment) { <<~COMMENT }
           Tag substitution performed.
           Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo}; Tag2 changed from #{sample_a_orig_tag2.oligo} to #{sample_a_new_tag2.oligo};
           Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo}; Tag2 changed from #{sample_b_orig_tag2.oligo} to #{sample_b_new_tag2.oligo};
         COMMENT
-      end
 
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, original_tag2_id: sample_a_orig_tag2.id,
-            substitute_tag2_id: sample_a_new_tag2.id },
-          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, original_tag2_id: sample_b_orig_tag2.id,
-            substitute_tag2_id: sample_b_new_tag2.id }
+          {
+            sample_id: sample_a.id,
+            library_id: library_tube_a.receptacle.id,
+            original_tag_id: sample_a_orig_tag.id,
+            substitute_tag_id: sample_b_orig_tag.id,
+            original_tag2_id: sample_a_orig_tag2.id,
+            substitute_tag2_id: sample_a_new_tag2.id
+          },
+          {
+            sample_id: sample_b.id,
+            library_id: library_tube_b.receptacle.id,
+            original_tag_id: sample_b_orig_tag.id,
+            substitute_tag_id: sample_a_orig_tag.id,
+            original_tag2_id: sample_b_orig_tag2.id,
+            substitute_tag2_id: sample_b_new_tag2.id
+          }
         ]
       end
 
@@ -208,10 +259,22 @@ describe TagSubstitution do
     context 'when details don\'t match' do
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, original_tag2_id: sample_a_orig_tag2.id,
-            substitute_tag2_id: sample_b_orig_tag2.id },
-          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, original_tag2_id: sample_b_orig_tag2.id,
-            substitute_tag2_id: sample_a_orig_tag2.id }
+          {
+            sample_id: sample_a.id,
+            library_id: library_tube_a.receptacle.id,
+            original_tag_id: sample_b_orig_tag.id,
+            substitute_tag_id: sample_a_orig_tag.id,
+            original_tag2_id: sample_a_orig_tag2.id,
+            substitute_tag2_id: sample_b_orig_tag2.id
+          },
+          {
+            sample_id: sample_b.id,
+            library_id: library_tube_b.receptacle.id,
+            original_tag_id: sample_a_orig_tag.id,
+            substitute_tag_id: sample_b_orig_tag.id,
+            original_tag2_id: sample_b_orig_tag2.id,
+            substitute_tag2_id: sample_a_orig_tag2.id
+          }
         ]
       end
 
@@ -224,24 +287,34 @@ describe TagSubstitution do
     context 'when other attributes are updated' do
       let(:instructions) do
         [
-          { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, library_type: library_type.name, insert_size_from: 20,
-            insert_size_to: 400 },
-          { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, library_type: library_type.name, insert_size_from: 20,
-            insert_size_to: 400 }
+          {
+            sample_id: sample_a.id,
+            library_id: library_tube_a.receptacle.id,
+            original_tag_id: sample_a_orig_tag.id,
+            substitute_tag_id: sample_a_orig_tag.id,
+            library_type: library_type.name,
+            insert_size_from: 20,
+            insert_size_to: 400
+          },
+          {
+            sample_id: sample_b.id,
+            library_id: library_tube_b.receptacle.id,
+            original_tag_id: sample_b_orig_tag.id,
+            substitute_tag_id: sample_b_orig_tag.id,
+            library_type: library_type.name,
+            insert_size_from: 20,
+            insert_size_to: 400
+          }
         ]
       end
 
-      let(:comment) do
-        <<~COMMENT
+      let(:comment) { <<~COMMENT }
           Tag substitution performed.
           Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
           Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
         COMMENT
-      end
 
-      before do
-        assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}"
-      end
+      before { assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}" }
 
       it 'also update allow update of other attributes' do
         [library_aliquot_a, library_aliquot_b, mx_aliquot_a, mx_aliquot_b].each do |aliquot|
@@ -289,12 +362,24 @@ describe TagSubstitution do
 
     let(:instructions) do
       [
-        { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag_a.id,
-          substitute_tag_id: sample_b_orig_tag_a.id },
-        { sample_id: sample_a.id, library_id: library_tube_a.receptacle.id, original_tag_id: sample_a_orig_tag_b.id,
-          substitute_tag_id: other_tag.id },
-        { sample_id: sample_b.id, library_id: library_tube_b.receptacle.id, original_tag_id: sample_b_orig_tag_a.id,
-          substitute_tag_id: sample_a_orig_tag_a.id }
+        {
+          sample_id: sample_a.id,
+          library_id: library_tube_a.receptacle.id,
+          original_tag_id: sample_a_orig_tag_a.id,
+          substitute_tag_id: sample_b_orig_tag_a.id
+        },
+        {
+          sample_id: sample_a.id,
+          library_id: library_tube_a.receptacle.id,
+          original_tag_id: sample_a_orig_tag_b.id,
+          substitute_tag_id: other_tag.id
+        },
+        {
+          sample_id: sample_b.id,
+          library_id: library_tube_b.receptacle.id,
+          original_tag_id: sample_b_orig_tag_a.id,
+          substitute_tag_id: sample_a_orig_tag_a.id
+        }
       ]
     end
 

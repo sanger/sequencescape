@@ -15,11 +15,12 @@
 #
 # JG: This pattern has been pretty much eliminated. It seems to just be used to control {Sample} renaming
 module ValidationStateGuard
-  def validation_guard(guard)
+  def validation_guard(guard) # rubocop:todo Metrics/MethodLength
     guard = guard.to_sym
 
     line = __LINE__ + 1
-    class_eval("
+    class_eval(
+      "
       attr_accessor #{guard.inspect}
       alias_method(#{guard.inspect}?, #{guard.inspect})
       private #{guard.inspect}, #{guard.inspect}?
@@ -28,17 +29,21 @@ module ValidationStateGuard
 
       # Do not remove the 'true' from this otherwise the return value is false, which will fail the save!
       after_save { |record| record.send(#{guard.inspect}=, false) ; true }
-    ", __FILE__, line)
+    ",
+      __FILE__,
+      line
+    )
   end
 
-  def validation_guarded_by(method, guard)
+  def validation_guarded_by(method, guard) # rubocop:todo Metrics/MethodLength
     # Method name could end in ! or ?, in which case the unguarded name needs to be correct.
     method.to_s =~ /^([^!?]+)([!?])?$/
     core_name, extender = $1, $2
-    unguarded_name      = :"#{core_name}_unguarded_by_#{guard}#{extender}"
+    unguarded_name = :"#{core_name}_unguarded_by_#{guard}#{extender}"
 
     line = __LINE__ + 1
-    class_eval("
+    class_eval(
+      "
       alias_method(#{unguarded_name.inspect}, #{method.to_sym.inspect})
       def #{method}(*args, &block)
         send(#{guard.to_sym.inspect}=, true)
@@ -46,6 +51,9 @@ module ValidationStateGuard
       ensure
         send(#{guard.to_sym.inspect}=, false)
       end
-    ", __FILE__, line)
+    ",
+      __FILE__,
+      line
+    )
   end
 end

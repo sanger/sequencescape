@@ -10,16 +10,23 @@ RSpec.describe SamplesController, type: :controller do
 
   describe '#update' do
     context 'when the user is the owner of the study' do
-      before do
-        current_user.roles.create(authorizable_id: sample.id, authorizable_type: 'Sample', name: 'owner')
-      end
+      before { current_user.roles.create(authorizable_id: sample.id, authorizable_type: 'Sample', name: 'owner') }
 
       context 'when changing withdraw consent' do
         let(:consent) { true }
         let(:action) do
-          post :update, session: { user: current_user.id }, params: {
-            id: sample.id, sample: { sample_metadata_attributes: { consent_withdrawn: consent } }
-          }
+          post :update,
+               session: {
+                 user: current_user.id
+               },
+               params: {
+                 id: sample.id,
+                 sample: {
+                   sample_metadata_attributes: {
+                     consent_withdrawn: consent
+                   }
+                 }
+               }
           sample.reload
         end
 

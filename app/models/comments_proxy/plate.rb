@@ -20,8 +20,7 @@ class CommentsProxy::Plate < CommentsProxy::Base
   private
 
   def request_ids
-    @commentable.well_requests_as_source.ids.presence ||
-      @commentable.in_progress_requests.ids.presence ||
+    @commentable.well_requests_as_source.ids.presence || @commentable.in_progress_requests.ids.presence ||
       # This is a final fallback to support legacy plates prior to request on aliquot
       Request.where(submission_id: @commentable.all_submission_ids).ids
   end

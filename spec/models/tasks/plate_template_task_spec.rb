@@ -30,9 +30,7 @@ RSpec.describe PlateTemplateTask, type: :model do
   let(:payload) do
     CSV.generate do |csv|
       csv << ['Request ID', 'Sample Name', 'Plate', 'Destination Well']
-      batch.requests.each_with_index do |r, i|
-        csv << [r.id, r.asset.samples.first.name, '1', "#{(65 + i).chr}1"]
-      end
+      batch.requests.each_with_index { |r, i| csv << [r.id, r.asset.samples.first.name, '1', "#{(65 + i).chr}1"] }
     end
   end
   let(:spreadsheet_layout) do
@@ -53,11 +51,9 @@ RSpec.describe PlateTemplateTask, type: :model do
     ]
   end
 
-  let(:file) { instance_double(ActionDispatch::Http::UploadedFile, 'blank?' => false, read: payload) }
+  let(:file) { instance_double(ActionDispatch::Http::UploadedFile, 'blank?' => false, :read => payload) }
 
-  let(:workflow_controller) do
-    instance_double(WorkflowsController, batch: batch)
-  end
+  let(:workflow_controller) { instance_double(WorkflowsController, batch: batch) }
 
   describe '#render_task' do
     let(:workflow_controller) do
@@ -76,8 +72,11 @@ RSpec.describe PlateTemplateTask, type: :model do
 
   describe '#do_task' do
     let(:params) do
-      ActionController::Parameters.new(workflow_id: workflow.id, file: file,
-                                       plate_purpose_id: create(:plate_purpose).id)
+      ActionController::Parameters.new(
+        workflow_id: workflow.id,
+        file: file,
+        plate_purpose_id: create(:plate_purpose).id
+      )
     end
 
     it 'does stuff' do

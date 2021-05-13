@@ -19,20 +19,24 @@ FactoryBot.define do
       studies { build_list(:study, 1) } # A list of studies to apply to wells.
       projects { build_list(:project, 1) } # A list of projects to apply to wells
       well_order { :column_order } # The order of wells on the plate. Almost always column_order
+
       # HELPERS: Generally you shouldn't need to use these transients
       studies_cycle { studies.cycle } # Allow us to rotate through listed studies when building out wells
       projects_cycle { projects.cycle } # Allow us to rotate through listed studies when building out wells
-      well_locations do
-        maps.where(well_order => occupied_well_index)
-      end
+      well_locations { maps.where(well_order => occupied_well_index) }
       occupied_well_index { (0...well_count) }
     end
 
     after(:build) do |plate, evaluator|
-      plate.wells = evaluator.well_locations.map do |map|
-        build(evaluator.well_factory, map: map, study: evaluator.studies_cycle.next,
-                                      project: evaluator.projects_cycle.next)
-      end
+      plate.wells =
+        evaluator.well_locations.map do |map|
+          build(
+            evaluator.well_factory,
+            map: map,
+            study: evaluator.studies_cycle.next,
+            project: evaluator.projects_cycle.next
+          )
+        end
     end
   end
 
@@ -44,8 +48,8 @@ FactoryBot.define do
     end
     after(:create) do |plate, evaluator|
       plate.wells.each do |well|
-        well.transfer_requests_as_target << create(:transfer_request, target_asset: well,
-                                                                      submission: evaluator.submission_cycle.next)
+        well.transfer_requests_as_target <<
+          create(:transfer_request, target_asset: well, submission: evaluator.submission_cycle.next)
       end
     end
   end
@@ -75,13 +79,15 @@ FactoryBot.define do
       after(:build) do |plate, evaluator|
         well_hash = evaluator.parent.wells.index_by(&:map_description)
         plate.wells.each do |well|
-          well.stock_well_links << build(:stock_well_link, target_well: well,
-                                                           source_well: well_hash[well.map_description])
-          outer_request = well_hash[well.map_description].requests.detect do |r|
-            r.submission_id == evaluator.submission.id
-          end
+          well.stock_well_links <<
+            build(:stock_well_link, target_well: well, source_well: well_hash[well.map_description])
+          outer_request =
+            well_hash[well.map_description].requests.detect { |r| r.submission_id == evaluator.submission.id }
 
-          create :transfer_request, asset: well_hash[well.map_description], target_asset: well, outer_request: outer_request
+          create :transfer_request,
+                 asset: well_hash[well.map_description],
+                 target_asset: well,
+                 outer_request: outer_request
         end
       end
     end
@@ -108,9 +114,7 @@ FactoryBot.define do
       end
 
       factory :final_plate do
-        transient do
-          well_factory { :passed_well }
-        end
+        transient { well_factory { :passed_well } }
       end
     end
 
@@ -123,9 +127,7 @@ FactoryBot.define do
     end
 
     factory :child_plate do
-      transient do
-        parent { create(:source_plate) }
-      end
+      transient { parent { create(:source_plate) } }
 
       plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose) }
 
@@ -147,9 +149,13 @@ FactoryBot.define do
       end
 
       after(:create) do |plate, evaluator|
-        plate.wells = evaluator.occupied_map_locations.map.with_index do |map, i|
-          create(:well_for_location_report, map: map, study: evaluator.studies[i], project: nil)
-        end
+        plate.wells =
+          evaluator
+            .occupied_map_locations
+            .map
+            .with_index do |map, i|
+              create(:well_for_location_report, map: map, study: evaluator.studies[i], project: nil)
+            end
       end
     end
 
@@ -168,9 +174,7 @@ FactoryBot.define do
     size { 96 }
     plate_purpose
 
-    transient do
-      well_count { 96 }
-    end
+    transient { well_count { 96 } }
 
     # A plate that has exactly the right number of wells!
     factory :pooling_plate do
@@ -205,9 +209,7 @@ FactoryBot.define do
     factory(:full_stock_plate) do
       plate_purpose { PlatePurpose.stock_plate_purpose }
 
-      factory(:partial_plate) do
-        transient { well_count { 48 } }
-      end
+      factory(:partial_plate) { transient { well_count { 48 } } }
 
       factory(:plate_for_strip_tubes) do
         transient do
@@ -216,14 +218,10 @@ FactoryBot.define do
         end
       end
 
-      factory(:two_column_plate) do
-        transient { well_count { 16 } }
-      end
+      factory(:two_column_plate) { transient { well_count { 16 } } }
     end
 
-    factory(:full_plate_with_samples) do
-      transient { well_factory { :tagged_well } }
-    end
+    factory(:full_plate_with_samples) { transient { well_factory { :tagged_well } } }
   end
 
   factory :control_plate, class: 'ControlPlate', traits: %i[plate_barcode with_wells] do
@@ -231,9 +229,7 @@ FactoryBot.define do
     name { 'Control Plate name' }
     size { 96 }
 
-    transient do
-      well_factory { :untagged_well }
-    end
+    transient { well_factory { :untagged_well } }
 
     after(:create) do |plate, _evaluator|
       plate.wells.each_with_index do |well, index|
@@ -277,11 +273,9 @@ FactoryBot.define do
 
   # StripTubes are effectively thin plates
   factory :strip_tube do
-    name               { 'Strip_tube' }
-    size               { 8 }
-    plate_purpose      { create :strip_tube_purpose }
-    after(:create) do |st|
-      st.wells = st.maps.map { |map| create(:well, map: map) }
-    end
+    name { 'Strip_tube' }
+    size { 8 }
+    plate_purpose { create :strip_tube_purpose }
+    after(:create) { |st| st.wells = st.maps.map { |map| create(:well, map: map) } }
   end
 end

@@ -27,9 +27,9 @@ class LibraryCreationRequest < CustomerRequest
       super
       transfer_aliquots
       target_asset.aliquots.each do |aliquot|
-        aliquot.library      ||= target_asset
+        aliquot.library ||= target_asset
         aliquot.library_type ||= library_type
-        aliquot.insert_size  ||= insert_size
+        aliquot.insert_size ||= insert_size
         aliquot.save!
       end
     end

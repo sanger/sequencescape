@@ -20,14 +20,14 @@
 # {Accessionable::Policy} Details about how the data may be used. (EGA)
 #
 # Accessioning of samples has been partially migrated to {Accession 'a separate accession library'}
-class AccessionService
+class AccessionService # rubocop:todo Metrics/ClassLength
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
 
   AccessionServiceError = Class.new(StandardError)
-  NumberNotRequired     = Class.new(AccessionServiceError)
-  NumberNotGenerated    = Class.new(AccessionServiceError)
+  NumberNotRequired = Class.new(AccessionServiceError)
+  NumberNotGenerated = Class.new(AccessionServiceError)
 
   CenterName = 'SC'.freeze # TODO: [xxx] use confing file
   Protect = 'protect'.freeze
@@ -43,8 +43,10 @@ class AccessionService
 
   # When samples belong to multiple studies, the submission service with the highest priority will be selected
   class_attribute :priority, instance_writer: false
+
   # When true, allows the accessioning of samples prior to accessioning of the study
   class_attribute :no_study_accession_needed, instance_writer: false
+
   # Indicates that the class reflects a real accessioning service. Set to false for dummy services. This allow
   # scripts like the accessioning cron to break out prematurely for dummy services
   class_attribute :operational, instance_writer: false
@@ -53,6 +55,10 @@ class AccessionService
   self.no_study_accession_needed = false
   self.operational = false
 
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/BlockLength
   def submit(user, *accessionables) # rubocop:todo Metrics/CyclomaticComplexity
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
@@ -63,51 +69,54 @@ class AccessionService
 
       files = [] # maybe not necessary, but just to be sure that the tempfile still exists when they are sent
       begin
-        xml_result = post_files(submission.all_accessionables.map do |acc|
-                                  file = Tempfile.open("#{acc.schema_type}_file")
-                                  files << file
-                                  file.puts(acc.xml)
-                                  file.open # reopen for read
+        xml_result =
+          post_files(
+            submission.all_accessionables.map do |acc|
+              file = Tempfile.open("#{acc.schema_type}_file")
+              files << file
+              file.puts(acc.xml)
+              file.open # reopen for read
 
-                                  Rails.logger.debug { file.each_line.to_a.join("\n") }
+              Rails.logger.debug { file.each_line.to_a.join("\n") }
 
-                                  { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
-                                end)
+              { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
+            end
+          )
         Rails.logger.debug { xml_result }
         if xml_result.match?(/(Server error|Auth required|Login failed)/)
           raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}"
         end
 
-        xmldoc  = Document.new(xml_result)
+        xmldoc = Document.new(xml_result)
         success = xmldoc.root.attributes['success']
         accession_numbers = []
+
         # for some reasons, ebi doesn't give us back a accession number for the submission if it's a MODIFY action
         # therefore, we should be ready to get one or not
         number_generated = true
         case success
         when 'true'
           # extract and update accession numbers
-          accession_number = submission.all_accessionables.each do |acc|
-            accession_number = acc.extract_accession_number(xmldoc)
-            if accession_number
-              acc.update_accession_number!(user, accession_number)
-              accession_numbers << accession_number
-            else
-              # error only, if one of the expected accessionable didn't get a AN
-              # We don't care about the submission
-              number_generated = false if accessionables.include?(acc)
+          accession_number =
+            submission.all_accessionables.each do |acc|
+              accession_number = acc.extract_accession_number(xmldoc)
+              if accession_number
+                acc.update_accession_number!(user, accession_number)
+                accession_numbers << accession_number
+              else
+                # error only, if one of the expected accessionable didn't get a AN
+                # We don't care about the submission
+                number_generated = false if accessionables.include?(acc)
+              end
+              ae_an = acc.extract_array_express_accession_number(xmldoc)
+              acc.update_array_express_accession_number!(ae_an) if ae_an
             end
-            ae_an = acc.extract_array_express_accession_number(xmldoc)
-            acc.update_array_express_accession_number!(ae_an) if ae_an
-          end
 
           raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
-
         when 'false'
           errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
-          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{errors.map do |e|
-                                                                                                           "\n  - #{e}"
-                                                                                                         end }"
+          raise AccessionServiceError,
+                "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
         else
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
         end
@@ -119,10 +128,16 @@ class AccessionService
     end
   end
 
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/BlockLength
+
   def submit_sample_for_user(sample, user)
     # raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
 
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
+
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
 
     submit(user, Accessionable::Sample.new(sample))
@@ -135,6 +150,7 @@ class AccessionService
     # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
 
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
+
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
 
     submit(user, Accessionable::Study.new(study))
@@ -183,7 +199,8 @@ class AccessionService
 
   private
 
-  def accession_submission_xml(submission, accession_number)
+  # rubocop:todo Metrics/MethodLength
+  def accession_submission_xml(submission, accession_number) # rubocop:todo Metrics/AbcSize
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.SUBMISSION(
@@ -208,19 +225,16 @@ class AccessionService
             xml.MODIFY(source: submission[:source], target: '')
           end
         end
-        xml.ACTION do
-          if submission[:hold] == AccessionService::Protect
-            xml.PROTECT
-          else
-            xml.HOLD
-          end
-        end
+        xml.ACTION { submission[:hold] == AccessionService::Protect ? xml.PROTECT : xml.HOLD }
       end
     end
     xml.target!
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   require 'rexml/document'
+
   # require 'curb'
   include REXML
 
@@ -232,13 +246,16 @@ class AccessionService
     rest_client_class.new(configatron.accession.url!, accession_options)
   end
 
-  def post_files(file_params)
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def post_files(file_params) # rubocop:todo Metrics/CyclomaticComplexity
     rc = rest_client_resource
 
     if configatron.disable_web_proxy == true
       RestClient.proxy = nil
     elsif configatron.fetch(:proxy).present?
       RestClient.proxy = configatron.proxy
+
       # UA required to get through Sanger proxy
       # Although currently this UA is actually being set elsewhere in the
       # code as RestClient doesn't pass this header to the proxy.
@@ -247,15 +264,16 @@ class AccessionService
       RestClient.proxy = ENV['http_proxy']
     end
 
-    payload = file_params.each_with_object({}) do |param, hash|
-      hash[param[:name]] = AccessionedFile.open(param[:local_name]).tap do |f|
-        f.original_filename = param[:remote_name]
+    payload =
+      file_params.each_with_object({}) do |param, hash|
+        hash[param[:name]] =
+          AccessionedFile.open(param[:local_name]).tap { |f| f.original_filename = param[:remote_name] }
       end
-    end
 
     response = rc.post(payload)
     case response.code
-    when (200...300) # success
+    when (200...300)
+      # success
       response.body.to_s
     when (400...600)
       Rails.logger.warn($!)
@@ -267,4 +285,6 @@ class AccessionService
   rescue StandardError => e
     raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 end

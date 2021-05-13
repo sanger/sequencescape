@@ -5,7 +5,7 @@ module Tasks::MovieLengthHandler # rubocop:todo Style/Documentation
     @assets = task.find_batch_requests(params[:batch_id]).map(&:asset).uniq
   end
 
-  def do_movie_length_task(task, params)
+  def do_movie_length_task(task, params) # rubocop:todo Metrics/MethodLength
     ActiveRecord::Base.transaction do
       params[:asset].each do |asset_id, movie_length|
         asset = Receptacle.find(asset_id)

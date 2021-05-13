@@ -13,7 +13,7 @@ module Submission::AccessionBehaviour # rubocop:todo Style/Documentation
     RequestType.find(request_types).detect(&:accessioning_required?)
   end
 
-  def check_data_release_and_accession_for_submission
+  def check_data_release_and_accession_for_submission # rubocop:todo Metrics/AbcSize
     return if configatron.disable_accession_check == true
 
     if not study.valid_data_release_properties?

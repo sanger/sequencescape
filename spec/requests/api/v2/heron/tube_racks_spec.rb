@@ -26,11 +26,15 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
       {
         "#{tubes_coordinates[0]}": {
           barcode: tubes_barcodes[0],
-          content: { supplier_name: supplier_sample_ids[0] }
+          content: {
+            supplier_name: supplier_sample_ids[0]
+          }
         },
         "#{tubes_coordinates[1]}": {
           barcode: tubes_barcodes[1],
-          content: { supplier_name: supplier_sample_ids[1] }
+          content: {
+            supplier_name: supplier_sample_ids[1]
+          }
         }
       }
     end
@@ -38,7 +42,7 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
       {
         data: {
           'type' => 'tube_rack',
-          attributes: {
+          :attributes => {
             purpose_uuid: purpose_uuid,
             study_uuid: study.uuid,
             barcode: tube_rack_barcode,
@@ -50,9 +54,7 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
 
     shared_examples_for 'a failed tube rack creation' do
       it 'does not create a tube rack' do
-        expect do
-          request
-        end.not_to change(TubeRack, :count)
+        expect { request }.not_to change(TubeRack, :count)
       end
 
       it 'returns a 422 status code' do
@@ -68,9 +70,7 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
 
     shared_examples_for 'a successful tube rack creation' do
       it 'creates a new tube rack' do
-        expect do
-          request
-        end.to change(TubeRack, :count).by(1)
+        expect { request }.to change(TubeRack, :count).by(1)
       end
 
       it 'returns a 201 status code' do
@@ -96,7 +96,10 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
         it 'writes the supplier name' do
           request
           expect(
-            ::Sample::Metadata.joins(sample: { aliquots: { receptacle: :barcodes } }).where(barcodes: { barcode: tubes_barcodes }).map(&:supplier_name)
+            ::Sample::Metadata
+              .joins(sample: { aliquots: { receptacle: :barcodes } })
+              .where(barcodes: { barcode: tubes_barcodes })
+              .map(&:supplier_name)
           ).to eq(supplier_sample_ids)
         end
       end
@@ -106,11 +109,17 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
           {
             "#{tubes_coordinates[0]}": {
               barcode: tubes_barcodes[0],
-              content: { control: true, control_type: 'positive' }
+              content: {
+                control: true,
+                control_type: 'positive'
+              }
             },
             "#{tubes_coordinates[1]}": {
               barcode: tubes_barcodes[1],
-              content: { control: false, control_type: nil }
+              content: {
+                control: false,
+                control_type: nil
+              }
             }
           }
         end
@@ -120,14 +129,20 @@ RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: tr
         it 'writes the control' do
           request
           expect(
-            ::Sample.joins(aliquots: { receptacle: :barcodes }).where(barcodes: { barcode: tubes_barcodes }).map(&:control)
+            ::Sample
+              .joins(aliquots: { receptacle: :barcodes })
+              .where(barcodes: { barcode: tubes_barcodes })
+              .map(&:control)
           ).to eq([true, false])
         end
 
         it 'writes the control type' do
           request
           expect(
-            ::Sample.joins(aliquots: { receptacle: :barcodes }).where(barcodes: { barcode: tubes_barcodes }).map(&:control_type)
+            ::Sample
+              .joins(aliquots: { receptacle: :barcodes })
+              .where(barcodes: { barcode: tubes_barcodes })
+              .map(&:control_type)
           ).to eq(['positive', nil])
         end
       end

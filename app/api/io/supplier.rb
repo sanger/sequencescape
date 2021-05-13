@@ -13,9 +13,11 @@ class ::Io::Supplier < ::Core::Io::Base
   end
 
   set_json_root(:supplier)
+
   # set_eager_loading { |model| model }   # TODO: uncomment and add any named_scopes that do includes you need
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
             name  => name
            email  => email
          address  => address
@@ -24,5 +26,6 @@ class ::Io::Supplier < ::Core::Io::Base
              fax  => fax
     supplier_url  => url
     abbreviation  => abbreviation
-  ")
+  '
+  )
 end

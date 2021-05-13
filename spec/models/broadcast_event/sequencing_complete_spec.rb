@@ -3,36 +3,42 @@
 require 'rails_helper'
 
 RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event: true do
-  let(:user)  { create(:user) }
+  let(:user) { create(:user) }
   let(:study) { create(:study) }
   let(:project) { create(:project) }
-  let(:sample)  { create(:sample) }
+  let(:sample) { create(:sample) }
   let(:aliquot) { create(:aliquot, study: study, project: project, sample: sample) }
   let(:pipeline) { create(:pipeline) }
   let(:submission) { create(:submission_without_order, priority: 3) }
   let(:request_type) { create(:sequencing_request_type, product_line: create(:product_line)) }
   let(:lane) { create(:lane_with_stock_plate) }
   let!(:request) do
-    create(:sequencing_request_with_assets,
-           project: nil,
-           study: nil,
-           batch: create(:batch, pipeline: pipeline),
-           request_type: request_type,
-           submission: submission,
-           target_asset: lane,
-           request_metadata_attributes: {
-             fragment_size_required_from: 100,
-             fragment_size_required_to: 200,
-             read_length: 76
-           })
+    create(
+      :sequencing_request_with_assets,
+      project: nil,
+      study: nil,
+      batch: create(:batch, pipeline: pipeline),
+      request_type: request_type,
+      submission: submission,
+      target_asset: lane,
+      request_metadata_attributes: {
+        fragment_size_required_from: 100,
+        fragment_size_required_to: 200,
+        read_length: 76
+      }
+    )
   end
   let(:event) do
-    described_class.create!(seed: lane,
-                            user: user,
-                            properties: { result: :passed },
-                            created_at: Time.zone.parse('2018-01-12T13:37:03+00:00'))
+    described_class.create!(
+      seed: lane,
+      user: user,
+      properties: {
+        result: :passed
+      },
+      created_at: Time.zone.parse('2018-01-12T13:37:03+00:00')
+    )
   end
-  let(:json)  { JSON.parse(event.to_json) }
+  let(:json) { JSON.parse(event.to_json) }
 
   it 'has the correct event type' do
     expect(json['event']['event_type']).to eq('sequencing_complete')

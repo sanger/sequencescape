@@ -21,8 +21,14 @@ RSpec.describe RecordLoader::PrimerPanelLoader, type: :model, loader: true do
         name: 'Unique attribute',
         snp_count: 2,
         programs: {
-          'pcr 1' => { 'name' => 'example', 'duration' => '225' },
-          'pcr 2' => { 'name' => 'example_2', 'duration' => '120' }
+          'pcr 1' => {
+            'name' => 'example',
+            'duration' => '225'
+          },
+          'pcr 2' => {
+            'name' => 'example_2',
+            'duration' => '120'
+          }
         }
       }
     end

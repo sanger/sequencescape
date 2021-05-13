@@ -10,13 +10,9 @@ module Api
 
       filter :name
 
-      filter :state, apply: lambda { |records, value, _options|
-        records.by_state(value)
-      }
+      filter :state, apply: lambda { |records, value, _options| records.by_state(value) }
 
-      filter :user, apply: lambda { |records, value, _options|
-        records.by_user(value)
-      }
+      filter :user, apply: lambda { |records, value, _options| records.by_user(value) }
     end
   end
 end

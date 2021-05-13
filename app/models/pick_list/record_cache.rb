@@ -12,17 +12,18 @@ class PickList::RecordCache
 
     def convert(entry)
       source_receptacle_id, study_id, project_id = entry.values_at(:source_receptacle_id, :study_id, :project_id)
-      entry.except(*RECEPTACLE_KEYS).to_hash.merge(
-        source_receptacle: source_receptacle(source_receptacle_id),
-        study: study(study_id),
-        project: project(project_id)
-      )
+      entry
+        .except(*RECEPTACLE_KEYS)
+        .to_hash
+        .merge(
+          source_receptacle: source_receptacle(source_receptacle_id),
+          study: study(study_id),
+          project: project(project_id)
+        )
     end
 
     def source_receptacle(id)
-      @source_receptacle ||= Receptacle.includes(:studies, :projects)
-                                       .find(stored(:source_receptacle_id))
-                                       .index_by(&:id)
+      @source_receptacle ||= Receptacle.includes(:studies, :projects).find(stored(:source_receptacle_id)).index_by(&:id)
       @source_receptacle[id] || missing_resource('receptacle ids', id)
     end
   end
@@ -39,19 +40,17 @@ class PickList::RecordCache
       study_id, project_id = entry.values_at(:study_id, :project_id)
       other_keys = entry.except(*LABWARE_KEYS).to_hash
       source_receptacles.map do |source_receptacle|
-        other_keys.merge(
-          source_receptacle: source_receptacle,
-          study: study(study_id),
-          project: project(project_id)
-        )
+        other_keys.merge(source_receptacle: source_receptacle, study: study(study_id), project: project(project_id))
       end
     end
 
     def source_receptacle_by_labware_id(id)
-      @source_receptacle_by_labware_id ||= Receptacle.preload(:studies, :projects)
-                                                     .with_contents
-                                                     .where(labware_id: stored(:source_labware_id))
-                                                     .group_by(&:labware_id)
+      @source_receptacle_by_labware_id ||=
+        Receptacle
+          .preload(:studies, :projects)
+          .with_contents
+          .where(labware_id: stored(:source_labware_id))
+          .group_by(&:labware_id)
       @source_receptacle_by_labware_id[id] || missing_resource('labware ids', id)
     end
 
@@ -64,12 +63,14 @@ class PickList::RecordCache
     # As we're about to use the exact same barcode to pull the information back
     # out the cache, we're fine.
     def source_receptacle_by_labware_barcode(barcode)
-      @source_receptacle_by_labware_barcode ||= Receptacle.preload(:studies, :projects)
-                                                          .with_contents
-                                                          .with_barcode(stored(:source_labware_barcode))
-                                                          .select_table
-                                                          .select('barcodes.barcode AS found_barcode')
-                                                          .group_by(&:found_barcode)
+      @source_receptacle_by_labware_barcode ||=
+        Receptacle
+          .preload(:studies, :projects)
+          .with_contents
+          .with_barcode(stored(:source_labware_barcode))
+          .select_table
+          .select('barcodes.barcode AS found_barcode')
+          .group_by(&:found_barcode)
       @source_receptacle_by_labware_barcode[barcode] || missing_resource('labware barcodes', barcode)
     end
 

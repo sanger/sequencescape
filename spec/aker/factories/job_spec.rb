@@ -6,7 +6,7 @@ require 'support/barcode_helper'
 RSpec.describe Aker::Factories::Job, type: :model, aker: true do
   include BarcodeHelper
   let(:my_config) do
-    %(
+    '
     sample_metadata.gender              <=   gender
     sample_metadata.donor_id            <=   donor_id
     sample_metadata.supplier_name       <=   supplier_name
@@ -14,7 +14,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     sample_metadata.sample_common_name  <=   common_name
     well_attribute.measured_volume      <=>  volume
     well_attribute.concentration        <=>  concentration
-    )
+    '
   end
   before do
     Aker::Material.config = my_config
@@ -75,9 +75,10 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
 
     context 'when the update from aker to ss is defined' do
       before do
-        Aker::Material.config = %(
+        Aker::Material.config =
+          '
           sample_metadata.sample_common_name  <=   common_name
-        )
+        '
       end
 
       it '#create updates the materials if they already exist' do
@@ -89,9 +90,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     end
 
     context 'when the update from aker to ss is not defined' do
-      before do
-        Aker::Material.config = ''
-      end
+      before { Aker::Material.config = '' }
 
       it '#create does not update the materials data if they already exist' do
         job = described_class.create(params.merge(job_uuid: SecureRandom.uuid))

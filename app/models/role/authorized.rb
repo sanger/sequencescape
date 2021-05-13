@@ -17,10 +17,8 @@ module Role::Authorized
 
   class_methods do
     def role_relation(name, role_name)
-      scope name.to_sym, lambda { |user|
-        joins(:roles, :users)
-          .where(roles: { name: role_name.to_s }, users: { id: user.id })
-      }
+      scope name.to_sym,
+            lambda { |user| joins(:roles, :users).where(roles: { name: role_name.to_s }, users: { id: user.id }) }
     end
   end
 end

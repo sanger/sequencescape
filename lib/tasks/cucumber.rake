@@ -4,7 +4,8 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
-unless ARGV.any? { |a| a =~ /^gems/ } # Don't load anything when running the gems:* tasks
+unless ARGV.any? { |a| a =~ /^gems/ }
+  # Don't load anything when running the gems:* tasks
 
   vendored_cucumber_bin = Dir["#{Rails.root}/vendor/{gems,plugins}/cucumber*/bin/cucumber"].first
   $LOAD_PATH.unshift(File.dirname(vendored_cucumber_bin) + '/../lib') unless vendored_cucumber_bin.nil?
@@ -25,8 +26,10 @@ unless ARGV.any? { |a| a =~ /^gems/ } # Don't load anything when running the gem
         t.profile = 'wip'
       end
 
-      Cucumber::Rake::Task.new({ rerun: 'test:prepare' },
-                               'Record failing features and run only them if any exist') do |t|
+      Cucumber::Rake::Task.new(
+        { rerun: 'test:prepare' },
+        'Record failing features and run only them if any exist'
+      ) do |t|
         t.binary = vendored_cucumber_bin
         t.fork = true # You may get faster startup if you set this to false
         t.profile = 'rerun'
@@ -37,7 +40,7 @@ unless ARGV.any? { |a| a =~ /^gems/ } # Don't load anything when running the gem
 
       task statsetup: :environment do
         require 'rails/code_statistics'
-        ::STATS_DIRECTORIES << %w(Cucumber\ features features) if File.exist?('features')
+        ::STATS_DIRECTORIES << %w[Cucumber\ features features] if File.exist?('features')
         ::CodeStatistics::TEST_TYPES << 'Cucumber features' if File.exist?('features')
       end
 
@@ -72,5 +75,4 @@ unless ARGV.any? { |a| a =~ /^gems/ } # Don't load anything when running the gem
       abort 'Cucumber rake task is not available. Be sure to install cucumber as a gem or plugin'
     end
   end
-
 end

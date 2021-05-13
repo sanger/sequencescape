@@ -1,13 +1,17 @@
 module ::Core::Endpoint::BasicHandler::Actions::Guards # rubocop:todo Style/Documentation
   class Guard # rubocop:todo Style/Documentation
-    def initialize(method = nil, &block)
+    def initialize(method = nil, &block) # rubocop:todo Metrics/MethodLength
       if method.present?
         line = __LINE__ + 1
-        singleton_class.class_eval("
+        singleton_class.class_eval(
+          "
           def execute(object)
             object.#{method}
           end
-        ", __FILE__, line)
+        ",
+          __FILE__,
+          line
+        )
       elsif block
         singleton_class.send(:define_method, :execute, &block)
       else

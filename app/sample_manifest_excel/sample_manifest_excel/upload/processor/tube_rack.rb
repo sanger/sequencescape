@@ -11,7 +11,7 @@ module SampleManifestExcel
       # Used for processing the upload of sample manifests.
       # Contains behaviour specific to processing 'Tube Rack' manifests.
       # Had to explicitly specify the namespace for Base here otherwise it picks up Upload::Base
-      class TubeRack < SampleManifestExcel::Upload::Processor::Base
+      class TubeRack < SampleManifestExcel::Upload::Processor::Base # rubocop:todo Metrics/ClassLength
         include ActiveModel::Validations
         include ::CsvParserClient
 
@@ -29,13 +29,15 @@ module SampleManifestExcel
           @tube_rack_information_previously_processed = check_if_tube_racks_present
         end
 
-        def run(tag_group)
+        def run(tag_group) # rubocop:todo Metrics/MethodLength
           return unless valid?
 
           unless @tube_rack_information_previously_processed
             @rack_size = upload.sample_manifest.tube_rack_purpose.size
-            return unless retrieve_scan_results && validate_against_scan_results && validate_coordinates(@rack_size,
-                                                                                                         @rack_barcode_to_scan_results)
+            unless retrieve_scan_results && validate_against_scan_results &&
+                     validate_coordinates(@rack_size, @rack_barcode_to_scan_results)
+              return
+            end
 
             success = create_tube_racks_and_link_tubes
 
@@ -92,7 +94,8 @@ module SampleManifestExcel
           list_of_validity.each_with_index do |validity, index|
             list_of_invalid_coordinates << list_of_coordinates[index] unless validity
           end
-          error_message = "The following coordinates in the scan are not valid for a tube rack of size #{rack_size}: #{list_of_invalid_coordinates}."
+          error_message =
+            "The following coordinates in the scan are not valid for a tube rack of size #{rack_size}: #{list_of_invalid_coordinates}."
           upload.errors.add(:base, error_message)
 
           true
@@ -121,7 +124,7 @@ module SampleManifestExcel
           rack_barcode_to_tube_rack
         end
 
-        def create_tube_rack_if_not_existing(tube_rack_barcode)
+        def create_tube_rack_if_not_existing(tube_rack_barcode) # rubocop:todo Metrics/MethodLength
           barcode = Barcode.includes(:asset).find_by(asset_id: tube_rack_barcode)
 
           if barcode.nil?
@@ -144,10 +147,11 @@ module SampleManifestExcel
           tube_rack
         end
 
-        def create_barcodes_for_existing_tubes
+        def create_barcodes_for_existing_tubes # rubocop:todo Metrics/MethodLength
           upload.rows.each do |row|
             tube_barcode = row.value('tube_barcode')
             tube = row.labware
+
             # TODO: the below foreign barcode checks are duplicated in sanger_tube_id specialised field file - refactor
             barcode_format = Barcode.matching_barcode_format(tube_barcode)
             if barcode_format.nil?

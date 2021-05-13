@@ -24,7 +24,7 @@ class Plate::CreatorParameters # rubocop:todo Style/Documentation
     (!params[:dilution_factor].nil?) && (!params[:dilution_factor].to_s.empty?)
   end
 
-  def plate_parameters(_plate, parent_plate = nil)
+  def plate_parameters(_plate, parent_plate = nil) # rubocop:todo Metrics/MethodLength
     params = @params.clone
 
     parent_dilution_factor = plate_dilution_factor(parent_plate)
@@ -38,6 +38,7 @@ class Plate::CreatorParameters # rubocop:todo Style/Documentation
       # If not specified, I'll inherit the value of the source plate (if it has one)
       params[:dilution_factor] = parent_dilution_factor
     end
+
     # If I don't have a dilution factor yet, I'll let the value fall back to database default
     params.delete(:dilution_factor) if params[:dilution_factor].nil?
 

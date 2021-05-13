@@ -4,6 +4,7 @@
 
 if Rails.env.development?
   require './lib/working_setup/standard_seeder'
+
   # Barcode printers (These match some of the more frequently used printers,
   # or at least the most frequently used when I first put this together)
   plate = BarcodePrinterType.find_by!(name: '96 Well Plate')
@@ -12,10 +13,10 @@ if Rails.env.development?
 
   BarcodePrinter.find_or_create_by!(name: 'g312bc2', barcode_printer_type: plate)
   BarcodePrinter.find_or_create_by!(name: 'g311bc2', barcode_printer_type: plate)
-  BarcodePrinter.find_or_create_by!(name: 'g316bc',  barcode_printer_type: plate)
-  BarcodePrinter.find_or_create_by!(name: 'g317bc',  barcode_printer_type: plate)
-  BarcodePrinter.find_or_create_by!(name: 'g314bc',  barcode_printer_type: plate)
-  BarcodePrinter.find_or_create_by!(name: 'f225bc',  barcode_printer_type: plate)
+  BarcodePrinter.find_or_create_by!(name: 'g316bc', barcode_printer_type: plate)
+  BarcodePrinter.find_or_create_by!(name: 'g317bc', barcode_printer_type: plate)
+  BarcodePrinter.find_or_create_by!(name: 'g314bc', barcode_printer_type: plate)
+  BarcodePrinter.find_or_create_by!(name: 'f225bc', barcode_printer_type: plate)
   BarcodePrinter.find_or_create_by!(name: 'g311bc1', barcode_printer_type: tube)
   BarcodePrinter.find_or_create_by!(name: 'dnapbc2', barcode_printer_type: plate384)
   BarcodePrinter.find_or_create_by!(name: 'ogilviebc', barcode_printer_type: plate384)
@@ -28,6 +29,7 @@ if Rails.env.development?
   seeder.study_b
   seeder.project
   seeder.supplier
+
   # Generates a handful of samples and robots
   seeder.seed
 end

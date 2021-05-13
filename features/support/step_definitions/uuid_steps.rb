@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 def set_uuid_for(object, uuid_value)
-  uuid   = object.uuid_object
+  uuid = object.uuid_object
   uuid ||= object.build_uuid_object
   uuid.external_id = uuid_value
   uuid.save(validate: false)
@@ -50,21 +50,21 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
 ].freeze
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')
-PLURAL_MODELS_BASED_ON_NAME_REGEXP   = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.map(&:pluralize).join('|')
+PLURAL_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.map(&:pluralize).join('|')
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
 Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/o do |model, name, uuid_value|
-  object = model.gsub(/\s+/,
-                      '_').classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
+  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or
+    raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object, uuid_value)
 end
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
 Given /^the UUID for the receptacle in (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/o do |model, name, uuid_value|
-  object = model.gsub(/\s+/,
-                      '_').classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
+  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or
+    raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object.receptacle, uuid_value)
 end
 
@@ -82,14 +82,12 @@ end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^"]+)" and IDs starting at (\d+)$/o do |count, model, name, id|
   (0...count.to_i).each do |index|
-    step(%{a #{model.singularize} called "#{name}-#{index + 1}" with ID #{id.to_i + index}})
+    step("a #{model.singularize} called \"#{name}-#{index + 1}\" with ID #{id.to_i + index}")
   end
 end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^"]+)"$/o do |count, model, name|
-  (0...count.to_i).each do |index|
-    step(%{a #{model.singularize} called "#{name}-#{index + 1}"})
-  end
+  (0...count.to_i).each { |index| step("a #{model.singularize} called \"#{name}-#{index + 1}\"") }
 end
 
 ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
@@ -97,7 +95,6 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'library creation request',
   'multiplexed library creation request',
   'sequencing request',
-
   'user',
   'asset rack',
   'full asset rack',
@@ -110,22 +107,16 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'pulldown multiplexed library tube',
   'multiplexed library tube',
   'stock multiplexed library tube',
-
   'asset audit',
-
   'plate purpose',
   'purpose',
   'dilution plate purpose',
   'bulk transfer',
-
   'sample',
   'sample manifest',
-
   'submission',
   'order',
-
   'batch',
-
   'tag layout',
   'tag 2 layout',
   'tag2 layout template',
@@ -133,7 +124,6 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'plate conversion',
   'tube creation',
   'state change',
-
   'aliquot',
   'qcable',
   'stock',
@@ -150,7 +140,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 ].freeze
 
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')
-PLURAL_MODELS_BASED_ON_ID_REGEXP   = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.map(&:pluralize).join('|')
+PLURAL_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.map(&:pluralize).join('|')
 
 Given /^a (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with UUID "([^"]*)" exists$/o do |model, uuid_value|
   set_uuid_for(FactoryBot.create(model.gsub(/\s+/, '_').to_sym), uuid_value)
@@ -165,23 +155,25 @@ Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with ID (\d+) i
 end
 
 Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) have sequential UUIDs based on "([^"]+)"$/o do |model, core_uuid|
-  core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
+  core_uuid = core_uuid.dup # Oh the irony of modifying a string that then alters Cucumber output!
   core_uuid << '-' if core_uuid.length == 23
   core_uuid << "%0#{36 - core_uuid.length}d"
 
-  model.singularize.gsub(/\s+/, '_').camelize.constantize.all.each_with_index do |object, index|
-    set_uuid_for(object, core_uuid % (index + 1))
-  end
+  model
+    .singularize
+    .gsub(/\s+/, '_')
+    .camelize
+    .constantize
+    .all
+    .each_with_index { |object, index| set_uuid_for(object, core_uuid % (index + 1)) }
 end
 
 Given /^all sample tubes have receptacles with sequential UUIDs based on "([^"]+)"$/ do |core_uuid|
-  core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
+  core_uuid = core_uuid.dup # Oh the irony of modifying a string that then alters Cucumber output!
   core_uuid << '-' if core_uuid.length == 23
   core_uuid << "%0#{36 - core_uuid.length}d"
 
-  SampleTube.all.each_with_index do |object, index|
-    set_uuid_for(object.receptacle, core_uuid % (index + 1))
-  end
+  SampleTube.all.each_with_index { |object, index| set_uuid_for(object.receptacle, core_uuid % (index + 1)) }
 end
 
 Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created will be "([^"]+)"$/o do |model, uuid_value|
@@ -191,25 +183,25 @@ Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created wil
 end
 
 Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^"]+)"$/ do |id, core_uuid|
-  core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
+  core_uuid = core_uuid.dup # Oh the irony of modifying a string that then alters Cucumber output!
   core_uuid << '-' if core_uuid.length == 23
   core_uuid << "%0#{36 - core_uuid.length}d"
 
-  SampleManifest.find(id).samples.each_with_index do |object, index|
-    set_uuid_for(object, core_uuid % (index + 1))
-  end
+  SampleManifest.find(id).samples.each_with_index { |object, index| set_uuid_for(object, core_uuid % (index + 1)) }
 end
 
 Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^"]+)"$/o do |model, uuid_value|
-  target = model.gsub(/\s+/,
-                      '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
+  target = model.gsub(/\s+/, '_').classify.constantize.last or
+    raise StandardError, "There appear to be no #{model.pluralize}"
   target.uuid_object.update!(external_id: uuid_value)
 end
 
 # TODO: It's 'UUID' not xxxing 'uuid'.
 Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model, uuid_value|
-  set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/, '_').camelize.constantize.create!(message: model),
-               uuid_value)
+  set_uuid_for(
+    model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/, '_').camelize.constantize.create!(message: model),
+    uuid_value
+  )
 end
 
 Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model, uuid_value|
@@ -228,20 +220,22 @@ end
 
 Given /^a asset_link with uuid "([^"]*)" exists and connects "([^"]*)" and "([^"]*)"$/ do |uuid_value, uuid_plate, uuid_well|
   plate = Plate.find(Uuid.find_id(uuid_plate))
-  well  = Well.find(Uuid.find_id(uuid_well))
+  well = Well.find(Uuid.find_id(uuid_well))
   set_uuid_for(AssetLink.create!(ancestor: plate, descendant: well), uuid_value)
 end
 
 Given /^there are (\d+) "([^"]+)" requests with IDs starting at (\d+)$/ do |count, type, id|
-  (0...count.to_i).each do |index|
-    step(%{a "#{type}" request with ID #{id.to_i + index}})
-  end
+  (0...count.to_i).each { |index| step("a \"#{type}\" request with ID #{id.to_i + index}") }
 end
 
 Given /^a "([^"]+)" request with ID (\d+)$/ do |type, id|
   request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
+
   # TODO: This is wrong.
-  request_type.requests.create! { |r| r.id = id.to_i; r.request_purpose = request_type.request_purpose }
+  request_type.requests.create! do |r|
+    r.id = id.to_i
+    r.request_purpose = request_type.request_purpose
+  end
 end
 
 Given /^all of the requests have appropriate assets with samples$/ do

@@ -8,9 +8,7 @@ class ApiApplicationTest < ActiveSupport::TestCase
   should validate_presence_of :privilege
 
   context '#create' do
-    setup do
-      @app = ApiApplication.create(name: 'test')
-    end
+    setup { @app = ApiApplication.create(name: 'test') }
 
     should 'automatically generate a key if no present' do
       @app = ApiApplication.create

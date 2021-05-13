@@ -13,33 +13,38 @@ class PlateTemplateTask < Task
       @plate_size = plate_size
     end
 
-    def layout
+    # rubocop:todo Metrics/MethodLength
+    def layout # rubocop:todo Metrics/AbcSize
       barcodes = Set.new
-      plates = mapped_plate_wells.each_value.map do |mapped_wells|
-        Array.new(plate_size) do |i|
-          request_id = mapped_wells[i]
-          if request_id.present?
-            asset = requests[request_id].asset
-            barcodes << asset.plate.barcode_number
-            [request_id, asset.plate.barcode_number, asset.display_name]
-          else
-            CherrypickTask::EMPTY_WELL
+      plates =
+        mapped_plate_wells.each_value.map do |mapped_wells|
+          Array.new(plate_size) do |i|
+            request_id = mapped_wells[i]
+            if request_id.present?
+              asset = requests[request_id].asset
+              barcodes << asset.plate.barcode_number
+              [request_id, asset.plate.barcode_number, asset.display_name]
+            else
+              CherrypickTask::EMPTY_WELL
+            end
           end
         end
-      end
 
       [plates, barcodes.to_a]
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     private
 
     def mapped_plate_wells
       (Hash.new { |h, k| h[k] = {} }).tap do |parsed_plates|
         CSV.parse(csv_string, headers: :first_row) do |row|
-          parse_spreadsheet_row(row['Request ID'], row['Plate'],
-                                row['Destination Well']) do |plate_key, request_id, location|
-            parsed_plates[plate_key][location.column_order] = request_id
-          end
+          parse_spreadsheet_row(
+            row['Request ID'],
+            row['Plate'],
+            row['Destination Well']
+          ) { |plate_key, request_id, location| parsed_plates[plate_key][location.column_order] = request_id }
         end
       end
     end
@@ -67,16 +72,17 @@ class PlateTemplateTask < Task
     workflow.render_plate_template_task(self, params)
   end
 
-  def do_task(workflows_controller, params)
+  def do_task(workflows_controller, params) # rubocop:todo Metrics/AbcSize
     return true if params[:file].blank?
 
-    plate_size = if params[:plate_template].blank?
-                   PlatePurpose.find(params[:plate_purpose_id]).size
-                 else
-                   PlateTemplate.find(params[:plate_template]['0'].to_i).size
-                 end
-    workflows_controller.spreadsheet_layout = SpreadsheetReader.new(params[:file].read, workflows_controller.batch,
-                                                                    plate_size).layout
+    plate_size =
+      if params[:plate_template].blank?
+        PlatePurpose.find(params[:plate_purpose_id]).size
+      else
+        PlateTemplate.find(params[:plate_template]['0'].to_i).size
+      end
+    workflows_controller.spreadsheet_layout =
+      SpreadsheetReader.new(params[:file].read, workflows_controller.batch, plate_size).layout
     true
   end
 end

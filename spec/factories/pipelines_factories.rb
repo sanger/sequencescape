@@ -29,14 +29,14 @@ FactoryBot.define do
   end
 
   factory :descriptor do
-    name                { 'Desc name' }
-    value               { '' }
-    selection           { '' }
+    name { 'Desc name' }
+    value { '' }
+    selection { '' }
     task
-    kind                { '' }
-    required            { 0 }
-    sorter              { nil }
-    key                 { '' }
+    kind { '' }
+    required { 0 }
+    sorter { nil }
+    key { '' }
   end
 
   factory :lab_event do
@@ -47,11 +47,11 @@ FactoryBot.define do
   end
 
   factory :pipeline do
-    name                  { generate :pipeline_name }
-    automated             { false }
-    active                { true }
-    next_pipeline_id      { nil }
-    previous_pipeline_id  { nil }
+    name { generate :pipeline_name }
+    automated { false }
+    active { true }
+    next_pipeline_id { nil }
+    previous_pipeline_id { nil }
 
     transient do
       item_limit { 2 }
@@ -62,8 +62,12 @@ FactoryBot.define do
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       if pipeline.workflow.nil?
-        pipeline.build_workflow(name: pipeline.name, item_limit: evaluator.item_limit, locale: evaluator.locale,
-                                pipeline: pipeline)
+        pipeline.build_workflow(
+          name: pipeline.name,
+          item_limit: evaluator.item_limit,
+          locale: evaluator.locale,
+          pipeline: pipeline
+        )
       end
     end
 
@@ -73,15 +77,13 @@ FactoryBot.define do
   end
 
   factory :cherrypick_pipeline do
-    transient do
-      request_type { build(:cherrypick_request_type) }
-    end
+    transient { request_type { build(:cherrypick_request_type) } }
 
-    name            { generate :pipeline_name }
-    automated       { false }
-    active          { true }
-    max_size        { 3000 }
-    summary         { true }
+    name { generate :pipeline_name }
+    automated { false }
+    active { true }
+    max_size { 3000 }
+    summary { true }
     externally_managed { false }
     min_size { 1 }
 
@@ -93,26 +95,24 @@ FactoryBot.define do
   end
 
   factory :fluidigm_pipeline, class: 'CherrypickPipeline' do
-    name                    { generate :pipeline_name }
-    active                  { true }
-    max_size                { 192 }
-    sorter                  { 11 }
-    summary                 { false }
-    externally_managed      { false }
+    name { generate :pipeline_name }
+    active { true }
+    max_size { 192 }
+    sorter { 11 }
+    summary { false }
+    externally_managed { false }
     control_request_type_id { 0 }
-    min_size                { 1 }
+    min_size { 1 }
 
     association(:workflow, factory: :fluidigm_pipeline_workflow)
 
-    after(:build) do |pipeline|
-      pipeline.request_types << build(:well_request_type)
-    end
+    after(:build) { |pipeline| pipeline.request_types << build(:well_request_type) }
   end
 
   factory :sequencing_pipeline do
-    name                  { generate :pipeline_name }
-    automated             { false }
-    active                { true }
+    name { generate :pipeline_name }
+    automated { false }
+    active { true }
 
     workflow { build :lab_workflow_for_pipeline }
 
@@ -127,21 +127,20 @@ FactoryBot.define do
   factory :pac_bio_sequencing_pipeline do
     name { FactoryBot.generate :pipeline_name }
     active { true }
+
     #  association(:workflow, factory: :lab_workflow_for_pipeline)
     control_request_type_id { -1 }
     workflow { build :lab_workflow_for_pipeline }
 
-    after(:build) do |pipeline|
-      pipeline.request_types << create(:pac_bio_sequencing_request_type)
-    end
+    after(:build) { |pipeline| pipeline.request_types << create(:pac_bio_sequencing_request_type) }
   end
 
   factory :library_creation_pipeline do
-    name                  { |_a| FactoryBot.generate :pipeline_name }
-    automated             { false }
-    active                { true }
-    next_pipeline_id      { nil }
-    previous_pipeline_id  { nil }
+    name { |_a| FactoryBot.generate :pipeline_name }
+    automated { false }
+    active { true }
+    next_pipeline_id { nil }
+    previous_pipeline_id { nil }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -152,8 +151,8 @@ FactoryBot.define do
 
   factory :multiplexed_library_creation_pipeline do
     name { |_a| FactoryBot.generate :pipeline_name }
-    automated             { false }
-    active                { true }
+    automated { false }
+    active { true }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -164,54 +163,55 @@ FactoryBot.define do
 
   factory :library_completion, class: 'IlluminaHtp::Requests::LibraryCompletion' do
     request_type do
-      create(:request_type,
-             name: 'Illumina-B Pooled',
-             key: 'illumina_b_pool',
-             request_class_name: 'IlluminaHtp::Requests::LibraryCompletion',
-             for_multiplexing: true,
-             no_target_asset: false)
+      create(
+        :request_type,
+        name: 'Illumina-B Pooled',
+        key: 'illumina_b_pool',
+        request_class_name: 'IlluminaHtp::Requests::LibraryCompletion',
+        for_multiplexing: true,
+        no_target_asset: false
+      )
     end
-    asset        { |target| target.association(:well_with_sample_and_plate) }
+    asset { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose { :standard }
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 300
-      request.request_metadata.fragment_size_required_to   = 500
-      request.request_metadata.library_type                = create(:library_type)
+      request.request_metadata.fragment_size_required_to = 500
+      request.request_metadata.library_type = create(:library_type)
     end
   end
 
   factory :task do
-    name        { 'New task' }
+    name { 'New task' }
     association(:workflow, factory: :lab_workflow)
-    sorted      { nil }
-    batched     { nil }
-    location    { '' }
+    sorted { nil }
+    batched { nil }
+    location { '' }
     interactive { nil }
   end
 
   factory :pipeline_admin, class: 'User' do
-    login         { 'ad1' }
-    email         { |a| "#{a.login}@example.com".downcase }
+    login { 'ad1' }
+    email { |a| "#{a.login}@example.com".downcase }
     pipeline_administrator { true }
   end
 
   factory :workflow, aliases: [:lab_workflow] do
-    name                  { FactoryBot.generate :lab_workflow_name }
-    item_limit            { 2 }
-    locale                { 'Internal' }
+    name { FactoryBot.generate :lab_workflow_name }
+    item_limit { 2 }
+    locale { 'Internal' }
+
     # Bit grim. Otherwise pipeline behaves a little weird and tries to build a second workflow.
     pipeline { |workflow| workflow.association(:pipeline, workflow: workflow.instance_variable_get('@instance')) }
   end
 
   factory :lab_workflow_for_pipeline, class: 'Workflow' do
-    name                  { generate :lab_workflow_name }
-    item_limit            { 2 }
-    locale                { 'Internal' }
+    name { generate :lab_workflow_name }
+    item_limit { 2 }
+    locale { 'Internal' }
 
-    after(:build) do |workflow|
-      workflow.pipeline = build(:pipeline, workflow: workflow) unless workflow.pipeline
-    end
+    after(:build) { |workflow| workflow.pipeline = build(:pipeline, workflow: workflow) unless workflow.pipeline }
   end
 
   factory :fluidigm_pipeline_workflow, class: 'Workflow' do
@@ -221,12 +221,7 @@ FactoryBot.define do
       workflow.pipeline = build(:fluidigm_pipeline, workflow: workflow) unless workflow.pipeline
     end
 
-    tasks do
-      [
-        build(:fluidigm_template_task, workflow: nil),
-        build(:cherrypick_task, workflow: nil)
-      ]
-    end
+    tasks { [build(:fluidigm_template_task, workflow: nil), build(:cherrypick_task, workflow: nil)] }
   end
 
   factory :cherrypick_pipeline_workflow, class: 'Workflow' do
@@ -236,12 +231,7 @@ FactoryBot.define do
       workflow.pipeline = build(:cherrypick_pipeline, workflow: workflow) unless workflow.pipeline
     end
 
-    tasks do
-      [
-        build(:plate_template_task, workflow: nil),
-        build(:cherrypick_task, workflow: nil)
-      ]
-    end
+    tasks { [build(:plate_template_task, workflow: nil), build(:cherrypick_task, workflow: nil)] }
   end
 
   factory :batch_request do
@@ -261,37 +251,37 @@ FactoryBot.define do
   end
 
   factory :request_information_type do
-    name                   { '' }
-    key                    { '' }
-    label                  { '' }
-    hide_in_inbox          { '' }
+    name { '' }
+    key { '' }
+    label { '' }
+    hide_in_inbox { '' }
   end
 
   factory :pipeline_request_information_type do
-    pipeline                  { |pipeline| pipeline.association(:pipeline) }
-    request_information_type  do |request_information_type|
+    pipeline { |pipeline| pipeline.association(:pipeline) }
+    request_information_type do |request_information_type|
       request_information_type.association(:request_information_type)
     end
   end
 
   factory :implement do
-    name                { 'CS03' }
-    barcode             { 'LE6G' }
-    equipment_type      { 'Cluster Station' }
+    name { 'CS03' }
+    barcode { 'LE6G' }
+    equipment_type { 'Cluster Station' }
   end
 
   factory :map do
-    description      { 'A2' }
-    asset_size       { '96' }
-    location_id      { 2 }
-    row_order        { 1 }
-    column_order     { 8 }
+    description { 'A2' }
+    asset_size { '96' }
+    location_id { 2 }
+    row_order { 1 }
+    column_order { 8 }
     asset_shape { AssetShape.default }
   end
 
   factory :plate_template do
-    name      { 'testtemplate' }
-    size      { 96 }
+    name { 'testtemplate' }
+    size { 96 }
   end
 
   factory :asset_link do

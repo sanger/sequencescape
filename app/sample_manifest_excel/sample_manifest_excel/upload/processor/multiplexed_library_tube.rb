@@ -42,10 +42,7 @@ module SampleManifestExcel
         end
 
         def processed?
-          samples_updated? &&
-            aliquots_updated? &&
-            sample_manifest_updated? &&
-            aliquots_transferred?
+          samples_updated? && aliquots_updated? && sample_manifest_updated? && aliquots_transferred?
         end
 
         def aliquots_transferred?

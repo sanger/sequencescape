@@ -14,69 +14,56 @@ describe StockStamper do
     create :plate_type, name: 'FluidX075', maximum_volume: 500
     create :plate_type, name: 'FluidX03', maximum_volume: 280
 
-    @attributes = { user_barcode: '2470041440697',
-                    source_plate_barcode: plate.ean13_barcode,
-                    destination_plate_barcode: plate.ean13_barcode,
-                    source_plate_type_name: 'ABgene_0765',
-                    destination_plate_type_name: 'ABgene_0800',
-                    overage: 1.2 }
+    @attributes = {
+      user_barcode: '2470041440697',
+      source_plate_barcode: plate.ean13_barcode,
+      destination_plate_barcode: plate.ean13_barcode,
+      source_plate_type_name: 'ABgene_0765',
+      destination_plate_type_name: 'ABgene_0800',
+      overage: 1.2
+    }
     @stock_stamper = described_class.new(@attributes)
     new_time = Time.zone.local(2008, 9, 1, 12, 0, 0)
     Timecop.freeze(new_time)
     @tecan_data = {
       'user' => user.login,
       'time' => new_time,
-      'source' =>
-                    {
-                      "#{plate.machine_barcode}_s" =>
-                      {
-                        'name' => 'ABgene 0765',
-                        'plate_size' => 96
-                      }
-                    },
-      'destination' =>
-                    {
-                      "#{plate.machine_barcode}_d" =>
-                      {
-                        'name' => 'ABgene 0800',
-                        'plate_size' => 96,
-                        'mapping' => [
-                          {
-                            'src_well' => [
-                              "#{plate.machine_barcode}_s",
-                              'A1'
-                            ],
-                            'dst_well' => 'A1',
-                            'volume' => 180.0,
-                            'buffer_volume' => 0.0
-                          },
-                          {
-                            'src_well' => [
-                              "#{plate.machine_barcode}_s",
-                              'B2'
-                            ],
-                            'dst_well' => 'B2',
-                            'volume' => 180.0,
-                            'buffer_volume' => 0.0
-                          },
-                          {
-                            'src_well' => [
-                              "#{plate.machine_barcode}_s",
-                              'E6'
-                            ],
-                            'dst_well' => 'E6',
-                            'volume' => 180.0,
-                            'buffer_volume' => 0.0
-                          }
-                        ]
-                      }
-                    }
+      'source' => {
+        "#{plate.machine_barcode}_s" => {
+          'name' => 'ABgene 0765',
+          'plate_size' => 96
+        }
+      },
+      'destination' => {
+        "#{plate.machine_barcode}_d" => {
+          'name' => 'ABgene 0800',
+          'plate_size' => 96,
+          'mapping' => [
+            {
+              'src_well' => ["#{plate.machine_barcode}_s", 'A1'],
+              'dst_well' => 'A1',
+              'volume' => 180.0,
+              'buffer_volume' => 0.0
+            },
+            {
+              'src_well' => ["#{plate.machine_barcode}_s", 'B2'],
+              'dst_well' => 'B2',
+              'volume' => 180.0,
+              'buffer_volume' => 0.0
+            },
+            {
+              'src_well' => ["#{plate.machine_barcode}_s", 'E6'],
+              'dst_well' => 'E6',
+              'volume' => 180.0,
+              'buffer_volume' => 0.0
+            }
+          ]
+        }
+      }
     }
   end
 
-  after do
-    Timecop.return
-  end
+  after { Timecop.return }
 
   describe 'it verifies the plates' do
     it 'is not valid without plates barcodes, user barcode, plates types' do
@@ -86,8 +73,10 @@ describe StockStamper do
     end
 
     it 'is not valid if user barcode or plate barcode are invalid' do
-      invalid_stock_stamper = described_class.new(@attributes.merge(source_plate_barcode: '123',
-                                                                    destination_plate_barcode: '234', user_barcode: '345'))
+      invalid_stock_stamper =
+        described_class.new(
+          @attributes.merge(source_plate_barcode: '123', destination_plate_barcode: '234', user_barcode: '345')
+        )
       expect(invalid_stock_stamper.valid?).to be false
       expect(invalid_stock_stamper.errors.messages.length).to eq 3
       expect(invalid_stock_stamper.errors.full_messages).to include 'User is not registered in Sequencescape'
@@ -122,8 +111,11 @@ describe StockStamper do
 
     it 'creates correct message after execution' do
       @stock_stamper.execute
-      expect(@stock_stamper.message).to eq(notice: 'You can generate the TECAN file and print label now.',
-                                           error: 'Required volume exceeds the maximum well volume for well(s) A1, B2, E6. Maximum well volume 180.0 will be used in tecan file')
+      expect(@stock_stamper.message).to eq(
+        notice: 'You can generate the TECAN file and print label now.',
+        error:
+          'Required volume exceeds the maximum well volume for well(s) A1, B2, E6. Maximum well volume 180.0 will be used in tecan file'
+      )
     end
   end
 end

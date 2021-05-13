@@ -62,10 +62,7 @@ module SampleManifestExcel
       def ==(other)
         return false unless other.is_a?(self.class)
 
-        name == other.name &&
-          columns == other.columns &&
-          heading == other.heading &&
-          asset_type == other.asset_type
+        name == other.name && columns == other.columns && heading == other.heading && asset_type == other.asset_type
       end
     end
 
@@ -73,9 +70,7 @@ module SampleManifestExcel
 
     def create_manifest_types(manifest_types)
       self.manifest_types.tap do |mf|
-        manifest_types.each do |k, manifest_type|
-          mf[k] = ManifestType.new(manifest_type.merge(name: k))
-        end
+        manifest_types.each { |k, manifest_type| mf[k] = ManifestType.new(manifest_type.merge(name: k)) }
       end
     end
   end

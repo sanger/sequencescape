@@ -5,9 +5,24 @@ require 'rails_helper'
 class TestSeed
   include ActiveModel::Model
   include ActiveModel::AttributeMethods
-  define_attribute_methods :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
+  define_attribute_methods :uuid,
+                           :friendly_name,
+                           :subject_type,
+                           :single_relation,
+                           :many_relation,
+                           :dynamic_relation,
+                           :id,
+                           :data_method_a
 
-  attr_accessor :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a, :nil_relation
+  attr_accessor :uuid,
+                :friendly_name,
+                :subject_type,
+                :single_relation,
+                :many_relation,
+                :dynamic_relation,
+                :id,
+                :data_method_a,
+                :nil_relation
 
   def self.primary_key
     :id
@@ -17,7 +32,7 @@ class TestSeed
     'test_seed'
   end
 
-  def attributes
+  def attributes # rubocop:todo Metrics/MethodLength
     {
       'uuid' => @uuid,
       'friendly_name' => @friendly_name,
@@ -64,12 +79,16 @@ class ExampleEvent < BroadcastEvent
 
   # The seed itself can be a subject
   seed_subject :seed
+
   # Methods that yield a single object
   has_subject :single, :single_relation
+
   # Methods that yield a single object (that can be nil)
   has_subject :nil, :nil_relation
+
   # Methods that yield an array
   has_subjects :many, :many_relation
+
   # Blocks that define more complicated relationships
   has_subject(:block) { |ts, _e| ts.dynamic_relation.target }
 

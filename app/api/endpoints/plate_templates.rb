@@ -1,9 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for PlateTemplates
 class ::Endpoints::PlateTemplates < ::Core::Endpoint::Base
-  model do
-  end
+  model {}
 
-  instance do
-    has_many(:wells, json: 'wells', to: 'wells', scoped: 'for_api_plate_json.in_row_major_order')
-  end
+  instance { has_many(:wells, json: 'wells', to: 'wells', scoped: 'for_api_plate_json.in_row_major_order') }
 end

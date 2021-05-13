@@ -3,10 +3,12 @@ class ::Io::Transfer::FromPlateToSpecificTubesByPool < ::Core::Io::Base # ruboco
   set_json_root(:transfer)
   set_eager_loading { |model| model.include_source.include_transfers }
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
             user <=> user
           source <=> source
          targets <=  targets
        transfers  => transfers
-  ")
+  '
+  )
 end

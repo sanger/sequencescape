@@ -11,9 +11,7 @@ FactoryBot.define do
       asset_attributes { {} }
     end
 
-    assets do
-      create_list asset_type, asset_count, asset_attributes
-    end
+    assets { create_list asset_type, asset_count, asset_attributes }
   end
 
   factory :asset_group_asset do

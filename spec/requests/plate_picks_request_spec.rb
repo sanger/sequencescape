@@ -6,14 +6,15 @@ RSpec.describe 'PlatePicks', type: :request do
   let(:plate) { create :plate, well_count: 1 }
   let(:destination_plate) { create :plate, well_count: 1 }
   let(:released_cherrypick_batch) do
-    build :cherrypick_batch, state: 'released', request_attributes: [
-      { asset: plate.wells[0], target_asset: destination_plate.wells.first, state: 'passed' }
-    ]
+    build :cherrypick_batch,
+          state: 'released',
+          request_attributes: [{ asset: plate.wells[0], target_asset: destination_plate.wells.first, state: 'passed' }]
   end
   let(:released_other_batch) { build :batch, state: 'released', request_attributes: [{ asset: plate.wells[0] }] }
   let(:pending_cherrypick_batch) do
     build :cherrypick_batch, state: 'pending', request_attributes: [{ asset: plate.wells[0] }]
   end
+
   # We exclude the pending batches here, as they don't have pick information.
   # Initially we still showed them, to improve visibility of pending work, but UAT feedback
   # was that this was confusing, and they'd prefer to hide them.
@@ -25,17 +26,17 @@ RSpec.describe 'PlatePicks', type: :request do
   let(:missing_plate) { '{"errors":"Could not find plate in Sequencescape"}' }
   let(:pick_name) { "#{released_cherrypick_batch.id}:#{destination_plate.human_barcode} 1 of 1" }
   let(:found_batch) do
-    { 'batch' => {
-      'id' => released_cherrypick_batch.id.to_s,
-      'picks' => [{ 'name' => pick_name, 'plates' => [plate_payload] }]
-    } }
+    {
+      'batch' => {
+        'id' => released_cherrypick_batch.id.to_s,
+        'picks' => [{ 'name' => pick_name, 'plates' => [plate_payload] }]
+      }
+    }
   end
   let(:not_suitable) { '{"errors":"Batch has no pick information"}' }
   let(:missing_batch) { '{"errors":"Could not find batch in Sequencescape"}' }
 
-  before do
-    post '/login', params: { login: user.login, password: 'password' }
-  end
+  before { post '/login', params: { login: user.login, password: 'password' } }
 
   describe 'GET show' do
     it 'returns the application', :aggregate_failures do

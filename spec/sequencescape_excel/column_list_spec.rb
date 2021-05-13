@@ -5,13 +5,13 @@ require 'rails_helper'
 RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_excel: true, sample_manifest: true do
   include SequencescapeExcel::Helpers
 
-  let(:folder)                  { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
-  let(:yaml)                    { load_file(folder, 'columns') }
+  let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
+  let(:yaml) { load_file(folder, 'columns') }
   let(:conditional_formattings) do
     SequencescapeExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings'))
   end
-  let(:column_list)             { described_class.new(yaml, conditional_formattings) }
-  let(:ranges)                  { build(:range_list, ranges_data: load_file(folder, 'ranges')) }
+  let(:column_list) { described_class.new(yaml, conditional_formattings) }
+  let(:ranges) { build(:range_list, ranges_data: load_file(folder, 'ranges')) }
 
   it 'creates a list of columns' do
     expect(column_list.count).to eq(yaml.length)
@@ -24,14 +24,18 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
     expect(column_list).to be_all { |column| column_list.find_by(:name, column.name).present? }
   end
 
-  it 'has some conditional formattings' do # rubocop:todo RSpec/AggregateExamples
-    expect(column_list.find_by(:name,
-                               :gender).conditional_formattings.count).to eq(yaml[:gender][:conditional_formattings].length)
-    expect(column_list.find_by(:name,
-                               :sibling).conditional_formattings.count).to eq(yaml[:sibling][:conditional_formattings].length)
+  it 'has some conditional formattings' do
+    # rubocop:todo RSpec/AggregateExamples
+    expect(column_list.find_by(:name, :gender).conditional_formattings.count).to eq(
+      yaml[:gender][:conditional_formattings].length
+    )
+    expect(column_list.find_by(:name, :sibling).conditional_formattings.count).to eq(
+      yaml[:sibling][:conditional_formattings].length
+    )
   end
 
-  it '#headings returns list of headings' do # rubocop:todo RSpec/AggregateExamples
+  it '#headings returns list of headings' do
+    # rubocop:todo RSpec/AggregateExamples
     expect(column_list.headings).to eq(yaml.values.pluck(:heading))
   end
 
@@ -51,9 +55,7 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
   end
 
   it 'each column has a number' do
-    column_list.each_with_index do |column, i|
-      expect(column_list.find_by(:number, i + 1)).to eq(column)
-    end
+    column_list.each_with_index { |column, i| expect(column_list.find_by(:number, i + 1)).to eq(column) }
   end
 
   it '#extract returns correct list of columns' do
@@ -61,9 +63,7 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
     list = column_list.extract(names)
     expect(column_list.count).to eq(yaml.length)
     expect(list.count).to eq(names.length)
-    names.each_with_index do |name, i|
-      expect(list.find_by(:name, name).number).to eq(i + 1)
-    end
+    names.each_with_index { |name, i| expect(list.find_by(:name, name).number).to eq(i + 1) }
   end
 
   it '#extract doesnt affect original list of columns' do
@@ -104,7 +104,8 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
     expect(described_class.new(nil, conditional_formattings)).not_to be_valid
   end
 
-  it '#find_column_or_null returns a null object if none exists for key and value' do # rubocop:todo RSpec/AggregateExamples
+  it '#find_column_or_null returns a null object if none exists for key and value' do
+    # rubocop:todo RSpec/AggregateExamples
     expect(column_list.find_column_or_null(:name, :bad_value).number).to eq(-1)
   end
 

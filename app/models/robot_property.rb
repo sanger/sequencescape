@@ -1,18 +1,12 @@
 class RobotProperty < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :robot
 
-  scope :beds, ->() {
-    where(name: nil)
-  }
+  scope :beds, -> { where(name: nil) }
 
   def ean13_barcode
     if name.nil?
       str = Barcode.calculate_barcode('BD', value.to_i).to_s
-      if str.length == 12
-        '0' + str
-      else
-        str
-      end
+      str.length == 12 ? '0' + str : str
     end
   end
 

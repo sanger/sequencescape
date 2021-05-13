@@ -7,11 +7,7 @@ class Descriptor < ApplicationRecord # rubocop:todo Style/Documentation
   end
 
   def matches?(search)
-    search.descriptors.each do |descriptor|
-      if descriptor.name == name && descriptor.value == value
-        return true
-      end
-    end
+    search.descriptors.each { |descriptor| return true if descriptor.name == name && descriptor.value == value }
     false
   end
 end

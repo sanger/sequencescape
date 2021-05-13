@@ -22,6 +22,7 @@ class Ability::LabManager
     can :change_purpose, Labware
     can :change_priority, [Request, Submission]
     can :update_priority, [Pipeline] # Really should be on request
+
     # Whether the inbox shows if a request is previously failed
     can :see_previously_failed, Request
   end

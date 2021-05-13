@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 describe 'Create a QC report' do
-  let(:user)                { create(:admin) }
-  let!(:study)              { create(:study) }
-  let!(:product_criteria)   { create(:product_criteria) }
-  let(:plate_purposes)      { create_list :plate_purpose, 3 }
+  let(:user) { create(:admin) }
+  let!(:study) { create(:study) }
+  let!(:product_criteria) { create(:product_criteria) }
+  let(:plate_purposes) { create_list :plate_purpose, 3 }
   let(:plate_purpose_names) { plate_purposes.map(&:name) }
 
   before do
@@ -22,9 +22,7 @@ describe 'Create a QC report' do
     within('#new_report') do
       select(study.name, from: 'Study')
       select(product_criteria.product.display_name, from: 'Product')
-      plate_purpose_names.each do |plate_purpose|
-        select(plate_purpose, from: 'Plate purpose')
-      end
+      plate_purpose_names.each { |plate_purpose| select(plate_purpose, from: 'Plate purpose') }
     end
     click_button('Create report')
     expect(QcReport.first.plate_purposes & plate_purpose_names).to contain_exactly(*plate_purpose_names)

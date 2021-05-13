@@ -9,31 +9,26 @@ Given /^the following custom texts are defined$/ do |table|
 end
 
 Given /^there is a CustomText with identifier: "([^"]*)", differential: "([^"]*)"$/ do |identifier, differential|
-  @current_custom_text = CustomText.find_by(
-    identifier: identifier,
-    differential: differential
-  )
+  @current_custom_text = CustomText.find_by(identifier: identifier, differential: differential)
 
   assert_not_nil @current_custom_text
 end
 
 When /^I edit the custom text with identifier "([^"]*)" and differential "([^"]*)"$/ do |identifier, differential|
-  step(%{I follow "Edit" within "##{identifier}-#{differential}-details"})
+  step("I follow \"Edit\" within \"##{identifier}-#{differential}-details\"")
 end
 
 When /^I delete the custom text with identifier "([^"]*)" and differential "([^"]*)"$/ do |identifier, differential|
-  step(%{I follow "Delete" within "##{identifier}-#{differential}-details"})
+  step("I follow \"Delete\" within \"##{identifier}-#{differential}-details\"")
 end
 
 When /^I edit the CustomText$/ do
-  step(%{I follow "Edit" within "##{@current_custom_text.name}-details"})
+  step("I follow \"Edit\" within \"##{@current_custom_text.name}-details\"")
 end
 
 Given /^the application information box should contain "([^"]*)"$/ do |info_text|
   regexp = Regexp.new(info_text)
-  with_scope('#app-info-box') do
-    assert page.has_xpath?('//*', text: regexp)
-  end
+  with_scope('#app-info-box') { assert page.has_xpath?('//*', text: regexp) }
 end
 
 Then /^the application information box is not shown$/ do
@@ -47,16 +42,12 @@ end
 
 Then /^the page should contain the following$/ do |table|
   # table is a Cucumber::Ast::Table
-  table.hashes.each do |hash|
-    step "I should see \"#{hash[:text]}\""
-  end
+  table.hashes.each { |hash| step "I should see \"#{hash[:text]}\"" }
 end
 
 Then /^I should be able to (enter|edit) the following fields$/ do |action, table|
   # table is a Cucumber::Ast::Table
-  table.hashes.each do |hash|
-    step(%{I fill in "#{hash[:label]}" with "#{hash[:value]}"})
-  end
+  table.hashes.each { |hash| step("I fill in \"#{hash[:label]}\" with \"#{hash[:value]}\"") }
 
   step 'I press "Save Custom text"'
   case action
@@ -65,7 +56,5 @@ Then /^I should be able to (enter|edit) the following fields$/ do |action, table
   when 'edit'
     step 'I should see "Details have been updated"'
   end
-  table.hashes.each do |hash|
-    step "I should see \"#{hash[:value]}\""
-  end
+  table.hashes.each { |hash| step "I should see \"#{hash[:value]}\"" }
 end

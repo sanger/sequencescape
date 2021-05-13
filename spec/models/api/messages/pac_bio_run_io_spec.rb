@@ -33,27 +33,32 @@ RSpec.describe Api::Messages::PacBioRunIO, type: :model do
         {
           'well_label' => 'A1',
           'well_uuid_lims' => well_a1.uuid,
-          'samples' => [{
-            'pac_bio_library_tube_id_lims' => library_tube_1.human_barcode,
-            'pac_bio_library_tube_uuid' => library_tube_1.receptacle.uuid,
-            'pac_bio_library_tube_name' => library_tube_1.name,
-            'pac_bio_library_tube_legacy_id' => library_tube_1.receptacle.id,
-            'sample_uuid' => aliquot_1.sample.uuid,
-            'tag_sequence' => aliquot_1.tag.oligo,
-            'tag_set_id_lims' => aliquot_1.tag.tag_group_id,
-            'tag_identifier' => aliquot_1.tag.map_id,
-            'tag_set_name' => aliquot_1.tag.tag_group.name
-          }]
-        }, {
+          'samples' => [
+            {
+              'pac_bio_library_tube_id_lims' => library_tube_1.human_barcode,
+              'pac_bio_library_tube_uuid' => library_tube_1.receptacle.uuid,
+              'pac_bio_library_tube_name' => library_tube_1.name,
+              'pac_bio_library_tube_legacy_id' => library_tube_1.receptacle.id,
+              'sample_uuid' => aliquot_1.sample.uuid,
+              'tag_sequence' => aliquot_1.tag.oligo,
+              'tag_set_id_lims' => aliquot_1.tag.tag_group_id,
+              'tag_identifier' => aliquot_1.tag.map_id,
+              'tag_set_name' => aliquot_1.tag.tag_group.name
+            }
+          ]
+        },
+        {
           'well_label' => 'B1',
           'well_uuid_lims' => well_b1.uuid,
-          'samples' => [{
-            'pac_bio_library_tube_id_lims' => library_tube_2.human_barcode,
-            'pac_bio_library_tube_uuid' => library_tube_2.receptacle.uuid,
-            'pac_bio_library_tube_name' => library_tube_2.name,
-            'pac_bio_library_tube_legacy_id' => library_tube_2.receptacle.id,
-            'sample_uuid' => aliquot_2.sample.uuid
-          }]
+          'samples' => [
+            {
+              'pac_bio_library_tube_id_lims' => library_tube_2.human_barcode,
+              'pac_bio_library_tube_uuid' => library_tube_2.receptacle.uuid,
+              'pac_bio_library_tube_name' => library_tube_2.name,
+              'pac_bio_library_tube_legacy_id' => library_tube_2.receptacle.id,
+              'sample_uuid' => aliquot_2.sample.uuid
+            }
+          ]
         }
       ]
     }

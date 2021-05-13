@@ -18,16 +18,20 @@ class Ability::Administrator
 
   private
 
-  def grant_privileges
+  # rubocop:todo Metrics/MethodLength
+  def grant_privileges # rubocop:todo Metrics/AbcSize
     Rails.logger.debug { 'Granting Administrator privileges' }
+
     # Labware
     can %i[edit rename change_purpose], Labware
 
     # Requests
     can :update, Request
+
     # Lets the user request additional sequencing/libraries
     # under a different study/project than the original
     can :edit_additional, Request
+
     # For old pipelines, removes QC events
     can :reset_qc_information, Request
 
@@ -40,6 +44,7 @@ class Ability::Administrator
     # to activate/deactivate a study and change ethical approval
     # or data-release fields
     can :administer, Study
+
     # If the user is an administrator show all studies.
     can :request_additional_with, Study
     can :unlink_sample, Study
@@ -52,8 +57,10 @@ class Ability::Administrator
     # admin/projects controller. It mostly adds the ability
     # to disable enforced validation, and add financial approval
     can :administer, Project
+
     # Manage is actually more powerful than administer.
     can :manage, Project
+
     # Previously granted to managers who weren't specifically managers of a
     # particular study
     can :create_submission, Project
@@ -75,7 +82,9 @@ class Ability::Administrator
     can :create, Order
 
     can :print_asset_group_labels, Study
+
     # Edit and delete submissions
     can :manage, Submission
   end
+  # rubocop:enable Metrics/MethodLength
 end

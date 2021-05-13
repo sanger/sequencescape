@@ -9,6 +9,7 @@ module Sequencescape
   class Application < Rails::Application # rubocop:todo Style/Documentation
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.0
+
     # Default options which predate the Rails 5 switch
     config.active_record.belongs_to_required_by_default = false
     config.action_controller.forgery_protection_origin_check = false
@@ -58,15 +59,16 @@ module Sequencescape
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
     # Settings in config/environments/* take precedence over those specified here.
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )
-    config.autoload_paths += %W{#{Rails.root}/app/observers}
-    config.autoload_paths += %W{#{Rails.root}/app/metal}
-    config.autoload_paths += %W{#{Rails.root}/app}
-    config.autoload_paths += %W{#{Rails.root}/lib}
-    config.autoload_paths += %W{#{Rails.root}/lib/accession}
+    config.autoload_paths += %W[#{Rails.root}/app/observers]
+    config.autoload_paths += %W[#{Rails.root}/app/metal]
+    config.autoload_paths += %W[#{Rails.root}/app]
+    config.autoload_paths += %W[#{Rails.root}/lib]
+    config.autoload_paths += %W[#{Rails.root}/lib/accession]
 
     config.encoding = 'utf-8'
 
@@ -85,12 +87,13 @@ module Sequencescape
     #  }
 
     # Enable localisations to be split over multiple paths.
-    config.i18n.load_path = Dir[File.join(Rails.root, %w{config locales metadata *.{rb,yml}})]
+    config.i18n.load_path = Dir[File.join(Rails.root, %w[config locales metadata *.{rb,yml}])]
     I18n.enforce_available_locales = false
 
     config.cherrypickable_default_type = 'ABgene_0800'
     config.plate_default_type = 'ABgene_0800'
     config.plate_default_max_volume = 180
+
     # See issue #3134 Leave wells D3/H10 free
     config.plate_default_control_wells_to_leave_free = [19, 79].freeze
 

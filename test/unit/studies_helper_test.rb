@@ -10,9 +10,7 @@ class StudiesHelperTest < ActiveSupport::TestCase
     end
 
     context '#display_owners' do
-      setup do
-        @owners = []
-      end
+      setup { @owners = [] }
 
       teardown do
         study = mock('Study', owners: @owners)

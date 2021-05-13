@@ -65,9 +65,7 @@ class Presenters::QcReportPresenter # rubocop:todo Style/Documentation
   delegate :available?, :study, :report_identifier, to: :qc_report
 
   def each_header
-    HEADER_FIELDS.each do |field, lookup|
-      yield [field, send(lookup)]
-    end
+    HEADER_FIELDS.each { |field, lookup| yield [field, send(lookup)] }
   end
 
   private
@@ -77,13 +75,11 @@ class Presenters::QcReportPresenter # rubocop:todo Style/Documentation
     @csv << [REPORT_IDENTITY, VERSION]
     @csv << [I18n.t('qc_reports.fixed_content')]
     @csv << [I18n.t('qc_reports.instruction')]
-    each_header do |pair|
-      @csv << pair
-    end
+    each_header { |pair| @csv << pair }
   end
 
   def criteria_headers
-    @criteria_headers ||=  qc_report.product_criteria.headers
+    @criteria_headers ||= qc_report.product_criteria.headers
   end
 
   # The headers for the qc information table

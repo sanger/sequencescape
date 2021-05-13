@@ -43,8 +43,14 @@ RSpec.describe PrimerPanel, type: :model do
         'name' => primer_panel.name,
         'snp_count' => primer_panel.snp_count,
         'programs' => {
-          'pcr 1' => { 'name' => 'pcr1 program', 'duration' => 45 },
-          'pcr 2' => { 'name' => 'pcr2 program', 'duration' => 20 }
+          'pcr 1' => {
+            'name' => 'pcr1 program',
+            'duration' => 45
+          },
+          'pcr 2' => {
+            'name' => 'pcr2 program',
+            'duration' => 20
+          }
         }
       )
     end

@@ -7,18 +7,15 @@ module WorkflowsHelper
   # blank string...
   def descriptor_value(descriptor)
     # Refactored to remove reliance on @values
-    params[:values].try(:[], descriptor.name) ||
-      @study.try(:descriptor_value, descriptor.name) || ''
+    params[:values].try(:[], descriptor.name) || @study.try(:descriptor_value, descriptor.name) || ''
   end
 
   # Returns a link to any available request comments with "None" as a
   # default value.
   def link_to_comments(request)
-    link_to_if(
-      request.comments.present?,
-      pluralize(request.comments.size, 'comment'),
-      request_comments_url(request)
-    ) { 'None' }
+    link_to_if(request.comments.present?, pluralize(request.comments.size, 'comment'), request_comments_url(request)) do
+      'None'
+    end
   end
 
   def tag_index_for(request)
@@ -26,21 +23,40 @@ module WorkflowsHelper
   end
 
   def batch_tag_index
-    @tag_hash ||= Tag.joins(:aliquots)
-                     .where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id) })
-                     .pluck(:receptacle_id, :map_id).to_h.tap { |th| th.default = '-' }
+    @tag_hash ||=
+      Tag
+        .joins(:aliquots)
+        .where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id) })
+        .pluck(:receptacle_id, :map_id)
+        .to_h
+        .tap { |th| th.default = '-' }
   end
 
   def qc_select_box(request, status, html_options = {})
     select_options = %w[pass fail]
-    select_tag("#{request.id}[qc_state]", options_for_select(select_options, status),
-               html_options.merge(class: 'qc_state'))
+    select_tag(
+      "#{request.id}[qc_state]",
+      options_for_select(select_options, status),
+      html_options.merge(class: 'qc_state')
+    )
   end
 
-  def gel_qc_select_box(request, status, html_options = {})
+  def gel_qc_select_box(request, status, html_options = {}) # rubocop:todo Metrics/MethodLength
     html_options.delete(:generate_blank)
     status = 'OK' if status.blank? || status == 'Pass'
-    select_tag("wells[#{request.id}][qc_state]",
-               options_for_select({ 'Pass' => 'OK', 'Fail' => 'Fail', 'Weak' => 'Weak', 'No Band' => 'Band Not Visible', 'Degraded' => 'Degraded' }, status), html_options)
+    select_tag(
+      "wells[#{request.id}][qc_state]",
+      options_for_select(
+        {
+          'Pass' => 'OK',
+          'Fail' => 'Fail',
+          'Weak' => 'Weak',
+          'No Band' => 'Band Not Visible',
+          'Degraded' => 'Degraded'
+        },
+        status
+      ),
+      html_options
+    )
   end
 end

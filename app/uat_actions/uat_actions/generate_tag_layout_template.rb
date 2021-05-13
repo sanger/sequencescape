@@ -14,25 +14,31 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
              label: 'Tag Group',
              help: 'Select tag group 1 for the template',
              select_options: -> { TagGroup.visible.pluck(:name) },
-             options: { include_blank: 'Select tag group...' }
+             options: {
+               include_blank: 'Select tag group...'
+             }
   form_field :tag2_group_name,
              :select,
              label: 'Tag2 Group',
              help: 'Select tag group 2 for the template',
              select_options: -> { TagGroup.visible.pluck(:name) },
-             options: { include_blank: 'Select tag 2 group...' }
+             options: {
+               include_blank: 'Select tag 2 group...'
+             }
   form_field :direction_algorithm,
              :select,
              label: 'Direction',
              help: 'Direction the tags are laid out by',
              select_options: -> { TagLayoutTemplatesController::DIRECTIONS },
-             options: { include_blank: 'Select a direction...' }
+             options: {
+               include_blank: 'Select a direction...'
+             }
 
   validates :name, presence: { message: 'needs a name' }
   validates :tag_group_name, presence: { message: 'needs a choice' }
   validates :direction_algorithm, presence: { message: 'needs a choice' }
 
-  def perform
+  def perform # rubocop:todo Metrics/MethodLength
     report[:name] = name
     return true if existing_tag_layout_template
 

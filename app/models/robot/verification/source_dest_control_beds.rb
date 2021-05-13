@@ -12,10 +12,17 @@ class Robot::Verification::SourceDestControlBeds < Robot::Verification::Base
     [dest_barcode_index, source_barcode_index, control_barcode_index]
   end
 
-  def valid_plate_locations?(params, batch, robot, expected_plate_layout)
+  def valid_plate_locations?(params, batch, robot, expected_plate_layout) # rubocop:todo Metrics/MethodLength
     return false unless super
-    return false unless valid_control_plates_on_robot?(params[:control_bed_barcodes], params[:control_plate_barcodes],
-                                                       robot, batch, expected_plate_layout)
+    unless valid_control_plates_on_robot?(
+             params[:control_bed_barcodes],
+             params[:control_plate_barcodes],
+             robot,
+             batch,
+             expected_plate_layout
+           )
+      return false
+    end
 
     true
   end
@@ -46,17 +53,13 @@ class Robot::Verification::SourceDestControlBeds < Robot::Verification::Base
   # @return [Hash] Hash of plate barcodes mapped to their bed index
   #
   def source_barcode_to_plate_index(destinations, sources)
-    filter_barcode_to_plate_index(destinations) do |barcode|
-      !sources.dig(barcode, 'control')
-    end
+    filter_barcode_to_plate_index(destinations) { |barcode| !sources.dig(barcode, 'control') }
   end
 
   # Returns a hash of plates to indexes sorted by destination well to make sure
   # the plates are put the right way round for the robot
   # e.g. for Tecan 'SCRC1' goes into the 1st row of the fluidigm chip, and 'SCRC2' into the 2nd
   def control_barcode_to_plate_index(destinations, sources)
-    filter_barcode_to_plate_index(destinations) do |barcode|
-      sources.dig(barcode, 'control')
-    end
+    filter_barcode_to_plate_index(destinations) { |barcode| sources.dig(barcode, 'control') }
   end
 end

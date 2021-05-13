@@ -21,22 +21,26 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
     @comment.uniq!
   end
 
-  def assess!
+  # rubocop:todo Metrics/MethodLength
+  def assess! # rubocop:todo Metrics/AbcSize
     @qc_decision = 'passed'
     STATE_ORDER.each do |decision|
-      params.fetch(decision, []).each do |attribute, comparisons|
-        value = fetch_attribute(attribute)
-        values[attribute] = value
+      params
+        .fetch(decision, [])
+        .each do |attribute, comparisons|
+          value = fetch_attribute(attribute)
+          values[attribute] = value
 
-        if value.blank? && comparisons.present?
-          invalid(attribute, '%s has not been recorded', decision)
-          next
-        end
+          if value.blank? && comparisons.present?
+            invalid(attribute, '%s has not been recorded', decision)
+            next
+          end
 
-        comparisons.each do |comparison, target|
-          value.send(method_for(comparison), target) || invalid(attribute, message_for(comparison), decision)
+          comparisons.each do |comparison, target|
+            value.send(method_for(comparison), target) || invalid(attribute, message_for(comparison), decision)
+          end
         end
-      end
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

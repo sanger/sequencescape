@@ -7,7 +7,7 @@ module Attributable
   # 2) Tools to assist with validating eg. submissions prior to the creation of the
   #    requests themselves
   # 3) Wiping out some fields on the condition of others
-  class Attribute
+  class Attribute # rubocop:todo Metrics/ClassLength
     attr_reader :name, :default
 
     alias assignable_attribute_name name
@@ -78,7 +78,10 @@ module Attributable
       valid_format
     end
 
-    def configure(model)
+    # rubocop:todo Metrics/PerceivedComplexity
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
+    def configure(model) # rubocop:todo Metrics/CyclomaticComplexity
       conditions = @options.slice(:if, :on)
       save_blank_value = @options.delete(:save_blank)
       allow_blank = save_blank_value
@@ -88,33 +91,41 @@ module Attributable
         object.with_options(allow_nil: optional?, allow_blank: allow_blank) do |required|
           required.validates_inclusion_of(name, in: [true, false]) if boolean?
           if integer? || float?
-            required.validates name, numericality: { only_integer: integer?,
-                                                     greater_than_or_equal_to: minimum }
+            required.validates name, numericality: { only_integer: integer?, greater_than_or_equal_to: minimum }
           end
           required.validates_inclusion_of(name, in: selection_values, allow_false: true) if fixed_selection?
           required.validates_format_of(name, with: valid_format) if valid_format?
+
           # Custom validators should handle nil explicitly.
           required.validates name, custom: true, allow_nil: false if validator?
         end
       end
 
       unless save_blank_value
-        model.class_eval("
+        model.class_eval(
+          "
           before_validation do |record|
             value = record.#{name}
             record.#{name}= nil if value and value.blank?
           end
-        ")
+        "
+        )
       end
 
       return if conditions[:if].nil?
 
-      model.class_eval("
+      model.class_eval(
+        "
         before_validation do |record|
           record.#{name}= nil unless record.#{conditions[:if]}
         end
-      ")
+      "
+      )
     end
+
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
 
     def self.find_display_name(klass, name)
       translation = I18n.t("metadata.#{klass.name.underscore.tr('/', '.')}.#{name}")
@@ -122,9 +133,11 @@ module Attributable
       return translation[:label] if translation.is_a?(Hash) # translation found, we return the label
 
       superclass = klass.superclass
-      if superclass == ActiveRecord::Base # We've reached the top and have no translation
+      if superclass == ActiveRecord::Base
+        # We've reached the top and have no translation
         translation # shoulb be an error message, so that's ok
-      else # We still have a parent class
+      else
+        # We still have a parent class
         find_display_name(superclass, name) # Walk up the class hierarchy and try again
       end
     end
@@ -162,7 +175,7 @@ module Attributable
       selection_values || selection_from_metadata(validator_source) || []
     end
 
-    def to_field_info(validator_source = nil)
+    def to_field_info(validator_source = nil) # rubocop:todo Metrics/MethodLength
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
         display_name: display_name,

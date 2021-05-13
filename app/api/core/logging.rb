@@ -9,9 +9,7 @@ module Core::Logging # rubocop:todo Style/Documentation
     END_OF_HELPER
   end
 
-  %i[debug info error].each do |level|
-    logging_helper(level)
-  end
+  %i[debug info error].each { |level| logging_helper(level) }
 
   def low_level(*args)
     # debug(*args)

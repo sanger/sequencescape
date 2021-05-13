@@ -13,9 +13,7 @@ module SequencescapeExcel
       def update(attributes = {})
         return unless valid? && attributes[:aliquot].present?
 
-        aliquots.each do |aliquot|
-          aliquot.primer_panel = primer_panel
-        end
+        aliquots.each { |aliquot| aliquot.primer_panel = primer_panel }
       end
 
       private

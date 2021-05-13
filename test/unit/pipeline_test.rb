@@ -4,11 +4,12 @@ require 'test_helper'
 
 class PipelineTest < ActiveSupport::TestCase
   context 'Pipeline' do
-    should have_one  :workflow
+    should have_one :workflow
     should have_many :batches
     should have_many :controls
     should have_many :request_information_types # , :through => :pipeline_request_information_types
     should have_many :pipeline_request_information_types
+
     # should_require_attributes :name
 
     context 'sequencing_pipeline#read length consistency among batch requests' do
@@ -17,19 +18,21 @@ class PipelineTest < ActiveSupport::TestCase
 
         @request_type = create :request_type, name: 'sequencing', target_asset_type: nil
         @pipeline = create :sequencing_pipeline, name: 'sequencing pipeline', request_types: [@request_type]
-        @request1 = create(
-          :sequencing_request,
-          asset: create(:sample_tube, :scanned_into_lab, sample: @sample),
-          target_asset: nil,
-          request_type: @request_type
-        )
+        @request1 =
+          create(
+            :sequencing_request,
+            asset: create(:sample_tube, :scanned_into_lab, sample: @sample),
+            target_asset: nil,
+            request_type: @request_type
+          )
 
-        @request2 = create(
-          :sequencing_request,
-          asset: create(:sample_tube, :scanned_into_lab, sample: @sample),
-          target_asset: nil,
-          request_type: @request_type
-        )
+        @request2 =
+          create(
+            :sequencing_request,
+            asset: create(:sample_tube, :scanned_into_lab, sample: @sample),
+            target_asset: nil,
+            request_type: @request_type
+          )
       end
 
       should 'return true if not any request was selected' do
@@ -57,19 +60,21 @@ class PipelineTest < ActiveSupport::TestCase
 
       should 'check that other pipelines are not affected by different read_length attributes' do
         @pipeline2 = create :pipeline, name: 'other pipeline', request_types: [@request_type]
-        @request1 = create(
-          :sequencing_request,
-          asset: create(:sample_tube, sample: @sample),
-          target_asset: nil,
-          request_type: @request_type
-        )
+        @request1 =
+          create(
+            :sequencing_request,
+            asset: create(:sample_tube, sample: @sample),
+            target_asset: nil,
+            request_type: @request_type
+          )
 
-        @request2 = create(
-          :sequencing_request,
-          asset: create(:sample_tube, sample: @sample),
-          target_asset: nil,
-          request_type: @request_type
-        )
+        @request2 =
+          create(
+            :sequencing_request,
+            asset: create(:sample_tube, sample: @sample),
+            target_asset: nil,
+            request_type: @request_type
+          )
 
         @request1.request_metadata.read_length = 76
         @request2.request_metadata.read_length = 100

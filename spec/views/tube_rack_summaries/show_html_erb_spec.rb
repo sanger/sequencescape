@@ -16,8 +16,7 @@ RSpec.describe 'tube_rack_summaries/show.html.erb', type: :view do
 
     before do
       Array.new(num_tubes) do |i|
-        create(:sample_tube, :in_a_rack,
-               tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
       end
 
       assign(:tube_rack, tube_rack) # sets @widget = Widget.new in the view template
@@ -28,16 +27,12 @@ RSpec.describe 'tube_rack_summaries/show.html.erb', type: :view do
 
       it 'displays the barcodes for all the tubes' do
         render
-        barcodes.each do |instance|
-          expect(rendered).to match(instance.barcode)
-        end
+        barcodes.each { |instance| expect(rendered).to match(instance.barcode) }
       end
 
       it 'displays the coordinates for all the tubes' do
         render
-        locations.each do |location|
-          expect(rendered).to match(location)
-        end
+        locations.each { |location| expect(rendered).to match(location) }
       end
     end
   end

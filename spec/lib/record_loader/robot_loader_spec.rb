@@ -29,13 +29,7 @@ RSpec.describe RecordLoader::RobotLoader, type: :model, loader: true do
     end
 
     context 'when setting robot attributes' do
-      let(:expected_attributes) do
-        {
-          name: 'Robot 2',
-          location: 'Room 2',
-          barcode: '5678'
-        }
-      end
+      let(:expected_attributes) { { name: 'Robot 2', location: 'Room 2', barcode: '5678' } }
 
       it 'attributes match expected' do
         record_loader.create!

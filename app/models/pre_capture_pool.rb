@@ -9,9 +9,7 @@ class PreCapturePool < ApplicationRecord
   # INclude in request classes which allow pre-capture pooling
   module Poolable
     def self.included(base)
-      base.class_eval do
-        self.pre_capture_pooled = true
-      end
+      base.class_eval { self.pre_capture_pooled = true }
     end
   end
 
@@ -47,9 +45,7 @@ class PreCapturePool < ApplicationRecord
         # be sorted in column order.
         grouped_requests.each do |_, requests|
           plex = requests.first.order.request_options['pre_capture_plex_level'].to_i
-          poolable_requests = requests.flat_map do |request|
-            walk_to_pooled_request(request)
-          end
+          poolable_requests = requests.flat_map { |request| walk_to_pooled_request(request) }
           pool(poolable_requests, plex)
         end
       end
@@ -75,17 +71,16 @@ class PreCapturePool < ApplicationRecord
     end
 
     def pool(requests, plex)
-      requests.flatten.each_slice(plex) do |pooled_requests|
-        PreCapturePool.create!(requests: pooled_requests)
-      end
+      requests.flatten.each_slice(plex) { |pooled_requests| PreCapturePool.create!(requests: pooled_requests) }
     end
 
     def grouped_requests
-      submission.requests
-                .joins(:order, asset: :map)
-                .where(request_type_id: library_creation_type)
-                .order('maps.column_order ASC, id ASC')
-                .group_by { |r| r.order.pre_cap_group || "o#{r.order_id}" }
+      submission
+        .requests
+        .joins(:order, asset: :map)
+        .where(request_type_id: library_creation_type)
+        .order('maps.column_order ASC, id ASC')
+        .group_by { |r| r.order.pre_cap_group || "o#{r.order_id}" }
     end
   end
 end

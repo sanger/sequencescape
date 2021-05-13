@@ -31,6 +31,6 @@ class Api::Messages::WellStockResourceIO < Api::Base
 
   with_nested_has_many_association(:aliquots, as: 'samples') do
     with_association(:sample) { map_attribute_to_json_attribute(:uuid, 'sample_uuid') }
-    with_association(:study)  { map_attribute_to_json_attribute(:uuid, 'study_uuid') }
+    with_association(:study) { map_attribute_to_json_attribute(:uuid, 'study_uuid') }
   end
 end

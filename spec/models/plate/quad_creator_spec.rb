@@ -11,9 +11,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
   let(:user) { create :user }
   let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose: target_purpose, user: user } }
 
-  setup do
-    allow(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
-  end
+  setup { allow(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000)) }
 
   describe '#target_coordinate_for' do
     [
@@ -48,23 +46,21 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
     context 'when a parent is not a plate or rack' do
       let(:tube) { create :tube }
-      let(:parent_barcodes_hash) do
-        { 'quad_1' => tube.machine_barcode }
-      end       # this should pass in the tube, not the barcode
+      let(:parent_barcodes_hash) { { 'quad_1' => tube.machine_barcode } } # this should pass in the tube, not the barcode
 
       it { is_expected.not_to be_valid }
 
       it 'produces a useful error' do
         quad_creator.valid?
-        expect(quad_creator.errors.full_messages).to include("Parent barcodes Quad 1 (#{tube.machine_barcode}) is not a plate or tube rack")
+        expect(quad_creator.errors.full_messages).to include(
+          "Parent barcodes Quad 1 (#{tube.machine_barcode}) is not a plate or tube rack"
+        )
       end
     end
 
     context 'when a parent is the wrong size' do
       let(:plate) { create :plate, size: 384, barcode: 1 }
-      let(:parent_barcodes_hash) do
-        { 'quad_1' => plate.machine_barcode }
-      end       # this should pass in the plate, not the barcode
+      let(:parent_barcodes_hash) { { 'quad_1' => plate.machine_barcode } } # this should pass in the plate, not the barcode
 
       it { is_expected.not_to be_valid }
 
@@ -79,9 +75,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
     context 'with 4 parents' do
       let(:occupied_wells) { [0, 95] }
       let(:number_of_parents) { 4 }
-      let(:parents) do
-        create_list :plate_with_untagged_wells, number_of_parents, occupied_well_index: occupied_wells
-      end       # 2 wells in each, A1 & H12
+      let(:parents) { create_list :plate_with_untagged_wells, number_of_parents, occupied_well_index: occupied_wells } # 2 wells in each, A1 & H12
       let(:parent_barcodes_hash) do
         {
           'quad_1' => parents[0].machine_barcode,
@@ -97,9 +91,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
       describe '#save' do
         context 'when complete' do
-          before do
-            quad_creator.save
-          end
+          before { quad_creator.save }
 
           it 'will create a new plate of the selected purpose' do
             expect(quad_creator.target_plate.purpose).to eq target_purpose
@@ -117,12 +109,11 @@ RSpec.describe Plate::QuadCreator, type: :model do
             expect(well_hash['O24'].samples).to eq(quad_3_wells['H12'].samples)
             expect(well_hash['P24'].samples).to eq(quad_4_wells['H12'].samples)
           end
+
           # rubocop:enable RSpec/ExampleLength
 
           it 'will set each parent as a parent plate of the target' do
-            parents.each do |parent|
-              expect(quad_creator.target_plate.parents).to include(parent)
-            end
+            parents.each { |parent| expect(quad_creator.target_plate.parents).to include(parent) }
           end
         end
 
@@ -132,15 +123,17 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
         it 'creates the correct transfer request collection' do
           expected_transfers = number_of_parents * occupied_wells.length
-          expect { quad_creator.save }.to change(TransferRequestCollection, :count).by(1)
-                                                                                   .and change(TransferRequest,
-                                                                                               :count).by(expected_transfers)
+          expect { quad_creator.save }.to change(TransferRequestCollection, :count).by(1).and change(
+                                                               TransferRequest,
+                                                               :count
+                                                             ).by(expected_transfers)
         end
 
         it 'creates a custom metadatum collection and custom metadata' do
-          expect { quad_creator.save }.to change(CustomMetadatumCollection, :count).by(1)
-                                                                                   .and change(CustomMetadatum,
-                                                                                               :count).by(4)
+          expect { quad_creator.save }.to change(CustomMetadatumCollection, :count).by(1).and change(
+                                                               CustomMetadatum,
+                                                               :count
+                                                             ).by(4)
         end
       end
     end
@@ -188,9 +181,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
       let(:quad_4_tubes) { parents[3].tubes.index_by { |tube| tube.racked_tube.coordinate } }
 
       describe '#save' do
-        before do
-          quad_creator.save
-        end
+        before { quad_creator.save }
 
         it 'will create a new plate of the selected purpose' do
           expect(quad_creator.target_plate.purpose).to eq target_purpose
@@ -208,21 +199,18 @@ RSpec.describe Plate::QuadCreator, type: :model do
           expect(well_hash['O24'].samples).to eq(quad_3_tubes['H12'].samples)
           expect(well_hash['P24'].samples).to eq(quad_4_tubes['H12'].samples)
         end
+
         # rubocop:enable RSpec/ExampleLength
 
         it 'will set each parent as a parent rack of the target' do
-          parents.each do |parent|
-            expect(quad_creator.target_plate.parents).to include(parent)
-          end
+          parents.each { |parent| expect(quad_creator.target_plate.parents).to include(parent) }
         end
       end
     end
   end
 
   context 'with a mixture of parent plates and racks' do
-    let(:parents_plates) do
-      create_list :plate_with_untagged_wells, 2, occupied_well_index: [0, 95]
-    end # 2 wells in each, A1 & H12
+    let(:parents_plates) { create_list :plate_with_untagged_wells, 2, occupied_well_index: [0, 95] } # 2 wells in each, A1 & H12
     let(:parents_racks) { create_list :tube_rack_with_tubes, 2 }
 
     let(:parent_barcodes_hash) do
@@ -240,9 +228,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
     let(:quad_4_tubes) { parents_racks[1].tubes.index_by { |tube| tube.racked_tube.coordinate } }
 
     describe '#save' do
-      before do
-        quad_creator.save
-      end
+      before { quad_creator.save }
 
       it 'will create a new plate of the selected purpose' do
         expect(quad_creator.target_plate.purpose).to eq target_purpose
@@ -260,12 +246,13 @@ RSpec.describe Plate::QuadCreator, type: :model do
         expect(well_hash['O24'].samples).to eq(quad_3_tubes['H12'].samples)
         expect(well_hash['P24'].samples).to eq(quad_4_tubes['H12'].samples)
       end
+
       # rubocop:enable RSpec/ExampleLength
 
       it 'will set each parent as a parent rack or plate of the target' do
-        parents_plates.concat(parents_racks).each do |parent|
-          expect(quad_creator.target_plate.parents).to include(parent)
-        end
+        parents_plates
+          .concat(parents_racks)
+          .each { |parent| expect(quad_creator.target_plate.parents).to include(parent) }
       end
     end
   end

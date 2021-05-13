@@ -47,7 +47,11 @@ module DeprecationHelper
   # @yield [Void] Yield to block rendering the contents of the card (ie. the feature to be deprecated)
   #
   # @return [String] The HTML to render
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/ParameterLists
   def deprecate_section(date: nil, message: '', replaced_by: nil, custom_title: nil, custom_style: nil, &block)
+    # rubocop:enable Metrics/ParameterLists
     # If we're past the date just hide the section
     if date && Date.current > date
       Rails.logger.warn "Deprecated section past deadline: #{Kernel.caller.first}"
@@ -60,21 +64,28 @@ module DeprecationHelper
     style = custom_style || level.style
 
     tag.div(class: ['ss-card', "border-#{style}"]) do
-      concat(tag.div(class: ['card-body', "bg-#{style}", 'text-white']) do
-        concat icon('fas', level.icon, title)
-        concat tag.p(message)
-        concat link_to 'See the alternative', replaced_by, class: %w[btn btn-block btn-outline-light] if replaced_by
-        concat mail_to configatron.admin_email, icon('far', 'envelope ',
-                                                     'Let us know if you still need this'), class: %w[btn btn-block
-                                                                                                      btn-outline-light]
-      end)
+      concat(
+        tag.div(class: ['card-body', "bg-#{style}", 'text-white']) do
+          concat icon('fas', level.icon, title)
+          concat tag.p(message)
+          concat link_to 'See the alternative', replaced_by, class: %w[btn btn-block btn-outline-light] if replaced_by
+          concat mail_to configatron.admin_email,
+                         icon('far', 'envelope ', 'Let us know if you still need this'),
+                         class: %w[btn btn-block btn-outline-light]
+        end
+      )
       concat tag.div(class: 'card-body', &block)
     end
   end
 
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+
   def _deprecation_level(date)
-    if date.nil? then LEVELS[:candidate]
-    elsif (date - Date.current) < IMMINENT_THRESHOLD then LEVELS[:imminent]
+    if date.nil?
+      LEVELS[:candidate]
+    elsif (date - Date.current) < IMMINENT_THRESHOLD
+      LEVELS[:imminent]
     else
       LEVELS[:scheduled]
     end

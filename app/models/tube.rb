@@ -48,9 +48,7 @@ class Tube < Labware
 
   # Delegates the provided methods to purpose, passing the tube as the first argument, and the remaining arguments as-is
   def self.delegate_to_purpose(*methods)
-    methods.each do |method|
-      class_eval("def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end")
-    end
+    methods.each { |method| class_eval("def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end") }
   end
 
   # TODO: change column name to account for purpose, not plate_purpose!
@@ -58,9 +56,7 @@ class Tube < Labware
   has_one :racked_tube, dependent: :destroy
   has_one :tube_rack, through: :racked_tube
 
-  scope :in_column_major_order, lambda {
-    joins(:racked_tube).order('racked_tubes.coordinate ASC')
-  }
+  scope :in_column_major_order, lambda { joins(:racked_tube).order('racked_tubes.coordinate ASC') }
   delegate :coordinate, to: :racked_tube
 
   # @!method stock_plate
@@ -88,8 +84,8 @@ class Tube < Labware
 
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    barcode    = args.first || attributes.delete(:barcode)
-    prefix     = attributes.delete(:barcode_prefix)&.prefix || default_prefix
+    barcode = args.first || attributes.delete(:barcode)
+    prefix = attributes.delete(:barcode_prefix)&.prefix || default_prefix
     if barcode.present?
       human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
       raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)

@@ -12,9 +12,7 @@ RSpec.describe Api::V2::QcResultsController, type: :request, qc_result: true do
 
     it 'creates some new qc results' do
       params = { data: { attributes: [asset_1, asset_2, asset_3] } }
-      expect do
-        post api_v2_qc_results_path, params: params
-      end.to change(QcResult, :count).by(3)
+      expect { post api_v2_qc_results_path, params: params }.to change(QcResult, :count).by(3)
       expect(response).to have_http_status(:created)
 
       json = ActiveSupport::JSON.decode(response.body)
@@ -45,9 +43,7 @@ RSpec.describe Api::V2::QcResultsController, type: :request, qc_result: true do
 
     it 'creates some new qc results' do
       params = { data: { attributes: [asset_1, asset_2, asset_3] } }
-      expect do
-        post api_v2_qc_results_path, params: params
-      end.to change(QcResult, :count).by(3)
+      expect { post api_v2_qc_results_path, params: params }.to change(QcResult, :count).by(3)
       expect(response).to have_http_status(:created)
 
       json = ActiveSupport::JSON.decode(response.body)

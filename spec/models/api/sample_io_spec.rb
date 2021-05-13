@@ -43,7 +43,7 @@ RSpec.describe Api::SampleIO, type: :model do
              user_id_of_consent_withdrawn: user.id,
              reference_genome_id: reference_genome.id,
              organism: 'rat',
-             sample_ebi_accession_number: 18374739430,
+             sample_ebi_accession_number: 18_374_739_430,
              sample_common_name: 'mouse',
              sample_description: 'desc',
              sample_taxon_id: 2,

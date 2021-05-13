@@ -29,18 +29,14 @@ RSpec.describe StockAssetsController do
         it 'renders the form' do
           get :new, params: { batch_id: batch.id }, session: { user: current_user.id }
           expect(assigns(:assets).length).to eq(2)
-          assigns(:assets).each do |asset|
-            expect(asset.last).to be_a(StockLibraryTube)
-          end
+          assigns(:assets).each { |asset| expect(asset.last).to be_a(StockLibraryTube) }
           expect(assigns(:assets).keys).to eq(library_tube_ids)
           expect(response).to render_template :new
         end
       end
 
       context 'with stock tube already existing' do
-        before do
-          batch.reload.requests.each { |r| r.target_asset.labware.parents << create(:stock_library_tube) }
-        end
+        before { batch.reload.requests.each { |r| r.target_asset.labware.parents << create(:stock_library_tube) } }
 
         let(:warning) { 'Stock tubes have already been created' }
 
@@ -60,11 +56,7 @@ RSpec.describe StockAssetsController do
       context 'with mx tubes' do
         let(:multiplexed_library_tube) { create :multiplexed_library_tube }
 
-        before do
-          batch.reload.requests.each do |request|
-            request.target_asset.children << multiplexed_library_tube
-          end
-        end
+        before { batch.reload.requests.each { |request| request.target_asset.children << multiplexed_library_tube } }
 
         context 'without stock tubes' do
           it 'renders the form' do
@@ -79,9 +71,7 @@ RSpec.describe StockAssetsController do
         end
 
         context 'with stock tube already existing' do
-          before do
-            multiplexed_library_tube.parents << create(:stock_multiplexed_library_tube)
-          end
+          before { multiplexed_library_tube.parents << create(:stock_multiplexed_library_tube) }
 
           let(:warning) { 'Stock tubes have already been created' }
 
@@ -98,10 +88,25 @@ RSpec.describe StockAssetsController do
     let(:library_tube_2) { create :library_tube }
 
     it 'creates the required stock assets' do
-      post :create, params: { batch_id: batch.id, assets: {
-        library_tube_1.id => { name: 'My stock 1', volume: '100', concentration: '200' },
-        library_tube_2.id => { name: 'My stock 2', volume: '100', concentration: '200' }
-      } }, session: { user: current_user.id }
+      post :create,
+           params: {
+             batch_id: batch.id,
+             assets: {
+               library_tube_1.id => {
+                 name: 'My stock 1',
+                 volume: '100',
+                 concentration: '200'
+               },
+               library_tube_2.id => {
+                 name: 'My stock 2',
+                 volume: '100',
+                 concentration: '200'
+               }
+             }
+           },
+           session: {
+             user: current_user.id
+           }
       expect(response).to redirect_to(batch)
       expect(flash[:notice]).to eq('2 stock tubes created')
       expect(library_tube_1.reload.parents.first).to be_a(StockLibraryTube)

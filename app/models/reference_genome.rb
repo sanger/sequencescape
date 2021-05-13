@@ -6,9 +6,12 @@ class ReferenceGenome < ApplicationRecord # rubocop:todo Style/Documentation
 
   has_many :studies
   has_many :samples
-  validates :name, uniqueness: { message: 'of reference genome already present in database',
-                                 allow_blank: true,
-                                 case_sensitive: false }
+  validates :name,
+            uniqueness: {
+              message: 'of reference genome already present in database',
+              allow_blank: true,
+              case_sensitive: false
+            }
   broadcast_with_warren
 
   module Associations # rubocop:todo Style/Documentation

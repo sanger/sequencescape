@@ -29,7 +29,9 @@ describe 'stamping of stock', js: true do
     select('ABgene_0800', from: 'stock_stamper_source_plate_type_name')
     select('ABgene_0765', from: 'stock_stamper_destination_plate_type_name')
     click_button 'Check the form'
-    expect(page).to have_content 'Required volume exceeds the maximum well volume for well(s) A1. Maximum well volume 800.0 will be used in tecan file'
+    expect(
+      page
+    ).to have_content 'Required volume exceeds the maximum well volume for well(s) A1. Maximum well volume 800.0 will be used in tecan file'
     expect(page).to have_content 'You can generate the TECAN file and print label now.'
     expect(page).not_to have_content('Plates barcodes are not identical')
     click_button 'Generate TECAN file'

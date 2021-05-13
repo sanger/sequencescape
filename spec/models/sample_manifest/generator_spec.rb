@@ -19,20 +19,17 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
     )
   end
 
-  let!(:user)             { create(:user) }
-  let!(:study)            { create(:study) }
-  let!(:supplier)         { create(:supplier) }
-  let!(:barcode_printer)  { create(:barcode_printer) }
-  let(:configuration)     { SampleManifestExcel.configuration }
+  let!(:user) { create(:user) }
+  let!(:study) { create(:study) }
+  let!(:supplier) { create(:supplier) }
+  let!(:barcode_printer) { create(:barcode_printer) }
+  let(:configuration) { SampleManifestExcel.configuration }
 
   let(:attributes) do
-    { template: 'plate_full', study_id: study.id, supplier_id: supplier.id,
-      count: '4' }.with_indifferent_access
+    { template: 'plate_full', study_id: study.id, supplier_id: supplier.id, count: '4' }.with_indifferent_access
   end
 
-  after(:all) do
-    SampleManifestExcel.reset!
-  end
+  after(:all) { SampleManifestExcel.reset! }
 
   it 'model name is sample manifest' do
     expect(described_class.model_name).to eq('SampleManifest')
@@ -64,10 +61,9 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
   end
 
   it 'raises an error if sample manifest is not valid' do
-    expect do
-      described_class.new(attributes.except(:study_id), user,
-                          configuration).execute
-    end.to raise_error(ActiveRecord::RecordInvalid)
+    expect { described_class.new(attributes.except(:study_id), user, configuration).execute }.to raise_error(
+      ActiveRecord::RecordInvalid
+    )
   end
 
   it 'generates sample manifest to create details_array' do
@@ -97,8 +93,12 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
   it 'prints labels if barcode printer is present' do
     allow(LabelPrinter::PmbClient).to receive(:get_label_template_by_name).and_return('data' => [{ 'id' => 15 }])
 
-    generator = described_class.new(attributes.merge(barcode_printer: barcode_printer.name,
-                                                     only_first_label: '0'), user, configuration)
+    generator =
+      described_class.new(
+        attributes.merge(barcode_printer: barcode_printer.name, only_first_label: '0'),
+        user,
+        configuration
+      )
 
     allow(RestClient).to receive(:post)
     expect(generator).to be_print_job_required
@@ -109,8 +109,12 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
   it 'print job is not valid with invalid printer name' do
     allow(LabelPrinter::PmbClient).to receive(:get_label_template_by_name).and_return('data' => [{ 'id' => 15 }])
 
-    generator = described_class.new(attributes.merge(barcode_printer: 'dodgy_printer',
-                                                     only_first_label: '0'), user, configuration)
+    generator =
+      described_class.new(
+        attributes.merge(barcode_printer: 'dodgy_printer', only_first_label: '0'),
+        user,
+        configuration
+      )
     expect(generator).to be_print_job_required
     generator.execute
     expect(generator.print_job_message).to be_key(:error)

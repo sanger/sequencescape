@@ -20,11 +20,12 @@ module Api
         private
 
         def tube_rack_status_params
-          params.require(:data)
-                .require(:attributes)
-                .require(:tube_rack_status)
-                .require(:tube_rack)
-                .permit(:barcode, :status, messages: [])
+          params
+            .require(:data)
+            .require(:attributes)
+            .require(:tube_rack_status)
+            .require(:tube_rack)
+            .permit(:barcode, :status, messages: [])
         end
       end
     end

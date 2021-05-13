@@ -5,9 +5,7 @@ module StateChanger
   class StandardPlate < StateChanger::Base
     # Target_state of failed will fail associated requests only.
     # All other transitions will be ignored.
-    self.map_target_state_to_associated_request_state = {
-      'failed' => 'failed'
-    }
+    self.map_target_state_to_associated_request_state = { 'failed' => 'failed' }
 
     # Updates the state of the labware to the target state.  The basic implementation does this by updating
     # all of the TransferRequest instances to the state specified.  If {#contents} is blank then the change is assumed to
@@ -51,9 +49,7 @@ module StateChanger
     end
 
     def update_transfer_requests
-      transfer_requests.each do |request|
-        request.transition_to(target_state)
-      end
+      transfer_requests.each { |request| request.transition_to(target_state) }
     end
 
     def update_associated_requests

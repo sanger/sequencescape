@@ -1,3 +1,4 @@
+# rubocop:todo Metrics/ModuleLength
 module BootstrapHelper # rubocop:todo Style/Documentation
   def panel(type = :default, options = {}, &block)
     bs_custom_panel(type, :div, { class: 'card-body' }, options, &block)
@@ -46,14 +47,16 @@ module BootstrapHelper # rubocop:todo Style/Documentation
   #       </tr>
   #     </table>
   #   </div>
-  def summary(type = :default, options = {})
+  def summary(type = :default, options = {}) # rubocop:todo Metrics/MethodLength
     options[:title] ||= 'Summary'
     bs_custom_panel(type, :table, { class: 'table table-summary' }, options) do
       yield.each do |key, value|
-        concat(tag.tr do
-          concat tag.th(key)
-          concat tag.td(value)
-        end)
+        concat(
+          tag.tr do
+            concat tag.th(key)
+            concat tag.td(value)
+          end
+        )
       end
     end
   end
@@ -61,7 +64,8 @@ module BootstrapHelper # rubocop:todo Style/Documentation
   # <div class="page-header">
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
-  def page_title(title, subtitle = nil, titlecase: true, badges: [])
+  # rubocop:todo Metrics/MethodLength
+  def page_title(title, subtitle = nil, titlecase: true, badges: []) # rubocop:todo Metrics/AbcSize
     tag.div(class: 'page-header') do
       title_class = title.length > 25 ? 'title-long' : 'title-short'
       tag.h1(class: title_class) do
@@ -80,6 +84,8 @@ module BootstrapHelper # rubocop:todo Style/Documentation
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def pagination(collection)
     will_paginate collection, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'
   end
@@ -93,19 +99,23 @@ module BootstrapHelper # rubocop:todo Style/Documentation
     tag.div(class: "col-#{screen}-#{size}", &block)
   end
 
-  def progress_bar(count)
-    css_class = if count < 25
-                  'bg-danger'
-                elsif count > 99
-                  'bg-success'
-                else
-                  'bg-warning'
-                end
-    tag.span(count, style: 'display:none') <<
-      tag.div(class: 'progress') do
-        tag.div("#{count}%", class: ['progress-bar', 'progress-bar-striped', css_class], role: 'progressbar',
-                             style: "width: #{count}%;")
+  def progress_bar(count) # rubocop:todo Metrics/MethodLength
+    css_class =
+      if count < 25
+        'bg-danger'
+      elsif count > 99
+        'bg-success'
+      else
+        'bg-warning'
       end
+    tag.span(count, style: 'display:none') << tag.div(class: 'progress') do
+      tag.div(
+        "#{count}%",
+        class: ['progress-bar', 'progress-bar-striped', css_class],
+        role: 'progressbar',
+        style: "width: #{count}%;"
+      )
+    end
   end
 
   # <div class="progress">
@@ -122,36 +132,30 @@ module BootstrapHelper # rubocop:todo Style/Documentation
   end
 
   def render_section(form, field_name, sections, field)
-    label = form.label(field_name, sections.label, sections.label_options) <<
-            tag.span(sections.edit_info, class: 'property_edit_info')
+    label =
+      form.label(field_name, sections.label, sections.label_options) <<
+        tag.span(sections.edit_info, class: 'property_edit_info')
     help = sections.help
     form_collection(label, field, help)
   end
 
   def render_radio_section(_form, _field_name, sections, field)
-    label = tag.label(sections.label, sections.label_options) <<
-            tag.span(sections.edit_info, class: 'property_edit_info')
+    label =
+      tag.label(sections.label, sections.label_options) << tag.span(sections.edit_info, class: 'property_edit_info')
     help = sections.help
-    tag.legend(sections.label, class: 'sr-only') <<
-      form_collection(label, field, help)
+    tag.legend(sections.label, class: 'sr-only') << form_collection(label, field, help)
   end
 
   def form_collection(label, field, help = nil)
-    form_group do
-      bs_column(2, 'md') { label } <<
-        bs_column(10, 'md') do
-          field << help_text { raw(help) }
-        end
-    end
+    form_group { bs_column(2, 'md') { label } << bs_column(10, 'md') { field << help_text { raw(help) } } }
   end
 
   def bs_select(*args)
     hashes = args[-2, 2].count { |arg| arg.respond_to?(:keys) }
-    (2 - hashes).times do
-      args << {}
-    end
+    (2 - hashes).times { args << {} }
     args.last[:class] ||= ''
     args.last[:class] << ' custom-select'
     select(*args)
   end
 end
+# rubocop:enable Metrics/ModuleLength

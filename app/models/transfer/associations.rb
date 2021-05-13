@@ -2,7 +2,8 @@
 
 # Include in assets that can act as sources/destinations for transfers
 module Transfer::Associations
-  def self.included(base)
+  # rubocop:todo Metrics/MethodLength
+  def self.included(base) # rubocop:todo Metrics/AbcSize
     base.class_eval do
       include Transfer::State
 
@@ -25,11 +26,15 @@ module Transfer::Associations
                inverse_of: :destination
 
       # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
-      scope :with_no_outgoing_transfers, lambda {
-        select("DISTINCT #{base.quoted_table_name}.*")
-          .joins("LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`")
-          .where('outgoing_transfers.source_id IS NULL')
-      }
+      scope :with_no_outgoing_transfers,
+            lambda {
+              select("DISTINCT #{base.quoted_table_name}.*")
+                .joins(
+                  "LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`"
+                )
+                .where('outgoing_transfers.source_id IS NULL')
+            }
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

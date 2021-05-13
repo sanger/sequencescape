@@ -1,2 +1,2 @@
 // Load the plate-picks application
-require('plate-picks')
+require("plate-picks");

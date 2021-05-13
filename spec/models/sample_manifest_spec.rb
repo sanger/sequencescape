@@ -35,13 +35,13 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       setup { Delayed::Worker.delay_jobs = false }
       teardown { Delayed::Worker.delay_jobs = true }
 
+      # rubocop:todo Metrics/BlockLength
       [1, 2].each do |count|
         context "count: #{count}" do
           let(:count) { count }
 
           it "create #{count} plate(s), #{count * 96} wells" do
-            expect { manifest.generate }.to change(Plate, :count).by(count)
-                                                                 .and change(Well, :count).by(count * 96)
+            expect { manifest.generate }.to change(Plate, :count).by(count).and change(Well, :count).by(count * 96)
             expect(manifest.labware.count).to eq(count)
             expect(manifest.labware.first).to be_a(Plate)
           end
@@ -67,29 +67,19 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
             it 'create sample and aliquots' do
               sma1 = manifest.sample_manifest_assets.first
-              expect do
-                manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset)
-              end.to change(Sample, :count).by(1)
-                                                                                              .and change {
-                                                                                                     study.samples.count
-                                                                                                   }.by(1)
-                                                                                              .and change(Messenger,
-                                                                                                          :count).by(1)
+              expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count)
+                .by(1).and change { study.samples.count }.by(1).and change(Messenger, :count).by(1)
               sma2 = manifest.sample_manifest_assets.last
-              expect do
-                manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset)
-              end.to change(Sample, :count).by(1)
-                                                                                              .and change {
-                                                                                                     study.samples.count
-                                                                                                   }.by(1)
-                                                                                              .and change(Messenger,
-                                                                                                          :count).by(1)
+              expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(Sample, :count)
+                .by(1).and change { study.samples.count }.by(1).and change(Messenger, :count).by(1)
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
             end
           end
         end
       end
+
+      # rubocop:enable Metrics/BlockLength
 
       context 'with a custom purpose' do
         let(:purpose) { create :plate_purpose, size: 2 }
@@ -111,8 +101,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       teardown { Delayed::Worker.delay_jobs = true }
 
       it 'create 1 plate(s), 96 wells' do
-        expect { manifest.generate }.to change(Plate, :count).by(count)
-                                                             .and change(Well, :count).by(count * 96)
+        expect { manifest.generate }.to change(Plate, :count).by(count).and change(Well, :count).by(count * 96)
         expect(manifest.labware.count).to eq(count)
         expect(manifest.labware.first).to be_a(Plate)
       end
@@ -129,36 +118,20 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         it 'returns the details of the created samples' do
           sample_id = SangerSampleId.order(id: :desc).limit(96 * count).last.id
           expect(manifest.details_array.length).to eq(96 * count)
-          expect(manifest.details_array.first).to eq(
-            barcode: 'DN23N',
-            position: 'A1',
-            sample_id: "WTCCC#{sample_id}"
-          )
+          expect(manifest.details_array.first).to eq(barcode: 'DN23N', position: 'A1', sample_id: "WTCCC#{sample_id}")
         end
 
         it 'create sample and aliquots' do
           sma1 = manifest.sample_manifest_assets.first
-          expect do
-            manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset)
-          end.to change(Sample, :count).by(1)
-                                                                                          .and change {
-                                                                                                 study.samples.count
-                                                                                               }.by(1)
+          expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count).by(
+            1
+          ).and change { study.samples.count }.by(1)
           sma2 = manifest.sample_manifest_assets.last
-          expect do
-            manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset)
-          end.to change(Sample, :count).by(1)
-                                                                                          .and change {
-                                                                                                 study.samples.count
-                                                                                               }.by(1)
-          expect(sma1.sample.primary_aliquot).to have_attributes(
-            study_id: study.id,
-            library_id: sma1.asset.id
-          )
-          expect(sma2.sample.primary_aliquot).to have_attributes(
-            study_id: study.id,
-            library_id: sma2.asset.id
-          )
+          expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(Sample, :count).by(
+            1
+          ).and change { study.samples.count }.by(1)
+          expect(sma1.sample.primary_aliquot).to have_attributes(study_id: study.id, library_id: sma1.asset.id)
+          expect(sma2.sample.primary_aliquot).to have_attributes(study_id: study.id, library_id: sma2.asset.id)
         end
       end
 
@@ -188,18 +161,20 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     context 'when asset_type: multiplexed_library' do
       let(:asset_type) { 'multiplexed_library' }
 
+      # rubocop:todo Metrics/BlockLength
       [2, 3].each do |count|
         context "#{count} libraries(s)" do
           let(:count) { count }
 
           it 'create 1 MX tube' do
-            expect { manifest.generate }.to  change(LibraryTube, :count).by(count)
-                                        .and change(MultiplexedLibraryTube, :count).by(1)
-                                        .and change(BroadcastEvent, :count).by(1)
+            expect { manifest.generate }.to change(LibraryTube, :count).by(count).and change(
+                                                       MultiplexedLibraryTube,
+                                                       :count
+                                                     ).by(1).and change(BroadcastEvent, :count).by(1)
           end
 
           it 'create sample manifest asset' do
-            expect { manifest.generate }.to  change(SampleManifestAsset, :count).by(count)
+            expect { manifest.generate }.to change(SampleManifestAsset, :count).by(count)
             expect(manifest.assets).to contain_exactly(*LibraryTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 
@@ -217,12 +192,8 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
             it 'create sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
-              expect do
-                manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset)
-              end.to change(Sample, :count).by(1)
-                                                                                            .and change {
-                                                                                                   study.samples.count
-                                                                                                 }.by(1)
+              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count)
+                .by(1).and change { study.samples.count }.by(1)
               expect(LibraryTube.last.aliquots.first.library).to eq(manifest.assets.last)
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
@@ -235,13 +206,15 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
                 expect(subject.count).to eq(1)
               end
 
-              it 'is a multiplexed library tube' do # rubocop:todo RSpec/AggregateExamples
+              it 'is a multiplexed library tube' do
+                # rubocop:todo RSpec/AggregateExamples
                 expect(subject.first).to be_a(MultiplexedLibraryTube)
               end
             end
           end
         end
       end
+      # rubocop:enable Metrics/BlockLength
     end
 
     context 'when asset_type: library' do
@@ -251,11 +224,22 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       context 'library tubes' do
         it 'create 1 tube' do
           # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-          expect { manifest.generate }.to change(LibraryTube, :count).by(count)
-                                      .and change(MultiplexedLibraryTube, :count).by(0)
-                                      .and change(SampleTube, :count).by(0)
-                                      .and change(SampleManifestAsset, :count).by(count)
-                                      .and change(BroadcastEvent, :count).by(1)
+          expect { manifest.generate }.to change(LibraryTube, :count).by(count).and change(
+                                                     MultiplexedLibraryTube,
+                                                     :count
+                                                   ).by(0).and change(SampleTube, :count).by(0).and change(
+                                                                                                                                         SampleManifestAsset,
+                                                                                                                                         :count
+                                                                                                                                       )
+                                                                                                                                         .by(
+                                                                                                                                         count
+                                                                                                                                       ).and change(
+                                                                                                                                                                                          BroadcastEvent,
+                                                                                                                                                                                          :count
+                                                                                                                                                                                        )
+                                                                                                                                                                                          .by(
+                                                                                                                                                                                          1
+                                                                                                                                                                                        )
         end
 
         context 'once generated' do
@@ -264,10 +248,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           it 'returns the details of the created samples' do
             sample_id = SangerSampleId.order(id: :desc).limit(count).last.id
             expect(manifest.details_array.length).to eq(count)
-            expect(manifest.details_array.first).to eq(
-              barcode: manifest.barcodes.first,
-              sample_id: "WTCCC#{sample_id}"
-            )
+            expect(manifest.details_array.first).to eq(barcode: manifest.barcodes.first, sample_id: "WTCCC#{sample_id}")
           end
 
           it 'create sample manifest asset' do
@@ -277,10 +258,9 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
           it 'create sample and aliquots' do
             sma = manifest.sample_manifest_assets.last
-            expect do
-              manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset)
-            end.to change(Sample, :count).by(1)
-              .and change { study.samples.count }.by(count)
+            expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count).by(
+              1
+            ).and change { study.samples.count }.by(count)
             expect(LibraryTube.last.aliquots.first.library).to eq(manifest.assets.last)
             manifest.samples.reset
             expect(manifest.samples.first.primary_aliquot.study).to eq(study)
@@ -293,7 +273,8 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               expect(labware.count).to eq(1)
             end
 
-            it 'is a library tube' do # rubocop:todo RSpec/AggregateExamples
+            it 'is a library tube' do
+              # rubocop:todo RSpec/AggregateExamples
               expect(labware.first).to be_a(LibraryTube)
             end
           end
@@ -305,13 +286,15 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       let(:asset_type) { '1dtube' }
       let(:purpose) { Tube::Purpose.standard_sample_tube }
 
+      # rubocop:todo Metrics/BlockLength
       [1, 2].each do |count|
         context "#{count} tubes(s)" do
           let(:count) { count }
 
           it "create #{count} tubes(s)" do
-            expect { manifest.generate }.to change(SampleTube, :count).by(count)
-                                        .and change { manifest.assets.count }.by(count)
+            expect { manifest.generate }.to change(SampleTube, :count).by(count).and change {
+                                                      manifest.assets.count
+                                                    }.by(count)
             expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 
@@ -320,10 +303,8 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
             it 'create sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
-              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }
-                .to change(Sample, :count).by(1)
-                .and change { study.samples.count }.by(1)
-                .and change(Messenger, :count).by(1)
+              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count)
+                .by(1).and change { study.samples.count }.by(1).and change(Messenger, :count).by(1)
               expect(SampleTube.last.aliquots.first.library).to be_nil
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
@@ -344,13 +325,15 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
                 expect(labware.count).to eq(count)
               end
 
-              it 'is a sample tube' do # rubocop:todo RSpec/AggregateExamples
+              it 'is a sample tube' do
+                # rubocop:todo RSpec/AggregateExamples
                 expect(labware.first).to be_a(SampleTube)
               end
             end
           end
         end
       end
+      # rubocop:enable Metrics/BlockLength
     end
   end
 

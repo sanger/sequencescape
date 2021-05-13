@@ -3,7 +3,8 @@ module Tasks::SamplePrepQcHandler # rubocop:todo Style/Documentation
     @requests = task.find_batch_requests(params[:batch_id])
   end
 
-  def do_sample_prep_qc_task(task, params)
+  # rubocop:todo Metrics/MethodLength
+  def do_sample_prep_qc_task(task, params) # rubocop:todo Metrics/AbcSize
     requests = task.find_batch_requests(params[:batch_id])
 
     params[:request].each do |request_id, qc_status|
@@ -27,4 +28,5 @@ module Tasks::SamplePrepQcHandler # rubocop:todo Style/Documentation
 
     true
   end
+  # rubocop:enable Metrics/MethodLength
 end

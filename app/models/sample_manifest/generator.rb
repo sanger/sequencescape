@@ -37,12 +37,16 @@ class SampleManifest::Generator
   end
 
   def print_job
-    @print_job ||= LabelPrinter::PrintJob.new(params[:barcode_printer],
-                                              LabelPrinter::Label::SampleManifestRedirect,
-                                              only_first_label: only_first_label, sample_manifest: sample_manifest)
+    @print_job ||=
+      LabelPrinter::PrintJob.new(
+        params[:barcode_printer],
+        LabelPrinter::Label::SampleManifestRedirect,
+        only_first_label: only_first_label,
+        sample_manifest: sample_manifest
+      )
   end
 
-  def execute
+  def execute # rubocop:todo Metrics/MethodLength
     if valid?
       ActiveRecord::Base.transaction do
         @sample_manifest = SampleManifest.create!(attributes)
@@ -92,8 +96,7 @@ class SampleManifest::Generator
   end
 
   def attributes
-    params.except(:template, :barcode_printer, :only_first_label)
-          .merge(user: user, asset_type: asset_type)
+    params.except(:template, :barcode_printer, :only_first_label).merge(user: user, asset_type: asset_type)
   end
 
   def asset_type

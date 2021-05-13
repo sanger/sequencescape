@@ -14,9 +14,7 @@ module SequencescapeExcel
       def update(attributes = {})
         return unless valid? && attributes[:aliquot].present?
 
-        aliquots.each do |aliquot|
-          aliquot.library_type = value
-        end
+        aliquots.each { |aliquot| aliquot.library_type = value }
       end
 
       private

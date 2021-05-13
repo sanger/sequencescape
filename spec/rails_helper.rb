@@ -65,12 +65,14 @@ RSpec.configure do |config|
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
+
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
   config.include TransactionalCapybara::AjaxHelpers
   config.include ApiHelper
   config.include TableHelper
+
   # In a few places we have models that receive a file from an uploader
   # fixture_file_upload() ensures that the tests mimic the live behaviour.
   # This include make sit available to us. Including it globally causes
@@ -83,9 +85,7 @@ RSpec.configure do |config|
   config.include ApiV2Helper, with: :api_v2
   config.include RSpec::Longrun::DSL
 
-  Capybara.add_selector(:data_behavior) do
-    xpath { |name| XPath.css("[data-behavior='#{name}']") }
-  end
+  Capybara.add_selector(:data_behavior) { xpath { |name| XPath.css("[data-behavior='#{name}']") } }
 
   Capybara.server = :puma, { Silent: true }
 end

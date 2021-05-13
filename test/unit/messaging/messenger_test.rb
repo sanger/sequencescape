@@ -5,16 +5,15 @@ require 'test_helper'
 class MessengerTest < ActiveSupport::TestCase
   context '#Messenger' do
     setup do
-      @target    = Batch.new
+      @target = Batch.new
+
       # @target.stubs(:class).returns(Batch)
-      @template  = 'FlowcellIO'
+      @template = 'FlowcellIO'
       @messenger = Messenger.new(target: @target, template: @template, root: 'example')
     end
 
     context 'to_json' do
-      setup do
-        Api::Messages::FlowcellIO.expects(:to_hash).with(@target).returns('example' => 'hash')
-      end
+      setup { Api::Messages::FlowcellIO.expects(:to_hash).with(@target).returns('example' => 'hash') }
 
       should 'render the json' do
         assert_equal '{"example":{"example":"hash"},"lims":"SQSCP"}', @messenger.to_json

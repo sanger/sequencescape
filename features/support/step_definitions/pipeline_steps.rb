@@ -8,7 +8,7 @@ Given /^I have a pipeline called "([^"]*)"$/ do |name|
 end
 
 Given /^I have a batch in "([^"]*)"$/ do |pipeline|
-  step %{I have a "pending" batch in "#{pipeline}"}
+  step "I have a \"pending\" batch in \"#{pipeline}\""
 end
 
 Given /^I have a "([^"]*)" batch in "([^"]*)"$/ do |state, pipeline|
@@ -25,15 +25,22 @@ def pipeline_name_to_asset_type(pipeline_name)
   :library_tube
 end
 
-def create_request_for_pipeline(pipeline_name, options = {})
-  pipeline = Pipeline.find_by(name: pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
+# rubocop:todo Metrics/MethodLength
+def create_request_for_pipeline(pipeline_name, options = {}) # rubocop:todo Metrics/AbcSize
+  pipeline = Pipeline.find_by(name: pipeline_name) or
+    raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
   request_metadata = FactoryBot.create :"request_metadata_for_#{pipeline.request_types.first.key}"
-  request_parameters = options.merge(request_type: pipeline.request_types.last,
-                                     asset: FactoryBot.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
-  FactoryBot.create(:request_with_submission, request_parameters).tap do |request|
-    request.asset.labware.create_scanned_into_lab_event!(content: '2018-01-01')
-  end
+  request_parameters =
+    options.merge(
+      request_type: pipeline.request_types.last,
+      asset: FactoryBot.create(pipeline_name_to_asset_type(pipeline_name)),
+      request_metadata: request_metadata
+    )
+  FactoryBot
+    .create(:request_with_submission, request_parameters)
+    .tap { |request| request.asset.labware.create_scanned_into_lab_event!(content: '2018-01-01') }
 end
+# rubocop:enable Metrics/MethodLength
 
 Given /^I have a request for "([^"]*)"$/ do |pipeline_name|
   create_request_for_pipeline(pipeline_name)
@@ -52,9 +59,7 @@ Then /^the requests from "([^"]+)" batches should not be in the inbox$/ do |name
   raise StandardError, "There are no batches in #{name.inspect}" if pipeline.batches.empty?
 
   pipeline.batches.each do |batch|
-    batch.requests.each do |request|
-      assert page.has_no_xpath?("//*[@id='request_#{request.id}']")
-    end
+    batch.requests.each { |request| assert page.has_no_xpath?("//*[@id='request_#{request.id}']") }
   end
 end
 
@@ -64,8 +69,10 @@ Given /^the maximum batch size for the pipeline "([^"]+)" is (\d+)$/ do |name, m
 end
 
 Given /^the pipeline "([^"]+)" accepts "([^"]+)" requests$/ do |pipeline_name, request_name|
-  pipeline     = Pipeline.find_by(name: pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
-  request_type = RequestType.find_by(name: request_name) or raise StandardError, "Cannot find request type #{request_name.inspect}"
+  pipeline = Pipeline.find_by(name: pipeline_name) or
+    raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
+  request_type = RequestType.find_by(name: request_name) or
+    raise StandardError, "Cannot find request type #{request_name.inspect}"
   pipeline.update!(request_types: [request_type])
 end
 

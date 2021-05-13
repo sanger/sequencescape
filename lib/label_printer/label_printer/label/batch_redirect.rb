@@ -9,11 +9,7 @@ module LabelPrinter
       end
 
       def to_h
-        if @printer_type_class.double_label?
-          BatchPlateDouble.new(options).to_h
-        else
-          BatchPlate.new(options).to_h
-        end
+        @printer_type_class.double_label? ? BatchPlateDouble.new(options).to_h : BatchPlate.new(options).to_h
       end
     end
   end

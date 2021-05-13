@@ -5,6 +5,7 @@ require 'rails/performance_test_help'
 
 class StateChangeTest < ActionDispatch::PerformanceTest
   self.profile_options = { runs: 5, metrics: [:wall_time], formats: [:flat] }
+
   # Refer to the documentation for all available options
   # self.profile_options = { runs: 5, metrics: [:wall_time, :memory],
   #                          output: 'tmp/performance', formats: [:flat] }
@@ -17,8 +18,6 @@ class StateChangeTest < ActionDispatch::PerformanceTest
   end
 
   test 'StateChange.create' do
-    ActiveRecord::Base.transaction do
-      StateChange.create!(target: @destination, user: @user, target_state: 'passed')
-    end
+    ActiveRecord::Base.transaction { StateChange.create!(target: @destination, user: @user, target_state: 'passed') }
   end
 end

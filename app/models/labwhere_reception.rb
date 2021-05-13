@@ -10,10 +10,12 @@ class LabwhereReception
   attr_reader :asset_barcodes, :user_code, :location_barcode
 
   validates :asset_barcodes, :user_code, presence: true
-  validates :user, presence: {
-    message: 'could not be found with that swipecard or barcode. '\
-             'You may need to update your swipecard in Sequencescape.'
-  }
+  validates :user,
+            presence: {
+              message:
+                'could not be found with that swipecard or barcode. ' \
+                  'You may need to update your swipecard in Sequencescape.'
+            }
 
   def initialize(user_code, location_barcode, asset_barcodes)
     @asset_barcodes = (asset_barcodes || []).map(&:strip)
@@ -21,11 +23,17 @@ class LabwhereReception
     @user_code = user_code.try(:strip)
   end
 
-  def id; nil; end
+  def id
+    nil
+  end
 
-  def persisted?; false; end
+  def persisted?
+    false
+  end
 
-  def new_record?; true; end
+  def new_record?
+    true
+  end
 
   def user
     @user ||= User.find_with_barcode_or_swipecard_code(@user_code)
@@ -33,15 +41,17 @@ class LabwhereReception
 
   # save attempts to perform the actions, and returns true if it was successful
   # This maintains compatibility with rails
-  def save
+  # rubocop:todo Metrics/MethodLength
+  def save # rubocop:todo Metrics/AbcSize
     return false unless valid?
 
     begin
-      scan = LabWhereClient::Scan.create(
-        location_barcode: location_barcode,
-        user_code: user_code,
-        labware_barcodes: asset_barcodes
-      )
+      scan =
+        LabWhereClient::Scan.create(
+          location_barcode: location_barcode,
+          user_code: user_code,
+          labware_barcodes: asset_barcodes
+        )
 
       unless scan.valid?
         errors.add(:scan, scan.error)
@@ -54,12 +64,19 @@ class LabwhereReception
 
     assets.each do |asset|
       asset.events.create_scanned_into_lab!(location_barcode, user.login)
-      BroadcastEvent::LabwareReceived.create!(seed: asset, user: user,
-                                              properties: { location_barcode: location_barcode })
+      BroadcastEvent::LabwareReceived.create!(
+        seed: asset,
+        user: user,
+        properties: {
+          location_barcode: location_barcode
+        }
+      )
     end
 
     valid?
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def assets
     @assets ||= Labware.with_barcode(asset_barcodes)
@@ -68,8 +85,6 @@ class LabwhereReception
   def missing_barcodes
     machine_barcodes = assets.map(&:machine_barcode).to_set
     human_barcodes = assets.map(&:human_barcode).to_set
-    asset_barcodes.delete_if do |barcode|
-      human_barcodes.include?(barcode) || machine_barcodes.include?(barcode)
-    end
+    asset_barcodes.delete_if { |barcode| human_barcodes.include?(barcode) || machine_barcodes.include?(barcode) }
   end
 end

@@ -5,11 +5,16 @@
 #
 # @author [grl]
 #
-class TagSubstitution::Substitution
+class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
   include ActiveModel::Model
 
   attr_accessor :sample_id, :library_id
-  attr_reader :tag_substitution, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id, :tag_substituter
+  attr_reader :tag_substitution,
+              :original_tag_id,
+              :substitute_tag_id,
+              :original_tag2_id,
+              :substitute_tag2_id,
+              :tag_substituter
 
   delegate :disable_match_expectation, to: :tag_substituter, allow_nil: true
 
@@ -31,9 +36,18 @@ class TagSubstitution::Substitution
   #   OR
   #   aliquot: Provide an aliquot to act as a template. Useful for pre-populating forms
   # @param tag_substituter [TagSubstitution] The parent tag substituter
-  def initialize(attributes, tag_substituter = nil)
-    super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id,
-                              :substitute_tag2_id, :aliquot))
+  def initialize(attributes, tag_substituter = nil) # rubocop:todo Metrics/MethodLength
+    super(
+      attributes.extract!(
+        :sample_id,
+        :library_id,
+        :original_tag_id,
+        :substitute_tag_id,
+        :original_tag2_id,
+        :substitute_tag2_id,
+        :aliquot
+      )
+    )
     @other_attributes = attributes
     @tag_substituter = tag_substituter
   end
@@ -81,8 +95,9 @@ class TagSubstitution::Substitution
   # as otherwise we introduce tag clashes while performing substitutions
   def nullify_tags
     tags_hash = {}
-    tags_hash[:tag_id]  = nil if substitute_tag?
+    tags_hash[:tag_id] = nil if substitute_tag?
     tags_hash[:tag2_id] = nil if substitute_tag2?
+
     # We DO NOT want to trigger validations here
     Aliquot.where(id: matching_aliquots).update_all(tags_hash) if tags_hash.present? # rubocop:disable Rails/SkipsModelValidations
   end
@@ -92,12 +107,14 @@ class TagSubstitution::Substitution
   #
   # @return [Void]
   def substitute_tags
-    Aliquot.where(id: matching_aliquots).find_each do |aliquot|
-      aliquot.tag_id = substitute_tag_id if substitute_tag?
-      aliquot.tag2_id = substitute_tag2_id if substitute_tag2?
-      aliquot.update(@other_attributes) if @other_attributes.present?
-      aliquot.save!
-    end
+    Aliquot
+      .where(id: matching_aliquots)
+      .find_each do |aliquot|
+        aliquot.tag_id = substitute_tag_id if substitute_tag?
+        aliquot.tag2_id = substitute_tag2_id if substitute_tag2?
+        aliquot.update(@other_attributes) if @other_attributes.present?
+        aliquot.save!
+      end
   end
 
   #
@@ -106,7 +123,7 @@ class TagSubstitution::Substitution
   # @param oligo_index [Hash] A hash of oligo sequences indexed by oligo id.
   #
   # @return [String] A description of the substitution
-  def comment(oligo_index)
+  def comment(oligo_index) # rubocop:todo Metrics/AbcSize
     return '' unless updated?
 
     comment = +"Sample #{sample_id}:"
@@ -116,9 +133,7 @@ class TagSubstitution::Substitution
     if substitute_tag2?
       comment << " Tag2 changed from #{oligo_index[original_tag2_id]} to #{oligo_index[substitute_tag2_id]};"
     end
-    @other_attributes.each do |k, v|
-      comment << " #{k} changed to #{v};"
-    end
+    @other_attributes.each { |k, v| comment << " #{k} changed to #{v};" }
     comment
   end
 

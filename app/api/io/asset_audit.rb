@@ -23,6 +23,7 @@ module Io
 
     set_model_for_input(::AssetAudit)
     set_json_root(:asset_audit)
+
     # set_eager_loading { |model| model }   # TODO: uncomment and add any named_scopes that do includes you need
 
     # TODO: define the mapping from the model attributes to the JSON attributes
@@ -38,13 +39,15 @@ module Io
     # The 'attribute' is the attribute to write, i.e. 'name' would be the 'name' attribute, and 'parent.name' would be the 'name'
     # attribute of whatever 'parent' is.
 
-    define_attribute_and_json_mapping("
+    define_attribute_and_json_mapping(
+      '
      message  <=> message
      key  <=> key
      created_by  <=> created_by
      asset_uuid  <=> asset
      witnessed_by  <=> witnessed_by
      metadata <=> metadata
-    ")
+    '
+    )
   end
 end

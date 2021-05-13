@@ -9,9 +9,7 @@ module Role::UserRoleHelper
   # @return [Boolean] Returns true if the user has the role
   def role?(role_name, authorizable = nil)
     if roles.loaded?
-      roles.any? do |role|
-        role.name == role_name.to_s && role.authorizes?(authorizable)
-      end
+      roles.any? { |role| role.name == role_name.to_s && role.authorizes?(authorizable) }
     else
       roles.named(role_name).authorizing(authorizable).exists?
     end

@@ -2,11 +2,12 @@
 # It provides various callbacks that can be hooked in to by the derived classes.
 require 'aasm'
 
+# rubocop:todo Metrics/ModuleLength
 module Request::Statemachine # rubocop:todo Style/Documentation
   extend ActiveSupport::Concern
   COMPLETED_STATE = %w[passed failed].freeze
-  OPENED_STATE    = %w[pending blocked started].freeze
-  ACTIVE = %w(passed pending blocked started).freeze
+  OPENED_STATE = %w[pending blocked started].freeze
+  ACTIVE = %w[passed pending blocked started].freeze
   INACTIVE = %w[failed cancelled].freeze
   SORT_ORDER = %w[pending blocked hold started passed failed cancelled].freeze
 
@@ -16,20 +17,22 @@ module Request::Statemachine # rubocop:todo Style/Documentation
       aasm(options, &block)
     end
 
-    def destroy_aasm
+    def destroy_aasm # rubocop:todo Metrics/MethodLength
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
       old_machine = AASM::StateMachineStore.fetch(self) && AASM::StateMachineStore.fetch(self).machine(:default)
       if old_machine
-        old_machine.events.keys.each do |event|
-          undef_method(event);
-          undef_method(:"#{event}!")
-          undef_method(:"#{event}_without_validation!")
-          undef_method(:"may_#{event}?")
-        end
-        old_machine.states.each do |state|
-          undef_method(:"#{state}?")
-        end
+        old_machine
+          .events
+          .keys
+          .each do |event|
+            undef_method(event)
+            undef_method(:"#{event}!")
+            undef_method(:"#{event}_without_validation!")
+            undef_method(:"may_#{event}?")
+          end
+        old_machine.states.each { |state| undef_method(:"#{state}?") }
       end
+
       # Wipe out the inherited state machine. Can't use unregister
       # as we still need the state machine on the parent class.
       AASM::StateMachineStore.register(self, true)
@@ -39,13 +42,13 @@ module Request::Statemachine # rubocop:todo Style/Documentation
   included do
     ## State machine
     aasm column: :state, whiny_persistence: true do
-      state :pending,   initial: true
-      state :started,   after_enter: :on_started
-      state :failed,    after_enter: :on_failed
-      state :passed,    after_enter: :on_passed
+      state :pending, initial: true
+      state :started, after_enter: :on_started
+      state :failed, after_enter: :on_failed
+      state :passed, after_enter: :on_passed
       state :cancelled, after_enter: :on_cancelled
-      state :blocked,   after_enter: :on_blocked
-      state :hold,      after_enter: :on_hold
+      state :blocked, after_enter: :on_blocked
+      state :hold, after_enter: :on_hold
 
       event :hold do
         transitions to: :hold, from: [:pending]
@@ -115,30 +118,30 @@ module Request::Statemachine # rubocop:todo Style/Documentation
       # manual_only prevents the transition being detected by the transition_to methods
       event :fail_from_upstream, manual_only?: true do
         transitions to: :cancelled, from: [:pending]
-        transitions to: :failed,    from: [:started]
-        transitions to: :failed,    from: [:passed]
+        transitions to: :failed, from: [:started]
+        transitions to: :failed, from: [:passed]
       end
 
       # Called by {Event} when the evented is a {Request} and the family is fail
       # Can be triggered by NPG, or via the BatchesController::fail page
       # manual_only prevents the transition being detected by the transition_to methods
       event :evented_fail, manual_only?: true do
-        transitions to: :failed,    from: [:started, :passed]
+        transitions to: :failed, from: %i[started passed]
       end
 
       # Called by {Event} when the evented is a {Request} and the family is pass
       # manual_only prevents the transition being detected by the transition_to methods
       event :evented_pass, manual_only?: true do
-        transitions to: :passed,    from: [:started, :failed]
+        transitions to: :passed, from: %i[started failed]
       end
     end
 
     scope :for_state, ->(state) { where(state: state) }
 
-    scope :completed,        -> { where(state: COMPLETED_STATE) }
-    scope :pending,          -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
-    scope :opened,           -> { where(state: OPENED_STATE) }
-    scope :closed,           -> { where(state: %w[passed failed cancelled]) }
+    scope :completed, -> { where(state: COMPLETED_STATE) }
+    scope :pending, -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
+    scope :opened, -> { where(state: OPENED_STATE) }
+    scope :closed, -> { where(state: %w[passed failed cancelled]) }
   end
 
   #--
@@ -157,7 +160,7 @@ module Request::Statemachine # rubocop:todo Style/Documentation
   def transfer_aliquots
     target_asset.aliquots << asset.aliquots.map do |aliquot|
       aliquot.dup.tap do |clone|
-        clone.study_id   = initial_study_id   || aliquot.study_id
+        clone.study_id = initial_study_id || aliquot.study_id
         clone.project_id = initial_project_id || aliquot.project_id
       end
     end
@@ -176,22 +179,18 @@ module Request::Statemachine # rubocop:todo Style/Documentation
 
     raise StandardError, 'Can only use change decision on passed or failed requests'
   end
-  deprecate change_decision!: 'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
+  deprecate change_decision!:
+              'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
 
-  def on_failed
-  end
+  def on_failed; end
 
-  def on_passed
-  end
+  def on_passed; end
 
-  def on_cancelled
-  end
+  def on_cancelled; end
 
-  def on_blocked
-  end
+  def on_blocked; end
 
-  def on_hold
-  end
+  def on_hold; end
 
   def failed_upstream!
     fail_from_upstream! unless failed?
@@ -210,14 +209,15 @@ module Request::Statemachine # rubocop:todo Style/Documentation
   end
 
   def closed?
-    %w(passed failed cancelled aborted).include?(state)
+    %w[passed failed cancelled aborted].include?(state)
   end
 
   def open?
-    %w(pending started).include?(state)
+    %w[pending started].include?(state)
   end
 
   def cancellable?
-    %w(pending cancelled).include?(state)
+    %w[pending cancelled].include?(state)
   end
 end
+# rubocop:enable Metrics/ModuleLength

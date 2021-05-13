@@ -18,11 +18,13 @@ class WellAttribute < ApplicationRecord
 
   aasm column: :pico_pass, whiny_persistence: true do
     state :ungraded, initial: true
+
     # These states are originally used in SNP
     state :Pass
     state :Repeat
     state :Fail
   end
+
   # TODO: Remvoe 'Too Low To Normalise' from the pico_pass column
   # The state of 'Too Low To Normalise' exists in the database (from SNP?)
   # but it doesn't look like AASM can handle spaces in state names.
@@ -32,9 +34,12 @@ class WellAttribute < ApplicationRecord
   # to use a different transition name.
   def pico_pass
     case self[:pico_pass]
-    when 'Too Low To Normalise' then 'Fail'
-    when nil, '' then 'ungraded'
-    else self[:pico_pass]
+    when 'Too Low To Normalise'
+      'Fail'
+    when nil, ''
+      'ungraded'
+    else
+      self[:pico_pass]
     end
   end
 
@@ -54,14 +59,14 @@ class WellAttribute < ApplicationRecord
 
   def quantity_in_nano_grams
     return nil if estimated_volume.nil? || concentration.nil?
-    return 0   if estimated_volume < 0 || concentration < 0
+    return 0 if estimated_volume < 0 || concentration < 0
 
     (estimated_volume * concentration).to_i
   end
 
   def quantity_in_micro_grams
     return nil if estimated_volume.nil? || concentration.nil?
-    return 0   if estimated_volume < 0 || concentration < 0
+    return 0 if estimated_volume < 0 || concentration < 0
 
     (estimated_volume * concentration) / 1000
   end

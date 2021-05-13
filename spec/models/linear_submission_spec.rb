@@ -55,8 +55,11 @@ RSpec.describe LinearSubmission do
         it 'set an appropriate criteria and set responsibility' do
           mpx_submission.process!
           mpx_submission.requests.each do |request|
-            assert request.qc_metrics.include?(expected_metric), "Metric not included in #{request.request_type.name}: #{request.qc_metrics.inspect}"
-            assert_equal true, request.request_metadata.customer_accepts_responsibility, "Customer doesn't accept responsibility"
+            assert request.qc_metrics.include?(expected_metric),
+                   "Metric not included in #{request.request_type.name}: #{request.qc_metrics.inspect}"
+            assert_equal true,
+                         request.request_metadata.customer_accepts_responsibility,
+                         "Customer doesn't accept responsibility"
           end
         end
       end
@@ -67,33 +70,36 @@ RSpec.describe LinearSubmission do
           create :multiplexed_library_creation_request_type, target_purpose: purpose
         end
         let(:mpx_submission) do
-          create(:linear_submission,
-                 study: study,
-                 project: project,
-                 user: user,
-                 assets: mpx_assets,
-                 request_types: request_type_option,
-                 request_options: request_options).submission
+          create(
+            :linear_submission,
+            study: study,
+            project: project,
+            user: user,
+            assets: mpx_assets,
+            request_types: request_type_option,
+            request_options: request_options
+          ).submission
         end
 
-        setup do
-          mpx_submission.built!
-        end
+        setup { mpx_submission.built! }
 
         describe '#process!' do
           context 'when library_creation then sequencing' do
             let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type.id] }
 
             it 'create requests but not comments' do
-              expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 1)
-                                                                           .and change(Comment, :count).by(0)
+              expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 1).and change(
+                                                                 Comment,
+                                                                 :count
+                                                               ).by(0)
             end
 
             it 'be a multiplexed submission' do
               expect(mpx_submission).to be_multiplexed
             end
 
-            it "not save a comment if one isn't supplied" do # rubocop:todo RSpec/AggregateExamples
+            it "not save a comment if one isn't supplied" do
+              # rubocop:todo RSpec/AggregateExamples
               expect(mpx_submission.comments).to be_blank
             end
           end
@@ -105,8 +111,10 @@ RSpec.describe LinearSubmission do
             end
 
             it 'create requests but not comments' do
-              expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 2)
-                                                                           .and change(Comment, :count).by(0)
+              expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 2).and change(
+                                                                 Comment,
+                                                                 :count
+                                                               ).by(0)
             end
           end
         end
@@ -131,9 +139,7 @@ RSpec.describe LinearSubmission do
           assets: assets
         }
       end
-      let(:submission) do
-        create(:linear_submission, basic_options).submission.tap(&:built!)
-      end
+      let(:submission) { create(:linear_submission, basic_options).submission.tap(&:built!) }
 
       it 'builds the submission' do
         submission.process!
@@ -148,14 +154,16 @@ RSpec.describe LinearSubmission do
       let(:library_creation_request_type) { create :library_creation_request_type }
       let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type.id] }
       let(:submission) do
-        create(:linear_submission,
-               study: study,
-               project: project,
-               user: user,
-               assets: assets,
-               request_types: request_type_option,
-               request_options: request_options,
-               comments: 'This is a comment').submission
+        create(
+          :linear_submission,
+          study: study,
+          project: project,
+          user: user,
+          assets: assets,
+          request_types: request_type_option,
+          request_options: request_options,
+          comments: 'This is a comment'
+        ).submission
       end
 
       setup { submission.built! }
@@ -164,7 +172,8 @@ RSpec.describe LinearSubmission do
         expect(submission.multiplexed?).to be false
       end
 
-      it 'save request_types as array of Integers' do # rubocop:todo RSpec/AggregateExamples
+      it 'save request_types as array of Integers' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(submission.orders.first.request_types).to be_a Array
         expect(submission.orders.first.request_types).to eq(request_type_option)
       end
@@ -175,8 +184,8 @@ RSpec.describe LinearSubmission do
 
       describe '#process!' do
         it 'create requests but not comments' do
-          expect { submission.process! }.to change(Request, :count).by(sx_asset_count * 2)
-                                                                   .and change(Comment, :count).by(sx_asset_count * 2)
+          expect { submission.process! }.to change(Request, :count).by(sx_asset_count * 2).and change(Comment, :count)
+                                                             .by(sx_asset_count * 2)
         end
 
         context 'when it has been run' do
@@ -189,16 +198,21 @@ RSpec.describe LinearSubmission do
           end
 
           it 'sets metadata on library creation requests' do
-            expect(library_request.request_metadata).to have_attributes(customer_accepts_responsibility: nil,
-                                                                        gigabases_expected: nil,
-                                                                        library_type: library_creation_request_type.default_library_type.name,
-                                                                        fragment_size_required_to: '200',
-                                                                        fragment_size_required_from: '150')
+            expect(library_request.request_metadata).to have_attributes(
+              customer_accepts_responsibility: nil,
+              gigabases_expected: nil,
+              library_type: library_creation_request_type.default_library_type.name,
+              fragment_size_required_to: '200',
+              fragment_size_required_from: '150'
+            )
           end
 
-          it 'sets metadata on sequencing requests' do # rubocop:todo RSpec/AggregateExamples
-            expect(sequencing_request.request_metadata).to have_attributes(customer_accepts_responsibility: nil,
-                                                                           read_length: 108)
+          it 'sets metadata on sequencing requests' do
+            # rubocop:todo RSpec/AggregateExamples
+            expect(sequencing_request.request_metadata).to have_attributes(
+              customer_accepts_responsibility: nil,
+              read_length: 108
+            )
           end
         end
       end
@@ -226,59 +240,72 @@ RSpec.describe LinearSubmission do
              key: 'library_creation'
     end
     let(:sequencing_request_type) do
-      create :request_type, asset_type: 'LibraryTube', initial_state: 'pending', name: 'PE sequencing', order: 2, key: 'pe_sequencing'
+      create :request_type,
+             asset_type: 'LibraryTube',
+             initial_state: 'pending',
+             name: 'PE sequencing',
+             order: 2,
+             key: 'pe_sequencing'
     end
 
     context 'when a multiplication factor of 5 is provided' do
       context 'with non multiplexed libraries and sequencing' do
         let(:submission) do
-          create(:linear_submission,
-                 study: study,
-                 project: project,
-                 user: user,
-                 assets: assets,
-                 request_types: [lib_request_type.id, sequencing_request_type.id],
-                 request_options: {
-                   :multiplier => { sequencing_request_type.id.to_s => '5', lib_request_type.id.to_s => '1' },
-                   'read_length' => '108',
-                   'fragment_size_required_from' => '150',
-                   'fragment_size_required_to' => '200'
-                 },
-                 comments: '').submission
+          create(
+            :linear_submission,
+            study: study,
+            project: project,
+            user: user,
+            assets: assets,
+            request_types: [lib_request_type.id, sequencing_request_type.id],
+            request_options: {
+              :multiplier => {
+                sequencing_request_type.id.to_s => '5',
+                lib_request_type.id.to_s => '1'
+              },
+              'read_length' => '108',
+              'fragment_size_required_from' => '150',
+              'fragment_size_required_to' => '200'
+            },
+            comments: ''
+          ).submission
         end
 
         setup { submission.built! }
 
         it 'builds the requests' do
           expect { submission.process! }.to change(Request, :count).by(12) &
-                                            change { lib_request_type.requests.count }.by(2) &
-                                            change { sequencing_request_type.requests.count }.by(10)
+            change { lib_request_type.requests.count }.by(2) & change { sequencing_request_type.requests.count }.by(10)
         end
       end
 
       context 'with multiplexed libraries and sequencing' do
         let(:submission) do
-          create(:linear_submission,
-                 study: study,
-                 project: project,
-                 user: user,
-                 assets: assets,
-                 request_types: [mx_request_type.id, sequencing_request_type.id],
-                 request_options: {
-                   :multiplier => { sequencing_request_type.id.to_s => '5', mx_request_type.id.to_s => '1' },
-                   'read_length' => '108',
-                   'fragment_size_required_from' => '150',
-                   'fragment_size_required_to' => '200'
-                 },
-                 comments: '').submission
+          create(
+            :linear_submission,
+            study: study,
+            project: project,
+            user: user,
+            assets: assets,
+            request_types: [mx_request_type.id, sequencing_request_type.id],
+            request_options: {
+              :multiplier => {
+                sequencing_request_type.id.to_s => '5',
+                mx_request_type.id.to_s => '1'
+              },
+              'read_length' => '108',
+              'fragment_size_required_from' => '150',
+              'fragment_size_required_to' => '200'
+            },
+            comments: ''
+          ).submission
         end
 
         setup { submission.built! }
 
         it 'builds the requests' do
           expect { submission.process! }.to change(Request, :count).by(7) &
-                                            change { mx_request_type.requests.count }.by(2) &
-                                            change { sequencing_request_type.requests.count }.by(5)
+            change { mx_request_type.requests.count }.by(2) & change { sequencing_request_type.requests.count }.by(5)
         end
       end
     end

@@ -35,13 +35,7 @@ module Asset::Ownership
         has_one :plate_owner
         has_one :owner, source: :user, through: :plate_owner
 
-        scope :for_user, ->(user) {
-          if user.nil?
-            all
-          else
-            joins(:plate_owner).where(plate_owners: { user_id: user })
-          end
-        }
+        scope :for_user, ->(user) { user.nil? ? all : joins(:plate_owner).where(plate_owners: { user_id: user }) }
       end
     end
 

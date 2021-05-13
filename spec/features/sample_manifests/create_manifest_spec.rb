@@ -15,9 +15,7 @@ describe 'SampleManifest controller', sample_manifest: true do
   let!(:supplier) { create :supplier }
   let!(:study) { create :study }
   let(:barcode) { 1000 }
-  let(:created_plate) do
-    Plate.with_barcode(SBCF::SangerBarcode.new(prefix: 'DN', number: barcode).human_barcode).first
-  end
+  let(:created_plate) { Plate.with_barcode(SBCF::SangerBarcode.new(prefix: 'DN', number: barcode).human_barcode).first }
 
   shared_examples 'a plate manifest' do
     it 'creating manifests' do
@@ -68,9 +66,7 @@ describe 'SampleManifest controller', sample_manifest: true do
 
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
-      within('#sample_manifest_template') do
-        expect(page).to have_selector('option', count: 18)
-      end
+      within('#sample_manifest_template') { expect(page).to have_selector('option', count: 18) }
       select(created_purpose.name, from: 'Purpose')
       expect(page).to have_text('Used for plate manifests only')
     end

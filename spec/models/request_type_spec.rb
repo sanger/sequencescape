@@ -43,9 +43,7 @@ describe RequestType do
     end
 
     context 'when deprecated,' do
-      setup do
-        @deprecated_request_type = create(:request_type, deprecated: true)
-      end
+      setup { @deprecated_request_type = create(:request_type, deprecated: true) }
 
       it 'not create deprecated requests' do
         expect { @deprecated_request_type.create! }.to raise_error RequestType::DeprecatedError

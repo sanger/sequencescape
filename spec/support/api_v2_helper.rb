@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module ApiV2Helper
-  DEFAULT_HEADERS = {
-    'ACCEPT' => 'application/vnd.api+json',
-    'CONTENT_TYPE' => 'application/vnd.api+json'
-  }.freeze
+  DEFAULT_HEADERS = { 'ACCEPT' => 'application/vnd.api+json', 'CONTENT_TYPE' => 'application/vnd.api+json' }.freeze
 
   def api_get(path, headers: {})
     headers.merge!(DEFAULT_HEADERS)

@@ -9,11 +9,12 @@ module SampleManifestExcel
         extend ActiveSupport::Concern
         include Tags::ClashesFinder
 
-        included do
-          validate :check_tags
-        end
+        included { validate :check_tags }
 
-        def check_tags
+        # rubocop:todo Metrics/PerceivedComplexity
+        # rubocop:todo Metrics/MethodLength
+        # rubocop:todo Metrics/AbcSize
+        def check_tags # rubocop:todo Metrics/CyclomaticComplexity
           i7s = upload.data_at(:i7)
           i5s = upload.data_at(:i5)
 
@@ -22,18 +23,26 @@ module SampleManifestExcel
           tag2_groups = upload.data_at(:tag2_group)
           tag2_indexes = upload.data_at(:tag2_index)
 
-          duplicates = if i7s.present? && i5s.present?
-                         find_tags_clash(i7s.zip(i5s))
-                       elsif tag_groups.present? && tag_indexes.present? && tag2_groups.present? && tag2_indexes.present?
-                         check_tag_groups_and_indexes(tag_groups, tag_indexes, tag2_groups, tag2_indexes)
-                       else
-                         {}
-                       end
+          duplicates =
+            if i7s.present? && i5s.present?
+              find_tags_clash(i7s.zip(i5s))
+            elsif tag_groups.present? && tag_indexes.present? && tag2_groups.present? && tag2_indexes.present?
+              check_tag_groups_and_indexes(tag_groups, tag_indexes, tag2_groups, tag2_indexes)
+            else
+              {}
+            end
           errors.add(:tags_clash, create_tags_clashes_message(duplicates, FIRST_ROW)) unless duplicates.empty?
         end
 
+        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/PerceivedComplexity
+
         private
 
+        # rubocop:todo Metrics/CyclomaticComplexity
+        # rubocop:todo Metrics/PerceivedComplexity
+        # rubocop:todo Metrics/AbcSize
         def check_tag_groups_and_indexes(tag_groups, tag_indexes, tag2_groups, tag2_indexes)
           i7s = []
           i5s = []
@@ -45,6 +54,9 @@ module SampleManifestExcel
           end
           find_tags_clash(i7s.zip(i5s))
         end
+        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/CyclomaticComplexity
       end
     end
   end

@@ -90,9 +90,6 @@ class RequestType::Validator < ApplicationRecord
   end
 
   def type_cast
-    {
-      'read_length' => :to_i,
-      'insert_size' => :to_i
-    }[request_option]
+    { 'read_length' => :to_i, 'insert_size' => :to_i }[request_option]
   end
 end

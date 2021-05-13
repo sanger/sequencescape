@@ -5,25 +5,42 @@ require 'test_helper'
 class PrintJobTest < ActiveSupport::TestCase
   attr_reader :print_job, :plates, :plate, :plate_purpose, :barcode_printer, :attributes
 
-  def setup
+  # rubocop:todo Metrics/MethodLength
+  def setup # rubocop:todo Metrics/AbcSize
     @barcode_printer = create :barcode_printer
     LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     @plates = create_list :plate, 1, well_count: 1, well_factory: :untagged_well
     @plate = plates[0]
     @plate_purpose = plate.plate_purpose
-    @attributes = { printer_name: barcode_printer.name,
-                    labels: { body:
-                  [{ main_label:
-                    { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-                      bottom_left: plate.human_barcode.to_s,
-                      top_right: plate_purpose.name.to_s,
-                      bottom_right: 'user WTCCC',
-                      top_far_right: plate.parent.try(:barcode_number).to_s,
-                      barcode: plate.machine_barcode } }] },
-                    label_template_id: 15 }
-    @print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateCreator, plates: plates,
-                                                                                                     plate_purpose: plate_purpose, user_login: 'user')
+    @attributes = {
+      printer_name: barcode_printer.name,
+      labels: {
+        body: [
+          {
+            main_label: {
+              top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
+              bottom_left: plate.human_barcode.to_s,
+              top_right: plate_purpose.name.to_s,
+              bottom_right: 'user WTCCC',
+              top_far_right: plate.parent.try(:barcode_number).to_s,
+              barcode: plate.machine_barcode
+            }
+          }
+        ]
+      },
+      label_template_id: 15
+    }
+    @print_job =
+      LabelPrinter::PrintJob.new(
+        barcode_printer.name,
+        LabelPrinter::Label::PlateCreator,
+        plates: plates,
+        plate_purpose: plate_purpose,
+        user_login: 'user'
+      )
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   test 'should have attributes' do
     assert print_job.printer_name

@@ -7,23 +7,26 @@ module Requests
     context 'Requests controller' do
       setup do
         @controller = Requests::CommentsController.new
-        @request    = ActionController::TestRequest.create(@controller)
+        @request = ActionController::TestRequest.create(@controller)
         @user = create :user
         session[:user] = @user.id
       end
 
       should_require_login(:index, resource: 'comment', parent: 'request')
 
-      resource_test('comment', actions: ['index'], ignore_actions: %w(new edit update show destroy create),
-                               formats: ['html'], parent: 'request')
+      resource_test(
+        'comment',
+        actions: ['index'],
+        ignore_actions: %w[new edit update show destroy create],
+        formats: ['html'],
+        parent: 'request'
+      )
 
       context 'with an ajax request' do
         setup do
           @rq = create :request
 
-          %w(this is a test).each do |description|
-            create :comment, description: description, commentable: @rq
-          end
+          %w[this is a test].each { |description| create :comment, description: description, commentable: @rq }
         end
 
         should 'return a ul of comments' do

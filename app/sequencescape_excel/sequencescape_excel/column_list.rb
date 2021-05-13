@@ -25,9 +25,7 @@ module SequencescapeExcel
     end
 
     def column_values(replacements = {})
-      replacements.each do |k, v|
-        find(k).value = v
-      end
+      replacements.each { |k, v| find(k).value = v }
       columns.collect(&:value)
     end
 
@@ -38,11 +36,7 @@ module SequencescapeExcel
       ColumnList.new do |column_list|
         keys.each do |key|
           column = find(key)
-          if column.present?
-            column_list.add_with_number(column.dup, column_list)
-          else
-            column_list.bad_keys << key
-          end
+          column.present? ? column_list.add_with_number(column.dup, column_list) : column_list.bad_keys << key
         end
       end
     end
@@ -106,13 +100,16 @@ module SequencescapeExcel
 
     # You can add a hash of columns, a hash of attributes or an array of columns.
     # If it is a hash of columns there is an assumption that a copy is being created.
-    def create_columns(columns, conditional_formattings)
+    def create_columns(columns, conditional_formattings) # rubocop:todo Metrics/MethodLength
       columns.each do |k, v|
-        add_with_number(if v.is_a?(Hash)
-                          SequencescapeExcel::Column.new(SequencescapeExcel::Column.build_arguments(v, k, conditional_formattings))
-                        else
-                          k.dup
-                        end, self)
+        add_with_number(
+          if v.is_a?(Hash)
+            SequencescapeExcel::Column.new(SequencescapeExcel::Column.build_arguments(v, k, conditional_formattings))
+          else
+            k.dup
+          end,
+          self
+        )
       rescue TypeError => e
         Rails.logger.error("column can't be created for #{k}: #{e.message}")
       end

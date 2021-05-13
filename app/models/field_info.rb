@@ -14,11 +14,12 @@ class FieldInfo
   end
 
   SELECTION = 'Selection'
-  TEXT      = 'Text'
-  BOOLEAN   = 'Boolean'
-  NUMERIC   = 'Numeric'
+  TEXT = 'Text'
+  BOOLEAN = 'Boolean'
+  NUMERIC = 'Numeric'
+
   # Sorted in order of least restrictiveness
-  KIND      = [TEXT, NUMERIC, SELECTION, BOOLEAN].freeze
+  KIND = [TEXT, NUMERIC, SELECTION, BOOLEAN].freeze
 
   attr_accessor :display_name, :key, :kind, :default_value, :required, :step, :min, :max, :selection
 
@@ -26,9 +27,7 @@ class FieldInfo
     attributes = Hash.new(NullFieldInfo)
 
     request_types.each do |request_type|
-      request_type.request_attributes.each do |att|
-        attributes[att.name] &= att.to_field_info(request_type)
-      end
+      request_type.request_attributes.each { |att| attributes[att.name] &= att.to_field_info(request_type) }
     end
 
     attributes.values
@@ -55,13 +54,14 @@ class FieldInfo
   # @param other [FieldInfo] The FieldInfo to combine with
   #
   # @return [FieldInfo] The new, more restrictive field info
-  def &(other)
+  def &(other) # rubocop:todo Metrics/AbcSize
     raise StandardError, "Attempted to combine #{key} with #{other.key} FieldInfos" unless key == other.key
 
     dup.tap do |combined|
       # Use set selector to filter to those common to all attributes
       combined.selection = [combined.selection, other.selection].compact.reduce(&:&)
       combined.required ||= other.required
+
       # If kinds differ, we want to select the most restrictive (eg. selection over numeric)
       combined.kind = other.kind if combined.kind_priority < other.kind_priority
       combined.default_value ||= other.default_value
@@ -69,11 +69,8 @@ class FieldInfo
   end
 
   def ==(other)
-    display_name == other.display_name &&
-      key == other.key &&
-      kind == other.kind &&
-      default_value == other.default_value &&
-      selection == other.selection
+    display_name == other.display_name && key == other.key && kind == other.kind &&
+      default_value == other.default_value && selection == other.selection
   end
 
   def kind_priority

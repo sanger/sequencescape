@@ -22,12 +22,15 @@ module SequencescapeExcel
     end
 
     def combine(other = nil)
-      (other || {}).merge(style: style, options: options).with_indifferent_access.tap do |cf|
-        if expression?
-          cf[:formula] ||= {}
-          cf[:formula].merge!(type: type)
+      (other || {})
+        .merge(style: style, options: options)
+        .with_indifferent_access
+        .tap do |cf|
+          if expression?
+            cf[:formula] ||= {}
+            cf[:formula].merge!(type: type)
+          end
         end
-      end
     end
 
     def inspect

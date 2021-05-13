@@ -6,7 +6,9 @@ class Io::Labware < Core::Io::Base
   set_json_root(:asset)
   set_eager_loading { |model| model }
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                          name  => name
-  ")
+  '
+  )
 end

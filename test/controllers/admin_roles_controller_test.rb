@@ -7,17 +7,21 @@ module Admin
     context 'Roles controller' do
       setup do
         @controller = Admin::RolesController.new
-        @request    = ActionController::TestRequest.create(@controller)
+        @request = ActionController::TestRequest.create(@controller)
       end
 
       should_require_login
 
       context 'with user' do
-        setup do
-          session[:user] = @user = create :admin
-        end
+        setup { session[:user] = @user = create :admin }
 
-        resource_test('role', with_prefix: 'admin_', ignore_actions: %w(create destroy update edit), formats: ['html'], user: :admin)
+        resource_test(
+          'role',
+          with_prefix: 'admin_',
+          ignore_actions: %w[create destroy update edit],
+          formats: ['html'],
+          user: :admin
+        )
       end
     end
   end

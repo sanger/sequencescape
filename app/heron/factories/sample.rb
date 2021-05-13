@@ -16,9 +16,7 @@ module Heron
       def check_no_other_params_when_uuid
         return if sample_keys.empty?
 
-        sample_keys.each do |key|
-          errors.add(key, 'No other params can be added when sample uuid specified')
-        end
+        sample_keys.each { |key| errors.add(key, 'No other params can be added when sample uuid specified') }
       end
 
       def sample_keys
@@ -69,11 +67,12 @@ module Heron
       def create_sample!
         return sample if sample
 
-        @sample = ::Sample.create!(params_for_sample_creation) do |sample|
-          replace_uuid(sample) if @params[:uuid]
-          sample.sample_metadata.update!(params_for_sample_metadata_table)
-          sample.studies << study
-        end
+        @sample =
+          ::Sample.create!(params_for_sample_creation) do |sample|
+            replace_uuid(sample) if @params[:uuid]
+            sample.sample_metadata.update!(params_for_sample_metadata_table)
+            sample.studies << study
+          end
       end
 
       def replace_uuid(sample)
@@ -91,25 +90,17 @@ module Heron
       end
 
       def unexisting_column_keys
-        (sample_keys - [
-          params_for_sample_table.keys,
-          params_for_sample_metadata_table.keys
-        ].flatten.map(&:to_sym))
+        (sample_keys - [params_for_sample_table.keys, params_for_sample_metadata_table.keys].flatten.map(&:to_sym))
       end
 
       def all_fields_are_existing_columns
         return if unexisting_column_keys.empty?
 
-        unexisting_column_keys.each do |col|
-          errors.add(col, 'Unexisting field for sample or sample_metadata')
-        end
+        unexisting_column_keys.each { |col| errors.add(col, 'Unexisting field for sample or sample_metadata') }
       end
 
       def params_for_sample_creation
-        {
-          name: sanger_sample_id,
-          sanger_sample_id: sanger_sample_id
-        }.merge(params_for_sample_table)
+        { name: sanger_sample_id, sanger_sample_id: sanger_sample_id }.merge(params_for_sample_table)
       end
 
       def params_for_aliquot_creation

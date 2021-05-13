@@ -8,18 +8,22 @@ class Api::StudyIO < Api::Base
       end
     end
 
-    def self.included(base)
+    def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> {
-          includes([
-            :uuid_object, {
-              study_metadata: %i[faculty_sponsor reference_genome study_type data_release_study_type],
-              roles: :users
-            }
-          ])
-        }
+        scope :including_associations_for_json,
+              -> {
+                includes(
+                  [
+                    :uuid_object,
+                    {
+                      study_metadata: %i[faculty_sponsor reference_genome study_type data_release_study_type],
+                      roles: :users
+                    }
+                  ]
+                )
+              }
       end
     end
 
@@ -42,30 +46,25 @@ class Api::StudyIO < Api::Base
     json_attributes['abbreviation'] = object.abbreviation
 
     object.roles.each do |role|
-      json_attributes[role.name.downcase.gsub(/\s+/, '_')] = role.user_role_bindings.map do |user_role|
-        { login: user_role.user.login, email: user_role.user.email, name: user_role.user.name }.tap do
-          json_attributes['updated_at'] ||= user_role.updated_at
-          json_attributes['updated_at']   = user_role.updated_at if json_attributes['updated_at'] < user_role.updated_at
+      json_attributes[role.name.downcase.gsub(/\s+/, '_')] =
+        role.user_role_bindings.map do |user_role|
+          { login: user_role.user.login, email: user_role.user.email, name: user_role.user.name }.tap do
+            json_attributes['updated_at'] ||= user_role.updated_at
+            json_attributes['updated_at'] = user_role.updated_at if json_attributes['updated_at'] < user_role.updated_at
+          end
         end
-      end
     end
   end
 
   with_association(:study_metadata) do
-    with_association(:faculty_sponsor, lookup_by: :name) do
-      map_attribute_to_json_attribute(:name, 'sac_sponsor')
-    end
+    with_association(:faculty_sponsor, lookup_by: :name) { map_attribute_to_json_attribute(:name, 'sac_sponsor') }
 
-    with_association(:reference_genome, lookup_by: :name) do
-      map_attribute_to_json_attribute(:name, 'reference_genome')
-    end
+    with_association(:reference_genome, lookup_by: :name) { map_attribute_to_json_attribute(:name, 'reference_genome') }
     map_attribute_to_json_attribute(:prelim_id, 'prelim_id')
     map_attribute_to_json_attribute(:study_ebi_accession_number, 'accession_number')
     map_attribute_to_json_attribute(:study_description, 'description')
     map_attribute_to_json_attribute(:study_abstract, 'abstract')
-    with_association(:study_type, lookup_by: :name) do
-      map_attribute_to_json_attribute(:name, 'study_type')
-    end
+    with_association(:study_type, lookup_by: :name) { map_attribute_to_json_attribute(:name, 'study_type') }
 
     map_attribute_to_json_attribute(:study_project_id, 'ena_project_id')
     map_attribute_to_json_attribute(:study_study_title, 'study_title')

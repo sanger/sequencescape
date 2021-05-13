@@ -1,5 +1,10 @@
 class OrderPresenter # rubocop:todo Style/Documentation
-  attr_accessor :study_id, :project_name, :plate_purpose_id, :sample_names_text, :lanes_of_sequencing_required, :comments
+  attr_accessor :study_id,
+                :project_name,
+                :plate_purpose_id,
+                :sample_names_text,
+                :lanes_of_sequencing_required,
+                :comments
 
   def initialize(order)
     @target_order = order

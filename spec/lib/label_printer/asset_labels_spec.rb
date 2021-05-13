@@ -7,9 +7,7 @@ shared_examples_for 'asset labels creator' do
 
   let(:date) { Time.zone.today.strftime('%e-%^b-%Y').to_s }
 
-  let(:labels) do
-    { labels: { body: body } }
-  end
+  let(:labels) { { labels: { body: body } } }
 
   it 'prints the correct labels' do
     expect(subject.to_h).to eq(labels)
@@ -29,13 +27,16 @@ context 'printing plates' do
   describe LabelPrinter::Label::AssetPlate do
     let(:body) do
       assets.map do |asset|
-        { main_label:
-          { top_left: date,
+        {
+          main_label: {
+            top_left: date,
             bottom_left: asset.human_barcode.to_s,
             top_right: asset.plate_purpose.name.to_s,
             bottom_right: asset.studies.first&.abbreviation,
             top_far_right: asset.parent.try(:barcode_number).to_s,
-            barcode: asset.machine_barcode.to_s } }
+            barcode: asset.machine_barcode.to_s
+          }
+        }
       end
     end
 
@@ -45,13 +46,16 @@ context 'printing plates' do
   describe LabelPrinter::Label::AssetPlateDouble do
     let(:body) do
       assets.map do |asset|
-        [{ main_label:
-           { left_text: asset.human_barcode.to_s,
-             right_text: "#{asset.prefix} #{asset.barcode_number}",
-             barcode: asset.machine_barcode.to_s } },
-         { extra_label:
-           { left_text: date,
-             right_text: asset.purpose.name } }]
+        [
+          {
+            main_label: {
+              left_text: asset.human_barcode.to_s,
+              right_text: "#{asset.prefix} #{asset.barcode_number}",
+              barcode: asset.machine_barcode.to_s
+            }
+          },
+          { extra_label: { left_text: date, right_text: asset.purpose.name } }
+        ]
       end.flatten
     end
 
@@ -67,13 +71,16 @@ context 'printing tubes' do
 
     let(:body) do
       assets.map do |asset|
-        { main_label:
-        { top_line: asset.name,
-          middle_line: asset.barcode_number,
-          bottom_line: date,
-          round_label_top_line: asset.prefix,
-          round_label_bottom_line: asset.barcode_number,
-          barcode: asset.machine_barcode } }
+        {
+          main_label: {
+            top_line: asset.name,
+            middle_line: asset.barcode_number,
+            bottom_line: date,
+            round_label_top_line: asset.prefix,
+            round_label_bottom_line: asset.barcode_number,
+            barcode: asset.machine_barcode
+          }
+        }
       end
     end
 

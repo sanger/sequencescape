@@ -29,9 +29,11 @@ RSpec.describe Api::V2::TubeResource, type: :resource do
     subject { resource.labware_barcode }
 
     it do
-      expect(subject).to eq('ean13_barcode' => '3980000001795',
-                            'human_barcode' => 'NT1O',
-                            'machine_barcode' => '3980000001795')
+      expect(subject).to eq(
+        'ean13_barcode' => '3980000001795',
+        'human_barcode' => 'NT1O',
+        'machine_barcode' => '3980000001795'
+      )
     end
   end
 end

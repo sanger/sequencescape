@@ -4,9 +4,7 @@ module Heron
     class Event
       include ActiveModel::Model
 
-      EVENT_CLASSES = {
-        BroadcastEvent::PlateCherrypicked::EVENT_TYPE.to_s => BroadcastEvent::PlateCherrypicked
-      }.freeze
+      EVENT_CLASSES = { BroadcastEvent::PlateCherrypicked::EVENT_TYPE.to_s => BroadcastEvent::PlateCherrypicked }.freeze
       validates :broadcast_event, presence: true
       validate :check_broadcast_event
 
@@ -37,9 +35,7 @@ module Heron
         return false unless valid?
         return false unless broadcast_event
 
-        ActiveRecord::Base.transaction do
-          broadcast_event.save
-        end
+        ActiveRecord::Base.transaction { broadcast_event.save }
         true
       end
     end

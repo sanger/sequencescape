@@ -53,10 +53,7 @@ module Aker
     end
 
     def as_json(_options = {})
-      {
-        barcode: barcode,
-        address: address
-      }.compact
+      { barcode: barcode, address: address }.compact
     end
 
     def put_sample_in_container(sample, study)

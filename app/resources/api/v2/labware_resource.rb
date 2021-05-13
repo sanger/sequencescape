@@ -12,9 +12,9 @@ module Api
       has_many :comments, readonly: true
       has_many :direct_submissions, readonly: true
 
-      filter :purpose_name, apply: (lambda do |records, value, _options|
-        records.joins(:purpose).where(plate_purposes: { name: value })
-      end)
+      filter :purpose_name,
+             apply:
+               (lambda { |records, value, _options| records.joins(:purpose).where(plate_purposes: { name: value }) })
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }

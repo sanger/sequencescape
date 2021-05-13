@@ -11,11 +11,10 @@ class GelsController < ApplicationController # rubocop:todo Style/Documentation
   def index
     # TODO: if a plate has a working dilution plate and it has a gel dilution plate, display:
     @gel_plates = GelDilutionPlate.page(params[:page]).order(id: :desc)
-    @plates     = @gel_plates.map(&:stock_plate).compact
+    @plates = @gel_plates.map(&:stock_plate).compact
   end
 
-  def find
-  end
+  def find; end
 
   def lookup
     @plate = Plate.find_from_barcode([params[:barcode], "#{Plate.default_prefix}#{params[:barcode]}"])
@@ -32,7 +31,7 @@ class GelsController < ApplicationController # rubocop:todo Style/Documentation
     @plate = Plate.find(params[:id])
   end
 
-  def update
+  def update # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       params[:wells].keys.each do |well_id|
         well = Well.find(well_id)

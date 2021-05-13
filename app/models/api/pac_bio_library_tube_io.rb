@@ -42,7 +42,5 @@ class Api::PacBioLibraryTubeIO < Api::Base
 
   map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
 
-  with_association(:scanned_into_lab_event) do
-    map_attribute_to_json_attribute(:content, 'scanned_in_date')
-  end
+  with_association(:scanned_into_lab_event) { map_attribute_to_json_attribute(:content, 'scanned_in_date') }
 end

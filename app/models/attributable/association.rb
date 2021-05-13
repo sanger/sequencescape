@@ -4,7 +4,7 @@ module Attributable
       def self.extended(base)
         base.class_eval do
           include InstanceMethods
-          scope :for_selection, ->() { order(:name) }
+          scope :for_selection, -> { order(:name) }
         end
       end
 
@@ -46,8 +46,7 @@ module Attributable
     end
 
     def from(record)
-      record.send(@name)
-            .try(@method)
+      record.send(@name).try(@method)
     end
 
     def display_name
@@ -79,8 +78,9 @@ module Attributable
       )
     end
 
-    def configure(target)
-      target.class_eval(%{
+    def configure(target) # rubocop:todo Metrics/MethodLength
+      target.class_eval(
+        %{
         def #{assignable_attribute_name}=(value)
           record = self.class.reflections['#{@name}'].klass.find_by_#{@method}(value) or
             raise ActiveRecord::RecordNotFound, "Could not find #{@name} with #{@method} \#{value.inspect}"
@@ -90,7 +90,8 @@ module Attributable
         def #{assignable_attribute_name}
           send(:#{@name}).send(:#{@method})
         end
-      })
+      }
+      )
     end
 
     private

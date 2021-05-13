@@ -2,14 +2,15 @@
 
 # Handles the behaviour of {CherrypickTask} and included in {WorkflowsController}
 # {include:CherrypickTask}
-module Tasks::CherrypickHandler
+module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
   def self.included(base)
-    base.class_eval do
-      include Cherrypick::Task::PickHelpers
-    end
+    base.class_eval { include Cherrypick::Task::PickHelpers }
   end
 
-  def render_cherrypick_task(_task, params)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def render_cherrypick_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     if flash[:error].present?
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return
@@ -54,13 +55,14 @@ module Tasks::CherrypickHandler
     flash.now[:warning] = I18n.t('cherrypick.picking_by_row') if @plate_purpose.cherrypick_in_rows?
 
     @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
-    @map_info = if @spreadsheet_layout
-                  @spreadsheet_layout
-                elsif @plate.present?
-                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @plate, @control_plate, self)
-                else
-                  @task.pick_new_plate(@requests, plate_template, @robot, @plate_purpose, @control_plate, self)
-                end
+    @map_info =
+      if @spreadsheet_layout
+        @spreadsheet_layout
+      elsif @plate.present?
+        @task.pick_onto_partial_plate(@requests, plate_template, @robot, @plate, @control_plate, self)
+      else
+        @task.pick_new_plate(@requests, plate_template, @robot, @plate_purpose, @control_plate, self)
+      end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
 
@@ -68,14 +70,20 @@ module Tasks::CherrypickHandler
     @plate_rows = @plate.try(:height) || @plate_purpose.plate_height
   end
 
-  def setup_input_params_for_pass_through
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+
+  # rubocop:todo Metrics/MethodLength
+  def setup_input_params_for_pass_through # rubocop:todo Metrics/AbcSize
     @robot_id = params[:robot_id]
     @robot = Robot.find(@robot_id)
     @plate_type = params[:plate_type]
     if params[:nano_grams_per_micro_litre]
       @nano_grams_per_micro_litre_volume_required = params[:nano_grams_per_micro_litre][:volume_required]
       @nano_grams_per_micro_litre_concentration_required = params[:nano_grams_per_micro_litre][:concentration_required]
-      @nano_grams_per_micro_litre_robot_minimum_picking_volume = params[:nano_grams_per_micro_litre][:robot_minimum_picking_volume]
+      @nano_grams_per_micro_litre_robot_minimum_picking_volume =
+        params[:nano_grams_per_micro_litre][:robot_minimum_picking_volume]
     end
     if params[:nano_grams]
       @nano_grams_minimum_volume = params[:nano_grams][:minimum_volume]
@@ -89,12 +97,18 @@ module Tasks::CherrypickHandler
     @fluidigm_barcode = params[:fluidigm_plate]
   end
 
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
   def do_cherrypick_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     plates = params[:plate]
     size = params[:plate_size]
     plate_type = params[:plate_type]
 
-    ActiveRecord::Base.transaction do # rubocop:todo Metrics/BlockLength
+    # rubocop:todo Metrics/BlockLength
+    ActiveRecord::Base.transaction do
       # Determine if there is a standard plate to use.
       partial_plate = nil
       plate_barcode = params[:plate_barcode]
@@ -109,22 +123,30 @@ module Tasks::CherrypickHandler
       # Configure the cherrypicking action based on the parameters
       cherrypicker =
         case params[:cherrypick_action]
-        when 'nano_grams_per_micro_litre' then create_nano_grams_per_micro_litre_picker(params[:nano_grams_per_micro_litre])
-        when 'nano_grams'                 then create_nano_grams_picker(params[:nano_grams])
-        when 'micro_litre'                then create_micro_litre_picker(params[:micro_litre])
-        else raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_action]}"
+        when 'nano_grams_per_micro_litre'
+          create_nano_grams_per_micro_litre_picker(params[:nano_grams_per_micro_litre])
+        when 'nano_grams'
+          create_nano_grams_picker(params[:nano_grams])
+        when 'micro_litre'
+          create_micro_litre_picker(params[:micro_litre])
+        else
+          raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_action]}"
         end
 
       # We can preload the well locations so that we can do efficient lookup later.
-      well_locations = Map.where_plate_size(partial_plate.try(:size) || size).where_plate_shape(partial_plate.try(:asset_shape) || asset_shape_id).in_row_major_order.index_by(&:description)
+      well_locations =
+        Map
+          .where_plate_size(partial_plate.try(:size) || size)
+          .where_plate_shape(partial_plate.try(:asset_shape) || asset_shape_id)
+          .in_row_major_order
+          .index_by(&:description)
 
       # All of the requests we're going to be using should be part of the batch.  If they are not
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
       # whole load of wells so that they can be retrieved quickly and easily.
       wells = Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).index_by(&:id)
-      request_and_well = @batch.requests.includes(:request_metadata).map do |r|
-        [r.id.to_i, [r, wells[r.target_asset_id]]]
-      end.to_h
+      request_and_well =
+        @batch.requests.includes(:request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }.to_h
       used_requests = []
       plates_and_wells = Hash.new { |h, k| h[k] = [] }
       plate_and_requests = Hash.new { |h, k| h[k] = [] }
@@ -143,10 +165,13 @@ module Tasks::CherrypickHandler
         if plate.nil?
           barcode_number = PlateBarcode.create.barcode
           barcode = { prefix: plate_purpose.prefix, number: barcode_number }
-          plate   = plate_purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode_number}", size: size,
-                                                                sanger_barcode: barcode) do |new_plate|
-            new_plate.fluidigm_barcode = fluidigm_plate if fluidigm_plate.present?
-          end
+          plate =
+            plate_purpose.create!(
+              :do_not_create_wells,
+              name: "Cherrypicked #{barcode_number}",
+              size: size,
+              sanger_barcode: barcode
+            ) { |new_plate| new_plate.fluidigm_barcode = fluidigm_plate if fluidigm_plate.present? }
         end
 
         # Set the plate type, regardless of what it was.  This may change the standard plate.
@@ -158,9 +183,9 @@ module Tasks::CherrypickHandler
           row_params.each do |col, request_id|
             next if request_id.blank?
 
-            request, well = request_and_well[request_id.gsub('well_',
-                                                             '').to_i] || raise(ActiveRecord::RecordNotFound,
-                                                                                "Cannot find request #{request_id.inspect}")
+            request, well =
+              request_and_well[request_id.gsub('well_', '').to_i] ||
+                raise(ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}")
 
             # NOTE: Performance enhancement here
             # This collects the wells together for the plate they should be on, and modifies
@@ -187,16 +212,19 @@ module Tasks::CherrypickHandler
         plate.wells << plate_wells
       end
 
-      links = plate_and_requests.flat_map do |target_plate, requests|
-        Plate.with_requests(requests).map do |source_plate|
-          [source_plate.id, target_plate.id]
-        end
-      end.uniq
+      links =
+        plate_and_requests.flat_map do |target_plate, requests|
+          Plate.with_requests(requests).map { |source_plate| [source_plate.id, target_plate.id] }
+        end.uniq
 
-      @batch.lab_events.create(description: 'Cherrypick Layout Set', message: 'Layout set', user_id: current_user.id,
-                               descriptors: {
-                                 'robot_id' => params[:robot_id]
-                               })
+      @batch.lab_events.create(
+        description: 'Cherrypick Layout Set',
+        message: 'Layout set',
+        user_id: current_user.id,
+        descriptors: {
+          'robot_id' => params[:robot_id]
+        }
+      )
 
       AssetLink::BuilderJob.create(links)
 
@@ -204,5 +232,9 @@ module Tasks::CherrypickHandler
       used_requests.map(&:pass!)
       (@batch.requests - used_requests).each(&:recycle_from_batch!)
     end
+    # rubocop:enable Metrics/BlockLength
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 end

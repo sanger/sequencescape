@@ -16,9 +16,7 @@ class Studies::CommentsController < ApplicationController # rubocop:todo Style/D
 
   def destroy
     comment = Comment.find(params[:id])
-    if comment.present?
-      comment.destroy
-    end
+    comment.destroy if comment.present?
     @comments = @study.comments
     render partial: 'list', locals: { commentable: @study, visible: true }
   end

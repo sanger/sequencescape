@@ -22,20 +22,20 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
 
   let(:spreadsheet) { Roo::Spreadsheet.open(test_file) }
 
-  after do
-    File.delete(test_file) if File.exist?(test_file)
-  end
+  after { File.delete(test_file) if File.exist?(test_file) }
 
   context 'data worksheet' do
     let!(:worksheet) do
-      described_class.new(workbook: workbook,
-                          columns: configuration.columns.all.dup,
-                          assets: assets,
-                          ranges: configuration.ranges.dup,
-                          defaults: {
-                            user_login: user_login,
-                            template_name: template_name
-                          })
+      described_class.new(
+        workbook: workbook,
+        columns: configuration.columns.all.dup,
+        assets: assets,
+        ranges: configuration.ranges.dup,
+        defaults: {
+          user_login: user_login,
+          template_name: template_name
+        }
+      )
     end
 
     before do
@@ -47,7 +47,8 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
       expect(worksheet.axlsx_worksheet).to be_present
     end
 
-    it 'last row should be correct' do # rubocop:todo RSpec/AggregateExamples
+    it 'last row should be correct' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.last_row).to eq(spreadsheet.sheet(0).last_row)
     end
 
@@ -56,54 +57,123 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
     end
 
     it 'adds standard headings to worksheet' do
-      worksheet.columns.headings.each_with_index do |heading, i|
-        expect(spreadsheet.sheet(0).cell(2, i + 1)).to eq(heading)
-      end
+      worksheet
+        .columns
+        .headings
+        .each_with_index { |heading, i| expect(spreadsheet.sheet(0).cell(2, i + 1)).to eq(heading) }
     end
 
     it 'unlock cells for all columns which are unlocked' do
-      worksheet.columns.values.select(&:unlocked?).each do |column|
-        expect(worksheet.axlsx_worksheet[column.range.first_cell.reference].style).to eq(worksheet.styles[:unlocked].reference)
-        expect(worksheet.axlsx_worksheet[column.range.last_cell.reference].style).to eq(worksheet.styles[:unlocked].reference)
-      end
+      worksheet
+        .columns
+        .values
+        .select(&:unlocked?)
+        .each do |column|
+          expect(worksheet.axlsx_worksheet[column.range.first_cell.reference].style).to eq(
+            worksheet.styles[:unlocked].reference
+          )
+          expect(worksheet.axlsx_worksheet[column.range.last_cell.reference].style).to eq(
+            worksheet.styles[:unlocked].reference
+          )
+        end
     end
 
-    it 'adds all of the details' do # rubocop:todo RSpec/AggregateExamples
+    it 'adds all of the details' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(spreadsheet.sheet(0).last_row).to eq(assets.count + 2)
     end
 
-    it 'updates all of the columns' do # rubocop:todo RSpec/AggregateExamples
+    it 'updates all of the columns' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.columns.values).to be_all(&:updated?)
     end
 
-    it 'panes should be frozen correctly' do # rubocop:todo RSpec/AggregateExamples
+    it 'panes should be frozen correctly' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.axlsx_worksheet.sheet_view.pane.x_split).to eq(worksheet.freeze_after_column(:sanger_sample_id))
       expect(worksheet.axlsx_worksheet.sheet_view.pane.y_split).to eq(worksheet.first_row - 1)
       expect(worksheet.axlsx_worksheet.sheet_view.pane.state).to eq('frozen')
     end
 
-    it 'worksheet is not protected with password and columns and rows format can be changed' do # rubocop:todo RSpec/AggregateExamples
+    it 'worksheet is not protected with password and columns and rows format can be changed' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.axlsx_worksheet.sheet_protection.password).not_to be_present
     end
 
     it 'populates the data as expected' do
       [
-        [user_login, template_name, wells['A1'].projects.first.name, wells['A1'].studies.first.name, nil,
-         plate.human_barcode, 'A1'],
-        [user_login, template_name, wells['B1'].projects.first.name, wells['B1'].studies.first.name, nil,
-         plate.human_barcode, 'B1'],
-        [user_login, template_name, wells['C1'].projects.first.name, wells['C1'].studies.first.name, nil,
-         plate.human_barcode, 'C1'],
-        [user_login, template_name, wells['D1'].projects.first.name, wells['D1'].studies.first.name, nil,
-         plate.human_barcode, 'D1'],
-        [user_login, template_name, wells['E1'].projects.first.name, wells['E1'].studies.first.name, nil,
-         plate.human_barcode, 'E1'],
-        [user_login, template_name, wells['F1'].projects.first.name, wells['F1'].studies.first.name, nil,
-         plate.human_barcode, 'F1'],
-        [user_login, template_name, wells['G1'].projects.first.name, wells['G1'].studies.first.name, nil,
-         plate.human_barcode, 'G1'],
-        [user_login, template_name, wells['H1'].projects.first.name, wells['H1'].studies.first.name, nil,
-         plate.human_barcode, 'H1']
+        [
+          user_login,
+          template_name,
+          wells['A1'].projects.first.name,
+          wells['A1'].studies.first.name,
+          nil,
+          plate.human_barcode,
+          'A1'
+        ],
+        [
+          user_login,
+          template_name,
+          wells['B1'].projects.first.name,
+          wells['B1'].studies.first.name,
+          nil,
+          plate.human_barcode,
+          'B1'
+        ],
+        [
+          user_login,
+          template_name,
+          wells['C1'].projects.first.name,
+          wells['C1'].studies.first.name,
+          nil,
+          plate.human_barcode,
+          'C1'
+        ],
+        [
+          user_login,
+          template_name,
+          wells['D1'].projects.first.name,
+          wells['D1'].studies.first.name,
+          nil,
+          plate.human_barcode,
+          'D1'
+        ],
+        [
+          user_login,
+          template_name,
+          wells['E1'].projects.first.name,
+          wells['E1'].studies.first.name,
+          nil,
+          plate.human_barcode,
+          'E1'
+        ],
+        [
+          user_login,
+          template_name,
+          wells['F1'].projects.first.name,
+          wells['F1'].studies.first.name,
+          nil,
+          plate.human_barcode,
+          'F1'
+        ],
+        [
+          user_login,
+          template_name,
+          wells['G1'].projects.first.name,
+          wells['G1'].studies.first.name,
+          nil,
+          plate.human_barcode,
+          'G1'
+        ],
+        [
+          user_login,
+          template_name,
+          wells['H1'].projects.first.name,
+          wells['H1'].studies.first.name,
+          nil,
+          plate.human_barcode,
+          'H1'
+        ]
       ].each_with_index do |row_info, row_offset|
         row = 3 + row_offset
         row_info.each_with_index do |value, column_offset|

@@ -7,28 +7,24 @@ RSpec.describe Aker::Mapping, aker: true do
   let(:instance) { double('some model') }
   let(:mapping) { described_class.new }
   let(:my_config) do
-    %(
+    '
     sample_metadata.gender              <=   gender
     sample_metadata.donor_id            <=   donor_id
     sample_metadata.phenotype           <=   phenotype
     sample_metadata.sample_common_name  <=   common_name
     well_attribute.measured_volume      <=>  volume
     well_attribute.concentration        <=>  concentration
-    )
+    '
   end
 
-  before do
-    described_class.config = my_config
-  end
+  before { described_class.config = my_config }
 
   it_behaves_like 'a mapping between an Aker model and Sequencescape'
 
   context 'with a custom definition for #model_for_table' do
     let(:some_model) { double('model', measured_volume: 33, concentration: 0.3) }
 
-    before do
-      allow(mapping).to receive(:model_for_table).and_return(some_model)
-    end
+    before { allow(mapping).to receive(:model_for_table).and_return(some_model) }
 
     describe '#attributes' do
       it 'generates an attributes object using the config definition and translating' do
@@ -37,9 +33,9 @@ RSpec.describe Aker::Mapping, aker: true do
 
       context 'with any not defined attribute for sequencescape side' do
         let(:my_config) do
-          %(
+          '
             bubidibu         =>  blublublu
-          )
+          '
         end
 
         before do
@@ -48,9 +44,7 @@ RSpec.describe Aker::Mapping, aker: true do
         end
 
         it 'will try to get its value by calling the get method in the mapping object' do
-          mapping.instance_eval do
-            def bubidibu; end
-          end
+          mapping.instance_eval { def bubidibu; end }
           allow(mapping).to receive(:bubidibu).and_return('a value')
           expect(mapping).to receive(:bubidibu)
           expect(mapping.attributes[:blublublu]).to eq('a value')
@@ -73,9 +67,9 @@ RSpec.describe Aker::Mapping, aker: true do
 
       context 'with any not defined attribute for sequencescape side' do
         let(:my_config) do
-          %(
+          '
             bubidibu        <=  blublublu
-          )
+          '
         end
 
         before do
@@ -84,9 +78,7 @@ RSpec.describe Aker::Mapping, aker: true do
         end
 
         it 'will try to update its value by calling the set method in the material object' do
-          mapping.instance_eval do
-            def bubidibu=(value); end
-          end
+          mapping.instance_eval { def bubidibu=(value); end }
           expect(mapping).to receive(:bubidibu=).with('some value')
           mapping.update(blublublu: 'some value')
         end

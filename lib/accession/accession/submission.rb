@@ -25,7 +25,8 @@ module Accession
       end
     end
 
-    def to_xml
+    # rubocop:todo Metrics/MethodLength
+    def to_xml # rubocop:todo Metrics/AbcSize
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.SUBMISSION(
@@ -35,30 +36,24 @@ module Accession
         alias: sample.ebi_alias_datestamped,
         submission_date: date
       ) do
-        xml.CONTACTS do
-          xml.CONTACT(contact.to_h)
-        end
+        xml.CONTACTS { xml.CONTACT(contact.to_h) }
 
         xml.ACTIONS do
-          xml.ACTION do
-            xml.ADD(source: sample.filename, schema: sample.schema_type)
-          end
-          xml.ACTION do
-            xml.tag!(service.visibility)
-          end
+          xml.ACTION { xml.ADD(source: sample.filename, schema: sample.schema_type) }
+          xml.ACTION { xml.tag!(service.visibility) }
         end
       end
       xml.target!
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     def post
       @response = Accession::Request.post(self) if valid?
     end
 
     def update_accession_number
-      if accessioned?
-        sample.update_accession_number(response.accession_number)
-      end
+      sample.update_accession_number(response.accession_number) if accessioned?
     end
 
     def payload
@@ -74,11 +69,10 @@ module Accession
       attr_reader :files
 
       def initialize(accessionables)
-        @files = {}.tap do |f|
-          accessionables.each do |accessionable|
-            f[accessionable.schema_type.upcase] = accessionable.to_file
+        @files =
+          {}.tap do |f|
+            accessionables.each { |accessionable| f[accessionable.schema_type.upcase] = accessionable.to_file }
           end
-        end
       end
 
       def each(&block)
@@ -97,11 +91,7 @@ module Accession
     private
 
     def check_sample
-      unless sample.valid?
-        sample.errors.each do |key, value|
-          errors.add key, value
-        end
-      end
+      sample.errors.each { |key, value| errors.add key, value } unless sample.valid?
     end
   end
 end

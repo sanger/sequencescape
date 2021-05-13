@@ -1,10 +1,12 @@
 require 'event_factory'
+# rubocop:todo Metrics/ClassLength
 class ProjectsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :login_required
   before_action :set_variables_for_project, only: %i[show edit update destroy studies]
+
   # TODO: before_action :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
 
   def index
@@ -30,17 +32,18 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
 
     respond_to do |format|
       format.html
-      format.xml   { render xml: @project }
-      format.json  { render json: @project }
+      format.xml { render xml: @project }
+      format.json { render json: @project }
     end
   end
 
   def edit
     @project = Project.find(params[:id])
-    @users   = User.all
+    @users = User.all
   end
 
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     # TODO[5002667]: All of this code should be in a before_create/after_create callback in the Project model ...
     @project = Project.new(params[:project])
     @project.save!
@@ -55,29 +58,29 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     flash[:notice] = 'Your project has been created'
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
-      format.xml  { render xml: @project, status: :created, location: @project }
+      format.xml { render xml: @project, status: :created, location: @project }
       format.json { render json: @project, status: :created, location: @project }
     end
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Problems creating your new project'
     respond_to do |format|
-      format.html do
-        render action: 'new'
-      end
-      format.xml  { render xml: @project.errors, status: :unprocessable_entity }
+      format.html { render action: 'new' }
+      format.xml { render xml: @project.errors, status: :unprocessable_entity }
       format.json { render json: @project.errors, status: :unprocessable_entity }
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def update
     respond_to do |format|
       if @project.update(params[:project])
         flash[:notice] = 'Project was successfully updated.'
         format.html { redirect_to(@project) }
-        format.xml  { head :ok }
+        format.xml { head :ok }
       else
         format.html { render action: 'edit' }
-        format.xml  { render xml: @project.errors, status: :unprocessable_entity }
+        format.xml { render xml: @project.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -87,7 +90,7 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
 
     respond_to do |format|
       format.html { redirect_to(projects_url) }
-      format.xml  { head :ok }
+      format.xml { head :ok }
     end
   end
 
@@ -102,13 +105,13 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
   end
 
   def collaborators
-    @project    = Project.find(params[:id])
-    @all_roles  = %w[owner follower manager]
-    @roles      = Role.where(authorizable_id: @project.id, authorizable_type: 'Project')
-    @users      = User.order(:first_name)
+    @project = Project.find(params[:id])
+    @all_roles = %w[owner follower manager]
+    @roles = Role.where(authorizable_id: @project.id, authorizable_type: 'Project')
+    @users = User.order(:first_name)
   end
 
-  def follow
+  def follow # rubocop:todo Metrics/AbcSize
     @project = Project.find(params[:id])
     if current_user.follower_of?(@project)
       current_user.remove_role 'follower', @project
@@ -120,10 +123,11 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     redirect_to project_path(@project)
   end
 
-  def grant_role
-    @user    = User.find(params[:role][:user])
+  # rubocop:todo Metrics/MethodLength
+  def grant_role # rubocop:todo Metrics/AbcSize
+    @user = User.find(params[:role][:user])
     @project = Project.find(params[:id])
-    @role    = Role.find_by(name: params[:role][:authorizable_type])
+    @role = Role.find_by(name: params[:role][:authorizable_type])
 
     if request.xhr?
       if params[:role]
@@ -143,10 +147,13 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     end
   end
 
-  def remove_role
-    @user    = User.find(params[:role][:user])
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def remove_role # rubocop:todo Metrics/AbcSize
+    @user = User.find(params[:role][:user])
     @project = Project.find(params[:id])
-    @role    = Role.find_by(name: params[:role][:authorizable_type])
+    @role = Role.find_by(name: params[:role][:authorizable_type])
 
     if request.xhr?
       if params[:role]
@@ -166,9 +173,12 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   private
 
   def set_variables_for_project
     @project = Project.find(params[:id])
   end
 end
+# rubocop:enable Metrics/ClassLength

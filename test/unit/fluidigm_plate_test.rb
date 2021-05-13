@@ -4,9 +4,7 @@ require 'test_helper'
 
 class FluidigmPlateTest < ActiveSupport::TestCase
   context 'A 96:96 Fluidigm Plate' do
-    setup do
-      @plate = create(:fluidigm_96_purpose).create!(barcode: generate(:barcode_number))
-    end
+    setup { @plate = create(:fluidigm_96_purpose).create!(barcode: generate(:barcode_number)) }
 
     should 'have 96 wells' do
       assert_equal 96, @plate.wells.count
@@ -14,9 +12,7 @@ class FluidigmPlateTest < ActiveSupport::TestCase
     end
 
     should 'have wells named sequentially in rows with prefix S' do
-      @plate.wells.in_row_major_order.each_with_index do |w, i|
-        assert 'S%02d' % i, w.map_description
-      end
+      @plate.wells.in_row_major_order.each_with_index { |w, i| assert 'S%02d' % i, w.map_description }
     end
 
     should 'be 6*16' do
@@ -25,9 +21,7 @@ class FluidigmPlateTest < ActiveSupport::TestCase
   end
 
   context 'A 192:24 Fluidigm Plate' do
-    setup do
-      @plate = create(:fluidigm_192_purpose).create!(barcode: generate(:barcode_number))
-    end
+    setup { @plate = create(:fluidigm_192_purpose).create!(barcode: generate(:barcode_number)) }
 
     should 'have 192 wells' do
       assert_equal 192, @plate.wells.count
@@ -35,9 +29,7 @@ class FluidigmPlateTest < ActiveSupport::TestCase
     end
 
     should 'have wells named sequentially in rows with prefix S' do
-      @plate.wells.in_row_major_order.each_with_index do |w, i|
-        assert 'S%03d' % i, w.map_description
-      end
+      @plate.wells.in_row_major_order.each_with_index { |w, i| assert 'S%03d' % i, w.map_description }
     end
 
     should 'be 12*16' do

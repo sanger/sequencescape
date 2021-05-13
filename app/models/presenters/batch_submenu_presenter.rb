@@ -35,9 +35,7 @@ module Presenters
         # If not, it will be a Hash with the new content (controller, action, ...)
         action_params = { action: action_params } if action_params.is_a?(Symbol)
         action_config = @defaults.dup
-        action_params.each_pair do |key, value|
-          action_config[key] = value
-        end
+        action_params.each_pair { |key, value| action_config[key] = value }
         action_params = url_for(action_config)
       end
       @options += [{ label: text, url: action_params }]
@@ -89,11 +87,15 @@ module Presenters
       [!sequencing?, can_create_stock_assets?, !multiplexed?].all?
     end
 
+    # rubocop:todo Metrics/PerceivedComplexity
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
     def load_pipeline_options # rubocop:todo Metrics/CyclomaticComplexity
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
 
       # Printing of labels is enabled for anybody
       add_submenu_option 'Print labels', :print_labels # The test for this was ridiculously slow,
+
       # and would be always true anyway. I've removed the conditional to give a quick performance boost, with no
       # changes in behaviour. This whole section needs refactoring anyway.
       add_submenu_option 'Print pool label', :print_multiplex_labels if multiplexed?
@@ -101,15 +103,17 @@ module Presenters
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
       add_submenu_option 'Print stock labels', :print_stock_labels if stock_labels?
 
-      add_submenu_option 'Create stock tubes', new_batch_stock_asset_path(@batch) if can_create_stock_assets? && can?(:create_stock_asset)
+      if can_create_stock_assets? && can?(:create_stock_asset)
+        add_submenu_option 'Create stock tubes', new_batch_stock_asset_path(@batch)
+      end
 
-      add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet if pacbio_sample_pipeline? && can?(:sample_prep_worksheet)
+      if pacbio_sample_pipeline? && can?(:sample_prep_worksheet)
+        add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet
+      end
 
       if can? :print
         if @pipeline.prints_a_worksheet_per_task? && !pacbio_sample_pipeline?
-          @tasks.each do |task|
-            add_submenu_option "Print worksheet for #{task.name}", action: :print, task_id: task.id
-          end
+          @tasks.each { |task| add_submenu_option "Print worksheet for #{task.name}", action: :print, task_id: task.id }
         else
           add_submenu_option 'Print worksheet', :print
         end
@@ -117,5 +121,8 @@ module Presenters
 
       add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
   end
 end

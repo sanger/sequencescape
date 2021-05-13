@@ -14,7 +14,8 @@ class StudyReportsController < ApplicationController # rubocop:todo Style/Docume
     create
   end
 
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     study = Study.find_by(id: params[:study_report][:study])
     study_report = StudyReport.create!(study: study, user: @current_user)
 
@@ -24,21 +25,26 @@ class StudyReportsController < ApplicationController # rubocop:todo Style/Docume
       if study_report
         flash[:notice] = 'Report being generated'
         format.html { redirect_to(study_reports_path) }
-        format.xml  { render xml: study_report, status: :created, location: study_report }
+        format.xml { render xml: study_report, status: :created, location: study_report }
         format.json { render json: study_report, status: :created, location: study_report }
       else
         flash[:error] = 'Error: report not being generated'
         format.html { redirect_to(study_reports_path) }
-        format.xml  { render xml: flash[:error], status: :unprocessable_entity }
+        format.xml { render xml: flash[:error], status: :unprocessable_entity }
         format.json { render json: flash[:error], status: :unprocessable_entity }
       end
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def show
     study_report = StudyReport.find(params[:id])
-    send_data(study_report.report.read, type: 'text/plain',
-                                        filename: "#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
-                                        disposition: 'attachment')
+    send_data(
+      study_report.report.read,
+      type: 'text/plain',
+      filename: "#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
+      disposition: 'attachment'
+    )
   end
 end

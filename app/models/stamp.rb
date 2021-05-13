@@ -34,8 +34,6 @@ class Stamp < ApplicationRecord # rubocop:todo Style/Documentation
   private
 
   def stamp!
-    ActiveRecord::Base.transaction do
-      qcables.each(&:do_stamp!)
-    end
+    ActiveRecord::Base.transaction { qcables.each(&:do_stamp!) }
   end
 end

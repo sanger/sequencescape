@@ -1,5 +1,6 @@
 module PlatesHelper # rubocop:todo Style/Documentation
-  class AliquotError < StandardError; end
+  class AliquotError < StandardError
+  end
 
   def padded_wells_by_row(plate, overide = nil)
     wells = wells_hash(plate)
@@ -12,17 +13,13 @@ module PlatesHelper # rubocop:todo Style/Documentation
   def valid_options_for_params(val)
     return {} unless val.valid_options
 
-    val.valid_options.merge(
-      valid_dilution_factors: val.valid_options[:valid_dilution_factors].map(&:to_s)
-    )
+    val.valid_options.merge(valid_dilution_factors: val.valid_options[:valid_dilution_factors].map(&:to_s))
   end
 
   def plate_creator_parameters_json(plate_creators)
-    return({}.to_json) unless plate_creators
+    return {}.to_json unless plate_creators
 
-    plate_creators.each_with_object({}) do |val, memo|
-      memo[val.name] = valid_options_for_params(val)
-    end.to_json
+    plate_creators.each_with_object({}) { |val, memo| memo[val.name] = valid_options_for_params(val) }.to_json
   end
 
   private
@@ -33,11 +30,7 @@ module PlatesHelper # rubocop:todo Style/Documentation
     raise AliquotError if well.samples.length > 1
 
     sample = well.samples.first
-    [
-      sample.name,
-      '',
-      sample.sample_metadata.sample_type || 'Unknown'
-    ]
+    [sample.name, '', sample.sample_metadata.sample_type || 'Unknown']
   end
 
   def padded_well_name_with_index(plate)
@@ -53,13 +46,11 @@ module PlatesHelper # rubocop:todo Style/Documentation
   def wells_hash(plate)
     Hash.new { |h, i| h[i] = ['[ Empty ]', '', 'NTC'] }.tap do |wells|
       wells[:overide] = ['', '', 'NTC']
-      plate.wells.each do |well|
-        wells[well.map.row_order] = well_properties(well)
-      end
+      plate.wells.each { |well| wells[well.map.row_order] = well_properties(well) }
     end
   end
 
   def self.event_family_for_pick(plate_purpose_name)
-    "picked_well_to_#{plate_purpose_name.tr(' ', "_").downcase}_plate"
+    "picked_well_to_#{plate_purpose_name.tr(' ', '_').downcase}_plate"
   end
 end

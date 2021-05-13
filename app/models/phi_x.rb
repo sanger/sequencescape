@@ -69,18 +69,14 @@ module PhiX
   # creates it if it doesn't exist
   # @return [Tube::Purpose] The tube purpose
   def self.stock_purpose
-    Tube::Purpose.create_with(
-      target_type: 'LibraryTube'
-    ).find_or_create_by(name: 'PhiX Stock')
+    Tube::Purpose.create_with(target_type: 'LibraryTube').find_or_create_by(name: 'PhiX Stock')
   end
 
   # Returns the purpose used to generate new PhiX SpikedBuffers
   # creates it if it doesn't exist
   # @return [Tube::Purpose] The tube purpose
   def self.spiked_buffer_purpose
-    Tube::Purpose.create_with(
-      target_type: 'SpikedBuffer'
-    ).find_or_create_by(name: 'PhiX Spiked Buffer')
+    Tube::Purpose.create_with(target_type: 'SpikedBuffer').find_or_create_by(name: 'PhiX Spiked Buffer')
   end
 
   # Returns the sample the represents PhiX, creates it if it doesn't exist
@@ -118,8 +114,6 @@ module PhiX
     oligo = tag_options.dig(tag_option, tag_type)
     return nil if oligo.nil?
 
-    tag_group.tags
-             .create_with(map_id: configuration[:tag_map_id])
-             .find_or_create_by!(oligo: oligo)
+    tag_group.tags.create_with(map_id: configuration[:tag_map_id]).find_or_create_by!(oligo: oligo)
   end
 end

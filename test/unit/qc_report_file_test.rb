@@ -4,7 +4,7 @@ require 'test_helper'
 require 'timecop'
 require 'csv'
 
-class QcReport::FileTest < ActiveSupport::TestCase
+class QcReport::FileTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   include ActionDispatch::TestProcess
 
   context 'QcReport File' do
@@ -19,9 +19,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         assert_equal ['190_tube_sample_info.xls was not a csv file'], @qcr_file.errors
       end
 
-      teardown do
-        @file.close unless @file.nil?
-      end
+      teardown { @file.close unless @file.nil? }
     end
 
     context 'given a non-compatible csv file' do
@@ -32,12 +30,13 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should 'fail processing' do
         assert_equal false, @qcr_file.process, 'Non-compatible file processed unexpectedly'
-        assert_equal ['fluidigm.csv does not appear to be a qc report file. Make sure the Sequencescape QC Report line has not been removed.'], @qcr_file.errors
+        assert_equal [
+                       'fluidigm.csv does not appear to be a qc report file. Make sure the Sequencescape QC Report line has not been removed.'
+                     ],
+                     @qcr_file.errors
       end
 
-      teardown do
-        @file.close unless @file.nil?
-      end
+      teardown { @file.close unless @file.nil? }
     end
 
     context 'given a file with no report' do
@@ -48,12 +47,13 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should 'fail processing' do
         assert_equal false, @qcr_file.process, 'File with no report processed unexpectedly'
-        assert_equal ["Couldn't find the report wtccc_demo_product_20150101000000. Check that the report identifier has not been modified."], @qcr_file.errors
+        assert_equal [
+                       "Couldn't find the report wtccc_demo_product_20150101000000. Check that the report identifier has not been modified."
+                     ],
+                     @qcr_file.errors
       end
 
-      teardown do
-        @file.close unless @file.nil?
-      end
+      teardown { @file.close unless @file.nil? }
     end
 
     context 'given a file with a report' do
@@ -62,10 +62,12 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @criteria = create :product_criteria, product: @product, version: 1
         @study = create :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
-          @report = create :qc_report, study: @study,
-                                       exclude_existing: false,
-                                       product_criteria: @criteria,
-                                       state: 'awaiting_proceed'
+          @report =
+            create :qc_report,
+                   study: @study,
+                   exclude_existing: false,
+                   product_criteria: @criteria,
+                   state: 'awaiting_proceed'
         end
         @asset_ids = []
         2.times do |i|
@@ -93,9 +95,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         assert_equal %w[passed failed], @report.qc_metrics.order('asset_id ASC').map(&:qc_decision)
       end
 
-      teardown do
-        @file.close unless @file.nil?
-      end
+      teardown { @file.close unless @file.nil? }
     end
 
     context 'On overriding' do
@@ -104,10 +104,12 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @criteria = FactoryBot.build :product_criteria, product: @product, version: 1
         @study = FactoryBot.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
-          @report = create :qc_report, study: @study,
-                                       exclude_existing: false,
-                                       product_criteria: @criteria,
-                                       state: 'awaiting_proceed'
+          @report =
+            create :qc_report,
+                   study: @study,
+                   exclude_existing: false,
+                   product_criteria: @criteria,
+                   state: 'awaiting_proceed'
         end
         @asset_ids = []
         2.times do |i|
@@ -124,9 +126,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         assert_equal %w[passed manually_passed], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
       end
 
-      teardown do
-        @file.close unless @file.nil?
-      end
+      teardown { @file.close unless @file.nil? }
     end
 
     context 'With missing assets' do
@@ -135,15 +135,15 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @criteria = FactoryBot.build :product_criteria, product: @product, version: 1
         @study = FactoryBot.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
-          @report = create :qc_report, study: @study,
-                                       exclude_existing: false,
-                                       product_criteria: @criteria,
-                                       state: 'awaiting_proceed'
+          @report =
+            create :qc_report,
+                   study: @study,
+                   exclude_existing: false,
+                   product_criteria: @criteria,
+                   state: 'awaiting_proceed'
         end
         @asset_ids = []
-        2.times do |i|
-          create :qc_metric, qc_report: @report, qc_decision: %w[passed failed][i]
-        end
+        2.times { |i| create :qc_metric, qc_report: @report, qc_decision: %w[passed failed][i] }
         @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv", 'text/csv')
 
         @qcr_file = QcReport::File.new(@file, true, 'qc_report.csv', 'text/csv')
@@ -154,9 +154,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         assert_equal ['Could not find assets 1 and 2'], @qcr_file.errors
       end
 
-      teardown do
-        @file.close unless @file.nil?
-      end
+      teardown { @file.close unless @file.nil? }
     end
   end
 end

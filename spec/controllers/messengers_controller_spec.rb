@@ -8,16 +8,15 @@ RSpec.describe MessengersController do
 
   it_behaves_like 'it requires login', 'show', resource: :messenger
 
-  setup do
-    session[:user] = user.id
-  end
+  setup { session[:user] = user.id }
 
   describe '#show' do
     setup { get :show, params: { id: messenger.id } }
 
     it { is_expected.to respond_with :success }
 
-    it 'returns the messenger payload' do # rubocop:todo RSpec/AggregateExamples
+    it 'returns the messenger payload' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(response.body).to eq(messenger.to_json)
     end
   end

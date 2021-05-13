@@ -20,11 +20,11 @@ class Tag < ApplicationRecord
   belongs_to :tag_group
   has_many :aliquots
   has_many :assets, through: :aliquots, source: :receptacle
-  has_many :requests, ->() { distinct }, through: :assets
+  has_many :requests, -> { distinct }, through: :assets
 
   broadcast_with_warren
 
-  scope :sorted, ->() { order('map_id ASC') }
+  scope :sorted, -> { order('map_id ASC') }
 
   def name
     "Tag #{map_id}"
@@ -36,23 +36,23 @@ class Tag < ApplicationRecord
   end
 
   # Allows the application of multiple tags to an aliquot
-  def multitag!(asset)
+  def multitag!(asset) # rubocop:todo Metrics/MethodLength
     raise StandardError, 'Cannot tag an empty asset' if asset.aliquots.empty?
 
-    asset.aliquots.group_by(&:sample_id).each do |_sample_id, aliquots|
-      if aliquots.first.no_tag1?
-        aliquots.first.update(tag: self)
-      else
-        asset.aliquots << aliquots.first.dup(tag: self, receptacle: asset)
+    asset
+      .aliquots
+      .group_by(&:sample_id)
+      .each do |_sample_id, aliquots|
+        if aliquots.first.no_tag1?
+          aliquots.first.update(tag: self)
+        else
+          asset.aliquots << aliquots.first.dup(tag: self, receptacle: asset)
+        end
       end
-    end
   end
 
   # Map id is converted to a string here for consistency with elsewhere in the api.
   def summary
-    {
-      tag_group: tag_group.name,
-      tag_index: map_id.to_s
-    }
+    { tag_group: tag_group.name, tag_index: map_id.to_s }
   end
 end

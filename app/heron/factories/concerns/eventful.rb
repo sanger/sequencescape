@@ -8,9 +8,7 @@ module Heron
           return unless @params[:events]
           return if errors.count.positive?
 
-          params_for_event.map do |event_params|
-            Heron::Factories::Event.new(event_params, seed)
-          end
+          params_for_event.map { |event_params| Heron::Factories::Event.new(event_params, seed) }
         end
 
         def params_for_event
@@ -20,15 +18,11 @@ module Heron
         end
 
         def add_all_errors_from_events(events)
-          events.each do |event|
-            add_all_errors_from_event(event)
-          end
+          events.each { |event| add_all_errors_from_event(event) }
         end
 
         def add_all_errors_from_event(event)
-          event.errors.each do |key, value|
-            errors.add(key, value)
-          end
+          event.errors.each { |key, value| errors.add(key, value) }
         end
 
         def rollback_for_events(events)

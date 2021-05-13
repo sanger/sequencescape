@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class Core::Io::JsonOutputTest < ActiveSupport::TestCase
+class Core::Io::JsonOutputTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   module BasicMethods
     def object_json(_object, options)
       options[:stream]
@@ -19,27 +19,17 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           'encoded'
         end
       end
-    end.singleton_class.tap do |encoder|
-      encoder.generate_object_to_json_mapping(mappings)
-    end
+    end.singleton_class.tap { |encoder| encoder.generate_object_to_json_mapping(mappings) }
   end
   private :encoder_for
 
   def object_to_encode(attributes)
-    OpenStruct.new(attributes.reverse_merge(
-                     created_at: 'created_at_now',
-                     updated_at: 'updated_at_now'
-                   ))
+    OpenStruct.new(attributes.reverse_merge(created_at: 'created_at_now', updated_at: 'updated_at_now'))
   end
   private :object_to_encode
 
   def json_results(attributes)
-    {
-      'encoded' => attributes.reverse_merge(
-        'created_at' => 'created_at_now',
-        'updated_at' => 'updated_at_now'
-      )
-    }
+    { 'encoded' => attributes.reverse_merge('created_at' => 'created_at_now', 'updated_at' => 'updated_at_now') }
   end
   private :json_results
 
@@ -62,17 +52,9 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
       context 'simple JSON' do
         context 'value cases' do
           teardown do
-            encoder_for(
-              'attribute' => 'json'
-            ).object_json(
-              object_to_encode(attribute: @value),
-              @options
-            )
+            encoder_for('attribute' => 'json').object_json(object_to_encode(attribute: @value), @options)
 
-            assert_equal(
-              json_results('json' => @expected || @value),
-              decode(@stream)
-            )
+            assert_equal(json_results('json' => @expected || @value), decode(@stream))
           end
 
           should 'handle nil' do
@@ -107,41 +89,21 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
         end
 
         should 'output multiple values' do
-          encoder_for(
-            'attribute1' => 'json1',
-            'attribute2' => 'json2'
-          ).object_json(
-            object_to_encode(
-              attribute1: 'value1',
-              attribute2: 'value2'
-            ),
+          encoder_for('attribute1' => 'json1', 'attribute2' => 'json2').object_json(
+            object_to_encode(attribute1: 'value1', attribute2: 'value2'),
             @options
           )
 
-          assert_equal(
-            json_results(
-              'json1' => 'value1',
-              'json2' => 'value2'
-            ),
-            decode(@stream)
-          )
+          assert_equal(json_results('json1' => 'value1', 'json2' => 'value2'), decode(@stream))
         end
       end
 
       context 'nested JSON attribute' do
         context 'value cases' do
           teardown do
-            encoder_for(
-              'attribute' => 'nested.json'
-            ).object_json(
-              object_to_encode(attribute: @value),
-              @options
-            )
+            encoder_for('attribute' => 'nested.json').object_json(object_to_encode(attribute: @value), @options)
 
-            assert_equal(
-              json_results('nested' => { 'json' => @value }),
-              decode(@stream)
-            )
+            assert_equal(json_results('nested' => { 'json' => @value }), decode(@stream))
           end
 
           should 'handle nil' do
@@ -154,26 +116,12 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
         end
 
         should 'output multiple values' do
-          encoder_for(
-            'attribute1' => 'nested.json1',
-            'attribute2' => 'nested.json2'
-          ).object_json(
-            object_to_encode(
-              attribute1: 'value1',
-              attribute2: 'value2'
-            ),
+          encoder_for('attribute1' => 'nested.json1', 'attribute2' => 'nested.json2').object_json(
+            object_to_encode(attribute1: 'value1', attribute2: 'value2'),
             @options
           )
 
-          assert_equal(
-            json_results(
-              'nested' => {
-                'json1' => 'value1',
-                'json2' => 'value2'
-              }
-            ),
-            decode(@stream)
-          )
+          assert_equal(json_results('nested' => { 'json1' => 'value1', 'json2' => 'value2' }), decode(@stream))
         end
       end
     end
@@ -181,50 +129,27 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
     context 'nested attribute' do
       context 'when intermediate is absent' do
         should 'be nil if JSON attribute simple' do
-          encoder_for(
-            'level1.attribute' => 'json'
-          ).object_json(
-            object_to_encode(level1: nil),
-            @options
-          )
+          encoder_for('level1.attribute' => 'json').object_json(object_to_encode(level1: nil), @options)
 
-          assert_equal(
-            json_results({}),
-            decode(@stream)
-          )
+          assert_equal(json_results({}), decode(@stream))
         end
 
         should 'be absent if JSON attribute is complicated' do
-          encoder_for(
-            'level1.attribute' => 'nested.json'
-          ).object_json(
-            object_to_encode(level1: nil),
-            @options
-          )
+          encoder_for('level1.attribute' => 'nested.json').object_json(object_to_encode(level1: nil), @options)
 
-          assert_equal(
-            json_results('nested' => {}),
-            decode(@stream)
-          )
+          assert_equal(json_results('nested' => {}), decode(@stream))
         end
       end
 
       context 'when intermediate present' do
         context 'simple values' do
           teardown do
-            encoder_for(
-              'level1.attribute' => 'json'
-            ).object_json(
+            encoder_for('level1.attribute' => 'json').object_json(
               object_to_encode(level1: OpenStruct.new(attribute: @value)),
               @options
             )
 
-            assert_equal(
-              json_results(
-                'json' => @value
-              ),
-              decode(@stream)
-            )
+            assert_equal(json_results('json' => @value), decode(@stream))
           end
 
           should 'handle nil' do
@@ -239,10 +164,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
 
       context 'multiple values' do
         should 'output multiple values' do
-          encoder_for(
-            'level1.attribute1' => 'nested.json1',
-            'level2.attribute2' => 'nested.json2'
-          ).object_json(
+          encoder_for('level1.attribute1' => 'nested.json1', 'level2.attribute2' => 'nested.json2').object_json(
             object_to_encode(
               level1: OpenStruct.new(attribute1: 'value1'),
               level2: OpenStruct.new(attribute2: 'value2')
@@ -250,22 +172,11 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             @options
           )
 
-          assert_equal(
-            json_results(
-              'nested' => {
-                'json1' => 'value1',
-                'json2' => 'value2'
-              }
-            ),
-            decode(@stream)
-          )
+          assert_equal(json_results('nested' => { 'json1' => 'value1', 'json2' => 'value2' }), decode(@stream))
         end
 
         should 'output multiple ungrouped values' do
-          encoder_for(
-            'level1.attribute1' => 'nested1.json1',
-            'level2.attribute2' => 'nested2.json2'
-          ).object_json(
+          encoder_for('level1.attribute1' => 'nested1.json1', 'level2.attribute2' => 'nested2.json2').object_json(
             object_to_encode(
               level1: OpenStruct.new(attribute1: 'value1'),
               level2: OpenStruct.new(attribute2: 'value2')
@@ -274,10 +185,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           )
 
           assert_equal(
-            json_results(
-              'nested1' => { 'json1' => 'value1' },
-              'nested2' => { 'json2' => 'value2' }
-            ),
+            json_results('nested1' => { 'json1' => 'value1' }, 'nested2' => { 'json2' => 'value2' }),
             decode(@stream)
           )
         end

@@ -3,7 +3,7 @@ module Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Documen
   MissingEndpoint = Class.new(EndpointError)
 
   def endpoint_for(model, root = model)
-    raise EndpointError, "Incorrect hierarchy for #{root.inspect}"     if model.nil?
+    raise EndpointError, "Incorrect hierarchy for #{root.inspect}" if model.nil?
     raise MissingEndpoint, "No endpoint for the model #{root.inspect}" if model == ActiveRecord::Base
 
     endpoint_name = ['Endpoints', model.name.pluralize].join('::')
@@ -19,8 +19,8 @@ module Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Documen
   private :endpoint_for
 
   def cache_endpoint_as(endpoint_name, endpoint)
-    root, *rest   = endpoint_name.split('::')
-    leaf          = rest.pop
+    root, *rest = endpoint_name.split('::')
+    leaf = rest.pop
     module_parent = rest.inject(root.constantize, &method(:constant_lookup))
     constant_lookup(module_parent, leaf, endpoint)
   end

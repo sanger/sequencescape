@@ -21,11 +21,7 @@ module Event::PlateEvents # rubocop:todo Style/Documentation
   end
 
   def event_date(key)
-    if events.loaded?
-      event_from_object(key)
-    else
-      event_from_database(key)
-    end
+    events.loaded? ? event_from_object(key) : event_from_database(key)
   end
 
   def event_from_database(key)
