@@ -247,5 +247,19 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode " 1234567890NBC\na"
   end
 
+  describe Barcode::FormatHandlers::PlymouthV1 do
+    it_has_a_valid_barcode 'PLY-chp-123456', prefix: 'PLY', number: 123456, suffix: nil
+    it_has_a_valid_barcode 'PLY-chp-12345678', prefix: 'PLY', number: 12345678, suffix: nil
+    it_has_an_invalid_barcode 'PLY-123456'
+    it_has_an_invalid_barcode 'PLY-chp-_123456'
+    it_has_an_invalid_barcode 'INVALID'
+    it_has_an_invalid_barcode '12PLY-chp-123456'
+    it_has_an_invalid_barcode '123456789PLY-chp-'
+    it_has_an_invalid_barcode 'RNA_1234'
+    it_has_an_invalid_barcode ' PLY-chp-_123456'
+    it_has_an_invalid_barcode 'PLY-chp-_123456  '
+    it_has_an_invalid_barcode " 1234567890NBC\na"
+  end
+
   # rubocop:enable RSpec/EmptyExampleGroup
 end
