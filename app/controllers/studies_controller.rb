@@ -152,7 +152,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       current_user.remove_role 'follower', @study
       flash[:notice] = "You have stopped following the '#{@study.name}' study."
     else
-      current_user.follower_of?(@study)
+      current_user.grant_follower(@study)
       flash[:notice] = "You are now following the '#{@study.name}' study."
     end
     redirect_to study_information_path(@study)
