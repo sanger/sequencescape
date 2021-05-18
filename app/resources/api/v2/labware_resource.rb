@@ -14,6 +14,7 @@ module Api
       has_many :comments, readonly: true
       has_many :direct_submissions, readonly: true
       has_many :state_changes, readonly: true
+      has_many :ancestors, readonly: true, polymorphic: true
 
       filter :purpose_name, apply: (lambda do |records, value, _options|
         records.joins(:purpose).where(plate_purposes: { name: value })
