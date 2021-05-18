@@ -19,7 +19,9 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       # Establish a cache of rubocop cache to improve performance
       # ${{ env.RUBOCOP_CACHE_ROOT }}
-      - name: Cache gems and cops
+      - name: Set up yarn
+        run: yarn
+      - name: Cache cops
         uses: actions/cache@v2
         with:
           path: |
@@ -32,6 +34,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-rubocop-
             ${{ runner.os }}-
+      # Run prettier prior to the cops
+      - name: Run prettier
+        run: yarn prettier --check
       # Actually run our cops with flags to improve the details of lint errors
       # and parallel to try and improve speed
       - name: Run rubocop
