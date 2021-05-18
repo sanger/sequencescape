@@ -2,13 +2,13 @@
 
 # The removal of barcode and the prefix association necessitates
 # updating the views used by reports.
-class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
+class UpdateBarcodesInViews < ActiveRecord::Migration[5.1] # rubocop:todo Metrics/ClassLength
   def self.up
     # Pulled these from production Sequencescape itself, just in case
     # some modifications have been made without our knowledge.
     ViewsSchema.update_view(
       'view_wells',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `w`.`id` AS `internal_id`,
            `w`.`name` AS `name`,
@@ -40,11 +40,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `uuids` `su` on(((`su`.`resource_id` = `al`.`sample_id`) and (`su`.`resource_type` = 'Sample'))))
             left join `uuids` `pu` on(((`pu`.`resource_id` = `p`.`id`) and (`pu`.`resource_type` = 'Asset'))))
             left join `samples` `s` on((`s`.`id` = `al`.`sample_id`)))
-            left join `well_attributes` `wa` on((`wa`.`well_id` = `w`.`id`))) where (`w`.`sti_type` = 'Well')}
+            left join `well_attributes` `wa` on((`wa`.`well_id` = `w`.`id`))) where (`w`.`sti_type` = 'Well')"
     )
     ViewsSchema.update_view(
       'view_library_tubes',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `lt`.`id` AS `internal_id`,
            `lt`.`name` AS `name`,
@@ -81,11 +81,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `requests` `r` on((`lt`.`id` = `r`.`target_asset_id`)))
             left join `uuids` `ru` on(((`ru`.`resource_id` = `r`.`id`) and (`ru`.`resource_type` = 'Request'))))
             left join `samples` `s` on((`s`.`id` = `al`.`sample_id`)))
-            left join `events` `e` on(((`e`.`eventful_id` = `lt`.`id`) and (`e`.`eventful_type` = 'Asset') and (`e`.`type` = 'Event::ScannedIntoLabEvent')))) where (`lt`.`sti_type` = 'LibraryTube')}
+            left join `events` `e` on(((`e`.`eventful_id` = `lt`.`id`) and (`e`.`eventful_type` = 'Asset') and (`e`.`type` = 'Event::ScannedIntoLabEvent')))) where (`lt`.`sti_type` = 'LibraryTube')"
     )
     ViewsSchema.update_view(
       'view_requests_new',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `r`.`id` AS `internal_id`,
            `rt`.`name` AS `request_type`,
@@ -138,11 +138,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `assets` `ta` on((`r`.`target_asset_id` = `ta`.`id`)))
             left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset'))))
             left join `barcodes` `tabc` on (`ta`.`id` = `tabc`.`asset_id` AND `tabc`.`format` = 1))
-    }
+    "
     )
     ViewsSchema.update_view(
       'view_sample_tubes',
-      %{SELECT
+      "SELECT
           `u`.`external_id` AS `uuid`,
          `st`.`id` AS `internal_id`,
          `st`.`name` AS `name`,
@@ -163,11 +163,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
           left join `uuids` `su` on(((`su`.`resource_id` = `al`.`sample_id`) and (`su`.`resource_type` = 'Sample'))))
           left join `samples` `s` on((`s`.`id` = `al`.`sample_id`)))
           left join `events` `e` on(((`e`.`eventful_id` = `st`.`id`) and (`e`.`eventful_type` = 'Asset') and (`e`.`type` = 'Event::ScannedIntoLabEvent')))) where (`st`.`sti_type` = 'SampleTube')
-    }
+    "
     )
     ViewsSchema.update_view(
       'view_plates',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `p`.`id` AS `internal_id`,
            `p`.`name` AS `name`,
@@ -185,11 +185,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `plate_purposes` `pp` on((`pp`.`id` = `p`.`plate_purpose_id`)))
             left join `uuids` `u1` on(((`u1`.`resource_id` = `pp`.`id`) and (`u1`.`resource_type` = 'PlatePurpose'))))
             left join `plate_metadata` `pm` on((`p`.`id` = `pm`.`plate_id`))) where (`p`.`sti_type` = 'Plate')
-    }
+    "
     )
     ViewsSchema.update_view(
       'view_requests',
-      %{SELECT
+      "SELECT
             `u`.`external_id` AS `uuid`,
             `r`.`id` AS `internal_id`,
             `rt`.`name` AS `request_type`,
@@ -255,7 +255,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset'))))
             left join `barcodes` `tabc` on (`ta`.`id` = `tabc`.`asset_id` AND `tabc`.`format` = 1))
             left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))
-    }
+    "
     )
   end
 
@@ -264,7 +264,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
     # some modifications have been made without our knowledge.
     ViewsSchema.update_view(
       'view_wells',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `w`.`id` AS `internal_id`,
            `w`.`name` AS `name`,
@@ -296,11 +296,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `uuids` `su` on(((`su`.`resource_id` = `al`.`sample_id`) and (`su`.`resource_type` = 'Sample'))))
             left join `uuids` `pu` on(((`pu`.`resource_id` = `p`.`id`) and (`pu`.`resource_type` = 'Asset'))))
             left join `samples` `s` on((`s`.`id` = `al`.`sample_id`)))
-            left join `well_attributes` `wa` on((`wa`.`well_id` = `w`.`id`))) where (`w`.`sti_type` = 'Well')}
+            left join `well_attributes` `wa` on((`wa`.`well_id` = `w`.`id`))) where (`w`.`sti_type` = 'Well')"
     )
     ViewsSchema.update_view(
       'view_library_tubes',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `lt`.`id` AS `internal_id`,
            `lt`.`name` AS `name`,
@@ -337,11 +337,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `requests` `r` on((`lt`.`id` = `r`.`target_asset_id`)))
             left join `uuids` `ru` on(((`ru`.`resource_id` = `r`.`id`) and (`ru`.`resource_type` = 'Request'))))
             left join `samples` `s` on((`s`.`id` = `al`.`sample_id`)))
-            left join `events` `e` on(((`e`.`eventful_id` = `lt`.`id`) and (`e`.`eventful_type` = 'Asset') and (`e`.`type` = 'Event::ScannedIntoLabEvent')))) where (`lt`.`sti_type` = 'LibraryTube')}
+            left join `events` `e` on(((`e`.`eventful_id` = `lt`.`id`) and (`e`.`eventful_type` = 'Asset') and (`e`.`type` = 'Event::ScannedIntoLabEvent')))) where (`lt`.`sti_type` = 'LibraryTube')"
     )
     ViewsSchema.update_view(
       'view_requests_new',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `r`.`id` AS `internal_id`,
            `rt`.`name` AS `request_type`,
@@ -394,11 +394,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `assets` `ta` on((`r`.`target_asset_id` = `ta`.`id`)))
             left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset'))))
             left join `barcode_prefixes` `tbp` on((`ta`.`barcode_prefix_id` = `tbp`.`id`)))
-    }
+    "
     )
     ViewsSchema.update_view(
       'view_sample_tubes',
-      %{SELECT
+      "SELECT
           `u`.`external_id` AS `uuid`,
          `st`.`id` AS `internal_id`,
          `st`.`name` AS `name`,
@@ -419,11 +419,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
           left join `uuids` `su` on(((`su`.`resource_id` = `al`.`sample_id`) and (`su`.`resource_type` = 'Sample'))))
           left join `samples` `s` on((`s`.`id` = `al`.`sample_id`)))
           left join `events` `e` on(((`e`.`eventful_id` = `st`.`id`) and (`e`.`eventful_type` = 'Asset') and (`e`.`type` = 'Event::ScannedIntoLabEvent')))) where (`st`.`sti_type` = 'SampleTube')
-    }
+    "
     )
     ViewsSchema.update_view(
       'view_plates',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `p`.`id` AS `internal_id`,
            `p`.`name` AS `name`,
@@ -441,11 +441,11 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `plate_purposes` `pp` on((`pp`.`id` = `p`.`plate_purpose_id`)))
             left join `uuids` `u1` on(((`u1`.`resource_id` = `pp`.`id`) and (`u1`.`resource_type` = 'PlatePurpose'))))
             left join `plate_metadata` `pm` on((`p`.`id` = `pm`.`plate_id`))) where (`p`.`sti_type` = 'Plate')
-    }
+    "
     )
     ViewsSchema.update_view(
       'view_requests',
-      %{SELECT
+      "SELECT
             `u`.`external_id` AS `uuid`,
             `r`.`id` AS `internal_id`,
             `rt`.`name` AS `request_type`,
@@ -511,7 +511,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
             left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset'))))
             left join `barcode_prefixes` `tbp` on((`ta`.`barcode_prefix_id` = `tbp`.`id`)))
             left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))
-    }
+    "
     )
   end
 end

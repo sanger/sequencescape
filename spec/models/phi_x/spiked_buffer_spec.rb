@@ -71,40 +71,44 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
 
       it { is_expected.to be true }
 
-      it 'generates tubes according to the number supplied' do # rubocop:todo RSpec/AggregateExamples
+      it 'generates tubes according to the number supplied' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to have(2).items
       end
 
-      it 'generates PhiX SpikedBuffer tubes' do # rubocop:todo RSpec/AggregateExamples
+      it 'generates PhiX SpikedBuffer tubes' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all be_a SpikedBuffer
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(purpose: PhiX.spiked_buffer_purpose)
       end
 
-      it 'names tubes appropriately' do # rubocop:todo RSpec/AggregateExamples
-        expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(name: a_string_starting_with('Example #'))
+      it 'names tubes appropriately' do
+        # rubocop:todo RSpec/AggregateExamples
+        expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(
+              name: a_string_starting_with('Example #')
+            )
       end
 
-      it 'sets the concentration and volume' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets the concentration and volume' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(concentration: 0.8, volume: 10)
       end
 
       it 'generates an aliquot in each tube' do
-        phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
-          expect(tube.aliquots).to have(1).items
-        end
+        phi_x_spiked_buffer.created_spiked_buffers.each { |tube| expect(tube.aliquots).to have(1).items }
       end
 
       it 'generates an aliquot which match the parent' do
         phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
-          expect(tube.aliquots).to all have_attributes(sample: parent.aliquots.first.sample,
-                                                       tag: parent.aliquots.first.tag)
+          expect(tube.aliquots).to all have_attributes(
+                sample: parent.aliquots.first.sample,
+                tag: parent.aliquots.first.tag
+              )
         end
       end
 
       it 'records the parent' do
-        phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
-          expect(tube.parents).to all eq parent
-        end
+        phi_x_spiked_buffer.created_spiked_buffers.each { |tube| expect(tube.parents).to all eq parent }
       end
     end
 

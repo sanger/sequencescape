@@ -15,24 +15,30 @@ describe 'Users API', with: :api_v2 do
 
     it 'sends a list of users' do
       api_get '/api/v2/users'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(7)
     end
 
     it 'allows filtering of users by user_code with swipecard' do
       api_get "/api/v2/users?filter[user_code]=#{swipecard_code}"
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(1)
     end
 
     it 'allows filtering of users by user_code with barcode' do
       api_get "/api/v2/users?filter[user_code]=#{user_barcode}"
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(1)
     end

@@ -3,20 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::TubeRackStatus, type: :model, heron: true do
-  before do
-    create(:study)
-  end
+  before { create(:study) }
 
-  let(:params) do
-    {
-      barcode: '0000000001',
-      status: 'validation_failed',
-      messages: [
-        'message 1',
-        'message 2'
-      ]
-    }
-  end
+  let(:params) { { barcode: '0000000001', status: 'validation_failed', messages: ['message 1', 'message 2'] } }
 
   it 'is valid with all relevant attributes' do
     tube_rack_status = described_class.new(params)

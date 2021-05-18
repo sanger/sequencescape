@@ -11,24 +11,19 @@ module Aliquot::DataForSubstitution
   end
 
   def generate_substitution_hash
-    aliquot_identifiers
-      .merge(tag_id_substitution)
-      .merge(tag2_id_substitution)
-      .merge(other_attributes_for_substitution)
+    aliquot_identifiers.merge(tag_id_substitution).merge(tag2_id_substitution).merge(other_attributes_for_substitution)
   end
 
   def tag_id_substitution
     return {} if changes[:tag_id].blank?
 
-    { original_tag_id: original_tag_id,
-      substitute_tag_id: substitute_tag_id }
+    { original_tag_id: original_tag_id, substitute_tag_id: substitute_tag_id }
   end
 
   def tag2_id_substitution
     return {} if changes[:tag2_id].blank?
 
-    { original_tag2_id: original_tag2_id,
-      substitute_tag2_id: substitute_tag2_id }
+    { original_tag2_id: original_tag2_id, substitute_tag2_id: substitute_tag2_id }
   end
 
   def original_tag_id
@@ -58,9 +53,6 @@ module Aliquot::DataForSubstitution
   private
 
   def aliquot_identifiers
-    {
-      sample_id: sample_id,
-      library_id: library_id
-    }
+    { sample_id: sample_id, library_id: library_id }
   end
 end

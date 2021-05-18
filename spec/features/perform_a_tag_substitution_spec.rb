@@ -21,12 +21,42 @@ describe 'Perform a tag substitution', js: true do
   let(:user) { create :user }
 
   before do
-    create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: library_tube_a
-    create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: library_tube_b
-    create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: mx_library_tube
-    create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: mx_library_tube
-    create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: lane
-    create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: lane
+    create :aliquot,
+           sample: sample_a,
+           tag: sample_a_orig_tag,
+           tag2: sample_a_orig_tag2,
+           library: library_tube_a,
+           receptacle: library_tube_a
+    create :aliquot,
+           sample: sample_b,
+           tag: sample_b_orig_tag,
+           tag2: sample_b_orig_tag2,
+           library: library_tube_b,
+           receptacle: library_tube_b
+    create :aliquot,
+           sample: sample_a,
+           tag: sample_a_orig_tag,
+           tag2: sample_a_orig_tag2,
+           library: library_tube_a,
+           receptacle: mx_library_tube
+    create :aliquot,
+           sample: sample_b,
+           tag: sample_b_orig_tag,
+           tag2: sample_b_orig_tag2,
+           library: library_tube_b,
+           receptacle: mx_library_tube
+    create :aliquot,
+           sample: sample_a,
+           tag: sample_a_orig_tag,
+           tag2: sample_a_orig_tag2,
+           library: library_tube_a,
+           receptacle: lane
+    create :aliquot,
+           sample: sample_b,
+           tag: sample_b_orig_tag,
+           tag2: sample_b_orig_tag2,
+           library: library_tube_b,
+           receptacle: lane
   end
 
   it 'Performing a tag swap' do
@@ -38,10 +68,16 @@ describe 'Perform a tag substitution', js: true do
     select('Incorrect tags selected in Sequencescape.', from: 'Reason')
     find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}")
       .ancestor('tr')
-      .select("#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}", from: 'tag_substitution[substitutions][][substitute_tag_id]')
+      .select(
+        "#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}",
+        from: 'tag_substitution[substitutions][][substitute_tag_id]'
+      )
     find('td', text: "#{sample_b.id}: #{sample_a.sanger_sample_id}")
       .ancestor('tr')
-      .select("#{sample_a_orig_tag.map_id} - #{sample_a_orig_tag.oligo}", from: 'tag_substitution[substitutions][][substitute_tag_id]')
+      .select(
+        "#{sample_a_orig_tag.map_id} - #{sample_a_orig_tag.oligo}",
+        from: 'tag_substitution[substitutions][][substitute_tag_id]'
+      )
     click_button 'Substitute Tags'
     expect(page).to have_content "Receptacle #{lane.display_name}"
     expect(page).to have_content 'Your substitution was performed.'
@@ -52,13 +88,12 @@ describe 'Perform a tag substitution', js: true do
 
     click_link '1 comment'
 
-    expect(page).to have_content(<<~COMMENT
+    expect(page).to have_content(<<~COMMENT)
       Tag substitution performed.
       Referenced ticket no: 12345
       Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_b_orig_tag.oligo};
       Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_a_orig_tag.oligo};
     COMMENT
-                                )
   end
 
   it 'Performing an invalid tag swap' do
@@ -70,13 +105,21 @@ describe 'Perform a tag substitution', js: true do
     select('Incorrect tags selected in Sequencescape.', from: 'Reason')
     find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}")
       .ancestor('tr')
-      .select("#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}", from: 'tag_substitution[substitutions][][substitute_tag_id]')
+      .select(
+        "#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}",
+        from: 'tag_substitution[substitutions][][substitute_tag_id]'
+      )
     find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}")
       .ancestor('tr')
-      .select("#{sample_b_orig_tag2.map_id} - #{sample_b_orig_tag2.oligo}", from: 'tag_substitution[substitutions][][substitute_tag2_id]')
+      .select(
+        "#{sample_b_orig_tag2.map_id} - #{sample_b_orig_tag2.oligo}",
+        from: 'tag_substitution[substitutions][][substitute_tag2_id]'
+      )
     click_button 'Substitute Tags'
     expect(page).to have_content(lane.name)
     expect(page).to have_content 'Your tag substitution could not be performed.'
-    expect(page).to have_content "Tag pair #{sample_b_orig_tag.oligo}-#{sample_b_orig_tag2.oligo} features multiple times in the pool."
+    expect(
+      page
+    ).to have_content "Tag pair #{sample_b_orig_tag.oligo}-#{sample_b_orig_tag2.oligo} features multiple times in the pool."
   end
 end

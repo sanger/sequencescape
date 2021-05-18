@@ -32,9 +32,7 @@ RSpec.describe BulkSubmissionExcel::Download, type: :model, bulk_submission_exce
   let(:assets) { create(:plate_with_untagged_wells).wells }
   let(:submission_template) { create :libray_and_sequencing_template }
 
-  after do
-    File.delete(test_file) if File.exist?(test_file)
-  end
+  after { File.delete(test_file) if File.exist?(test_file) }
 
   context 'without columns' do
     let(:columns) { nil }
@@ -65,9 +63,7 @@ RSpec.describe BulkSubmissionExcel::Download, type: :model, bulk_submission_exce
       download.save(test_file)
     end
 
-    let(:spreadsheet) do
-      Roo::Spreadsheet.open(test_file)
-    end
+    let(:spreadsheet) { Roo::Spreadsheet.open(test_file) }
 
     it 'creates an excel file' do
       expect(File).to be_file(test_file)
@@ -78,7 +74,8 @@ RSpec.describe BulkSubmissionExcel::Download, type: :model, bulk_submission_exce
       expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
-    it 'have the correct number of columns' do # rubocop:todo RSpec/AggregateExamples
+    it 'have the correct number of columns' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(download.column_list.count).to eq(configuration.columns.all.count)
     end
   end

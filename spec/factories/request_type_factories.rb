@@ -9,12 +9,12 @@ FactoryBot.define do
   end
 
   factory :request_type do
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    deprecated     { false }
-    asset_type     { 'SampleTube' }
-    request_class  { Request }
-    order          { 1 }
+    name { generate :request_type_name }
+    key { generate :request_type_key }
+    deprecated { false }
+    asset_type { 'SampleTube' }
+    request_class { Request }
+    order { 1 }
     initial_state { 'pending' }
     request_purpose { :standard }
 
@@ -55,16 +55,14 @@ FactoryBot.define do
     end
 
     factory :library_creation_request_type do
-      transient do
-        library_type { build :library_type }
-      end
+      transient { library_type { build :library_type } }
 
       target_asset_type { 'LibraryTube' }
       request_class { LibraryCreationRequest }
 
       after(:build) do |request_type, evaluator|
-        request_type.library_types_request_types << create(:library_types_request_type,
-                                                           library_type: evaluator.library_type, request_type: request_type)
+        request_type.library_types_request_types <<
+          create(:library_types_request_type, library_type: evaluator.library_type, request_type: request_type)
         request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
       end
 
@@ -76,15 +74,23 @@ FactoryBot.define do
     end
 
     factory :pac_bio_sequencing_request_type do
-      asset_type     { 'PacBioLibraryTube' }
-      request_class  { PacBioSequencingRequest }
+      asset_type { 'PacBioLibraryTube' }
+      request_class { PacBioSequencingRequest }
 
       after(:build) do |request_type|
         request_type.request_type_validators = [
-          build(:request_type_validator, request_type: request_type, request_option: 'insert_size',
-                                         options: [500, 1000, 2000, 5000, 10000, 20000]),
-          build(:request_type_validator, request_type: request_type, request_option: 'sequencing_type',
-                                         options: ['Standard', 'MagBead', 'MagBead OneCellPerWell v1'])
+          build(
+            :request_type_validator,
+            request_type: request_type,
+            request_option: 'insert_size',
+            options: [500, 1000, 2000, 5000, 10_000, 20_000]
+          ),
+          build(
+            :request_type_validator,
+            request_type: request_type,
+            request_option: 'sequencing_type',
+            options: ['Standard', 'MagBead', 'MagBead OneCellPerWell v1']
+          )
         ]
       end
     end
@@ -99,12 +105,17 @@ FactoryBot.define do
         read_lengths { [37, 54, 76, 108] }
         default { 54 }
       end
-      asset_type     { 'LibraryTube' }
-      request_class  { SequencingRequest }
+      asset_type { 'LibraryTube' }
+      request_class { SequencingRequest }
 
       after(:build) do |request_type, ev|
-        srv = create(:sequencing_request_type_validator, request_type: request_type, options: ev.read_lengths,
-                                                         default: ev.default)
+        srv =
+          create(
+            :sequencing_request_type_validator,
+            request_type: request_type,
+            options: ev.read_lengths,
+            default: ev.default
+          )
         request_type.request_type_validators << srv
       end
     end
@@ -120,9 +131,9 @@ FactoryBot.define do
     end
 
     factory :multiplexed_library_creation_request_type do
-      request_class      { MultiplexedLibraryCreationRequest }
-      asset_type         { 'SampleTube' }
-      for_multiplexing   { true }
+      request_class { MultiplexedLibraryCreationRequest }
+      asset_type { 'SampleTube' }
+      for_multiplexing { true }
 
       after(:build) do |request_type|
         request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
@@ -131,9 +142,9 @@ FactoryBot.define do
     end
 
     factory :plate_based_multiplexed_library_creation_request_type do
-      request_class      { MultiplexedLibraryCreationRequest }
-      asset_type         { 'Well' }
-      for_multiplexing   { true }
+      request_class { MultiplexedLibraryCreationRequest }
+      asset_type { 'Well' }
+      for_multiplexing { true }
 
       after(:build) do |request_type|
         request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
@@ -142,9 +153,7 @@ FactoryBot.define do
     end
 
     factory :validated_request_type do
-      after(:create) do |request_type|
-        request_type.extended_validators << create(:extended_validator)
-      end
+      after(:create) { |request_type| request_type.extended_validators << create(:extended_validator) }
     end
   end
 

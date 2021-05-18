@@ -8,7 +8,8 @@ module Accessionable
   class Study < Base # rubocop:todo Style/Documentation
     attr_reader :study_title, :description, :center_study_name, :study_abstract, :existing_study_type, :tags
 
-    def initialize(study)
+    # rubocop:todo Metrics/MethodLength
+    def initialize(study) # rubocop:todo Metrics/AbcSize
       @study = study
       data = {}
 
@@ -35,21 +36,24 @@ module Accessionable
       super(study.study_metadata.study_ebi_accession_number)
     end
 
+    # rubocop:enable Metrics/MethodLength
+
     def errors
       error_list = []
     end
 
-    def xml
+    # rubocop:todo Metrics/MethodLength
+    def xml # rubocop:todo Metrics/AbcSize
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') do
         xml.STUDY(alias: self.alias, accession: accession_number) do
           xml.DESCRIPTOR do
-            xml.STUDY_TITLE         study_title
-            xml.STUDY_DESCRIPTION   description
+            xml.STUDY_TITLE study_title
+            xml.STUDY_DESCRIPTION description
             xml.CENTER_PROJECT_NAME center_study_name
-            xml.CENTER_NAME         center_name
-            xml.STUDY_ABSTRACT      study_abstract
+            xml.CENTER_NAME center_name
+            xml.STUDY_ABSTRACT study_abstract
 
             xml.PROJECT_ID(accessionable_id || '0')
             study_type = existing_study_type
@@ -59,17 +63,13 @@ module Accessionable
               xml.STUDY_TYPE(existing_study_type: ::Study::Other_type, new_study_type: study_type)
             end
           end
-          xml.STUDY_ATTRIBUTES do
-            tags.each do |tag|
-              xml.STUDY_ATTRIBUTE do
-                tag.build(xml)
-              end
-            end
-          end if tags.present?
+          xml.STUDY_ATTRIBUTES { tags.each { |tag| xml.STUDY_ATTRIBUTE { tag.build(xml) } } } if tags.present?
         end
       end
       xml.target!
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     def accessionable_id
       @study.id

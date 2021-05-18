@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe 'Aliquots API', with: :api_v2 do
   context 'with multiple aliquots' do
-    before do
-      create_list(:aliquot, 5)
-    end
+    before { create_list(:aliquot, 5) }
 
     it 'sends a list of aliquots' do
       api_get '/api/v2/aliquots'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end

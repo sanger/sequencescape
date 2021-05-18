@@ -6,36 +6,28 @@ class AdminControllerTest < ActionController::TestCase
   context 'Admin controller' do
     setup do
       @controller = AdminController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login
 
     context 'admin frontpage' do
-      setup do
-        session[:user] = @user = create :admin
-      end
+      setup { session[:user] = @user = create :admin }
 
       context '#index' do
-        setup do
-          get :index
-        end
+        setup { get :index }
         should respond_with :success
         should render_template :index
       end
 
       context '#filter' do
-        setup do
-          get :filter
-        end
+        setup { get :filter }
         should respond_with :success
         should render_template 'admin/users/_users'
       end
 
       context '#filter with query' do
-        setup do
-          get :filter, params: { q: 'abc123' }
-        end
+        setup { get :filter, params: { q: 'abc123' } }
         should respond_with :success
         should render_template 'admin/users/_users'
       end

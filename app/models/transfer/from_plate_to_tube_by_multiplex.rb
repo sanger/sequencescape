@@ -8,18 +8,20 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
   private
 
   def locate_mx_library_tube_for(well)
-    well.requests_as_source.where_is_a(Request::Multiplexing).detect do |r|
-      r.target_asset.aliquots.empty?
-    end.try(:target_labware)
+    well.requests_as_source.where_is_a(Request::Multiplexing).detect { |r| r.target_asset.aliquots.empty? }.try(
+      :target_labware
+    )
   end
 
   def well_to_destination
-    source.wells.each_with_object({}) do |well, store|
-      tube = locate_mx_library_tube_for(well)
-      next if tube.nil? || should_well_not_be_transferred?(well)
+    source
+      .wells
+      .each_with_object({}) do |well, store|
+        tube = locate_mx_library_tube_for(well)
+        next if tube.nil? || should_well_not_be_transferred?(well)
 
-      store[well] = [tube, tube.requests_as_target.map(&:asset)]
-    end
+        store[well] = [tube, tube.requests_as_target.map(&:asset)]
+      end
   end
 
   # Before creating an instance of this class the appropriate transfers need to be made from a source
@@ -36,8 +38,6 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
   end
 
   def build_asset_links
-    destinations.each do |destination|
-      AssetLink.create_edge(source, destination)
-    end
+    destinations.each { |destination| AssetLink.create_edge(source, destination) }
   end
 end

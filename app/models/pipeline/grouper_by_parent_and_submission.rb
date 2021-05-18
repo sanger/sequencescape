@@ -5,6 +5,7 @@
 class Pipeline::GrouperByParentAndSubmission < Pipeline::GrouperForPipeline
   def all(selected_groups)
     queries = selected_groups.map { |group| extract_conditions(group) }
+
     # We build out own OR query by hand, as the built in Rails support will raise
     # a SystemStackError when face with a large number of `selected_groups`.
     # This is beacuse it processes the various conditions in a recursive manner.
@@ -25,16 +26,14 @@ class Pipeline::GrouperByParentAndSubmission < Pipeline::GrouperForPipeline
   # and uses them to generate a query.
   def extract_conditions(group)
     labware_id, submission_id = group.split(', ')
+
     # This is a Rails provided method to sanatize
     # input into sql queries. While calling .to_i on
     # our inputs should render then safe, an extra
     # layer of caution can't harm and should protect
     # us against future changes intoroducing risks.
     requests.sanitize_sql(
-      [
-        '(`receptacles`.`labware_id` = ? AND `requests`.`submission_id` = ?)',
-        labware_id.to_i, submission_id.to_i
-      ]
+      ['(`receptacles`.`labware_id` = ? AND `requests`.`submission_id` = ?)', labware_id.to_i, submission_id.to_i]
     )
   end
 end

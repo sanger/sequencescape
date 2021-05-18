@@ -1,8 +1,6 @@
 module SharedBehaviour::Deprecatable # rubocop:todo Style/Documentation
   def self.included(base)
-    base.class_eval do
-      scope :active, ->() { where(deprecated_at: nil) }
-    end
+    base.class_eval { scope :active, -> { where(deprecated_at: nil) } }
   end
 
   def deprecate!

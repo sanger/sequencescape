@@ -8,23 +8,26 @@ module Admin
     context 'Admin Users controller' do
       setup do
         @controller = Admin::UsersController.new
-        @request    = ActionController::TestRequest.create(@controller)
+        @request = ActionController::TestRequest.create(@controller)
       end
 
       should_require_login
 
       resource_test(
-        'user', ignore_actions: ['update'],
-                actions: %w[show edit index],
-                formats: ['html'],
-                defaults: { login: 'abc1234' },
-                user: :admin,
-
-                # Setup needed because 'edit' assumes presence of at least one Study and Project
-                setup_with: lambda do
-                  FactoryBot.create(:study)
-                  FactoryBot.create(:project)
-                end
+        'user',
+        ignore_actions: ['update'],
+        actions: %w[show edit index],
+        formats: ['html'],
+        defaults: {
+          login: 'abc1234'
+        },
+        user: :admin,
+        # Setup needed because 'edit' assumes presence of at least one Study and Project
+        setup_with:
+          lambda do
+            FactoryBot.create(:study)
+            FactoryBot.create(:project)
+          end
       )
 
       context '#filter' do

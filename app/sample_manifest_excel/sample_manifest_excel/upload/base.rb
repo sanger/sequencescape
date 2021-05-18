@@ -14,7 +14,7 @@ module SampleManifestExcel
     # *Retrieve the sample manifest
     # *Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
-    class Base
+    class Base # rubocop:todo Metrics/ClassLength
       include ActiveModel::Model
 
       attr_accessor :file, :column_list, :start_row, :override
@@ -23,6 +23,7 @@ module SampleManifestExcel
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
       validate :check_data
+
       # If the file isn't valid, and hasn't been read, then don't the contents
       # it will just appear to be empty, which is confusing.
       validate :check_columns, :check_processor, :check_rows, if: :data_valid?
@@ -32,7 +33,7 @@ module SampleManifestExcel
       delegate :data_at, to: :rows
       delegate :study, to: :sample_manifest, allow_nil: true
 
-      def initialize(attributes = {})
+      def initialize(attributes = {}) # rubocop:todo Metrics/AbcSize
         super
         @data = Upload::Data.new(file)
         @start_row = @data.start_row
@@ -86,6 +87,7 @@ module SampleManifestExcel
       def broadcast_sample_manifest_updated_event(user)
         # Send to event warehouse
         sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted.map(&:id))
+
         # Log legacy events: Show on history page, and may be used by reports.
         # We can get rid of these when:
         # - History page is updates with event warehouse viewer
@@ -107,7 +109,7 @@ module SampleManifestExcel
 
       private
 
-      def create_processor
+      def create_processor # rubocop:todo Metrics/MethodLength
         case sample_manifest&.asset_type
         when '1dtube'
           Upload::Processor::OneDTube.new(self)
@@ -147,9 +149,7 @@ module SampleManifestExcel
       def check_object(object)
         return if object.valid?
 
-        object.errors.each do |key, value|
-          errors.add key, value
-        end
+        object.errors.each { |key, value| errors.add key, value }
       end
 
       def processor?

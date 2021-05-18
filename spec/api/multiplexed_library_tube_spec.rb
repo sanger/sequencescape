@@ -22,32 +22,32 @@ describe '/api/1/multiplexed-library-tube-uuid' do
     subject { '/api/1/' + uuid }
 
     let(:response_body) do
-      %{{
-        "multiplexed_library_tube": {
-          "actions": {
-            "read": "http://www.example.com/api/1/#{uuid}"
+      "{
+        \"multiplexed_library_tube\": {
+          \"actions\": {
+            \"read\": \"http://www.example.com/api/1/#{uuid}\"
           },
-          "custom_metadatum_collection": {
-            "actions": {
-              "read": "http://www.example.com/api/1/#{custom_metadata_uuid}"
+          \"custom_metadatum_collection\": {
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{custom_metadata_uuid}\"
             }
           },
-          "studies": {
-            "size": 0,
-            "actions": {
-              "read": "http://www.example.com/api/1/#{uuid}/studies"
+          \"studies\": {
+            \"size\": 0,
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{uuid}/studies\"
             }
           },
-          "purpose": {
-            "actions": {
-              "read": "http://www.example.com/api/1/#{purpose_uuid}"
+          \"purpose\": {
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{purpose_uuid}\"
             },
-            "name": "Example purpose"
+            \"name\": \"Example purpose\"
           },
-          "uuid": "#{uuid}",
-          "volume": 8.76
+          \"uuid\": \"#{uuid}\",
+          \"volume\": 8.76
         }
-      }}
+      }"
     end
     let(:response_code) { 200 }
 

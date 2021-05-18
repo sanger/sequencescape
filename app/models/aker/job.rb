@@ -15,12 +15,7 @@ module Aker
     validates :aker_job_url, presence: true
 
     def as_json(_options = {})
-      {
-        job: {
-          id: id,
-          aker_job_id: aker_job_id
-        }
-      }
+      { job: { id: id, aker_job_id: aker_job_id } }
     end
 
     def updated_materials

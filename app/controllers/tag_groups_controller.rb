@@ -7,17 +7,13 @@ class TagGroupsController < ApplicationController
   def index
     @tag_groups = TagGroup.includes(:adapter_type)
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   def show
     @tag_group = TagGroup.find(params[:id])
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   ##
@@ -26,9 +22,7 @@ class TagGroupsController < ApplicationController
   def new
     @form_object = TagGroup::FormObject.new
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   ##

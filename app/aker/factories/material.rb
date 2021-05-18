@@ -69,9 +69,7 @@ module Aker
         end
         return if container.valid?
 
-        container.errors.each do |key, value|
-          errors.add key, value
-        end
+        container.errors.each { |key, value| errors.add key, value }
       end
 
       def check_supplier_name

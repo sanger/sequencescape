@@ -2,14 +2,14 @@
 
 require 'rails_helper'
 
-RSpec.configure do |c|
-  c.include LabWhereClientHelper
-end
+RSpec.configure { |c| c.include LabWhereClientHelper }
 
 RSpec.describe CherrypickTask, type: :model do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
   let(:control_plate) { create :control_plate, sample_count: 2 }
-  let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission: submission) } }
+  let(:requests) do
+    plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission: submission) }
+  end
   let(:template) { create(:plate_template, size: 6) }
   let(:robot) { instance_double('Robot', max_beds: 2) }
   let(:purpose) { create :purpose }
@@ -27,31 +27,28 @@ RSpec.describe CherrypickTask, type: :model do
 
   describe '#pick_new_plate' do
     context 'with control plate' do
-      before do
-        allow(requests.first).to receive(:batch).and_return(batch)
-      end
+      before { allow(requests.first).to receive(:batch).and_return(batch) }
 
       context 'when controls and wells fit in one plate' do
         before do
           locator = instance_double(CherrypickTask::ControlLocator, control_positions: [2, 5])
-          allow(CherrypickTask::ControlLocator).to receive(:new).with(
-            batch_id: 1235,
-            total_wells: 6,
-            num_control_wells: 2,
-            wells_to_leave_free: wells_to_leave_free
-          ).and_return(locator)
+          allow(CherrypickTask::ControlLocator).to receive(:new)
+            .with(batch_id: 1235, total_wells: 6, num_control_wells: 2, wells_to_leave_free: wells_to_leave_free)
+            .and_return(locator)
         end
 
         let(:instance) { described_class.new }
         let(:destinations) do
-          [[
-            [plate.human_barcode, 'A1'],
-            [plate.human_barcode, 'B1'],
-            [control_plate.human_barcode, 'A1'],
-            [plate.human_barcode, 'C1'],
-            [plate.human_barcode, 'D1'],
-            [control_plate.human_barcode, 'B1']
-          ]]
+          [
+            [
+              [plate.human_barcode, 'A1'],
+              [plate.human_barcode, 'B1'],
+              [control_plate.human_barcode, 'A1'],
+              [plate.human_barcode, 'C1'],
+              [plate.human_barcode, 'D1'],
+              [control_plate.human_barcode, 'B1']
+            ]
+          ]
         end
 
         it 'generates one plate' do
@@ -122,14 +119,16 @@ RSpec.describe CherrypickTask, type: :model do
         let(:instance) { described_class.new }
         let!(:plate) { create :plate_with_untagged_wells, sample_count: 2 }
         let(:destinations) do
-          [[
-            [plate.human_barcode, 'A1'],
-            [plate.human_barcode, 'B1'],
-            [control_plate.human_barcode, 'A1'],
-            [control_plate.human_barcode, 'B1'],
-            ['Empty', ''],
-            ['---', '']
-          ]]
+          [
+            [
+              [plate.human_barcode, 'A1'],
+              [plate.human_barcode, 'B1'],
+              [control_plate.human_barcode, 'A1'],
+              [control_plate.human_barcode, 'B1'],
+              ['Empty', ''],
+              ['---', '']
+            ]
+          ]
         end
 
         it 'generates one plate' do
@@ -214,21 +213,9 @@ RSpec.describe CherrypickTask, type: :model do
       before do
         stub_lwclient_labware_bulk_find_by_bc(
           [
-            {
-              lw_barcode: plate1.human_barcode,
-              lw_locn_name: location1,
-              lw_locn_parentage: parentage1
-            },
-            {
-              lw_barcode: plate2.human_barcode,
-              lw_locn_name: location2,
-              lw_locn_parentage: parentage2
-            },
-            {
-              lw_barcode: plate3.human_barcode,
-              lw_locn_name: location3,
-              lw_locn_parentage: parentage3
-            }
+            { lw_barcode: plate1.human_barcode, lw_locn_name: location1, lw_locn_parentage: parentage1 },
+            { lw_barcode: plate2.human_barcode, lw_locn_name: location2, lw_locn_parentage: parentage2 },
+            { lw_barcode: plate3.human_barcode, lw_locn_name: location3, lw_locn_parentage: parentage3 }
           ]
         )
       end
@@ -257,21 +244,9 @@ RSpec.describe CherrypickTask, type: :model do
       before do
         stub_lwclient_labware_bulk_find_by_bc(
           [
-            {
-              lw_barcode: plate1.human_barcode,
-              lw_locn_name: '',
-              lw_locn_parentage: ''
-            },
-            {
-              lw_barcode: plate2.human_barcode,
-              lw_locn_name: '',
-              lw_locn_parentage: ''
-            },
-            {
-              lw_barcode: plate3.human_barcode,
-              lw_locn_name: '',
-              lw_locn_parentage: ''
-            }
+            { lw_barcode: plate1.human_barcode, lw_locn_name: '', lw_locn_parentage: '' },
+            { lw_barcode: plate2.human_barcode, lw_locn_name: '', lw_locn_parentage: '' },
+            { lw_barcode: plate3.human_barcode, lw_locn_name: '', lw_locn_parentage: '' }
           ]
         )
       end
@@ -300,21 +275,9 @@ RSpec.describe CherrypickTask, type: :model do
       before do
         stub_lwclient_labware_bulk_find_by_bc(
           [
-            {
-              lw_barcode: plate1.human_barcode,
-              lw_locn_name: '',
-              lw_locn_parentage: ''
-            },
-            {
-              lw_barcode: plate2.human_barcode,
-              lw_locn_name: location2,
-              lw_locn_parentage: parentage2
-            },
-            {
-              lw_barcode: plate3.human_barcode,
-              lw_locn_name: location3,
-              lw_locn_parentage: parentage3
-            }
+            { lw_barcode: plate1.human_barcode, lw_locn_name: '', lw_locn_parentage: '' },
+            { lw_barcode: plate2.human_barcode, lw_locn_name: location2, lw_locn_parentage: parentage2 },
+            { lw_barcode: plate3.human_barcode, lw_locn_name: location3, lw_locn_parentage: parentage3 }
           ]
         )
       end
@@ -343,21 +306,9 @@ RSpec.describe CherrypickTask, type: :model do
       before do
         stub_lwclient_labware_bulk_find_by_bc(
           [
-            {
-              lw_barcode: plate1.human_barcode,
-              lw_locn_name: location1,
-              lw_locn_parentage: parentage1
-            },
-            {
-              lw_barcode: plate2.human_barcode,
-              lw_locn_name: location1,
-              lw_locn_parentage: parentage1
-            },
-            {
-              lw_barcode: plate3.human_barcode,
-              lw_locn_name: location1,
-              lw_locn_parentage: parentage1
-            }
+            { lw_barcode: plate1.human_barcode, lw_locn_name: location1, lw_locn_parentage: parentage1 },
+            { lw_barcode: plate2.human_barcode, lw_locn_name: location1, lw_locn_parentage: parentage1 },
+            { lw_barcode: plate3.human_barcode, lw_locn_name: location1, lw_locn_parentage: parentage1 }
           ]
         )
       end
@@ -386,13 +337,7 @@ RSpec.describe CherrypickTask, type: :model do
 
       before do
         stub_lwclient_labware_bulk_find_by_bc(
-          [
-            {
-              lw_barcode: plate1.human_barcode,
-              lw_locn_name: '',
-              lw_locn_parentage: ''
-            }
-          ]
+          [{ lw_barcode: plate1.human_barcode, lw_locn_name: '', lw_locn_parentage: '' }]
         )
       end
 

@@ -57,8 +57,8 @@ FactoryBot.define do
     qcable_creator { create :qcable_creator }
 
     factory :qcable_with_asset do
-      state  { 'created' }
-      asset  { create :full_plate }
+      state { 'created' }
+      asset { create :full_plate }
     end
   end
 

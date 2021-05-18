@@ -40,9 +40,11 @@ class TagLayout < ApplicationRecord
 
   # The user performing the layout
   belongs_to :user, optional: false
+
   # The tag group to layout on the plate, along with the substitutions that should be made
   belongs_to :tag_group, optional: false
   belongs_to :tag2_group, class_name: 'TagGroup'
+
   # The plate we'll be laying out the tags into
   belongs_to :plate, optional: false
 
@@ -69,9 +71,7 @@ class TagLayout < ApplicationRecord
   end
 
   def wells_in_walking_order
-    @wiwo ||= plate.wells
-                   .send(direction_algorithm_module.well_order_scope)
-                   .includes(aliquots: %i[tag tag2])
+    @wiwo ||= plate.wells.send(direction_algorithm_module.well_order_scope).includes(aliquots: %i[tag tag2])
   end
 
   def direction_algorithm_module
@@ -89,7 +89,7 @@ class TagLayout < ApplicationRecord
   end
 
   # Convenience mechanism for laying out tags in a particular fashion.
-  def layout_tags_into_wells
+  def layout_tags_into_wells # rubocop:todo Metrics/AbcSize
     # Make sure that the substitutions requested by the user are handled before applying the tags
     # to the wells.
     walk_wells do |well, index, index2 = index|
@@ -116,9 +116,7 @@ class TagLayout < ApplicationRecord
 
   def ordered_tags_for(tag_group)
     tag_hash = build_tag_hash(tag_group)
-    tag_hash.map do |map_id, tag|
-      substitutions.key?(map_id) ? tag_hash[substitutions[map_id]] : tag
-    end
+    tag_hash.map { |map_id, tag| substitutions.key?(map_id) ? tag_hash[substitutions[map_id]] : tag }
   end
 
   def build_tag_hash(tag_group)

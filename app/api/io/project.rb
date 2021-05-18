@@ -4,7 +4,8 @@ class Io::Project < Core::Io::Base
   set_json_root(:project)
   set_eager_loading { |model| model.include_project_metadata.include_roles }
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                                               name  => name
                                           approved  => approved
                                              state  => state
@@ -19,5 +20,6 @@ class Io::Project < Core::Io::Base
             project_metadata.project_funding_model  => funding_model
 
                                      roles_as_json  => roles
-  ")
+  '
+  )
 end

@@ -20,9 +20,7 @@ module Api
       attribute :last_name, readonly: true
 
       # Filters
-      filter :user_code, apply: lambda { |records, value, _options|
-        records.with_user_code(*value)
-      }
+      filter :user_code, apply: lambda { |records, value, _options| records.with_user_code(*value) }
     end
   end
 end

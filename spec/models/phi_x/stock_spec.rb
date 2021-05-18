@@ -50,40 +50,38 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
 
       it { is_expected.to be true }
 
-      it 'generates tubes according to the number supplied' do # rubocop:todo RSpec/AggregateExamples
+      it 'generates tubes according to the number supplied' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to have(2).items
       end
 
-      it 'generates PhiX Stock tubes' do # rubocop:todo RSpec/AggregateExamples
+      it 'generates PhiX Stock tubes' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to all be_a LibraryTube
         expect(phi_x_stock.created_stocks).to all have_attributes(purpose: PhiX.stock_purpose)
       end
 
-      it 'names tubes appropriately' do # rubocop:todo RSpec/AggregateExamples
+      it 'names tubes appropriately' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to all have_attributes(name: a_string_starting_with('Example #'))
       end
 
-      it 'sets the concentration' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets the concentration' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to all have_attributes(concentration: 0.8)
       end
 
       it 'generates an aliquot in each tube' do
-        phi_x_stock.created_stocks.each do |tube|
-          expect(tube.aliquots).to have(1).items
-        end
+        phi_x_stock.created_stocks.each { |tube| expect(tube.aliquots).to have(1).items }
       end
 
       it 'generates an aliquot with PhiX sample' do
-        phi_x_stock.created_stocks.each do |tube|
-          expect(tube.aliquots).to all have_attributes(sample: PhiX.sample)
-        end
+        phi_x_stock.created_stocks.each { |tube| expect(tube.aliquots).to all have_attributes(sample: PhiX.sample) }
       end
 
       context 'with Single tags' do
         let(:tags) { 'Single' }
-        let(:expected_tag) do
-          TagGroup.find_by!(name: 'Control Tag Group 888').tags.find_by!(oligo: 'ACAACGCAAT')
-        end
+        let(:expected_tag) { TagGroup.find_by!(name: 'Control Tag Group 888').tags.find_by!(oligo: 'ACAACGCAAT') }
 
         it 'generates an aliquot with an i7 tag' do
           phi_x_stock.created_stocks.each do |tube|
@@ -94,17 +92,16 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
 
       context 'with Dual tags' do
         let(:tags) { 'Dual' }
-        let(:expected_tag) do
-          TagGroup.find_by!(name: 'Control Tag Group 888').tags.find_by!(oligo: 'TGTGCAGC')
-        end
-        let(:expected_tag_2) do
-          TagGroup.find_by!(name: 'Control Tag Group 888').tags.find_by!(oligo: 'ACTGATGT')
-        end
+        let(:expected_tag) { TagGroup.find_by!(name: 'Control Tag Group 888').tags.find_by!(oligo: 'TGTGCAGC') }
+        let(:expected_tag_2) { TagGroup.find_by!(name: 'Control Tag Group 888').tags.find_by!(oligo: 'ACTGATGT') }
 
         it 'generates an aliquot with an i5 and i7 tag' do
           phi_x_stock.created_stocks.each do |tube|
-            expect(tube.aliquots).to all have_attributes(tag: expected_tag, tag2: expected_tag_2,
-                                                         library_id: tube.receptacle.id)
+            expect(tube.aliquots).to all have_attributes(
+                  tag: expected_tag,
+                  tag2: expected_tag_2,
+                  library_id: tube.receptacle.id
+                )
           end
         end
       end

@@ -7,12 +7,7 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder # rubocop:todo St
   end
 
   def view_for(type, partial_name = nil, &block)
-    @views[type.to_sym] =
-      if partial_name.nil?
-        { inline: capture(&block) }
-      else
-        { partial: partial_name }
-      end
+    @views[type.to_sym] = partial_name.nil? ? { inline: capture(&block) } : { partial: partial_name }
   end
 
   private
@@ -32,16 +27,17 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder # rubocop:todo St
     sections
   end
 
-  def render_view(type, field, options = {})
+  def render_view(type, field, options = {}) # rubocop:todo Metrics/MethodLength
     view = @views.fetch(type.to_sym)
 
-    locals = @locals.merge(
-      sections: localised_sections(field),
-      form: self,
-      field_name: field,
-      group: nil,
-      value: @object.send(field)
-    )
+    locals =
+      @locals.merge(
+        sections: localised_sections(field),
+        form: self,
+        field_name: field,
+        group: nil,
+        value: @object.send(field)
+      )
     locals[:group] = options[:grouping].downcase.gsub(/[^a-z0-9]+/, '_') if options[:grouping].present?
     locals = yield(locals) if block_given?
     render(view.merge(locals: locals))

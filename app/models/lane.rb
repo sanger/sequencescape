@@ -27,9 +27,7 @@ class Lane < Receptacle
 
   extend Metadata
 
-  has_metadata do
-    custom_attribute(:release_reason, in: LIST_REASONS)
-  end
+  has_metadata { custom_attribute(:release_reason, in: LIST_REASONS) }
 
   has_many :aliquot_indicies, inverse_of: :lane, class_name: 'AliquotIndex'
 

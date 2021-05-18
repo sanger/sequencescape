@@ -26,7 +26,7 @@ class NpgActions::AssetsController < ApplicationController
 
   private
 
-  def action_for_qc_state(state)
+  def action_for_qc_state(state) # rubocop:todo Metrics/MethodLength
     ActiveRecord::Base.transaction do
       if @last_event.present?
         # If we already have an event we check to see its state. If it matches,
@@ -37,7 +37,7 @@ class NpgActions::AssetsController < ApplicationController
       end
 
       respond_to do |format|
-        format.xml  { render file: 'assets/show' }
+        format.xml { render file: 'assets/show' }
         format.html { render template: 'assets/show.xml.builder' }
       end
     end
@@ -56,8 +56,7 @@ class NpgActions::AssetsController < ApplicationController
 
     batch.npg_set_state
 
-    BroadcastEvent::SequencingComplete.create!(seed: @asset,
-                                               properties: { result: state_str })
+    BroadcastEvent::SequencingComplete.create!(seed: @asset, properties: { result: state_str })
   end
 
   def find_asset
@@ -72,9 +71,7 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def find_last_event
-    @last_event = Event.family_pass_and_fail
-                       .npg_events(@request.id)
-                       .first
+    @last_event = Event.family_pass_and_fail.npg_events(@request.id).first
   end
 
   def qc_information

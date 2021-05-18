@@ -12,14 +12,14 @@
 Sequencescape is a cloud based and highly extensible LIMS system for use in labs with large numbers
 of samples.
 
-* Work order tracking
-* Sample and study management
-* Capacity management for pipelines
-* Accounting
-* Accessioning for samples and studies at the EBI ENA/EGA
-* Dynamically defined workflows for labs with support for custom processes
-* Labware and freezer tracking
-* API support for 3rd party applications
+- Work order tracking
+- Sample and study management
+- Capacity management for pipelines
+- Accounting
+- Accessioning for samples and studies at the EBI ENA/EGA
+- Dynamically defined workflows for labs with support for custom processes
+- Labware and freezer tracking
+- API support for 3rd party applications
 
 Current installation supports over 5 million samples and 1.8 million pieces of labware and is used in
 a organisation of 900 people.
@@ -28,31 +28,31 @@ a organisation of 900 people.
 
 <!-- toc -->
 
-* [Documentation](#documentation)
-* [Requirements](#requirements)
-* [Getting started](#getting-started)
-  * [Installing ruby](#installing-ruby)
-    * [rbenv](#rbenv)
-  * [Automatic Sequencescape setup](#automatic-sequencescape-setup)
-  * [Manual Sequencescape setup](#manual-sequencescape-setup)
-    * [Installing gems](#installing-gems)
-    * [Adjusting config](#adjusting-config)
-    * [Default setup](#default-setup)
-  * [Stating rails](#stating-rails)
-    * [Delayed job](#delayed-job)
-* [Testing](#testing)
-* [Rake tasks](#rake-tasks)
-* [Supporting applications](#supporting-applications)
-  * [Barcode printing](#barcode-printing)
-  * [Plate barcode service](#plate-barcode-service)
-  * [Data warehousing](#data-warehousing)
-* [Miscellaneous](#miscellaneous)
-  * [Ruby warnings and rake 11](#ruby-warnings-and-rake-11)
-  * [NPG - Illumina tracking software](#npg---illumina-tracking-software)
-  * [Troubleshooting](#troubleshooting)
-    * [MySQL errors when installing](#mysql-errors-when-installing)
-  * [Updating the table of contents](#updating-the-table-of-contents)
-  * [CI](#ci)
+- [Documentation](#documentation)
+- [Requirements](#requirements)
+- [Getting started](#getting-started)
+  - [Installing ruby](#installing-ruby)
+    - [rbenv](#rbenv)
+  - [Automatic Sequencescape setup](#automatic-sequencescape-setup)
+  - [Manual Sequencescape setup](#manual-sequencescape-setup)
+    - [Installing gems](#installing-gems)
+    - [Adjusting config](#adjusting-config)
+    - [Default setup](#default-setup)
+  - [Stating rails](#stating-rails)
+    - [Delayed job](#delayed-job)
+- [Testing](#testing)
+- [Rake tasks](#rake-tasks)
+- [Supporting applications](#supporting-applications)
+  - [Barcode printing](#barcode-printing)
+  - [Plate barcode service](#plate-barcode-service)
+  - [Data warehousing](#data-warehousing)
+- [Miscellaneous](#miscellaneous)
+  - [Ruby warnings and rake 11](#ruby-warnings-and-rake-11)
+  - [NPG - Illumina tracking software](#npg---illumina-tracking-software)
+  - [Troubleshooting](#troubleshooting)
+    - [MySQL errors when installing](#mysql-errors-when-installing)
+  - [Updating the table of contents](#updating-the-table-of-contents)
+  - [CI](#ci)
 
 <!-- tocstop -->
 
@@ -71,13 +71,13 @@ Yard will also try and document the installed gems: http://localhost:8808/docs
 
 The following tools are required for development:
 
-* ruby (version defined in the `.ruby-version`)
-* yarn
-* node (version defined in the `.nvmrc`)
-* mysql client libraries - if you do not want to install mysql server on your machine, consider
-using mysql-client: `brew install mysql-client`. Alternatively, to install the MySQL required by
-Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21)
-helpful link.
+- ruby (version defined in the `.ruby-version`)
+- yarn
+- node (version defined in the `.nvmrc`)
+- mysql client libraries - if you do not want to install mysql server on your machine, consider
+  using mysql-client: `brew install mysql-client`. Alternatively, to install the MySQL required by
+  Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21)
+  helpful link.
 
 ## Getting started
 
@@ -125,15 +125,15 @@ The `config/database.yml` file saves the list of databases.
 
 1. Create the database tables
 
-    ```shell
-    bundle exec rake db:setup
-    ```
+   ```shell
+   bundle exec rake db:setup
+   ```
 
 2. Install webpacker and the required JS libraries
 
-    ```shell
-    bundle exec rails webpacker:install
-    ```
+   ```shell
+   bundle exec rails webpacker:install
+   ```
 
 ### Stating rails
 
@@ -163,16 +163,16 @@ bundle exec ./script/delayed_job start
 Sequencescape has its own message broker and consumer. To develop this or run it locally, you
 must have RabbitMQ installed. It may be easiest to use the docker image (https://hub.docker.com/_/rabbitmq).
 
-```docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 -p 5672:5672 rabbitmq:3-management```
+`docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 -p 5672:5672 rabbitmq:3-management`
 
 It can be useful to follow the rabbitmq logs, to look for broken connections or other problems. To do this using the docker image,
 get the container id using `docker ps`, and then:
 
-```docker logs -f <container id>```
+`docker logs -f <container id>`
 
 To start the consumer off listening for messages:
 
-```bundle exec ./bin/amqp_client start```
+`bundle exec ./bin/amqp_client start`
 
 where `start` instructs it to start. You can also stop a worker by calling `stop`
 or restart it with `restart`.
@@ -182,22 +182,21 @@ Logs can be found in `tmp/pids`.
 You will also have to change the config in config/warren.yml from `type: log` to `type: broadcast` to get
 it to actually send messages in development mode.
 
-
 ## Testing
 
 Testing is done in three ways; using rspec, rails test and feature tests.
 
 1. To run the rspec tests (found in `rspec/` dir.):
 
-    ```shell
-    bundle exec rspec --fail-fast [<path_to_spec>]
-    ```
+   ```shell
+   bundle exec rspec --fail-fast [<path_to_spec>]
+   ```
 
 1. To run the rails tests (found in `tests/` dir.):
 
-    ```shell
-    bundle exec rake test -f
-    ```
+   ```shell
+   bundle exec rake test -f
+   ```
 
 ## Rake tasks
 
@@ -214,7 +213,7 @@ below.
 ### Barcode printing
 
 Barcode printing is carried out by a separate REST service, PrintMyBarcode. The source
-for this is also available on GitHub [sanger/print\_my\_barcode](https://github.com/sanger/print_my_barcode)
+for this is also available on GitHub [sanger/print_my_barcode](https://github.com/sanger/print_my_barcode)
 
 ### Plate barcode service
 
@@ -228,9 +227,9 @@ Sequencescape. This is driven asynchronously via RabbitMQ.
 
 See our various clients on GitHub:
 
-[sanger/unified\_warehouse](https://github.com/sanger/unified_warehouse)
+[sanger/unified_warehouse](https://github.com/sanger/unified_warehouse)
 
-[sanger/event\_warehouse](https://github.com/sanger/event_warehouse)
+[sanger/event_warehouse](https://github.com/sanger/event_warehouse)
 
 ## Miscellaneous
 
@@ -286,4 +285,4 @@ yarn markdown-toc -i README.md --bullets "*"
 
 The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec and Cucumber tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
 
-Copyright (c) 2007, 2010-2021  Genome Research Ltd.
+Copyright (c) 2007, 2010-2021 Genome Research Ltd.

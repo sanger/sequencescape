@@ -20,9 +20,7 @@ module Accession
 
     def load!
       if folder.present?
-        FILES.each do |file|
-          send("#{file}=", load_file(folder, file.to_s))
-        end
+        FILES.each { |file| send("#{file}=", load_file(folder, file.to_s)) }
         @loaded = true
       end
     end

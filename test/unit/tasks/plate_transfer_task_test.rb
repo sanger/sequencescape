@@ -14,66 +14,76 @@ class DummyWorkflowController < WorkflowsController
   end
 end
 
-class PlateTransferTaskTest < ActiveSupport::TestCase
+class PlateTransferTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   context 'PlateTransferHandler' do
     setup do
       @workflows_controller = DummyWorkflowController.new
-      @task                 = create :plate_transfer_task
-      @params               = 'UNUSED_PARAMS'
-      @batch                = create :batch
+      @task = create :plate_transfer_task
+      @params = 'UNUSED_PARAMS'
+      @batch = create :batch
       @workflows_controller.batch = @batch
       @source_plate = create :plate
-      @source_plate.wells = %w[A1 B1 C1].map do |loc|
-        create(:well_with_sample_and_without_plate).tap do |w|
-          w.map = Map.find_by(description: loc, asset_size: 96)
-          request = create :pac_bio_sample_prep_request, asset: w
-          @batch.requests << request
+      @source_plate.wells =
+        %w[A1 B1 C1].map do |loc|
+          create(:well_with_sample_and_without_plate).tap do |w|
+            w.map = Map.find_by(description: loc, asset_size: 96)
+            request = create :pac_bio_sample_prep_request, asset: w
+            @batch.requests << request
+          end
         end
-      end
     end
 
     context '#render_plate_transfer_task' do
       setup do
-        plate_barcode = create(:plate_barcode, barcode: 1234567)
+        plate_barcode = create(:plate_barcode, barcode: 1_234_567)
         PlateBarcode.stubs(:create).returns(plate_barcode)
       end
 
       context 'when used for the first time' do
         setup do
-          @plate_count =  Plate.count
+          @plate_count = Plate.count
           @transferrequest_count = TransferRequest.count
           params = { batch_id: @batch.id }
           @task.render_task(@workflows_controller, params)
         end
 
         should 'change Plate.count by 1' do
-          assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
+          assert_equal 1, Plate.count - @plate_count, 'Expected Plate.count to change by 1'
         end
 
         should 'change TransferRequest.count by 6' do
-          assert_equal 6,  TransferRequest.count - @transferrequest_count, 'Expected TransferRequest.count to change by 6'
+          assert_equal 6,
+                       TransferRequest.count - @transferrequest_count,
+                       'Expected TransferRequest.count to change by 6'
         end
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
-            assert_equal w.aliquots.map { |a|
-                           a.sample.name
-                         }, Plate.last.wells.located_at(w.map_description).first.aliquots.map { |a|
-                              a.sample.name
-                            }
+            assert_equal w.aliquots.map { |a| a.sample.name },
+                         Plate.last.wells.located_at(w.map_description).first.aliquots.map { |a| a.sample.name }
           end
         end
 
         should 'create transfer requests between wells' do
           @source_plate.wells.each do |w|
-            assert_equal w.transfer_requests_as_source.last.target_asset, Plate.last.wells.located_at(w.map_description).first
+            assert_equal w.transfer_requests_as_source.last.target_asset,
+                         Plate.last.wells.located_at(w.map_description).first
           end
         end
 
         should 'create transfer to the Library tubes' do
           @batch.requests.each do |r|
             w = r.asset
-            assert_equal r.target_asset, Plate.order(:id).last.wells.located_at(w.map_description).first.transfer_requests_as_source.first.target_asset
+            assert_equal r.target_asset,
+                         Plate
+                           .order(:id)
+                           .last
+                           .wells
+                           .located_at(w.map_description)
+                           .first
+                           .transfer_requests_as_source
+                           .first
+                           .target_asset
           end
         end
       end
@@ -87,7 +97,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         end
 
         should 'change Plate.count by 1' do
-          assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
+          assert_equal 1, Plate.count - @plate_count, 'Expected Plate.count to change by 1'
         end
 
         should 'find the existing plate' do
@@ -116,10 +126,11 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
     context '#do_plate_transfer_task' do
       setup do
-        plate_barcode = create(:plate_barcode, barcode: 1234567)
+        plate_barcode = create(:plate_barcode, barcode: 1_234_567)
         PlateBarcode.stubs(:create).returns(plate_barcode)
 
         params = { plate_transfer_task: {}, batch_id: @batch.id }
+
         # @workflows_controller.batch = mock("Batch")
 
         params = { batch_id: @batch.id }

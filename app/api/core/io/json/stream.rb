@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module ::Core::Io::Json
-  class Stream # rubocop:todo Style/Documentation
+  # Custom JSON streaming class to handle streamed serialization of API V1
+  # objects
+  class Stream # rubocop:todo Metrics/ClassLength
     # An interface matches object who respond to the provided method
     class Interface
       def initialize(interface)
@@ -28,48 +30,59 @@ module ::Core::Io::Json
     end
 
     def array(attribute, objects)
-      named(attribute) do
-        array_encode(objects) { |v| yield(self, v) }
-      end
+      named(attribute) { array_encode(objects) { |v| yield(self, v) } }
     end
 
     def attribute(attribute, value, options = {})
-      named(attribute) do
-        encode(value, options)
-      end
+      named(attribute) { encode(value, options) }
     end
 
     def block(attribute, &block)
       named(attribute) { open(&block) }
     end
 
-    def encode(object, options = {})
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
+    def encode(object, options = {}) # rubocop:todo Metrics/CyclomaticComplexity
       case object
-      when NilClass                    then unencoded('null')
-      when Symbol                      then string_encode(object)
-      when TrueClass                   then unencoded('true')
-      when FalseClass                  then unencoded('false')
-      when String                      then string_encode(object)
-      when Integer                     then unencoded(object.to_s)
-      when Float                       then unencoded(object.to_s)
-      when Date                        then string_encode(object)
-      when ActiveSupport::TimeWithZone then string_encode(object.to_s)
-      when Time                        then string_encode(object.to_s(:compatible))
-      when Hash                        then hash_encode(object, options)
-      when ZIPPABLE                    then array_encode(object) { |o| encode(o, options) }
-      else object_encode(object, options)
+      when NilClass
+        unencoded('null')
+      when Symbol
+        string_encode(object)
+      when TrueClass
+        unencoded('true')
+      when FalseClass
+        unencoded('false')
+      when String
+        string_encode(object)
+      when Integer
+        unencoded(object.to_s)
+      when Float
+        unencoded(object.to_s)
+      when Date
+        string_encode(object)
+      when ActiveSupport::TimeWithZone
+        string_encode(object.to_s)
+      when Time
+        string_encode(object.to_s(:compatible))
+      when Hash
+        hash_encode(object, options)
+      when ZIPPABLE
+        array_encode(object) { |o| encode(o, options) }
+      else
+        object_encode(object, options)
       end
     end
 
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
+
     def object_encode(object, options)
       open do
-        ::Core::Io::Registry.instance.lookup_for_object(object).object_json(
-          object, options.merge(
-                    stream: self,
-                    object: object,
-                    nested: true
-                  )
-        )
+        ::Core::Io::Registry
+          .instance
+          .lookup_for_object(object)
+          .object_json(object, options.merge(stream: self, object: object, nested: true))
       end
     end
     private :object_encode
@@ -84,16 +97,13 @@ module ::Core::Io::Json
     end
 
     def hash_encode(hash, options)
-      open do |stream|
-        hash.each do |k, v|
-          stream.attribute(k.to_s, v, options)
-        end
-      end
+      open { |stream| hash.each { |k, v| stream.attribute(k.to_s, v, options) } }
     end
     private :hash_encode
 
     def array_encode(array)
       unencoded('[')
+
       # Use length rather than size, as otherwise we perform
       # a count query. Not only is this unnecessary, but seems
       # to generate inaccurate numbers in some cases.

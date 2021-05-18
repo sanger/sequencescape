@@ -10,9 +10,7 @@ RSpec.describe BulkSubmissionExcel, type: :model, bulk_submission_excel: true do
     end
   end
 
-  after do
-    described_class.reset!
-  end
+  after { described_class.reset! }
 
   it 'loads the configuration' do
     expect(described_class.configuration).to be_loaded

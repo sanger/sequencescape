@@ -6,8 +6,6 @@ class MachineBarcodesController < ApplicationController
     asset = Labware.with_barcode(params[:id]).first
     summary = asset.present? ? asset.summary_hash : {}
     status = asset.present? ? 200 : 404
-    respond_to do |format|
-      format.json { render json: summary, status: status }
-    end
+    respond_to { |format| format.json { render json: summary, status: status } }
   end
 end

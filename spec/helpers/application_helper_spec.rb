@@ -41,21 +41,13 @@ describe ApplicationHelper do
     end
 
     context 'with a mix of content' do
-      let(:json) do
-        {
-          'Key a' => 'String',
-          'Key b' => %w[a b],
-          'Key c' => {
-            'nexted' => 'object'
-          }
-        }
-      end
+      let(:json) { { 'Key a' => 'String', 'Key b' => %w[a b], 'Key c' => { 'nexted' => 'object' } } }
 
       it 'works recursively' do
         expect(returned_html).to eq(
-          '<dl><dt>Key a</dt><dd>String</dd>'\
-          '<dt>Key b</dt><dd><ul><li>a</li><li>b</li></ul></dd>'\
-          '<dt>Key c</dt><dd><dl><dt>nexted</dt><dd>object</dd></dl></dd></dl>'
+          '<dl><dt>Key a</dt><dd>String</dd>' \
+            '<dt>Key b</dt><dd><ul><li>a</li><li>b</li></ul></dd>' \
+            '<dt>Key c</dt><dd><dl><dt>nexted</dt><dd>object</dd></dl></dd></dl>'
         )
       end
     end

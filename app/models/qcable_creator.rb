@@ -20,14 +20,10 @@ class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
   private
 
   def qcables_by_count!
-    lot.qcables.build([{ qcable_creator: self }] * count).tap do |_|
-      lot.save!
-    end
+    lot.qcables.build([{ qcable_creator: self }] * count).tap { |_| lot.save! }
   end
 
   def qcables_by_barcode!
-    barcodes.split(',').collect do |barcode|
-      lot.qcables.create!(qcable_creator: self, barcode: barcode)
-    end
+    barcodes.split(',').collect { |barcode| lot.qcables.create!(qcable_creator: self, barcode: barcode) }
   end
 end

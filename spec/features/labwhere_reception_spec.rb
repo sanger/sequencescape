@@ -3,14 +3,14 @@
 require 'rails_helper'
 
 describe 'Labwhere reception', js: true do
-  let(:user) { create :user, email: 'login@example.com', swipecard_code: 12345 }
+  let(:user) { create :user, email: 'login@example.com', swipecard_code: 12_345 }
   let(:plate) { create :plate }
 
   it 'user can scan plates into the reception' do
     login_user user
     visit labwhere_receptions_path
     expect(page).to have_content 'Labwhere Reception'
-    fill_in('User barcode or swipecard', with: 12345)
+    fill_in('User barcode or swipecard', with: 12_345)
     click_on 'Update locations'
     expect(page).to have_content "Asset barcodes can't be blank"
     within('#new_labwhere_reception') do

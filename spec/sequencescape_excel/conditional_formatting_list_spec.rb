@@ -2,7 +2,10 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormattingList, type: :model, sample_manifest_excel: true, sample_manifest: true do
+RSpec.describe SequencescapeExcel::ConditionalFormattingList,
+               type: :model,
+               sample_manifest_excel: true,
+               sample_manifest: true do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
@@ -15,7 +18,8 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList, type: :model, samp
     expect(conditional_formatting_list.count).to eq(rules.length)
   end
 
-  it '#options provides a list of conditional formatting options' do # rubocop:todo RSpec/AggregateExamples
+  it '#options provides a list of conditional formatting options' do
+    # rubocop:todo RSpec/AggregateExamples
     expect(conditional_formatting_list.options.count).to eq(rules.length)
     expect(rules.values).to be_all { |rule| conditional_formatting_list.options.include? rule['options'] }
   end
@@ -44,8 +48,14 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList, type: :model, samp
     conditional_formatting_list = described_class.new(rule_1: attributes_for(:conditional_formatting_with_formula))
     conditional_formatting_list.update(options)
     expect(conditional_formatting_list).to be_saved
-    expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(ERB::Util.html_escape(SequencescapeExcel::Formula.new(options.merge(attributes_for(:conditional_formatting_with_formula)[:formula])).to_s))
+    expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(
+      ERB::Util.html_escape(
+        SequencescapeExcel::Formula.new(options.merge(attributes_for(:conditional_formatting_with_formula)[:formula]))
+          .to_s
+      )
+    )
   end
+
   # rubocop:enable Layout/LineLength
 
   it 'is comparable' do

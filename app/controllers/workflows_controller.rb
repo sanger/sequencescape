@@ -12,7 +12,7 @@
 #
 # @note A large amount of the task processing actually occurs within the controller.
 #       These methods are included via the various Handler modules.
-class WorkflowsController < ApplicationController
+class WorkflowsController < ApplicationController # rubocop:todo Metrics/ClassLength
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -65,6 +65,7 @@ class WorkflowsController < ApplicationController
   # @todo Remove
   def batches
     @workflow = Workflow.find(params[:id])
+
     # TODO: association broken here - something to do with the attachables polymorph?
     @batches = Batch.where(workflow_id: @workflow.id).sort_by(&:id).reverse
   end
@@ -90,14 +91,17 @@ class WorkflowsController < ApplicationController
   #    be worth maintaining the behaviour until we solve the problems.
   # 5: We need to improve the repeatability of tasks.
   # 6: GET should be Idempotent. doing a task should be a POST
-  def stage
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def stage # rubocop:todo Metrics/CyclomaticComplexity
     @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
+
     # If params[:next_stage] is nil then just render the current task
     # else actually execute the task.
     unless params[:next_stage].nil?
-
       eager_loading = @task.included_for_do_task
       @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
 
@@ -130,6 +134,10 @@ class WorkflowsController < ApplicationController
     end
   end
 
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+
   # Default render task activity, eg. from {Task#render_task}
   def render_task(task, params)
     @rits = @batch.pipeline.request_information_types
@@ -143,9 +151,7 @@ class WorkflowsController < ApplicationController
 
   def ordered_fields(fields)
     response = Array.new
-    fields.keys.sort_by(&:to_i).each do |key|
-      response.push fields[key]
-    end
+    fields.keys.sort_by(&:to_i).each { |key| response.push fields[key] }
     response
   end
 
@@ -163,7 +169,7 @@ class WorkflowsController < ApplicationController
   # @param ancestor_names [Array] Ancestors for all keys in the hash
   #
   # @return [type] [description]
-  def flatten_hash(hash = params, ancestor_names = [])
+  def flatten_hash(hash = params, ancestor_names = []) # rubocop:todo Metrics/MethodLength
     flat_hash = {}
     hash.each do |k, v|
       names = Array.new(ancestor_names)
@@ -183,9 +189,7 @@ class WorkflowsController < ApplicationController
   def flat_hash_key(names)
     names = Array.new(names)
     name = names.shift.to_s.dup
-    names.each do |n|
-      name << "[#{n}]"
-    end
+    names.each { |n| name << "[#{n}]" }
     name
   end
 
@@ -194,11 +198,7 @@ class WorkflowsController < ApplicationController
   end
 
   def eventify_batch(batch, task)
-    event = batch.lab_events.build(
-      description: 'Complete',
-      user: current_user,
-      batch: batch
-    )
+    event = batch.lab_events.build(description: 'Complete', user: current_user, batch: batch)
     event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
     event.add_descriptor Descriptor.new(name: 'task', value: task.name)
     event.save!

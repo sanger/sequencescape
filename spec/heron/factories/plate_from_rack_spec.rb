@@ -3,18 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::PlateFromRack, type: :model, heron: true do
-  let(:purpose) do
-    create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
-  end
+  let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
   let(:rack) { create :tube_rack }
   let(:plate_factory) { described_class.new(tube_rack: rack, plate_purpose: purpose) }
   let(:tubes) { create_list(:sample_tube, 2) }
 
   include BarcodeHelper
 
-  before do
-    mock_plate_barcode_service
-  end
+  before { mock_plate_barcode_service }
 
   it 'can build a valid plate factory from a rack' do
     expect(plate_factory).to be_valid

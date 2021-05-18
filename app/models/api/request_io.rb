@@ -8,31 +8,27 @@ class Api::RequestIO < Api::Base
       end
     end
 
-    def self.included(base)
+    def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> {
-          includes([
-            :uuid_object,
-            :request_type,
-            :request_metadata,
-            :user, {
-              asset: [
-                :uuid_object,
-                :barcodes,
-                { primary_aliquot: { sample: :uuid_object } }
-              ],
-              target_asset: [
-                :uuid_object,
-                :barcodes,
-                { primary_aliquot: { sample: :uuid_object } }
-              ],
-              initial_study: :uuid_object,
-              initial_project: :uuid_object
-            }
-          ])
-        }
+        scope :including_associations_for_json,
+              -> {
+                includes(
+                  [
+                    :uuid_object,
+                    :request_type,
+                    :request_metadata,
+                    :user,
+                    {
+                      asset: [:uuid_object, :barcodes, { primary_aliquot: { sample: :uuid_object } }],
+                      target_asset: [:uuid_object, :barcodes, { primary_aliquot: { sample: :uuid_object } }],
+                      initial_study: :uuid_object,
+                      initial_project: :uuid_object
+                    }
+                  ]
+                )
+              }
       end
     end
 
@@ -65,23 +61,17 @@ class Api::RequestIO < Api::Base
   map_attribute_to_json_attribute(:priority)
 
   extra_json_attributes do |object, json_attributes|
-    if object.is_a?(SequencingRequest)
-      json_attributes['read_length']                 = object.request_metadata.read_length
-    end
-    if object.is_a?(LibraryCreationRequest)
-      json_attributes['library_type']                = object.request_metadata.library_type
-    end
+    json_attributes['read_length'] = object.request_metadata.read_length if object.is_a?(SequencingRequest)
+    json_attributes['library_type'] = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
     if object.request_metadata.respond_to?(:fragment_size_required_from)
       json_attributes['fragment_size_required_from'] = object.request_metadata.fragment_size_required_from
     end
     if object.request_metadata.respond_to?(:fragment_size_required_to)
-      json_attributes['fragment_size_required_to']   = object.request_metadata.fragment_size_required_to
+      json_attributes['fragment_size_required_to'] = object.request_metadata.fragment_size_required_to
     end
   end
 
-  with_association(:user) do
-    map_attribute_to_json_attribute(:login, 'user')
-  end
+  with_association(:user) { map_attribute_to_json_attribute(:login, 'user') }
 
   with_association(:submission) do
     map_attribute_to_json_attribute(:uuid, 'submission_uuid')
@@ -146,7 +136,5 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:prefix, 'target_asset_barcode_prefix')
   end
 
-  with_association(:request_type) do
-    map_attribute_to_json_attribute(:name, 'request_type')
-  end
+  with_association(:request_type) { map_attribute_to_json_attribute(:name, 'request_type') }
 end

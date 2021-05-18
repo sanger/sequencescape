@@ -45,11 +45,7 @@ module Barcode::Barcodeable
   def primary_barcode
     # If we've already loaded the barcodes, then their order is indeterminate
     # rather than re-fetching them, we sort in Ruby.
-    if barcodes.loaded?
-      barcodes.max_by(&:id)
-    else
-      barcodes.last
-    end
+    barcodes.loaded? ? barcodes.max_by(&:id) : barcodes.last
   end
 
   def infinium_barcode
@@ -112,6 +108,7 @@ module Barcode::Barcodeable
     return unless @barcode_number && @barcode_prefix
 
     self.primary_barcode = Barcode.build_sanger_ean13(prefix: @barcode_prefix, number: @barcode_number)
+
     # We've effectively modified the barcodes relationship, so lets reset it.
     # This probably indicates we should handle primary barcode ourself, and load
     # all barcodes whenever.

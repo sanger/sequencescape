@@ -31,10 +31,12 @@ module Accession
     end
 
     def to_file
-      AccessionableFile.open("#{schema_type}_file").tap do |f|
-        f.write(to_xml << "\n")
-        f.original_filename = filename
-      end
+      AccessionableFile
+        .open("#{schema_type}_file")
+        .tap do |f|
+          f.write(to_xml << "\n")
+          f.original_filename = filename
+        end
     end
   end
 end

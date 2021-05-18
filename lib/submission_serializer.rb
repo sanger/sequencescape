@@ -17,7 +17,10 @@ module SubmissionSerializer # rubocop:todo Style/Documentation
   STRAIGHT_CLONE = %w[name submission_class_name].freeze
   SP_STRAIGHT_CLONE = %i[info_differential asset_input_methods request_options].freeze
 
-  def self.serialize(st)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def self.serialize(st) # rubocop:todo Metrics/CyclomaticComplexity
     attributes = st.attributes
     new_attributes = {}
 
@@ -40,9 +43,7 @@ module SubmissionSerializer # rubocop:todo Style/Documentation
     sp = attributes['submission_parameters'] || {}
     ensp = new_attributes[:submission_parameters] = {}
 
-    SP_STRAIGHT_CLONE.each do |key|
-      ensp[key] = sp[key] if sp[key].present?
-    end
+    SP_STRAIGHT_CLONE.each { |key| ensp[key] = sp[key] if sp[key].present? }
 
     if ensp[:request_options] && ensp[:request_options][:initial_state]
       new_initial = ensp[:request_options][:initial_state].transform_keys { |k| RequestType.find(k).key }
@@ -55,37 +56,49 @@ module SubmissionSerializer # rubocop:todo Style/Documentation
     new_attributes
   end
 
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
   def self.construct!(hash) # rubocop:todo Metrics/CyclomaticComplexity
     st = {}
 
-    STRAIGHT_CLONE.each do |key|
-      st[key.to_sym] = hash[key.to_sym]
-    end
+    STRAIGHT_CLONE.each { |key| st[key.to_sym] = hash[key.to_sym] }
 
     st[:product_line_id] = ProductLine.find_or_create_by(name: hash[:product_line]).id if hash[:product_line]
     if hash[:product_catalogue]
       st[:product_catalogue_id] = ProductCatalogue.find_or_create_by(name: hash[:product_catalogue]).id
     end
-    st[:superceded_by_id] = hash.has_key?(:superceded_by) ? SubmissionTemplate.find_by(name: hash[:superceded_by]).try(:id) || -2 : hash[:superceded_by_id] || -1
-    st[:superceded_at] =  DateTime.parse(hash[:superceded_at]) if hash.has_key?(:superceded_at)
+    st[:superceded_by_id] =
+      if hash.has_key?(:superceded_by)
+        SubmissionTemplate.find_by(name: hash[:superceded_by]).try(:id) || -2
+      else
+        hash[:superceded_by_id] || -1
+      end
+    st[:superceded_at] = DateTime.parse(hash[:superceded_at]) if hash.has_key?(:superceded_at)
 
     sp = st[:submission_parameters] = {}
     ensp = hash[:submission_parameters]
 
-    SP_STRAIGHT_CLONE.each do |key|
-      sp[key] = ensp[key] if ensp[key].present?
-    end
+    SP_STRAIGHT_CLONE.each { |key| sp[key] = ensp[key] if ensp[key].present? }
 
     if sp[:request_options] && sp[:request_options][:initial_state]
       new_initial = sp[:request_options][:initial_state].transform_keys { |k| RequestType.find_by(key: k).id }
       sp[:request_options][:initial_state] = new_initial
     end
 
-    sp[:request_type_ids_list] = ensp[:request_types].map do |rtk|
-      [(RequestType.find_by(key: rtk).try(:id) || raise(StandardError, "Could not find #{rtk}"))]
-    end
+    sp[:request_type_ids_list] =
+      ensp[:request_types].map do |rtk|
+        [(RequestType.find_by(key: rtk).try(:id) || raise(StandardError, "Could not find #{rtk}"))]
+      end
     sp[:order_role_id] = OrderRole.find_or_create_by(role: ensp[:order_role]).id if ensp[:order_role]
 
     SubmissionTemplate.create!(st)
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 end

@@ -2,14 +2,15 @@
 
 # View information about {Receptacle}
 # @see Receptacle
-class ReceptaclesController < ApplicationController
+class ReceptaclesController < ApplicationController # rubocop:todo Metrics/ClassLength
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_receptacle_with_includes, only: %i[show edit update summary close print_assets print history]
   before_action :find_receptacle_only, only: %i[new_request create_request]
 
-  def index
+  # rubocop:todo Metrics/MethodLength
+  def index # rubocop:todo Metrics/AbcSize
     if params[:study_id]
       @study = Study.find(params[:study_id])
       @assets = @study.assets_through_aliquots.order(created_at: :desc).page(params[:page])
@@ -27,6 +28,8 @@ class ReceptaclesController < ApplicationController
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def show
     @source_plates = @asset.source_plates
     respond_to do |format|
@@ -41,12 +44,11 @@ class ReceptaclesController < ApplicationController
   end
 
   def history
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
-  def update
+  # rubocop:todo Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     respond_to do |format|
       if @asset.update(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
         flash[:notice] = 'Receptacle was successfully updated.'
@@ -54,14 +56,16 @@ class ReceptaclesController < ApplicationController
           format.html { redirect_to(action: :lab_view, barcode: @asset.human_barcode) }
         else
           format.html { redirect_to(action: :show, id: @asset.id) }
-          format.xml  { head :ok }
+          format.xml { head :ok }
         end
       else
         format.html { render action: 'edit' }
-        format.xml  { render xml: @asset.errors, status: :unprocessable_entity }
+        format.xml { render xml: @asset.errors, status: :unprocessable_entity }
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def summary
     @summary = UiHelper::Summary.new(per_page: 25, page: params[:page])
@@ -72,13 +76,9 @@ class ReceptaclesController < ApplicationController
     @asset.closed = !@asset.closed
     @asset.save
     respond_to do |format|
-      flash[:notice] = if @asset.closed
-                         "Receptacle #{@asset.name} was closed."
-                       else
-                         "Receptacle #{@asset.name} was opened."
-                       end
+      flash[:notice] = @asset.closed ? "Receptacle #{@asset.name} was closed." : "Receptacle #{@asset.name} was opened."
       format.html { redirect_to(receptacle_path(@asset)) }
-      format.xml  { head :ok }
+      format.xml { head :ok }
     end
   end
 
@@ -93,9 +93,8 @@ class ReceptaclesController < ApplicationController
   end
 
   def print_labels
-    print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                           LabelPrinter::Label::AssetRedirect,
-                                           printables: params[:printables])
+    print_job =
+      LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::AssetRedirect, printables: params[:printables])
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -106,9 +105,7 @@ class ReceptaclesController < ApplicationController
   end
 
   def print_assets
-    print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                           LabelPrinter::Label::AssetRedirect,
-                                           printables: @asset)
+    print_job = LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::AssetRedirect, printables: @asset)
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -123,6 +120,7 @@ class ReceptaclesController < ApplicationController
 
   def new_request
     @request_types = RequestType.standard.active.applicable_for_asset(@asset)
+
     # In rare cases the user links in to the 'new request' page
     # with a specific study specified. In even rarer cases this may
     # conflict with the assets primary study.
@@ -132,33 +130,32 @@ class ReceptaclesController < ApplicationController
     # 1. This should probably be RequestsController::new
     # 2. We should use Request.new(...) and form helpers
     # 3. This will allow us to instance_variable_or_id_param helpers.
-    @study = if params[:study_id]
-               Study.find(params[:study_id])
-             else
-               @asset.studies.first
-             end
+    @study = params[:study_id] ? Study.find(params[:study_id]) : @asset.studies.first
     @project = @asset.projects.first || @asset.studies.first&.projects&.first
   end
 
-  def create_request
+  # rubocop:todo Metrics/MethodLength
+  def create_request # rubocop:todo Metrics/AbcSize
     @request_type = RequestType.find(params[:request_type_id])
-    @study        = Study.find(params[:study_id]) if params[:cross_study_request].blank?
-    @project      = Project.find(params[:project_id]) if params[:cross_project_request].blank?
+    @study = Study.find(params[:study_id]) if params[:cross_study_request].blank?
+    @project = Project.find(params[:project_id]) if params[:cross_project_request].blank?
 
     request_options = params.fetch(:request, {}).fetch(:request_metadata_attributes, {})
     request_options[:multiplier] = { @request_type.id => params[:count].to_i } if params[:count].present?
     submission = Submission.new(priority: params[:priority], name: @study.try(:name), user: current_user)
+
     # Despite its name, this is actually an order.
-    resubmission_order = ReRequestSubmission.new(
-      study: @study,
-      project: @project,
-      user: current_user,
-      assets: [@asset],
-      request_types: [@request_type.id],
-      request_options: request_options.to_unsafe_h,
-      submission: submission,
-      comments: params[:comments]
-    )
+    resubmission_order =
+      ReRequestSubmission.new(
+        study: @study,
+        project: @project,
+        user: current_user,
+        assets: [@asset],
+        request_types: [@request_type.id],
+        request_options: request_options.to_unsafe_h,
+        submission: submission,
+        comments: params[:comments]
+      )
     resubmission_order.save!
     submission.built!
 
@@ -176,7 +173,10 @@ class ReceptaclesController < ApplicationController
     end
   end
 
-  def lookup
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def lookup # rubocop:todo Metrics/AbcSize
     return unless params[:asset] && params[:asset][:barcode]
 
     @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
@@ -187,15 +187,17 @@ class ReceptaclesController < ApplicationController
       flash.now[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
       respond_to do |format|
         format.html { render action: 'lookup' }
-        format.xml  { render xml: @assets.to_xml }
+        format.xml { render xml: @assets.to_xml }
       end
     else
       respond_to do |format|
         format.html { render action: 'index' }
-        format.xml  { render xml: @assets.to_xml }
+        format.xml { render xml: @assets.to_xml }
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   private
 

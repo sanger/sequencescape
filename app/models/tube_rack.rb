@@ -19,16 +19,7 @@ class TubeRack < Labware
   # class is intended to prevent inadvertant destruction of receptacles.
   has_many :tube_receptacles, through: :tubes, source: :receptacle
 
-  LAYOUTS = {
-    48 => {
-      'rows' => 6,
-      'columns' => 8
-    },
-    96 => {
-      'rows' => 8,
-      'columns' => 12
-    }
-  }.freeze
+  LAYOUTS = { 48 => { 'rows' => 6, 'columns' => 8 }, 96 => { 'rows' => 8, 'columns' => 12 } }.freeze
 
   def human_barcode
     primary_barcode.present? ? primary_barcode.barcode : nil
@@ -40,7 +31,7 @@ class TubeRack < Labware
     tube_receptacles.includes(:racked_tube)
   end
 
-  def self.check_if_coordinates_valid(rack_size, list_coordinates)
+  def self.check_if_coordinates_valid(rack_size, list_coordinates) # rubocop:todo Metrics/MethodLength
     output = []
 
     num_rows = LAYOUTS[rack_size]['rows']

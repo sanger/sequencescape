@@ -38,11 +38,7 @@ module Accession
     # to be called.
     def by_group
       groups.each_with_object({}) { |v, h| h[v] = TagList.new }.tap do |result|
-        tags.values.each do |tag|
-          tag.groups.each do |group|
-            result[group] << tag
-          end
-        end
+        tags.values.each { |tag| tag.groups.each { |group| result[group] << tag } }
       end
     end
 
@@ -69,9 +65,7 @@ module Accession
       TagList.new do |tag_list|
         tags.keys.each do |key|
           value = record.send(key)
-          if value.present?
-            tag_list.add(tags[key].dup.add_value(value))
-          end
+          tag_list.add(tags[key].dup.add_value(value)) if value.present?
         end
         tag_list.groups = groups
       end
@@ -93,13 +87,7 @@ module Accession
     private
 
     def add_tags(tags)
-      tags.each do |k, tag|
-        add(if tag.instance_of?(Accession::Tag)
-              add(tag)
-            else
-              Accession::Tag.new(tag.merge(name: k))
-            end)
-      end
+      tags.each { |k, tag| add(tag.instance_of?(Accession::Tag) ? add(tag) : Accession::Tag.new(tag.merge(name: k))) }
     end
   end
 end

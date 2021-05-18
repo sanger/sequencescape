@@ -7,7 +7,7 @@ class PopulateReceptaclesTable < ActiveRecord::Migration[4.2]
     ActiveRecord::Base.connection.execute('SET unique_checks = 0')
     ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0')
 
-    ActiveRecord::Base.connection.execute(<<~SQLQUERY
+    ActiveRecord::Base.connection.execute(<<~SQLQUERY)
       INSERT receptacles (id, sti_type, qc_state, resource, map_id, closed,
              external_release, volume, concentration, labware_id,
              created_at, updated_at)
@@ -24,7 +24,6 @@ class PopulateReceptaclesTable < ActiveRecord::Migration[4.2]
          "GelDilutionPlate"
        )
     SQLQUERY
-                                         )
 
     ActiveRecord::Base.connection.execute('COMMIT')
     ActiveRecord::Base.connection.execute('SET autocommit = 1')

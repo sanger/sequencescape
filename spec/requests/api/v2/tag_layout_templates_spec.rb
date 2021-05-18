@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe 'TagLayoutTemplates API', with: :api_v2 do
   context 'with multiple TagLayoutTemplates' do
-    before do
-      create_list(:tag_layout_template, 5)
-    end
+    before { create_list(:tag_layout_template, 5) }
 
     it 'sends a list of tag_layout_templates' do
       api_get '/api/v2/tag_layout_templates'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end

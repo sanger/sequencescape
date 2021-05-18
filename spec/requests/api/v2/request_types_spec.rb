@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe 'RequestTypes API', with: :api_v2 do
   context 'with multiple request_types' do
-    before do
-      create_list(:request_type, 5)
-    end
+    before { create_list(:request_type, 5) }
 
     it 'sends a list of request_types' do
       api_get '/api/v2/request_types'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(RequestType.count)
     end

@@ -6,9 +6,19 @@ require_relative 'shared_tests'
 class PlateCreatorTest < ActiveSupport::TestCase
   include LabelPrinterTests::SharedPlateTests
 
-  attr_reader :plate_label, :plate1, :plates, :plate_purpose, :label, :user, :barcode1, :parent_barcode, :study_abbreviation, :purpose_name
+  attr_reader :plate_label,
+              :plate1,
+              :plates,
+              :plate_purpose,
+              :label,
+              :user,
+              :barcode1,
+              :parent_barcode,
+              :study_abbreviation,
+              :purpose_name
 
-  def setup
+  # rubocop:todo Metrics/MethodLength
+  def setup # rubocop:todo Metrics/AbcSize
     @parent_barcode = '1234'
     @studies = create_list :study, 1
     parent = create :source_plate, barcode: parent_barcode, studies: @studies
@@ -16,20 +26,30 @@ class PlateCreatorTest < ActiveSupport::TestCase
     @barcode1 = '1111'
     @purpose_name = 'test purpose'
     plate_purpose = create :plate_purpose, name: purpose_name
-    @plate1 = create :child_plate, parent: parent, barcode: barcode1, plate_purpose: plate_purpose,
-                                   well_count: 1, well_factory: :untagged_well, studies: @studies
+    @plate1 =
+      create :child_plate,
+             parent: parent,
+             barcode: barcode1,
+             plate_purpose: plate_purpose,
+             well_count: 1,
+             well_factory: :untagged_well,
+             studies: @studies
     @plates = [plate1]
     @user = 'user'
     @study_abbreviation = 'WTCCC'
     options = { plate_purpose: plate_purpose, plates: plates, user_login: user }
     @plate_label = LabelPrinter::Label::PlateCreator.new(options)
-    @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-               bottom_left: (plate1.human_barcode).to_s,
-               top_right: (purpose_name).to_s,
-               bottom_right: "#{user} #{study_abbreviation}",
-               top_far_right: (parent_barcode).to_s,
-               barcode: plate1.machine_barcode }
+    @label = {
+      top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
+      bottom_left: (plate1.human_barcode).to_s,
+      top_right: (purpose_name).to_s,
+      bottom_right: "#{user} #{study_abbreviation}",
+      top_far_right: (parent_barcode).to_s,
+      barcode: plate1.machine_barcode
+    }
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   test 'should have plates' do
     assert_equal plates, plate_label.assets

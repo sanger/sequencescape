@@ -43,12 +43,9 @@ RSpec.describe Api::V2::TagGroupResource, type: :resource do
     # aliquots. This will ease the transition to each sequence only being registered
     # once.
     it 'returns a sorted array of tag information' do
-      expect(subject.tags).to eq([
-        { index: 1, oligo: 'AAA' },
-        { index: 2, oligo: 'TTT' },
-        { index: 3, oligo: 'CCC' },
-        { index: 4, oligo: 'GGG' }
-      ])
+      expect(subject.tags).to eq(
+        [{ index: 1, oligo: 'AAA' }, { index: 2, oligo: 'TTT' }, { index: 3, oligo: 'CCC' }, { index: 4, oligo: 'GGG' }]
+      )
     end
   end
 end

@@ -4,9 +4,7 @@ require 'test_helper'
 
 class StockLibraryTubeTest < ActiveSupport::TestCase
   context 'A stock Library tube' do
-    setup do
-      @stock_library = create :stock_library_tube
-    end
+    setup { @stock_library = create :stock_library_tube }
 
     context '#has_stock_asset?' do
       should 'return false' do

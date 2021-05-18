@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:todo Metrics/ClassLength
 class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
   # includes / extends
   extend DbFile::Uploader
@@ -26,8 +27,11 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
   validates :name, presence: true
   validates :report_type, presence: true
   validate :check_location_barcode, if: :type_labwhere?
-  validate :check_any_select_field_present, :check_both_dates_present_if_used,
-           :check_end_date_same_or_after_start_date, :check_maxlength_of_barcodes, :check_any_plates_found,
+  validate :check_any_select_field_present,
+           :check_both_dates_present_if_used,
+           :check_end_date_same_or_after_start_date,
+           :check_maxlength_of_barcodes,
+           :check_any_plates_found,
            if: :type_selection?
 
   def type_selection?
@@ -46,9 +50,9 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
 
   def check_any_select_field_present
     attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes]
-    errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? do |attr|
-                                                                                         send(attr).blank?
-                                                                                       end
+    if attr_list.all? { |attr| send(attr).blank? }
+      errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled'))
+    end
   end
 
   def check_both_dates_present_if_used
@@ -81,13 +85,11 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
 
   def generate!
     csv_options = { row_sep: "\r\n", force_quotes: true }
-    filename    = ['locn_rpt', name].join('_') + '.csv'
+    filename = ['locn_rpt', name].join('_') + '.csv'
 
     ActiveRecord::Base.transaction do
       Tempfile.open(filename) do |tempfile|
-        generate_report_rows do |fields|
-          tempfile << CSV.generate_line(fields, csv_options)
-        end
+        generate_report_rows { |fields| tempfile << CSV.generate_line(fields, csv_options) }
         tempfile.rewind
         update!(report: tempfile)
       end
@@ -98,7 +100,7 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
     Delayed::Job.enqueue LocationReportJob.new(id)
   end
 
-  def generate_report_rows
+  def generate_report_rows # rubocop:todo Metrics/MethodLength
     if plates_list.empty?
       yield([I18n.t('location_reports.errors.plate_list_empty')])
       return
@@ -108,9 +110,7 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
 
     plates_list.each do |cur_plate|
       if cur_plate.studies.present?
-        cur_plate.studies.each do |cur_study|
-          yield(generate_report_row(cur_plate, cur_study))
-        end
+        cur_plate.studies.each { |cur_study| yield(generate_report_row(cur_plate, cur_study)) }
       else
         yield(generate_report_row(cur_plate, nil))
       end
@@ -124,13 +124,14 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
   #######
 
   def plates_list
-    @plates_list ||= if type_selection?
-                       search_for_plates_by_selection
-                     elsif type_labwhere?
-                       search_for_plates_by_labwhere_locn_bc
-                     else
-                       []
-                     end
+    @plates_list ||=
+      if type_selection?
+        search_for_plates_by_selection
+      elsif type_labwhere?
+        search_for_plates_by_labwhere_locn_bc
+      else
+        []
+      end
   end
 
   def generate_report_row(cur_plate, cur_study)
@@ -141,6 +142,7 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
   def generate_plate_cols_for_row(cur_plate)
     cols = [] << cur_plate.machine_barcode
     cols << cur_plate.human_barcode
+
     # NB. some older plates do not have a purpose
     cols << (cur_plate.plate_purpose&.name || 'Unknown')
     cols << cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S')
@@ -154,6 +156,7 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
     # NB. some older studies may not have a name
     cols = [] << (cur_study.name || cur_study.id)
     cols << cur_study.id
+
     # NB. some studies may not have a faculty sponsor
     cols << (cur_study.study_metadata.faculty_sponsor&.name || 'Unknown')
   end
@@ -179,9 +182,7 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
     end
     return [] if @labware_barcodes.blank?
 
-    params = {
-      barcodes: @labware_barcodes
-    }
+    params = { barcodes: @labware_barcodes }
     Plate.search_for_plates(params)
   end
 
@@ -189,8 +190,10 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
     # collect any labware barcodes at this level
     curr_locn_labwares = LabWhereClient::Location.labwares(curr_locn_bc)
     curr_locn_labwares.map { |curr_labware| @labware_barcodes << curr_labware.barcode } if curr_locn_labwares.present?
+
     # search recursively in any child locations
     curr_locn_children = LabWhereClient::Location.children(curr_locn_bc)
     curr_locn_children.each { |curr_locn| get_labwares_per_location(curr_locn.barcode) } if curr_locn_children.present?
   end
 end
+# rubocop:enable Metrics/ClassLength

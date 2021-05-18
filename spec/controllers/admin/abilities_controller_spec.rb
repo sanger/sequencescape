@@ -4,9 +4,7 @@ require 'rails_helper'
 
 describe Admin::AbilitiesController do
   context 'when admin' do
-    before do
-      session[:user] = create :admin
-    end
+    before { session[:user] = create :admin }
 
     describe '#index' do
       before { get :index }

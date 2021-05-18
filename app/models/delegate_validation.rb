@@ -5,28 +5,32 @@
 # Because RequestType isn't subclassed it actually delegates to the Request class that it'll instantiate, so
 # you can find examples of the delegator stuff in SequencingRequest and LibraryCreationRequest
 module DelegateValidation
-  def delegate_validation(*args)
-    options           = args.extract_options!
+  # rubocop:todo Metrics/MethodLength
+  def delegate_validation(*args) # rubocop:todo Metrics/AbcSize
+    options = args.extract_options!
     delegation_target = options.delete(:to) or raise StandardError, 'Cannot delegate validation without :to!'
-    attribute_tag     = options[:as]
+    attribute_tag = options[:as]
     args.push(options)
 
     validates_each(*args) do |record, _attr, value|
       validator = record.send(:"#{delegation_target}_delegate_validator").new(value)
       validator.valid?.tap do
-        validator.errors.messages.each do |attrib, message|
-          record.errors.add("#{attribute_tag}.#{attrib}", message.join('; '))
-        end
+        validator
+          .errors
+          .messages
+          .each { |attrib, message| record.errors.add("#{attribute_tag}.#{attrib}", message.join('; ')) }
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   class Validator # rubocop:todo Style/Documentation
     include Validateable
 
     class DelegateError < ActiveModel::Errors # rubocop:todo Style/Documentation
       def initialize(base, target)
-        @base     = base
+        @base = base
         @messages = target.errors.messages
       end
     end
@@ -43,14 +47,15 @@ module DelegateValidation
       @target = target
     end
 
-    def self.delegate_attribute(*args)
-      options   = args.extract_options!
+    def self.delegate_attribute(*args) # rubocop:todo Metrics/MethodLength
+      options = args.extract_options!
       type_cast = ".#{options[:type_cast]}" if options.key?(:type_cast) && options[:type_cast].present?
-      default   = " || #{options[:default].inspect}" if options.key?(:default)
+      default = " || #{options[:default].inspect}" if options.key?(:default)
 
       args.each do |attribute|
         line = __LINE__ + 1
-        class_eval("
+        class_eval(
+          "
           def #{attribute}_before_type_cast
             #{options[:to]}.#{attribute} #{default}
           end
@@ -62,7 +67,10 @@ module DelegateValidation
           def #{attribute}_needs_checking?
             #{attribute}_before_type_cast.present? or include_unset_values?
           end
-        ", __FILE__, line)
+        ",
+          __FILE__,
+          line
+        )
       end
     end
   end
@@ -80,9 +88,7 @@ module DelegateValidation
     class_attribute :validator_classes, instance_writer: false
 
     def self.construct(*validator_classes)
-      Class.new(CompositeValidator).tap do |sub_class|
-        sub_class.validator_classes = validator_classes
-      end
+      Class.new(CompositeValidator).tap { |sub_class| sub_class.validator_classes = validator_classes }
     end
 
     def initialize(target)
@@ -94,9 +100,7 @@ module DelegateValidation
       # We have to run over all validators to get all error messages, then we can check they're all valid
       return true if @validators.map(&:valid?).all?(true)
 
-      @validators.each do |validator|
-        errors.messages.merge!(validator.errors.messages)
-      end
+      @validators.each { |validator| errors.messages.merge!(validator.errors.messages) }
       false
     end
   end

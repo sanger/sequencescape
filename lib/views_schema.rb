@@ -24,10 +24,12 @@ module ViewsSchema
 
   # Valid algorithm options, first option is default
   ALGORITHMS = %w[UNDEFINED MERGE TEMPTABLE].freeze
+
   # Valid security options, first option is default
   SECURITIES = %w[DEFINER INVOKER].freeze
   VIEW_STATEMENT = '%{action} ALGORITHM=%<algorithm>s SQL SECURITY %<security>s VIEW `%<name>s` AS %<statement>s'.freeze
-  REGEXP = /\ACREATE ALGORITHM=(?<algorithm>\w*) DEFINER=`[^`]*`@`[^`]*` SQL SECURITY (?<security>\w*) VIEW `[^`]+` AS (?<statement>.*)\z/i.freeze
+  REGEXP = /\ACREATE ALGORITHM=(?<algorithm>\w*) DEFINER=`[^`]*`@`[^`]*` SQL SECURITY (?<security>\w*) VIEW `[^`]+` AS (?<statement>.*)\z/i
+    .freeze
 
   def self.each_view
     all_views.each do |name|
@@ -41,10 +43,12 @@ module ViewsSchema
   end
 
   def self.all_views
-    ActiveRecord::Base.connection.execute("
+    ActiveRecord::Base.connection.execute(
+      "
       SELECT TABLE_NAME AS name
       FROM INFORMATION_SCHEMA.VIEWS
-      WHERE TABLE_SCHEMA = '#{ActiveRecord::Base.connection.current_database}';").map do |v|
+      WHERE TABLE_SCHEMA = '#{ActiveRecord::Base.connection.current_database}';"
+    ).map do |v|
       # Behaviour depends on ruby version, so we need to work out what we have
       v.is_a?(Hash) ? v['name'] : v.first
     end.flatten
@@ -59,13 +63,7 @@ module ViewsSchema
   #
   # @return [Void]
   def self.create_view(name, statement, algorithm: ALGORITHMS.first, security: SECURITIES.first)
-    execute(
-      action: 'CREATE',
-      name: name,
-      statement: statement,
-      algorithm: algorithm,
-      security: security
-    )
+    execute(action: 'CREATE', name: name, statement: statement, algorithm: algorithm, security: security)
   end
 
   #
@@ -77,13 +75,7 @@ module ViewsSchema
   #
   # @return [Void]
   def self.update_view(name, statement, algorithm: ALGORITHMS.first, security: SECURITIES.first)
-    execute(
-      action: 'CREATE OR REPLACE',
-      name: name,
-      statement: statement,
-      algorithm: algorithm,
-      security: security
-    )
+    execute(action: 'CREATE OR REPLACE', name: name, statement: statement, algorithm: algorithm, security: security)
   end
 
   #

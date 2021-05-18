@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
-COLUMN_RANGES = [
-  (1..1),
-  (1..2),
-  (1..3),
-  (1..4),
-  (1..6),
-  (1..12)
-].freeze
+COLUMN_RANGES = [(1..1), (1..2), (1..3), (1..4), (1..6), (1..12)].freeze
 
 def locations_for(row_range, column_range)
   row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten
@@ -15,11 +8,7 @@ end
 
 def pooling_row_to_first_column_transfer_layout_96
   layout = {}
-  ('A'..'H').each do |row|
-    (1..12).each do |column|
-      layout["#{row}#{column}"] = "#{row}1"
-    end
-  end
+  ('A'..'H').each { |row| (1..12).each { |column| layout["#{row}#{column}"] = "#{row}1" } }
   layout
 end
 
@@ -36,10 +25,7 @@ ActiveRecord::Base.transaction do
     name: 'Pool wells based on submission',
     transfer_class_name: Transfer::BetweenPlatesBySubmission.name
   )
-  TransferTemplate.create!(
-    name: 'Custom pooling',
-    transfer_class_name: Transfer::BetweenPlates.name
-  )
+  TransferTemplate.create!(name: 'Custom pooling', transfer_class_name: Transfer::BetweenPlates.name)
 
   # Plate-to-tube transfers
   TransferTemplate.create!(

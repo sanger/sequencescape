@@ -3,8 +3,10 @@
 # Will construct plates with well_count wells filled with samples
 class UatActions::IntergrationSuiteTools < UatActions
   self.title = 'Intergration suite tools'
+
   # The description displays on the list of UAT actions to provide additional information
-  self.description = 'Returns a suite of information for configuring automatic integration tests. Of limited use in UAT but will not cause problems.'
+  self.description =
+    'Returns a suite of information for configuring automatic integration tests. Of limited use in UAT but will not cause problems.'
 
   # Form fields
   # We don't actually have any fields

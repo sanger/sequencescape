@@ -20,20 +20,18 @@ FactoryBot.define do
   end
 
   factory :well_attribute do
-    concentration       { 23.2 }
-    current_volume      { 15 }
+    concentration { 23.2 }
+    current_volume { 15 }
 
     factory :complete_well_attribute do
-      gel_pass            { 'Pass' }
-      pico_pass           { 'Pass' }
-      sequenom_count      { 2 }
+      gel_pass { 'Pass' }
+      pico_pass { 'Pass' }
+      sequenom_count { 2 }
     end
   end
 
   factory :tagged_well, parent: :well, aliases: [:well_with_sample_and_without_plate] do
-    transient do
-      aliquot_count { 1 }
-    end
+    transient { aliquot_count { 1 } }
     aliquots { build_list(:tagged_aliquot, aliquot_count, aliquot_options) }
 
     factory :passed_well do
@@ -44,7 +42,9 @@ FactoryBot.define do
       end
       stock_wells { [association(:well)] }
       requests_as_target { [association(:well_request, state: 'passed', asset: stock_wells.first)] }
-      transfer_requests_as_target { [association(:transfer_request, state: 'passed', submission: requests_as_target.first.submission)] }
+      transfer_requests_as_target do
+        [association(:transfer_request, state: 'passed', submission: requests_as_target.first.submission)]
+      end
     end
   end
 
@@ -57,14 +57,10 @@ FactoryBot.define do
     map
     plate
     after(:build) do |well|
-      als = Array.new(2) do
-        {
-          sample: create(:sample),
-          study: create(:study),
-          project: create(:project),
-          tag: create(:tag)
-        }
-      end
+      als =
+        Array.new(2) do
+          { sample: create(:sample), study: create(:study), project: create(:project), tag: create(:tag) }
+        end
       well.aliquots.build(als)
     end
   end
@@ -82,9 +78,7 @@ FactoryBot.define do
     plate { create(:plate) }
     map { create(:map) }
 
-    after(:create) do |well, evaluator|
-      well.aliquots.each { |a| a.update!(study: evaluator.study) }
-    end
+    after(:create) { |well, evaluator| well.aliquots.each { |a| a.update!(study: evaluator.study) } }
   end
 
   factory :well_for_location_report, parent: :well do

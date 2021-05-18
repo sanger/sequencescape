@@ -5,7 +5,8 @@ class Io::Qcable < Core::Io::Base
 
   set_eager_loading(&:include_for_json)
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                       state  => state
             stamp_qcable.bed => stamp_bed
                  stamp_index => stamp_index
@@ -17,5 +18,6 @@ asset.two_dimensional_barcode  => barcode.two_dimensional
         asset.machine_barcode  => barcode.machine
            asset.barcode_type  => barcode.type
 
-  ")
+  '
+  )
 end

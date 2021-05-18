@@ -11,22 +11,14 @@ RSpec.describe RecordLoader::TagGroupLoader, type: :model, loader: true do
 
   subject(:record_loader) { a_new_record_loader }
 
-  before do
-    create :adapter_type, name: 'Sanger 168'
-  end
+  before { create :adapter_type, name: 'Sanger 168' }
 
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/tag_groups') }
 
   context 'with tag_groups_basic selected' do
     let(:selected_files) { 'tag_groups_basic' }
-    let(:expected_attributes) do
-      {
-        name: 'Tag Group 1',
-        adapter_type_name: 'Sanger 168',
-        visible: true
-      }
-    end
+    let(:expected_attributes) { { name: 'Tag Group 1', adapter_type_name: 'Sanger 168', visible: true } }
 
     it 'creates two records' do
       expect { record_loader.create! }.to change(TagGroup, :count).by(2)

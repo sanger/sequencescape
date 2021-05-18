@@ -16,14 +16,14 @@ describe '/api/1/labware-uuid' do
 
     # We use asset for compatibility reasons.
     let(:response_body) do
-      %({
-        "asset": {
-          "actions": {
-            "read": "http://www.example.com/api/1/#{uuid}"
+      "{
+        \"asset\": {
+          \"actions\": {
+            \"read\": \"http://www.example.com/api/1/#{uuid}\"
           },
-          "uuid": "#{uuid}"
+          \"uuid\": \"#{uuid}\"
         }
-      })
+      }"
     end
     let(:response_code) { 200 }
 

@@ -4,13 +4,7 @@ require 'rails_helper'
 require 'ostruct'
 
 describe PsdFormatter do
-  let(:deployment_info) do
-    OpenStruct.new(
-      name: application_name,
-      version: '10.3.0',
-      environment: 'test'
-    )
-  end
+  let(:deployment_info) { OpenStruct.new(name: application_name, version: '10.3.0', environment: 'test') }
 
   let(:log) { StringIO.new }
 
@@ -29,7 +23,9 @@ describe PsdFormatter do
     it 'formats the log correctly' do
       Rails.logger.info 'info message'
       log.rewind
-      expect(log.read).to match(/\A\(thread-#{Thread.current.object_id}\) \[#{application_name}:#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/)
+      expect(log.read).to match(
+        /\A\(thread-#{Thread.current.object_id}\) \[#{application_name}:#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/
+      )
     end
   end
 
@@ -39,7 +35,9 @@ describe PsdFormatter do
     it 'formats the log correctly' do
       Rails.logger.info 'info message'
       log.rewind
-      expect(log.read).to match(/\A\(thread-#{Thread.current.object_id}\) \[#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/)
+      expect(log.read).to match(
+        /\A\(thread-#{Thread.current.object_id}\) \[#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/
+      )
     end
   end
 end

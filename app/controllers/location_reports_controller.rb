@@ -13,9 +13,7 @@ class LocationReportsController < ApplicationController
     @location_report_form = LocationReport::LocationReportForm.new
     @location_report_form.user = @current_user
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   def show
@@ -29,7 +27,8 @@ class LocationReportsController < ApplicationController
     )
   end
 
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @location_report_form = LocationReport::LocationReportForm.new(location_report_params)
     @location_report_form.user = @current_user
 
@@ -38,7 +37,7 @@ class LocationReportsController < ApplicationController
         flash[:notice] = I18n.t('location_reports.success')
         format.html { redirect_to location_reports_path }
       else
-        error_messages    = @location_report_form.errors.full_messages.join('; ')
+        error_messages = @location_report_form.errors.full_messages.join('; ')
         flash.now[:error] = "Failed to create report: #{error_messages}"
         @location_reports = LocationReport.order(id: :desc).page(params[:page])
         format.html { render action: 'index' }
@@ -46,14 +45,30 @@ class LocationReportsController < ApplicationController
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   #######
 
   private
 
   #######
 
-  def location_report_params
-    params.require(:location_report).permit(:report_type, :name, :location_barcode, :barcodes, :barcodes_text,
-                                            :study_id, :start_date, :end_date, :barcodes, :barcodes_text, faculty_sponsor_ids: [], plate_purpose_ids: [])
+  def location_report_params # rubocop:todo Metrics/MethodLength
+    params
+      .require(:location_report)
+      .permit(
+        :report_type,
+        :name,
+        :location_barcode,
+        :barcodes,
+        :barcodes_text,
+        :study_id,
+        :start_date,
+        :end_date,
+        :barcodes,
+        :barcodes_text,
+        faculty_sponsor_ids: [],
+        plate_purpose_ids: []
+      )
   end
 end

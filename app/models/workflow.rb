@@ -3,9 +3,11 @@
 # A workflow describes a series of Tasks which are processed as
 # part of taking a Batch through a Pipeline
 class Workflow < ApplicationRecord
-  has_many :tasks, lambda {
-                     order('sorted')
-                   }, dependent: :destroy, foreign_key: :pipeline_workflow_id, inverse_of: :workflow
+  has_many :tasks,
+           lambda { order('sorted') },
+           dependent: :destroy,
+           foreign_key: :pipeline_workflow_id,
+           inverse_of: :workflow
 
   belongs_to :pipeline, inverse_of: :workflow
   validates :pipeline_id, uniqueness: { message: 'only one workflow per pipeline!' }
@@ -24,15 +26,17 @@ class Workflow < ApplicationRecord
     []
   end
 
-  def deep_copy(suffix = '_dup', skip_pipeline = false)
+  # rubocop:todo Metrics/MethodLength
+  def deep_copy(suffix = '_dup', skip_pipeline = false) # rubocop:todo Metrics/AbcSize
     dup.tap do |new_workflow|
       ActiveRecord::Base.transaction do
         new_workflow.name = new_workflow.name + suffix
-        new_workflow.tasks = tasks.map do |task|
-          new_task = task.dup
-          new_task.descriptors = task.descriptors.map(&:dup)
-          new_task
-        end
+        new_workflow.tasks =
+          tasks.map do |task|
+            new_task = task.dup
+            new_task.descriptors = task.descriptors.map(&:dup)
+            new_task
+          end
         new_workflow.pipeline = nil
         new_workflow.save!
 
@@ -46,4 +50,5 @@ class Workflow < ApplicationRecord
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

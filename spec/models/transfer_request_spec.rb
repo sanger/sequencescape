@@ -12,10 +12,7 @@ RSpec.describe TransferRequest, type: :model do
 
   context 'with a library request' do
     subject do
-      create :transfer_request,
-             asset: source,
-             target_asset: destination,
-             submission: library_request.submission
+      create :transfer_request, asset: source, target_asset: destination, submission: library_request.submission
     end
 
     let(:library_request) do
@@ -97,12 +94,7 @@ RSpec.describe TransferRequest, type: :model do
   end
 
   context 'with multiple library requests' do
-    subject do
-      create :transfer_request,
-             asset: source,
-             target_asset: destination,
-             outer_request: library_request
-    end
+    subject { create :transfer_request, asset: source, target_asset: destination, outer_request: library_request }
 
     before do
       library_request
@@ -165,7 +157,7 @@ RSpec.describe TransferRequest, type: :model do
 
       it 'duplicates the aliquots' do
         expected_aliquots = source.aliquots.map { |a| [a.sample_id, a.tag_id] }
-        target_aliquots   = destination.aliquots.map { |a| [a.sample_id, a.tag_id] }
+        target_aliquots = destination.aliquots.map { |a| [a.sample_id, a.tag_id] }
         expect(target_aliquots).to eq expected_aliquots
       end
 
@@ -196,8 +188,7 @@ RSpec.describe TransferRequest, type: :model do
       let(:equivalent_aliquot) { source.aliquots.first.dup }
       let(:destination) { create :well, aliquots: [equivalent_aliquot] }
       let(:transfer_request) do
-        described_class.new(asset: source, target_asset: destination,
-                            merge_equivalent_aliquots: merge)
+        described_class.new(asset: source, target_asset: destination, merge_equivalent_aliquots: merge)
       end
 
       context 'when merge_equivalent_aliquots is true' do
@@ -242,15 +233,41 @@ RSpec.describe TransferRequest, type: :model do
     subject { build :transfer_request }
 
     {
-      start: { pending: :started },
-      pass: { pending: :passed, started: :passed, failed: :passed, processed_2: :passed },
-      process_1: { pending: :processed_1 },
-      process_2: { processed_1: :processed_2 },
-      qc: { passed: :qc_complete },
-      fail: { pending: :failed, started: :failed, processed_1: :failed, processed_2: :failed, passed: :failed },
-      cancel: { started: :cancelled, processed_1: :cancelled, processed_2: :cancelled, passed: :cancelled,
-                qc_complete: :cancelled },
-      cancel_before_started: { pending: :cancelled }
+      start: {
+        pending: :started
+      },
+      pass: {
+        pending: :passed,
+        started: :passed,
+        failed: :passed,
+        processed_2: :passed
+      },
+      process_1: {
+        pending: :processed_1
+      },
+      process_2: {
+        processed_1: :processed_2
+      },
+      qc: {
+        passed: :qc_complete
+      },
+      fail: {
+        pending: :failed,
+        started: :failed,
+        processed_1: :failed,
+        processed_2: :failed,
+        passed: :failed
+      },
+      cancel: {
+        started: :cancelled,
+        processed_1: :cancelled,
+        processed_2: :cancelled,
+        passed: :cancelled,
+        qc_complete: :cancelled
+      },
+      cancel_before_started: {
+        pending: :cancelled
+      }
     }.each do |event, transitions|
       transitions.each do |from_state, to_state|
         it { is_expected.to transition_from(from_state).to(to_state).on_event(event) }
@@ -269,11 +286,7 @@ RSpec.describe TransferRequest, type: :model do
     let(:example_study) { create :study }
     let(:example_project) { create :project }
 
-    let(:library_request) do
-      create :library_request,
-             asset: stock_asset,
-             submission: create(:submission)
-    end
+    let(:library_request) { create :library_request, asset: stock_asset, submission: create(:submission) }
 
     before do
       # A decoy library request, this is part of a different submission and
@@ -282,9 +295,7 @@ RSpec.describe TransferRequest, type: :model do
       last_well.stock_wells << stock_asset
     end
 
-    let(:transfer_request) do
-      create :transfer_request, asset: source_asset, submission: library_request.submission
-    end
+    let(:transfer_request) { create :transfer_request, asset: source_asset, submission: library_request.submission }
 
     describe '#outer_request' do
       subject { transfer_request.outer_request }
@@ -319,29 +330,54 @@ RSpec.describe TransferRequest, type: :model do
   context 'transfer downstream of pooling (such as in ISC)' do
     let(:library_request_type) { create :library_request_type }
     let(:multiplex_request_type) { create :multiplex_request_type }
+
     # In some cases (such as chromium) we have multiple aliquots pre library request
     let(:source_well_a) { create :tagged_well, aliquot_count: 2 }
     let(:source_well_b) { create :tagged_well }
     let(:target_well) { create :empty_well }
     let(:submission) { create :submission }
     let(:order) do
-      create :library_order, submission: submission, request_types: [library_request_type.id,
-                                                                     multiplex_request_type.id], assets: [source_well_a,
-                                                                                                          source_well_b]
+      create :library_order,
+             submission: submission,
+             request_types: [library_request_type.id, multiplex_request_type.id],
+             assets: [source_well_a, source_well_b]
     end
     let(:multiplexed_library_tube) { create :multiplexed_library_tube, aliquots: [] }
     let(:library_request_a) do
-      create :library_request, asset: source_well_a, target_asset: target_well, submission: submission, order: order, state: 'passed', request_type: library_request_type
+      create :library_request,
+             asset: source_well_a,
+             target_asset: target_well,
+             submission: submission,
+             order: order,
+             state: 'passed',
+             request_type: library_request_type
     end
     let(:library_request_b) do
-      create :library_request, asset: source_well_b, target_asset: target_well, submission: submission, order: order, state: 'passed', request_type: library_request_type
+      create :library_request,
+             asset: source_well_b,
+             target_asset: target_well,
+             submission: submission,
+             order: order,
+             state: 'passed',
+             request_type: library_request_type
     end
+
     # While source and target assets are the same, we actually have two requests
     let(:multiplex_request_a) do
-      create :multiplex_request, asset: target_well, target_asset: multiplexed_library_tube, submission: submission,  order: order, request_type: multiplex_request_type
+      create :multiplex_request,
+             asset: target_well,
+             target_asset: multiplexed_library_tube,
+             submission: submission,
+             order: order,
+             request_type: multiplex_request_type
     end
     let(:multiplex_request_b) do
-      create :multiplex_request, asset: target_well, target_asset: multiplexed_library_tube, submission: submission,  order: order, request_type: multiplex_request_type
+      create :multiplex_request,
+             asset: target_well,
+             target_asset: multiplexed_library_tube,
+             submission: submission,
+             order: order,
+             request_type: multiplex_request_type
     end
 
     # Order here matters
@@ -357,8 +393,9 @@ RSpec.describe TransferRequest, type: :model do
 
     it 'associated each aliquot with a different library request' do
       create :transfer_request, asset: target_well, target_asset: multiplexed_library_tube, submission: submission
-      expect(multiplexed_library_tube.reload.aliquots.map(&:request_id)).to eq([multiplex_request_a.id,
-                                                                                multiplex_request_a.id, multiplex_request_b.id])
+      expect(multiplexed_library_tube.reload.aliquots.map(&:request_id)).to eq(
+        [multiplex_request_a.id, multiplex_request_a.id, multiplex_request_b.id]
+      )
     end
   end
 end

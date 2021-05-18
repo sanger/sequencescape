@@ -57,11 +57,7 @@ module Heron
           create_recipients!
           create_contents!
 
-          ::TubeRackStatus.create!(
-            barcode: barcode,
-            status: :created,
-            labware: @tube_rack
-          )
+          ::TubeRackStatus.create!(barcode: barcode, status: :created, labware: @tube_rack)
         end
         true
       end
@@ -86,8 +82,7 @@ module Heron
         recipients.keys.map do |coordinate|
           tube_factory = recipients[coordinate]
           sample_tube = tube_factory.create
-          RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate),
-                            tube_rack: tube_rack)
+          RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate), tube_rack: tube_rack)
         end
       end
 
@@ -96,9 +91,11 @@ module Heron
       end
 
       def containers_for_locations
-        @tube_rack.racked_tubes.each_with_object({}) do |racked_tube, memo|
-          memo[unpad_coordinate(racked_tube.coordinate)] = racked_tube.tube.receptacle
-        end
+        @tube_rack
+          .racked_tubes
+          .each_with_object({}) do |racked_tube, memo|
+            memo[unpad_coordinate(racked_tube.coordinate)] = racked_tube.tube.receptacle
+          end
       end
     end
   end

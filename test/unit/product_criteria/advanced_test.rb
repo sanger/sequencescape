@@ -7,21 +7,28 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
     setup do
       @params = {
         'failed' => {
-          concentration: { greater_than: 500 },
-          measured_volume: { greater_than: 100 }
+          concentration: {
+            greater_than: 500
+          },
+          measured_volume: {
+            greater_than: 100
+          }
         },
         'unprocessable' => {
-          concentration: { greater_than: 50 },
-          measured_volume: { greater_than: 10 }
+          concentration: {
+            greater_than: 50
+          },
+          measured_volume: {
+            greater_than: 10
+          }
         }
       }
     end
 
     context 'with a list of target wells' do
       setup do
-        @well_attribute = create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: %w[
-          M M U
-        ]
+        @well_attribute =
+          create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: %w[M M U]
         @well = create :well, well_attribute: @well_attribute
 
         @target_wells = create_list :well, 7
@@ -29,7 +36,8 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
         @criteria = ProductCriteria::Advanced.new(@params, @well, @target_wells)
       end
       should 'get the most recent target well from the supplied list' do
-        assert_equal @criteria.most_recent_concentration_from_target_well_by_updating_date, @target_wells[4].get_concentration
+        assert_equal @criteria.most_recent_concentration_from_target_well_by_updating_date,
+                     @target_wells[4].get_concentration
         @criteria2 = ProductCriteria::Advanced.new(@params, @well, nil)
         assert_nil @criteria2.most_recent_concentration_from_target_well_by_updating_date
       end
@@ -68,7 +76,7 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
 
     context 'with a very bad well' do
       setup do
-        @well_attribute = create :well_attribute, concentration: 1, measured_volume: 30000
+        @well_attribute = create :well_attribute, concentration: 1, measured_volume: 30_000
         @well = create :well, well_attribute: @well_attribute
         @criteria = ProductCriteria::Advanced.new(@params, @well)
       end

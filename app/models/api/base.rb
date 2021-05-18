@@ -3,11 +3,12 @@
 # @note Originally the warehouse was built nightly by calls the the v0.5 API.
 #       When the warehouse was switched to a queue based system the same JSON
 #       exposed via the API was used to form the message payload.
-class Api::Base
+class Api::Base # rubocop:todo Metrics/ClassLength
   UNSERIALIZED_COLUMNS = [:descriptor_fields].freeze
 
   class_attribute :includes
   self.includes = []
+
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
   #
   # Basically this is in a transition as I move more of the behaviour of the API into these model classes,
@@ -38,7 +39,10 @@ class Api::Base
   # in lib/api_tools.rb, as well as in the Api::AssetsController.
   #++
   class << self
-    def to_hash(object)
+    # rubocop:todo Metrics/PerceivedComplexity
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
+    def to_hash(object) # rubocop:todo Metrics/CyclomaticComplexity
       # If the object is nil we get a chance to use the 'default' object that was specified.  By
       # default the "default" object is nil, but you can override it for associations through the
       # with_association(:name, :if_nil_use => :some_method).
@@ -60,19 +64,22 @@ class Api::Base
       end
       nested_has_many_associations.each do |_association, helper|
         values = helper.target(object)
-        all_targets = values.map do |value|
-          helper.newer_than(value, json_attributes['updated_at']) do |timestamp|
-            json_attributes['updated_at'] = timestamp
+        all_targets =
+          values.map do |value|
+            helper.newer_than(value, json_attributes['updated_at']) do |timestamp|
+              json_attributes['updated_at'] = timestamp
+            end
+            helper.to_hash(value)
           end
-          helper.to_hash(value)
-        end
         json_attributes.update(helper.alias.to_s => all_targets)
       end
-      extra_json_attribute_handlers.each do |handler|
-        handler.call(object, json_attributes)
-      end
+      extra_json_attribute_handlers.each { |handler| handler.call(object, json_attributes) }
       json_attributes
     end
+
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
 
     def to_hash_for_list(object)
       raise StandardError, 'The object is nil, which is highly unexpected!' if object.nil?
@@ -92,7 +99,10 @@ class Api::Base
   class << self
     # The default behaviour for any model I/O is to write out all of the columns as they appear.  Some of
     # the columns are ignored, a few manipulated, but mostly it's a direct copy.
-    def render_class_for_model(model)
+    # rubocop:todo Metrics/PerceivedComplexity
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
+    def render_class_for_model(model) # rubocop:todo Metrics/CyclomaticComplexity
       render_class = Class.new(self)
 
       # NOTE: It's quite annoying that you don't have any access to the inheritable class attributes from
@@ -108,24 +118,20 @@ class Api::Base
           json_attributes['uuid'] = object.uuid if object.respond_to?(:uuid)
 
           # Users and roles
-          if object.respond_to?(:user)
-            json_attributes['user'] = object.user.nil? ? 'unknown' : object.user.login
-          end
+          json_attributes['user'] = object.user.nil? ? 'unknown' : object.user.login if object.respond_to?(:user)
           if object.respond_to?(:roles)
             object.roles.each do |role|
-              json_attributes[role.name.underscore] = role.users.map do |user|
-                {
-                  login: user.login,
-                  email: user.email,
-                  name: user.name
-                }
-              end
+              json_attributes[role.name.underscore] =
+                role.users.map { |user| { login: user.login, email: user.email, name: user.name } }
             end
           end
         end
       end
       render_class
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
   end
 
   # The model class that our I/O methods are responsible for
@@ -141,7 +147,8 @@ class Api::Base
 
   # TODO[xxx]: Need to warn about 'id' not being 'internal_id'
   def self.map_attribute_to_json_attribute(attribute, json_attribute = attribute)
-    self.attribute_to_json_attribute_mappings = attribute_to_json_attribute_mappings.merge(attribute.to_sym => json_attribute.to_s)
+    self.attribute_to_json_attribute_mappings =
+      attribute_to_json_attribute_mappings.merge(attribute.to_sym => json_attribute.to_s)
   end
 
   # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
@@ -152,7 +159,9 @@ class Api::Base
   class_attribute :nested_has_many_associations
   self.nested_has_many_associations = {}
 
-  def self.newer_than(object, timestamp)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/AbcSize
+  def self.newer_than(object, timestamp) # rubocop:todo Metrics/CyclomaticComplexity
     return if object.nil? || timestamp.nil?
 
     modified, object_timestamp = false, ((object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp)
@@ -161,12 +170,13 @@ class Api::Base
       helper.newer_than(helper.target(object), timestamp) { |t| timestamp, modified = t, true }
     end
     nested_has_many_associations.each do |_association, helper|
-      helper.target(object).each do |child|
-        helper.newer_than(child, timestamp) { |t| timestamp, modified = t, true }
-      end
+      helper.target(object).each { |child| helper.newer_than(child, timestamp) { |t| timestamp, modified = t, true } }
     end
     yield(timestamp) if modified
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/PerceivedComplexity
 
   # Returns the default object to use (by default this is 'nil') and can be overridden by passing
   # ':if_nil_use => :some_function_that_returns_default_object' to with_association.
@@ -174,7 +184,8 @@ class Api::Base
     nil
   end
 
-  def self.with_association(association, options = {}, &block)
+  # rubocop:todo Metrics/MethodLength
+  def self.with_association(association, options = {}, &block) # rubocop:todo Metrics/AbcSize
     association_helper = Class.new(Api::Base)
     association_helper.class_eval(&block)
     association_helper.singleton_class.class_eval do
@@ -190,7 +201,10 @@ class Api::Base
     associations[association.to_sym] = association_helper
   end
 
-  def self.with_nested_has_many_association(association, options = {}, &block)
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def self.with_nested_has_many_association(association, options = {}, &block) # rubocop:todo Metrics/AbcSize
     association_helper = Class.new(Api::Base)
     association_helper.class_eval(&block)
     association_helper.singleton_class.class_eval do
@@ -204,6 +218,8 @@ class Api::Base
     self.nested_has_many_associations = Hash.new if nested_has_many_associations.empty?
     nested_has_many_associations[association.to_sym] = association_helper
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def self.performs_lookup?
     !!lookup_by
@@ -242,7 +258,8 @@ class Api::Base
       convert_json_attributes_to_attributes(params[model_class.name.underscore])
     end
 
-    def convert_json_attributes_to_attributes(json_attributes)
+    # rubocop:todo Metrics/MethodLength
+    def convert_json_attributes_to_attributes(json_attributes) # rubocop:todo Metrics/AbcSize
       return {} if json_attributes.blank?
 
       attributes = {}
@@ -262,7 +279,10 @@ class Api::Base
       attributes
     end
 
-    def json_attribute_for_attribute(attribute_or_association, *rest)
+    # rubocop:enable Metrics/MethodLength
+
+    # rubocop:todo Metrics/MethodLength
+    def json_attribute_for_attribute(attribute_or_association, *rest) # rubocop:todo Metrics/AbcSize
       json_attribute = attribute_to_json_attribute_mappings[attribute_or_association.to_sym]
       if json_attribute.blank?
         # If we have reached the end of the line, and the attribute_or_association is for what looks like
@@ -281,5 +301,6 @@ class Api::Base
 
       json_attribute
     end
+    # rubocop:enable Metrics/MethodLength
   end
 end

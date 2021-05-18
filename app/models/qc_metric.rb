@@ -10,10 +10,7 @@ class QcMetric < ApplicationRecord # rubocop:todo Style/Documentation
     'manually_failed' => 'manually_failed'
   }.freeze
 
-  PROCEED_TRANSLATION = {
-    true => 'Y',
-    false => 'N'
-  }.freeze
+  PROCEED_TRANSLATION = { true => 'Y', false => 'N' }.freeze
 
   new_state 'passed'
   new_state 'failed', passed: false
@@ -31,17 +28,13 @@ class QcMetric < ApplicationRecord # rubocop:todo Style/Documentation
 
   scope :with_asset_ids, ->(ids) { where(asset_id: ids) }
 
-  scope :for_product, ->(product) {
-    joins(qc_report: :product_criteria)
-      .where(product_criteria: { product_id: product })
-  }
+  scope :for_product,
+        ->(product) { joins(qc_report: :product_criteria).where(product_criteria: { product_id: product }) }
 
-  scope :stock_metric, ->() {
-    joins(qc_report: :product_criteria)
-      .where(product_criteria: { stage: ProductCriteria::STAGE_STOCK })
-  }
+  scope :stock_metric,
+        -> { joins(qc_report: :product_criteria).where(product_criteria: { stage: ProductCriteria::STAGE_STOCK }) }
 
-  scope :most_recent_first, ->() { order('created_at DESC, id DESC') }
+  scope :most_recent_first, -> { order('created_at DESC, id DESC') }
 
   before_save :update_aliquot_quality
 
@@ -103,15 +96,11 @@ class QcMetric < ApplicationRecord # rubocop:todo Style/Documentation
 
   def decision_to_manual_state(decision)
     hash = QC_DECISION_TRANSITIONS
-    hash[decision].tap do |v|
-      raise(InvalidValue, value_error_message(decision, hash.keys)) if v.nil?
-    end
+    hash[decision].tap { |v| raise(InvalidValue, value_error_message(decision, hash.keys)) if v.nil? }
   end
 
   def human_to_bool(hash, choice)
-    hash.key(choice).tap do |v|
-      raise(InvalidValue, value_error_message(choice, hash.values)) if v.nil?
-    end
+    hash.key(choice).tap { |v| raise(InvalidValue, value_error_message(choice, hash.values)) if v.nil? }
   end
 
   def value_error_message(decision, accepted_list)

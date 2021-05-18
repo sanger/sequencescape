@@ -43,8 +43,7 @@ class Admin::PrimerPanelsController < ApplicationController # rubocop:todo Style
   private
 
   def default_programs
-    { 'pcr 1' => { 'name' => nil, 'duration' => nil },
-      'pcr 2' => { 'name' => nil, 'duration' => nil } }
+    { 'pcr 1' => { 'name' => nil, 'duration' => nil }, 'pcr 2' => { 'name' => nil, 'duration' => nil } }
   end
 
   def discover_primer_panel
@@ -52,7 +51,8 @@ class Admin::PrimerPanelsController < ApplicationController # rubocop:todo Style
   end
 
   def primer_panel_params
-    params.require(:primer_panel).permit(:name, :snp_count, programs: [{ 'pcr 1': %i[name duration],
-                                                                         'pcr 2': %i[name duration] }])
+    params
+      .require(:primer_panel)
+      .permit(:name, :snp_count, programs: [{ 'pcr 1': %i[name duration], 'pcr 2': %i[name duration] }])
   end
 end

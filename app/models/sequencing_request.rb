@@ -22,7 +22,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   before_validation :clear_cross_projects
   def clear_cross_projects
     self.initial_project = nil if submission.try(:cross_project?)
-    self.initial_study   = nil if submission.try(:cross_study?)
+    self.initial_study = nil if submission.try(:cross_study?)
   end
   private :clear_cross_projects
 
@@ -42,18 +42,17 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   end
 
   # Returns true if a request is read for batching
-  def ready?
+  def ready? # rubocop:todo Metrics/CyclomaticComplexity
     # Reject any requests with missing or empty assets.
     # We use most tagged aliquot here, as its already loaded.
     return false if asset.nil? || asset.most_tagged_aliquot.nil?
+
     # Rejects any assets which haven't been scanned in
     return false if asset.scanned_in_date.blank?
 
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
-    upstream_requests.empty? ||
-      upstream_requests.all?(&:closed?) &&
-        upstream_requests.any?(&:passed?)
+    upstream_requests.empty? || upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?)
   end
 
   def self.delegate_validator

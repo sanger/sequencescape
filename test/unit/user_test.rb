@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class UserTest < ActiveSupport::TestCase
+class UserTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   context 'A User' do
     context 'authenticate' do
       setup do
@@ -22,9 +22,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'is an administrator' do
-      setup do
-        @user = create :admin
-      end
+      setup { @user = create :admin }
 
       should 'be able to access admin functions' do
         assert @user.administrator?
@@ -36,9 +34,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'is a manager' do
-      setup do
-        @user = create :manager
-      end
+      setup { @user = create :manager }
 
       should 'not be able to access admin functions' do
         assert_not @user.administrator?
@@ -54,9 +50,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'is an owner' do
-      setup do
-        @user = create :owner
-      end
+      setup { @user = create :owner }
 
       should 'not be able to access admin functions' do
         assert_not @user.administrator?
@@ -119,9 +113,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'without a swipecard_code' do
-      setup do
-        @user = create :user
-      end
+      setup { @user = create :user }
 
       should 'not have a swipecard code' do
         assert_equal false, @user.swipecard_code?
@@ -134,9 +126,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'is a data_access_coordinator' do
-      setup do
-        @user = create :data_access_coordinator
-      end
+      setup { @user = create :data_access_coordinator }
 
       should 'be able to access data_access_coordinator functions' do
         assert @user.data_access_coordinator?

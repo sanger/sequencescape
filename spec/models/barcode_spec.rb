@@ -113,7 +113,7 @@ describe Barcode, type: :model do
     let(:barcode) { build :sanger_ean13, barcode: barcode_value, format: barcode_format }
 
     let(:barcode_value) { 'DN12345U' }
-    let(:number) { 12345 }
+    let(:number) { 12_345 }
     let(:barcode_prefix) { 'DN' }
     let(:suffix) { 'U' }
     let(:barcode_format) { 'sanger_ean13' }
@@ -146,7 +146,7 @@ describe Barcode, type: :model do
     let(:barcode) { build :sanger_code39, barcode: barcode_value, format: barcode_format }
 
     let(:barcode_value) { 'DN12345U' }
-    let(:number) { 12345 }
+    let(:number) { 12_345 }
     let(:barcode_prefix) { 'DN' }
     let(:suffix) { 'U' }
     let(:barcode_format) { 'sanger_code39' }
@@ -180,7 +180,7 @@ describe Barcode, type: :model do
 
     let(:barcode_value) { 'WG0010602-DNA' }
     let(:barcode_format) { 'infinium' }
-    let(:number) { 10602 }
+    let(:number) { 10_602 }
     let(:barcode_prefix) { 'WG' }
     let(:suffix) { 'DNA' }
     let(:human_barcode) { 'WG0010602-DNA' }
@@ -233,7 +233,7 @@ describe Barcode, type: :model do
 
     let(:barcode_value) { 'RNA12345' }
     let(:barcode_format) { 'uk_biocentre_v3' }
-    let(:number) { 12345 }
+    let(:number) { 12_345 }
     let(:barcode_prefix) { 'RNA' }
     let(:suffix) { nil }
     let(:human_barcode) { 'RNA12345' }
@@ -262,7 +262,7 @@ describe Barcode, type: :model do
 
     let(:barcode_value) { 'EXT_135432_D' }
     let(:barcode_format) { 'external' }
-    let(:number) { 135432 }
+    let(:number) { 135_432 }
     let(:barcode_prefix) { 'EXT_' }
     let(:suffix) { '_D' }
     let(:human_barcode) { 'EXT_135432_D' }
@@ -312,13 +312,7 @@ describe Barcode, type: :model do
     let(:code39_barcode) { 'CGAP-ABC123' }
     let(:prefix) { nil }
 
-    let(:summary) do
-      {
-        number: 'ABC12',
-        prefix: 'CGAP-',
-        machine_barcode: 'CGAP-ABC123'
-      }
-    end
+    let(:summary) { { number: 'ABC12', prefix: 'CGAP-', machine_barcode: 'CGAP-ABC123' } }
 
     it_behaves_like 'a basic barcode'
     it_behaves_like 'not an ean13 barcode'

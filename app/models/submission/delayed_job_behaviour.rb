@@ -8,10 +8,9 @@ module Submission::DelayedJobBehaviour # rubocop:todo Style/Documentation
     Delayed::Job.enqueue SubmissionBuilderJob.new(id), priority: default_priority - priority
   end
 
-  def build_batch
-    ActiveRecord::Base.transaction do
-      finalize_build!
-    end
+  # rubocop:todo Metrics/MethodLength
+  def build_batch # rubocop:todo Metrics/AbcSize
+    ActiveRecord::Base.transaction { finalize_build! }
   rescue ActiveRecord::StatementInvalid => e
     # If an SQL problems occurs, it's more likely that's it's
     # a one shot one, e.g. timeout , deadlock etc ...
@@ -27,6 +26,8 @@ module Submission::DelayedJobBehaviour # rubocop:todo Style/Documentation
     Rails.logger.error(e.backtrace)
     fail_set_message_and_save("#{e.message}\n#{e.backtrace.join("\n")}")
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def finalize_build!
     process!

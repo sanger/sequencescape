@@ -8,14 +8,16 @@ FactoryBot.define do
 
     factory :standard_accession_tag_list do
       tags do
-        [build(:sample_taxon_id_accession_tag),
-         build(:sample_common_name_accession_tag),
-         build(:gender_accession_tag),
-         build(:phenotype_accession_tag),
-         build(:donor_id_accession_tag),
-         build(:sample_public_name_accession_tag),
-         build(:disease_state_accession_tag),
-         build(:rnai_accession_tag)].index_by(&:name)
+        [
+          build(:sample_taxon_id_accession_tag),
+          build(:sample_common_name_accession_tag),
+          build(:gender_accession_tag),
+          build(:phenotype_accession_tag),
+          build(:donor_id_accession_tag),
+          build(:sample_public_name_accession_tag),
+          build(:disease_state_accession_tag),
+          build(:rnai_accession_tag)
+        ].index_by(&:name)
       end
     end
 

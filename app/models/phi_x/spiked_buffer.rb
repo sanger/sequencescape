@@ -10,15 +10,20 @@ class PhiX::SpikedBuffer
   #                  Will be appended with #n to distinguish multiple tubes.
   #                  eg. ('Tube name #1', 'Tube name #2')
   attr_accessor :name
+
   # @return [String] The barcode of the LibraryTube from which the SpikedBuffer
   # has been created
   attr_accessor :parent_barcode
+
   # @return [Float] The concentration of the created library in nM
   attr_accessor :concentration
+
   # @return [Float] The volume of the created library in ul
   attr_accessor :volume
+
   # @return [Integer] The number of {SpikedBuffer library tubes} to create
   attr_accessor :number
+
   # @return [Tube] PhiX containing parent tube. If not provided will look up via the parent_barcode
   attr_writer :parent
 
@@ -61,8 +66,7 @@ class PhiX::SpikedBuffer
   # The parent MUST contain one aliquot, and it MUST be a PhiX sample
   # This MAY be a stock, or a previously created spiked buffer
   def parent_contains_phi_x
-    return true if parent.aliquots.one? &&
-                   parent.aliquots.all? { |aliquot| aliquot.sample == PhiX.sample }
+    return true if parent.aliquots.one? && parent.aliquots.all? { |aliquot| aliquot.sample == PhiX.sample }
 
     errors.add(:parent_barcode, 'does not contain PhiX')
   end
@@ -83,16 +87,21 @@ class PhiX::SpikedBuffer
   # Creates a qc_result to set the concentration (uses molarity as we're in nM not ng/ul)
   # Creates a qc_result to set the volume
   # Transfers aliquots from the parent
-  def generate_spiked_buffers
+  # rubocop:todo Metrics/MethodLength
+  def generate_spiked_buffers # rubocop:todo Metrics/AbcSize
     Array.new(number.to_i) do |index|
-      spiked_buffer = PhiX.spiked_buffer_purpose.create!(name: "#{name} ##{index + 1}") do |tube|
-        receptacle = tube.receptacle
-        receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
-        receptacle.qc_results.build(key: 'volume', value: volume, units: 'ul')
-        receptacle.transfer_requests_as_target.build(asset: parent.receptacle, target_asset: receptacle)
-      end
+      spiked_buffer =
+        PhiX
+          .spiked_buffer_purpose
+          .create!(name: "#{name} ##{index + 1}") do |tube|
+            receptacle = tube.receptacle
+            receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
+            receptacle.qc_results.build(key: 'volume', value: volume, units: 'ul')
+            receptacle.transfer_requests_as_target.build(asset: parent.receptacle, target_asset: receptacle)
+          end
       parent.children << spiked_buffer
       spiked_buffer
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

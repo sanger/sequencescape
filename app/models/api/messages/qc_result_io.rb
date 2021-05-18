@@ -46,9 +46,7 @@ class Api::Messages::QcResultIO < Api::Base
     map_attribute_to_json_attribute(:external_identifier, 'id_pool_lims')
     with_nested_has_many_association(:aliquots) do
       map_attribute_to_json_attribute(:library_identifier, 'id_library_lims')
-      with_association(:sample) do
-        map_attribute_to_json_attribute(:uuid, 'sample_uuid')
-      end
+      with_association(:sample) { map_attribute_to_json_attribute(:uuid, 'sample_uuid') }
     end
   end
 end

@@ -1,11 +1,12 @@
 class Parsers::QuantParser # rubocop:todo Style/Documentation
-  class InvalidFile < StandardError; end
+  class InvalidFile < StandardError
+  end
 
   HEADER_IDENTIFIER = 'Headers'.freeze
   LOCATION_HEADER = 'Well Location'.freeze
   COLUMN_MAPS = {
-    'concentration' => ['concentration', 'ng/ul'],
-    'molarity' => ['molarity', 'nmol/l'],
+    'concentration' => %w[concentration ng/ul],
+    'molarity' => %w[molarity nmol/l],
     'volume' => %w[volume ul],
     'rin' => %w[RIN RIN]
   }.freeze
@@ -66,12 +67,15 @@ class Parsers::QuantParser # rubocop:todo Style/Documentation
   end
 
   def header_options
-    @header_options ||= headers_section.each_with_object([]).with_index do |(description, array), index|
-      key, units = column_maps[description&.strip&.downcase]
-      next if key.nil? # Our column is not one we are interested in
+    @header_options ||=
+      headers_section
+        .each_with_object([])
+        .with_index do |(description, array), index|
+          key, units = column_maps[description&.strip&.downcase]
+          next if key.nil? # Our column is not one we are interested in
 
-      array << [key, units, index]
-    end
+          array << [key, units, index]
+        end
   end
 
   def qc_values_for_row(row)

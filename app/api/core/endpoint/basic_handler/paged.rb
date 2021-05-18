@@ -14,9 +14,7 @@ module Core::Endpoint::BasicHandler::Paged # rubocop:todo Style/Documentation
   ].freeze
 
   def actions(object, options)
-    super.tap do |actions|
-      actions.merge!(pages_to_actions(object, options)) if options[:handled_by] == self
-    end
+    super.tap { |actions| actions.merge!(pages_to_actions(object, options)) if options[:handled_by] == self }
   end
   private :actions
 
@@ -47,13 +45,11 @@ module Core::Endpoint::BasicHandler::Paged # rubocop:todo Style/Documentation
   def page_of_results(target, page = 1, model = target)
     raise ActiveRecord::RecordNotFound, 'before the start of the results' if page <= 0
 
-    target.paginate(
-      page: page,
-      per_page: results_per_page,
-      total_entries: model.count(:all)
-    ).tap do |results|
-      raise ActiveRecord::RecordNotFound, 'past the end of the results' if (page > 1) && (page > results.total_pages)
-    end
+    target
+      .paginate(page: page, per_page: results_per_page, total_entries: model.count(:all))
+      .tap do |results|
+        raise ActiveRecord::RecordNotFound, 'past the end of the results' if (page > 1) && (page > results.total_pages)
+      end
   end
   private :page_of_results
 

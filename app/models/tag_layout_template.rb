@@ -24,12 +24,13 @@ class TagLayoutTemplate < ApplicationRecord
   # Create a TagLayout instance that does the actual work of laying out the tags.
   def create!(attributes = {}, &block)
     new_tag_layout_attributes = attributes.except(:enforce_uniqueness).merge(tag_layout_attributes)
+
     # By default if not overridden, dual indexed tag template enforce their uniqueness
     # We use fetch here, as both nil and false are expected values
     enforce_uniqueness = attributes.fetch(:enforce_uniqueness, tag2_group.present?)
-    TagLayout.create!(new_tag_layout_attributes, &block).tap do |tag_layout|
-      record_template_use(tag_layout.plate, enforce_uniqueness)
-    end
+    TagLayout
+      .create!(new_tag_layout_attributes, &block)
+      .tap { |tag_layout| record_template_use(tag_layout.plate, enforce_uniqueness) }
   end
 
   def tag_group_name=(name)
@@ -61,8 +62,11 @@ class TagLayoutTemplate < ApplicationRecord
 
   def record_template_use(plate, enforce_uniqueness)
     plate.submissions.each do |submission|
-      TagLayout::TemplateSubmission.create!(submission: submission, tag_layout_template: self,
-                                            enforce_uniqueness: enforce_uniqueness)
+      TagLayout::TemplateSubmission.create!(
+        submission: submission,
+        tag_layout_template: self,
+        enforce_uniqueness: enforce_uniqueness
+      )
     end
   end
 end

@@ -30,8 +30,7 @@ class AssetLink < ApplicationRecord
   self.per_page = 500
   self.lazy_uuid_generation = true
 
-  def destroy!
-  end
+  def destroy!; end
 
   module Associations # rubocop:todo Style/Documentation
     def self.included(base)
@@ -48,11 +47,12 @@ class AssetLink < ApplicationRecord
     end
 
     module ClassMethods # rubocop:todo Style/Documentation
-      def has_one_as_child(name, scope)
+      def has_one_as_child(name, scope) # rubocop:todo Metrics/MethodLength
         plural_name = name.to_s.pluralize.to_sym
         has_many(plural_name, scope, through: :links_as_child, source: :ancestor)
         line = __LINE__ + 1
-        class_eval("
+        class_eval(
+          "
           def #{name}
             #{plural_name}.first
           end
@@ -67,7 +67,10 @@ class AssetLink < ApplicationRecord
           def has_#{name}?
             #{name}.present?
           end
-        ", __FILE__, line)
+        ",
+          __FILE__,
+          line
+        )
       end
     end
   end

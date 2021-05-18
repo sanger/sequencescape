@@ -3,8 +3,8 @@ module QcMetric::QcState # rubocop:todo Style/Documentation
 
   def new_state(name, options = {})
     @states ||= {}
-    @states[name] = State.new(name, options.fetch(:automatic, true), options.fetch(:passed, true),
-                              options.fetch(:proceedable, true))
+    @states[name] =
+      State.new(name, options.fetch(:automatic, true), options.fetch(:passed, true), options.fetch(:proceedable, true))
   end
 
   def valid_states

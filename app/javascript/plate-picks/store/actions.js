@@ -4,27 +4,26 @@
 // Latest versions of Chrome (49) and Firefox (52.9.0) on windows XP have
 // native support, which covers out main need for legacy support.
 // So this polyfill will only really be useful for anyone attempting to use IE.
-import 'whatwg-fetch'
+import "whatwg-fetch";
 
-const PLATE_PATH = '/plate_picks/plates/'
-const BATCH_PATH = '/plate_picks/batches/'
+const PLATE_PATH = "/plate_picks/plates/";
+const BATCH_PATH = "/plate_picks/batches/";
 
 // Private:
 // Extracts pick information from batch and adds it to the plate
-async function processPicks({commit, dispatch}, batch) {
-  const pick_ids = []
+async function processPicks({ commit, dispatch }, batch) {
+  const pick_ids = [];
   for (const pick of batch.picks) {
-    const id = (await dispatch('nextPickId')).toString()
-    const new_pick = { ...pick, id, short: `${id}` }
-    pick_ids.push(id)
-    commit('updatePick', new_pick)
+    const id = (await dispatch("nextPickId")).toString();
+    const new_pick = { ...pick, id, short: `${id}` };
+    pick_ids.push(id);
+    commit("updatePick", new_pick);
     for (const plate of pick.plates) {
-      commit('addPickToPlate', { plate: plate, batch: batch.id, pick: { id } })
+      commit("addPickToPlate", { plate: plate, batch: batch.id, pick: { id } });
     }
   }
-  return pick_ids
+  return pick_ids;
 }
-
 
 /**
  * Requests plate_barcode from the server.
@@ -37,12 +36,12 @@ async function processPicks({commit, dispatch}, batch) {
  */
 const plateRequest = async (plate_barcode) => {
   try {
-    return await window.fetch(PLATE_PATH + encodeURIComponent(plate_barcode), {})
+    return await window.fetch(PLATE_PATH + encodeURIComponent(plate_barcode), {});
   } catch (error) {
-    console.error(error)
-    throw `Network Error: ${error.message}`
+    console.error(error);
+    throw `Network Error: ${error.message}`;
   }
-}
+};
 
 /**
  * Requests batch_id from the server.
@@ -56,12 +55,12 @@ const plateRequest = async (plate_barcode) => {
  */
 const batchRequest = async (batch_id) => {
   try {
-    return await window.fetch(BATCH_PATH + encodeURIComponent(batch_id), {})
+    return await window.fetch(BATCH_PATH + encodeURIComponent(batch_id), {});
   } catch (error) {
-    console.error(error)
-    throw `Network Error: ${error.message}`
+    console.error(error);
+    throw `Network Error: ${error.message}`;
   }
-}
+};
 
 /**
  * Extracts the payload from he response, updates the plate,
@@ -78,13 +77,13 @@ const batchRequest = async (batch_id) => {
  */
 const extractPlateJson = async (response) => {
   try {
-    const json = await response.json()
-    return json.plate
+    const json = await response.json();
+    return json.plate;
   } catch (e) {
-    console.error(e)
-    throw 'Unexpected response from the server. Contact support.'
+    console.error(e);
+    throw "Unexpected response from the server. Contact support.";
   }
-}
+};
 
 /**
  * Extract errors from a response object if available
@@ -94,84 +93,90 @@ const extractPlateJson = async (response) => {
  */
 const extractErrors = async (response) => {
   try {
-    const json = await response.json()
-    console.error('Error response with json', json)
-    return `${response.statusText}: ${json.errors}`
-  } catch(e) {
-    console.error('Error response without json', e)
-    return response.statusText
+    const json = await response.json();
+    console.error("Error response with json", json);
+    return `${response.statusText}: ${json.errors}`;
+  } catch (e) {
+    console.error("Error response without json", e);
+    return response.statusText;
   }
-}
+};
 
 // Actions handle asynchronous update of state, such as via calls to external apis
 // Exported for easy testing. See https://vuex.vuejs.org/guide/testing.html
 export default {
   plateBarcodeScan: async ({ commit, dispatch, state }, plate_barcode) => {
     // Firstly we record that the plate has been scanned.
-    commit('scanPlate', { barcode: plate_barcode })
-    const scanned_plate_id = state.scanStore[`_${plate_barcode}`].id
+    commit("scanPlate", { barcode: plate_barcode });
+    const scanned_plate_id = state.scanStore[`_${plate_barcode}`].id;
 
     // If we have an id, we don't need to fetch more plate info but we may have
     // batches to fetch
     if (scanned_plate_id) {
-      const scanned_plate = state.plates[scanned_plate_id]
+      const scanned_plate = state.plates[scanned_plate_id];
       // Don't fetch batches from control plates
-      if (!scanned_plate.control) { dispatch('fetchBatches', { ids: scanned_plate.batches }) }
+      if (!scanned_plate.control) {
+        dispatch("fetchBatches", { ids: scanned_plate.batches });
+      }
     } else {
       // We've not loaded the plate yet, so go fetch it.
       try {
-        const response = await plateRequest(plate_barcode)
+        const response = await plateRequest(plate_barcode);
 
         if (response.status === 200) {
-          const plate = await extractPlateJson(response)
-          commit('updatePlate', { ...plate, scanned: true })
-          commit('updateScanPlate', { barcode: plate_barcode, id: plate.id })
-          if (!plate.control) {  dispatch('fetchBatches', { ids: plate.batches }) }
+          const plate = await extractPlateJson(response);
+          commit("updatePlate", { ...plate, scanned: true });
+          commit("updateScanPlate", { barcode: plate_barcode, id: plate.id });
+          if (!plate.control) {
+            dispatch("fetchBatches", { ids: plate.batches });
+          }
         } else {
-          const error_message = await extractErrors(response)
-          throw error_message
+          const error_message = await extractErrors(response);
+          throw error_message;
         }
       } catch (error) {
         // We catch and log most expected errors where they occur, and re-throw with
         // a user-friendly error message. This handles displaying that
-        commit('updateScanPlate', { 'barcode': plate_barcode, errorMessage: error })
+        commit("updateScanPlate", { barcode: plate_barcode, errorMessage: error });
       }
     }
   },
   fetchBatches({ dispatch }, batch_details) {
-    for( const id of batch_details.ids) {
-      dispatch('fetchBatch', { id: `${id}` })
+    for (const id of batch_details.ids) {
+      dispatch("fetchBatch", { id: `${id}` });
     }
   },
   fetchBatch: async ({ commit, state, dispatch }, batch_attributes) => {
     // Add the batch to the list so that we can show a spinner
-    const batch_id = batch_attributes.id
-    const existingBatch = state.batches[`b${batch_id}`]
+    const batch_id = batch_attributes.id;
+    const existingBatch = state.batches[`b${batch_id}`];
     // We only want to trigger a lookup once, so back out if we already exist.
-    if (existingBatch) { return }
+    if (existingBatch) {
+      return;
+    }
 
     // Add the batch to the list so that we can show a spinner
-    commit('updateBatch', { id: batch_id })
+    commit("updateBatch", { id: batch_id });
 
     try {
-      const response = await batchRequest(batch_id)
+      const response = await batchRequest(batch_id);
 
       if (response.status === 200) {
-        const json = await response.json()
-        const picks = await processPicks({ commit, dispatch }, json.batch)
+        const json = await response.json();
+        const picks = await processPicks({ commit, dispatch }, json.batch);
 
-        commit('updateBatch', { ...json.batch, picks })
+        commit("updateBatch", { ...json.batch, picks });
       } else {
-        const error_message = await extractErrors(response)
-        throw error_message
+        const error_message = await extractErrors(response);
+        throw error_message;
       }
     } catch (error) {
-      console.error(error)
-      commit('updateBatch', { id: batch_id, errorMessage: error })
+      console.error(error);
+      commit("updateBatch", { id: batch_id, errorMessage: error });
     }
   },
-  nextPickId({commit, state}) {
-    commit('incrementPick')
-    return state.pickCount
-  }
-}
+  nextPickId({ commit, state }) {
+    commit("incrementPick");
+    return state.pickCount;
+  },
+};

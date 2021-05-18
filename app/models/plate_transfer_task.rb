@@ -2,9 +2,7 @@ class PlateTransferTask < Task # rubocop:todo Style/Documentation
   belongs_to :purpose
 
   def render_task(workflow, params)
-    ActiveRecord::Base.transaction do
-      workflow.render_plate_transfer_task(self, params)
-    end
+    ActiveRecord::Base.transaction { workflow.render_plate_transfer_task(self, params) }
   end
 
   def do_task(workflow, params)

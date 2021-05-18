@@ -1,7 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for AssetGroups
 class ::Endpoints::AssetGroups < ::Core::Endpoint::Base
-  model do
-  end
+  model {}
 
   instance do
     belongs_to(:study, json: 'study')

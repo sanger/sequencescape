@@ -16,8 +16,7 @@ class Admin::BaitLibrariesController < ApplicationController # rubocop:todo Styl
     @bait_library = BaitLibrary.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @bait_library = BaitLibrary.new(params[:bait_library])
@@ -45,9 +44,7 @@ class Admin::BaitLibrariesController < ApplicationController # rubocop:todo Styl
 
   def destroy
     respond_to do |format|
-      if @bait_library.hide
-        flash[:notice] = 'Bait Library was successfully deleted.'
-      end
+      flash[:notice] = 'Bait Library was successfully deleted.' if @bait_library.hide
       format.html { redirect_to(admin_bait_libraries_path) }
     end
   end

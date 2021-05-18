@@ -6,24 +6,17 @@ RSpec.describe Heron::Factories::Event, type: :model, heron: true, heron_events:
   let(:plate) { create :plate }
   let(:subjects) do
     [
-      build(:event_subject,
-            role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
-            subject_type: 'plate'),
-      build(:event_subject,
-            role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
-            subject_type: 'sample'),
-      build(:event_subject,
-            role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE,
-            subject_type: 'robot')
+      build(
+        :event_subject,
+        role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+        subject_type: 'plate'
+      ),
+      build(:event_subject, role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, subject_type: 'sample'),
+      build(:event_subject, role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, subject_type: 'robot')
     ]
   end
   let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
-  let(:params) do
-    { event: {
-      event_type: event_type,
-      subjects: subjects
-    } }
-  end
+  let(:params) { { event: { event_type: event_type, subjects: subjects } } }
 
   it 'is valid with all relevant attributes' do
     event = described_class.new(params, plate)
@@ -44,12 +37,12 @@ RSpec.describe Heron::Factories::Event, type: :model, heron: true, heron_events:
     context 'when missing one of the required subjects' do
       let(:subjects) do
         [
-          build(:event_subject,
-                role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
-                subject_type: 'plate'),
-          build(:event_subject,
-                role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
-                subject_type: 'sample')
+          build(
+            :event_subject,
+            role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+            subject_type: 'plate'
+          ),
+          build(:event_subject, role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, subject_type: 'sample')
         ]
       end
 
@@ -72,16 +65,12 @@ RSpec.describe Heron::Factories::Event, type: :model, heron: true, heron_events:
   describe '#save' do
     it 'persists the event if it is valid' do
       event = described_class.new(params, plate)
-      expect do
-        event.save
-      end.to change(BroadcastEvent, :count).by(1)
+      expect { event.save }.to change(BroadcastEvent, :count).by(1)
     end
 
     it 'does not persist if missing any required info' do
       event = described_class.new(params, nil)
-      expect do
-        event.save
-      end.not_to change(BroadcastEvent, :count)
+      expect { event.save }.not_to change(BroadcastEvent, :count)
     end
   end
 end

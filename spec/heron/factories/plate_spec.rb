@@ -3,22 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: true, heron_events: true do
-  let(:purpose) do
-    create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
-  end
-  let(:study) do
-    create(:study)
-  end
+  let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
+  let(:study) { create(:study) }
   let(:barcode) { '0000000001' }
-  let(:params) do
-    { purpose_uuid: purpose.uuid, barcode: barcode }
-  end
+  let(:params) { { purpose_uuid: purpose.uuid, barcode: barcode } }
 
   include BarcodeHelper
 
-  before do
-    mock_plate_barcode_service
-  end
+  before { mock_plate_barcode_service }
 
   context 'with valid params' do
     let(:plate_factory) { described_class.new(params) }
@@ -43,10 +35,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
 
     context 'without a barcode' do
       let(:params) { { purpose_uuid: purpose.uuid } }
-      let(:error_messages) do
-        ["Barcode can't be blank",
-         "The barcode '' is not a recognised format."]
-      end
+      let(:error_messages) { ["Barcode can't be blank", "The barcode '' is not a recognised format."] }
 
       it_behaves_like 'an invalid parameter'
     end
@@ -78,9 +67,7 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
     let(:plate_factory) { described_class.new(params) }
 
     it 'can persist a new plate' do
-      expect do
-        plate_factory.save
-      end.to change(Plate, :count).by(1)
+      expect { plate_factory.save }.to change(Plate, :count).by(1)
     end
 
     it 'the plate has a purpose' do
@@ -101,25 +88,35 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       let!(:sample) { create(:sample) }
       let(:wells) do
         {
-          A01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-          B01: { content: { phenotype: 'A phenotype', study_uuid: study.uuid } },
-          C01: { content: { sample_uuid: sample.uuid } }
+          A01: {
+            content: {
+              phenotype: 'A phenotype',
+              study_uuid: study.uuid
+            }
+          },
+          B01: {
+            content: {
+              phenotype: 'A phenotype',
+              study_uuid: study.uuid
+            }
+          },
+          C01: {
+            content: {
+              sample_uuid: sample.uuid
+            }
+          }
         }
       end
-      let(:params) do
-        { barcode: barcode, purpose_uuid: purpose.uuid, wells: wells }
-      end
+      let(:params) { { barcode: barcode, purpose_uuid: purpose.uuid, wells: wells } }
 
       it 'persists the plate' do
-        expect do
-          plate_factory.save
-        end.to change(Plate, :count).by(1)
+        expect { plate_factory.save }.to change(Plate, :count).by(1)
       end
 
       it 'creates the new samples' do
-        expect { plate_factory.save }.to change(Plate, :count).by(1).and(
-          change(Sample, :count).by(2).and(change(Aliquot, :count).by(3))
-        )
+        expect { plate_factory.save }.to change(Plate, :count)
+          .by(1)
+          .and(change(Sample, :count).by(2).and(change(Aliquot, :count).by(3)))
       end
 
       it 'allows you to fetch a unique list of study names' do
@@ -131,8 +128,15 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
       context 'when there is an error in the sample info' do
         let(:wells) do
           {
-            A01: { content: { wrong: 'wrong', study_uuid: study.uuid } },
-            C01: { content: [{ phenotype: 'right' }, { sample_uuid: sample.uuid, phenotype: 'wrong' }] }
+            A01: {
+              content: {
+                wrong: 'wrong',
+                study_uuid: study.uuid
+              }
+            },
+            C01: {
+              content: [{ phenotype: 'right' }, { sample_uuid: sample.uuid, phenotype: 'wrong' }]
+            }
           }
         end
 
@@ -140,45 +144,37 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
           expect(plate_factory).to be_invalid
         end
 
-        it 'stores the error message from samples' do # rubocop:todo RSpec/AggregateExamples
-          expect(plate_factory.tap(&:validate).errors.full_messages).to eq([
-            'Content a1 Wrong Unexisting field for sample or sample_metadata',
-            "Content c1, pos: 0 Study can't be blank",
-            'Content c1, pos: 1 Phenotype No other params can be added when sample uuid specified'
-          ])
+        it 'stores the error message from samples' do
+          # rubocop:todo RSpec/AggregateExamples
+          expect(plate_factory.tap(&:validate).errors.full_messages).to eq(
+            [
+              'Content a1 Wrong Unexisting field for sample or sample_metadata',
+              "Content c1, pos: 0 Study can't be blank",
+              'Content c1, pos: 1 Phenotype No other params can be added when sample uuid specified'
+            ]
+          )
         end
       end
     end
 
     context 'when declaring events' do
-      let(:params) do
-        { barcode: barcode, purpose_uuid: purpose.uuid, events: [event] }
-      end
+      let(:params) { { barcode: barcode, purpose_uuid: purpose.uuid, events: [event] } }
       let(:subjects) do
         [
-          build(:event_subject,
-                role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
-                subject_type: 'plate'),
-          build(:event_subject,
-                role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
-                subject_type: 'sample'),
-          build(:event_subject,
-                role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE,
-                subject_type: 'robot')
+          build(
+            :event_subject,
+            role_type: BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE,
+            subject_type: 'plate'
+          ),
+          build(:event_subject, role_type: BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, subject_type: 'sample'),
+          build(:event_subject, role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, subject_type: 'robot')
         ]
       end
       let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
-      let(:event) do
-        { event: {
-          event_type: event_type,
-          subjects: subjects
-        } }
-      end
+      let(:event) { { event: { event_type: event_type, subjects: subjects } } }
 
       it 'can persist the events' do
-        expect do
-          plate_factory.save
-        end.to change(BroadcastEvent, :count).by(1)
+        expect { plate_factory.save }.to change(BroadcastEvent, :count).by(1)
       end
     end
   end

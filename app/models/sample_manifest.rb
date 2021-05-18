@@ -15,7 +15,7 @@
 # All {Sample samples} in a given manifest will initially belong to a single
 # {Study}, although it is possible for them to become associated with additional
 # studies over time.
-class SampleManifest < ApplicationRecord
+class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
@@ -27,7 +27,8 @@ class SampleManifest < ApplicationRecord
   # to allow for:
   # 1) Subsequent serialization by the delayed job
   # 2) The addition of a 'too many errors' message
-  LIMIT_ERROR_LENGTH = 50000
+  LIMIT_ERROR_LENGTH = 50_000
+
   # In addition we truncate individual messages, this ensures that we don't
   # inadvertently filter out ALL our errors if the first message is especially long.
   # We don't re-use the figure above as that would prevent any display of subsequent
@@ -85,14 +86,19 @@ class SampleManifest < ApplicationRecord
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
-  delegate :printables, :acceptable_purposes, :acceptable_rack_purposes, :labware, :labware=,
-           :pending_external_library_creation_requests, :default_purpose, :default_tube_rack_purpose,
+  delegate :printables,
+           :acceptable_purposes,
+           :acceptable_rack_purposes,
+           :labware,
+           :labware=,
+           :pending_external_library_creation_requests,
+           :default_purpose,
+           :default_tube_rack_purpose,
            to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
 
-  def truncate_errors
+  def truncate_errors # rubocop:todo Metrics/MethodLength
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
-
       # First we truncate individual error messages. This ensures that it the first message is already
       # longer than out max limit, we still show something.
       full_last_errors = last_errors.map { |error| error.truncate(INDIVIDUAL_ERROR_LIMIT) }
@@ -109,7 +115,6 @@ class SampleManifest < ApplicationRecord
       end
 
       self.last_errors = full_last_errors
-
     end
   end
 
@@ -126,17 +131,23 @@ class SampleManifest < ApplicationRecord
   end
 
   # TODO[xxx] Consider index to make it faster
-  scope :pending_manifests, ->() {
-    order('sample_manifests.id DESC')
-      .joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"')
-      .where('documents.id IS NULL')
-  }
+  scope :pending_manifests,
+        -> {
+          order('sample_manifests.id DESC')
+            .joins(
+              'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"'
+            )
+            .where('documents.id IS NULL')
+        }
 
-  scope :completed_manifests, ->() {
-    order('sample_manifests.updated_at DESC')
-      .joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"')
-      .where('documents.id IS NOT NULL')
-  }
+  scope :completed_manifests,
+        -> {
+          order('sample_manifests.updated_at DESC')
+            .joins(
+              'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"'
+            )
+            .where('documents.id IS NOT NULL')
+        }
 
   def generate
     ActiveRecord::Base.transaction do
@@ -152,9 +163,9 @@ class SampleManifest < ApplicationRecord
   end
 
   def create_sample(sanger_sample_id)
-    Sample.create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id, sample_manifest: self).tap do |sample|
-      sample.events.created_using_sample_manifest!(user)
-    end
+    Sample
+      .create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id, sample_manifest: self)
+      .tap { |sample| sample.events.created_using_sample_manifest!(user) }
   end
 
   def created_broadcast_event
@@ -165,8 +176,13 @@ class SampleManifest < ApplicationRecord
     # We chunk samples into groups of 3000 to avoid issues with the column size in broadcast_events.properties
     # In practice we have 11 characters per sample with current id lengths. This allows for up to 21 characters
     updated_samples_ids.each_slice(SAMPLES_PER_EVENT) do |chunked_sample_ids|
-      BroadcastEvent::SampleManifestUpdated.create!(seed: self, user: user_updating_manifest,
-                                                    properties: { updated_samples_ids: chunked_sample_ids })
+      BroadcastEvent::SampleManifestUpdated.create!(
+        seed: self,
+        user: user_updating_manifest,
+        properties: {
+          updated_samples_ids: chunked_sample_ids
+        }
+      )
     end
   end
 

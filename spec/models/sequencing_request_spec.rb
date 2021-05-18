@@ -10,9 +10,7 @@ RSpec.describe SequencingRequest, type: :model do
     subject { sequencing_request.ready? }
 
     context 'with a reception event' do
-      setup do
-        library_tube.create_scanned_into_lab_event!(content: '2018-01-01')
-      end
+      setup { library_tube.create_scanned_into_lab_event!(content: '2018-01-01') }
 
       context 'with no upstream requests as target' do
         it { is_expected.to be true }
@@ -40,12 +38,12 @@ RSpec.describe SequencingRequest, type: :model do
     context 'with upstream requests' do
       before do
         library_tube.create_scanned_into_lab_event!(content: '2018-01-01')
-        create  :library_creation_request_for_testing_sequencing_requests,
-                target_asset: library_tube,
-                state: library_request_1_state
-        create  :library_creation_request_for_testing_sequencing_requests,
-                target_asset: library_tube,
-                state: library_request_2_state
+        create :library_creation_request_for_testing_sequencing_requests,
+               target_asset: library_tube,
+               state: library_request_1_state
+        create :library_creation_request_for_testing_sequencing_requests,
+               target_asset: library_tube,
+               state: library_request_2_state
       end
 
       # Nothing has happened yet!
@@ -113,6 +111,7 @@ RSpec.describe SequencingRequest, type: :model do
 
     context 'with a wrong unit' do
       let(:user_input) { '20 nM' }
+
       # We don't convert, as a wrong unit shows a deviation from SOP, and possibly
       # indicated that the user has input the WRONG concentration
 
@@ -121,6 +120,7 @@ RSpec.describe SequencingRequest, type: :model do
 
     context 'with unpredictable information' do
       let(:user_input) { '20 - 50 nM' }
+
       # Have some ranges in the database.
 
       it { is_expected.to eq nil }
@@ -128,6 +128,7 @@ RSpec.describe SequencingRequest, type: :model do
 
     context 'with lots of whitespace' do
       let(:user_input) { '  20    pM  ' }
+
       # Have some ranges in the database.
 
       it { is_expected.to eq 20.0 }

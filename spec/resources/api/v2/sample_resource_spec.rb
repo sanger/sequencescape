@@ -13,7 +13,8 @@ RSpec.describe Api::V2::SampleResource, type: :resource do
     expect(subject).to have_attribute :uuid
   end
 
-  it 'has sample metadata information' do # rubocop:todo RSpec/AggregateExamples
+  it 'has sample metadata information' do
+    # rubocop:todo RSpec/AggregateExamples
     expect(subject).to have_one(:sample_metadata).with_class_name('SampleMetadata')
   end
 end

@@ -7,7 +7,9 @@ require_relative 'globals'
 module ApplicationHelper # rubocop:todo Style/Documentation
   include Informatics::Globals
 
-  def add(type, link, options = nil)
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def add(type, link, options = nil) # rubocop:todo Metrics/CyclomaticComplexity
     o = Informatics::Support::Options.collect(options)
     l = Informatics::Support::Options.collect(link)
     case type
@@ -17,7 +19,8 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     when :back_menu
       @back_menu ||= Informatics::View::Menu::List.new
       @back_menu.add_item text: l.first_key, link: l.first_value
-    when :about, :title # Replaces :title
+    when :about, :title
+      # Replaces :title
       @about = link
     when :legend_option
       @legend = add_link(@legend, l, o, options)
@@ -27,19 +30,25 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+
   def logger
     Rails.logger
   end
 
   private
 
-  def add_link(menu, l, o, options)
+  def add_link(menu, l, o, options) # rubocop:todo Metrics/MethodLength
     menu ||= Informatics::View::Menu::List.new
     if options.nil?
       menu.add_item text: l.first_key, link: l.first_value
     elsif o.key_is_present?(:confirm)
       if o.key_is_present?(:method)
-        menu.add_item text: l.first_key, link: l.first_value, confirm: o.value_for(:confirm), method: o.value_for(:method)
+        menu.add_item text: l.first_key,
+                      link: l.first_value,
+                      confirm: o.value_for(:confirm),
+                      method: o.value_for(:method)
       else
         menu.add_item text: l.first_key, link: l.first_value, confirm: o.value_for(:confirm)
       end

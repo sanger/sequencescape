@@ -2,12 +2,25 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, sample_manifest_excel: true, sample_manifest: true do
+RSpec.describe SequencescapeExcel::ConditionalFormattingDefault,
+               type: :model,
+               sample_manifest_excel: true,
+               sample_manifest: true do
   context 'basic' do
     let(:options) do
-      { style: { bg_color: '82CAFA', type: :dxf },
-        options: { type: :cellIs, formula: 'FALSE', operator: :equal, priority: 1 },
-        type: 'a_type' }.with_indifferent_access
+      {
+        style: {
+          bg_color: '82CAFA',
+          type: :dxf
+        },
+        options: {
+          type: :cellIs,
+          formula: 'FALSE',
+          operator: :equal,
+          priority: 1
+        },
+        type: 'a_type'
+      }.with_indifferent_access
     end
 
     let(:conditional_formatting_default) { described_class.new(options) }
@@ -16,32 +29,45 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, s
       expect(conditional_formatting_default.type).to eq(options[:type].to_sym)
     end
 
-    it 'has some options' do # rubocop:todo RSpec/AggregateExamples
+    it 'has some options' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default.options).to eq(options[:options])
     end
 
-    it 'has some style' do # rubocop:todo RSpec/AggregateExamples
+    it 'has some style' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default.style).to eq(options[:style])
     end
 
-    it 'must not be an expression' do # rubocop:todo RSpec/AggregateExamples
+    it 'must not be an expression' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default).not_to be_expression
     end
 
-    it '#combine with conditional_formatting will produce correct options' do # rubocop:todo RSpec/AggregateExamples
+    it '#combine with conditional_formatting will produce correct options' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default.combine).to eq(options.except(:type))
     end
 
-    it 'be comparable' do # rubocop:todo RSpec/AggregateExamples
+    it 'be comparable' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default).to eq(described_class.new(options))
     end
   end
 
   context 'expression' do
     let(:options) do
-      { style: { bg_color: 'FF0000', type: :dxf },
-        options: { type: :expression, priority: 2 },
-        type: :another_type }.with_indifferent_access
+      {
+        style: {
+          bg_color: 'FF0000',
+          type: :dxf
+        },
+        options: {
+          type: :expression,
+          priority: 2
+        },
+        type: :another_type
+      }.with_indifferent_access
     end
     let(:conditional_formatting_default) { described_class.new(options) }
 
@@ -58,9 +84,17 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, type: :model, s
 
   context 'with formula' do
     let(:options) do
-      { style: { bg_color: 'FF0000', type: :dxf },
-        options: { type: :expression, priority: 2 },
-        type: :len }.with_indifferent_access
+      {
+        style: {
+          bg_color: 'FF0000',
+          type: :dxf
+        },
+        options: {
+          type: :expression,
+          priority: 2
+        },
+        type: :len
+      }.with_indifferent_access
     end
     let(:conditional_formatting_default) { described_class.new(options) }
 

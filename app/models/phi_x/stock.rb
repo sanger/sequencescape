@@ -10,11 +10,14 @@ class PhiX::Stock
   #                  Will be appended with #n to distinguish multiple tubes.
   #                  eg. ('Tube name #1', 'Tube name #2')
   attr_accessor :name
+
   # @return [String] The name for the set of tags to apply. eg. 'Single', 'Dual'
   #                  Valid options are taken from {PhiX.tag_option_names}
   attr_accessor :tags
+
   # @return [Float] The concentration of the created library in nM
   attr_accessor :concentration
+
   # @return [Integer] The number of {LibraryTube library tubes} to create
   attr_accessor :number
 
@@ -49,12 +52,14 @@ class PhiX::Stock
   # with name, followed by '#n' where n is the tube number (starting with 1)
   # Creates a qc_result to set the concentration (uses molarity as we're in nM not ng/ul)
   # Builds tagged PhiX aliquots
-  def generate_stocks
+  def generate_stocks # rubocop:todo Metrics/AbcSize
     Array.new(number.to_i) do |index|
-      PhiX.stock_purpose.create!(name: "#{name} ##{index + 1}") do |tube|
-        tube.receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
-        tube.receptacle.aliquots.build(sample: phi_x_sample, tag: i7_tag, tag2: i5_tag, library: tube)
-      end
+      PhiX
+        .stock_purpose
+        .create!(name: "#{name} ##{index + 1}") do |tube|
+          tube.receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
+          tube.receptacle.aliquots.build(sample: phi_x_sample, tag: i7_tag, tag2: i5_tag, library: tube)
+        end
     end
   end
 

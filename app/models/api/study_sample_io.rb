@@ -12,10 +12,8 @@ class Api::StudySampleIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, lambda {
-                                                  includes([:uuid_object, { study: :uuid_object },
-                                                            { sample: :uuid_object }])
-                                                }
+        scope :including_associations_for_json,
+              lambda { includes([:uuid_object, { study: :uuid_object }, { sample: :uuid_object }]) }
       end
     end
   end

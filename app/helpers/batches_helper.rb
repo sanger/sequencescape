@@ -4,7 +4,8 @@ module BatchesHelper # rubocop:todo Style/Documentation
   end
 
   # Used by both assets/show.xml.builder and batches/show.xml.builder
-  def output_aliquot(xml, aliquot)
+  # rubocop:todo Metrics/MethodLength
+  def output_aliquot(xml, aliquot) # rubocop:todo Metrics/AbcSize
     xml.sample(
       sample_id: aliquot.sample_id,
       library_id: aliquot.library_id,
@@ -15,24 +16,28 @@ module BatchesHelper # rubocop:todo Style/Documentation
       consent_withdrawn: aliquot.sample.consent_withdrawn?
     ) do
       # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
-      xml.tag!(:tag, tag_id: aliquot.tag.id) do
-        xml.index             aliquot.aliquot_index_value || aliquot.tag.map_id
-        xml.expected_sequence aliquot.tag.oligo
-        xml.tag_group_id      aliquot.tag.tag_group_id
-      end unless aliquot.tag.nil?
+      unless aliquot.tag.nil?
+        xml.tag!(:tag, tag_id: aliquot.tag.id) do
+          xml.index aliquot.aliquot_index_value || aliquot.tag.map_id
+          xml.expected_sequence aliquot.tag.oligo
+          xml.tag_group_id aliquot.tag.tag_group_id
+        end
+      end
 
-      xml.tag(tag2_id: aliquot.tag2.id) do
-        xml.expected_sequence aliquot.tag2.oligo
-        xml.tag_group_id      aliquot.tag2.tag_group_id
-      end unless aliquot.tag2.nil?
+      unless aliquot.tag2.nil?
+        xml.tag(tag2_id: aliquot.tag2.id) do
+          xml.expected_sequence aliquot.tag2.oligo
+          xml.tag_group_id aliquot.tag2.tag_group_id
+        end
+      end
 
-      xml.bait(id: aliquot.bait_library.id) do
-        xml.name aliquot.bait_library.name
-      end if aliquot.bait_library.present?
+      xml.bait(id: aliquot.bait_library.id) { xml.name aliquot.bait_library.name } if aliquot.bait_library.present?
 
       xml.insert_size(from: aliquot.insert_size.from, to: aliquot.insert_size.to) if aliquot.insert_size.present?
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def workflow_name(batch)
     return unless batch && batch.workflow
@@ -41,9 +46,9 @@ module BatchesHelper # rubocop:todo Style/Documentation
   end
 
   def batch_link(batch, options)
-    link_text = tag.strong("Batch #{batch.id} ") <<
-                tag.span(batch.pipeline.name, class: 'pipline-name') << ' ' <<
-                badge(batch.state, type: 'batch-state')
+    link_text =
+      tag.strong("Batch #{batch.id} ") << tag.span(batch.pipeline.name, class: 'pipline-name') << ' ' <<
+        badge(batch.state, type: 'batch-state')
     link_to(link_text, batch_path(batch), options)
   end
 end

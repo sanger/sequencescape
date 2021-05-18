@@ -16,11 +16,7 @@ RSpec.describe Order, type: :model do
     # specify a study.
 
     subject do
-      build :order,
-            assets: assets,
-            autodetect_studies_projects: autodetect_studies_projects,
-            study: nil,
-            project: nil
+      build :order, assets: assets, autodetect_studies_projects: autodetect_studies_projects, study: nil, project: nil
     end
 
     let(:assets) { [tube] }
@@ -61,9 +57,7 @@ RSpec.describe Order, type: :model do
     end
 
     context 'with the same asset in a different order' do
-      setup do
-        create :order, assets: [asset_a], template_name: 'other_template'
-      end
+      setup { create :order, assets: [asset_a], template_name: 'other_template' }
 
       it 'not detect duplicates' do
         expect(order.duplicates_within(1.month)).not_to be_truthy
@@ -74,7 +68,8 @@ RSpec.describe Order, type: :model do
       setup do
         @asset_b = create :sample_tube, sample: asset_a.samples.first
         @secondary_submission = create :submission
-        @secondary_order = create :order, assets: [@asset_b], template_name: shared_template, submission: @secondary_submission
+        @secondary_order =
+          create :order, assets: [@asset_b], template_name: shared_template, submission: @secondary_submission
       end
       it 'detect duplicates' do
         assert order.duplicates_within(1.month)

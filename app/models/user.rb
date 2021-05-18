@@ -5,7 +5,7 @@ require 'digest/sha1'
 
 # Represents Sequencescape users, used to regulate login as well as provide tracking of who did what.
 # While most users are internal, some are external.
-class User < ApplicationRecord
+class User < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Authentication
   extend EventfulRecord
   include Uuid::Uuidable
@@ -23,9 +23,12 @@ class User < ApplicationRecord
   has_many :submissions
   has_many :batches
   has_many :assigned_batches, class_name: 'Batch', foreign_key: :assignee_id, inverse_of: :assignee
-  has_many :pipelines, ->() { order('batches.id DESC').distinct }, through: :batches
+  has_many :pipelines, -> { order('batches.id DESC').distinct }, through: :batches
 
-  has_many :consent_withdrawn_sample_metadata, class_name: 'Sample::Metadata', foreign_key: 'user_id_of_consent_withdrawn', inverse_of: :user_of_consent_withdrawn
+  has_many :consent_withdrawn_sample_metadata,
+           class_name: 'Sample::Metadata',
+           foreign_key: 'user_id_of_consent_withdrawn',
+           inverse_of: :user_of_consent_withdrawn
 
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
@@ -36,15 +39,13 @@ class User < ApplicationRecord
   scope :with_login, ->(*logins) { where(login: logins.flatten) }
   scope :all_administrators, -> { joins(:roles).where(roles: { name: 'administrator' }) }
 
-  scope :owners, lambda {
-                   where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct
-                 }
+  scope :owners,
+        lambda { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct }
 
-  scope :with_user_code, lambda { |*codes|
-                           where(barcode: codes.map do |code|
-                                            Barcode.barcode_to_human(code)
-                                          end.compact).or(with_swipecard_code(codes))
-                         }
+  scope :with_user_code,
+        lambda { |*codes|
+          where(barcode: codes.map { |code| Barcode.barcode_to_human(code) }.compact).or(with_swipecard_code(codes))
+        }
 
   attr_accessor :password
 
@@ -91,11 +92,7 @@ class User < ApplicationRecord
   end
 
   def logout_path
-    if configatron.authentication == 'sanger-sso'
-      (configatron.sso_logout_url).to_s
-    else
-      '/logout'
-    end
+    configatron.authentication == 'sanger-sso' ? (configatron.sso_logout_url).to_s : '/logout'
   end
 
   def profile_incomplete?
@@ -136,7 +133,7 @@ class User < ApplicationRecord
 
   def new_api_key(length = 32)
     u = Digest::SHA1.hexdigest(login)[0..12]
-    k = Digest::SHA1.hexdigest(Time.zone.now.to_s + rand(12341234).to_s)[1..length]
+    k = Digest::SHA1.hexdigest(Time.zone.now.to_s + rand(12_341_234).to_s)[1..length]
     self.api_key = "#{u}-#{k}"
   end
 
@@ -152,13 +149,13 @@ class User < ApplicationRecord
   # These create and unset the fields required for remembering users between browser closes
   def remember_me
     self.remember_token_expires_at = 2.weeks.from_now.utc
-    self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
+    self.remember_token = encrypt("#{email}--#{remember_token_expires_at}")
     save(validate: false)
   end
 
   def forget_me
     self.remember_token_expires_at = nil
-    self.remember_token            = nil
+    self.remember_token = nil
     save(validate: false)
   end
 

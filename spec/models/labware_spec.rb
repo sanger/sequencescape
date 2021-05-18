@@ -3,9 +3,7 @@
 require 'rails_helper'
 require 'support/lab_where_client_helper'
 
-RSpec.configure do |c|
-  c.include LabWhereClientHelper
-end
+RSpec.configure { |c| c.include LabWhereClientHelper }
 
 RSpec.describe Labware, type: :model do
   describe '#assign_relationships' do
@@ -16,23 +14,24 @@ RSpec.describe Labware, type: :model do
       let(:parents) { [parent_labware_1, parent_labware_2] }
       let(:child_labware) { create(:labware) }
 
-      before do
-        labware.assign_relationships(parents, child_labware)
-      end
+      before { labware.assign_relationships(parents, child_labware) }
 
       it 'adds 2 parents to the labware' do
         expect(labware.reload.parents.size).to eq(2)
       end
 
-      it 'adds 1 child to the labware' do # rubocop:todo RSpec/AggregateExamples
+      it 'adds 1 child to the labware' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(labware.reload.children.size).to eq(1)
       end
 
-      it 'sets the correct child' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets the correct child' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(child_labware).to eq(labware.reload.children.first)
       end
 
-      it 'sets the correct parents' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets the correct parents' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(parents).to eq(labware.reload.parents)
       end
     end
@@ -54,15 +53,18 @@ RSpec.describe Labware, type: :model do
         expect(labware.reload.parents.size).to eq(2)
       end
 
-      it 'adds 1 child to the labware' do # rubocop:todo RSpec/AggregateExamples
+      it 'adds 1 child to the labware' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(labware.reload.children.size).to eq(1)
       end
 
-      it 'sets the correct child' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets the correct child' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(child_labware).to eq(labware.reload.children.first)
       end
 
-      it 'sets the correct parents' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets the correct parents' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(parents).to eq(labware.reload.parents)
       end
     end
@@ -104,14 +106,7 @@ RSpec.describe Labware, type: :model do
             plate_fluidigm_2.fluidigm_barcode
           ]
         end
-        let(:expected_result) do
-          [
-            plate_ean13_1,
-            plate_fluidigm_1,
-            plate_ean13_2,
-            plate_fluidigm_2
-          ]
-        end
+        let(:expected_result) { [plate_ean13_1, plate_fluidigm_1, plate_ean13_2, plate_fluidigm_2] }
 
         it 'finds plates' do
           expect(described_class.with_barcode(searched_barcodes)).to match_array(expected_result)
@@ -129,14 +124,7 @@ RSpec.describe Labware, type: :model do
             plate_fluidigm_2.fluidigm_barcode
           ]
         end
-        let(:expected_result) do
-          [
-            plate_ean13_1,
-            plate_fluidigm_1,
-            plate_ean13_2,
-            plate_fluidigm_2
-          ]
-        end
+        let(:expected_result) { [plate_ean13_1, plate_fluidigm_1, plate_ean13_2, plate_fluidigm_2] }
 
         it 'finds plates' do
           expect(described_class.with_barcode(searched_barcodes)).to match_array(expected_result)
@@ -154,12 +142,16 @@ RSpec.describe Labware, type: :model do
       let(:location) { 'Shelf 1' }
 
       setup do
-        stub_lwclient_labware_find_by_bc(lw_barcode: plate.human_barcode,
-                                         lw_locn_name: location,
-                                         lw_locn_parentage: parentage)
-        stub_lwclient_labware_find_by_bc(lw_barcode: plate.machine_barcode,
-                                         lw_locn_name: location,
-                                         lw_locn_parentage: parentage)
+        stub_lwclient_labware_find_by_bc(
+          lw_barcode: plate.human_barcode,
+          lw_locn_name: location,
+          lw_locn_parentage: parentage
+        )
+        stub_lwclient_labware_find_by_bc(
+          lw_barcode: plate.machine_barcode,
+          lw_locn_name: location,
+          lw_locn_parentage: parentage
+        )
       end
 
       it { is_expected.to eq "#{parentage} - #{location}" }
@@ -185,16 +177,8 @@ RSpec.describe Labware, type: :model do
       setup do
         stub_lwclient_labware_bulk_find_by_bc(
           [
-            {
-              lw_barcode: plate_1.human_barcode,
-              lw_locn_name: location_1,
-              lw_locn_parentage: parentage_1
-            },
-            {
-              lw_barcode: plate_2.human_barcode,
-              lw_locn_name: location_2,
-              lw_locn_parentage: parentage_2
-            }
+            { lw_barcode: plate_1.human_barcode, lw_locn_name: location_1, lw_locn_parentage: parentage_1 },
+            { lw_barcode: plate_2.human_barcode, lw_locn_name: location_2, lw_locn_parentage: parentage_2 }
           ]
         )
       end
@@ -205,7 +189,10 @@ RSpec.describe Labware, type: :model do
 
   describe 'labwhere_location' do
     it 'returns not found when a LabWhereClient error is raised' do
-      allow(LabWhereClient::Labware).to receive(:find_by_barcode).and_raise(StandardError, 'Timed out reading data from server')
+      allow(LabWhereClient::Labware).to receive(:find_by_barcode).and_raise(
+        StandardError,
+        'Timed out reading data from server'
+      )
 
       plate = create(:plate, barcode: 1)
       expect(plate.storage_location).to eq('Not found - There is a problem with Labwhere')

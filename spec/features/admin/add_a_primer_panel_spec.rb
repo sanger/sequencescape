@@ -24,7 +24,9 @@ describe 'Primer Panel' do
   it 'user can edit a primer panel' do
     login_user user
     visit edit_admin_primer_panel_path(primer_panel)
-    expect(page).to have_content('Editing a primer panel will affect all experiments where a primer panel has been used.')
+    expect(page).to have_content(
+      'Editing a primer panel will affect all experiments where a primer panel has been used.'
+    )
     expect(find_field('Name').value).to eq('Primer Panel 1')
     expect(find_field('SNP count').value).to eq('1')
     expect(find_field('primer_panel_programs_pcr_1_name').value).to eq('pcr1 program')

@@ -11,20 +11,27 @@
 # creation requests.
 class WorkCompletion < ApplicationRecord
   include Uuid::Uuidable
+
   # These includes are required for library passing
-  REQUEST_INCLUDES = [{ submission: :orders },
-                      { request_type: :request_type_validators },
-                      { target_asset: :aliquots },
-                      :order,
-                      :request_events,
-                      :request_metadata].freeze
+  REQUEST_INCLUDES = [
+    { submission: :orders },
+    { request_type: :request_type_validators },
+    { target_asset: :aliquots },
+    :order,
+    :request_events,
+    :request_metadata
+  ].freeze
+
   # The user who performed the state change
   belongs_to :user, optional: false
+
   # The plate on which requests were completed
   belongs_to :target, class_name: 'Labware', optional: false
+
   # The submissions which were passed. Mainly kept for auditing
   # purposes
   has_many :work_completions_submissions, dependent: :destroy
+
   # Submissions should already be valid at this point.
   # We don't re-validate for performance reasons.
   has_many :submissions, through: :work_completions_submissions, validate: false

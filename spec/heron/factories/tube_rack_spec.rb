@@ -13,20 +13,21 @@ RSpec.describe Heron::Factories::TubeRack, type: :model, heron: true do
       tubes: {
         'A01' => {
           barcode: 'FD00000001',
-          content: { supplier_name: 'PHEC-nnnnnnn1' }
+          content: {
+            supplier_name: 'PHEC-nnnnnnn1'
+          }
         },
         'A02' => {
           barcode: 'FD00000002',
-          content: { supplier_name: 'PHEC-nnnnnnn2' }
+          content: {
+            supplier_name: 'PHEC-nnnnnnn2'
+          }
         }
       }
     }
   end
 
-  let(:invalid_tube) do
-    {
-    }
-  end
+  let(:invalid_tube) { {} }
 
   let!(:purpose_96) { create(:tube_rack_purpose, target_type: 'TubeRack', size: 96) }
   let!(:purpose_48) { create(:tube_rack_purpose, target_type: 'TubeRack', size: 48) }

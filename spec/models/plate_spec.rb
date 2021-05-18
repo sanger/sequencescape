@@ -7,9 +7,7 @@ describe Plate do
   describe '#comments' do
     let(:plate) { create :plate, well_count: 2 }
 
-    before do
-      create :comment, commentable: plate, description: 'Comment on plate'
-    end
+    before { create :comment, commentable: plate, description: 'Comment on plate' }
 
     it 'allows comment addition' do
       plate.comments.create!(description: 'Works')
@@ -101,6 +99,7 @@ describe Plate do
       end
     end
   end
+
   # Pools are horrendously complicated
 
   describe '#pools' do
@@ -113,9 +112,15 @@ describe Plate do
         {
           target_submission.uuid => {
             wells: %w[A1 B1 C1],
-            insert_size: { from: 1, to: 20 },
-            library_type: { name: 'Standard' },
-            request_type: library_request_type.key, pcr_cycles: nil,
+            insert_size: {
+              from: 1,
+              to: 20
+            },
+            library_type: {
+              name: 'Standard'
+            },
+            request_type: library_request_type.key,
+            pcr_cycles: nil,
             pool_complete: false,
             for_multiplexing: false
           }
@@ -126,13 +131,7 @@ describe Plate do
     end
 
     context 'after passing' do
-      before do
-        WorkCompletion.create!(
-          user: create(:user),
-          target: target_plate,
-          submissions: [target_submission]
-        )
-      end
+      before { WorkCompletion.create!(user: create(:user), target: target_plate, submissions: [target_submission]) }
 
       context 'with downstream requests' do
         let(:expected_pools_hash) do
@@ -156,17 +155,29 @@ describe Plate do
           {
             target_submission.uuid => {
               wells: %w[A1 B1 C1],
-              insert_size: { from: 1, to: 20 },
-              library_type: { name: 'Standard' },
-              request_type: library_request_type.key, pcr_cycles: nil,
+              insert_size: {
+                from: 1,
+                to: 20
+              },
+              library_type: {
+                name: 'Standard'
+              },
+              request_type: library_request_type.key,
+              pcr_cycles: nil,
               pool_complete: true,
               for_multiplexing: false
             },
             decoy_submission.uuid => {
               wells: %w[A1 B1 C1],
-              insert_size: { from: 1, to: 20 },
-              library_type: { name: 'Standard' },
-              request_type: library_request_type.key, pcr_cycles: nil,
+              insert_size: {
+                from: 1,
+                to: 20
+              },
+              library_type: {
+                name: 'Standard'
+              },
+              request_type: library_request_type.key,
+              pcr_cycles: nil,
               pool_complete: false,
               for_multiplexing: false
             }

@@ -40,27 +40,21 @@ RSpec.describe Accession::Request, type: :model, accession: true do
 
     it 'returns nothing if an error is raised' do
       request = described_class.new(submission)
-      allow(request.resource).to receive(:post)
-        .with(submission.payload.files)
-        .and_raise(StandardError)
+      allow(request.resource).to receive(:post).with(submission.payload.files).and_raise(StandardError)
 
       expect(request.post).not_to be_accessioned
     end
 
     it 'returns a successful response if accessioning is successful' do
       request = described_class.new(submission)
-      allow(request.resource).to receive(:post)
-        .with(submission.payload.files)
-        .and_return(successful_accession_response)
+      allow(request.resource).to receive(:post).with(submission.payload.files).and_return(successful_accession_response)
 
       expect(request.post).to be_accessioned
     end
 
     it 'returns a failure response if accessioning fails' do
       request = described_class.new(submission)
-      allow(request.resource).to receive(:post)
-        .with(submission.payload.files)
-        .and_return(failed_accession_response)
+      allow(request.resource).to receive(:post).with(submission.payload.files).and_return(failed_accession_response)
 
       expect(request.post).not_to be_accessioned
     end

@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class BatchTest < ActiveSupport::TestCase
+class BatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   context 'A batch' do
     context 'on its own' do
       setup { @batch = build :batch }
@@ -19,9 +19,10 @@ class BatchTest < ActiveSupport::TestCase
   context 'modifying request positions within a batch' do
     setup do
       @pipeline = create :pipeline
+
       # Weirdly, this is actually FASTER than factories by a substantial amount
       @requests = Array.new(10) { @pipeline.request_types.last.create! }
-      @batch    = create :batch, requests: @requests, pipeline: @pipeline
+      @batch = create :batch, requests: @requests, pipeline: @pipeline
     end
 
     context '#assign_positions_to_requests!' do
@@ -37,9 +38,10 @@ class BatchTest < ActiveSupport::TestCase
         @batch.assign_positions_to_requests!(@requests.reverse.map(&:id))
 
         expected = @requests.reverse.each_with_index.map { |request, index| [request.id, index + 1] }.to_h
-        actual   = @batch.batch_requests.each_with_object({}) do |batch_request, memo|
-          memo[batch_request.request_id] = batch_request.position
-        end
+        actual =
+          @batch
+            .batch_requests
+            .each_with_object({}) { |batch_request, memo| memo[batch_request.request_id] = batch_request.position }
         assert_equal(expected, actual, 'Positions of requests do not match')
       end
     end
@@ -55,9 +57,7 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should 'be able to call start_requests' do
-      assert_nothing_raised do
-        @batch.start_requests
-      end
+      assert_nothing_raised { @batch.start_requests }
     end
 
     should 'have initially have a pending status for batch requests' do
@@ -93,7 +93,8 @@ class BatchTest < ActiveSupport::TestCase
     end
     context 'when a batch is not associated with any events, it' do
       should 'return false.' do
-        assert_equal false, @batch.has_event('Tube layout verified'),
+        assert_equal false,
+                     @batch.has_event('Tube layout verified'),
                      '#has_event should return false if an event is not found'
       end
     end
@@ -203,7 +204,11 @@ class BatchTest < ActiveSupport::TestCase
 
     setup do
       @pipeline_next = create :pipeline, name: 'Next pipeline'
-      @pipeline      = create :library_creation_pipeline, name: 'Pipeline for BatchTest', automated: false, next_pipeline_id: @pipeline_next.id
+      @pipeline =
+        create :library_creation_pipeline,
+               name: 'Pipeline for BatchTest',
+               automated: false,
+               next_pipeline_id: @pipeline_next.id
       @pipeline_qc = create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_next.id
     end
 
@@ -218,9 +223,7 @@ class BatchTest < ActiveSupport::TestCase
         # This is dependent of some aspects of pipelines and request types.
         # Its all a bit convoluted and inconsistent.
         assert_equal 4, Receptacle.count - @asset_count, 'Expected Receptacle.count to change by 4'
-        @requests.each do |r|
-          assert r.reload.target_asset.present?, 'Request has no target asset'
-        end
+        @requests.each { |r| assert r.reload.target_asset.present?, 'Request has no target asset' }
       end
 
       should 'not have same asset name' do
@@ -232,9 +235,7 @@ class BatchTest < ActiveSupport::TestCase
       end
 
       should 'have request position corresponding to the request creation order' do
-        @batch.batch_requests.each do |br|
-          assert_equal @requests[br.position - 1].id, br.request_id
-        end
+        @batch.batch_requests.each { |br| assert_equal @requests[br.position - 1].id, br.request_id }
       end
     end
 
@@ -246,10 +247,11 @@ class BatchTest < ActiveSupport::TestCase
         @control = create :sample_tube, resource: true
 
         @batch = @pipeline.batches.create!
-        @request1, @request2 = @batch.requests = [
-          @pipeline.request_types.last.create!,
-          @pipeline.request_types.last.create!(asset: @control)
-        ]
+        @request1, @request2 =
+          @batch.requests = [
+            @pipeline.request_types.last.create!,
+            @pipeline.request_types.last.create!(asset: @control)
+          ]
 
         @reason = 'PCR not enough'
         @comment = 'Hey! sing Are we human?'
@@ -404,9 +406,7 @@ class BatchTest < ActiveSupport::TestCase
       end
 
       context 'underrun' do
-        setup do
-          @pipeline.workflow.update!(item_limit: 4)
-        end
+        setup { @pipeline.workflow.update!(item_limit: 4) }
 
         should 'return POSITIVE difference between batch.request_limit and batch.request_count' do
           assert_equal 2, @batch.underrun
@@ -428,9 +428,7 @@ class BatchTest < ActiveSupport::TestCase
 
     context '#QC related' do
       context '#qc_criteria_received' do
-        setup do
-          @batch = @pipeline.batches.create!
-        end
+        setup { @batch = @pipeline.batches.create! }
 
         should 'have pending as qc_state until flag is set' do
           assert_equal 'qc_pending', @batch.qc_state
@@ -443,9 +441,7 @@ class BatchTest < ActiveSupport::TestCase
 
     context '#reset!' do
       context 'once started' do
-        setup do
-          @batch = create :batch, pipeline: @pipeline, state: 'started'
-        end
+        setup { @batch = create :batch, pipeline: @pipeline, state: 'started' }
 
         should 'raise an exception' do
           assert_raise AASM::InvalidTransition do
@@ -454,6 +450,7 @@ class BatchTest < ActiveSupport::TestCase
         end
       end
 
+      # rubocop:todo Metrics/BlockLength
       {
         sequencing_pipeline: :sequencing_request_with_assets,
         pipeline: :request
@@ -490,6 +487,7 @@ class BatchTest < ActiveSupport::TestCase
           end
         end
       end
+      # rubocop:enable Metrics/BlockLength
     end
 
     context '#qc_previous_state!' do
@@ -508,19 +506,18 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     context '#swap' do
+      # rubocop:todo Metrics/BlockLength
       # We must test swapping requests at different and same positions, as well as ones which would clash if not adjusted
-      [
-        [3, 4], [4, 4], [2, 1]
-      ].each do |left_position, right_position|
+      [[3, 4], [4, 4], [2, 1]].each do |left_position, right_position|
         context "when swapping #{left_position} and #{right_position}" do
           setup do
             # Create a batch with a couple of requests positioned appropriately
-            @left_batch            = create :batch, pipeline: @pipeline
+            @left_batch = create :batch, pipeline: @pipeline
             @original_left_request = create :batch_request, batch_id: @left_batch.id, position: left_position
             create :batch_request, batch_id: @left_batch.id, position: 1
 
             # Now create another batch that we'll swap the requests between
-            @right_batch            = create :batch, pipeline: @pipeline
+            @right_batch = create :batch, pipeline: @pipeline
             @original_right_request = create :batch_request, batch_id: @right_batch.id, position: right_position
             create :batch_request, batch_id: @right_batch.id, position: 2
 
@@ -531,19 +528,30 @@ class BatchTest < ActiveSupport::TestCase
             assert(
               @left_batch.swap(
                 @user,
-                'batch_1' => { 'id' => @left_batch.id.to_s, 'lane' => left_position.to_s },
-                'batch_2' => { 'id' => @right_batch.id.to_s, 'lane' => right_position.to_s }
+                'batch_1' => {
+                  'id' => @left_batch.id.to_s,
+                  'lane' => left_position.to_s
+                },
+                'batch_2' => {
+                  'id' => @right_batch.id.to_s,
+                  'lane' => right_position.to_s
+                }
               )
             )
 
             # The two requests should have been swapped
-            assert_equal(@original_right_request.request,
-                         @left_batch.batch_requests.at_position(left_position).first.request)
-            assert_equal(@original_left_request.request,
-                         @right_batch.batch_requests.at_position(right_position).first.request)
+            assert_equal(
+              @original_right_request.request,
+              @left_batch.batch_requests.at_position(left_position).first.request
+            )
+            assert_equal(
+              @original_left_request.request,
+              @right_batch.batch_requests.at_position(right_position).first.request
+            )
           end
         end
       end
+      # rubocop:enable Metrics/BlockLength
     end
 
     context '#detach_request' do
@@ -558,14 +566,10 @@ class BatchTest < ActiveSupport::TestCase
       end
 
       context 'detaching' do
-        setup do
-          @lib_prep_batch.detach_request(@lib_prep_request)
-        end
+        setup { @lib_prep_batch.detach_request(@lib_prep_request) }
 
         context 'from the input side of the batch' do
-          setup do
-            @lib_prep_request.reload
-          end
+          setup { @lib_prep_request.reload }
 
           should 'leave the target asset from the request but remove the request from the batch' do
             assert_equal @lib_prep_request.target_asset, @library_tube.receptacle
@@ -574,9 +578,7 @@ class BatchTest < ActiveSupport::TestCase
         end
 
         context 'from the output side of the batch' do
-          setup do
-            @pe_seq_request.reload
-          end
+          setup { @pe_seq_request.reload }
 
           should 'not remove the asset from the request' do
             assert_equal @pe_seq_request.asset, @library_tube.receptacle
@@ -588,18 +590,14 @@ class BatchTest < ActiveSupport::TestCase
         @lib_prep_request.target_asset = nil
         @lib_prep_request.save
 
-        assert_nothing_raised do
-          @lib_prep_batch.detach_request(@lib_prep_request)
-        end
+        assert_nothing_raised { @lib_prep_batch.detach_request(@lib_prep_request) }
       end
 
       should 'not raise any exceptions if the request does not have an asset' do
         @pe_seq_request.asset = nil
         @pe_seq_request.save
 
-        assert_nothing_raised do
-          @lib_prep_batch.detach_request(@lib_prep_request)
-        end
+        assert_nothing_raised { @lib_prep_batch.detach_request(@lib_prep_request) }
       end
     end
 
@@ -655,15 +653,14 @@ class BatchTest < ActiveSupport::TestCase
       @pipeline = create :sequencing_pipeline
       @batch = create :batch, pipeline: @pipeline
       @batch.update!(qc_state: 'qc_manual_in_progress')
-      @requests = create_list :sequencing_request_with_assets, 2, state: 'started', request_type: @pipeline.request_types.first
+      @requests =
+        create_list :sequencing_request_with_assets, 2, state: 'started', request_type: @pipeline.request_types.first
       @batch.requests = @requests
     end
 
     context 'when all requests are passed' do
       setup do
-        @requests.each do |r|
-          r.events.create!(family: 'pass')
-        end
+        @requests.each { |r| r.events.create!(family: 'pass') }
         @batch.npg_set_state
       end
       should 'should complete the batch' do
@@ -699,8 +696,8 @@ class BatchTest < ActiveSupport::TestCase
   context 'ready? all requests before creating batch' do
     setup do
       @library_tube = create :library_tube, sample_count: 1
-      @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests,
-                                         target_asset: @library_tube)
+      @library_creation_request =
+        create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
       @pipeline = create :sequencing_pipeline
 
       @library_tube.create_scanned_into_lab_event!(content: '2018-01-01')

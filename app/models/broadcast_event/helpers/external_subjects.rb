@@ -26,8 +26,7 @@ module BroadcastEvent::Helpers
 
     def check_subject_role_type(property, role_type)
       unless subjects_with_role_type?(role_type)
-        errors.add(property,
-                   "is a required subject needed for the event '#{event_type}'")
+        errors.add(property, "is a required subject needed for the event '#{event_type}'")
       end
     end
   end

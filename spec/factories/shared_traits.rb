@@ -11,9 +11,8 @@ FactoryBot.define do
 
     after(:create) do |library_tube, evaluator|
       if evaluator.samples.present?
-        library_tube.aliquots = evaluator.samples.map do |s|
-          create(evaluator.aliquot_factory, sample: s, library_type: 'Standard')
-        end
+        library_tube.aliquots =
+          evaluator.samples.map { |s| create(evaluator.aliquot_factory, sample: s, library_type: 'Standard') }
       end
     end
   end
@@ -24,17 +23,13 @@ FactoryBot.define do
   end
 
   trait :uuidable do
-    transient do
-      uuid { SecureRandom.uuid }
-    end
+    transient { uuid { SecureRandom.uuid } }
 
     # Using an after build as I need access to both the transient and the resource.
     after(:build) do |resource, context|
       resource.uuid_object = build :uuid, external_id: context.uuid, resource: resource
     end
 
-    after(:create) do |resource, _context|
-      resource.uuid_object.save!
-    end
+    after(:create) { |resource, _context| resource.uuid_object.save! }
   end
 end

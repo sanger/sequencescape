@@ -69,8 +69,7 @@ module SampleManifestExcel
         end
 
         def aliquots_updated?
-          downstream_aliquots_updated? ||
-            no_substitutions? ||
+          downstream_aliquots_updated? || no_substitutions? ||
             log_error_and_return_false('Could not update tags in other assets.')
         end
 
@@ -84,17 +83,15 @@ module SampleManifestExcel
         # actual aliquots in multiplexed library tube and other aliquots downstream are updated by this method
         # library updates all aliquots in one go, doing it row by row is inefficient and may trigger tag clash
         def update_downstream_aliquots
-          substituter = TagSubstitution.new(
-            substitutions: substitutions.compact,
-            comment: 'Manifest updated',
-            disable_clash_detection: true,
-            disable_match_expectation: disable_match_expectation
-          )
-          @downstream_aliquots_updated = if substituter.save
-                                           true
-                                         else
-                                           log_error_and_return_false(substituter.errors.full_messages.join('; '))
-                                         end
+          substituter =
+            TagSubstitution.new(
+              substitutions: substitutions.compact,
+              comment: 'Manifest updated',
+              disable_clash_detection: true,
+              disable_match_expectation: disable_match_expectation
+            )
+          @downstream_aliquots_updated =
+            substituter.save ? true : log_error_and_return_false(substituter.errors.full_messages.join('; '))
         end
 
         def no_substitutions?
@@ -119,12 +116,16 @@ module SampleManifestExcel
           duplicated_barcode_row = duplicate_barcodes
           return if duplicated_barcode_row.nil?
 
-          errors.add(:base,
-                     "Barcode duplicated at row: #{duplicated_barcode_row.number}. The barcode must be unique for each tube.")
+          errors.add(
+            :base,
+            "Barcode duplicated at row: #{duplicated_barcode_row.number}. The barcode must be unique for each tube."
+          )
         end
 
         # Return the row of the first encountered barcode mismatch
-        def duplicate_barcodes
+        # rubocop:todo Metrics/MethodLength
+        # rubocop:todo Metrics/AbcSize
+        def duplicate_barcodes # rubocop:todo Metrics/CyclomaticComplexity
           return unless upload.respond_to?('rows')
 
           unique_bcs = []
@@ -141,6 +142,8 @@ module SampleManifestExcel
           end
           nil
         end
+        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/MethodLength
       end
     end
   end

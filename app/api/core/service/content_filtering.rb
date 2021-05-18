@@ -1,18 +1,20 @@
 # Everything coming in and going out should be JSON.
 module Core::Service::ContentFiltering
   class InvalidRequestedContentType < ::Core::Service::Error # rubocop:todo Style/Documentation
-    self.api_error_code    = 406
-    self.api_error_message = "the 'Accept' header can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'"
+    self.api_error_code = 406
+    self.api_error_message =
+      "the 'Accept' header can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'"
   end
 
   class InvalidRequestedContentTypeOnFile < ::Core::Service::Error # rubocop:todo Style/Documentation
-    self.api_error_code    = 406
+    self.api_error_code = 406
     self.api_error_message = "the 'Accept' header can only be 'application/json' when submitting a file"
   end
 
   class InvalidBodyContentType < ::Core::Service::Error # rubocop:todo Style/Documentation
-    self.api_error_code    = 415
-    self.api_error_message = "the 'Content-Type' can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'"
+    self.api_error_code = 415
+    self.api_error_message =
+      "the 'Content-Type' can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'"
   end
 
   module Helpers # rubocop:todo Style/Documentation
@@ -20,7 +22,7 @@ module Core::Service::ContentFiltering
       @json
     end
 
-    def process_request_body
+    def process_request_body # rubocop:todo Metrics/AbcSize
       content = request.body.read
       if content.present? && acceptable_types.exclude?(request.content_type)
         raise Core::Service::ContentFiltering::InvalidBodyContentType
@@ -38,11 +40,7 @@ module Core::Service::ContentFiltering
       headers('Content-Type' => request_accepted.first)
     end
 
-    ACCEPTABLE_TYPES = if Rails.env.development?
-                         ['application/json', '*/*'].freeze
-                       else
-                         ['application/json'].freeze
-                       end
+    ACCEPTABLE_TYPES = Rails.env.development? ? %w[application/json */*].freeze : ['application/json'].freeze
 
     def acceptable_types
       ACCEPTABLE_TYPES + ::Api::EndpointHandler.registered_mimetypes
@@ -66,8 +64,6 @@ module Core::Service::ContentFiltering
       process_request_body
     end
 
-    app.after_all_actions do
-      process_response_body
-    end
+    app.after_all_actions { process_response_body }
   end
 end

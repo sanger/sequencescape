@@ -21,9 +21,7 @@ class Item < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: { scope: [:version], on: :create, message: 'already in use (item)' }
 
-  scope :for_search_query, ->(query) {
-                             where(['name LIKE ? OR id=?', "%#{query}%", query])
-                           }
+  scope :for_search_query, ->(query) { where(['name LIKE ? OR id=?', "%#{query}%", query]) }
 
   before_validation :set_version, on: :create
 

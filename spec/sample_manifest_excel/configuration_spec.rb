@@ -43,8 +43,11 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
     end
 
     it 'will load the columns' do
-      columns = SequencescapeExcel::ColumnList.new(configuration.load_file(folder, 'columns'),
-                                                   configuration.conditional_formattings)
+      columns =
+        SequencescapeExcel::ColumnList.new(
+          configuration.load_file(folder, 'columns'),
+          configuration.conditional_formattings
+        )
       expect(configuration.columns.all).to eq(columns)
       configuration.manifest_types.each do |k, v|
         expect(configuration.columns.send(k)).to eq(columns.extract(v.columns))
@@ -53,19 +56,24 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
       end
     end
 
-    it 'load the conditional formattings' do # rubocop:todo RSpec/AggregateExamples
-      expect(configuration.conditional_formattings).to eq(SequencescapeExcel::ConditionalFormattingDefaultList.new(configuration.load_file(
-                                                                                                                     folder, 'conditional_formattings'
-                                                                                                                   )))
+    it 'load the conditional formattings' do
+      # rubocop:todo RSpec/AggregateExamples
+      expect(configuration.conditional_formattings).to eq(
+        SequencescapeExcel::ConditionalFormattingDefaultList.new(
+          configuration.load_file(folder, 'conditional_formattings')
+        )
+      )
     end
 
-    it 'load the manifest types' do # rubocop:todo RSpec/AggregateExamples
-      expect(configuration.manifest_types).to eq(SampleManifestExcel::ManifestTypeList.new(configuration.load_file(
-                                                                                             folder, 'manifest_types'
-                                                                                           )))
+    it 'load the manifest types' do
+      # rubocop:todo RSpec/AggregateExamples
+      expect(configuration.manifest_types).to eq(
+        SampleManifestExcel::ManifestTypeList.new(configuration.load_file(folder, 'manifest_types'))
+      )
     end
 
-    it 'load the ranges' do # rubocop:todo RSpec/AggregateExamples
+    it 'load the ranges' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.ranges).to eq(SequencescapeExcel::RangeList.new(configuration.load_file(folder, 'ranges')))
     end
 
@@ -75,12 +83,11 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
       expect(configuration.ranges).to be_frozen
       expect(configuration.columns).to be_frozen
       expect(configuration.columns.all).to be_frozen
-      configuration.manifest_types.each do |k, _v|
-        expect(configuration.columns.send(k)).to be_frozen
-      end
+      configuration.manifest_types.each { |k, _v| expect(configuration.columns.send(k)).to be_frozen }
     end
 
-    it 'has a tag group' do # rubocop:todo RSpec/AggregateExamples
+    it 'has a tag group' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.tag_group).to eq('My Magic Tag Group')
     end
   end

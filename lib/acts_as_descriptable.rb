@@ -37,11 +37,7 @@ module ActsAsDescriptable # :nodoc:
   end
 
   def descriptors
-    [].tap do |response|
-      each_descriptor do |field, value|
-        response.push(Descriptor.new(name: field, value: value))
-      end
-    end
+    [].tap { |response| each_descriptor { |field, value| response.push(Descriptor.new(name: field, value: value)) } }
   end
 
   def descriptor_value(key)
@@ -49,7 +45,7 @@ module ActsAsDescriptable # :nodoc:
   end
 
   def add_descriptor(descriptor)
-    write_attribute(:descriptors,       descriptor_hash.merge(descriptor.name => descriptor.value))
+    write_attribute(:descriptors, descriptor_hash.merge(descriptor.name => descriptor.value))
     write_attribute(:descriptor_fields, descriptor_fields.push(descriptor.name))
   end
 

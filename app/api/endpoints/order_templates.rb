@@ -1,6 +1,5 @@
 class Endpoints::OrderTemplates < Core::Endpoint::Base # rubocop:todo Style/Documentation
-  model do
-  end
+  model {}
 
   instance do
     nested('orders') do

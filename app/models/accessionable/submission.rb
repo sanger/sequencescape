@@ -20,7 +20,8 @@ class Accessionable::Submission < Accessionable::Base
     @accessionables << accesionable
   end
 
-  def xml
+  # rubocop:todo Metrics/MethodLength
+  def xml # rubocop:todo Metrics/AbcSize
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.SUBMISSION(
@@ -37,33 +38,22 @@ class Accessionable::Submission < Accessionable::Base
         additions, modifications = accessionables.partition { |accessionable| accessionable.accession_number.blank? }
 
         additions.each do |accessionable|
-          xml.ACTION do
-            xml.ADD(source: accessionable.file_name,  schema: accessionable.schema_type)
-          end
+          xml.ACTION { xml.ADD(source: accessionable.file_name, schema: accessionable.schema_type) }
 
-          xml.ACTION do
-            xml.tag!(accessionable.protect?(@service) ? 'PROTECT' : 'HOLD')
-          end
+          xml.ACTION { xml.tag!(accessionable.protect?(@service) ? 'PROTECT' : 'HOLD') }
         end
 
         modifications.each do |accessionable|
-          xml.ACTION do
-            xml.MODIFY(
-              source: accessionable.file_name,
-              schema: accessionable.schema_type
-            )
-          end
+          xml.ACTION { xml.MODIFY(source: accessionable.file_name, schema: accessionable.schema_type) }
 
-          state_action(accessionable) do |action|
-            xml.ACTION do
-              xml.tag!(action)
-            end
-          end
+          state_action(accessionable) { |action| xml.ACTION { xml.tag!(action) } }
         end
       end
     end
     xml.target!
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def state_action(accessionable)
     if accessionable.protect?(@service)
@@ -74,11 +64,7 @@ class Accessionable::Submission < Accessionable::Base
   end
 
   def name
-    if @accessionables.size >= 1
-      @accessionables.first.name
-    else
-      'empty'
-    end
+    @accessionables.size >= 1 ? @accessionables.first.name : 'empty'
   end
 
   def all_accessionables
@@ -101,11 +87,7 @@ class Accessionable::Submission < Accessionable::Base
     end
 
     def build(markup)
-      markup.CONTACT(
-        inform_on_error: inform_on_error,
-        inform_on_status: inform_on_status,
-        name: name
-      )
+      markup.CONTACT(inform_on_error: inform_on_error, inform_on_status: inform_on_status, name: name)
     end
   end
 end

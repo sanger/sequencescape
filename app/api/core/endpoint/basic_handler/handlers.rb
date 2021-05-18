@@ -1,12 +1,11 @@
 module Core::Endpoint::BasicHandler::Handlers # rubocop:todo Style/Documentation
   # Handler that behaves like it never deals with any URLs
-  NullHandler = Object.new.tap do |handler|
-    %i[create read update delete].each do |action|
-      handler.define_singleton_method(action) do |*_args|
-        raise ::Core::Service::UnsupportedAction
+  NullHandler =
+    Object.new.tap do |handler|
+      %i[create read update delete].each do |action|
+        handler.define_singleton_method(action) { |*_args| raise ::Core::Service::UnsupportedAction }
       end
     end
-  end
 
   def initialize
     super
@@ -20,9 +19,7 @@ module Core::Endpoint::BasicHandler::Handlers # rubocop:todo Style/Documentation
   def actions(object, options)
     @handlers.select do |_name, handler|
       handler.is_a?(Core::Endpoint::BasicHandler::Actions::InnerAction)
-    end.map do |_name, handler|
-      handler.send(:actions, object, options)
-    end.inject(super) do |actions, subactions|
+    end.map { |_name, handler| handler.send(:actions, object, options) }.inject(super) do |actions, subactions|
       actions.merge(subactions)
     end
   end

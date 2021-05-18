@@ -12,7 +12,7 @@
 #             associates the two sets of requests, and is usually used to determine
 #             what gets pooled together during multiplexing. As a result, sequencing
 #             requests may be shared between multiple orders.
-class Order < ApplicationRecord
+class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Ensure order methods behave correctly
   AssetTypeError = Class.new(StandardError)
   DEFAULT_ASSET_INPUT_METHODS = ['select an asset group'].freeze
@@ -31,6 +31,7 @@ class Order < ApplicationRecord
   # return a list of request_types lists  (a sequence of choices) to display in the new view
   attr_writer :request_type_ids_list, :input_field_infos
   attr_writer :asset_input_methods
+
   # Unused. Maintained because some submission templates attempt to set the info
   attr_writer :info_differential
 
@@ -47,6 +48,7 @@ class Order < ApplicationRecord
   belongs_to :product, optional: true
   belongs_to :order_role, optional: true
   belongs_to :submission, inverse_of: :orders
+
   # In the case of some cross study/project orders, such as resequencing of
   # mixed pools, there is no study/project on the order itself.
   # In some cases, such as viewing submission, it can be useful to display
@@ -78,15 +80,12 @@ class Order < ApplicationRecord
   scope :containing_samples, ->(samples) { joins(assets: :samples).where(samples: { id: samples }) }
   scope :for_studies, ->(*args) { where(study_id: args) }
 
-  scope :including_associations_for_json, lambda {
-    includes([
-      :uuid_object,
-      { assets: [:uuid_object] },
-      { project: :uuid_object },
-      { study: :uuid_object },
-      :user
-    ])
-  }
+  scope :including_associations_for_json,
+        lambda {
+          includes(
+            [:uuid_object, { assets: [:uuid_object] }, { project: :uuid_object }, { study: :uuid_object }, :user]
+          )
+        }
 
   delegate :role, to: :order_role, allow_nil: true
 
@@ -168,31 +167,38 @@ class Order < ApplicationRecord
     (request_options.dig(:multiplier, request_type_id.to_s) || 1).to_i
   end
 
-  def create_request_of_type!(request_type, attributes = {})
+  # rubocop:todo Metrics/MethodLength
+  def create_request_of_type!(request_type, attributes = {}) # rubocop:todo Metrics/AbcSize
     em = request_type.extract_metadata_from_hash(request_options)
     request_type.create!(attributes) do |request|
-      request.submission_id               = submission_id
-      request.study                       = study
-      request.initial_project             = project
-      request.user                        = user
+      request.submission_id = submission_id
+      request.study = study
+      request.initial_project = project
+      request.user = user
       request.request_metadata_attributes = em
-      request.state                       = request_type.initial_state
-      request.order                       = self
+      request.state = request_type.initial_state
+      request.order = self
 
       if request.asset.present?
-        raise AssetTypeError, 'Asset type does not match that expected by request type.' unless asset_applicable_to_type?(
-          request_type, request.asset
-        )
+        unless asset_applicable_to_type?(request_type, request.asset)
+          raise AssetTypeError, 'Asset type does not match that expected by request type.'
+        end
       end
     end
   end
 
-  def duplicates_within(timespan)
-    matching_orders = Order.containing_samples(all_samples)
-                           .where(template_name: template_name)
-                           .includes(:submission, assets: :samples)
-                           .where.not(orders: { id: id })
-                           .where('orders.created_at > ?', Time.current - timespan)
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def duplicates_within(timespan) # rubocop:todo Metrics/AbcSize
+    matching_orders =
+      Order
+        .containing_samples(all_samples)
+        .where(template_name: template_name)
+        .includes(:submission, assets: :samples)
+        .where
+        .not(orders: { id: id })
+        .where('orders.created_at > ?', Time.current - timespan)
     return false if matching_orders.empty?
 
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
@@ -200,6 +206,8 @@ class Order < ApplicationRecord
     yield matching_samples, matching_orders, matching_submissions if block_given?
     true
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def request_type_ids_list
     @request_type_ids_list ||= [[]]
@@ -261,9 +269,10 @@ class Order < ApplicationRecord
   def add_comment(comment_str, user)
     update!(comments: [comments, comment_str].compact.join('; '))
 
-    submission.requests.for_order_including_submission_based_requests(self).map do |request|
-      request.add_comment(comment_str, user)
-    end
+    submission
+      .requests
+      .for_order_including_submission_based_requests(self)
+      .map { |request| request.add_comment(comment_str, user) }
   end
 
   def friendly_name
@@ -303,12 +312,12 @@ class Order < ApplicationRecord
 
   def assets_are_appropriate
     all_assets.each do |asset|
-      next if asset_applicable_to_type?(
-        first_request_type, asset
-      )
+      next if asset_applicable_to_type?(first_request_type, asset)
 
-      errors.add(:asset,
-                 "'#{asset.display_name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests")
+      errors.add(
+        :asset,
+        "'#{asset.display_name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests"
+      )
     end
     return true if errors.empty?
 

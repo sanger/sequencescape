@@ -13,8 +13,11 @@ module SampleManifestExcel
       attr_reader :sheet, :header_row, :data, :start_row, :file, :description_info
 
       validates_presence_of :start_row, :file
-      validates :file_extension, inclusion: { in: ['.csv', '.xlsx'].freeze,
-                                              message: 'is unsupported; should be csv or xlsx' }
+      validates :file_extension,
+                inclusion: {
+                  in: %w[.csv .xlsx].freeze,
+                  message: 'is unsupported; should be csv or xlsx'
+                }
       validate :file_errors_empty
 
       SANGER_SAMPLE_ID_COLUMN_LABEL = 'SANGER SAMPLE ID'
@@ -23,7 +26,7 @@ module SampleManifestExcel
       # The file is opened as a Roo spreadsheet.
       # If it is valid it is split by the start row.
       # Start row of column headers and data put into separate rows.
-      def initialize(file)
+      def initialize(file) # rubocop:todo Metrics/MethodLength
         @file = file
         @file_errors = nil
         @sheet = read_sheet
@@ -68,7 +71,7 @@ module SampleManifestExcel
         return nil if file.nil?
 
         Roo::Spreadsheet.open(file).sheet(0)
-      # In production we see a variety of errors here, all of which indicate problems with the manifest
+        # In production we see a variety of errors here, all of which indicate problems with the manifest
       rescue StandardError => e
         # We store the errors in an instance variable, as otherwise they get lost on any subsequent
         # calls to #valid?
@@ -88,9 +91,7 @@ module SampleManifestExcel
         return nil if sheet.nil?
 
         (0..sheet.last_row).each do |row_num|
-          sheet.row(row_num).each do |cell_value|
-            return row_num if cell_value == SANGER_SAMPLE_ID_COLUMN_LABEL
-          end
+          sheet.row(row_num).each { |cell_value| return row_num if cell_value == SANGER_SAMPLE_ID_COLUMN_LABEL }
         end
 
         nil

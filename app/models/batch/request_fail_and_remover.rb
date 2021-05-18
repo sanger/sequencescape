@@ -8,10 +8,15 @@ class Batch::RequestFailAndRemover
   attr_accessor :reason, :comment
 
   validates :reason, presence: { message: 'Please specify a failure reason for this batch' }
+
   # The used can either remove or fail a request, not both.
-  validates :clashing_requests, absence: { message: lambda { |_, data|
-    "Fail and remove were both selected for the following - #{data[:value].to_sentence} this is not supported."
-  } }
+  validates :clashing_requests,
+            absence: {
+              message:
+                lambda { |_, data|
+                  "Fail and remove were both selected for the following - #{data[:value].to_sentence} this is not supported."
+                }
+            }
 
   def save
     return false unless valid?

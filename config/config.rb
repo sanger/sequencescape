@@ -42,13 +42,12 @@ configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/d
 configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
   ['Generic Lims', 'http://www.example.com'],
-  ['Gatekeeper', 'http://www.example.com']
+  %w[Gatekeeper http://www.example.com]
 ]
 
 configatron.help_link_base_url = 'http://wwww.example.com'
 
 if Rails.env.development? || Rails.env.profile?
-
   configatron.asset_audits_url = 'http://localhost:3014/process_plates/new'
 
   configatron.invalid_policy_url_domains = []
@@ -59,7 +58,7 @@ if Rails.env.development? || Rails.env.profile?
   configatron.disable_accession_check = true
   configatron.disable_api_authentication = true
 
-  configatron.ldap_port = 13890
+  configatron.ldap_port = 13_890
   configatron.ldap_secure_port = 6360
   configatron.ldap_server = 'localhost'
 
@@ -86,7 +85,7 @@ if Rails.env.development? || Rails.env.profile?
   configatron.run_data_by_batch_id_url = 'http://example.com/search?query='
   configatron.sequencing_admin_email = 'admin@example.com'
   configatron.api.authorisation_code = 'development'
-  configatron.api.flush_response_at = 32768
+  configatron.api.flush_response_at = 32_768
 
   configatron.register_printers_automatically = false
 
@@ -97,9 +96,8 @@ if Rails.env.development? || Rails.env.profile?
 end
 
 if Rails.env.test? || Rails.env.cucumber?
-
   configatron.barcode_images_url = 'http://example.com/deliberately_broken_url'
-  configatron.invalid_policy_url_domains = ['internal.example.com', 'invalid.example.com']
+  configatron.invalid_policy_url_domains = %w[internal.example.com invalid.example.com]
 
   configatron.disable_accession_check = false
   configatron.disable_api_authentication = true
@@ -128,7 +126,7 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.run_data_by_batch_id_url = 'http://example.com/search?query='
   configatron.sequencing_admin_email = 'admin@example.com'
   configatron.api.authorisation_code = 'cucumber'
-  configatron.api.flush_response_at = 32768
+  configatron.api.flush_response_at = 32_768
 
   configatron.register_printers_automatically = false
 

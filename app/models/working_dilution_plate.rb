@@ -9,6 +9,7 @@ class WorkingDilutionPlate < DilutionPlate
   def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
       super
+
       # If we have multiple parents, or don't have a dilution
       # factor specified then move on.
       return true unless parents.one? && dilution_factor.present?

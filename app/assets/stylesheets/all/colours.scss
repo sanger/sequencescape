@@ -1,392 +1,1165 @@
-@mixin colour-badge($base_colour, $text_colour) { background-color: $base_colour; color: $text_colour; }
+@mixin colour-badge($base_colour, $text_colour) {
+  background-color: $base_colour;
+  color: $text_colour;
+}
 
 /*
  * Colours from: https://stackoverflow.com/questions/33295120/how-to-generate-gif-256-colors-palette/33295456#33295456
  * calculated that each colour on the list has maximal distance from all previous colours.
  */
-.ss-badge, .card-header, .ss-badge-lg {
-  &.colour-1 { @include colour-badge(#FFFF00, #000000); }
-  &.colour-2 { @include colour-badge(#1CE6FF, #000000); }
-  &.colour-3 { @include colour-badge(#FF34FF, #000000); }
-  &.colour-4 { @include colour-badge(#FF4A46, #000000); }
-  &.colour-5 { @include colour-badge(#008941, #000000); }
-  &.colour-6 { @include colour-badge(#006FA6, #FFFFFF); }
-  &.colour-7 { @include colour-badge(#A30059, #FFFFFF); }
-  &.colour-8 { @include colour-badge(#FFDBE5, #000000); }
-  &.colour-9 { @include colour-badge(#7A4900, #FFFFFF); }
-  &.colour-10 { @include colour-badge(#0000A6, #FFFFFF); }
-  &.colour-11 { @include colour-badge(#63FFAC, #000000); }
-  &.colour-12 { @include colour-badge(#B79762, #000000); }
-  &.colour-13 { @include colour-badge(#004D43, #FFFFFF); }
-  &.colour-14 { @include colour-badge(#8FB0FF, #000000); }
-  &.colour-15 { @include colour-badge(#997D87, #000000); }
-  &.colour-16 { @include colour-badge(#5A0007, #FFFFFF); }
-  &.colour-17 { @include colour-badge(#809693, #000000); }
-  &.colour-18 { @include colour-badge(#FEFFE6, #000000); }
-  &.colour-19 { @include colour-badge(#1B4400, #FFFFFF); }
-  &.colour-20 { @include colour-badge(#4FC601, #000000); }
-  &.colour-21 { @include colour-badge(#3B5DFF, #FFFFFF); }
-  &.colour-22 { @include colour-badge(#4A3B53, #FFFFFF); }
-  &.colour-23 { @include colour-badge(#FF2F80, #000000); }
-  &.colour-24 { @include colour-badge(#61615A, #FFFFFF); }
-  &.colour-25 { @include colour-badge(#BA0900, #FFFFFF); }
-  &.colour-26 { @include colour-badge(#6B7900, #FFFFFF); }
-  &.colour-27 { @include colour-badge(#00C2A0, #000000); }
-  &.colour-28 { @include colour-badge(#FFAA92, #000000); }
-  &.colour-29 { @include colour-badge(#FF90C9, #000000); }
-  &.colour-30 { @include colour-badge(#B903AA, #FFFFFF); }
-  &.colour-31 { @include colour-badge(#D16100, #000000); }
-  &.colour-32 { @include colour-badge(#DDEFFF, #000000); }
-  &.colour-33 { @include colour-badge(#000035, #FFFFFF); }
-  &.colour-34 { @include colour-badge(#7B4F4B, #FFFFFF); }
-  &.colour-35 { @include colour-badge(#A1C299, #000000); }
-  &.colour-36 { @include colour-badge(#300018, #FFFFFF); }
-  &.colour-37 { @include colour-badge(#0AA6D8, #000000); }
-  &.colour-38 { @include colour-badge(#013349, #FFFFFF); }
-  &.colour-39 { @include colour-badge(#00846F, #FFFFFF); }
-  &.colour-40 { @include colour-badge(#372101, #FFFFFF); }
-  &.colour-41 { @include colour-badge(#FFB500, #000000); }
-  &.colour-42 { @include colour-badge(#C2FFED, #000000); }
-  &.colour-43 { @include colour-badge(#A079BF, #000000); }
-  &.colour-44 { @include colour-badge(#CC0744, #FFFFFF); }
-  &.colour-45 { @include colour-badge(#C0B9B2, #000000); }
-  &.colour-46 { @include colour-badge(#C2FF99, #000000); }
-  &.colour-47 { @include colour-badge(#001E09, #FFFFFF); }
-  &.colour-48 { @include colour-badge(#00489C, #FFFFFF); }
-  &.colour-49 { @include colour-badge(#6F0062, #FFFFFF); }
-  &.colour-50 { @include colour-badge(#0CBD66, #000000); }
-  &.colour-51 { @include colour-badge(#EEC3FF, #000000); }
-  &.colour-52 { @include colour-badge(#456D75, #FFFFFF); }
-  &.colour-53 { @include colour-badge(#B77B68, #000000); }
-  &.colour-54 { @include colour-badge(#7A87A1, #000000); }
-  &.colour-55 { @include colour-badge(#788D66, #000000); }
-  &.colour-56 { @include colour-badge(#885578, #FFFFFF); }
-  &.colour-57 { @include colour-badge(#FAD09F, #000000); }
-  &.colour-58 { @include colour-badge(#FF8A9A, #000000); }
-  &.colour-59 { @include colour-badge(#D157A0, #000000); }
-  &.colour-60 { @include colour-badge(#BEC459, #000000); }
-  &.colour-61 { @include colour-badge(#456648, #FFFFFF); }
-  &.colour-62 { @include colour-badge(#0086ED, #000000); }
-  &.colour-63 { @include colour-badge(#886F4C, #FFFFFF); }
-  &.colour-64 { @include colour-badge(#34362D, #FFFFFF); }
-  &.colour-65 { @include colour-badge(#B4A8BD, #000000); }
-  &.colour-66 { @include colour-badge(#00A6AA, #000000); }
-  &.colour-67 { @include colour-badge(#452C2C, #FFFFFF); }
-  &.colour-68 { @include colour-badge(#636375, #FFFFFF); }
-  &.colour-69 { @include colour-badge(#A3C8C9, #000000); }
-  &.colour-70 { @include colour-badge(#FF913F, #000000); }
-  &.colour-71 { @include colour-badge(#938A81, #000000); }
-  &.colour-72 { @include colour-badge(#575329, #FFFFFF); }
-  &.colour-73 { @include colour-badge(#00FECF, #000000); }
-  &.colour-74 { @include colour-badge(#B05B6F, #FFFFFF); }
-  &.colour-75 { @include colour-badge(#8CD0FF, #000000); }
-  &.colour-76 { @include colour-badge(#3B9700, #000000); }
-  &.colour-77 { @include colour-badge(#04F757, #000000); }
-  &.colour-78 { @include colour-badge(#C8A1A1, #000000); }
-  &.colour-79 { @include colour-badge(#1E6E00, #FFFFFF); }
-  &.colour-80 { @include colour-badge(#7900D7, #FFFFFF); }
-  &.colour-81 { @include colour-badge(#A77500, #000000); }
-  &.colour-82 { @include colour-badge(#6367A9, #FFFFFF); }
-  &.colour-83 { @include colour-badge(#A05837, #FFFFFF); }
-  &.colour-84 { @include colour-badge(#6B002C, #FFFFFF); }
-  &.colour-85 { @include colour-badge(#772600, #FFFFFF); }
-  &.colour-86 { @include colour-badge(#D790FF, #000000); }
-  &.colour-87 { @include colour-badge(#9B9700, #000000); }
-  &.colour-88 { @include colour-badge(#549E79, #000000); }
-  &.colour-89 { @include colour-badge(#FFF69F, #000000); }
-  &.colour-90 { @include colour-badge(#201625, #FFFFFF); }
-  &.colour-91 { @include colour-badge(#72418F, #FFFFFF); }
-  &.colour-92 { @include colour-badge(#BC23FF, #000000); }
-  &.colour-93 { @include colour-badge(#99ADC0, #000000); }
-  &.colour-94 { @include colour-badge(#3A2465, #FFFFFF); }
-  &.colour-95 { @include colour-badge(#922329, #FFFFFF); }
-  &.colour-96 { @include colour-badge(#5B4534, #FFFFFF); }
-  &.colour-97 { @include colour-badge(#FDE8DC, #000000); }
-  &.colour-98 { @include colour-badge(#404E55, #FFFFFF); }
-  &.colour-99 { @include colour-badge(#0089A3, #000000); }
-  &.colour-100 { @include colour-badge(#CB7E98, #000000); }
-  &.colour-101 { @include colour-badge(#A4E804, #000000); }
-  &.colour-102 { @include colour-badge(#324E72, #FFFFFF); }
-  &.colour-103 { @include colour-badge(#6A3A4C, #FFFFFF); }
-  &.colour-104 { @include colour-badge(#83AB58, #000000); }
-  &.colour-105 { @include colour-badge(#001C1E, #FFFFFF); }
-  &.colour-106 { @include colour-badge(#D1F7CE, #000000); }
-  &.colour-107 { @include colour-badge(#004B28, #FFFFFF); }
-  &.colour-108 { @include colour-badge(#C8D0F6, #000000); }
-  &.colour-109 { @include colour-badge(#A3A489, #000000); }
-  &.colour-110 { @include colour-badge(#806C66, #FFFFFF); }
-  &.colour-111 { @include colour-badge(#222800, #FFFFFF); }
-  &.colour-112 { @include colour-badge(#BF5650, #000000); }
-  &.colour-113 { @include colour-badge(#E83000, #000000); }
-  &.colour-114 { @include colour-badge(#66796D, #FFFFFF); }
-  &.colour-115 { @include colour-badge(#DA007C, #FFFFFF); }
-  &.colour-116 { @include colour-badge(#FF1A59, #000000); }
-  &.colour-117 { @include colour-badge(#8ADBB4, #000000); }
-  &.colour-118 { @include colour-badge(#1E0200, #FFFFFF); }
-  &.colour-119 { @include colour-badge(#5B4E51, #FFFFFF); }
-  &.colour-120 { @include colour-badge(#C895C5, #000000); }
-  &.colour-121 { @include colour-badge(#320033, #FFFFFF); }
-  &.colour-122 { @include colour-badge(#FF6832, #000000); }
-  &.colour-123 { @include colour-badge(#66E1D3, #000000); }
-  &.colour-124 { @include colour-badge(#CFCDAC, #000000); }
-  &.colour-125 { @include colour-badge(#D0AC94, #000000); }
-  &.colour-126 { @include colour-badge(#7ED379, #000000); }
-  &.colour-127 { @include colour-badge(#012C58, #FFFFFF); }
-  &.colour-128 { @include colour-badge(#7A7BFF, #000000); }
-  &.colour-129 { @include colour-badge(#D68E01, #000000); }
-  &.colour-130 { @include colour-badge(#353339, #FFFFFF); }
-  &.colour-131 { @include colour-badge(#78AFA1, #000000); }
-  &.colour-132 { @include colour-badge(#FEB2C6, #000000); }
-  &.colour-133 { @include colour-badge(#75797C, #000000); }
-  &.colour-134 { @include colour-badge(#837393, #000000); }
-  &.colour-135 { @include colour-badge(#943A4D, #FFFFFF); }
-  &.colour-136 { @include colour-badge(#B5F4FF, #000000); }
-  &.colour-137 { @include colour-badge(#D2DCD5, #000000); }
-  &.colour-138 { @include colour-badge(#9556BD, #FFFFFF); }
-  &.colour-139 { @include colour-badge(#6A714A, #FFFFFF); }
-  &.colour-140 { @include colour-badge(#001325, #FFFFFF); }
-  &.colour-141 { @include colour-badge(#02525F, #FFFFFF); }
-  &.colour-142 { @include colour-badge(#0AA3F7, #000000); }
-  &.colour-143 { @include colour-badge(#E98176, #000000); }
-  &.colour-144 { @include colour-badge(#DBD5DD, #000000); }
-  &.colour-145 { @include colour-badge(#5EBCD1, #000000); }
-  &.colour-146 { @include colour-badge(#3D4F44, #FFFFFF); }
-  &.colour-147 { @include colour-badge(#7E6405, #FFFFFF); }
-  &.colour-148 { @include colour-badge(#02684E, #FFFFFF); }
-  &.colour-149 { @include colour-badge(#962B75, #FFFFFF); }
-  &.colour-150 { @include colour-badge(#8D8546, #000000); }
-  &.colour-151 { @include colour-badge(#9695C5, #000000); }
-  &.colour-152 { @include colour-badge(#E773CE, #000000); }
-  &.colour-153 { @include colour-badge(#D86A78, #000000); }
-  &.colour-154 { @include colour-badge(#3E89BE, #000000); }
-  &.colour-155 { @include colour-badge(#CA834E, #000000); }
-  &.colour-156 { @include colour-badge(#518A87, #000000); }
-  &.colour-157 { @include colour-badge(#5B113C, #FFFFFF); }
-  &.colour-158 { @include colour-badge(#55813B, #000000); }
-  &.colour-159 { @include colour-badge(#E704C4, #000000); }
-  &.colour-160 { @include colour-badge(#00005F, #FFFFFF); }
-  &.colour-161 { @include colour-badge(#A97399, #000000); }
-  &.colour-162 { @include colour-badge(#4B8160, #000000); }
-  &.colour-163 { @include colour-badge(#59738A, #FFFFFF); }
-  &.colour-164 { @include colour-badge(#FF5DA7, #000000); }
-  &.colour-165 { @include colour-badge(#F7C9BF, #000000); }
-  &.colour-166 { @include colour-badge(#643127, #FFFFFF); }
-  &.colour-167 { @include colour-badge(#513A01, #FFFFFF); }
-  &.colour-168 { @include colour-badge(#6B94AA, #000000); }
-  &.colour-169 { @include colour-badge(#51A058, #000000); }
-  &.colour-170 { @include colour-badge(#A45B02, #FFFFFF); }
-  &.colour-171 { @include colour-badge(#1D1702, #FFFFFF); }
-  &.colour-172 { @include colour-badge(#E20027, #FFFFFF); }
-  &.colour-173 { @include colour-badge(#E7AB63, #000000); }
-  &.colour-174 { @include colour-badge(#4C6001, #FFFFFF); }
-  &.colour-175 { @include colour-badge(#9C6966, #000000); }
-  &.colour-176 { @include colour-badge(#64547B, #FFFFFF); }
-  &.colour-177 { @include colour-badge(#97979E, #000000); }
-  &.colour-178 { @include colour-badge(#006A66, #FFFFFF); }
-  &.colour-179 { @include colour-badge(#391406, #FFFFFF); }
-  &.colour-180 { @include colour-badge(#F4D749, #000000); }
-  &.colour-181 { @include colour-badge(#0045D2, #FFFFFF); }
-  &.colour-182 { @include colour-badge(#006C31, #FFFFFF); }
-  &.colour-183 { @include colour-badge(#DDB6D0, #000000); }
-  &.colour-184 { @include colour-badge(#7C6571, #FFFFFF); }
-  &.colour-185 { @include colour-badge(#9FB2A4, #000000); }
-  &.colour-186 { @include colour-badge(#00D891, #000000); }
-  &.colour-187 { @include colour-badge(#15A08A, #000000); }
-  &.colour-188 { @include colour-badge(#BC65E9, #000000); }
-  &.colour-189 { @include colour-badge(#FFFFFE, #000000); }
-  &.colour-190 { @include colour-badge(#C6DC99, #000000); }
-  &.colour-191 { @include colour-badge(#203B3C, #FFFFFF); }
-  &.colour-192 { @include colour-badge(#671190, #FFFFFF); }
-  &.colour-193 { @include colour-badge(#6B3A64, #FFFFFF); }
-  &.colour-194 { @include colour-badge(#F5E1FF, #000000); }
-  &.colour-195 { @include colour-badge(#FFA0F2, #000000); }
-  &.colour-196 { @include colour-badge(#CCAA35, #000000); }
-  &.colour-197 { @include colour-badge(#374527, #FFFFFF); }
-  &.colour-198 { @include colour-badge(#8BB400, #000000); }
-  &.colour-199 { @include colour-badge(#797868, #000000); }
-  &.colour-200 { @include colour-badge(#C6005A, #FFFFFF); }
-  &.colour-201 { @include colour-badge(#3B000A, #FFFFFF); }
-  &.colour-202 { @include colour-badge(#C86240, #000000); }
-  &.colour-203 { @include colour-badge(#29607C, #FFFFFF); }
-  &.colour-204 { @include colour-badge(#402334, #FFFFFF); }
-  &.colour-205 { @include colour-badge(#7D5A44, #FFFFFF); }
-  &.colour-206 { @include colour-badge(#CCB87C, #000000); }
-  &.colour-207 { @include colour-badge(#B88183, #000000); }
-  &.colour-208 { @include colour-badge(#AA5199, #FFFFFF); }
-  &.colour-209 { @include colour-badge(#B5D6C3, #000000); }
-  &.colour-210 { @include colour-badge(#A38469, #000000); }
-  &.colour-211 { @include colour-badge(#9F94F0, #000000); }
-  &.colour-212 { @include colour-badge(#A74571, #FFFFFF); }
-  &.colour-213 { @include colour-badge(#B894A6, #000000); }
-  &.colour-214 { @include colour-badge(#71BB8C, #000000); }
-  &.colour-215 { @include colour-badge(#00B433, #000000); }
-  &.colour-216 { @include colour-badge(#789EC9, #000000); }
-  &.colour-217 { @include colour-badge(#6D80BA, #000000); }
-  &.colour-218 { @include colour-badge(#953F00, #FFFFFF); }
-  &.colour-219 { @include colour-badge(#5EFF03, #000000); }
-  &.colour-220 { @include colour-badge(#E4FFFC, #000000); }
-  &.colour-221 { @include colour-badge(#1BE177, #000000); }
-  &.colour-222 { @include colour-badge(#BCB1E5, #000000); }
-  &.colour-223 { @include colour-badge(#76912F, #000000); }
-  &.colour-224 { @include colour-badge(#003109, #FFFFFF); }
-  &.colour-225 { @include colour-badge(#0060CD, #FFFFFF); }
-  &.colour-226 { @include colour-badge(#D20096, #FFFFFF); }
-  &.colour-227 { @include colour-badge(#895563, #FFFFFF); }
-  &.colour-228 { @include colour-badge(#29201D, #FFFFFF); }
-  &.colour-229 { @include colour-badge(#5B3213, #FFFFFF); }
-  &.colour-230 { @include colour-badge(#A76F42, #000000); }
-  &.colour-231 { @include colour-badge(#89412E, #FFFFFF); }
-  &.colour-232 { @include colour-badge(#1A3A2A, #FFFFFF); }
-  &.colour-233 { @include colour-badge(#494B5A, #FFFFFF); }
-  &.colour-234 { @include colour-badge(#A88C85, #000000); }
-  &.colour-235 { @include colour-badge(#F4ABAA, #000000); }
-  &.colour-236 { @include colour-badge(#A3F3AB, #000000); }
-  &.colour-237 { @include colour-badge(#00C6C8, #000000); }
-  &.colour-238 { @include colour-badge(#EA8B66, #000000); }
-  &.colour-239 { @include colour-badge(#958A9F, #000000); }
-  &.colour-240 { @include colour-badge(#BDC9D2, #000000); }
-  &.colour-241 { @include colour-badge(#9FA064, #000000); }
-  &.colour-242 { @include colour-badge(#BE4700, #FFFFFF); }
-  &.colour-243 { @include colour-badge(#658188, #000000); }
-  &.colour-244 { @include colour-badge(#83A485, #000000); }
-  &.colour-245 { @include colour-badge(#453C23, #FFFFFF); }
-  &.colour-246 { @include colour-badge(#47675D, #FFFFFF); }
-  &.colour-247 { @include colour-badge(#3A3F00, #FFFFFF); }
-  &.colour-248 { @include colour-badge(#061203, #FFFFFF); }
-  &.colour-249 { @include colour-badge(#DFFB71, #000000); }
-  &.colour-250 { @include colour-badge(#868E7E, #000000); }
-  &.colour-251 { @include colour-badge(#98D058, #000000); }
-  &.colour-252 { @include colour-badge(#6C8F7D, #000000); }
-  &.colour-253 { @include colour-badge(#D7BFC2, #000000); }
-  &.colour-254 { @include colour-badge(#3C3E6E, #FFFFFF); }
-  &.colour-255 { @include colour-badge(#D83D66, #000000); }
-  &.colour-256 { @include colour-badge(#2F5D9B, #FFFFFF); }
-  &.colour-257 { @include colour-badge(#6C5E46, #FFFFFF); }
-  &.colour-258 { @include colour-badge(#D25B88, #000000); }
-  &.colour-259 { @include colour-badge(#5B656C, #FFFFFF); }
-  &.colour-260 { @include colour-badge(#00B57F, #000000); }
-  &.colour-261 { @include colour-badge(#545C46, #FFFFFF); }
-  &.colour-262 { @include colour-badge(#866097, #FFFFFF); }
-  &.colour-263 { @include colour-badge(#365D25, #FFFFFF); }
-  &.colour-264 { @include colour-badge(#252F99, #FFFFFF); }
-  &.colour-265 { @include colour-badge(#00CCFF, #000000); }
-  &.colour-266 { @include colour-badge(#674E60, #FFFFFF); }
-  &.colour-267 { @include colour-badge(#FC009C, #000000); }
-  &.colour-268 { @include colour-badge(#92896B, #000000); }
-  &.colour-269 { @include colour-badge(#1E2324, #FFFFFF); }
-  &.colour-270 { @include colour-badge(#DEC9B2, #000000); }
-  &.colour-271 { @include colour-badge(#9D4948, #FFFFFF); }
-  &.colour-272 { @include colour-badge(#85ABB4, #000000); }
-  &.colour-273 { @include colour-badge(#342142, #FFFFFF); }
-  &.colour-274 { @include colour-badge(#D09685, #000000); }
-  &.colour-275 { @include colour-badge(#A4ACAC, #000000); }
-  &.colour-276 { @include colour-badge(#00FFFF, #000000); }
-  &.colour-277 { @include colour-badge(#AE9C86, #000000); }
-  &.colour-278 { @include colour-badge(#742A33, #FFFFFF); }
-  &.colour-279 { @include colour-badge(#0E72C5, #FFFFFF); }
-  &.colour-280 { @include colour-badge(#AFD8EC, #000000); }
-  &.colour-281 { @include colour-badge(#C064B9, #000000); }
-  &.colour-282 { @include colour-badge(#91028C, #FFFFFF); }
-  &.colour-283 { @include colour-badge(#FEEDBF, #000000); }
-  &.colour-284 { @include colour-badge(#FFB789, #000000); }
-  &.colour-285 { @include colour-badge(#9CB8E4, #000000); }
-  &.colour-286 { @include colour-badge(#AFFFD1, #000000); }
-  &.colour-287 { @include colour-badge(#2A364C, #FFFFFF); }
-  &.colour-288 { @include colour-badge(#4F4A43, #FFFFFF); }
-  &.colour-289 { @include colour-badge(#647095, #FFFFFF); }
-  &.colour-290 { @include colour-badge(#34BBFF, #000000); }
-  &.colour-291 { @include colour-badge(#807781, #000000); }
-  &.colour-292 { @include colour-badge(#920003, #FFFFFF); }
-  &.colour-293 { @include colour-badge(#B3A5A7, #000000); }
-  &.colour-294 { @include colour-badge(#018615, #FFFFFF); }
-  &.colour-295 { @include colour-badge(#F1FFC8, #000000); }
-  &.colour-296 { @include colour-badge(#976F5C, #000000); }
-  &.colour-297 { @include colour-badge(#FF3BC1, #000000); }
-  &.colour-298 { @include colour-badge(#FF5F6B, #000000); }
-  &.colour-299 { @include colour-badge(#077D84, #FFFFFF); }
-  &.colour-300 { @include colour-badge(#F56D93, #000000); }
-  &.colour-301 { @include colour-badge(#5771DA, #000000); }
-  &.colour-302 { @include colour-badge(#4E1E2A, #FFFFFF); }
-  &.colour-303 { @include colour-badge(#830055, #FFFFFF); }
-  &.colour-304 { @include colour-badge(#02D346, #000000); }
-  &.colour-305 { @include colour-badge(#BE452D, #FFFFFF); }
-  &.colour-306 { @include colour-badge(#00905E, #000000); }
-  &.colour-307 { @include colour-badge(#BE0028, #FFFFFF); }
-  &.colour-308 { @include colour-badge(#6E96E3, #000000); }
-  &.colour-309 { @include colour-badge(#007699, #FFFFFF); }
-  &.colour-310 { @include colour-badge(#FEC96D, #000000); }
-  &.colour-311 { @include colour-badge(#9C6A7D, #000000); }
-  &.colour-312 { @include colour-badge(#3FA1B8, #000000); }
-  &.colour-313 { @include colour-badge(#893DE3, #FFFFFF); }
-  &.colour-314 { @include colour-badge(#79B4D6, #000000); }
-  &.colour-315 { @include colour-badge(#7FD4D9, #000000); }
-  &.colour-316 { @include colour-badge(#6751BB, #FFFFFF); }
-  &.colour-317 { @include colour-badge(#B28D2D, #000000); }
-  &.colour-318 { @include colour-badge(#E27A05, #000000); }
-  &.colour-319 { @include colour-badge(#DD9CB8, #000000); }
-  &.colour-320 { @include colour-badge(#AABC7A, #000000); }
-  &.colour-321 { @include colour-badge(#980034, #FFFFFF); }
-  &.colour-322 { @include colour-badge(#561A02, #FFFFFF); }
-  &.colour-323 { @include colour-badge(#8F7F00, #000000); }
-  &.colour-324 { @include colour-badge(#635000, #FFFFFF); }
-  &.colour-325 { @include colour-badge(#CD7DAE, #000000); }
-  &.colour-326 { @include colour-badge(#8A5E2D, #FFFFFF); }
-  &.colour-327 { @include colour-badge(#FFB3E1, #000000); }
-  &.colour-328 { @include colour-badge(#6B6466, #FFFFFF); }
-  &.colour-329 { @include colour-badge(#C6D300, #000000); }
-  &.colour-330 { @include colour-badge(#0100E2, #FFFFFF); }
-  &.colour-331 { @include colour-badge(#88EC69, #000000); }
-  &.colour-332 { @include colour-badge(#8FCCBE, #000000); }
-  &.colour-333 { @include colour-badge(#21001C, #FFFFFF); }
-  &.colour-334 { @include colour-badge(#511F4D, #FFFFFF); }
-  &.colour-335 { @include colour-badge(#E3F6E3, #000000); }
-  &.colour-336 { @include colour-badge(#FF8EB1, #000000); }
-  &.colour-337 { @include colour-badge(#6B4F29, #FFFFFF); }
-  &.colour-338 { @include colour-badge(#A37F46, #000000); }
-  &.colour-339 { @include colour-badge(#6A5950, #FFFFFF); }
-  &.colour-340 { @include colour-badge(#1F2A1A, #FFFFFF); }
-  &.colour-341 { @include colour-badge(#04784D, #FFFFFF); }
-  &.colour-342 { @include colour-badge(#101835, #FFFFFF); }
-  &.colour-343 { @include colour-badge(#E6E0D0, #000000); }
-  &.colour-344 { @include colour-badge(#FF74FE, #000000); }
-  &.colour-345 { @include colour-badge(#00A45F, #000000); }
-  &.colour-346 { @include colour-badge(#8F5DF8, #000000); }
-  &.colour-347 { @include colour-badge(#4B0059, #FFFFFF); }
-  &.colour-348 { @include colour-badge(#412F23, #FFFFFF); }
-  &.colour-349 { @include colour-badge(#D8939E, #000000); }
-  &.colour-350 { @include colour-badge(#DB9D72, #000000); }
-  &.colour-351 { @include colour-badge(#604143, #FFFFFF); }
-  &.colour-352 { @include colour-badge(#B5BACE, #000000); }
-  &.colour-353 { @include colour-badge(#989EB7, #000000); }
-  &.colour-354 { @include colour-badge(#D2C4DB, #000000); }
-  &.colour-355 { @include colour-badge(#A587AF, #000000); }
-  &.colour-356 { @include colour-badge(#77D796, #000000); }
-  &.colour-357 { @include colour-badge(#7F8C94, #000000); }
-  &.colour-358 { @include colour-badge(#FF9B03, #000000); }
-  &.colour-359 { @include colour-badge(#555196, #FFFFFF); }
-  &.colour-360 { @include colour-badge(#31DDAE, #000000); }
-  &.colour-361 { @include colour-badge(#74B671, #000000); }
-  &.colour-362 { @include colour-badge(#802647, #FFFFFF); }
-  &.colour-363 { @include colour-badge(#2A373F, #FFFFFF); }
-  &.colour-364 { @include colour-badge(#014A68, #FFFFFF); }
-  &.colour-365 { @include colour-badge(#696628, #FFFFFF); }
-  &.colour-366 { @include colour-badge(#4C7B6D, #FFFFFF); }
-  &.colour-367 { @include colour-badge(#002C27, #FFFFFF); }
-  &.colour-368 { @include colour-badge(#7A4522, #FFFFFF); }
-  &.colour-369 { @include colour-badge(#3B5859, #FFFFFF); }
-  &.colour-370 { @include colour-badge(#E5D381, #000000); }
-  &.colour-371 { @include colour-badge(#FFF3FF, #000000); }
-  &.colour-372 { @include colour-badge(#679FA0, #000000); }
-  &.colour-373 { @include colour-badge(#261300, #FFFFFF); }
-  &.colour-374 { @include colour-badge(#2C5742, #FFFFFF); }
-  &.colour-375 { @include colour-badge(#9131AF, #FFFFFF); }
-  &.colour-376 { @include colour-badge(#AF5D88, #000000); }
-  &.colour-377 { @include colour-badge(#C7706A, #000000); }
-  &.colour-378 { @include colour-badge(#61AB1F, #000000); }
-  &.colour-379 { @include colour-badge(#8CF2D4, #000000); }
-  &.colour-380 { @include colour-badge(#C5D9B8, #000000); }
-  &.colour-381 { @include colour-badge(#9FFFFB, #000000); }
-  &.colour-382 { @include colour-badge(#BF45CC, #000000); }
-  &.colour-383 { @include colour-badge(#493941, #FFFFFF); }
-  &.colour-384 { @include colour-badge(#863B60, #FFFFFF); }
+.ss-badge,
+.card-header,
+.ss-badge-lg {
+  &.colour-1 {
+    @include colour-badge(#ffff00, #000000);
+  }
+  &.colour-2 {
+    @include colour-badge(#1ce6ff, #000000);
+  }
+  &.colour-3 {
+    @include colour-badge(#ff34ff, #000000);
+  }
+  &.colour-4 {
+    @include colour-badge(#ff4a46, #000000);
+  }
+  &.colour-5 {
+    @include colour-badge(#008941, #000000);
+  }
+  &.colour-6 {
+    @include colour-badge(#006fa6, #ffffff);
+  }
+  &.colour-7 {
+    @include colour-badge(#a30059, #ffffff);
+  }
+  &.colour-8 {
+    @include colour-badge(#ffdbe5, #000000);
+  }
+  &.colour-9 {
+    @include colour-badge(#7a4900, #ffffff);
+  }
+  &.colour-10 {
+    @include colour-badge(#0000a6, #ffffff);
+  }
+  &.colour-11 {
+    @include colour-badge(#63ffac, #000000);
+  }
+  &.colour-12 {
+    @include colour-badge(#b79762, #000000);
+  }
+  &.colour-13 {
+    @include colour-badge(#004d43, #ffffff);
+  }
+  &.colour-14 {
+    @include colour-badge(#8fb0ff, #000000);
+  }
+  &.colour-15 {
+    @include colour-badge(#997d87, #000000);
+  }
+  &.colour-16 {
+    @include colour-badge(#5a0007, #ffffff);
+  }
+  &.colour-17 {
+    @include colour-badge(#809693, #000000);
+  }
+  &.colour-18 {
+    @include colour-badge(#feffe6, #000000);
+  }
+  &.colour-19 {
+    @include colour-badge(#1b4400, #ffffff);
+  }
+  &.colour-20 {
+    @include colour-badge(#4fc601, #000000);
+  }
+  &.colour-21 {
+    @include colour-badge(#3b5dff, #ffffff);
+  }
+  &.colour-22 {
+    @include colour-badge(#4a3b53, #ffffff);
+  }
+  &.colour-23 {
+    @include colour-badge(#ff2f80, #000000);
+  }
+  &.colour-24 {
+    @include colour-badge(#61615a, #ffffff);
+  }
+  &.colour-25 {
+    @include colour-badge(#ba0900, #ffffff);
+  }
+  &.colour-26 {
+    @include colour-badge(#6b7900, #ffffff);
+  }
+  &.colour-27 {
+    @include colour-badge(#00c2a0, #000000);
+  }
+  &.colour-28 {
+    @include colour-badge(#ffaa92, #000000);
+  }
+  &.colour-29 {
+    @include colour-badge(#ff90c9, #000000);
+  }
+  &.colour-30 {
+    @include colour-badge(#b903aa, #ffffff);
+  }
+  &.colour-31 {
+    @include colour-badge(#d16100, #000000);
+  }
+  &.colour-32 {
+    @include colour-badge(#ddefff, #000000);
+  }
+  &.colour-33 {
+    @include colour-badge(#000035, #ffffff);
+  }
+  &.colour-34 {
+    @include colour-badge(#7b4f4b, #ffffff);
+  }
+  &.colour-35 {
+    @include colour-badge(#a1c299, #000000);
+  }
+  &.colour-36 {
+    @include colour-badge(#300018, #ffffff);
+  }
+  &.colour-37 {
+    @include colour-badge(#0aa6d8, #000000);
+  }
+  &.colour-38 {
+    @include colour-badge(#013349, #ffffff);
+  }
+  &.colour-39 {
+    @include colour-badge(#00846f, #ffffff);
+  }
+  &.colour-40 {
+    @include colour-badge(#372101, #ffffff);
+  }
+  &.colour-41 {
+    @include colour-badge(#ffb500, #000000);
+  }
+  &.colour-42 {
+    @include colour-badge(#c2ffed, #000000);
+  }
+  &.colour-43 {
+    @include colour-badge(#a079bf, #000000);
+  }
+  &.colour-44 {
+    @include colour-badge(#cc0744, #ffffff);
+  }
+  &.colour-45 {
+    @include colour-badge(#c0b9b2, #000000);
+  }
+  &.colour-46 {
+    @include colour-badge(#c2ff99, #000000);
+  }
+  &.colour-47 {
+    @include colour-badge(#001e09, #ffffff);
+  }
+  &.colour-48 {
+    @include colour-badge(#00489c, #ffffff);
+  }
+  &.colour-49 {
+    @include colour-badge(#6f0062, #ffffff);
+  }
+  &.colour-50 {
+    @include colour-badge(#0cbd66, #000000);
+  }
+  &.colour-51 {
+    @include colour-badge(#eec3ff, #000000);
+  }
+  &.colour-52 {
+    @include colour-badge(#456d75, #ffffff);
+  }
+  &.colour-53 {
+    @include colour-badge(#b77b68, #000000);
+  }
+  &.colour-54 {
+    @include colour-badge(#7a87a1, #000000);
+  }
+  &.colour-55 {
+    @include colour-badge(#788d66, #000000);
+  }
+  &.colour-56 {
+    @include colour-badge(#885578, #ffffff);
+  }
+  &.colour-57 {
+    @include colour-badge(#fad09f, #000000);
+  }
+  &.colour-58 {
+    @include colour-badge(#ff8a9a, #000000);
+  }
+  &.colour-59 {
+    @include colour-badge(#d157a0, #000000);
+  }
+  &.colour-60 {
+    @include colour-badge(#bec459, #000000);
+  }
+  &.colour-61 {
+    @include colour-badge(#456648, #ffffff);
+  }
+  &.colour-62 {
+    @include colour-badge(#0086ed, #000000);
+  }
+  &.colour-63 {
+    @include colour-badge(#886f4c, #ffffff);
+  }
+  &.colour-64 {
+    @include colour-badge(#34362d, #ffffff);
+  }
+  &.colour-65 {
+    @include colour-badge(#b4a8bd, #000000);
+  }
+  &.colour-66 {
+    @include colour-badge(#00a6aa, #000000);
+  }
+  &.colour-67 {
+    @include colour-badge(#452c2c, #ffffff);
+  }
+  &.colour-68 {
+    @include colour-badge(#636375, #ffffff);
+  }
+  &.colour-69 {
+    @include colour-badge(#a3c8c9, #000000);
+  }
+  &.colour-70 {
+    @include colour-badge(#ff913f, #000000);
+  }
+  &.colour-71 {
+    @include colour-badge(#938a81, #000000);
+  }
+  &.colour-72 {
+    @include colour-badge(#575329, #ffffff);
+  }
+  &.colour-73 {
+    @include colour-badge(#00fecf, #000000);
+  }
+  &.colour-74 {
+    @include colour-badge(#b05b6f, #ffffff);
+  }
+  &.colour-75 {
+    @include colour-badge(#8cd0ff, #000000);
+  }
+  &.colour-76 {
+    @include colour-badge(#3b9700, #000000);
+  }
+  &.colour-77 {
+    @include colour-badge(#04f757, #000000);
+  }
+  &.colour-78 {
+    @include colour-badge(#c8a1a1, #000000);
+  }
+  &.colour-79 {
+    @include colour-badge(#1e6e00, #ffffff);
+  }
+  &.colour-80 {
+    @include colour-badge(#7900d7, #ffffff);
+  }
+  &.colour-81 {
+    @include colour-badge(#a77500, #000000);
+  }
+  &.colour-82 {
+    @include colour-badge(#6367a9, #ffffff);
+  }
+  &.colour-83 {
+    @include colour-badge(#a05837, #ffffff);
+  }
+  &.colour-84 {
+    @include colour-badge(#6b002c, #ffffff);
+  }
+  &.colour-85 {
+    @include colour-badge(#772600, #ffffff);
+  }
+  &.colour-86 {
+    @include colour-badge(#d790ff, #000000);
+  }
+  &.colour-87 {
+    @include colour-badge(#9b9700, #000000);
+  }
+  &.colour-88 {
+    @include colour-badge(#549e79, #000000);
+  }
+  &.colour-89 {
+    @include colour-badge(#fff69f, #000000);
+  }
+  &.colour-90 {
+    @include colour-badge(#201625, #ffffff);
+  }
+  &.colour-91 {
+    @include colour-badge(#72418f, #ffffff);
+  }
+  &.colour-92 {
+    @include colour-badge(#bc23ff, #000000);
+  }
+  &.colour-93 {
+    @include colour-badge(#99adc0, #000000);
+  }
+  &.colour-94 {
+    @include colour-badge(#3a2465, #ffffff);
+  }
+  &.colour-95 {
+    @include colour-badge(#922329, #ffffff);
+  }
+  &.colour-96 {
+    @include colour-badge(#5b4534, #ffffff);
+  }
+  &.colour-97 {
+    @include colour-badge(#fde8dc, #000000);
+  }
+  &.colour-98 {
+    @include colour-badge(#404e55, #ffffff);
+  }
+  &.colour-99 {
+    @include colour-badge(#0089a3, #000000);
+  }
+  &.colour-100 {
+    @include colour-badge(#cb7e98, #000000);
+  }
+  &.colour-101 {
+    @include colour-badge(#a4e804, #000000);
+  }
+  &.colour-102 {
+    @include colour-badge(#324e72, #ffffff);
+  }
+  &.colour-103 {
+    @include colour-badge(#6a3a4c, #ffffff);
+  }
+  &.colour-104 {
+    @include colour-badge(#83ab58, #000000);
+  }
+  &.colour-105 {
+    @include colour-badge(#001c1e, #ffffff);
+  }
+  &.colour-106 {
+    @include colour-badge(#d1f7ce, #000000);
+  }
+  &.colour-107 {
+    @include colour-badge(#004b28, #ffffff);
+  }
+  &.colour-108 {
+    @include colour-badge(#c8d0f6, #000000);
+  }
+  &.colour-109 {
+    @include colour-badge(#a3a489, #000000);
+  }
+  &.colour-110 {
+    @include colour-badge(#806c66, #ffffff);
+  }
+  &.colour-111 {
+    @include colour-badge(#222800, #ffffff);
+  }
+  &.colour-112 {
+    @include colour-badge(#bf5650, #000000);
+  }
+  &.colour-113 {
+    @include colour-badge(#e83000, #000000);
+  }
+  &.colour-114 {
+    @include colour-badge(#66796d, #ffffff);
+  }
+  &.colour-115 {
+    @include colour-badge(#da007c, #ffffff);
+  }
+  &.colour-116 {
+    @include colour-badge(#ff1a59, #000000);
+  }
+  &.colour-117 {
+    @include colour-badge(#8adbb4, #000000);
+  }
+  &.colour-118 {
+    @include colour-badge(#1e0200, #ffffff);
+  }
+  &.colour-119 {
+    @include colour-badge(#5b4e51, #ffffff);
+  }
+  &.colour-120 {
+    @include colour-badge(#c895c5, #000000);
+  }
+  &.colour-121 {
+    @include colour-badge(#320033, #ffffff);
+  }
+  &.colour-122 {
+    @include colour-badge(#ff6832, #000000);
+  }
+  &.colour-123 {
+    @include colour-badge(#66e1d3, #000000);
+  }
+  &.colour-124 {
+    @include colour-badge(#cfcdac, #000000);
+  }
+  &.colour-125 {
+    @include colour-badge(#d0ac94, #000000);
+  }
+  &.colour-126 {
+    @include colour-badge(#7ed379, #000000);
+  }
+  &.colour-127 {
+    @include colour-badge(#012c58, #ffffff);
+  }
+  &.colour-128 {
+    @include colour-badge(#7a7bff, #000000);
+  }
+  &.colour-129 {
+    @include colour-badge(#d68e01, #000000);
+  }
+  &.colour-130 {
+    @include colour-badge(#353339, #ffffff);
+  }
+  &.colour-131 {
+    @include colour-badge(#78afa1, #000000);
+  }
+  &.colour-132 {
+    @include colour-badge(#feb2c6, #000000);
+  }
+  &.colour-133 {
+    @include colour-badge(#75797c, #000000);
+  }
+  &.colour-134 {
+    @include colour-badge(#837393, #000000);
+  }
+  &.colour-135 {
+    @include colour-badge(#943a4d, #ffffff);
+  }
+  &.colour-136 {
+    @include colour-badge(#b5f4ff, #000000);
+  }
+  &.colour-137 {
+    @include colour-badge(#d2dcd5, #000000);
+  }
+  &.colour-138 {
+    @include colour-badge(#9556bd, #ffffff);
+  }
+  &.colour-139 {
+    @include colour-badge(#6a714a, #ffffff);
+  }
+  &.colour-140 {
+    @include colour-badge(#001325, #ffffff);
+  }
+  &.colour-141 {
+    @include colour-badge(#02525f, #ffffff);
+  }
+  &.colour-142 {
+    @include colour-badge(#0aa3f7, #000000);
+  }
+  &.colour-143 {
+    @include colour-badge(#e98176, #000000);
+  }
+  &.colour-144 {
+    @include colour-badge(#dbd5dd, #000000);
+  }
+  &.colour-145 {
+    @include colour-badge(#5ebcd1, #000000);
+  }
+  &.colour-146 {
+    @include colour-badge(#3d4f44, #ffffff);
+  }
+  &.colour-147 {
+    @include colour-badge(#7e6405, #ffffff);
+  }
+  &.colour-148 {
+    @include colour-badge(#02684e, #ffffff);
+  }
+  &.colour-149 {
+    @include colour-badge(#962b75, #ffffff);
+  }
+  &.colour-150 {
+    @include colour-badge(#8d8546, #000000);
+  }
+  &.colour-151 {
+    @include colour-badge(#9695c5, #000000);
+  }
+  &.colour-152 {
+    @include colour-badge(#e773ce, #000000);
+  }
+  &.colour-153 {
+    @include colour-badge(#d86a78, #000000);
+  }
+  &.colour-154 {
+    @include colour-badge(#3e89be, #000000);
+  }
+  &.colour-155 {
+    @include colour-badge(#ca834e, #000000);
+  }
+  &.colour-156 {
+    @include colour-badge(#518a87, #000000);
+  }
+  &.colour-157 {
+    @include colour-badge(#5b113c, #ffffff);
+  }
+  &.colour-158 {
+    @include colour-badge(#55813b, #000000);
+  }
+  &.colour-159 {
+    @include colour-badge(#e704c4, #000000);
+  }
+  &.colour-160 {
+    @include colour-badge(#00005f, #ffffff);
+  }
+  &.colour-161 {
+    @include colour-badge(#a97399, #000000);
+  }
+  &.colour-162 {
+    @include colour-badge(#4b8160, #000000);
+  }
+  &.colour-163 {
+    @include colour-badge(#59738a, #ffffff);
+  }
+  &.colour-164 {
+    @include colour-badge(#ff5da7, #000000);
+  }
+  &.colour-165 {
+    @include colour-badge(#f7c9bf, #000000);
+  }
+  &.colour-166 {
+    @include colour-badge(#643127, #ffffff);
+  }
+  &.colour-167 {
+    @include colour-badge(#513a01, #ffffff);
+  }
+  &.colour-168 {
+    @include colour-badge(#6b94aa, #000000);
+  }
+  &.colour-169 {
+    @include colour-badge(#51a058, #000000);
+  }
+  &.colour-170 {
+    @include colour-badge(#a45b02, #ffffff);
+  }
+  &.colour-171 {
+    @include colour-badge(#1d1702, #ffffff);
+  }
+  &.colour-172 {
+    @include colour-badge(#e20027, #ffffff);
+  }
+  &.colour-173 {
+    @include colour-badge(#e7ab63, #000000);
+  }
+  &.colour-174 {
+    @include colour-badge(#4c6001, #ffffff);
+  }
+  &.colour-175 {
+    @include colour-badge(#9c6966, #000000);
+  }
+  &.colour-176 {
+    @include colour-badge(#64547b, #ffffff);
+  }
+  &.colour-177 {
+    @include colour-badge(#97979e, #000000);
+  }
+  &.colour-178 {
+    @include colour-badge(#006a66, #ffffff);
+  }
+  &.colour-179 {
+    @include colour-badge(#391406, #ffffff);
+  }
+  &.colour-180 {
+    @include colour-badge(#f4d749, #000000);
+  }
+  &.colour-181 {
+    @include colour-badge(#0045d2, #ffffff);
+  }
+  &.colour-182 {
+    @include colour-badge(#006c31, #ffffff);
+  }
+  &.colour-183 {
+    @include colour-badge(#ddb6d0, #000000);
+  }
+  &.colour-184 {
+    @include colour-badge(#7c6571, #ffffff);
+  }
+  &.colour-185 {
+    @include colour-badge(#9fb2a4, #000000);
+  }
+  &.colour-186 {
+    @include colour-badge(#00d891, #000000);
+  }
+  &.colour-187 {
+    @include colour-badge(#15a08a, #000000);
+  }
+  &.colour-188 {
+    @include colour-badge(#bc65e9, #000000);
+  }
+  &.colour-189 {
+    @include colour-badge(#fffffe, #000000);
+  }
+  &.colour-190 {
+    @include colour-badge(#c6dc99, #000000);
+  }
+  &.colour-191 {
+    @include colour-badge(#203b3c, #ffffff);
+  }
+  &.colour-192 {
+    @include colour-badge(#671190, #ffffff);
+  }
+  &.colour-193 {
+    @include colour-badge(#6b3a64, #ffffff);
+  }
+  &.colour-194 {
+    @include colour-badge(#f5e1ff, #000000);
+  }
+  &.colour-195 {
+    @include colour-badge(#ffa0f2, #000000);
+  }
+  &.colour-196 {
+    @include colour-badge(#ccaa35, #000000);
+  }
+  &.colour-197 {
+    @include colour-badge(#374527, #ffffff);
+  }
+  &.colour-198 {
+    @include colour-badge(#8bb400, #000000);
+  }
+  &.colour-199 {
+    @include colour-badge(#797868, #000000);
+  }
+  &.colour-200 {
+    @include colour-badge(#c6005a, #ffffff);
+  }
+  &.colour-201 {
+    @include colour-badge(#3b000a, #ffffff);
+  }
+  &.colour-202 {
+    @include colour-badge(#c86240, #000000);
+  }
+  &.colour-203 {
+    @include colour-badge(#29607c, #ffffff);
+  }
+  &.colour-204 {
+    @include colour-badge(#402334, #ffffff);
+  }
+  &.colour-205 {
+    @include colour-badge(#7d5a44, #ffffff);
+  }
+  &.colour-206 {
+    @include colour-badge(#ccb87c, #000000);
+  }
+  &.colour-207 {
+    @include colour-badge(#b88183, #000000);
+  }
+  &.colour-208 {
+    @include colour-badge(#aa5199, #ffffff);
+  }
+  &.colour-209 {
+    @include colour-badge(#b5d6c3, #000000);
+  }
+  &.colour-210 {
+    @include colour-badge(#a38469, #000000);
+  }
+  &.colour-211 {
+    @include colour-badge(#9f94f0, #000000);
+  }
+  &.colour-212 {
+    @include colour-badge(#a74571, #ffffff);
+  }
+  &.colour-213 {
+    @include colour-badge(#b894a6, #000000);
+  }
+  &.colour-214 {
+    @include colour-badge(#71bb8c, #000000);
+  }
+  &.colour-215 {
+    @include colour-badge(#00b433, #000000);
+  }
+  &.colour-216 {
+    @include colour-badge(#789ec9, #000000);
+  }
+  &.colour-217 {
+    @include colour-badge(#6d80ba, #000000);
+  }
+  &.colour-218 {
+    @include colour-badge(#953f00, #ffffff);
+  }
+  &.colour-219 {
+    @include colour-badge(#5eff03, #000000);
+  }
+  &.colour-220 {
+    @include colour-badge(#e4fffc, #000000);
+  }
+  &.colour-221 {
+    @include colour-badge(#1be177, #000000);
+  }
+  &.colour-222 {
+    @include colour-badge(#bcb1e5, #000000);
+  }
+  &.colour-223 {
+    @include colour-badge(#76912f, #000000);
+  }
+  &.colour-224 {
+    @include colour-badge(#003109, #ffffff);
+  }
+  &.colour-225 {
+    @include colour-badge(#0060cd, #ffffff);
+  }
+  &.colour-226 {
+    @include colour-badge(#d20096, #ffffff);
+  }
+  &.colour-227 {
+    @include colour-badge(#895563, #ffffff);
+  }
+  &.colour-228 {
+    @include colour-badge(#29201d, #ffffff);
+  }
+  &.colour-229 {
+    @include colour-badge(#5b3213, #ffffff);
+  }
+  &.colour-230 {
+    @include colour-badge(#a76f42, #000000);
+  }
+  &.colour-231 {
+    @include colour-badge(#89412e, #ffffff);
+  }
+  &.colour-232 {
+    @include colour-badge(#1a3a2a, #ffffff);
+  }
+  &.colour-233 {
+    @include colour-badge(#494b5a, #ffffff);
+  }
+  &.colour-234 {
+    @include colour-badge(#a88c85, #000000);
+  }
+  &.colour-235 {
+    @include colour-badge(#f4abaa, #000000);
+  }
+  &.colour-236 {
+    @include colour-badge(#a3f3ab, #000000);
+  }
+  &.colour-237 {
+    @include colour-badge(#00c6c8, #000000);
+  }
+  &.colour-238 {
+    @include colour-badge(#ea8b66, #000000);
+  }
+  &.colour-239 {
+    @include colour-badge(#958a9f, #000000);
+  }
+  &.colour-240 {
+    @include colour-badge(#bdc9d2, #000000);
+  }
+  &.colour-241 {
+    @include colour-badge(#9fa064, #000000);
+  }
+  &.colour-242 {
+    @include colour-badge(#be4700, #ffffff);
+  }
+  &.colour-243 {
+    @include colour-badge(#658188, #000000);
+  }
+  &.colour-244 {
+    @include colour-badge(#83a485, #000000);
+  }
+  &.colour-245 {
+    @include colour-badge(#453c23, #ffffff);
+  }
+  &.colour-246 {
+    @include colour-badge(#47675d, #ffffff);
+  }
+  &.colour-247 {
+    @include colour-badge(#3a3f00, #ffffff);
+  }
+  &.colour-248 {
+    @include colour-badge(#061203, #ffffff);
+  }
+  &.colour-249 {
+    @include colour-badge(#dffb71, #000000);
+  }
+  &.colour-250 {
+    @include colour-badge(#868e7e, #000000);
+  }
+  &.colour-251 {
+    @include colour-badge(#98d058, #000000);
+  }
+  &.colour-252 {
+    @include colour-badge(#6c8f7d, #000000);
+  }
+  &.colour-253 {
+    @include colour-badge(#d7bfc2, #000000);
+  }
+  &.colour-254 {
+    @include colour-badge(#3c3e6e, #ffffff);
+  }
+  &.colour-255 {
+    @include colour-badge(#d83d66, #000000);
+  }
+  &.colour-256 {
+    @include colour-badge(#2f5d9b, #ffffff);
+  }
+  &.colour-257 {
+    @include colour-badge(#6c5e46, #ffffff);
+  }
+  &.colour-258 {
+    @include colour-badge(#d25b88, #000000);
+  }
+  &.colour-259 {
+    @include colour-badge(#5b656c, #ffffff);
+  }
+  &.colour-260 {
+    @include colour-badge(#00b57f, #000000);
+  }
+  &.colour-261 {
+    @include colour-badge(#545c46, #ffffff);
+  }
+  &.colour-262 {
+    @include colour-badge(#866097, #ffffff);
+  }
+  &.colour-263 {
+    @include colour-badge(#365d25, #ffffff);
+  }
+  &.colour-264 {
+    @include colour-badge(#252f99, #ffffff);
+  }
+  &.colour-265 {
+    @include colour-badge(#00ccff, #000000);
+  }
+  &.colour-266 {
+    @include colour-badge(#674e60, #ffffff);
+  }
+  &.colour-267 {
+    @include colour-badge(#fc009c, #000000);
+  }
+  &.colour-268 {
+    @include colour-badge(#92896b, #000000);
+  }
+  &.colour-269 {
+    @include colour-badge(#1e2324, #ffffff);
+  }
+  &.colour-270 {
+    @include colour-badge(#dec9b2, #000000);
+  }
+  &.colour-271 {
+    @include colour-badge(#9d4948, #ffffff);
+  }
+  &.colour-272 {
+    @include colour-badge(#85abb4, #000000);
+  }
+  &.colour-273 {
+    @include colour-badge(#342142, #ffffff);
+  }
+  &.colour-274 {
+    @include colour-badge(#d09685, #000000);
+  }
+  &.colour-275 {
+    @include colour-badge(#a4acac, #000000);
+  }
+  &.colour-276 {
+    @include colour-badge(#00ffff, #000000);
+  }
+  &.colour-277 {
+    @include colour-badge(#ae9c86, #000000);
+  }
+  &.colour-278 {
+    @include colour-badge(#742a33, #ffffff);
+  }
+  &.colour-279 {
+    @include colour-badge(#0e72c5, #ffffff);
+  }
+  &.colour-280 {
+    @include colour-badge(#afd8ec, #000000);
+  }
+  &.colour-281 {
+    @include colour-badge(#c064b9, #000000);
+  }
+  &.colour-282 {
+    @include colour-badge(#91028c, #ffffff);
+  }
+  &.colour-283 {
+    @include colour-badge(#feedbf, #000000);
+  }
+  &.colour-284 {
+    @include colour-badge(#ffb789, #000000);
+  }
+  &.colour-285 {
+    @include colour-badge(#9cb8e4, #000000);
+  }
+  &.colour-286 {
+    @include colour-badge(#afffd1, #000000);
+  }
+  &.colour-287 {
+    @include colour-badge(#2a364c, #ffffff);
+  }
+  &.colour-288 {
+    @include colour-badge(#4f4a43, #ffffff);
+  }
+  &.colour-289 {
+    @include colour-badge(#647095, #ffffff);
+  }
+  &.colour-290 {
+    @include colour-badge(#34bbff, #000000);
+  }
+  &.colour-291 {
+    @include colour-badge(#807781, #000000);
+  }
+  &.colour-292 {
+    @include colour-badge(#920003, #ffffff);
+  }
+  &.colour-293 {
+    @include colour-badge(#b3a5a7, #000000);
+  }
+  &.colour-294 {
+    @include colour-badge(#018615, #ffffff);
+  }
+  &.colour-295 {
+    @include colour-badge(#f1ffc8, #000000);
+  }
+  &.colour-296 {
+    @include colour-badge(#976f5c, #000000);
+  }
+  &.colour-297 {
+    @include colour-badge(#ff3bc1, #000000);
+  }
+  &.colour-298 {
+    @include colour-badge(#ff5f6b, #000000);
+  }
+  &.colour-299 {
+    @include colour-badge(#077d84, #ffffff);
+  }
+  &.colour-300 {
+    @include colour-badge(#f56d93, #000000);
+  }
+  &.colour-301 {
+    @include colour-badge(#5771da, #000000);
+  }
+  &.colour-302 {
+    @include colour-badge(#4e1e2a, #ffffff);
+  }
+  &.colour-303 {
+    @include colour-badge(#830055, #ffffff);
+  }
+  &.colour-304 {
+    @include colour-badge(#02d346, #000000);
+  }
+  &.colour-305 {
+    @include colour-badge(#be452d, #ffffff);
+  }
+  &.colour-306 {
+    @include colour-badge(#00905e, #000000);
+  }
+  &.colour-307 {
+    @include colour-badge(#be0028, #ffffff);
+  }
+  &.colour-308 {
+    @include colour-badge(#6e96e3, #000000);
+  }
+  &.colour-309 {
+    @include colour-badge(#007699, #ffffff);
+  }
+  &.colour-310 {
+    @include colour-badge(#fec96d, #000000);
+  }
+  &.colour-311 {
+    @include colour-badge(#9c6a7d, #000000);
+  }
+  &.colour-312 {
+    @include colour-badge(#3fa1b8, #000000);
+  }
+  &.colour-313 {
+    @include colour-badge(#893de3, #ffffff);
+  }
+  &.colour-314 {
+    @include colour-badge(#79b4d6, #000000);
+  }
+  &.colour-315 {
+    @include colour-badge(#7fd4d9, #000000);
+  }
+  &.colour-316 {
+    @include colour-badge(#6751bb, #ffffff);
+  }
+  &.colour-317 {
+    @include colour-badge(#b28d2d, #000000);
+  }
+  &.colour-318 {
+    @include colour-badge(#e27a05, #000000);
+  }
+  &.colour-319 {
+    @include colour-badge(#dd9cb8, #000000);
+  }
+  &.colour-320 {
+    @include colour-badge(#aabc7a, #000000);
+  }
+  &.colour-321 {
+    @include colour-badge(#980034, #ffffff);
+  }
+  &.colour-322 {
+    @include colour-badge(#561a02, #ffffff);
+  }
+  &.colour-323 {
+    @include colour-badge(#8f7f00, #000000);
+  }
+  &.colour-324 {
+    @include colour-badge(#635000, #ffffff);
+  }
+  &.colour-325 {
+    @include colour-badge(#cd7dae, #000000);
+  }
+  &.colour-326 {
+    @include colour-badge(#8a5e2d, #ffffff);
+  }
+  &.colour-327 {
+    @include colour-badge(#ffb3e1, #000000);
+  }
+  &.colour-328 {
+    @include colour-badge(#6b6466, #ffffff);
+  }
+  &.colour-329 {
+    @include colour-badge(#c6d300, #000000);
+  }
+  &.colour-330 {
+    @include colour-badge(#0100e2, #ffffff);
+  }
+  &.colour-331 {
+    @include colour-badge(#88ec69, #000000);
+  }
+  &.colour-332 {
+    @include colour-badge(#8fccbe, #000000);
+  }
+  &.colour-333 {
+    @include colour-badge(#21001c, #ffffff);
+  }
+  &.colour-334 {
+    @include colour-badge(#511f4d, #ffffff);
+  }
+  &.colour-335 {
+    @include colour-badge(#e3f6e3, #000000);
+  }
+  &.colour-336 {
+    @include colour-badge(#ff8eb1, #000000);
+  }
+  &.colour-337 {
+    @include colour-badge(#6b4f29, #ffffff);
+  }
+  &.colour-338 {
+    @include colour-badge(#a37f46, #000000);
+  }
+  &.colour-339 {
+    @include colour-badge(#6a5950, #ffffff);
+  }
+  &.colour-340 {
+    @include colour-badge(#1f2a1a, #ffffff);
+  }
+  &.colour-341 {
+    @include colour-badge(#04784d, #ffffff);
+  }
+  &.colour-342 {
+    @include colour-badge(#101835, #ffffff);
+  }
+  &.colour-343 {
+    @include colour-badge(#e6e0d0, #000000);
+  }
+  &.colour-344 {
+    @include colour-badge(#ff74fe, #000000);
+  }
+  &.colour-345 {
+    @include colour-badge(#00a45f, #000000);
+  }
+  &.colour-346 {
+    @include colour-badge(#8f5df8, #000000);
+  }
+  &.colour-347 {
+    @include colour-badge(#4b0059, #ffffff);
+  }
+  &.colour-348 {
+    @include colour-badge(#412f23, #ffffff);
+  }
+  &.colour-349 {
+    @include colour-badge(#d8939e, #000000);
+  }
+  &.colour-350 {
+    @include colour-badge(#db9d72, #000000);
+  }
+  &.colour-351 {
+    @include colour-badge(#604143, #ffffff);
+  }
+  &.colour-352 {
+    @include colour-badge(#b5bace, #000000);
+  }
+  &.colour-353 {
+    @include colour-badge(#989eb7, #000000);
+  }
+  &.colour-354 {
+    @include colour-badge(#d2c4db, #000000);
+  }
+  &.colour-355 {
+    @include colour-badge(#a587af, #000000);
+  }
+  &.colour-356 {
+    @include colour-badge(#77d796, #000000);
+  }
+  &.colour-357 {
+    @include colour-badge(#7f8c94, #000000);
+  }
+  &.colour-358 {
+    @include colour-badge(#ff9b03, #000000);
+  }
+  &.colour-359 {
+    @include colour-badge(#555196, #ffffff);
+  }
+  &.colour-360 {
+    @include colour-badge(#31ddae, #000000);
+  }
+  &.colour-361 {
+    @include colour-badge(#74b671, #000000);
+  }
+  &.colour-362 {
+    @include colour-badge(#802647, #ffffff);
+  }
+  &.colour-363 {
+    @include colour-badge(#2a373f, #ffffff);
+  }
+  &.colour-364 {
+    @include colour-badge(#014a68, #ffffff);
+  }
+  &.colour-365 {
+    @include colour-badge(#696628, #ffffff);
+  }
+  &.colour-366 {
+    @include colour-badge(#4c7b6d, #ffffff);
+  }
+  &.colour-367 {
+    @include colour-badge(#002c27, #ffffff);
+  }
+  &.colour-368 {
+    @include colour-badge(#7a4522, #ffffff);
+  }
+  &.colour-369 {
+    @include colour-badge(#3b5859, #ffffff);
+  }
+  &.colour-370 {
+    @include colour-badge(#e5d381, #000000);
+  }
+  &.colour-371 {
+    @include colour-badge(#fff3ff, #000000);
+  }
+  &.colour-372 {
+    @include colour-badge(#679fa0, #000000);
+  }
+  &.colour-373 {
+    @include colour-badge(#261300, #ffffff);
+  }
+  &.colour-374 {
+    @include colour-badge(#2c5742, #ffffff);
+  }
+  &.colour-375 {
+    @include colour-badge(#9131af, #ffffff);
+  }
+  &.colour-376 {
+    @include colour-badge(#af5d88, #000000);
+  }
+  &.colour-377 {
+    @include colour-badge(#c7706a, #000000);
+  }
+  &.colour-378 {
+    @include colour-badge(#61ab1f, #000000);
+  }
+  &.colour-379 {
+    @include colour-badge(#8cf2d4, #000000);
+  }
+  &.colour-380 {
+    @include colour-badge(#c5d9b8, #000000);
+  }
+  &.colour-381 {
+    @include colour-badge(#9ffffb, #000000);
+  }
+  &.colour-382 {
+    @include colour-badge(#bf45cc, #000000);
+  }
+  &.colour-383 {
+    @include colour-badge(#493941, #ffffff);
+  }
+  &.colour-384 {
+    @include colour-badge(#863b60, #ffffff);
+  }
 }

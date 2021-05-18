@@ -6,7 +6,7 @@ class ReportContractTest < ActiveSupport::TestCase
   # Contracted views are those we've agreed to maintain
   # We'll track all views in these tests, but this'll
   # pick up any that get 'dropped' by accident
-  contracted_views = %w(
+  contracted_views = %w[
     view_aliquots
     view_asset_links
     view_lanes
@@ -20,13 +20,17 @@ class ReportContractTest < ActiveSupport::TestCase
     view_studies
     view_tags
     view_wells
-  )
+  ]
 
-  ViewsSchema.all_views.concat(contracted_views).uniq.each do |view|
-    context "View #{view}" do
-      should 'respond to Select * from' do
-        assert ActiveRecord::Base.connection.execute("SELECT * FROM #{view};")
+  ViewsSchema
+    .all_views
+    .concat(contracted_views)
+    .uniq
+    .each do |view|
+      context "View #{view}" do
+        should 'respond to Select * from' do
+          assert ActiveRecord::Base.connection.execute("SELECT * FROM #{view};")
+        end
       end
     end
-  end
 end

@@ -18,10 +18,12 @@ class WorkOrder
     end
 
     def create_work_orders!
-      requests.group_by(&:asset_id).map do |_asset_id, requests|
-        state = requests.first.state
-        WorkOrder.create!(work_order_type: work_order_type, requests: requests, state: state)
-      end
+      requests
+        .group_by(&:asset_id)
+        .map do |_asset_id, requests|
+          state = requests.first.state
+          WorkOrder.create!(work_order_type: work_order_type, requests: requests, state: state)
+        end
     end
 
     private

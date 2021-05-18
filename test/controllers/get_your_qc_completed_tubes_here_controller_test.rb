@@ -8,8 +8,8 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
 
     setup do
       @controller = GetYourQcCompletedTubesHereController.new
-      @request    = ActionController::TestRequest.create(@controller)
-      @user       = create(:user)
+      @request = ActionController::TestRequest.create(@controller)
+      @user = create(:user)
       @controller.stubs(:current_user).returns(@user)
       @controller.stubs(:logged_in?).returns(@user)
     end
@@ -23,10 +23,15 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
         @generator = LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study)
         generator.stubs(:valid?).returns(true)
         generator.stubs(:create!).returns(true)
-        generator.stubs(:asset_group).returns(AssetGroup.create(
-                                                assets: create_list(:lib_pool_tube,
-                                                                    3).map(&:receptacle), study: create(:study), name: 'Asset Group 1'
-                                              ))
+        generator
+          .stubs(:asset_group)
+          .returns(
+            AssetGroup.create(
+              assets: create_list(:lib_pool_tube, 3).map(&:receptacle),
+              study: create(:study),
+              name: 'Asset Group 1'
+            )
+          )
       end
 
       should 'create some assets, redirect to the asset group' do

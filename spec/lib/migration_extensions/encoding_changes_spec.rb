@@ -13,16 +13,14 @@ RSpec.describe MigrationExtensions::EncodingChanges do
     end
   end
 
-  setup do
-    ActiveRecord::Migration.verbose = false
-  end
+  setup { ActiveRecord::Migration.verbose = false }
 
   describe '#up' do
     setup do
-      expect(ActiveRecord::Base.connection).to receive(:execute)
-        .with('ALTER TABLE test_table ROW_FORMAT=DYNAMIC')
-      expect(ActiveRecord::Base.connection).to receive(:execute)
-        .with('ALTER TABLE test_table CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci')
+      expect(ActiveRecord::Base.connection).to receive(:execute).with('ALTER TABLE test_table ROW_FORMAT=DYNAMIC')
+      expect(ActiveRecord::Base.connection).to receive(:execute).with(
+        'ALTER TABLE test_table CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+      )
     end
 
     it 'migrates' do
@@ -32,10 +30,10 @@ RSpec.describe MigrationExtensions::EncodingChanges do
 
   describe '#down' do
     setup do
-      expect(ActiveRecord::Base.connection).to receive(:execute)
-        .with('ALTER TABLE test_table CONVERT TO CHARACTER SET latin1 COLLATE latin1_swedish_ci')
-      expect(ActiveRecord::Base.connection).to receive(:execute)
-        .with('ALTER TABLE test_table ROW_FORMAT=COMPACT')
+      expect(ActiveRecord::Base.connection).to receive(:execute).with(
+        'ALTER TABLE test_table CONVERT TO CHARACTER SET latin1 COLLATE latin1_swedish_ci'
+      )
+      expect(ActiveRecord::Base.connection).to receive(:execute).with('ALTER TABLE test_table ROW_FORMAT=COMPACT')
     end
 
     it 'migrates' do
@@ -43,7 +41,5 @@ RSpec.describe MigrationExtensions::EncodingChanges do
     end
   end
 
-  teardown do
-    ActiveRecord::Migration.verbose = true
-  end
+  teardown { ActiveRecord::Migration.verbose = true }
 end

@@ -17,11 +17,7 @@ class BaitLibraryLayout < ApplicationRecord # rubocop:todo Style/Documentation
   validates_unassigned :layout
 
   def well_layout
-    {}.tap do |well_to_name|
-      layout.map do |name, locations|
-        locations.map { |l| well_to_name[l] = name }
-      end
-    end
+    {}.tap { |well_to_name| layout.map { |name, locations| locations.map { |l| well_to_name[l] = name } } }
   end
 
   # Records the assignment of the bait library to a particular well
@@ -51,27 +47,31 @@ class BaitLibraryLayout < ApplicationRecord # rubocop:todo Style/Documentation
   end
   private :layout_bait_libraries_on_plate
 
-  def each_bait_library_assignment
+  # rubocop:todo Metrics/MethodLength
+  def each_bait_library_assignment # rubocop:todo Metrics/AbcSize
     plate.stock_wells.each do |well, stock_wells|
-      bait_library = stock_wells.map do |w|
-        w.requests_as_source.for_submission_id(well.pool_id).first
-      end.compact.map(&:request_metadata).map(&:bait_library).uniq
+      bait_library =
+        stock_wells.map { |w| w.requests_as_source.for_submission_id(well.pool_id).first }.compact
+          .map(&:request_metadata)
+          .map(&:bait_library)
+          .uniq
       if bait_library.size > 1
-        raise StandardError, "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.human_barcode}"
+        raise StandardError,
+              "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.human_barcode}"
       end
 
       yield(well, bait_library.first)
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
   private :each_bait_library_assignment
 
   # Generates the layout of bait libraries for preview.  In other words, none of the actually assignment is
   # done, just the recording, which would fail validation if an attempt was then made to save it.  So this is
   # safe to do.
   def generate_for_preview
-    each_bait_library_assignment do |well, bait_library|
-      record_bait_library_assignment(well, bait_library)
-    end
+    each_bait_library_assignment { |well, bait_library| record_bait_library_assignment(well, bait_library) }
   end
   private :generate_for_preview
 

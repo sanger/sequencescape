@@ -25,9 +25,15 @@ RSpec.describe Api::V2::QcAssaysController, type: :request, qc_result: true do
 
   it 'returns an error if someone tries to create an invalid qc assay' do
     expect do
-      post api_v2_qc_assays_path, params: { data: { attributes: {
-        qc_results: [asset_1, asset_2, asset_3, asset_invalid], lot_number: 'LN1234567'
-      } } }
+      post api_v2_qc_assays_path,
+           params: {
+             data: {
+               attributes: {
+                 qc_results: [asset_1, asset_2, asset_3, asset_invalid],
+                 lot_number: 'LN1234567'
+               }
+             }
+           }
     end.not_to change(QcAssay, :count)
     expect(response).to have_http_status(:unprocessable_entity)
     json = ActiveSupport::JSON.decode(response.body)

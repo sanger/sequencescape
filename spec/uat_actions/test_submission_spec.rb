@@ -4,9 +4,7 @@ require 'rails_helper'
 
 describe UatActions::TestSubmission do
   context 'valid options' do
-    before do
-      expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 2))
-    end
+    before { expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 2)) }
 
     let(:submission_template) { create :limber_wgs_submission_template }
     let(:primer_panel) { create :primer_panel }
@@ -40,12 +38,7 @@ describe UatActions::TestSubmission do
     end
 
     context 'with optional library type supplied' do
-      let(:parameters) do
-        {
-          submission_template_name: submission_template.name,
-          library_type_name: 'Standard'
-        }
-      end
+      let(:parameters) { { submission_template_name: submission_template.name, library_type_name: 'Standard' } }
 
       it 'can be performed' do
         expect(uat_action.perform).to eq true
@@ -74,12 +67,7 @@ describe UatActions::TestSubmission do
     end
 
     context 'with optional number of wells with samples supplied' do
-      let(:parameters) do
-        {
-          submission_template_name: submission_template.name,
-          number_of_wells_with_samples: '2'
-        }
-      end
+      let(:parameters) { { submission_template_name: submission_template.name, number_of_wells_with_samples: '2' } }
 
       it 'can be performed' do
         expect(uat_action.perform).to eq true
@@ -90,12 +78,7 @@ describe UatActions::TestSubmission do
     end
 
     context 'with optional number of wells to submit supplied' do
-      let(:parameters) do
-        {
-          submission_template_name: submission_template.name,
-          number_of_wells_to_submit: '2'
-        }
-      end
+      let(:parameters) { { submission_template_name: submission_template.name, number_of_wells_to_submit: '2' } }
 
       it 'can be performed' do
         expect(uat_action.perform).to eq true

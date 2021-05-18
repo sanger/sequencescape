@@ -2,21 +2,21 @@
 
 def upload_submission_spreadsheet(name, encoding = nil)
   attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', "#{name}.csv"))
-  if encoding
-    step(%{I select "#{encoding}" from 'Encoding'})
-  end
+  step("I select \"#{encoding}\" from 'Encoding'") if encoding
   click_button 'Create Bulk submission'
 end
 
 def upload_custom_row_submission
-  attach_file('bulk_submission_spreadsheet',
-              File.join(Rails.root, 'features', 'submission', 'csv', 'template_for_bulk_submission.csv'))
+  attach_file(
+    'bulk_submission_spreadsheet',
+    File.join(Rails.root, 'features', 'submission', 'csv', 'template_for_bulk_submission.csv')
+  )
   click_button 'Create Bulk submission'
 end
 
 When /^I have a plate '(.*)' that has a well in location 'A1' that contains the sample '(.*)'$/ do |asset_name, sample_name|
   sample = Sample.find_by(name: sample_name)
-  plate =  FactoryBot.create :plate, name: asset_name
+  plate = FactoryBot.create :plate, name: asset_name
   plate.wells.construct!
   well = plate.wells.first
   well.aliquots.create!(sample: sample)

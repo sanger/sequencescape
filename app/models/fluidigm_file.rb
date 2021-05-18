@@ -20,8 +20,8 @@ class FluidigmFile # rubocop:todo Style/Documentation
 
     class Irods # rubocop:todo Style/Documentation
       def initialize(barcode)
-        @data = IrodsReader::DataObj.find('seq', 'dcterms:audience' => configatron.irods_audience,
-                                                 :fluidigm_plate => barcode)
+        @data =
+          IrodsReader::DataObj.find('seq', 'dcterms:audience' => configatron.irods_audience, :fluidigm_plate => barcode)
       end
 
       def empty?
@@ -36,10 +36,7 @@ class FluidigmFile # rubocop:todo Style/Documentation
     end
 
     def self.default
-      {
-        'irods' => Irods,
-        'directory' => Directory
-      }.fetch(configatron.fluidigm_data.source)
+      { 'irods' => Irods, 'directory' => Directory }.fetch(configatron.fluidigm_data.source)
     end
 
     def self.find(barcode)
@@ -47,16 +44,17 @@ class FluidigmFile # rubocop:todo Style/Documentation
     end
   end
 
-  class InvalidFile < StandardError; end
+  class InvalidFile < StandardError
+  end
 
   class Assay # rubocop:todo Style/Documentation
     attr_reader :name, :result
 
     @@valid_markers = %w[XX XY YY]
-    @@gender_map    = { 'XX' => 'F', 'YY' => 'F', 'XY' => 'M' }
+    @@gender_map = { 'XX' => 'F', 'YY' => 'F', 'XY' => 'M' }
 
     def initialize(name, result)
-      @name   = name
+      @name = name
       @result = result
     end
 
@@ -128,9 +126,9 @@ class FluidigmFile # rubocop:todo Style/Documentation
   private
 
   def header_start_index
-    @header_start_index ||= (0..@csv.size).detect do |i|
-      @csv[i][0] == 'Experiment Information'
-    end || raise(InvalidFile, 'Could not find header')
+    @header_start_index ||=
+      (0..@csv.size).detect { |i| @csv[i][0] == 'Experiment Information' } ||
+        raise(InvalidFile, 'Could not find header')
   end
 
   def data_start_index
@@ -138,9 +136,11 @@ class FluidigmFile # rubocop:todo Style/Documentation
   end
 
   def headers
-    @headers ||= @csv[header_start_index].zip(@csv[header_start_index + 1]).zip(@csv[header_start_index + 2]).map do |h|
-      h.join(' ')
-    end
+    @headers ||=
+      @csv[header_start_index]
+        .zip(@csv[header_start_index + 1])
+        .zip(@csv[header_start_index + 2])
+        .map { |h| h.join(' ') }
   end
 
   def column(head)
@@ -153,8 +153,10 @@ class FluidigmFile # rubocop:todo Style/Documentation
       next if row[column('Experiment Information Sample Name')] == 'Water'
 
       well = well_at(row[column('Experiment Information Chamber ID')].split('-').first)
-      well.add_assay(row[column('Experiment Information SNP Assay and Allele Names Assay')],
-                     row[column('Results Call Information Final')])
+      well.add_assay(
+        row[column('Experiment Information SNP Assay and Allele Names Assay')],
+        row[column('Results Call Information Final')]
+      )
     end
   end
 end

@@ -23,6 +23,7 @@ Given /^well "([^"]*)" on plate "([^"]*)" has an empty supplier sample name$/ do
   plate = Plate.find_from_barcode(plate_barcode)
   well = plate.find_well_by_name(well_position)
   well.aliquots.clear
-  well.aliquots.create!(sample: Sample.create!(name: "Sample_#{well_position}_on_plate_#{plate_barcode}",
-                                               empty_supplier_sample_name: true))
+  well.aliquots.create!(
+    sample: Sample.create!(name: "Sample_#{well_position}_on_plate_#{plate_barcode}", empty_supplier_sample_name: true)
+  )
 end

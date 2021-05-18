@@ -2,11 +2,23 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_manifest_excel: true, sample_manifest: true do
+RSpec.describe SequencescapeExcel::ConditionalFormatting,
+               type: :model,
+               sample_manifest_excel: true,
+               sample_manifest: true do
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
   let(:rule) do
-    { name: :rule1, style: { bg_color: '82CAFA', type: :dxf },
-      options: { option1: 'some_value', option2: 'another_value' } }.with_indifferent_access
+    {
+      name: :rule1,
+      style: {
+        bg_color: '82CAFA',
+        type: :dxf
+      },
+      options: {
+        option1: 'some_value',
+        option2: 'another_value'
+      }
+    }.with_indifferent_access
   end
 
   it 'is comparable' do
@@ -30,11 +42,13 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
       expect(conditional_formatting.options).to eq(rule[:options])
     end
 
-    it 'has a style' do # rubocop:todo RSpec/AggregateExamples
+    it 'has a style' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting.style).to eq(rule[:style])
     end
 
-    it 'will not have a formula' do # rubocop:todo RSpec/AggregateExamples
+    it 'will not have a formula' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting.formula).to be_nil
     end
 
@@ -42,7 +56,8 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
       expect(conditional_formatting.update(worksheet: worksheet)).to be_styled
     end
 
-    it '#to_h produces a hash of options' do # rubocop:todo RSpec/AggregateExamples
+    it '#to_h produces a hash of options' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting.to_h).to eq(conditional_formatting.options)
     end
 
@@ -64,10 +79,13 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, type: :model, sample_m
     end
 
     it 'updates the formula if cell references are added' do
-      expect(conditional_formatting.update(references).options['formula']).to eq(SequencescapeExcel::Formula.new(formula.merge(references)).to_s)
+      expect(conditional_formatting.update(references).options['formula']).to eq(
+        SequencescapeExcel::Formula.new(formula.merge(references)).to_s
+      )
     end
 
-    it '#to_h should produce a hash of options' do # rubocop:todo RSpec/AggregateExamples
+    it '#to_h should produce a hash of options' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting.to_h).to eq(conditional_formatting.options)
     end
 

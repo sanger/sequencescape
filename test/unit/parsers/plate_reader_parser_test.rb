@@ -6,9 +6,7 @@ require 'csv'
 class PlateReaderParserTest < ActiveSupport::TestCase
   def read_file(filename)
     content = nil
-    File.open(filename, 'r') do |fd|
-      content = fd.read
-    end
+    File.open(filename, 'r') { |fd| content = fd.read }
     content
   end
 

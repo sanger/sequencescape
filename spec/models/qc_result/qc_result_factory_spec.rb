@@ -19,9 +19,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       it 'creates an assay to group all items passed' do
         factory = described_class.new([asset_1, asset_2, asset_3])
         expect(factory.qc_assay).to be_a(QcAssay)
-        factory.resources.each do |resource|
-          expect(resource.qc_assay).to eq(factory.qc_assay)
-        end
+        factory.resources.each { |resource| expect(resource.qc_assay).to eq(factory.qc_assay) }
       end
 
       it '#save saves all of the resources if they are valid' do
@@ -30,9 +28,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
         expect(factory.save).to be_truthy
         expect(QcResult.all.count).to eq(3)
         expect(QcAssay.all.count).to eq(1)
-        QcResult.all.each do |qc_result|
-          expect(qc_result.qc_assay).to eq QcAssay.last
-        end
+        QcResult.all.each { |qc_result| expect(qc_result.qc_assay).to eq QcAssay.last }
       end
 
       it 'produces sensible error messages if the resource is not valid' do
@@ -64,9 +60,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
         factory = described_class.new(qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567')
         expect(factory.qc_assay).to be_a(QcAssay)
         expect(factory.qc_assay.lot_number).to eq('LN1234567')
-        factory.resources.each do |resource|
-          expect(resource.qc_assay).to eq(factory.qc_assay)
-        end
+        factory.resources.each { |resource| expect(resource.qc_assay).to eq(factory.qc_assay) }
       end
 
       it '#save saves all of the resources if they are valid' do
@@ -75,9 +69,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
         expect(factory.save).to be_truthy
         expect(QcResult.all.count).to eq(3)
         expect(QcAssay.all.count).to eq(1)
-        QcResult.all.each do |qc_result|
-          expect(qc_result.qc_assay).to eq QcAssay.last
-        end
+        QcResult.all.each { |qc_result| expect(qc_result.qc_assay).to eq QcAssay.last }
       end
     end
 
@@ -99,7 +91,8 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
         expect(no_blank_wells).not_to include(asset_3)
       end
 
-      it 'will save all of the assets with valid wells' do # rubocop:todo RSpec/AggregateExamples
+      it 'will save all of the assets with valid wells' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(factory.save).to be_truthy
         expect(QcResult.all.count).to eq(2)
       end
@@ -142,14 +135,18 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       let(:plate) { create(:plate_with_empty_wells, well_count: 12) }
 
       it 'is valid if the well location is valid' do
-        expect(described_class.new(qc_result_attributes.merge(uuid: plate.uuid,
-                                                              well_location: plate.wells.first.map.description))).to be_valid
+        expect(
+          described_class.new(
+            qc_result_attributes.merge(uuid: plate.uuid, well_location: plate.wells.first.map.description)
+          )
+        ).to be_valid
       end
 
       it 'is a blank well if the asset is a plate and the well does not exist' do
         expect(described_class.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: 'Z999'))).to be_valid
-        expect(described_class.new(qc_result_attributes.merge(uuid: plate.uuid,
-                                                              well_location: 'Z999'))).to be_blank_well
+        expect(
+          described_class.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: 'Z999'))
+        ).to be_blank_well
       end
     end
 
@@ -157,13 +154,22 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       let(:plate) { create(:plate_with_empty_wells, well_count: 12) }
 
       it 'will create a valid resource with a valid barcode' do
-        expect(described_class.new(qc_result_attributes.merge(barcode: plate.barcodes.first.barcode,
-                                                              well_location: plate.wells.first.map.description))).to be_valid
+        expect(
+          described_class.new(
+            qc_result_attributes.merge(
+              barcode: plate.barcodes.first.barcode,
+              well_location: plate.wells.first.map.description
+            )
+          )
+        ).to be_valid
       end
 
       it 'will not create a valid resource with an invalid barcode' do
-        expect(described_class.new(qc_result_attributes.merge(barcode: 'DODGY_BARCODE',
-                                                              well_location: plate.wells.first.map.description))).not_to be_valid
+        expect(
+          described_class.new(
+            qc_result_attributes.merge(barcode: 'DODGY_BARCODE', well_location: plate.wells.first.map.description)
+          )
+        ).not_to be_valid
       end
     end
 
@@ -171,7 +177,9 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       let(:sample) { create(:sample_with_well) }
 
       it 'creates the asset as the primary receptacle' do
-        expect(described_class.new(qc_result_attributes.merge(uuid: sample.uuid)).asset).to eq(sample.primary_receptacle)
+        expect(described_class.new(qc_result_attributes.merge(uuid: sample.uuid)).asset).to eq(
+          sample.primary_receptacle
+        )
       end
     end
 
@@ -187,8 +195,10 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
           create(:working_dilution_plate, parents: [stock_plate], well_count: 3, dilution_factor: 10)
         end
         let(:working_dilution_attributes) do
-          attributes.merge(uuid: working_dilution_plate.uuid,
-                           well_location: working_dilution_plate.wells.first.map.description)
+          attributes.merge(
+            uuid: working_dilution_plate.uuid,
+            well_location: working_dilution_plate.wells.first.map.description
+          )
         end
 
         it 'resource indicates if it is a working dilution' do
@@ -224,8 +234,10 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
           create(:working_dilution_plate, parents: [stock_plate], well_count: 3, dilution_factor: nil)
         end
         let(:working_dilution_attributes) do
-          attributes.merge(uuid: working_dilution_plate.uuid,
-                           well_location: working_dilution_plate.wells.first.map.description)
+          attributes.merge(
+            uuid: working_dilution_plate.uuid,
+            well_location: working_dilution_plate.wells.first.map.description
+          )
         end
 
         it '#save will not update the parent well if it is a working dilution' do

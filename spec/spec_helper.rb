@@ -46,9 +46,7 @@ require './lib/capybara_failure_logger'
 require 'pry'
 
 Capybara.register_driver :headless_chrome do |app|
-  enable_chrome_headless_downloads(
-    Capybara.drivers[:selenium_chrome_headless].call(app)
-  )
+  enable_chrome_headless_downloads(Capybara.drivers[:selenium_chrome_headless].call(app))
 end
 
 def enable_chrome_headless_downloads(driver)
@@ -64,6 +62,7 @@ WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com
 
 RSpec.configure do |config|
   config.bisect_runner = :shell # Forking doesn't seem to work
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -158,9 +157,7 @@ RSpec.configure do |config|
     FactoryBot.rewind_sequences
   end
 
-  config.before(:each, js: true) do
-    page.driver.browser.manage.window.resize_to(1024, 1024)
-  end
+  config.before(:each, js: true) { page.driver.browser.manage.window.resize_to(1024, 1024) }
 
   config.after(:each, js: true) do |example|
     if example.exception

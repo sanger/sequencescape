@@ -36,8 +36,8 @@ export default () => {
       // Controls how notifications are delivered to the user
       notifyMode: {
         // Whether to use the full pick name by default, or a short name.
-        mode: 'short'
-      }
-    }
-  }
-}
+        mode: "short",
+      },
+    },
+  };
+};

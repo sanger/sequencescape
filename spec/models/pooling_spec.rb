@@ -25,7 +25,9 @@ describe Pooling, type: :model, poolings: true do
 
     it 'is not valid without source_assets' do
       expect(pooling).not_to be_valid
-      expect(pooling.errors.full_messages).to include 'Source assets were not scanned or were not found in Sequencescape'
+      expect(
+        pooling.errors.full_messages
+      ).to include 'Source assets were not scanned or were not found in Sequencescape'
     end
   end
 
@@ -37,8 +39,12 @@ describe Pooling, type: :model, poolings: true do
     it 'is not valid if tubes are not in sqsc, if tubes do not have at least one aliquot or if there is a tag clash' do
       expect(pooling).not_to be_valid
       expect(pooling.errors.messages.count).to eq 2
-      expect(pooling.errors.full_messages).to include 'Source assets with barcode(s) -1, -2 were not found in Sequencescape'
-      expect(pooling.errors.full_messages).to include "Source assets with barcode(s) #{empty_lb_tube.ean13_barcode} do not have any aliquots"
+      expect(
+        pooling.errors.full_messages
+      ).to include 'Source assets with barcode(s) -1, -2 were not found in Sequencescape'
+      expect(
+        pooling.errors.full_messages
+      ).to include "Source assets with barcode(s) #{empty_lb_tube.ean13_barcode} do not have any aliquots"
       expect(pooling.errors.full_messages).to include 'Tags combinations are not compatible and result in a tag clash'
     end
   end
@@ -53,19 +59,20 @@ describe Pooling, type: :model, poolings: true do
       ]
     end
 
-    before do
-      create_list(:single_tagged_aliquot, 2, receptacle: mx_tube)
-    end
+    before { create_list(:single_tagged_aliquot, 2, receptacle: mx_tube) }
 
     it 'is valid if tubes are in sqsc, have at least 1 aliquot and there is no tag clash' do
       expect(pooling).to be_valid
     end
 
-    it 'creates only standard mx tube if stock is not required' do # rubocop:todo RSpec/AggregateExamples
+    it 'creates only standard mx tube if stock is not required' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(pooling.execute).to be true
       expect(pooling.stock_mx_tube.present?).to be false
       expect(pooling.standard_mx_tube.aliquots.count).to eq 5
-      expect(pooling.message).to eq(notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} ")
+      expect(pooling.message).to eq(
+        notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} "
+      )
     end
 
     it 'sets up child relationships' do
@@ -80,7 +87,10 @@ describe Pooling, type: :model, poolings: true do
         expect(pooling.execute).to be true
         expect(pooling.stock_mx_tube.aliquots.count).to eq 5
         expect(pooling.standard_mx_tube.aliquots.count).to eq 5
-        expect(pooling.message).to eq(notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} and stock_mx_tube #{Tube.last(2).first.human_barcode} ")
+        expect(pooling.message).to eq(
+          notice:
+            "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} and stock_mx_tube #{Tube.last(2).first.human_barcode} "
+        )
       end
 
       it 'sets up child relationships', aggregate_failures: true do
@@ -118,14 +128,19 @@ describe Pooling, type: :model, poolings: true do
         expect(RestClient).to receive(:post)
         expect(pooling.execute).to be true
         expect(pooling.print_job_required?).to be true
-        expect(pooling.message).to eq(notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} Your 1 label(s) have been sent to printer #{barcode_printer.name}")
+        expect(pooling.message).to eq(
+          notice:
+            "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} Your 1 label(s) have been sent to printer #{barcode_printer.name}"
+        )
       end
 
       it 'returns correct message if something is wrong with pmb' do
         expect(RestClient).to receive(:get).and_raise(Errno::ECONNREFUSED)
         expect(pooling.execute).to be true
-        expect(pooling.message).to eq(error: 'Printmybarcode service is down',
-                                      notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} ")
+        expect(pooling.message).to eq(
+          error: 'Printmybarcode service is down',
+          notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} "
+        )
       end
     end
   end

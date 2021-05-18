@@ -21,27 +21,21 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
-  def show
-  end
+  def show; end
 
   def switch
     session[:user] = params[:id]
     redirect_to studies_url
   end
 
-  def update
+  # rubocop:todo Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     @user = User.find(params[:id])
     Role.general_roles.each do |role|
-      if params[:role] && params[:role][role.name]
-        @user.grant_role(role.name)
-      else
-        @user.remove_role(role.name)
-      end
+      params[:role] && params[:role][role.name] ? @user.grant_role(role.name) : @user.remove_role(role.name)
     end
 
-    if @user.id == params[:id].to_i
-      @user.update(params[:user])
-    end
+    @user.update(params[:user]) if @user.id == params[:id].to_i
     if @user.save
       flash[:notice] = 'Profile updated'
     else
@@ -50,14 +44,18 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     redirect_to profile_path(@user)
   end
 
-  def grant_user_role
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def grant_user_role # rubocop:todo Metrics/AbcSize
     if request.xhr?
       if params[:role]
-        authorizable_object = if params[:role][:authorizable_type] == 'Project'
-                                Project.find(params[:role][:authorizable_id])
-                              else
-                                Study.find(params[:role][:authorizable_id])
-                              end
+        authorizable_object =
+          if params[:role][:authorizable_type] == 'Project'
+            Project.find(params[:role][:authorizable_id])
+          else
+            Study.find(params[:role][:authorizable_id])
+          end
         @user.grant_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
@@ -75,14 +73,18 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
-  def remove_user_role
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def remove_user_role # rubocop:todo Metrics/AbcSize
     if request.xhr?
       if params[:role]
-        authorizable_object = if params[:role][:authorizable_type] == 'project'
-                                Project.find(params[:role][:authorizable_id])
-                              else
-                                Study.find(params[:role][:authorizable_id])
-                              end
+        authorizable_object =
+          if params[:role][:authorizable_type] == 'project'
+            Project.find(params[:role][:authorizable_id])
+          else
+            Study.find(params[:role][:authorizable_id])
+          end
         @user.remove_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
@@ -100,10 +102,17 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def filter
     if params[:q]
-      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query',
-                                        query: "%#{params[:q].downcase}%")
+      @users =
+        User
+          .order(:login)
+          .where(
+            'first_name LIKE :query OR last_name LIKE :query OR login LIKE :query',
+            query: "%#{params[:q].downcase}%"
+          )
     end
 
     render partial: 'users', locals: { users: @users }

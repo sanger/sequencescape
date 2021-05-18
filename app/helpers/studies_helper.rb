@@ -1,10 +1,6 @@
 module StudiesHelper # rubocop:todo Style/Documentation
   def status_link_title(study)
-    if study.inactive? || study.pending?
-      'Open'
-    else
-      'Close'
-    end
+    study.inactive? || study.pending? ? 'Open' : 'Close'
   end
 
   def display_owners(study)
@@ -19,7 +15,7 @@ module StudiesHelper # rubocop:todo Style/Documentation
 
   public
 
-  def display_file_icon(document)
+  def display_file_icon(document) # rubocop:todo Metrics/MethodLength
     return icon('fas', 'exclamation-circle', class: 'text-danger') unless document
 
     case document.content_type
@@ -39,8 +35,7 @@ module StudiesHelper # rubocop:todo Style/Documentation
   end
 
   def study_link(study, options)
-    link_text = tag.strong(study.name) << ' ' <<
-                badge(study.state, type: 'study-state')
+    link_text = tag.strong(study.name) << ' ' << badge(study.state, type: 'study-state')
     link_to(link_text, study_path(study), options)
   end
 end

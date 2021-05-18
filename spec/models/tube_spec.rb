@@ -62,7 +62,8 @@ describe Tube, type: :model do
       expect(scanned_in_asset.scanned_in_date).to eq(Time.zone.today.to_s)
     end
 
-    it "returns nothing if it hasn't been scanned in" do # rubocop:todo RSpec/AggregateExamples
+    it "returns nothing if it hasn't been scanned in" do
+      # rubocop:todo RSpec/AggregateExamples
       expect(unscanned_in_asset.scanned_in_date).to be_blank
     end
   end
@@ -70,9 +71,7 @@ describe Tube, type: :model do
   describe '#comments' do
     let(:tube) { create :tube }
 
-    before do
-      create :comment, commentable: tube, description: 'Comment on tube'
-    end
+    before { create :comment, commentable: tube, description: 'Comment on tube' }
 
     it 'allows comment addition' do
       tube.comments.create!(description: 'Works')

@@ -7,10 +7,11 @@ module QcableStatemachineChecks
       instance_eval(&block)
     end
 
-    def check_event(name, options)
+    # rubocop:todo Metrics/MethodLength
+    def check_event(name, options) # rubocop:todo Metrics/AbcSize
       target = @target
       acceptable_states = options[:from]
-      end_state         = options[:to]
+      end_state = options[:to]
 
       @owner.instance_eval do
         context "##{name}" do
@@ -23,13 +24,15 @@ module QcableStatemachineChecks
             @qcable.stubs(:lot).returns(lot)
           end
 
-          acceptable_states.map(&:to_s).each do |state|
-            should "transition from #{state} to #{end_state}" do
-              @qcable.state = state
-              @qcable.send(:"#{name}")
-              assert_equal end_state.to_s, @qcable.state
+          acceptable_states
+            .map(&:to_s)
+            .each do |state|
+              should "transition from #{state} to #{end_state}" do
+                @qcable.state = state
+                @qcable.send(:"#{name}")
+                assert_equal end_state.to_s, @qcable.state
+              end
             end
-          end
 
           (target.aasm.states.map(&:name).map(&:to_s) - acceptable_states.map(&:to_s)).each do |state|
             should "not transition from #{state}" do
@@ -40,6 +43,7 @@ module QcableStatemachineChecks
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
   end
 
   def state_machine(state_machined_class, &block)

@@ -1,5 +1,5 @@
 ---
-  # There are multiple different cherrypicking request types.
+# There are multiple different cherrypicking request types.
 # This does not include fluidigm, which was always an abuse of the cherrypicking
 # pipeline.
 cherrypick:

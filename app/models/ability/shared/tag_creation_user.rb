@@ -5,6 +5,7 @@
 module Ability::Shared::TagCreationUser
   def grant_privileges
     super
+
     # More advanced user administration, such as the ability to add
     # and remove roles
     Rails.logger.debug { 'Granting TagCreationUser privileges' }

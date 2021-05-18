@@ -9,11 +9,8 @@ module StateChanger
     # which should fail it, and cancel, which should do nothing. We don't expect
     # to see a transition to pending, but in the unlikely case we do, this should
     # also be ignored.
-    self.map_target_state_to_associated_request_state = {
-      'failed' => 'failed',
-      'cancelled' => nil,
-      'pending' => nil
-    }.tap { |h| h.default = 'started' }
+    self.map_target_state_to_associated_request_state =
+      { 'failed' => 'failed', 'cancelled' => nil, 'pending' => nil }.tap { |h| h.default = 'started' }
 
     def update_associated_requests
       associated_requests.each do |request|
@@ -29,9 +26,8 @@ module StateChanger
     end
 
     def transfer_requests
-      @transfer_requests ||= labware.transfer_requests_as_target
-                                    .where.not(state: TERMINATED_STATES)
-                                    .include_for_request_state_change
+      @transfer_requests ||=
+        labware.transfer_requests_as_target.where.not(state: TERMINATED_STATES).include_for_request_state_change
     end
 
     def valid_transition?(outer_request)

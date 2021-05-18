@@ -11,27 +11,37 @@ module Aker
       @jobs = Aker::Job.paginate(page: params[:page], per_page: 10).order(created_at: :desc)
     end
 
-    def show
+    def show # rubocop:todo Metrics/MethodLength
       recover_from_connection_refused do
-        @aker_job = JSON.parse(RestClient::Request.execute(
-          verify_ssl: false,
-          method: :get,
-          url: @job.aker_job_url.to_s,
-          headers: { content_type: :json },
-          proxy: nil
-        ).body)['job']
+        @aker_job =
+          JSON.parse(
+            RestClient::Request.execute(
+              verify_ssl: false,
+              method: :get,
+              url: @job.aker_job_url.to_s,
+              headers: {
+                content_type: :json
+              },
+              proxy: nil
+            ).body
+          )[
+            'job'
+          ]
       end
     end
 
-    def start
+    def start # rubocop:todo Metrics/MethodLength
       recover_from_connection_refused do
-        response = RestClient::Request.execute(
-          verify_ssl: false,
-          method: :put,
-          url: "#{@job.aker_job_url}/start",
-          headers: { content_type: :json },
-          proxy: nil
-        )
+        response =
+          RestClient::Request.execute(
+            verify_ssl: false,
+            method: :put,
+            url: "#{@job.aker_job_url}/start",
+            headers: {
+              content_type: :json
+            },
+            proxy: nil
+          )
 
         render json: response.body, status: :ok
       end
@@ -47,16 +57,19 @@ module Aker
 
     private
 
-    def _finish_action(url)
+    def _finish_action(url) # rubocop:todo Metrics/MethodLength
       recover_from_connection_refused do
-        response = RestClient::Request.execute(
-          verify_ssl: false,
-          method: :put,
-          url: url,
-          payload: @job.finish_message.to_json,
-          headers: { content_type: :json },
-          proxy: nil
-        )
+        response =
+          RestClient::Request.execute(
+            verify_ssl: false,
+            method: :put,
+            url: url,
+            payload: @job.finish_message.to_json,
+            headers: {
+              content_type: :json
+            },
+            proxy: nil
+          )
 
         render json: response.body, status: :ok
       end

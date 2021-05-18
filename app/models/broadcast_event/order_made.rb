@@ -43,9 +43,7 @@ class BroadcastEvent::OrderMade < BroadcastEvent # rubocop:todo Style/Documentat
 
   has_subjects(:sample, :samples)
 
-  has_subjects(:order_source_plate) do |_order, event|
-    event.plates
-  end
+  has_subjects(:order_source_plate) { |_order, event| event.plates }
 
   has_subjects(:order_source_tubes) { |order, _event| order.assets.select { |a| a.labware.is_a?(Tube) } }
 

@@ -62,13 +62,7 @@ RSpec.describe Api::ProjectIO, type: :model do
         'funding_model' => 'Internal',
         'project_manager' => project_manager.name,
         'budget_division' => metadata.budget_division.name,
-        'manager' => [
-          {
-            login: manager.login,
-            email: manager.email,
-            name: manager.name
-          }
-        ]
+        'manager' => [{ login: manager.login, email: manager.email, name: manager.name }]
       }
     end
 

@@ -22,9 +22,10 @@ class Plate::QuadCreator
   def parent_barcodes=(quad_barcodes)
     @parent_barcodes = quad_barcodes
     found_parents = Labware.with_barcode(quad_barcodes.values)
-    @parents = quad_barcodes.transform_values do |barcode|
-      found_parents.detect { |candidate| candidate.any_barcode_matching?(barcode) } || :not_found
-    end
+    @parents =
+      quad_barcodes.transform_values do |barcode|
+        found_parents.detect { |candidate| candidate.any_barcode_matching?(barcode) } || :not_found
+      end
   end
 
   def parent_barcodes
@@ -37,7 +38,7 @@ class Plate::QuadCreator
 
   private
 
-  def all_parents_acceptable
+  def all_parents_acceptable # rubocop:todo Metrics/MethodLength
     @parents.each do |location, parent|
       case parent
       when Plate, TubeRack
@@ -70,10 +71,8 @@ class Plate::QuadCreator
   end
 
   def transfer_request_collection
-    @transfer_request_collection ||= TransferRequestCollection.new(
-      user: user,
-      transfer_requests_attributes: transfer_requests_attributes
-    )
+    @transfer_request_collection ||=
+      TransferRequestCollection.new(user: user, transfer_requests_attributes: transfer_requests_attributes)
   end
 
   def transfer_requests_attributes
@@ -83,10 +82,7 @@ class Plate::QuadCreator
 
       @parents[quadrant_name].receptacles_with_position.map do |receptacle|
         target_coordinate = Plate::QuadCreator.target_coordinate_for(receptacle.absolute_position_name, quadrant_index)
-        {
-          asset_id: receptacle.id,
-          target_asset_id: indexed_target_wells[target_coordinate].id
-        }
+        { asset_id: receptacle.id, target_asset_id: indexed_target_wells[target_coordinate].id }
       end
     end.compact
   end
@@ -98,11 +94,8 @@ class Plate::QuadCreator
     %w[quad_1 quad_2 quad_3 quad_4].each_with_index do |quadrant_name, quadrant_index|
       quadrant_metadata["Quadrant #{quadrant_index + 1}"] = parent_barcodes[quadrant_name] || 'Empty'
     end
-    @quadrant_metadata_collection ||= CustomMetadatumCollection.new(
-      user: user,
-      asset: target_plate,
-      metadata: quadrant_metadata
-    )
+    @quadrant_metadata_collection ||=
+      CustomMetadatumCollection.new(user: user, asset: target_plate, metadata: quadrant_metadata)
   end
 
   class << self

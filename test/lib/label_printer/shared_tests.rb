@@ -2,7 +2,8 @@
 
 module LabelPrinterTests
   module SharedTubeTests
-    def self.included(base)
+    # rubocop:todo Metrics/MethodLength
+    def self.included(base) # rubocop:todo Metrics/AbcSize
       base.class_eval do
         test 'should return the correct values' do
           assert_equal (barcode1).to_s, tube_label.middle_line(tube1)
@@ -17,10 +18,11 @@ module LabelPrinterTests
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
   end
 
   module SharedPlateTests
-    def self.included(base)
+    def self.included(base) # rubocop:todo Metrics/AbcSize
       base.class_eval do
         test 'should return correct common values' do
           assert_match barcode1, plate_label.bottom_left(plate1)

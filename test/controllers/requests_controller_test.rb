@@ -3,25 +3,25 @@
 require 'test_helper'
 require 'requests_controller'
 
-class RequestsControllerTest < ActionController::TestCase
+class RequestsControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
   context 'Request controller' do
     setup do
       @controller = RequestsController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
       @user = FactoryBot.create :admin
     end
 
     should_require_login
 
     context '#cancel' do
-      setup do
-        session[:user] = @user.id
-      end
+      setup { session[:user] = @user.id }
 
       should 'cancel request' do
-        request = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(
-          :study, name: 'ReqCon2'
-        )
+        request =
+          FactoryBot.create :request,
+                            user: @user,
+                            request_type: FactoryBot.create(:request_type),
+                            study: FactoryBot.create(:study, name: 'ReqCon2')
         get :cancel, params: { id: request.id }
 
         assert_equal flash[:notice], "Request #{request.id} has been cancelled"
@@ -30,9 +30,12 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should 'cancel started request' do
-        request = FactoryBot.create :request, state: 'started', user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(
-          :study, name: 'ReqCon2'
-        )
+        request =
+          FactoryBot.create :request,
+                            state: 'started',
+                            user: @user,
+                            request_type: FactoryBot.create(:request_type),
+                            study: FactoryBot.create(:study, name: 'ReqCon2')
         get :cancel, params: { id: request.id }
 
         assert_equal flash[:error], "Request #{request.id} can't be cancelled"
@@ -41,14 +44,14 @@ class RequestsControllerTest < ActionController::TestCase
     end
 
     context '#copy' do
-      setup do
-        session[:user] = @user.id
-      end
+      setup { session[:user] = @user.id }
 
       should 'when quotas is copied and redirect' do
-        @request_initial = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(
-          :study, name: 'ReqCon2'
-        )
+        @request_initial =
+          FactoryBot.create :request,
+                            user: @user,
+                            request_type: FactoryBot.create(:request_type),
+                            study: FactoryBot.create(:study, name: 'ReqCon2')
         get :copy, params: { id: @request_initial.id }
 
         @new_request = Request.last
@@ -57,9 +60,12 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should 'set failed requests to pending' do
-        @request_initial = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(
-          :study, name: 'ReqCon2'
-        ), state: 'failed'
+        @request_initial =
+          FactoryBot.create :request,
+                            user: @user,
+                            request_type: FactoryBot.create(:request_type),
+                            study: FactoryBot.create(:study, name: 'ReqCon2'),
+                            state: 'failed'
         get :copy, params: { id: @request_initial.id }
 
         @new_request = Request.last
@@ -75,17 +81,22 @@ class RequestsControllerTest < ActionController::TestCase
         @prop_value_before = '999'
         @prop_value_after = 666
 
-        @our_request = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(
-          :study, name: 'ReqCon'
-        )
-        @params = { request_metadata_attributes: { read_length: '37' }, state: 'pending',
-                    request_type_id: @our_request.request_type_id }
+        @our_request =
+          FactoryBot.create :request,
+                            user: @user,
+                            request_type: FactoryBot.create(:request_type),
+                            study: FactoryBot.create(:study, name: 'ReqCon')
+        @params = {
+          request_metadata_attributes: {
+            read_length: '37'
+          },
+          state: 'pending',
+          request_type_id: @our_request.request_type_id
+        }
       end
 
       context 'when not logged in' do
-        setup do
-          put :update, params: { id: @our_request.id, request: @params }
-        end
+        setup { put :update, params: { id: @our_request.id, request: @params } }
         should redirect_to('login page') { login_path }
       end
 
@@ -111,10 +122,12 @@ class RequestsControllerTest < ActionController::TestCase
         session[:user] = @user.id
 
         @project = FactoryBot.create(:project_with_order, name: 'Prj1')
-        @reqwest = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(
-          :study, name: 'ReqCon XXX'
-        ),
-                                               project: @project
+        @reqwest =
+          FactoryBot.create :request,
+                            user: @user,
+                            request_type: FactoryBot.create(:request_type),
+                            study: FactoryBot.create(:study, name: 'ReqCon XXX'),
+                            project: @project
       end
 
       context 'update invalid and failed' do

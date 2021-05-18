@@ -16,9 +16,9 @@ en:
     abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
     # Used in date_select and datime_select.
     order:
-    - :year
-    - :month
-    - :day
+      - :year
+      - :month
+      - :day
 
   time:
     formats:
@@ -28,7 +28,7 @@ en:
     am: "am"
     pm: "pm"
 
-# Used in array.to_sentence.
+  # Used in array.to_sentence.
   support:
     array:
       sentence_connector: "and"
@@ -74,7 +74,7 @@ en:
       batches: "Batches"
       labwhere_reception: "Labwhere Reception"
       labsearch: "Lab search"
-      labview:  "Lab View"
+      labview: "Lab View"
       report_fails: "Report Fails"
 
   errors:
@@ -228,7 +228,7 @@ en:
       both_dates_required: "Both start and end date are required if either one is used."
       barcodes_maxlength_exceeded: "The length of the text in the barcodes field is too long, please reduce."
   tag_groups:
-    success: 'The Tag Layout Template has been successfully created.'
+    success: "The Tag Layout Template has been successfully created."
     errors:
       duplicate_oligo_found: "The following oligo was found to be present more than once in the list, please correct: "
       invalid_oligos_found: "Oligos can contain only A, T, G or C characters and must be separated by spaces or commas, the following are invalid: "

@@ -59,6 +59,7 @@ describe '/api/1/state_changes' do
       all_wells = target_plate.maps.pluck(:description)
       affected_wells = contents || all_wells
       unaffected_wells = all_wells - affected_wells
+
       # We check the state of the wells, rather than the transfer requests, as we don't particularly care
       # about implementation here
       expect(target_plate.wells.located_at(affected_wells).map(&:state)).to all eq target_state
@@ -145,11 +146,7 @@ describe '/api/1/state_changes' do
       let(:customer_accepts_responsibility) { nil }
       let(:response_code) { 422 }
 
-      let(:response_body) do
-        {
-          content: { reason: ["can't be blank"] }
-        }.to_json
-      end
+      let(:response_body) { { content: { reason: ["can't be blank"] } }.to_json }
 
       it_behaves_like 'a failed state_change_endpoint'
     end
@@ -185,9 +182,7 @@ describe '/api/1/state_changes' do
 
       let(:response_code) { 501 }
 
-      let(:response_body) do
-        { general: ['Could not find requests for wells.'] }.to_json
-      end
+      let(:response_body) { { general: ['Could not find requests for wells.'] }.to_json }
 
       # Strip out our request ids to mimic legacy data
       before { target_plate.aliquots.update_all(request_id: nil) } # rubocop:disable Rails/SkipsModelValidations

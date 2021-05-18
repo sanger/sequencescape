@@ -2,11 +2,9 @@
 
 require 'test_helper'
 
-class DataReleaseTest < ActiveSupport::TestCase
+class DataReleaseTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   context 'A study' do
-    setup do
-      @study = create :study
-    end
+    setup { @study = create :study }
     context '#valid_data_release_properties?' do
       context 'and data_release enforced' do
         setup do
@@ -18,8 +16,8 @@ class DataReleaseTest < ActiveSupport::TestCase
           context 'which allow release' do
             setup do
               @study.study_metadata.data_release_study_type.name = 'genotyping or cytogenetics'
-              @study.study_metadata.data_release_strategy        = 'open'
-              @study.study_metadata.data_release_timing          = 'standard'
+              @study.study_metadata.data_release_strategy = 'open'
+              @study.study_metadata.data_release_timing = 'standard'
 
               @study.save!
             end
@@ -30,12 +28,12 @@ class DataReleaseTest < ActiveSupport::TestCase
           end
           context 'which do allow release (for EGA)' do
             setup do
-              @study.study_metadata.data_release_study_type.name           = 'genotyping or cytogenetics'
-              @study.study_metadata.data_release_strategy                  = 'managed'
-              @study.study_metadata.data_access_group                      = 'dag'
-              @study.study_metadata.data_release_timing                    = 'never'
-              @study.study_metadata.data_release_prevention_reason         = 'legal'
-              @study.study_metadata.data_release_prevention_approval       = 'Yes'
+              @study.study_metadata.data_release_study_type.name = 'genotyping or cytogenetics'
+              @study.study_metadata.data_release_strategy = 'managed'
+              @study.study_metadata.data_access_group = 'dag'
+              @study.study_metadata.data_release_timing = 'never'
+              @study.study_metadata.data_release_prevention_reason = 'legal'
+              @study.study_metadata.data_release_prevention_approval = 'Yes'
               @study.study_metadata.data_release_prevention_reason_comment = 'It just is'
 
               @study.save!
@@ -49,8 +47,7 @@ class DataReleaseTest < ActiveSupport::TestCase
     end
 
     context '#ena_accession_required?' do
-      setup do
-      end
+      setup {}
       context 'with accessioning turned off' do
         setup do
           @study.enforce_accessioning = false
@@ -63,10 +60,10 @@ class DataReleaseTest < ActiveSupport::TestCase
 
       context 'with properties which allow for data release' do
         setup do
-          @study.enforce_accessioning                        = true
+          @study.enforce_accessioning = true
           @study.study_metadata.data_release_study_type.name = 'genomic sequencing'
-          @study.study_metadata.data_release_strategy        = 'open'
-          @study.study_metadata.data_release_timing          = 'standard'
+          @study.study_metadata.data_release_strategy = 'open'
+          @study.study_metadata.data_release_timing = 'standard'
 
           @study.save!
         end
@@ -83,24 +80,21 @@ class DataReleaseTest < ActiveSupport::TestCase
       end
 
       context 'with properties which do not allow for ENA data release' do
-        setup do
-          @study.enforce_accessioning = true
-        end
+        setup { @study.enforce_accessioning = true }
 
         data_release_study_types = ['transcriptomics', 'other sequencing-based assay', 'genotyping or cytogenetics']
         data_release_strategies = %w[managed open]
 
+        # rubocop:todo Metrics/BlockLength
         data_release_study_types.each do |data_release_sort_of_study_value|
           context "where sort of study is #{data_release_sort_of_study_value}" do
-            setup do
-              @study.study_metadata.data_release_study_type.name = data_release_sort_of_study_value
-            end
+            setup { @study.study_metadata.data_release_study_type.name = data_release_sort_of_study_value }
 
             context 'and release timing is never' do
               setup do
-                @study.study_metadata.data_release_timing                    = 'never'
-                @study.study_metadata.data_release_prevention_reason         = 'legal'
-                @study.study_metadata.data_release_prevention_approval       = 'Yes'
+                @study.study_metadata.data_release_timing = 'never'
+                @study.study_metadata.data_release_prevention_reason = 'legal'
+                @study.study_metadata.data_release_prevention_approval = 'Yes'
                 @study.study_metadata.data_release_prevention_reason_comment = 'It just is'
               end
 
@@ -120,15 +114,15 @@ class DataReleaseTest < ActiveSupport::TestCase
 
             context 'and release timing is delayed' do
               setup do
-                @study.study_metadata.data_release_timing       = 'delayed'
+                @study.study_metadata.data_release_timing = 'delayed'
                 @study.study_metadata.data_release_delay_reason = 'phd study'
               end
 
               data_release_strategies.each do |strategy|
                 context "and strategy is #{strategy}" do
                   setup do
-                    @study.study_metadata.data_release_strategy       = strategy
-                    @study.study_metadata.data_release_delay_period   = '3 months'
+                    @study.study_metadata.data_release_strategy = strategy
+                    @study.study_metadata.data_release_delay_period = '3 months'
                     @study.study_metadata.data_release_delay_approval = 'No'
                     @study.save!
                   end
@@ -141,6 +135,7 @@ class DataReleaseTest < ActiveSupport::TestCase
             end
           end
         end
+        # rubocop:enable Metrics/BlockLength
       end
     end
   end

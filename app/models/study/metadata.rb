@@ -54,8 +54,7 @@ class Study
 
     def sanity_check_y_separation
       if remove_x_and_autosomes?
-        errors.add(:separate_y_chromosome_data,
-                   'cannot be selected with remove x and autosomes.')
+        errors.add(:separate_y_chromosome_data, 'cannot be selected with remove x and autosomes.')
       end
       !remove_x_and_autosomes?
     end
@@ -75,7 +74,8 @@ class Study
       errors.add(:study_type, 'is not specified') if study_type.name == 'Not specified'
     end
 
-    def valid_policy_url?
+    # rubocop:todo Metrics/MethodLength
+    def valid_policy_url? # rubocop:todo Metrics/AbcSize
       # Rails 2.3 has no inbuilt URL validation, but rather than rolling our own, we'll
       # use the inbuilt ruby URI parser, a bit like here:
       # http://www.simonecarletti.com/blog/2009/04/validating-the-format-of-an-url-with-rails/
@@ -85,13 +85,17 @@ class Study
       begin
         uri = URI.parse(dac_policy)
         if configatron.invalid_policy_url_domains.include?(uri.host)
-          errors.add(:dac_policy,
-                     ": #{dac_policy} is not an acceptable URL. Please ensure you haven't provided an internal URL.")
+          errors.add(
+            :dac_policy,
+            ": #{dac_policy} is not an acceptable URL. Please ensure you haven't provided an internal URL."
+          )
         end
       rescue URI::InvalidURIError
         errors.add(:dac_policy, ": #{dac_policy} is not a valid URL")
       end
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     with_options(on: :accession, if: :enforce_data_release) do
       validates :data_release_strategy, presence: true

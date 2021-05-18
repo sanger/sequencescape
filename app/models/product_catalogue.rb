@@ -30,15 +30,11 @@ class ProductCatalogue < ApplicationRecord # rubocop:todo Style/Documentation
     def construct!(arguments)
       ActiveRecord::Base.transaction do
         products = arguments.delete(:products)
-        product_assocations = products.map do |criterion, product_name|
-          {
-            selection_criterion: criterion,
-            product: Product.find_or_create_by(name: product_name)
-          }
-        end
-        create!(arguments) do |catalogue|
-          catalogue.product_product_catalogues.build(product_assocations)
-        end
+        product_assocations =
+          products.map do |criterion, product_name|
+            { selection_criterion: criterion, product: Product.find_or_create_by(name: product_name) }
+          end
+        create!(arguments) { |catalogue| catalogue.product_product_catalogues.build(product_assocations) }
       end
     end
   end

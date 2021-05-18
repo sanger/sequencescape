@@ -3,6 +3,7 @@ Rails.application.configure do
 
   # We NEED to cache classes for ruby-rpof
   config.cache_classes = true
+
   # Eager load on boot
   config.eager_load = true
 

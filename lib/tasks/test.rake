@@ -24,9 +24,10 @@ namespace :test do
     desc 'Verify that all FactoryBot factories are valid'
     task lint: :environment do
       require 'factory_bot'
-      Dir.glob(File.expand_path(File.join(Rails.root, %w{spec factories ** *.rb}))).sort.each do |factory_filename|
-        require factory_filename
-      end
+      Dir
+        .glob(File.expand_path(File.join(Rails.root, %w[spec factories ** *.rb])))
+        .sort
+        .each { |factory_filename| require factory_filename }
 
       if Rails.env.test?
         DatabaseCleaner.strategy = :transaction
@@ -43,4 +44,4 @@ namespace :test do
   end
 end
 
-task test: ['test:load_cov', 'test:factory_bot:lint']
+task test: %w[test:load_cov test:factory_bot:lint]

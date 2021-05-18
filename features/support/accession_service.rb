@@ -17,7 +17,8 @@ class FakeAccessionService # rubocop:todo Style/Documentation
     end
   end
 
-  def self.install_hooks(target, tags)
+  # rubocop:todo Metrics/MethodLength
+  def self.install_hooks(target, tags) # rubocop:todo Metrics/AbcSize
     target.instance_eval do
       Before(tags) do |_scenario|
         # Set up our evesdropper
@@ -35,24 +36,23 @@ class FakeAccessionService # rubocop:todo Style/Documentation
           stub_request(:post, accession_url)
             .with(basic_auth: service_login)
             .to_return do |_request|
-            response = FakeAccessionService.instance.next!
-            status = response.nil? ? 500 : 200
-            {
-              headers: { 'Content-Type' => 'text/xml' },
-              body: response,
-              status: status
-            }
-          end
+              response = FakeAccessionService.instance.next!
+              status = response.nil? ? 500 : 200
+              { headers: { 'Content-Type' => 'text/xml' }, body: response, status: status }
+            end
         end
       end
 
       After(tags) do |_scenario|
         FakeAccessionService.instance.clear
+
         # Remove the evesdropper
         AccessionService.rest_client_class = RestClient::Resource
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def bodies
     @bodies ||= []
@@ -80,7 +80,7 @@ class FakeAccessionService # rubocop:todo Style/Documentation
   end
 
   def failure(message)
-    bodies << %{<RECEIPT success="false"><ERROR>#{message}</ERROR></RECEIPT>}
+    bodies << "<RECEIPT success=\"false\"><ERROR>#{message}</ERROR></RECEIPT>"
   end
 
   def next!

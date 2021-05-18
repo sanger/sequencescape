@@ -6,9 +6,7 @@
 module Asset::ApplyIdToNameOnCreate
   extend ActiveSupport::Concern
 
-  included do
-    after_create :generate_name_with_id, if: :name_needs_to_be_generated?
-  end
+  included { after_create :generate_name_with_id, if: :name_needs_to_be_generated? }
 
   def generate_name_with_id
     update!(name: "#{name} #{id}")

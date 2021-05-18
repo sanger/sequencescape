@@ -12,8 +12,6 @@ module Core::Endpoint::BasicHandler::Associations::HasFile # rubocop:todo Style/
   end
 
   def file_through(content_types)
-    content_type(content_types.detect do |ct|
-      content_type(ct)
-    end)
+    content_type(content_types.detect { |ct| content_type(ct) })
   end
 end

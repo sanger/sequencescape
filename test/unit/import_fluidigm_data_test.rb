@@ -8,7 +8,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
   YY = 'F'
   NC = 'Unknown'
 
-  def create_fluidigm_file
+  def create_fluidigm_file # rubocop:todo Metrics/MethodLength
     @file = File.open("#{Rails.root}/test/data/fluidigm.csv")
     @fluidigm = FluidigmFile.new(@file.read)
     @well_maps = {
@@ -29,31 +29,34 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
   end
 
   def create_stock_plate(barcode)
-    create :plate, name: "Stock plate #{barcode}",
-                   well_count: 1,
-                   well_factory: :untagged_well,
-                   purpose: PlatePurpose.stock_plate_purpose,
-                   barcode: barcode
+    create :plate,
+           name: "Stock plate #{barcode}",
+           well_count: 1,
+           well_factory: :untagged_well,
+           purpose: PlatePurpose.stock_plate_purpose,
+           barcode: barcode
   end
 
-  def create_plate_with_fluidigm(_barcode, fluidigm_barcode, stock_plate)
+  def create_plate_with_fluidigm(_barcode, fluidigm_barcode, stock_plate) # rubocop:todo Metrics/MethodLength
     fgp = create :fluidigm_96_purpose
-    plate_target = create :plate,
-                          size: 96,
-                          purpose: fgp,
-                          well_count: 1,
-                          well_factory: :empty_well,
-                          fluidigm_barcode: fluidigm_barcode
+    plate_target =
+      create :plate,
+             size: 96,
+             purpose: fgp,
+             well_count: 1,
+             well_factory: :empty_well,
+             fluidigm_barcode: fluidigm_barcode
 
     well_target = plate_target.wells.first
 
-    create :final_cherrypick_for_fluidigm_request, state: 'passed',
-                                                   asset: stock_plate.wells.first,
-                                                   target_asset: well_target,
-                                                   request_metadata_attributes: {
-                                                     target_purpose_id: fgp.id
-                                                   },
-                                                   request_type: @fluidigm_request_type
+    create :final_cherrypick_for_fluidigm_request,
+           state: 'passed',
+           asset: stock_plate.wells.first,
+           target_asset: well_target,
+           request_metadata_attributes: {
+             target_purpose_id: fgp.id
+           },
+           request_type: @fluidigm_request_type
 
     plate_target
   end
@@ -75,9 +78,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
       end
     end
     context 'after uploading the fluidigm file' do
-      setup do
-        @plate1.apply_fluidigm_data(@fluidigm_file)
-      end
+      setup { @plate1.apply_fluidigm_data(@fluidigm_file) }
 
       should "we only get the plates that haven't been updated yet" do
         @plates_requiring_fluidigm = Plate.requiring_fluidigm_data

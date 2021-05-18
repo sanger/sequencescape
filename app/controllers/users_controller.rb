@@ -5,13 +5,13 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   before_action :find_user
   authorize_resource
 
-  def show
+  # rubocop:todo Metrics/MethodLength
+  def show # rubocop:todo Metrics/AbcSize
     @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all)
 
     begin
-      label_template = LabelPrinter::PmbClient.get_label_template_by_name(configatron.swipecard_pmb_template)
-                                              .fetch('data')
-                                              .first
+      label_template =
+        LabelPrinter::PmbClient.get_label_template_by_name(configatron.swipecard_pmb_template).fetch('data').first
       @label_template_id ||= label_template['id']
     rescue LabelPrinter::PmbException => e
       @label_template_id = nil
@@ -22,15 +22,14 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
     end
   end
 
-  def edit
-  end
+  # rubocop:enable Metrics/MethodLength
 
-  def update
+  def edit; end
+
+  def update # rubocop:todo Metrics/AbcSize
     params[:user].delete(:swipecard_code) if params[:user][:swipecard_code].blank?
     @user = User.find(params[:id])
-    if @user.id == params[:id].to_i
-      @user.update(params[:user])
-    end
+    @user.update(params[:user]) if @user.id == params[:id].to_i
     if @user.save
       flash[:notice] = 'Profile updated'
     else

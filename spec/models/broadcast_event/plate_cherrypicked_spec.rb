@@ -4,12 +4,7 @@ require 'rails_helper'
 
 RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event: true, heron_events: true do
   def subject_record(subject_type, role_type, friendly_name, uuid)
-    {
-      role_type: role_type,
-      subject_type: subject_type,
-      friendly_name: friendly_name,
-      uuid: uuid
-    }
+    { role_type: role_type, subject_type: subject_type, friendly_name: friendly_name, uuid: uuid }
   end
 
   let(:uuids) { Array.new(6) { SecureRandom.uuid } }
@@ -21,16 +16,22 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
     subject_record('plate', BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, '000002', uuids[1])
   end
   let(:sample1) do
-    subject_record('sample', BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 'ASDF001-000001_A01-AP-Positive',
-                   uuids[2])
+    subject_record(
+      'sample',
+      BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
+      'ASDF001-000001_A01-AP-Positive',
+      uuids[2]
+    )
   end
   let(:sample2) do
-    subject_record('sample', BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE, 'ASDF001-000001_B01-AP-Negative',
-                   uuids[3])
+    subject_record(
+      'sample',
+      BroadcastEvent::PlateCherrypicked::SAMPLE_ROLE_TYPE,
+      'ASDF001-000001_B01-AP-Negative',
+      uuids[3]
+    )
   end
-  let(:robot) do
-    subject_record('robot', BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, 'RB00001', uuids[4])
-  end
+  let(:robot) { subject_record('robot', BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, 'RB00001', uuids[4]) }
   let(:plate3) do
     subject_record('plate', BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE, '000003', uuids[5])
   end
@@ -54,9 +55,9 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
   it 'can be created without destination plate' do
     props = { subjects: [plate1, plate2, sample1, sample2, robot] }
     instance = described_class.new(seed: destination_plate, properties: props)
-    expect(instance.subjects.find do |s|
-      s.role_type == BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE
-    end).not_to be_nil
+    expect(
+      instance.subjects.find { |s| s.role_type == BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE }
+    ).not_to be_nil
   end
 
   it 'is valid with destination plate' do
@@ -69,9 +70,9 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
   it 'can be created with destination plate' do
     props = { subjects: [plate1, plate2, sample1, sample2, robot, plate3] }
     instance = described_class.new(seed: destination_plate, properties: props)
-    expect(instance.subjects.find do |s|
-      s.role_type == BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE
-    end).not_to be_nil
+    expect(
+      instance.subjects.find { |s| s.role_type == BroadcastEvent::PlateCherrypicked::DESTINATION_PLATE_ROLE_TYPE }
+    ).not_to be_nil
   end
 
   it 'cannot be created without source plates' do
@@ -95,17 +96,11 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
     end
 
     context 'with a created instance' do
-      before do
-        instance.save!
-      end
+      before { instance.save! }
 
       describe '#to_json' do
         it 'can generate a json object' do
-          expect(instance.to_json).to include_json({
-                                                     event: {
-                                                       event_type: 'lh_beckman_cp_destination_created'
-                                                     }
-                                                   })
+          expect(instance.to_json).to include_json({ event: { event_type: 'lh_beckman_cp_destination_created' } })
         end
 
         it 'includes a user identifier' do
@@ -149,9 +144,7 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, type: :model, broadcast_event:
 
       describe '#default_destination_plate_subject' do
         it 'can generate a default destination plate subject' do
-          expect(instance.default_destination_plate_subject).to include({
-                                                                          uuid: destination_plate.uuid
-                                                                        })
+          expect(instance.default_destination_plate_subject).to include({ uuid: destination_plate.uuid })
         end
       end
     end

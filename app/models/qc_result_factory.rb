@@ -27,9 +27,7 @@ class QcResultFactory
   end
 
   def build_resources(assets)
-    assets.each do |asset|
-      resources << Resource.new(asset.merge(qc_assay: qc_assay))
-    end
+    assets.each { |asset| resources << Resource.new(asset.merge(qc_assay: qc_assay)) }
   end
 
   def except_blank_wells
@@ -39,9 +37,7 @@ class QcResultFactory
   def save
     return false unless valid?
 
-    ActiveRecord::Base.transaction do
-      except_blank_wells.collect(&:save)
-    end
+    ActiveRecord::Base.transaction { except_blank_wells.collect(&:save) }
     true
   end
 
@@ -59,12 +55,21 @@ class QcResultFactory
 
     validate :check_asset_identifier, :check_asset, :check_qc_result
 
-    def initialize(attributes = {})
+    def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
       super(attributes)
 
       @asset = build_asset
-      @qc_result = QcResult.new(asset: asset, key: key, value: value, units: units, cv: cv, assay_type: assay_type,
-                                assay_version: assay_version, qc_assay: qc_assay)
+      @qc_result =
+        QcResult.new(
+          asset: asset,
+          key: key,
+          value: value,
+          units: units,
+          cv: cv,
+          assay_type: assay_type,
+          assay_version: assay_version,
+          qc_assay: qc_assay
+        )
     end
 
     def message_id
@@ -82,11 +87,7 @@ class QcResultFactory
       uuid_object = Uuid.find_by(external_id: uuid)
       return if uuid_object.blank?
 
-      @uuid = if uuid_object.resource_type == 'Sample'
-                uuid_object.resource.primary_receptacle
-              else
-                uuid_object.resource
-              end
+      @uuid = uuid_object.resource_type == 'Sample' ? uuid_object.resource.primary_receptacle : uuid_object.resource
     end
 
     def barcode=(barcode)
@@ -134,8 +135,8 @@ class QcResultFactory
       return unless can_update_parent_well?
 
       well = parent_plate.find_well_by_map_description(well_location)
-      parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well,
-                                                                 value: value.to_f * plate.dilution_factor))
+      parent_qc_result =
+        QcResult.new(qc_result.attributes.merge(asset: well, value: value.to_f * plate.dilution_factor))
       parent_qc_result.save!
     end
 
@@ -155,9 +156,7 @@ class QcResultFactory
     def check_qc_result
       return if qc_result.valid?
 
-      qc_result.errors.each do |k, v|
-        errors.add(k, v) unless k == :asset && blank_well?
-      end
+      qc_result.errors.each { |k, v| errors.add(k, v) unless k == :asset && blank_well? }
     end
 
     def check_asset_identifier
@@ -173,9 +172,7 @@ class QcResultFactory
     resources.each do |resource|
       next if resource.valid?
 
-      resource_errors = resource.errors.map do |key, value|
-        "#{key} #{value}"
-      end.join(' ')
+      resource_errors = resource.errors.map { |key, value| "#{key} #{value}" }.join(' ')
 
       errors.add(resource.message_id, resource_errors)
     end

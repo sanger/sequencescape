@@ -5,9 +5,11 @@
 class SampleManifestAsset < ApplicationRecord
   belongs_to :sample_manifest, optional: false
   belongs_to :asset, class_name: 'Receptacle', optional: false
-  belongs_to :sample, foreign_key: :sanger_sample_id,
-                      primary_key: :sanger_sample_id, optional: true,
-                      inverse_of: :sample_manifest_asset
+  belongs_to :sample,
+             foreign_key: :sanger_sample_id,
+             primary_key: :sanger_sample_id,
+             optional: true,
+             inverse_of: :sample_manifest_asset
 
   validates :sanger_sample_id, presence: true
   delegate :labware, to: :asset

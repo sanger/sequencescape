@@ -13,37 +13,37 @@ describe '/api/1/tag_layout_templates' do
 
   describe '#get' do
     let(:response_body) do
-      %(
+      "
         {
-          "actions":{
-            "read":"http://www.example.com/api/1/tag_layout_templates/1",
-            "first":"http://www.example.com/api/1/tag_layout_templates/1",
-            "last":"http://www.example.com/api/1/tag_layout_templates/1"
+          \"actions\":{
+            \"read\":\"http://www.example.com/api/1/tag_layout_templates/1\",
+            \"first\":\"http://www.example.com/api/1/tag_layout_templates/1\",
+            \"last\":\"http://www.example.com/api/1/tag_layout_templates/1\"
           },
-          "size":#{TagLayoutTemplate.count},
-          "tag_layout_templates":[
+          \"size\":#{TagLayoutTemplate.count},
+          \"tag_layout_templates\":[
             {
-              "actions":{
-                "read":"http://www.example.com/api/1/#{example_template_uuid}",
-                "create":"http://www.example.com/api/1/#{example_template_uuid}"
+              \"actions\":{
+                \"read\":\"http://www.example.com/api/1/#{example_template_uuid}\",
+                \"create\":\"http://www.example.com/api/1/#{example_template_uuid}\"
               },
-              "uuid":"#{example_template_uuid}",
-              "direction":"column",
-              "name":"#{example_template.name}",
-              "tag_group":{
-                "actions":{
-                  "read":"http://www.example.com/api/1/#{tag_group_uuid}"
+              \"uuid\":\"#{example_template_uuid}\",
+              \"direction\":\"column\",
+              \"name\":\"#{example_template.name}\",
+              \"tag_group\":{
+                \"actions\":{
+                  \"read\":\"http://www.example.com/api/1/#{tag_group_uuid}\"
                 },
-                "uuid":"#{tag_group_uuid}",
-                "name":"#{example_group.name}",
-                "tags":{"1":"","2":""}
+                \"uuid\":\"#{tag_group_uuid}\",
+                \"name\":\"#{example_group.name}\",
+                \"tags\":{\"1\":\"\",\"2\":\"\"}
               },
-              "tag2_group": null,
-              "walking_by":"wells in pools"
+              \"tag2_group\": null,
+              \"walking_by\":\"wells in pools\"
             }
           ]
         }
-      )
+      "
     end
     let(:response_code) { 200 }
 
@@ -64,32 +64,30 @@ describe '/api/1/tag_layout_templates' do
   describe '/api/1/template-uuid' do
     subject { "/api/1/#{example_template.uuid}" }
 
-    let(:example_template) do
-      create :entire_plate_tag_layout_template, name: 'Test Example', tags: %w[AAA TTT]
-    end
+    let(:example_template) { create :entire_plate_tag_layout_template, name: 'Test Example', tags: %w[AAA TTT] }
     let(:example_tag_group) { example_template.tag_group }
 
     describe '#get' do
       let(:response_body) do
-        %({
-          "tag_layout_template":{
-            "actions":{
-              "read":"http://www.example.com/api/1/#{example_template.uuid}",
-              "create":"http://www.example.com/api/1/#{example_template.uuid}"
+        "{
+          \"tag_layout_template\":{
+            \"actions\":{
+              \"read\":\"http://www.example.com/api/1/#{example_template.uuid}\",
+              \"create\":\"http://www.example.com/api/1/#{example_template.uuid}\"
             },
-            "uuid":"#{example_template.uuid}",
-            "direction":"column",
-            "name":"Test Example",
-            "tag_group":{
-              "actions":{"read":"http://www.example.com/api/1/#{example_tag_group.uuid}"},
-              "uuid":"#{example_tag_group.uuid}",
-              "name":"Test Example",
-              "tags":{"1":"AAA","2":"TTT"}
+            \"uuid\":\"#{example_template.uuid}\",
+            \"direction\":\"column\",
+            \"name\":\"Test Example\",
+            \"tag_group\":{
+              \"actions\":{\"read\":\"http://www.example.com/api/1/#{example_tag_group.uuid}\"},
+              \"uuid\":\"#{example_tag_group.uuid}\",
+              \"name\":\"Test Example\",
+              \"tags\":{\"1\":\"AAA\",\"2\":\"TTT\"}
             },
-            "tag2_group": null,
-            "walking_by":"wells of plate"
+            \"tag2_group\": null,
+            \"walking_by\":\"wells of plate\"
           }
-        })
+        }"
       end
       let(:response_code) { 200 }
 
@@ -102,31 +100,29 @@ describe '/api/1/tag_layout_templates' do
 
     describe '#post' do
       let(:target) { create :plate }
-      let(:payload) do
-        %({"tag_layout":{ "plate": "#{target.uuid}", "user": "#{user.uuid}"}})
-      end
+      let(:payload) { "{\"tag_layout\":{ \"plate\": \"#{target.uuid}\", \"user\": \"#{user.uuid}\"}}" }
 
       let(:response_body) do
-        %({
-          "tag_layout": {
-            "actions": {},
-            "plate": {
-              "actions": {
-                "read": "http://www.example.com/api/1/#{target.uuid}"
+        "{
+          \"tag_layout\": {
+            \"actions\": {},
+            \"plate\": {
+              \"actions\": {
+                \"read\": \"http://www.example.com/api/1/#{target.uuid}\"
               }
             },
-            "direction": "column",
+            \"direction\": \"column\",
 
-            "tag_group": {
-              "name": "#{example_template.name}",
-              "tags": {
-                "1": "AAA",
-                "2": "TTT"
+            \"tag_group\": {
+              \"name\": \"#{example_template.name}\",
+              \"tags\": {
+                \"1\": \"AAA\",
+                \"2\": \"TTT\"
               }
             },
-            "tag2_group": null
+            \"tag2_group\": null
           }
-        })
+        }"
       end
       let(:response_code) { 201 }
 

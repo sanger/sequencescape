@@ -5,9 +5,7 @@ require 'unit/tag_qc/qcable_statemachine_checks'
 
 class QcableTest < ActiveSupport::TestCase
   context 'A Qcable' do
-    setup do
-      PlateBarcode.stubs(:create).returns(create(:plate_barcode))
-    end
+    setup { PlateBarcode.stubs(:create).returns(create(:plate_barcode)) }
 
     should belong_to :lot
     should belong_to :asset
@@ -41,9 +39,9 @@ class QcableTest < ActiveSupport::TestCase
     context '#qcable pre-pending' do
       setup do
         @mock_purpose = build :tube_purpose, default_state: 'pending'
-        @template     = FactoryBot.build(:tag2_layout_template)
-        @lot_type     = create :tag2_lot_type, target_purpose: @mock_purpose
-        @mock_lot     = create :tag2_lot, lot_type: @lot_type
+        @template = FactoryBot.build(:tag2_layout_template)
+        @lot_type = create :tag2_lot_type, target_purpose: @mock_purpose
+        @mock_lot = create :tag2_lot, lot_type: @lot_type
       end
 
       should 'create an asset of the given purpose' do

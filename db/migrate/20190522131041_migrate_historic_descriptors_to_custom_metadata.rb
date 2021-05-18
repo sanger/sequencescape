@@ -10,9 +10,8 @@ class MigrateHistoricDescriptorsToCustomMetadata < ActiveRecord::Migration[5.1]
     self.table_name = 'assets'
     serialize :descriptors
 
-    scope :fragments_with_descriptors, lambda {
-                                         where.not(descriptors: nil).where('descriptors != "---\n"').where(sti_type: 'Fragment')
-                                       }
+    scope :fragments_with_descriptors,
+          lambda { where.not(descriptors: nil).where('descriptors != "---\n"').where(sti_type: 'Fragment') }
   end
 
   # Migration specific version of CustomMetadataCollection
@@ -21,9 +20,9 @@ class MigrateHistoricDescriptorsToCustomMetadata < ActiveRecord::Migration[5.1]
     self.table_name = 'custom_metadatum_collections'
 
     def metadata=(attributes)
-      MigratingCustomMetadatum.create!(attributes.map do |k, v|
-                                         { key: k, value: v, custom_metadatum_collection_id: id }
-                                       end)
+      MigratingCustomMetadatum.create!(
+        attributes.map { |k, v| { key: k, value: v, custom_metadatum_collection_id: id } }
+      )
     end
   end
 
@@ -41,8 +40,8 @@ class MigrateHistoricDescriptorsToCustomMetadata < ActiveRecord::Migration[5.1]
 
   def up
     ActiveRecord::Base.transaction do
-      data_owner = User.find_or_create_by!(login: configatron.sequencescape_email,
-                                           email: configatron.sequencescape_email)
+      data_owner =
+        User.find_or_create_by!(login: configatron.sequencescape_email, email: configatron.sequencescape_email)
       MigratingAsset.fragments_with_descriptors.find_each do |fragment|
         say "Fragment #{fragment.id}"
         collection = MigratingCustomMetadatumCollection.create!(user_id: data_owner.id, asset_id: fragment.id)

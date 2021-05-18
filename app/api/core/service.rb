@@ -23,12 +23,12 @@ module Core
     end
 
     class UnsupportedAction < Error # rubocop:todo Style/Documentation
-      self.api_error_code    = 501
+      self.api_error_code = 501
       self.api_error_message = 'requested action is not supported on this resource'
     end
 
     class DeprecatedAction < Error # rubocop:todo Style/Documentation
-      self.api_error_code    = 410
+      self.api_error_code = 410
       self.api_error_message = 'requested action is no longer supported'
     end
 
@@ -38,7 +38,7 @@ module Core
         @allowed = Array(allowed_http_verbs).map(&:to_s).map(&:upcase).join(',')
       end
 
-      self.api_error_code    = 405
+      self.api_error_code = 405
       self.api_error_message = 'unsupported action'
 
       def api_error(response)
@@ -64,9 +64,9 @@ module Core
     # Without this you'll find that only one of the services actually behaves properly, the others
     # will all fail with 404 errors.
     def handle_not_found!(_boom)
-      @response.status               = 404
+      @response.status = 404
       @response.headers['X-Cascade'] = 'pass'
-      @response.body                 = nil
+      @response.body = nil
     end
 
     # Configure a handler for the cucumber environment that logs the error to the console so that
@@ -80,13 +80,13 @@ module Core
     end
 
     def redirect_to(url, body)
-      status(301)   # Moved permanently
+      status(301) # Moved permanently
       headers('Location' => url)
       body(body)
     end
 
     def redirect_to_multiple_locations(body)
-      status(300)   # Multiple content
+      status(300) # Multiple content
       body(body)
     end
 
@@ -162,14 +162,17 @@ module Core
       def create!(instance_attributes = attributes)
         ActiveRecord::Base.transaction do
           record = target.create!(instance_attributes)
-          ::Core::Io::Registry.instance.lookup_for_object(record).eager_loading_for(record.class).include_uuid.find(record.id)
+          ::Core::Io::Registry
+            .instance
+            .lookup_for_object(record)
+            .eager_loading_for(record.class)
+            .include_uuid
+            .find(record.id)
         end
       end
 
       def update!(instance_attributes = attributes)
-        ActiveRecord::Base.transaction do
-          target.tap { |o| o.update!(instance_attributes) }
-        end
+        ActiveRecord::Base.transaction { target.tap { |o| o.update!(instance_attributes) } }
       end
     end
 
@@ -200,7 +203,7 @@ module Core
         end
       end
 
-      attr_reader             :request
+      attr_reader :request
 
       initialized_attr_reader :handled_by, :object
 
@@ -222,24 +225,26 @@ module Core
       # Note that this method disables garbage collection, which should improve the performance of writing
       # out the JSON to the client.  The garbage collection is then re-enabled in close.
       #++
-      def each(&block)
+      # rubocop:todo Metrics/MethodLength
+      def each(&block) # rubocop:todo Metrics/AbcSize
         Rails.logger.info('API[streaming]: starting JSON streaming')
         start = Time.zone.now
 
         ::Core::Io::Buffer.new(block) do |buffer|
-          ::Core::Io::Json::Stream.new(buffer).open do |stream|
-            ::Core::Io::Registry.instance.lookup_for_object(object).as_json(
-              response: self,
-              target: object,
-              stream: stream,
-              object: object,
-              handled_by: handled_by
-            )
-          end
+          ::Core::Io::Json::Stream
+            .new(buffer)
+            .open do |stream|
+              ::Core::Io::Registry
+                .instance
+                .lookup_for_object(object)
+                .as_json(response: self, target: object, stream: stream, object: object, handled_by: handled_by)
+            end
         end
 
         Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.zone.now - start}s")
       end
+
+      # rubocop:enable Metrics/MethodLength
 
       def close
         identifier, started_at = self.identifier, self.started_at # Save for later as next line discards our request!

@@ -27,27 +27,19 @@ FactoryBot.define do
     end
 
     factory :limber_wgs_submission_template do
-      transient do
-        request_types { [create(:library_request_type)] }
-      end
+      transient { request_types { [create(:library_request_type)] } }
     end
 
     factory :libray_and_sequencing_template do
-      transient do
-        request_types { [create(:library_request_type), create(:sequencing_request_type)] }
-      end
+      transient { request_types { [create(:library_request_type), create(:sequencing_request_type)] } }
     end
 
     factory :heron_libray_and_sequencing_template do
-      transient do
-        request_types { [create(:heron_request_type), create(:sequencing_request_type)] }
-      end
+      transient { request_types { [create(:heron_request_type), create(:sequencing_request_type)] } }
     end
 
     factory :isc_libray_and_sequencing_template do
-      transient do
-        request_types { [create(:isc_library_request_type), create(:sequencing_request_type)] }
-      end
+      transient { request_types { [create(:isc_library_request_type), create(:sequencing_request_type)] } }
     end
   end
 
@@ -105,8 +97,8 @@ FactoryBot.define do
 
     user
     after(:build) do |submission, evaluator|
-      submission.orders << build(:library_order, assets: evaluator.assets,
-                                                 request_types: evaluator.request_types.map(&:id))
+      submission.orders <<
+        build(:library_order, assets: evaluator.assets, request_types: evaluator.request_types.map(&:id))
     end
   end
 end
@@ -119,6 +111,7 @@ class FactoryHelp
       submission_options[option] = value if value
     end
     submission = FactoryBot.create(:order_with_submission, options).submission
+
     # trying to skip StateMachine
     submission.update!(submission_options) if submission_options.present?
     submission.reload

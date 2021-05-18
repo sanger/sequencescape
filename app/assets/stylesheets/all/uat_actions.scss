@@ -7,7 +7,15 @@
     @extend .text-muted;
   }
 
-  input { @extend .form-control; }
-  select { @extend .custom-select; }
-  input[type=submit] { @extend .btn; @extend .btn-lg; @extend .btn-success; }
+  input {
+    @extend .form-control;
+  }
+  select {
+    @extend .custom-select;
+  }
+  input[type="submit"] {
+    @extend .btn;
+    @extend .btn-lg;
+    @extend .btn-success;
+  }
 }

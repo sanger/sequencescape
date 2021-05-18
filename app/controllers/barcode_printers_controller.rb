@@ -8,25 +8,19 @@ class BarcodePrintersController < ApplicationController # rubocop:todo Style/Doc
   def index
     @barcode_printers = BarcodePrinter.all
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   def show
     @barcode_printer = BarcodePrinter.find(params[:id])
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   def new
     @barcode_printer = BarcodePrinter.new
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   def edit
@@ -47,7 +41,7 @@ class BarcodePrintersController < ApplicationController # rubocop:todo Style/Doc
     end
   end
 
-  def update
+  def update # rubocop:todo Metrics/AbcSize
     @barcode_printer = BarcodePrinter.find(params[:id])
     @barcode_printer.barcode_printer_type = BarcodePrinterType.find(params[:barcode_printer_type_id])
 
@@ -65,8 +59,6 @@ class BarcodePrintersController < ApplicationController # rubocop:todo Style/Doc
     @barcode_printer = BarcodePrinter.find(params[:id])
     @barcode_printer.destroy
 
-    respond_to do |format|
-      format.html { redirect_to(barcode_printers_url) }
-    end
+    respond_to { |format| format.html { redirect_to(barcode_printers_url) } }
   end
 end

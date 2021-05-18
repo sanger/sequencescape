@@ -7,8 +7,7 @@
 # WARNING: Seeding anything other than the development or test DB takes someone who knows exactly what
 # they are doing.  So here we're preventing you from actually doing that.
 ##########################################################################################################
-unless %i[development test seeding cucumber].include?(Rails.env.to_sym)
-  raise StandardError, <<~END_OF_MESSAGE
+raise StandardError, <<~END_OF_MESSAGE unless %i[development test seeding cucumber].include?(Rails.env.to_sym)
     **********************************************************************************************************
     ********************************** SERIOUSLY, YOU DON'T WANT TO DO THIS **********************************
 
@@ -19,10 +18,9 @@ unless %i[development test seeding cucumber].include?(Rails.env.to_sym)
     **********************************************************************************************************
     **********************************************************************************************************
   END_OF_MESSAGE
-end
 
 if Rails.env.test?
-  Rails.logger.warn(<<~END_OF_MESSAGE
+  Rails.logger.warn(<<~END_OF_MESSAGE)
     **********************************************************************************************************
     ******************************************* NO LONGER NECESSARY ******************************************
 
@@ -31,22 +29,22 @@ if Rails.env.test?
     **********************************************************************************************************
     **********************************************************************************************************
   END_OF_MESSAGE
-                   )
   exit 0
 end
 
 ActiveRecord::Base.transaction do
   # Here is a proc that will do the seeding.
-  handler = lambda do |seed_data_file|
-    Rails.logger.info("Loading seed data from #{seed_data_file} ...")
-    require seed_data_file
-    Rails.logger.info("Seed data loaded from #{seed_data_file}")
-  end
+  handler =
+    lambda do |seed_data_file|
+      Rails.logger.info("Loading seed data from #{seed_data_file} ...")
+      require seed_data_file
+      Rails.logger.info("Seed data loaded from #{seed_data_file}")
+    end
 
   # Load all of the files under the 'seeds' directory in their sorted order.  This allows us to define
   # separate files for different sets of seed data and to govern the order they are created in.  For
   # example, property definitions depend on workflows to be present, so they should be ordered *after*
   # those workflows have been created.  Ideally you will be preceeding your seed data with a 4 digit
   # 0-extended sequence number, i.e. 0001_foo.rb is executed *before* 0002_bar.rb.
-  Dir.glob(File.expand_path(File.join(File.dirname(__FILE__), %w{seeds *.rb}))).sort.each(&handler)
+  Dir.glob(File.expand_path(File.join(File.dirname(__FILE__), %w[seeds *.rb]))).sort.each(&handler)
 end

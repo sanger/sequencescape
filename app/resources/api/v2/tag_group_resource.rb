@@ -31,9 +31,7 @@ module Api
       # Class method overrides
       # We inline tags to better isolate our implementation
       def tags
-        _model.tags.sort_by(&:map_id).map do |tag|
-          { index: tag.map_id, oligo: tag.oligo }
-        end
+        _model.tags.sort_by(&:map_id).map { |tag| { index: tag.map_id, oligo: tag.oligo } }
       end
     end
   end

@@ -1,11 +1,14 @@
 class Program < ApplicationRecord # rubocop:todo Style/Documentation
   extend Attributable::Association::Target
 
-  default_scope ->() { order(:name) }
+  default_scope -> { order(:name) }
 
   validates :name,
             presence: true,
-            uniqueness: { message: 'of programs already present in database', case_sensitive: false }
+            uniqueness: {
+              message: 'of programs already present in database',
+              case_sensitive: false
+            }
 
   has_many :study_metadata, class_name: 'Study::Metadata'
   has_many :studies, through: :study_metadata

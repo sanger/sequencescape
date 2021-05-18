@@ -2,7 +2,7 @@
 
 # Originally used to generate an overwhelmingly
 # large spec file. Kept primarily for reference
-class AbilityAnalysis::SpecGenerator
+class AbilityAnalysis::SpecGenerator # rubocop:todo Metrics/ClassLength
   attr_reader :ability_analysis
 
   def initialize(ability_analysis, output: $stdout)
@@ -10,10 +10,9 @@ class AbilityAnalysis::SpecGenerator
     @output = output
   end
 
-  delegate :ability, :roles, :sorted_permissions, :abilities_for,
-           :user_with_roles, to: :ability_analysis
+  delegate :ability, :roles, :sorted_permissions, :abilities_for, :user_with_roles, to: :ability_analysis
 
-  def generate
+  def generate # rubocop:todo Metrics/MethodLength
     output <<~HEADER
       # frozen_string_literal: true
 
@@ -45,9 +44,7 @@ class AbilityAnalysis::SpecGenerator
   def generate_permissions_list(name, permissions_to_list, indent: 2)
     output "let(:#{name}) do", indent: indent
     output '{', indent: indent + 2
-    list = permissions_to_list.map do |klass, permissions|
-      "#{klass} => %i[#{permissions.join(' ')}]"
-    end.join(",\n")
+    list = permissions_to_list.map { |klass, permissions| "#{klass} => %i[#{permissions.join(' ')}]" }.join(",\n")
     output list, indent: indent + 4
     output '}', indent: indent + 2
     output 'end', indent: indent
@@ -115,13 +112,15 @@ class AbilityAnalysis::SpecGenerator
   end
 
   def generate_authorized_models(role)
-    AbilityAnalysis::AUTHORIZED_ROLES.fetch(role, []).each do |object|
-      output "    let(:authorized_#{object}) { build :#{object}, :with_#{role}, #{role}: user }"
-      output "    let(:unauthorized_#{object}) { build :#{object} }"
-    end
+    AbilityAnalysis::AUTHORIZED_ROLES
+      .fetch(role, [])
+      .each do |object|
+        output "    let(:authorized_#{object}) { build :#{object}, :with_#{role}, #{role}: user }"
+        output "    let(:unauthorized_#{object}) { build :#{object} }"
+      end
   end
 
-  def generate_tests(user, role: nil)
+  def generate_tests(user, role: nil) # rubocop:todo Metrics/MethodLength
     ability = abilities_for(user)
     granted = permissions_for(ability)
     generate_permissions_list('granted_permissions', granted, indent: 4)
@@ -132,9 +131,7 @@ class AbilityAnalysis::SpecGenerator
       next unless AbilityAnalysis::AUTHORIZED_ROLES.fetch(role, []).include?(klass.downcase)
 
       output "# #{klass}", indent: 4
-      actions.each do |action|
-        generate_authorized_test(ability, action, klass, role)
-      end
+      actions.each { |action| generate_authorized_test(ability, action, klass, role) }
     end
   end
 
