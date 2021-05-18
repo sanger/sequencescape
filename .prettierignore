@@ -49,3 +49,4 @@ yarn-debug.log*
 .history/*
 config/cucumber.yml
 config/database.yml
+*.min.js
