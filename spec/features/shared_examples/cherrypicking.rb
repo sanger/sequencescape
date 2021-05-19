@@ -311,7 +311,7 @@ shared_examples 'a cherrypicking procedure' do
                   expect(generated_lines[index]).to eq(expected_line), "Error on line #{index} in #{expected_file}"
                 end
               end
-            when 'Tecan'
+            when 'Tecan', 'TecanV2'
               # for Robot::Generator::Tecan
               # Tecan files start with 2 lines of dynamic information for user and date, e.g.
               # C;

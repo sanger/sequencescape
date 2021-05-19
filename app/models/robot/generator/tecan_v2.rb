@@ -19,7 +19,7 @@ class Robot::Generator::TecanV2 < Robot::Generator::Base
   include Robot::Generator::Behaviours::TecanDefault
 
   def buffer_info(vert_map_id)
-    buffer_pos = (vert_map_id % NUM_BUFFER_CHANNELS) + 1
+    buffer_pos = ((vert_map_id - 1) % NUM_BUFFER_CHANNELS) + 1
     "BUFF Trough;;Trough 100ml;#{buffer_pos}"
   end
 
