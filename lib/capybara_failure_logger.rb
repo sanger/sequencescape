@@ -52,9 +52,9 @@ module CapybaraFailureLogger
   end
 
   def self.output_image(filename, &block)
-    return unless ENV['TERM_PROGRAM'] == 'iTerm.app'
+    return unless ENV['TERM_PROGRAM'] == 'iTerm.app' # rubocop:todo Rails/EnvironmentVariableAccess
 
-    case ENV['INLINE_ERROR_SCREENSHOTS']
+    case ENV['INLINE_ERROR_SCREENSHOTS'] # rubocop:todo Rails/EnvironmentVariableAccess
     when 'enabled'
       encoded_image = Base64.encode64(File.read(filename))
       name = Base64.encode64(filename)

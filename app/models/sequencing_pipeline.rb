@@ -16,7 +16,7 @@ class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
       return true
     end
 
-    read_length_list = batch.requests.map { |request| request.request_metadata.read_length }.compact
+    read_length_list = batch.requests.filter_map { |request| request.request_metadata.read_length }
 
     # The pipeline doen't contain the read_length attribute
     return true if read_length_list.size == 0

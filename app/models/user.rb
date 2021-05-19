@@ -44,7 +44,7 @@ class User < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   scope :with_user_code,
         lambda { |*codes|
-          where(barcode: codes.map { |code| Barcode.barcode_to_human(code) }.compact).or(with_swipecard_code(codes))
+          where(barcode: codes.filter_map { |code| Barcode.barcode_to_human(code) }).or(with_swipecard_code(codes))
         }
 
   attr_accessor :password

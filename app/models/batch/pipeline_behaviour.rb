@@ -47,6 +47,6 @@ module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
   end
 
   def completed_task_ids
-    complete_events.map { |lab_event| lab_event.descriptor_hash['task_id'] }.compact
+    complete_events.filter_map { |lab_event| lab_event.descriptor_hash['task_id'] }
   end
 end

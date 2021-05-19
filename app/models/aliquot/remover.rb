@@ -19,12 +19,12 @@ module Aliquot::Remover
   end
 
   def remove_matching_aliquots(aliquots_to_remove)
-    aliquots_to_remove.map do |aliquot_to_remove|
+    aliquots_to_remove.filter_map do |aliquot_to_remove|
       to_remove = aliquots.select { |aliquot| aliquot.matches?(aliquot_to_remove) }
       raise "Duplicate aliquots detected in asset #{display_name}." if to_remove.count > 1
       next unless to_remove.count == 1
 
       to_remove.first.tap(&:destroy)
-    end.compact
+    end
   end
 end

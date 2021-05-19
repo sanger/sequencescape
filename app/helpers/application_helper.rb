@@ -165,7 +165,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   # rubocop:todo Metrics/MethodLength
   def tabulated_error_messages_for(*params) # rubocop:todo Metrics/AbcSize
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
-    objects = params.collect { |object_name| instance_variable_get("@#{object_name}") }.compact
+    objects = params.filter_map { |object_name| instance_variable_get("@#{object_name}") }
     count = objects.inject(0) { |sum, object| sum + object.errors.count }
     if count.zero?
       ''

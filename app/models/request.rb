@@ -481,7 +481,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def format_qc_information # rubocop:todo Metrics/MethodLength
     return [] if lab_events.empty?
 
-    events.map do |event|
+    events.filter_map do |event|
       next if event.family.nil? || %w[pass fail].exclude?(event.family.downcase)
 
       message = event.message.presence || '(No message was specified)'
