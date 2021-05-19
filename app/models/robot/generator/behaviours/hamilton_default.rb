@@ -64,5 +64,4 @@ module Robot::Generator::Behaviours::HamiltonDefault
     end
     source_mappings
   end
-
 end

@@ -19,5 +19,4 @@ class Robot::Generator::Tecan < Robot::Generator::Base
   def buffer_info(vert_map_id)
     "BUFF;;96-TROUGH;#{vert_map_id}"
   end
-
 end
