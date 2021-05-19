@@ -334,7 +334,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     # If we don't have any stock wells, use ourself. If it is a stock well, we'll find our
     # qc metric. If its not a stock well, then a metric won't be present anyway
     metric_wells = stock_wells.empty? ? [self] : stock_wells
-    metric_wells.map { |stock_well| stock_well.qc_metrics.for_product(product).most_recent_first.first }.compact.uniq
+    metric_wells.filter_map { |stock_well| stock_well.qc_metrics.for_product(product).most_recent_first.first }.uniq
   end
 
   def asset_type_for_request_types

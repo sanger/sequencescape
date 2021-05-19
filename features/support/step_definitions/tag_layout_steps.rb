@@ -53,14 +53,14 @@ def plate_view_of_oligos(label, mapping) # rubocop:todo Metrics/AbcSize
 end
 
 # rubocop:todo Metrics/MethodLength
-def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/AbcSize
+def check_tag_layout(name, well_range, expected_wells_to_oligos)
   plate = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
-    plate.wells.map do |w|
+    plate.wells.filter_map do |w|
       next unless well_range.include?(w)
 
       [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
-    end.compact.to_h
+    end.to_h
   if expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got', wells_to_oligos)
@@ -70,14 +70,14 @@ end
 # rubocop:enable Metrics/MethodLength
 
 # rubocop:todo Metrics/MethodLength
-def check_tag2_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/AbcSize
+def check_tag2_layout(name, well_range, expected_wells_to_oligos)
   plate = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
-    plate.wells.map do |w|
+    plate.wells.filter_map do |w|
       next unless well_range.include?(w)
 
       [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || '']
-    end.compact.to_h
+    end.to_h
   if expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got', wells_to_oligos)

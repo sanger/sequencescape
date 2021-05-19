@@ -11,7 +11,7 @@ class GelsController < ApplicationController # rubocop:todo Style/Documentation
   def index
     # TODO: if a plate has a working dilution plate and it has a gel dilution plate, display:
     @gel_plates = GelDilutionPlate.page(params[:page]).order(id: :desc)
-    @plates = @gel_plates.map(&:stock_plate).compact
+    @plates = @gel_plates.filter_map(&:stock_plate)
   end
 
   def find; end

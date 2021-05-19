@@ -181,7 +181,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Doc
     # rubocop:todo Metrics/AbcSize
     def handle_has_many(attributes, attribute, json, object) # rubocop:todo Metrics/CyclomaticComplexity
       if json.first.is_a?(Hash)
-        uuids = Uuid.include_resource.lookup_many_uuids(json.map { |j| j['uuid'] }.compact)
+        uuids = Uuid.include_resource.lookup_many_uuids(json.filter_map { |j| j['uuid'] })
         uuid_to_resource = uuids.each_with_object({}) { |uuid, hash| hash[uuid.external_id] = uuid.resource }
         mapped_attributes =
           json.map do |j|
