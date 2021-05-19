@@ -1,5 +1,7 @@
-module Robot::Generator::Behaviours::TecanDefault
+# frozen_string_literal: true
 
+# Module with the file generation functionality for Tecan robots
+module Robot::Generator::Behaviours::TecanDefault
   def mapping(data_object: picking_data)
     raise ArgumentError, 'Data object not present for Tecan mapping' if data_object.nil?
 
@@ -71,7 +73,6 @@ module Robot::Generator::Behaviours::TecanDefault
   def buffers(data_object, total_volume)
     buffer = []
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
-      binding.pry
       next unless total_volume > mapping['volume']
 
       dest_name = data_object['destination'][dest_plate_barcode]['name']
@@ -85,7 +86,6 @@ module Robot::Generator::Behaviours::TecanDefault
 
   def footer
     footer = "C;\n"
-    binding.pry
     source_barcode_index.sort_by { |a| a[1] }.each do |barcode, index|
       footer += "C; SCRC#{index} = #{barcode}\n"
     end

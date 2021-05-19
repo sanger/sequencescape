@@ -37,11 +37,11 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:custom_destination_type) { nil }
   let(:custom_destination_type_name) { custom_destination_type.name || nil }
   let(:expected_pick_files_by_destination_plate) { nil }
-  let(:plates) { 
+  let(:plates) do
     create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2).tap do |list_plates|
       list_plates.each(&:wells)
     end
-  }
+  end
 
   def initialize_plates(plates)
     plates.each do |plate|
@@ -66,7 +66,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     end
   end
 
-  def initialize_for_tests
+  before do
     plate_template
     plate_type
     target_purpose
@@ -84,9 +84,6 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   end
 
   describe 'when creating batches' do
-    before do
-      initialize_for_tests
-    end
     it 'requests leave the inbox once a batch has been created' do
       login_user(user)
       visit pipeline_path(pipeline)
@@ -122,10 +119,6 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     end
 
     context 'when robot is using 96-Trough buffer (Tecan v1)' do
-      before do
-        initialize_for_tests
-      end
-  
       let(:expected_tecan_file) do
         <<~TECAN
           C;
@@ -178,23 +171,22 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
       end
 
       it_behaves_like 'a cherrypicking procedure'
-  
     end
 
     context 'when robot is using 8-Trough buffer (Tecan v2)' do
-      before do
-        initialize_for_tests
+      let!(:plates) do
+        create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 4)
       end
-  
-      let!(:plates) { 
-        create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 4).tap do |list|
-          list.map(&:wells)
-        end
-      }
-    
+
       let(:robot) do
         create(:full_robot_tecan_v2, barcode: '1111', number_of_sources: max_plates,
-                            number_of_destinations: 1, max_plates_value: max_plates)
+                                     number_of_destinations: 1, max_plates_value: max_plates)
+      end
+
+      let(:source_plates_ordered_in_row_order_by_destination) do
+        # In Tecan we give priority to picking source plates by row order of the
+        # destination wells, so following A1, A2, ... B1, B2....
+        [plates[0], plates[2], plates[1]]
       end
 
       let(:expected_tecan_file) do
@@ -276,23 +268,19 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
           D;#{destination_plate_human_barcode};;Custom Type;12;;15.6
           W;
           C;
-          C; SCRC1 = #{plates[0].human_barcode}
-          C; SCRC2 = #{plates[1].human_barcode}
-          C; SCRC3 = #{plates[2].human_barcode}
+          C; SCRC1 = #{source_plates_ordered_in_row_order_by_destination[0].human_barcode}
+          C; SCRC2 = #{source_plates_ordered_in_row_order_by_destination[1].human_barcode}
+          C; SCRC3 = #{source_plates_ordered_in_row_order_by_destination[2].human_barcode}
           C;
           C; DEST1 = #{destination_plate_human_barcode}
         TECAN
       end
-  
+
       it_behaves_like 'a cherrypicking procedure'
     end
   end
 
   describe 'where picking by ng for a tecan robot' do
-    before do
-      initialize_for_tests
-    end
-
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng' }
     let(:plate_type) { create :plate_type, name: 'ABgene_0800', maximum_volume: 800 }
@@ -346,10 +334,6 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   end
 
   describe 'where the number of plates does not exceed the max beds for the robot' do
-    before do
-      initialize_for_tests
-    end
-
     let(:layout_volume_option) { 'Pick by µl' }
     let(:expected_plates_by_destination_plate) do
       {
@@ -363,10 +347,6 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   end
 
   describe 'where the number of plates exceeds the max beds for the robot' do
-    before do
-      initialize_for_tests
-    end
-
     let(:layout_volume_option) { 'Pick by µl' }
     let(:max_plates) { 2 }
     let(:expected_plates_by_destination_plate) do
@@ -404,10 +384,6 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   end
 
   describe 'where there is a control plate and a single destination' do
-    before do
-      initialize_for_tests
-    end
-
     let(:plate1) { create  :plate_with_untagged_wells, sample_count: 2 }
     let(:plate2) { create  :plate_with_untagged_wells, sample_count: 2 }
     let(:control_plate) { create :control_plate, sample_count: 2 }
@@ -444,10 +420,6 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   end
 
   describe 'where there is a control plate and multiple destinations', js: true do
-    before do
-      initialize_for_tests
-    end
-
     let(:plate1) { create  :plate_with_untagged_wells, sample_count: 50 }
     let(:plate2) { create  :plate_with_untagged_wells, sample_count: 50 }
     let(:control_plate) { create :control_plate, sample_count: 2 }
