@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Module with the file generation functionality for Tecan robots
 module Robot::Generator::Behaviours::TecanDefault
   def mapping(data_object: picking_data)
     raise ArgumentError, 'Data object not present for Tecan mapping' if data_object.nil?

@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Module with the file generation functionality for Hamilton robots
 module Robot::Generator::Behaviours::HamiltonDefault
   COLUMN_HEADERS = %w[SourcePlateID SourceWellID SourcePlateType SourcePlateVolume DestinationPlateID
                       DestinationWellID DestinationPlateType DestinationPlateVolume WaterVolume].freeze
