@@ -46,6 +46,9 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2)
   end
 
+
+  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
   def initialize_plates(plates)
     plates.each do |plate|
       plate.wells.each_with_index do |well, index|
@@ -68,7 +71,10 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
       end
     end
   end
-
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  
+  
   before do
     plate_template
     plate_type

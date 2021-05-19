@@ -78,7 +78,7 @@ module Robot::Generator::Behaviours::TecanDefault
     'C;'
   end
 
-  def buffers(data_object, total_volume) # rubocop:todo Metrics/MethodLength
+  def buffers(data_object, total_volume)
     buffer = []
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
       next unless total_volume > mapping['volume']
@@ -107,5 +107,6 @@ module Robot::Generator::Behaviours::TecanDefault
     footer
   end
 
-
-end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/PerceivedComplexity
+  end
