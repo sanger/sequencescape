@@ -32,7 +32,10 @@ class DataReleaseStudyType < ApplicationRecord
 
   validates :name,
             presence: true,
-            uniqueness: { message: 'of data release study type already present in database', case_sensitive: false }
+            uniqueness: {
+              message: 'of data release study type already present in database',
+              case_sensitive: false
+            }
 
   scope :assay_types, -> { where(is_assay_type: true) }
   scope :non_assay_types, -> { where(is_assay_type: false) }

@@ -3,9 +3,7 @@
 require 'rails_helper'
 require 'support/lab_where_client_helper'
 
-RSpec.configure do |c|
-  c.include LabWhereClientHelper
-end
+RSpec.configure { |c| c.include LabWhereClientHelper }
 
 describe 'Location reports' do
   let(:user) { create(:admin) }
@@ -53,7 +51,9 @@ describe 'Location reports' do
         fill_in 'End date', with: '01/09/2016'
       end
       click_button('Create report from selection')
-      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(
+        page
+      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with a faculty sponsor and start and end date selected' do
@@ -67,7 +67,9 @@ describe 'Location reports' do
         fill_in 'End date', with: '01/11/2016'
       end
       click_button('Create report from selection')
-      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(
+        page
+      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with a study, start and end date selected' do
@@ -81,7 +83,9 @@ describe 'Location reports' do
         fill_in 'End date', with: '01/09/2016'
       end
       click_button('Create report from selection')
-      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(
+        page
+      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with a start and end date and a purpose seleced' do
@@ -95,7 +99,9 @@ describe 'Location reports' do
         select(plt_1_purpose, from: 'Plate purposes (can select multiple)')
       end
       click_button('Create report from selection')
-      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(
+        page
+      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with a faculty_sponsor, study, start and end date and a purpose selected' do
@@ -111,7 +117,9 @@ describe 'Location reports' do
         select(plt_1_purpose, from: 'Plate purposes (can select multiple)')
       end
       click_button('Create report from selection')
-      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(
+        page
+      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'without a start date selected' do
@@ -124,7 +132,9 @@ describe 'Location reports' do
         fill_in 'End date', with: '01/09/2016'
       end
       click_button('Create report from selection')
-      expect(page).to have_content 'Failed to create report: Start date Both start and end date are required if either one is used.'
+      expect(
+        page
+      ).to have_content 'Failed to create report: Start date Both start and end date are required if either one is used.'
     end
 
     it 'with a single valid barcode' do
@@ -136,7 +146,9 @@ describe 'Location reports' do
         fill_in 'List of Barcodes (separated by new lines, spaces or commas)', with: plate_1.machine_barcode
       end
       click_button('Create report from selection')
-      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(
+        page
+      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with selection criteria that find no results' do
@@ -162,8 +174,11 @@ describe 'Location reports' do
       # set up LabWhere stubs
       labwhere_locn_bc = 'lw-mylocn-123'
       p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Shelf 1', lw_locn_parentage: labwhere_locn_prefix }
-      stub_lwclient_locn_find_by_bc(locn_barcode: labwhere_locn_bc, locn_name: 'Shelf 1',
-                                    locn_parentage: labwhere_locn_prefix)
+      stub_lwclient_locn_find_by_bc(
+        locn_barcode: labwhere_locn_bc,
+        locn_name: 'Shelf 1',
+        locn_parentage: labwhere_locn_prefix
+      )
       stub_lwclient_locn_children(labwhere_locn_bc, [])
       stub_lwclient_locn_labwares(labwhere_locn_bc, [p1])
       stub_lwclient_labware_find_by_bc(p1)
@@ -176,7 +191,9 @@ describe 'Location reports' do
         fill_in 'LabWhere location barcode', with: labwhere_locn_bc
       end
       click_button('Create report from labwhere')
-      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(
+        page
+      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with an invalid labwhere location barcode' do
@@ -192,7 +209,9 @@ describe 'Location reports' do
         fill_in 'LabWhere location barcode', with: labwhere_locn_bc
       end
       click_button('Create report from labwhere')
-      expect(page).to have_content 'Failed to create report: LabWhere location not found, please scan or enter a valid location barcode.'
+      expect(
+        page
+      ).to have_content 'Failed to create report: LabWhere location not found, please scan or enter a valid location barcode.'
     end
   end
 end

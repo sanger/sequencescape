@@ -58,6 +58,7 @@ class CherrypickTask::ControlLocator
   #
   def control_positions(num_plate)
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
+
     # Check that all elements in wells_to_leave_free fall within the acceptable range
     raise StandardError, 'More wells left free than available' unless wells_to_leave_free.all?(0...total_wells)
     return [] if num_control_wells.zero?

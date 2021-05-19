@@ -16,6 +16,7 @@ class StateChange < ApplicationRecord
   attr_accessor :customer_accepts_responsibility
 
   belongs_to :user, optional: false
+
   # This is the target asset for which to update the state
   belongs_to :target, class_name: 'Labware', optional: false
 
@@ -25,11 +26,13 @@ class StateChange < ApplicationRecord
 
   # If the state change is a known failure state then a reason must be included
   validates :reason, presence: true, if: :targetted_for_failure?
+
   # These track the state of the target.  The target_state is what we want it to end up in and the previous_state
   # records the state that it was in before the update.  The previous_state is not assigned by the creator but
   # by the action of making the transition.
   validates :target_state, presence: true
   validates_unassigned :previous_state
+
   # If we don't have a state changer configured, we can't change the state
   validates :state_changer, presence: { message: 'target does not have a configured state changer' }
 

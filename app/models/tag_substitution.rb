@@ -25,7 +25,7 @@
 #      }
 #    ]
 #  ).save #=> true
-class TagSubstitution
+class TagSubstitution # rubocop:todo Metrics/ClassLength
   include ActiveModel::Model
 
   # The user performing the substitution, gets recorded on the generated comments [optional]
@@ -36,6 +36,7 @@ class TagSubstitution
   # the generated comment [optional]
   # @return [String] ticket number
   attr_accessor :ticket
+
   # Any additional comments regarding the substitution [optional]
   # @return [String] free-text comment field
   attr_accessor :comment
@@ -88,7 +89,7 @@ class TagSubstitution
 
   # Perform the substitution, add comments to all tubes and lanes and rebroadcast all flowcells
   # @return [Boolean] returns true if the operation was successful, false otherwise
-  def save
+  def save # rubocop:todo Metrics/MethodLength
     return false unless valid?
 
     # First set all tags to null to avoid the issue of tag clashes
@@ -114,9 +115,7 @@ class TagSubstitution
   #
   # @return [void]
   def template_asset=(asset)
-    @substitutions = asset.aliquots.includes(:sample).map do |aliquot|
-      Substitution.new(aliquot: aliquot)
-    end
+    @substitutions = asset.aliquots.includes(:sample).map { |aliquot| Substitution.new(aliquot: aliquot) }
     @name = asset.display_name
   end
 
@@ -150,29 +149,30 @@ class TagSubstitution
   end
 
   def comment_text
-    @comment_text ||= @substitutions.each_with_object(comment_header) do |substitution, comment|
-      substitution_comment = substitution.comment(oligo_index)
-      comment << substitution_comment << "\n" if substitution_comment.present?
-    end
+    @comment_text ||=
+      @substitutions.each_with_object(comment_header) do |substitution, comment|
+        substitution_comment = substitution.comment(oligo_index)
+        comment << substitution_comment << "\n" if substitution_comment.present?
+      end
   end
 
   def commented_assets
-    @commented_assets ||= (
-      Receptacle.on_a(Tube).with_required_aliquots(all_aliquots).pluck(:id) + lane_ids
-    ).uniq
+    @commented_assets ||= (Receptacle.on_a(Tube).with_required_aliquots(all_aliquots).pluck(:id) + lane_ids).uniq
   end
 
-  def apply_comments
+  def apply_comments # rubocop:todo Metrics/MethodLength
     commentable_type = Receptacle.base_class.name
-    Comment.import(commented_assets.map do |asset_id|
-      {
-        commentable_id: asset_id,
-        commentable_type: commentable_type,
-        user_id: @user&.id,
-        description: comment_text,
-        title: "Tag Substitution #{@ticket}"
-      }
-    end)
+    Comment.import(
+      commented_assets.map do |asset_id|
+        {
+          commentable_id: asset_id,
+          commentable_type: commentable_type,
+          user_id: @user&.id,
+          description: comment_text,
+          title: "Tag Substitution #{@ticket}"
+        }
+      end
+    )
   end
 
   def oligo_index

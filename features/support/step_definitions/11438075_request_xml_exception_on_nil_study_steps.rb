@@ -4,10 +4,13 @@ Given /^I have a request (\d+) with a study (\d+)$/ do |request_id, study_id|
   study = FactoryBot.create(:study, id: study_id, name: 'Study 999')
   project = FactoryBot.create(:project, id: 1)
   request_type = RequestType.find_by(key: 'library_creation')
-  request = FactoryBot.create(
-    :request,
-    id: request_id,
-    study: study, project: project, request_type: request_type,
-    asset: FactoryBot.create(:sample_tube)
-  )
+  request =
+    FactoryBot.create(
+      :request,
+      id: request_id,
+      study: study,
+      project: project,
+      request_type: request_type,
+      asset: FactoryBot.create(:sample_tube)
+    )
 end

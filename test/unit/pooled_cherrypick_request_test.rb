@@ -11,7 +11,14 @@ class PooledCherrypickRequestTest < ActiveSupport::TestCase
       @well_b = create :well
 
       @a1 = create :aliquot, receptacle: @well_a, study: @study
-      @a2 = create :aliquot, sample: @a1.sample, study: @study, project: @a1.project, receptacle: @well_b, tag: @a1.tag, tag2: @a1.tag2
+      @a2 =
+        create :aliquot,
+               sample: @a1.sample,
+               study: @study,
+               project: @a1.project,
+               receptacle: @well_b,
+               tag: @a1.tag,
+               tag2: @a1.tag2
 
       @target_well = create :well
 

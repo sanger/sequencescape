@@ -60,14 +60,19 @@ namespace :limber do
         plates = Purpose.find_by(name: 'GBS Stock').plates.order(id: :desc).limit(4)
         template = SubmissionTemplate.find_by!(name: 'Limber-Htp - GBS')
         plates.each do |plate|
-          order = template.new_order(
-            assets: plate.wells,
-            study: Study.first!,
-            project: Project.first!,
-            user: User.first,
-            request_options: { primer_panel_name: 'Dummy Panel', library_type: 'GBS',
-                               fragment_size_required_from: 100, fragment_size_required_to: 200 }
-          )
+          order =
+            template.new_order(
+              assets: plate.wells,
+              study: Study.first!,
+              project: Project.first!,
+              user: User.first,
+              request_options: {
+                primer_panel_name: 'Dummy Panel',
+                library_type: 'GBS',
+                fragment_size_required_from: 100,
+                fragment_size_required_to: 200
+              }
+            )
           sub = Submission.create!(name: plate.human_barcode, user: User.first, orders: [order])
           sub.built!
           Delayed::Worker.new.work_off
@@ -79,16 +84,21 @@ namespace :limber do
         next if TagLayoutTemplate.find_by(name: 'GbS Tag Set A')
 
         ('A'..'D').each_with_index do |set, index|
-          tg = TagGroup.create!(name: "GbS Test - #{set}") do |group|
-            group.tags.build(OligoEnumerator.new(384, index * 384).each_with_index.map do |oligo, map_id|
-                               { oligo: oligo, map_id: map_id + 1 }
-                             end)
-          end
+          tg =
+            TagGroup.create!(name: "GbS Test - #{set}") do |group|
+              group.tags.build(
+                OligoEnumerator
+                  .new(384, index * 384)
+                  .each_with_index
+                  .map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
+              )
+            end
           TagLayoutTemplate.create!(
             name: "GbS Tag Set #{set}",
             direction_algorithm: 'TagLayout::InColumns',
             walking_algorithm: 'TagLayout::WalkWellsOfPlate',
-            tag_group: tg, tag2_group: tg
+            tag_group: tg,
+            tag2_group: tg
           )
         end
       end
@@ -97,25 +107,25 @@ namespace :limber do
       task pf384_tag_set: ['limber:dev:env_check', :environment] do
         next if TagLayoutTemplate.find_by(name: 'IDT for Illumina v1 - 384 Quadrant')
 
-        tg = TagGroup.create!(name: 'IDT for Illumina v1 - MOCK') do |group|
-          group.tags.build(OligoEnumerator.new(384).each_with_index.map do |oligo, map_id|
-                             { oligo: oligo, map_id: map_id + 1 }
-                           end)
-        end
+        tg =
+          TagGroup.create!(name: 'IDT for Illumina v1 - MOCK') do |group|
+            group.tags.build(
+              OligoEnumerator.new(384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
+            )
+          end
         TagLayoutTemplate.create!(
           name: 'IDT for Illumina v1 - 384 Quadrant',
           direction_algorithm: 'TagLayout::InColumns',
           walking_algorithm: 'TagLayout::Quadrants',
-          tag_group: tg, tag2_group: tg
+          tag_group: tg,
+          tag2_group: tg
         )
       end
 
       desc 'Add tag plates for GbS: dev only'
       task gbs_tag_plates: ['limber:dev:env_check', :environment, 'limber:dev:setup:gbs_tag_set'] do
         seeder = WorkingSetup::StandardSeeder.new([])
-        ('A'..'D').each do |set|
-          seeder.tag_plates(lot_type: 'Pre Stamped Tags - 384', template: "GbS Tag Set #{set}")
-        end
+        ('A'..'D').each { |set| seeder.tag_plates(lot_type: 'Pre Stamped Tags - 384', template: "GbS Tag Set #{set}") }
       end
 
       desc 'Generate a mock WGS tag set if required'
@@ -124,16 +134,21 @@ namespace :limber do
           ["pWGS UDI tag layout v2 #{set}", "TS_pWGS#{set}_UDI96"].each_with_index do |template_name, idx|
             next if TagLayoutTemplate.find_by(name: template_name)
 
-            tg = TagGroup.create!(name: "WGS Test #{idx} - #{set}") do |group|
-              group.tags.build(OligoEnumerator.new(384, index * 384).each_with_index.map do |oligo, map_id|
-                                 { oligo: oligo, map_id: map_id + 1 }
-                               end)
-            end
+            tg =
+              TagGroup.create!(name: "WGS Test #{idx} - #{set}") do |group|
+                group.tags.build(
+                  OligoEnumerator
+                    .new(384, index * 384)
+                    .each_with_index
+                    .map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
+                )
+              end
             TagLayoutTemplate.create!(
               name: template_name,
               direction_algorithm: 'TagLayout::InColumns',
               walking_algorithm: 'TagLayout::WalkWellsOfPlate',
-              tag_group: tg, tag2_group: tg
+              tag_group: tg,
+              tag2_group: tg
             )
           end
         end

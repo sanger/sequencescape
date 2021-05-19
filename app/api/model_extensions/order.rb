@@ -9,7 +9,10 @@ module ModelExtensions::Order
     def self.included(base)
       base.class_eval do
         extend DelegateValidation
-        delegate_validation :request_options_for_validation, as: 'request_options', to: :request_types, if: :validate_request_options?
+        delegate_validation :request_options_for_validation,
+                            as: 'request_options',
+                            to: :request_types,
+                            if: :validate_request_options?
       end
     end
 
@@ -22,7 +25,9 @@ module ModelExtensions::Order
     private :validate_request_options?
 
     def request_types_delegate_validator
-      DelegateValidation::CompositeValidator.construct(*::RequestType.find(request_types.flatten).map(&:delegate_validator))
+      DelegateValidation::CompositeValidator.construct(
+        *::RequestType.find(request_types.flatten).map(&:delegate_validator)
+      )
     end
 
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
@@ -44,7 +49,8 @@ module ModelExtensions::Order
     true
   end
 
-  def self.included(base)
+  # rubocop:todo Metrics/MethodLength
+  def self.included(base) # rubocop:todo Metrics/AbcSize
     base.class_eval do
       include Validations
 
@@ -64,9 +70,8 @@ module ModelExtensions::Order
         end
       end
 
-      scope :that_submitted_asset_id, ->(asset_id) {
-        where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets)
-      }
+      scope :that_submitted_asset_id,
+            ->(asset_id) { where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets) }
 
       validate :extended_validation
       def extended_validation
@@ -84,6 +89,8 @@ module ModelExtensions::Order
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   class NonNilHash # rubocop:todo Style/Documentation
     def initialize(key_style_operation = :symbolize_keys)
@@ -128,43 +135,56 @@ module ModelExtensions::Order
     yield(request_types.last.to_s.to_sym) if request_types.present?
   end
 
-  def request_options_structured
+  # rubocop:todo Metrics/MethodLength
+  def request_options_structured # rubocop:todo Metrics/AbcSize
     NonNilHash.new(:stringify_keys).tap do |json|
-      NonNilHash.new.deep_merge(request_options).tap do |attributes|
-        json['read_length']                    = attributes[:read_length].try(:to_i)
-        json['library_type']                   = attributes[:library_type]
-        json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
-        json['fragment_size_required', 'to']   = attributes[:fragment_size_required_to].try(:to_i)
-        json['pcr_cycles']                     = attributes[:pcr_cycles].try(:to_i)
-        json['bait_library']                   = attributes[:bait_library_name]
-        json['primer_panel_name']              = attributes[:primer_panel_name]
-        json['sequencing_type']                = attributes[:sequencing_type]
-        json['insert_size']                    = attributes[:insert_size].try(:to_i)
-        request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
-      end
+      NonNilHash
+        .new
+        .deep_merge(request_options)
+        .tap do |attributes|
+          json['read_length'] = attributes[:read_length].try(:to_i)
+          json['library_type'] = attributes[:library_type]
+          json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
+          json['fragment_size_required', 'to'] = attributes[:fragment_size_required_to].try(:to_i)
+          json['pcr_cycles'] = attributes[:pcr_cycles].try(:to_i)
+          json['bait_library'] = attributes[:bait_library_name]
+          json['primer_panel_name'] = attributes[:primer_panel_name]
+          json['sequencing_type'] = attributes[:sequencing_type]
+          json['insert_size'] = attributes[:insert_size].try(:to_i)
+          request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
+        end
     end.to_hash
   end
 
-  def request_options_structured=(values)
-    @request_options_structured = NonNilHash.new.tap do |attributes|
-      NonNilHash.new(:stringify_keys).deep_merge(values).tap do |json|
-        # NOTE: Be careful with the names here to ensure that they match up, exactly with what is in a template.
-        # If the template uses symbol names then these need to be symbols too.
-        attributes[:read_length]                  = json['read_length']
-        attributes['library_type']                = json['library_type']
-        attributes['fragment_size_required_from'] = json['fragment_size_required', 'from'] ||
-                                                    json['fragment_size_required_from']
-        attributes['fragment_size_required_to']   = json['fragment_size_required', 'to'] ||
-                                                    json['fragment_size_required_to']
-        attributes['pcr_cycles']                  = json['pcr_cycles']
-        attributes[:bait_library_name]            = json['bait_library']
-        attributes[:primer_panel_name]            = json['primer_panel_name']
-        attributes[:sequencing_type]              = json['sequencing_type']
-        attributes[:insert_size]                  = json['insert_size']
-        request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
-      end
-    end.to_hash
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def request_options_structured=(values) # rubocop:todo Metrics/AbcSize
+    @request_options_structured =
+      NonNilHash.new.tap do |attributes|
+        NonNilHash
+          .new(:stringify_keys)
+          .deep_merge(values)
+          .tap do |json|
+            # NOTE: Be careful with the names here to ensure that they match up, exactly with what is in a template.
+            # If the template uses symbol names then these need to be symbols too.
+            attributes[:read_length] = json['read_length']
+            attributes['library_type'] = json['library_type']
+            attributes['fragment_size_required_from'] =
+              json['fragment_size_required', 'from'] || json['fragment_size_required_from']
+            attributes['fragment_size_required_to'] =
+              json['fragment_size_required', 'to'] || json['fragment_size_required_to']
+            attributes['pcr_cycles'] = json['pcr_cycles']
+            attributes[:bait_library_name] = json['bait_library']
+            attributes[:primer_panel_name] = json['primer_panel_name']
+            attributes[:sequencing_type] = json['sequencing_type']
+            attributes[:insert_size] = json['insert_size']
+            request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
+          end
+      end.to_hash
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def merge_in_structured_request_options
     self.request_options ||= {}

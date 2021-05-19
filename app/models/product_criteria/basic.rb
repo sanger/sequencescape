@@ -1,10 +1,27 @@
+# rubocop:todo Metrics/ClassLength
 class ProductCriteria::Basic # rubocop:todo Style/Documentation
-  SUPPORTED_WELL_ATTRIBUTES = %i[gel_pass concentration rin current_volume pico_pass gender_markers measured_volume
-                                 initial_volume molarity sequenom_count].freeze
+  SUPPORTED_WELL_ATTRIBUTES = %i[
+    gel_pass
+    concentration
+    rin
+    current_volume
+    pico_pass
+    gender_markers
+    measured_volume
+    initial_volume
+    molarity
+    sequenom_count
+  ].freeze
   SUPPORTED_SAMPLE = [:sanger_sample_id].freeze
   SUPPORTED_SAMPLE_METADATA = %i[gender sample_ebi_accession_number supplier_name phenotype sample_description].freeze
-  EXTENDED_ATTRIBUTES = %i[total_micrograms conflicting_gender_markers sample_gender well_location plate_barcode
-                           concentration_from_normalization].freeze
+  EXTENDED_ATTRIBUTES = %i[
+    total_micrograms
+    conflicting_gender_markers
+    sample_gender
+    well_location
+    plate_barcode
+    concentration_from_normalization
+  ].freeze
 
   PASSSED_STATE = 'passed'.freeze
   FAILED_STATE = 'failed'.freeze
@@ -21,14 +38,11 @@ class ProductCriteria::Basic # rubocop:todo Style/Documentation
     less_than: Comparison.new(:<, '%s too high'),
     at_least: Comparison.new(:>=, '%s too low'),
     at_most: Comparison.new(:<=, '%s too high'),
-    equals: Comparison.new(:==,   '%s not suitable'),
+    equals: Comparison.new(:==, '%s not suitable'),
     not_equal: Comparison.new(:'!=', '%s not suitable')
   }.freeze
 
-  GENDER_MARKER_MAPS = {
-    'male' => 'M',
-    'female' => 'F'
-  }.freeze
+  GENDER_MARKER_MAPS = { 'male' => 'M', 'female' => 'F' }.freeze
 
   class << self
     # Returns a list of possible criteria to either display or validate
@@ -83,26 +97,19 @@ class ProductCriteria::Basic # rubocop:todo Style/Documentation
     most_recent_concentration_from_target_well_by_updating_date
   end
 
-  SUPPORTED_SAMPLE.each do |attribute|
-    delegate(attribute, to: :sample, allow_nil: true)
-  end
+  SUPPORTED_SAMPLE.each { |attribute| delegate(attribute, to: :sample, allow_nil: true) }
 
   delegate(:sample_metadata, to: :sample, allow_nil: true)
 
-  SUPPORTED_SAMPLE_METADATA.each do |attribute|
-    delegate(attribute, to: :sample_metadata, allow_nil: true)
-  end
+  SUPPORTED_SAMPLE_METADATA.each { |attribute| delegate(attribute, to: :sample_metadata, allow_nil: true) }
 
-  SUPPORTED_WELL_ATTRIBUTES.each do |attribute|
-    delegate(attribute, to: :well_attribute, allow_nil: true)
-  end
+  SUPPORTED_WELL_ATTRIBUTES.each { |attribute| delegate(attribute, to: :well_attribute, allow_nil: true) }
 
   # Return the sample gender, returns nil if it can't be determined
   # ie. mixed input, or not male/female
   def sample_gender
-    markers = @well_or_metric.samples.map do |s|
-      s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip
-    end.uniq
+    markers =
+      @well_or_metric.samples.map { |s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
     return nil if markers.count > 1
 
     GENDER_MARKER_MAPS[markers.first]
@@ -144,7 +151,7 @@ class ProductCriteria::Basic # rubocop:todo Style/Documentation
     @comment.uniq!
   end
 
-  def assess!
+  def assess! # rubocop:todo Metrics/MethodLength
     @passed = true
     params.each do |attribute, comparisons|
       value = fetch_attribute(attribute)
@@ -168,11 +175,7 @@ class ProductCriteria::Basic # rubocop:todo Style/Documentation
   # in the well. This is useful if the metric has gone through multiple manual states.
   # This probably won't get callled for the basic class, but may be used for subclasses
   def fetch_attribute(attribute)
-    if @well_or_metric.is_a?(Hash)
-      @well_or_metric[attribute]
-    else
-      send(attribute)
-    end
+    @well_or_metric.is_a?(Hash) ? @well_or_metric[attribute] : send(attribute)
   end
 
   def method_for(comparison)
@@ -186,7 +189,8 @@ class ProductCriteria::Basic # rubocop:todo Style/Documentation
   private
 
   def comparison_for(comparison)
-    METHOD_ALIAS.fetch(comparison) || raise(UnknownSpecification,
-                                            "#{comparison} isn't a recognised means of comparison.")
+    METHOD_ALIAS.fetch(comparison) ||
+      raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
   end
 end
+# rubocop:enable Metrics/ClassLength

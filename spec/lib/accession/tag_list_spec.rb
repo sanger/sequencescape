@@ -5,9 +5,9 @@ require 'rails_helper'
 RSpec.describe Accession::TagList, type: :model, accession: true do
   include Accession::Helpers
 
-  let(:folder)      { File.join('spec', 'data', 'accession') }
-  let(:yaml)        { load_file(folder, 'tags') }
-  let(:tag_list)    { described_class.new(yaml) }
+  let(:folder) { File.join('spec', 'data', 'accession') }
+  let(:yaml) { load_file(folder, 'tags') }
+  let(:tag_list) { described_class.new(yaml) }
 
   it 'has the correct number of tags' do
     expect(tag_list.count).to eq(yaml.count)
@@ -19,7 +19,8 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
     expect(tag_list.find(:dodgy_tag)).to be_nil
   end
 
-  it 'picks out tags which are required for each service' do # rubocop:todo RSpec/AggregateExamples
+  it 'picks out tags which are required for each service' do
+    # rubocop:todo RSpec/AggregateExamples
     expect(tag_list.required_for(build(:ena_service)).count).to eq(2)
     expect(tag_list.required_for(build(:ega_service)).count).to eq(5)
   end

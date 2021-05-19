@@ -31,11 +31,12 @@ module Pipeline::GroupByParent
   private
 
   def labware_report(request_association, requests, group_by: 'labware.id')
-    Labware.joins(request_association)
-           .where('requests.id' => requests)
-           .preload(:barcodes, :purpose)
-           .group(group_by)
-           .select('labware.*', 'COUNT(DISTINCT requests.id) AS request_count')
+    Labware
+      .joins(request_association)
+      .where('requests.id' => requests)
+      .preload(:barcodes, :purpose)
+      .group(group_by)
+      .select('labware.*', 'COUNT(DISTINCT requests.id) AS request_count')
   end
 
   # Note can be overidden if also grouping by submission
@@ -44,7 +45,7 @@ module Pipeline::GroupByParent
   end
 
   def groups
-    return ['labware.id', 'requests.submission_id'] if group_by_submission?
+    return 'labware.id', 'requests.submission_id' if group_by_submission?
 
     'labware.id'
   end

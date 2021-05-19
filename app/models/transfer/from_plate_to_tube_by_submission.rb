@@ -17,8 +17,7 @@ class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
   # @return [Asset] The asset into which the well should be transferred
   #
   def asset_cache
-    @asset_cache ||= Hash.new do |cache, submission_id|
-      cache[submission_id] = Submission.find(submission_id).multiplexed_labware
-    end
+    @asset_cache ||=
+      Hash.new { |cache, submission_id| cache[submission_id] = Submission.find(submission_id).multiplexed_labware }
   end
 end

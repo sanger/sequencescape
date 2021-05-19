@@ -13,12 +13,8 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
     file = File.read(File.join('spec', 'data', 'aker', 'job.json'))
     JSON.parse(file).with_indifferent_access
   end
-  let(:material) do
-    json[:job][:materials].first
-  end
-  let(:params) do
-    json[:job][:container]
-  end
+  let(:material) { json[:job][:materials].first }
+  let(:params) { json[:job][:container] }
 
   it 'is valid with barcode and address' do
     container = described_class.new(params.merge(address: material[:address]))

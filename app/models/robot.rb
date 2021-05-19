@@ -5,19 +5,19 @@ class Robot < ApplicationRecord # rubocop:todo Style/Documentation
   validates :name, presence: true
   validates :location, presence: true
   has_many :robot_properties
-  has_one :max_plates_property, ->() { where(key: 'max_plates') }, class_name: 'RobotProperty'
-  has_one :verification_behaviour_property, ->() { where(key: 'verification_behaviour') }, class_name: 'RobotProperty'
-  has_one :generation_behaviour_property, ->() { where(key: 'generation_behaviour') }, class_name: 'RobotProperty'
+  has_one :max_plates_property, -> { where(key: 'max_plates') }, class_name: 'RobotProperty'
+  has_one :verification_behaviour_property, -> { where(key: 'verification_behaviour') }, class_name: 'RobotProperty'
+  has_one :generation_behaviour_property, -> { where(key: 'generation_behaviour') }, class_name: 'RobotProperty'
 
-  scope :with_barcode, ->(barcode) {
-                         return none unless Barcode.prefix_from_barcode(barcode) == prefix
+  scope :with_barcode,
+        ->(barcode) {
+          return none unless Barcode.prefix_from_barcode(barcode) == prefix
 
-                         where(barcode: Barcode.number_to_human(barcode))
-                       }
+          where(barcode: Barcode.number_to_human(barcode))
+        }
   scope :include_properties, -> { includes(:robot_properties) }
-  scope :with_verification_behaviour, -> {
-                                        includes(:robot_properties).where(robot_properties: { key: 'verification_behaviour' })
-                                      }
+  scope :with_verification_behaviour,
+        -> { includes(:robot_properties).where(robot_properties: { key: 'verification_behaviour' }) }
 
   #
   # Returns an array of all pick numbers associated with the corresponding batch and plate_barcode
@@ -90,7 +90,7 @@ class Robot < ApplicationRecord # rubocop:todo Style/Documentation
       Barcode.barcode_to_human!(code, prefix)
       find_from_barcode(code) # an exception is raise if not found
       true
-    rescue
+    rescue StandardError
       false
     end
     alias find_from_barcode find_by_barcode

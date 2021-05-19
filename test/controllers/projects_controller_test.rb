@@ -3,11 +3,11 @@
 require 'test_helper'
 require 'projects_controller'
 
-class ProjectsControllerTest < ActionController::TestCase
+class ProjectsControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
   context 'ProjectsController' do
     setup do
       @controller = ProjectsController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login
@@ -16,35 +16,34 @@ class ProjectsControllerTest < ActionController::TestCase
   context 'create a project - custom' do
     setup do
       @controller = ProjectsController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
       @user = FactoryBot.create :user
       session[:user] = @user.id
     end
 
     context '#new' do
-      setup do
-        get :new
-      end
+      setup { get :new }
 
       should respond_with :success
       should render_template :new
     end
 
     context '#create' do
-      setup do
-        @request_type_1 = FactoryBot.create :request_type
-      end
+      setup { @request_type_1 = FactoryBot.create :request_type }
 
       context 'successfully create a new project' do
         setup do
           @project_counter = Project.count
-          post :create, params: { 'project' => {
-            'name' => 'hello',
-            :project_metadata_attributes => {
-              project_cost_code: 'Some cost code',
-              project_funding_model: 'Internal'
-            }
-          } }
+          post :create,
+               params: {
+                 'project' => {
+                   'name' => 'hello',
+                   :project_metadata_attributes => {
+                     project_cost_code: 'Some cost code',
+                     project_funding_model: 'Internal'
+                   }
+                 }
+               }
         end
 
         should set_flash.to('Your project has been created')
@@ -57,13 +56,16 @@ class ProjectsControllerTest < ActionController::TestCase
       context 'with invalid data' do
         setup do
           @initial_project_count = Project.count
-          post :create, params: { 'project' => {
-            'name' => 'hello 2',
-            :project_metadata_attributes => {
-              project_cost_code: '',
-              project_funding_model: ''
-            }
-          } }
+          post :create,
+               params: {
+                 'project' => {
+                   'name' => 'hello 2',
+                   :project_metadata_attributes => {
+                     project_cost_code: '',
+                     project_funding_model: ''
+                   }
+                 }
+               }
         end
 
         should render_template :new
@@ -77,13 +79,16 @@ class ProjectsControllerTest < ActionController::TestCase
       context 'create a new project using permission allowed (not required)' do
         setup do
           @project_counter = Project.count
-          post :create, params: { 'project' => {
-            'name' => 'hello 3',
-            :project_metadata_attributes => {
-              project_cost_code: 'Some cost code',
-              project_funding_model: 'Internal'
-            }
-          } }
+          post :create,
+               params: {
+                 'project' => {
+                   'name' => 'hello 3',
+                   :project_metadata_attributes => {
+                     project_cost_code: 'Some cost code',
+                     project_funding_model: 'Internal'
+                   }
+                 }
+               }
         end
 
         should redirect_to('last project added page') { project_path(Project.last) }

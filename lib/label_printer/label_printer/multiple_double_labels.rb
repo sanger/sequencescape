@@ -6,11 +6,7 @@ module LabelPrinter
       include MultipleLabels
 
       def create_labels
-        [].tap do |l|
-          assets.each do |asset|
-            count.times { l.push(*double_label(asset)) }
-          end
-        end
+        [].tap { |l| assets.each { |asset| count.times { l.push(*double_label(asset)) } } }
       end
 
       def double_label(asset)

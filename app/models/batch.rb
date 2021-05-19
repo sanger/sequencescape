@@ -4,7 +4,7 @@ require 'aasm'
 # A {Batch} groups 1 or more {Request requests} together to enable processing in a
 # {Pipeline}. All requests in a batch get usually processed together, although it is
 # possible for requests to get removed from a batch in a handful of cases.
-class Batch < ApplicationRecord
+class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
   include AASM
@@ -55,41 +55,50 @@ class Batch < ApplicationRecord
   accepts_nested_attributes_for :requests
   broadcast_with_warren
 
-  validate :requests_have_same_read_length, :batch_meets_minimum_size, :all_requests_are_ready?, on: :create, if: :pipeline
+  validate :requests_have_same_read_length,
+           :batch_meets_minimum_size,
+           :all_requests_are_ready?,
+           on: :create,
+           if: :pipeline
 
   after_create :generate_target_assets_for_requests, if: :generate_target_assets_on_batch_create?
   after_commit :rebroadcast
 
   # Named scope for search by query string behaviour
-  scope :for_search_query, ->(query) {
-    user = User.find_by(login: query)
-    if user
-      where(user_id: user)
-    else
-      with_safe_id(query) # Ensures extra long input (most likely barcodes) doesn't throw an exception
-    end
-  }
+  scope :for_search_query,
+        ->(query) {
+          user = User.find_by(login: query)
+          if user
+            where(user_id: user)
+          else
+            with_safe_id(query) # Ensures extra long input (most likely barcodes) doesn't throw an exception
+          end
+        }
 
-  scope :includes_for_ui,    -> { limit(5).includes(:user, :assignee, :pipeline) }
-  scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
-  scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
-  scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
-  scope :failed_for_ui,      -> { where(production_state: 'fail').includes(:failures).latest_first }
+  scope :includes_for_ui, -> { limit(5).includes(:user, :assignee, :pipeline) }
+  scope :pending_for_ui, -> { where(state: 'pending', production_state: nil).latest_first }
+  scope :released_for_ui, -> { where(state: 'released', production_state: nil).latest_first }
+  scope :completed_for_ui, -> { where(state: 'completed', production_state: nil).latest_first }
+  scope :failed_for_ui, -> { where(production_state: 'fail').includes(:failures).latest_first }
   scope :in_progress_for_ui, -> { where(state: 'started', production_state: nil).latest_first }
   scope :include_pipeline, -> { includes(pipeline: :uuid_object) }
   scope :include_user, -> { includes(:user) }
-  scope :include_requests, -> {
-    includes(requests: [
-      :uuid_object, :request_metadata, :request_type,
-      { submission: :uuid_object },
-      { asset: [:uuid_object, { aliquots: %i[sample tag] }] },
-      { target_asset: [:uuid_object, { aliquots: %i[sample tag] }] }
-    ])
-  }
+  scope :include_requests,
+        -> {
+          includes(
+            requests: [
+              :uuid_object,
+              :request_metadata,
+              :request_type,
+              { submission: :uuid_object },
+              { asset: [:uuid_object, { aliquots: %i[sample tag] }] },
+              { target_asset: [:uuid_object, { aliquots: %i[sample tag] }] }
+            ]
+          )
+        }
 
-  scope :from_labware_barcodes, ->(barcodes) {
-    joins(input_labware: :barcodes).where(barcodes: { barcode: barcodes }).distinct
-  }
+  scope :from_labware_barcodes,
+        ->(barcodes) { joins(input_labware: :barcodes).where(barcodes: { barcode: barcodes }).distinct }
 
   scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
@@ -107,9 +116,7 @@ class Batch < ApplicationRecord
   def all_requests_are_ready?
     # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed
     # (as referred by #75102998)
-    unless requests.all?(&:ready?)
-      errors.add :base, 'All requests must be ready to be added to a batch'
-    end
+    errors.add :base, 'All requests must be ready to be added to a batch' unless requests.all?(&:ready?)
   end
 
   def subject_type
@@ -147,9 +154,7 @@ class Batch < ApplicationRecord
 
     requests.each do |request|
       request.failures.create(reason: reason, comment: comment, notify_remote: true)
-      unless request.asset && request.asset.resource?
-        EventSender.send_fail_event(request, reason, comment, id)
-      end
+      EventSender.send_fail_event(request, reason, comment, id) unless request.asset && request.asset.resource?
     end
 
     self.production_state = 'fail'
@@ -157,15 +162,17 @@ class Batch < ApplicationRecord
   end
 
   # Fail specific requests on this batch
-  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false)
+  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false) # rubocop:todo Metrics/MethodLength
     ActiveRecord::Base.transaction do
-      requests.find(requests_to_fail).each do |request|
-        logger.debug "SENDING FAIL FOR REQUEST #{request.id}, BATCH #{id}, WITH REASON #{reason}"
+      requests
+        .find(requests_to_fail)
+        .each do |request|
+          logger.debug "SENDING FAIL FOR REQUEST #{request.id}, BATCH #{id}, WITH REASON #{reason}"
 
-        request.customer_accepts_responsibility! if fail_but_charge
-        request.failures.create(reason: reason, comment: comment, notify_remote: true)
-        EventSender.send_fail_event(request, reason, comment, id)
-      end
+          request.customer_accepts_responsibility! if fail_but_charge
+          request.failures.create(reason: reason, comment: comment, notify_remote: true)
+          EventSender.send_fail_event(request, reason, comment, id)
+        end
       update_batch_state(reason, comment)
     end
   end
@@ -259,9 +266,7 @@ class Batch < ApplicationRecord
   def output_plates
     # We use re-order here as batch_requests applies a default sort order to
     # the relationship, which takes preference, even though we're has_many throughing
-    if output_labware.loaded?
-      return output_labware.sort_by(&:id)
-    end
+    return output_labware.sort_by(&:id) if output_labware.loaded?
 
     output_labware.reorder(id: :asc)
   end
@@ -322,7 +327,8 @@ class Batch < ApplicationRecord
   #
   # @return [Bool] true if the layout is correct, false otherwise
   #
-  def verify_tube_layout(barcodes, user = nil)
+  # rubocop:todo Metrics/MethodLength
+  def verify_tube_layout(barcodes, user = nil) # rubocop:todo Metrics/AbcSize
     requests.each do |request|
       barcode = barcodes[request.position - 1]
       unless barcode == request.asset.machine_barcode
@@ -338,21 +344,23 @@ class Batch < ApplicationRecord
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def release_pending_requests
     # We set the unused requests to pending.
     # this is to allow unused well to be cherry-picked again
-    requests.each do |request|
-      detach_request(request) if request.started?
-    end
+    requests.each { |request| detach_request(request) if request.started? }
   end
 
   # Remove the request from the batch and remove asset information
   def remove_request_ids(request_ids, reason = nil, comment = nil)
     ActiveRecord::Base.transaction do
-      Request.find(request_ids).each do |request|
-        request.failures.create(reason: reason, comment: comment, notify_remote: true)
-        detach_request(request)
-      end
+      Request
+        .find(request_ids)
+        .each do |request|
+          request.failures.create(reason: reason, comment: comment, notify_remote: true)
+          detach_request(request)
+        end
       update_batch_state(reason, comment)
     end
   end
@@ -363,8 +371,7 @@ class Batch < ApplicationRecord
   def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
       unless current_user.nil?
-        request.add_comment("Used to belong to Batch #{id} removed at #{Time.zone.now}",
-                            current_user)
+        request.add_comment("Used to belong to Batch #{id} removed at #{Time.zone.now}", current_user)
       end
       pipeline.detach_request_from_batch(self, request)
     end
@@ -373,8 +380,10 @@ class Batch < ApplicationRecord
   def return_request_to_inbox(request, current_user = nil)
     ActiveRecord::Base.transaction do
       unless current_user.nil?
-        request.add_comment("Used to belong to Batch #{id} returned to inbox unstarted at #{Time.zone.now}",
-                            current_user)
+        request.add_comment(
+          "Used to belong to Batch #{id} returned to inbox unstarted at #{Time.zone.now}",
+          current_user
+        )
       end
       request.return_pending_to_inbox!
     end
@@ -384,7 +393,8 @@ class Batch < ApplicationRecord
     request.batch = nil
   end
 
-  def reset!(current_user)
+  # rubocop:todo Metrics/MethodLength
+  def reset!(current_user) # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       discard!
 
@@ -394,62 +404,98 @@ class Batch < ApplicationRecord
       end
 
       if requests.last.submission_id.present?
-        Request.where(submission_id: requests.last.submission_id, state: 'pending')
-               .where.not(request_type_id: pipeline.request_type_ids).find_each do |request|
-          request.asset_id = nil
-          request.save!
-        end
+        Request
+          .where(submission_id: requests.last.submission_id, state: 'pending')
+          .where
+          .not(request_type_id: pipeline.request_type_ids)
+          .find_each do |request|
+            request.asset_id = nil
+            request.save!
+          end
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def parent_of_purpose(name)
     return nil if requests.empty?
 
-    requests.first.asset.ancestors.joins(
-      "INNER JOIN plate_purposes ON #{Plate.table_name}.plate_purpose_id = plate_purposes.id"
-    )
-            .find_by(plate_purposes: { name: name })
+    requests
+      .first
+      .asset
+      .ancestors
+      .joins("INNER JOIN plate_purposes ON #{Plate.table_name}.plate_purpose_id = plate_purposes.id")
+      .find_by(plate_purposes: { name: name })
   end
 
-  def swap(current_user, batch_info = {})
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def swap(current_user, batch_info = {}) # rubocop:todo Metrics/CyclomaticComplexity
     return false if batch_info.empty?
 
     # Find the two lanes that are to be swapped
-    batch_request_left = BatchRequest.find_by(batch_id: batch_info['batch_1']['id'],
-                                              position: batch_info['batch_1']['lane']) or errors.add('Swap: ',
-                                                                                                     'The first lane cannot be found')
-    batch_request_right = BatchRequest.find_by(batch_id: batch_info['batch_2']['id'],
-                                               position: batch_info['batch_2']['lane']) or errors.add('Swap: ',
-                                                                                                      'The second lane cannot be found')
+    batch_request_left =
+      BatchRequest.find_by(batch_id: batch_info['batch_1']['id'], position: batch_info['batch_1']['lane']) or
+      errors.add('Swap: ', 'The first lane cannot be found')
+    batch_request_right =
+      BatchRequest.find_by(batch_id: batch_info['batch_2']['id'], position: batch_info['batch_2']['lane']) or
+      errors.add('Swap: ', 'The second lane cannot be found')
     return unless batch_request_left.present? && batch_request_right.present?
 
+    # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
-      batch_request_left.request.lab_events.each do |event|
-        event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id
-      end
-      batch_request_right.request.lab_events.each do |event|
-        event.update!(batch_id: batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id
-      end
+      batch_request_left
+        .request
+        .lab_events
+        .each do |event|
+          event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id
+        end
+      batch_request_right
+        .request
+        .lab_events
+        .each do |event|
+          event.update!(batch_id: batch_request_left.batch_id) if event.batch_id == batch_request_right.batch_id
+        end
 
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but ensuring that the
       # two requests don't clash on position by removing one of them.
-      original_left_batch_id, original_left_position, original_right_request_id = batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
+      original_left_batch_id, original_left_position, original_right_request_id =
+        batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
       batch_request_right.destroy
       batch_request_left.update!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
-      batch_request_right = BatchRequest.create!(batch_id: original_left_batch_id, position: original_left_position,
-                                                 request_id: original_right_request_id)
+      batch_request_right =
+        BatchRequest.create!(
+          batch_id: original_left_batch_id,
+          position: original_left_position,
+          request_id: original_right_request_id
+        )
 
       # Finally record the fact that the batch was swapped
-      batch_request_left.batch.lab_events.create!(description: 'Lane swap',
-                                                  message: "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}", user_id: current_user.id)
-      batch_request_right.batch.lab_events.create!(description: 'Lane swap',
-                                                   message: "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}", user_id: current_user.id)
+      batch_request_left.batch.lab_events.create!(
+        description: 'Lane swap',
+        message:
+          "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}",
+        user_id: current_user.id
+      )
+      batch_request_right.batch.lab_events.create!(
+        description: 'Lane swap',
+        message:
+          "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}",
+        user_id: current_user.id
+      )
     end
+
+    # rubocop:enable Metrics/BlockLength
 
     true
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(requests.for_studies(study))
@@ -471,8 +517,11 @@ class Batch < ApplicationRecord
     return if has_event('robot verified')
 
     pipeline.robot_verified!(self)
-    lab_events.create(description: 'Robot verified',
-                      message: 'Robot verification completed and source volumes updated.', user_id: user_id)
+    lab_events.create(
+      description: 'Robot verified',
+      message: 'Robot verification completed and source volumes updated.',
+      user_id: user_id
+    )
   end
 
   def self.prefix
@@ -483,13 +532,11 @@ class Batch < ApplicationRecord
     begin
       split_code = barcode_without_pick_number(code)
       Barcode.barcode_to_human!(split_code, prefix)
-    rescue
+    rescue StandardError
       return false
     end
 
-    if find_from_barcode(code).nil?
-      return false
-    end
+    return false if find_from_barcode(code).nil?
 
     true
   end
@@ -524,8 +571,7 @@ class Batch < ApplicationRecord
   end
 
   def show_actions?
-    released? == false or
-      pipeline.class.const_get(:ALWAYS_SHOW_RELEASE_ACTIONS)
+    released? == false or pipeline.class.const_get(:ALWAYS_SHOW_RELEASE_ACTIONS)
   end
 
   def npg_set_state
@@ -566,13 +612,11 @@ class Batch < ApplicationRecord
   private
 
   def all_requests_qced?
-    requests.all? do |request|
-      request.asset.resource? ||
-        request.events.family_pass_and_fail.exists?
-    end
+    requests.all? { |request| request.asset.resource? || request.events.family_pass_and_fail.exists? }
   end
 
-  def generate_target_assets_for_requests
+  # rubocop:todo Metrics/MethodLength
+  def generate_target_assets_for_requests # rubocop:todo Metrics/AbcSize
     requests_to_update, asset_links = [], []
 
     asset_type = pipeline.asset_type.constantize
@@ -581,10 +625,11 @@ class Batch < ApplicationRecord
 
       # we need to call downstream request before setting the target_asset
       # otherwise, the request use the target asset to find the next request
-      target_asset = asset_type.create! do |asset|
-        asset.generate_barcode
-        asset.generate_name(request.asset.name)
-      end
+      target_asset =
+        asset_type.create! do |asset|
+          asset.generate_barcode
+          asset.generate_name(request.asset.name)
+        end
 
       downstream_requests_needing_asset(request) do |downstream_requests|
         requests_to_update.concat(downstream_requests.map { |r| [r, target_asset.receptacle] })
@@ -598,8 +643,7 @@ class Batch < ApplicationRecord
 
     AssetLink::BuilderJob.create(asset_links)
 
-    requests_to_update.each do |request, asset|
-      request.update!(asset: asset)
-    end
+    requests_to_update.each { |request, asset| request.update!(asset: asset) }
   end
+  # rubocop:enable Metrics/MethodLength
 end

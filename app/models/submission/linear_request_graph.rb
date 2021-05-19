@@ -33,16 +33,15 @@ module Submission::LinearRequestGraph
   private
 
   # Generates a list of RequestType and multiplier pairs for the instance.
-  def build_request_type_multiplier_pairs
+  def build_request_type_multiplier_pairs # rubocop:todo Metrics/AbcSize
     # Ensure that the keys of the multipliers hash are strings, otherwise we get weirdness!
-    multipliers = Hash.new { |h, k| h[k] = 1 }.tap do |multipliers|
-      requested_multipliers = request_options.try(:[], :multiplier) || {}
-      requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
-    end
+    multipliers =
+      Hash.new { |h, k| h[k] = 1 }.tap do |multipliers|
+        requested_multipliers = request_options.try(:[], :multiplier) || {}
+        requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
+      end
 
-    request_types.dup.map do |request_type_id|
-      [RequestType.find(request_type_id), multipliers[request_type_id.to_s]]
-    end
+    request_types.dup.map { |request_type_id| [RequestType.find(request_type_id), multipliers[request_type_id.to_s]] }
   end
 
   def create_target_asset_for!(request_type, source_asset = nil)
@@ -57,11 +56,15 @@ module Submission::LinearRequestGraph
   # that need creating.
   # @yieldreturn [Array<Asset>] For orders with multiplexed request types, yields the target asset of
   #                             the multiplexing, such as a {MultiplexedLibraryTube}.
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
   def create_request_chain!(request_type_and_multiplier_pairs, source_data_set, multiplexing_assets, &block) # rubocop:todo Metrics/CyclomaticComplexity
     raise StandardError, 'No request types specified!' if request_type_and_multiplier_pairs.empty?
 
     request_type, multiplier = request_type_and_multiplier_pairs.shift
 
+    # rubocop:todo Metrics/BlockLength
     multiplier.times do
       # If the request type is for multiplexing it means that all of the assets end up in one target asset.
       # Otherwise there are the same number of target assets as source.
@@ -81,23 +84,21 @@ module Submission::LinearRequestGraph
         qc_metrics = source_data.qc_metric
         target_asset = target_assets[index]
 
-        create_request_of_type!(
-          request_type,
-          asset: source_asset, target_asset: target_asset
-        ).tap do |request|
+        create_request_of_type!(request_type, asset: source_asset, target_asset: target_asset).tap do |request|
           # TODO: AssetLink is supposed to disappear at some point in the future because it makes no real sense
           # given that the request graph describes this relationship.
           # JG: Its removal only really makes sense if we can walk the request graph in a timely manner.
           # We use save not save! as AssetLink throws validation errors when the link already exists
-          AssetLink.create_edge(source_asset.labware,
-                                target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
+          if source_asset&.labware.present? && target_asset&.labware.present?
+            AssetLink.create_edge(source_asset.labware, target_asset.labware)
+          end
 
           request.qc_metrics = qc_metrics.compact.uniq
           request.update_responsibilities!
 
-          comments.split("\n").each do |comment|
-            request.comments.create!(user: user, description: comment)
-          end if comments.present?
+          if comments.present?
+            comments.split("\n").each { |comment| request.comments.create!(user: user, description: comment) }
+          end
         end
       end
 
@@ -107,7 +108,8 @@ module Submission::LinearRequestGraph
       next if request_type_and_multiplier_pairs.empty?
 
       target_data_set =
-        if request_type.for_multiplexing? # May have many nil assets for non-multiplexing
+        if request_type.for_multiplexing?
+          # May have many nil assets for non-multiplexing
           if multiplexing_assets.nil?
             criteria = source_data_set.map(&:qc_metric).flatten.uniq
             target_assets.uniq.map { |asset| SourceData.new(asset, criteria, nil) }
@@ -124,15 +126,23 @@ module Submission::LinearRequestGraph
 
       create_request_chain!(request_type_and_multiplier_pairs.dup, target_data_set, multiplexing_assets, &block)
     end
+    # rubocop:enable Metrics/BlockLength
   end
 
-  def associate_built_requests(assets)
-    assets.map(&:requests).flatten.each do |request|
-      request.update!(initial_study: nil) if request.initial_study != study
-      request.update!(initial_project: nil) if request.initial_project != project
-      comments.split("\n").each do |comment|
-        request.comments.create!(user: user, description: comment)
-      end if comments.present?
-    end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+
+  def associate_built_requests(assets) # rubocop:todo Metrics/AbcSize
+    assets
+      .map(&:requests)
+      .flatten
+      .each do |request|
+        request.update!(initial_study: nil) if request.initial_study != study
+        request.update!(initial_project: nil) if request.initial_project != project
+        if comments.present?
+          comments.split("\n").each { |comment| request.comments.create!(user: user, description: comment) }
+        end
+      end
   end
 end

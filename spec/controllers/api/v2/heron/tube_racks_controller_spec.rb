@@ -9,9 +9,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
   let!(:purpose_96) { create(:tube_rack_purpose, target_type: 'TubeRack', size: 96) }
   let(:study) { create :study, name: 'Study 1' }
 
-  before do
-    mock_plate_barcode_service
-  end
+  before { mock_plate_barcode_service }
 
   context 'when there is a tube rack with tubes with samples in the message' do
     let(:purpose_96_uuid) { purpose_96.uuid }
@@ -25,11 +23,15 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
             tubes: {
               'A01' => {
                 barcode: 'FD00000001',
-                content: { supplier_name: 'PHEC-nnnnnnn1' }
+                content: {
+                  supplier_name: 'PHEC-nnnnnnn1'
+                }
               },
               'A02' => {
                 barcode: 'FD00000002',
-                content: { supplier_name: 'PHEC-nnnnnnn2' }
+                content: {
+                  supplier_name: 'PHEC-nnnnnnn2'
+                }
               }
             },
             purpose_uuid: purpose_96_uuid,
@@ -41,9 +43,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true 
     let!(:before_tube_rack_count) { TubeRack.count }
     let!(:before_tube_count) { Tube.count }
 
-    setup do
-      post api_v2_heron_tube_racks_path, params: params
-    end
+    setup { post api_v2_heron_tube_racks_path, params: params }
 
     it 'creates a new tube rack successfully' do
       expect(response).to have_http_status(:created)

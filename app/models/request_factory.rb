@@ -1,12 +1,14 @@
 class RequestFactory # rubocop:todo Style/Documentation
   def self.copy_request(request)
     ActiveRecord::Base.transaction do
-      request.class.create!(request.attributes.except('id', 'created_at', 'updated_at')) do |request_copy|
-        request_copy.target_asset_id = nil
-        request_copy.state           = 'pending'
-        request_copy.request_metadata_attributes = request.request_metadata.attributes
-        request_copy.created_at = Time.zone.now
-      end
+      request
+        .class
+        .create!(request.attributes.except('id', 'created_at', 'updated_at')) do |request_copy|
+          request_copy.target_asset_id = nil
+          request_copy.state = 'pending'
+          request_copy.request_metadata_attributes = request.request_metadata.attributes
+          request_copy.created_at = Time.zone.now
+        end
     end
   end
 

@@ -16,7 +16,7 @@ When /^I get the XML for the last batch$/ do ||
 end
 
 Given /^the last batch is for the "([^"]+)" pipeline$/ do |name|
-  batch    = Batch.last or raise StandardError, 'There appear to be no batches'
+  batch = Batch.last or raise StandardError, 'There appear to be no batches'
   pipeline = Pipeline.find_by(name: name) or raise StandardError, "Unable to find the pipeline #{name}"
   pipeline.batches << batch
 end

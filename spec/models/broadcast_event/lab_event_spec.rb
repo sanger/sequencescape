@@ -35,11 +35,13 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
     expect(json).not_to be_nil
   end
 
-  it 'sets the event type based on the lab event' do # rubocop:todo RSpec/AggregateExamples
+  it 'sets the event type based on the lab event' do
+    # rubocop:todo RSpec/AggregateExamples
     expect(json).to include_json('event' => { 'event_type' => 'read_1_lin_block_hyb_load' })
   end
 
-  it 'grabs the metadata verbatim from the descriptors hash' do # rubocop:todo RSpec/AggregateExamples
+  it 'grabs the metadata verbatim from the descriptors hash' do
+    # rubocop:todo RSpec/AggregateExamples
     expect(json).to include_json('event' => { 'metadata' => { 'key_a' => 'value a', 'key_b' => 'value b' } })
   end
 
@@ -47,13 +49,29 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
     let(:eventful) { batch.reload }
 
     it 'includes the expected subjects' do
-      expect(json.dig('event', 'subjects')).to match_unordered_json([
-        { 'role_type' => 'flowcell', 'subject_type' => 'flowcell', 'uuid' => batch.uuid, 'friendly_name' => batch.id },
-        { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
-        { 'role_type' => 'sample', 'subject_type' => 'sample', 'uuid' => sample.uuid, 'friendly_name' => sample.name },
-        { 'role_type' => 'sequencing_source_labware', 'subject_type' => 'tube', 'uuid' => stock_asset.uuid,
-          'friendly_name' => stock_asset.human_barcode }
-      ])
+      expect(json.dig('event', 'subjects')).to match_unordered_json(
+        [
+          {
+            'role_type' => 'flowcell',
+            'subject_type' => 'flowcell',
+            'uuid' => batch.uuid,
+            'friendly_name' => batch.id
+          },
+          { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
+          {
+            'role_type' => 'sample',
+            'subject_type' => 'sample',
+            'uuid' => sample.uuid,
+            'friendly_name' => sample.name
+          },
+          {
+            'role_type' => 'sequencing_source_labware',
+            'subject_type' => 'tube',
+            'uuid' => stock_asset.uuid,
+            'friendly_name' => stock_asset.human_barcode
+          }
+        ]
+      )
     end
   end
 
@@ -61,13 +79,29 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
     let(:eventful) { request }
 
     it 'includes the expected subjects' do
-      expect(json.dig('event', 'subjects')).to match_unordered_json([
-        { 'role_type' => 'flowcell', 'subject_type' => 'flowcell', 'uuid' => batch.uuid, 'friendly_name' => batch.id },
-        { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
-        { 'role_type' => 'sample', 'subject_type' => 'sample', 'uuid' => sample.uuid, 'friendly_name' => sample.name },
-        { 'role_type' => 'sequencing_source_labware', 'subject_type' => 'tube', 'uuid' => stock_asset.uuid,
-          'friendly_name' => stock_asset.human_barcode }
-      ])
+      expect(json.dig('event', 'subjects')).to match_unordered_json(
+        [
+          {
+            'role_type' => 'flowcell',
+            'subject_type' => 'flowcell',
+            'uuid' => batch.uuid,
+            'friendly_name' => batch.id
+          },
+          { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
+          {
+            'role_type' => 'sample',
+            'subject_type' => 'sample',
+            'uuid' => sample.uuid,
+            'friendly_name' => sample.name
+          },
+          {
+            'role_type' => 'sequencing_source_labware',
+            'subject_type' => 'tube',
+            'uuid' => stock_asset.uuid,
+            'friendly_name' => stock_asset.human_barcode
+          }
+        ]
+      )
     end
   end
 

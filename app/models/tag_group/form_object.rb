@@ -39,7 +39,8 @@ class TagGroup::FormObject
     oligos_text&.squish&.split(/[\s,]+/) || []
   end
 
-  def check_entered_oligos
+  # rubocop:todo Metrics/MethodLength
+  def check_entered_oligos # rubocop:todo Metrics/AbcSize
     invalid_oligos_list = []
     valid_oligos_hash = {}
     parse_oligos_list.each do |cur_oligo|
@@ -54,22 +55,21 @@ class TagGroup::FormObject
       end
     end
     unless invalid_oligos_list.size.zero?
-      errors.add(:base,
-                 I18n.t('tag_groups.errors.invalid_oligos_found') + invalid_oligos_list.join(','))
+      errors.add(:base, I18n.t('tag_groups.errors.invalid_oligos_found') + invalid_oligos_list.join(','))
     end
     errors.add(:base, I18n.t('tag_groups.errors.no_valid_oligos_found')) if valid_oligos_hash.empty?
   end
 
-  def persist!
+  # rubocop:enable Metrics/MethodLength
+
+  def persist! # rubocop:todo Metrics/AbcSize
     TagGroup.transaction do
       @tag_group = TagGroup.new(name: name, adapter_type_id: adapter_type_id)
       @tag_group.tags.build(parse_oligos_list.each_with_index.map { |oligo, i| { oligo: oligo.upcase, map_id: i + 1 } })
       return if @tag_group.save
 
       errors.add(:base, I18n.t('tag_groups.errors.failed_to_save_tag_group'))
-      @tag_group.errors.full_messages.each do |msg|
-        errors.add_to_base("TagGroup Error: #{msg}")
-      end
+      @tag_group.errors.full_messages.each { |msg| errors.add_to_base("TagGroup Error: #{msg}") }
     end
   end
 end

@@ -1,13 +1,14 @@
 # Controls API V1 IO for {::Order}
 class ::Io::Order < ::Core::Io::Base
-  REQUEST_OPTIONS_FIELDS = {
-    read_length: 'read_length',
-    library_type: 'library_type',
-    fragment_size_required_from: 'fragment_size_required.from',
-    fragment_size_required_to: 'fragment_size_required.to',
-    pcr_cycles: 'pcr_cycles',
-    primer_panel_name: 'primer_panel_name'
-  }.map { |k, v| ["request_options.#{k}".to_sym, "request_options.#{v}"] }.to_h
+  REQUEST_OPTIONS_FIELDS =
+    {
+      read_length: 'read_length',
+      library_type: 'library_type',
+      fragment_size_required_from: 'fragment_size_required.from',
+      fragment_size_required_to: 'fragment_size_required.to',
+      pcr_cycles: 'pcr_cycles',
+      primer_panel_name: 'primer_panel_name'
+    }.map { |k, v| ["request_options.#{k}".to_sym, "request_options.#{v}"] }.to_h
 
   def self.json_field_for(attribute)
     REQUEST_OPTIONS_FIELDS[attribute.to_sym] || super
@@ -17,7 +18,8 @@ class ::Io::Order < ::Core::Io::Base
   set_json_root(:order)
   set_eager_loading { |model| model.include_study.include_project.include_assets }
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                                           study <=  study
                                      study.name  => study.name
 
@@ -35,5 +37,6 @@ class ::Io::Order < ::Core::Io::Base
                                            user <=  user
 
                     autodetect_studies_projects <= autodetect_studies_projects
-  ")
+  '
+  )
 end

@@ -12,10 +12,12 @@ class Api::SampleIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, lambda {
-                                                  includes([:uuid_object, { sample_metadata: :reference_genome },
-                                                            { studies: %i[study_metadata uuid_object] }])
-                                                }
+        scope :including_associations_for_json,
+              lambda {
+                includes(
+                  [:uuid_object, { sample_metadata: :reference_genome }, { studies: %i[study_metadata uuid_object] }]
+                )
+              }
       end
     end
 
@@ -61,9 +63,7 @@ class Api::SampleIO < Api::Base
     map_attribute_to_json_attribute(:sample_description, 'description')
     map_attribute_to_json_attribute(:sample_sra_hold, 'sample_visibility')
     map_attribute_to_json_attribute(:developmental_stage)
-    with_association(:reference_genome, lookup_by: :name) do
-      map_attribute_to_json_attribute(:name, 'reference_genome')
-    end
+    with_association(:reference_genome, lookup_by: :name) { map_attribute_to_json_attribute(:name, 'reference_genome') }
     map_attribute_to_json_attribute(:supplier_name)
     map_attribute_to_json_attribute(:donor_id)
     map_attribute_to_json_attribute(:phenotype)
@@ -96,21 +96,15 @@ class Api::SampleIO < Api::Base
   end
 
   extra_json_attributes do |_object, json_attributes|
-    if json_attributes['reference_genome'].blank?
-      json_attributes['reference_genome'] = nil
-    end
+    json_attributes['reference_genome'] = nil if json_attributes['reference_genome'].blank?
 
     user_id = json_attributes['marked_as_consent_withdrawn_by']
-    if user_id.present?
-      json_attributes['marked_as_consent_withdrawn_by'] = User.find_by(id: user_id)&.login
-    end
+    json_attributes['marked_as_consent_withdrawn_by'] = User.find_by(id: user_id)&.login if user_id.present?
   end
 
   # Whenever we create samples through the API we also need to register a sample tube too.  The user
   # can then retrieve the sample tube information through the API.
   def self.create!(parameters)
-    super.tap do |sample|
-      Tube::Purpose.standard_sample_tube.create!.aliquots.create!(sample: sample)
-    end
+    super.tap { |sample| Tube::Purpose.standard_sample_tube.create!.aliquots.create!(sample: sample) }
   end
 end

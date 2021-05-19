@@ -1,4 +1,5 @@
 module SampleManifest::PlateBehaviour
+  # rubocop:todo Metrics/ClassLength
   class Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::Shared
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
@@ -29,25 +30,19 @@ module SampleManifest::PlateBehaviour
     def generate_wells(well_data, plates)
       # Generate the wells, samples & requests asynchronously.
       generate_wells_for_plates(well_data, plates) do |this_plates_well_data, plate|
-        generate_wells_asynchronously(
-          this_plates_well_data.map { |map, sample_id| [map.id, sample_id] },
-          plate.id
-        )
+        generate_wells_asynchronously(this_plates_well_data.map { |map, sample_id| [map.id, sample_id] }, plate.id)
       end
 
       # Ensure we maintain the information we need for printing labels and generating
       # the CSV file
       @plates = plates.sort_by(&:human_barcode)
 
-      @details_array = plates.flat_map do |plate|
-        well_data.slice!(0, plate.size).map do |map, sample_id|
-          {
-            barcode: plate.human_barcode,
-            position: map.description,
-            sample_id: sample_id
-          }
+      @details_array =
+        plates.flat_map do |plate|
+          well_data
+            .slice!(0, plate.size)
+            .map { |map, sample_id| { barcode: plate.human_barcode, position: map.description, sample_id: sample_id } }
         end
-      end
     end
 
     def io_samples
@@ -66,20 +61,20 @@ module SampleManifest::PlateBehaviour
     def updated_by!(user, samples)
       # It's more efficient to look for the wells with the samples than to look for the assets from the samples
       # themselves as the former can use named_scopes where as the latter is an array that needs iterating over.
-      Plate.with_sample(samples).each do |plate|
-        plate.events.updated_using_sample_manifest!(user)
-      end
+      Plate.with_sample(samples).each { |plate| plate.events.updated_using_sample_manifest!(user) }
     end
 
     def details_array
-      @details_array ||= sample_manifest_assets.includes(asset: [:map, :aliquots,
-                                                                 { plate: :barcodes }]).map do |sample_manifest_asset|
-        {
-          barcode: sample_manifest_asset.asset.plate.human_barcode,
-          position: sample_manifest_asset.asset.map_description,
-          sample_id: sample_manifest_asset.sanger_sample_id
-        }
-      end
+      @details_array ||=
+        sample_manifest_assets
+          .includes(asset: [:map, :aliquots, { plate: :barcodes }])
+          .map do |sample_manifest_asset|
+            {
+              barcode: sample_manifest_asset.asset.plate.human_barcode,
+              position: sample_manifest_asset.asset.map_description,
+              sample_id: sample_manifest_asset.sanger_sample_id
+            }
+          end
     end
 
     def labware=(labware)
@@ -95,11 +90,11 @@ module SampleManifest::PlateBehaviour
     # Called by {SampleManifest::GenerateWellsJob} and builds the wells
     def generate_wells_job(wells_for_plate, plate)
       wells_for_plate.map do |map, sanger_sample_id|
-        plate.wells.create!(map: map) do |well|
-          SampleManifestAsset.create(sanger_sample_id: sanger_sample_id,
-                                     asset: well,
-                                     sample_manifest: @manifest)
-        end
+        plate
+          .wells
+          .create!(map: map) do |well|
+            SampleManifestAsset.create(sanger_sample_id: sanger_sample_id, asset: well, sample_manifest: @manifest)
+          end
       end
       RequestFactory.create_assets_requests(plate.wells, study)
       plate.events.created_using_sample_manifest!(@manifest.user)
@@ -112,9 +107,7 @@ module SampleManifest::PlateBehaviour
     # truncate the data.
     def generate_wells_for_plates(well_data, plates)
       cloned_well_data = well_data.dup
-      plates.each do |plate|
-        yield(cloned_well_data.slice!(0, plate.size), plate)
-      end
+      plates.each { |plate| yield(cloned_well_data.slice!(0, plate.size), plate) }
     end
 
     def labware_from_barcodes
@@ -125,7 +118,8 @@ module SampleManifest::PlateBehaviour
       Delayed::Job.enqueue SampleManifest::GenerateWellsJob.new(@manifest.id, map_ids_to_sample_ids, plate_id)
     end
 
-    def generate_plates(purpose)
+    # rubocop:todo Metrics/MethodLength
+    def generate_plates(purpose) # rubocop:todo Metrics/AbcSize
       study_abbreviation = study.abbreviation
 
       well_data = []
@@ -134,12 +128,15 @@ module SampleManifest::PlateBehaviour
       plates.each do |plate|
         sanger_sample_ids = generate_sanger_ids(plate.size)
 
-        plate.maps.in_column_major_order.each do |well_map|
-          sanger_sample_id           = sanger_sample_ids.shift
-          generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
+        plate
+          .maps
+          .in_column_major_order
+          .each do |well_map|
+            sanger_sample_id = sanger_sample_ids.shift
+            generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
 
-          well_data << [well_map, generated_sanger_sample_id]
-        end
+            well_data << [well_map, generated_sanger_sample_id]
+          end
       end
 
       generate_wells(well_data, plates)
@@ -147,7 +144,10 @@ module SampleManifest::PlateBehaviour
 
       plates
     end
+    # rubocop:enable Metrics/MethodLength
   end
+
+  # rubocop:enable Metrics/ClassLength
 
   class Core < Base
     include SampleManifest::CoreBehaviour::StockAssets

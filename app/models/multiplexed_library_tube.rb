@@ -5,7 +5,7 @@ class MultiplexedLibraryTube < Tube # rubocop:todo Style/Documentation
   include Api::MultiplexedLibraryTubeIO::Extensions
   include Asset::SharedLibraryTubeBehaviour
 
-  has_many :order_roles, ->() { distinct }, through: :requests_as_target
+  has_many :order_roles, -> { distinct }, through: :requests_as_target
 
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests

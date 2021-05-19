@@ -7,9 +7,27 @@ module Aker
     # Validates presence of aker_job_id and ensures that there is at least one material.
     class Job
       include ActiveModel::Model
-      ATTRIBUTES = %i[job_id job_uuid work_order_id aker_job_url product_name process_name process_uuid modules
-                      product_version product_uuid project_uuid project_name cost_code container materials comment
-                      desired_date data_release_uuid priority].freeze
+      ATTRIBUTES = %i[
+        job_id
+        job_uuid
+        work_order_id
+        aker_job_url
+        product_name
+        process_name
+        process_uuid
+        modules
+        product_version
+        product_uuid
+        project_uuid
+        project_name
+        cost_code
+        container
+        materials
+        comment
+        desired_date
+        data_release_uuid
+        priority
+      ].freeze
       DEFAULT_ATTRIBUTES = { data_release_uuid: nil, materials: {} }.freeze
       IGNORE_ATTRIBUTES = %w[container_id num_of_rows num_of_cols].freeze
 
@@ -25,9 +43,8 @@ module Aker
       end
 
       def initialize(params = {})
-        @container_params = params.to_h.with_indifferent_access[:container].reject do |k, _v|
-          IGNORE_ATTRIBUTES.include?(k)
-        end
+        @container_params =
+          params.to_h.with_indifferent_access[:container].reject { |k, _v| IGNORE_ATTRIBUTES.include?(k) }
         super(DEFAULT_ATTRIBUTES.merge(params))
         @aker_job_id = job_id
       end
@@ -41,14 +58,17 @@ module Aker
       def create
         return unless valid?
 
-        @model = Aker::Job.create(aker_job_id: aker_job_id, job_uuid: job_uuid, samples: materials.map(&:create),
-                                  aker_job_url: aker_job_url)
+        @model =
+          Aker::Job.create(
+            aker_job_id: aker_job_id,
+            job_uuid: job_uuid,
+            samples: materials.map(&:create),
+            aker_job_url: aker_job_url
+          )
       end
 
       def as_json(_options = {})
-        {
-          job: json_attributes
-        }
+        { job: json_attributes }
       end
 
       def study
@@ -63,11 +83,7 @@ module Aker
       private
 
       def json_attributes
-        {}.tap do |json|
-          ATTRIBUTES.each do |attribute|
-            json[attribute] = json_attribute(attribute)
-          end
-        end
+        {}.tap { |json| ATTRIBUTES.each { |attribute| json[attribute] = json_attribute(attribute) } }
       end
 
       def json_attribute(attribute)
@@ -98,9 +114,7 @@ module Aker
         materials.each do |material|
           next if material.valid?
 
-          material.errors.each do |key, value|
-            errors.add key, value
-          end
+          material.errors.each { |key, value| errors.add key, value }
         end
       end
 

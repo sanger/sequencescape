@@ -14,16 +14,16 @@ module Presenters
     VISIBLE_STATES = 'pending'.freeze
 
     # Register our fields and their respective conditions
-    add_field 'Internal ID',    :internal_id
-    add_field 'Barcode',        :barcode
-    add_field 'Wells',          :well_count,     if: :purpose_important?
-    add_field 'Plate Purpose',  :plate_purpose,  if: :purpose_important?
-    add_field 'Pick To',        :pick_to,        if: :pick_to?
-    add_field 'Submission',     :submission_id,  if: :group_by_submission?
-    add_field 'Study',          :study,          if: :group_by_submission?
-    add_field 'Stock Barcode',  :stock_barcode,  if: :show_stock?
+    add_field 'Internal ID', :internal_id
+    add_field 'Barcode', :barcode
+    add_field 'Wells', :well_count, if: :purpose_important?
+    add_field 'Plate Purpose', :plate_purpose, if: :purpose_important?
+    add_field 'Pick To', :pick_to, if: :pick_to?
+    add_field 'Submission', :submission_id, if: :group_by_submission?
+    add_field 'Study', :study, if: :group_by_submission?
+    add_field 'Stock Barcode', :stock_barcode, if: :show_stock?
     add_field 'Still Required', :still_required, if: :select_partial_requests?
-    add_field 'Submitted at',   :submitted_at
+    add_field 'Submitted at', :submitted_at
 
     attr_reader :pipeline, :user
 
@@ -33,6 +33,7 @@ module Presenters
       @pipeline = pipeline
       @user = user
       @show_held_requests = show_held_requests
+
       # We shouldn't trigger this, as we explicitly detect the group by status
       unless pipeline.group_by_parent?
         raise "Pipeline #{pipeline.name} is incompatible with GroupedPipelineInboxPresenter"
@@ -48,15 +49,11 @@ module Presenters
     end
 
     def each_field_header
-      valid_fields.each do |field, _method, _condition|
-        yield field
-      end
+      valid_fields.each { |field, _method, _condition| yield field }
     end
 
     def each_method
-      valid_fields.each do |_field, method, _condition|
-        yield method
-      end
+      valid_fields.each { |_field, method, _condition| yield method }
     end
 
     # Yields a line presenter
@@ -78,17 +75,15 @@ module Presenters
     end
 
     def grouped_requests
-      @request_groups ||= @pipeline.requests
-                                   .where(state: states)
-                                   .asset_on_labware
-                                   .unbatched
-                                   .send(@pipeline.inbox_eager_loading)
-                                   .select(
-                                     'requests.*',
-                                     'count(DISTINCT requests.id) AS well_count',
-                                     'MAX(requests.priority) AS priority'
-                                   )
-                                   .group(grouping_attributes)
+      @request_groups ||=
+        @pipeline
+          .requests
+          .where(state: states)
+          .asset_on_labware
+          .unbatched
+          .send(@pipeline.inbox_eager_loading)
+          .select('requests.*', 'count(DISTINCT requests.id) AS well_count', 'MAX(requests.priority) AS priority')
+          .group(grouping_attributes)
     end
 
     def grouping_attributes
@@ -136,9 +131,7 @@ module Presenters
     end
 
     def each_field
-      inbox.each_method do |method|
-        yield send(method)
-      end
+      inbox.each_method { |method| yield send(method) }
     end
 
     def internal_id

@@ -11,9 +11,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
 
   context 'A fluidigm file' do
     setup do
-      File.open("#{Rails.root}/test/data/fluidigm.csv") do |file|
-        @fluidigm = FluidigmFile.new(file.read)
-      end
+      File.open("#{Rails.root}/test/data/fluidigm.csv") { |file| @fluidigm = FluidigmFile.new(file.read) }
 
       @well_maps = {
         'S06' => {
@@ -38,9 +36,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
 
     should 'find 95 wells' do
       count = 0
-      @fluidigm.each_well do |_well|
-        count += 1
-      end
+      @fluidigm.each_well { |_well| count += 1 }
       assert_equal 95, count
     end
 

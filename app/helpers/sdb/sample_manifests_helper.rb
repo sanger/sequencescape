@@ -20,26 +20,14 @@ module Sdb::SampleManifestsHelper # rubocop:todo Style/Documentation
   end
 
   def submit_label_for(asset_type)
-    if asset_type == 'tube_rack'
-      'Create manifest'
-    else
-      'Create manifest and print labels'
-    end
+    asset_type == 'tube_rack' ? 'Create manifest' : 'Create manifest and print labels'
   end
 
   def purpose_label_for(asset_type)
-    if asset_type == 'tube_rack'
-      'Tube purpose'
-    else
-      'Purpose'
-    end
+    asset_type == 'tube_rack' ? 'Tube purpose' : 'Purpose'
   end
 
   def count_barcode_heading_for(asset_type)
-    if asset_type == 'tube_rack'
-      'Tube Racks'
-    else
-      'Barcodes'
-    end
+    asset_type == 'tube_rack' ? 'Tube Racks' : 'Barcodes'
   end
 end

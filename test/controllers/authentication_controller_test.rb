@@ -10,7 +10,7 @@ class AuthenticationController < ApplicationController
     data = { parent: { child: 'open' } }
     respond_to do |format|
       format.html { render plain: '<html></html>' }
-      format.xml  { render plain: data.to_xml }
+      format.xml { render plain: data.to_xml }
       format.json { render plain: data.to_json }
     end
   end
@@ -19,13 +19,13 @@ class AuthenticationController < ApplicationController
     data = { parent: { child: 'restricted' } }
     respond_to do |format|
       format.html { render plain: '<html></html>' }
-      format.xml  { render plain: data.to_xml }
+      format.xml { render plain: data.to_xml }
       format.json { render plain: data.to_json }
     end
   end
 end
 
-class AuthenticationControllerTest < ActionController::TestCase
+class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
   # def skip_routing
   #   Rails.application.routes.draw do
   #     get 'authentication/open'
@@ -38,19 +38,15 @@ class AuthenticationControllerTest < ActionController::TestCase
   context 'Authenticated pages' do
     setup do
       @controller = AuthenticationController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
       @request.host = 'www.example.com'
       # skip_routing
     end
 
     context 'with configatron disable_api_authentication set to true' do
-      setup do
-        configatron.stubs(:disable_api_authentication).returns(true)
-      end
+      setup { configatron.stubs(:disable_api_authentication).returns(true) }
       context 'allow access to open HTML content' do
-        setup do
-          get :open
-        end
+        setup { get :open }
         should respond_with :success
       end
       context 'allow access to open XML content' do
@@ -74,9 +70,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
       end
       context 'require login to restricted HTML content' do
-        setup do
-          get :restricted
-        end
+        setup { get :restricted }
         should respond_with :redirect
         should redirect_to('login page') { login_path }
       end
@@ -107,20 +101,14 @@ class AuthenticationControllerTest < ActionController::TestCase
         @memo = configatron.disable_api_authentication
         configatron.disable_api_authentication = false
       end
-      teardown do
-        configatron.disable_api_authentication = @memo
-      end
+      teardown { configatron.disable_api_authentication = @memo }
       context 'and HTML request' do
         context 'will allow access to open content' do
-          setup do
-            get :open
-          end
+          setup { get :open }
           should respond_with :success
         end
         context 'will require login to restricted content' do
-          setup do
-            get :restricted
-          end
+          setup { get :restricted }
           should respond_with :redirect
           should redirect_to('login page') { login_path }
         end
@@ -132,30 +120,22 @@ class AuthenticationControllerTest < ActionController::TestCase
           should respond_with :success
         end
         context 'with an invalid api_key will require login to restricted content' do
-          setup do
-            get :restricted, params: { api_key: 'fakeapikey' }
-          end
+          setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :redirect
           should redirect_to('login page') { login_path }
         end
       end
       context 'and XML request' do
-        setup do
-          @request.accept = 'application/xml'
-        end
+        setup { @request.accept = 'application/xml' }
         context 'will allow access to open content' do
-          setup do
-            get :open
-          end
+          setup { get :open }
           should respond_with :success
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.content_type
           end
         end
         context 'will require login to restricted content' do
-          setup do
-            get :restricted
-          end
+          setup { get :restricted }
           should respond_with :unauthorized
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.content_type
@@ -172,9 +152,7 @@ class AuthenticationControllerTest < ActionController::TestCase
           end
         end
         context 'with an invalid api_key will require login to restricted content' do
-          setup do
-            get :restricted, params: { api_key: 'fakeapikey' }
-          end
+          setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :unauthorized
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.content_type
@@ -182,22 +160,16 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
       end
       context 'and JSON request' do
-        setup do
-          @request.accept = 'application/json'
-        end
+        setup { @request.accept = 'application/json' }
         context 'will allow access to open content' do
-          setup do
-            get :open
-          end
+          setup { get :open }
           should respond_with :success
           should 'Respond with json' do
             assert_equal 'application/json', @response.content_type
           end
         end
         context 'will require login to restricted content' do
-          setup do
-            get :restricted
-          end
+          setup { get :restricted }
           should respond_with :unauthorized
           should 'Respond with json' do
             assert_equal 'application/json', @response.content_type
@@ -214,9 +186,7 @@ class AuthenticationControllerTest < ActionController::TestCase
           end
         end
         context 'with an invalid api_key will require login to restricted content' do
-          setup do
-            get :restricted, params: { api_key: 'fakeapikey' }
-          end
+          setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :unauthorized
           should 'Respond with json' do
             assert_equal 'application/json', @response.content_type

@@ -8,41 +8,29 @@ class ExampleLabel
   attr_accessor :assets
 
   def create_label(asset)
-    { left: asset.name,
-      right: asset.prefix,
-      barcode: asset.barcode_number }
+    { left: asset.name, right: asset.prefix, barcode: asset.barcode_number }
   end
 end
 
 class ExampleLabelTest < ActiveSupport::TestCase
   attr_reader :example_label, :label, :labels, :plate1, :plate2, :plate3, :plate4
 
-  def setup
+  def setup # rubocop:todo Metrics/MethodLength
     @example_label = ExampleLabel.new
     @plate1 = create :plate, name: 'Plate 1', barcode: '1111'
     @plate2 = create :plate, name: 'Plate 2', barcode: '2222'
     @plate3 = create :plate, name: 'Plate 3', barcode: '3333'
     @plate4 = create :plate, name: 'Plate 4', barcode: '4444'
-    @label = { left: 'Plate 1',
-               right: 'DN',
-               barcode: '1111' }
+    @label = { left: 'Plate 1', right: 'DN', barcode: '1111' }
 
-    @labels = { body: [{ main_label:
-                        { left: 'Plate 1',
-                          right: 'DN',
-                          barcode: '1111' } },
-                       { main_label:
-                         { left: 'Plate 2',
-                           right: 'DN',
-                           barcode: '2222' } },
-                       { main_label:
-                         { left: 'Plate 3',
-                           right: 'DN',
-                           barcode: '3333' } },
-                       { main_label:
-                         { left: 'Plate 4',
-                           right: 'DN',
-                           barcode: '4444' } }] }
+    @labels = {
+      body: [
+        { main_label: { left: 'Plate 1', right: 'DN', barcode: '1111' } },
+        { main_label: { left: 'Plate 2', right: 'DN', barcode: '2222' } },
+        { main_label: { left: 'Plate 3', right: 'DN', barcode: '3333' } },
+        { main_label: { left: 'Plate 4', right: 'DN', barcode: '4444' } }
+      ]
+    }
   end
 
   test 'should return the right label' do

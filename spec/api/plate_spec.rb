@@ -11,64 +11,60 @@ describe '/api/1/plate-uuid' do
 
   let(:plate) { create :plate, barcode: '1' }
 
-  before do
-    custom_metadata_collection
-  end
+  before { custom_metadata_collection }
 
-  let(:custom_metadata_collection) do
-    create(:custom_metadatum_collection, asset: plate)
-  end
+  let(:custom_metadata_collection) { create(:custom_metadatum_collection, asset: plate) }
 
   let(:purpose) { plate.purpose }
 
   let(:response_body) do
-    %({
-      "plate": {
-        "actions": {
-          "read": "http://www.example.com/api/1/#{uuid}"
+    "{
+      \"plate\": {
+        \"actions\": {
+          \"read\": \"http://www.example.com/api/1/#{uuid}\"
         },
-        "plate_purpose": {
-          "actions": {
-            "read": "http://www.example.com/api/1/#{purpose.uuid}"
+        \"plate_purpose\": {
+          \"actions\": {
+            \"read\": \"http://www.example.com/api/1/#{purpose.uuid}\"
           }
         },
-        "wells": {
-          "actions": {
-            "read": "http://www.example.com/api/1/#{uuid}/wells"
+        \"wells\": {
+          \"actions\": {
+            \"read\": \"http://www.example.com/api/1/#{uuid}/wells\"
           }
         },
-        "submission_pools": {
-          "actions": {
-            "read": "http://www.example.com/api/1/#{uuid}/submission_pools"
+        \"submission_pools\": {
+          \"actions\": {
+            \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools\"
           }
         },
-        "custom_metadatum_collection": {
-          "actions": {
-            "read": "http://www.example.com/api/1/#{custom_metadata_collection.uuid}"
+        \"custom_metadatum_collection\": {
+          \"actions\": {
+            \"read\": \"http://www.example.com/api/1/#{custom_metadata_collection.uuid}\"
           }
         },
-        "transfer_request_collections": {
-          "size": 0,
-          "actions": {
-            "read": "http://www.example.com/api/1/#{uuid}/transfer_request_collections"
+        \"transfer_request_collections\": {
+          \"size\": 0,
+          \"actions\": {
+            \"read\": \"http://www.example.com/api/1/#{uuid}/transfer_request_collections\"
           }
         },
 
 
-        "barcode": {
-          "prefix": "DN",
-          "number": "1",
-          "ean13": "1220000001831",
-          "type": 1
+        \"barcode\": {
+          \"prefix\": \"DN\",
+          \"number\": \"1\",
+          \"ean13\": \"1220000001831\",
+          \"type\": 1
         },
 
-        "stock_plate": {
-          "barcode": {}
+        \"stock_plate\": {
+          \"barcode\": {}
         },
 
-        "uuid": "#{uuid}"
+        \"uuid\": \"#{uuid}\"
       }
-    })
+    }"
   end
 
   let(:response_code) { 200 }
@@ -81,60 +77,60 @@ describe '/api/1/plate-uuid' do
 
   context 'with a stock plate' do
     let(:response_body) do
-      %({
-        "plate": {
-          "actions": {
-            "read": "http://www.example.com/api/1/#{uuid}"
+      "{
+        \"plate\": {
+          \"actions\": {
+            \"read\": \"http://www.example.com/api/1/#{uuid}\"
           },
-          "plate_purpose": {
-            "actions": {
-              "read": "http://www.example.com/api/1/#{purpose.uuid}"
+          \"plate_purpose\": {
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{purpose.uuid}\"
             }
           },
-          "wells": {
-            "actions": {
-              "read": "http://www.example.com/api/1/#{uuid}/wells"
+          \"wells\": {
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{uuid}/wells\"
             }
           },
-          "submission_pools": {
-            "actions": {
-              "read": "http://www.example.com/api/1/#{uuid}/submission_pools"
+          \"submission_pools\": {
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools\"
             }
           },
-          "custom_metadatum_collection": {
-            "actions": {
-              "read": "http://www.example.com/api/1/#{custom_metadata_collection.uuid}"
+          \"custom_metadatum_collection\": {
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{custom_metadata_collection.uuid}\"
             }
           },
-          "transfer_request_collections": {
-            "size": 0,
-            "actions": {
-              "read": "http://www.example.com/api/1/#{uuid}/transfer_request_collections"
+          \"transfer_request_collections\": {
+            \"size\": 0,
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{uuid}/transfer_request_collections\"
             }
           },
 
 
-          "barcode": {
-            "prefix": "DN",
-            "number": "1",
-            "ean13": "1220000001831",
-            "type": 1,
-            "machine": "DN1S"
+          \"barcode\": {
+            \"prefix\": \"DN\",
+            \"number\": \"1\",
+            \"ean13\": \"1220000001831\",
+            \"type\": 1,
+            \"machine\": \"DN1S\"
           },
 
-          "stock_plate": {
-            "barcode": {
-              "number":"2",
-              "prefix":"DN",
-              "ean13":"1220000002845",
-              "machine":"DN2T"
+          \"stock_plate\": {
+            \"barcode\": {
+              \"number\":\"2\",
+              \"prefix\":\"DN\",
+              \"ean13\":\"1220000002845\",
+              \"machine\":\"DN2T\"
             },
-            "uuid":"#{stock_plate&.uuid}"
+            \"uuid\":\"#{stock_plate&.uuid}\"
           },
 
-          "uuid": "#{uuid}"
+          \"uuid\": \"#{uuid}\"
         }
-      })
+      }"
     end
 
     let(:stock_plate) { create(:full_stock_plate, barcode: 2) }

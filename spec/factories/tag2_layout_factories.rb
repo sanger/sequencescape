@@ -8,9 +8,7 @@ FactoryBot.define do
   end
 
   factory :tag2_layout_template do |_itlt|
-    transient do
-      oligo { generate :oligo }
-    end
+    transient { oligo { generate :oligo } }
     sequence(:name) { |n| "Tag 2 layout template #{n}" }
     tag { |tag| tag.association :tag, oligo: oligo }
   end

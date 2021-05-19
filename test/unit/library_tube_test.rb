@@ -4,9 +4,7 @@ require 'test_helper'
 
 class LibraryTubeTest < ActiveSupport::TestCase
   context 'A Library tube' do
-    setup do
-      @library_tube = create :library_tube
-    end
+    setup { @library_tube = create :library_tube }
 
     context '#has_stock_asset?' do
       setup do
@@ -26,9 +24,7 @@ class LibraryTubeTest < ActiveSupport::TestCase
 
     context '#create_stock_asset!' do
       context 'straight creation' do
-        setup do
-          @stock = @library_tube.create_stock_asset!
-        end
+        setup { @stock = @library_tube.create_stock_asset! }
 
         should 'create a StockLibraryTube' do
           assert @stock.is_a?(StockLibraryTube)
@@ -44,9 +40,7 @@ class LibraryTubeTest < ActiveSupport::TestCase
       end
 
       context 'should allow overriding of attributes' do
-        setup do
-          @stock = @library_tube.create_stock_asset!(name: 'Foo', barcode: '1111')
-        end
+        setup { @stock = @library_tube.create_stock_asset!(name: 'Foo', barcode: '1111') }
 
         should 'use the specified name' do
           assert_equal 'Foo', @stock.name

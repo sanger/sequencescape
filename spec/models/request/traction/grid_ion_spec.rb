@@ -5,7 +5,13 @@ require 'shared_contexts/limber_shared_context'
 
 describe Request::Traction::GridIon do
   subject do
-    build :request_traction_grid_ion, asset: well, request_metadata_attributes: metadata, order: order, submission: submission, request_type: request_type, state: state
+    build :request_traction_grid_ion,
+          asset: well,
+          request_metadata_attributes: metadata,
+          order: order,
+          submission: submission,
+          request_type: request_type,
+          state: state
   end
 
   let(:order) { build(:order, submission: submission, assets: [well], request_types: [request_type.id]) }
@@ -15,9 +21,7 @@ describe Request::Traction::GridIon do
   let(:state) { 'pending' }
 
   context 'with valid metadata' do
-    let(:metadata) do
-      { library_type: 'Rapid', data_type: 'basecalls and raw data' }
-    end
+    let(:metadata) { { library_type: 'Rapid', data_type: 'basecalls and raw data' } }
 
     it { is_expected.to be_valid }
 

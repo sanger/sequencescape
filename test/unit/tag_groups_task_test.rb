@@ -10,9 +10,7 @@ class TagGroupsTaskTest < TaskTestBase
   context '#render_tag_groups_task' do
     setup do
       create :tag_group
-      @object = task_instance_for(::Tasks::TagGroupHandler) do
-        attr_reader :tag_groups
-      end
+      @object = task_instance_for(::Tasks::TagGroupHandler) { attr_reader :tag_groups }
 
       @object.render_tag_groups_task(nil, nil)
     end
@@ -32,6 +30,7 @@ class TagGroupsTaskTest < TaskTestBase
       should 'call render_tag_groups_task on workflow' do
         @controller = DummyWorkflowController.new
         @user = create :user
+
         # session[:user] = @user.id
         @controller.batch = @batch
         @workflow = create :lab_workflow_for_pipeline

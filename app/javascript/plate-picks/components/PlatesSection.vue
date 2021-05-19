@@ -6,22 +6,12 @@
     <h2>Plates</h2>
     <table class="table table-striped table-sm">
       <thead>
-        <th scope="col">
-          Barcode
-        </th>
-        <th scope="col">
-          Status
-        </th>
-        <th scope="col">
-          Picks
-        </th>
+        <th scope="col">Barcode</th>
+        <th scope="col">Status</th>
+        <th scope="col">Picks</th>
       </thead>
       <tbody>
-        <PlatesSectionPlate
-          v-for="plate in scannedPlates"
-          :key="plate.barcode"
-          v-bind="plate"
-        />
+        <PlatesSectionPlate v-for="plate in scannedPlates" :key="plate.barcode" v-bind="plate" />
       </tbody>
       <tfoot>
         <td>
@@ -32,7 +22,7 @@
             class="form-control"
             @keydown.enter="plateBarcodeScan"
             @keydown.tab="plateBarcodeScan"
-          >
+          />
         </td>
         <td colspan="2">
           <label for="scan-plate">Scan a plate</label>
@@ -43,36 +33,38 @@
 </template>
 
 <script>
-import PlatesSectionPlate from './PlatesSectionPlate'
+import PlatesSectionPlate from "./PlatesSectionPlate";
 
 export default {
   components: {
-    PlatesSectionPlate
+    PlatesSectionPlate,
   },
   data: function () {
     return {
-      scannedBarcode: ''
-    }
+      scannedBarcode: "",
+    };
   },
   computed: {
-    scannedPlates () { return this.$store.getters.scannedPlates }
+    scannedPlates() {
+      return this.$store.getters.scannedPlates;
+    },
   },
   mounted() {
-    this.$refs.scanPlate.focus()
+    this.$refs.scanPlate.focus();
   },
   methods: {
-    plateBarcodeScan (event) {
-      const last_scan = this.scannedBarcode.trim()
-      if (last_scan === '') { return }
-      this.scannedBarcode = ''
-      this.$store.dispatch('plateBarcodeScan', last_scan)
+    plateBarcodeScan(event) {
+      const last_scan = this.scannedBarcode.trim();
+      if (last_scan === "") {
+        return;
+      }
+      this.scannedBarcode = "";
+      this.$store.dispatch("plateBarcodeScan", last_scan);
       // Prevent us from losing focus
-      event.preventDefault()
-    }
-  }
-}
+      event.preventDefault();
+    },
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

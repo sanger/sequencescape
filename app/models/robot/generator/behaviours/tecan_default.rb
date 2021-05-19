@@ -30,6 +30,7 @@ module Robot::Generator::Behaviours::TecanDefault
     value.to_f.round(configatron.tecan_precision)
   end
 
+  # rubocop:todo Metrics/MethodLength
   def each_mapping(data_object)
     data_object['destination'].each do |dest_plate_barcode, plate_details|
       mapping_by_well = Hash.new { |h, i| h[i] = [] }
@@ -47,6 +48,8 @@ module Robot::Generator::Behaviours::TecanDefault
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:todo Metrics/MethodLength
   def dyn_mappings(data_object)
     dyn_mappings = ''
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
@@ -66,11 +69,12 @@ module Robot::Generator::Behaviours::TecanDefault
     dyn_mappings
   end
 
+  # rubocop:enable Metrics/MethodLength
   def buffer_seperator
     'C;'
   end
 
-  def buffers(data_object, total_volume)
+  def buffers(data_object, total_volume) # rubocop:todo Metrics/MethodLength
     buffer = []
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
       next unless total_volume > mapping['volume']
@@ -84,6 +88,8 @@ module Robot::Generator::Behaviours::TecanDefault
     buffer.join("\n")
   end
 
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/AbcSize
   def footer
     footer = "C;\n"
     source_barcode_index.sort_by { |a| a[1] }.each do |barcode, index|

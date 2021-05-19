@@ -10,7 +10,8 @@ describe Transfer::FromPlateToTube do
     expect(transfer_without_transfers.transfers).to eq(%w[A1 B1 C1])
   end
 
-  it 'transfers only the specified transfers' do # rubocop:todo RSpec/AggregateExamples
+  it 'transfers only the specified transfers' do
+    # rubocop:todo RSpec/AggregateExamples
     expect(transfer_with_transfers.transfers).to eq(%w[A1 B1])
   end
 

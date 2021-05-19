@@ -21,8 +21,19 @@ class CreatorTest < ActiveSupport::TestCase
 
     RestClient.expects(:post)
 
-    assert creator.execute('', barcode_printer, scanned_user, create_asset_group,
-                           Plate::CreatorParameters.new('user_barcode' => '2470000099652', 'source_plates' => '', 'creator_id' => '1', 'dilution_factor' => '1', 'barcode_printer' => '1'))
+    assert creator.execute(
+             '',
+             barcode_printer,
+             scanned_user,
+             create_asset_group,
+             Plate::CreatorParameters.new(
+               'user_barcode' => '2470000099652',
+               'source_plates' => '',
+               'creator_id' => '1',
+               'dilution_factor' => '1',
+               'barcode_printer' => '1'
+             )
+           )
   end
 
   test 'should properly create plates' do
@@ -44,7 +55,8 @@ class CreatorTest < ActiveSupport::TestCase
 
     parent.wells.each_with_index do |well, i|
       matching_aliquots = well.aliquots.first.matches?(child.wells[i].aliquots.first)
-      assert matching_aliquots, "Aliquots do not match in #{well.map_description}: #{well.aliquots.first} !~= #{child.wells[i].aliquots.first}"
+      assert matching_aliquots,
+             "Aliquots do not match in #{well.map_description}: #{well.aliquots.first} !~= #{child.wells[i].aliquots.first}"
     end
   end
 
@@ -66,7 +78,7 @@ class CreatorTest < ActiveSupport::TestCase
     barcode = create(:plate_barcode)
     PlateBarcode.stubs(:create).returns(barcode)
 
-    parent = create :plate_with_untagged_wells, barcodes: create_list(:heron_tailed, 1, number: 123000)
+    parent = create :plate_with_untagged_wells, barcodes: create_list(:heron_tailed, 1, number: 123_000)
     user = create :user
     create_asset_group = 'No'
 

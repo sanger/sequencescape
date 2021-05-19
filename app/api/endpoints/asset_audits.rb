@@ -1,12 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for AssetAudits
 class ::Endpoints::AssetAudits < ::Core::Endpoint::Base
-  model do
-    action(:create) do |request, _response|
-      request.create!
-    end
-  end
+  model { action(:create) { |request, _response| request.create! } }
 
-  instance do
-    belongs_to(:asset, json: 'asset')
-  end
+  instance { belongs_to(:asset, json: 'asset') }
 end

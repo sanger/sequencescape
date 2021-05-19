@@ -2,10 +2,11 @@
 
 # Handles viewing {Labware} information
 # @see Labware
-class LabwareController < ApplicationController
+class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
   before_action :discover_asset, only: %i[show edit update summary print_assets print history]
 
-  def index
+  # rubocop:todo Metrics/MethodLength
+  def index # rubocop:todo Metrics/AbcSize
     if params[:study_id]
       @study = Study.find(params[:study_id])
       @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
@@ -28,6 +29,8 @@ class LabwareController < ApplicationController
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def show
     @source_plates = @asset.source_plates
     respond_to do |format|
@@ -44,12 +47,13 @@ class LabwareController < ApplicationController
   def history
     respond_to do |format|
       format.html
-      format.xml  { @request.events.to_xml }
+      format.xml { @request.events.to_xml }
       format.json { @request.events.to_json }
     end
   end
 
-  def update
+  # rubocop:todo Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     respond_to do |format|
       if @asset.update(labware_params.merge(params.to_unsafe_h.fetch(:lane, {})))
         flash[:notice] = 'Labware was successfully updated.'
@@ -57,21 +61,23 @@ class LabwareController < ApplicationController
           format.html { redirect_to(action: :lab_view, barcode: @asset.human_barcode) }
         else
           format.html { redirect_to(action: :show, id: @asset.id) }
-          format.xml  { head :ok }
+          format.xml { head :ok }
         end
       else
         format.html { render action: 'edit' }
-        format.xml  { render xml: @asset.errors, status: :unprocessable_entity }
+        format.xml { render xml: @asset.errors, status: :unprocessable_entity }
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def destroy
     @asset.destroy
 
     respond_to do |format|
       format.html { redirect_to(assets_url) }
-      format.xml  { head :ok }
+      format.xml { head :ok }
     end
   end
 
@@ -91,9 +97,8 @@ class LabwareController < ApplicationController
   end
 
   def print_labels
-    print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                           LabelPrinter::Label::AssetRedirect,
-                                           printables: params[:printables])
+    print_job =
+      LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::AssetRedirect, printables: params[:printables])
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -104,9 +109,7 @@ class LabwareController < ApplicationController
   end
 
   def print_assets
-    print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                           LabelPrinter::Label::AssetRedirect,
-                                           printables: @asset)
+    print_job = LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::AssetRedirect, printables: @asset)
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -119,7 +122,8 @@ class LabwareController < ApplicationController
     @asset = Plate.find(params[:id])
   end
 
-  def lookup
+  # rubocop:todo Metrics/MethodLength
+  def lookup # rubocop:todo Metrics/AbcSize
     return unless params[:asset] && params[:asset][:barcode]
 
     @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
@@ -130,15 +134,17 @@ class LabwareController < ApplicationController
       flash.now[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
       respond_to do |format|
         format.html { render action: 'lookup' }
-        format.xml  { render xml: @assets.to_xml }
+        format.xml { render xml: @assets.to_xml }
       end
     else
       respond_to do |format|
         format.html { render action: 'index' }
-        format.xml  { render xml: @assets.to_xml }
+        format.xml { render xml: @assets.to_xml }
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def find_by_barcode; end
 

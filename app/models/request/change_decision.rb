@@ -17,9 +17,9 @@ class Request::ChangeDecision # rubocop:todo Style/Documentation
     [change_decision_check_box, asset_qc_state_check_box]
   end
   validates_each(:checkboxes) do |record, attribute, list_of_checkbox_values|
-    record.errors.add(attribute, 'at least one must be selected') if list_of_checkbox_values.all? do |v|
-                                                                       v.blank? || (v == '0')
-                                                                     end
+    if list_of_checkbox_values.all? { |v| v.blank? || (v == '0') }
+      record.errors.add(attribute, 'at least one must be selected')
+    end
   end
 
   validates_each(:asset_qc_state, unless: :asset_qc_state_absent?) do |record, _attr, value|
@@ -72,27 +72,36 @@ class Request::ChangeDecision # rubocop:todo Style/Documentation
     request.target_asset.reload
   end
 
-  def perform_decision_change_request_state!
+  # rubocop:todo Metrics/MethodLength
+  def perform_decision_change_request_state! # rubocop:todo Metrics/AbcSize
     previous_state = request.state
     ActiveRecord::Base.transaction do
       # Really this toggle of states isn't ideal, as effectively it means
       # multiple requests in quick succession could toggle the state, which probably
       # wasn't the intended behaviour.
       case
-      when request.failed? then request.retrospective_pass!
-      when request.passed? then request.retrospective_fail!
+      when request.failed?
+        request.retrospective_pass!
+      when request.passed?
+        request.retrospective_fail!
       else
         raise InvalidDecision, self
       end
-      request.events.create!(message: "Change state from #{previous_state} to  #{state}", created_by: user.login,
-                             family: 'update')
+      request.events.create!(
+        message: "Change state from #{previous_state} to  #{state}",
+        created_by: user.login,
+        family: 'update'
+      )
       request.comments.create!(description: comment, user_id: user.id)
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def perform_decision_change_asset_qc_state!
     previous_state = request.target_asset.qc_state
     request.target_asset.set_qc_state(asset_qc_state)
+
     # self.request.asset.events << Event.new({:message => "Change qc_state from #{previous_state} to  #{asset_qc_state}", :created_by => self.user.login, :family => self.asset_qc_state})
     request.target_asset.comments.create!(description: comment, user_id: user.id)
   end

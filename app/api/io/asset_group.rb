@@ -4,8 +4,10 @@ class ::Io::AssetGroup < ::Core::Io::Base
   set_json_root(:asset_group)
   set_eager_loading { |model| model.include_study.include_assets }
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
           name  => name
     study.name  => study.name
-  ")
+  '
+  )
 end

@@ -15,17 +15,11 @@ RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_
   let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
   let!(:download) { build(:test_download_tubes, columns: columns) }
 
-  before do
-    download.save(test_file_name)
-  end
+  before { download.save(test_file_name) }
 
-  after(:all) do
-    SampleManifestExcel.reset!
-  end
+  after(:all) { SampleManifestExcel.reset! }
 
-  after do
-    File.delete(test_file_name) if File.exist?(test_file_name)
-  end
+  after { File.delete(test_file_name) if File.exist?(test_file_name) }
 
   it 'is not valid without a filename' do
     expect(described_class.new(nil)).not_to be_valid
@@ -47,9 +41,9 @@ RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_
     data = described_class.new(test_file)
     spreadsheet = Roo::Spreadsheet.open(test_file).sheet(0)
     expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1)).not_to be nil
-    expect(data.cell(spreadsheet.last_row - 10,
-                     spreadsheet.last_column - 1)).to eq(spreadsheet.cell(spreadsheet.last_row,
-                                                                          spreadsheet.last_column - 1))
+    expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1)).to eq(
+      spreadsheet.cell(spreadsheet.last_row, spreadsheet.last_column - 1)
+    )
   end
 
   context 'when the file is invalid' do

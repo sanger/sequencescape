@@ -2,9 +2,7 @@
 
 Given /^user "([^"]*)" owns all requests$/ do |user_name|
   user = FactoryBot.create :user, login: user_name
-  Request.find_each do |request|
-    request.update!(user: user)
-  end
+  Request.find_each { |request| request.update!(user: user) }
 end
 
 Given /^all requests have a priority flag$/ do

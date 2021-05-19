@@ -13,10 +13,11 @@
 # {ProductLine team (product line)} however this may belong better on request itself, and
 # could be set either on the basis of the submission template used, or by a new 'team' option
 # on the submission itself.
-class RequestType < ApplicationRecord
+class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include RequestType::Validation
 
-  class DeprecatedError < RuntimeError; end
+  class DeprecatedError < RuntimeError
+  end
 
   class RequestTypePlatePurpose < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('request_type_plate_purposes')
@@ -51,9 +52,11 @@ class RequestType < ApplicationRecord
   belongs_to :pooling_method, class_name: 'RequestType::PoolingMethod'
   has_many :request_type_extended_validators, class_name: 'ExtendedValidator::RequestTypeExtendedValidator'
   has_many :extended_validators, through: :request_type_extended_validators, dependent: :destroy
+
   # Returns a collect of pipelines for which this RequestType is valid control.
   # ...so only valid for ControlRequest producing RequestTypes...
   has_many :control_pipelines, class_name: 'Pipeline', foreign_key: :control_request_type_id
+
   # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
   has_many :plate_purposes, class_name: 'RequestType::RequestTypePlatePurpose'
@@ -62,18 +65,15 @@ class RequestType < ApplicationRecord
   # While a request type describes what a request is, a request purpose describes why it is being done.
   # ie. standard, qc, internal
   # The value on request type acts as a default for requests
-  enum request_purpose: {
-    standard: 1,
-    internal: 2,
-    qc: 3,
-    control: 4
-  }
+  enum request_purpose: { standard: 1, internal: 2, qc: 3, control: 4 }
 
   belongs_to :product_line
+
   # The target asset can either be described by a purpose, or by the target asset type.
   belongs_to :target_purpose, class_name: 'Purpose'
 
   validates :request_purpose, presence: true
+
   # Order in this case is merely a means of sorting lists of request types to ensure that
   # those earlier in the typical process appear first.
   # eg. library_creation has a lower order than sequencing
@@ -97,11 +97,13 @@ class RequestType < ApplicationRecord
   def construct_request(construct_method, attributes, klass = request_class)
     raise RequestType::DeprecatedError if deprecated?
 
-    new_request = klass.public_send(construct_method, attributes) do |request|
-      request.request_type = self
-      request.request_purpose ||= request_purpose
-      yield(request) if block_given?
-    end
+    new_request =
+      klass.public_send(construct_method, attributes) do |request|
+        request.request_type = self
+        request.request_purpose ||= request_purpose
+        yield(request) if block_given?
+      end
+
     # Prevent us caching all our requests
     requests.reset
     new_request
@@ -169,9 +171,12 @@ class RequestType < ApplicationRecord
 
   def create_target_asset!(&block)
     case
-    when target_purpose.present?  then target_purpose.create!(&block).receptacle
-    when target_asset_type.blank? then nil
-    else                               target_asset_type.constantize.create!(&block)
+    when target_purpose.present?
+      target_purpose.create!(&block).receptacle
+    when target_asset_type.blank?
+      nil
+    else
+      target_asset_type.constantize.create!(&block)
     end
   end
 
@@ -192,7 +197,7 @@ class RequestType < ApplicationRecord
     request_class::Metadata.attribute_details + request_class::Metadata.association_details
   end
 
-  delegate :pool_count,             to: :pooling_method
-  delegate :pool_index_for_asset,   to: :pooling_method
+  delegate :pool_count, to: :pooling_method
+  delegate :pool_index_for_asset, to: :pooling_method
   delegate :pool_index_for_request, to: :pooling_method
 end

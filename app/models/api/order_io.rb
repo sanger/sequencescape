@@ -27,9 +27,7 @@ class Api::OrderIO < Api::Base
     map_attribute_to_json_attribute(:id, 'submission_internal_id')
   end
 
-  with_association(:user) do
-    map_attribute_to_json_attribute(:login, 'created_by')
-  end
+  with_association(:user) { map_attribute_to_json_attribute(:login, 'created_by') }
 
   extra_json_attributes do |object, json_attributes|
     json_attributes['request_options'] = object.request_options_structured if object.request_options_structured.present?

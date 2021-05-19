@@ -4,16 +4,17 @@ module LabelPrinter
       include Label::MultipleLabels
 
       def create_label(tube)
-        { top_line: top_line(tube),
+        {
+          top_line: top_line(tube),
           middle_line: middle_line(tube),
           bottom_line: bottom_line(tube),
           round_label_top_line: round_label_top_line(tube),
           round_label_bottom_line: round_label_bottom_line(tube),
-          barcode: barcode(tube) }
+          barcode: barcode(tube)
+        }
       end
 
-      def top_line(tube)
-      end
+      def top_line(tube); end
 
       def middle_line(tube)
         tube.barcode_number

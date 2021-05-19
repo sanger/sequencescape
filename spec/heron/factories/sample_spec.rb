@@ -85,9 +85,9 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
       let(:factory) { described_class.new(study: study, aliquot: { tag_id: tag_id }) }
 
       it 'can create an aliquot of the sample in the well' do
-        expect do
-          factory.create_aliquot_at(well)
-        end.to change(::Aliquot, :count).by(1).and(change(::Sample, :count).by(1))
+        expect { factory.create_aliquot_at(well) }.to change(::Aliquot, :count)
+          .by(1)
+          .and(change(::Sample, :count).by(1))
       end
 
       it 'creates aliquots using the arguments provided' do
@@ -97,10 +97,10 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
       end
 
       it 'registers a stock resource message' do
-        expect do
-          factory.create_aliquot_at(well)
-        end.to change(::Messenger.where(root: 'stock_resource', template: 'WellStockResourceIO', target: well),
-                      :count).by(1)
+        expect { factory.create_aliquot_at(well) }.to change(
+          ::Messenger.where(root: 'stock_resource', template: 'WellStockResourceIO', target: well),
+          :count
+        ).by(1)
       end
     end
   end
@@ -163,9 +163,7 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
 
       context 'when providing a sanger_sample_id' do
         let(:sample_id) { 'test' }
-        let(:factory) do
-          described_class.new(study: study, sanger_sample_id: sample_id)
-        end
+        let(:factory) { described_class.new(study: study, sanger_sample_id: sample_id) }
 
         it 'sets the id provided as sanger_sample_id' do
           expect(factory.create.sanger_sample_id).to eq(sample_id)
@@ -174,9 +172,7 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
 
       context 'when providing a name' do
         let(:sample_id) { 'test' }
-        let(:factory) do
-          described_class.new(study: study, name: sample_id)
-        end
+        let(:factory) { described_class.new(study: study, name: sample_id) }
 
         it 'sets the id provided as name' do
           expect(factory.create.name).to eq(sample_id)
@@ -186,35 +182,28 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
       context 'when providing both sanger_sample_id and name' do
         let(:sample_id) { 'test' }
         let(:name) { 'testingname' }
-        let(:factory) do
-          described_class.new(study: study, name: name, sanger_sample_id: sample_id)
-        end
+        let(:factory) { described_class.new(study: study, name: name, sanger_sample_id: sample_id) }
 
         it 'sets the id provided as sanger_sample_id' do
           expect(factory.create.sanger_sample_id).to eq(sample_id)
         end
 
-        it 'sets the id provided as name' do # rubocop:todo RSpec/AggregateExamples
+        it 'sets the id provided as name' do
+          # rubocop:todo RSpec/AggregateExamples
           expect(factory.create.name).to eq(name)
         end
 
         it 'does not generate a new sanger_sample_id' do
-          expect do
-            factory.create
-          end.not_to change(SangerSampleId, :count)
+          expect { factory.create }.not_to change(SangerSampleId, :count)
         end
       end
 
       context 'when not providing a sanger_sample_id' do
-        let(:factory) do
-          described_class.new(study: study)
-        end
+        let(:factory) { described_class.new(study: study) }
 
         it 'generates a new sanger_sample_id' do
           sample = nil
-          expect do
-            sample = factory.create
-          end.to change(SangerSampleId, :count).by(1)
+          expect { sample = factory.create }.to change(SangerSampleId, :count).by(1)
           expect(sample.sanger_sample_id).not_to be_nil
         end
 

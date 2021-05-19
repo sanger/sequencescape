@@ -1,10 +1,6 @@
 module Core::Io::Base::EagerLoadingBehaviour # rubocop:todo Style/Documentation
   def set_eager_loading
-    singleton_class.class_eval do
-      define_method(:eager_loading_for) do |loaded_class|
-        yield(super(loaded_class))
-      end
-    end
+    singleton_class.class_eval { define_method(:eager_loading_for) { |loaded_class| yield(super(loaded_class)) } }
   end
 
   def eager_loading_for(model)

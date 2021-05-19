@@ -11,7 +11,7 @@ class PlateConversionTest < ActiveSupport::TestCase
     context '#stamp' do
       should 'convert plates to a new purpose' do
         @plate = create :plate
-        @user  = create :user
+        @user = create :user
         @purpose_b = PlatePurpose.new(name: 'test_purpose')
 
         PlateConversion.create!(target: @plate, user: @user, purpose: @purpose_b)

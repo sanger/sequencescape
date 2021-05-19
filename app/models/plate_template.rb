@@ -6,7 +6,7 @@ class PlateTemplate < Plate
 
   scope :with_sizes, ->(sizes) { where(size: sizes) }
 
-  def update_params!(details = {})
+  def update_params!(details = {}) # rubocop:todo Metrics/AbcSize
     self.name = details[:name]
     wells.delete_all
     self.size = (details[:rows]).to_i * (details[:cols]).to_i
@@ -14,9 +14,7 @@ class PlateTemplate < Plate
 
     unless details[:wells].nil?
       empty_wells = details[:wells].keys
-      empty_wells.each do |well|
-        add_well_by_map_description(Well.create!, well)
-      end
+      empty_wells.each { |well| add_well_by_map_description(Well.create!, well) }
     end
   end
 
@@ -28,9 +26,7 @@ class PlateTemplate < Plate
 
   def stamp_to(plate)
     ActiveRecord::Base.transaction do
-      wells.each do |well|
-        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map(&:dup)
-      end
+      wells.each { |well| plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map(&:dup) }
     end
   end
 end

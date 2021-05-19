@@ -2,14 +2,17 @@
 
 require 'test_helper'
 
-class SampleTest < ActiveSupport::TestCase
+class SampleTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   def assert_accession_service(type)
-    service = {
-      ega: EgaAccessionService,
-      ena: EnaAccessionService,
-      none: NoAccessionService,
-      unsuitable: UnsuitableAccessionService
-    }[type]
+    service =
+      {
+        ega: EgaAccessionService,
+        ena: EnaAccessionService,
+        none: NoAccessionService,
+        unsuitable: UnsuitableAccessionService
+      }[
+        type
+      ]
     assert @sample.accession_service.is_a?(service), "Sent to #{@sample.accession_service.provider} not #{type}"
   end
 
@@ -33,29 +36,21 @@ class SampleTest < ActiveSupport::TestCase
     end
 
     context '#accession_number?' do
-      setup do
-        @sample = create :sample
-      end
+      setup { @sample = create :sample }
       context 'with nil accession number' do
-        setup do
-          @sample.sample_metadata.sample_ebi_accession_number = nil
-        end
+        setup { @sample.sample_metadata.sample_ebi_accession_number = nil }
         should 'return false' do
           assert_not @sample.accession_number?
         end
       end
       context 'with a blank accession number' do
-        setup do
-          @sample.sample_metadata.sample_ebi_accession_number = ''
-        end
+        setup { @sample.sample_metadata.sample_ebi_accession_number = '' }
         should 'return false' do
           assert_not @sample.accession_number?
         end
       end
       context 'with a valid accession number' do
-        setup do
-          @sample.sample_metadata.sample_ebi_accession_number = 'ERS00001'
-        end
+        setup { @sample.sample_metadata.sample_ebi_accession_number = 'ERS00001' }
         should 'return true' do
           assert @sample.accession_number?
         end

@@ -12,9 +12,7 @@ module Accession
       @code = response.code
       @body = response.body.to_s
 
-      if success?
-        @xml = Nokogiri::XML::Document.parse(body)
-      end
+      @xml = Nokogiri::XML::Document.parse(body) if success?
     end
 
     def success?
@@ -30,9 +28,7 @@ module Accession
     def accessioned?
       return false unless success?
 
-      ActiveRecord::Type::Boolean.new.cast(
-        xml.at('RECEIPT').attribute('success').value
-      )
+      ActiveRecord::Type::Boolean.new.cast(xml.at('RECEIPT').attribute('success').value)
     end
 
     # If the request was successful and the receipt says so extract the accession number

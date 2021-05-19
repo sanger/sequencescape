@@ -15,21 +15,25 @@ module SequencescapeExcel
       def initialize(attributes = {})
         super
         create_styles
-        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name,
-                                  sample_manifest.count)
+        add_title_and_description(
+          sample_manifest.study.abbreviation,
+          sample_manifest.supplier.name,
+          sample_manifest.count
+        )
         add_columns
         freeze_panes
       end
 
       def type
-        @type ||= case sample_manifest.asset_type
-                  when '1dtube', 'multiplexed_library', 'library'
-                    'Tubes'
-                  when 'plate'
-                    'Plates'
-                  else
-                    ''
-                  end
+        @type ||=
+          case sample_manifest.asset_type
+          when '1dtube', 'multiplexed_library', 'library'
+            'Tubes'
+          when 'plate'
+            'Plates'
+          else
+            ''
+          end
       end
 
       # Adds title and description (study abbreviation, supplier name, number of assets sent)
@@ -54,9 +58,7 @@ module SequencescapeExcel
       def add_columns
         columns.update(first_row, last_row, ranges, axlsx_worksheet)
         add_headers
-        sample_manifest.details_array.each do |detail|
-          create_row(detail)
-        end
+        sample_manifest.details_array.each { |detail| create_row(detail) }
       end
 
       # Creates row filled in with required column values, also unlocks (adds unlock style)

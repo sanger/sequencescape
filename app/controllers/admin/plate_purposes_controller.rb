@@ -31,33 +31,35 @@ class Admin::PlatePurposesController < ApplicationController # rubocop:todo Styl
     end
   end
 
-  def edit
-  end
+  def edit; end
 
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @plate_purpose = PlatePurpose.new(params[:plate_purpose])
 
     respond_to do |format|
       if @plate_purpose.save
         flash[:notice] = 'Plate Purpose was successfully created.'
         format.html { redirect_to(admin_plate_purposes_path) }
-        format.xml  { render xml: @plate_purpose, status: :created, location: @plate_purpose }
+        format.xml { render xml: @plate_purpose, status: :created, location: @plate_purpose }
       else
         format.html { render action: 'new' }
-        format.xml  { render xml: @plate_purpose.errors, status: :unprocessable_entity }
+        format.xml { render xml: @plate_purpose.errors, status: :unprocessable_entity }
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def update
     respond_to do |format|
       if @plate_purpose.update(params[:plate_purpose])
         flash[:notice] = 'Plate Purpose was successfully updated.'
         format.html { redirect_to(admin_plate_purposes_path) }
-        format.xml  { head :ok }
+        format.xml { head :ok }
       else
         format.html { render action: 'edit' }
-        format.xml  { render xml: @plate_purpose.errors, status: :unprocessable_entity }
+        format.xml { render xml: @plate_purpose.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -67,7 +69,7 @@ class Admin::PlatePurposesController < ApplicationController # rubocop:todo Styl
 
     respond_to do |format|
       format.html { redirect_to(admin_plate_purposes_url) }
-      format.xml  { head :ok }
+      format.xml { head :ok }
     end
   end
 

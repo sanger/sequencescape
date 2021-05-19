@@ -1,3 +1,4 @@
+# rubocop:todo Metrics/ClassLength
 class SamplesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -17,7 +18,8 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     @studies = Study.alphabetical
   end
 
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @sample = Sample.new(params[:sample])
 
     study_id = params[:study_id]
@@ -30,19 +32,21 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
       if @sample.save
         flash[:notice] = 'Sample successfully created'
         format.html { redirect_to sample_path(@sample) }
-        format.xml  { render xml: @sample, status: :created, location: @sample }
+        format.xml { render xml: @sample, status: :created, location: @sample }
         format.json { render json: @sample, status: :created, location: @sample }
       else
         flash[:error] = 'Problems creating your new sample'
         format.html { render action: :new }
-        format.xml  { render xml: @sample.errors, status: :unprocessable_entity }
+        format.xml { render xml: @sample.errors, status: :unprocessable_entity }
         format.json { render json: @sample.errors, status: :unprocessable_entity }
       end
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def show
-    @sample  = Sample.includes(:assets, :studies).find(params[:id])
+    @sample = Sample.includes(:assets, :studies).find(params[:id])
     @studies = Study.where(state: %w[pending active]).alphabetical
 
     respond_to do |format|
@@ -65,7 +69,8 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     redirect_to sample_path(@sample)
   end
 
-  def edit
+  # rubocop:todo Metrics/MethodLength
+  def edit # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
     authorize! :update, @sample
 
@@ -77,12 +82,15 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @samples.to_xml }
+      format.xml { render xml: @samples.to_xml }
       format.json { render json: @samples.to_json }
     end
   end
 
-  def update
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
     authorize! :update, @sample
 
@@ -98,14 +106,14 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def history
     @sample = Sample.find(params[:id])
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
-  def add_to_study
+  def add_to_study # rubocop:todo Metrics/AbcSize
     sample = Sample.find(params[:id])
     study = Study.find(params[:study][:id])
     study.samples << sample
@@ -115,7 +123,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     redirect_to sample_path(sample)
   end
 
-  def remove_from_study
+  def remove_from_study # rubocop:todo Metrics/AbcSize
     study = Study.find(params[:study_id])
     sample = Sample.find(params[:id])
     StudySample.find_by(study_id: params[:study_id], sample_id: params[:id]).destroy
@@ -131,7 +139,8 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
-  def accession
+  # rubocop:todo Metrics/MethodLength
+  def accession # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
     @sample.validate_ena_required_fields!
     @sample.accession_service.submit_sample_for_user(@sample, current_user)
@@ -152,14 +161,19 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     redirect_to(sample_path(@sample))
   end
 
-  def taxon_lookup
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def taxon_lookup # rubocop:todo Metrics/AbcSize
     if params[:term]
       url = configatron.taxon_lookup_url + "/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
     elsif params[:id]
       url = configatron.taxon_lookup_url + "/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
-    else return
+    else
+      return
     end
 
+    # rubocop:todo Rails/EnvironmentVariableAccess
     rc = RestClient::Resource.new(URI.parse(url).to_s)
     if configatron.disable_web_proxy == true
       RestClient.proxy = nil
@@ -169,6 +183,9 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     elsif ENV['http_proxy'].present?
       RestClient.proxy = ENV['http_proxy']
     end
+
+    # rubocop:enable Rails/EnvironmentVariableAccess
+
     # rc.verbose = true
     body = rc.get.body
 
@@ -179,19 +196,65 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   private
 
-  def default_permitted_metadata_fields
-    { sample_metadata_attributes: %i[
-      consent_withdrawn
-      organism gc_content cohort gender country_of_origin geographical_region ethnicity dna_source
-      volume mother father replicate sample_public_name sample_common_name
-      sample_strain_att sample_taxon_id sample_ebi_accession_number sample_sra_hold
-      sample_description sibling is_resubmitted date_of_sample_collection date_of_sample_extraction
-      sample_extraction_method sample_purified purification_method concentration concentration_determined_by
-      sample_type sample_storage_conditions supplier_name reference_genome_id genotype phenotype age
-      developmental_stage cell_type disease_state compound dose immunoprecipitate growth_condition
-      rnai organism_part time_point disease subject treatment donor_id
-    ] }
+  def default_permitted_metadata_fields # rubocop:todo Metrics/MethodLength
+    {
+      sample_metadata_attributes: %i[
+        consent_withdrawn
+        organism
+        gc_content
+        cohort
+        gender
+        country_of_origin
+        geographical_region
+        ethnicity
+        dna_source
+        volume
+        mother
+        father
+        replicate
+        sample_public_name
+        sample_common_name
+        sample_strain_att
+        sample_taxon_id
+        sample_ebi_accession_number
+        sample_sra_hold
+        sample_description
+        sibling
+        is_resubmitted
+        date_of_sample_collection
+        date_of_sample_extraction
+        sample_extraction_method
+        sample_purified
+        purification_method
+        concentration
+        concentration_determined_by
+        sample_type
+        sample_storage_conditions
+        supplier_name
+        reference_genome_id
+        genotype
+        phenotype
+        age
+        developmental_stage
+        cell_type
+        disease_state
+        compound
+        dose
+        immunoprecipitate
+        growth_condition
+        rnai
+        organism_part
+        time_point
+        disease
+        subject
+        treatment
+        donor_id
+      ]
+    }
   end
 end
+# rubocop:enable Metrics/ClassLength

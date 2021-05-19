@@ -7,9 +7,7 @@ FactoryBot.define do
     sequence(:_id) { |_n| SecureRandom.uuid.to_s }
     gender { 'male' }
     donor_id { 'd' }
-    sequence(:supplier_name) do |value|
-      "supplier#{value}"
-    end
+    sequence(:supplier_name) { |value| "supplier#{value}" }
     phenotype { 'p' }
     common_name { 'Mouse' }
     sequence(:address) do |value|

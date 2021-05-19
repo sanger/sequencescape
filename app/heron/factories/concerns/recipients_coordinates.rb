@@ -9,9 +9,7 @@ module Heron
       # are valid coordinates, otherwise it will add the errors to the active model instance
       module RecipientsCoordinates
         def self.included(klass)
-          klass.instance_eval do
-            validate :check_recipient_coordinates
-          end
+          klass.instance_eval { validate :check_recipient_coordinates }
         end
 
         def check_recipient_coordinates

@@ -8,7 +8,9 @@ class ExternalReleaseEvent < Event # rubocop:todo Style/Documentation
     create!(
       eventful: asset,
       message: "Data to be released externally set #{asset.external_release}",
-      created_by: '', family: 'update', of_interest_to: 'administrators',
+      created_by: '',
+      family: 'update',
+      of_interest_to: 'administrators',
       send_email: sendmail
     )
   end

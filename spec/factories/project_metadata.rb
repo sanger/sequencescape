@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory  :budget_division do
+  factory :budget_division do
     name { |_a| generate :budget_division_name }
   end
 

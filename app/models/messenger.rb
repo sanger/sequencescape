@@ -14,8 +14,7 @@ class Messenger < ApplicationRecord
   end
 
   def as_json(_options = {})
-    { root => render_class.to_hash(target),
-      'lims' => configatron.amqp.lims_id! }
+    { root => render_class.to_hash(target), 'lims' => configatron.amqp.lims_id! }
   end
 
   def queue_for_broadcast

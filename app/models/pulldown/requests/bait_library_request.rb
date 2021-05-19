@@ -4,12 +4,8 @@ module Pulldown::Requests
   # Include in request classes to allow the recording of a bait library
   module BaitLibraryRequest
     def self.included(base)
-      base.class_eval do
-        fragment_size_details(100, 400)
-      end
-      base::Metadata.class_eval do
-        include Pulldown::Requests::BaitLibraryRequest::BaitMetadata
-      end
+      base.class_eval { fragment_size_details(100, 400) }
+      base::Metadata.class_eval { include Pulldown::Requests::BaitLibraryRequest::BaitMetadata }
     end
 
     # Ensure that the bait library information is also included in the pool information.
@@ -33,8 +29,7 @@ module Pulldown::Requests
 
       def bait_library_valid
         unless bait_library.visible?
-          errors.add(:bait_library_id,
-                     'Validation failed: Bait library is no longer available.')
+          errors.add(:bait_library_id, 'Validation failed: Bait library is no longer available.')
         end
       end
       private :bait_library_valid

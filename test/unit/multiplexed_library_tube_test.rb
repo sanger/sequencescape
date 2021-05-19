@@ -4,9 +4,7 @@ require 'test_helper'
 
 class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
   context 'A multiplexed Library tube' do
-    setup do
-      @multiplexed_library_tube = create :multiplexed_library_tube
-    end
+    setup { @multiplexed_library_tube = create :multiplexed_library_tube }
     context '#has_stock_asset?' do
       setup do
         @multiplexed_library_tube_with_stock_tube = create :multiplexed_library_tube
@@ -25,9 +23,7 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
 
     context '#create_stock_asset!' do
       context 'straight creation' do
-        setup do
-          @stock = @multiplexed_library_tube.create_stock_asset!
-        end
+        setup { @stock = @multiplexed_library_tube.create_stock_asset! }
 
         should 'create a StockLibraryTube' do
           assert @stock.is_a?(StockMultiplexedLibraryTube)

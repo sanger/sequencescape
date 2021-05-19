@@ -58,9 +58,7 @@ class ExtractionAttribute < ApplicationRecord # rubocop:todo Style/Documentation
   end
 
   def disallow_wells_with_multiple_samples!(destination_well, samples)
-    if (destination_well.samples.count > 0) && (destination_well.samples != samples)
-      raise WellAlreadyHasSample
-    end
+    raise WellAlreadyHasSample if (destination_well.samples.count > 0) && (destination_well.samples != samples)
   end
 
   def validate_well_for_racking_samples!(destination_well, samples)
@@ -75,11 +73,9 @@ class ExtractionAttribute < ApplicationRecord # rubocop:todo Style/Documentation
     samples.all? { |sample| destination_well.samples.exclude?(sample) }
   end
 
-  def rack_well(well_data)
+  def rack_well(well_data) # rubocop:todo Metrics/MethodLength
     return unless well_data && well_data['sample_tube_uuid']
-    unless well_data['sample_tube_resource']
-      raise SampleTubeNotExists
-    end
+    raise SampleTubeNotExists unless well_data['sample_tube_resource']
 
     sample_tube = well_data['sample_tube_resource']
     aliquots = sample_tube.aliquots.map(&:dup)
@@ -93,7 +89,7 @@ class ExtractionAttribute < ApplicationRecord # rubocop:todo Style/Documentation
     end
   end
 
-  def rerack_well(well_data)
+  def rerack_well(well_data) # rubocop:todo Metrics/AbcSize
     return unless well_data
 
     well = well_data['resource']

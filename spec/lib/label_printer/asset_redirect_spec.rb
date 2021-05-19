@@ -8,9 +8,7 @@ context 'printing different asset types' do
 
     describe 'from asset group controller' do
       let(:options) do
-        { printables: { asset1.id.to_s => 'true',
-                        asset2.id.to_s => 'true',
-                        asset3.id.to_s => 'false' } }
+        { printables: { asset1.id.to_s => 'true', asset2.id.to_s => 'true', asset3.id.to_s => 'false' } }
       end
 
       it { is_expected.to eq [asset1, asset2] }

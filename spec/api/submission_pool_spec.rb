@@ -22,15 +22,15 @@ describe '/api/1/plate-uuid/submission_pools' do
     context 'a plate without submissions' do
       let(:plate) { create :plate }
       let(:response_body) do
-        %({
-          "actions": {
-            "read": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-             "first": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-             "last": "http://www.example.com/api/1/#{uuid}/submission_pools/1"
+        "{
+          \"actions\": {
+            \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+             \"first\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+             \"last\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\"
            },
-           "size": 0,
-           "submission_pools": []
-       })
+           \"size\": 0,
+           \"submission_pools\": []
+       }"
       end
 
       it_behaves_like 'an API/1 GET endpoint'
@@ -47,19 +47,19 @@ describe '/api/1/plate-uuid/submission_pools' do
       end
 
       let(:response_body) do
-        %({
-            "actions": {
-              "read": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "first": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "last": "http://www.example.com/api/1/#{uuid}/submission_pools/1"
+        "{
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"first\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"last\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\"
             },
-            "size":1,
-            "submission_pools":[{
-              "plates_in_submission":1,
-              "used_tag2_layout_templates":[{"uuid":"#{tag2_layout_template.uuid}","name":"#{tag2_layout_template.name}"}],
-              "used_tag_layout_templates":[]
+            \"size\":1,
+            \"submission_pools\":[{
+              \"plates_in_submission\":1,
+              \"used_tag2_layout_templates\":[{\"uuid\":\"#{tag2_layout_template.uuid}\",\"name\":\"#{tag2_layout_template.name}\"}],
+              \"used_tag_layout_templates\":[]
            }]
-       })
+       }"
       end
 
       it_behaves_like 'an API/1 GET endpoint'
@@ -70,24 +70,28 @@ describe '/api/1/plate-uuid/submission_pools' do
 
       before do
         plate.wells.each do |well|
-          create :library_creation_request, asset: well, submission: submission, request_type: request_type, state: 'cancelled'
+          create :library_creation_request,
+                 asset: well,
+                 submission: submission,
+                 request_type: request_type,
+                 state: 'cancelled'
         end
       end
 
       let(:response_body) do
-        %({
-            "actions": {
-              "read": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "first": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "last": "http://www.example.com/api/1/#{uuid}/submission_pools/1"
+        "{
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"first\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"last\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\"
             },
-            "size":1,
-            "submission_pools":[{
-              "plates_in_submission":0,
-              "used_tag2_layout_templates":[],
-              "used_tag_layout_templates":[]
+            \"size\":1,
+            \"submission_pools\":[{
+              \"plates_in_submission\":0,
+              \"used_tag2_layout_templates\":[],
+              \"used_tag_layout_templates\":[]
            }]
-       })
+       }"
       end
 
       it_behaves_like 'an API/1 GET endpoint'
@@ -104,19 +108,19 @@ describe '/api/1/plate-uuid/submission_pools' do
       end
 
       let(:response_body) do
-        %({
-            "actions": {
-              "read": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "first": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "last": "http://www.example.com/api/1/#{uuid}/submission_pools/1"
+        "{
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"first\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"last\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\"
             },
-            "size":1,
-            "submission_pools":[{
-              "plates_in_submission":1,
-              "used_tag2_layout_templates":[],
-              "used_tag_layout_templates":[{"uuid":"#{tag_layout_template.uuid}","name":"#{tag_layout_template.name}"}]
+            \"size\":1,
+            \"submission_pools\":[{
+              \"plates_in_submission\":1,
+              \"used_tag2_layout_templates\":[],
+              \"used_tag_layout_templates\":[{\"uuid\":\"#{tag_layout_template.uuid}\",\"name\":\"#{tag_layout_template.name}\"}]
            }]
-       })
+       }"
       end
 
       it_behaves_like 'an API/1 GET endpoint'
@@ -136,19 +140,19 @@ describe '/api/1/plate-uuid/submission_pools' do
       end
 
       let(:response_body) do
-        %({
-            "actions":{
-              "read": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "first": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "last": "http://www.example.com/api/1/#{uuid}/submission_pools/1"
+        "{
+            \"actions\":{
+              \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"first\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"last\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\"
             },
-           "size":1,
-           "submission_pools":[{
-              "plates_in_submission":2,
-              "used_tag2_layout_templates":[],
-              "used_tag_layout_templates":[]
+           \"size\":1,
+           \"submission_pools\":[{
+              \"plates_in_submission\":2,
+              \"used_tag2_layout_templates\":[],
+              \"used_tag_layout_templates\":[]
            }]
-       })
+       }"
       end
 
       it_behaves_like 'an API/1 GET endpoint'
@@ -170,19 +174,19 @@ describe '/api/1/plate-uuid/submission_pools' do
       end
 
       let(:response_body) do
-        %({
-            "actions":{
-              "read": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "first": "http://www.example.com/api/1/#{uuid}/submission_pools/1",
-              "last": "http://www.example.com/api/1/#{uuid}/submission_pools/1"
+        "{
+            \"actions\":{
+              \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"first\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
+              \"last\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\"
             },
-           "size":1,
-           "submission_pools":[{
-              "plates_in_submission":1,
-              "used_tag2_layout_templates":[],
-              "used_tag_layout_templates":[]
+           \"size\":1,
+           \"submission_pools\":[{
+              \"plates_in_submission\":1,
+              \"used_tag2_layout_templates\":[],
+              \"used_tag_layout_templates\":[]
            }]
-       })
+       }"
       end
 
       it_behaves_like 'an API/1 GET endpoint'

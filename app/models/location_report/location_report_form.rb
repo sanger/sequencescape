@@ -24,7 +24,9 @@ class LocationReport::LocationReportForm
   attr_writer :location_report, :barcodes
 
   # validations
-  validate :check_labwhere_location_exists, :check_maxlength_of_barcodes, :check_for_valid_barcodes,
+  validate :check_labwhere_location_exists,
+           :check_maxlength_of_barcodes,
+           :check_for_valid_barcodes,
            :check_location_report
 
   def name=(input_name)
@@ -32,19 +34,21 @@ class LocationReport::LocationReportForm
     @name = Time.current.to_formatted_s(:number) if input_name.blank?
   end
 
-  def location_report
-    @location_report || @location_report = LocationReport.new(
-      user: user,
-      name: name,
-      report_type: report_type,
-      location_barcode: location_barcode,
-      faculty_sponsor_ids: faculty_sponsor_ids,
-      study_id: study_id,
-      start_date: start_date&.to_datetime,
-      end_date: end_date&.to_datetime,
-      plate_purpose_ids: plate_purpose_ids,
-      barcodes: barcodes
-    )
+  def location_report # rubocop:todo Metrics/MethodLength
+    @location_report ||
+      @location_report =
+        LocationReport.new(
+          user: user,
+          name: name,
+          report_type: report_type,
+          location_barcode: location_barcode,
+          faculty_sponsor_ids: faculty_sponsor_ids,
+          study_id: study_id,
+          start_date: start_date&.to_datetime,
+          end_date: end_date&.to_datetime,
+          plate_purpose_ids: plate_purpose_ids,
+          barcodes: barcodes
+        )
   end
 
   def save
@@ -75,7 +79,7 @@ class LocationReport::LocationReportForm
 
   def check_maxlength_of_barcodes
     return unless report_type == 'type_selection'
-    return if barcodes_text.blank? || barcodes_text.length <= 60000
+    return if barcodes_text.blank? || barcodes_text.length <= 60_000
 
     errors.add(:barcodes_text, I18n.t('location_reports.errors.barcodes_maxlength_exceeded'))
   end
@@ -104,9 +108,7 @@ class LocationReport::LocationReportForm
   def add_location_errors
     return if location_report.nil?
 
-    location_report.errors.each do |key, value|
-      errors.add key, value
-    end
+    location_report.errors.each { |key, value| errors.add key, value }
   end
 
   def barcode_is_human_readable?(barcode)

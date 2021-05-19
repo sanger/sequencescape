@@ -25,12 +25,12 @@ After('@javascript') do
   class Timecop # rubocop:todo Style/Documentation
     class << self
       alias freeze freeze_without_warning
-      undef :freeze_without_warning
+      undef freeze_without_warning
     end
   end
 end
 
-After do |_s|
+After() do |_s|
   # If we're lost in time then we need to return to the present...
   Timecop.return
 

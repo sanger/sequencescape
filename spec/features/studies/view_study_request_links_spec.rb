@@ -8,8 +8,13 @@ describe 'View study properties' do
   let(:sample) { create(:sample, name: 'sample_1-3871492') }
   let(:sequencing_request_type) { create :sequencing_request_type }
   let(:single_request) do
-    create(:sequencing_request, request_type: sequencing_request_type, asset: library_tube, state: 'passed',
-                                initial_study: study)
+    create(
+      :sequencing_request,
+      request_type: sequencing_request_type,
+      asset: library_tube,
+      state: 'passed',
+      initial_study: study
+    )
   end
   let(:library_tube) { create(:library_tube, samples: [sample], study: study) }
   let(:sample_tube) { create(:sample_tube, sample: sample, study: study) }
@@ -19,8 +24,14 @@ describe 'View study properties' do
     study.samples << sample
     sample_tube
     single_request
-    create_list(:sequencing_request, 2, request_type: sequencing_request_type, asset: library_tube, state: 'failed',
-                                        initial_study: study)
+    create_list(
+      :sequencing_request,
+      2,
+      request_type: sequencing_request_type,
+      asset: library_tube,
+      state: 'failed',
+      initial_study: study
+    )
     login_user(user)
     visit study_path(study)
   end

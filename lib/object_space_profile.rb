@@ -41,9 +41,7 @@ class ObjectSpaceProfile
   # @param [String] filename The csv file to generate (In the application base directory)
   def report(filename)
     CSV.open(filename, 'wb', headers: headers, write_headers: true) do |csv|
-      @data.each_with_index do |data, index|
-        csv << data.merge({ 'Iteration' => index })
-      end
+      @data.each_with_index { |data, index| csv << data.merge({ 'Iteration' => index }) }
     end
   end
 

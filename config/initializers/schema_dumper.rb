@@ -1,4 +1,4 @@
-ActiveRecord::SchemaDumper.ignore_tables = %w(
+ActiveRecord::SchemaDumper.ignore_tables = %w[
   view_aliquots
   view_asset_links
   view_lanes
@@ -13,4 +13,4 @@ ActiveRecord::SchemaDumper.ignore_tables = %w(
   view_studies
   view_tags
   view_wells
-)
+]

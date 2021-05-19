@@ -12,10 +12,11 @@ class TransferRequestCollection < ApplicationRecord
   class UuidCache
     def initialize(parameters)
       uuids = parameters.flat_map(&:values).select { |v| v.is_a?(String) && Uuid::ValidRegexp.match?(v) }
-      @cache = Uuid.where(external_id: uuids).pluck(:external_id, :resource_type,
-                                                    :resource_id).each_with_object({}) do |uuid_item, store|
-        store[uuid_item[0, 2]] = uuid_item[-1]
-      end
+      @cache =
+        Uuid
+          .where(external_id: uuids)
+          .pluck(:external_id, :resource_type, :resource_id)
+          .each_with_object({}) { |uuid_item, store| store[uuid_item[0, 2]] = uuid_item[-1] }
       extract_receptacles_from_labware
     end
 
@@ -55,49 +56,51 @@ class TransferRequestCollection < ApplicationRecord
 
   # The api is terrible at handling nested has_many relationships
   # This caches all our UUIDs in one query, and extracts the ids
-  def transfer_requests_io=(parameters)
+  # rubocop:todo Metrics/MethodLength
+  def transfer_requests_io=(parameters) # rubocop:todo Metrics/AbcSize
     uuid_cache = UuidCache.new(parameters)
 
-    updated_attributes = parameters.map do |parameter|
-      if parameter['source_asset'].is_a?(String)
-        parameter['asset_id'] = uuid_cache.find(Receptacle,
-                                                parameter.delete('source_asset'))
+    updated_attributes =
+      parameters.map do |parameter|
+        if parameter['source_asset'].is_a?(String)
+          parameter['asset_id'] = uuid_cache.find(Receptacle, parameter.delete('source_asset'))
+        end
+        parameter['asset'] = parameter.delete('source_asset') if parameter['source_asset'].present?
+        if parameter['target_asset'].is_a?(String)
+          parameter['target_asset_id'] = uuid_cache.find(Receptacle, parameter.delete('target_asset'))
+        end
+        if parameter['submission'].is_a?(String)
+          parameter['submission_id'] = uuid_cache.find(Submission, parameter.delete('submission'))
+        end
+        if parameter['outer_request'].is_a?(String)
+          parameter['outer_request_id'] = uuid_cache.find(Request, parameter.delete('outer_request'))
+        end
+        parameter
       end
-      parameter['asset'] = parameter.delete('source_asset') if parameter['source_asset'].present?
-      if parameter['target_asset'].is_a?(String)
-        parameter['target_asset_id'] = uuid_cache.find(Receptacle,
-                                                       parameter.delete('target_asset'))
-      end
-      if parameter['submission'].is_a?(String)
-        parameter['submission_id'] = uuid_cache.find(Submission,
-                                                     parameter.delete('submission'))
-      end
-      if parameter['outer_request'].is_a?(String)
-        parameter['outer_request_id'] = uuid_cache.find(Request,
-                                                        parameter.delete('outer_request'))
-      end
-      parameter
-    end
 
     self.transfer_requests_attributes = updated_attributes
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   # These are optimizations to reduce the number of queries that need to be
   # performed while the transfer takes place.
   # Transfer requests rely both on the aliquots in an assets, and the transfer requests
   # into the asset (used to track state). Here we eager load all necessary assets
   # and associated records, and pass them to the transfer requests directly.
-  def transfer_requests_attributes=(args)
+  def transfer_requests_attributes=(args) # rubocop:todo Metrics/MethodLength
     asset_ids = extract_asset_ids(args)
-    asset_cache = Receptacle.includes(:aliquots, :transfer_requests_as_target,
-                                      requests: :request_metadata,
-                                      labware: :purpose)
-                            .find(asset_ids).index_by(&:id)
-    optimized_parameters = args.map do |param|
-      param['asset'] ||= asset_cache[param.delete('asset_id')]
-      param['target_asset'] ||= asset_cache[param.delete('target_asset_id')]
-      param
-    end
+    asset_cache =
+      Receptacle
+        .includes(:aliquots, :transfer_requests_as_target, requests: :request_metadata, labware: :purpose)
+        .find(asset_ids)
+        .index_by(&:id)
+    optimized_parameters =
+      args.map do |param|
+        param['asset'] ||= asset_cache[param.delete('asset_id')]
+        param['target_asset'] ||= asset_cache[param.delete('target_asset_id')]
+        param
+      end
     super(optimized_parameters)
   end
 

@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe 'CustomMetadatumCollections API', with: :api_v2 do
   context 'with multiple custom_metadatum_collections' do
-    before do
-      create_list(:custom_metadatum_collection, 5)
-    end
+    before { create_list(:custom_metadatum_collection, 5) }
 
     it 'sends a list of custom_metadatum_collections' do
       api_get '/api/v2/custom_metadatum_collections'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end

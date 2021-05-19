@@ -1,9 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Lanes
 class ::Endpoints::Lanes < ::Core::Endpoint::Base
-  model do
-  end
+  model {}
 
-  instance do
-    has_many(:requests, json: 'requests', to: 'requests')
-  end
+  instance { has_many(:requests, json: 'requests', to: 'requests') }
 end

@@ -3,8 +3,6 @@
 # @todo Rails relationships should be moved to SampleTube
 module ModelExtensions::SampleTube
   def self.included(base)
-    base.class_eval do
-      has_many :library_tubes, through: :links_as_parent, source: :descendant, validate: false
-    end
+    base.class_eval { has_many :library_tubes, through: :links_as_parent, source: :descendant, validate: false }
   end
 end

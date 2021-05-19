@@ -27,6 +27,7 @@ describe 'Retrospective failure' do
 
   # The well we'll be failing
   let(:target_well) { create :untagged_well }
+
   # The actual request that gets failed.
   let(:target_request) { create :transfer_request, target_asset: target_well }
   let(:initial_aliquot) { target_well.aliquots.first }
@@ -34,9 +35,7 @@ describe 'Retrospective failure' do
   let(:tag2) { create :tag }
 
   context 'with two descendants and one clash' do
-    let(:child_well_1) do
-      create :empty_well
-    end
+    let(:child_well_1) { create :empty_well }
 
     let(:child_well_2) do
       well = create :empty_well
@@ -47,22 +46,30 @@ describe 'Retrospective failure' do
     before do
       # NOTE: These transfer requests automatically handle the transfer of our aliquot.
       create :transfer_request, asset: target_well, target_asset: child_well_1
+
       # Apply tags to make sure that gets handled correctly
-      child_well_1.aliquots.first.tap do |aliquot|
-        aliquot.tag = tag
-        aliquot.save!
-      end
+      child_well_1
+        .aliquots
+        .first
+        .tap do |aliquot|
+          aliquot.tag = tag
+          aliquot.save!
+        end
       create :transfer_request, asset: child_well_1, target_asset: child_well_2
+
       # Just double check that the setup has worked as intended
       expect(child_well_2.aliquots.count).to eq(2)
     end
 
     it 'fail removed downstream aliquots' do
       target_request.fail!
+
       # We don't remove the aliquot from the failed well itself
       expect(target_well.aliquots.count).to eq(1)
+
       # We don't remove the aliquot from the failed well itself
       expect(child_well_1.aliquots.count).to eq(0)
+
       # Non matching aliquots downstream are left untouched
       expect(child_well_2.aliquots.count).to eq(1)
       expect(child_well_2.aliquots.first.tag).not_to eq(tag)
@@ -70,17 +77,11 @@ describe 'Retrospective failure' do
   end
 
   context 'with a QcTube descendant' do
-    let(:child_well_1) do
-      create :empty_well
-    end
+    let(:child_well_1) { create :empty_well }
 
-    let(:qc_tube) do
-      create :qc_tube
-    end
+    let(:qc_tube) { create :qc_tube }
 
-    let(:lane) do
-      create :lane
-    end
+    let(:lane) { create :lane }
 
     before do
       # NOTE: These transfer requests automatically handle the transfer of our aliquot.
@@ -91,10 +92,13 @@ describe 'Retrospective failure' do
 
     it 'fail removed downstream aliquots' do
       target_request.fail!
+
       # We don't remove the aliquot from the failed well itself
       expect(target_well.aliquots.count).to eq(1)
+
       # We don't remove the aliquot from the failed well itself
       expect(child_well_1.aliquots.count).to eq(0)
+
       # But we don't touch the aliquots in the qc tube or its lanes.
       expect(qc_tube.aliquots.count).to eq(1)
       expect(lane.aliquots.count).to eq(1)

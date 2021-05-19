@@ -5,10 +5,12 @@
 class UpdateUuidResourceTypes < ActiveRecord::Migration[5.1]
   def up
     ActiveRecord::Base.transaction do
-      execute(%{UPDATE `uuids`
+      execute(
+        "UPDATE `uuids`
 LEFT OUTER JOIN receptacles ON receptacles.id = resource_id
 SET `uuids`.`resource_type` = IF(receptacles.id IS NULL, 'Labware', 'Receptacle')
-WHERE `uuids`.`resource_type` = 'Asset'})
+WHERE `uuids`.`resource_type` = 'Asset'"
+      )
     end
   end
 

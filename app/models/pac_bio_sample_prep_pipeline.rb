@@ -27,9 +27,7 @@ class PacBioSamplePrepPipeline < Pipeline # rubocop:todo Style/Documentation
   end
 
   def cancel_sequencing_requests_on_library_failure(batch)
-    batch.requests.each do |request|
-      cancel_downstream_requests(request) if request.failed?
-    end
+    batch.requests.each { |request| cancel_downstream_requests(request) if request.failed? }
   end
 
   def cancel_excess_sequencing_requests(batch)
@@ -45,9 +43,12 @@ class PacBioSamplePrepPipeline < Pipeline # rubocop:todo Style/Documentation
   end
 
   def cancel_excess_downstream_requests(request, number_to_cancel)
-    request.next_requests.select(&:pending?).each_with_index do |sequencing_request, index|
-      sequencing_request.cancel_from_upstream! if index < number_to_cancel
-    end
+    request
+      .next_requests
+      .select(&:pending?)
+      .each_with_index do |sequencing_request, index|
+        sequencing_request.cancel_from_upstream! if index < number_to_cancel
+      end
   end
 
   def number_of_smrt_cells_requested(request)

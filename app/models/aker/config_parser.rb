@@ -30,30 +30,29 @@ module Aker
     def initial_config
       {
         # Maps SS models with Aker attributes
-        map_ss_columns_with_aker: {
-        },
-
+        map_ss_columns_with_aker: {},
         # Aker attributes allowed to update from Aker into SS
         updatable_attrs_from_aker_into_ss: [],
-
         # Sequencescape models with columns allowed to update from SS into Aker
         updatable_columns_from_ss_into_aker: {}
       }
     end
 
     def parse(description_text)
-      description_text.split("\n").each do |line|
-        next unless line.include?('=')
+      description_text
+        .split("\n")
+        .each do |line|
+          next unless line.include?('=')
 
-        token = tokenizer(line)
-        __parse_map_ss_columns_with_aker(token)
-        __parse_updatable_attrs_from_aker_into_ss(token)
-        __parse_updatable_columns_from_ss_into_aker(token)
-      end
+          token = tokenizer(line)
+          __parse_map_ss_columns_with_aker(token)
+          __parse_updatable_attrs_from_aker_into_ss(token)
+          __parse_updatable_columns_from_ss_into_aker(token)
+        end
       config
     end
 
-    def tokenizer(str)
+    def tokenizer(str) # rubocop:todo Metrics/MethodLength
       list = str.split('=').map { |s| s.gsub(/[<=> ]/, '') }
       ss = list[0]
       aker_name = list[1].to_sym
@@ -80,7 +79,8 @@ module Aker
 
     private
 
-    def __parse_map_ss_columns_with_aker(token)
+    # rubocop:todo Metrics/MethodLength
+    def __parse_map_ss_columns_with_aker(token) # rubocop:todo Metrics/AbcSize
       return if token[:ss_model].nil?
 
       if config[:map_ss_columns_with_aker][token[:ss_model]].nil?
@@ -96,6 +96,8 @@ module Aker
         config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].push(attr_name)
       end
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     def __parse_updatable_attrs_from_aker_into_ss(token)
       return unless token[:aker_to_ss]

@@ -7,9 +7,7 @@ class ProjectTest < ActiveSupport::TestCase
     should validate_presence_of :name
 
     context '#metadata' do
-      setup do
-        @project = Project.new name: "Project : #{Time.zone.now}"
-      end
+      setup { @project = Project.new name: "Project : #{Time.zone.now}" }
 
       should 'require cost-code and project funding model' do
         assert_equal false, @project.project_metadata.valid?, 'Validation not working'

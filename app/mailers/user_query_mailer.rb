@@ -6,11 +6,6 @@ class UserQueryMailer < ActionMailer::Base
     @to = user_query.to
     @subject = 'Request for help'
     @date = user_query.date
-    mail(
-      from: @from,
-      to: @to,
-      subject: @subject,
-      sent_on: @date
-    )
+    mail(from: @from, to: @to, subject: @subject, sent_on: @date)
   end
 end

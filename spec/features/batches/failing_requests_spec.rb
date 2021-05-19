@@ -6,14 +6,14 @@ require 'pry'
 describe 'Batches controller', js: true do
   let(:request_count) { 3 }
   let(:batch) do
-    create :cherrypick_batch, request_count: request_count,
-                              state: 'released', request_factory: :passed_cherrypick_request
+    create :cherrypick_batch,
+           request_count: request_count,
+           state: 'released',
+           request_factory: :passed_cherrypick_request
   end
   let(:user) { create :admin }
 
-  before do
-    create :robot
-  end
+  before { create :robot }
 
   it 'failing passed cherrypick requests' do
     request_ids = batch.batch_requests.map(&:request_id)
@@ -28,6 +28,7 @@ describe 'Batches controller', js: true do
     fill_in('Comment', with: 'Test')
     click_on 'Fail selected requests'
     expect(page).to have_text('3 requests failed')
+
     # Limit ourselves to the table, as our request links can be a bit generic
     within('form .table') do
       request_ids.each do |id|

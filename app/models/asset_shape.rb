@@ -18,11 +18,9 @@ class AssetShape < ApplicationRecord
   end
 
   def self.default
-    AssetShape.create_with(
-      horizontal_ratio: 3,
-      vertical_ratio: 2,
-      description_strategy: 'Map::Coordinate'
-    ).find_or_create_by(name: 'Standard')
+    AssetShape
+      .create_with(horizontal_ratio: 3, vertical_ratio: 2, description_strategy: 'Map::Coordinate')
+      .find_or_create_by(name: 'Standard')
   end
 
   def standard?
@@ -53,20 +51,21 @@ class AssetShape < ApplicationRecord
     interlace(well_position, plate_size)
   end
 
-  def generate_map(size)
+  def generate_map(size) # rubocop:todo Metrics/MethodLength
     raise StandardError, 'Map already exists' if Map.find_by(asset_size: size, asset_shape_id: id).present?
 
     ActiveRecord::Base.transaction do
-      map_data = Array.new(size) do |i|
-        {
-          asset_size: size,
-          asset_shape_id: id,
-          location_id: i + 1,
-          row_order: i,
-          column_order: (horizontal_to_vertical(i + 1, size) || 1) - 1,
-          description: location_from_index(i, size)
-        }
-      end
+      map_data =
+        Array.new(size) do |i|
+          {
+            asset_size: size,
+            asset_shape_id: id,
+            location_id: i + 1,
+            row_order: i,
+            column_order: (horizontal_to_vertical(i + 1, size) || 1) - 1,
+            description: location_from_index(i, size)
+          }
+        end
       Map.import(map_data)
     end
   end

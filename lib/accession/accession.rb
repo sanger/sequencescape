@@ -29,7 +29,7 @@ module Accession # rubocop:todo Style/Documentation
     include Comparable
 
     def to_a
-      attributes.collect { |v| instance_variable_get("@#{v}") }.compact
+      attributes.filter_map { |v| instance_variable_get("@#{v}") }
     end
 
     ##

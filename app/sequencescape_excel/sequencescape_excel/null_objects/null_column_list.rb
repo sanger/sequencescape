@@ -20,9 +20,7 @@ module SequencescapeExcel
       end
 
       def errors
-        {
-          columns: 'Not valid'
-        }
+        { columns: 'Not valid' }
       end
 
       def with_specialised_fields

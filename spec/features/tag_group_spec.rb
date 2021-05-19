@@ -5,9 +5,7 @@ require 'rails_helper'
 describe 'Create a new tag group' do
   let(:user) { create :admin }
 
-  setup do
-    create :adapter_type, name: 'My type'
-  end
+  setup { create :adapter_type, name: 'My type' }
 
   it 'view tag groups and create a new valid one', js: true do
     login_user user

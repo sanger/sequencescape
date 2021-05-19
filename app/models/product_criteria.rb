@@ -19,8 +19,8 @@ class ProductCriteria < ApplicationRecord # rubocop:todo Style/Documentation
   serialize :configuration
 
   scope :for_stage, ->(stage) { where(stage: stage) }
-  scope :stock, ->()          { where(stage: STAGE_STOCK) }
-  scope :older_than, ->(id)   { where(['id < ?', id]) }
+  scope :stock, -> { where(stage: STAGE_STOCK) }
+  scope :older_than, ->(id) { where(['id < ?', id]) }
 
   before_create :set_version_number
 

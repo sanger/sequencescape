@@ -14,26 +14,30 @@ describe 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
   let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: '5' }
   let(:plates) { [plate1, plate2, plate3] }
-  let(:barcode) { 99999 }
+  let(:barcode) { 99_999 }
   let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
   let(:request_types) { pipeline.request_types.map(&:key) }
 
   before do
-    assets = plates.each_with_object([]) do |plate, assets|
-      assets.concat(plate.wells)
-      plate.wells.each_with_index do |well, index|
-        well.well_attribute.update!(
-          measured_volume: 30 + (index % 30)
-        )
+    assets =
+      plates.each_with_object([]) do |plate, assets|
+        assets.concat(plate.wells)
+        plate.wells.each_with_index { |well, index| well.well_attribute.update!(measured_volume: 30 + (index % 30)) }
       end
-    end
     assets.each do |asset|
-      create :cherrypick_for_fluidigm_request, asset: asset, request_type: pipeline.request_types.first, submission: submission, study: study, project: project
+      create :cherrypick_for_fluidigm_request,
+             asset: asset,
+             request_type: pipeline.request_types.first,
+             submission: submission,
+             study: study,
+             project: project
     end
 
     stub_request(:post, "#{configatron.plate_barcode_service}plate_barcodes.xml").to_return(
-      headers: { 'Content-Type' => 'text/xml' },
+      headers: {
+        'Content-Type' => 'text/xml'
+      },
       body: "<plate_barcode><id>42</id><name>Barcode #{barcode}</name><barcode>#{barcode}</barcode></plate_barcode>"
     )
 
@@ -48,13 +52,9 @@ describe 'cherrypick for fluidigm pipeline - micro litre', js: true do
     login_user(user)
     visit pipeline_path(pipeline)
     first(:button, 'Select all').click
-    find_all(:checkbox).each do |checkbox|
-      expect(checkbox).to be_checked
-    end
+    find_all(:checkbox).each { |checkbox| expect(checkbox).to be_checked }
     first(:button, 'Deselect all').click
-    find_all(:checkbox).each do |checkbox|
-      expect(checkbox).not_to be_checked
-    end
+    find_all(:checkbox).each { |checkbox| expect(checkbox).not_to be_checked }
 
     check('Select DN1S for batch')
     check('Select DN10I for batch')

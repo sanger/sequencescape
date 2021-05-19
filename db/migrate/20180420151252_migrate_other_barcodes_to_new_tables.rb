@@ -2,37 +2,43 @@
 
 # Move the barcodes from metadata to the new tables.
 class MigrateOtherBarcodesToNewTables < ActiveRecord::Migration[5.1]
-  def up
+  def up # rubocop:todo Metrics/AbcSize
+    # rubocop:disable Metrics/BlockLength
     Barcode.transaction do
       say 'Migrating Infinium Barcodes'
-      Plate::Metadata.where.not(infinium_barcode: nil).in_batches.each_with_index do |batch, i|
-        say "Fetching batch #{i}"
-        barcodes = batch.pluck(:plate_id, :infinium_barcode)
-        say "From #{barcodes.first.first} to #{barcodes.last.first}"
-        say 'Building hashes'
-        barcodes_hash = barcodes.map do |asset_id, barcode|
-          { asset_id: asset_id, barcode: barcode, format: 1 }
+      Plate::Metadata
+        .where
+        .not(infinium_barcode: nil)
+        .in_batches
+        .each_with_index do |batch, i|
+          say "Fetching batch #{i}"
+          barcodes = batch.pluck(:plate_id, :infinium_barcode)
+          say "From #{barcodes.first.first} to #{barcodes.last.first}"
+          say 'Building hashes'
+          barcodes_hash = barcodes.map { |asset_id, barcode| { asset_id: asset_id, barcode: barcode, format: 1 } }
+          say 'Importing'
+          Barcode.import(barcodes_hash)
+          say 'Imported'
         end
-        say 'Importing'
-        Barcode.import(barcodes_hash)
-        say 'Imported'
-      end
       say 'Finished migrating Infinium Barcodes'
       say 'Migrating Fluidigm barcodes'
-      Plate::Metadata.where.not(fluidigm_barcode: nil).in_batches.each_with_index do |batch, i|
-        say "Fetching batch #{i}"
-        barcodes = batch.pluck(:plate_id, :fluidigm_barcode)
-        say "From #{barcodes.first.first} to #{barcodes.last.first}"
-        say 'Building hashes'
-        barcodes_hash = barcodes.map do |asset_id, barcode|
-          { asset_id: asset_id, barcode: barcode, format: 2 }
+      Plate::Metadata
+        .where
+        .not(fluidigm_barcode: nil)
+        .in_batches
+        .each_with_index do |batch, i|
+          say "Fetching batch #{i}"
+          barcodes = batch.pluck(:plate_id, :fluidigm_barcode)
+          say "From #{barcodes.first.first} to #{barcodes.last.first}"
+          say 'Building hashes'
+          barcodes_hash = barcodes.map { |asset_id, barcode| { asset_id: asset_id, barcode: barcode, format: 2 } }
+          say 'Importing'
+          Barcode.import(barcodes_hash)
+          say 'Imported'
         end
-        say 'Importing'
-        Barcode.import(barcodes_hash)
-        say 'Imported'
-      end
       say 'Finished migrating Fluidigm Barcodes'
     end
+    # rubocop:enable Metrics/BlockLength
   end
 
   def down

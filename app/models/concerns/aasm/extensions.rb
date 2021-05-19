@@ -19,9 +19,10 @@ module AASM
     # Determines the most likely event that should be fired when transitioning between the two states.  If there is
     # only one option then that is what is returned, otherwise an exception is raised.
     def suggested_transition_to(target)
-      valid_events = aasm.events(permitted: true).select do |event|
-        permit_automatic_transition?(event) && event.transitions_to_state?(target.to_sym)
-      end
+      valid_events =
+        aasm
+          .events(permitted: true)
+          .select { |event| permit_automatic_transition?(event) && event.transitions_to_state?(target.to_sym) }
 
       return valid_events.first.name if valid_events.one?
 

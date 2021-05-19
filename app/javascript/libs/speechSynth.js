@@ -1,7 +1,6 @@
-
 function say(sentence) {
-  const utterance = new SpeechSynthesisUtterance(sentence)
-  window.speechSynthesis.speak(utterance)
+  const utterance = new SpeechSynthesisUtterance(sentence);
+  window.speechSynthesis.speak(utterance);
 }
 
-export { say }
+export { say };

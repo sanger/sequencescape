@@ -7,6 +7,7 @@ module Aliquot::DeprecatedBehaviours
       tag.try(:map_id) || ''
     end
     deprecate :tag_number
+
     # Logged calls from: app/controllers/batches_controller.rb:259, _app_views_batches_print_labels_html_erb
 
     # tags and tag have been moved to the appropriate assets.
@@ -18,10 +19,12 @@ module Aliquot::DeprecatedBehaviours
       target_asset.primary_aliquot.try(:tag)
     end
     deprecate :tag
+
     # Logged calls from: app/models/aliquot/deprecated_behaviours.rb
 
     delegate :tags, to: :asset
     deprecate :tags
+
     # ---
 
     def sample_name(default = nil)
@@ -30,10 +33,14 @@ module Aliquot::DeprecatedBehaviours
       # # default is used if no smaple
       # # block is used to aggregate the samples
       case
-      when samples.size == 0 then default
-      when samples.size == 1 then samples.first.name
-      when block_given?      then yield(samples)
-      else                        samples.map(&:name).join(' | ')
+      when samples.size == 0
+        default
+      when samples.size == 1
+        samples.first.name
+      when block_given?
+        yield(samples)
+      else
+        samples.map(&:name).join(' | ')
       end
     end
     deprecate :sample_name

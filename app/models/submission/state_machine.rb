@@ -80,12 +80,13 @@ module Submission::StateMachine
     end
   end
 
-  def configure_state_machine
+  # rubocop:todo Metrics/MethodLength
+  def configure_state_machine # rubocop:todo Metrics/AbcSize
     aasm column: :state, whiny_persistence: true do
-      state :building,    initial: true, exit: :valid_for_leaving_building_state
-      state :pending,     after_enter: :queue_submission_builder
-      state :processing,  enter: :process_submission!, exit: :process_callbacks!
-      state :ready,       enter: :broadcast_events
+      state :building, initial: true, exit: :valid_for_leaving_building_state
+      state :pending, after_enter: :queue_submission_builder
+      state :processing, enter: :process_submission!, exit: :process_callbacks!
+      state :ready, enter: :broadcast_events
       state :failed
       state :cancelled, enter: :cancel_all_requests
 
@@ -98,22 +99,24 @@ module Submission::StateMachine
       end
 
       event :cancel do
-        transitions to: :cancelled, from: %i(pending ready cancelled), guard: :requests_cancellable?
+        transitions to: :cancelled, from: %i[pending ready cancelled], guard: :requests_cancellable?
       end
 
       event :process do
-        transitions to: :processing, from: %i(processing failed pending)
+        transitions to: :processing, from: %i[processing failed pending]
       end
 
       event :ready do
-        transitions to: :ready, from: %i(processing failed)
+        transitions to: :ready, from: %i[processing failed]
       end
 
       event :fail do
-        transitions to: :failed, from: %i(processing failed pending)
+        transitions to: :failed, from: %i[processing failed pending]
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
   private :configure_state_machine
 
   UnprocessedStates = %w[building pending processing].freeze

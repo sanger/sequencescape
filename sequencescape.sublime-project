@@ -1,6 +1,5 @@
 {
-  "folders":
-  [
+  "folders": [
     {
       // Note: Name is intentionally left out of this folder config to
       // support the use of multiple directories for the same project
@@ -19,10 +18,7 @@
         "public/public",
         "public/packs"
       ],
-      "file_exclude_patterns":[
-        ".swp",
-        "sequencescape.sublime-workspace"
-      ],
+      "file_exclude_patterns": [".swp", "sequencescape.sublime-workspace"],
       "binary_file_patterns": [
         "*.jpg",
         "*.jpeg",

@@ -4,17 +4,10 @@
 require 'spec_helper'
 
 RSpec.describe AbilityAnalysis do
-  subject(:ability_analysis) do
-    described_class.new(roles: roles, ability: ability, permissions: permissions)
-  end
+  subject(:ability_analysis) { described_class.new(roles: roles, ability: ability, permissions: permissions) }
 
   let(:roles) { %w[role_a role_b] }
-  let(:permissions) do
-    {
-      'Study' => %i[edit read],
-      'Project' => %i[edit read]
-    }
-  end
+  let(:permissions) { { 'Study' => %i[edit read], 'Project' => %i[edit read] } }
 
   let(:ability) do
     Class.new do
@@ -39,17 +32,12 @@ RSpec.describe AbilityAnalysis do
   describe '#permission_matrix' do
     let(:expected_matrix) do
       [
-        ['Project', [
-          [:edit, [false, true, true, true]],
-          [:read, [false, false, false, false]]
-        ]],
-        ['Sample', [
-          [:read, [true, true, true, true]]
-        ]],
-        ['Study', [
-          [:edit, [false, { active: true }, { active: true }, { active: true }]],
-          [:read, [false, true, true, true]]
-        ]]
+        ['Project', [[:edit, [false, true, true, true]], [:read, [false, false, false, false]]]],
+        ['Sample', [[:read, [true, true, true, true]]]],
+        [
+          'Study',
+          [[:edit, [false, { active: true }, { active: true }, { active: true }]], [:read, [false, true, true, true]]]
+        ]
       ]
     end
 
@@ -59,9 +47,7 @@ RSpec.describe AbilityAnalysis do
   end
 
   describe '#all_roles' do
-    let(:expected_roles) do
-      ['Logged Out', 'Basic User', 'role_a', 'role_b']
-    end
+    let(:expected_roles) { ['Logged Out', 'Basic User', 'role_a', 'role_b'] }
 
     it 'returns a description of the roles' do
       expect(ability_analysis.all_roles).to eq expected_roles

@@ -32,12 +32,11 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
   end
 
   # TODO: remove unneeded code
-  def filter
-    unless params[:filter].nil?
-      if params[:filter][:by] == 'not approved'
-        filter_conditions = { approved: false }
-      end
-    end
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def filter # rubocop:todo Metrics/CyclomaticComplexity
+    filter_conditions = { approved: false } if params[:filter][:by] == 'not approved' unless params[:filter].nil?
 
     if params[:filter][:by] == 'not approved' || params[:filter][:by] == 'all'
       @studies = Study.where(filter_conditions).alphabetical.select { |p| p.name.include? params[:q] }
@@ -59,12 +58,16 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     render partial: 'filtered_studies'
   end
 
-  def managed_update
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+
+  # rubocop:todo Metrics/MethodLength
+  def managed_update # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:id])
 
     if params[:study][:uploaded_data].present?
-      Document.create!(documentable: @study,
-                       uploaded_data: params[:study][:uploaded_data])
+      Document.create!(documentable: @study, uploaded_data: params[:study][:uploaded_data])
     end
     params[:study].delete(:uploaded_data)
 
@@ -79,6 +82,8 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     flash[:error] = 'Failed to update attributes for study!'
     render action: :show, id: @study.id and return
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def sort
     @studies = Study.all.sort_by(&:name)

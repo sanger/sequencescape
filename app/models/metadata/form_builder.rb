@@ -1,3 +1,4 @@
+# rubocop:todo Metrics/ClassLength
 class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documentation
   def initialize(*args, &block)
     super
@@ -39,12 +40,10 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
   def checktext_field(field, options = {})
     options[:class] ||= []
     options[:class] << ' form-control'
-    property_field(:field, field) do
-      render_view(:checktext, field, options)
-    end
+    property_field(:field, field) { render_view(:checktext, field, options) }
   end
 
-  %i(text_area text_field number_field).each do |field|
+  %i[text_area text_field number_field].each do |field|
     class_eval <<-END_OF_METHOD
       def #{field}_with_bootstrap(*args, &block)
         options    = args.extract_options!
@@ -62,9 +61,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
     group = html_options.delete(:grouping) || options.delete(:grouping)
     html_options[:class] ||= ''
     html_options[:class] << ' custom-select'
-    property_field(:field, method, grouping: group) do
-      super(method, choices, options, html_options, &block)
-    end
+    property_field(:field, method, grouping: group) { super(method, choices, options, html_options, &block) }
   end
 
   def radio_select(method, choices, options = {}, html_options = {})
@@ -91,9 +88,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
         options[:class] << ' form-control'
         field_args = options.slice(:grouping)
         args.push(options.slice!(:grouping))
-        property_field(:field, method, field_args) do
-          super(method, *args, &block)
-        end
+        property_field(:field, method, field_args) { super(method, *args, &block) }
       end
     end
   end
@@ -106,12 +101,13 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
   # You can use `:to` to give the name of the field, `:when` for the single value when the fields should
   # be shown, and `:in` for a group of values.  You *must* call finalize_related_fields at the end of
   # your view to get the appropriate behaviour
-  def related_fields(options, &block)
+  def related_fields(options, &block) # rubocop:todo Metrics/AbcSize
     options.symbolize_keys!
 
-    values = (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map do |v|
-      v.to_s.downcase.gsub(/[^a-z0-9]+/, '_')
-    end
+    values =
+      (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map do |v|
+        v.to_s.downcase.gsub(/[^a-z0-9]+/, '_')
+      end
     content = capture(&block)
     concat(tag.div(content, class: [:related_to, options[:to], values].flatten.join(' ')))
 
@@ -121,36 +117,38 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
 
   # Allows the options of the specified 'field' to be changed based on the value of another field.
   def change_select_options_for(field, options)
-    options[:values] = options[:values].inject({}) do |values, (key, value)|
-      values.tap do
-        Array(key).each { |k| values[k.to_s] = Array(value) }
+    options[:values] =
+      options[:values].inject({}) do |values, (key, value)|
+        values.tap { Array(key).each { |k| values[k.to_s] = Array(value) } }
       end
-    end
     @changing.push([field, options])
   end
 
   # Renders the Javascript for dealing with showing and hiding the related fields.
-  def finalize_related_fields
+  def finalize_related_fields # rubocop:todo Metrics/MethodLength
     related = @related_fields.compact.uniq.map(&:to_s)
-    concat(render(
-             partial: 'shared/metadata/related_fields',
-             locals: {
-               root: sanitized_object_name,
-               related: related,
-               changing_fields: @changing
-             }
-           )) unless related.empty?
+    unless related.empty?
+      concat(
+        render(
+          partial: 'shared/metadata/related_fields',
+          locals: {
+            root: sanitized_object_name,
+            related: related,
+            changing_fields: @changing
+          }
+        )
+      )
+    end
   end
 
   private
 
   def property_field(type, field, options = {})
-    content = capture do
-      render_view(type, field, options) { |locals| locals.merge(field: yield) }
-    end
+    content = capture { render_view(type, field, options) { |locals| locals.merge(field: yield) } }
 
     div_options = { id: field.to_s }
     div_options[:class] = 'field_with_errors' if @object.errors[field].present?
     tag.fieldset(content, div_options)
   end
 end
+# rubocop:enable Metrics/ClassLength

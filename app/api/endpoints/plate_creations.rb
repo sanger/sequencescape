@@ -1,8 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for PlateCreations
 class ::Endpoints::PlateCreations < ::Core::Endpoint::Base
-  model do
-    action(:create, to: :standard_create!)
-  end
+  model { action(:create, to: :standard_create!) }
 
   instance do
     belongs_to(:child, json: 'child')

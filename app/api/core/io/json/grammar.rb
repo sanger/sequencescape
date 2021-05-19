@@ -19,9 +19,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def process_children(object, options, stream)
-      @children.each do |_, child|
-        child.call(object, options, stream)
-      end
+      @children.each { |_, child| child.call(object, options, stream) }
     end
     private :process_children
 
@@ -29,18 +27,28 @@ module ::Core::Io::Json::Grammar
       yield(node.merge_children_with(self))
     end
 
-    def merge_children_with(node)
-      (node.children.keys + @children.keys).uniq.each_with_object({}) do |k, store|
-        cloned = case
-                 when @children.key?(k) && node.children.key?(k) then node.children[k].merge(@children[k])
-                 when @children.key?(k)                          then @children[k]
-                 when node.children.key?(k)                      then node.children[k]
-                 else raise 'Odd, how did that happen?'
-                 end
+    # rubocop:todo Metrics/MethodLength
+    def merge_children_with(node) # rubocop:todo Metrics/AbcSize
+      (node.children.keys + @children.keys)
+        .uniq
+        .each_with_object({}) do |k, store|
+          cloned =
+            case
+            when @children.key?(k) && node.children.key?(k)
+              node.children[k].merge(@children[k])
+            when @children.key?(k)
+              @children[k]
+            when node.children.key?(k)
+              node.children[k]
+            else
+              raise 'Odd, how did that happen?'
+            end
 
-        store[k] = cloned
-      end
+          store[k] = cloned
+        end
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     def inspect
       @children.values.inspect
@@ -76,9 +84,7 @@ module ::Core::Io::Json::Grammar
       return self unless object.respond_to?(:uuid)
 
       instance_handler = options[:handled_by].send(:endpoint_for_object, object).instance_handler
-      instance_handler.tree_for(object, options).merge(self) do |children|
-        self.class.new(@owner, children)
-      end
+      instance_handler.tree_for(object, options).merge(self) { |children| self.class.new(@owner, children) }
     rescue Core::Endpoint::BasicHandler::EndpointLookup::MissingEndpoint => e
       # There is no endpoint for this, even though it has a UUID!
       self
@@ -115,9 +121,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def call(object, options, stream)
-      stream.block(@name) do |stream|
-        super(object, options, stream)
-      end
+      stream.block(@name) { |stream| super(object, options, stream) }
     end
 
     def dup
@@ -137,13 +141,17 @@ module ::Core::Io::Json::Grammar
     attr_reader :name
 
     def initialize(name, attribute)
-      @name           = name
-      @attribute      = attribute.pop
+      @name = name
+      @attribute = attribute.pop
       @attribute_path = attribute
     end
 
     def call(object, options, stream)
-      value = @attribute_path.inject(object) { |o, k| return if o.nil?; o.send(k) } or return
+      value =
+        @attribute_path.inject(object) do |o, k|
+          return if o.nil?
+          o.send(k)
+        end or return
 
       stream.attribute(@name, value.send(@attribute), options)
     end
@@ -172,9 +180,9 @@ module ::Core::Io::Json::Grammar
   module Resource # rubocop:todo Style/Documentation
     def resource_details(endpoint, object, options, stream)
       stream.block('actions') do |nested_stream|
-        endpoint.send(:actions, object, options.merge(target: object)).map do |action, url|
-          nested_stream.attribute(action, url)
-        end
+        endpoint
+          .send(:actions, object, options.merge(target: object))
+          .map { |action, url| nested_stream.attribute(action, url) }
         actions(object, options, nested_stream)
       end
       stream.attribute('uuid', object.uuid)

@@ -6,8 +6,14 @@ module PrototypeReplacementHelper # rubocop:todo Style/Documentation
   end
 
   def tooltip(name = 'Help', opts = {}, &block)
-    button = tag.span(name, class: 'btn btn-info popover-trigger', 'data-content': capture(opts, &block),
-                            'data-toggle': 'popover', 'data-title': opts.fetch(:title, 'About this'))
+    button =
+      tag.span(
+        name,
+        class: 'btn btn-info popover-trigger',
+        'data-content': capture(opts, &block),
+        'data-toggle': 'popover',
+        'data-title': opts.fetch(:title, 'About this')
+      )
     concat button
   end
 end

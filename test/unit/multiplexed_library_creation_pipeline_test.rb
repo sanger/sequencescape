@@ -5,19 +5,20 @@ require 'test_helper'
 class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
   def setup
     @pipeline = create :multiplexed_library_creation_pipeline
-    @user     = create(:user)
+    @user = create(:user)
   end
 
   context 'batch interaction' do
     setup do
       @batch = create(:batch, pipeline: @pipeline)
-      @batch.requests = create_list(:multiplexed_library_creation_request, 5,
-                                    request_type: @batch.pipeline.request_types.last)
+      @batch.requests =
+        create_list(:multiplexed_library_creation_request, 5, request_type: @batch.pipeline.request_types.last)
     end
 
     context 'for completion' do
       setup do
         @batch.start!(@user)
+
         # The loaded target_assets are still empty, as the code updates them through an eager
         # loaded scope. Complete! is only called on a freshly loaded batch in a separate
         # web request, so this is merely a side effect of the way the tests are written.
@@ -25,9 +26,7 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
       end
 
       should 'add errors if there are untagged target asset aliquots' do
-        assert_raise(ActiveRecord::RecordInvalid) do
-          @batch.complete!(@user)
-        end
+        assert_raise(ActiveRecord::RecordInvalid) { @batch.complete!(@user) }
 
         assert_not(@batch.errors.empty?, 'There are no errors on the batch')
       end

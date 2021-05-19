@@ -2,7 +2,9 @@
 
 require './spec/support/download_helper'
 
-Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
+Given(
+  /^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/
+) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
   step('a plate template exists')
@@ -20,7 +22,9 @@ Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum
   step('the last batch has a barcode of "550000555760"')
 end
 
-Given(/^I have a released low concentration cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
+Given(
+  /^I have a released low concentration cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/
+) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
   step('a plate template exists')
@@ -38,7 +42,10 @@ Given(/^I have a released low concentration cherrypicking batch with (\d+) sampl
   step('the last batch has a barcode of "550000555760"')
 end
 
-Given(/^I have a released cherrypicking batch with 3 plates and the minimum robot pick is "([^"]*)"$/) do |minimum_robot_pick|
+# rubocop:disable Metrics/BlockLength
+Given(
+  /^I have a released cherrypicking batch with 3 plates and the minimum robot pick is "([^"]*)"$/
+) do |minimum_robot_pick|
   step('I am a "administrator" user logged in as "user"')
   step('I have a project called "Test project"')
   step('I have an active study called "Test study"')
@@ -74,6 +81,7 @@ Given(/^I have a released cherrypicking batch with 3 plates and the minimum robo
   step('I press "Release this batch"')
   step('the last batch has a barcode of "550000555760"')
 end
+# rubocop:enable Metrics/BlockLength
 
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do
   step('I have a released cherrypicking batch with 1 samples and the minimum robot pick is "1"')
@@ -87,7 +95,8 @@ Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode
 end
 
 Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
-  batch = Batch.find_by_barcode(batch_barcode) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
+  batch = Batch.find_by_barcode(batch_barcode) or
+    raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
 
   generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_#{plate_barcode}_1.gwl")
 

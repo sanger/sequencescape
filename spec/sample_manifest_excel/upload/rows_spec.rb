@@ -14,13 +14,9 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
   let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
   let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
 
-  after(:all) do
-    SampleManifestExcel.reset!
-  end
+  after(:all) { SampleManifestExcel.reset! }
 
-  after do
-    File.delete(test_file_name) if File.exist?(test_file_name)
-  end
+  after { File.delete(test_file_name) if File.exist?(test_file_name) }
 
   it 'is not valid without some data' do
     expect(described_class.new(nil, columns)).not_to be_valid
@@ -55,6 +51,7 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
     download = build(:test_download_tubes, columns: columns, validation_errors: [:insert_size_from])
     download.save(test_file_name)
     rows = described_class.new(SampleManifestExcel::Upload::Data.new(test_file), columns)
+
     # column 7 is insert_size_from
     expect(rows.data_at(7)).to eq [nil, '200', '200', '200', '200', '200']
   end

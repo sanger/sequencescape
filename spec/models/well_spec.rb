@@ -157,9 +157,9 @@ describe Well do
 
     well_plate_concentrations = [
       # Plate 1, Plate 2, Plate 3
-      [50,       40,      60],  # Well 1
-      [30,       nil,     nil], # Well 2
-      [10,       nil,     nil]  # Well 3
+      [50, 40, 60], # Well 1
+      [30, nil, nil], # Well 2
+      [10, nil, nil] # Well 3
     ]
 
     norm_plates.each_with_index do |plate, plate_index|
@@ -251,6 +251,7 @@ describe Well do
     end
   end
 
+  # rubocop:todo Metrics/BlockLength
   [
     [1000, 10, 50, 50, 0, nil],
     [1000, 10, 10, 10, 0, nil],
@@ -260,9 +261,11 @@ describe Well do
     [5000, 1000, 50, 5, 5, nil],
     [10, 100, 50, 1, 9, nil],
     [1000, 250, 50, 4, 6, nil],
-    [10000, 250, 50, 40, 0, nil],
-    [10000, 250, 30, 30, 0, nil]
+    [10_000, 250, 50, 40, 0, nil],
+    [10_000, 250, 30, 30, 0, nil]
+    # rubocop:todo Metrics/ParameterLists
   ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
+    # rubocop:enable Metrics/ParameterLists
     context 'cherrypick by nano grams' do
       setup do
         @source_well = create :well
@@ -270,10 +273,18 @@ describe Well do
         minimum_volume = 10
         maximum_volume = 50
         robot_minimum_picking_volume = 1.0
-        @source_well.well_attribute.update!(concentration: measured_concentration, measured_volume: measured_volume,
-                                            current_volume: current_volume)
-        @target_well.volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, @source_well,
-                                                        robot_minimum_picking_volume)
+        @source_well.well_attribute.update!(
+          concentration: measured_concentration,
+          measured_volume: measured_volume,
+          current_volume: current_volume
+        )
+        @target_well.volume_to_cherrypick_by_nano_grams(
+          minimum_volume,
+          maximum_volume,
+          target_ng,
+          @source_well,
+          robot_minimum_picking_volume
+        )
       end
       it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
         assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
@@ -284,6 +295,8 @@ describe Well do
       end
     end
   end
+
+  # rubocop:enable Metrics/BlockLength
 
   context 'when while cherrypicking by nanograms ' do
     context 'and we want to get less volume than the minimum' do
@@ -302,8 +315,13 @@ describe Well do
         buffer_added = 9.9
         robot_minimum_picking_volume = nil
         @source_well.well_attribute.update!(concentration: @measured_concentration, measured_volume: @measured_volume)
-        @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well,
-                                                        robot_minimum_picking_volume)
+        @target_well.volume_to_cherrypick_by_nano_grams(
+          @minimum_volume,
+          @maximum_volume,
+          @target_ng,
+          @source_well,
+          robot_minimum_picking_volume
+        )
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
@@ -313,8 +331,13 @@ describe Well do
         buffer_added = 9
         robot_minimum_picking_volume = 1.0
         @source_well.well_attribute.update!(concentration: @measured_concentration, measured_volume: @measured_volume)
-        @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well,
-                                                        robot_minimum_picking_volume)
+        @target_well.volume_to_cherrypick_by_nano_grams(
+          @minimum_volume,
+          @maximum_volume,
+          @target_ng,
+          @source_well,
+          robot_minimum_picking_volume
+        )
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
@@ -324,8 +347,13 @@ describe Well do
         buffer_added = 0.0
         robot_minimum_picking_volume = 10.0
         @source_well.well_attribute.update!(concentration: @measured_concentration, measured_volume: @measured_volume)
-        @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well,
-                                                        robot_minimum_picking_volume)
+        @target_well.volume_to_cherrypick_by_nano_grams(
+          @minimum_volume,
+          @maximum_volume,
+          @target_ng,
+          @source_well,
+          robot_minimum_picking_volume
+        )
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
@@ -335,8 +363,13 @@ describe Well do
         buffer_added = 5.0
         robot_minimum_picking_volume = 5.0
         @source_well.well_attribute.update!(concentration: @measured_concentration, measured_volume: @measured_volume)
-        @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well,
-                                                        robot_minimum_picking_volume)
+        @target_well.volume_to_cherrypick_by_nano_grams(
+          @minimum_volume,
+          @maximum_volume,
+          @target_ng,
+          @source_well,
+          robot_minimum_picking_volume
+        )
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
@@ -355,8 +388,8 @@ describe Well do
 
     it 'return volume to pick' do
       assert_equal 1.25, well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
-      assert_equal 3.9,  well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)
-      assert_equal 9.1,  well.get_buffer_volume
+      assert_equal 3.9, well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)
+      assert_equal 9.1, well.get_buffer_volume
     end
 
     it 'sets the buffer volume' do
@@ -373,23 +406,40 @@ describe Well do
     end
 
     [
-      [100.0, 50.0, 100.0,  200.0,  nil, 50.0,  50.0,
-       'Standard scenario, sufficient material, buffer and dna both added'],
-      [100.0, 50.0, 100.0,  20.0,   nil, 20.0,  80.0,
-       'Insufficient source material for concentration or volume. Make up with buffer'],
-      [100.0, 5.0,  100.0,  2.0,    nil, 2.0,   98.0, 'As above, just more extreme'],
-      [100.0, 5.0,  100.0,  5.0,    5.0, 5.0,   95.0, 'High concentration, minimum robot volume increases source pick'],
-      [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  5.0,
-       'Lowish concentration, non zero, but less than robot buffer required'],
-      [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'Less DNA than robot minimum pick, fall back to DNA'],
-      [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer'],
-      [120.0, 50.0, 0,      60.0,   5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
-      [120.0, 50.0, 0,      3.0,    5.0, 3.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
+      [100.0, 50.0, 100.0, 200.0, nil, 50.0, 50.0, 'Standard scenario, sufficient material, buffer and dna both added'],
+      [
+        100.0,
+        50.0,
+        100.0,
+        20.0,
+        nil,
+        20.0,
+        80.0,
+        'Insufficient source material for concentration or volume. Make up with buffer'
+      ],
+      [100.0, 5.0, 100.0, 2.0, nil, 2.0, 98.0, 'As above, just more extreme'],
+      [100.0, 5.0, 100.0, 5.0, 5.0, 5.0, 95.0, 'High concentration, minimum robot volume increases source pick'],
+      [100.0, 50.0, 52.0, 200.0, 5.0, 96.2, 5.0, 'Lowish concentration, non zero, but less than robot buffer required'],
+      [100.0, 5.0, 100.0, 2.0, 5.0, 2.0, 98.0, 'Less DNA than robot minimum pick, fall back to DNA'],
+      [100.0, 50.0, 1.0, 200.0, 5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer'],
+      [120.0, 50.0, 0, 60.0, 5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
+      [120.0, 50.0, 0, 3.0, 5.0, 3.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
+      # rubocop:todo Metrics/ParameterLists
     ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
+      # rubocop:enable Metrics/ParameterLists
       context "when testing #{scenario}" do
         setup do
-          @result_volume = format('%.1f', well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,
-                                                                                                  concentration_required, source_concentration, source_volume, robot_minimum_pick_volume)).to_f
+          @result_volume =
+            format(
+              '%.1f',
+              well.volume_to_cherrypick_by_nano_grams_per_micro_litre(
+                volume_required,
+                concentration_required,
+                source_concentration,
+                source_volume,
+                robot_minimum_pick_volume
+              )
+            ).to_f
           @result_buffer_volume = format('%.1f', well.get_buffer_volume).to_f
         end
         it 'gets correct volume quantity' do
@@ -408,9 +458,21 @@ describe Well do
       @our_product_criteria = create :product_criteria
       @other_criteria = create :product_criteria
 
-      @old_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.zone.now - 1.day, report_identifier: "A#{Time.zone.now}"
-      @current_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.zone.now - 1.hour, report_identifier: "B#{Time.zone.now}"
-      @unrelated_report = create :qc_report, product_criteria: @other_criteria, created_at: Time.zone.now, report_identifier: "C#{Time.zone.now}"
+      @old_report =
+        create :qc_report,
+               product_criteria: @our_product_criteria,
+               created_at: Time.zone.now - 1.day,
+               report_identifier: "A#{Time.zone.now}"
+      @current_report =
+        create :qc_report,
+               product_criteria: @our_product_criteria,
+               created_at: Time.zone.now - 1.hour,
+               report_identifier: "B#{Time.zone.now}"
+      @unrelated_report =
+        create :qc_report,
+               product_criteria: @other_criteria,
+               created_at: Time.zone.now,
+               report_identifier: "C#{Time.zone.now}"
 
       @stock_well = create :well
 
@@ -420,7 +482,8 @@ describe Well do
       create :qc_metric, asset: @stock_well, qc_report: @old_report, qc_decision: 'passed', proceed: true
       create :qc_metric, asset: @stock_well, qc_report: @unrelated_report, qc_decision: 'passed', proceed: true
 
-      @expected_metric = create :qc_metric, asset: @stock_well, qc_report: @current_report, qc_decision: 'failed', proceed: true
+      @expected_metric =
+        create :qc_metric, asset: @stock_well, qc_report: @current_report, qc_decision: 'failed', proceed: true
     end
 
     it 'report appropriate metrics' do
@@ -440,8 +503,12 @@ describe Well do
   end
 
   it '#with qc results will show the qc results by key' do
-    qc_results = [build(:qc_result_concentration), build(:qc_result_volume), build(:qc_result_molarity),
-                  build(:qc_result_rin)]
+    qc_results = [
+      build(:qc_result_concentration),
+      build(:qc_result_volume),
+      build(:qc_result_molarity),
+      build(:qc_result_rin)
+    ]
     well = create(:well, qc_results: qc_results)
     expect(well.qc_results_by_key.size).to eq(4)
     expect(well.qc_results_by_key['concentration'].length).to eq(1)

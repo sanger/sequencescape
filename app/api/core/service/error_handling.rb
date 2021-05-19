@@ -1,5 +1,6 @@
 module Core::Service::ErrorHandling # rubocop:todo Style/Documentation
-  def self.registered(app)
+  # rubocop:todo Metrics/MethodLength
+  def self.registered(app) # rubocop:todo Metrics/AbcSize
     app.instance_eval do
       helpers Helpers
 
@@ -21,6 +22,8 @@ module Core::Service::ErrorHandling # rubocop:todo Style/Documentation
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   module Helpers # rubocop:todo Style/Documentation
     class JsonError # rubocop:todo Style/Documentation
@@ -94,7 +97,7 @@ end
 
 class IllegalOperation < RuntimeError # rubocop:todo Style/Documentation
   include ::Core::Service::Error::Behaviour
-  self.api_error_code    = 501
+  self.api_error_code = 501
   self.api_error_message = 'requested action is not supported on this resource'
 end
 

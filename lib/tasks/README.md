@@ -14,14 +14,14 @@ To view all the support tasks, run `bundle exec rails -T support`
 
 <!-- toc -->
 
-* [Un-categorised tasks](#un-categorised-tasks)
-  * [Add printers and label templates](#add-printers-and-label-templates)
-* [Support tasks](#support-tasks)
-  * [Update library type for given batch](#update-library-type-for-given-batch)
-    * [Parameters](#parameters)
-    * [Runnning](#runnning)
-    * [Confirmation](#confirmation)
-    * [Related RT tickets](#related-rt-tickets)
+- [Un-categorised tasks](#un-categorised-tasks)
+  - [Add printers and label templates](#add-printers-and-label-templates)
+- [Support tasks](#support-tasks)
+  - [Update library type for given batch](#update-library-type-for-given-batch)
+    - [Parameters](#parameters)
+    - [Runnning](#runnning)
+    - [Confirmation](#confirmation)
+    - [Related RT tickets](#related-rt-tickets)
 
 <!-- tocstop -->
 
@@ -45,8 +45,8 @@ File: [support/update_library_types.rake](./support/update_library_types.rake)
 
 #### Parameters
 
-* `batch_id`: The batch ID - probably in RT ticket
-* `library_type_name`: The library type name to update to
+- `batch_id`: The batch ID - probably in RT ticket
+- `library_type_name`: The library type name to update to
 
 #### Runnning
 

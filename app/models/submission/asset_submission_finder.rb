@@ -8,13 +8,17 @@ module Submission::AssetSubmissionFinder # rubocop:todo Style/Documentation
   end
 
   def find_all_assets_by_name_including_samples!(names)
-    Receptacle.for_bulk_submission.named(names).tap do |found|
-      missing = names - found.map(&:name)
-      raise ActiveRecord::RecordNotFound, "Could not find Labware with names #{missing.inspect}" if missing.present?
-    end
+    Receptacle
+      .for_bulk_submission
+      .named(names)
+      .tap do |found|
+        missing = names - found.map(&:name)
+        raise ActiveRecord::RecordNotFound, "Could not find Labware with names #{missing.inspect}" if missing.present?
+      end
   end
 
-  def find_wells_including_samples_for!(details)
+  # rubocop:todo Metrics/MethodLength
+  def find_wells_including_samples_for!(details) # rubocop:todo Metrics/AbcSize
     barcodes, well_list = details['barcode'], details['plate well']
     errors.add(:spreadsheet, 'You can only specify one plate per asset group') unless barcodes.uniq.one?
     barcode = barcodes.first
@@ -30,10 +34,16 @@ module Submission::AssetSubmissionFinder # rubocop:todo Style/Documentation
     wells
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def find_tubes_including_samples_for!(details)
-    Receptacle.on_a(Tube).for_bulk_submission.with_barcode(details['barcode']).tap do |found|
-      missing = details['barcode'].reject { |barcode| found.any? { |tube| tube.any_barcode_matching?(barcode) } }
-      raise ActiveRecord::RecordNotFound, "Could not find Tubes with barcodes #{missing.inspect}" if missing.present?
-    end
+    Receptacle
+      .on_a(Tube)
+      .for_bulk_submission
+      .with_barcode(details['barcode'])
+      .tap do |found|
+        missing = details['barcode'].reject { |barcode| found.any? { |tube| tube.any_barcode_matching?(barcode) } }
+        raise ActiveRecord::RecordNotFound, "Could not find Tubes with barcodes #{missing.inspect}" if missing.present?
+      end
   end
 end

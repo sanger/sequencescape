@@ -33,17 +33,14 @@ module RecordLoader
     def build_creator(purpose, creator_options)
       config = creator_options.respond_to?(:[]) ? creator_options : {}
       parents = Purpose.where(name: config.fetch('from', []))
-      Plate::Creator.create!(
-        name: purpose.name,
-        plate_purposes: [purpose],
-        parent_plate_purposes: parents
-      )
+      Plate::Creator.create!(name: purpose.name, plate_purposes: [purpose], parent_plate_purposes: parents)
     end
 
     def barcode_printer_type(name)
-      @printer_cache ||= Hash.new do |hash, uncached_type_name|
-        hash[uncached_type_name] = BarcodePrinterType.find_by(name: uncached_type_name)
-      end
+      @printer_cache ||=
+        Hash.new do |hash, uncached_type_name|
+          hash[uncached_type_name] = BarcodePrinterType.find_by(name: uncached_type_name)
+        end
       @printer_cache[name || DEFAULT_PRINTER_TYPE]
     end
   end

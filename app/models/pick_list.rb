@@ -35,9 +35,7 @@ class PickList < ApplicationRecord
   # @return [Array<PickList::Pick>] The picks created
   #
   def pick_attributes=(picks)
-    picks.map { |pick| Pick.new(pick) }
-         .group_by(&:order_options)
-         .each do |order_options, pick_group|
+    picks.map { |pick| Pick.new(pick) }.group_by(&:order_options).each do |order_options, pick_group|
       orders << build_order(pick_group, order_options)
     end
   end
@@ -60,11 +58,8 @@ class PickList < ApplicationRecord
   end
 
   def links
-    [
-      { name: "Pick-list #{id}", url: url_helpers.pick_list_url(self, host: configatron.site_url) }
-    ] + batches.map do |batch|
-      { name: "Batch #{batch.id}", url: url_helpers.batch_url(batch, host: configatron.site_url) }
-    end
+    [{ name: "Pick-list #{id}", url: url_helpers.pick_list_url(self, host: configatron.site_url) }] + batches
+      .map { |batch| { name: "Batch #{batch.id}", url: url_helpers.batch_url(batch, host: configatron.site_url) } }
   end
 
   def process_immediately
@@ -104,7 +99,7 @@ class PickList < ApplicationRecord
       user: user,
       assets: pick_group.map(&:source_receptacle),
       request_types: [request_type_id],
-      ** order_options # Merge the order options into the arguments
+      **order_options # Merge the order options into the arguments
     )
   end
 

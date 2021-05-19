@@ -54,9 +54,7 @@ module CarrierWave
         end
 
         def content_type=(type)
-          if @uploader.model.respond_to? :content_type
-            @uploader.model.content_type = type unless type.nil?
-          end
+          @uploader.model.content_type = type unless type.nil? if @uploader.model.respond_to? :content_type
         end
 
         private

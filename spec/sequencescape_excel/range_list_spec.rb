@@ -30,9 +30,7 @@ RSpec.describe SequencescapeExcel::RangeList, type: :model, sample_manifest_exce
   end
 
   it '#set_worksheet_names will set worksheet names' do
-    range_list.set_worksheet_names('Ranges').each do |_k, range|
-      expect(range.worksheet_name).to eq('Ranges')
-    end
+    range_list.set_worksheet_names('Ranges').each { |_k, range| expect(range.worksheet_name).to eq('Ranges') }
   end
 
   it 'will be comparable' do

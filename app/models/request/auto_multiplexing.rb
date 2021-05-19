@@ -18,11 +18,8 @@ class Request::AutoMultiplexing < Request::Multiplexing
     # We go via order as we need to get a particular instance of submission
     return if asset.blank?
 
-    order.submission.register_callback(:once) do
-      Transfer::FromPlateToTubeByMultiplex.create!(
-        source: asset.plate,
-        user: order.user
-      )
-    end
+    order
+      .submission
+      .register_callback(:once) { Transfer::FromPlateToTubeByMultiplex.create!(source: asset.plate, user: order.user) }
   end
 end

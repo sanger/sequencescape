@@ -3,23 +3,29 @@
 # Generate a bulk submission excel template
 # from basic user provided data
 class BulkSubmissionExcel::DownloadsController < ApplicationController
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     finder = Asset::Finder.new(submission_parameters.fetch(:asset_barcodes, '').split(/\s+/))
-    download = BulkSubmissionExcel::Download.new(
-      column_list: BulkSubmissionExcel.configuration.columns.all,
-      range_list: BulkSubmissionExcel.configuration.ranges,
-      defaults: params[:defaults],
-      assets: finder.resolve
-    )
+    download =
+      BulkSubmissionExcel::Download.new(
+        column_list: BulkSubmissionExcel.configuration.columns.all,
+        range_list: BulkSubmissionExcel.configuration.ranges,
+        defaults: params[:defaults],
+        assets: finder.resolve
+      )
     file = Tempfile.new
     download.save(file)
-    send_file file.path, content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename: "#{finder.barcodes.join('_')}_#{Time.current.strftime('%Y%m%d')}.xlsx"
+    send_file file.path,
+              content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              filename: "#{finder.barcodes.join('_')}_#{Time.current.strftime('%Y%m%d')}.xlsx"
   rescue Asset::Finder::InvalidInputException => e
     flash[:error] = e.message
     redirect_back fallback_location: bulk_submissions_path
   ensure
     file&.close
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def new
     @submission_template = SubmissionTemplate.find_by(id: params[:submission_template_id])

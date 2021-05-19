@@ -1,11 +1,11 @@
 ---
 Basic Plate:
-  target_type: 'Plate'
+  target_type: "Plate"
   stock_plate: true
-  barcode_printer_type: '96 Well Plate'
+  barcode_printer_type: "96 Well Plate"
 Other Plate:
-  target_type: 'Plate'
+  target_type: "Plate"
   stock_plate: true
-  barcode_printer_type: '96 Well Plate'
+  barcode_printer_type: "96 Well Plate"
   plate_creator:
-    from: 'Stock Plate'
+    from: "Stock Plate"

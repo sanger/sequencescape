@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Studies
-  class AssetGroupsControllerTest < ActionController::TestCase
+  class AssetGroupsControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
     @assetgroup_count = AssetGroup.count
     @study_count = Study.count
 
@@ -12,7 +12,7 @@ module Studies
         @assetgroup_count_a = AssetGroup.count
         @study_count_a = Study.count
         @controller = Studies::AssetGroupsController.new
-        @request    = ActionController::TestRequest.create(@controller)
+        @request = ActionController::TestRequest.create(@controller)
         @user = FactoryBot.create :user
         session[:user] = @user.id
         @controller.stubs(:logged_in?).returns(@user)
@@ -30,15 +30,15 @@ module Studies
           should respond_with :success
 
           should 'change AssetGroup.count by 0' do
-            assert_equal 0,  AssetGroup.count - @assetgroup_count, 'Expected AssetGroup.count to change by 0'
+            assert_equal 0, AssetGroup.count - @assetgroup_count, 'Expected AssetGroup.count to change by 0'
           end
           should 'change Study.count by 0' do
-            assert_equal 0,  Study.count - @study_count, 'Expected Study.count to change by 0'
+            assert_equal 0, Study.count - @study_count, 'Expected Study.count to change by 0'
           end
         end
       end
 
-      %w(show edit print printing).each do |controller_method|
+      %w[show edit print printing].each do |controller_method|
         context "##{controller_method}" do
           setup do
             @assetgroup_count = AssetGroup.count
@@ -46,43 +46,35 @@ module Studies
             get controller_method, params: { study_id: @study.id, id: @asset_group.id }
           end
           should 'change AssetGroup.count by 0' do
-            assert_equal 0,  AssetGroup.count - @assetgroup_count, 'Expected AssetGroup.count to change by 0'
+            assert_equal 0, AssetGroup.count - @assetgroup_count, 'Expected AssetGroup.count to change by 0'
           end
           should 'change Study.count by 0' do
-            assert_equal 0,  Study.count - @study_count, 'Expected Study.count to change by 0'
+            assert_equal 0, Study.count - @study_count, 'Expected Study.count to change by 0'
           end
         end
       end
 
       context '#search' do
         context 'should redirect if no query is passed in' do
-          setup do
-            get :search, params: { study_id: @study.id, id: @asset_group.id }
-          end
+          setup { get :search, params: { study_id: @study.id, id: @asset_group.id } }
 
           should respond_with :redirect
         end
 
         context 'should redirect if it is given a blank query' do
-          setup do
-            get :search, params: { study_id: @study.id, id: @asset_group.id, q: '' }
-          end
+          setup { get :search, params: { study_id: @study.id, id: @asset_group.id, q: '' } }
 
           should respond_with :redirect
         end
 
         context 'should redirect if too small a query is passed' do
-          setup do
-            get :search, params: { study_id: @study.id, id: @asset_group.id, q: 'a' }
-          end
+          setup { get :search, params: { study_id: @study.id, id: @asset_group.id, q: 'a' } }
 
           should respond_with :redirect
         end
 
         context 'should suceed with a query longer than 1' do
-          setup do
-            get :search, params: { study_id: @study.id, id: @asset_group.id, q: 'ab' }
-          end
+          setup { get :search, params: { study_id: @study.id, id: @asset_group.id, q: 'ab' } }
 
           should respond_with :success
         end
@@ -100,7 +92,7 @@ module Studies
         end
 
         should 'change Study.count by 0' do
-          assert_equal 0,  Study.count - @study_count, 'Expected Study.count to change by 0'
+          assert_equal 0, Study.count - @study_count, 'Expected Study.count to change by 0'
         end
 
         should respond_with :redirect
@@ -116,11 +108,11 @@ module Studies
         should set_flash.to(/updated/)
 
         should 'change AssetGroup.count by 0' do
-          assert_equal 0,  AssetGroup.count - @assetgroup_count, 'Expected AssetGroup.count to change by 0'
+          assert_equal 0, AssetGroup.count - @assetgroup_count, 'Expected AssetGroup.count to change by 0'
         end
 
         should 'change Study.count by 0' do
-          assert_equal 0,  Study.count - @study_count, 'Expected Study.count to change by 0'
+          assert_equal 0, Study.count - @study_count, 'Expected Study.count to change by 0'
         end
 
         should respond_with :redirect
@@ -140,8 +132,15 @@ module Studies
 
           RestClient.expects(:post)
 
-          post :print_labels, params: { printables: { @asset.id.to_s => 'true' }, printer: barcode_printer.name,
-                                        id: @asset_group.id, study_id: @study.id }
+          post :print_labels,
+               params: {
+                 printables: {
+                   @asset.id.to_s => 'true'
+                 },
+                 printer: barcode_printer.name,
+                 id: @asset_group.id,
+                 study_id: @study.id
+               }
         end
       end
     end

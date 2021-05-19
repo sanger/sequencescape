@@ -9,7 +9,7 @@ FactoryBot.define do
 
   factory :qc_metric do
     qc_report
-    asset            { |a| a.association(:well) }
-    qc_decision      { 'passed' }
+    asset { |a| a.association(:well) }
+    qc_decision { 'passed' }
   end
 end

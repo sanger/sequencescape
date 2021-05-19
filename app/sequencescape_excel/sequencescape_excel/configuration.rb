@@ -25,9 +25,7 @@ module SequencescapeExcel
     def load!
       return if folder.blank?
 
-      @files.each do |file|
-        send("#{file}=", load_file(folder, file.to_s))
-      end
+      @files.each { |file| send("#{file}=", load_file(folder, file.to_s)) }
       @loaded = true
     end
 
@@ -50,9 +48,7 @@ module SequencescapeExcel
     def ==(other)
       return false unless other.is_a?(self.class)
 
-      folder == other.folder &&
-        conditional_formattings == other.conditional_formattings &&
-        ranges == other.ranges &&
+      folder == other.folder && conditional_formattings == other.conditional_formattings && ranges == other.ranges &&
         columns == other.columns
     end
 

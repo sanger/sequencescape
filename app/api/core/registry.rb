@@ -4,16 +4,17 @@ class ::Core::Registry # rubocop:todo Style/Documentation
   include ::Singleton
   include ::Core::Logging
 
-  RegistryError          = Class.new(StandardError)
+  RegistryError = Class.new(StandardError)
   AlreadyRegisteredError = Class.new(RegistryError)
-  UnregisteredError      = Class.new(RegistryError)
+  UnregisteredError = Class.new(RegistryError)
 
   def initialize
     @model_class_to_target = {}
   end
 
   def lookup_target_class_in_registry!(model_class)
-    lookup_target_class_in_registry(model_class) or raise UnregisteredError, "Unable to locate for #{model_class.name.inspect}"
+    lookup_target_class_in_registry(model_class) or
+      raise UnregisteredError, "Unable to locate for #{model_class.name.inspect}"
   end
 
   def lookup_target_class_through_model_hierarchy!(model_class, root_lookup_model_class = model_class)

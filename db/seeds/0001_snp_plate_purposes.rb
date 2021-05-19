@@ -53,28 +53,27 @@ plate_purposes = <<~EOS
     prefix: FA
 EOS
 
-YAML.load(plate_purposes).each do |plate_purpose|
-  attributes = plate_purpose.reverse_merge(
-    'type' => 'PlatePurpose',
-    'cherrypickable_target' => false,
-    'asset_shape_id' => AssetShape.default_id,
-    'prefix' => 'DN',
-    'target_type' => 'Plate'
-  )
-  attributes.delete('type').constantize.new(attributes) do |purpose|
-    purpose.id = attributes['id']
-  end.save!
-end
+YAML
+  .load(plate_purposes)
+  .each do |plate_purpose|
+    attributes =
+      plate_purpose.reverse_merge(
+        'type' => 'PlatePurpose',
+        'cherrypickable_target' => false,
+        'asset_shape_id' => AssetShape.default_id,
+        'prefix' => 'DN',
+        'target_type' => 'Plate'
+      )
+    attributes.delete('type').constantize.new(attributes) { |purpose| purpose.id = attributes['id'] }.save!
+  end
 
 # Some plate purposes that appear to be used by SLF but are not in the seeds from SNP.
-5.times do |index|
-  PlatePurpose.create!(name: "Aliquot #{index}", stock_plate: true, cherrypickable_target: true)
-end
+5.times { |index| PlatePurpose.create!(name: "Aliquot #{index}", stock_plate: true, cherrypickable_target: true) }
 
 ActiveRecord::Base.transaction do
   # A couple of legacy pulldown types
-  PlatePurpose.create!(name: 'SEQCAP WG', cherrypickable_target: false)  # Superceded by Pulldown WGS below (here for transition period)
-  PlatePurpose.create!(name: 'SEQCAP SC', cherrypickable_target: false)  # Superceded by Pulldown SC/ISC below (here for transition period)
+  PlatePurpose.create!(name: 'SEQCAP WG', cherrypickable_target: false) # Superceded by Pulldown WGS below (here for transition period)
+  PlatePurpose.create!(name: 'SEQCAP SC', cherrypickable_target: false) # Superceded by Pulldown SC/ISC below (here for transition period)
 
   PlatePurpose.create!(
     name: 'STA',
@@ -126,5 +125,9 @@ PlatePurpose.create!(
   size: 96,
   asset_shape_id: AssetShape.default_id
 )
-MessengerCreator.create!(purpose: Purpose.find_by(name: 'Stock Plate'), root: 'stock_resource',
-                         template: 'WellStockResourceIO', target_finder_class: 'WellFinder')
+MessengerCreator.create!(
+  purpose: Purpose.find_by(name: 'Stock Plate'),
+  root: 'stock_resource',
+  template: 'WellStockResourceIO',
+  target_finder_class: 'WellFinder'
+)

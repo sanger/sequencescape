@@ -3,7 +3,7 @@
 # 24*26 (384). The wells are differentiated via their {Map} which corresponds to a
 # row and column. Most well locations are identified by a letter-number combination,
 # eg. A1, H12.
-class Well < Receptacle
+class Well < Receptacle # rubocop:todo Metrics/ClassLength
   include Api::WellIO::Extensions
   include ModelExtensions::Well
   include Cherrypick::VolumeByNanoGrams
@@ -23,13 +23,13 @@ class Well < Receptacle
     belongs_to :target_well, class_name: 'Well'
     belongs_to :source_well, class_name: 'Well'
 
-    scope :stock, ->() { where(type: 'stock') }
+    scope :stock, -> { where(type: 'stock') }
   end
 
   self.stock_message_template = 'WellStockResourceIO'
   self.per_page = 500
 
-  has_many :stock_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :target_well_id
+  has_many :stock_well_links, -> { stock }, class_name: 'Well::Link', foreign_key: :target_well_id
   has_many :stock_wells, through: :stock_well_links, source: :source_well do
     def attach!(wells)
       Well::Link.import(attach(wells))
@@ -44,7 +44,7 @@ class Well < Receptacle
   has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
   has_many :qc_reports, through: :qc_metrics
   has_many :reported_criteria, through: :qc_reports, source: :product_criteria
-  has_many :target_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
+  has_many :target_well_links, -> { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
   has_many :target_wells, through: :target_well_links, source: :target_well
 
   belongs_to :plate, foreign_key: :labware_id
@@ -54,106 +54,107 @@ class Well < Receptacle
 
   before_create :well_attribute # Ensure all wells have attributes
 
-  scope :with_concentration, ->() {
-    joins(:well_attribute)
-      .where('well_attributes.concentration IS NOT NULL')
-  }
+  scope :with_concentration, -> { joins(:well_attribute).where('well_attributes.concentration IS NOT NULL') }
   scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
-  scope :include_stock_wells_for_modification, -> {
-    # Preload rather than include, as otherwise joins result
-    # in exponential expansion of the number of records loaded
-    # and you run out of memory.
-    preload(:stock_well_links,
+  scope :include_stock_wells_for_modification,
+        -> {
+          # Preload rather than include, as otherwise joins result
+          # in exponential expansion of the number of records loaded
+          # and you run out of memory.
+          preload(
+            :stock_well_links,
             stock_wells: {
               requests_as_source: [
                 :target_asset,
                 :request_type,
                 :request_metadata,
                 :request_events,
-                {
-                  initial_project: :project_metadata,
-                  submission: :orders
-                }
+                { initial_project: :project_metadata, submission: :orders }
               ]
-            })
-  }
+            }
+          )
+        }
 
   scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
+
   # added version of scope with includes to avoid multiple calls to LabWhere in qc report when getting storage location
   # for wells in the same plate
-  scope :on_plate_purpose_included, ->(purposes) {
-    includes(labware: :barcodes)
-      .references(:labware)
-      .where(labware: { plate_purpose_id: purposes })
-  }
+  scope :on_plate_purpose_included,
+        ->(purposes) {
+          includes(labware: :barcodes).references(:labware).where(labware: { plate_purpose_id: purposes })
+        }
 
-  scope :for_study_through_aliquot, ->(study) {
-    joins(:aliquots)
-      .where(aliquots: { study_id: study })
-  }
+  scope :for_study_through_aliquot, ->(study) { joins(:aliquots).where(aliquots: { study_id: study }) }
 
-  scope :with_report, ->(product_criteria) {
-    joins(:reported_criteria).where(product_criteria: {
-                                      product_id: product_criteria.product_id,
-                                      stage: product_criteria.stage
-                                    })
-  }
+  scope :with_report,
+        ->(product_criteria) {
+          joins(:reported_criteria).where(
+            product_criteria: {
+              product_id: product_criteria.product_id,
+              stage: product_criteria.stage
+            }
+          )
+        }
 
-  scope :without_report, ->(product_criteria) {
-    where.not(id: Well.with_report(product_criteria))
-  }
+  scope :without_report, ->(product_criteria) { where.not(id: Well.with_report(product_criteria)) }
 
-  scope :stock_wells_for, ->(wells) {
-    joins(:target_well_links)
-      .where(well_links: { target_well_id: [wells].flatten.map(&:id) })
-  }
-  scope :target_wells_for, ->(wells) {
-    select_table.select('well_links.source_well_id AS stock_well_id')
-                .joins(:stock_well_links).where(well_links: {
-                                                  source_well_id: wells
-                                                })
-  }
+  scope :stock_wells_for,
+        ->(wells) { joins(:target_well_links).where(well_links: { target_well_id: [wells].flatten.map(&:id) }) }
+  scope :target_wells_for,
+        ->(wells) {
+          select_table
+            .select('well_links.source_well_id AS stock_well_id')
+            .joins(:stock_well_links)
+            .where(well_links: { source_well_id: wells })
+        }
 
-  scope :pooled_as_target_by_transfer, ->() {
-    joins("LEFT JOIN transfer_requests patb ON #{table_name}.id=patb.target_asset_id")
-      .select_table
-      .select('patb.submission_id AS pool_id').distinct
-  }
+  scope :pooled_as_target_by_transfer,
+        -> {
+          joins("LEFT JOIN transfer_requests patb ON #{table_name}.id=patb.target_asset_id")
+            .select_table
+            .select('patb.submission_id AS pool_id')
+            .distinct
+        }
 
-  scope :pooled_as_source_by, ->(type) {
-    joins("LEFT JOIN requests pasb ON #{table_name}.id=pasb.asset_id")
-      .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)',
-              [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
-      .select_table
-      .select('pasb.submission_id AS pool_id').distinct
-  }
+  scope :pooled_as_source_by,
+        ->(type) {
+          joins("LEFT JOIN requests pasb ON #{table_name}.id=pasb.asset_id")
+            .where(
+              [
+                '(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)',
+                [type, *type.descendants].map(&:name),
+                Request::Statemachine::OPENED_STATE
+              ]
+            )
+            .select_table
+            .select('pasb.submission_id AS pool_id')
+            .distinct
+        }
 
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
-  scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
-  scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
-  scope :in_inverse_column_major_order, -> {
-                                          joins(:map).order('column_order DESC').select_table.select('column_order')
-                                        }
-  scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select_table.select('row_order') }
-  scope :in_plate_column, ->(col, size) {
-                            joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size),
-                                                      asset_size: size })
-                          }
-  scope :in_plate_row,    ->(row, size) {
-                            joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size),
-                                                      asset_size: size })
-                          }
-  scope :with_blank_samples, -> {
-    joins([
-      'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id',
-      'INNER JOIN samples ON aliquots.sample_id=samples.id'
-    ])
-      .where(['samples.empty_supplier_sample_name=?', true])
-  }
-  scope :without_blank_samples, ->() {
-    joins(aliquots: :sample)
-      .where(samples: { empty_supplier_sample_name: false })
-  }
+  scope :in_column_major_order, -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
+  scope :in_row_major_order, -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
+  scope :in_inverse_column_major_order,
+        -> { joins(:map).order('column_order DESC').select_table.select('column_order') }
+  scope :in_inverse_row_major_order, -> { joins(:map).order('row_order DESC').select_table.select('row_order') }
+  scope :in_plate_column,
+        ->(col, size) {
+          joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size), asset_size: size })
+        }
+  scope :in_plate_row,
+        ->(row, size) {
+          joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size), asset_size: size })
+        }
+  scope :with_blank_samples,
+        -> {
+          joins(
+            [
+              'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id',
+              'INNER JOIN samples ON aliquots.sample_id=samples.id'
+            ]
+          ).where(['samples.empty_supplier_sample_name=?', true])
+        }
+  scope :without_blank_samples, -> { joins(aliquots: :sample).where(samples: { empty_supplier_sample_name: false }) }
 
   delegate :location, :location_id, :location_id=, :printable_target, :source_plate, to: :plate, allow_nil: true
   delegate :column_order, :row_order, to: :map, allow_nil: true
@@ -179,6 +180,7 @@ class Well < Receptacle
       return {} unless purpose_names
 
       purposes = PlatePurpose.where(name: purpose_names)
+
       # We might need to be careful about this line in future.
       target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).preload(:well_attribute).with_concentration
 
@@ -203,12 +205,13 @@ class Well < Receptacle
   end
 
   def qc_result_for(key)
-    result =  if key == 'quantity_in_nano_grams'
-                well_attribute.quantity_in_nano_grams
-              else
-                results = qc_results_by_key[key]
-                results.first.value if results.present?
-              end
+    result =
+      if key == 'quantity_in_nano_grams'
+        well_attribute.quantity_in_nano_grams
+      else
+        results = qc_results_by_key[key]
+        results.first.value if results.present?
+      end
 
     return if result.nil?
     return result.to_f.round(3) if result.to_s.include?('.')
@@ -269,7 +272,8 @@ class Well < Receptacle
 
   delegate_to_well_attribute(:gender_markers)
 
-  def update_gender_markers!(gender_markers, resource)
+  # rubocop:todo Metrics/MethodLength
+  def update_gender_markers!(gender_markers, resource) # rubocop:todo Metrics/AbcSize
     if well_attribute.gender_markers == gender_markers
       gender_marker_event = events.where(family: 'update_gender_markers').order('id desc').first
       if gender_marker_event.blank?
@@ -284,10 +288,10 @@ class Well < Receptacle
     well_attribute.update!(gender_markers: gender_markers)
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def update_sequenom_count!(sequenom_count, resource)
-    unless well_attribute.sequenom_count == sequenom_count
-      events.update_sequenom_count!(resource)
-    end
+    events.update_sequenom_count!(resource) unless well_attribute.sequenom_count == sequenom_count
     well_attribute.update!(sequenom_count: sequenom_count)
   end
 
@@ -306,10 +310,7 @@ class Well < Receptacle
   end
 
   def qc_data
-    { pico: get_pico_pass,
-      gel: get_gel_pass,
-      sequenom: get_sequenom_pass,
-      concentration: get_concentration }
+    { pico: get_pico_pass, gel: get_gel_pass, sequenom: get_sequenom_pass, concentration: get_concentration }
   end
 
   def buffer_required?
@@ -333,9 +334,7 @@ class Well < Receptacle
     # If we don't have any stock wells, use ourself. If it is a stock well, we'll find our
     # qc metric. If its not a stock well, then a metric won't be present anyway
     metric_wells = stock_wells.empty? ? [self] : stock_wells
-    metric_wells.map do |stock_well|
-      stock_well.qc_metrics.for_product(product).most_recent_first.first
-    end.compact.uniq
+    metric_wells.filter_map { |stock_well| stock_well.qc_metrics.for_product(product).most_recent_first.first }.uniq
   end
 
   def asset_type_for_request_types

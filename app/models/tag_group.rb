@@ -4,10 +4,10 @@ class TagGroup < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
   include SharedBehaviour::Named
 
-  has_many :tags, ->() { order('map_id ASC') }
+  has_many :tags, -> { order('map_id ASC') }
   belongs_to :adapter_type, class_name: 'TagGroup::AdapterType', optional: true
 
-  scope :include_tags, ->() { includes(:tags) }
+  scope :include_tags, -> { includes(:tags) }
 
   scope :visible, -> { where(visible: true) }
 

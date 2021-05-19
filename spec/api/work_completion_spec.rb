@@ -14,33 +14,33 @@ describe '/api/1/work_completions' do
 
   describe '#post' do
     let(:payload) do
-      %{{
-        "work_completion":{
-          "target": "#{target_plate.uuid}",
-          "user": "#{user.uuid}",
-          "submissions": ["#{target_submission.uuid}"]
+      "{
+        \"work_completion\":{
+          \"target\": \"#{target_plate.uuid}\",
+          \"user\": \"#{user.uuid}\",
+          \"submissions\": [\"#{target_submission.uuid}\"]
         }
-      }}
+      }"
     end
 
     let(:response_body) do
-      %{{
-        "work_completion": {
-          "actions": {},
-          "target": {
-            "uuid": "#{target_plate.uuid}",
-            "actions": {}
+      "{
+        \"work_completion\": {
+          \"actions\": {},
+          \"target\": {
+            \"uuid\": \"#{target_plate.uuid}\",
+            \"actions\": {}
           },
-          "submissions": {
-            "size": 1,
-            "actions": {}
+          \"submissions\": {
+            \"size\": 1,
+            \"actions\": {}
           },
-          "user": {
-            "uuid": "#{user.uuid}",
-            "actions": {}
+          \"user\": {
+            \"uuid\": \"#{user.uuid}\",
+            \"actions\": {}
           }
         }
-      }}
+      }"
     end
     let(:response_code) { 201 }
 

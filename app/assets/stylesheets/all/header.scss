@@ -27,12 +27,14 @@ body.production {
   padding: 0;
   font-size: 8px;
   letter-spacing: 2px;
-  text-shadow: 0 -1px 1px #00131C;
+  text-shadow: 0 -1px 1px #00131c;
   width: 100%;
   text-align: center;
 }
 
-#app_name a, #app_name a:link, #app_name a:visited #app_name a:hover {
+#app_name a,
+#app_name a:link,
+#app_name a:visited #app_name a:hover {
   text-decoration: none;
   color: #fff;
 }

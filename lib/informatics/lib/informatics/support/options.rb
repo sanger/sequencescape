@@ -10,9 +10,7 @@ module Informatics
       end
 
       def options=(opt)
-        if opt.is_a? Array
-          opt = opt[0]
-        end
+        opt = opt[0] if opt.is_a? Array
         @options = opt
       end
 

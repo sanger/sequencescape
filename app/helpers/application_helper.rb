@@ -1,14 +1,14 @@
+# rubocop:todo Metrics/ModuleLength
 module ApplicationHelper # rubocop:todo Style/Documentation
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
-    Rails.cache.fetch("#{identifier}-#{differential}") do
-      custom_text = CustomText.find_by(
-        identifier: identifier,
-        differential: differential
-      )
+    Rails
+      .cache
+      .fetch("#{identifier}-#{differential}") do
+        custom_text = CustomText.find_by(identifier: identifier, differential: differential)
 
-      custom_text.try(:content) || ''
-    end
+        custom_text.try(:content) || ''
+      end
   end
 
   #
@@ -35,11 +35,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
 
   def render_flashes
     flash.each do |key, message|
-      concat(
-        alert(key, id: "message_#{key}") do
-          Array(message).each { |m| concat tag.div(m) }
-        end
-      )
+      concat(alert(key, id: "message_#{key}") { Array(message).each { |m| concat tag.div(m) } })
     end
     nil
   end
@@ -55,15 +51,11 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   #
   # @return [type] [description]
   def display_user_guide(display_text, link = nil)
-    alert(:user_guide) do
-      concat link.present? ? link_to(display_text, link) : display_text
-    end
+    alert(:user_guide) { concat link.present? ? link_to(display_text, link) : display_text }
   end
 
   def display_user_error(display_text, link = nil)
-    alert(:danger) do
-      link.present? ? link_to(display_text, link) : display_text
-    end
+    alert(:danger) { link.present? ? link_to(display_text, link) : display_text }
   end
 
   #
@@ -106,7 +98,8 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     badge(status, type: 'counter-badge', style: 'primary')
   end
 
-  def dynamic_link_to(summary_item)
+  # rubocop:todo Metrics/MethodLength
+  def dynamic_link_to(summary_item) # rubocop:todo Metrics/AbcSize
     object = summary_item.object
     if object.instance_of?(Submission)
       link_to("Submission #{object.id}", study_information_submission_path(object.study, object))
@@ -121,10 +114,11 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
-  def request_count_link(study, asset, state, request_type)
-    matching_requests = asset.requests.select do |request|
-      (request.request_type_id == request_type.id) and request.state == state
-    end
+  # rubocop:enable Metrics/MethodLength
+
+  def request_count_link(study, asset, state, request_type) # rubocop:todo Metrics/AbcSize
+    matching_requests =
+      asset.requests.select { |request| (request.request_type_id == request_type.id) and request.state == state }
     html_options, count = { title: "#{asset.try(:human_barcode) || asset.id} #{state}" }, matching_requests.size
 
     # 0 requests => no link, just '0'
@@ -139,7 +133,9 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
+  # rubocop:todo Metrics/ParameterLists
   def request_link(object, count, request_type, status = nil, options = {}, link_options = {})
+    # rubocop:enable Metrics/ParameterLists
     link_to_if((count != 0), count, request_list_path(object, request_type, status, options), link_options)
   end
 
@@ -157,11 +153,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   end
 
   def display_follow(item, user, msg)
-    if user.follower_of?(item)
-      'Unfollow ' + msg
-    else
-      'Follow ' + msg
-    end
+    user.follower_of?(item) ? 'Unfollow ' + msg : 'Follow ' + msg
   end
 
   ## From Pipelines
@@ -170,35 +162,42 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     add :about, title
   end
 
-  def tabulated_error_messages_for(*params)
+  # rubocop:todo Metrics/MethodLength
+  def tabulated_error_messages_for(*params) # rubocop:todo Metrics/AbcSize
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
-    objects = params.collect { |object_name| instance_variable_get("@#{object_name}") }.compact
-    count   = objects.inject(0) { |sum, object| sum + object.errors.count }
+    objects = params.filter_map { |object_name| instance_variable_get("@#{object_name}") }
+    count = objects.inject(0) { |sum, object| sum + object.errors.count }
     if count.zero?
       ''
     else
       error_messages = objects.map { |object| object.errors.full_messages.map { |msg| tag.div(msg) } }.join
-      [tag.td(class: 'error item') do
-        "Your #{params.first} has not been created."
-      end,
-       tag.td(class: 'error') do
-         raw(error_messages)
-       end].join.html_safe
+      [
+        tag.td(class: 'error item') { "Your #{params.first} has not been created." },
+        tag.td(class: 'error') { raw(error_messages) }
+      ].join.html_safe
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   # <li class="nav-item">
   #   <a class="nav-link <active>" id="name-tab" data-toggle="tab" href="#name"
   #    role="tab" aria-controls="name" aria-selected="true">name</a>
   # </li>
-  def tab(name, target: nil, active: false, id: nil)
+  def tab(name, target: nil, active: false, id: nil) # rubocop:todo Metrics/MethodLength
     target ||= name.parameterize
     active_class = active ? 'active' : ''
     id ||= "#{name}-tab".parameterize
     tag.li(class: 'nav-item') do
-      link_to name, "##{target}", id: id, data: { toggle: 'tab' }, role: 'tab', aria_controls: target, class: [
-        'nav-link', active_class
-      ]
+      link_to name,
+              "##{target}",
+              id: id,
+              data: {
+                toggle: 'tab'
+              },
+              role: 'tab',
+              aria_controls: target,
+              class: ['nav-link', active_class]
     end
   end
 
@@ -209,8 +208,13 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     tab_id ||= "#{name}-tab".parameterize
     id ||= name.parameterize
     active_class = active ? 'active' : ''
-    tag.div(class: ['tab-pane', 'fade', 'show', active_class], id: id, role: 'tabpanel', aria_labelledby: tab_id,
-            &block)
+    tag.div(
+      class: ['tab-pane', 'fade', 'show', active_class],
+      id: id,
+      role: 'tabpanel',
+      aria_labelledby: tab_id,
+      &block
+    )
   end
 
   def display_request_information(request, rit, batch = nil)
@@ -268,13 +272,13 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   #
   # @return [String] HTML formatted for rendering
   #
-  def render_parsed_json(json)
+  # rubocop:todo Metrics/MethodLength
+  def render_parsed_json(json) # rubocop:todo Metrics/AbcSize
     case json
-    when String; then json
+    when String
+      json
     when Array
-      tag.ul do
-        json.each { |elem, _string| concat tag.li(render_parsed_json(elem)) }
-      end
+      tag.ul { json.each { |elem, _string| concat tag.li(render_parsed_json(elem)) } }
     when Hash
       tag.dl do
         json.each do |key, value|
@@ -289,10 +293,17 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.
   def old_url
-    permitted_urls = ['http://sequencescape.psd.sanger.ac.uk', 'http://uat.sequencescape.psd.sanger.ac.uk',
-                      'http://uat2.sequencescape.psd.sanger.ac.uk', 'http://training.sequencescape.psd.sanger.ac.uk']
+    permitted_urls = %w[
+      http://sequencescape.psd.sanger.ac.uk
+      http://uat.sequencescape.psd.sanger.ac.uk
+      http://uat2.sequencescape.psd.sanger.ac.uk
+      http://training.sequencescape.psd.sanger.ac.uk
+    ]
     return true unless permitted_urls.include?(request.base_url)
   end
 end
+# rubocop:enable Metrics/ModuleLength

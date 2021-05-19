@@ -6,6 +6,7 @@ module Ability::Shared::SampleManagementUser
   def grant_privileges
     super
     Rails.logger.debug { 'Granting SampleManagementUser privileges' }
+
     # Index page of a few sample management tasks
     can :manage, GelsController
     can :read, SampleLogisticsController

@@ -15,11 +15,13 @@
 #         It appears to be supposed to redirect to the labware page, but it blows up for tubes
 #         and shows the qc information for plates.
 class AssetsController < ApplicationController
-  def show
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def show # rubocop:todo Metrics/CyclomaticComplexity
     # LEGACY API FOR CGP to allow switch-over
     # In future they will use the recpetacles/:id/parent
     if request.format.xml?
-
       @asset = Receptacle.include_for_show.find(params[:id])
       respond_to { |format| format.xml }
       return
@@ -41,12 +43,15 @@ class AssetsController < ApplicationController
     end
   end
 
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+
   # TODO: This is currently used from the PhiX::SpikedBuffersController and
   # PhiX::StocksController show pages. It doesn't really belong here.
   def print_labels
-    print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                           LabelPrinter::Label::AssetRedirect,
-                                           printables: params[:printables])
+    print_job =
+      LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::AssetRedirect, printables: params[:printables])
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -57,7 +62,8 @@ class AssetsController < ApplicationController
   end
 
   # JG 23/12/2020: I can't find any links to this page, and think we can probably lose it.
-  def lookup
+  # rubocop:todo Metrics/MethodLength
+  def lookup # rubocop:todo Metrics/AbcSize
     if params[:asset] && params[:asset][:barcode]
       @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
 
@@ -68,14 +74,15 @@ class AssetsController < ApplicationController
         flash.now[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
         respond_to do |format|
           format.html { render action: 'lookup' }
-          format.xml  { render xml: @assets.to_xml }
+          format.xml { render xml: @assets.to_xml }
         end
       else
         respond_to do |format|
           format.html { render action: 'index' }
-          format.xml  { render xml: @assets.to_xml }
+          format.xml { render xml: @assets.to_xml }
         end
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

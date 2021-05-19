@@ -31,13 +31,13 @@ See: https://github.com/sanger/sequencescape/issues/2860
             </li>
             <li>
               <i class="fas fa-check" />
-              If the plate is in a single pick, the plate will turn green, and the pick
-              will be listed. If the sound is turned on, the pick name will be read out.
+              If the plate is in a single pick, the plate will turn green, and the pick will be listed. If the sound is
+              turned on, the pick name will be read out.
             </li>
             <li>
               <i class="fas fa-check-double" />
-              If the plate is in a multiple pick, the plate will turn blue, and the picks
-              will be listed. If the sound is turned on, the pick names will be read out.
+              If the plate is in a multiple pick, the plate will turn blue, and the picks will be listed. If the sound
+              is turned on, the pick names will be read out.
             </li>
             <li>
               <i class="fas fa-times" />
@@ -45,10 +45,9 @@ See: https://github.com/sanger/sequencescape/issues/2860
             </li>
             <li>
               <i class="fas fa-vial" />
-              If the plate is a control its picks will not be shown and instead it will indicate control.
-              This is beacuse control plates are used in a large number of picks, and attempting to
-              display them all would be impractical.
-              The plate will turn grey.
+              If the plate is a control its picks will not be shown and instead it will indicate control. This is
+              beacuse control plates are used in a large number of picks, and attempting to display them all would be
+              impractical. The plate will turn grey.
             </li>
             <li>
               <i class="fas fa-exclamation-triangle" />
@@ -57,8 +56,8 @@ See: https://github.com/sanger/sequencescape/issues/2860
           </ul>
         </li>
         <li>
-          The right hand side of the screen will display all picks in the same batch as the plate.
-          Any plates which have been scanned in to the left hand side will be green and ticked.
+          The right hand side of the screen will display all picks in the same batch as the plate. Any plates which have
+          been scanned in to the left hand side will be green and ticked.
         </li>
         <li>Proceed to scan in the next plate</li>
       </ol>
@@ -68,7 +67,7 @@ See: https://github.com/sanger/sequencescape/issues/2860
       v-model="notifyMode"
       :options="[
         { value: 'short', label: 'Short pick names' },
-        { value: 'long', label: 'Long pick names' }
+        { value: 'long', label: 'Long pick names' },
       ]"
       name="notifyMode"
       :inline="true"
@@ -81,32 +80,42 @@ See: https://github.com/sanger/sequencescape/issues/2860
 </template>
 
 <script>
-import HelpToggle from './components/HelpToggle.vue'
-import PicksSection from './components/PicksSection.vue'
-import PlatesSection from './components/PlatesSection.vue'
+import HelpToggle from "./components/HelpToggle.vue";
+import PicksSection from "./components/PicksSection.vue";
+import PlatesSection from "./components/PlatesSection.vue";
 
 export default {
   components: {
-    'help-toggle': HelpToggle,
-    'picks-section': PicksSection,
-    'plates-section': PlatesSection
+    "help-toggle": HelpToggle,
+    "picks-section": PicksSection,
+    "plates-section": PlatesSection,
   },
-  data: function () { return {} },
+  data: function () {
+    return {};
+  },
   computed: {
     notifyMode: {
-      get () {
-        return this.$store.state.options.notifyMode.mode
+      get() {
+        return this.$store.state.options.notifyMode.mode;
       },
-      set (value) {
-        this.$store.commit('updateNotifyMode', { mode: value })
-      }
-    }
-  }
-}
+      set(value) {
+        this.$store.commit("updateNotifyMode", { mode: value });
+      },
+    },
+  },
+};
 </script>
 
 <style scoped>
-  #sections { display: flex; }
-  #plates-section { flex-grow: 1; padding: 1em; }
-  #picks-section { flex-grow: 1; padding: 1em; }
+#sections {
+  display: flex;
+}
+#plates-section {
+  flex-grow: 1;
+  padding: 1em;
+}
+#picks-section {
+  flex-grow: 1;
+  padding: 1em;
+}
 </style>

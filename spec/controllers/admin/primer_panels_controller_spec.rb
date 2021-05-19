@@ -6,9 +6,7 @@ describe Admin::PrimerPanelsController do
   let(:primer_panel) { create :primer_panel }
 
   context 'as admin' do
-    before do
-      session[:user] = create :admin
-    end
+    before { session[:user] = create :admin }
 
     describe '#index' do
       before { get :index }
@@ -56,9 +54,7 @@ describe Admin::PrimerPanelsController do
   end
 
   context 'as non-admin' do
-    before do
-      session[:user] = create :user
-    end
+    before { session[:user] = create :user }
 
     describe '#index' do
       it 'redirects' do

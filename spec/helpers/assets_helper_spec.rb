@@ -79,6 +79,7 @@ describe AssetsHelper do
     context 'with a manager' do
       let(:user) { create :manager }
       let(:asset) { create :sample_tube }
+
       # NOTE: This behaviour changes with the permissions update to be consistent
       # with sequencing.
 

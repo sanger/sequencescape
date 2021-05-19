@@ -26,33 +26,23 @@ When /^(?:|I )go to (.+)$/ do |page_name|
 end
 
 When /^(?:|I )press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
-  with_scope(selector) do
-    click_button(button)
-  end
+  with_scope(selector) { click_button(button) }
 end
 
 When /^(?:|I )press the first "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
-  with_scope(selector) do
-    first(:button, button).click
-  end
+  with_scope(selector) { first(:button, button).click }
 end
 
 When /^(?:|I )follow "([^"]*)"(?: within "([^"]*)")?$/ do |link, selector|
-  with_scope(selector) do
-    click_link(link)
-  end
+  with_scope(selector) { click_link(link) }
 end
 
 When(/^(?:|I )fill in "([^"]*)" with "([^"]*)"(?: within "([^"]*)")?$/) do |field, value, selector|
-  with_scope(selector) do
-    fill_in(field, with: value)
-  end
+  with_scope(selector) { fill_in(field, with: value) }
 end
 
 When(/^(?:|I )fill in "([^"]*)" with the file "([^"]*)"(?: within "([^"]*)")?$/) do |field, value, selector|
-  with_scope(selector) do
-    attach_file(field, value)
-  end
+  with_scope(selector) { attach_file(field, value) }
 end
 
 # Use this to fill in an entire form with data from a table. Example:
@@ -68,73 +58,49 @@ end
 #
 When(/^(?:|I )fill in the following(?: within "([^"]*)")?:$/) do |selector, fields|
   selector ||= 'body'
-  with_scope(selector) do
-    fields.rows_hash.each do |name, value|
-      step %{I fill in "#{name}" with "#{value}"}
-    end
-  end
+  with_scope(selector) { fields.rows_hash.each { |name, value| step "I fill in \"#{name}\" with \"#{value}\"" } }
 end
 
 When /^(?:|I )select "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
-  with_scope(selector) do
-    select(value, from: field)
-  end
+  with_scope(selector) { select(value, from: field) }
 end
 
 When /^(?:|I )choose "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, _selector|
-  within_fieldset(field) do
-    choose(value, allow_label_click: true)
-  end
+  within_fieldset(field) { choose(value, allow_label_click: true) }
 end
 
 When /^(?:|I )select "([^"]*)" from the first "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
-  with_scope(selector) do
-    first(:select, field).select(value)
-  end
+  with_scope(selector) { first(:select, field).select(value) }
 end
 
 When /^(?:|I )check (the invisible )?"([^"]*)"(?: within "([^"]*)")?$/ do |invisible, field, selector|
   visible = invisible != 'the invisible '
-  with_scope(selector) do
-    check(field, visible: visible)
-  end
+  with_scope(selector) { check(field, visible: visible) }
 end
 
 When /^(?:|I )uncheck "([^"]*)"(?: within "([^"]*)")?$/ do |field, selector|
-  with_scope(selector) do
-    uncheck(field)
-  end
+  with_scope(selector) { uncheck(field) }
 end
 
 When /^(?:|I )choose "([^"]*)"(?: within "([^"]*)")?$/ do |field, selector|
-  with_scope(selector) do
-    choose(field)
-  end
+  with_scope(selector) { choose(field) }
 end
 
 When /^(?:|I )attach the file "([^"]*)" to "([^"]*)"(?: within "([^"]*)")?$/ do |path, field, selector|
-  with_scope(selector) do
-    attach_file(field, path)
-  end
+  with_scope(selector) { attach_file(field, path) }
 end
 
 Then /^(?:|I )should see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
-  with_scope(selector) do
-    expect(page).to have_text(text)
-  end
+  with_scope(selector) { expect(page).to have_text(text) }
 end
 
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
-  with_scope(selector) do
-    expect(page).not_to have_text(text)
-  end
+  with_scope(selector) { expect(page).not_to have_text(text) }
 end
 
-Then /^(?:|I )should not see \/([^\/]*)\/(?: within "([^"]*)")?$/ do |regexp, selector|
+Then %r{^(?:|I )should not see \/([^\/]*)\/(?: within "([^"]*)")?$} do |regexp, selector|
   regexp = Regexp.new(regexp)
-  with_scope(selector) do
-    assert page.has_no_xpath?('//*', text: regexp)
-  end
+  with_scope(selector) { assert page.has_no_xpath?('//*', text: regexp) }
 end
 
 Then /^the "([^"]*)" field(?: within "([^"]*)")? should contain "([^"]*)"$/ do |field, selector, value|
@@ -146,15 +112,11 @@ Then /^the "([^"]*)" field(?: within "([^"]*)")? should contain "([^"]*)"$/ do |
 end
 
 Then /^the "([^"]*)" checkbox(?: within "([^"]*)")? should be checked$/ do |label, selector|
-  with_scope(selector) do
-    assert find_field(label).checked?
-  end
+  with_scope(selector) { assert find_field(label).checked? }
 end
 
 Then /^the "([^"]*)" checkbox(?: within "([^"]*)")? should not be checked$/ do |label, selector|
-  with_scope(selector) do
-    assert_not find_field(label).checked?
-  end
+  with_scope(selector) { assert_not find_field(label).checked? }
 end
 
 Then /^(?:|I )should be on (.+)$/ do |page_name|

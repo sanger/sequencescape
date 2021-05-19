@@ -4,12 +4,12 @@
  *
  * Note: aliases begin with @ to help distinguish them from standard paths
  */
-const { resolve } = require('path')
+const { resolve } = require("path");
 
 module.exports = {
   resolve: {
     alias: {
-      '@sharedComponents': resolve('app/javascript/shared/components')
-    }
-  }
-}
+      "@sharedComponents": resolve("app/javascript/shared/components"),
+    },
+  },
+};

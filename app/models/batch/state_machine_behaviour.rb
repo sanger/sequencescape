@@ -1,6 +1,7 @@
 require 'aasm'
 module Batch::StateMachineBehaviour # rubocop:todo Style/Documentation
-  def self.included(base)
+  # rubocop:todo Metrics/MethodLength
+  def self.included(base) # rubocop:todo Metrics/AbcSize
     base.class_eval do
       include AASM
       aasm column: :state, whiny_persistence: true do
@@ -40,6 +41,8 @@ module Batch::StateMachineBehaviour # rubocop:todo Style/Documentation
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def finished?
     completed? or released?
   end
@@ -60,11 +63,13 @@ module Batch::StateMachineBehaviour # rubocop:todo Style/Documentation
   end
 
   def create_complete_batch_event_for(user)
-    lab_events.create!(batch: self, user: user, description: 'Complete').tap do |event|
-      event.add_descriptor Descriptor.new(name: 'pipeline_id', value: pipeline.id)
-      event.add_descriptor Descriptor.new(name: 'pipeline',    value: pipeline.name)
-      event.save!
-    end
+    lab_events
+      .create!(batch: self, user: user, description: 'Complete')
+      .tap do |event|
+        event.add_descriptor Descriptor.new(name: 'pipeline_id', value: pipeline.id)
+        event.add_descriptor Descriptor.new(name: 'pipeline', value: pipeline.name)
+        event.save!
+      end
   end
   private :create_complete_batch_event_for
 
@@ -75,14 +80,16 @@ module Batch::StateMachineBehaviour # rubocop:todo Style/Documentation
     pipeline.post_release_batch(self, user)
   end
 
-  def create_release_batch_event_for(user)
-    lab_events.create!(batch: self, user: user, description: 'Released').tap do |event|
-      event.add_descriptor Descriptor.new(name: 'workflow_id', value: workflow.id)
-      event.add_descriptor Descriptor.new(name: 'workflow',    value: "Released from #{workflow.name}")
-      event.add_descriptor Descriptor.new(name: 'task',        value: workflow.name)
-      event.add_descriptor Descriptor.new(name: 'Released',    value: workflow.name)
-      event.save!
-    end
+  def create_release_batch_event_for(user) # rubocop:todo Metrics/AbcSize
+    lab_events
+      .create!(batch: self, user: user, description: 'Released')
+      .tap do |event|
+        event.add_descriptor Descriptor.new(name: 'workflow_id', value: workflow.id)
+        event.add_descriptor Descriptor.new(name: 'workflow', value: "Released from #{workflow.name}")
+        event.add_descriptor Descriptor.new(name: 'task', value: workflow.name)
+        event.add_descriptor Descriptor.new(name: 'Released', value: workflow.name)
+        event.save!
+      end
   end
   private :create_release_batch_event_for
 end

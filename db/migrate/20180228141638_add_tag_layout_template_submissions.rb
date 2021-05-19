@@ -11,6 +11,7 @@ class AddTagLayoutTemplateSubmissions < ActiveRecord::Migration[5.1]
       t.references :tag_layout_template, null: false, foreign_key: true, type: :integer
       t.boolean :enforce_uniqueness
       t.timestamps
+
       # Allows us to enforce uniqueness when required at the database level
       # This helps avoid race conditions where users try and create two plates
       # with the same template at the same time.

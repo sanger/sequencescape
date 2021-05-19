@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
+# rubocop:todo Metrics/ClassLength
 class QcReport::File # rubocop:todo Style/Documentation
   ACCEPTED_MIMETYPE = 'text/csv'
   ACCEPTED_EXTENSTION = 'csv'
   FILE_VERSION_KEY = 'Sequencescape QC Report'
   REPORT_ID_KEY = 'Report Identifier'
+
   # We set a maximum header size to stop really large documents from getting
   # read into the header hash.
   MAXIMUM_HEADER_SIZE = 40
+
   # The number of lines processed at a time.
   GROUP_SIZE = 400
 
@@ -29,9 +32,7 @@ class QcReport::File # rubocop:todo Style/Documentation
     return false unless valid?
 
     ActiveRecord::Base.transaction do
-      each_group_of_decisions do |group|
-        process_group(group)
-      end
+      each_group_of_decisions { |group| process_group(group) }
     rescue DataError, QcMetric::InvalidValue => e
       invalid(e.message)
       raise ActiveRecord::Rollback
@@ -40,13 +41,21 @@ class QcReport::File # rubocop:todo Style/Documentation
     @valid
   end
 
-  def valid?
+  def valid? # rubocop:todo Metrics/MethodLength
     return invalid("#{filename} was not a csv file") unless is_a_csv?
     unless is_a_report?
-      return invalid("#{filename} does not appear to be a qc report file. Make sure the #{FILE_VERSION_KEY} line has not been removed.")
+      return(
+        invalid(
+          "#{filename} does not appear to be a qc report file. Make sure the #{FILE_VERSION_KEY} line has not been removed."
+        )
+      )
     end
     unless qc_report
-      return invalid("Couldn't find the report #{report_identifier}. Check that the report identifier has not been modified.")
+      return(
+        invalid(
+          "Couldn't find the report #{report_identifier}. Check that the report identifier has not been modified."
+        )
+      )
     end
 
     true
@@ -106,7 +115,7 @@ class QcReport::File # rubocop:todo Style/Documentation
     end
   end
 
-  def process_group(group)
+  def process_group(group) # rubocop:todo Metrics/AbcSize
     asset_ids = group.keys
     assets = qc_report.qc_metrics.with_asset_ids(asset_ids)
     if asset_ids.count != assets.length
@@ -159,3 +168,4 @@ class QcReport::File # rubocop:todo Style/Documentation
     @headers = headers
   end
 end
+# rubocop:enable Metrics/ClassLength

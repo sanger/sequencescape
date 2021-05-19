@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class AliquotIndexerTest < ActiveSupport::TestCase
+class AliquotIndexerTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   context 'when given a sensible number of aliquots' do
     context 'which are dual indexed' do
       setup do
@@ -26,8 +26,10 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         new_indexes.each do |ai|
           aliquot_number = @aliquots.index(ai.aliquot)
           expected_index = @aliquot_index[aliquot_number]
-          actual_index   = ai.aliquot_index
-          assert_equal expected_index, ai.aliquot_index, "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
+          actual_index = ai.aliquot_index
+          assert_equal expected_index,
+                       ai.aliquot_index,
+                       "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
         end
       end
 
@@ -49,8 +51,10 @@ class AliquotIndexerTest < ActiveSupport::TestCase
           new_indexes.each do |ai|
             aliquot_number = @aliquots.index(ai.aliquot)
             expected_index = @aliquot_index[aliquot_number]
-            actual_index   = ai.aliquot_index
-            assert_equal expected_index, ai.aliquot_index, "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
+            actual_index = ai.aliquot_index
+            assert_equal expected_index,
+                         ai.aliquot_index,
+                         "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
           end
         end
       end
@@ -77,8 +81,10 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         new_indexes.each do |ai|
           aliquot_number = @aliquots.index(ai.aliquot)
           expected_index = @aliquot_index[aliquot_number]
-          actual_index   = ai.aliquot_index
-          assert_equal expected_index, ai.aliquot_index, "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
+          actual_index = ai.aliquot_index
+          assert_equal expected_index,
+                       ai.aliquot_index,
+                       "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
         end
       end
 
@@ -100,8 +106,10 @@ class AliquotIndexerTest < ActiveSupport::TestCase
           new_indexes.each do |ai|
             aliquot_number = @aliquots.index(ai.aliquot)
             expected_index = @aliquot_index[aliquot_number]
-            actual_index   = ai.aliquot_index
-            assert_equal expected_index, ai.aliquot_index, "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
+            actual_index = ai.aliquot_index
+            assert_equal expected_index,
+                         ai.aliquot_index,
+                         "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
           end
         end
       end
@@ -128,8 +136,10 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         new_indexes.each do |ai|
           aliquot_number = @aliquots.index(ai.aliquot)
           expected_index = @aliquot_index[aliquot_number]
-          actual_index   = ai.aliquot_index
-          assert_equal expected_index, ai.aliquot_index, "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
+          actual_index = ai.aliquot_index
+          assert_equal expected_index,
+                       ai.aliquot_index,
+                       "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
         end
       end
 
@@ -151,8 +161,10 @@ class AliquotIndexerTest < ActiveSupport::TestCase
           new_indexes.each do |ai|
             aliquot_number = @aliquots.index(ai.aliquot)
             expected_index = @aliquot_index[aliquot_number]
-            actual_index   = ai.aliquot_index
-            assert_equal expected_index, ai.aliquot_index, "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
+            actual_index = ai.aliquot_index
+            assert_equal expected_index,
+                         ai.aliquot_index,
+                         "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
           end
         end
       end

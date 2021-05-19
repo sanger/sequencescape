@@ -12,10 +12,10 @@ class Api::WellIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, lambda {
-                                                  includes([:uuid_object, :map, :well_attribute, :plate,
-                                                            { primary_aliquot: { sample: :uuid_object } }])
-                                                }
+        scope :including_associations_for_json,
+              lambda {
+                includes([:uuid_object, :map, :well_attribute, :plate, { primary_aliquot: { sample: :uuid_object } }])
+              }
       end
     end
   end
@@ -40,9 +40,7 @@ class Api::WellIO < Api::Base
     map_attribute_to_json_attribute(:gender_markers_string, 'gender_markers')
   end
 
-  with_association(:map) do
-    map_attribute_to_json_attribute(:description, 'map')
-  end
+  with_association(:map) { map_attribute_to_json_attribute(:description, 'map') }
 
   with_association(:plate) do
     map_attribute_to_json_attribute(:uuid, 'plate_uuid')

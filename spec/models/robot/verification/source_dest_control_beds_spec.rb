@@ -10,8 +10,9 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
     shared_examples 'it generates layout information' do
       describe '#pick_number_to_expected_layout' do
         it 'generates a layout' do
-          expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode,
-                                                         max_beds)).to eq(expected_layout)
+          expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)).to eq(
+            expected_layout
+          )
         end
       end
 
@@ -41,6 +42,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
       source_plate_2
       source_plate_3
       destination_wells = destination_plate.wells.in_column_major_order
+
       # These are specified in an odd order to ensure we are sorting by
       # destination well, not request id, or other side effects of creation order
       {
@@ -70,24 +72,28 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
     context 'without control plates' do
       let(:source_plate_2) { create :plate, well_count: 2 }
       let(:expected_layout) do
-        { 1 => [
-          { destination_plate.machine_barcode => 1 }, # Destinations
-          {
-            source_plate_3.machine_barcode => 1,
-            source_plate_2.machine_barcode => 2,
-            source_plate_1.machine_barcode => 3
-          }, # Sources
-          {} # Controls
-        ] }
+        {
+          1 => [
+            { destination_plate.machine_barcode => 1 }, # Destinations
+            {
+              source_plate_3.machine_barcode => 1,
+              source_plate_2.machine_barcode => 2,
+              source_plate_1.machine_barcode => 3
+            }, # Sources
+            {} # Controls
+          ]
+        }
       end
 
-      let(:all_picks) do
-        { destination_plate.machine_barcode => expected_layout }
-      end
+      let(:all_picks) { { destination_plate.machine_barcode => expected_layout } }
 
       let(:params) do
         {
-          bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824' },
+          bed_barcodes: {
+            '1' => '580000001806',
+            '2' => '580000002810',
+            '3' => '580000003824'
+          },
           plate_barcodes: {
             source_plate_3.machine_barcode => source_plate_3.machine_barcode,
             source_plate_2.machine_barcode => source_plate_2.machine_barcode,
@@ -99,8 +105,12 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
             source_plate_1.machine_barcode => 'ABgene_0765',
             destination_plate.machine_barcode => 'ABgene_0800'
           },
-          destination_bed_barcodes: { '1' => '580000026663' },
-          destination_plate_barcodes: { destination_plate.machine_barcode => destination_plate.machine_barcode },
+          destination_bed_barcodes: {
+            '1' => '580000026663'
+          },
+          destination_plate_barcodes: {
+            destination_plate.machine_barcode => destination_plate.machine_barcode
+          },
           commit: 'Verify',
           barcodes: {
             destination_plate_barcode: destination_plate.machine_barcode
@@ -126,53 +136,42 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
         {
           1 => [
             { destination_plate.machine_barcode => 1 }, # Destinations
-            {
-              source_plate_3.machine_barcode => 1,
-              source_plate_2.machine_barcode => 2
-            }, # Sources
+            { source_plate_3.machine_barcode => 1, source_plate_2.machine_barcode => 2 }, # Sources
             {} # Controls
           ],
           2 => [
             { destination_plate.machine_barcode => 1 }, # Destinations
-            {
-              source_plate_1.machine_barcode => 1
-            }, # Sources
+            { source_plate_1.machine_barcode => 1 }, # Sources
             {} # Controls
           ]
         }
       end
 
-      let(:all_picks) do
-        { destination_plate.machine_barcode => expected_layout }
-      end
+      let(:all_picks) { { destination_plate.machine_barcode => expected_layout } }
 
       it_behaves_like 'it generates layout information'
     end
 
     context 'with control plates' do
-      let(:source_plate_2) do
-        create :control_plate, well_count: 2
-      end
+      let(:source_plate_2) { create :control_plate, well_count: 2 }
       let(:expected_layout) do
-        { 1 => [
-          { destination_plate.machine_barcode => 1 }, # Destinations
-          {
-            source_plate_3.machine_barcode => 1,
-            source_plate_1.machine_barcode => 2
-          }, # Sources
-          {
-            source_plate_2.machine_barcode => 1
-          } # Controls
-        ] }
+        {
+          1 => [
+            { destination_plate.machine_barcode => 1 }, # Destinations
+            { source_plate_3.machine_barcode => 1, source_plate_1.machine_barcode => 2 }, # Sources
+            { source_plate_2.machine_barcode => 1 } # Controls
+          ]
+        }
       end
 
-      let(:all_picks) do
-        { destination_plate.machine_barcode => expected_layout }
-      end
+      let(:all_picks) { { destination_plate.machine_barcode => expected_layout } }
 
       let(:params) do
         {
-          bed_barcodes: { '1' => '580000001806', '2' => '580000002810' },
+          bed_barcodes: {
+            '1' => '580000001806',
+            '2' => '580000002810'
+          },
           plate_barcodes: {
             source_plate_3.machine_barcode => source_plate_3.machine_barcode,
             source_plate_1.machine_barcode => source_plate_1.machine_barcode
@@ -183,10 +182,18 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
             source_plate_1.machine_barcode => 'ABgene_0765',
             destination_plate.machine_barcode => 'ABgene_0800'
           },
-          control_bed_barcodes: { '1' => '580000025659' },
-          control_plate_barcodes: { source_plate_2.machine_barcode => source_plate_2.machine_barcode },
-          destination_bed_barcodes: { '1' => '580000026663' },
-          destination_plate_barcodes: { destination_plate.machine_barcode => destination_plate.machine_barcode },
+          control_bed_barcodes: {
+            '1' => '580000025659'
+          },
+          control_plate_barcodes: {
+            source_plate_2.machine_barcode => source_plate_2.machine_barcode
+          },
+          destination_bed_barcodes: {
+            '1' => '580000026663'
+          },
+          destination_plate_barcodes: {
+            destination_plate.machine_barcode => destination_plate.machine_barcode
+          },
           commit: 'Verify',
           barcodes: {
             destination_plate_barcode: destination_plate.machine_barcode
@@ -208,9 +215,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
     context 'with control plates and multiple picks' do
       let(:max_beds) { 1 }
 
-      let(:source_plate_2) do
-        create :control_plate, well_count: 2
-      end
+      let(:source_plate_2) { create :control_plate, well_count: 2 }
       let(:expected_layout) do
         # NOTE: This generates three picks.
         # In theory this should be possible to do in two, as the control bed
@@ -233,13 +238,14 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
           ]
         }
       end
-      let(:all_picks) do
-        { destination_plate.machine_barcode => expected_layout }
-      end
+      let(:all_picks) { { destination_plate.machine_barcode => expected_layout } }
 
       let(:params) do
         {
-          bed_barcodes: { '1' => '580000001806', '2' => '580000002810' },
+          bed_barcodes: {
+            '1' => '580000001806',
+            '2' => '580000002810'
+          },
           plate_barcodes: {
             source_plate_3.machine_barcode => source_plate_3.machine_barcode,
             source_plate_1.machine_barcode => source_plate_1.machine_barcode
@@ -250,10 +256,18 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
             source_plate_1.machine_barcode => 'ABgene_0765',
             destination_plate.machine_barcode => 'ABgene_0800'
           },
-          control_bed_barcodes: { '1' => '580000025659' },
-          control_plate_barcodes: { source_plate_2.machine_barcode => source_plate_2.machine_barcode },
-          destination_bed_barcodes: { '1' => '580000026663' },
-          destination_plate_barcodes: { destination_plate.machine_barcode => destination_plate.machine_barcode },
+          control_bed_barcodes: {
+            '1' => '580000025659'
+          },
+          control_plate_barcodes: {
+            source_plate_2.machine_barcode => source_plate_2.machine_barcode
+          },
+          destination_bed_barcodes: {
+            '1' => '580000026663'
+          },
+          destination_plate_barcodes: {
+            destination_plate.machine_barcode => destination_plate.machine_barcode
+          },
           commit: 'Verify',
           barcodes: {
             destination_plate_barcode: destination_plate.machine_barcode

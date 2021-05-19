@@ -14,14 +14,15 @@ describe '/api/1/extraction_attributes' do
 
     it 'supports attributes update on a plate' do
       sample_tube = create :sample_tube
-      payload = %{{
-          "extraction_attribute":{
-            "created_by": "#{user.login}",
-            "attributes_update": [
-              {"sample_tube_uuid": "#{sample_tube.uuid}", "location": "A1"}
+      payload =
+        "{
+          \"extraction_attribute\":{
+            \"created_by\": \"#{user.login}\",
+            \"attributes_update\": [
+              {\"sample_tube_uuid\": \"#{sample_tube.uuid}\", \"location\": \"A1\"}
             ]
           }
-        }}
+        }"
       authorized_api_request :post, subject, payload
       expect(JSON.parse(response.body)).to include_json(JSON.parse(payload)), response.body
       expect(status).to eq(response_code)
@@ -34,15 +35,15 @@ describe '/api/1/extraction_attributes' do
       let(:source_tube2_uuid) { sample_tube2.uuid }
 
       let(:payload) do
-        %{{
-          "extraction_attribute":{
-            "created_by": "#{user.login}",
-            "attributes_update": [
-              {"sample_tube_uuid": "#{source_tube1_uuid}", "location": "A1"},
-              {"sample_tube_uuid": "#{source_tube2_uuid}", "location": "B1"}
+        "{
+          \"extraction_attribute\":{
+            \"created_by\": \"#{user.login}\",
+            \"attributes_update\": [
+              {\"sample_tube_uuid\": \"#{source_tube1_uuid}\", \"location\": \"A1\"},
+              {\"sample_tube_uuid\": \"#{source_tube2_uuid}\", \"location\": \"B1\"}
             ]
           }
-        }}
+        }"
       end
 
       context 'with an empty plate' do
@@ -100,21 +101,21 @@ describe '/api/1/extraction_attributes' do
       let(:well2) { previous_plate2.wells.first }
 
       let(:payload) do
-        %{{
-          "extraction_attribute":{
-            "created_by": "#{user.login}",
-            "attributes_update": [
+        "{
+          \"extraction_attribute\":{
+            \"created_by\": \"#{user.login}\",
+            \"attributes_update\": [
               {
-                "uuid": "#{well1.uuid}",
-                "location": "B1"
+                \"uuid\": \"#{well1.uuid}\",
+                \"location\": \"B1\"
               },
               {
-                "uuid": "#{well2.uuid}",
-                "location": "A1"
+                \"uuid\": \"#{well2.uuid}\",
+                \"location\": \"A1\"
               }
             ]
           }
-        }}
+        }"
       end
 
       it 'reracks a well into another plate' do
@@ -136,21 +137,21 @@ describe '/api/1/extraction_attributes' do
         let(:well3) { target_plate.wells[2] }
 
         let(:payload) do
-          %{{
-            "extraction_attribute":{
-              "created_by": "#{user.login}",
-              "attributes_update": [
+          "{
+            \"extraction_attribute\":{
+              \"created_by\": \"#{user.login}\",
+              \"attributes_update\": [
                 {
-                  "uuid": "#{well1.uuid}",
-                  "location": "B1"
+                  \"uuid\": \"#{well1.uuid}\",
+                  \"location\": \"B1\"
                 },
                 {
-                  "uuid": "#{well2.uuid}",
-                  "location": "C1"
+                  \"uuid\": \"#{well2.uuid}\",
+                  \"location\": \"C1\"
                 }
               ]
             }
-          }}
+          }"
         end
 
         setup do
@@ -176,21 +177,21 @@ describe '/api/1/extraction_attributes' do
           let(:well1) { target_plate.wells.located_at('A1').first }
           let(:well2) { target_plate.wells.located_at('B1').first }
           let(:payload) do
-            %{{
-              "extraction_attribute":{
-                "created_by": "#{user.login}",
-                "attributes_update": [
+            "{
+              \"extraction_attribute\":{
+                \"created_by\": \"#{user.login}\",
+                \"attributes_update\": [
                   {
-                    "uuid": "#{well1.uuid}",
-                    "location": "B1"
+                    \"uuid\": \"#{well1.uuid}\",
+                    \"location\": \"B1\"
                   },
                   {
-                    "uuid": "#{well2.uuid}",
-                    "location": "A1"
+                    \"uuid\": \"#{well2.uuid}\",
+                    \"location\": \"A1\"
                   }
                 ]
               }
-            }}
+            }"
           end
 
           it 'swaps the tubes position' do
@@ -218,23 +219,23 @@ describe '/api/1/extraction_attributes' do
 
       context 'in the same request' do
         let(:payload) do
-          %{{
-            "extraction_attribute":{
-              "created_by": "#{user.login}",
-              "attributes_update": [
-                {"sample_tube_uuid": "#{sample_tube.uuid}", "location": "A1"},
+          "{
+            \"extraction_attribute\":{
+              \"created_by\": \"#{user.login}\",
+              \"attributes_update\": [
+                {\"sample_tube_uuid\": \"#{sample_tube.uuid}\", \"location\": \"A1\"},
                 {
-                  "uuid": "#{well1.uuid}",
-                  "location": "B1"
+                  \"uuid\": \"#{well1.uuid}\",
+                  \"location\": \"B1\"
                 },
-                {"sample_tube_uuid": "#{sample_tube2.uuid}", "location": "C1"},
+                {\"sample_tube_uuid\": \"#{sample_tube2.uuid}\", \"location\": \"C1\"},
                 {
-                  "uuid": "#{well2.uuid}",
-                  "location": "D1"
+                  \"uuid\": \"#{well2.uuid}\",
+                  \"location\": \"D1\"
                 }
               ]
             }
-          }}
+          }"
         end
 
         it 'racks and reracks' do
@@ -262,32 +263,32 @@ describe '/api/1/extraction_attributes' do
         let(:well2) { first_plate.wells.located_at('B1').first }
 
         let(:payload_rack) do
-          %{{
-            "extraction_attribute":{
-              "created_by": "#{user.login}",
-              "attributes_update": [
-                {"sample_tube_uuid": "#{sample_tube.uuid}", "location": "A1"},
-                {"sample_tube_uuid": "#{sample_tube2.uuid}", "location": "B1"}
+          "{
+            \"extraction_attribute\":{
+              \"created_by\": \"#{user.login}\",
+              \"attributes_update\": [
+                {\"sample_tube_uuid\": \"#{sample_tube.uuid}\", \"location\": \"A1\"},
+                {\"sample_tube_uuid\": \"#{sample_tube2.uuid}\", \"location\": \"B1\"}
               ]
             }
-          }}
+          }"
         end
         let(:payload_rerack) do
-          %{{
-            "extraction_attribute":{
-              "created_by": "#{user.login}",
-              "attributes_update": [
+          "{
+            \"extraction_attribute\":{
+              \"created_by\": \"#{user.login}\",
+              \"attributes_update\": [
                 {
-                  "uuid": "#{well1.uuid}",
-                  "location": "A1"
+                  \"uuid\": \"#{well1.uuid}\",
+                  \"location\": \"A1\"
                 },
                 {
-                  "uuid": "#{well2.uuid}",
-                  "location": "B1"
+                  \"uuid\": \"#{well2.uuid}\",
+                  \"location\": \"B1\"
                 }
               ]
             }
-          }}
+          }"
         end
 
         context 'with 2 plates with samples already' do
@@ -351,9 +352,7 @@ describe '/api/1/extraction_attributes' do
 
   # Move into a helper as this expands
   def authorized_api_request(action, path, body)
-    headers = {
-      'HTTP_ACCEPT' => 'application/json'
-    }
+    headers = { 'HTTP_ACCEPT' => 'application/json' }
     headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = authorised_app.key
     yield(headers) if block_given?

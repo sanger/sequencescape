@@ -24,10 +24,12 @@ FactoryBot.define do
 
         after(:build) do |sample_manifest|
           sample_manifest.labware.each do |tube|
-            create(:sample_manifest_asset,
-                   sanger_sample_id: generate(:sanger_sample_id),
-                   asset: tube.receptacle,
-                   sample_manifest: sample_manifest)
+            create(
+              :sample_manifest_asset,
+              sanger_sample_id: generate(:sanger_sample_id),
+              asset: tube.receptacle,
+              sample_manifest: sample_manifest
+            )
           end
           sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)
         end
@@ -39,9 +41,7 @@ FactoryBot.define do
         factory :tube_sample_manifest_with_sample_tubes do
           count { 5 }
 
-          after(:build) do |sample_manifest|
-            sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)
-          end
+          after(:build) { |sample_manifest| sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode) }
         end
       end
     end
@@ -57,9 +57,10 @@ FactoryBot.define do
 
       # set sanger_sample_id on samples
       after(:build) do |sample_manifest, evaluator|
-        evaluator.plates.flat_map(&:wells).each do |well|
-          create(:sample_manifest_asset, asset: well, sample_manifest: sample_manifest)
-        end
+        evaluator
+          .plates
+          .flat_map(&:wells)
+          .each { |well| create(:sample_manifest_asset, asset: well, sample_manifest: sample_manifest) }
       end
     end
 

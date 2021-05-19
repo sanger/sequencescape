@@ -7,7 +7,7 @@ class UsersControllerTest < ActionController::TestCase
   context 'Users controller' do
     setup do
       @controller = UsersController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
       LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     end
 

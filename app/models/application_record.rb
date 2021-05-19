@@ -7,6 +7,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   # include Warren::BroadcastMessages
   include Warren::Callback
+
   # Provides {Squishify} which allows attributes to automatically have their whitespace compressed before validation
   # @example Squishifying a study title
   #  class Study < ApplicationRecord
@@ -22,7 +23,7 @@ class ApplicationRecord < ActiveRecord::Base
   # and throws an exception ActiveModel::Type::Integer
   # In a few places (particularly searches) we allow users to find by both barcode and id,
   # with barcodes falling outside of this rage.
-  scope :with_safe_id, ->(query) { (-2147483648...2147483648).cover?(query.to_i) ? where(id: query.to_i) : none }
+  scope :with_safe_id, ->(query) { (-2_147_483_648...2_147_483_648).cover?(query.to_i) ? where(id: query.to_i) : none }
   scope :where_is_a, ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
   scope :select_table, -> { select("#{table_name}.*") }
 

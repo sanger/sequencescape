@@ -26,9 +26,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
     end
 
     it 'generates positions within the range' do
-      expect(generated_positions.flatten).to all(
-        be_an(Integer) & be_in(valid_range)
-      )
+      expect(generated_positions.flatten).to all(be_an(Integer) & be_in(valid_range))
     end
 
     it 'generates a unique position for each control' do
@@ -93,6 +91,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
     end
 
     # Test the basics for a range of batches
+    # rubocop:todo Metrics/BlockLength
     1.upto(100) do |batch_id|
       context "when batch is #{batch_id} and we have a 96 well plate with no wells free" do
         let(:batch_id) { batch_id }
@@ -131,21 +130,23 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
       end
     end
 
+    # rubocop:enable Metrics/BlockLength
+
     context 'when over a range of batches' do
       let(:range) { (1...1000) }
       let(:control_positions) do
         range.map do |batch_id|
-          described_class.new(
-            batch_id: batch_id, total_wells: 96, num_control_wells: 1
-          ).control_positions(0).first
+          described_class.new(batch_id: batch_id, total_wells: 96, num_control_wells: 1).control_positions(0).first
         end
       end
 
       it 'generates a reasonable control distribution' do
         # Counts up how many times each well is used
         tally = control_positions.tally
+
         # We expect all wells to be used
         expect(tally.length).to eq 96
+
         # At a reasonable distribution
         # Not sure how best to handle this one, we're effectively expecting
         # a binomial distribution. 25 is actually a pretty extreme outlier, and

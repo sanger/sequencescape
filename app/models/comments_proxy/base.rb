@@ -15,17 +15,26 @@ module CommentsProxy
     # - Finds any comments associated with the asset
     # - OR with any requests returned by request_ids
     # - Then group them together to perform de-duplication
-    def comment_assn
-      @comment_assn ||= Comment.where(commentable_type: 'Request', commentable_id: request_ids)
-                               .or(Comment.where(commentable: @commentable))
-                               .create_with(commentable: @commentable)
-                               .select(
-                                 # We need to describe how we select values which aren't included in the group by
-                                 # This is required with default configurations of MySQL 5.7 and ensures reproducible
-                                 # queries with other set-ups.
-                                 ['MIN(id) AS id', :title, :user_id, :description, 'MIN(created_at) AS created_at',
-                                  'MIN(updated_at) AS updated_at']
-                               ).group(:description, :title, :user_id)
+    def comment_assn # rubocop:todo Metrics/MethodLength
+      @comment_assn ||=
+        Comment
+          .where(commentable_type: 'Request', commentable_id: request_ids)
+          .or(Comment.where(commentable: @commentable))
+          .create_with(commentable: @commentable)
+          .select(
+            # We need to describe how we select values which aren't included in the group by
+            # This is required with default configurations of MySQL 5.7 and ensures reproducible
+            # queries with other set-ups.
+            [
+              'MIN(id) AS id',
+              :title,
+              :user_id,
+              :description,
+              'MIN(created_at) AS created_at',
+              'MIN(updated_at) AS updated_at'
+            ]
+          )
+          .group(:description, :title, :user_id)
     end
 
     # We're using group above, resulting in size and count returning a hash, not a count.
@@ -38,9 +47,9 @@ module CommentsProxy
     end
 
     def add_comment_to_submissions(comment)
-      Submission.where(id: submission_ids).find_each do |submission|
-        submission.add_comment(comment.description, comment.user, comment.title)
-      end
+      Submission
+        .where(id: submission_ids)
+        .find_each { |submission| submission.add_comment(comment.description, comment.user, comment.title) }
     end
 
     private

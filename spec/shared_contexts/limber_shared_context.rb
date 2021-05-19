@@ -18,14 +18,17 @@ shared_context 'a limber target plate with submissions' do |library_state = 'sta
     create :library_submission, assets: input_plate.wells, request_types: submission_request_types
   end
   let(:order) { target_submission.orders.first }
+
   # The decoy submission represents a submission which we don't care about
   let(:decoy_submission) do
     create :library_submission, assets: input_plate.wells, request_types: submission_request_types
   end
+
   # The target plate is the downstream plate we are going to be passing.
   let(:target_plate) do
     create :target_plate, parent: input_plate, well_count: tested_wells, submission: target_submission
   end
+
   # And now we have a few helpers to make the tests more readable
   let(:library_requests) { target_submission.requests.where(request_type_id: library_request_type.id) }
   let(:multiplex_requests) { target_submission.requests.where(request_type_id: multiplex_request_type.id) }
@@ -33,20 +36,36 @@ shared_context 'a limber target plate with submissions' do |library_state = 'sta
 
   let(:build_library_requests) do
     input_plate.wells.each do |well|
-      create_list :library_request, requests_per_well, request_type: library_request_type, asset: well,
-                                                       submission: target_submission, state: library_state, order: order
-      create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: library_state
+      create_list :library_request,
+                  requests_per_well,
+                  request_type: library_request_type,
+                  asset: well,
+                  submission: target_submission,
+                  state: library_state,
+                  order: order
+      create :library_request,
+             request_type: library_request_type,
+             asset: well,
+             submission: decoy_submission,
+             state: library_state
     end
   end
+
   # Build the requests we'll use. The order here is important, as submissions depend on it for finding the
   # next request in a submission
   before do
     build_library_requests
     submission_request_types[1..].each do |downstream_type|
-      input_plate.wells.count.times do
-        create_list :multiplex_request, requests_per_well, request_type: downstream_type, submission: target_submission
-        create :multiplex_request, request_type: downstream_type, submission: decoy_submission
-      end
+      input_plate
+        .wells
+        .count
+        .times do
+          create_list :multiplex_request,
+                      requests_per_well,
+                      request_type: downstream_type,
+                      submission: target_submission
+          create :multiplex_request, request_type: downstream_type, submission: decoy_submission
+        end
     end
   end
 end

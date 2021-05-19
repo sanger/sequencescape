@@ -8,11 +8,7 @@ RSpec.describe User, type: :model do
   describe '#consent_withdrawn_sample_metadata' do
     let(:samples) { create_list :sample, 4 }
 
-    before do
-      samples.each do |sample|
-        sample.sample_metadata.update(user_id_of_consent_withdrawn: user.id)
-      end
-    end
+    before { samples.each { |sample| sample.sample_metadata.update(user_id_of_consent_withdrawn: user.id) } }
 
     it 'returns the list of samples that this user has withdraw consent' do
       expect(user.consent_withdrawn_sample_metadata).to eq(samples.map(&:sample_metadata))

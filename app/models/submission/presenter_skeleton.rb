@@ -9,22 +9,19 @@ class Submission::PresenterSkeleton # rubocop:todo Style/Documentation
 
     @user = user
 
-    attributes.each do |attribute|
-      send("#{attribute}=", submission_attributes[attribute])
-    end
+    attributes.each { |attribute| send("#{attribute}=", submission_attributes[attribute]) }
   end
 
   # id accessors need to be explicitly defined...
   attr_accessor :id
 
   def lanes_of_sequencing
-    return lanes_from_request_options if %{building pending}.include?(submission.state)
+    return lanes_from_request_options if 'building pending'.include?(submission.state)
 
     lanes_from_request_counting
   end
 
-  def cross_compatible?
-  end
+  def cross_compatible?; end
 
   def each_submission_warning(&block)
     submission.each_submission_warning(&block)
@@ -44,20 +41,15 @@ class Submission::PresenterSkeleton # rubocop:todo Style/Documentation
 
   private
 
-  def lanes_from_request_options
+  def lanes_from_request_options # rubocop:todo Metrics/AbcSize
     return order.request_options.fetch(:multiplier, {}).values.last || 1 if order.request_types[-2].nil?
 
     sequencing_request = RequestType.find(order.request_types.last)
     multiplier_hash = order.request_options.fetch(:multiplier, {})
-    sequencing_multiplier = (multiplier_hash[sequencing_request.id.to_s] || multiplier_hash.fetch(
-      sequencing_request.id, 1
-    )).to_i
+    sequencing_multiplier =
+      (multiplier_hash[sequencing_request.id.to_s] || multiplier_hash.fetch(sequencing_request.id, 1)).to_i
 
-    if order.multiplexed?
-      sequencing_multiplier
-    else
-      order.assets.count * sequencing_multiplier
-    end
+    order.multiplexed? ? sequencing_multiplier : order.assets.count * sequencing_multiplier
   end
 
   def lanes_from_request_counting

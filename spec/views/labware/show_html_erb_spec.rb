@@ -34,8 +34,7 @@ RSpec.describe 'labware/show.html.erb', type: :view do
     let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
     let!(:tubes) do
       Array.new(num_tubes) do |i|
-        create(:sample_tube, :in_a_rack,
-               tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
       end
     end
 
@@ -48,16 +47,12 @@ RSpec.describe 'labware/show.html.erb', type: :view do
 
       it 'displays the barcodes for all the tubes' do
         render
-        barcodes.each do |instance|
-          expect(rendered).to match(instance.barcode)
-        end
+        barcodes.each { |instance| expect(rendered).to match(instance.barcode) }
       end
 
       it 'displays the coordinates for all the tubes' do
         render
-        locations.each do |location|
-          expect(rendered).to match(location)
-        end
+        locations.each { |location| expect(rendered).to match(location) }
       end
 
       it 'displays the number of samples' do
@@ -78,9 +73,7 @@ RSpec.describe 'labware/show.html.erb', type: :view do
     end
 
     context 'when the tube is inside a rack' do
-      before do
-        tube.update(racked_tube: racked_tube)
-      end
+      before { tube.update(racked_tube: racked_tube) }
 
       let(:coordinate) { 'A1' }
       let(:racked_tube) { build :racked_tube, tube_rack: tube_rack, coordinate: coordinate }

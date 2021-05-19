@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-TRANSFER_TYPES = [
-  'between plates',
-  'from plate to tube'
-].freeze
+TRANSFER_TYPES = ['between plates', 'from plate to tube'].freeze
 
 TRANSFER_TYPES_REGEXP = TRANSFER_TYPES.join('|')
 
@@ -31,10 +28,14 @@ Then 'the transfers from {plate_name} to {plate_name} should be:' do |source, de
   table.hashes.each do |transfers|
     source_well_location, destination_well_location = transfers['source'], transfers['destination']
 
-    source_well      = source.wells.located_at(source_well_location).first           or raise StandardError, "Plate #{source.id} does not have well #{source_well_location.inspect}"
-    destination_well = destination.wells.located_at(destination_well_location).first or raise StandardError, "Plate #{destination.id} does not have well #{destination_well_location.inspect}"
-    assert_not_nil(TransferRequest.find_by(asset_id: source_well, target_asset_id: destination_well),
-                   "No transfer between #{source_well_location.inspect} and #{destination_well_location.inspect}")
+    source_well = source.wells.located_at(source_well_location).first or
+      raise StandardError, "Plate #{source.id} does not have well #{source_well_location.inspect}"
+    destination_well = destination.wells.located_at(destination_well_location).first or
+      raise StandardError, "Plate #{destination.id} does not have well #{destination_well_location.inspect}"
+    assert_not_nil(
+      TransferRequest.find_by(asset_id: source_well, target_asset_id: destination_well),
+      "No transfer between #{source_well_location.inspect} and #{destination_well_location.inspect}"
+    )
   end
 end
 
@@ -47,12 +48,19 @@ Given /^a transfer plate called "([^"]+)" exists$/ do |name|
 end
 
 Given /^the plate "(.*?)" has additional wells$/ do |name|
-  Plate.find_by(name: name).tap do |plate|
-    plate.wells << %w[C1 D1].map do |location|
-      map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-      FactoryBot.create(:tagged_well, map: map)
+  Plate
+    .find_by(name: name)
+    .tap do |plate|
+      plate.wells << %w[C1 D1].map do |location|
+        map =
+          Map
+            .where_description(location)
+            .where_plate_size(plate.size)
+            .where_plate_shape(AssetShape.find_by(name: 'Standard'))
+            .first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        FactoryBot.create(:tagged_well, map: map)
+      end
     end
-  end
 end
 
 Given /^a transfer plate called "([^"]+)" exists as a child of "([^"]+)"$/ do |name, parent|
@@ -66,9 +74,11 @@ Given(/^a transfer plate called "([^"]*)" exists as a child of plate (\d+)$/) do
 end
 
 Given /^the "([^"]+)" transfer template has been used between "([^"]+)" and "([^"]+)"$/ do |template_name, source_name, destination_name|
-  template    = TransferTemplate.find_by(name: template_name) or raise StandardError, "Could not find transfer template #{template_name.inspect}"
-  source      = Plate.find_by(name: source_name)              or raise StandardError, "Could not find source plate #{source_name.inspect}"
-  destination = Plate.find_by(name: destination_name)         or raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
+  template = TransferTemplate.find_by(name: template_name) or
+    raise StandardError, "Could not find transfer template #{template_name.inspect}"
+  source = Plate.find_by(name: source_name) or raise StandardError, "Could not find source plate #{source_name.inspect}"
+  destination = Plate.find_by(name: destination_name) or
+    raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
   template.create!(source: source, destination: destination, user: FactoryBot.create(:user))
 end
 
@@ -83,9 +93,9 @@ end
 
 def change_request_state(state, targets, direction, request_class)
   association = direction == 'to' ? :requests_as_target : :requests_as_source
-  Request.where(id: Array(targets).map(&association).flatten.select do |r|
-                      r.is_a?(request_class)
-                    end.map(&:id)).update_all(state: state)
+  Request
+    .where(id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id))
+    .update_all(state: state)
 end
 
 Then 'the state of all the {request_class} requests {direction} {uuid} should be {string}' do |request_class, direction, target, state|
@@ -116,15 +126,17 @@ Then 'the state of all the transfer requests from {uuid} should be {string}' do 
 end
 
 Then 'the state of transfer requests {direction} {well_range} on {plate_name} should be {string}' do |direction, range, plate, state|
-  plate.wells.select(&range.method(:include?)).each do |well|
-    assert_request_state(state, well, direction, TransferRequest)
-  end
+  plate
+    .wells
+    .select(&range.method(:include?))
+    .each { |well| assert_request_state(state, well, direction, TransferRequest) }
 end
 
 Then 'the state of {request_class} requests {direction} {well_range} on {plate_name} should be {string}' do |request_class, direction, range, plate, state|
-  plate.wells.select(&range.method(:include?)).each do |well|
-    assert_request_state(state, well, direction, request_class)
-  end
+  plate
+    .wells
+    .select(&range.method(:include?))
+    .each { |well| assert_request_state(state, well, direction, request_class) }
 end
 
 Given 'the wells {well_range} on {plate_name} are empty' do |range, plate|

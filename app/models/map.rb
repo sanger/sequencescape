@@ -17,10 +17,7 @@ class Map < ApplicationRecord
     # TODO: These methods are only valid for standard plates. Moved them here to make that more explicit
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
-    PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(
-      96 => [12, 8],
-      384 => [24, 16]
-    )
+    PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(96 => [12, 8], 384 => [24, 16])
 
     # Seems to expect row to be zero-indexed but column to be 1 indexed
     def self.location_from_row_and_column(row, column, _ = nil, __ = nil)
@@ -141,16 +138,13 @@ class Map < ApplicationRecord
     end
   end
 
-  scope :for_position_on_plate, ->(position, plate_size, asset_shape) {
-                                  where(
-                                    row_order: position - 1,
-                                    asset_size: plate_size,
-                                    asset_shape_id: asset_shape.id
-                                  )
-                                }
+  scope :for_position_on_plate,
+        ->(position, plate_size, asset_shape) {
+          where(row_order: position - 1, asset_size: plate_size, asset_shape_id: asset_shape.id)
+        }
 
   scope :where_description, ->(*descriptions) { where(description: descriptions.flatten) }
-  scope :where_plate_size,  ->(size) { where(asset_size: size) }
+  scope :where_plate_size, ->(size) { where(asset_size: size) }
   scope :where_plate_shape, ->(asset_shape) { where(asset_shape_id: asset_shape) }
   scope :where_vertical_plate_position, ->(*positions) { where(column_order: positions.map { |v| v - 1 }) }
   scope :for_plate, ->(plate) { where_plate_size(plate.size).where_plate_shape(plate.asset_shape) }
@@ -252,27 +246,27 @@ class Map < ApplicationRecord
     map.description
   end
 
-  scope :in_row_major_order,            -> { order('row_order ASC') }
-  scope :in_reverse_row_major_order,    -> { order('row_order DESC') }
-  scope :in_column_major_order,         -> { order('column_order ASC') }
+  scope :in_row_major_order, -> { order('row_order ASC') }
+  scope :in_reverse_row_major_order, -> { order('row_order DESC') }
+  scope :in_column_major_order, -> { order('column_order ASC') }
   scope :in_reverse_column_major_order, -> { order('column_order DESC') }
 
   class << self
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
     def walk_plate_in_column_major_order(size, asset_shape = nil)
       asset_shape ||= AssetShape.default_id
-      where(asset_size: size, asset_shape_id: asset_shape).order(:column_order).each do |position|
-        yield(position, position.column_order)
-      end
+      where(asset_size: size, asset_shape_id: asset_shape)
+        .order(:column_order)
+        .each { |position| yield(position, position.column_order) }
     end
     alias walk_plate_vertically walk_plate_in_column_major_order
 
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
     def walk_plate_in_row_major_order(size, asset_shape = nil)
       asset_shape ||= AssetShape.default_id
-      where(asset_size: size, asset_shape_id: asset_shape).order(:row_order).each do |position|
-        yield(position, position.row_order)
-      end
+      where(asset_size: size, asset_shape_id: asset_shape)
+        .order(:row_order)
+        .each { |position| yield(position, position.row_order) }
     end
   end
 end

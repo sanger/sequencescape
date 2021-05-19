@@ -39,7 +39,17 @@ RSpec.describe Ability do
       QcDecision => %i[create new],
       Receptacle => %i[edit close create read delete],
       ReferenceGenome => %i[create edit read delete],
-      Request => %i[create_additional copy cancel change_priority see_previously_failed edit_additional reset_qc_information edit change_decision],
+      Request => %i[
+        create_additional
+        copy
+        cancel
+        change_priority
+        see_previously_failed
+        edit_additional
+        reset_qc_information
+        edit
+        change_decision
+      ],
       Robot => %i[create edit read delete],
       RobotProperty => %i[create edit read delete],
       Role => %i[create administer edit read delete],
@@ -47,7 +57,20 @@ RSpec.describe Ability do
       SampleLogisticsController => %i[read],
       SampleManifest => %i[create new],
       Sequencescape => %i[administer],
-      Study => %i[administer unlink_sample link_sample edit create activate deactivate print_asset_group_labels accession request_additional_with grant_role remove_role],
+      Study => %i[
+        administer
+        unlink_sample
+        link_sample
+        edit
+        create
+        activate
+        deactivate
+        print_asset_group_labels
+        accession
+        request_additional_with
+        grant_role
+        remove_role
+      ],
       Submission => %i[create read edit update delete change_priority new order_fields study_assets],
       Supplier => %i[create new],
       TagGroup => %i[create read edit delete],
@@ -56,11 +79,7 @@ RSpec.describe Ability do
     }
   end
 
-  let(:all_actions) do
-    global_permissions.flat_map do |klass, actions|
-      actions.map { |action| [klass, action] }
-    end
-  end
+  let(:all_actions) { global_permissions.flat_map { |klass, actions| actions.map { |action| [klass, action] } } }
 
   let(:basic_permissions) do
     # Permissions granted to all users.
@@ -128,44 +147,58 @@ RSpec.describe Ability do
     let(:user) { build :user, :with_role, role_name: 'administrator' }
 
     let(:granted_permissions) do
-      merge_permissions(basic_permissions, {
-                          AssetGroup => %i[create edit read delete new],
-                          BaitLibrary => %i[create edit read delete],
-                          BaitLibrary::Supplier => %i[create edit read delete],
-                          BaitLibraryType => %i[create edit read delete],
-                          BarcodePrinter => %i[create edit read delete],
-                          Batch => %i[rollback],
-                          CustomText => %i[create edit read delete],
-                          Document => %i[delete],
-                          FacultySponsor => %i[create edit read delete],
-                          GelsController => %i[create edit read delete],
-                          Labware => %i[rename change_purpose edit],
-                          Order => %i[create new],
-                          Pipeline => %i[activate deactivate],
-                          Plate => %i[convert_to_tube],
-                          PlatePurpose => %i[create new edit read delete],
-                          PlateTemplate => %i[create edit delete],
-                          PrimerPanel => %i[create edit read delete],
-                          Program => %i[create edit read delete],
-                          Project => %i[administer edit create read delete],
-                          Purpose => %i[create edit read delete new],
-                          Receptacle => %i[edit close create read delete],
-                          ReferenceGenome => %i[create edit delete],
-                          Request => %i[create_additional copy cancel edit_additional reset_qc_information edit change_decision],
-                          Robot => %i[create edit delete],
-                          RobotProperty => %i[create edit read delete],
-                          Role => %i[create administer edit read delete],
-                          Sample => %i[update_released],
-                          SampleLogisticsController => %i[read],
-                          SampleManifest => %i[create new],
-                          Sequencescape => %i[administer],
-                          Study => %i[administer unlink_sample link_sample edit activate deactivate accession request_additional_with grant_role remove_role],
-                          Submission => %i[delete change_priority],
-                          Supplier => %i[create new],
-                          TagGroup => %i[create edit delete],
-                          TagLayoutTemplate => %i[create edit delete],
-                          User => %i[administer create delete]
-                        })
+      merge_permissions(
+        basic_permissions,
+        {
+          AssetGroup => %i[create edit read delete new],
+          BaitLibrary => %i[create edit read delete],
+          BaitLibrary::Supplier => %i[create edit read delete],
+          BaitLibraryType => %i[create edit read delete],
+          BarcodePrinter => %i[create edit read delete],
+          Batch => %i[rollback],
+          CustomText => %i[create edit read delete],
+          Document => %i[delete],
+          FacultySponsor => %i[create edit read delete],
+          GelsController => %i[create edit read delete],
+          Labware => %i[rename change_purpose edit],
+          Order => %i[create new],
+          Pipeline => %i[activate deactivate],
+          Plate => %i[convert_to_tube],
+          PlatePurpose => %i[create new edit read delete],
+          PlateTemplate => %i[create edit delete],
+          PrimerPanel => %i[create edit read delete],
+          Program => %i[create edit read delete],
+          Project => %i[administer edit create read delete],
+          Purpose => %i[create edit read delete new],
+          Receptacle => %i[edit close create read delete],
+          ReferenceGenome => %i[create edit delete],
+          Request => %i[create_additional copy cancel edit_additional reset_qc_information edit change_decision],
+          Robot => %i[create edit delete],
+          RobotProperty => %i[create edit read delete],
+          Role => %i[create administer edit read delete],
+          Sample => %i[update_released],
+          SampleLogisticsController => %i[read],
+          SampleManifest => %i[create new],
+          Sequencescape => %i[administer],
+          Study => %i[
+            administer
+            unlink_sample
+            link_sample
+            edit
+            activate
+            deactivate
+            accession
+            request_additional_with
+            grant_role
+            remove_role
+          ],
+          Submission => %i[delete change_priority],
+          Supplier => %i[create new],
+          TagGroup => %i[create edit delete],
+          TagLayoutTemplate => %i[create edit delete],
+          User => %i[administer create delete]
+        }
+      )
     end
 
     it_behaves_like 'it grants only granted_permissions'
@@ -174,9 +207,7 @@ RSpec.describe Ability do
   context 'when the user has the role "data_access_coordinator"' do
     let(:user) { build :user, :with_role, role_name: 'data_access_coordinator' }
 
-    let(:granted_permissions) do
-      merge_permissions(basic_permissions, { Study => %i[change_ethically_approved] })
-    end
+    let(:granted_permissions) { merge_permissions(basic_permissions, { Study => %i[change_ethically_approved] }) }
 
     it_behaves_like 'it grants only granted_permissions'
   end
@@ -245,13 +276,16 @@ RSpec.describe Ability do
     let(:user) { build :user, :with_role, role_name: 'lab_manager' }
 
     let(:granted_permissions) do
-      merge_permissions(basic_permissions, {
-                          Labware => %i[change_purpose edit],
-                          Pipeline => %i[update_priority],
-                          PlateTemplate => %i[edit],
-                          Request => %i[change_priority see_previously_failed],
-                          Submission => %i[change_priority]
-                        })
+      merge_permissions(
+        basic_permissions,
+        {
+          Labware => %i[change_purpose edit],
+          Pipeline => %i[update_priority],
+          PlateTemplate => %i[edit],
+          Request => %i[change_priority see_previously_failed],
+          Submission => %i[change_priority]
+        }
+      )
     end
 
     it_behaves_like 'it grants only granted_permissions'
@@ -261,19 +295,22 @@ RSpec.describe Ability do
     let(:user) { build :user, :with_role, role_name: 'manager' }
 
     let(:granted_permissions) do
-      merge_permissions(basic_permissions, {
-                          AssetGroup => %i[create new],
-                          Labware => %i[edit],
-                          Order => %i[create new],
-                          Plate => %i[convert_to_tube],
-                          Project => %i[edit],
-                          Receptacle => %i[edit close create read delete],
-                          Request => %i[create_additional copy cancel change_decision],
-                          SampleManifest => %i[create new],
-                          Sequencescape => %i[administer],
-                          Study => %i[unlink_sample link_sample edit activate deactivate accession request_additional_with],
-                          Supplier => %i[create new]
-                        })
+      merge_permissions(
+        basic_permissions,
+        {
+          AssetGroup => %i[create new],
+          Labware => %i[edit],
+          Order => %i[create new],
+          Plate => %i[convert_to_tube],
+          Project => %i[edit],
+          Receptacle => %i[edit close create read delete],
+          Request => %i[create_additional copy cancel change_decision],
+          SampleManifest => %i[create new],
+          Sequencescape => %i[administer],
+          Study => %i[unlink_sample link_sample edit activate deactivate accession request_additional_with],
+          Supplier => %i[create new]
+        }
+      )
     end
 
     it_behaves_like 'it grants only granted_permissions'
@@ -350,6 +387,7 @@ RSpec.describe Ability do
       it { is_expected.to be_able_to(:read, unauthorized_project) }
       it { is_expected.not_to be_able_to(:delete, authorized_project) }
       it { is_expected.not_to be_able_to(:delete, unauthorized_project) }
+
       # Sample
       it { is_expected.to be_able_to(:edit, authorized_sample) }
       it { is_expected.not_to be_able_to(:edit, unauthorized_sample) }
@@ -359,6 +397,7 @@ RSpec.describe Ability do
       it { is_expected.not_to be_able_to(:accession, unauthorized_sample) }
       it { is_expected.not_to be_able_to(:update_released, authorized_sample) }
       it { is_expected.not_to be_able_to(:update_released, unauthorized_sample) }
+
       # Study
       it { is_expected.not_to be_able_to(:administer, authorized_study) }
       it { is_expected.not_to be_able_to(:administer, unauthorized_study) }
@@ -388,9 +427,7 @@ RSpec.describe Ability do
   context 'when the user has the role "qa_manager"' do
     let(:user) { build :user, :with_role, role_name: 'qa_manager' }
 
-    let(:granted_permissions) do
-      merge_permissions(basic_permissions, { QcDecision => %i[create new] })
-    end
+    let(:granted_permissions) { merge_permissions(basic_permissions, { QcDecision => %i[create new] }) }
 
     it_behaves_like 'it grants only granted_permissions'
   end
@@ -399,10 +436,10 @@ RSpec.describe Ability do
     let(:user) { build :user, :with_role, role_name: 'slf_gel' }
 
     let(:granted_permissions) do
-      merge_permissions(basic_permissions, {
-                          GelsController => %i[create edit read delete],
-                          SampleLogisticsController => %i[read]
-                        })
+      merge_permissions(
+        basic_permissions,
+        { GelsController => %i[create edit read delete], SampleLogisticsController => %i[read] }
+      )
     end
 
     it_behaves_like 'it grants only granted_permissions'
@@ -412,14 +449,17 @@ RSpec.describe Ability do
     let(:user) { build :user, :with_role, role_name: 'slf_manager' }
 
     let(:granted_permissions) do
-      merge_permissions(basic_permissions, {
-                          GelsController => %i[create edit read delete],
-                          Plate => %i[convert_to_tube],
-                          PlateTemplate => %i[create edit delete],
-                          SampleLogisticsController => %i[read],
-                          SampleManifest => %i[create new],
-                          Supplier => %i[create new]
-                        })
+      merge_permissions(
+        basic_permissions,
+        {
+          GelsController => %i[create edit read delete],
+          Plate => %i[convert_to_tube],
+          PlateTemplate => %i[create edit delete],
+          SampleLogisticsController => %i[read],
+          SampleManifest => %i[create new],
+          Supplier => %i[create new]
+        }
+      )
     end
 
     it_behaves_like 'it grants only granted_permissions'

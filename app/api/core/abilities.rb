@@ -36,7 +36,7 @@ module Core::Abilities
 
   class CompositeAbility #:nodoc:
     attr_reader :user, :application
-    private     :user, :application
+    private :user, :application
 
     def initialize(request)
       @user, @application = User.new(request), Application.new(request)
@@ -66,11 +66,15 @@ module Core::Abilities
     module ClassMethods # rubocop:todo Style/Documentation
       def recorder_helper(name)
         line = __LINE__ + 1
-        singleton_class.class_eval("
+        singleton_class.class_eval(
+          "
           def #{name}(&block)
             record(@#{name} ||= Recorder.new, &block)
           end
-        ", __FILE__, line)
+        ",
+          __FILE__,
+          line
+        )
       end
 
       def record(recorder, &block)
@@ -151,9 +155,10 @@ module Core::Abilities
 
       # Every application is entitled to be able to lookup UUIDs and make searches
       can(:create, [Endpoints::Uuids::Model::Lookup, Endpoints::Uuids::Model::Bulk])
-      can(:create,
-          [Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All,
-           Endpoints::Searches::Instance::Last])
+      can(
+        :create,
+        [Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All, Endpoints::Searches::Instance::Last]
+      )
     end
 
     # Registered applications can manage all objects that allow it and can have unauthenicated users.
@@ -181,7 +186,8 @@ module Core::Abilities
       if single_sign_on_cookie.blank? && cannot?(:authenticate, :nil)
         Core::Service::Authentication::UnauthenticatedError.no_cookie!
       elsif single_sign_on_cookie.present?
-        user = ::User.find_by(api_key: single_sign_on_cookie) or Core::Service::Authentication::UnauthenticatedError.unauthenticated!
+        user = ::User.find_by(api_key: single_sign_on_cookie) or
+          Core::Service::Authentication::UnauthenticatedError.unauthenticated!
         @request.service.instance_variable_set(:@user, user)
       end
 

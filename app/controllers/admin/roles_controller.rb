@@ -9,7 +9,7 @@ class Admin::RolesController < ApplicationController # rubocop:todo Style/Docume
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render xml: @roles }
+      format.xml { render xml: @roles }
     end
   end
 
@@ -18,7 +18,7 @@ class Admin::RolesController < ApplicationController # rubocop:todo Style/Docume
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render xml: @role }
+      format.xml { render xml: @role }
     end
   end
 
@@ -27,21 +27,21 @@ class Admin::RolesController < ApplicationController # rubocop:todo Style/Docume
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render xml: @role }
+      format.xml { render xml: @role }
     end
   end
 
-  def create
+  def create # rubocop:todo Metrics/MethodLength
     @role = Role.new(params[:role])
 
     respond_to do |format|
       if @role.save
         flash[:notice] = 'Role was successfully created.'
         format.html { redirect_to(@role) }
-        format.xml  { render xml: @role, status: :created, location: @role }
+        format.xml { render xml: @role, status: :created, location: @role }
       else
         format.html { render action: 'new' }
-        format.xml  { render xml: @role.errors, status: :unprocessable_entity }
+        format.xml { render xml: @role.errors, status: :unprocessable_entity }
       end
     end
   end

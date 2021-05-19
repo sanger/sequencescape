@@ -18,7 +18,9 @@ describe Pulldown::Requests::IscLibraryRequest do
 
     it 'explains the problem' do
       subject.valid?
-      expect(subject.errors.full_messages).to include('Request metadata bait library Validation failed: Bait library is no longer available.')
+      expect(subject.errors.full_messages).to include(
+        'Request metadata bait library Validation failed: Bait library is no longer available.'
+      )
     end
   end
 end

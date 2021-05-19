@@ -16,11 +16,7 @@ module Heron
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          @tube_rack_status = ::TubeRackStatus.create!(
-            barcode: barcode,
-            status: status,
-            messages: messages
-          )
+          @tube_rack_status = ::TubeRackStatus.create!(barcode: barcode, status: status, messages: messages)
         end
         true
       end

@@ -13,8 +13,10 @@ describe 'Tubes API', with: :api_v2 do
 
     it 'sends a list of tubes' do
       api_get '/api/v2/tubes'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end
