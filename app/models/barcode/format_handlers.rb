@@ -435,4 +435,13 @@ module Barcode::FormatHandlers
   class PlymouthV1 < BaseRegExBarcode
     self.format = /\A(?<prefix>PLY)-chp-(?<number>\d+)\z/
   end
+
+  # Added to support 3 ad hoc plates from UK Biocentre
+  # as part of project Heron
+  # Expected formats:
+  # RNAsstnnnnn
+  # where n is a digit
+  class UkBiocentreV6 < BaseRegExBarcode
+    self.format = /\A(?<prefix>RNAsst)(?<number>\d+)\z/
+  end
 end
