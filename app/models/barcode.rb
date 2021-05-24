@@ -50,7 +50,8 @@ class Barcode < ApplicationRecord # rubocop:todo Metrics/ClassLength
          randox_v2: 29,
          glasgow_v3: 30,
          uk_biocentre_v5: 31,
-         health_services_laboratories_v1: 32
+         health_services_laboratories_v1: 32,
+         uk_biocentre_v6: 33,
        }
 
   # Barcode formats which may be submitted via sample manifests
@@ -83,6 +84,7 @@ class Barcode < ApplicationRecord # rubocop:todo Metrics/ClassLength
     glasgow_v3
     uk_biocentre_v5
     health_services_laboratories_v1
+    uk_biocentre_v6
   ].freeze
 
   validate :barcode_valid?
