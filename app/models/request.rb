@@ -3,7 +3,7 @@ require 'aasm'
 # A Request represents work which needs to be done, either to fulfil a customers
 # needs {CustomerRequest} or for internal reasons {SystemRequest}.
 # The progress of a request is tracked through its {Request::Statemachine state machine}.
-class Request < ApplicationRecord
+class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Include
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
@@ -15,6 +15,7 @@ class Request < ApplicationRecord
   include StandardNamedScopes
   include Request::Statemachine
   include Batch::RequestBehaviour
+
   # Extend
   extend Request::Statistics
   extend EventfulRecord
@@ -41,12 +42,15 @@ class Request < ApplicationRecord
   belongs_to :order, inverse_of: :requests
   belongs_to :submission, inverse_of: :requests
   belongs_to :submission_pool, foreign_key: :submission_id
+
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, class_name: 'Project'
+
   # same as project with study
   belongs_to :initial_study, class_name: 'Study'
   belongs_to :work_order, optional: true
+
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
   # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :requests_as_target, optional: true
@@ -62,7 +66,7 @@ class Request < ApplicationRecord
   has_many :qc_metrics, through: :qc_metric_requests
   has_many :asset_studies, through: :asset, source: :studies
 
-  has_many :request_events, ->() { order(:current_from) }, inverse_of: :request do
+  has_many :request_events, -> { order(:current_from) }, inverse_of: :request do
     def date_for_state(state)
       # Annoyingly we get a new scope generated within the class method
       # so can't actually check if we have the events loaded. This optimization
@@ -76,6 +80,7 @@ class Request < ApplicationRecord
     end
   end
   has_many :upstream_requests, through: :asset, source: :requests_as_target
+
   # Related aliquots are those made as a request is being processed.
   # They can be intermediate aliquots, created while a request is being processed, and wont always
   # reflect the final product of a request.
@@ -83,9 +88,6 @@ class Request < ApplicationRecord
 
   delegate :flowcell, to: :batch, allow_nil: true
   delegate :for_multiplexing?, to: :request_type
-
-  belongs_to :billing_product, class_name: 'Billing::Product'
-  has_many :billing_items, class_name: 'Billing::Item'
 
   # Only actively used by poolable requests, but here to help with eager loading
   has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', inverse_of: :request
@@ -102,136 +104,148 @@ class Request < ApplicationRecord
   # cf. RequestType which defines how it will be fulfilled.
   # Both RequestType and Request have a purpose, with the former acting as the default for
   # the latter.
-  enum request_purpose: {
-    standard: 1,
-    internal: 2,
-    qc: 3,
-    control: 4
-  }
+  enum request_purpose: { standard: 1, internal: 2, qc: 3, control: 4 }
+
   # Validations
   # On create we perform a full and complete validation.
   validates :request_purpose, presence: true
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   # Scopes
-  scope :for_pipeline, ->(pipeline) {
-    joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
-      .where(['prt.pipeline_id=?', pipeline.id])
-      .readonly(false)
-  }
+  scope :for_pipeline,
+        ->(pipeline) {
+          joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
+            .where(['prt.pipeline_id=?', pipeline.id])
+            .readonly(false)
+        }
 
-  scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
+  scope :customer_requests, -> { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
-  scope :for_pooling_of, ->(plate) {
-    submission_ids = plate.all_submission_ids
-    add_joins =
-      if plate.stock_plate?
-        ['INNER JOIN receptacles AS pw ON requests.asset_id=pw.id']
-      else
-        [
-          'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-          'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
-        ]
-      end
+  # rubocop:disable Metrics/BlockLength
+  scope :for_pooling_of,
+        ->(plate) {
+          submission_ids = plate.all_submission_ids
+          add_joins =
+            if plate.stock_plate?
+              ['INNER JOIN receptacles AS pw ON requests.asset_id=pw.id']
+            else
+              [
+                'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
+                'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
+              ]
+            end
 
-    select(%{uuids.external_id AS pool_id,
-              GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into,
+          select(
+              "uuids.external_id AS pool_id,
+              GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR \",\") AS pool_into,
               SUM(requests.state = 'passed') > 0 AS pool_complete,
               MIN(requests.id) AS id,
               MIN(requests.sti_type) AS sti_type,
               MIN(requests.target_asset_id) AS target_asset_id,
               MIN(requests.submission_id) AS submission_id,
-              MIN(requests.request_type_id) AS request_type_id})
-      .joins(add_joins + [
-        'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
-        'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
-      ])
-      .group('uuids.external_id')
-      .where(
-        pw: { labware_id: plate.id },
-        requests: { submission_id: submission_ids }
-      ).where.not(
-        requests: { state: 'cancelled' }
-      )
-  }
+              MIN(requests.request_type_id) AS request_type_id"
+            )
+            .joins(
+              add_joins + [
+                'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
+                'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
+              ]
+            )
+            .group('uuids.external_id')
+            .where(pw: { labware_id: plate.id }, requests: { submission_id: submission_ids })
+            .where
+            .not(requests: { state: 'cancelled' })
+        }
 
-  scope :for_pre_cap_grouping_of, ->(plate) {
-    add_joins =
-      if plate.stock_plate?
-        ['INNER JOIN receptacles AS pw ON requests.asset_id=pw.id']
-      else
-        [
-          'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-          'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
-        ]
-      end
+  scope :for_pre_cap_grouping_of,
+        ->(plate) {
+          add_joins =
+            if plate.stock_plate?
+              ['INNER JOIN receptacles AS pw ON requests.asset_id=pw.id']
+            else
+              [
+                'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
+                'INNER JOIN receptacles AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"'
+              ]
+            end
 
-    select('min(uuids.external_id) AS group_id,
+          select(
+              'min(uuids.external_id) AS group_id,
       GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into,
       MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id,
-      MIN(requests.request_type_id) AS request_type_id')
-      .joins(add_joins + [
-        'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
-        'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-        'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
-      ])
-      .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
-      .where(state: %w[started pending])
-      .where(pw: { labware_id: plate })
-  }
+      MIN(requests.request_type_id) AS request_type_id'
+            )
+            .joins(
+              add_joins + [
+                'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+                'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
+                'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+              ]
+            )
+            .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
+            .where(state: %w[started pending])
+            .where(pw: { labware_id: plate })
+        }
+
+  # rubocop:enable Metrics/BlockLength
 
   scope :in_order, ->(order) { where(order_id: order) }
 
-  scope :for_event_notification_by_order, ->(order) {
-    in_order(order).where(state: 'passed')
-  }
+  scope :for_event_notification_by_order, ->(order) { in_order(order).where(state: 'passed') }
 
-  scope :including_samples_from_target, ->() { includes(target_asset: { aliquots: :sample }) }
-  scope :including_samples_from_source, ->() { includes(asset: { aliquots: :sample }) }
+  scope :including_samples_from_target, -> { includes(target_asset: { aliquots: :sample }) }
+  scope :including_samples_from_source, -> { includes(asset: { aliquots: :sample }) }
 
-  scope :for_order_including_submission_based_requests, ->(order) {
-    # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
-    # as a common element for any order in the submission)
-    where(['requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)', order.id,
-           order.submission.id])
-  }
+  scope :for_order_including_submission_based_requests,
+        ->(order) {
+          # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
+          # as a common element for any order in the submission)
+          where(
+            [
+              'requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)',
+              order.id,
+              order.submission.id
+            ]
+          )
+        }
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
   scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
-  scope :for_billing, -> { includes([:initial_project, :request_type, { target_asset: :aliquots }]) }
 
   scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids) }
 
-  scope :request_type, ->(request_type) {
-    where(request_type_id: request_type)
-  }
+  scope :request_type, ->(request_type) { where(request_type_id: request_type) }
 
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
   scope :full_inbox, -> { where(state: %w[pending hold]) }
-  scope :pipeline_pending, ->(include_held = false) {
-                             include_held ? where(state: %w[pending hold]) : where(state: 'pending')
-                           }
+  scope :pipeline_pending,
+        ->(include_held = false) { include_held ? where(state: %w[pending hold]) : where(state: 'pending') }
   scope :with_asset, -> { where.not(asset_id: nil) }
+
   # Ensures the actual record is present
   scope :with_present_asset, -> { joins(:asset).where.not(Receptacle.table_name => { id: nil }) }
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
   scope :join_asset, -> { joins(:asset) }
   scope :with_asset_location, -> { includes(asset: :map) }
   scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
-  scope :asset_on_labware, ->() {
-                             joins(:asset)
-                               .select('requests.*')
-                               .select('receptacles.labware_id AS labware_id')
-                               .where.not(receptacles: { labware_id: nil })
-                           }
-  scope :target_asset_on_labware, ->() {
-                                    joins(:target_asset)
-                                      .select('requests.*')
-                                      .select('receptacles.labware_id AS labware_id')
-                                      .where.not(receptacles: { labware_id: nil })
-                                  }
+  scope :asset_on_labware,
+        -> {
+          joins(:asset)
+            .select('requests.*')
+            .select('receptacles.labware_id AS labware_id')
+            .where
+            .not(receptacles: { labware_id: nil })
+        }
+  scope :target_asset_on_labware,
+        -> {
+          joins(:target_asset)
+            .select('requests.*')
+            .select('receptacles.labware_id AS labware_id')
+            .where
+            .not(receptacles: { labware_id: nil })
+        }
 
   scope :without_asset, -> { where('asset_id is null') }
   scope :without_target, -> { where('target_asset_id is null') }
@@ -240,28 +254,33 @@ class Request < ApplicationRecord
 
   # NOTE: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
-  scope :loaded_for_inbox_display, -> {
-                                     preload([{ submission: { orders: :study },
-                                                asset: [:scanned_into_lab_event, :studies, { labware: :barcodes }] }])
-                                   }
-  scope :loaded_for_sequencing_inbox_display, -> {
-                                                preload([{ submission: { orders: :study }, asset: %i(requests scanned_into_lab_event most_tagged_aliquot) },
-                                                         { request_type: :product_line }])
-                                              }
-  scope :loaded_for_grouped_inbox_display, -> {
-                                             preload([
-                                               { submission: :orders,
-                                                 asset: { labware: [:purpose, :barcodes] } }, :target_asset, :order
-                                             ])
-                                           }
+  scope :loaded_for_inbox_display,
+        -> {
+          preload(
+            [{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies, { labware: :barcodes }] }]
+          )
+        }
+  scope :loaded_for_sequencing_inbox_display,
+        -> {
+          preload(
+            [
+              { submission: { orders: :study }, asset: %i[requests scanned_into_lab_event most_tagged_aliquot] },
+              { request_type: :product_line }
+            ]
+          )
+        }
+  scope :loaded_for_grouped_inbox_display,
+        -> { preload([{ submission: :orders, asset: { labware: %i[purpose barcodes] } }, :target_asset, :order]) }
   scope :loaded_for_pacbio_inbox_display, -> { preload(:submission) }
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
-  scope :for_study_ids, ->(ids) {
-                          joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id')
-                            .where(['al.study_id IN (?)', ids]).uniq
-                        }
+  scope :for_study_ids,
+        ->(ids) {
+          joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id')
+            .where(['al.study_id IN (?)', ids])
+            .uniq
+        }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
 
@@ -272,10 +291,8 @@ class Request < ApplicationRecord
   scope :for_search_query, ->(query) { where(['id=?', query]) }
   scope :for_studies, ->(*studies) { where(initial_study_id: studies) }
 
-  scope :with_assets_for_starting_requests, -> {
-                                              includes([:request_metadata, :request_events,
-                                                        { asset: :aliquots, target_asset: :aliquots }])
-                                            }
+  scope :with_assets_for_starting_requests,
+        -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
 
   scope :multiplexed, -> { joins(:request_type).where(request_types: { for_multiplexing: true }) }
@@ -285,6 +302,7 @@ class Request < ApplicationRecord
     belongs_to :primer_panel
     belongs_to :bait_library
   end
+
   # Do NOT move above 'has_metadata'
   include Request::CustomerResponsibility
 
@@ -292,6 +310,7 @@ class Request < ApplicationRecord
 
   # Delegations
   delegate :billable?, to: :request_type, allow_nil: true
+
   # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
   # we now need to be explicit in how we want it delegated.
   delegate :name, to: :request_metadata
@@ -318,11 +337,7 @@ class Request < ApplicationRecord
   end
 
   def run_events
-    if events.loaded?
-      events.select { |e| e.message.starts_with?('Run') }
-    else
-      where('message LIKE "Run%"')
-    end
+    events.loaded? ? events.select { |e| e.message.starts_with?('Run') } : where('message LIKE "Run%"')
   end
 
   def source_labware
@@ -334,11 +349,7 @@ class Request < ApplicationRecord
   end
 
   def current_request_event
-    if request_events.loaded?
-      request_events.detect(&:current?)
-    else
-      request_events.current.last
-    end
+    request_events.loaded? ? request_events.detect(&:current?) : request_events.current.last
   end
 
   def project_id=(project_id)
@@ -348,11 +359,7 @@ class Request < ApplicationRecord
   end
 
   def submission_plate_count
-    submission.requests
-              .where(request_type_id: request_type_id)
-              .joins(:source_labware)
-              .distinct
-              .count('labware.id')
+    submission.requests.where(request_type_id: request_type_id).joins(:source_labware).distinct.count('labware.id')
   end
 
   def update_responsibilities!
@@ -393,11 +400,7 @@ class Request < ApplicationRecord
   # @return [Hash] A hash of aliquot attributes
   #
   def aliquot_attributes
-    {
-      study_id: initial_study_id,
-      project_id: initial_project_id,
-      request_id: id
-    }
+    { study_id: initial_study_id, project_id: initial_project_id, request_id: id }
   end
 
   def get_value(request_information_type)
@@ -428,11 +431,7 @@ class Request < ApplicationRecord
   end
 
   def lab_events_for_batch(batch)
-    if lab_events.loaded?
-      lab_events.select { |le| le.batch_id == batch.id }
-    else
-      lab_events.where(batch_id: batch.id)
-    end
+    lab_events.loaded? ? lab_events.select { |le| le.batch_id == batch.id } : lab_events.where(batch_id: batch.id)
   end
 
   def event_with_key_value(k, v = nil)
@@ -455,8 +454,7 @@ class Request < ApplicationRecord
   # CAUTION!: This may not behaves as expected. I'll be deprecating this soon.
   def next_requests_via_asset
     if target_asset.present?
-      target_asset.requests.where(submission_id: submission_id,
-                                  request_type_id: next_request_type_id)
+      target_asset.requests.where(submission_id: submission_id, request_type_id: next_request_type_id)
     end
   end
 
@@ -480,15 +478,19 @@ class Request < ApplicationRecord
     raise StandardError, "Can only return pending requests, request is #{state}" unless pending?
   end
 
-  def format_qc_information
+  def format_qc_information # rubocop:todo Metrics/MethodLength
     return [] if lab_events.empty?
 
-    events.map do |event|
+    events.filter_map do |event|
       next if event.family.nil? || %w[pass fail].exclude?(event.family.downcase)
 
       message = event.message.presence || '(No message was specified)'
-      { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message,
-        'created_at' => event.created_at }
+      {
+        'event_id' => event.id,
+        'status' => event.family.downcase,
+        'message' => message,
+        'created_at' => event.created_at
+      }
     end.compact
   end
 
@@ -546,8 +548,6 @@ class Request < ApplicationRecord
   end
 
   def manifest_processed!; end
-
-  def billing_product_identifier; end
 
   private
 

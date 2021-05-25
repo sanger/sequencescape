@@ -8,11 +8,7 @@ module Transfer::State
   ALL_STATES = %w[started qc_complete pending passed failed cancelled].freeze
 
   def self.state_helper(names)
-    names.each do |name|
-      module_eval do
-        define_method("#{name}?") { state == name }
-      end
-    end
+    names.each { |name| module_eval { define_method("#{name}?") { state == name } } }
   end
 
   state_helper(ALL_STATES)
@@ -36,55 +32,58 @@ module Transfer::State
 
   # Plate specific behaviour
   module PlateState
-    def self.included(base)
+    def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
-        scope :in_state, lambda { |states|
-                           states = Array(states).map(&:to_s)
+        scope :in_state,
+              lambda { |states|
+                states = Array(states).map(&:to_s)
 
-                           # If all of the states are present there is no point in actually adding this set of conditions because we're
-                           # basically looking for all of the plates.
-                           if states.sort != ALL_STATES.sort
-                             # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
-                             # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
-                             # pulldown at least).
-                             query_conditions = +'transfer_requests.state IN (?)'
-                             if states.include?('pending')
-                               query_conditions << ' OR (transfer_requests.state IS NULL AND plate_purposes.stock_plate=TRUE)'
-                             end
+                # If all of the states are present there is no point in actually adding this set of conditions because we're
+                # basically looking for all of the plates.
+                if states.sort != ALL_STATES.sort
+                  # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
+                  # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
+                  # pulldown at least).
+                  query_conditions = +'transfer_requests.state IN (?)'
+                  if states.include?('pending')
+                    query_conditions << ' OR (transfer_requests.state IS NULL AND plate_purposes.stock_plate=TRUE)'
+                  end
 
-                             joins(:transfer_requests_as_target, :plate_purpose).where([query_conditions, states])
-                           else
-                             all
-                           end
-                         }
+                  joins(:transfer_requests_as_target, :plate_purpose).where([query_conditions, states])
+                else
+                  all
+                end
+              }
       end
     end
   end
 
   # Tube specific behaviour
   module TubeState
-    def self.included(base)
+    def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
-        scope :in_state, lambda { |states|
-                           states = Array(states).map(&:to_s)
+        scope :in_state,
+              lambda { |states|
+                states = Array(states).map(&:to_s)
 
-                           # If all of the states are present there is no point in actually adding this set of conditions because we're
-                           # basically looking for all of the plates.
-                           if states.sort != ALL_STATES.sort
+                # If all of the states are present there is no point in actually adding this set of conditions because we're
+                # basically looking for all of the plates.
+                if states.sort != ALL_STATES.sort
+                  join_options = [
+                    'LEFT OUTER JOIN `transfer_requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id'
+                  ]
 
-                             join_options = [
-                               'LEFT OUTER JOIN `transfer_requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id'
-                             ]
-
-                             joins(join_options).where(transfer_requests_as_target: { state: states })
-                           else
-                             all
-                           end
-                         }
-        scope :without_finished_tubes, lambda { |purpose|
-          where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'",
-                     purpose.map(&:id)])
-        }
+                  joins(join_options).where(transfer_requests_as_target: { state: states })
+                else
+                  all
+                end
+              }
+        scope :without_finished_tubes,
+              lambda { |purpose|
+                where.not(
+                  ["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'", purpose.map(&:id)]
+                )
+              }
       end
     end
   end

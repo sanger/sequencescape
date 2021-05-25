@@ -13,9 +13,7 @@ RSpec.describe TubeRack do
       tube_rack = create :tube_rack
       racked_tube = create :racked_tube
 
-      expect { tube_rack.racked_tubes << racked_tube }.to(
-        change { tube_rack.racked_tubes.count }.by(1)
-      )
+      expect { tube_rack.racked_tubes << racked_tube }.to(change { tube_rack.racked_tubes.count }.by(1))
     end
 
     it 'can contain a barcode' do
@@ -64,8 +62,7 @@ RSpec.describe TubeRack do
     let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
     let!(:tubes) do
       Array.new(num_tubes) do |i|
-        create(:sample_tube, :in_a_rack,
-               tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
       end
     end
 

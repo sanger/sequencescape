@@ -10,7 +10,7 @@ FactoryBot.define do
     receptacle
 
     factory :untagged_aliquot do
-      tag  { nil }
+      tag { nil }
       tag2 { nil }
     end
 
@@ -32,7 +32,7 @@ FactoryBot.define do
       bait_library
       primer_panel
       insert_size_from { 100 }
-      insert_size_to   { 200 }
+      insert_size_to { 200 }
     end
 
     factory :phi_x_aliquot do

@@ -11,7 +11,8 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     setup do
       @product_a = create :product
-      @criteria_a = create :product_criteria, product: @product_a, configuration: { total_micrograms: { greater_than: 50 } }
+      @criteria_a =
+        create :product_criteria, product: @product_a, configuration: { total_micrograms: { greater_than: 50 } }
     end
 
     should 'only allow one active criteria per product per stage' do
@@ -70,11 +71,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     end
 
     should 'be able to take metrics' do
-      well = {
-        concentration: 800,
-        current_volume: 100,
-        total_micrograms: 90
-      }
+      well = { concentration: 800, current_volume: 100, total_micrograms: 90 }
       assesment = @criteria_a.assess(well)
       assert assesment.is_a?(ProductCriteria::Basic)
       assert assesment.passed?

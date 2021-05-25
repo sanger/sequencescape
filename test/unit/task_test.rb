@@ -9,9 +9,7 @@ class TaskTest < ActiveSupport::TestCase
   end
 
   context 'A SetDescriptorsTask' do
-    setup do
-      @task = SetDescriptorsTask.new
-    end
+    setup { @task = SetDescriptorsTask.new }
 
     should 'store a descriptor' do
       @task.set_descriptor_value('name', 'value')
@@ -23,9 +21,7 @@ class TaskTest < ActiveSupport::TestCase
     end
 
     context 'with a descriptor' do
-      setup do
-        @task.set_descriptor_value('name', 'value')
-      end
+      setup { @task.set_descriptor_value('name', 'value') }
 
       should 'get is value' do
         assert_equal 'value', @task.get_descriptor_value('name')

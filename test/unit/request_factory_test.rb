@@ -9,8 +9,14 @@ class RequestcreateTest < ActiveSupport::TestCase
         @project = create(:project)
         @project.project_metadata.update!(budget_division: BudgetDivision.create!(name: 'Test'))
         @order = create(:order, project: @project)
-        @request = create(:request, request_type: create(:request_type), project: @project,
-                                    asset: create(:sample_tube), target_asset: create(:well))
+        @request =
+          create(
+            :request,
+            request_type: create(:request_type),
+            project: @project,
+            asset: create(:sample_tube),
+            target_asset: create(:well)
+          )
       end
 
       context 'without quotas' do
@@ -33,9 +39,7 @@ class RequestcreateTest < ActiveSupport::TestCase
       end
 
       context 'with quotas' do
-        setup do
-          @project.update!(enforce_quotas: true)
-        end
+        setup { @project.update!(enforce_quotas: true) }
 
         should 'not fail' do
           RequestFactory.copy_request(@request)
@@ -46,11 +50,8 @@ class RequestcreateTest < ActiveSupport::TestCase
 
   context '.create_assets_requests' do
     setup do
-      @study  = create(:study)
-      @assets = [
-        create(:sample_tube, study: nil, project: nil),
-        create(:sample_tube, study: nil, project: nil)
-      ]
+      @study = create(:study)
+      @assets = [create(:sample_tube, study: nil, project: nil), create(:sample_tube, study: nil, project: nil)]
 
       RequestFactory.create_assets_requests(@assets, @study)
     end
@@ -64,9 +65,8 @@ class RequestcreateTest < ActiveSupport::TestCase
     end
 
     should 'have the asset IDs' do
-      assert_equal @assets.map { |a|
-                     a.receptacle.id
-                   }.sort, RequestType.find_by(key: 'create_asset').requests.map(&:asset_id).sort
+      assert_equal @assets.map { |a| a.receptacle.id }.sort,
+                   RequestType.find_by(key: 'create_asset').requests.map(&:asset_id).sort
     end
   end
 end

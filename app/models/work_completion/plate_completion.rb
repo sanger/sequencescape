@@ -27,9 +27,11 @@ class WorkCompletion::PlateCompletion
         # This is because submission.next_requests tries to take a shortcut through
         # the target_asset if it is defined.
         upstream.next_requests.each { |ds| ds.update!(asset: target_well) }
+
         # In some cases, such as the Illumina-C pipelines, requests might be
         # connected upfront. We don't want to touch these.
         upstream.target_asset ||= target_well
+
         # We don't try and pass failed requests.
         # I'm not 100% convinced this decision belongs here, and instead
         # we may want to let the client specify wells to pass, and perform
@@ -56,9 +58,11 @@ class WorkCompletion::PlateCompletion
   end
 
   def target_wells
-    @target_wells ||= target_plate.wells
-                                  .includes(aliquots: { request: WorkCompletion::REQUEST_INCLUDES })
-                                  .include_stock_wells_for_modification
-                                  .where(requests: { submission_id: submission_ids })
+    @target_wells ||=
+      target_plate
+        .wells
+        .includes(aliquots: { request: WorkCompletion::REQUEST_INCLUDES })
+        .include_stock_wells_for_modification
+        .where(requests: { submission_id: submission_ids })
   end
 end

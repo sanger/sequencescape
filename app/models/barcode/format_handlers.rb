@@ -421,4 +421,18 @@ module Barcode::FormatHandlers
   class RandoxEagle < BaseRegExBarcode
     self.format = /\A(?<prefix>RXE)(?<number>\d{6})\z/
   end
+
+  # Expected formats:
+  # HSLnnnnnn
+  # where n is a digit
+  class HealthServicesLaboratoriesV1 < BaseRegExBarcode
+    self.format = /\A(?<prefix>HSL)(?<number>\d+)\z/
+  end
+
+  # Expected formats:
+  # PLY-chp-nnnnnnn.csv
+  # where n is a digit
+  class PlymouthV1 < BaseRegExBarcode
+    self.format = /\A(?<prefix>PLY)-chp-(?<number>\d+)\z/
+  end
 end

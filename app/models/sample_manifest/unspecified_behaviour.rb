@@ -19,7 +19,8 @@ module SampleManifest::UnspecifiedBehaviour
     end
 
     def generate_sample_and_aliquot(sanger_sample_id, asset)
-      raise StandardError, "UnspecifiedBehaviour can not be used to create Sample: #{sanger_sample_id}, for Asset: #{asset.display_name}."
+      raise StandardError,
+            "UnspecifiedBehaviour can not be used to create Sample: #{sanger_sample_id}, for Asset: #{asset.display_name}."
     end
   end
 end

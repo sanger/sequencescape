@@ -20,38 +20,38 @@ on:
   # https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow
   workflow_dispatch:
   schedule:
-  # * is a special character in YAML so you have to quote this string
-  # Every sunday at 10 am
-  - cron: "0 10 * * 0"
+    # * is a special character in YAML so you have to quote this string
+    # Every sunday at 10 am
+    - cron: "0 10 * * 0"
 
 jobs:
   update_rubocop:
     if: (github.repository_owner == 'sanger') # On the sanger fork only
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      env:
-        BUNDLE_WITHOUT: 'warehouse cucumber deployment profile development default test'
-      with:
-        bundler-cache: true
-    - name: Update Rubocop
-      run: |
-        bundle config --local deployment false
-        bundle update --group=linting
-    - name: Correcting and ignoring
-      run: bundle exec rubocop --auto-correct --disable-uncorrectable
-      # https://github.com/marketplace/actions/create-pull-request
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
-      with:
-        title: Automatic Rubocop update
-        branch: gh_action/update_rubocop
-        delete-branch: true
-        body: |
-          Automatic update via https://github.com/sanger/sequencescape/blob/develop/.github/workflows/update_rubocop.yml
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        env:
+          BUNDLE_WITHOUT: "cucumber deployment profile development default test"
+        with:
+          bundler-cache: true
+      - name: Update Rubocop
+        run: |
+          bundle config --local deployment false
+          bundle update --group=linting
+      - name: Correcting and ignoring
+        run: bundle exec rubocop --auto-correct --disable-uncorrectable
+        # https://github.com/marketplace/actions/create-pull-request
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: Automatic Rubocop update
+          branch: gh_action/update_rubocop
+          delete-branch: true
+          body: |
+            Automatic update via https://github.com/sanger/sequencescape/blob/develop/.github/workflows/update_rubocop.yml
 
-          This cop will trigger safe-autocorrect for new cops, and will
-          add inline rubocop:todo for other cops. Please sanity check
-          any changes before merging in.
+            This cop will trigger safe-autocorrect for new cops, and will
+            add inline rubocop:todo for other cops. Please sanity check
+            any changes before merging in.

@@ -4,6 +4,7 @@
 class Tag2Layout < ApplicationRecord
   include Uuid::Uuidable
   serialize :target_well_locations
+
   ##
   # This class provides two benefits
   # 1) We can enforce uniqueness of tag2_layouts/submissions at the database level
@@ -32,8 +33,8 @@ class Tag2Layout < ApplicationRecord
 
   belongs_to :source, class_name: 'Labware'
 
-  scope :include_tag, ->() { includes(:tag) }
-  scope :include_plate, ->() { includes(:plate) }
+  scope :include_tag, -> { includes(:tag) }
+  scope :include_plate, -> { includes(:plate) }
 
   # After creating the instance we can layout the tags into the wells.
   after_create :layout_tag2_into_wells, if: :valid?

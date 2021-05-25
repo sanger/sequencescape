@@ -17,7 +17,7 @@ class Role < ApplicationRecord
 
   after_destroy :touch_authorizable
 
-  broadcasts_associated_via_warren :authorizable
+  broadcasts_associated_with_warren :authorizable
 
   def self.keys
     distinct.pluck(:name)
@@ -42,8 +42,10 @@ class Role < ApplicationRecord
   #
   def authorizes?(check)
     case check
-    when nil then true
-    when Class then authorizable.is_a?(check)
+    when nil
+      true
+    when Class
+      authorizable.is_a?(check)
     else
       check == authorizable
     end

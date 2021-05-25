@@ -30,24 +30,31 @@ class Qcable < ApplicationRecord # rubocop:todo Style/Documentation
 
   scope :include_for_json, -> { includes(%i[asset lot stamp stamp_qcable]) }
 
-  scope :stamped, -> {
-                    includes(%i[stamp_qcable
-                                stamp]).where('stamp_qcables.id IS NOT NULL').order('stamps.created_at ASC, stamp_qcables.order ASC')
-                  }
+  scope :stamped,
+        -> {
+          includes(%i[stamp_qcable stamp])
+            .where('stamp_qcables.id IS NOT NULL')
+            .order('stamps.created_at ASC, stamp_qcables.order ASC')
+        }
 
   has_many :barcodes, through: :asset
+
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate
   # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
   # to their appropriate query conditions (as though they operated on their own) and then we join
   # them together with 'OR' to get the overall conditions.
-  scope :with_barcode, ->(*barcodes) {
-    db_barcodes = barcodes.flatten.each_with_object([]) do |source_bc, store|
-      next if source_bc.blank?
+  scope :with_barcode,
+        ->(*barcodes) {
+          db_barcodes =
+            barcodes
+              .flatten
+              .each_with_object([]) do |source_bc, store|
+                next if source_bc.blank?
 
-      store.concat(Barcode.extract_barcode(source_bc))
-    end
-    joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
-  }
+                store.concat(Barcode.extract_barcode(source_bc))
+              end
+          joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+        }
 
   def stamp_index
     return nil if stamp_qcable.nil?
@@ -64,11 +71,7 @@ class Qcable < ApplicationRecord # rubocop:todo Style/Documentation
   def create_asset!
     return true if lot.nil?
 
-    self.asset ||= if barcode.present?
-                     asset_purpose.create!(external_barcode: barcode)
-                   else
-                     asset_purpose.create!
-                   end
+    self.asset ||= barcode.present? ? asset_purpose.create!(external_barcode: barcode) : asset_purpose.create!
   end
 
   def primary_barcode

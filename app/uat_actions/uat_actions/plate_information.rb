@@ -5,10 +5,7 @@ class UatActions::PlateInformation < UatActions
   self.title = 'Plate Information'
   self.description = 'Get plate information for a barcode.'
 
-  form_field :plate_barcode,
-             :text_field,
-             label: 'Plate Barcode',
-             help: 'Fetches basic information for a plate barcode.'
+  form_field :plate_barcode, :text_field, label: 'Plate Barcode', help: 'Fetches basic information for a plate barcode.'
 
   validates :plate_barcode, presence: { message: 'needs a value' }
   validates :plate, presence: { message: 'could not be found' }

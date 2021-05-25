@@ -10,7 +10,7 @@ require 'lab_where_client'
 # - {Well}: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
 # - {PlateType}: Identifies the plates form factor, typically provided to robots to ensure tips are positioned correctly.
 #
-class Plate < Labware
+class Plate < Labware # rubocop:todo Metrics/ClassLength
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
   include Transfer::Associations
@@ -37,28 +37,31 @@ class Plate < Labware
   belongs_to :plate_purpose, inverse_of: :plates
   belongs_to :purpose, foreign_key: :plate_purpose_id
   has_many :wells, inverse_of: :plate, foreign_key: :labware_id do
-    def construct!
+    # rubocop:todo Metrics/MethodLength
+    def construct! # rubocop:todo Metrics/AbcSize
       transaction do
         plate = proxy_association.owner
-        plate.maps.in_row_major_order.ids.map do |location_id|
-          { map_id: location_id }
-        end.tap do |wells|
+        plate.maps.in_row_major_order.ids.map { |location_id| { map_id: location_id } }.tap do |wells|
           plate.wells.import(wells)
           ids = plate.wells.ids
           well_type = Well.base_class.name
+
           # These would usually be handled in after create callbacks, however
           # import does not fire these, and we want to create them in bulk anyway
           WellAttribute.import(ids.map { |well| { well_id: well } })
-          Uuid.import(ids.map do |well|
-                        { resource_id: well, resource_type: well_type, external_id: Uuid.generate_uuid }
-                      end)
-          # Warren::QueueBroadcastMessage keeps track of the class (Well) and id, and gets sent after
+          Uuid.import(
+            ids.map { |well| { resource_id: well, resource_type: well_type, external_id: Uuid.generate_uuid } }
+          )
+
+          # Warren::Message::Short keeps track of the class (Well) and id, and gets sent after
           # the transaction completes. This avoids us needing to instantiate wells, keeping the memory footprint
           # down.
-          ids.each { |id| Warren::QueueBroadcastMessage.new(class_name: 'Well', id: id).queue(Warren.handler) }
+          ids.each { |id| Warren::Message::Short.new(class_name: 'Well', id: id).queue(Warren.handler) }
         end
       end
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     # Returns the wells with their pool identifier included
     # @note This is a method defined on the well association, and can be considered a scope.
@@ -84,12 +87,14 @@ class Plate < Labware
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
   has_many :well_requests_as_source, through: :wells, source: :requests_as_source
   has_many :orders_as_target, -> { distinct }, through: :well_requests_as_target, source: :order
+
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
   has_many :stock_requests, -> { distinct }, through: :stock_well_associations, source: :requests
   has_many :stock_well_associations, -> { distinct }, through: :wells, source: :stock_wells
   has_many :stock_orders, -> { distinct }, through: :stock_requests, source: :order
   has_many :extraction_attributes, foreign_key: 'target_id'
   has_many :siblings, through: :parents, source: :children
+
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
   has_many :transfer_request_collections, -> { distinct }, through: :transfer_requests_as_source
@@ -124,9 +129,7 @@ class Plate < Labware
   #
   # @return [Void]
   def update_volume(volume_change)
-    ActiveRecord::Base.transaction do
-      wells.each { |well| well.update_volume(volume_change) }
-    end
+    ActiveRecord::Base.transaction { wells.each { |well| well.update_volume(volume_change) } }
   end
 
   #
@@ -141,7 +144,10 @@ class Plate < Labware
   def summary_hash
     {
       asset_id: id,
-      barcode: { ean13_barcode: ean13_barcode, human_readable: human_barcode },
+      barcode: {
+        ean13_barcode: ean13_barcode,
+        human_readable: human_barcode
+      },
       occupied_wells: wells.with_aliquots.include_map.map(&:map_description)
     }
   end
@@ -184,10 +190,11 @@ class Plate < Labware
   end
 
   def iteration
-    iter = siblings # assets sharing the same parent
-           .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type
-           .where("#{self.class.table_name}.created_at <= ?", created_at) # created before or at the same time
-           .count(:id) # count the siblings.
+    iter =
+      siblings # assets sharing the same parent
+        .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type
+        .where("#{self.class.table_name}.created_at <= ?", created_at) # created before or at the same time
+        .count(:id) # count the siblings.
 
     iter.zero? ? nil : iter # Maintains compatibility with legacy version
   end
@@ -197,53 +204,54 @@ class Plate < Labware
   end
 
   def priority
-    waiting_submissions.maximum(:priority) ||
-      in_progress_submissions.maximum(:priority) ||
-      0
+    waiting_submissions.maximum(:priority) || in_progress_submissions.maximum(:priority) || 0
   end
 
   before_create :set_plate_name_and_size
 
   scope :with_sample, ->(sample) { includes(:contained_samples).where(samples: { id: sample }) }
   scope :with_requests, ->(requests) { includes(wells: :requests).where(requests: { id: requests }).distinct }
-  scope :output_by_batch, ->(batch) {
-    joins(wells: { requests_as_target: :batch })
-      .where(batches: { id: batch })
-  }
-  scope :with_wells, ->(wells) {
-    joins(:wells)
-      .where(receptacles: { id: wells.map(&:id) })
-      .distinct
-  }
+  scope :output_by_batch, ->(batch) { joins(wells: { requests_as_target: :batch }).where(batches: { id: batch }) }
+  scope :with_wells, ->(wells) { joins(:wells).where(receptacles: { id: wells.map(&:id) }).distinct }
 
-  has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
-  has_many :descendant_tubes, class_name: 'Tube', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
-  has_many :descendant_lanes, class_name: 'Lane::Labware', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
+  has_many :descendant_plates,
+           class_name: 'Plate',
+           through: :links_as_ancestor,
+           foreign_key: :ancestor_id,
+           source: :descendant
+  has_many :descendant_tubes,
+           class_name: 'Tube',
+           through: :links_as_ancestor,
+           foreign_key: :ancestor_id,
+           source: :descendant
+  has_many :descendant_lanes,
+           class_name: 'Lane::Labware',
+           through: :links_as_ancestor,
+           foreign_key: :ancestor_id,
+           source: :descendant
   has_many :tag_layouts, dependent: :destroy
 
-  scope :with_descendants_owned_by, ->(user) {
-    joins(descendant_plates: :plate_owner)
-      .where(plate_owners: { user_id: user })
-      .distinct
-  }
+  scope :with_descendants_owned_by,
+        ->(user) { joins(descendant_plates: :plate_owner).where(plate_owners: { user_id: user }).distinct }
 
-  scope :source_plates, -> {
-    joins(:plate_purpose)
-      .where('plate_purposes.id = plate_purposes.source_purpose_id')
-  }
+  scope :source_plates, -> { joins(:plate_purpose).where('plate_purposes.id = plate_purposes.source_purpose_id') }
 
-  scope :with_wells_and_requests, -> {
-    eager_load(wells: [
-      :uuid_object, :map,
-      {
-        requests_as_target: [
-          { initial_study: :uuid_object },
-          { initial_project: :uuid_object },
-          { asset: { aliquots: :sample } }
-        ]
-      }
-    ])
-  }
+  scope :with_wells_and_requests,
+        -> {
+          eager_load(
+            wells: [
+              :uuid_object,
+              :map,
+              {
+                requests_as_target: [
+                  { initial_study: :uuid_object },
+                  { initial_project: :uuid_object },
+                  { asset: { aliquots: :sample } }
+                ]
+              }
+            ]
+          )
+        }
 
   def self.search_for_plates(params)
     with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
@@ -254,34 +262,30 @@ class Plate < Labware
       .distinct
   end
 
-  scope :with_faculty_sponsor_ids, ->(faculty_sponsor_ids) {
-    if faculty_sponsor_ids.present?
-      joins(studies: { study_metadata: :faculty_sponsor })
-        .where(faculty_sponsors: { id: faculty_sponsor_ids })
-    end
-  }
+  scope :with_faculty_sponsor_ids,
+        ->(faculty_sponsor_ids) {
+          if faculty_sponsor_ids.present?
+            joins(studies: { study_metadata: :faculty_sponsor }).where(faculty_sponsors: { id: faculty_sponsor_ids })
+          end
+        }
 
   scope :with_study_id, ->(study_id) { joins(:studies).where(studies: { id: study_id }) if study_id.present? }
 
-  scope :with_plate_purpose_ids, ->(plate_purpose_ids) {
-    where(plate_purpose_id: plate_purpose_ids) if plate_purpose_ids.present?
-  }
+  scope :with_plate_purpose_ids,
+        ->(plate_purpose_ids) { where(plate_purpose_id: plate_purpose_ids) if plate_purpose_ids.present? }
 
   # TODO: When on Ruby 2.6 try using endless ranges
-  scope :created_between, ->(start_date, end_date) {
-    where(created_at: (start_date.midnight..(end_date || Time.current).end_of_day)) if start_date.present?
-  }
+  scope :created_between,
+        ->(start_date, end_date) {
+          where(created_at: (start_date.midnight..(end_date || Time.current).end_of_day)) if start_date.present?
+        }
 
   def maps
     Map.where_plate_size(size).where_plate_shape(asset_shape)
   end
 
   def find_well_by_name(well_name)
-    if wells.loaded?
-      wells.indexed_by_location[well_name]
-    else
-      wells.located_at_position(well_name).first
-    end
+    wells.loaded? ? wells.indexed_by_location[well_name] : wells.located_at_position(well_name).first
   end
   alias find_well_by_map_description find_well_by_name
 
@@ -343,8 +347,8 @@ class Plate < Labware
   end
 
   def self.safe_sanger_barcode(sanger_barcode)
-    if sanger_barcode[:number].blank? || Barcode.sanger_barcode(sanger_barcode[:prefix],
-                                                                sanger_barcode[:number]).exists?
+    if sanger_barcode[:number].blank? ||
+         Barcode.sanger_barcode(sanger_barcode[:prefix], sanger_barcode[:number]).exists?
       { number: PlateBarcode.create.barcode, prefix: sanger_barcode[:prefix] }
     else
       sanger_barcode
@@ -383,8 +387,7 @@ class Plate < Labware
   end
 
   extend Metadata
-  has_metadata do
-  end
+  has_metadata {}
 
   def height
     asset_shape.plate_height(size)
@@ -395,7 +398,7 @@ class Plate < Labware
   end
 
   # This method returns a map from the wells on the plate to their stock well.
-  def stock_wells
+  def stock_wells # rubocop:todo Metrics/AbcSize
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!]
     if stock_plate?
       wells.with_pool_id.each_with_object({}) { |w, store| store[w] = [w] }
@@ -403,9 +406,7 @@ class Plate < Labware
       wells.include_stock_wells.with_pool_id.each_with_object({}) do |w, store|
         storted_stock_wells = w.stock_wells.sort_by { |sw| sw.map.column_order }
         store[w] = storted_stock_wells unless storted_stock_wells.empty?
-      end.tap do |stock_wells_hash|
-        raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
-      end
+      end.tap { |stock_wells_hash| raise "No stock plate associated with #{id}" if stock_wells_hash.empty? }
     end
   end
 
@@ -421,28 +422,39 @@ class Plate < Labware
     @well_hash ||= wells.include_map.includes(:well_attribute).index_by(&:map_description)
   end
 
-  def update_qc_values_with_parser(parser)
+  def update_qc_values_with_parser(parser) # rubocop:todo Metrics/MethodLength
     ActiveRecord::Base.transaction do
       qc_assay = QcAssay.new
       parser.each_well_and_parameters do |position, well_updates|
         # We might have a nil well if a plate was only partially cherrypicked
         well = well_hash[position] || next
         well_updates.each do |attribute, value|
-          QcResult.create!(asset: well, key: attribute, unit_value: value, assay_type: parser.assay_type,
-                           assay_version: parser.assay_version, qc_assay: qc_assay)
+          QcResult.create!(
+            asset: well,
+            key: attribute,
+            unit_value: value,
+            assay_type: parser.assay_type,
+            assay_version: parser.assay_version,
+            qc_assay: qc_assay
+          )
         end
       end
     end
     true
   end
 
-  def team
-    ProductLine.joins([
-      'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
-      'INNER JOIN requests ON requests.request_type_id = request_types.id',
-      'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
-      'INNER JOIN receptacles AS re ON re.id = well_links.target_well_id'
-    ]).find_by(['re.labware_id = ?', id]).try(:name) || 'UNKNOWN'
+  def team # rubocop:todo Metrics/MethodLength
+    ProductLine
+      .joins(
+        [
+          'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
+          'INNER JOIN requests ON requests.request_type_id = request_types.id',
+          'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
+          'INNER JOIN receptacles AS re ON re.id = well_links.target_well_id'
+        ]
+      )
+      .find_by(['re.labware_id = ?', id])
+      .try(:name) || 'UNKNOWN'
   end
 
   alias friendly_name human_barcode
@@ -455,7 +467,8 @@ class Plate < Labware
   # an invalid plate barcode. In the future we probably want to scrap this approach entirely,
   # and generate all barcodes in the plate style. (That is, as part of the factory on, eg. plate purpose)
   def generate_barcode
-    raise StandardError, "#generate_barcode has been called on plate, which wasn't supposed to happen, and probably indicates a bug."
+    raise StandardError,
+          "#generate_barcode has been called on plate, which wasn't supposed to happen, and probably indicates a bug."
   end
 
   def sanger_barcode=(attributes)
@@ -471,19 +484,11 @@ class Plate < Labware
   end
 
   def wells_in_row_order
-    if wells.loaded?
-      wells.sort_by(&:row_order)
-    else
-      wells.in_row_major_order
-    end
+    wells.loaded? ? wells.sort_by(&:row_order) : wells.in_row_major_order
   end
 
   def wells_in_column_order
-    if wells.loaded?
-      wells.sort_by(&:column_order)
-    else
-      wells.in_column_major_order
-    end
+    wells.loaded? ? wells.sort_by(&:column_order) : wells.in_column_major_order
   end
 
   # When Cherrypicking, especially on the Hamilton, control plates get placed

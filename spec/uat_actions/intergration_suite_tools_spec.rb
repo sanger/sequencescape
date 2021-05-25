@@ -6,12 +6,7 @@ describe UatActions::IntergrationSuiteTools do
   context 'valid options' do
     let(:parameters) { {} }
     let(:uat_action) { described_class.new(parameters) }
-    let(:report) do
-      {
-        user_swipecard: '__uat_test__',
-        user_login: '__uat_test__'
-      }
-    end
+    let(:report) { { user_swipecard: '__uat_test__', user_login: '__uat_test__' } }
 
     it 'can be performed' do
       expect(uat_action.perform).to eq true

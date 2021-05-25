@@ -25,22 +25,25 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
     end
 
     it 'will not proceed if the sample is not suitable' do
-      sample = create(:sample_for_accessioning_with_open_study,
-                      sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
+      sample =
+        create(
+          :sample_for_accessioning_with_open_study,
+          sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil)
+        )
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
 
     it 'will add an accession number if successful' do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
-      sample = create(:sample_for_accessioning_with_open_study,
-                      sample_metadata: create(:sample_metadata_for_accessioning))
+      sample =
+        create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_present
     end
 
     it 'will not add an accession number if it fails' do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
-      sample = build(:sample_for_accessioning_with_open_study,
-                     sample_metadata: create(:sample_metadata_for_accessioning))
+      sample =
+        build(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
       expect { sample.save! }.to raise_error(JobFailed)
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
@@ -52,16 +55,12 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       expect(stand_alone_sample).not_to be_registered_through_manifest
 
       sample_manifest = create :tube_sample_manifest_with_samples
-      sample_manifest.samples.each do |sample|
-        expect(sample).to be_registered_through_manifest
-      end
+      sample_manifest.samples.each { |sample| expect(sample).to be_registered_through_manifest }
     end
 
     it 'knows when it can be included in submission if it was registered through manifest' do
       sample_manifest = create :tube_sample_manifest_with_samples
-      sample_manifest.samples.each do |sample|
-        expect(sample).not_to be_can_be_included_in_submission
-      end
+      sample_manifest.samples.each { |sample| expect(sample).not_to be_can_be_included_in_submission }
       sample = sample_manifest.samples.first
       sample.sample_metadata.supplier_name = 'new sample'
       expect(sample).to be_can_be_included_in_submission
@@ -75,9 +74,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
 
   context 'Aker' do
     include BarcodeHelper
-    before do
-      mock_plate_barcode_service
-    end
+    before { mock_plate_barcode_service }
 
     it 'can have many work orders' do
       job = create(:aker_job)

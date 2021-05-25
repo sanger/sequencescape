@@ -10,7 +10,7 @@ describe '/api/1/' do
     let(:authorised_app) { create :api_application }
 
     let(:response_body) do
-      %{{
+      '{
         "revision": 2,
         "uuids": {
           "actions": {
@@ -377,7 +377,7 @@ describe '/api/1/' do
             "create": "http://www.example.com/api/1/work_completions"
           }
         }
-      }}
+      }'
     end
     let(:response_code) { 200 }
 
@@ -392,7 +392,7 @@ describe '/api/1/' do
     let(:user) { create :user }
 
     let(:response_body) do
-      %{{
+      '{
         "revision": 2,
 
         "uuids": {
@@ -722,7 +722,7 @@ describe '/api/1/' do
             "read": "http://www.example.com/api/1/work_completions"
           }
         }
-      }}
+      }'
     end
     let(:response_code) { 200 }
 

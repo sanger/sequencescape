@@ -3,9 +3,7 @@
 require 'rails_helper'
 require 'support/lab_where_client_helper'
 
-RSpec.configure do |c|
-  c.include LabWhereClientHelper
-end
+RSpec.configure { |c| c.include LabWhereClientHelper }
 
 describe 'Viewing a receptacle' do
   let(:user) { create :user }

@@ -16,23 +16,27 @@ module SampleManifestExcel
         super
         @extra_rows_added = 0
         create_styles
-        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name,
-                                  sample_manifest.count)
+        add_title_and_description(
+          sample_manifest.study.abbreviation,
+          sample_manifest.supplier.name,
+          sample_manifest.count
+        )
         add_columns
         freeze_panes
       end
 
-      def type
-        @type ||= case sample_manifest.asset_type
-                  when '1dtube', 'multiplexed_library', 'library'
-                    'Tubes'
-                  when 'plate'
-                    'Plates'
-                  when 'tube_rack'
-                    'Tube Racks'
-                  else
-                    ''
-                  end
+      def type # rubocop:todo Metrics/MethodLength
+        @type ||=
+          case sample_manifest.asset_type
+          when '1dtube', 'multiplexed_library', 'library'
+            'Tubes'
+          when 'plate'
+            'Plates'
+          when 'tube_rack'
+            'Tube Racks'
+          else
+            ''
+          end
       end
 
       # Adds title and description (study abbreviation, supplier name, number of assets sent)
@@ -70,9 +74,7 @@ module SampleManifestExcel
       def add_columns
         columns.update(computed_first_row, last_row, ranges, axlsx_worksheet)
         add_headers
-        sample_manifest.details_array.each do |detail|
-          create_row(detail)
-        end
+        sample_manifest.details_array.each { |detail| create_row(detail) }
       end
 
       # Creates row filled in with required column values, also unlocks (adds unlock style)
@@ -123,11 +125,7 @@ module SampleManifestExcel
       end
 
       def computed_first_row
-        if type == 'Tube Racks'
-          first_row + @extra_rows_added
-        else
-          first_row
-        end
+        type == 'Tube Racks' ? first_row + @extra_rows_added : first_row
       end
     end
   end

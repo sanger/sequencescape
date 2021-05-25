@@ -19,9 +19,9 @@ FactoryBot.define do
 
   factory :strip_tube_purpose, class: 'PlatePurpose' do
     prefix { 'LS' }
-    name               { generate :purpose_name }
-    size               { '8' }
-    asset_shape        { create :strip_tube_column_shape }
+    name { generate :purpose_name }
+    size { '8' }
+    asset_shape { create :strip_tube_column_shape }
     target_type { 'StripTube' }
   end
 
@@ -34,9 +34,7 @@ FactoryBot.define do
     asset_shape { AssetShape.default }
 
     factory :source_plate_purpose do
-      after(:build) do |source_plate_purpose, _evaluator|
-        source_plate_purpose.source_purpose = source_plate_purpose
-      end
+      after(:build) { |source_plate_purpose, _evaluator| source_plate_purpose.source_purpose = source_plate_purpose }
 
       factory :input_plate_purpose, class: 'PlatePurpose::Input' do
         stock_plate { true }
@@ -76,7 +74,7 @@ FactoryBot.define do
 
   factory :tube_purpose, class: 'Tube::Purpose' do
     prefix { 'NT' }
-    name        { generate :purpose_name }
+    name { generate :purpose_name }
     target_type { 'MultiplexedLibraryTube' }
 
     factory :sample_tube_purpose do
@@ -104,7 +102,7 @@ FactoryBot.define do
 
   factory :std_mx_tube_purpose, class: 'Tube::StandardMx' do
     prefix { 'NT' }
-    name        { generate :purpose_name }
+    name { generate :purpose_name }
     target_type { 'MultiplexedLibraryTube' }
   end
 

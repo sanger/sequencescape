@@ -3,9 +3,7 @@
 require 'rails_helper'
 require 'support/lab_where_client_helper'
 
-RSpec.configure do |c|
-  c.include LabWhereClientHelper
-end
+RSpec.configure { |c| c.include LabWhereClientHelper }
 
 describe 'Viewing an asset' do
   # We'll keep the old controller around for a little while to ensure any

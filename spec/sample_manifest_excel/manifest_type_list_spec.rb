@@ -2,7 +2,10 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::ManifestTypeList, type: :model, sample_manifest_excel: true, sample_manifest: true do
+RSpec.describe SampleManifestExcel::ManifestTypeList,
+               type: :model,
+               sample_manifest_excel: true,
+               sample_manifest: true do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
@@ -26,9 +29,7 @@ RSpec.describe SampleManifestExcel::ManifestTypeList, type: :model, sample_manif
   it '#to_a produces a list of headings and names' do
     names_and_headings = manifest_type_list.to_a
     expect(names_and_headings.count).to eq(yaml.length)
-    yaml.each do |k, v|
-      expect(names_and_headings).to include([v['heading'], k])
-    end
+    yaml.each { |k, v| expect(names_and_headings).to include([v['heading'], k]) }
   end
 
   it '#by_asset_type returns a list of manifest types by their asset type' do

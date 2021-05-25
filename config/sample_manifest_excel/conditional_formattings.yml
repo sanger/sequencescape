@@ -1,10 +1,10 @@
 empty_cell:
   style:
-    bg_color: '82CAFA'
+    bg_color: "82CAFA"
     type: :dxf
   options:
     type: :cellIs
-    formula: 'FALSE' 
+    formula: "FALSE"
     operator: :equal
     priority: 1
 len:

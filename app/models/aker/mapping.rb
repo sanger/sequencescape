@@ -49,7 +49,7 @@ module Aker
       true
     end
 
-    def attributes
+    def attributes # rubocop:todo Metrics/MethodLength
       {}.tap do |obj|
         config[:updatable_columns_from_ss_into_aker].each do |table_name, column_names|
           model = model_for_table(table_name)
@@ -73,9 +73,7 @@ module Aker
     def update_model(model, setting_attrs)
       return model.update(setting_attrs) unless model.nil?
 
-      setting_attrs.each_pair do |k, v|
-        send(:"#{k}=", v)
-      end
+      setting_attrs.each_pair { |k, v| send(:"#{k}=", v) }
       true
     end
 
@@ -140,9 +138,7 @@ module Aker
         attrs.each do |k, v|
           next unless config[:updatable_attrs_from_aker_into_ss].include?(k)
 
-          columns_for_table_from_field(table_name, k).each do |column_name|
-            update_obj[column_name] = v
-          end
+          columns_for_table_from_field(table_name, k).each { |column_name| update_obj[column_name] = v }
         end
       end
     end

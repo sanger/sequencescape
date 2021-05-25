@@ -26,7 +26,8 @@ Given /^the lot exists with the attributes:$/ do |table|
     lot_number: settings['lot_number'],
     lot_type: LotType.find_by(name: settings['lot_type']),
     received_at: settings['received_at'],
-    template: TagLayoutTemplate.find_by(name: settings['template']) || PlateTemplate.find_by(name: settings['template']),
+    template:
+      TagLayoutTemplate.find_by(name: settings['template']) || PlateTemplate.find_by(name: settings['template']),
     user: User.last
   )
 end
@@ -41,15 +42,11 @@ Given /^lot "(.*?)" has (\d+) created qcables$/ do |lot_number, qcable_count|
 end
 
 Then /^the qcables in lot "(.*?)" should be "(.*?)"$/ do |lot_number, target_state|
-  Lot.find_by(lot_number: lot_number).qcables.each do |qcable|
-    assert_equal target_state, qcable.state
-  end
+  Lot.find_by(lot_number: lot_number).qcables.each { |qcable| assert_equal target_state, qcable.state }
 end
 
 Given /^all qcables in lot "(.*?)" are "(.*?)"$/ do |lot_number, state|
-  Lot.find_by(lot_number: lot_number).qcables.each do |qcable|
-    qcable.update!(state: state)
-  end
+  Lot.find_by(lot_number: lot_number).qcables.each { |qcable| qcable.update!(state: state) }
 end
 
 Given /^I am set up for testing qcable ordering$/ do
@@ -75,7 +72,7 @@ end
 Given /^I have a qcable$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   user = User.last
-  step %{the UUID of the next plate created will be "55555555-6666-7777-8888-000000000004"}
+  step 'the UUID of the next plate created will be "55555555-6666-7777-8888-000000000004"'
   step 'the plate barcode webservice returns "1000001"'
   QcableCreator.create!(lot: lot, user: user, count: 1)
 end
@@ -90,15 +87,18 @@ end
 
 Given /^I have a robot for testing called "(.*?)"$/ do |name|
   Robot.create!(name: name, location: 'Somewhere', barcode: 123) do |robot|
-    robot.robot_properties.build([
-      { name: 'Max Number of plates', key: 'max_plates', value: '3' },
-      { key: 'SCRC1', value: '20001' },
-      { key: 'DEST1', value: '20002' },
-      { key: 'DEST2', value: '20003' }
-    ])
+    robot.robot_properties.build(
+      [
+        { name: 'Max Number of plates', key: 'max_plates', value: '3' },
+        { key: 'SCRC1', value: '20001' },
+        { key: 'DEST1', value: '20002' },
+        { key: 'DEST2', value: '20003' }
+      ]
+    )
   end
 end
 
+# rubocop:disable Metrics/BlockLength
 Given /^I have a qc library created$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   lot_b = Lot.find_by(lot_number: '1234567891')
@@ -112,17 +112,27 @@ Given /^I have a qc library created$/ do
   reporter_plate = qcb.qcables.first.asset
 
   tag_plate.update!(plate_purpose: PlatePurpose.find_by(name: 'Tag PCR'))
-  Transfer::BetweenPlates.create!(user: user, source: reporter_plate, destination: tag_plate,
-                                  transfers: { 'A1' => 'A1' })
-  stc = SpecificTubeCreation.create!(parent: tag_plate, child_purposes: [Tube::Purpose.find_by(name: 'Tag MX')],
-                                     user: user)
-  batch = Batch.new(pipeline: Pipeline.find_by(name: 'MiSeq sequencing')).tap do |batch|
-    batch.id = 12345
-    batch.save!
-  end
+  Transfer::BetweenPlates.create!(
+    user: user,
+    source: reporter_plate,
+    destination: tag_plate,
+    transfers: {
+      'A1' => 'A1'
+    }
+  )
+  stc =
+    SpecificTubeCreation.create!(parent: tag_plate, child_purposes: [Tube::Purpose.find_by(name: 'Tag MX')], user: user)
+  batch =
+    Batch
+      .new(pipeline: Pipeline.find_by(name: 'MiSeq sequencing'))
+      .tap do |batch|
+        batch.id = 12_345
+        batch.save!
+      end
   FactoryBot.create :request_without_submission, asset: stc.children.first, batch: batch
   # Batch.find(12345).batch_requests.create!(:request=>Request.create!(:asset=>stc.children.first),:position=>1)
 end
+# rubocop:enable Metrics/BlockLength
 
 Given /^the library is testing a reporter$/ do
   lot = Lot.find_by(lot_number: '1234567890')

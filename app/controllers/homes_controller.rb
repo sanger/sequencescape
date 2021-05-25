@@ -1,7 +1,7 @@
 class HomesController < ApplicationController # rubocop:todo Style/Documentation
   before_action :login_required
 
-  def show
+  def show # rubocop:todo Metrics/AbcSize
     @links = configatron.fetch(:external_applications, [])
     @pipelines = current_user.pipelines.active
     @latest_batches = current_user.batches.latest_first.limit(10).includes(:pipeline)

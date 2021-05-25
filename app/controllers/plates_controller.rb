@@ -4,13 +4,13 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
   before_action :evil_parameter_hack!
   before_action :login_required, except: [:fluidigm_file]
 
-  before_action :set_plate_creators, only: [:new, :create]
-  before_action :set_barcode_printers, only: [:new, :create]
+  before_action :set_plate_creators, only: %i[new create]
+  before_action :set_barcode_printers, only: %i[new create]
 
   def new
     respond_to do |format|
       format.html
-      format.xml  { render xml: @plate }
+      format.xml { render xml: @plate }
       format.json { render json: @plate }
     end
   end
@@ -19,7 +19,8 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
     @plate = Plate.find(params[:id])
   end
 
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @creator = plate_creator = Plate::Creator.find(params[:plates][:creator_id])
     barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
     source_plate_barcodes = params[:plates][:source_plates]
@@ -31,12 +32,7 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
       if scanned_user.nil?
         flash[:error] = 'Please scan your user barcode'
       elsif tube_rack_sources?
-        plate_creator.create_plates_from_tube_racks!(
-          tube_racks,
-          barcode_printer,
-          scanned_user,
-          create_asset_group
-        )
+        plate_creator.create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, create_asset_group)
       else
         plate_creator.execute(
           source_plate_barcodes,
@@ -56,6 +52,8 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
       format.html { render(new_plate_path) }
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def set_plate_creators
     @plate_creators = Plate::Creator.order(:name)
@@ -87,38 +85,39 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
     @studies = Study.alphabetical
   end
 
-  def create_sample_tubes
+  # rubocop:todo Metrics/MethodLength
+  def create_sample_tubes # rubocop:todo Metrics/AbcSize
     barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
     barcode_array = params[:plates][:source_plates].scan(/\w+/)
     plates = Plate.with_barcode(barcode_array)
     study = Study.find(params[:plates][:study])
 
     respond_to do |format|
-      asset_group = Plate::SampleTubeFactory.create_sample_tubes_asset_group_and_print_barcodes(plates,
-                                                                                                barcode_printer,
-                                                                                                study)
+      asset_group =
+        Plate::SampleTubeFactory.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
       if asset_group
         flash[:notice] = 'Created tubes and printed barcodes'
+
         # makes request properties partial show
         format.html { redirect_to(new_submission_path(study_id: asset_group.study.id)) }
-        format.xml  { render xml: asset_group, status: :created }
+        format.xml { render xml: asset_group, status: :created }
         format.json { render json: asset_group, status: :created }
       else
         flash[:error] = 'Failed to create sample tubes'
         format.html { redirect_to(to_sample_tubes_plates_path) }
-        format.xml  { render xml: flash.to_xml, status: :unprocessable_entity }
+        format.xml { render xml: flash.to_xml, status: :unprocessable_entity }
         format.json { render json: flash.to_json, status: :unprocessable_entity }
       end
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def fluidigm_file
     if logged_in?
       @plate = Plate.includes(wells: [{ samples: :sample_metadata }, :map]).find(params[:id])
       @parents = @plate.parents
-      respond_to do |format|
-        format.csv { render csv: @plate, content_type: 'text/csv' }
-      end
+      respond_to { |format| format.csv { render csv: @plate, content_type: 'text/csv' } }
     end
   end
 end

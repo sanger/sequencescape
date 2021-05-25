@@ -11,6 +11,7 @@ module MigrationExtensions::EncodingChanges
   }.freeze
   DEFAULT_TARGET_ROW_FORMAT = 'DYNAMIC'
   DEFAULT_SOURCE_ROW_FORMAT = 'COMPACT'
+
   #
   # Converts the table to a new character_encoding. Can be used in a reversible 'change'
   # migration
@@ -31,7 +32,8 @@ module MigrationExtensions::EncodingChanges
   # @option from [String] row_format: The current row_format of the table (COMPACT by default)
   #
   # @return [void]
-  def change_encoding(table, from:, to:)
+  # rubocop:todo Metrics/MethodLength
+  def change_encoding(table, from:, to:) # rubocop:todo Metrics/AbcSize
     from_options = from.is_a?(String) ? { character_set: from } : from
     to_options = to.is_a?(String) ? { character_set: to } : to
 
@@ -51,13 +53,13 @@ module MigrationExtensions::EncodingChanges
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def alter_encoding(table, row_format, character_set, collation)
     say "Updating Encoding on #{table}"
     say "Update row format to #{row_format}", :subitem
     connection.execute("ALTER TABLE #{table} ROW_FORMAT=#{row_format}")
     say "Convert character set to #{character_set}, collation #{collation}", :subitem
-    connection.execute(
-      "ALTER TABLE #{table} CONVERT TO CHARACTER SET #{character_set} COLLATE #{collation}"
-    )
+    connection.execute("ALTER TABLE #{table} CONVERT TO CHARACTER SET #{character_set} COLLATE #{collation}")
   end
 end

@@ -3,6 +3,7 @@ require_relative '../../config/config'
 
 namespace :pmb do
   task add_label_templates: :environment do
+    # rubocop:todo Metrics/ClassLength
     class LabelTemplateCreator # rubocop:todo Style/Documentation
       attr_accessor :label_types
 
@@ -17,7 +18,7 @@ namespace :pmb do
 
         attr_reader :label_types
 
-        def label_type_params(label_type_name)
+        def label_type_params(label_type_name) # rubocop:todo Metrics/MethodLength
           label_params = {
             plate: {
               data: {
@@ -72,141 +73,354 @@ namespace :pmb do
           JSON.parse(res)['data']['id']
         end
 
-        def sqsc_96plate_label_template
+        def sqsc_96plate_label_template # rubocop:todo Metrics/MethodLength
           label_type_id = get_label_type_id('Plate')
-          { 'data' =>
-            { 'attributes' =>
-              { 'name' => 'sqsc_96plate_label_template',
+          {
+            'data' => {
+              'attributes' => {
+                'name' => 'sqsc_96plate_label_template',
                 'label_type_id' => label_type_id,
                 'labels_attributes' => [
-                  { 'name' => 'main_label',
+                  {
+                    'name' => 'main_label',
                     'bitmaps_attributes' => [
-                      { 'x_origin' => '0030', 'y_origin' => '0035', 'field_name' => 'top_left',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0030', 'y_origin' => '0065', 'field_name' => 'bottom_left',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0500', 'y_origin' => '0035', 'field_name' => 'top_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0500', 'y_origin' => '0065', 'field_name' => 'bottom_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0750', 'y_origin' => '0035', 'field_name' => 'top_far_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0750', 'y_origin' => '0065', 'field_name' => 'bottom_far_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0890', 'y_origin' => '0065', 'field_name' => 'label_counter_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '33' }
+                      {
+                        'x_origin' => '0030',
+                        'y_origin' => '0035',
+                        'field_name' => 'top_left',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0030',
+                        'y_origin' => '0065',
+                        'field_name' => 'bottom_left',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0500',
+                        'y_origin' => '0035',
+                        'field_name' => 'top_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0500',
+                        'y_origin' => '0065',
+                        'field_name' => 'bottom_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0750',
+                        'y_origin' => '0035',
+                        'field_name' => 'top_far_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0750',
+                        'y_origin' => '0065',
+                        'field_name' => 'bottom_far_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0890',
+                        'y_origin' => '0065',
+                        'field_name' => 'label_counter_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '33'
+                      }
                     ],
                     'barcodes_attributes' => [
-                      { 'x_origin' => '0200', 'y_origin' => '0000', 'field_name' => 'barcode', 'barcode_type' => '5',
-                        'one_module_width' => '02', 'height' => '0070', 'rotational_angle' => nil,
-                        'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil,
-                        'no_of_columns' => nil }
-                    ] }
-                ] } } }
+                      {
+                        'x_origin' => '0200',
+                        'y_origin' => '0000',
+                        'field_name' => 'barcode',
+                        'barcode_type' => '5',
+                        'one_module_width' => '02',
+                        'height' => '0070',
+                        'rotational_angle' => nil,
+                        'one_cell_width' => nil,
+                        'type_of_check_digit' => '2',
+                        'bar_height' => nil,
+                        'no_of_columns' => nil
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
         end
 
-        def sqsc_96plate_label_template_code39
+        def sqsc_96plate_label_template_code39 # rubocop:todo Metrics/MethodLength
           label_type_id = get_label_type_id('Plate')
-          { 'data' =>
-            { 'attributes' =>
-              { 'name' => 'sqsc_96plate_label_template_code39',
+          {
+            'data' => {
+              'attributes' => {
+                'name' => 'sqsc_96plate_label_template_code39',
                 'label_type_id' => label_type_id,
                 'labels_attributes' => [
-                  { 'name' => 'main_label',
+                  {
+                    'name' => 'main_label',
                     'bitmaps_attributes' => [
-                      { 'x_origin' => '0030', 'y_origin' => '0035', 'field_name' => 'top_left',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0030', 'y_origin' => '0065', 'field_name' => 'bottom_left',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0570', 'y_origin' => '0035', 'field_name' => 'top_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0570', 'y_origin' => '0065', 'field_name' => 'bottom_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0750', 'y_origin' => '0035', 'field_name' => 'top_far_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0750', 'y_origin' => '0065', 'field_name' => 'bottom_far_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0890', 'y_origin' => '0065', 'field_name' => 'label_counter_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '33' }
+                      {
+                        'x_origin' => '0030',
+                        'y_origin' => '0035',
+                        'field_name' => 'top_left',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0030',
+                        'y_origin' => '0065',
+                        'field_name' => 'bottom_left',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0570',
+                        'y_origin' => '0035',
+                        'field_name' => 'top_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0570',
+                        'y_origin' => '0065',
+                        'field_name' => 'bottom_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0750',
+                        'y_origin' => '0035',
+                        'field_name' => 'top_far_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0750',
+                        'y_origin' => '0065',
+                        'field_name' => 'bottom_far_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0890',
+                        'y_origin' => '0065',
+                        'field_name' => 'label_counter_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '33'
+                      }
                     ],
                     'barcodes_attributes' => [
-                      { 'x_origin' => '0200', 'y_origin' => '0000', 'field_name' => 'barcode', 'barcode_type' => 'B', 'one_module_width' => '02',
-                        'height' => '0070', 'rotational_angle' => '0', 'one_cell_width' => nil, 'type_of_check_digit' => '1', 'bar_height' => nil,
-                        'no_of_columns' => nil, 'narrow_bar_width' => '01', 'narrow_space_width' => '01', 'wide_bar_width' => '03', 'wide_space_width' => '03',
-                        'char_to_char_space_width' => '03' }
-                    ] }
-                ] } } }
+                      {
+                        'x_origin' => '0200',
+                        'y_origin' => '0000',
+                        'field_name' => 'barcode',
+                        'barcode_type' => 'B',
+                        'one_module_width' => '02',
+                        'height' => '0070',
+                        'rotational_angle' => '0',
+                        'one_cell_width' => nil,
+                        'type_of_check_digit' => '1',
+                        'bar_height' => nil,
+                        'no_of_columns' => nil,
+                        'narrow_bar_width' => '01',
+                        'narrow_space_width' => '01',
+                        'wide_bar_width' => '03',
+                        'wide_space_width' => '03',
+                        'char_to_char_space_width' => '03'
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
         end
 
-        def sqsc_384plate_label_template
+        def sqsc_384plate_label_template # rubocop:todo Metrics/MethodLength
           label_type_id = get_label_type_id('Plate')
-          { 'data' =>
-            { 'attributes' =>
-              { 'name' => 'sqsc_384plate_label_template',
+          {
+            'data' => {
+              'attributes' => {
+                'name' => 'sqsc_384plate_label_template',
                 'label_type_id' => label_type_id,
                 'labels_attributes' => [
-                  { 'name' => 'main_label',
+                  {
+                    'name' => 'main_label',
                     'bitmaps_attributes' => [
-                      { 'x_origin' => '0140', 'y_origin' =>  '0035', 'field_name' =>  'top_left',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '03', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0140', 'y_origin' =>  '0070', 'field_name' =>  'bottom_left',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '03', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0610', 'y_origin' =>  '0035', 'field_name' =>  'top_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0610', 'y_origin' =>  '0070', 'field_name' =>  'bottom_right',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' }
+                      {
+                        'x_origin' => '0140',
+                        'y_origin' => '0035',
+                        'field_name' => 'top_left',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '03',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0140',
+                        'y_origin' => '0070',
+                        'field_name' => 'bottom_left',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '03',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0610',
+                        'y_origin' => '0035',
+                        'field_name' => 'top_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0610',
+                        'y_origin' => '0070',
+                        'field_name' => 'bottom_right',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      }
                     ],
                     'barcodes_attributes' => [
-                      { 'x_origin' => '0330', 'y_origin' =>  '0010', 'field_name' => 'barcode', 'barcode_type' => '5',
-                        'one_module_width' => '02', 'height' => '0070', 'rotational_angle' => nil,
-                        'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil,
-                        'no_of_columns' => nil }
-                    ] }
-                ] } } }
+                      {
+                        'x_origin' => '0330',
+                        'y_origin' => '0010',
+                        'field_name' => 'barcode',
+                        'barcode_type' => '5',
+                        'one_module_width' => '02',
+                        'height' => '0070',
+                        'rotational_angle' => nil,
+                        'one_cell_width' => nil,
+                        'type_of_check_digit' => '2',
+                        'bar_height' => nil,
+                        'no_of_columns' => nil
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
         end
 
-        def sqsc_1dtube_label_template
+        def sqsc_1dtube_label_template # rubocop:todo Metrics/MethodLength
           label_type_id = get_label_type_id('Tube')
-          { 'data' =>
-            { 'attributes' =>
-              { 'name' => 'sqsc_1dtube_label_template',
+          {
+            'data' => {
+              'attributes' => {
+                'name' => 'sqsc_1dtube_label_template',
                 'label_type_id' => label_type_id,
                 'labels_attributes' => [
-                  { 'name' => 'main_label',
+                  {
+                    'name' => 'main_label',
                     'bitmaps_attributes' => [
-                      { 'x_origin' => '0038', 'y_origin' => '0210', 'field_name' => 'bottom_line',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '05', 'font' => 'H',
-                        'space_adjustment' => '03', 'rotational_angles' => '11' },
-                      { 'x_origin' => '0070', 'y_origin' => '0210', 'field_name' => 'middle_line',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '05', 'font' => 'H',
-                        'space_adjustment' => '02', 'rotational_angles' => '11' },
-                      { 'x_origin' => '0120', 'y_origin' => '0210', 'field_name' => 'top_line',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '05', 'font' => 'H',
-                        'space_adjustment' => '02', 'rotational_angles' => '11' },
-                      { 'x_origin' => '0240', 'y_origin' => '0165', 'field_name' => 'round_label_top_line',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' },
-                      { 'x_origin' => '0220', 'y_origin' => '0193', 'field_name' => 'round_label_bottom_line',
-                        'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G',
-                        'space_adjustment' => '00', 'rotational_angles' => '00' }
+                      {
+                        'x_origin' => '0038',
+                        'y_origin' => '0210',
+                        'field_name' => 'bottom_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '05',
+                        'font' => 'H',
+                        'space_adjustment' => '03',
+                        'rotational_angles' => '11'
+                      },
+                      {
+                        'x_origin' => '0070',
+                        'y_origin' => '0210',
+                        'field_name' => 'middle_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '05',
+                        'font' => 'H',
+                        'space_adjustment' => '02',
+                        'rotational_angles' => '11'
+                      },
+                      {
+                        'x_origin' => '0120',
+                        'y_origin' => '0210',
+                        'field_name' => 'top_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '05',
+                        'font' => 'H',
+                        'space_adjustment' => '02',
+                        'rotational_angles' => '11'
+                      },
+                      {
+                        'x_origin' => '0240',
+                        'y_origin' => '0165',
+                        'field_name' => 'round_label_top_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0220',
+                        'y_origin' => '0193',
+                        'field_name' => 'round_label_bottom_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      }
                     ],
                     'barcodes_attributes' => [
                       {
@@ -214,118 +428,138 @@ namespace :pmb do
                         'y_origin' => '0100',
                         'field_name' => 'barcode',
                         'barcode_type' => '5',
-                        'one_module_width' => '01', 'height' => '0100', 'rotational_angle' => nil,
+                        'one_module_width' => '01',
+                        'height' => '0100',
+                        'rotational_angle' => nil,
                         'one_cell_width' => nil,
                         'type_of_check_digit' => '2',
                         'bar_height' => nil,
                         'no_of_columns' => nil
                       }
-                    ] }
-                ] } } }
-        end
-
-        def swipecard_barcode_template
-          {
-            data: {
-              attributes: {
-                name: 'swipecard_barcode_template',
-                label_type_id: get_label_type_id('Plate'),
-                labels_attributes: [{
-                  name: 'main',
-                  bitmaps_attributes: [{
-                    horizontal_magnification: '1',
-                    vertical_magnification: '1',
-                    font: 'N',
-                    space_adjustment: '00',
-                    rotational_angles: '00',
-                    x_origin: '0050',
-                    y_origin: '0050',
-                    field_name: 'left_text'
-                  }],
-                  barcodes_attributes: [{
-                    barcode_type: '9',
-                    one_module_width: '02',
-                    height: '0070',
-                    rotational_angle: nil,
-                    one_cell_width: nil,
-                    type_of_check_digit: nil,
-                    no_of_columns: nil,
-                    bar_height: nil,
-                    x_origin: '0300',
-                    y_origin: '0010',
-                    field_name: 'barcode'
-                  }]
-                }]
+                    ]
+                  }
+                ]
               }
             }
           }
         end
 
-        def plate_6mm_double
+        def swipecard_barcode_template # rubocop:todo Metrics/MethodLength
+          {
+            data: {
+              attributes: {
+                name: 'swipecard_barcode_template',
+                label_type_id: get_label_type_id('Plate'),
+                labels_attributes: [
+                  {
+                    name: 'main',
+                    bitmaps_attributes: [
+                      {
+                        horizontal_magnification: '1',
+                        vertical_magnification: '1',
+                        font: 'N',
+                        space_adjustment: '00',
+                        rotational_angles: '00',
+                        x_origin: '0050',
+                        y_origin: '0050',
+                        field_name: 'left_text'
+                      }
+                    ],
+                    barcodes_attributes: [
+                      {
+                        barcode_type: '9',
+                        one_module_width: '02',
+                        height: '0070',
+                        rotational_angle: nil,
+                        one_cell_width: nil,
+                        type_of_check_digit: nil,
+                        no_of_columns: nil,
+                        bar_height: nil,
+                        x_origin: '0300',
+                        y_origin: '0010',
+                        field_name: 'barcode'
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        end
+
+        def plate_6mm_double # rubocop:todo Metrics/MethodLength
           {
             data: {
               attributes: {
                 name: 'plate_6mm_double',
                 label_type_id: get_label_type_id('plate - 6mm'),
-                labels_attributes: [{
-                  name: 'main_label',
-                  bitmaps_attributes: [{
-                    x_origin: '0010',
-                    y_origin: '0040',
-                    field_name: 'left_text',
-                    horizontal_magnification: '08',
-                    vertical_magnification: '09',
-                    font: 'N',
-                    space_adjustment: '00',
-                    rotational_angles: '00'
+                labels_attributes: [
+                  {
+                    name: 'main_label',
+                    bitmaps_attributes: [
+                      {
+                        x_origin: '0010',
+                        y_origin: '0040',
+                        field_name: 'left_text',
+                        horizontal_magnification: '08',
+                        vertical_magnification: '09',
+                        font: 'N',
+                        space_adjustment: '00',
+                        rotational_angles: '00'
+                      },
+                      {
+                        x_origin: '0470',
+                        y_origin: '0040',
+                        field_name: 'right_text',
+                        horizontal_magnification: '08',
+                        vertical_magnification: '09',
+                        font: 'N',
+                        space_adjustment: '00',
+                        rotational_angles: '00'
+                      }
+                    ],
+                    barcodes_attributes: [
+                      {
+                        x_origin: '0210',
+                        y_origin: '0000',
+                        field_name: 'barcode',
+                        barcode_type: '5',
+                        one_module_width: '02',
+                        height: '0050',
+                        rotational_angle: nil,
+                        one_cell_width: nil,
+                        type_of_check_digit: '2',
+                        bar_height: nil,
+                        no_of_columns: nil
+                      }
+                    ]
                   },
-                                       {
-                                         x_origin: '0470',
-                                         y_origin: '0040',
-                                         field_name: 'right_text',
-                                         horizontal_magnification: '08',
-                                         vertical_magnification: '09',
-                                         font: 'N',
-                                         space_adjustment: '00',
-                                         rotational_angles: '00'
-                                       }],
-                  barcodes_attributes: [{
-                    x_origin: '0210',
-                    y_origin: '0000',
-                    field_name: 'barcode',
-                    barcode_type: '5',
-                    one_module_width: '02',
-                    height: '0050',
-                    rotational_angle: nil,
-                    one_cell_width: nil,
-                    type_of_check_digit: '2',
-                    bar_height: nil,
-                    no_of_columns: nil
-                  }]
-                },
-                                    {
-                                      name: 'extra_label',
-                                      bitmaps_attributes: [{
-                                        x_origin: '0010',
-                                        y_origin: '0035',
-                                        field_name: 'left_text',
-                                        horizontal_magnification: '05',
-                                        vertical_magnification: '06',
-                                        font: 'N',
-                                        space_adjustment: '00',
-                                        rotational_angles: '00'
-                                      },
-                                                           {
-                                                             x_origin: '0150',
-                                                             y_origin: '0035',
-                                                             field_name: 'right_text',
-                                                             horizontal_magnification: '06',
-                                                             vertical_magnification: '07',
-                                                             font: 'N',
-                                                             space_adjustment: '00',
-                                                             rotational_angles: '00'
-                                                           }]
-                                    }]
+                  {
+                    name: 'extra_label',
+                    bitmaps_attributes: [
+                      {
+                        x_origin: '0010',
+                        y_origin: '0035',
+                        field_name: 'left_text',
+                        horizontal_magnification: '05',
+                        vertical_magnification: '06',
+                        font: 'N',
+                        space_adjustment: '00',
+                        rotational_angles: '00'
+                      },
+                      {
+                        x_origin: '0150',
+                        y_origin: '0035',
+                        field_name: 'right_text',
+                        horizontal_magnification: '06',
+                        vertical_magnification: '07',
+                        font: 'N',
+                        space_adjustment: '00',
+                        rotational_angles: '00'
+                      }
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -357,32 +591,14 @@ namespace :pmb do
           end
         end
 
-        def execute
+        def execute # rubocop:todo Metrics/MethodLength
           unregistered_templates = [
-            {
-              name: 'sqsc_96plate_label_template',
-              type: BarcodePrinterType96Plate
-            },
-            {
-              name: 'sqsc_96plate_label_template_code39',
-              type: BarcodePrinterType96Plate
-            },
-            {
-              name: 'sqsc_1dtube_label_template',
-              type: BarcodePrinterType1DTube
-            },
-            {
-              name: 'sqsc_384plate_label_template',
-              type: BarcodePrinterType384Plate
-            },
-            {
-              name: 'plate_6mm_double',
-              type: BarcodePrinterType384DoublePlate
-            },
-            {
-              name: 'swipecard_barcode_template',
-              type: nil
-            }
+            { name: 'sqsc_96plate_label_template', type: BarcodePrinterType96Plate },
+            { name: 'sqsc_96plate_label_template_code39', type: BarcodePrinterType96Plate },
+            { name: 'sqsc_1dtube_label_template', type: BarcodePrinterType1DTube },
+            { name: 'sqsc_384plate_label_template', type: BarcodePrinterType384Plate },
+            { name: 'plate_6mm_double', type: BarcodePrinterType384DoublePlate },
+            { name: 'swipecard_barcode_template', type: nil }
           ]
           get_label_types
           registered_templates = get_label_templates
@@ -396,13 +612,18 @@ namespace :pmb do
       end
     end
 
+    # rubocop:enable Metrics/ClassLength
+
     LabelTemplateCreator.execute
   end
 
   task add_printers: :environment do
     def register_printer(name)
-      RestClient.post(printer_url, { 'data' => { 'attributes' => { 'name' => name } } },
-                      LabelPrinter::PmbClient.headers)
+      RestClient.post(
+        printer_url,
+        { 'data' => { 'attributes' => { 'name' => name } } },
+        LabelPrinter::PmbClient.headers
+      )
     end
 
     def get_pmb_printers_names
@@ -417,9 +638,7 @@ namespace :pmb do
     def add_printers
       sqsc_printers_names = BarcodePrinter.all.map(&:name)
       unregistered_printers = sqsc_printers_names - get_pmb_printers_names
-      unless unregistered_printers.empty?
-        unregistered_printers.each { |name| register_printer(name) }
-      end
+      unregistered_printers.each { |name| register_printer(name) } unless unregistered_printers.empty?
     end
 
     add_printers

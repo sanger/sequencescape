@@ -2,12 +2,12 @@ class RobotVerificationsController < ApplicationController # rubocop:todo Style/
   before_action :find_barcodes, only: :submission
 
   # Step 1: Renders a form asking for user barcode, batch barcode, robot barcode and destination plate barcode
-  def index
-  end
+  def index; end
 
   # Step 2: Renders the bed verification form, in which the user is expected to scan in all beds and plates
   #         This is generated based on the information provided in step 1.
-  def submission
+  # rubocop:todo Metrics/MethodLength
+  def submission # rubocop:todo Metrics/AbcSize
     errors = []
 
     if @robot.nil?
@@ -19,20 +19,21 @@ class RobotVerificationsController < ApplicationController # rubocop:todo Style/
 
     if errors.empty?
       @pick_number = Batch.extract_pick_number(barcode_hash[:batch_barcode])
-      @dest_plates, @source_plates, @ctrl_plates = @robot.pick_number_to_expected_layout(
-        @batch,
-        barcode_hash[:destination_plate_barcode]
-      )[@pick_number]
+      @dest_plates, @source_plates, @ctrl_plates =
+        @robot.pick_number_to_expected_layout(@batch, barcode_hash[:destination_plate_barcode])[@pick_number]
     else
       flash[:error] = errors
       redirect_to action: :index
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   # Step 3: Receives the submission form and checks if it is valid. In the event it is valid
   #         provides a link to download the gwl/csv driver file for the robot. Otherwise
   #         redirects the user back to step 1 with an error message.
-  def download
+  # rubocop:todo Metrics/MethodLength
+  def download # rubocop:todo Metrics/AbcSize
     @robot = Robot.find(params[:robot_id])
     @robot_verification = @robot.verification_behaviour
 
@@ -47,6 +48,8 @@ class RobotVerificationsController < ApplicationController # rubocop:todo Style/
       redirect_to action: :index
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def find_barcodes
     @robot = Robot.find_from_barcode(barcode_hash[:robot_barcode])

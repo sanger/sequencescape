@@ -8,7 +8,7 @@ class ReferenceGenomesController < ApplicationController # rubocop:todo Style/Do
     @reference_genomes = ReferenceGenome.alphabetical
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render xml: @reference_genomes }
+      format.xml { render xml: @reference_genomes }
     end
   end
 
@@ -19,7 +19,7 @@ class ReferenceGenomesController < ApplicationController # rubocop:todo Style/Do
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render xml: @reference_genome }
+      format.xml { render xml: @reference_genome }
     end
   end
 
@@ -30,7 +30,7 @@ class ReferenceGenomesController < ApplicationController # rubocop:todo Style/Do
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render xml: @reference_genome }
+      format.xml { render xml: @reference_genome }
     end
   end
 
@@ -47,10 +47,10 @@ class ReferenceGenomesController < ApplicationController # rubocop:todo Style/Do
     respond_to do |format|
       if @reference_genome.save
         format.html { redirect_to(@reference_genome, notice: 'Reference genome was successfully created.') }
-        format.xml  { render xml: @reference_genome, status: :created, location: @reference_genome }
+        format.xml { render xml: @reference_genome, status: :created, location: @reference_genome }
       else
         format.html { render action: 'new' }
-        format.xml  { render xml: @reference_genome.errors, status: :unprocessable_entity }
+        format.xml { render xml: @reference_genome.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -63,10 +63,10 @@ class ReferenceGenomesController < ApplicationController # rubocop:todo Style/Do
     respond_to do |format|
       if @reference_genome.update(params[:reference_genome])
         format.html { redirect_to(@reference_genome, notice: 'Reference genome was successfully updated.') }
-        format.xml  { head :ok }
+        format.xml { head :ok }
       else
         format.html { render action: 'edit' }
-        format.xml  { render xml: @reference_genome.errors, status: :unprocessable_entity }
+        format.xml { render xml: @reference_genome.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -79,7 +79,7 @@ class ReferenceGenomesController < ApplicationController # rubocop:todo Style/Do
 
     respond_to do |format|
       format.html { redirect_to(reference_genomes_url) }
-      format.xml  { head :ok }
+      format.xml { head :ok }
     end
   end
 end

@@ -7,7 +7,7 @@ class QcReportsControllerTest < ActionController::TestCase
   context 'QcReports controller' do
     setup do
       @controller = QcReportsController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
       @request.env['HTTP_REFERER'] = '/'
 
       @user = create :user
@@ -20,9 +20,7 @@ class QcReportsControllerTest < ActionController::TestCase
     should_require_login(:index)
 
     context '#index' do
-      setup do
-        get :index, params: { study_id: @study.id }
-      end
+      setup { get :index, params: { study_id: @study.id } }
       should respond_with :success
       should render_template :index
     end
@@ -44,9 +42,7 @@ class QcReportsControllerTest < ActionController::TestCase
     end
 
     context '#create without product' do
-      setup do
-        post :create, params: { qc_report: { study_id: @study.id } }
-      end
+      setup { post :create, params: { qc_report: { study_id: @study.id } } }
       should respond_with :redirect
       should redirect_to('index') { '/' }
       should set_flash.to('You must select a product')

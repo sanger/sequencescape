@@ -13,17 +13,16 @@ module Core::Io::Base::JsonFormattingBehaviour # rubocop:todo Style/Documentatio
   # NOTE: This one is OK!
   def as_json(options = nil)
     options ||= {}
-    object    = options.delete(:object)
+    object = options.delete(:object)
     object_json(object, options)
   end
 
   #--
   # Very root level does absolutely nothing useful!
   #++
-  def object_json(*args)
-  end
+  def object_json(*args); end
 
-  def json_field_for(attribute)
+  def json_field_for(attribute) # rubocop:todo Metrics/AbcSize
     return attribute_to_json_field[attribute.to_s] if attribute_to_json_field.key?(attribute.to_s)
 
     # We have to assume that this could be an association that is being exposed, in which case we'll
@@ -35,7 +34,8 @@ module Core::Io::Base::JsonFormattingBehaviour # rubocop:todo Style/Documentatio
     return attribute.to_s if reflection.nil?
 
     # TODO: 'association' here should really be garnered from the appropriate endpoint
-    association_json_field = ::Core::Io::Registry.instance.lookup_for_class(reflection.klass).json_field_for(association_parts.join('.'))
+    association_json_field =
+      ::Core::Io::Registry.instance.lookup_for_class(reflection.klass).json_field_for(association_parts.join('.'))
     "#{association}.#{association_json_field}"
   end
 
@@ -59,17 +59,20 @@ module Core::Io::Base::JsonFormattingBehaviour # rubocop:todo Style/Documentatio
     end
   end
 
-  VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/.freeze
+  VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
+    .freeze
 
-  def parse_mapping_rules(mapping)
+  def parse_mapping_rules(mapping) # rubocop:todo Metrics/AbcSize
     attribute_to_json, json_to_attribute = [], []
-    StringIO.new(mapping).each_line do |line|
-      next if line.blank? || line =~ (/^\s*#/)
+    StringIO
+      .new(mapping)
+      .each_line do |line|
+        next if line.blank? || line =~ (/^\s*#/)
 
-      match = VALID_LINE_REGEXP.match(line) or raise StandardError, "Invalid line: #{line.inspect}"
-      attribute_to_json.push([match[1], match[3]]) if (match[2] =~ /<?=>/)
-      json_to_attribute.push([match[3], /<=>?/.match?(match[2]) ? match[1] : nil])
-    end
+        match = VALID_LINE_REGEXP.match(line) or raise StandardError, "Invalid line: #{line.inspect}"
+        attribute_to_json.push([match[1], match[3]]) if (match[2] =~ /<?=>/)
+        json_to_attribute.push([match[3], /<=>?/.match?(match[2]) ? match[1] : nil])
+      end
     yield(attribute_to_json, json_to_attribute)
   end
   private :parse_mapping_rules

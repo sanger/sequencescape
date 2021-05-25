@@ -10,12 +10,15 @@ module Limber::Helper
 
   # Build a Limber library creation request type
   class RequestTypeConstructor
-    def initialize(prefix,
-                   request_class: DEFAULT_REQUEST_CLASS,
-                   library_types: DEFAULT_LIBRARY_TYPES,
-                   default_purposes: DEFAULT_PURPOSES,
-                   for_multiplexing: false,
-                   product_line: PRODUCTLINE)
+    # rubocop:todo Metrics/ParameterLists
+    def initialize(
+      prefix,
+      request_class: DEFAULT_REQUEST_CLASS,
+      library_types: DEFAULT_LIBRARY_TYPES,
+      default_purposes: DEFAULT_PURPOSES,
+      for_multiplexing: false,
+      product_line: PRODUCTLINE
+    )
       @prefix = prefix
       @request_class = request_class
       @library_types = library_types
@@ -24,24 +27,30 @@ module Limber::Helper
       @product_line = product_line
     end
 
+    # rubocop:enable Metrics/ParameterLists
+
     def key
       "limber_#{@prefix.downcase.tr(' ', '_')}"
     end
 
     # Builds the corresponding request type, unless it
     # already exists.
-    def build!
-      rt = RequestType.create_with(
-        name: "Limber #{@prefix}",
-        request_class_name: @request_class,
-        asset_type: 'Well',
-        order: 1,
-        initial_state: 'pending',
-        billable: true,
-        product_line: ProductLine.find_or_create_by!(name: @product_line),
-        request_purpose: :standard,
-        for_multiplexing: @for_multiplexing
-      ).find_or_create_by!(key: key)
+    # rubocop:todo Metrics/MethodLength
+    def build! # rubocop:todo Metrics/AbcSize
+      rt =
+        RequestType
+          .create_with(
+            name: "Limber #{@prefix}",
+            request_class_name: @request_class,
+            asset_type: 'Well',
+            order: 1,
+            initial_state: 'pending',
+            billable: true,
+            product_line: ProductLine.find_or_create_by!(name: @product_line),
+            request_purpose: :standard,
+            for_multiplexing: @for_multiplexing
+          )
+          .find_or_create_by!(key: key)
 
       rt.acceptable_plate_purposes = Purpose.where(name: @default_purposes)
       rt_lts = rt.library_types.pluck(:name)
@@ -57,6 +66,7 @@ module Limber::Helper
         valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
       )
     end
+    # rubocop:enable Metrics/MethodLength
   end
 
   # Construct submission templates for the Limber pipeline
@@ -153,9 +163,7 @@ module Limber::Helper
     #
     # @return [Array] All Sequencing RequestTypes for which a SubmissionTemplate will be generated
     def sequencing_request_types
-      @sequencing_request_types ||= @sequencing_keys.map do |request|
-        RequestType.find_by!(key: request)
-      end
+      @sequencing_request_types ||= @sequencing_keys.map { |request| RequestType.find_by!(key: request) }
     end
 
     #
@@ -165,9 +173,9 @@ module Limber::Helper
     #
     # @return [String] A name for the request type
     def name_for(cherrypick, sequencing_request_type)
-      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{sequencing_request_type.name.gsub(
-        PIPELINE_REGEX, ''
-      )}"
+      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{
+        sequencing_request_type.name.gsub(PIPELINE_REGEX, '')
+      }"
     end
 
     # Construct a series of {SubmissionTemplate submission templates} according to the specified options.
@@ -181,9 +189,7 @@ module Limber::Helper
     #  ).build!
     def build!
       validate!
-      each_submission_template do |config|
-        SubmissionTemplate.create!(config)
-      end
+      each_submission_template { |config| SubmissionTemplate.create!(config) }
     end
 
     private
@@ -216,18 +222,20 @@ module Limber::Helper
       @cherrypicked ? [true, false] : [false]
     end
 
-    def each_submission_template
+    def each_submission_template # rubocop:todo Metrics/MethodLength
       cherrypick_options.each do |cherrypick|
         sequencing_request_types.each do |sequencing_request_type|
           next if SubmissionTemplate.exists?(name: name_for(cherrypick, sequencing_request_type))
 
-          yield({
-            name: name_for(cherrypick, sequencing_request_type),
-            submission_class_name: 'LinearSubmission',
-            submission_parameters: submission_parameters(cherrypick, sequencing_request_type),
-            product_line_id: product_line_id,
-            product_catalogue: catalogue
-          })
+          yield(
+            {
+              name: name_for(cherrypick, sequencing_request_type),
+              submission_class_name: 'LinearSubmission',
+              submission_parameters: submission_parameters(cherrypick, sequencing_request_type),
+              product_line_id: product_line_id,
+              product_catalogue: catalogue
+            }
+          )
         end
       end
     end

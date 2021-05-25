@@ -1,5 +1,6 @@
 require 'aasm'
 
+# rubocop:todo Metrics/ClassLength
 class Project < ApplicationRecord # rubocop:todo Style/Documentation
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
@@ -23,7 +24,7 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
   has_many_events
   has_many_lab_events
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   aasm column: :state, whiny_persistence: true do
     state :pending, initial: true
@@ -43,42 +44,35 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
     end
   end
 
-  scope :in_assets, ->(assets) {
-    select('projects.*').uniq
-                        .joins(:aliquots)
-                        .where(aliquots: { receptacle_id: assets })
-  }
+  scope :in_assets, ->(assets) { select('projects.*').uniq.joins(:aliquots).where(aliquots: { receptacle_id: assets }) }
 
-  has_many :studies, ->() { distinct }, class_name: 'Study', through: :orders, source: :study
-  has_many :submissions,  ->() { distinct }, through: :orders, source: :submission
+  has_many :studies, -> { distinct }, class_name: 'Study', through: :orders, source: :study
+  has_many :submissions, -> { distinct }, through: :orders, source: :submission
   has_many :sample_manifests
   has_many :aliquots
 
   has_many :owners, -> { where(roles: { name: 'owner' }) }, through: :roles, source: :users
-  has_many :managers, ->() { where(roles: { name: 'manager' }) }, through: :roles, source: :users
+  has_many :managers, -> { where(roles: { name: 'manager' }) }, through: :roles, source: :users
 
   validates :name, :state, presence: true
   validates :name, uniqueness: { on: :create, message: "already in use (#{name})", case_sensitive: false }
 
-  scope :for_search_query, ->(query) {
-    where(['name LIKE ? OR id=?', "%#{query}%", query])
-  }
+  scope :for_search_query, ->(query) { where(['name LIKE ? OR id=?', "%#{query}%", query]) }
 
   # Allow us to pass in nil or '' if we don't want to filter state.
   # State is required so we don't need to look up an actual null state
-  scope :in_state, ->(state) {
-    state.present? ? where(state: state) : all
-  }
+  scope :in_state, ->(state) { state.present? ? where(state: state) : all }
 
-  scope :approved,     ->()     { where(approved: true) }
-  scope :unapproved,   ->()     { where(approved: false) }
-  scope :valid,        ->()     { active.approved }
-  scope :for_user,     ->(user) { joins(roles: :user_role_bindings).where(roles_users: { user_id: user }) }
+  scope :approved, -> { where(approved: true) }
+  scope :unapproved, -> { where(approved: false) }
+  scope :valid, -> { active.approved }
+  scope :for_user, ->(user) { joins(roles: :user_role_bindings).where(roles_users: { user_id: user }) }
 
-  scope :with_unallocated_manager, ->() {
-    roles = Role.arel_table
-    joins(:roles).on(roles[:name].eq('manager')).where(roles[:id].eq(nil))
-  }
+  scope :with_unallocated_manager,
+        -> {
+          roles = Role.arel_table
+          joins(:roles).on(roles[:name].eq('manager')).where(roles[:id].eq(nil))
+        }
 
   squishify :name
 
@@ -113,14 +107,10 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
 
   delegate :project_cost_code, to: :project_metadata
 
-  PROJECT_FUNDING_MODELS = [
-    '',
-    'Internal',
-    'External',
-    'External - own machine'
-  ].freeze
+  PROJECT_FUNDING_MODELS = ['', 'Internal', 'External', 'External - own machine'].freeze
 
   extend Metadata
+
   # @!parse class Project::Metadata < Metadata::Base; end
   has_metadata do
     # NOTE: The following attribute is not required for Microarray Genotyping.
@@ -148,7 +138,13 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
     'project'
   end
 
-  scope :with_unallocated_budget_division, -> {
-                                             joins(:project_metadata).where(project_metadata: { budget_division_id: BudgetDivision.find_by(name: 'Unallocated') })
-                                           }
+  scope :with_unallocated_budget_division,
+        -> {
+          joins(:project_metadata).where(
+            project_metadata: {
+              budget_division_id: BudgetDivision.find_by(name: 'Unallocated')
+            }
+          )
+        }
 end
+# rubocop:enable Metrics/ClassLength

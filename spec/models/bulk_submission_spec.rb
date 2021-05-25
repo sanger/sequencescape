@@ -3,12 +3,11 @@
 require 'rails_helper'
 
 describe BulkSubmission, with: :uploader do
-  subject do
-    described_class.new(spreadsheet: submission_file, encoding: encoding)
-  end
+  subject { described_class.new(spreadsheet: submission_file, encoding: encoding) }
 
   let(:encoding) { 'Windows-1252' }
   let(:spreadsheet_path) { Rails.root.join('features', 'submission', 'csv', spreadsheet_filename) }
+
   # NB. fixture_file_upload is a Rails method on ActionDispatch::TestProcess::FixtureFile
   let(:submission_file) { fixture_file_upload(spreadsheet_path) }
 
@@ -35,17 +34,19 @@ describe BulkSubmission, with: :uploader do
         submission_class_name: 'LinearSubmission',
         product_catalogue: 'Generic',
         superceeded_by_id: -2,
-        submission_parameters: { info_differential: 5,
-                                 request_options: { 'fragment_size_required_to' => '400',
-                                                    'fragment_size_required_from' => '100' },
-                                 request_types: request_types.map(&:key) }
+        submission_parameters: {
+          info_differential: 5,
+          request_options: {
+            'fragment_size_required_to' => '400',
+            'fragment_size_required_from' => '100'
+          },
+          request_types: request_types.map(&:key)
+        }
       }
     end
     let(:spreadsheet_filename) { '1_valid_rows.csv' }
 
-    setup do
-      SubmissionSerializer.construct!(submission_template_hash)
-    end
+    setup { SubmissionSerializer.construct!(submission_template_hash) }
 
     it 'is valid' do
       expect(subject).to be_valid
@@ -70,15 +71,17 @@ describe BulkSubmission, with: :uploader do
         name: 'Example Template',
         submission_class_name: 'LinearSubmission',
         product_catalogue: 'Generic',
-        submission_parameters: { request_options: { 'fragment_size_required_to' => '400',
-                                                    'fragment_size_required_from' => '100' },
-                                 request_types: request_types.map(&:key) }
+        submission_parameters: {
+          request_options: {
+            'fragment_size_required_to' => '400',
+            'fragment_size_required_from' => '100'
+          },
+          request_types: request_types.map(&:key)
+        }
       }
     end
 
-    setup do
-      SubmissionSerializer.construct!(submission_template_hash)
-    end
+    setup { SubmissionSerializer.construct!(submission_template_hash) }
     it { is_expected.to be_valid }
 
     it 'links the samples to the study' do
@@ -96,9 +99,7 @@ describe BulkSubmission, with: :uploader do
     let(:spreadsheet_filename) { 'pcr_cycles.csv' }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template,
-             name: 'pcr_cycle_test',
-             request_types: [request_type]
+      create :limber_wgs_submission_template, name: 'pcr_cycle_test', request_types: [request_type]
     end
     let(:request_type) { create(:library_request_type) }
 
@@ -109,7 +110,9 @@ describe BulkSubmission, with: :uploader do
         'pcr_cycles' => '5',
         'read_length' => '100',
         'library_type' => 'Standard',
-        'multiplier' => { request_type.id.to_s => 1 }
+        'multiplier' => {
+          request_type.id.to_s => 1
+        }
       }
     end
 
@@ -128,9 +131,7 @@ describe BulkSubmission, with: :uploader do
     let!(:primer_panel) { create :primer_panel, name: 'Test panel' }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template,
-             name: 'primer_panel_test',
-             request_types: [request_type]
+      create :limber_wgs_submission_template, name: 'primer_panel_test', request_types: [request_type]
     end
     let(:request_type) { create(:gbs_request_type) }
 
@@ -142,7 +143,9 @@ describe BulkSubmission, with: :uploader do
         'read_length' => '100',
         'library_type' => 'Standard',
         'primer_panel_name' => 'Test panel',
-        'multiplier' => { request_type.id.to_s => 1 }
+        'multiplier' => {
+          request_type.id.to_s => 1
+        }
       }
     end
 
@@ -162,9 +165,7 @@ describe BulkSubmission, with: :uploader do
     let!(:bait_library_2) { create :bait_library, name: 'Bait library 2' }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template,
-             name: 'Bait submission example',
-             request_types: [request_type]
+      create :limber_wgs_submission_template, name: 'Bait submission example', request_types: [request_type]
     end
     let(:request_type) { create(:isc_library_request_type) }
 
@@ -174,7 +175,9 @@ describe BulkSubmission, with: :uploader do
         'fragment_size_required_from' => '1',
         'read_length' => '100',
         'bait_library_name' => 'Bait library 1',
-        'multiplier' => { request_type.id.to_s => 1 }
+        'multiplier' => {
+          request_type.id.to_s => 1
+        }
       }
     end
 
@@ -192,9 +195,7 @@ describe BulkSubmission, with: :uploader do
     let(:spreadsheet_filename) { 'with_lowercase_library_type.csv' }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template,
-             name: 'library_type_test',
-             request_types: [request_type]
+      create :limber_wgs_submission_template, name: 'library_type_test', request_types: [request_type]
     end
     let(:request_type) { create(:library_request_type) }
 
@@ -205,7 +206,9 @@ describe BulkSubmission, with: :uploader do
         'pcr_cycles' => '5',
         'read_length' => '100',
         'library_type' => 'Standard',
-        'multiplier' => { request_type.id.to_s => 1 }
+        'multiplier' => {
+          request_type.id.to_s => 1
+        }
       }
     end
 
@@ -223,9 +226,7 @@ describe BulkSubmission, with: :uploader do
     let(:spreadsheet_filename) { 'with_unknown_library_type.csv' }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template,
-             name: 'library_type_test',
-             request_types: [request_type]
+      create :limber_wgs_submission_template, name: 'library_type_test', request_types: [request_type]
     end
     let(:request_type) { create(:library_request_type) }
 
@@ -236,7 +237,9 @@ describe BulkSubmission, with: :uploader do
 
     it 'sets an error message' do
       subject.process
-      expect(subject.errors.messages[:spreadsheet][0]).to eq('There was a problem on row(s) 2: Cannot find library type "unrecognised"')
+      expect(subject.errors.messages[:spreadsheet][0]).to eq(
+        'There was a problem on row(s) 2: Cannot find library type "unrecognised"'
+      )
     end
   end
 end

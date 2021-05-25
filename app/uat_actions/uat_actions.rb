@@ -110,6 +110,4 @@ class UatActions
 end
 
 # Load all uat_action modules so that they register themselves
-Dir[File.join(__dir__, 'uat_actions', '*.rb')].each do |file|
-  require_dependency file
-end
+Dir[File.join(__dir__, 'uat_actions', '*.rb')].each { |file| require_dependency file }

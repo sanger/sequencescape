@@ -14,7 +14,7 @@
 # an untagged well.
 # We have some performance optimizations in place to avoid trying to look up tag -1
 # @see Tag
-class Aliquot < ApplicationRecord
+class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
   include Api::Messages::QcResultIO::AliquotExtensions
@@ -35,6 +35,7 @@ class Aliquot < ApplicationRecord
   end
 
   TAG_COUNT_NAMES = %w[Untagged Single Dual].freeze
+
   # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
   # To ensure that there can only be one untagged aliquot present in a receptacle we use a special value for tag_id,
   # rather than NULL which does not work in MySQL.  It also works because the unassigned tag ID never gets matched
@@ -63,8 +64,10 @@ class Aliquot < ApplicationRecord
 
   belongs_to :request
 
-  composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}],
-                            class_name: 'Aliquot::InsertSize', allow_nil: true
+  composed_of :insert_size,
+              mapping: [%w[insert_size_from from], %w[insert_size_to to]],
+              class_name: 'Aliquot::InsertSize',
+              allow_nil: true
 
   has_one :aliquot_index, dependent: :destroy
 
@@ -73,15 +76,16 @@ class Aliquot < ApplicationRecord
   before_validation { |record| record.tag_id ||= UNASSIGNED_TAG unless tag }
   before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG unless tag2 }
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   scope :include_summary, -> { includes([:sample, { tag: :tag_group }, { tag2: :tag_group }]) }
-  scope :in_tag_order, -> {
-    joins(
-      'LEFT OUTER JOIN tags AS tag1s ON tag1s.id = aliquots.tag_id,
+  scope :in_tag_order,
+        -> {
+          joins(
+            'LEFT OUTER JOIN tags AS tag1s ON tag1s.id = aliquots.tag_id,
        LEFT OUTER JOIN tags AS tag2s ON tag2s.id = aliquots.tag2_id'
-    ).order('tag1s.map_id ASC, tag2s.map_id ASC')
-  }
+          ).order('tag1s.map_id ASC, tag2s.map_id ASC')
+        }
   scope :untagged, -> { where(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
   scope :any_tags, -> { where.not(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
 
@@ -171,9 +175,7 @@ class Aliquot < ApplicationRecord
   # also reset the timestamp information as this is a new aliquot really.
   # Any options passed in as parameters will override the aliquot defaults
   def dup(params = {})
-    super().tap do |cloned_aliquot|
-      cloned_aliquot.assign_attributes(params)
-    end
+    super().tap { |cloned_aliquot| cloned_aliquot.assign_attributes(params) }
   end
 
   def update_quality(suboptimal_quality)
@@ -181,26 +183,36 @@ class Aliquot < ApplicationRecord
     save!
   end
 
-  def matches?(object)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def matches?(object) # rubocop:todo Metrics/CyclomaticComplexity
     # NOTE: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot
     case
-    when sample_id != object.sample_id                                                   then false # The samples don't match
-    when object.library_id.present?      && (library_id      != object.library_id)       then false # Our libraries don't match.
-    when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)  then false # We have different bait libraries
+    when sample_id != object.sample_id
+      false # The samples don't match
+    when object.library_id.present? && (library_id != object.library_id)
+      false # Our libraries don't match.
+    when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)
+      false # We have different bait libraries
     when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)
       raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
-    when object.no_tags? then true # The upstream aliquot was untagged, we don't need to check tags
-    else (object.no_tag1? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
+    when object.no_tags?
+      true # The upstream aliquot was untagged, we don't need to check tags
+    else
+      (object.no_tag1? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
     end
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
   # only id, timestamps and receptacles are excluded
   def equivalent?(other)
-    Aliquot.equivalent_attributes.all? do |attrib|
-      send(attrib) == other.send(attrib)
-    end
+    Aliquot.equivalent_attributes.all? { |attrib| send(attrib) == other.send(attrib) }
   end
 
   private

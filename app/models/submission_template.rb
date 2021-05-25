@@ -13,7 +13,7 @@ class SubmissionTemplate < ApplicationRecord
   has_many :orders
   belongs_to :product_line
 
-  has_many   :supercedes,    class_name: 'SubmissionTemplate', foreign_key: :superceded_by_id
+  has_many :supercedes, class_name: 'SubmissionTemplate', foreign_key: :superceded_by_id
   belongs_to :superceded_by, class_name: 'SubmissionTemplate'
 
   belongs_to :product_catalogue, inverse_of: :submission_templates
@@ -25,8 +25,8 @@ class SubmissionTemplate < ApplicationRecord
   LATEST_VERSION = -1
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
 
-  scope :hidden,               -> { order(product_line_id: :asc).where.not(superceded_by_id: LATEST_VERSION) }
-  scope :visible,              -> { order(product_line_id: :asc).where(superceded_by_id: LATEST_VERSION) }
+  scope :hidden, -> { order(product_line_id: :asc).where.not(superceded_by_id: LATEST_VERSION) }
+  scope :visible, -> { order(product_line_id: :asc).where(superceded_by_id: LATEST_VERSION) }
   scope :include_product_line, -> { includes(:product_line) }
 
   def self.grouped_by_product_lines
@@ -61,21 +61,22 @@ class SubmissionTemplate < ApplicationRecord
   end
 
   def create_with_submission!(attributes = {})
-    create_order!(attributes) do |order|
-      order.create_submission(user_id: order.user_id)
-    end
+    create_order!(attributes) { |order| order.create_submission(user_id: order.user_id) }
   end
 
   # create a new submission of the good subclass and with pre-set attributes
   def new_order(params = {})
     duped_params = safely_duplicate(params)
+
     # NOTE: Stringifying request_option keys here is NOT a good idea as it affects multipliers
     attributes = submission_attributes.with_indifferent_access.deep_merge(duped_params)
 
-    submission_class.new(attributes).tap do |order|
-      order.template_name = name
-      order.product = product_for(attributes)
-    end
+    submission_class
+      .new(attributes)
+      .tap do |order|
+        order.template_name = name
+        order.product = product_for(attributes)
+      end
   end
 
   def submission_class
@@ -127,14 +128,14 @@ class SubmissionTemplate < ApplicationRecord
   # NOTE: You cannot use Marshal.load(Marshal.dump(params)) here because it causes all kinds of problems with
   # the ActiveRecord::Base derived classes when params contains their instances.  It'll appear as insecure
   # method errors somewhere else in the code.
-  def safely_duplicate(params)
+  def safely_duplicate(params) # rubocop:todo Metrics/MethodLength
     params.transform_values do |v|
       if v.is_a?(ActiveRecord::Base)
         v
       elsif v.is_a?(Array) && v.first.is_a?(ActiveRecord::Base)
-        v.dup                           # Duplicate the array, but not the contents
+        v.dup # Duplicate the array, but not the contents
       elsif v.is_a?(Array) || v.is_a?(Hash)
-        Marshal.load(Marshal.dump(v))   # Make safe copies of arrays and hashes
+        Marshal.load(Marshal.dump(v)) # Make safe copies of arrays and hashes
       else
         v
       end

@@ -3,15 +3,9 @@
 # This helper contains the default values to report failures in plates from the Report Fail UI
 #
 module ReportFailsHelper
-  FAILURE_KEYS = %w[
-    sample_integrity
-    quantification
-    lab_error
-  ].freeze
+  FAILURE_KEYS = %w[sample_integrity quantification lab_error].freeze
   def report_fail_failure_options
-    FAILURE_KEYS.index_by do |val|
-      I18n.t("report_fails.#{val}")
-    end
+    FAILURE_KEYS.index_by { |val| I18n.t("report_fails.#{val}") }
   end
 
   def report_fail_selected_option

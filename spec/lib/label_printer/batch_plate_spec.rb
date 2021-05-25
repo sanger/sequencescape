@@ -6,16 +6,18 @@ shared_examples 'a correct single label printer' do
   it 'produces the correct label' do
     expected_label = {
       labels: {
-        body: [{
-          main_label: {
-            barcode: plate1.machine_barcode,
-            bottom_left: plate1.human_barcode,
-            bottom_right: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number}",
-            top_far_right: nil,
-            top_left: date_today,
-            top_right: batch.studies.first.abbreviation
+        body: [
+          {
+            main_label: {
+              barcode: plate1.machine_barcode,
+              bottom_left: plate1.human_barcode,
+              bottom_right: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number}",
+              top_far_right: nil,
+              top_left: date_today,
+              top_right: batch.studies.first.abbreviation
+            }
           }
-        }]
+        ]
       }
     }
     expect(subject.to_h).to eq(expected_label)
@@ -26,19 +28,22 @@ shared_examples 'a correct double label printer' do
   it 'produces the correct label' do
     expected_label = {
       labels: {
-        body: [{
-          main_label: {
-            left_text: plate1.human_barcode.to_s,
-            right_text: plate1.barcode_number.to_s,
-            barcode: plate1.machine_barcode
+        body: [
+          {
+            main_label: {
+              left_text: plate1.human_barcode.to_s,
+              right_text: plate1.barcode_number.to_s,
+              barcode: plate1.machine_barcode
+            }
+          },
+          {
+            extra_label: {
+              left_text: date_today,
+              right_text:
+                "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
+            }
           }
-        },
-               {
-                 extra_label: {
-                   left_text: date_today,
-                   right_text: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
-                 }
-               }]
+        ]
       }
     }
     expect(subject.to_h).to eq(expected_label)
@@ -54,10 +59,7 @@ shared_examples 'a correct multi-copy printer' do
 end
 
 shared_examples 'a correct filter' do
-  let(:printables) do
-    { plate1.human_barcode => 'on',
-      plate2.human_barcode => 'on' }
-  end
+  let(:printables) { { plate1.human_barcode => 'on', plate2.human_barcode => 'on' } }
 
   it 'has the correct plates' do
     expect(subject.assets).to eq([plate1, plate2])
@@ -72,24 +74,24 @@ context 'printing labels' do
   let(:batch) { create :batch }
   let(:study) { create :study }
   let(:request1) do
-    order = create(:order,
-                   order_role: OrderRole.new(role: 'test_role'),
-                   study: study,
-                   assets: [create(:empty_sample_tube)])
-    create(:well_request,
-           asset: create(:well_with_sample_and_plate),
-           target_asset: create(:well_with_sample_and_plate),
-           order: order)
+    order =
+      create(:order, order_role: OrderRole.new(role: 'test_role'), study: study, assets: [create(:empty_sample_tube)])
+    create(
+      :well_request,
+      asset: create(:well_with_sample_and_plate),
+      target_asset: create(:well_with_sample_and_plate),
+      order: order
+    )
   end
   let(:request2) do
-    order = create(:order,
-                   order_role: OrderRole.new(role: 'test_role'),
-                   study: study,
-                   assets: [create(:empty_sample_tube)])
-    create(:well_request,
-           asset: create(:well_with_sample_and_plate),
-           target_asset: create(:well_with_sample_and_plate),
-           order: order)
+    order =
+      create(:order, order_role: OrderRole.new(role: 'test_role'), study: study, assets: [create(:empty_sample_tube)])
+    create(
+      :well_request,
+      asset: create(:well_with_sample_and_plate),
+      target_asset: create(:well_with_sample_and_plate),
+      order: order
+    )
   end
   let(:plate1) { request1.target_asset.plate }
   let(:plate2) { request2.target_asset.plate }

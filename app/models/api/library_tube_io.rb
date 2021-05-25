@@ -8,20 +8,27 @@ class Api::LibraryTubeIO < Api::Base
       end
     end
 
-    def self.included(base)
+    def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> {
-          includes([
-            :uuid_object,
-            :barcodes, {
-              source_request: %i[uuid_object request_metadata],
-              primary_aliquot: { sample: :uuid_object, tag: [:uuid_object, { tag_group: :uuid_object }] }
-            },
-            :scanned_into_lab_event
-          ])
-        }
+        scope :including_associations_for_json,
+              -> {
+                includes(
+                  [
+                    :uuid_object,
+                    :barcodes,
+                    {
+                      source_request: %i[uuid_object request_metadata],
+                      primary_aliquot: {
+                        sample: :uuid_object,
+                        tag: [:uuid_object, { tag_group: :uuid_object }]
+                      }
+                    },
+                    :scanned_into_lab_event
+                  ]
+                )
+              }
       end
     end
 
@@ -45,16 +52,14 @@ class Api::LibraryTubeIO < Api::Base
   map_attribute_to_json_attribute(:updated_at)
   map_attribute_to_json_attribute(:public_name)
 
-  with_association(:scanned_into_lab_event) do
-    map_attribute_to_json_attribute(:content, 'scanned_in_date')
-  end
+  with_association(:scanned_into_lab_event) { map_attribute_to_json_attribute(:content, 'scanned_in_date') }
 
   map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
 
   with_association(:primary_aliquot_if_unique) do
     with_association(:sample) do
       map_attribute_to_json_attribute(:uuid, 'sample_uuid')
-      map_attribute_to_json_attribute(:id,   'sample_internal_id')
+      map_attribute_to_json_attribute(:id, 'sample_internal_id')
       map_attribute_to_json_attribute(:name, 'sample_name')
     end
 
@@ -73,21 +78,17 @@ class Api::LibraryTubeIO < Api::Base
   end
 
   with_association(:source_request) do
-    map_attribute_to_json_attribute(:id,   'source_request_internal_id')
+    map_attribute_to_json_attribute(:id, 'source_request_internal_id')
     map_attribute_to_json_attribute(:uuid, 'source_request_uuid')
 
     extra_json_attributes do |object, json_attributes|
-      if object.is_a?(SequencingRequest)
-        json_attributes['read_length']                 = object.request_metadata.read_length
-      end
-      if object.is_a?(LibraryCreationRequest)
-        json_attributes['library_type']                = object.request_metadata.library_type
-      end
+      json_attributes['read_length'] = object.request_metadata.read_length if object.is_a?(SequencingRequest)
+      json_attributes['library_type'] = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
       if object.respond_to?(:fragment_size_required_from)
         json_attributes['fragment_size_required_from'] = object.request_metadata.fragment_size_required_from
       end
       if object.respond_to?(:fragment_size_required_to)
-        json_attributes['fragment_size_required_to']   = object.request_metadata.fragment_size_required_to
+        json_attributes['fragment_size_required_to'] = object.request_metadata.fragment_size_required_to
       end
     end
   end

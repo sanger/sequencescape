@@ -1,25 +1,29 @@
 module Batch::RequestBehaviour # rubocop:todo Style/Documentation
-  def self.included(base)
+  def self.included(base) # rubocop:todo Metrics/MethodLength
     base.class_eval do
       has_one :batch_request, inverse_of: :request, dependent: :destroy
       has_one :batch, through: :batch_request, inverse_of: :requests
 
-      scope :include_for_batch_view, -> {
-                                       includes(:batch_request, :asset, :target_asset, :request_metadata, :comments)
-                                     }
+      scope :include_for_batch_view,
+            -> { includes(:batch_request, :asset, :target_asset, :request_metadata, :comments) }
 
       # For backwards compatibility
-      def batch_requests; [batch_request].compact; end
+      def batch_requests
+        [batch_request].compact
+      end
 
-      def batches; [batch].compact; end
+      def batches
+        [batch].compact
+      end
 
       # Identifies all requests that are not part of a batch.
       # Note: we join, rather than includes due to custom select limitations.
-      scope :unbatched, ->() {
-        joins('LEFT OUTER JOIN batch_requests ON batch_requests.request_id = requests.id')
-          .readonly(false)
-          .where(batch_requests: { request_id: nil })
-      }
+      scope :unbatched,
+            -> {
+              joins('LEFT OUTER JOIN batch_requests ON batch_requests.request_id = requests.id')
+                .readonly(false)
+                .where(batch_requests: { request_id: nil })
+            }
 
       delegate :position, to: :batch_request, allow_nil: true
     end

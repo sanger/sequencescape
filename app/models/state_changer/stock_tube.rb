@@ -5,9 +5,7 @@ module StateChanger
   class StockTube < StateChanger::TubeBase
     TERMINATED_STATES = %w[cancelled failed].freeze
 
-    self.map_target_state_to_associated_request_state = {
-      'failed' => 'failed'
-    }
+    self.map_target_state_to_associated_request_state = { 'failed' => 'failed' }
 
     private
 
@@ -16,8 +14,7 @@ module StateChanger
     end
 
     def transfer_requests
-      @transfer_requests ||= labware.transfer_requests_as_target
-                                    .where.not(state: TERMINATED_STATES)
+      @transfer_requests ||= labware.transfer_requests_as_target.where.not(state: TERMINATED_STATES)
     end
 
     def update_associated_requests

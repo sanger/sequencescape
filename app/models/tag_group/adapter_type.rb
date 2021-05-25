@@ -9,6 +9,7 @@ class TagGroup::AdapterType < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validate :name_is_not_reserved
+
   # Prevent destruction on in-use adapter types
   has_many :tag_groups, dependent: :restrict_with_error
 

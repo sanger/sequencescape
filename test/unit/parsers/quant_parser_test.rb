@@ -3,12 +3,10 @@
 require './test/test_helper'
 require 'csv'
 
-class QuantParserTest < ActiveSupport::TestCase
+class QuantParserTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   def read_file(filename)
     content = nil
-    File.open(filename, 'r') do |fd|
-      content = fd.read
-    end
+    File.open(filename, 'r') { |fd| content = fd.read }
     content
   end
 
@@ -42,9 +40,7 @@ class QuantParserTest < ActiveSupport::TestCase
         end
 
         should 'update well attributes with the file contents' do
-          [['A1', 35, 7.5],
-           ['A2', 56, 8.1],
-           ['A3', 89, 4.3]].each do |location, concentration, _rin|
+          [['A1', 35, 7.5], ['A2', 56, 8.1], ['A3', 89, 4.3]].each do |location, concentration, _rin|
             assert_equal concentration, @wells[location].get_concentration
           end
         end
@@ -70,9 +66,7 @@ class QuantParserTest < ActiveSupport::TestCase
         end
 
         should 'update well attributes with the file contents' do
-          [['A1', 35, 7.5],
-           ['A2', 56, 8.1],
-           ['A3', 89, 4.3]].each do |location, concentration, _rin|
+          [['A1', 35, 7.5], ['A2', 56, 8.1], ['A3', 89, 4.3]].each do |location, concentration, _rin|
             assert_equal concentration, @wells[location].get_concentration
           end
         end
@@ -82,9 +76,7 @@ class QuantParserTest < ActiveSupport::TestCase
           assert_equal @default_conc, @wells['B3'].get_concentration
         end
         should 'update parent well attributes with adjusted concentration contents' do
-          [['A1', 350, 7.5],
-           ['A2', 560, 8.1],
-           ['A3', 890, 4.3]].each do |location, concentration, rin|
+          [['A1', 350, 7.5], ['A2', 560, 8.1], ['A3', 890, 4.3]].each do |location, concentration, rin|
             assert_equal concentration, @parent_wells[location].get_concentration
             assert_equal rin, @parent_wells[location].get_rin
           end
@@ -121,9 +113,7 @@ class QuantParserTest < ActiveSupport::TestCase
         end
 
         should 'update well attributes with the file contents' do
-          [['A1', 134.47, 7.5],
-           ['A2', 81.96, 8.1],
-           ['A3', 36.76, 4.3]].each do |location, concentration, _rin|
+          [['A1', 134.47, 7.5], ['A2', 81.96, 8.1], ['A3', 36.76, 4.3]].each do |location, concentration, _rin|
             assert_equal concentration, @wells[location].get_concentration
           end
         end

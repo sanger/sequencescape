@@ -7,7 +7,8 @@ module Submission::FlexibleRequestGraph
   # in place.
   Doublet = Struct.new(:asset, :qc_metric)
 
-  class RequestChainError < RuntimeError; end
+  class RequestChainError < RuntimeError
+  end
 
   class RequestChain # rubocop:todo Style/Documentation
     attr_reader :order, :source_assets_qc_metrics, :preplexed, :built, :multiplexed
@@ -61,10 +62,11 @@ module Submission::FlexibleRequestGraph
     end
 
     def multipliers
-      @multipliers ||= Hash.new { |h, k| h[k] = 1 }.tap do |multipliers|
-        requested_multipliers = order.request_options.try(:[], :multiplier) || {}
-        requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
-      end
+      @multipliers ||=
+        Hash.new { |h, k| h[k] = 1 }.tap do |multipliers|
+          requested_multipliers = order.request_options.try(:[], :multiplier) || {}
+          requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
+        end
     end
   end
 
@@ -84,38 +86,44 @@ module Submission::FlexibleRequestGraph
     end
 
     def initialize(request_type, multiplier, source_assets_qc_metrics, chain)
-      @request_type              = request_type
-      @multiplier                = multiplier
-      @source_assets_qc_metrics  = source_assets_qc_metrics
-      @chain                     = chain
+      @request_type = request_type
+      @multiplier = multiplier
+      @source_assets_qc_metrics = source_assets_qc_metrics
+      @chain = chain
     end
 
-    def multiplexed?; false; end
+    def multiplexed?
+      false
+    end
 
-    def build!
+    # rubocop:todo Metrics/MethodLength
+    def build! # rubocop:todo Metrics/AbcSize
       multiplier.times do |_|
         # Now we can iterate over the source assets and target assets building the requests between them.
         # Ensure that the request has the correct comments on it, and that the aliquots of the source asset
         # are transferred into the destination if the request does not do this in some manner itself.
         source_asset_metrics_target_assets do |source_asset, qc_metrics, target_asset|
-          chain.order.create_request_of_type!(
-            request_type,
-            asset: source_asset, target_asset: target_asset
-          ).tap do |request|
-            AssetLink.create_edge(source_asset.labware,
-                                  target_asset.labware) if source_asset&.labware.present? && target_asset&.labware.present?
+          chain
+            .order
+            .create_request_of_type!(request_type, asset: source_asset, target_asset: target_asset)
+            .tap do |request|
+              if source_asset&.labware.present? && target_asset&.labware.present?
+                AssetLink.create_edge(source_asset.labware, target_asset.labware)
+              end
 
-            request.qc_metrics = qc_metrics.compact.uniq
-            request.update_responsibilities!
+              request.qc_metrics = qc_metrics.compact.uniq
+              request.update_responsibilities!
 
-            comments.each do |comment|
-              request.comments.create!(user: user, description: comment)
-            end if comments.present?
-          end
+              if comments.present?
+                comments.each { |comment| request.comments.create!(user: user, description: comment) }
+              end
+            end
         end
       end
       associate_built_requests!
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     def target_assets
       target_assets_qc_metrics.map(&:asset).flatten.uniq
@@ -160,32 +168,31 @@ module Submission::FlexibleRequestGraph
       super
     end
 
-    def multiplexed?; true; end
+    def multiplexed?
+      true
+    end
 
     private
 
     def source_assets_doublet_with_index
-      source_assets_qc_metrics.each do |doublet|
-        yield(doublet, request_type.pool_index_for_asset(doublet.asset))
-      end
+      source_assets_qc_metrics.each { |doublet| yield(doublet, request_type.pool_index_for_asset(doublet.asset)) }
     end
 
     # We can only do this once for multiplexed request types
     def generate_target_assets
-      @target_assets_qc_metrics ||= chain.multiplexing_assets do
-        # We yield only if we don't have any multiplexing assets
-        all_qc_metrics = source_assets_qc_metrics.map(&:qc_metric).flatten.uniq
-        Array.new(request_type.pool_count) { Doublet.new(create_target_asset, all_qc_metrics) }
-      end
+      @target_assets_qc_metrics ||=
+        chain.multiplexing_assets do
+          # We yield only if we don't have any multiplexing assets
+          all_qc_metrics = source_assets_qc_metrics.map(&:qc_metric).flatten.uniq
+          Array.new(request_type.pool_count) { Doublet.new(create_target_asset, all_qc_metrics) }
+        end
     end
 
     def associate_built_requests!
       downstream_requests.each do |request|
         request.update!(initial_study: nil) if request.initial_study != study
         request.update!(initial_project: nil) if request.initial_project != project
-        comments.each do |comment|
-          request.comments.create!(user: user, description: comment)
-        end if comments.present?
+        comments.each { |comment| request.comments.create!(user: user, description: comment) } if comments.present?
       end
     end
 
@@ -213,9 +220,7 @@ module Submission::FlexibleRequestGraph
     end
 
     def source_assets_doublet_with_index
-      source_assets_qc_metrics.each_with_index do |doublet, index|
-        yield(doublet, index)
-      end
+      source_assets_qc_metrics.each_with_index { |doublet, index| yield(doublet, index) }
     end
   end
 

@@ -14,9 +14,8 @@ module ApiTools # rubocop:todo Style/Documentation
   end
 
   def to_xml(options = {})
-    renamed_keys = for_api.inject({}) do |renamed_keys, (key, value)|
-      renamed_keys.tap { renamed_keys[key.underscore] = value }
-    end
+    renamed_keys =
+      for_api.inject({}) { |renamed_keys, (key, value)| renamed_keys.tap { renamed_keys[key.underscore] = value } }
     options.reverse_merge!(root: self.class.to_s.underscore, skip_types: true)
     renamed_keys.to_xml(options)
   end

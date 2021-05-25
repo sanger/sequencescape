@@ -10,10 +10,12 @@
 module Sanger
   module Testing
     module Controller
-      module Macros
-        RESTFUL_ACTIONS = %w(index new create show update destroy edit).freeze
+      module Macros # rubocop:todo Metrics/ModuleLength
+        RESTFUL_ACTIONS = %w[index new create show update destroy edit].freeze
 
-        def resource_test( # rubocop:todo Metrics/CyclomaticComplexity
+        # rubocop:todo Metrics/PerceivedComplexity
+        # rubocop:todo Metrics/CyclomaticComplexity
+        def resource_test(
           resource_name,
           ignore_actions: [],
           actions: (RESTFUL_ACTIONS - ignore_actions),
@@ -28,7 +30,6 @@ module Sanger
           teardown_with: nil,
           user: :user
         )
-
           resource_name = resource_name.to_sym
 
           untested_actions = (RESTFUL_ACTIONS - ignore_actions) - actions
@@ -38,19 +39,17 @@ module Sanger
           context 'should be a resource' do
             setup do
               @factory_options = defaults
-              @create_options  = defaults
-              @update_options  = defaults.reject do |k, _v|
-                protect_on_update.include?(k)
-              end.deep_merge(extra_on_update)
+              @create_options = defaults
+              @update_options = defaults.reject { |k, _v| protect_on_update.include?(k) }.deep_merge(extra_on_update)
               @input_params = {}
             end
 
-            show_url              = "#{with_prefix}#{resource_name}_path(@object)"
-            index_url             = "#{with_prefix}#{resource_name.to_s.pluralize}_path"
-            parent_resource       = parent
+            show_url = "#{with_prefix}#{resource_name}_path(@object)"
+            index_url = "#{with_prefix}#{resource_name.to_s.pluralize}_path"
+            parent_resource = parent
 
             if parent_resource
-              show_url  = "#{parent_resource}_#{resource_name}_path(@#{parent_resource}, @object)"
+              show_url = "#{parent_resource}_#{resource_name}_path(@#{parent_resource}, @object)"
               index_url = "#{parent_resource}_#{resource_name.to_s.pluralize}_path(@#{parent_resource})"
 
               setup do
@@ -60,7 +59,7 @@ module Sanger
               end
             end
 
-            setup    { setup_with.call    } if setup_with
+            setup { setup_with.call } if setup_with
             teardown { teardown_with.call } if teardown_with
 
             context 'when logged in' do
@@ -68,14 +67,13 @@ module Sanger
                 # Create the user using the factory specified by the :user parameter
                 # or fall back to the default :user factory
                 @user = create(user)
+
                 # All our things need a user to be logged in
                 session[:user] = @user.id
               end
               if actions.include?('index')
                 context 'should get index' do
-                  setup do
-                    get :index, params: @input_params
-                  end
+                  setup { get :index, params: @input_params }
                   should respond_with :success
                   should render_template :index
                 end
@@ -83,9 +81,7 @@ module Sanger
 
               if actions.include?('new')
                 context 'should get new' do
-                  setup do
-                    get :new, params: @input_params
-                  end
+                  setup { get :new, params: @input_params }
                   should respond_with :success
                 end
               end
@@ -233,6 +229,8 @@ module Sanger
             end
           end
         end
+        # rubocop:enable Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/CyclomaticComplexity
       end
     end
   end

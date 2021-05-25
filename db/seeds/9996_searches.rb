@@ -4,8 +4,8 @@
 
 Search::FindAssetByBarcode.create!(name: 'Find assets by barcode')
 Search::FindModelByName.create!(name: 'Find project by name', target_model_name: 'Project')
-Search::FindModelByName.create!(name: 'Find study by name',   target_model_name: 'Study')
-Search::FindModelByName.create!(name: 'Find sample by name',  target_model_name: 'Sample')
+Search::FindModelByName.create!(name: 'Find study by name', target_model_name: 'Study')
+Search::FindModelByName.create!(name: 'Find sample by name', target_model_name: 'Sample')
 Search::FindSourceAssetsByDestinationAssetBarcode.create!(name: 'Find source assets by destination asset barcode')
 Search::FindUserByLogin.create!(name: 'Find user by login')
 Search::FindUserBySwipecardCode.create!(name: 'Find user by swipecard code')
@@ -24,11 +24,13 @@ Search::FindLotByLotNumber.create!(name: 'Find lot by lot number')
 Search::FindQcableByBarcode.create!(name: 'Find qcable by barcode')
 Search::FindRobotByBarcode.create!(name: 'Find robot by barcode')
 Search::FindLotByBatchId.create!(name: 'Find lot by batch id')
-plate_purposes = Purpose.where(name: ['ILC Stock',
-                                      'ILC AL Libs',
-                                      'ILC Lib PCR',
-                                      'ILC Lib PCR-XP',
-                                      'ILC AL Libs Tagged']).pluck(:id)
-Search::FindPlatesForUser.create!(name: 'Find Illumina-C plates for user',
-                                  default_parameters: { plate_purpose_ids: plate_purposes, limit: 30,
-                                                        include_used: true })
+plate_purposes =
+  Purpose.where(name: ['ILC Stock', 'ILC AL Libs', 'ILC Lib PCR', 'ILC Lib PCR-XP', 'ILC AL Libs Tagged']).pluck(:id)
+Search::FindPlatesForUser.create!(
+  name: 'Find Illumina-C plates for user',
+  default_parameters: {
+    plate_purpose_ids: plate_purposes,
+    limit: 30,
+    include_used: true
+  }
+)

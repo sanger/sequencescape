@@ -7,7 +7,7 @@ module Studies
     context 'Studies controller' do
       setup do
         @controller = Studies::SamplesController.new
-        @request    = ActionController::TestRequest.create(@controller)
+        @request = ActionController::TestRequest.create(@controller)
 
         @user = create :user
         session[:user] = @user.id

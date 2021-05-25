@@ -28,15 +28,18 @@ class LibPoolNormTubeGenerator # rubocop:todo Style/Documentation
   end
 
   def lib_pool_tubes
-    @lib_pool_tubes ||= plate.children.select { |c| c.is_a?(StockMultiplexedLibraryTube) }
-                             .reject { |tube| tube.state == 'failed' || tube.state == 'qc_complete' || tube.state == 'cancelled' }
+    @lib_pool_tubes ||=
+      plate.children.select { |c| c.is_a?(StockMultiplexedLibraryTube) }.reject do |tube|
+        tube.state == 'failed' || tube.state == 'qc_complete' || tube.state == 'cancelled'
+      end
   end
 
   def destination_tubes
     @destination_tubes ||= []
   end
 
-  def create!
+  # rubocop:todo Metrics/MethodLength
+  def create! # rubocop:todo Metrics/AbcSize
     if valid?
       begin
         ActiveRecord::Base.transaction do
@@ -45,8 +48,12 @@ class LibPoolNormTubeGenerator # rubocop:todo Style/Documentation
             pass_and_complete(create_lib_pool_norm_tube(tube))
           end
 
-          @asset_group = AssetGroup.create!(assets: destination_tubes.map(&:receptacle), study: study,
-                                            name: "#{plate.human_barcode}_qc_completed_tubes")
+          @asset_group =
+            AssetGroup.create!(
+              assets: destination_tubes.map(&:receptacle),
+              study: study,
+              name: "#{plate.human_barcode}_qc_completed_tubes"
+            )
         end
         true
       rescue => e
@@ -56,6 +63,8 @@ class LibPoolNormTubeGenerator # rubocop:todo Style/Documentation
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   private
 

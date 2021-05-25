@@ -1,7 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Tag2LayoutTemplates
 class ::Endpoints::Tag2LayoutTemplates < ::Core::Endpoint::Base
-  model do
-  end
+  model {}
 
   instance do
     action(:create) do |request, _|

@@ -14,9 +14,9 @@
 #
 # While orders are mostly in charge of building their own requests, Submissions trigger this
 # behaviour, and handle multiplexing between orders.
-class Submission < ApplicationRecord
+class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
-  extend  Submission::StateMachine
+  extend Submission::StateMachine
   include Submission::DelayedJobBehaviour
   include ModelExtensions::Submission
   include Submission::Priorities
@@ -31,16 +31,19 @@ class Submission < ApplicationRecord
   # Once a submission has requests we REALLY shouldn't be destroying it.
   has_many :requests, inverse_of: :submission, dependent: :restrict_with_exception
   has_many :aliquots, through: :requests, source: :related_aliquots
+
   # Items are a legacy item that used to represent libraries which had yet to be made.
   # JG: I don't think we have any behaviour that depends on them. They can probably be removed.
   has_many :items, through: :requests
   has_many :events, through: :requests
+
   # Orders are the main submission workhorses, and do most the heavy lifting. They group together
   # assets, under a study and project, and collect together the request types which will be built,
   # and the request options.
   # Submissions with orders cannot be destroyed
   has_many :orders, inverse_of: :submission, dependent: :restrict_with_error
   has_many :studies, through: :orders
+
   # JG: Comments are a bit broken, but not sure how best to fix them. Orders set them on request,
   # but essentially this just sets the same comment on each request. And then we also have comments on
   # asset, but then plate also want to show the request comments. Its probably a case of simplifying things
@@ -57,20 +60,18 @@ class Submission < ApplicationRecord
   before_destroy :prevent_destruction_unless_building?
 
   accepts_nested_attributes_for :orders, update_only: true
-  broadcast_via_warren
+  broadcast_with_warren
 
   # Used in the v1 API
-  scope :including_associations_for_json, -> {
-    includes([
-      :uuid_object,
-      { orders: [
-        { project: :uuid_object },
-        { assets: :uuid_object },
-        { study: :uuid_object },
-        :user
-      ] }
-    ])
-  }
+  scope :including_associations_for_json,
+        -> {
+          includes(
+            [
+              :uuid_object,
+              { orders: [{ project: :uuid_object }, { assets: :uuid_object }, { study: :uuid_object }, :user] }
+            ]
+          )
+        }
 
   scope :latest_first, -> { order('id DESC') }
 
@@ -100,9 +101,7 @@ class Submission < ApplicationRecord
   #
   # @return [Void]
   def add_comment(description, user, title = nil)
-    requests.each do |request|
-      request.add_comment(description, user, title)
-    end
+    requests.each { |request| request.add_comment(description, user, title) }
   end
 
   def requests_cancellable?
@@ -157,6 +156,7 @@ class Submission < ApplicationRecord
     orders.first.request_types.map(&:to_i)
   end
   deprecate request_type_ids: 'Orders may now have different request_types'
+
   # Logged calls from: app/models/pre_capture_pool.rb:74
 
   def order_request_type_ids
@@ -174,7 +174,10 @@ class Submission < ApplicationRecord
   # @param request [Request] The request to find the next request for
   #
   # @return [Array<Request>] An array of downstream requests
-  def next_requests_via_submission(request)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def next_requests_via_submission(request) # rubocop:todo Metrics/CyclomaticComplexity
     raise "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
 
     # Pick out the siblings of the request, so we can work out where it is in the list, and all of
@@ -194,15 +197,19 @@ class Submission < ApplicationRecord
       index = request.request_type.pool_index_for_request(request)
       number_to_return = next_possible_requests.count / request.request_type.pool_count
       next_possible_requests.slice(index * number_to_return, number_to_return)
-
     else
       multiplier = multiplier_for(request.next_request_type_id)
       index = sibling_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }.index(request)
-      next_possible_requests.select do |npr|
-        npr.order_id.nil? || (npr.order_id == request.order_id)
-      end [index * multiplier, multiplier]
+      next_possible_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }[
+        index * multiplier,
+        multiplier
+      ]
     end
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def name
     super.presence || "##{id} #{study_names.truncate(128)}"
@@ -210,11 +217,9 @@ class Submission < ApplicationRecord
 
   def study_names
     # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
-    orders.map do |o|
-      o.study.try(:name) || o.assets.map do |a|
-        a.studies.pluck(:name)
-      end
-    end.flatten.compact.sort.uniq.join('|')
+    orders.map { |o| o.study.try(:name) || o.assets.map { |a| a.studies.pluck(:name) } }.flatten.compact.sort.uniq.join(
+      '|'
+    )
   end
 
   def cross_project?
@@ -274,32 +279,29 @@ class Submission < ApplicationRecord
   end
 
   def request_cache
-    @request_cache ||= Hash.new do |cache, ids|
-      cache[ids] = requests.with_request_type_id(ids)
-                           .includes(:asset, :billing_product)
-                           .order(id: :asc)
-                           .group_by(&:request_type_id)
-    end
+    @request_cache ||=
+      Hash.new do |cache, ids|
+        cache[ids] = requests.with_request_type_id(ids).includes(:asset).order(id: :asc).group_by(&:request_type_id)
+      end
   end
 
   def multiplier_cache
-    @multiplier_cache ||= Hash.new do |cache, request_type_id|
-      # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
-      # if downstream changes affect the ratio. We can use the multiplier on order however, as we
-      # don't need to worry about divergence ratios f < 1
-      # Determine the number of requests that should come next from the multipliers in the orders.
-      # NOTE: This will only work whilst you order the same number of requests.
-      multipliers = orders.reduce(Set.new) { |set, order| set << order.multiplier_for(request_type_id) }
-      raise "Mismatched multiplier information for submission #{id}" unless multipliers.one?
+    @multiplier_cache ||=
+      Hash.new do |cache, request_type_id|
+        # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
+        # if downstream changes affect the ratio. We can use the multiplier on order however, as we
+        # don't need to worry about divergence ratios f < 1
+        # Determine the number of requests that should come next from the multipliers in the orders.
+        # NOTE: This will only work whilst you order the same number of requests.
+        multipliers = orders.reduce(Set.new) { |set, order| set << order.multiplier_for(request_type_id) }
+        raise "Mismatched multiplier information for submission #{id}" unless multipliers.one?
 
-      # Now we can take the group of requests from next_possible_requests that tie up.
-      cache[request_type_id] = multipliers.first
-    end
+        # Now we can take the group of requests from next_possible_requests that tie up.
+        cache[request_type_id] = multipliers.first
+      end
   end
 
   def cancel_all_requests
-    ActiveRecord::Base.transaction do
-      requests.each(&:submission_cancelled!)
-    end
+    ActiveRecord::Base.transaction { requests.each(&:submission_cancelled!) }
   end
 end

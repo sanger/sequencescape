@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Accession all samples' do
-  let!(:user)   { create(:user, api_key: configatron.accession_local_key) }
-  let!(:study)  { create(:open_study, accession_number: 'ENA123', samples: create_list(:sample_for_accessioning, 5)) }
+  let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+  let!(:study) { create(:open_study, accession_number: 'ENA123', samples: create_list(:sample_for_accessioning, 5)) }
 
   before do
     Delayed::Worker.delay_jobs = false

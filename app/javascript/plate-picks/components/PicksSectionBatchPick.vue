@@ -22,10 +22,7 @@
     >
       <h5>{{ name }}</h5>
       <div>
-        <input
-          v-model="shortName"
-          class="form-control"
-        >
+        <input v-model="shortName" class="form-control" />
       </div>
     </div>
     <ul class="list-group list-group-flush">
@@ -34,14 +31,11 @@
         :key="plate.barcode"
         :class="{
           'list-group-item': true,
-          'list-group-item-success': plate.scanned
+          'list-group-item-success': plate.scanned,
         }"
       >
         <i :class="`fas fa-${plate.scanned ? 'check' : ''}`" />
-        <i
-          v-if="plate.control"
-          class="fas fa-vial"
-        />
+        <i v-if="plate.control" class="fas fa-vial" />
         {{ plate.barcode }}
       </li>
     </ul>
@@ -55,40 +49,40 @@
 // See https://vuejs.org/v2/style-guide/#Component-instance-options-order-recommended
 // for order of other options
 export default {
-  name: 'PicksSectionBatchPick',
+  name: "PicksSectionBatchPick",
   props: {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     short: {
       type: String,
-      required: true
+      required: true,
     },
     id: {
       type: [String, Number],
-      required: true
+      required: true,
     },
     plates: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data: function () {
-    return { }
+    return {};
   },
   computed: {
     shortName: {
-      get() { return this.short },
+      get() {
+        return this.short;
+      },
       set(value) {
-        this.$store.commit('updatePick', { id: this.id, short: value })
-      }
-    }
-  }
+        this.$store.commit("updatePick", { id: this.id, short: value });
+      },
+    },
+  },
   // methods: {},
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

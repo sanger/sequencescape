@@ -45,16 +45,20 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
       record.errors.add(field, 'should be a tuple') unless value.is_a?(Hash)
     end
 
-    def self.attribute_delegate(*names)
+    def self.attribute_delegate(*names) # rubocop:todo Metrics/MethodLength
       names.each do |name|
         line = __LINE__ + 1
-        class_eval("
+        class_eval(
+          "
           def #{name}
             return nil unless lookup.respond_to?(:fetch)
             lookup[#{name.to_s.inspect}]
           end
           protected #{name.to_sym.inspect}
-        ", __FILE__, line)
+        ",
+          __FILE__,
+          line
+        )
       end
     end
 
@@ -73,10 +77,10 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     end
 
     def self.create_bulk!(list_of_attributes)
-      raise CriteriaInvalid, 'should be an array of tuples' if     list_of_attributes.nil?
+      raise CriteriaInvalid, 'should be an array of tuples' if list_of_attributes.nil?
       raise CriteriaInvalid, 'should be an array of tuples' unless list_of_attributes.is_a?(Array)
-      raise CriteriaInvalid, "can't be blank"               if     list_of_attributes.blank?
-      raise CriteriaInvalid, 'should be a tuple'            unless list_of_attributes.all?(Hash)
+      raise CriteriaInvalid, "can't be blank" if list_of_attributes.blank?
+      raise CriteriaInvalid, 'should be a tuple' unless list_of_attributes.all?(Hash)
 
       list_of_attributes.map(&method(:create!))
     end
@@ -96,7 +100,9 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
       uuid = Search.create!(lookup).find
 
       # Hack time ...
-      class << response; include ::Endpoints::Uuids::Response; end
+      class << response
+        include ::Endpoints::Uuids::Response
+      end
       response.redirect_to(request.service.api_path(uuid.external_id))
 
       {
@@ -114,7 +120,9 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
       uuids = Search.create_bulk!(lookup).map(&:find)
 
       # Hack time ...
-      class << response; include ::Endpoints::Uuids::Response; end
+      class << response
+        include ::Endpoints::Uuids::Response
+      end
       response.multiple_choices
 
       uuids.map do |uuid|

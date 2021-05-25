@@ -1,8 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for TubeFromTubeCreations
 class ::Endpoints::TubeFromTubeCreations < ::Core::Endpoint::Base
-  model do
-    action(:create, to: :standard_create!)
-  end
+  model { action(:create, to: :standard_create!) }
 
   instance do
     belongs_to(:child, json: 'child', to: 'child')

@@ -9,7 +9,7 @@ module LabelPrinter
         @options = options
       end
 
-      def to_h
+      def to_h # rubocop:todo Metrics/MethodLength
         case sample_manifest.asset_type
         when 'plate', 'library_plate'
           if @printer_type_class.double_label?

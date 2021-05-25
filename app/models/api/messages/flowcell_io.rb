@@ -6,19 +6,15 @@ class Api::Messages::FlowcellIO < Api::Base
 
   self.includes = {
     requests: [
-      { target_asset: {
-        aliquots: [
-          :aliquot_index,
-          :library,
-          {
-            tag: :tag_group,
-            tag2: :tag_group,
-            sample: :uuid_object,
-            study: :uuid_object,
-            project: :uuid_object
-          }
-        ]
-      } },
+      {
+        target_asset: {
+          aliquots: [
+            :aliquot_index,
+            :library,
+            { tag: :tag_group, tag2: :tag_group, sample: :uuid_object, study: :uuid_object, project: :uuid_object }
+          ]
+        }
+      },
       :lab_events,
       :batch_request,
       :request_metadata
@@ -27,7 +23,8 @@ class Api::Messages::FlowcellIO < Api::Base
 
   # Included in SequencingRequest
   module LaneExtensions
-    def self.included(base)
+    # rubocop:todo Metrics/MethodLength
+    def self.included(base) # rubocop:todo Metrics/AbcSize
       base.class_eval do
         def mx_library
           asset.external_identifier
@@ -99,17 +96,16 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def detect_descriptor(name)
-          lab_events.each do |e|
-            e.descriptor_value_for(name).tap { |bc| return bc if bc.present? }
-          end
+          lab_events.each { |e| e.descriptor_value_for(name).tap { |bc| return bc if bc.present? } }
           nil # We have no flowcell barcode
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
   end
 
   module ControlLaneExtensions # rubocop:todo Style/Documentation
-    def self.included(base)
+    def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
         def mx_library
           asset.external_identifier || 'UNKNOWN'
@@ -193,6 +189,7 @@ class Api::Messages::FlowcellIO < Api::Base
         def read_length
           requests.first&.request_metadata&.read_length
         end
+
         # We alias is as the json generator assumes each method is called only once.
         alias_method :reverse_read_length, :read_length
       end
@@ -208,7 +205,8 @@ class Api::Messages::FlowcellIO < Api::Base
 
   map_attribute_to_json_attribute(:updated_at)
 
-  with_nested_has_many_association(:requests, as: :lanes) do # actually requests
+  with_nested_has_many_association(:requests, as: :lanes) do
+    # actually requests
     map_attribute_to_json_attribute(:manual_qc)
     map_attribute_to_json_attribute(:position)
     map_attribute_to_json_attribute(:priority)
@@ -222,48 +220,35 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:workflow)
     map_attribute_to_json_attribute(:loading_concentration)
 
-    with_nested_has_many_association(:lane_samples, as: :samples) do # actually aliquots
+    with_nested_has_many_association(:lane_samples, as: :samples) do
+      # actually aliquots
       map_attribute_to_json_attribute(:aliquot_index_value, 'tag_index')
       map_attribute_to_json_attribute(:suboptimal, 'suboptimal')
 
       with_association(:tag) do
         map_attribute_to_json_attribute(:oligo, 'tag_sequence')
         map_attribute_to_json_attribute(:tag_group_id, 'tag_set_id_lims')
-        with_association(:tag_group) do
-          map_attribute_to_json_attribute(:name, 'tag_set_name')
-        end
+        with_association(:tag_group) { map_attribute_to_json_attribute(:name, 'tag_set_name') }
         map_attribute_to_json_attribute(:map_id, 'tag_identifier')
       end
       with_association(:tag2) do
         map_attribute_to_json_attribute(:oligo, 'tag2_sequence')
         map_attribute_to_json_attribute(:tag_group_id, 'tag2_set_id_lims')
-        with_association(:tag_group) do
-          map_attribute_to_json_attribute(:name, 'tag2_set_name')
-        end
+        with_association(:tag_group) { map_attribute_to_json_attribute(:name, 'tag2_set_name') }
         map_attribute_to_json_attribute(:map_id, 'tag2_identifier')
       end
       map_attribute_to_json_attribute(:library_type, 'pipeline_id_lims')
-      with_association(:bait_library) do
-        map_attribute_to_json_attribute(:name, 'bait_name')
-      end
+      with_association(:bait_library) { map_attribute_to_json_attribute(:name, 'bait_name') }
       map_attribute_to_json_attribute(:insert_size_from, 'requested_insert_size_from')
-      map_attribute_to_json_attribute(:insert_size_to,   'requested_insert_size_to')
-      with_association(:sample) do
-        map_attribute_to_json_attribute(:uuid, 'sample_uuid')
-      end
-      with_association(:study) do
-        map_attribute_to_json_attribute(:uuid, 'study_uuid')
-      end
+      map_attribute_to_json_attribute(:insert_size_to, 'requested_insert_size_to')
+      with_association(:sample) { map_attribute_to_json_attribute(:uuid, 'sample_uuid') }
+      with_association(:study) { map_attribute_to_json_attribute(:uuid, 'study_uuid') }
       with_association(:project) do
         map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')
         map_attribute_to_json_attribute(:r_and_d?, 'is_r_and_d')
       end
-      with_association(:primer_panel) do
-        map_attribute_to_json_attribute(:name, 'primer_panel')
-      end
-      with_association(:library) do
-        map_attribute_to_json_attribute(:external_identifier, 'id_library_lims')
-      end
+      with_association(:primer_panel) { map_attribute_to_json_attribute(:name, 'primer_panel') }
+      with_association(:library) { map_attribute_to_json_attribute(:external_identifier, 'id_library_lims') }
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
       map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
     end
@@ -273,29 +258,19 @@ class Api::Messages::FlowcellIO < Api::Base
         map_attribute_to_json_attribute(:map_id, 'tag_index')
         map_attribute_to_json_attribute(:oligo, 'tag_sequence')
         map_attribute_to_json_attribute(:tag_group_id, 'tag_set_id_lims')
-        with_association(:tag_group) do
-          map_attribute_to_json_attribute(:name, 'tag_set_name')
-        end
+        with_association(:tag_group) { map_attribute_to_json_attribute(:name, 'tag_set_name') }
       end
       with_association(:tag2) do
         map_attribute_to_json_attribute(:oligo, 'tag2_sequence')
         map_attribute_to_json_attribute(:tag_group_id, 'tag2_set_id_lims')
-        with_association(:tag_group) do
-          map_attribute_to_json_attribute(:name, 'tag2_set_name')
-        end
+        with_association(:tag_group) { map_attribute_to_json_attribute(:name, 'tag2_set_name') }
         map_attribute_to_json_attribute(:map_id, 'tag2_identifier')
       end
       map_attribute_to_json_attribute(:library_type, 'pipeline_id_lims')
-      with_association(:sample) do
-        map_attribute_to_json_attribute(:uuid, 'sample_uuid')
-      end
-      with_association(:study) do
-        map_attribute_to_json_attribute(:uuid, 'study_uuid')
-      end
+      with_association(:sample) { map_attribute_to_json_attribute(:uuid, 'sample_uuid') }
+      with_association(:study) { map_attribute_to_json_attribute(:uuid, 'study_uuid') }
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
-      with_association(:library) do
-        map_attribute_to_json_attribute(:external_identifier, 'id_library_lims')
-      end
+      with_association(:library) { map_attribute_to_json_attribute(:external_identifier, 'id_library_lims') }
       map_attribute_to_json_attribute(:control_aliquot_type, 'entity_type')
     end
   end

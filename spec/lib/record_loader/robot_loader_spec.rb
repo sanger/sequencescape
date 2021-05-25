@@ -5,9 +5,11 @@ require 'record_loader/robot_loader'
 
 # This file was initially generated via `rails g record_loader`
 RSpec.describe RecordLoader::RobotLoader, type: :model, loader: true do
-  subject(:record_loader) do
+  def a_new_record_loader
     described_class.new(directory: test_directory, files: selected_files)
   end
+
+  subject(:record_loader) { a_new_record_loader }
 
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/robots') }
@@ -23,17 +25,11 @@ RSpec.describe RecordLoader::RobotLoader, type: :model, loader: true do
     # copies of existing records.
     it 'is idempotent' do
       record_loader.create!
-      expect { record_loader.create! }.not_to change(Robot, :count)
+      expect { a_new_record_loader.create! }.not_to change(Robot, :count)
     end
 
     context 'when setting robot attributes' do
-      let(:expected_attributes) do
-        {
-          name: 'Robot 2',
-          location: 'Room 2',
-          barcode: '5678'
-        }
-      end
+      let(:expected_attributes) { { name: 'Robot 2', location: 'Room 2', barcode: '5678' } }
 
       it 'attributes match expected' do
         record_loader.create!

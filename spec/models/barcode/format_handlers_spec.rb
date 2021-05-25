@@ -31,7 +31,7 @@ describe Barcode::FormatHandlers do
   # These groups aren't empty, we just use a helper to generate the tests
   # rubocop:disable RSpec/EmptyExampleGroup
   describe Barcode::FormatHandlers::UkBiocentreV1 do
-    it_has_a_valid_barcode '1234567890NBC', prefix: nil, number: 1234567890, suffix: 'NBC'
+    it_has_a_valid_barcode '1234567890NBC', prefix: nil, number: 1_234_567_890, suffix: 'NBC'
     it_has_an_invalid_barcode '123456789ANBC'
     it_has_an_invalid_barcode 'INVALID'
     it_has_an_invalid_barcode '123456789NCB'
@@ -43,7 +43,7 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::UkBiocentreV2 do
-    it_has_a_valid_barcode '123456789ANBC', prefix: nil, number: 123456789, suffix: 'ANBC'
+    it_has_a_valid_barcode '123456789ANBC', prefix: nil, number: 123_456_789, suffix: 'ANBC'
     it_has_an_invalid_barcode 'INVALID'
     it_has_an_invalid_barcode '123456789NCB'
     it_has_an_invalid_barcode '123456789MBC'
@@ -54,7 +54,7 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::UkBiocentreV3 do
-    it_has_a_valid_barcode 'RNA12345', prefix: 'RNA', number: 12345, suffix: nil
+    it_has_a_valid_barcode 'RNA12345', prefix: 'RNA', number: 12_345, suffix: nil
     it_has_an_invalid_barcode '123456789ANBC'
     it_has_an_invalid_barcode 'INVALID'
     it_has_an_invalid_barcode '123456789NCB'
@@ -66,7 +66,7 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::UkBiocentreV5 do
-    it_has_a_valid_barcode 'cpRNA123456', prefix: 'cpRNA', number: 123456, suffix: nil
+    it_has_a_valid_barcode 'cpRNA123456', prefix: 'cpRNA', number: 123_456, suffix: nil
     it_has_an_invalid_barcode '123456789ANBC'
     it_has_an_invalid_barcode 'INVALID'
     it_has_an_invalid_barcode '123456789NCB'
@@ -96,10 +96,10 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::AlderlyParkV2 do
-    it_has_a_valid_barcode 'AP-rna-12345678', prefix: 'AP-rna', number: 12345678
-    it_has_a_valid_barcode 'AP-rna-00110029', prefix: 'AP-rna', number: 110029
-    it_has_a_valid_barcode 'AP-kfr-00090016', prefix: 'AP-kfr', number: 90016
-    it_has_a_valid_barcode 'AP-chp-12345678', prefix: 'AP-chp', number: 12345678
+    it_has_a_valid_barcode 'AP-rna-12345678', prefix: 'AP-rna', number: 12_345_678
+    it_has_a_valid_barcode 'AP-rna-00110029', prefix: 'AP-rna', number: 110_029
+    it_has_a_valid_barcode 'AP-kfr-00090016', prefix: 'AP-kfr', number: 90_016
+    it_has_a_valid_barcode 'AP-chp-12345678', prefix: 'AP-chp', number: 12_345_678
     it_has_an_invalid_barcode 'SD-rna-1234567'
     it_has_an_invalid_barcode 'AP-rna-123456789'
     it_has_an_invalid_barcode 'AP-cdna-1234567'
@@ -115,8 +115,8 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::Glasgow do
-    it_has_a_valid_barcode 'GLA123456R', prefix: 'GLA', number: 123456, suffix: 'R'
-    it_has_a_valid_barcode 'GLA100000R', prefix: 'GLA', number: 100000, suffix: 'R'
+    it_has_a_valid_barcode 'GLA123456R', prefix: 'GLA', number: 123_456, suffix: 'R'
+    it_has_a_valid_barcode 'GLA100000R', prefix: 'GLA', number: 100_000, suffix: 'R'
     it_has_an_invalid_barcode 'GLA-123456-R'
     it_has_an_invalid_barcode 'GLA123456R '
     it_has_an_invalid_barcode "GLA123456R\n1"
@@ -126,9 +126,9 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::GlasgowV3 do
-    it_has_a_valid_barcode 'GLS-GP-123456', prefix: 'GLS-GP', number: 123456
-    it_has_a_valid_barcode 'GLS-GP-1234567', prefix: 'GLS-GP', number: 1234567
-    it_has_a_valid_barcode 'GLS-GP-12345678', prefix: 'GLS-GP', number: 12345678
+    it_has_a_valid_barcode 'GLS-GP-123456', prefix: 'GLS-GP', number: 123_456
+    it_has_a_valid_barcode 'GLS-GP-1234567', prefix: 'GLS-GP', number: 1_234_567
+    it_has_a_valid_barcode 'GLS-GP-12345678', prefix: 'GLS-GP', number: 12_345_678
     it_has_an_invalid_barcode 'GLS-GP-123456-R'
     it_has_an_invalid_barcode 'GLS-GP123456R '
     it_has_an_invalid_barcode "GLS-GP-123456R\n1"
@@ -136,16 +136,16 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::CambridgeAZ do
-    it_has_a_valid_barcode '002107834', number: 2107834 # trims off the leading zeros
-    it_has_a_valid_barcode '1087739333', number: 1087739333
+    it_has_a_valid_barcode '002107834', number: 2_107_834 # trims off the leading zeros
+    it_has_a_valid_barcode '1087739333', number: 1_087_739_333
     it_has_an_invalid_barcode '12345678912'
     it_has_an_invalid_barcode 'AB1234567'
     it_has_an_invalid_barcode '002107834 '
   end
 
   describe Barcode::FormatHandlers::HeronTailed do
-    it_has_a_valid_barcode 'HT-2107834', number: 2107834, prefix: 'HT'
-    it_has_a_valid_barcode 'HT-111111', number: 111111, prefix: 'HT'
+    it_has_a_valid_barcode 'HT-2107834', number: 2_107_834, prefix: 'HT'
+    it_has_a_valid_barcode 'HT-111111', number: 111_111, prefix: 'HT'
     it_has_an_invalid_barcode '12345678912'
     it_has_an_invalid_barcode 'AB1234567'
     it_has_an_invalid_barcode '002107834 '
@@ -164,8 +164,8 @@ describe Barcode::FormatHandlers do
 
   # XXX-AA-NNNNNN (where X = letter character A-Z, A = alphanumeric character A-Z/0-9, N = number character 0-9)
   describe Barcode::FormatHandlers::RandoxV2 do
-    it_has_a_valid_barcode 'ABC-B1-973465', prefix: 'ABC-B1', number: 973465
-    it_has_a_valid_barcode 'BYG-1X-111222', prefix: 'BYG-1X', number: 111222
+    it_has_a_valid_barcode 'ABC-B1-973465', prefix: 'ABC-B1', number: 973_465
+    it_has_a_valid_barcode 'BYG-1X-111222', prefix: 'BYG-1X', number: 111_222
     it_has_an_invalid_barcode 'BY-B1-973465'
     it_has_an_invalid_barcode 'aBC-B1-973465'
     it_has_an_invalid_barcode '8DS-1X-111222'
@@ -233,5 +233,33 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'RXE-000002'
     it_has_an_invalid_barcode 'ABC000002'
   end
+
+  describe Barcode::FormatHandlers::HealthServicesLaboratoriesV1 do
+    it_has_a_valid_barcode 'HSL123456', prefix: 'HSL', number: 123_456, suffix: nil
+    it_has_a_valid_barcode 'HSL12345678', prefix: 'HSL', number: 12_345_678, suffix: nil
+    it_has_an_invalid_barcode 'HSL_123456'
+    it_has_an_invalid_barcode 'INVALID'
+    it_has_an_invalid_barcode '12HSL123456'
+    it_has_an_invalid_barcode '123456789HSL'
+    it_has_an_invalid_barcode 'RNA_1234'
+    it_has_an_invalid_barcode ' HSL_123456'
+    it_has_an_invalid_barcode 'HSL_123456  '
+    it_has_an_invalid_barcode " 1234567890NBC\na"
+  end
+
+  describe Barcode::FormatHandlers::PlymouthV1 do
+    it_has_a_valid_barcode 'PLY-chp-123456', prefix: 'PLY', number: 123456, suffix: nil
+    it_has_a_valid_barcode 'PLY-chp-12345678', prefix: 'PLY', number: 12345678, suffix: nil
+    it_has_an_invalid_barcode 'PLY-123456'
+    it_has_an_invalid_barcode 'PLY-chp-_123456'
+    it_has_an_invalid_barcode 'INVALID'
+    it_has_an_invalid_barcode '12PLY-chp-123456'
+    it_has_an_invalid_barcode '123456789PLY-chp-'
+    it_has_an_invalid_barcode 'RNA_1234'
+    it_has_an_invalid_barcode ' PLY-chp-_123456'
+    it_has_an_invalid_barcode 'PLY-chp-_123456  '
+    it_has_an_invalid_barcode " 1234567890NBC\na"
+  end
+
   # rubocop:enable RSpec/EmptyExampleGroup
 end

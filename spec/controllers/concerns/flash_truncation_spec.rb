@@ -45,7 +45,7 @@ RSpec.describe FlashTruncation do
     context 'when the flash is an array larger than the max_size' do
       let(:flash) { ['longer', 'array', 'oh no'] }
 
-      it { is_expected.to eq ['longer', 'a...'] }
+      it { is_expected.to eq %w[longer a...] }
     end
   end
 end

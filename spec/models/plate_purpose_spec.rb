@@ -7,9 +7,7 @@ describe PlatePurpose, type: :model do
   let(:plate_purpose) { create :plate_purpose, prefix: barcode_prefix, target_type: target_type, size: size }
 
   shared_examples 'a plate factory' do
-    setup do
-      expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
-    end
+    setup { expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000)) }
 
     describe '#create!' do
       subject { plate_purpose.create! }
@@ -22,15 +20,18 @@ describe PlatePurpose, type: :model do
         expect(matched[:prefix]).to eq barcode_prefix
       end
 
-      it 'builds a plate of the correct size' do # rubocop:todo RSpec/AggregateExamples
+      it 'builds a plate of the correct size' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(subject.size).to eq size
       end
 
-      it 'sets itself as the purpose' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets itself as the purpose' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(subject.purpose).to eq(plate_purpose)
       end
 
-      it 'creates wells' do # rubocop:todo RSpec/AggregateExamples
+      it 'creates wells' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(subject.wells.count).to eq size
       end
     end

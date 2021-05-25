@@ -5,7 +5,7 @@ class RepairInfiniumBarcodeInViews < ActiveRecord::Migration[5.1]
   def up
     ViewsSchema.update_view(
       'view_plates',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `p`.`id` AS `internal_id`,
            `p`.`name` AS `name`,
@@ -24,14 +24,14 @@ class RepairInfiniumBarcodeInViews < ActiveRecord::Migration[5.1]
             left join `plate_purposes` `pp` on((`pp`.`id` = `p`.`plate_purpose_id`)))
             left join `uuids` `u1` on(((`u1`.`resource_id` = `pp`.`id`) and (`u1`.`resource_type` = 'PlatePurpose'))))
         WHERE (`p`.`sti_type` = 'Plate')
-    }
+    "
     )
   end
 
   def down
     ViewsSchema.update_view(
       'view_plates',
-      %{SELECT
+      "SELECT
            `u`.`external_id` AS `uuid`,
            `p`.`id` AS `internal_id`,
            `p`.`name` AS `name`,
@@ -49,7 +49,7 @@ class RepairInfiniumBarcodeInViews < ActiveRecord::Migration[5.1]
             left join `plate_purposes` `pp` on((`pp`.`id` = `p`.`plate_purpose_id`)))
             left join `uuids` `u1` on(((`u1`.`resource_id` = `pp`.`id`) and (`u1`.`resource_type` = 'PlatePurpose'))))
             left join `plate_metadata` `pm` on((`p`.`id` = `pm`.`plate_id`))) where (`p`.`sti_type` = 'Plate')
-    }
+    "
     )
   end
 end

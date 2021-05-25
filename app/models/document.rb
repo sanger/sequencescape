@@ -6,14 +6,15 @@ class Document < ApplicationRecord # rubocop:todo Style/Documentation
   module Associations # rubocop:todo Style/Documentation
     # Adds accessors for named fields and attaches documents to them
 
-    def has_uploaded_document(field, differentiator: field.to_s)
+    def has_uploaded_document(field, differentiator: field.to_s) # rubocop:todo Metrics/MethodLength
       # Options
       #  differentiator - this is a string used to separate multiple documents related to your model
       #     for example, you can have both a "generated" and an "uploaded" document in one Sample Manifest
 
       line = __LINE__ + 1
-      class_eval(%{
-        has_one(:#{field}_document, ->(){ where(:documentable_extended => differentiator) }, :class_name => "Document", :as => :documentable, :dependent => :destroy
+      class_eval(
+        "
+        has_one(:#{field}_document, ->(){ where(:documentable_extended => differentiator) }, :class_name => \"Document\", :as => :documentable, :dependent => :destroy
           )
 
         def #{field}
@@ -23,7 +24,10 @@ class Document < ApplicationRecord # rubocop:todo Style/Documentation
         def #{field}=(file)
           create_#{field}_document(uploaded_data: file, documentable_extended: '#{differentiator}') unless file.blank?
         end
-      }, __FILE__, line)
+      ",
+        __FILE__,
+        line
+      )
     end
   end
 

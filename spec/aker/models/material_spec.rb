@@ -7,19 +7,17 @@ RSpec.describe Aker::Material, type: :model, aker: true do
   let(:sample) { create :sample, name: 'test1' }
   let(:mapping) { described_class.new(sample) }
 
-  before do
-    described_class.config = my_config
-  end
+  before { described_class.config = my_config }
 
   let(:my_config) do
-    %(
+    '
     sample_metadata.gender              <=   gender
     sample_metadata.donor_id            <=   donor_id
     sample_metadata.phenotype           <=   phenotype
     sample_metadata.sample_common_name  <=   common_name
     well_attribute.measured_volume      <=>  volume
     well_attribute.concentration        <=>  concentration
-    )
+    '
   end
 
   it_behaves_like 'a mapping between an Aker model and Sequencescape'
@@ -40,11 +38,11 @@ RSpec.describe Aker::Material, type: :model, aker: true do
 
       context 'working with qc results' do
         let(:my_config) do
-          %(
+          '
             concentration         =>  concentration
             volume                =>  volume
             amount                =>  amount
-          )
+          '
         end
         let(:asset) { create :receptacle }
         let(:container) { create :container, asset: asset }
@@ -74,9 +72,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
     end
 
     describe '#update' do
-      before do
-        sample.sample_metadata.update(gender: 'Male')
-      end
+      before { sample.sample_metadata.update(gender: 'Male') }
 
       it 'updates an attribute' do
         expect(sample.sample_metadata.gender).to eq('Male')
@@ -88,7 +84,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
       context 'when the same value goes to two different models' do
         before do
           described_class.config =
-            %(
+            '
                 sample.name                         <=   supplier_name
                 sample_metadata.sample_public_name  <=   supplier_name
                 sample_metadata.sample_taxon_id     <=   taxon_id
@@ -99,7 +95,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
                 volume                               =>  volume
                 concentration                        =>  concentration
                 amount                               =>  amount
-              )
+              '
         end
 
         it 'updates both values' do
@@ -110,6 +106,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         end
       end
     end
+
     # TODO
     # Private methods should not be tested, but through using public methods.
     # Maybe this method should be public.
@@ -125,9 +122,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
           let(:well) { plate.wells.first }
           let(:container) { create :container, asset: well }
 
-          before do
-            allow(sample).to receive(:container).and_return(container)
-          end
+          before { allow(sample).to receive(:container).and_return(container) }
 
           it 'returns the model for the well_attribute' do
             expect(mapping.send(:model_for_table, :well_attribute)).to eq(well.well_attribute)
@@ -138,9 +133,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
           let(:tube) { create :tube }
           let(:container) { create :container, asset: tube }
 
-          before do
-            allow(sample).to receive(:container).and_return(container)
-          end
+          before { allow(sample).to receive(:container).and_return(container) }
 
           it 'returns the model for the well_attribute' do
             expect(mapping.send(:model_for_table, :well_attribute)).to eq(tube.receptacle)

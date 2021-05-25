@@ -24,7 +24,9 @@ describe 'Create a study' do
       expect(page).to have_field('No', type: :radio)
     end
 
-    within_fieldset('Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?') do
+    within_fieldset(
+      'Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?'
+    ) do
       expect(page).to have_field('Yes', type: :radio)
       expect(page).to have_field('No', type: :radio)
     end

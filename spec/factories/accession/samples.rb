@@ -35,14 +35,16 @@ FactoryBot.define do
 
   factory :accession_sample, class: 'Accession::Sample' do
     standard_tags { build(:standard_accession_tag_list) }
-    sample        { create(:sample_for_accessioning_with_open_study) }
+    sample { create(:sample_for_accessioning_with_open_study) }
 
     initialize_with { new(standard_tags, sample) }
 
     factory :invalid_accession_sample do
       sample do
-        create(:sample_for_accessioning_with_open_study,
-               sample_metadata: create(:sample_metadata_with_accession_number))
+        create(
+          :sample_for_accessioning_with_open_study,
+          sample_metadata: create(:sample_metadata_with_accession_number)
+        )
       end
     end
 

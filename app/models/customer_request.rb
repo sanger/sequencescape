@@ -5,9 +5,11 @@ class CustomerRequest < Request
   after_create :generate_create_request_event
   before_destroy :generate_destroy_request_event
   after_save :generate_request_event, if: :saved_change_to_state?
-  after_save :create_billing_events, if: :can_be_billed?
 
-  delegate :customer_accepts_responsibility, :customer_accepts_responsibility=, :customer_accepts_responsibility?, to: :request_metadata
+  delegate :customer_accepts_responsibility,
+           :customer_accepts_responsibility=,
+           :customer_accepts_responsibility?,
+           to: :request_metadata
 
   def update_responsibilities!
     return if qc_metrics.stock_metric.empty?
@@ -25,11 +27,7 @@ class CustomerRequest < Request
   # @return [RequestEvent] The generated request event
   #
   def generate_create_request_event
-    request_events.create!(
-      event_name: 'created',
-      to_state: state,
-      current_from: DateTime.current
-    )
+    request_events.create!(event_name: 'created', to_state: state, current_from: DateTime.current)
   end
 
   # Generate a request event for the state transition
@@ -64,18 +62,5 @@ class CustomerRequest < Request
       current_from: time,
       current_to: time
     )
-  end
-
-  def create_billing_events
-    factory = Billing::Factory.build(self)
-    factory.create! if factory.valid?
-  end
-
-  def can_be_billed?
-    passed? && biffable? && billing_items.empty?
-  end
-
-  def biffable?
-    billing_product.present?
   end
 end

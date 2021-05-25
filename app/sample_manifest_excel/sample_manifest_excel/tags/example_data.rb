@@ -22,9 +22,7 @@ module SampleManifestExcel
       # multiplexed library tube.
       def take(first, last, duplicate = false)
         {}.tap do |hsh|
-          (first..last).each_with_index do |n, i|
-            hsh[n] = { i7: i7s[i].join, i5: i5s[i].join }
-          end
+          (first..last).each_with_index { |n, i| hsh[n] = { i7: i7s[i].join, i5: i5s[i].join } }
           hsh[last] = hsh[first] if duplicate
         end
       end
@@ -34,17 +32,24 @@ module SampleManifestExcel
       # multiplex tube manifest uploads.
       # If duplicate is set to true the tag groups and indexes will be invalid for a
       # multiplexed library tube.
-      def take_as_groups_and_indexes(first, last, duplicate = false)
+      # rubocop:todo Metrics/MethodLength
+      def take_as_groups_and_indexes(first, last, duplicate = false) # rubocop:todo Metrics/AbcSize
         tag_groups = FactoryBot.create_list(:tag_group, 2, tag_count: (last - first) + 1)
 
         {}.tap do |hsh|
           (first..last).each_with_index do |n, i|
-            hsh[n] = { tag_group: tag_groups[0].name, tag_index: tag_groups[0].tags[i].map_id.to_s,
-                       tag2_group: tag_groups[1].name, tag2_index: tag_groups[1].tags[i].map_id.to_s }
+            hsh[n] = {
+              tag_group: tag_groups[0].name,
+              tag_index: tag_groups[0].tags[i].map_id.to_s,
+              tag2_group: tag_groups[1].name,
+              tag2_index: tag_groups[1].tags[i].map_id.to_s
+            }
           end
           hsh[last] = hsh[first] if duplicate
         end
       end
+
+      # rubocop:enable Metrics/MethodLength
 
       private
 

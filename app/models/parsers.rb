@@ -24,11 +24,13 @@ module Parsers # rubocop:todo Style/Documentation
     rescue ArgumentError => e
       # Fetch the next fallback encoding
       encoding = encodings.shift
+
       # Re-raise the exception if we've run out
       raise e if encoding.nil?
 
       # Force the new encoding
       content.force_encoding(encoding)
+
       # Try again
       retry unless encoding.nil?
     end

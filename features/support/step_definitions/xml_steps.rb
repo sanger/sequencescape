@@ -20,7 +20,7 @@ end
 
 Then /^ignoring "([^"]+)" the XML response should be:$/ do |key_regexp, serialized_xml|
   regexp = Regexp.new(key_regexp)
-  block  = ->(key) { key.to_s =~ regexp }
+  block = ->(key) { key.to_s =~ regexp }
   assert_hash_equal(
     sort_arrays(walk_hash_structure(Hash.from_xml(serialized_xml), &block)),
     sort_arrays(walk_hash_structure(Hash.from_xml(page.source), &block)),
@@ -28,11 +28,11 @@ Then /^ignoring "([^"]+)" the XML response should be:$/ do |key_regexp, serializ
   )
 end
 
-Then(/^the XML response should be:/) do |serialized_xml|
-  assert_xml_strings_equal(serialized_xml, page.source)
-end
+Then(/^the XML response should be:/) { |serialized_xml| assert_xml_strings_equal(serialized_xml, page.source) }
 
-Then(/^the value of the "([^"]+)" attribute of the XML element "([^"]+)" should be "([^"]+)"/) do |attribute, xpath, value|
+Then(
+  /^the value of the "([^"]+)" attribute of the XML element "([^"]+)" should be "([^"]+)"/
+) do |attribute, xpath, value|
   node = page.find(:xpath, xpath.downcase)
   assert node
   assert_equal value, node[attribute.downcase]
@@ -49,11 +49,12 @@ When /^I request XML for (.+)$/ do |page_name|
   page.driver.get(path_to(page_name), nil, 'HTTP_ACCEPT' => 'application/xml')
 end
 
-When /^I (POST|PUT) the following XML to "(\/[^"]+)":$/ do |action, path, xml|
+When %r{^I (POST|PUT) the following XML to "(\/[^"]+)":$} do |action, path, xml|
   page.driver.send(
     action.downcase,
     path.to_s,
     xml,
-    'CONTENT_TYPE' => 'application/xml', 'HTTP_ACCEPT' => 'application/xml'
+    'CONTENT_TYPE' => 'application/xml',
+    'HTTP_ACCEPT' => 'application/xml'
   )
 end

@@ -3,7 +3,9 @@
  */
 
 /* A Summary table presents simple key-value pairs */
-.table-summary th { text-align: right;}
+.table-summary th {
+  text-align: right;
+}
 .table-summary th:after {
   content: ":";
 }
@@ -15,8 +17,9 @@ table.table-dense-information {
 }
 
 /* main-row encompasses the bulk of the application */
-.main-row { margin-bottom:10px; }
-
+.main-row {
+  margin-bottom: 10px;
+}
 
 .loading-bar-container {
   @extend .progress;
@@ -27,15 +30,23 @@ table.table-dense-information {
     @extend .progress-bar-animated;
   }
 }
-.loading-bar-placeholder {  margin: 11px 0;}
+.loading-bar-placeholder {
+  margin: 11px 0;
+}
 
-.formtastic label.ft-label { width: 25%; }
+.formtastic label.ft-label {
+  width: 25%;
+}
 .formtastic input[type="file"] {
   display: inline-block;
 }
 
-.formtastic .boolean label.ft-label { width: auto; }
-.formtastic input.btn { padding: 6px 12px; }
+.formtastic .boolean label.ft-label {
+  width: auto;
+}
+.formtastic input.btn {
+  padding: 6px 12px;
+}
 
 .card-style-feature {
   @extend .bg-primary;
@@ -48,7 +59,7 @@ table.table-dense-information {
 
 // Apply basic button formatting to all buttons
 // Exclude any where a specific class has been applied
-input[type=submit]:not(.btn) {
+input[type="submit"]:not(.btn) {
   @extend .btn;
   @extend .btn-primary;
 }
@@ -56,22 +67,27 @@ input[type=submit]:not(.btn) {
 .link-panel {
   @extend .list-group;
   @extend .list-group-flush;
-  a { @extend .list-group-item; }
+  a {
+    @extend .list-group-item;
+  }
 }
-
 
 /* A collapsible info panel, which may contain tabulated data
  * A more semantic representation of bootstrap panels */
 section.info-panel {
   @extend .card;
-//  @extend .card-default;
+  //  @extend .card-default;
 
   header {
     @extend .card-header;
 
-    .counter { @extend .badge; }
+    .counter {
+      @extend .badge;
+    }
 
-    .show-hide { float: right; }
+    .show-hide {
+      float: right;
+    }
   }
 
   table {
@@ -89,7 +105,14 @@ section.info-panel {
   @extend .bg-danger;
   @extend .text-white;
 
-  h1, h2, h3, h4, h5, h6 { @extend .card-title; }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @extend .card-title;
+  }
   a {
     @extend .card-link;
     @extend .text-light;
@@ -101,7 +124,10 @@ section.info-panel {
       @extend .list-inline;
       margin-bottom: 0;
 
-      dt, dd { @extend .list-inline-item }
+      dt,
+      dd {
+        @extend .list-inline-item;
+      }
     }
   }
   .clash-description {
@@ -121,15 +147,24 @@ nav.toc {
 .pagination {
   li {
     @extend .page-item;
-    a { @extend .page-link; }
-    span { @extend .page-link; }
+    a {
+      @extend .page-link;
+    }
+    span {
+      @extend .page-link;
+    }
   }
 }
 
 dl.order-summary {
   @extend .row;
-  dt { @extend .col-2; text-align: right }
-  dd { @extend .col-10; }
+  dt {
+    @extend .col-2;
+    text-align: right;
+  }
+  dd {
+    @extend .col-10;
+  }
 }
 
 // Apply the standard spacing
@@ -153,22 +188,52 @@ dl.order-summary {
 
 // State-colour extensions
 // These extend the bootstrap classes to cover our states
-.badge-building { @extend .badge-info; }
-.badge-cancelled { @extend .badge-secondary; }
-.badge-failed { @extend .badge-danger; }
-.badge-pending { @extend .badge-warning; }
-.badge-processing { @extend .badge-primary; }
-.badge-ready { @extend .badge-success; }
-.badge-active { @extend .badge-success; }
-.badge-inactive { @extend .badge-danger; }
-.badge-completed { @extend .badge-info; }
-.badge-discarded { @extend .badge-secondary; }
-.badge-released { @extend .badge-success; }
-.badge-started { @extend .badge-primary; }
-.badge-passed { @extend .badge-success; }
-.table-error { @extend .table-danger; }
+.badge-building {
+  @extend .badge-info;
+}
+.badge-cancelled {
+  @extend .badge-secondary;
+}
+.badge-failed {
+  @extend .badge-danger;
+}
+.badge-pending {
+  @extend .badge-warning;
+}
+.badge-processing {
+  @extend .badge-primary;
+}
+.badge-ready {
+  @extend .badge-success;
+}
+.badge-active {
+  @extend .badge-success;
+}
+.badge-inactive {
+  @extend .badge-danger;
+}
+.badge-completed {
+  @extend .badge-info;
+}
+.badge-discarded {
+  @extend .badge-secondary;
+}
+.badge-released {
+  @extend .badge-success;
+}
+.badge-started {
+  @extend .badge-primary;
+}
+.badge-passed {
+  @extend .badge-success;
+}
+.table-error {
+  @extend .table-danger;
+}
 
-.btn-default { @extend .btn-primary; }
+.btn-default {
+  @extend .btn-primary;
+}
 
 .property_edit_info {
   @extend .badge;
@@ -181,26 +246,56 @@ dl.order-summary {
     @extend .row;
     @extend .align-items-center;
 
-    .request_type_name, .request_progress_totals { @extend .col-2; @extend .h6; }
-    .request_type_name { text-align: right; }
-    .key { @extend .col-8; }
+    .request_type_name,
+    .request_progress_totals {
+      @extend .col-2;
+      @extend .h6;
+    }
+    .request_type_name {
+      text-align: right;
+    }
+    .key {
+      @extend .col-8;
+    }
   }
   .request_progress_section {
     @extend .row;
     margin-bottom: 0.2em;
 
-    .request_type_name, .request_progress_totals { @extend .col-2; @extend .align-self-center; }
-    .bar-container { @extend .col-8; @extend .align-self-center; }
-    .request_type_name { text-align: right; }
+    .request_type_name,
+    .request_progress_totals {
+      @extend .col-2;
+      @extend .align-self-center;
+    }
+    .bar-container {
+      @extend .col-8;
+      @extend .align-self-center;
+    }
+    .request_type_name {
+      text-align: right;
+    }
   }
-  .progress-state-cancelled { @extend .bg-warning }
-  .progress-state-failed { @extend .bg-danger }
-  .progress-state-started { @extend .bg-info }
-  .progress-state-passed { @extend .bg-success }
-  .progress-state-other { @extend .bg-primary }
+  .progress-state-cancelled {
+    @extend .bg-warning;
+  }
+  .progress-state-failed {
+    @extend .bg-danger;
+  }
+  .progress-state-started {
+    @extend .bg-info;
+  }
+  .progress-state-passed {
+    @extend .bg-success;
+  }
+  .progress-state-other {
+    @extend .bg-primary;
+  }
 
   .key {
-    span { @extend .badge; @extend .text-white; }
+    span {
+      @extend .badge;
+      @extend .text-white;
+    }
   }
 }
 
@@ -211,7 +306,8 @@ dl.order-summary {
 }
 
 .asset-audit-details {
-  dl{ // Don't apply the styles to the top level.
+  dl {
+    // Don't apply the styles to the top level.
     dl {
       @extend .row;
       dt {

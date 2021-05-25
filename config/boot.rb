@@ -12,6 +12,7 @@ require 'bundler/setup' # Set up gems listed in the Gemfile.
 # rubocop:disable Rails/Output, Rails/TimeZone
 begin
   time = File.stat('tmp/cache/bootsnap-compile-cache').birthtime
+
   # If our file was created more than 30 days ago.
   # Note: ActiveSupport isn't loaded yet, so we can't just do 1.month.ago
   # We also avoid using a constant here, as we're in the global namespace

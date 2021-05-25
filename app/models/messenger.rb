@@ -3,23 +3,22 @@
 class Messenger < ApplicationRecord
   belongs_to :target, ->(messenger) { includes(messenger.render_class.includes) }, polymorphic: true
   validates :target, :root, :template, presence: true
-  broadcast_via_warren
-
-  def shoot
-    raise StandardErrror, "Hey, don't shoot the messenger"
-  end
+  broadcast_with_warren
 
   def render_class
     "Api::Messages::#{template}".constantize
   end
 
   def routing_key
-    "#{Rails.env}.message.#{root}.#{id}"
+    "message.#{root}.#{id}"
   end
 
   def as_json(_options = {})
-    { root => render_class.to_hash(target),
-      'lims' => configatron.amqp.lims_id! }
+    { root => render_class.to_hash(target), 'lims' => configatron.amqp.lims_id! }
+  end
+
+  def queue_for_broadcast
+    add_to_transaction
   end
 
   def resend

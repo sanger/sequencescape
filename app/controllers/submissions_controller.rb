@@ -24,7 +24,7 @@ class SubmissionsController < ApplicationController
   # New Order is just client side
   # Creates an order, followed by a submission, and then assigns the order to the submission.
   # On subsequent clicks of 'Save Order' we pass in the submission id from the original
-  def create
+  def create # rubocop:todo Metrics/MethodLength
     @presenter = Submission::SubmissionCreator.new(current_user, params[:submission].to_unsafe_h)
 
     if @presenter.save
@@ -68,7 +68,7 @@ class SubmissionsController < ApplicationController
   #             'Build Submission'
   # pending  => Submissions which the user has finished setting up, and has queued for processing by the delayed job
   # ready    => Submissions which the delayed job has finished processing. The final state of a submission.
-  def index
+  def index # rubocop:todo Metrics/AbcSize
     # Disable cache of this page
     expires_now
 
@@ -111,7 +111,7 @@ class SubmissionsController < ApplicationController
   # http://localhost:3000/submissions/study?id=23
   # Rather than http://localhost:3000/studies/23/submissions
   def study
-    @study       = Study.find(params[:id])
+    @study = Study.find(params[:id])
     @submissions = @study.submissions
   end
 

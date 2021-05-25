@@ -8,6 +8,7 @@ module Api
       # Constants...
       PERMITTED_PICK_ATTRIBUTES = %i[source_receptacle_id study_id project_id].freeze
       PERMITTED_LABWARE_PICK_ATTRIBUTES = %i[source_labware_id source_labware_barcode study_id project_id].freeze
+
       # immutable # uncomment to make the resource immutable
 
       # model_name / model_hint if required
@@ -54,9 +55,8 @@ module Api
       def labware_pick_attributes=(labware_picks)
         # Extract and look up records here before passing through
         cache = PickList::RecordCache::ByLabware.new(labware_picks)
-        @model.pick_attributes = labware_picks.flat_map do |pick|
-          cache.convert(pick.permit(PERMITTED_LABWARE_PICK_ATTRIBUTES))
-        end
+        @model.pick_attributes =
+          labware_picks.flat_map { |pick| cache.convert(pick.permit(PERMITTED_LABWARE_PICK_ATTRIBUTES)) }
       rescue KeyError => e
         # We'll see this if one of the attributes passed in doesn't match an actual record,
         # such as a non-existent study id.

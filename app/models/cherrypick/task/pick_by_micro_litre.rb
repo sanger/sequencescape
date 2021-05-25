@@ -7,9 +7,7 @@ module Cherrypick::Task::PickByMicroLitre # rubocop:todo Style/Documentation
   def create_micro_litre_picker(params)
     volume = params[:volume_required].to_f
 
-    lambda do |well, _|
-      well.volume_to_cherrypick_by_micro_litre(volume)
-    end
+    lambda { |well, _| well.volume_to_cherrypick_by_micro_litre(volume) }
   end
   private :create_micro_litre_picker
 end

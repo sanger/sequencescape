@@ -18,5 +18,5 @@ end
 
 Then /^(.+) asset (?:called|named) "([^"]+)"(.*)$/ do |pre, name, post|
   asset = Labware.find_by(name: name) or raise StandardError, "Cannot find asset #{name.inspect}"
-  step %{#{pre} asset "#{asset.id}"#{post}}
+  step "#{pre} asset \"#{asset.id}\"#{post}"
 end

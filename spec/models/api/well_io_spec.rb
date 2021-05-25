@@ -4,9 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Api::WellIO, type: :model do
   context 'with one sample' do
-    subject do
-      create :well_with_sample_and_without_plate, map: Map.find_by(description: 'A1'), plate: plate
-    end
+    subject { create :well_with_sample_and_without_plate, map: Map.find_by(description: 'A1'), plate: plate }
 
     let(:plate) { create :plate, barcode: 1 }
     let(:sample) { subject.samples.first }

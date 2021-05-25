@@ -1,5 +1,5 @@
 ---
-'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)':
+"Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)":
   :tag_group_name: Sanger_168tags - 10 mer tags
   :direction_algorithm: TagLayout::InColumns
   :walking_algorithm: TagLayout::WalkWellsOfPlate
@@ -7,7 +7,7 @@ Illumina pipeline tagging:
   :tag_group_name: Sanger_168tags - 10 mer tags
   :direction_algorithm: TagLayout::InColumns
   :walking_algorithm: TagLayout::WalkWellsOfPlate
-'NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)':
+"NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)":
   :tag_group_name: NEXTflex-96 barcoded adapters
   :direction_algorithm: TagLayout::InRows
   :walking_algorithm: TagLayout::WalkWellsOfPlate

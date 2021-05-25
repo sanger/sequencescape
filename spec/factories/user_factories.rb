@@ -3,18 +3,16 @@
 FactoryBot.define do
   factory :user do
     trait :with_role do
-      transient do
-        role_name { 'role' }
-      end
+      transient { role_name { 'role' } }
       roles { |role| [role.association(:role, name: role_name)] }
     end
 
-    first_name        { 'first_name' }
-    last_name         { 'last_name' }
+    first_name { 'first_name' }
+    last_name { 'last_name' }
     login
-    email             { "#{login}@example.com".downcase }
-    api_key           { '123456789' }
-    password              { 'password' }
+    email { "#{login}@example.com".downcase }
+    api_key { '123456789' }
+    password { 'password' }
     password_confirmation { 'password' }
 
     factory :admin do
@@ -24,9 +22,7 @@ FactoryBot.define do
     factory :manager do
       roles { |role| Array(authorizable).map { |auth| role.association(:manager_role, authorizable: auth) } }
 
-      transient do
-        authorizable { create :study }
-      end
+      transient { authorizable { create :study } }
     end
 
     factory :owner do

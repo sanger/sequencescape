@@ -3,8 +3,10 @@ class ::Io::ActiveRecord::Relation # rubocop:todo Style/Documentation
 
   class << self
     def as_json(options = {})
-      options[:handled_by].generate_json_actions(options[:object],
-                                                 options.merge(target: options[:response].request.target))
+      options[:handled_by].generate_json_actions(
+        options[:object],
+        options.merge(target: options[:response].request.target)
+      )
       super
     end
 

@@ -26,15 +26,29 @@ describe IlluminaHtp::InitialStockTubePurpose do
     before do
       create :transfer_request, asset: parent_well, target_asset: tube, submission: current_submission
       library_request
-      create :transfer_request, asset: parents_sibling_well, target_asset: sibling_tube, submission: sibling_submission, state: sibling_state if sibling_tube
-      create :multiplex_request, asset: parents_sibling_well, target_asset: target_tube, submission: sibling_submission, request_type: sibling_request_type
+      if sibling_tube
+        create :transfer_request,
+               asset: parents_sibling_well,
+               target_asset: sibling_tube,
+               submission: sibling_submission,
+               state: sibling_state
+      end
+      create :multiplex_request,
+             asset: parents_sibling_well,
+             target_asset: target_tube,
+             submission: sibling_submission,
+             request_type: sibling_request_type
     end
 
     context 'which has been created' do
       let(:sibling_tube) { create :stock_multiplexed_library_tube, purpose: tube_purpose, name: 'Sibling tube' }
       let(:sibling_tube_hash) do
-        { name: sibling_tube.name, uuid: sibling_tube.uuid, ean13_barcode: sibling_tube.ean13_barcode,
-          state: sibling_state }
+        {
+          name: sibling_tube.name,
+          uuid: sibling_tube.uuid,
+          ean13_barcode: sibling_tube.ean13_barcode,
+          state: sibling_state
+        }
       end
 
       context 'with siblings' do
@@ -75,12 +89,20 @@ describe IlluminaHtp::InitialStockTubePurpose do
           let(:sibling_request_type) { create :multiplex_request_type }
           let(:sibling_state) { 'passed' }
           let(:sibling_descendant_hash) do
-            { name: sibling_descendant.name, uuid: sibling_descendant.uuid,
-              ean13_barcode: sibling_descendant.ean13_barcode, state: sibling_state }
+            {
+              name: sibling_descendant.name,
+              uuid: sibling_descendant.uuid,
+              ean13_barcode: sibling_descendant.ean13_barcode,
+              state: sibling_state
+            }
           end
 
           before do
-            create :transfer_request, asset: sibling_tube, target_asset: sibling_descendant, submission: sibling_submission, state: 'passed'
+            create :transfer_request,
+                   asset: sibling_tube,
+                   target_asset: sibling_descendant,
+                   submission: sibling_submission,
+                   state: 'passed'
           end
 
           it 'works', :aggregate_failures do

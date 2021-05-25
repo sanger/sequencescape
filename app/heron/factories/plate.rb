@@ -31,7 +31,7 @@ module Heron
         @params[:barcode]
       end
 
-      def save
+      def save # rubocop:todo Metrics/MethodLength
         return false unless valid?
 
         @output_result = true
@@ -79,9 +79,7 @@ module Heron
       end
 
       def containers_for_locations
-        @plate.wells.index_by do |well|
-          unpad_coordinate(well.map.description)
-        end
+        @plate.wells.index_by { |well| unpad_coordinate(well.map.description) }
       end
     end
   end

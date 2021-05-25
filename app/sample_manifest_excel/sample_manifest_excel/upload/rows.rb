@@ -45,9 +45,7 @@ module SampleManifestExcel
       end
 
       def check_rows
-        items.each do |row|
-          errors.add(:base, row.errors.full_messages) unless row.valid?
-        end
+        items.each { |row| errors.add(:base, row.errors.full_messages) unless row.valid? }
       end
     end
   end

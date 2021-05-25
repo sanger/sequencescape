@@ -3,12 +3,8 @@
 # Ensure events point at the appropriate class
 class UpdateMessengerTargetType < ActiveRecord::Migration[5.1]
   def up
-    Messenger.where(target_type: 'Asset')
-             .where(template: 'FluidigmPlateIO')
-             .update_all(target_type: 'Labware')
-    Messenger.where(target_type: 'Asset')
-             .where(root: 'stock_resource')
-             .update_all(target_type: 'Receptacle')
+    Messenger.where(target_type: 'Asset').where(template: 'FluidigmPlateIO').update_all(target_type: 'Labware')
+    Messenger.where(target_type: 'Asset').where(root: 'stock_resource').update_all(target_type: 'Receptacle')
   end
 
   def down

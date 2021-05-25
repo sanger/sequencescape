@@ -16,13 +16,11 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
     Delayed::Worker.delay_jobs = true
   end
 
-  after(:all) do
-    SampleManifestExcel.reset!
-  end
+  after(:all) { SampleManifestExcel.reset! }
 
   context 'library tube sample manifest with tag sequences' do
-    let!(:user)     { create :admin }
-    let(:columns)   { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
+    let!(:user) { create :admin }
+    let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
 
     before do
@@ -139,8 +137,8 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
   end
 
   context 'multiplexed tube sample manifest with tag sequences' do
-    let!(:user)     { create :admin }
-    let(:columns)   { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
+    let!(:user) { create :admin }
+    let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
 
     before do
@@ -175,8 +173,8 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           # reupload
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 6
           expect(download.worksheet.multiplexed_library_tube.aliquots).to be_all { |a|
-                                                                            a.library_type == 'My personal library type'
-                                                                          }
+            a.library_type == 'My personal library type'
+          }
 
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
@@ -186,16 +184,19 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           expect(page).to have_content('Sample manifest successfully uploaded.')
 
           expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots.count do |a|
-                   a.library_type == new_library_type_name
-                 end).to eq 2
+          expect(
+            download.worksheet.multiplexed_library_tube.aliquots.count { |a| a.library_type == new_library_type_name }
+          ).to eq 2
         end
       end
 
       context 'cgap foreign barcodes' do
         let(:download) do
-          build(:test_download_tubes_cgap, columns: columns,
-                                           manifest_type: 'tube_multiplexed_library_with_tag_sequences')
+          build(
+            :test_download_tubes_cgap,
+            columns: columns,
+            manifest_type: 'tube_multiplexed_library_with_tag_sequences'
+          )
         end
 
         it 'upload' do
@@ -211,8 +212,12 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
     context 'invalid' do
       context 'upload' do
         let(:download) do
-          build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences',
-                                      validation_errors: %i[library_type tags])
+          build(
+            :test_download_tubes,
+            columns: columns,
+            manifest_type: 'tube_multiplexed_library_with_tag_sequences',
+            validation_errors: %i[library_type tags]
+          )
         end
 
         it 'validation errors' do
@@ -234,8 +239,12 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
       context 'with cgap barcodes' do
         let(:download) do
-          build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences',
-                                           validation_errors: [:library_type])
+          build(
+            :test_download_tubes_cgap,
+            columns: columns,
+            manifest_type: 'tube_multiplexed_library_with_tag_sequences',
+            validation_errors: [:library_type]
+          )
         end
 
         it 'validation errors' do
@@ -249,8 +258,12 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
       context 'with cgap barcodes' do
         let(:download) do
-          build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences',
-                                           validation_errors: [:sample_tube_id_duplicates])
+          build(
+            :test_download_tubes_cgap,
+            columns: columns,
+            manifest_type: 'tube_multiplexed_library_with_tag_sequences',
+            validation_errors: [:sample_tube_id_duplicates]
+          )
         end
 
         it 'duplicates' do
@@ -265,8 +278,8 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
   end
 
   context 'multiplexed tube sample manifest with tag groups and indexes' do
-    let!(:user)     { create :admin }
-    let(:columns)   { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
+    let!(:user) { create :admin }
+    let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
     let(:test_file) { 'test_file.xlsx' }
 
     before do
@@ -299,8 +312,8 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           # reupload
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 6
           expect(download.worksheet.multiplexed_library_tube.aliquots).to be_all { |a|
-                                                                            a.library_type == 'My personal library type'
-                                                                          }
+            a.library_type == 'My personal library type'
+          }
 
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
@@ -310,9 +323,9 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           expect(page).to have_content('Sample manifest successfully uploaded.')
 
           expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
-          expect(download.worksheet.multiplexed_library_tube.aliquots.count do |a|
-                   a.library_type == new_library_type_name
-                 end).to eq 2
+          expect(
+            download.worksheet.multiplexed_library_tube.aliquots.count { |a| a.library_type == new_library_type_name }
+          ).to eq 2
         end
       end
 
@@ -332,8 +345,12 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
     context 'invalid' do
       context 'upload' do
         let(:download) do
-          build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library',
-                                      validation_errors: %i[library_type tags])
+          build(
+            :test_download_tubes,
+            columns: columns,
+            manifest_type: 'tube_multiplexed_library',
+            validation_errors: %i[library_type tags]
+          )
         end
 
         it 'validation errors' do
@@ -356,8 +373,12 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
       context 'with cgap barcodes' do
         let(:download) do
-          build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library',
-                                           validation_errors: [:library_type])
+          build(
+            :test_download_tubes_cgap,
+            columns: columns,
+            manifest_type: 'tube_multiplexed_library',
+            validation_errors: [:library_type]
+          )
         end
 
         it 'validation errors' do
@@ -371,8 +392,12 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
       context 'with cgap barcodes' do
         let(:download) do
-          build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library',
-                                           validation_errors: [:sample_tube_id_duplicates])
+          build(
+            :test_download_tubes_cgap,
+            columns: columns,
+            manifest_type: 'tube_multiplexed_library',
+            validation_errors: [:sample_tube_id_duplicates]
+          )
         end
 
         it 'duplicates' do
@@ -387,8 +412,8 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
   end
 
   context 'plate sample manifest' do
-    let!(:user)     { create :admin }
-    let(:columns)   { SampleManifestExcel.configuration.columns.plate_default.dup }
+    let!(:user) { create :admin }
+    let(:columns) { SampleManifestExcel.configuration.columns.plate_default.dup }
     let(:test_file) { 'test_file.xlsx' }
 
     before do
@@ -460,8 +485,11 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
 
       context 'unrecognised cgap foreign barcodes' do
         let(:download) do
-          build(:test_download_plates_cgap, columns: columns,
-                                            validation_errors: [:sample_plate_id_unrecognised_foreign])
+          build(
+            :test_download_plates_cgap,
+            columns: columns,
+            validation_errors: [:sample_plate_id_unrecognised_foreign]
+          )
         end
 
         it 'validation errors' do

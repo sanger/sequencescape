@@ -5,9 +5,7 @@ Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*
   sample_tube = FactoryBot.create(:sample_tube, barcode: sample_tube_barcode)
   sample_tube.primary_aliquot.sample.rename_to!("Sample_#{sample_tube_barcode}")
   asset_group = AssetGroup.find_by(name: asset_group_name)
-  if asset_group.nil?
-    asset_group = FactoryBot.create(:asset_group, name: asset_group_name, study: study)
-  end
+  asset_group = FactoryBot.create(:asset_group, name: asset_group_name, study: study) if asset_group.nil?
 
   asset_group.assets << sample_tube.receptacle
   asset_group.save!
@@ -19,21 +17,28 @@ Given /^I have a PacBio submission$/ do
   study = Study.find_by(name: 'Test study')
 
   submission_template = SubmissionTemplate.find_by(name: 'PacBio')
-  order = submission_template.create_with_submission!(
-    study: study,
-    project: project,
-    user: User.last,
-    assets: Plate.find_from_barcode('DN1234567').wells.all,
-    submission: FactoryBot.build(:submission),
-    request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'insert_size' => '500',
-                       'sequencing_type' => 'Standard' }
-  )
+  order =
+    submission_template.create_with_submission!(
+      study: study,
+      project: project,
+      user: User.last,
+      assets: Plate.find_from_barcode('DN1234567').wells.all,
+      submission: FactoryBot.build(:submission),
+      request_options: {
+        :multiplier => {
+          '1' => '1',
+          '3' => '1'
+        },
+        'insert_size' => '500',
+        'sequencing_type' => 'Standard'
+      }
+    )
   order.submission.built!
   step('1 pending delayed jobs are processed')
 end
 
 Given /^I have a plate for PacBio$/ do
-  plate = FactoryBot.create(:plate, well_count: 2, barcode: 1234567)
+  plate = FactoryBot.create(:plate, well_count: 2, barcode: 1_234_567)
   plate.wells.each do |well|
     sample = FactoryBot.create(:sample, name: "Sample_#{well.map_description}")
     well.aliquots << FactoryBot.create(:untagged_aliquot, sample: sample)
@@ -101,8 +106,11 @@ Given /^the sample tubes are part of the study$/ do
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 
   sample_tube = SampleTube.find_from_barcode('NT222')
-  sample_tube.primary_aliquot.sample.sample_metadata.update!(sample_common_name: 'Flu', sample_taxon_id: 123,
-                                                             sample_strain_att: 'H1N1')
+  sample_tube.primary_aliquot.sample.sample_metadata.update!(
+    sample_common_name: 'Flu',
+    sample_taxon_id: 123,
+    sample_strain_att: 'H1N1'
+  )
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 end
 
@@ -113,8 +121,8 @@ end
 
 Then /^(\d+) PacBioSequencingRequests for "([^"]*)" should be "([^"]*)"$/ do |number_of_requests, asset_barcode, state|
   library_tube = PacBioLibraryTube.find_from_barcode(asset_barcode)
-  assert_equal number_of_requests.to_i, PacBioSequencingRequest.where(asset_id: library_tube.receptacle.id,
-                                                                      state: state).count
+  assert_equal number_of_requests.to_i,
+               PacBioSequencingRequest.where(asset_id: library_tube.receptacle.id, state: state).count
 end
 
 Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asset_barcode, state|
@@ -135,11 +143,11 @@ end
 Given /^the UUID for well "([^"]*)" on plate "([^"]*)" is "([^"]*)"$/ do |well_position, plate_barcode, uuid|
   plate = Plate.find_from_barcode(plate_barcode)
   well = plate.find_well_by_name(well_position)
-  step(%{the UUID for the well with ID #{well.id} is "#{uuid}"})
+  step("the UUID for the well with ID #{well.id} is \"#{uuid}\"")
 end
 
 Given /^the UUID for Library "([^"]*)" is "([^"]*)"$/ do |barcode, uuid|
-  step(%{the UUID for the receptacle with ID #{Labware.find_by_barcode(barcode).receptacle.id} is "#{uuid}"})
+  step("the UUID for the receptacle with ID #{Labware.find_by_barcode(barcode).receptacle.id} is \"#{uuid}\"")
 end
 
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|
@@ -151,7 +159,8 @@ Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results
 end
 
 Then /^the PacBioLibraryTube "(.*?)" should have (\d+) SMRTcells$/ do |barcode, cells|
-  assert_equal PacBioLibraryTube.find_from_barcode(barcode).pac_bio_library_tube_metadata.smrt_cells_available || 0, cells.to_i
+  assert_equal PacBioLibraryTube.find_from_barcode(barcode).pac_bio_library_tube_metadata.smrt_cells_available || 0,
+               cells.to_i
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|
@@ -163,7 +172,10 @@ Then /^the sample reference sequence table should look like:$/ do |expected_resu
 end
 
 Given /^the study "([^"]*)" has a reference genome of "([^"]*)"$/ do |study_name, reference_genome_name|
-  Study.find_by(name: study_name).study_metadata.update!(reference_genome: ReferenceGenome.find_by(name: reference_genome_name))
+  Study
+    .find_by(name: study_name)
+    .study_metadata
+    .update!(reference_genome: ReferenceGenome.find_by(name: reference_genome_name))
 end
 
 Then /^the PacBio manifest should be:$/ do |expected_results_table|
@@ -177,9 +189,9 @@ end
 
 Then /^I fill in the field for "(.*?)" with "(.*?)"$/ do |asset_name, content|
   request_id = Labware.find_by!(name: asset_name).requests_as_source.ids.first
-  step(%{I fill in the hidden field "locations_for_#{request_id}" with "#{content}"})
+  step("I fill in the hidden field \"locations_for_#{request_id}\" with \"#{content}\"")
 end
 
 When /^I drag the library tube to well "(.*?)"$/ do |well|
-  step %{I drag ".library_tube" to "#well_#{well}"}
+  step "I drag \".library_tube\" to \"#well_#{well}\""
 end

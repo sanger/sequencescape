@@ -3,16 +3,8 @@
 -->
 <template>
   <section>
-    <button
-      :class="btnClass"
-      @click="toggleVisibility"
-    >
-      {{ visible ? "Hide" : "Show" }} help
-    </button>
-    <article
-      v-if="visible"
-      class="col"
-    >
+    <button :class="btnClass" @click="toggleVisibility">{{ visible ? "Hide" : "Show" }} help</button>
+    <article v-if="visible" class="col">
       <div class="alert alert-user_guide">
         <slot />
       </div>
@@ -23,17 +15,23 @@
 <script>
 export default {
   data: function () {
-    return { visible: false }
+    return { visible: false };
   },
   computed: {
-    btnClass() { return { 'btn': true, 'btn-success': !this.visible, 'btn-danger': this.visible } }
+    btnClass() {
+      return { btn: true, "btn-success": !this.visible, "btn-danger": this.visible };
+    },
   },
   methods: {
-    toggleVisibility: function () { this.visible = !this.visible }
-  }
-}
+    toggleVisibility: function () {
+      this.visible = !this.visible;
+    },
+  },
+};
 </script>
 
 <style scoped>
-  article { margin: 1em; }
+article {
+  margin: 1em;
+}
 </style>

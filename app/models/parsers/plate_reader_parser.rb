@@ -1,5 +1,6 @@
 class Parsers::PlateReaderParser # rubocop:todo Style/Documentation
-  class InvalidFile < StandardError; end
+  class InvalidFile < StandardError
+  end
 
   class_attribute :assay_type, :assay_version
 
@@ -17,9 +18,7 @@ class Parsers::PlateReaderParser # rubocop:todo Style/Documentation
   def get_row(location)
     letter = location[0].chr
     num = location.slice(1, location.length)
-    table.detect do |row|
-      row[0] == letter && row[1] == num
-    end
+    table.detect { |row| row[0] == letter && row[1] == num }
   end
 
   def concentration(location)
@@ -31,9 +30,7 @@ class Parsers::PlateReaderParser # rubocop:todo Style/Documentation
   def get_column_for_header(sym)
     headers.each_with_index do |h, pos|
       name = get_name_for_header(sym)
-      unless name.nil? || h.nil?
-        return pos if h.squish == name.squish
-      end
+      return pos if h.squish == name.squish unless name.nil? || h.nil?
     end
   end
 
@@ -44,7 +41,9 @@ class Parsers::PlateReaderParser # rubocop:todo Style/Documentation
       content: 'Content',
       raw_data: 'Raw Data (485/520)',
       concentration: 'Linear regression fit based on Raw Data (485/520)'
-    }[sym_name]
+    }[
+      sym_name
+    ]
   end
 
   def self.parses?(content)

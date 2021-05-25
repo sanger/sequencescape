@@ -4,7 +4,8 @@ class Io::Sample < Core::Io::Base
   set_json_root(:sample)
   set_eager_loading { |model| model.include_sample_metadata.include_studies }
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                                     sm_container <= container
                                            name  => sanger.name
                                sanger_sample_id  => sanger.sample_id
@@ -73,5 +74,6 @@ class Io::Sample < Core::Io::Base
                       sample_metadata.treatment <=> data_release.managed.treatment
                         sample_metadata.subject <=> data_release.managed.subject
                         sample_metadata.disease <=> data_release.managed.disease
-  ")
+  '
+  )
 end

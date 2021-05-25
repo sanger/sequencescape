@@ -52,8 +52,7 @@ module LabWhereClient
       attr_reader :endpoint
     end
 
-    def initialize(params)
-    end
+    def initialize(params); end
   end
 
   module EndpointCreateActions # rubocop:todo Style/Documentation
@@ -119,9 +118,7 @@ module LabWhereClient
     end
 
     def initialize(params_list)
-      @labwares = params_list.map do |params|
-        Labware.new(params)
-      end
+      @labwares = params_list.map { |params| Labware.new(params) }
     end
   end
 

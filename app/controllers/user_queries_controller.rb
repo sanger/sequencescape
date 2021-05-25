@@ -3,7 +3,7 @@ class UserQueriesController < ApplicationController # rubocop:todo Style/Documen
     @user_query = UserQuery.new(url: request.referer, user: current_user)
   end
 
-  def create
+  def create # rubocop:todo Metrics/AbcSize
     @user_query = UserQuery.new(user_query_params.merge(user: current_user))
     if @user_query.valid?
       UserQueryMailer.request_for_help(@user_query).deliver_now

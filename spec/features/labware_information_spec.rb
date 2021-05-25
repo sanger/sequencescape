@@ -3,9 +3,7 @@
 require 'rails_helper'
 require 'support/lab_where_client_helper'
 
-RSpec.configure do |c|
-  c.include LabWhereClientHelper
-end
+RSpec.configure { |c| c.include LabWhereClientHelper }
 
 describe 'Viewing labware' do
   let(:user) { create :user }
@@ -41,8 +39,11 @@ describe 'Viewing labware' do
 
     context 'when in labwhere' do
       setup do
-        stub_lwclient_labware_find_by_bc(lw_barcode: labware.machine_barcode, lw_locn_name: 'location',
-                                         lw_locn_parentage: 'place > location')
+        stub_lwclient_labware_find_by_bc(
+          lw_barcode: labware.machine_barcode,
+          lw_locn_name: 'location',
+          lw_locn_parentage: 'place > location'
+        )
       end
       it_behaves_like 'labware'
     end

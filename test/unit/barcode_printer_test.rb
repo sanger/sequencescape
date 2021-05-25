@@ -7,8 +7,8 @@ class BarcodePrinterTest < ActiveSupport::TestCase
 
   def setup
     @barcode_printer = create :barcode_printer, name: 'test_printer'
-    printer384 = BarcodePrinterType.find_by(name: '384 Well Plate') || create(:barcode_printer_type,
-                                                                              name: '384 Well Plate')
+    printer384 =
+      BarcodePrinterType.find_by(name: '384 Well Plate') || create(:barcode_printer_type, name: '384 Well Plate')
     @printer_for_384_wells_plate = create :barcode_printer, barcode_printer_type: printer384
   end
 
@@ -19,15 +19,23 @@ class BarcodePrinterTest < ActiveSupport::TestCase
 
   test 'should register printer in PMB after create' do
     configatron.register_printers_automatically = true
-    RestClient.expects(:get)
-              .with('http://localhost:9292/v1/printers?filter[name]=test_printer',
-                    content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
-              .returns('{"data":[]}')
-    RestClient.expects(:post)
-              .with('http://localhost:9292/v1/printers',
-                    { 'data' => { 'attributes' => { 'name' => 'test_printer' } } }.to_json,
-                    content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
-              .returns(201)
+    RestClient
+      .expects(:get)
+      .with(
+        'http://localhost:9292/v1/printers?filter[name]=test_printer',
+        content_type: 'application/vnd.api+json',
+        accept: 'application/vnd.api+json'
+      )
+      .returns('{"data":[]}')
+    RestClient
+      .expects(:post)
+      .with(
+        'http://localhost:9292/v1/printers',
+        { 'data' => { 'attributes' => { 'name' => 'test_printer' } } }.to_json,
+        content_type: 'application/vnd.api+json',
+        accept: 'application/vnd.api+json'
+      )
+      .returns(201)
     create :barcode_printer, name: 'test_printer'
     configatron.register_printers_automatically = false
   end

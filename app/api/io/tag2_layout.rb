@@ -4,7 +4,8 @@ class ::Io::Tag2Layout < ::Core::Io::Base
   set_json_root(:tag2_layout)
   set_eager_loading { |model| model.include_plate.include_tag }
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                    user <=> user
                   plate <=> plate
   target_well_locations <=> target_well_locations
@@ -14,5 +15,6 @@ class ::Io::Tag2Layout < ::Core::Io::Base
              tag.map_id  => tag.identifier
               tag.oligo  => tag.oligo
      tag.tag_group.name  => tag.group
-  ")
+  '
+  )
 end

@@ -6,7 +6,7 @@
 #
 # @author [grl]
 #
-class Barcode < ApplicationRecord
+class Barcode < ApplicationRecord # rubocop:todo Metrics/ClassLength
   require 'sanger_barcode_format'
   require 'sanger_barcode_format/legacy_methods'
   extend SBCF::LegacyMethods
@@ -18,55 +18,83 @@ class Barcode < ApplicationRecord
 
   # Caution! Do not adjust the index of existing formats.
   enum format: {
-    sanger_ean13: 0,
-    infinium: 1,
-    fluidigm: 2,
-    external: 3,
-    aker_barcode: 4,
-    cgap: 5,
-    sanger_code39: 6,
-    fluidx_barcode: 7,
-    uk_biocentre_v1: 8,
-    uk_biocentre_v2: 9,
-    uk_biocentre_unid: 10,
-    alderly_park_v1: 11,
-    alderly_park_v2: 12,
-    uk_biocentre_v3: 13,
-    cgap_plate: 14,
-    cgap_rack: 15,
-    glasgow: 16,
-    cambridge_a_z: 17,
-    heron_tailed: 18,
-    randox: 19,
-    uk_biocentre_v4: 20,
-    cambridge_a_z_v2: 21,
-    glasgow_v2: 22,
-    eagle: 23,
-    cambridge_a_z_eagle: 24,
-    glasgow_eagle: 25,
-    uk_biocentre_eagle: 26,
-    alderley_park_eagle: 27,
-    randox_eagle: 28,
-    randox_v2: 29,
-    glasgow_v3: 30,
-    uk_biocentre_v5: 31
-  }
+         sanger_ean13: 0,
+         infinium: 1,
+         fluidigm: 2,
+         external: 3,
+         aker_barcode: 4,
+         cgap: 5,
+         sanger_code39: 6,
+         fluidx_barcode: 7,
+         uk_biocentre_v1: 8,
+         uk_biocentre_v2: 9,
+         uk_biocentre_unid: 10,
+         alderly_park_v1: 11,
+         alderly_park_v2: 12,
+         uk_biocentre_v3: 13,
+         cgap_plate: 14,
+         cgap_rack: 15,
+         glasgow: 16,
+         cambridge_a_z: 17,
+         heron_tailed: 18,
+         randox: 19,
+         uk_biocentre_v4: 20,
+         cambridge_a_z_v2: 21,
+         glasgow_v2: 22,
+         eagle: 23,
+         cambridge_a_z_eagle: 24,
+         glasgow_eagle: 25,
+         uk_biocentre_eagle: 26,
+         alderley_park_eagle: 27,
+         randox_eagle: 28,
+         randox_v2: 29,
+         glasgow_v3: 30,
+         uk_biocentre_v5: 31,
+         health_services_laboratories_v1: 32
+       }
 
   # Barcode formats which may be submitted via sample manifests
-  FOREIGN_BARCODE_FORMATS = %i[cgap fluidx_barcode fluidigm
-                               uk_biocentre_v1 uk_biocentre_v2 uk_biocentre_unid
-                               alderly_park_v1 alderly_park_v2 uk_biocentre_v3 cgap_plate cgap_rack
-                               glasgow cambridge_a_z heron_tailed randox uk_biocentre_v4 cambridge_a_z_v2 glasgow_v2
-                               eagle cambridge_a_z_eagle glasgow_eagle uk_biocentre_eagle alderley_park_eagle randox_eagle
-                               randox_v2 glasgow_v3 uk_biocentre_v5].freeze
+  FOREIGN_BARCODE_FORMATS = %i[
+    cgap
+    fluidx_barcode
+    fluidigm
+    uk_biocentre_v1
+    uk_biocentre_v2
+    uk_biocentre_unid
+    alderly_park_v1
+    alderly_park_v2
+    uk_biocentre_v3
+    cgap_plate
+    cgap_rack
+    glasgow
+    cambridge_a_z
+    heron_tailed
+    randox
+    uk_biocentre_v4
+    cambridge_a_z_v2
+    glasgow_v2
+    eagle
+    cambridge_a_z_eagle
+    glasgow_eagle
+    uk_biocentre_eagle
+    alderley_park_eagle
+    randox_eagle
+    randox_v2
+    glasgow_v3
+    uk_biocentre_v5
+    health_services_laboratories_v1
+  ].freeze
 
   validate :barcode_valid?
   validates :barcode, uniqueness: { scope: :format, case_sensitive: false }
 
-  scope(:sanger_barcode, lambda do |prefix, number|
-    human_barcode = SBCF::SangerBarcode.from_prefix_and_number(prefix, number).human_barcode
-    where(format: %i[sanger_ean13 sanger_code39], barcode: human_barcode)
-  end)
+  scope(
+    :sanger_barcode,
+    lambda do |prefix, number|
+      human_barcode = SBCF::SangerBarcode.from_prefix_and_number(prefix, number).human_barcode
+      where(format: %i[sanger_ean13 sanger_code39], barcode: human_barcode)
+    end
+  )
   scope :for_search_query, ->(*input) { where(barcode: Barcode.extract_barcodes(input)).includes(:asset) }
 
   delegate :=~, to: :handler
@@ -106,11 +134,13 @@ class Barcode < ApplicationRecord
   end
 
   def self.extract_barcodes(barcodes)
-    barcodes.flatten.each_with_object([]) do |source_bc, store|
-      next if source_bc.blank?
+    barcodes
+      .flatten
+      .each_with_object([]) do |source_bc, store|
+        next if source_bc.blank?
 
-      store.concat(Barcode.extract_barcode(source_bc))
-    end
+        store.concat(Barcode.extract_barcode(source_bc))
+      end
   end
 
   def handler

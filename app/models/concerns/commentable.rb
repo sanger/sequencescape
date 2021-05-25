@@ -19,9 +19,7 @@ module Commentable
   class_methods do
     def get_comment_count(ids = nil)
       h = Hash.new(0) # return 0 if key is not in the hash
-      with_comments.group(ids).each do |commentable_id, comment_count|
-        h[commentable_id.to_i] = comment_count
-      end
+      with_comments.group(ids).each { |commentable_id, comment_count| h[commentable_id.to_i] = comment_count }
       h
     end
   end

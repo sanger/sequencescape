@@ -11,10 +11,7 @@ class Pipeline::GrouperForPipeline
   end
 
   def base_scope
-    requests.order(:id)
-            .ready_in_storage
-            .full_inbox
-            .select('requests.*')
+    requests.order(:id).ready_in_storage.full_inbox.select('requests.*')
   end
 
   def all(_)

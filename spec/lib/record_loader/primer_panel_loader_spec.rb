@@ -5,9 +5,11 @@ require 'record_loader/primer_panel_loader'
 
 # This file was initially generated via `rails g record_loader`
 RSpec.describe RecordLoader::PrimerPanelLoader, type: :model, loader: true do
-  subject(:record_loader) do
+  def a_new_record_loader
     described_class.new(directory: test_directory, files: selected_files)
   end
+
+  subject(:record_loader) { a_new_record_loader }
 
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/primer_panels') }
@@ -19,8 +21,14 @@ RSpec.describe RecordLoader::PrimerPanelLoader, type: :model, loader: true do
         name: 'Unique attribute',
         snp_count: 2,
         programs: {
-          'pcr 1' => { 'name' => 'example', 'duration' => '225' },
-          'pcr 2' => { 'name' => 'example_2', 'duration' => '120' }
+          'pcr 1' => {
+            'name' => 'example',
+            'duration' => '225'
+          },
+          'pcr 2' => {
+            'name' => 'example_2',
+            'duration' => '120'
+          }
         }
       }
     end
@@ -33,7 +41,7 @@ RSpec.describe RecordLoader::PrimerPanelLoader, type: :model, loader: true do
     # copies of existing records.
     it 'is idempotent' do
       record_loader.create!
-      expect { record_loader.create! }.not_to change(PrimerPanel, :count)
+      expect { a_new_record_loader.create! }.not_to change(PrimerPanel, :count)
     end
 
     it 'sets attributes on the created records' do

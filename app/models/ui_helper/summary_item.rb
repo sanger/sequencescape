@@ -4,7 +4,7 @@ module UiHelper
 
     def initialize(options = {})
       @message = options[:message]
-      @object  = options[:object]
+      @object = options[:object]
       @timestamp = options[:timestamp]
       @external_link = options[:external_link]
       @external_message = options[:external_message]

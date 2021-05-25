@@ -11,9 +11,7 @@ RSpec.describe SpecificTubeCreation, type: :model do
     let(:parent) { create :plate }
 
     describe '#save' do
-      before do
-        expect(subject.save).to (be true), ->() { "Failed to save: #{subject.errors.full_messages}" }
-      end
+      before { expect(subject.save).to (be true), -> { "Failed to save: #{subject.errors.full_messages}" } }
 
       let(:first_child) { subject.children.first }
 
@@ -21,24 +19,22 @@ RSpec.describe SpecificTubeCreation, type: :model do
         expect(subject.children.count).to eq purpose_count
       end
 
-      it 'creates a tube' do # rubocop:todo RSpec/AggregateExamples
+      it 'creates a tube' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(first_child).to be_a Tube
       end
 
-      it 'sets the purpose' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets the purpose' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(first_child.purpose).to eq child_purpose
       end
 
       it 'sets expected names' do
-        subject.children.each_with_index do |child, i|
-          expect(child.name).to eq names[i]
-        end
+        subject.children.each_with_index { |child, i| expect(child.name).to eq names[i] }
       end
 
       it 'sets plates as parents' do
-        subject.children.each do |child|
-          expect(child.parents).to include(parent)
-        end
+        subject.children.each { |child| expect(child.parents).to include(parent) }
       end
     end
   end

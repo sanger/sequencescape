@@ -11,11 +11,7 @@ module LabelPrinter
       def to_h
         case assets.first
         when Plate
-          if @printer_type_class.double_label?
-            AssetPlateDouble.new(assets).to_h
-          else
-            AssetPlate.new(assets).to_h
-          end
+          @printer_type_class.double_label? ? AssetPlateDouble.new(assets).to_h : AssetPlate.new(assets).to_h
         when Tube
           AssetTube.new(assets).to_h
         end

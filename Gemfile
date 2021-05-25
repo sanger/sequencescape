@@ -27,6 +27,7 @@ group :default do
 
   gem 'carrierwave'
   gem 'net-ldap'
+
   # Will paginate clashes awkwardly with bootstrap
   gem 'will_paginate-bootstrap'
 
@@ -45,8 +46,7 @@ group :default do
   # Locked for ruby version
   gem 'delayed_job_active_record'
 
-  gem 'irods_reader', '>=0.0.2',
-      github: 'sanger/irods_reader'
+  gem 'irods_reader', '>=0.0.2', github: 'sanger/irods_reader'
 
   # For the API level
   gem 'json'
@@ -64,8 +64,8 @@ group :default do
   # due to not correctly eager loading dependencies on nested resources.
   gem 'jsonapi-resources', '0.9.0'
 
-  # Bunny is a RabbitMQ client.
-  gem 'bunny'
+  # Wraps bunny with connection pooling ad consumer process handling
+  gem 'sanger_warren'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
@@ -74,6 +74,7 @@ group :default do
   # reasonable once they are available. The next version looks like it may be v3.0.0, so be
   # aware of possible breaking changes.
   gem 'axlsx', github: 'sanger/axlsx', branch: 'v2.0.2sgr'
+
   # Excel file reading
   gem 'roo'
 
@@ -81,15 +82,6 @@ group :default do
   gem 'builder'
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
-
-  # Provides null db adapter, that blocks access to remote database
-  # (in our case used for Agresso db in non-production environments)
-  gem 'activerecord-nulldb-adapter', require: false
-
-  # Allow simple connection pooling on non-database connections
-  # Using it to maintain our warren's of bunnies.
-  # Or the connection pool of RabbitMQ channels to get technical
-  gem 'connection_pool'
 
   gem 'rack-cors', require: 'rack/cors'
 
@@ -106,26 +98,25 @@ group :default do
   gem 'cancancan'
 end
 
-group :warehouse do
-  # Used to connect to oracle databases for some data import
-  gem 'activerecord-oracle_enhanced-adapter'
-  gem 'ruby-oci8', platforms: :mri
-end
-
 group :development do
   gem 'rails-erd'
+
   # Detect n+1 queries
   gem 'bullet'
+
   # Automatically generate documentation
   gem 'yard', require: false
+
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
+
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'mini_racer'
+
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
 end
@@ -133,8 +124,8 @@ end
 group :development, :linting do
   # Enforces coding styles and detects some bad practices
   gem 'rubocop', require: false
-  gem 'rubocop-performance'
-  gem 'rubocop-rails'
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
   gem 'yard-activerecord', '~> 0.0.16'
 end
@@ -147,6 +138,7 @@ group :development, :test, :cucumber do
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'pry-stack_explorer'
+
   # Asset compilation, js and style libraries
   gem 'bootstrap'
   gem 'font-awesome-sass'
@@ -166,13 +158,16 @@ end
 
 group :test do
   gem 'rspec-html-matchers'
+
   # Rails performance tests
   gem 'rails-perftest'
   gem 'rspec-collection_matchers', require: false # Provides matchers for dealing with arrays
   gem 'rspec-longrun', require: false # Extends scenario logging for more verbose tracking
+
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
+
   # It is needed to use #assigns(attribute) in controllers tests
   gem 'minitest'
   gem 'minitest-profiler'
@@ -192,12 +187,14 @@ group :test, :cucumber do
   gem 'shoulda'
   gem 'simplecov', require: false
   gem 'timecop', require: false
+
   # Simplifies shared transactions between server and test threads
   # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
   # Essentially does two things:
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
+
   # Keep webdriver in sync with chrome to prevent frustrating CI failures
   gem 'webdrivers'
 end

@@ -8,9 +8,8 @@ module StandardNamedScopes # rubocop:todo Style/Documentation
       # "order_most_recently_updated_last".  These names seem more readable and understandable.
       SORT_FIELDS.each do |field|
         SORT_ORDERS.each do |position, order_by|
-          scope :"order_most_recently_#{field}_#{position}", lambda {
-                                                               order("#{quoted_table_name}.#{field}_at #{order_by}")
-                                                             }
+          scope :"order_most_recently_#{field}_#{position}",
+                lambda { order("#{quoted_table_name}.#{field}_at #{order_by}") }
         end
       end
     end

@@ -1,4 +1,5 @@
-class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationController # rubocop:todo Style/Documentation
+# Add and edit {BaitLibrary::Supplier}s
+class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationController
   authorize_resource class: BaitLibrary::Supplier
   before_action :discover_bait_library_supplier, only: %i[edit update destroy]
 
@@ -6,8 +7,7 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     @bait_library_supplier = BaitLibrary::Supplier.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @bait_library_supplier = BaitLibrary::Supplier.new(bait_library_supplier_params)
@@ -33,21 +33,25 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     end
   end
 
+  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
   def destroy
     if @bait_library_supplier.bait_libraries.visible.count > 0
       respond_to do |format|
-        flash[:error] = "Can not delete '#{@bait_library_supplier.name}', supplier is in use by #{@bait_library_supplier.bait_libraries.visible.count} libraries.<br/>"
+        flash[:error] =
+          "Can not delete '#{@bait_library_supplier.name}', supplier is in use by #{@bait_library_supplier.bait_libraries.visible.count} libraries.<br/>"
         format.html { redirect_to(admin_bait_libraries_path) }
       end
     else
       respond_to do |format|
-        if @bait_library_supplier.hide
-          flash[:notice] = 'Supplier was successfully deleted.'
-        end
+        flash[:notice] = 'Supplier was successfully deleted.' if @bait_library_supplier.hide
         format.html { redirect_to(admin_bait_libraries_path) }
       end
     end
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   private
 

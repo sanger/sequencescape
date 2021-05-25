@@ -11,11 +11,14 @@ describe ReportFailsController, type: :controller do
 
     shared_examples 'a successful failure event' do
       setup do
-        post :create, params: { report_fail: {
-          barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],
-          user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode,
-          failure_id: failure_id
-        } }
+        post :create,
+             params: {
+               report_fail: {
+                 barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],
+                 user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode,
+                 failure_id: failure_id
+               }
+             }
       end
 
       it 'Create failure events' do
@@ -31,11 +34,14 @@ describe ReportFailsController, type: :controller do
 
     shared_examples 'an unsuccessful failure event' do
       setup do
-        post :create, params: { report_fail: {
-          barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],
-          user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode,
-          failure_id: failure_id
-        } }
+        post :create,
+             params: {
+               report_fail: {
+                 barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],
+                 user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode,
+                 failure_id: failure_id
+               }
+             }
       end
 
       it('Sets the flash') { expect(flash.notice).not_to eq 'Failure saved' }

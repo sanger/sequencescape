@@ -2,8 +2,8 @@
 
 require 'test_helper'
 
-class SequencingQcBatchTest < ActiveSupport::TestCase
-  STATES = %w(qc_pending qc_submitted qc_manual qc_manual_in_progress qc_completed).freeze
+class SequencingQcBatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+  STATES = %w[qc_pending qc_submitted qc_manual qc_manual_in_progress qc_completed].freeze
 
   context SequencingQcBatch do
     context '.included' do

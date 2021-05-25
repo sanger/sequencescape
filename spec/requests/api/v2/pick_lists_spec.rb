@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe 'PickLists API', with: :api_v2, pick_list: true do
   context 'with multiple PickLists' do
-    before do
-      create_list(:pick_list, 5)
-    end
+    before { create_list(:pick_list, 5) }
 
     it 'sends a list of pick_lists' do
       api_get '/api/v2/pick_lists'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end

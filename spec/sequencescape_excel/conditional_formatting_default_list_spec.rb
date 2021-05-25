@@ -2,7 +2,10 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList, type: :model, sample_manifest_excel: true, sample_manifest: true do
+RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList,
+               type: :model,
+               sample_manifest_excel: true,
+               sample_manifest: true do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
@@ -19,9 +22,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList, type: :mode
   end
 
   it 'each default should have the correct type' do
-    rules.each do |k, _v|
-      expect(defaults.find_by(:type, k).type).to eq(k.to_sym)
-    end
+    rules.each { |k, _v| expect(defaults.find_by(:type, k).type).to eq(k.to_sym) }
   end
 
   it 'is comparable' do

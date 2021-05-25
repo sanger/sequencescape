@@ -5,9 +5,11 @@ require 'record_loader/request_type_loader'
 
 # This file was initially generated via `rails g record_loader`
 RSpec.describe RecordLoader::RequestTypeLoader, type: :model, loader: true do
-  subject(:record_loader) do
+  def a_new_record_loader
     described_class.new(directory: test_directory, files: selected_files)
   end
+
+  subject(:record_loader) { a_new_record_loader }
 
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/request_types') }
@@ -30,7 +32,8 @@ RSpec.describe RecordLoader::RequestTypeLoader, type: :model, loader: true do
 
       # If I split this out into independent tests, than RSpec/AggregateFailures shouts at me,
       # and the overall readability feels reduced. So overruling RuboCop here.
-      it 'sets attributes on the created records' do # rubocop:disable RSpec/ExampleLength
+      it 'sets attributes on the created records' do
+        # rubocop:disable RSpec/ExampleLength
         expect(RequestType.last).to have_attributes(
           name: 'Example type 2',
           asset_type: 'Well',

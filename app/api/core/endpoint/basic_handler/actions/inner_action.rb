@@ -8,11 +8,10 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction # rubocop:todo Style/D
   end
 
   def separate(_, actions)
-    actions[@options[:to].to_s] = lambda do |object, options, stream|
-      actions(object, options.merge(target: object)).map do |action, url|
-        stream.attribute(action, url)
+    actions[@options[:to].to_s] =
+      lambda do |object, options, stream|
+        actions(object, options.merge(target: object)).map { |action, url| stream.attribute(action, url) }
       end
-    end
   end
 
   def for_json
@@ -27,19 +26,21 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction # rubocop:todo Style/D
   private :rooted_json
 
   def generate_json_actions(object, options)
-    rooted_json(options) do |stream|
-      super(object, options.merge(stream: stream))
-    end
+    rooted_json(options) { |stream| super(object, options.merge(stream: stream)) }
   end
 
-  def declare_action(name, _options)
+  def declare_action(name, _options) # rubocop:todo Metrics/MethodLength
     line = __LINE__ + 1
-    singleton_class.class_eval("
+    singleton_class.class_eval(
+      "
       def _#{name}(request, response)
         object = @handler.call(self, request, response)
         yield(owner_for(request, object), object)
       end
-    ", __FILE__, line)
+    ",
+      __FILE__,
+      line
+    )
   end
   private :declare_action
 

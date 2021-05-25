@@ -9,10 +9,20 @@ module SequencescapeExcel
   class Range
     include Helpers::Attributes
 
-    setup_attributes :options, :identifier, :name, :scope, :first_row,
-                     :last_row, :first_column, :last_column, :worksheet_name,
+    setup_attributes :options,
+                     :identifier,
+                     :name,
+                     :scope,
+                     :first_row,
+                     :last_row,
+                     :first_column,
+                     :last_column,
+                     :worksheet_name,
                      :scope_on,
-                     defaults: { first_column: 1, options: {} }
+                     defaults: {
+                       first_column: 1,
+                       options: {}
+                     }
 
     attr_reader :first_cell
 
@@ -33,10 +43,10 @@ module SequencescapeExcel
     # the number of options minus one.
     def last_column
       @last_column || if dynamic?
-                        calculate_last_column
-                      else
-                        @last_column = calculate_last_column
-                      end
+        calculate_last_column
+      else
+        @last_column = calculate_last_column
+      end
     end
 
     # Returns either the cached last cell, or a dynamically created one.
@@ -85,6 +95,7 @@ module SequencescapeExcel
     def first_cell_reference
       first_cell.reference
     end
+
     # rubocop:enable Rails/Delegate
 
     ##
@@ -92,11 +103,7 @@ module SequencescapeExcel
     # worksheet to find a reference that is not in the current worksheet e.g. Sheet1!A1:A100
     # If the worksheet name is not present just returns the reference.
     def absolute_reference
-      if worksheet_name.present?
-        "#{worksheet_name}!#{fixed_reference}"
-      else
-        fixed_reference.to_s
-      end
+      worksheet_name.present? ? "#{worksheet_name}!#{fixed_reference}" : fixed_reference.to_s
     end
 
     ##
@@ -139,11 +146,7 @@ module SequencescapeExcel
     private
 
     def calculate_last_column
-      if options.empty?
-        first_column
-      else
-        options.length + (first_column - 1)
-      end
+      options.empty? ? first_column : options.length + (first_column - 1)
     end
 
     def create_dynamic_options

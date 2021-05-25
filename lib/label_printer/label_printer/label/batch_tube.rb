@@ -34,6 +34,7 @@ module LabelPrinter
       def round_label_bottom_line(tube)
         if tube.is_a?(PacBioLibraryTube)
           source_plate = source_plate_barcode(tube)
+
           # Return the last 4 characters. The fallback handles scenarios where
           # we have fewer than 4 characters in the string, as:
           #     'abc'[-4..] # => nil
@@ -43,20 +44,24 @@ module LabelPrinter
         end
       end
 
-      def tubes
-        @tubes ||=  if stock.present?
-                      if batch.multiplexed?
-                        # all info on a label including barcode is about target_asset first child
-                        requests.map { |request| request.target_labware.children.first }
-                      else
-                        # all info on a label including barcode is about target_asset stock asset
-                        requests.map { |request| request.target_labware.stock_asset }
-                      end
-                    else
-                      # all info on a label including barcode is about target_asset
-                      requests.map(&:target_labware)
-                    end
+      # rubocop:todo Metrics/PerceivedComplexity
+      def tubes # rubocop:todo Metrics/AbcSize
+        @tubes ||=
+          if stock.present?
+            if batch.multiplexed?
+              # all info on a label including barcode is about target_asset first child
+              requests.map { |request| request.target_labware.children.first }
+            else
+              # all info on a label including barcode is about target_asset stock asset
+              requests.map { |request| request.target_labware.stock_asset }
+            end
+          else
+            # all info on a label including barcode is about target_asset
+            requests.map(&:target_labware)
+          end
       end
+
+      # rubocop:enable Metrics/PerceivedComplexity
 
       private
 

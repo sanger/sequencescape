@@ -22,19 +22,21 @@ class ExtendedValidator < ApplicationRecord # rubocop:todo Style/Documentation
     return if behaviour.nil?
 
     behavior_module = "ExtendedValidator::#{behaviour}".constantize
-    class_eval do
-      include(behavior_module)
-    end
+    class_eval { include(behavior_module) }
   end
 
-  has_many :request_type_extened_validators, dependent: :destroy, class_name: 'ExtendedValidator::RequestTypeExtendedValidator'
+  has_many :request_type_extened_validators,
+           dependent: :destroy,
+           class_name: 'ExtendedValidator::RequestTypeExtendedValidator'
   has_many :request_types, through: :request_type_extened_validators
 
   validates :behaviour, presence: true
   serialize :options
 
-  scope :for_submission, ->(submission) {
-    joins('INNER JOIN request_types_extended_validators ON request_types_extended_validators.extended_validator_id = extended_validators.id')
-      .where(request_types_extended_validators: { request_type_id: submission.request_types })
-  }
+  scope :for_submission,
+        ->(submission) {
+          joins(
+            'INNER JOIN request_types_extended_validators ON request_types_extended_validators.extended_validator_id = extended_validators.id'
+          ).where(request_types_extended_validators: { request_type_id: submission.request_types })
+        }
 end

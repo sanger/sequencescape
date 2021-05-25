@@ -37,10 +37,14 @@ describe 'Bulk submission', js: false do
       submission_class_name: 'LinearSubmission',
       product_catalogue: 'Generic',
       superceded_by_id: deprecated ? -2 : -1,
-      submission_parameters: { info_differential: 5,
-                               request_options: { 'fragment_size_required_to' => '400',
-                                                  'fragment_size_required_from' => '100' },
-                               request_types: [library_request_type.key, sequencing_request_type.key] }
+      submission_parameters: {
+        info_differential: 5,
+        request_options: {
+          'fragment_size_required_to' => '400',
+          'fragment_size_required_from' => '100'
+        },
+        request_types: [library_request_type.key, sequencing_request_type.key]
+      }
     }
   end
 

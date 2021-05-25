@@ -19,14 +19,28 @@ require 'rexml/text'
 #                     {Receptacle}.
 # - Heron: Heron samples get registered via the Api::V2::Heron::PlatesController
 # - Special samples: Samples such as {PhiX} are generated internally
-class Sample < ApplicationRecord
-  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC'].freeze
-  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
-  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
-                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue'].freeze
+class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
+  GC_CONTENTS = ['Neutral', 'High AT', 'High GC'].freeze
+  GENDERS = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
+  DNA_SOURCES = [
+    'Genomic',
+    'Whole Genome Amplified',
+    'Blood',
+    'Cell Line',
+    'Saliva',
+    'Brain',
+    'FFPE',
+    'Amniocentesis Uncultured',
+    'Amniocentesis Cultured',
+    'CVS Uncultured',
+    'CVS Cultured',
+    'Fetal Blood',
+    'Tissue'
+  ].freeze
   SRA_HOLD_VALUES = %w[Hold Public Protect].freeze
-  AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
-  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
+  AGE_REGEXP =
+    '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
+  DOSE_REGEXP = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
   self.per_page = 500
 
@@ -80,12 +94,12 @@ class Sample < ApplicationRecord
     custom_attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
 
     custom_attribute(:sibling)
-    custom_attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
-    custom_attribute(:date_of_sample_collection)   # TODO[xxx]: Date field?
-    custom_attribute(:date_of_sample_extraction)   # TODO[xxx]: Date field?
+    custom_attribute(:is_resubmitted) # TODO[xxx]: selection of yes/no?
+    custom_attribute(:date_of_sample_collection) # TODO[xxx]: Date field?
+    custom_attribute(:date_of_sample_extraction) # TODO[xxx]: Date field?
     custom_attribute(:sample_extraction_method)
-    custom_attribute(:sample_purified)             # TODO[xxx]: selection of yes/no?
-    custom_attribute(:purification_method)         # TODO[xxx]: tied to the field above?
+    custom_attribute(:sample_purified) # TODO[xxx]: selection of yes/no?
+    custom_attribute(:purification_method) # TODO[xxx]: tied to the field above?
     custom_attribute(:concentration)
     custom_attribute(:concentration_determined_by)
     custom_attribute(:sample_type)
@@ -94,10 +108,12 @@ class Sample < ApplicationRecord
     # Array Express
     custom_attribute(:genotype)
     custom_attribute(:phenotype)
+
     # custom_attribute(:strain_or_line) strain
     # TODO: split age in two fields and use a composed_of
     custom_attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
     custom_attribute(:developmental_stage)
+
     # custom_attribute(:sex) gender
     custom_attribute(:cell_type)
     custom_attribute(:disease_state)
@@ -107,6 +123,7 @@ class Sample < ApplicationRecord
     custom_attribute(:growth_condition)
     custom_attribute(:rnai)
     custom_attribute(:organism_part)
+
     # custom_attribute(:species) common name
     custom_attribute(:time_point)
 
@@ -127,16 +144,32 @@ class Sample < ApplicationRecord
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji
     # @note phenotype isn't currently broadcast but has a field waiting in the warehouse
-    validates :organism, :cohort, :country_of_origin, :geographical_region,
-              :ethnicity, :mother, :father, :replicate, :donor_id,
-              :sample_public_name, :sample_common_name, :sample_strain_att,
-              :sample_description, :developmental_stage, :phenotype,
+    validates :organism,
+              :cohort,
+              :country_of_origin,
+              :geographical_region,
+              :ethnicity,
+              :mother,
+              :father,
+              :replicate,
+              :donor_id,
+              :sample_public_name,
+              :sample_common_name,
+              :sample_strain_att,
+              :sample_description,
+              :developmental_stage,
+              :phenotype,
               utf8mb3: true
+
     # These fields are restricted further as they aren't expected to ever contain anything more than ASCII
     validates :sample_ebi_accession_number,
-              format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII', allow_blank: true }
+              format: {
+                with: /\A[[:ascii:]]+\z/,
+                message: 'only allows ASCII',
+                allow_blank: true
+              }
 
-    with_options(on: [:EGA, :ENA]) do
+    with_options(on: %i[EGA ENA]) do
       validates :sample_taxon_id, presence: { message: 'is required' }
       validates :sample_common_name, presence: { message: 'is required' }
     end
@@ -149,16 +182,15 @@ class Sample < ApplicationRecord
 
     # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
     # capitalisation of these is correct.
-    REMAPPED_ATTRIBUTES = {
-      gc_content: GC_CONTENTS,
-      gender: GENDERS,
-      dna_source: DNA_SOURCES,
-      sample_sra_hold: SRA_HOLD_VALUES
-    }.transform_values { |v| v.index_by { |b| b.downcase } }
+    REMAPPED_ATTRIBUTES =
+      {
+        gc_content: GC_CONTENTS,
+        gender: GENDERS,
+        dna_source: DNA_SOURCES,
+        sample_sra_hold: SRA_HOLD_VALUES
+      }.transform_values { |v| v.index_by { |b| b.downcase } }
 
-    after_initialize do |record|
-      record.consent_withdrawn = false if record.consent_withdrawn.nil?
-    end
+    after_initialize { |record| record.consent_withdrawn = false if record.consent_withdrawn.nil? }
 
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?
@@ -193,8 +225,13 @@ class Sample < ApplicationRecord
     # 1) Understand what the actual constraints are for supplier_name
     # 2) Apply appropriate constraints
     # 3) Ensure the help text in sample manifest matches
-    validates :supplier_name, format: { with: /\A[[:ascii:]]+\z/,
-                                        message: 'only allows ASCII' }, if: :supplier_name_changed?
+    validates :supplier_name,
+              format: {
+                with: /\A[[:ascii:]]+\z/,
+                message: 'only allows ASCII'
+              },
+              if: :supplier_name_changed?
+
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
     # and the values can be easily remapped
@@ -211,7 +248,10 @@ class Sample < ApplicationRecord
       sample_common_name
     end
 
-    belongs_to :user_of_consent_withdrawn, class_name: 'User', foreign_key: 'user_id_of_consent_withdrawn', inverse_of: :consent_withdrawn_sample_metadata
+    belongs_to :user_of_consent_withdrawn,
+               class_name: 'User',
+               foreign_key: 'user_id_of_consent_withdrawn',
+               inverse_of: :consent_withdrawn_sample_metadata
 
     # This is misleading, as samples are rarely released through
     # Sequencescape, so our flag gets out of sync with the ENA/EGA
@@ -256,7 +296,7 @@ class Sample < ApplicationRecord
   has_one :sample_manifest_asset, foreign_key: :sanger_sample_id, primary_key: :sanger_sample_id, inverse_of: :sample
 
   has_many_lab_events
-  broadcast_via_warren
+  broadcast_with_warren
 
   # Aker
   has_many :sample_jobs
@@ -264,29 +304,40 @@ class Sample < ApplicationRecord
   belongs_to :container, class_name: 'Aker::Container'
 
   validates :name, presence: true
-  validates :name, format: { with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format,
-                             on: :create }
-  validates :name, format: { with: /\A[()+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format,
-                             on: :update }
-  validates :name, uniqueness: { on: :create, message: 'already in use', unless: :sample_manifest_id?,
-                                 case_sensitive: false }
+  validates :name,
+            format: {
+              with: /\A[\w_-]+\z/i,
+              message: I18n.t('samples.name_format'),
+              if: :new_name_format,
+              on: :create
+            }
+  validates :name,
+            format: {
+              with: /\A[()+\s\w._-]+\z/i,
+              message: I18n.t('samples.name_format'),
+              if: :new_name_format,
+              on: :update
+            }
+  validates :name,
+            uniqueness: {
+              on: :create,
+              message: 'already in use',
+              unless: :sample_manifest_id?,
+              case_sensitive: false
+            }
 
   validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
-  validates :control_type, absence: { with: true, unless: :control?,
-                                      message: 'should be blank if "control" is set to false' }
+  validates :control_type,
+            absence: {
+              with: true,
+              unless: :control?,
+              message: 'should be blank if "control" is set to false'
+            }
 
-  enum control_type: {
-    negative: 0,
-    positive: 1
-  }
+  enum control_type: { negative: 0, positive: 1 }
 
-  enum priority: {
-    no_priority: 0,
-    backlog: 1,
-    surveillance: 2,
-    priority: 3
-  }
+  enum priority: { no_priority: 0, backlog: 1, surveillance: 2, priority: 3 }
 
   # this method has to be before validation_guarded_by
   def rename_to!(new_name)
@@ -311,47 +362,64 @@ class Sample < ApplicationRecord
 
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
-  scope :for_search_query, lambda { |query|
-    # NOTE: This search is performed in two stages so that we can make best use of our indicies
-    # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
-    # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
-    # problem rails side, and perform two queries instead.
+  scope :for_search_query,
+        lambda { |query|
+          # NOTE: This search is performed in two stages so that we can make best use of our indicies
+          # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
+          # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
+          # problem rails side, and perform two queries instead.
 
-    # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
+          # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
 
-    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact', left: "#{query}%",
-                                                                                                    exact: query).pluck(:sample_id)
+          md =
+            Sample::Metadata
+              .where(
+                'supplier_name LIKE :left OR sample_ebi_accession_number = :exact',
+                left: "#{query}%",
+                exact: query
+              )
+              .pluck(:sample_id)
 
-    # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
-    # of numbers seems to massively increase the query length.
-    where('name LIKE :wild OR id IN (:sm_ids) OR id = :qid', wild: "%#{query}%", sm_ids: md, query: query,
-                                                             qid: query.to_i)
-  }
+          # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
+          # of numbers seems to massively increase the query length.
+          where(
+            'name LIKE :wild OR id IN (:sm_ids) OR id = :qid',
+            wild: "%#{query}%",
+            sm_ids: md,
+            query: query,
+            qid: query.to_i
+          )
+        }
 
-  scope :for_plate_and_order, lambda { |plate_id, order_id|
-    joins([
-      'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
-      'INNER JOIN receptacles AS rc ON rc.id = aliquots.receptacle_id',
-      'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
-      'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
-    ])
-      .where(['rc.labware_id = ? AND requests.order_id = ?', plate_id, order_id])
-  }
+  scope :for_plate_and_order,
+        lambda { |plate_id, order_id|
+          joins(
+            [
+              'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+              'INNER JOIN receptacles AS rc ON rc.id = aliquots.receptacle_id',
+              'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
+              'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
+            ]
+          ).where(['rc.labware_id = ? AND requests.order_id = ?', plate_id, order_id])
+        }
 
-  scope :for_plate_and_order_as_target, lambda { |plate_id, order_id|
-    joins([
-      'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
-      'INNER JOIN receptacles AS rc ON rc.id = aliquots.receptacle_id',
-      'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
-    ])
-      .where(['rc.labware_id = ? AND requests.order_id = ?', plate_id, order_id])
-  }
+  scope :for_plate_and_order_as_target,
+        lambda { |plate_id, order_id|
+          joins(
+            [
+              'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+              'INNER JOIN receptacles AS rc ON rc.id = aliquots.receptacle_id',
+              'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
+            ]
+          ).where(['rc.labware_id = ? AND requests.order_id = ?', plate_id, order_id])
+        }
 
-  scope :without_accession, lambda {
-    # Pick up samples where the accession number is either NULL or blank.
-    # MySQL automatically trims '  ' so '  '=''
-    joins(:sample_metadata).where(sample_metadata: { sample_ebi_accession_number: [nil, ''] })
-  }
+  scope :without_accession,
+        lambda {
+          # Pick up samples where the accession number is either NULL or blank.
+          # MySQL automatically trims '  ' so '  '=''
+          joins(:sample_metadata).where(sample_metadata: { sample_ebi_accession_number: [nil, ''] })
+        }
 
   # Truncates the sanger_sample_id for display on labels
   # - Returns the sanger_sample_id AS IS if it is nil or less than 10 characters
@@ -364,9 +432,12 @@ class Sample < ApplicationRecord
   # have thrown an exception.
   def shorten_sanger_sample_id
     case sanger_sample_id
-    when nil then sanger_sample_id
-    when sanger_sample_id.size < 10 then sanger_sample_id
-    when /(\d{7})$/ then Regexp.last_match(1)
+    when nil
+      sanger_sample_id
+    when sanger_sample_id.size < 10
+      sanger_sample_id
+    when /(\d{7})$/
+      Regexp.last_match(1)
     else
       sanger_sample_id
     end
@@ -391,8 +462,8 @@ class Sample < ApplicationRecord
   end
 
   def sample_supplier_name_empty?(supplier_sample_name)
-    supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available',
-                                    'none'].include?(supplier_sample_name.downcase)
+    supplier_sample_name.blank? ||
+      ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
   # Return the highest priority accession service
@@ -411,6 +482,7 @@ class Sample < ApplicationRecord
     return unless configatron.accession_samples
 
     accessionable = Accession::Sample.new(Accession.configuration.tags, self)
+
     # Accessioning jobs are lower priority (higher number) than submissions and reports
     Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200) if accessionable.valid?
   end
@@ -424,15 +496,9 @@ class Sample < ApplicationRecord
   end
 
   def validate_ena_required_fields!
-    valid?(:accession) &&
-      valid?(accession_service.provider) ||
-      raise(ActiveRecord::RecordInvalid, self)
+    valid?(:accession) && valid?(accession_service.provider) || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
-    unless ena_study.nil?
-      ena_study.errors.full_messages.each do |message|
-        errors.add(:base, "#{message} on study")
-      end
-    end
+    ena_study.errors.full_messages.each { |message| errors.add(:base, "#{message} on study") } unless ena_study.nil?
     raise e
   end
 
@@ -473,11 +539,7 @@ class Sample < ApplicationRecord
   # if sample was registered directly, only sample name is a required field, so supplier sample name can be empty
   # but it is reasonably safe to assume that required metadata was provided
   def can_be_included_in_submission?
-    if registered_through_manifest?
-      sample_metadata.supplier_name.present?
-    else
-      true
-    end
+    registered_through_manifest? ? sample_metadata.supplier_name.present? : true
   end
 
   def control_formatted

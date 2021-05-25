@@ -21,7 +21,7 @@ class BroadcastEvent < ApplicationRecord
   serialize :properties
   self.inheritance_column = 'sti_type'
 
-  broadcast_via_warren
+  broadcast_with_warren
 
   # Prefer email, fall back to login if missing
   def user_identifier
@@ -32,9 +32,7 @@ class BroadcastEvent < ApplicationRecord
 
   # Returns an array of all subjects
   def subjects
-    self.class.subject_associations.flat_map do |sa|
-      sa.for(seed, self)
-    end.select(&:broadcastable?)
+    self.class.subject_associations.flat_map { |sa| sa.for(seed, self) }.select(&:broadcastable?)
   end
 
   # Returns a hash of all metadata
@@ -43,9 +41,9 @@ class BroadcastEvent < ApplicationRecord
   end
 
   # Routing key generated for the broadcasted event.
-  # @return [String] Rouring key. eg. production.event.library_created.123
+  # @return [String] Routing key. eg. event.library_created.123
   def routing_key
-    "#{Rails.env}.event.#{event_type}.#{id}"
+    "event.#{event_type}.#{id}"
   end
 
   # @return [String] the root of the generated json object. 'event'

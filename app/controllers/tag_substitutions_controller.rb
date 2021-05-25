@@ -41,16 +41,22 @@ class TagSubstitutionsController < ApplicationController
 
   def prepare_form
     @suggested_reasons = SUGGESTED_REASONS
-    @complete_tags = Tag.includes(:tag_group)
-                        .pluck(Arel.sql('CONCAT(map_id, " - ", oligo)'), :id, 'tag_groups.name')
-                        .index_by(&:second)
+    @complete_tags =
+      Tag
+        .includes(:tag_group)
+        .pluck(Arel.sql('CONCAT(map_id, " - ", oligo)'), :id, 'tag_groups.name')
+        .index_by(&:second)
   end
 
   def tag_substitution_params
-    params.require(:tag_substitution).permit(
-      :reason, :ticket, :name, substitutions: %i[
-        sample_id library_id original_tag_id substitute_tag_id original_tag2_id substitute_tag2_id
-      ]
-    ).merge(user: current_user)
+    params
+      .require(:tag_substitution)
+      .permit(
+        :reason,
+        :ticket,
+        :name,
+        substitutions: %i[sample_id library_id original_tag_id substitute_tag_id original_tag2_id substitute_tag2_id]
+      )
+      .merge(user: current_user)
   end
 end

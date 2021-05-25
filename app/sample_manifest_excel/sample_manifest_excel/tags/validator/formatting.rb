@@ -8,9 +8,7 @@ module SampleManifestExcel
       module Formatting
         extend ActiveSupport::Concern
 
-        included do
-          validate :check_formatting
-        end
+        included { validate :check_formatting }
 
         def check_formatting
           return if value.blank?

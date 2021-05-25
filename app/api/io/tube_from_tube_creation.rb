@@ -5,9 +5,11 @@ class ::Io::TubeFromTubeCreation < ::Core::Io::Base
 
   set_eager_loading { |model| model.includes(parent: { aliquots: Io::Aliquot::PRELOADS }) }
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                    user <=> user
                  parent <=> parent
           child_purpose <=> child_purpose
-  ")
+  '
+  )
 end

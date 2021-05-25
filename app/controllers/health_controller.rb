@@ -5,8 +5,6 @@ class HealthController < ApplicationController
   def show
     @monitor = Health.new
 
-    respond_to do |format|
-      format.json { render json: @monitor, status: @monitor.status }
-    end
+    respond_to { |format| format.json { render json: @monitor, status: @monitor.status } }
   end
 end

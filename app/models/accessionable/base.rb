@@ -51,8 +51,7 @@ class Accessionable::Base
     raise NotImplementedError, 'abstract method'
   end
 
-  def update_array_express_accession_number!(accession_number)
-  end
+  def update_array_express_accession_number!(accession_number); end
 
   def accessionable_id
     raise NotImplementError, 'abstract method'
@@ -73,7 +72,7 @@ class Accessionable::Base
   end
 
   def label_scope
-    @label_scope ||= "metadata.#{self.class.name.split("::").last.downcase}.metadata"
+    @label_scope ||= "metadata.#{self.class.name.split('::').last.downcase}.metadata"
   end
 
   class Tag # rubocop:todo Style/Documentation
@@ -90,7 +89,7 @@ class Accessionable::Base
     end
 
     def build(xml)
-      xml.TAG   label
+      xml.TAG label
       xml.VALUE value
     end
   end

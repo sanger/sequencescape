@@ -20,13 +20,10 @@ module SequencescapeExcel
     # If the attributes contain a worksheet will add all of the
     # options for the list to a reference in the worksheet.
     def update(attributes = {})
-      each do |conditional_formatting|
-        conditional_formatting.update(attributes)
-      end
+      each { |conditional_formatting| conditional_formatting.update(attributes) }
 
       if attributes[:worksheet].present? && conditional_formattings.any?
-        @saved = attributes[:worksheet].add_conditional_formatting(attributes[:reference],
-                                                                   options)
+        @saved = attributes[:worksheet].add_conditional_formatting(attributes[:reference], options)
       end
 
       self
@@ -43,11 +40,13 @@ module SequencescapeExcel
     # for each key.
     def create_conditional_formattings(conditional_formattings)
       conditional_formattings.each do |key, conditional_formatting|
-        add(if conditional_formatting.is_a?(Hash)
-              ConditionalFormatting.new(conditional_formatting.merge(name: key))
-            else
-              key.dup
-            end)
+        add(
+          if conditional_formatting.is_a?(Hash)
+            ConditionalFormatting.new(conditional_formatting.merge(name: key))
+          else
+            key.dup
+          end
+        )
       end
     end
 

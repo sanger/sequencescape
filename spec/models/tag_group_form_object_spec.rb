@@ -35,9 +35,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     end
 
     context 'when oligos are separated by multiple spaces' do
-      before do
-        tag_group_form_object.oligos_text = ' ACGTACGT    ACTGCATG  ACTGGGCC   '
-      end
+      before { tag_group_form_object.oligos_text = ' ACGTACGT    ACTGCATG  ACTGGGCC   ' }
 
       it 'the model is valid' do
         expect(tag_group_form_object).to be_valid
@@ -65,9 +63,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     end
 
     context 'when the oligos are entered with commas separating them' do
-      before do
-        tag_group_form_object.oligos_text = 'ACCTTGGA,GGTTACAC,TAATCGCA'
-      end
+      before { tag_group_form_object.oligos_text = 'ACCTTGGA,GGTTACAC,TAATCGCA' }
 
       it 'the model is valid' do
         expect(tag_group_form_object).to be_valid
@@ -80,9 +76,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     end
 
     context 'when the oligos are entered with commas and spaces separating them' do
-      before do
-        tag_group_form_object.oligos_text = 'ACCTTGGA, GGTTACAC,  TAATCGCA'
-      end
+      before { tag_group_form_object.oligos_text = 'ACCTTGGA, GGTTACAC,  TAATCGCA' }
 
       it 'the model is valid' do
         expect(tag_group_form_object).to be_valid
@@ -95,9 +89,7 @@ RSpec.describe TagGroup::FormObject, type: :model do
     end
 
     context 'when the oligos are entered as lowercase' do
-      before do
-        tag_group_form_object.oligos_text = 'accttgga'
-      end
+      before { tag_group_form_object.oligos_text = 'accttgga' }
 
       it 'the model is valid' do
         expect(tag_group_form_object).to be_valid

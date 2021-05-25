@@ -16,9 +16,7 @@ module SequencescapeExcel
     private
 
     def create_defaults(defaults)
-      defaults.each do |k, default|
-        add ConditionalFormattingDefault.new(default.merge(type: k))
-      end
+      defaults.each { |k, default| add ConditionalFormattingDefault.new(default.merge(type: k)) }
     end
   end
 end

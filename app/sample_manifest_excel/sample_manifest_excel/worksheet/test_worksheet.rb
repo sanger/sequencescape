@@ -6,17 +6,27 @@ module SampleManifestExcel
   module Worksheet
     ##
     # A test worksheet is necessary for testing uploads.
-    class TestWorksheet < SequencescapeExcel::Worksheet::Base
+    class TestWorksheet < SequencescapeExcel::Worksheet::Base # rubocop:todo Metrics/ClassLength
       include SequencescapeExcel::Helpers::Worksheet
 
       self.worksheet_name = 'DNA Collections Form'
 
-      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns,
-                    :partial, :cgap, :num_plates, :num_samples_per_plate
+      attr_accessor :data,
+                    :no_of_rows,
+                    :study,
+                    :supplier,
+                    :count,
+                    :type,
+                    :validation_errors,
+                    :missing_columns,
+                    :partial,
+                    :cgap,
+                    :num_plates,
+                    :num_samples_per_plate
       attr_reader :dynamic_attributes, :tags
       attr_writer :manifest_type
 
-      def initialize(attributes = {})
+      def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
         super
         @validation_errors ||= []
         if type == 'Plates'
@@ -63,11 +73,13 @@ module SampleManifestExcel
         @sample_manifest ||= create_sample_manifest
       end
 
-      def create_sample_manifest
+      def create_sample_manifest # rubocop:todo Metrics/MethodLength
         if %w[plate_default plate_full plate_rnachip].include? manifest_type
-          FactoryBot.create(:pending_plate_sample_manifest,
-                            num_plates: num_plates,
-                            num_samples_per_plate: num_samples_per_plate)
+          FactoryBot.create(
+            :pending_plate_sample_manifest,
+            num_plates: num_plates,
+            num_samples_per_plate: num_samples_per_plate
+          )
         elsif %w[tube_library_with_tag_sequences].include? manifest_type
           FactoryBot.create(:sample_manifest, asset_type: 'library')
         elsif %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
@@ -86,11 +98,7 @@ module SampleManifestExcel
       private
 
       def initialize_dynamic_attributes
-        {}.tap do |hsh|
-          first_to_last.each do |i|
-            hsh[i] = {}
-          end
-        end.with_indifferent_access
+        {}.tap { |hsh| first_to_last.each { |i| hsh[i] = {} } }.with_indifferent_access
       end
 
       def create_plate_dynamic_attributes
@@ -98,7 +106,8 @@ module SampleManifestExcel
         record_plate_samples
       end
 
-      def record_plate_samples
+      # rubocop:todo Metrics/MethodLength
+      def record_plate_samples # rubocop:todo Metrics/AbcSize
         sm_sample_assets = sample_manifest.sample_manifest_assets.to_a
 
         first_to_last.each_with_index do |sheet_row, sample_index|
@@ -112,22 +121,27 @@ module SampleManifestExcel
 
           # set the plate barcode
           plate_id = cur_sm_sample_asset.asset.plate.id
+
           # Validation errors here indicates problems we WANT not problems we HAVE
-          dynamic_attributes[sheet_row][:sanger_plate_id] = if cgap
-                                                              if validation_errors.include?(:sample_plate_id_duplicates)
-                                                                'CGAP-99999'
-                                                              elsif validation_errors.include?(:sample_plate_id_unrecognised_foreign)
-                                                                "INVALID-#{plate_id.to_s.upcase}#{(plate_id % 10).to_s.upcase}"
-                                                              else
-                                                                "CGAP-#{plate_id.to_s(16).upcase}#{(plate_id % 16).to_s(16).upcase}"
-                                                              end
-                                                            else
-                                                              cur_sm_sample_asset.asset.plate.human_barcode
-                                                            end
+          dynamic_attributes[sheet_row][:sanger_plate_id] =
+            if cgap
+              if validation_errors.include?(:sample_plate_id_duplicates)
+                'CGAP-99999'
+              elsif validation_errors.include?(:sample_plate_id_unrecognised_foreign)
+                "INVALID-#{plate_id.to_s.upcase}#{(plate_id % 10).to_s.upcase}"
+              else
+                "CGAP-#{plate_id.to_s(16).upcase}#{(plate_id % 16).to_s(16).upcase}"
+              end
+            else
+              cur_sm_sample_asset.asset.plate.human_barcode
+            end
+
           # set the well position
           dynamic_attributes[sheet_row][:well] = cur_sm_sample_asset.asset.map_description
         end
       end
+
+      # rubocop:enable Metrics/MethodLength
 
       def create_tube_dynamic_attributes
         @dynamic_attributes = initialize_dynamic_attributes
@@ -135,7 +149,8 @@ module SampleManifestExcel
         create_tags
       end
 
-      def record_tube_samples
+      # rubocop:todo Metrics/MethodLength
+      def record_tube_samples # rubocop:todo Metrics/AbcSize
         tube_counter = 0
         first_to_last.each do |sheet_row|
           row = dynamic_attributes[sheet_row]
@@ -148,21 +163,24 @@ module SampleManifestExcel
               sample_manifest_asset.save
             end
             row[:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
-            row[:sanger_tube_id] = if cgap
-                                     tube_row_num = (sheet_row - computed_first_row) + 1
-                                     if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
-                                       'CGAP-99999'
-                                     else
-                                       "CGAP-#{tube_row_num.to_s(16).upcase}#{(tube_row_num % 16).to_s(16).upcase}"
-                                     end
-                                   else
-                                     asset.human_barcode
-                                   end
+            row[:sanger_tube_id] =
+              if cgap
+                tube_row_num = (sheet_row - computed_first_row) + 1
+                if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
+                  'CGAP-99999'
+                else
+                  "CGAP-#{tube_row_num.to_s(16).upcase}#{(tube_row_num % 16).to_s(16).upcase}"
+                end
+              else
+                asset.human_barcode
+              end
           end
           row[:tube_barcode] = 'TB1111111' + tube_counter.to_s
           tube_counter += 1
         end
       end
+
+      # rubocop:enable Metrics/MethodLength
 
       # Adds title and description (study abbreviation, supplier name, number of assets sent)
       # to a worksheet.
@@ -205,25 +223,38 @@ module SampleManifestExcel
         end
       end
 
-      def add_cell_data(column, row_num, partial)
+      # rubocop:todo Metrics/PerceivedComplexity
+      # rubocop:todo Metrics/MethodLength
+      # rubocop:todo Metrics/AbcSize
+      def add_cell_data(column, row_num, partial) # rubocop:todo Metrics/CyclomaticComplexity
         if partial && empty_row?(row_num)
           (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
-        elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && row_num == computed_first_row
+        elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' &&
+              row_num == computed_first_row
           nil
-        elsif validation_errors.include?(:sanger_sample_id_invalid) && column.name == 'sanger_sample_id' && row_num == computed_first_row
+        elsif validation_errors.include?(:sanger_sample_id_invalid) && column.name == 'sanger_sample_id' &&
+              row_num == computed_first_row
           'ABC'
         else
           data[column.name] || dynamic_attributes[row_num][column.name]
         end
       end
 
-      def build_tube_sample_manifest_asset
-        asset = if %w[tube_multiplexed_library tube_library_with_tag_sequences
-                      tube_multiplexed_library_with_tag_sequences].include? manifest_type
-                  FactoryBot.create(:empty_library_tube)
-                else
-                  FactoryBot.create(:empty_sample_tube)
-                end
+      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/PerceivedComplexity
+
+      def build_tube_sample_manifest_asset # rubocop:todo Metrics/MethodLength
+        asset =
+          if %w[
+               tube_multiplexed_library
+               tube_library_with_tag_sequences
+               tube_multiplexed_library_with_tag_sequences
+             ].include? manifest_type
+            FactoryBot.create(:empty_library_tube)
+          else
+            FactoryBot.create(:empty_sample_tube)
+          end
         sma = FactoryBot.build(:sample_manifest_asset, asset: asset.receptacle, sample_manifest: nil)
         assets << asset
         yield(sma) if block_given?
@@ -233,8 +264,11 @@ module SampleManifestExcel
         return unless %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
 
         assets.each do |asset|
-          FactoryBot.create(:external_multiplexed_library_tube_creation_request, asset: asset,
-                                                                                 target_asset: multiplexed_library_tube)
+          FactoryBot.create(
+            :external_multiplexed_library_tube_creation_request,
+            asset: asset,
+            target_asset: multiplexed_library_tube
+          )
         end
       end
 
@@ -250,27 +284,26 @@ module SampleManifestExcel
         ReferenceGenome.where(name: data[:reference_genome]).first_or_create
       end
 
-      def create_tags
+      # rubocop:todo Metrics/MethodLength
+      def create_tags # rubocop:todo Metrics/AbcSize
         if %w[tube_multiplexed_library_with_tag_sequences tube_library_with_tag_sequences].include? manifest_type
           oligos = Tags::ExampleData.new.take(computed_first_row, last_row, validation_errors.include?(:tags))
-          dynamic_attributes.each do |k, _v|
-            dynamic_attributes[k].merge!(oligos[k])
-          end
+          dynamic_attributes.each { |k, _v| dynamic_attributes[k].merge!(oligos[k]) }
         elsif %w[tube_multiplexed_library].include? manifest_type
-          groups_and_indexes = Tags::ExampleData.new.take_as_groups_and_indexes(computed_first_row, last_row,
-                                                                                validation_errors.include?(:tags))
-          dynamic_attributes.each do |k, _v|
-            dynamic_attributes[k].merge!(groups_and_indexes[k])
-          end
+          groups_and_indexes =
+            Tags::ExampleData.new.take_as_groups_and_indexes(
+              computed_first_row,
+              last_row,
+              validation_errors.include?(:tags)
+            )
+          dynamic_attributes.each { |k, _v| dynamic_attributes[k].merge!(groups_and_indexes[k]) }
         end
       end
 
+      # rubocop:enable Metrics/MethodLength
+
       def computed_first_row
-        if type == 'Tube Racks'
-          first_row + count + 1
-        else
-          first_row
-        end
+        type == 'Tube Racks' ? first_row + count + 1 : first_row
       end
     end
   end

@@ -22,7 +22,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
     end
 
     let(:fragment_size_required_from) { 1 }
-    let(:fragment_size_required_to)   { 20 }
+    let(:fragment_size_required_to) { 20 }
     let(:library_type) { create(:library_type).name }
     let(:pcr_cycles) { 8 }
 
@@ -39,8 +39,13 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
 
     let(:expected_pool_info) do
       {
-        insert_size: { from: fragment_size_required_from, to: fragment_size_required_to },
-        library_type: { name: library_type },
+        insert_size: {
+          from: fragment_size_required_from,
+          to: fragment_size_required_to
+        },
+        library_type: {
+          name: library_type
+        },
         request_type: subject.request_type.key,
         pcr_cycles: pcr_cycles,
         for_multiplexing: false
@@ -59,7 +64,8 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
       end
     end
 
-    it 'has a fragment_size_required_to' do # rubocop:todo RSpec/AggregateExamples
+    it 'has a fragment_size_required_to' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(subject.request_metadata.fragment_size_required_to).to eq(fragment_size_required_to)
     end
 
@@ -71,11 +77,13 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
       end
     end
 
-    it 'has a library_type' do # rubocop:todo RSpec/AggregateExamples
+    it 'has a library_type' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(subject.request_metadata.library_type).to eq(library_type)
     end
 
-    it 'has pcr_cycles' do # rubocop:todo RSpec/AggregateExamples
+    it 'has pcr_cycles' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(subject.request_metadata.pcr_cycles).to eq(pcr_cycles)
     end
 
@@ -96,9 +104,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
     end
 
     context 'with a configured pcr_cycle range of 0 only' do
-      before do
-        request_type.request_type_validators << create(:pcr_cycles_validator)
-      end
+      before { request_type.request_type_validators << create(:pcr_cycles_validator) }
 
       context 'with a valid cycle' do
         let(:pcr_cycles) { 0 }
@@ -116,6 +122,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
         let(:pcr_cycles) { nil }
 
         it('is valid') { expect(subject).to be_valid }
+
         # Defaults are set on a before validate call.
 
         it('sets defaults') do
@@ -126,9 +133,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
     end
 
     context 'with a configured pcr_cycle range' do
-      before do
-        request_type.request_type_validators << create(:pcr_cycles_validator, valid_options: (1..25))
-      end
+      before { request_type.request_type_validators << create(:pcr_cycles_validator, valid_options: (1..25)) }
 
       context 'with a valid cycle' do
         let(:pcr_cycles) { 5 }

@@ -4,9 +4,7 @@ FactoryBot.define do
   factory :aker_job_json, class: Hash do
     skip_create
 
-    transient do
-      study { create(:study) }
-    end
+    transient { study { create(:study) } }
     sequence(:job_id) { |n| n }
     job_uuid { SecureRandom.uuid }
     sequence(:work_order_id) { |n| n }
@@ -14,7 +12,7 @@ FactoryBot.define do
     product_name { '30x Human Whole Genome Shotgun (WGS) with PCR' }
     process_name { 'Process name' }
     process_uuid { SecureRandom.uuid }
-    product_version { 20170324 }
+    product_version { 20_170_324 }
     product_uuid { SecureRandom.uuid }
     project_uuid { SecureRandom.uuid }
     project_name { 'MyProject' }
@@ -26,12 +24,7 @@ FactoryBot.define do
     priority { 'standard' }
 
     container { build(:container_json) }
-    materials do
-      [
-        build(:material_json),
-        build(:material_json)
-      ]
-    end
+    materials { [build(:material_json), build(:material_json)] }
 
     initialize_with { attributes.stringify_keys }
 

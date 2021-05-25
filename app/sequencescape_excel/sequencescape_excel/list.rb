@@ -48,8 +48,7 @@ module SequencescapeExcel
     include Enumerable
     include Comparable
 
-    included do
-    end
+    included {}
 
     ##
     # ClassMethods
@@ -60,7 +59,8 @@ module SequencescapeExcel
       # - create a list of keys
       # - create a struct class based on the name
       # - creates a method which returns a list of keys for the items in each key
-      def list_for(*args)
+      # rubocop:todo Metrics/MethodLength
+      def list_for(*args) # rubocop:todo Metrics/AbcSize
         options = args.extract_options!
 
         model = args.first.to_s.classify
@@ -81,20 +81,21 @@ module SequencescapeExcel
 
         return if const_defined?(list_model)
 
-        list_model_const = Object.const_set(list_model, Struct.new(*options[:keys]) do
-          def fetch(key)
-            if members.include?(key)
-              self[key]
-            else
-              {}
+        list_model_const =
+          Object.const_set(
+            list_model,
+            Struct.new(*options[:keys]) do
+              def fetch(key)
+                members.include?(key) ? self[key] : {}
+              end
             end
-          end
-        end)
+          )
 
         define_method :list_model do
           list_model_const
         end
       end
+      # rubocop:enable Metrics/MethodLength
     end
 
     def initialize
@@ -126,9 +127,7 @@ module SequencescapeExcel
       return unless item.valid?
 
       values << item
-      keys.each do |key|
-        items.fetch(key).store(item.send(key).to_s, item)
-      end
+      keys.each { |key| items.fetch(key).store(item.send(key).to_s, item) }
     end
 
     ##

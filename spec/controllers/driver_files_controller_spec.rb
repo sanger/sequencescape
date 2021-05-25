@@ -13,12 +13,11 @@ RSpec.describe DriverFilesController, type: :controller do
     let(:destination_plate) { create :plate, well_count: 1, well_factory: :picked_well }
     let(:pipeline) { create :cherrypick_pipeline }
 
-    let(:transfers) do
-      { source_plate.wells[0] => destination_plate.wells.first }
-    end
+    let(:transfers) { { source_plate.wells[0] => destination_plate.wells.first } }
 
     let(:requests) do
-      create_list :cherrypick_request, 1,
+      create_list :cherrypick_request,
+                  1,
                   asset: source_plate.wells.first,
                   target_asset: destination_plate.wells.first,
                   request_type: pipeline.request_types.first,

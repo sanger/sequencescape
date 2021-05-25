@@ -15,13 +15,15 @@ module SequencescapeExcel
 
       validate :check_container
 
-      def update(attributes = {})
+      # rubocop:todo Metrics/PerceivedComplexity
+      # rubocop:todo Metrics/MethodLength
+      # rubocop:todo Metrics/AbcSize
+      def update(attributes = {}) # rubocop:todo Metrics/CyclomaticComplexity
         return unless valid? && attributes[:aliquot].present? && foreign_barcode_format.present?
 
         # if this tube's list of barcodes already contains a foreign barcode with the same format then update the existing one
-        foreign_barcode = attributes[:aliquot].receptacle.barcodes.find do |item|
-          item[:format] == foreign_barcode_format.to_s
-        end
+        foreign_barcode =
+          attributes[:aliquot].receptacle.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
         if foreign_barcode.present?
           if foreign_barcode.barcode != value
             foreign_barcode.update(barcode: value)
@@ -30,13 +32,17 @@ module SequencescapeExcel
             end
           end
         else
-          attributes[:aliquot].receptacle.labware.barcodes << Barcode.new(format: foreign_barcode_format,
-                                                                          barcode: value)
+          attributes[:aliquot].receptacle.labware.barcodes <<
+            Barcode.new(format: foreign_barcode_format, barcode: value)
           if attributes[:aliquot].sample.sample_manifest.present?
             attributes[:aliquot].sample.sample_manifest.update_barcodes
           end
         end
       end
+
+      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/PerceivedComplexity
 
       private
 

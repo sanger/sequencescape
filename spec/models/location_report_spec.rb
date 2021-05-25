@@ -3,19 +3,15 @@
 require 'rails_helper'
 require 'support/lab_where_client_helper'
 
-RSpec.configure do |c|
-  c.include LabWhereClientHelper
-end
+RSpec.configure { |c| c.include LabWhereClientHelper }
 
 RSpec.describe LocationReport, type: :model do
   # setup studies
-  let(:studies) do
-    create_list(:study, 2)
-  end
-  let(:study_1)               { studies[0] }
-  let(:study_2)               { studies[1] }
-  let(:study_1_sponsor)       { study_1.study_metadata.faculty_sponsor }
-  let(:study_2_sponsor)       { study_2.study_metadata.faculty_sponsor }
+  let(:studies) { create_list(:study, 2) }
+  let(:study_1) { studies[0] }
+  let(:study_2) { studies[1] }
+  let(:study_1_sponsor) { study_1.study_metadata.faculty_sponsor }
+  let(:study_2_sponsor) { study_2.study_metadata.faculty_sponsor }
 
   # setup plates
   let(:plate_1) do
@@ -26,8 +22,8 @@ RSpec.describe LocationReport, type: :model do
       created_at: '2016-02-01 12:00:00'
     )
   end
-  let(:plt_1_purpose)         { plate_1.plate_purpose.name }
-  let(:plt_1_created)         { plate_1.created_at.strftime('%Y-%m-%d %H:%M:%S') }
+  let(:plt_1_purpose) { plate_1.plate_purpose.name }
+  let(:plt_1_created) { plate_1.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
   let(:plate_2) do
     create(
@@ -38,8 +34,8 @@ RSpec.describe LocationReport, type: :model do
     )
   end
 
-  let(:plt_2_purpose)         { plate_2.plate_purpose.name }
-  let(:plt_2_created)         { plate_2.created_at.strftime('%Y-%m-%d %H:%M:%S') }
+  let(:plt_2_purpose) { plate_2.plate_purpose.name }
+  let(:plt_2_created) { plate_2.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
   let(:plate_3) do
     create(
@@ -49,12 +45,10 @@ RSpec.describe LocationReport, type: :model do
       created_at: '2016-10-01 12:00:00'
     )
   end
-  let(:plt_3_purpose)         { plate_3.plate_purpose.name }
-  let(:plt_3_created)         { plate_3.created_at.strftime('%Y-%m-%d %H:%M:%S') }
+  let(:plt_3_purpose) { plate_3.plate_purpose.name }
+  let(:plt_3_created) { plate_3.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
-  let(:headers_line)          do
-    'ScannedBarcode,HumanBarcode,Type,Created,Location,Service,StudyName,StudyId,FacultySponsor'
-  end
+  let(:headers_line) { 'ScannedBarcode,HumanBarcode,Type,Created,Location,Service,StudyName,StudyId,FacultySponsor' }
   let(:locn_prefix) { 'Sanger - Ogilvie - AA209 - Freezer 1' }
 
   context 'location reports' do
@@ -152,9 +146,7 @@ RSpec.describe LocationReport, type: :model do
           expect(location_report.save).to be_truthy
 
           lines = []
-          location_report.generate_report_rows do |fields|
-            lines.push(fields.join(','))
-          end
+          location_report.generate_report_rows { |fields| lines.push(fields.join(',')) }
 
           expect(lines).to match_array(expected_lines)
         end
@@ -183,8 +175,11 @@ RSpec.describe LocationReport, type: :model do
             [plate_2.machine_barcode.to_s, 'Shelf 2', locn_prefix],
             [plate_3.machine_barcode.to_s, 'Shelf 3', locn_prefix]
           ].each do |lw_barcode, lw_locn_name, lw_locn_parentage|
-            stub_lwclient_labware_find_by_bc(lw_barcode: lw_barcode, lw_locn_name: lw_locn_name,
-                                             lw_locn_parentage: lw_locn_parentage)
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: lw_barcode,
+              lw_locn_name: lw_locn_name,
+              lw_locn_parentage: lw_locn_parentage
+            )
           end
         end
 
@@ -300,8 +295,11 @@ RSpec.describe LocationReport, type: :model do
           let(:expected_lines) { [headers_line, plt_4_line] }
 
           before do
-            stub_lwclient_labware_find_by_bc(lw_barcode: plate_4.machine_barcode.to_s, lw_locn_name: 'Shelf 1',
-                                             lw_locn_parentage: locn_prefix)
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_4.machine_barcode.to_s,
+              lw_locn_name: 'Shelf 1',
+              lw_locn_parentage: locn_prefix
+            )
           end
 
           it_behaves_like 'a successful report'
@@ -363,8 +361,11 @@ RSpec.describe LocationReport, type: :model do
           let(:expected_lines) { ['No plates found when attempting to generate the report.'] }
 
           before do
-            stub_lwclient_locn_find_by_bc(locn_barcode: location_barcode, locn_name: 'Shelf 1',
-                                          locn_parentage: locn_prefix)
+            stub_lwclient_locn_find_by_bc(
+              locn_barcode: location_barcode,
+              locn_name: 'Shelf 1',
+              locn_parentage: locn_prefix
+            )
             stub_lwclient_locn_children(location_barcode, [])
             stub_lwclient_locn_labwares(location_barcode, [])
           end
@@ -382,8 +383,11 @@ RSpec.describe LocationReport, type: :model do
           before do
             # set up Shelf 1 with no labwares or sub-locations
             p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Shelf 1', lw_locn_parentage: locn_prefix }
-            stub_lwclient_locn_find_by_bc(locn_barcode: location_barcode, locn_name: 'Shelf 1',
-                                          locn_parentage: locn_prefix)
+            stub_lwclient_locn_find_by_bc(
+              locn_barcode: location_barcode,
+              locn_name: 'Shelf 1',
+              locn_parentage: locn_prefix
+            )
             stub_lwclient_locn_children(location_barcode, [])
             stub_lwclient_locn_labwares(location_barcode, [p1])
             stub_lwclient_labware_find_by_bc(p1)
@@ -407,24 +411,33 @@ RSpec.describe LocationReport, type: :model do
 
           before do
             # set up Shelf 1 with no labwares and 1 sub-location
-            stub_lwclient_locn_find_by_bc(locn_barcode: location_barcode, locn_name: 'Shelf 1',
-                                          locn_parentage: locn_prefix)
-            stub_lwclient_locn_children(location_barcode, [
-              {
-                locn_barcode: 'locn-1-at-lvl-2',
-                locn_name: 'Box 1',
-                locn_parentage: locn_prefix + ' - Shelf 1'
-              }
-            ])
+            stub_lwclient_locn_find_by_bc(
+              locn_barcode: location_barcode,
+              locn_name: 'Shelf 1',
+              locn_parentage: locn_prefix
+            )
+            stub_lwclient_locn_children(
+              location_barcode,
+              [{ locn_barcode: 'locn-1-at-lvl-2', locn_name: 'Box 1', locn_parentage: locn_prefix + ' - Shelf 1' }]
+            )
             stub_lwclient_locn_labwares(location_barcode, [])
 
             # set up Shelf 1 - Box 1 with 2 labwares and no sub-locations
-            p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Box 1',
-                   lw_locn_parentage: locn_prefix + ' - Shelf 1' }
-            p2 = { lw_barcode: plate_2.machine_barcode, lw_locn_name: 'Box 1',
-                   lw_locn_parentage: locn_prefix + ' - Shelf 1' }
-            stub_lwclient_locn_find_by_bc(locn_barcode: 'locn-1-at-lvl-2', locn_name: 'Box 1',
-                                          locn_parentage: locn_prefix + ' - Shelf 1')
+            p1 = {
+              lw_barcode: plate_1.machine_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+            }
+            p2 = {
+              lw_barcode: plate_2.machine_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+            }
+            stub_lwclient_locn_find_by_bc(
+              locn_barcode: 'locn-1-at-lvl-2',
+              locn_name: 'Box 1',
+              locn_parentage: locn_prefix + ' - Shelf 1'
+            )
             stub_lwclient_locn_children(location_barcode, [])
             stub_lwclient_locn_labwares(location_barcode, [p1, p2])
             stub_lwclient_labware_find_by_bc(p1)
@@ -449,26 +462,41 @@ RSpec.describe LocationReport, type: :model do
 
           before do
             # set up Shelf 1 with no labwares and two sub-locations
-            locn_lvl2_b1 = { locn_barcode: 'locn-1a-at-lvl-2', locn_name: 'Box 1',
-                             locn_parentage: locn_prefix + ' - Shelf 1' }
-            locn_lvl2_b2 = { locn_barcode: 'locn-1b-at-lvl-2', locn_name: 'Box 2',
-                             locn_parentage: locn_prefix + ' - Shelf 1' }
-            stub_lwclient_locn_find_by_bc(locn_barcode: location_barcode, locn_name: 'Shelf 1',
-                                          locn_parentage: locn_prefix)
+            locn_lvl2_b1 = {
+              locn_barcode: 'locn-1a-at-lvl-2',
+              locn_name: 'Box 1',
+              locn_parentage: locn_prefix + ' - Shelf 1'
+            }
+            locn_lvl2_b2 = {
+              locn_barcode: 'locn-1b-at-lvl-2',
+              locn_name: 'Box 2',
+              locn_parentage: locn_prefix + ' - Shelf 1'
+            }
+            stub_lwclient_locn_find_by_bc(
+              locn_barcode: location_barcode,
+              locn_name: 'Shelf 1',
+              locn_parentage: locn_prefix
+            )
             stub_lwclient_locn_children(location_barcode, [locn_lvl2_b1, locn_lvl2_b2])
             stub_lwclient_locn_labwares(location_barcode, [])
 
             # set up Shelf 1 - Box 1 with one labware and no sub-locations
-            p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Box 1',
-                   lw_locn_parentage: locn_prefix + ' - Shelf 1' }
+            p1 = {
+              lw_barcode: plate_1.machine_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+            }
             stub_lwclient_locn_find_by_bc(locn_lvl2_b1)
             stub_lwclient_locn_children(locn_lvl2_b1[:locn_barcode], [])
             stub_lwclient_locn_labwares(locn_lvl2_b1[:locn_barcode], [p1])
             stub_lwclient_labware_find_by_bc(p1)
 
             # set up Shelf 1 - Box 2 with one labware and no sub-locations
-            p2 = { lw_barcode: plate_2.machine_barcode, lw_locn_name: 'Box 2',
-                   lw_locn_parentage: locn_prefix + ' - Shelf 1' }
+            p2 = {
+              lw_barcode: plate_2.machine_barcode,
+              lw_locn_name: 'Box 2',
+              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+            }
             stub_lwclient_locn_find_by_bc(locn_lvl2_b2)
             stub_lwclient_locn_children(locn_lvl2_b2[:locn_barcode], [])
             stub_lwclient_locn_labwares(locn_lvl2_b2[:locn_barcode], [p2])
@@ -496,28 +524,43 @@ RSpec.describe LocationReport, type: :model do
 
           before do
             # set up Shelf 1 with 1 labware and 1 sub-location
-            locn_lvl2_t1 = { locn_barcode: 'locn-1-at-lvl-2', locn_name: 'Tray 1',
-                             locn_parentage: locn_prefix + ' - Shelf 1' }
+            locn_lvl2_t1 = {
+              locn_barcode: 'locn-1-at-lvl-2',
+              locn_name: 'Tray 1',
+              locn_parentage: locn_prefix + ' - Shelf 1'
+            }
             p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Shelf 1', lw_locn_parentage: locn_prefix }
-            stub_lwclient_locn_find_by_bc(locn_barcode: location_barcode, locn_name: 'Shelf 1',
-                                          locn_parentage: locn_prefix)
+            stub_lwclient_locn_find_by_bc(
+              locn_barcode: location_barcode,
+              locn_name: 'Shelf 1',
+              locn_parentage: locn_prefix
+            )
             stub_lwclient_locn_children(location_barcode, [locn_lvl2_t1])
             stub_lwclient_locn_labwares(location_barcode, [p1])
             stub_lwclient_labware_find_by_bc(p1)
 
             # set up Shelf 1 - Tray 1 with 1 labware and 1 sub-location
-            locn_lvl3_b1 = { locn_barcode: 'locn-1-at-lvl-3', locn_name: 'Box 1',
-                             locn_parentage: locn_prefix + ' - Shelf 1 - Tray 1' }
-            p2 = { lw_barcode: plate_2.machine_barcode, lw_locn_name: 'Tray 1',
-                   lw_locn_parentage: locn_prefix + ' - Shelf 1' }
+            locn_lvl3_b1 = {
+              locn_barcode: 'locn-1-at-lvl-3',
+              locn_name: 'Box 1',
+              locn_parentage: locn_prefix + ' - Shelf 1 - Tray 1'
+            }
+            p2 = {
+              lw_barcode: plate_2.machine_barcode,
+              lw_locn_name: 'Tray 1',
+              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+            }
             stub_lwclient_locn_find_by_bc(locn_lvl2_t1)
             stub_lwclient_locn_children(locn_lvl2_t1[:locn_barcode], [locn_lvl3_b1])
             stub_lwclient_locn_labwares(locn_lvl2_t1[:locn_barcode], [p2])
             stub_lwclient_labware_find_by_bc(p2)
 
             # set up Shelf 1 - Tray 1 - Box 1 with 1 labware and no sub-locations
-            p3 = { lw_barcode: plate_3.machine_barcode, lw_locn_name: 'Box 1',
-                   lw_locn_parentage: locn_prefix + ' - Shelf 1 - Tray 1' }
+            p3 = {
+              lw_barcode: plate_3.machine_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: locn_prefix + ' - Shelf 1 - Tray 1'
+            }
             stub_lwclient_locn_find_by_bc(locn_lvl3_b1)
             stub_lwclient_locn_children(locn_lvl3_b1[:locn_barcode], [])
             stub_lwclient_locn_labwares(locn_lvl3_b1[:locn_barcode], [p3])

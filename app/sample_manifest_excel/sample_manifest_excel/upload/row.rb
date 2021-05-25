@@ -9,7 +9,7 @@ module SampleManifestExcel
     # *number: Number of the row which is used for error tracking
     # *data: An array of sample data
     # *columns: The columns which relate to the data.
-    class Row
+    class Row # rubocop:todo Metrics/ClassLength
       include ActiveModel::Model
       include Converters
 
@@ -78,7 +78,8 @@ module SampleManifestExcel
       # *Updating all of the specialised fields in the aliquot
       # *Updating the sample metadata
       # *Saving the asset, metadata and sample
-      def update_sample(tag_group, override)
+      # rubocop:todo Metrics/MethodLength
+      def update_sample(tag_group, override) # rubocop:todo Metrics/AbcSize
         return unless valid?
 
         @reuploaded = sample.updated_by_manifest
@@ -95,14 +96,15 @@ module SampleManifestExcel
         end
       end
 
+      # rubocop:enable Metrics/MethodLength
+
       def changed?
-        @sample_updated && sample.previous_changes.present? || metadata.previous_changes.present? || aliquot.previous_changes.present?
+        @sample_updated && sample.previous_changes.present? || metadata.previous_changes.present? ||
+          aliquot.previous_changes.present?
       end
 
       def update_specialised_fields(tag_group)
-        specialised_fields.each do |specialised_field|
-          specialised_field.update(aliquot: aliquot, tag_group: tag_group)
-        end
+        specialised_fields.each { |specialised_field| specialised_field.update(aliquot: aliquot, tag_group: tag_group) }
       end
 
       def update_metadata_fields
@@ -185,8 +187,7 @@ module SampleManifestExcel
 
         specialised_fields.each do |specialised_field|
           unless specialised_field.valid?
-            errors.add(:base,
-                       "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
+            errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
           end
         end
       end
@@ -208,9 +209,10 @@ module SampleManifestExcel
       def create_specialised_fields
         return [] unless columns.present? && data.present? && sanger_sample_id.present?
 
-        specialised_fields = columns.with_specialised_fields.map do |column|
-          column.specialised_field.new(value: at(column.number), sample_manifest_asset: manifest_asset)
-        end
+        specialised_fields =
+          columns.with_specialised_fields.map do |column|
+            column.specialised_field.new(value: at(column.number), sample_manifest_asset: manifest_asset)
+          end
 
         specialised_fields.tap { |fields| link_tag_groups_and_indexes(fields) }
       end

@@ -11,9 +11,7 @@ class RequestType::PoolingMethod < ApplicationRecord # rubocop:todo Style/Docume
     return if pooling_behaviour.nil?
 
     behavior_module = "RequestType::PoolingMethod::#{pooling_behaviour}".constantize
-    class_eval do
-      include(behavior_module)
-    end
+    class_eval { include(behavior_module) }
   end
 
   def pooling_behaviour=(*params)

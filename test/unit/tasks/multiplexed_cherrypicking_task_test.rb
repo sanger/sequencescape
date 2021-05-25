@@ -10,19 +10,21 @@ class DummyWorkflowController < WorkflowsController
   end
 end
 
-class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
+class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   MockBc = Struct.new(:barcode)
 
-  def self.shared
+  # rubocop:todo Metrics/MethodLength
+  def self.shared # rubocop:todo Metrics/AbcSize
     context 'with tag clashes' do
       setup do
         tag_hash = Hash.new { |h, i| h[i] = create :tag }
         @tags = [1, 2, 3, 4, 5, 5, 6, 6].map { |i| tag_hash[i] }
-        @requests = (1..8).map do |i|
-          r = create :pooled_cherrypick_request
-          r.asset.aliquots.first.update!(tag: @tags[i - 1])
-          r
-        end
+        @requests =
+          (1..8).map do |i|
+            r = create :pooled_cherrypick_request
+            r.asset.aliquots.first.update!(tag: @tags[i - 1])
+            r
+          end
 
         @batch = mock('batch')
         @batch.stubs(:requests).returns(@requests)
@@ -41,15 +43,15 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   # Generate the request mapping according to the well array
   def request_location_hash
-    @requests.each_with_index.map do |request, index|
-      [request.id.to_s, @well_array[index]]
-    end.to_h
+    @requests.each_with_index.map { |request, index| [request.id.to_s, @well_array[index]] }.to_h
   end
 
   # Generate the parameters
-  def params
+  def params # rubocop:todo Metrics/MethodLength
     {
       request_locations: request_location_hash,
       commit: 'Next step',
@@ -66,14 +68,14 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   context 'AssignTubesToMultiplexedWellsHandler' do
     setup do
       @workflows_controller = DummyWorkflowController.new
-      @task                 = create :multiplexed_cherrypicking_task
+      @task = create :multiplexed_cherrypicking_task
     end
 
     context '#do_assign_requests_to_multiplexed_wells_task with existing plate' do
       setup do
         @plate = create :plate
 
-        @well_array = %w(A1 B1 C1 D1 E1 F1 G1 G1)
+        @well_array = %w[A1 B1 C1 D1 E1 F1 G1 G1]
 
         @barcode = @plate.ean13_barcode
         @purpose_id = '33'
@@ -86,11 +88,12 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
           tag_hash = Hash.new { |h, i| h[i] = create :tag }
           @tags = [1, 2, 3, 4, 5, 6, 7, 8].map { |i| tag_hash[i] }
 
-          @requests = (1..8).map do |i|
-            r = create :pooled_cherrypick_request
-            r.asset.aliquots.first.update!(tag: @tags[i - 1])
-            r
-          end
+          @requests =
+            (1..8).map do |i|
+              r = create :pooled_cherrypick_request
+              r.asset.aliquots.first.update!(tag: @tags[i - 1])
+              r
+            end
 
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
@@ -108,7 +111,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         PlateBarcode.stubs(:create).returns(MockBc.new('12345'))
         @purpose = create :plate_purpose
         @purpose_id = @purpose.id.to_s
-        @well_array = %w(A1 B1 C1 D1 E1 F1 G1 G1)
+        @well_array = %w[A1 B1 C1 D1 E1 F1 G1 G1]
       end
 
       shared
@@ -116,13 +119,14 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
       context 'with no tag clashes' do
         setup do
           @tags = Array.new(8) { create :tag }
-          @requests = (1..8).map do |i|
-            r = create :pooled_cherrypick_request
-            r.asset.aliquots.first.update!(tag: @tags[i])
-            r
-          end
+          @requests =
+            (1..8).map do |i|
+              r = create :pooled_cherrypick_request
+              r.asset.aliquots.first.update!(tag: @tags[i])
+              r
+            end
 
-          @well_array = %w(A1 B1 C1 D1 E1 F1 G1 H1)
+          @well_array = %w[A1 B1 C1 D1 E1 F1 G1 H1]
 
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
@@ -139,9 +143,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         end
         should 'set the pick volume on the target_wells' do
           assert @task.do_task(@workflows_controller, params), 'Task returned false'
-          @requests.each do |request|
-            assert_equal 5, request.target_asset.get_picked_volume
-          end
+          @requests.each { |request| assert_equal 5, request.target_asset.get_picked_volume }
         end
       end
 
@@ -149,13 +151,14 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         setup do
           @tag = create :tag
           @sample = create :sample
-          @requests = (1..8).map do |_i|
-            r = create :pooled_cherrypick_request
-            r.asset.aliquots.first.update!(tag: @tag, sample: @sample)
-            r
-          end
+          @requests =
+            (1..8).map do |_i|
+              r = create :pooled_cherrypick_request
+              r.asset.aliquots.first.update!(tag: @tag, sample: @sample)
+              r
+            end
 
-          @well_array = %w(A1 B1 C1 D1 E1 F1 G1 H1)
+          @well_array = %w[A1 B1 C1 D1 E1 F1 G1 H1]
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
           @workflows_controller.batch = @batch

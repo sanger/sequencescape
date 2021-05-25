@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+# rubocop:todo Metrics/ClassLength
 class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
-  class InvalidFile < StandardError; end
+  class InvalidFile < StandardError
+  end
 
   class_attribute :assay_type, :assay_version
 
@@ -15,10 +17,7 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
   end
 
   def field_name_for(sym_name)
-    {
-      concentration: 'Conc. [ng/µl]',
-      molarity: 'Molarity [nmol/l]'
-    }[sym_name]
+    { concentration: 'Conc. [ng/µl]', molarity: 'Molarity [nmol/l]' }[sym_name]
   end
 
   def concentration(plate_position)
@@ -29,7 +28,7 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
     get_parsed_attribute(plate_position, field_name_for(:molarity))
   end
 
-  def table_content_hash(group)
+  def table_content_hash(group) # rubocop:todo Metrics/AbcSize
     content_hash = {}
     starting_line = group[0]
     ending_line = group[1]
@@ -38,19 +37,13 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
 
     ((starting_line + 2)..(ending_line)).each do |pos|
       values = content[pos]
-      unless values.nil? && (values.length != fields.length)
-        content_hash.merge!(fields.zip(values).to_h)
-      end
+      content_hash.merge!(fields.zip(values).to_h) unless values.nil? && (values.length != fields.length)
     end
     content_hash
   end
 
   def build_range(range)
-    range = if range == nil
-              [0, content.length - 1]
-            else
-              range.dup
-            end
+    range = range == nil ? [0, content.length - 1] : range.dup
     range.push(content.length - 1) if (range.length == 1)
     range
   end
@@ -60,7 +53,10 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
   # - regexp -> Regular expression to be matched in the first column as beginning of range
   # - range -> In case it is specified, restricts the searching process to this range of lines
   # instead of using all the content of the CSV file
-  def get_groups(regexp, range = nil)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def get_groups(regexp, range = nil) # rubocop:todo Metrics/CyclomaticComplexity
     groups = []
     group = []
     range = build_range(range)
@@ -78,12 +74,14 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
         groups.push [group[0] + range[0], group[1] + range[0]]
         group = []
       end
-      if ((group.length == 1) && (pos == (group_contents.length - 1)))
-        groups.push [group[0] + range[0], pos + range[0]]
-      end
+      groups.push [group[0] + range[0], pos + range[0]] if ((group.length == 1) && (pos == (group_contents.length - 1)))
     end
     groups
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def get_group_content(group)
     content.slice(group[0], group[1] - group[0] + 1)
@@ -120,15 +118,9 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
     groups = get_groups(/Sample Name/)
 
     groups.each_with_index.map do |group, pos|
-      next_index = if (pos == (groups.length - 1))
-                     @content.length - 1
-                   else
-                     groups[pos + 1][0] - 1
-                   end
+      next_index = (pos == (groups.length - 1)) ? @content.length - 1 : groups[pos + 1][0] - 1
       [group[0], next_index]
-    end.reduce({}) do |memo, group|
-      memo.merge(parse_sample group)
-    end
+    end.reduce({}) { |memo, group| memo.merge(parse_sample group) }
   end
 
   def parsed_content
@@ -145,17 +137,19 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
 
   def each_well_and_parameters
     parsed_content.each do |well, values|
-      yield(well, {
-        'concentration' => Unit.new(values[:peak_table][field_name_for(:concentration)], 'ng/ul'),
-        'molarity' => Unit.new(values[:peak_table][field_name_for(:molarity)], 'nmol/l')
-      })
+      yield(
+        well,
+        {
+          'concentration' => Unit.new(values[:peak_table][field_name_for(:concentration)], 'ng/ul'),
+          'molarity' => Unit.new(values[:peak_table][field_name_for(:molarity)], 'nmol/l')
+        }
+      )
     end
   end
 
   def self.parses?(content)
     # We don't go through the whole file
-    content[0..10].detect do |line|
-      /Version Created/ === line[0] && /^B.*/ === line[1]
-    end.present?
+    content[0..10].detect { |line| /Version Created/ === line[0] && /^B.*/ === line[1] }.present?
   end
 end
+# rubocop:enable Metrics/ClassLength

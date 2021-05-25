@@ -11,27 +11,21 @@ FactoryBot.define do
       horizontal_ratio { 3 }
       vertical_ratio { 8 }
       description_strategy { 'Map::Sequential' }
-      after(:create) do |shape|
-        shape.generate_map(96)
-      end
+      after(:create) { |shape| shape.generate_map(96) }
     end
 
     factory :fluidigm_192_shape do
       horizontal_ratio { 3 }
       vertical_ratio { 4 }
       description_strategy { 'Map::Sequential' }
-      after(:create) do |shape|
-        shape.generate_map(192)
-      end
+      after(:create) { |shape| shape.generate_map(192) }
     end
 
     factory :strip_tube_column_shape do
       horizontal_ratio { 1 }
       vertical_ratio { 8 }
       description_strategy { 'Map::Sequential' }
-      after(:create) do |shape|
-        shape.generate_map(8)
-      end
+      after(:create) { |shape| shape.generate_map(8) }
     end
   end
 end

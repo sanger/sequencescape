@@ -17,9 +17,7 @@ FactoryBot.define do
       barcode { SBCF::SangerBarcode.new(prefix: prefix, number: barcode_number).human_barcode }
 
       factory :sanger_ean13_tube do
-        transient do
-          prefix { 'NT' }
-        end
+        transient { prefix { 'NT' } }
       end
     end
 
@@ -32,9 +30,7 @@ FactoryBot.define do
       barcode { SBCF::SangerBarcode.new(prefix: prefix, number: barcode_number).human_barcode }
 
       factory :sanger_code39_tube do
-        transient do
-          prefix { 'NT' }
-        end
+        transient { prefix { 'NT' } }
       end
     end
 
@@ -49,9 +45,7 @@ FactoryBot.define do
     end
 
     factory :fluidigm do
-      transient do
-        sequence(:number) { |i| '1' + i.to_s.rjust(9, '0') }
-      end
+      transient { sequence(:number) { |i| '1' + i.to_s.rjust(9, '0') } }
       format { 'fluidigm' }
       barcode { number }
     end
@@ -60,6 +54,7 @@ FactoryBot.define do
       transient do
         prefix { 'CGAP-' }
         sequence(:number) { |i| i.to_s(16).upcase }
+
         # we do not attempt to calculate a valid checksum here
         sequence(:suffix) { |i| (i % 16).to_s(16).upcase }
       end
@@ -76,16 +71,12 @@ FactoryBot.define do
       barcode { "#{prefix}#{number}" }
 
       factory :fluidx_tube do
-        transient do
-          prefix { 'FD' }
-        end
+        transient { prefix { 'FD' } }
       end
     end
 
     factory :heron_tailed do
-      transient do
-        sequence(:number) { |i| i + 100000 }
-      end
+      transient { sequence(:number) { |i| i + 100_000 } }
       format { 'heron_tailed' }
       barcode { "HT-#{number}" }
     end

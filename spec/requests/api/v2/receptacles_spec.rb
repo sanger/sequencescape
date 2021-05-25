@@ -15,13 +15,14 @@ describe 'Receptacles API', with: :api_v2 do
 
     it 'sends a list of receptacles' do
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(4)
     end
 
     it 'identifies the type of receptacle' do
       listed = json['data'].map { |data| data['type'] }.sort
-      expect(listed).to eq(%w(lanes receptacles receptacles wells))
+      expect(listed).to eq(%w[lanes receptacles receptacles wells])
     end
 
     # TODO: Check filters, ESPECIALLY if they aren't simple attribute filters
@@ -43,9 +44,7 @@ describe 'Receptacles API', with: :api_v2 do
              diluent_volume: diluent_volume
     end
 
-    before do
-      api_get "/api/v2/receptacles/#{receptacle.id}"
-    end
+    before { api_get "/api/v2/receptacles/#{receptacle.id}" }
 
     describe '#get' do
       it 'sends an individual receptacle' do
@@ -78,9 +77,7 @@ describe 'Receptacles API', with: :api_v2 do
         }
       end
 
-      before do
-        api_patch "/api/v2/receptacles/#{receptacle.id}", payload
-      end
+      before { api_patch "/api/v2/receptacles/#{receptacle.id}", payload }
 
       it 'returns successful response with the updated attributes' do
         expect(response).to have_http_status(:success)

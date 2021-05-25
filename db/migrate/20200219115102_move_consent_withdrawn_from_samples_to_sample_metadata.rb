@@ -19,7 +19,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     [true, false].include? val
   end
 
-  def create_recovery_file!
+  def create_recovery_file! # rubocop:todo Metrics/AbcSize
     say "recovery file: #{backup_file_path}"
     backup_data = []
     sample_id_and_consent_withdrawn.each do |sample|
@@ -38,7 +38,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     data_in_file
   end
 
-  def check_recovery_data!(data_in_file)
+  def check_recovery_data!(data_in_file) # rubocop:todo Metrics/CyclomaticComplexity
     raise 'Nothing read' if data_in_file.nil?
     raise 'Not a list' unless data_in_file.is_a?(Array)
     raise 'Empty list' if data_in_file.empty?
@@ -52,7 +52,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     end
   end
 
-  def up
+  def up # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       Sample.reset_column_information
       Sample::Metadata.reset_column_information

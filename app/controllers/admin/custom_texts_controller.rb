@@ -40,9 +40,7 @@ class Admin::CustomTextsController < ApplicationController # rubocop:todo Style/
 
   def edit
     @custom_text = CustomText.find(params[:id])
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   def update
@@ -58,11 +56,7 @@ class Admin::CustomTextsController < ApplicationController # rubocop:todo Style/
 
   def destroy
     custom_text = CustomText.find(params[:id])
-    flash[:notice] = if custom_text.destroy
-                       'Custom text deleted'
-                     else
-                       'Failed to destroy custom text'
-                     end
+    flash[:notice] = custom_text.destroy ? 'Custom text deleted' : 'Failed to destroy custom text'
     redirect_to admin_custom_texts_url
   end
 end

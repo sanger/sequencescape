@@ -3,6 +3,7 @@ namespace :primer_panel_templates do
   task create: :environment do
     # 384 only
     templates_to_clone = %w[TSsc384]
+
     # 96 and 384 (See https://github.com/sanger/limber/issues/546)
     # Modifications to limber will be required to support the use of these templates, this work is
     # lower priority than the 384 well version that works without modification.

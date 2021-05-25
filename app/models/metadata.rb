@@ -15,21 +15,25 @@ module Metadata # rubocop:todo Style/Documentation
 
   private
 
-  def build_association(as_class, options)
+  def build_association(as_class, options) # rubocop:todo Metrics/MethodLength
     # First we build the association into the current ActiveRecord::Base class
     as_name = as_class.name.demodulize.underscore
     association_name = "#{as_name}_metadata".underscore.to_sym
     class_name = "#{name}::Metadata"
 
-    default_options = { class_name: class_name, dependent: :destroy, validate: true, autosave: true,
-                        inverse_of: :owner, foreign_key: "#{as_name}_id" }
+    default_options = {
+      class_name: class_name,
+      dependent: :destroy,
+      validate: true,
+      autosave: true,
+      inverse_of: :owner,
+      foreign_key: "#{as_name}_id"
+    }
     has_one association_name, default_options.merge(options)
     accepts_nested_attributes_for(association_name, update_only: true)
 
     unless respond_to?(:"include_#{association_name}")
-      scope :"include_#{association_name}", lambda {
-                                              includes(association_name)
-                                            }
+      scope :"include_#{association_name}", lambda { includes(association_name) }
     end
 
     # We now ensure that, if the metadata is not already created, that a blank instance is built.  We cannot
@@ -38,7 +42,8 @@ module Metadata # rubocop:todo Style/Documentation
     # If lazy metadata is true we do NOT generate metadata upfront. This is the case for internal requests,
     # where metadata is unused anyway.
     line = __LINE__ + 1
-    class_eval("
+    class_eval(
+      "
       class_attribute :lazy_metadata
       self.lazy_metadata = false
 
@@ -57,7 +62,10 @@ module Metadata # rubocop:todo Style/Documentation
 
       before_validation :#{association_name}, on: :create, unless: :lazy_metadata?
 
-    ", __FILE__, line)
+    ",
+      __FILE__,
+      line
+    )
   end
 
   def include_tag(tag, options = Hash.new)
@@ -79,7 +87,7 @@ module Metadata # rubocop:todo Style/Documentation
     end
   end
 
-  def construct_metadata_class(table_name, as_class, &block)
+  def construct_metadata_class(table_name, as_class, &block) # rubocop:todo Metrics/MethodLength
     parent_class = self == as_class ? Metadata::Base : as_class::Metadata
     metadata = Class.new(parent_class, &block)
 
@@ -89,7 +97,12 @@ module Metadata # rubocop:todo Style/Documentation
     # is correctly set.
     metadata.table_name = table_name
     metadata.belongs_to :"#{as_name}", class_name: name, validate: false, autosave: false
-    metadata.belongs_to :owner, foreign_key: :"#{as_name}_id", class_name: name, validate: false, autosave: false, inverse_of: :"#{as_name}_metadata"
+    metadata.belongs_to :owner,
+                        foreign_key: :"#{as_name}_id",
+                        class_name: name,
+                        validate: false,
+                        autosave: false,
+                        inverse_of: :"#{as_name}_metadata"
 
     # Finally give it a name!
     const_set(:Metadata, metadata)
@@ -99,7 +112,7 @@ module Metadata # rubocop:todo Style/Documentation
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
 
-    broadcasts_associated_via_warren :owner
+    broadcasts_associated_with_warren :owner
 
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when
@@ -140,15 +153,17 @@ module Metadata # rubocop:todo Style/Documentation
         @loc_sec ||= Hash.new { |h, field| h[field] = localised_sections_generator(field) }
       end
 
-      def localised_sections_generator(field)
+      def localised_sections_generator(field) # rubocop:todo Metrics/MethodLength
         Section.new(
-          * (SECTION_FIELDS.map do |section|
-            I18n.t(
-              section,
-              scope: [:metadata, metadata_attribute_path(field)].flatten,
-              default: I18n.t(section, scope: %i[metadata defaults])
-            )
-          end << {})
+          *(
+            SECTION_FIELDS.map do |section|
+              I18n.t(
+                section,
+                scope: [:metadata, metadata_attribute_path(field)].flatten,
+                default: I18n.t(section, scope: %i[metadata defaults])
+              )
+            end << {}
+          )
         )
       end
 

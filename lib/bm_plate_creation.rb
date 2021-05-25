@@ -26,6 +26,4 @@ purpose = PlatePurpose.first
 
 Rails.logger.level = :warn
 
-Benchmark.bmbm do |x|
-  x.report('construct!') { TIMES.times { purpose.create! } }
-end
+Benchmark.bmbm { |x| x.report('construct!') { TIMES.times { purpose.create! } } }

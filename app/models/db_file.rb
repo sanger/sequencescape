@@ -3,6 +3,7 @@ class DbFile < ApplicationRecord # rubocop:todo Style/Documentation
 
   # Polymorphic so that many models can use this class to store binary data
   belongs_to :owner, polymorphic: true
+
   # NOTE: We are constrained by the database to split files into 200kbyte partitions
 
   # This module will set up all required associations and allow mounting "polymorphic uploaders"
@@ -16,9 +17,7 @@ class DbFile < ApplicationRecord # rubocop:todo Style/Documentation
     def has_uploaded(data, options)
       serialization_column = options.fetch(:serialization_column, data.to_s)
 
-      class_eval do
-        mount_uploader data, PolymorphicUploader, mount_on: serialization_column
-      end
+      class_eval { mount_uploader data, PolymorphicUploader, mount_on: serialization_column }
     end
   end
 end

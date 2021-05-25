@@ -18,12 +18,24 @@ class StudyReport < ApplicationRecord
   belongs_to :user
   validates :study, presence: true
 
-  def headers
+  def headers # rubocop:todo Metrics/MethodLength
     [
-      'Study', 'Sample Name', 'Plate', 'Supplier Volume', 'Supplier Concentration',
-      'Supplier Sample Name', 'Supplier Gender', 'Concentration',
-      'Sequenome Count', 'Sequenome Gender', 'Pico', 'Gel', 'Qc Status',
-      'Genotyping Status', 'Genotyping Chip', 'Is in Fluidigm'
+      'Study',
+      'Sample Name',
+      'Plate',
+      'Supplier Volume',
+      'Supplier Concentration',
+      'Supplier Sample Name',
+      'Supplier Gender',
+      'Concentration',
+      'Sequenome Count',
+      'Sequenome Gender',
+      'Pico',
+      'Gel',
+      'Qc Status',
+      'Genotyping Status',
+      'Genotyping Chip',
+      'Is in Fluidigm'
     ]
   end
 
@@ -31,9 +43,9 @@ class StudyReport < ApplicationRecord
     ActiveRecord::Base.transaction do
       csv_options = { row_sep: "\r\n", force_quotes: true }
       Tempfile.open("#{study.dehumanise_abbreviated_name}_progress_report.csv") do |tempfile|
-        Study.find(study_id).progress_report_on_all_assets do |fields|
-          tempfile.puts(CSV.generate_line(fields, csv_options))
-        end
+        Study
+          .find(study_id)
+          .progress_report_on_all_assets { |fields| tempfile.puts(CSV.generate_line(fields, csv_options)) }
         tempfile.open # Reopen the temporary file
         update!(report: tempfile)
       end

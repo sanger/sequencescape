@@ -5,7 +5,7 @@ require 'test_helper'
 class ReceptaclesControllerTest < ActionController::TestCase
   setup do
     @controller = ReceptaclesController.new
-    @request    = ActionController::TestRequest.create(@controller)
+    @request = ActionController::TestRequest.create(@controller)
     @user = create :admin, api_key: 'abc'
     session[:user] = @user.id
   end
@@ -35,27 +35,27 @@ class ReceptaclesControllerTest < ActionController::TestCase
     end
   end
 
-  def valid_json_create_request(asset, request_type, study, project)
-    %(
+  def valid_json_create_request(asset, request_type, study, project) # rubocop:todo Metrics/MethodLength
+    "
       {
-        "api_version": "#{RELEASE.api_version}",
-        "api_key": "abc",
-        "study_id": "#{study.id}",
-        "project_id": "#{project.id}",
-        "request_type_id": "#{request_type.id}",
-        "count": 3,
-        "priority": 3,
-        "comments": "This is a request",
-        "id": "#{asset.id}",
-        "request": {
-          "properties": {
-            "library_type": "Standard",
-            "fragment_size_required_from": 100,
-            "fragment_size_required_to": 500,
-            "read_length": 108
+        \"api_version\": \"#{RELEASE.api_version}\",
+        \"api_key\": \"abc\",
+        \"study_id\": \"#{study.id}\",
+        \"project_id\": \"#{project.id}\",
+        \"request_type_id\": \"#{request_type.id}\",
+        \"count\": 3,
+        \"priority\": 3,
+        \"comments\": \"This is a request\",
+        \"id\": \"#{asset.id}\",
+        \"request\": {
+          \"properties\": {
+            \"library_type\": \"Standard\",
+            \"fragment_size_required_from\": 100,
+            \"fragment_size_required_to\": 500,
+            \"read_length\": 108
           }
         }
       }
-    )
+    "
   end
 end

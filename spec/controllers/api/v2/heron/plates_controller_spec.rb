@@ -9,9 +9,7 @@ RSpec.describe Api::V2::Heron::PlatesController, type: :request, heron: true do
   let(:stock_plate_purpose) { PlatePurpose.stock_plate_purpose }
   let(:study) { create :study, name: 'Study 1' }
 
-  before do
-    mock_plate_barcode_service
-  end
+  before { mock_plate_barcode_service }
 
   context 'when there is a plate with samples in the message' do
     let(:purpose_uuid) { stock_plate_purpose.uuid }
@@ -24,8 +22,16 @@ RSpec.describe Api::V2::Heron::PlatesController, type: :request, heron: true do
           attributes: {
             barcode: barcode,
             wells: {
-              A01: { content: { supplier_name: 'xyz123' } },
-              A02: { content: { supplier_name: 'xyz456' } }
+              A01: {
+                content: {
+                  supplier_name: 'xyz123'
+                }
+              },
+              A02: {
+                content: {
+                  supplier_name: 'xyz456'
+                }
+              }
             },
             purpose_uuid: purpose_uuid,
             study_uuid: study_uuid
@@ -35,9 +41,7 @@ RSpec.describe Api::V2::Heron::PlatesController, type: :request, heron: true do
     end
     let!(:before_plate_count) { Plate.count }
 
-    setup do
-      post api_v2_heron_plates_path, params: params
-    end
+    setup { post api_v2_heron_plates_path, params: params }
 
     it 'creates a new plate successfully' do
       expect(response).to have_http_status(:created)

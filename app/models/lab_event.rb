@@ -13,19 +13,15 @@ class LabEvent < ApplicationRecord # rubocop:todo Style/Documentation
 
   scope :with_descriptor, ->(k, v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
 
-  scope :with_flowcell_barcode, ->(barcode) do
-    where(description: CHIP_BARCODE_STEPS)
-      .with_descriptor('Chip Barcode', barcode)
-  end
+  scope :with_flowcell_barcode,
+        ->(barcode) { where(description: CHIP_BARCODE_STEPS).with_descriptor('Chip Barcode', barcode) }
 
   delegate :flowcell, :eventful_studies, :samples, to: :eventful
 
   after_create :generate_broadcast_event
 
   def unescape_for_descriptors
-    self[:descriptors] = (self[:descriptors] || {}).to_h.transform_keys do |key|
-      CGI.unescape(key)
-    end
+    self[:descriptors] = (self[:descriptors] || {}).to_h.transform_keys { |key| CGI.unescape(key) }
   end
 
   def self.find_batch_id_by_barcode(barcode)
@@ -34,11 +30,7 @@ class LabEvent < ApplicationRecord # rubocop:todo Style/Documentation
   end
 
   def descriptor_value_for(name)
-    descriptors.each do |desc|
-      if desc.name.casecmp(name.to_s).zero?
-        return desc.value
-      end
-    end
+    descriptors.each { |desc| return desc.value if desc.name.casecmp(name.to_s).zero? }
     nil
   end
 

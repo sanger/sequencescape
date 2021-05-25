@@ -42,13 +42,21 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     source_plate_scope(tube).map(&:source_plate)
   end
 
-  def source_plate_scope(tube)
+  def source_plate_scope(tube) # rubocop:todo Metrics/MethodLength
     Plate
       .joins(wells: :requests)
-      .where(requests: {
-               target_asset_id: tube.id,
-               sti_type: [Request::Multiplexing, Request::AutoMultiplexing, Request::LibraryCreation,
-                          *Request::LibraryCreation.descendants].map(&:name)
-             }).distinct
+      .where(
+        requests: {
+          target_asset_id: tube.id,
+          sti_type:
+            [
+              Request::Multiplexing,
+              Request::AutoMultiplexing,
+              Request::LibraryCreation,
+              *Request::LibraryCreation.descendants
+            ].map(&:name)
+        }
+      )
+      .distinct
   end
 end

@@ -4,7 +4,8 @@ class Io::Study < Core::Io::Base
   set_json_root(:study)
   set_eager_loading { |model| model.include_study_metadata.include_projects }
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                                            name     => name
                              ethically_approved     => ethically_approved
                                           state     => state
@@ -24,5 +25,6 @@ class Io::Study < Core::Io::Base
           study_metadata.commercially_available     => commercially_available
     study_metadata.data_release_study_type.name     => data_release_sort_of_study
            study_metadata.data_release_strategy     => data_release_strategy
-  ")
+  '
+  )
 end

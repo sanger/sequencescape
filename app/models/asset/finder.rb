@@ -27,27 +27,35 @@ class Asset::Finder
     end
   end
 
-  def find_wells_in_array(plate, well_array)
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def find_wells_in_array(plate, well_array) # rubocop:todo Metrics/CyclomaticComplexity
     return plate.wells.in_column_major_order.with_aliquots.distinct if well_array.empty?
 
     well_array.flat_map do |map_description|
       case map_description
-      when /^[a-z,A-Z][0-9]+$/ # A well
+      when /^[a-z,A-Z][0-9]+$/
+        # A well
         well = plate.find_well_by_name(map_description)
         if well.nil? || well.aliquots.empty?
           raise InvalidInputException, "Well #{map_description} on #{plate.human_barcode} does not exist or is empty."
         end
 
         well
-      when /^[a-z,A-Z]$/ # A row
+      when /^[a-z,A-Z]$/
+        # A row
         plate.wells.with_aliquots.in_plate_row(map_description, plate.size).distinct
-      when /^[0-9]+$/ # A column
+      when /^[0-9]+$/
+        # A column
         plate.wells.with_aliquots.in_plate_column(map_description, plate.size).distinct
       else
         raise InvalidInputException, "#{map_description} is not a valid well location"
       end
     end
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   def barcodes
     barcodes_wells.map(&:first).uniq

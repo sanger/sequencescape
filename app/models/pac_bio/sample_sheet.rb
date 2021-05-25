@@ -1,33 +1,92 @@
+# rubocop:todo Metrics/ClassLength
 class PacBio::SampleSheet # rubocop:todo Style/Documentation
-  def header_metadata(batch)
+  def header_metadata(batch) # rubocop:todo Metrics/MethodLength
     [
       ['Version', '1.0.0', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
       ['Unique ID', batch.id, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
       ['Type', 'Plate', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
       ['Owner', 'System', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
-      ['Created By', batch.user.login, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-       nil, nil],
-      ['Comments', "New plate created on #{Time.zone.now}", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-       nil, nil, nil, nil, nil, nil, nil],
+      [
+        'Created By',
+        batch.user.login,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil
+      ],
+      [
+        'Comments',
+        "New plate created on #{Time.zone.now}",
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil
+      ],
       ['Output Path', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
       [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]
     ]
   end
 
-  def column_headers
-    ['Well No.', 'Sample Name', 'DNA Template Prep Kit Box Barcode', 'Prep Kit Parameters', 'Binding Kit Box Barcode', 'Binding Kit Parameters',
-     'Collection Protocol', 'CP Parameters', 'Basecaller', 'Basecaller Parameters', 'Secondary Analysis Protocol', 'Secondary Analysis Parameters',
-     'Sample Comments', 'User Field 1', 'User Field 2', 'User Field 3', 'User Field 4', 'User Field 5', 'User Field 6', 'Results Data Output Path']
+  def column_headers # rubocop:todo Metrics/MethodLength
+    [
+      'Well No.',
+      'Sample Name',
+      'DNA Template Prep Kit Box Barcode',
+      'Prep Kit Parameters',
+      'Binding Kit Box Barcode',
+      'Binding Kit Parameters',
+      'Collection Protocol',
+      'CP Parameters',
+      'Basecaller',
+      'Basecaller Parameters',
+      'Secondary Analysis Protocol',
+      'Secondary Analysis Parameters',
+      'Sample Comments',
+      'User Field 1',
+      'User Field 2',
+      'User Field 3',
+      'User Field 4',
+      'User Field 5',
+      'User Field 6',
+      'Results Data Output Path'
+    ]
   end
 
   def create_csv_from_batch(batch)
-    csv_string = CSV.generate(row_sep: "\r\n") do |csv|
-      header_metadata(batch).each { |header_row| csv << header_row }
-      csv << column_headers
-      requests_by_wells(batch).each do |requests|
-        csv << row(requests, batch)
+    csv_string =
+      CSV.generate(row_sep: "\r\n") do |csv|
+        header_metadata(batch).each { |header_row| csv << header_row }
+        csv << column_headers
+        requests_by_wells(batch).each { |requests| csv << row(requests, batch) }
       end
-    end
   end
 
   def requests_by_wells(batch)
@@ -40,13 +99,14 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
     protocol.gsub(/[^\w]/, '_')
   end
 
-  @@CONCAT_SEPARATOR = ';'
+  CONCAT_SEPARATOR = ';'.freeze
 
-  def concat(list, sym, separator = @@CONCAT_SEPARATOR)
+  def concat(list, sym, separator = CONCAT_SEPARATOR)
     list.map(&sym).uniq.join(separator)
   end
 
-  def row(requests, batch)
+  # rubocop:todo Metrics/MethodLength
+  def row(requests, batch) # rubocop:todo Metrics/AbcSize
     # Read these lines when secondary analysis activated
     #  replace_non_alphanumeric(library_tube.pac_bio_library_tube_metadata.protocol),
     # "JobName=DefaultJob_#{Time.now}",
@@ -81,6 +141,8 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
     ]
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def lookup_collection_protocol(request)
     return 'Standard Seq v3' if request.request_metadata.sequencing_type == 'Standard'
     return 'MagBead Standard Seq v2' if request.request_metadata.sequencing_type == 'MagBead'
@@ -88,3 +150,4 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
     request.request_metadata.sequencing_type
   end
 end
+# rubocop:enable Metrics/ClassLength

@@ -6,8 +6,11 @@ module Transfer::TransfersToKnownDestination
     base.class_eval do
       belongs_to :destination, class_name: 'Labware'
       validates :destination, presence: true
-      validates :destination_id, uniqueness: { scope: :source_id,
-                                               message: 'can only be transferred to once from the source' }
+      validates :destination_id,
+                uniqueness: {
+                  scope: :source_id,
+                  message: 'can only be transferred to once from the source'
+                }
     end
   end
 end

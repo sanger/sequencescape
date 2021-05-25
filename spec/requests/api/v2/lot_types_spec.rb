@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe 'LotTypes API', with: :api_v2 do
   context 'with multiple LotTypes' do
-    before do
-      create_list(:lot_type, 5)
-    end
+    before { create_list(:lot_type, 5) }
 
     it 'sends a list of lot_types' do
       api_get '/api/v2/lot_types'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end

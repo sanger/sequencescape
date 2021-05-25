@@ -12,7 +12,8 @@ class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
       end
     end
 
-    def self.included(base)
+    # rubocop:todo Metrics/MethodLength
+    def self.included(base) # rubocop:todo Metrics/AbcSize
       base.class_eval do
         # When adding new states, please make sure you update the config/locals/en.yml file
         # with descriptions.
@@ -68,6 +69,7 @@ class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
         extend ClassMethods
       end
     end
+    # rubocop:enable Metrics/MethodLength
   end
 
   module ReportBehaviour # rubocop:todo Style/Documentation
@@ -77,10 +79,14 @@ class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
     # This transitions the report into 'generating' and triggers this event.
     # On completion the report automatically passes into 'awaiting_proceed' through generation_complete!
     # You can trigger a synchronous report manually by calling #generate!
-    def generate_report
+    # rubocop:todo Metrics/MethodLength
+    def generate_report # rubocop:todo Metrics/AbcSize
       begin
-        study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria,
-                                                 (plate_purposes.empty? ? nil : plate_purposes)) do |assets|
+        study.each_well_for_qc_report_in_batches(
+          exclude_existing,
+          product_criteria,
+          (plate_purposes.empty? ? nil : plate_purposes)
+        ) do |assets|
           # If there are some wells of interest, we get them in a list
           connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
 
@@ -92,8 +98,12 @@ class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
           ActiveRecord::Base.transaction do
             assets.each do |asset|
               criteria = product_criteria.assess(asset, connected_wells[asset.id])
-              QcMetric.create!(asset: asset, qc_decision: criteria.qc_decision, metrics: criteria.metrics,
-                               qc_report: self)
+              QcMetric.create!(
+                asset: asset,
+                qc_decision: criteria.qc_decision,
+                metrics: criteria.metrics,
+                qc_report: self
+              )
             end
           end
         end
@@ -105,6 +115,8 @@ class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
         raise e
       end
     end
+
+    # rubocop:enable Metrics/MethodLength
     private :generate_report
   end
 
@@ -122,11 +134,7 @@ class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
 
   after_create :schedule_report
 
-  scope :for_report_page, ->(conditions) {
-    order('id desc')
-      .where(conditions)
-      .joins(:product_criteria)
-  }
+  scope :for_report_page, ->(conditions) { order('id desc').where(conditions).joins(:product_criteria) }
 
   validates :product_criteria, :study, :state, presence: true
 
@@ -161,11 +169,11 @@ class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
   def generate_report_identifier
     return true if study.nil? || product_criteria.nil?
 
-    rid = [
-      study.abbreviation,
-      product_criteria.product.name,
-      DateTime.now.to_formatted_s(:number)
-    ].compact.join('_').downcase.gsub(/[^\w]/, '_')
+    rid =
+      [study.abbreviation, product_criteria.product.name, DateTime.now.to_formatted_s(:number)].compact
+        .join('_')
+        .downcase
+        .gsub(/[^\w]/, '_')
     self.report_identifier = rid
   end
 end

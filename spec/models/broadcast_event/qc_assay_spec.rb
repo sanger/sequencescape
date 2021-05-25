@@ -9,7 +9,9 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
     described_class.create!(
       seed: qc_assay,
       created_at: Time.zone.parse('2018-01-12T13:37:03+00:00'),
-      properties: { 'assay_type' => 'Example Assay' }
+      properties: {
+        'assay_type' => 'Example Assay'
+      }
     )
   end
 
@@ -38,27 +40,53 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
         expect(json).not_to be_nil
       end
 
-      it 'sets the event type based on the qc_assay' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets the event type based on the qc_assay' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json('event' => { 'event_type' => 'quant_example_assay' })
       end
 
-      it 'sends the lot number as metadata' do # rubocop:todo RSpec/AggregateExamples
-        expect(json).to include_json('event' => { 'metadata' => { 'lot_number' => lot_number,
-                                                                  'assay_version' => 'v0.0' } })
+      it 'sends the lot number as metadata' do
+        # rubocop:todo RSpec/AggregateExamples
+        expect(json).to include_json(
+          'event' => {
+            'metadata' => {
+              'lot_number' => lot_number,
+              'assay_version' => 'v0.0'
+            }
+          }
+        )
       end
 
       it 'includes the expected subjects' do
-        expect(json.dig('event', 'subjects')).to match_unordered_json([
-          { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
-          { 'role_type' => 'sample', 'subject_type' => 'sample', 'uuid' => sample1.uuid,
-            'friendly_name' => sample1.name },
-          { 'role_type' => 'sample', 'subject_type' => 'sample', 'uuid' => sample2.uuid,
-            'friendly_name' => sample2.name },
-          { 'role_type' => 'assayed_labware', 'subject_type' => 'plate', 'uuid' => plate.uuid,
-            'friendly_name' => plate.human_barcode },
-          { 'role_type' => 'stock_plate', 'subject_type' => 'plate', 'uuid' => stock_plate.uuid,
-            'friendly_name' => stock_plate.human_barcode }
-        ])
+        expect(json.dig('event', 'subjects')).to match_unordered_json(
+          [
+            { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
+            {
+              'role_type' => 'sample',
+              'subject_type' => 'sample',
+              'uuid' => sample1.uuid,
+              'friendly_name' => sample1.name
+            },
+            {
+              'role_type' => 'sample',
+              'subject_type' => 'sample',
+              'uuid' => sample2.uuid,
+              'friendly_name' => sample2.name
+            },
+            {
+              'role_type' => 'assayed_labware',
+              'subject_type' => 'plate',
+              'uuid' => plate.uuid,
+              'friendly_name' => plate.human_barcode
+            },
+            {
+              'role_type' => 'stock_plate',
+              'subject_type' => 'plate',
+              'uuid' => stock_plate.uuid,
+              'friendly_name' => stock_plate.human_barcode
+            }
+          ]
+        )
       end
     end
 
@@ -87,25 +115,47 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
         expect(json).not_to be_nil
       end
 
-      it 'sets the event type based on the qc_assay' do # rubocop:todo RSpec/AggregateExamples
+      it 'sets the event type based on the qc_assay' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json('event' => { 'event_type' => 'quant_example_assay' })
       end
 
-      it 'sends the lot number as metadata' do # rubocop:todo RSpec/AggregateExamples
-        expect(json).to include_json('event' => { 'metadata' => { 'lot_number' => lot_number,
-                                                                  'assay_version' => 'v0.0' } })
+      it 'sends the lot number as metadata' do
+        # rubocop:todo RSpec/AggregateExamples
+        expect(json).to include_json(
+          'event' => {
+            'metadata' => {
+              'lot_number' => lot_number,
+              'assay_version' => 'v0.0'
+            }
+          }
+        )
       end
 
       it 'includes the expected subjects' do
-        expect(json.dig('event', 'subjects')).to match_unordered_json([
-          { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
-          { 'role_type' => 'sample', 'subject_type' => 'sample', 'uuid' => sample1.uuid,
-            'friendly_name' => sample1.name },
-          { 'role_type' => 'assayed_labware', 'subject_type' => 'plate', 'uuid' => plate.uuid,
-            'friendly_name' => plate.human_barcode },
-          { 'role_type' => 'stock_plate', 'subject_type' => 'plate', 'uuid' => stock_plate.uuid,
-            'friendly_name' => stock_plate.human_barcode }
-        ])
+        expect(json.dig('event', 'subjects')).to match_unordered_json(
+          [
+            { 'role_type' => 'study', 'subject_type' => 'study', 'uuid' => study.uuid, 'friendly_name' => study.name },
+            {
+              'role_type' => 'sample',
+              'subject_type' => 'sample',
+              'uuid' => sample1.uuid,
+              'friendly_name' => sample1.name
+            },
+            {
+              'role_type' => 'assayed_labware',
+              'subject_type' => 'plate',
+              'uuid' => plate.uuid,
+              'friendly_name' => plate.human_barcode
+            },
+            {
+              'role_type' => 'stock_plate',
+              'subject_type' => 'plate',
+              'uuid' => stock_plate.uuid,
+              'friendly_name' => stock_plate.human_barcode
+            }
+          ]
+        )
       end
     end
 

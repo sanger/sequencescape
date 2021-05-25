@@ -9,10 +9,7 @@ class Endpoints::Submissions < Core::Endpoint::Base # rubocop:todo Style/Documen
 
   instance do
     belongs_to(:user, json: 'user')
-    has_many(
-      :requests, json: 'requests', to: 'requests',
-                 include: %i[source_asset target_asset]
-    )
+    has_many(:requests, json: 'requests', to: 'requests', include: %i[source_asset target_asset])
 
     action(:update, to: :standard_update!, if: :building?)
 

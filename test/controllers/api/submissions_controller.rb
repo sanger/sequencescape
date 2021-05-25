@@ -7,7 +7,7 @@ module Api
     context 'submission' do
       setup do
         @controller = Api::SubmissionsController.new
-        @request    = ActionController::TestRequest.create(@controller)
+        @request = ActionController::TestRequest.create(@controller)
         @user = FactoryBot.create :user
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
@@ -23,8 +23,16 @@ module Api
           rt = FactoryBot.create :request_type
           template.request_types << rt
 
-          post :create, params: { order: { project_id: project.id, study_id: study.id,
-                                           sample_tubes: [sample_tube.id.to_s], number_of_lanes: '2', type: template.key } }
+          post :create,
+               params: {
+                 order: {
+                   project_id: project.id,
+                   study_id: study.id,
+                   sample_tubes: [sample_tube.id.to_s],
+                   number_of_lanes: '2',
+                   type: template.key
+                 }
+               }
         end
 
         should 'change Submission.count by 1' do

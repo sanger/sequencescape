@@ -19,17 +19,13 @@ class TagLayoutTemplatesController < ApplicationController
   def index
     @tag_layout_templates = TagLayoutTemplate.all
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   def show
     @tag_layout_template = TagLayoutTemplate.find(params[:id])
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   ##
@@ -38,9 +34,7 @@ class TagLayoutTemplatesController < ApplicationController
     @tag_layout_template = TagLayoutTemplate.new(tag_group_id: params[:tag_group_id])
     @direction_algorithms = DIRECTIONS
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   def create
@@ -58,7 +52,8 @@ class TagLayoutTemplatesController < ApplicationController
   end
 
   def tag_layout_template_params
-    params.require(:tag_layout_template).permit(:name, :tag_group_id, :tag2_group_id, :direction_algorithm,
-                                                :walking_algorithm)
+    params
+      .require(:tag_layout_template)
+      .permit(:name, :tag_group_id, :tag2_group_id, :direction_algorithm, :walking_algorithm)
   end
 end

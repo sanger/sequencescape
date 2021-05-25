@@ -22,11 +22,7 @@ class Task < ApplicationRecord
   # TODO: move into SetDescriptorsTask
   def get_descriptor_value(name, default = nil)
     name_s = name.to_s
-    descriptors.each do |desc|
-      if desc.name.eql?(name_s)
-        return desc.value
-      end
-    end
+    descriptors.each { |desc| return desc.value if desc.name.eql?(name_s) }
     default
   end
 
@@ -40,17 +36,14 @@ class Task < ApplicationRecord
     end
     descriptors << Descriptor.new(name: name_s, value: value)
   end
+
   # END descriptors
 
   # BEGIN subclass_to_attribute, could be move into a mixin
   has_many :subclass_attributes, as: :attributable, dependent: :destroy, autosave: true
   def get_subclass_attribute_value(name, default = nil)
     name_s = name.to_s
-    subclass_attributes.each do |desc|
-      if desc.name.eql?(name_s)
-        return desc.value
-      end
-    end
+    subclass_attributes.each { |desc| return desc.value if desc.name.eql?(name_s) }
     default
   end
 
@@ -91,7 +84,7 @@ class Task < ApplicationRecord
     self.class.get_subclass_attributes
   end
 
-  def self.set_subclass_attribute(name, options = {})
+  def self.set_subclass_attribute(name, options = {}) # rubocop:todo Metrics/MethodLength
     init_class
     raise ArgumentError, "subclass attribute #{name} already in use" if @subclass_attributes.include? name
 
@@ -104,23 +97,21 @@ class Task < ApplicationRecord
 
     define_method(name) do
       value = get_subclass_attribute_value name, default_value # we love closure :)
-      value and case cast
-                when :int
-                  value.to_i
-                else
-                  value
-                end
+      value and
+        case cast
+        when :int
+          value.to_i
+        else
+          value
+        end
     end
 
-    define_method("#{name}=") do |value|
-      set_subclass_attribute_value(name, value, kind)
-    end
+    define_method("#{name}=") { |value| set_subclass_attribute_value(name, value, kind) }
   end
 
   # END of subclass_to_attiribuet
 
-  def partial
-  end
+  def partial; end
 
   def included_for_do_task
     %i[requests pipeline lab_events]

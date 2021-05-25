@@ -15,9 +15,11 @@ class MovieLengthTask < Task # rubocop:todo Style/Documentation
   def valid_movie_length?(movie_length)
     return false if movie_length.blank?
 
-    movie_length.split(',').each do |movie_timing|
-      return false if (movie_timing.blank? || !movie_timing.to_i.is_a?(Integer) || movie_timing.to_i < 0)
-    end
+    movie_length
+      .split(',')
+      .each do |movie_timing|
+        return false if (movie_timing.blank? || !movie_timing.to_i.is_a?(Integer) || movie_timing.to_i < 0)
+      end
 
     true
   end

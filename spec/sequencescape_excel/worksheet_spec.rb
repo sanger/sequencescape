@@ -33,21 +33,15 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
     sample_manifest.generate
   end
 
-  after(:all) do
-    SampleManifestExcel.reset!
-  end
+  after(:all) { SampleManifestExcel.reset! }
 
-  after do
-    File.delete(test_file) if File.exist?(test_file)
-  end
+  after { File.delete(test_file) if File.exist?(test_file) }
 
   context 'validations ranges worksheet' do
     let!(:range_list) { SampleManifestExcel.configuration.ranges.dup }
     let!(:worksheet) { SequencescapeExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list) }
 
-    before do
-      save_file
-    end
+    before { save_file }
 
     it 'has a axlsx worksheet' do
       expect(worksheet.axlsx_worksheet).to be_present
@@ -55,9 +49,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
 
     it 'will add ranges to axlsx worksheet' do
       range = worksheet.ranges.first.last
-      range.options.each_with_index do |option, i|
-        expect(spreadsheet.sheet(0).cell(1, i + 1)).to eq(option)
-      end
+      range.options.each_with_index { |option, i| expect(spreadsheet.sheet(0).cell(1, i + 1)).to eq(option) }
       expect(spreadsheet.sheet(0).last_row).to eq(worksheet.ranges.count)
     end
 

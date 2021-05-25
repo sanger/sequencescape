@@ -1,4 +1,5 @@
 require 'event_factory'
+# rubocop:todo Metrics/ClassLength
 class RequestsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -12,19 +13,24 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
   # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
-  def index
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def index # rubocop:todo Metrics/CyclomaticComplexity
     @study, @item = nil, nil
 
     # Ok, here we pick the initial source for the Requests.  They either come from Request (as in all Requests), or they
     # are limited by the Asset / Item.
-    request_source = Request.includes(:request_type, :initial_study, :user, :events, asset: :barcodes)
-                            .order(id: :desc)
-                            .where(search_params)
-                            .paginate(per_page: 200, page: params[:page])
+    request_source =
+      Request
+        .includes(:request_type, :initial_study, :user, :events, asset: :barcodes)
+        .order(id: :desc)
+        .where(search_params)
+        .paginate(per_page: 200, page: params[:page])
 
-    @asset        = Receptacle.find(params[:asset_id]) if params[:asset_id]
+    @asset = Receptacle.find(params[:asset_id]) if params[:asset_id]
     @request_type = RequestType.find(params[:request_type_id]) if params[:request_type_id]
-    @study        = Study.find(params[:study_id]) if params[:study_id]
+    @study = Study.find(params[:study_id]) if params[:study_id]
 
     @subtitle = (@study&.name || @asset&.display_name)
 
@@ -36,22 +42,23 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
     # Now, here we go: find all of the requests!
     @requests = request_source
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def edit
     @request = Request.find(params[:id])
     authorize! :update, @request
 
     @request_types = RequestType.where(asset_type: @request.request_type.asset_type)
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
-  def update
+  # rubocop:todo Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     @request = Request.find(params[:id])
     authorize! :update, @request
 
@@ -79,11 +86,11 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def show
     @request = Request.find(params[:id])
-    if @request.user_id.present?
-      @user = User.find(@request.user_id)
-    end
+    @user = User.find(@request.user_id) if @request.user_id.present?
 
     respond_to do |format|
       format.html
@@ -92,7 +99,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
   end
 
   def additional
-    @request    = Request.find(params[:id])
+    @request = Request.find(params[:id])
     @additional = @request.request_type.create!(initial_study: @request.study, items: @request.items)
     redirect_to request_path(@additional)
   end
@@ -108,7 +115,8 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
     end
   end
 
-  def cancel
+  # rubocop:todo Metrics/MethodLength
+  def cancel # rubocop:todo Metrics/AbcSize
     @request = Request.find(params[:id])
     if @request.try(:may_cancel_before_started?)
       if @request.cancel_before_started && @request.save
@@ -122,12 +130,14 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
     redirect_to request_path(@request)
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   # Displays history of events
   def history
     @request = Request.find(params[:id])
     respond_to do |format|
       format.html
-      format.xml  { @request.events.to_xml }
+      format.xml { @request.events.to_xml }
       format.json { @request.events.to_json }
     end
   end
@@ -160,14 +170,13 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
   def filter_change_decision
     @change_decision = Request::ChangeDecision.new(request: @request, user: @current_user)
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   def change_decision
-    @change_decision = Request::ChangeDecision.new({ request: @request,
-                                                     user: @current_user }.merge(params[:change_decision] || {})).execute!
+    @change_decision =
+      Request::ChangeDecision.new({ request: @request, user: @current_user }.merge(params[:change_decision] || {}))
+        .execute!
     flash[:notice] = 'Update. Below you find the new situation.'
     redirect_to filter_change_decision_request_path(params[:id])
   rescue Request::ChangeDecision::InvalidDecision => e
@@ -182,3 +191,4 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
     permitted
   end
 end
+# rubocop:enable Metrics/ClassLength

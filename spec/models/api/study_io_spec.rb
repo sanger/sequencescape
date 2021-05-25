@@ -50,13 +50,7 @@ RSpec.describe Api::StudyIO, type: :model do
       'data_access_group' => 'something',
       's3_email_list' => 'aa1@sanger.ac.uk;aa2@sanger.ac.uk',
       'data_deletion_period' => '3 months',
-      'manager' => [
-        {
-          login: manager.login,
-          email: manager.email,
-          name: manager.name
-        }
-      ]
+      'manager' => [{ login: manager.login, email: manager.email, name: manager.name }]
     }
   end
 

@@ -1,26 +1,27 @@
 module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
-  class FluidigmError < StandardError; end
+  class FluidigmError < StandardError
+  end
 
-  def self.included(base)
+  def self.included(base) # rubocop:todo Metrics/MethodLength
     base.class_eval do
-      scope :requiring_fluidigm_data, -> {
-        fluidigm_request_ids = RequestType.where(key: 'pick_to_fluidigm').ids
+      scope :requiring_fluidigm_data,
+            -> {
+              fluidigm_request_ids = RequestType.where(key: 'pick_to_fluidigm').ids
 
-        joins([
-          :well_requests_as_target,
-          %(LEFT OUTER JOIN events
+              joins(
+                  [
+                    :well_requests_as_target,
+                    "LEFT OUTER JOIN events
             ON eventful_id = #{Plate.table_name}.id
-            AND eventful_type = "#{Plate.base_class.name}"
-            AND family = "update_fluidigm_plate"
-            AND content = "FLUIDIGM_DATA")
-        ])
-          .includes(:barcodes)
-          .where(
-            events: { id: nil },
-            requests: { request_type_id: fluidigm_request_ids }
-          )
-          .distinct
-      }
+            AND eventful_type = \"#{Plate.base_class.name}\"
+            AND family = \"update_fluidigm_plate\"
+            AND content = \"FLUIDIGM_DATA\""
+                  ]
+                )
+                .includes(:barcodes)
+                .where(events: { id: nil }, requests: { request_type_id: fluidigm_request_ids })
+                .distinct
+            }
     end
   end
 
@@ -34,22 +35,43 @@ module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
     end
   end
 
-  def apply_fluidigm_data(fluidigm_file)
+  # rubocop:todo Metrics/MethodLength
+  def apply_fluidigm_data(fluidigm_file) # rubocop:todo Metrics/AbcSize
     qc_assay = QcAssay.new
     raise FluidigmError, 'File does not match plate' unless fluidigm_file.for_plate?(fluidigm_barcode)
 
-    wells.located_at(fluidigm_file.well_locations).include_stock_wells.each do |well|
-      well.stock_wells.each do |sw|
-        gender_markers = fluidigm_file.well_at(well.map_description).gender_markers.join('')
-        loci_passed = fluidigm_file.well_at(well.map_description).count
-        QcResult.create!([
-          { asset: sw, key: 'gender_markers', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: gender_markers,
-            units: 'bases', qc_assay: qc_assay },
-          { asset: sw, key: 'loci_passed', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: loci_passed,
-            units: 'bases', qc_assay: qc_assay }
-        ])
+    wells # rubocop:todo Metrics/BlockLength
+      .located_at(fluidigm_file.well_locations)
+      .include_stock_wells
+      .each do |well|
+        well.stock_wells.each do |sw|
+          gender_markers = fluidigm_file.well_at(well.map_description).gender_markers.join('')
+          loci_passed = fluidigm_file.well_at(well.map_description).count
+          QcResult.create!(
+            [
+              {
+                asset: sw,
+                key: 'gender_markers',
+                assay_type: 'FLUIDIGM',
+                assay_version: 'v0.1',
+                value: gender_markers,
+                units: 'bases',
+                qc_assay: qc_assay
+              },
+              {
+                asset: sw,
+                key: 'loci_passed',
+                assay_type: 'FLUIDIGM',
+                assay_version: 'v0.1',
+                value: loci_passed,
+                units: 'bases',
+                qc_assay: qc_assay
+              }
+            ]
+          )
+        end
       end
-    end
     events.updated_fluidigm_plate!('FLUIDIGM_DATA')
   end
+  # rubocop:enable Metrics/MethodLength
 end

@@ -7,16 +7,14 @@ class EventsController < ApplicationController # rubocop:todo Style/Documentatio
     @event = Event.new
   end
 
-  def create
+  def create # rubocop:todo Metrics/AbcSize
     # Compatible with NPG
 
     params[:event].delete(:key)
 
     @event = Event.create(params[:event])
 
-    unless @event.eventful.nil?
-      @event.eventful.save
-    end
+    @event.eventful.save unless @event.eventful.nil?
 
     respond_to do |format|
       # I know this looks crazy, but it appears to be explicitly tested for
@@ -25,7 +23,7 @@ class EventsController < ApplicationController # rubocop:todo Style/Documentatio
       # its probably because NPG are missing accept headers in some cases
       # resulting in defaulting to HTML
       format.html { render xml: @event.to_xml }
-      format.xml  { render xml: @event.to_xml }
+      format.xml { render xml: @event.to_xml }
       format.json { render json: @event.to_json }
     end
   end

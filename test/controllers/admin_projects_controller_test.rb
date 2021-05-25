@@ -10,15 +10,15 @@ module Admin
     context 'Projects controller' do
       setup do
         @controller = Admin::ProjectsController.new
-        @request    = ActionController::TestRequest.create(@controller)
+        @request = ActionController::TestRequest.create(@controller)
       end
 
       should_require_login
 
       context 'management UI' do
         setup do
-          @user     = create :admin, email: 'project.owner@example.com'
-          @project  = create :project, approved: false
+          @user = create :admin, email: 'project.owner@example.com'
+          @project = create :project, approved: false
           role = FactoryBot.create :owner_role, authorizable: @project
           role.users << @user
           @request_type = FactoryBot.create :request_type
@@ -29,9 +29,7 @@ module Admin
         end
 
         context '#managed_update (without changes)' do
-          setup do
-            put :managed_update, params: { id: @project.id, project: { name: @project.name } }
-          end
+          setup { put :managed_update, params: { id: @project.id, project: { name: @project.name } } }
 
           should 'not send an email' do
             assert_equal [], emails

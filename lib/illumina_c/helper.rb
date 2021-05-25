@@ -1,7 +1,11 @@
 module IlluminaC::Helper
-  ACCEPTABLE_REQUEST_TYPES = %w(illumina_c_pcr illumina_c_nopcr illumina_c_multiplexing
-                                illumina_c_chromium_library).freeze
-  ACCEPTABLE_SEQUENCING_REQUESTS = %w(
+  ACCEPTABLE_REQUEST_TYPES = %w[
+    illumina_c_pcr
+    illumina_c_nopcr
+    illumina_c_multiplexing
+    illumina_c_chromium_library
+  ].freeze
+  ACCEPTABLE_SEQUENCING_REQUESTS = %w[
     illumina_c_single_ended_sequencing
     illumina_c_paired_end_sequencing
     illumina_c_hiseq_paired_end_sequencing
@@ -13,7 +17,7 @@ module IlluminaC::Helper
     illumina_c_hiseq_2500_single_end_sequencing
     illumina_c_hiseq_4000_paired_end_sequencing
     illumina_c_hiseq_4000_single_end_sequencing
-  ).freeze
+  ].freeze
 
   PIPELINE = 'Illumina-C'.freeze
   class TemplateConstructor # rubocop:todo Style/Documentation
@@ -38,15 +42,11 @@ module IlluminaC::Helper
     end
 
     def sequencing=(sequencing_array)
-      @sequencing = sequencing_array.map do |request|
-        RequestType.find_by!(key: request)
-      end
+      @sequencing = sequencing_array.map { |request| RequestType.find_by!(key: request) }
     end
 
     def validate!
-      %i[name type role catalogue].each do |value|
-        raise "Must provide a #{value}" if send(value).nil?
-      end
+      %i[name type role catalogue].each { |value| raise "Must provide a #{value}" if send(value).nil? }
       unless ACCEPTABLE_REQUEST_TYPES.include?(type)
         raise "Request Type should be #{ACCEPTABLE_REQUEST_TYPES.join(', ')}"
       end
@@ -55,16 +55,14 @@ module IlluminaC::Helper
     end
 
     def name_for(cherrypick, sequencing_request_type)
-      "#{PIPELINE} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{sequencing_request_type.name.gsub(
-        "#{PIPELINE} ", ''
-      )}"
+      "#{PIPELINE} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{
+        sequencing_request_type.name.gsub("#{PIPELINE} ", '')
+      }"
     end
 
     def build!
       validate!
-      each_submission_template do |config|
-        SubmissionTemplate.create!(config)
-      end
+      each_submission_template { |config| SubmissionTemplate.create!(config) }
     end
 
     def library_request_type
@@ -91,16 +89,18 @@ module IlluminaC::Helper
       @cherrypick_options = skip ? [false] : [true, false]
     end
 
-    def each_submission_template
+    def each_submission_template # rubocop:todo Metrics/MethodLength
       cherrypick_options.each do |cherrypick|
         sequencing.each do |sequencing_request_type|
-          yield({
-            name: name_for(cherrypick, sequencing_request_type),
-            submission_class_name: 'LinearSubmission',
-            submission_parameters: submission_parameters(cherrypick, sequencing_request_type),
-            product_line_id: ProductLine.find_by(name: PIPELINE).id,
-            product_catalogue: catalogue
-          })
+          yield(
+            {
+              name: name_for(cherrypick, sequencing_request_type),
+              submission_class_name: 'LinearSubmission',
+              submission_parameters: submission_parameters(cherrypick, sequencing_request_type),
+              product_line_id: ProductLine.find_by(name: PIPELINE).id,
+              product_catalogue: catalogue
+            }
+          )
         end
       end
     end
@@ -117,7 +117,9 @@ module IlluminaC::Helper
       each_submission_template do |options|
         next if options[:submission_parameters][:input_field_infos].nil?
 
-        SubmissionTemplate.find_by!(name: options[:name]).update!(submission_parameters: options[:submission_parameters])
+        SubmissionTemplate
+          .find_by!(name: options[:name])
+          .update!(submission_parameters: options[:submission_parameters])
       end
     end
 

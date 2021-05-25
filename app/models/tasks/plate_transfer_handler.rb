@@ -1,17 +1,17 @@
 module Tasks::PlateTransferHandler # rubocop:todo Style/Documentation
-  class InvalidBatch < StandardError; end
+  class InvalidBatch < StandardError
+  end
 
   def render_plate_transfer_task(task, _params)
-    ActiveRecord::Base.transaction do
-      @target = find_or_create_target(task)
-    end
+    ActiveRecord::Base.transaction { @target = find_or_create_target(task) }
   end
 
   def includes_for_plate_creation
     [{ asset: [:map, { plate: %i[plate_purpose barcodes] }, :aliquots] }, { target_asset: [] }]
   end
 
-  def find_or_create_target(task)
+  # rubocop:todo Metrics/MethodLength
+  def find_or_create_target(task) # rubocop:todo Metrics/AbcSize
     return target_plate if target_plate.present?
 
     # We only eager load the request stuff if we actually need it.
@@ -19,29 +19,37 @@ module Tasks::PlateTransferHandler # rubocop:todo Style/Documentation
     source_wells = batch_requests.map(&:asset)
     raise InvalidBatch if unsuitable_wells?(source_wells)
 
-    task.purpose.create!.tap do |target|
-      well_map = target.wells.index_by { |well| well.map_id }
+    task
+      .purpose
+      .create!
+      .tap do |target|
+        well_map = target.wells.index_by { |well| well.map_id }
 
-      batch_requests.each do |outer_request|
-        source = outer_request.asset
-        TransferRequest.create!(
-          asset: source,
-          target_asset: well_map[source.map_id],
-          submission_id: outer_request.submission_id
-        )
-        TransferRequest.create!(
-          asset: well_map[source.map_id],
-          target_asset: outer_request.target_asset,
-          submission_id: outer_request.submission_id
-        )
+        batch_requests.each do |outer_request|
+          source = outer_request.asset
+          TransferRequest.create!(
+            asset: source,
+            target_asset: well_map[source.map_id],
+            submission_id: outer_request.submission_id
+          )
+          TransferRequest.create!(
+            asset: well_map[source.map_id],
+            target_asset: outer_request.target_asset,
+            submission_id: outer_request.submission_id
+          )
+        end
       end
-    end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def target_plate
-    transfer = TransferRequest.for_request(@batch.requests.first)
-                              .where(submission_id: @batch.requests.first.submission_id)
-                              .includes(target_asset: :plate).first
+    transfer =
+      TransferRequest
+        .for_request(@batch.requests.first)
+        .where(submission_id: @batch.requests.first.submission_id)
+        .includes(target_asset: :plate)
+        .first
     return nil if transfer.blank?
 
     transfer.target_asset.plate
@@ -56,7 +64,6 @@ module Tasks::PlateTransferHandler # rubocop:todo Style/Documentation
   def do_plate_transfer_task(_task, _params)
     return if target_plate.state == 'passed'
 
-    StateChange.create(target: target_plate, target_state: 'passed',
-                       user: current_user)
+    StateChange.create(target: target_plate, target_state: 'passed', user: current_user)
   end
 end

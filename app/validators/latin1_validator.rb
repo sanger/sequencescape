@@ -14,9 +14,10 @@ class Latin1Validator < ActiveModel::EachValidator
     value.encode('cp1252')
     return true if value.encode('cp1252').valid_encoding?
   rescue Encoding::UndefinedConversionError => e
-    record.errors[attribute] << (
-      options[:message] ||
-      "contains unsupported characters (non-latin characters), remove or replace them: #{e.error_char}"
-    )
+    record.errors[attribute] <<
+      (
+        options[:message] ||
+          "contains unsupported characters (non-latin characters), remove or replace them: #{e.error_char}"
+      )
   end
 end

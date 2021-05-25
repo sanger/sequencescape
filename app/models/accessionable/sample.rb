@@ -2,12 +2,31 @@
 # It should have a 1 to 1 mapping with Sequencescape {Sample samples}.
 module Accessionable
   class Sample < Base # rubocop:todo Style/Documentation
-    ARRAY_EXPRESS_FIELDS = %w[genotype phenotype strain_or_line developmental_stage sex cell_type disease_state
-                              compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment].freeze
+    ARRAY_EXPRESS_FIELDS = %w[
+      genotype
+      phenotype
+      strain_or_line
+      developmental_stage
+      sex
+      cell_type
+      disease_state
+      compound
+      dose
+      immunoprecipitate
+      growth_condition
+      rnai
+      organism_part
+      species
+      time_point
+      age
+      treatment
+    ].freeze
 
     attr_reader :common_name, :taxon_id, :links, :tags
 
-    def initialize(sample)
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
+    def initialize(sample) # rubocop:todo Metrics/CyclomaticComplexity
       @sample = sample
       super(sample.ebi_accession_number)
 
@@ -16,14 +35,13 @@ module Accessionable
       @name = @name.gsub(/[^a-z\d]/i, '_') if @name.present?
 
       @common_name = sample.sample_metadata.sample_common_name
-      @taxon_id    = sample.sample_metadata.sample_taxon_id
+      @taxon_id = sample.sample_metadata.sample_taxon_id
 
       # Tags from the 'ENA attributes' property group
       # NOTE[xxx]: This used to also look for 'ENA links' and push them to the 'data[:links]' value, but group was empty
       @links = []
-      @tags  = sample.tags.map do |datum|
-        Tag.new(label_scope, datum.name, sample.sample_metadata[datum.tag], datum.downcase)
-      end
+      @tags =
+        sample.tags.map { |datum| Tag.new(label_scope, datum.name, sample.sample_metadata[datum.tag], datum.downcase) }
 
       # TODO: maybe unify this with the previous loop
       # Don't send managed AE data to SRA
@@ -40,6 +58,9 @@ module Accessionable
       @hold = sample_hold.presence || 'hold'
     end
 
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
+
     def accessionable_id
       @sample.id
     end
@@ -54,37 +75,29 @@ module Accessionable
 
     def sample_element_attributes
       # In case the accession number is defined, we won't send the alias
-      {
-        alias: self.alias,
-        accession: accession_number
-      }.tap do |obj|
-        obj.delete(:alias) if accession_number.present?
-      end
+      { alias: self.alias, accession: accession_number }.tap { |obj| obj.delete(:alias) if accession_number.present? }
     end
 
-    def xml
+    # rubocop:todo Metrics/MethodLength
+    def xml # rubocop:todo Metrics/AbcSize
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') do
         xml.SAMPLE(sample_element_attributes) do
           xml.TITLE title unless title.nil?
           xml.SAMPLE_NAME do
-            xml.COMMON_NAME  common_name
-            xml.TAXON_ID     taxon_id
+            xml.COMMON_NAME common_name
+            xml.TAXON_ID taxon_id
           end
-          xml.SAMPLE_ATTRIBUTES do
-            tags.each do |tag|
-              xml.SAMPLE_ATTRIBUTE do
-                tag.build(xml)
-              end
-            end
-          end if tags.present?
+          xml.SAMPLE_ATTRIBUTES { tags.each { |tag| xml.SAMPLE_ATTRIBUTE { tag.build(xml) } } } if tags.present?
 
           xml.SAMPLE_LINKS {} if links.present?
         end
       end
       xml.target!
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     def update_accession_number!(user, accession_number)
       @accession_number = accession_number
@@ -106,14 +119,14 @@ module Accessionable
 
   class ArrayExpressTag < Base::Tag # rubocop:todo Style/Documentation
     def label
-      default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
+      default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{@name}.label").tr(' ', '_').camelize}"
       I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)
     end
   end
 
   class EgaTag < Base::Tag # rubocop:todo Style/Documentation
     def label
-      default_tag = "EGA-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
+      default_tag = "EGA-#{I18n.t("#{@scope}.#{@name}.label").tr(' ', '_').camelize}"
       I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)
     end
   end

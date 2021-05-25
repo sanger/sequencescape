@@ -1,9 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Wells
 class ::Endpoints::Wells < ::Core::Endpoint::Base
-  model do
-  end
+  model {}
 
-  instance do
-    belongs_to :plate, json: 'plate'
-  end
+  instance { belongs_to :plate, json: 'plate' }
 end

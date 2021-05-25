@@ -7,11 +7,7 @@ class UatActions::FormField
   attr_writer :select_options, :options
 
   def select_options
-    if @select_options.respond_to?(:call)
-      @select_options.call
-    else
-      @select_options
-    end
+    @select_options.respond_to?(:call) ? @select_options.call : @select_options
   end
 
   def options

@@ -15,6 +15,7 @@ module Request::HasPrimerPanel
 
     self::Metadata.class_eval do
       association(:primer_panel, :name)
+
       # ON create, check our actual primer panel
       validates :primer_panel, presence: true, on: :create
     end

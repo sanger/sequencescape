@@ -7,7 +7,7 @@ class SamplesControllerTest < ActionController::TestCase
   context 'Samples controller' do
     setup do
       @controller = SamplesController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
 
       Sample.stubs(:assets).returns([])
     end
@@ -15,7 +15,8 @@ class SamplesControllerTest < ActionController::TestCase
     should_require_login
 
     resource_test(
-      'sample', defaults: {
+      'sample',
+      defaults: {
         name: 'Sample22',
         sample_metadata_attributes: {
           cohort: 'Cohort',
@@ -24,11 +25,18 @@ class SamplesControllerTest < ActionController::TestCase
           phenotype: ''
         }
       },
-                formats: ['html'],
-                ignore_actions: %w(show create destroy),
-                protect_on_update: [:name],
-                extra_on_update: { sample_metadata_attributes: { check: { genotype: 'false', phenotype: 'true' } } },
-                user: :admin
+      formats: ['html'],
+      ignore_actions: %w[show create destroy],
+      protect_on_update: [:name],
+      extra_on_update: {
+        sample_metadata_attributes: {
+          check: {
+            genotype: 'false',
+            phenotype: 'true'
+          }
+        }
+      },
+      user: :admin
     )
 
     # TODO: Test without admin

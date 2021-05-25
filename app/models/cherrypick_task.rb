@@ -10,10 +10,11 @@
 #
 # @see PlateTemplateTask for previous step
 # @see Tasks::CherrypickHandler for behaviour included in the {WorkflowsController}
-class CherrypickTask < Task
-  EMPTY_WELL          = [0, 'Empty', ''].freeze
+class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
+  EMPTY_WELL = [0, 'Empty', ''].freeze
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
   DEFAULT_WELLS_TO_LEAVE_FREE = Rails.application.config.plate_default_control_wells_to_leave_free
+
   #
   # Returns a {CherrypickTask::ControlLocator} which can generate control locations for plates
   # in a batch. It responds to #control_positions which takes a plate number as an argument
@@ -29,6 +30,7 @@ class CherrypickTask < Task
     )
   end
 
+  # rubocop:todo Metrics/ParameterLists
   def pick_new_plate(requests, template, robot, plate_purpose, control_source_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)
     perform_pick(requests, robot, control_source_plate, workflow_controller) do
@@ -36,18 +38,32 @@ class CherrypickTask < Task
     end
   end
 
-  def pick_onto_partial_plate(requests, template, robot, partial_plate, control_source_plate = nil, workflow_controller = nil)
+  def pick_onto_partial_plate(
+    requests,
+    template,
+    robot,
+    partial_plate,
+    control_source_plate = nil,
+    workflow_controller = nil
+  )
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
     perform_pick(requests, robot, control_source_plate, workflow_controller) do
-      target_type.new(template, purpose.try(:asset_shape), partial_plate).tap do
-        partial_plate = nil # Ensure that subsequent calls have no partial plate
-      end
+      target_type
+        .new(template, purpose.try(:asset_shape), partial_plate)
+        .tap do
+          partial_plate = nil # Ensure that subsequent calls have no partial plate
+        end
     end
   end
 
-  def perform_pick(requests, robot, control_source_plate, workflow_controller)
+  # rubocop:enable Metrics/ParameterLists
+
+  # rubocop:todo Metrics/CyclomaticComplexity
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  def perform_pick(requests, robot, control_source_plate, workflow_controller) # rubocop:todo Metrics/AbcSize
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
@@ -69,35 +85,49 @@ class CherrypickTask < Task
       current_destination_plate.add_any_initial_control_requests(control_posns, batch, control_assets)
     end
 
-    push_completed_plate = lambda do |idx|
-      destination_plates << current_destination_plate.completed_view
-      current_destination_plate = yield # reset to start picking to a fresh one
-      if control_source_plate && (idx < (plates_array.length - 1))
-        # when we start a new plate we rebuild the list of positions where the requests should be placed
-        num_plate += 1
-        control_posns = control_locator.control_positions(num_plate)
-        current_destination_plate.add_any_initial_control_requests(control_posns, batch, control_assets)
+    push_completed_plate =
+      lambda do |idx|
+        destination_plates << current_destination_plate.completed_view
+        current_destination_plate = yield # reset to start picking to a fresh one
+        if control_source_plate && (idx < (plates_array.length - 1))
+          # when we start a new plate we rebuild the list of positions where the requests should be placed
+          num_plate += 1
+          control_posns = control_locator.control_positions(num_plate)
+          current_destination_plate.add_any_initial_control_requests(control_posns, batch, control_assets)
+        end
       end
-    end
 
     plates_array.each_with_index do |list, idx|
       request_id, plate_barcode, well_location = list
       source_plates << plate_barcode
-      current_destination_plate.push_with_controls(request_id, plate_barcode, well_location,
-                                                   control_posns, batch, control_assets)
+      current_destination_plate.push_with_controls(
+        request_id,
+        plate_barcode,
+        well_location,
+        control_posns,
+        batch,
+        control_assets
+      )
       push_completed_plate.call(idx) if current_destination_plate.full?
     end
 
     # If our plate isn't empty we'll add any controls, and push it to the array
     unless current_destination_plate.empty?
       # If there are any remaining control requests, we'll add all of them at the end of the last plate
-      current_destination_plate.add_remaining_control_requests(control_posns, batch, control_assets) if control_source_plate
+      if control_source_plate
+        current_destination_plate.add_remaining_control_requests(control_posns, batch, control_assets)
+      end
+
       # Ensure that a non-empty plate is stored
       push_completed_plate.call(plates_array.length)
     end
 
     [destination_plates, source_plates]
   end
+
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity
   private :perform_pick
 
   def partial
@@ -117,9 +147,9 @@ class CherrypickTask < Task
   end
 
   # returns array [ [ request id, source plate barcode, source coordinate ] ]
-  def build_plate_wells_from_requests(requests, workflow_controller = nil)
-    loaded_requests = Request.where(requests: { id: requests })
-                             .includes(asset: [{ plate: :barcodes }, :map])
+  # rubocop:todo Metrics/MethodLength
+  def build_plate_wells_from_requests(requests, workflow_controller = nil) # rubocop:todo Metrics/AbcSize
+    loaded_requests = Request.where(requests: { id: requests }).includes(asset: [{ plate: :barcodes }, :map])
 
     source_plate_barcodes = loaded_requests.map { |request| request.asset.plate.human_barcode }.uniq
 
@@ -135,13 +165,16 @@ class CherrypickTask < Task
     end
 
     # sort by location in lab, followed by plate id, followed by well coordinate on plate
-    sorted_requests = loaded_requests.sort_by do |request|
-      [barcodes_sorted_by_location.index(request.asset.plate.human_barcode), request.asset.plate.id,
-       request.asset.map.column_order]
-    end
+    sorted_requests =
+      loaded_requests.sort_by do |request|
+        [
+          barcodes_sorted_by_location.index(request.asset.plate.human_barcode),
+          request.asset.plate.id,
+          request.asset.map.column_order
+        ]
+      end
 
-    sorted_requests.map do |request|
-      [request.id, request.asset.plate.human_barcode, request.asset.map_description]
-    end
+    sorted_requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
   end
+  # rubocop:enable Metrics/MethodLength
 end

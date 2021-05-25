@@ -18,21 +18,13 @@ class PlatePurpose < Purpose
 
   self.state_changer = StateChanger::StandardPlate
 
-  broadcast_via_warren
+  broadcast_with_warren
 
-  scope :compatible_with_purpose, ->(purpose) {
-    if purpose.nil?
-      none
-    else
-      where(target_type: purpose.target_type).order(name: :asc)
-    end
-  }
+  scope :compatible_with_purpose,
+        ->(purpose) { purpose.nil? ? none : where(target_type: purpose.target_type).order(name: :asc) }
 
   scope :cherrypickable_as_target, -> { where(cherrypickable_target: true) }
-  scope :for_submissions, ->() do
-    where('stock_plate = true OR name = "Working Dilution"')
-      .order(stock_plate: :desc)
-  end
+  scope :for_submissions, -> { where('stock_plate = true OR name = "Working Dilution"').order(stock_plate: :desc) }
   scope :considered_stock_plate, -> { where(stock_plate: true) }
 
   before_validation :set_default_target_type
@@ -73,15 +65,17 @@ class PlatePurpose < Purpose
     self.type = 'PlatePurpose::Input' if is_input
   end
 
-  def pool_wells(wells)
+  def pool_wells(wells) # rubocop:todo Metrics/MethodLength
     _pool_wells(wells)
-      .joins('LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id')
+      .joins(
+        'LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id'
+      )
       .select('pool_uuids.external_id AS pool_uuid')
       .readonly(false)
       .tap do |wells_with_pool|
-        raise StandardError, 'Cannot deal with a well in multiple pools' if wells_with_pool.group_by(&:id).any? do |_, multiple_pools|
-                                                                              multiple_pools.uniq.size > 1
-                                                                            end
+        if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
+          raise StandardError, 'Cannot deal with a well in multiple pools'
+        end
       end
   end
 
@@ -100,17 +94,17 @@ class PlatePurpose < Purpose
     super || 96
   end
 
-  def create!(*args, &block)
-    attributes          = args.extract_options!
+  def create!(*args, &block) # rubocop:todo Metrics/AbcSize
+    attributes = args.extract_options!
     do_not_create_wells = args.first.present?
     attributes[:size] ||= size
     attributes[:purpose] = self
     number = attributes.delete(:barcode)
     prefix = (attributes.delete(:barcode_prefix) || barcode_prefix).prefix
     attributes[:sanger_barcode] ||= { prefix: prefix, number: number }
-    target_class.create_with_barcode!(attributes, &block).tap do |plate|
-      plate.wells.construct! unless do_not_create_wells
-    end
+    target_class
+      .create_with_barcode!(attributes, &block)
+      .tap { |plate| plate.wells.construct! unless do_not_create_wells }
   end
 
   def cherrypick_in_rows?

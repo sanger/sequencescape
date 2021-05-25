@@ -3,13 +3,7 @@ module SequencingQcBatch
   # NOTE: Be careful that the length of these do not exceed 25 characters, otherwise you will have to alter the
   # batches.qc_state field in the DB to accommodate.  FYI, 25 characters is:
   #  <----------------------->
-  VALID_QC_STATES = %w(
-    qc_pending
-    qc_submitted
-    qc_manual
-    qc_manual_in_progress
-    qc_completed
-  ).freeze
+  VALID_QC_STATES = %w[qc_pending qc_submitted qc_manual qc_manual_in_progress qc_completed].freeze
 
   def self.included(base)
     base.instance_eval do
@@ -35,18 +29,21 @@ module SequencingQcBatch
     VALID_QC_STATES
   end
 
-  def qc_previous_state!(current_user)
+  def qc_previous_state!(current_user) # rubocop:todo Metrics/MethodLength
     previous_state = qc_previous_state
     if previous_state
-      lab_events.create(description: 'QC Rollback', message: "Manual QC moved from #{qc_state} to #{previous_state}",
-                        user_id: current_user.id)
+      lab_events.create(
+        description: 'QC Rollback',
+        message: "Manual QC moved from #{qc_state} to #{previous_state}",
+        user_id: current_user.id
+      )
       self.qc_state = previous_state
     end
     self.state = 'started'
     save
   end
 
-  def self.adjacent_state_helper(direction, offset, delimiter)
+  def self.adjacent_state_helper(direction, offset, delimiter) # rubocop:todo Metrics/AbcSize
     define_method(:"qc_#{direction}_state") do
       unless qc_states.include?(qc_state.to_s)
         raise StandardError, "Current QC state appears to be invalid: '#{qc_state}'"
@@ -59,7 +56,7 @@ module SequencingQcBatch
 
   # Sets up qc_next_state and qc_previous_state so that they move in the appropriate direction to find their
   # appropriate state, and are limited by the last or first states (respectively).
-  adjacent_state_helper(:next,     +1, :last)
+  adjacent_state_helper(:next, +1, :last)
   adjacent_state_helper(:previous, -1, :first)
 
   def self.state_transition_helper(name)
@@ -89,6 +86,6 @@ module SequencingQcBatch
 
   def qc_pipeline_update
     self.qc_pipeline = Pipeline.find_by(name: 'quality control', automated: true)
-    self.qc_state    = 'qc_pending'
+    self.qc_state = 'qc_pending'
   end
 end

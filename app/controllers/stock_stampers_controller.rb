@@ -16,15 +16,15 @@ class StockStampersController < ApplicationController # rubocop:todo Style/Docum
   end
 
   def generate_tecan_file
-    send_data params[:file_content], type: 'text/plain',
-                                     filename: "stock_stamper_#{params[:plate_barcode]}.gwl",
-                                     disposition: 'attachment'
+    send_data params[:file_content],
+              type: 'text/plain',
+              filename: "stock_stamper_#{params[:plate_barcode]}.gwl",
+              disposition: 'attachment'
   end
 
   def print_label
-    print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                           LabelPrinter::Label::AssetRedirect,
-                                           printables: params[:printable])
+    print_job =
+      LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::AssetRedirect, printables: params[:printable])
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -34,7 +34,15 @@ class StockStampersController < ApplicationController # rubocop:todo Style/Docum
   end
 
   def stock_stamper_params
-    params.require(:stock_stamper).permit(:user_barcode, :source_plate_barcode, :source_plate_type_name,
-                                          :destination_plate_barcode, :destination_plate_type_name, :overage)
+    params
+      .require(:stock_stamper)
+      .permit(
+        :user_barcode,
+        :source_plate_barcode,
+        :source_plate_type_name,
+        :destination_plate_barcode,
+        :destination_plate_type_name,
+        :overage
+      )
   end
 end

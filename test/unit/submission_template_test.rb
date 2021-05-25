@@ -21,9 +21,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
   end
 
   context 'A Order' do
-    setup do
-      @order = Order.new
-    end
+    setup { @order = Order.new }
     context 'with a comment' do
       setup do
         @comment = 'my comment'

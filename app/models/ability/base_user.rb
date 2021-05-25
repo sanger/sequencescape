@@ -13,15 +13,18 @@ class Ability::BaseUser
 
   private
 
-  def grant_privileges
+  # rubocop:todo Metrics/MethodLength
+  def grant_privileges # rubocop:todo Metrics/AbcSize
     Rails.logger.debug { 'Granting BaseUser privileges' }
 
     can :delete, Comment, { user_id: user.id }
     can :create, Comment, commentable_type: %w[Study Sample], commentable: { owners: { id: user.id } }
+
     # There isn't really much reason to stop users seeing this
     can :read, Delayed::Job
     can :read, Labware
     can %i[read create], Project
+
     # Basic users can only create submissions using projects they own.
     can :create_submission, Project, owners: { id: user.id }
     can :read, ReferenceGenome
@@ -37,6 +40,8 @@ class Ability::BaseUser
 
     grant_advanced_batch_operation_privileges
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   # Before this was granted to anyone, unless they
   # were an owner of anything, in which case they also

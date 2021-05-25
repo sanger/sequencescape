@@ -4,7 +4,8 @@ class Io::Plate < Core::Io::Base
   set_json_root(:plate)
   set_eager_loading(&:include_plate_purpose)
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                                            name  => name
                                            size <=> size
                              plate_purpose.name  => plate_purpose.name
@@ -33,5 +34,6 @@ class Io::Plate < Core::Io::Base
                                    ean13_barcode  => barcode.ean13
                                     barcode_type  => barcode.type
 
-  ")
+  '
+  )
 end

@@ -4,15 +4,12 @@ module StateChanger
   # Handles the basic transitions of the high throughput multiplexed library tube
   # {IlluminaHtp::MxTubePurpose} this is the tube at the end of the pipelines
   class MxTube < StateChanger::TubeBase
-    self.map_target_state_to_associated_request_state = {
-      'failed' => 'failed',
-      'passed' => 'passed'
-    }
+    self.map_target_state_to_associated_request_state = { 'failed' => 'failed', 'passed' => 'passed' }
 
     private
 
     def associated_requests
-      labware.requests_as_target.for_billing.opened
+      labware.requests_as_target.opened
     end
 
     def generate_events_for(orders)
@@ -27,12 +24,14 @@ module StateChanger
 
     def update_associated_requests
       # @note map.uniq is actually about twice as fast as a set for the kind of data we're expecting to see
-      orders = associated_requests.map do |request|
-        request.customer_accepts_responsibility! if customer_accepts_responsibility
-        request.transition_to(associated_request_target_state)
-        # Grab the order ids
-        request.order_id
-      end.uniq
+      orders =
+        associated_requests.map do |request|
+          request.customer_accepts_responsibility! if customer_accepts_responsibility
+          request.transition_to(associated_request_target_state)
+
+          # Grab the order ids
+          request.order_id
+        end.uniq
 
       generate_events_for(orders) if target_state == 'passed'
     end

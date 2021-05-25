@@ -25,10 +25,14 @@ module Api
       # Filters
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
-      filter :purpose_name, apply: (lambda do |records, value, _options|
-        purpose = Purpose.find_by(name: value)
-        records.where(plate_purpose_id: purpose)
-      end)
+      filter :purpose_name,
+             apply:
+               (
+                 lambda do |records, value, _options|
+                   purpose = Purpose.find_by(name: value)
+                   records.where(plate_purpose_id: purpose)
+                 end
+               )
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
 
       # Custom methods

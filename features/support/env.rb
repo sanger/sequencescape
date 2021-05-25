@@ -67,7 +67,7 @@ After('@javascript') do
   TransactionalCapybara::AjaxHelpers.wait_for_ajax(page)
 end
 
-After do |scenario|
+After() do |scenario|
   if scenario.failed?
     name = scenario.name.parameterize
     CapybaraFailureLogger.log_failure(name, page) { |message| warn message }
