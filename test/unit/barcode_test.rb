@@ -34,7 +34,7 @@ class BarcodeTest < ActiveSupport::TestCase
 
   context 'A valid barcode' do
     setup do
-      @barcode = 2470000002799.to_s
+      @barcode = 2_470_000_002_799.to_s
       @human = 'ID2O'
     end
 
@@ -44,9 +44,7 @@ class BarcodeTest < ActiveSupport::TestCase
   end
 
   context 'An invalid barcode' do
-    setup do
-      @barcode = 398002343284.to_s
-    end
+    setup { @barcode = 398_002_343_284.to_s }
 
     should 'not have a human form' do
       assert_nil Barcode.barcode_to_human(@barcode)
@@ -54,9 +52,7 @@ class BarcodeTest < ActiveSupport::TestCase
   end
 
   context 'A Generic Barcode' do
-    setup do
-      @barcode = 5018206206022.to_s
-    end
+    setup { @barcode = 5_018_206_206_022.to_s }
 
     should 'have a valid EAN' do
       assert Barcode.check_EAN(@barcode)
@@ -64,9 +60,7 @@ class BarcodeTest < ActiveSupport::TestCase
   end
 
   context 'A Generic Barcode' do
-    setup do
-      @barcode = 5018206206023.to_s
-    end
+    setup { @barcode = 5_018_206_206_023.to_s }
 
     should 'not have an invalid EAN' do
       assert_equal false, Barcode.check_EAN(@barcode)
@@ -74,9 +68,7 @@ class BarcodeTest < ActiveSupport::TestCase
   end
 
   context 'A number with more than 7 digits' do
-    setup do
-      @number = 12345678
-    end
+    setup { @number = 12_345_678 }
     should 'raise a error' do
       assert_raise ArgumentError do
         Barcode.calculate_barcode 'DN', @number
@@ -88,7 +80,7 @@ class BarcodeTest < ActiveSupport::TestCase
     setup do
       @human_readable_barcode = 'PR1234K'
       @invalid_human_barcode = 'QQ12345A'
-      @expected_machine_barcode = 4500001234757
+      @expected_machine_barcode = 4_500_001_234_757
     end
 
     should 'convert to the correct machine barcode' do
@@ -96,9 +88,7 @@ class BarcodeTest < ActiveSupport::TestCase
     end
 
     should 'raise an exception with an invalid barcode' do
-      assert_raise(SBCF::BarcodeError) do
-        Barcode.human_to_machine_barcode(@invalid_human_barcode)
-      end
+      assert_raise(SBCF::BarcodeError) { Barcode.human_to_machine_barcode(@invalid_human_barcode) }
     end
   end
 end

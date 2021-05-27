@@ -24,12 +24,14 @@ module Aker
       def create
         return unless valid?
 
-        @model = Aker::Container.find_or_create_by(barcode: barcode, address: address) do |m|
-          @labware = find_or_create_asset_by_aker_barcode!
-          # Connects Aker container with asset. If is a plate, connects with the well, if is a tube, directly with
-          # the tube
-          m.update(asset: a_well? ? @labware.wells.located_at(address_for_ss).first : @labware)
-        end
+        @model =
+          Aker::Container.find_or_create_by(barcode: barcode, address: address) do |m|
+            @labware = find_or_create_asset_by_aker_barcode!
+
+            # Connects Aker container with asset. If is a plate, connects with the well, if is a tube, directly with
+            # the tube
+            m.update(asset: a_well? ? @labware.wells.located_at(address_for_ss).first : @labware)
+          end
       end
 
       def as_json(_options = {})
@@ -43,11 +45,7 @@ module Aker
       private
 
       def create_asset!
-        if a_well?
-          PlatePurpose.stock_plate_purpose.create!
-        else
-          Tube::Purpose.standard_sample_tube.create!
-        end
+        a_well? ? PlatePurpose.stock_plate_purpose.create! : Tube::Purpose.standard_sample_tube.create!
       end
 
       def find_or_create_asset_by_aker_barcode!

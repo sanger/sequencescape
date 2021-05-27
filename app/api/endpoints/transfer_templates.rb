@@ -1,7 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for TransferTemplates
 class ::Endpoints::TransferTemplates < ::Core::Endpoint::Base
-  model do
-  end
+  model {}
 
   instance do
     def extract_parameters(request)
@@ -12,17 +11,11 @@ class ::Endpoints::TransferTemplates < ::Core::Endpoint::Base
 
     action(:create) do |request, response|
       response.status(201)
-      ActiveRecord::Base.transaction do
-        extract_parameters(request) do |parameters|
-          request.target.create!(parameters)
-        end
-      end
+      ActiveRecord::Base.transaction { extract_parameters(request) { |parameters| request.target.create!(parameters) } }
     end
     bind_action(:create, as: 'preview', to: 'preview') do |_, request, response|
       response.status(200)
-      extract_parameters(request) do |parameters|
-        request.target.preview!(parameters)
-      end
+      extract_parameters(request) { |parameters| request.target.preview!(parameters) }
     end
   end
 end

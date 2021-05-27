@@ -9,9 +9,13 @@ class BroadcastEvent::QcAssay < BroadcastEvent
   def self.generate_events(qc_assay)
     # A qc_assay is made up of multiple qc_results, which usually have the same assay_type, don't HAVE to.
     # We generate an event per assay type, and distinguish between then with properties
-    qc_assay.qc_results.distinct.pluck(:assay_type, :assay_version).map do |assay_type, assay_version|
-      create!(seed: qc_assay, properties: { assay_type: assay_type, assay_version: assay_version })
-    end
+    qc_assay
+      .qc_results
+      .distinct
+      .pluck(:assay_type, :assay_version)
+      .map do |assay_type, assay_version|
+        create!(seed: qc_assay, properties: { assay_type: assay_type, assay_version: assay_version })
+      end
   end
 
   has_subjects(:sample) { |_qc_assay, event| event.samples }

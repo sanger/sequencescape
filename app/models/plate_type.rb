@@ -3,8 +3,9 @@ class PlateType < ApplicationRecord # rubocop:todo Style/Documentation
 
   class << self
     def plate_default_type
-      create_with(maximum_volume: Sequencescape::Application.config.plate_default_max_volume)
-        .find_or_create_by!(name: Sequencescape::Application.config.plate_default_type)
+      create_with(maximum_volume: Sequencescape::Application.config.plate_default_max_volume).find_or_create_by!(
+        name: Sequencescape::Application.config.plate_default_type
+      )
     end
 
     def cherrypickable_default_type

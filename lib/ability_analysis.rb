@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
 # Tools to assist with analysing permissions
-class AbilityAnalysis
+class AbilityAnalysis # rubocop:todo Metrics/ClassLength
   attr_reader :permissions, :roles, :ability
 
   UserStub = Struct.new(:id, :role_names)
 
-  ALIAS = {
-    update: [:edit],
-    show: [:read],
-    index: [:read],
-    manage: %i[create edit read delete]
-  }.freeze
+  ALIAS = { update: [:edit], show: [:read], index: [:read], manage: %i[create edit read delete] }.freeze
 
   # Roles associated with an authorizable
   AUTHORIZED_ROLES = {
@@ -44,7 +39,17 @@ class AbilityAnalysis
     'QcDecision' => [:create],
     'Receptacle' => %i[edit close],
     'ReferenceGenome' => %i[create edit read delete],
-    'Request' => %i[create_additional copy cancel change_priority see_previously_failed edit_additional reset_qc_information edit change_decision],
+    'Request' => %i[
+      create_additional
+      copy
+      cancel
+      change_priority
+      see_previously_failed
+      edit_additional
+      reset_qc_information
+      edit
+      change_decision
+    ],
     'Robot' => %i[create edit read delete],
     'Role' => %i[create administer edit read delete],
     'Sample' => %i[edit release accession],
@@ -94,21 +99,9 @@ class AbilityAnalysis
   # @return [Array] Nested array of each model and their permissions
   #
   def permission_matrix
-    abilities = [
-      abilities_for(nil),
-      abilities_for(user_with_roles),
-      *roles.map { |role| ability_for_role(role) }
-    ]
+    abilities = [abilities_for(nil), abilities_for(user_with_roles), *roles.map { |role| ability_for_role(role) }]
     sorted_permissions.map do |model, actions|
-      [
-        model,
-        actions.map do |action|
-          [
-            action,
-            abilities.map { |ability| check_ability?(ability, action, model) }
-          ]
-        end
-      ]
+      [model, actions.map { |action| [action, abilities.map { |ability| check_ability?(ability, action, model) }] }]
     end
   end
 

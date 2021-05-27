@@ -9,9 +9,7 @@ class SampleTube < Tube # rubocop:todo Style/Documentation
   after_create :generate_name_from_aliquots, unless: :name?
 
   # All instances are labelled 'SampleTube', unless otherwise specified
-  before_validation do |record|
-    record.label = 'SampleTube' if record.label.blank?
-  end
+  before_validation { |record| record.label = 'SampleTube' if record.label.blank? }
 
   private
 

@@ -23,14 +23,12 @@ class QcDecisionTest < ActiveSupport::TestCase
 
       context 'with valid data' do
         setup do
-          @qcd = QcDecision.create(
-            user: @user,
-            lot: @lot,
-            decisions: [
-              { qcable: @qcable_a, decision: 'release' },
-              { qcable: @qcable_b, decision: 'fail' }
-            ]
-          )
+          @qcd =
+            QcDecision.create(
+              user: @user,
+              lot: @lot,
+              decisions: [{ qcable: @qcable_a, decision: 'release' }, { qcable: @qcable_b, decision: 'fail' }]
+            )
         end
 
         should 'Update the QC state' do
@@ -49,10 +47,7 @@ class QcDecisionTest < ActiveSupport::TestCase
           QcDecision.create!(
             user: @user,
             lot: @lot,
-            decisions: [
-              { qcable: @qcable_a, decision: 'delete' },
-              { qcable: @qcable_b, decision: 'fail' }
-            ]
+            decisions: [{ qcable: @qcable_a, decision: 'delete' }, { qcable: @qcable_b, decision: 'fail' }]
           )
         end
       end
@@ -62,10 +57,7 @@ class QcDecisionTest < ActiveSupport::TestCase
           QcDecision.create!(
             user: @user_b,
             lot: @lot,
-            decisions: [
-              { qcable: @qcable_a, decision: 'release' },
-              { qcable: @qcable_b, decision: 'fail' }
-            ]
+            decisions: [{ qcable: @qcable_a, decision: 'release' }, { qcable: @qcable_b, decision: 'fail' }]
           )
         end
       end

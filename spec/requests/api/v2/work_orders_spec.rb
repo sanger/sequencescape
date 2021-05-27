@@ -24,32 +24,40 @@ describe 'WorkOrders API', with: :api_v2 do
 
     it 'sends a list of work_orders' do
       api_get '/api/v2/work_orders'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end
 
     it 'allows filtering of work_orders by state' do
       api_get '/api/v2/work_orders?filter[state]=pending'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(3)
     end
 
     it 'allows filtering of work_orders by order type' do
       api_get "/api/v2/work_orders?filter[order_type]=#{our_request_type.key}"
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(3)
     end
 
     it 'allows filtering of work_orders by order type and state' do
       api_get "/api/v2/work_orders?filter[order_type]=#{our_request_type.key}&filter[state]=pending"
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(2)
     end
@@ -76,8 +84,10 @@ describe 'WorkOrders API', with: :api_v2 do
 
     it 'can inline all necessary information' do
       api_get '/api/v2/work_orders?include=study,samples,project,source_receptacle'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['included']).to include_json(expected_includes)
     end

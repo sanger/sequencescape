@@ -1,8 +1,8 @@
 module Submission::AssetGroupBehaviour # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
-      belongs_to    :asset_group
-      before_create :find_asset_group,             unless: :asset_group?
+      belongs_to :asset_group
+      before_create :find_asset_group, unless: :asset_group?
       before_create :pull_assets_from_asset_group, if: :asset_group?
 
       # Required once out of the building state ...
@@ -39,11 +39,7 @@ module Submission::AssetGroupBehaviour # rubocop:todo Style/Documentation
     group_name = asset_group_name
     group_name = uuid if asset_group_name.blank?
 
-    asset_group = study.asset_groups.create!(
-      name: group_name,
-      user: user,
-      assets: assets
-    )
+    asset_group = study.asset_groups.create!(name: group_name, user: user, assets: assets)
     update!(asset_group_id: asset_group.id)
   end
   private :create_our_asset_group

@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe 'PreCapturePools API', with: :api_v2 do
   context 'with multiple pre_capture_pools' do
-    before do
-      create_list(:pre_capture_pool, 5)
-    end
+    before { create_list(:pre_capture_pool, 5) }
 
     it 'sends a list of pre_capture_pools' do
       api_get '/api/v2/pre_capture_pools'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end

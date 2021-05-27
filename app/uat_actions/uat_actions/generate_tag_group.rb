@@ -5,6 +5,7 @@ require './lib/oligo_enumerator'
 # Will construct plates with well_count wells filled with samples
 class UatActions::GenerateTagGroup < UatActions
   self.title = 'Generate tag group'
+
   # The description displays on the list of UAT actions to provide additional information
   self.description = 'Generates a tag group of the specified size filled with random oligos'
 
@@ -17,12 +18,16 @@ class UatActions::GenerateTagGroup < UatActions
              :number_field,
              label: 'Number of Tags',
              help: 'The number of tags that will be generated',
-             options: { minimum: 1 }
+             options: {
+               minimum: 1
+             }
 
-  validates :size, numericality: {
-    less_than_or_equal_to: ->(record) { record.existing_tags },
-    message: 'is larger than the tag group with this name which already exists (%{count})'
-  }, if: :existing_tag_group
+  validates :size,
+            numericality: {
+              less_than_or_equal_to: ->(record) { record.existing_tags },
+              message: 'is larger than the tag group with this name which already exists (%{count})'
+            },
+            if: :existing_tag_group
 
   #
   # Returns a default copy of the UatAction which will be used to fill in the form
@@ -44,9 +49,9 @@ class UatActions::GenerateTagGroup < UatActions
     return true if existing_tag_group
 
     tag_group = TagGroup.create!(name: name)
-    tag_group.tags.build(OligoEnumerator.new(size.to_i).each_with_index.map do |oligo, map_id|
-                           { oligo: oligo, map_id: map_id + 1 }
-                         end)
+    tag_group.tags.build(
+      OligoEnumerator.new(size.to_i).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
+    )
     tag_group.save
   end
 

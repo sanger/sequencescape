@@ -8,18 +8,10 @@ module Api
       abstract
 
       # Loaded on the base class so that they can be loaded globally.
-      Purpose.descendants.each do |subclass|
-        model_hint model: subclass, resource: :purpose
-      end
-      Plate.descendants.each do |subclass|
-        model_hint model: subclass, resource: :plate
-      end
-      Tube.descendants.each do |subclass|
-        model_hint model: subclass, resource: :tube
-      end
-      Request.descendants.each do |subclass|
-        model_hint model: subclass, resource: :request
-      end
+      Purpose.descendants.each { |subclass| model_hint model: subclass, resource: :purpose }
+      Plate.descendants.each { |subclass| model_hint model: subclass, resource: :plate }
+      Tube.descendants.each { |subclass| model_hint model: subclass, resource: :tube }
+      Request.descendants.each { |subclass| model_hint model: subclass, resource: :request }
 
       # This extension allows the readonly property to be used on attributes/relationships
       # prior to the 0.10 upgrade. This avoids the need to override updatable_fields on
@@ -64,28 +56,30 @@ module Api
       # rubocop:disable all
       def self.resolve_relationship_names_to_relations(resource_klass, model_includes, options = {})
         case model_includes
-          when Array
-            return model_includes.map do |value|
-              resolve_relationship_names_to_relations(resource_klass, value, options)
-            end
-          when Hash
-            model_includes.keys.each do |key|
-              relationship = resource_klass._relationships[key]
-              value = model_includes[key]
-              model_includes.delete(key)
-              # MODIFICATION BEGINS
-              included_relationships = resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
-              model_includes[relationship.relation_name(options)] = relationship.resource_klass.inclusions + included_relationships
-              # MODIFICATION ENDS
-            end
-            return model_includes
-          when Symbol
-            relationship = resource_klass._relationships[model_includes]
+        when Array
+          return model_includes.map { |value| resolve_relationship_names_to_relations(resource_klass, value, options) }
+        when Hash
+          model_includes.keys.each do |key|
+            relationship = resource_klass._relationships[key]
+            value = model_includes[key]
+            model_includes.delete(key)
+
             # MODIFICATION BEGINS
-            # return relationship.relation_name(options)
-            inclusions = relationship.resource_klass.inclusions
-            { relationship.relation_name(options) => inclusions }
+            included_relationships =
+              resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
+            model_includes[relationship.relation_name(options)] =
+              relationship.resource_klass.inclusions + included_relationships
             # MODIFICATION ENDS
+          end
+          return model_includes
+        when Symbol
+          relationship = resource_klass._relationships[model_includes]
+
+          # MODIFICATION BEGINS
+          # return relationship.relation_name(options)
+          inclusions = relationship.resource_klass.inclusions
+          { relationship.relation_name(options) => inclusions }
+          # MODIFICATION ENDS
         end
       end
       # rubocop:enable all

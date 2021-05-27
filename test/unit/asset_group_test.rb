@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class AssetGroupTest < ActiveSupport::TestCase
+class AssetGroupTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   context 'An AssetGroup' do
     setup do
       Study.destroy_all
@@ -117,14 +117,16 @@ class AssetGroupTest < ActiveSupport::TestCase
     end
 
     context '#all_samples_have_accession_numbers?' do
-      setup do
-        @asset_group = build :asset_group
-      end
+      setup { @asset_group = build :asset_group }
       context 'where all samples' do
         setup do
           2.times do |_i|
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: 'ERS00001' })
+            asset.primary_aliquot.sample.update!(
+              sample_metadata_attributes: {
+                sample_ebi_accession_number: 'ERS00001'
+              }
+            )
             @asset_group.assets << asset.receptacle
           end
         end
@@ -162,14 +164,16 @@ class AssetGroupTest < ActiveSupport::TestCase
     end
 
     context '#all_samples_have_accession_numbers? On saved asset groups' do
-      setup do
-        @asset_group = create :asset_group
-      end
+      setup { @asset_group = create :asset_group }
       context 'where all samples' do
         setup do
           2.times do |_i|
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: 'ERS00001' })
+            asset.primary_aliquot.sample.update!(
+              sample_metadata_attributes: {
+                sample_ebi_accession_number: 'ERS00001'
+              }
+            )
             @asset_group.assets << asset.receptacle
           end
         end

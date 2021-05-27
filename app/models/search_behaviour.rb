@@ -6,7 +6,7 @@ module SearchBehaviour # rubocop:todo Style/Documentation
     base.helper_method :no_results?
   end
 
-  def search
+  def search # rubocop:todo Metrics/AbcSize
     t = Time.zone.now
     @query = params[:q]
     perform_search(params[:q].strip) unless params[:q].blank? || query_invalid?
@@ -22,9 +22,7 @@ module SearchBehaviour # rubocop:todo Style/Documentation
   private
 
   def perform_search(query)
-    searchable_classes.each do |clazz|
-      clazz_search(clazz, query)
-    end
+    searchable_classes.each { |clazz| clazz_search(clazz, query) }
   end
 
   def clazz_search(clazz, query)
@@ -43,9 +41,7 @@ module SearchBehaviour # rubocop:todo Style/Documentation
   end
 
   def no_results?
-    searchable_classes.all? do |clazz|
-      instance_variable_get("@#{clazz.name.underscore.pluralize}").blank?
-    end
+    searchable_classes.all? { |clazz| instance_variable_get("@#{clazz.name.underscore.pluralize}").blank? }
   end
 
   def query_invalid?

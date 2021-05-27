@@ -4,6 +4,7 @@
 # @see Purpose
 class Tube::Purpose < ::Purpose
   self.default_prefix = 'NT'
+
   # TODO: change to purpose_id
   has_many :tubes, foreign_key: :plate_purpose_id
 
@@ -11,6 +12,7 @@ class Tube::Purpose < ::Purpose
   # be performing this check so rarely that the performance hit is negligable.
   validates :target_type, presence: true, inclusion: { in: ->(_) { Tube.descendants.map(&:name) << 'Tube' } }
   before_validation :set_default_printer_type
+
   # Tubes of the general types have no stock plate!
   def stock_plate(_)
     nil
@@ -34,33 +36,23 @@ class Tube::Purpose < ::Purpose
   # Define some simple helper methods
   class << self
     def stock_library_tube
-      Tube::Purpose.create_with(
-        target_type: 'StockLibraryTube'
-      ).find_or_create_by!(name: 'Stock library')
+      Tube::Purpose.create_with(target_type: 'StockLibraryTube').find_or_create_by!(name: 'Stock library')
     end
 
     def stock_mx_tube
-      Tube::StockMx.create_with(
-        target_type: 'StockMultiplexedLibraryTube'
-      ).find_or_create_by!(name: 'Stock MX')
+      Tube::StockMx.create_with(target_type: 'StockMultiplexedLibraryTube').find_or_create_by!(name: 'Stock MX')
     end
 
     def standard_sample_tube
-      Tube::Purpose.create_with(
-        target_type: 'SampleTube'
-      ).find_or_create_by!(name: 'Standard sample')
+      Tube::Purpose.create_with(target_type: 'SampleTube').find_or_create_by!(name: 'Standard sample')
     end
 
     def standard_library_tube
-      Tube::Purpose.create_with(
-        target_type: 'LibraryTube'
-      ).find_or_create_by!(name: 'Standard library')
+      Tube::Purpose.create_with(target_type: 'LibraryTube').find_or_create_by!(name: 'Standard library')
     end
 
     def standard_mx_tube
-      Tube::StandardMx.create_with(
-        target_type: 'MultiplexedLibraryTube'
-      ).find_or_create_by!(name: 'Standard MX')
+      Tube::StandardMx.create_with(target_type: 'MultiplexedLibraryTube').find_or_create_by!(name: 'Standard MX')
     end
   end
 

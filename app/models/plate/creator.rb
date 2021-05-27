@@ -2,7 +2,7 @@
 
 # A plate creator creates a stamp of a parent plate into one or more children
 # A stamp is the complete transfer of content, maintaining the same well locations.
-class Plate::Creator < ApplicationRecord
+class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   PlateCreationError = Class.new(StandardError)
 
   # Join between the {Plate::Creator}, and the child purposes if can create
@@ -24,12 +24,18 @@ class Plate::Creator < ApplicationRecord
   self.table_name = 'plate_creators'
 
   # These are the plate purposes that will be created when this creator is used.
-  has_many :plate_creator_purposes, class_name: 'Plate::Creator::PurposeRelationship', dependent: :destroy,
-                                    foreign_key: :plate_creator_id, inverse_of: :plate_creator
+  has_many :plate_creator_purposes,
+           class_name: 'Plate::Creator::PurposeRelationship',
+           dependent: :destroy,
+           foreign_key: :plate_creator_id,
+           inverse_of: :plate_creator
   has_many :plate_purposes, through: :plate_creator_purposes
 
-  has_many :parent_purpose_relationships, class_name: 'Plate::Creator::ParentPurposeRelationship', dependent: :destroy,
-                                          foreign_key: :plate_creator_id, inverse_of: :plate_creator
+  has_many :parent_purpose_relationships,
+           class_name: 'Plate::Creator::ParentPurposeRelationship',
+           dependent: :destroy,
+           foreign_key: :plate_creator_id,
+           inverse_of: :plate_creator
   has_many :parent_plate_purposes, through: :parent_purpose_relationships, source: :plate_purpose
 
   serialize :valid_options
@@ -61,27 +67,45 @@ class Plate::Creator < ApplicationRecord
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
+  # rubocop:todo Metrics/MethodLength
   def execute(source_plate_barcodes, barcode_printer, scanned_user, should_create_asset_group, creator_parameters = nil)
     @created_plates = []
 
-    new_plates = transaction do
-      create_plates(source_plate_barcodes, scanned_user, creator_parameters)
-    end
+    new_plates = transaction { create_plates(source_plate_barcodes, scanned_user, creator_parameters) }
     fail_with_error('Plate creation failed') if new_plates.empty?
 
-    new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
-      print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                             LabelPrinter::Label::PlateCreator,
-                                             plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
+    new_plates
+      .group_by(&:plate_purpose)
+      .each do |plate_purpose, plates|
+        print_job =
+          LabelPrinter::PrintJob.new(
+            barcode_printer.name,
+            LabelPrinter::Label::PlateCreator,
+            plates: plates,
+            plate_purpose: plate_purpose,
+            user_login: scanned_user.login
+          )
 
-      warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}" unless print_job.execute
-    end
+        unless print_job.execute
+          warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}"
+        end
+      end
 
     @created_asset_group = create_asset_group(created_plates) if should_create_asset_group
     true
   end
 
-  def create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, should_create_asset_group, _creator_parameters = nil)
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def create_plates_from_tube_racks!(
+    tube_racks,
+    barcode_printer,
+    scanned_user,
+    should_create_asset_group,
+    _creator_parameters = nil
+  )
     # creates plates
     # creates an asset group if user requested one
     # prints the barcode labels
@@ -103,17 +127,25 @@ class Plate::Creator < ApplicationRecord
 
     @created_asset_group = create_asset_group(created_plates) if should_create_asset_group
 
-    print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                           LabelPrinter::Label::PlateCreator,
-                                           plates: created_plates.pluck(:destinations).flatten.compact,
-                                           plate_purpose: plate_purpose, user_login: scanned_user.login)
+    print_job =
+      LabelPrinter::PrintJob.new(
+        barcode_printer.name,
+        LabelPrinter::Label::PlateCreator,
+        plates: created_plates.pluck(:destinations).flatten.compact,
+        plate_purpose: plate_purpose,
+        user_login: scanned_user.login
+      )
 
     warnings_list << 'Barcode labels failed to print.' unless print_job.execute
     true
   end
 
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
+
   private
 
+  # rubocop:todo Metrics/MethodLength
   def create_asset_group(created_plates)
     group = nil
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
@@ -124,13 +156,16 @@ class Plate::Creator < ApplicationRecord
       return group
     end
 
-    ActiveRecord::Base.transaction do # TO DO: handle exceptions from this?
+    ActiveRecord::Base.transaction do
+      # TO DO: handle exceptions from this?
       group = AssetGroup.create!(study: study, name: asset_group_name)
       group.assets.concat(all_wells)
     end
 
     group
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def find_relevant_study(created_plates)
     # find a relevant study to put the Asset group under
@@ -143,9 +178,7 @@ class Plate::Creator < ApplicationRecord
 
     # try the study_samples table
     all_destination_plates.each do |plate|
-      plate.contained_samples.each do |sample|
-        return sample.studies.first if sample.studies.first
-      end
+      plate.contained_samples.each { |sample| return sample.studies.first if sample.studies.first }
     end
 
     nil
@@ -168,34 +201,32 @@ class Plate::Creator < ApplicationRecord
   end
 
   def create_plate_without_parent(creator_parameters)
-    plate_purposes.map do |purpose|
-      purpose.create!.tap do |plate|
-        creator_parameters&.set_plate_parameters(plate)
-      end
-    end
+    plate_purposes.map { |purpose| purpose.create!.tap { |plate| creator_parameters&.set_plate_parameters(plate) } }
   end
 
-  def create_plates(source_plate_barcodes, current_user, creator_parameters = nil)
+  # rubocop:todo Metrics/MethodLength
+  def create_plates(source_plate_barcodes, current_user, creator_parameters = nil) # rubocop:todo Metrics/AbcSize
     if source_plate_barcodes.blank?
       # No barcodes have been scanned. This results in empty plates. This behaviour
       # is used in a few circumstances. User comment:
       # bs6: we use it to create 'pico standard' barcodes, as well as 'aliquot' barcodes.
       # The latter is used on the rare occasion that we receive unlabelled samples that
       # we need to record a location for. Not sure there's anything else.
-      create_plate_without_parent(creator_parameters).tap do |destinations|
-        add_created_plates(nil, destinations)
-      end
+      create_plate_without_parent(creator_parameters).tap { |destinations| add_created_plates(nil, destinations) }
     else
       # In the majority of cases the users are creating stamps of the provided plates.
       scanned_barcodes = source_plate_barcodes.split(/[\s,]+/)
-      fail_with_error("Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}") if scanned_barcodes.blank?
+      if scanned_barcodes.blank?
+        fail_with_error("Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}")
+      end
 
       # NOTE: Plate barcodes are not unique within certain laboratories.  That means that we cannot do:
       #  plates = Plate.with_barcode(*scanned_barcodes).all(:include => [ :location, { :wells => :aliquots } ])
       # Because then you get multiple matches.  So we take the first match, which is just not right.
       scanned_barcodes.flat_map do |scanned|
-        plate = Plate.with_barcode(scanned).eager_load(wells: :aliquots).find_by_barcode(scanned) ||
-                fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
+        plate =
+          Plate.with_barcode(scanned).eager_load(wells: :aliquots).find_by_barcode(scanned) ||
+            fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
 
         unless can_create_plates?(plate)
           target_purposes = plate_purposes.map(&:name).join(',')
@@ -211,14 +242,14 @@ class Plate::Creator < ApplicationRecord
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def add_created_plates(source, destinations)
-    created_plates.push(
-      source: source,
-      destinations: destinations
-    )
+    created_plates.push(source: source, destinations: destinations)
   end
 
-  def create_child_plates_from(plate, current_user, creator_parameters)
+  # rubocop:todo Metrics/MethodLength
+  def create_child_plates_from(plate, current_user, creator_parameters) # rubocop:todo Metrics/AbcSize
     stock_well_picker = plate.plate_purpose.stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
     parent_wells = plate.wells
 
@@ -232,9 +263,10 @@ class Plate::Creator < ApplicationRecord
     parent_barcode = plate.sanger_barcode&.number
 
     plate_purposes.map do |target_plate_purpose|
-      child_plate = target_plate_purpose.create!(:without_wells, barcode: parent_barcode, size: plate.size) do |child|
-        child.name = "#{target_plate_purpose.name} #{child.human_barcode}"
-      end
+      child_plate =
+        target_plate_purpose.create!(:without_wells, barcode: parent_barcode, size: plate.size) do |child|
+          child.name = "#{target_plate_purpose.name} #{child.human_barcode}"
+        end
 
       # We should probably just use a transfer here.
       child_plate.wells << parent_wells.map do |well|
@@ -252,4 +284,5 @@ class Plate::Creator < ApplicationRecord
       child_plate
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

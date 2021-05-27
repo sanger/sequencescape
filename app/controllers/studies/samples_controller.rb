@@ -10,7 +10,7 @@ class Studies::SamplesController < ApplicationController # rubocop:todo Style/Do
     respond_to do |format|
       format.html
       format.json { render json: @samples.to_json }
-      format.xml  { render xml: @samples.to_xml }
+      format.xml { render xml: @samples.to_xml }
     end
   end
 end

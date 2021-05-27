@@ -15,8 +15,9 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
     shared_examples 'it generates layout information' do
       describe '#pick_number_to_expected_layout' do
         it 'generates a layout' do
-          expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode,
-                                                         max_beds)).to eq(expected_layout)
+          expect(verifier.pick_number_to_expected_layout(batch, destination_plate.human_barcode, max_beds)).to eq(
+            expected_layout
+          )
         end
       end
 
@@ -45,6 +46,7 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
       source_plate_2
       source_plate_3
       destination_wells = destination_plate.wells.in_column_major_order
+
       # These are specified in an odd order to ensure we are sorting by
       # destination well, not request id, or other side effects of creation order
       {
@@ -84,32 +86,27 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
         }
       end
 
-      let(:all_picks) do
-        { destination_plate.machine_barcode => expected_layout }
-      end
+      let(:all_picks) { { destination_plate.machine_barcode => expected_layout } }
 
       it_behaves_like 'it generates layout information'
     end
 
     context 'with control plates' do
-      let(:source_plate_2) do
-        create :control_plate, well_count: 2
-      end
+      let(:source_plate_2) { create :control_plate, well_count: 2 }
       let(:expected_layout) do
-        { 1 =>
-          [
+        {
+          1 => [
             { destination_plate.machine_barcode => 1 }, # Destinations
             {
               source_plate_3.machine_barcode => 1,
               source_plate_2.machine_barcode => 3,
               source_plate_1.machine_barcode => 2
             }
-          ] }
+          ]
+        }
       end
 
-      let(:all_picks) do
-        { destination_plate.machine_barcode => expected_layout }
-      end
+      let(:all_picks) { { destination_plate.machine_barcode => expected_layout } }
 
       it_behaves_like 'it generates layout information'
     end
@@ -137,13 +134,14 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
     let(:plate) { create(:plate_with_fluidigm_barcode) }
     let(:barcodes) do
       {
-        plate.machine_barcode =>
-          { 'mapping' => [
-            { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
-            { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 },
-            { 'src_well' =>  %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0 },
-            { 'src_well' =>  %w[88888 A1], 'dst_well' => 'S001', 'volume' => 13, 'buffer_volume' => 0.0 }
-          ] }
+        plate.machine_barcode => {
+          'mapping' => [
+            { 'src_well' => %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
+            { 'src_well' => %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 },
+            { 'src_well' => %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0 },
+            { 'src_well' => %w[88888 A1], 'dst_well' => 'S001', 'volume' => 13, 'buffer_volume' => 0.0 }
+          ]
+        }
       }
     end
     let(:source_index) { verifier.send(:source_barcode_to_plate_index, barcodes) }
@@ -165,18 +163,18 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
     let(:plate) { create(:plate_with_fluidigm_barcode) }
     let(:mapping) do
       [
-        { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
-        { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 },
-        { 'src_well' =>  %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0 },
-        { 'src_well' =>  %w[88888 A1], 'dst_well' => 'S001', 'volume' => 13, 'buffer_volume' => 0.0 }
+        { 'src_well' => %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
+        { 'src_well' => %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 },
+        { 'src_well' => %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0 },
+        { 'src_well' => %w[88888 A1], 'dst_well' => 'S001', 'volume' => 13, 'buffer_volume' => 0.0 }
       ]
     end
     let(:expected_order) do
       [
-        { 'src_well' =>  %w[88888 A1], 'dst_well' => 'S001', 'volume' => 13, 'buffer_volume' => 0.0 },
-        { 'src_well' =>  %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
-        { 'src_well' =>  %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0 },
-        { 'src_well' =>  %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 }
+        { 'src_well' => %w[88888 A1], 'dst_well' => 'S001', 'volume' => 13, 'buffer_volume' => 0.0 },
+        { 'src_well' => %w[88888 A11], 'dst_well' => 'S011', 'volume' => 13, 'buffer_volume' => 0.0 },
+        { 'src_well' => %w[99999 C7], 'dst_well' => 'S031', 'volume' => 13, 'buffer_volume' => 0.0 },
+        { 'src_well' => %w[66666 H7], 'dst_well' => 'S093', 'volume' => 13, 'buffer_volume' => 0.0 }
       ]
     end
 

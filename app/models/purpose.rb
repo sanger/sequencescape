@@ -35,6 +35,7 @@ class Purpose < ApplicationRecord
   belongs_to :barcode_printer_type
   belongs_to :source_purpose, class_name: 'Purpose'
   belongs_to :barcode_prefix, optional: false
+
   # Things that are created are often in a default location!
   has_many :messenger_creators, inverse_of: :purpose
   has_many :labware, inverse_of: :purpose
@@ -43,6 +44,7 @@ class Purpose < ApplicationRecord
 
   # rubocop:todo Rails/UniqueValidationWithoutIndex
   validates :name, format: { with: /\A\w[\s\w.\-]+\w\z/i }, presence: true, uniqueness: { case_sensitive: false }
+
   # rubocop:enable Rails/UniqueValidationWithoutIndex
 
   # NOTE: We should validate against valid asset subclasses, but running into some issues with

@@ -31,10 +31,11 @@ require 'aasm'
 #       an EGAS/ERP far too early in their lifecycle, and as a result we often need to perform
 #       'sample moves'. Although we do need to know if samples are open(ENA) or managed(EGA) at the
 #       point of accessioning.
-class Study < ApplicationRecord
+class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # It has to be here, as there are has_many through: :roles associations in modules
   # Includes / Extendes
   has_many :roles
+
   # Includes / Extendes
   include StudyReport::StudyDetails
   include ModelExtensions::Study
@@ -55,7 +56,7 @@ class Study < ApplicationRecord
   # Constants
   STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate'].freeze
   YES = 'Yes'.freeze
-  NO  = 'No'.freeze
+  NO = 'No'.freeze
   YES_OR_NO = [YES, NO].freeze
   Other_type = 'Other'.freeze
 
@@ -64,33 +65,21 @@ class Study < ApplicationRecord
   DATA_RELEASE_STRATEGY_OPEN = 'open'.freeze
   DATA_RELEASE_STRATEGY_MANAGED = 'managed'.freeze
   DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'.freeze
-  DATA_RELEASE_STRATEGIES = [DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED,
-                             DATA_RELEASE_STRATEGY_NOT_APPLICABLE].freeze
+  DATA_RELEASE_STRATEGIES = [
+    DATA_RELEASE_STRATEGY_OPEN,
+    DATA_RELEASE_STRATEGY_MANAGED,
+    DATA_RELEASE_STRATEGY_NOT_APPLICABLE
+  ].freeze
 
   DATA_RELEASE_TIMING_STANDARD = 'standard'.freeze
-  DATA_RELEASE_TIMING_NEVER    = 'never'.freeze
-  DATA_RELEASE_TIMING_DELAYED  = 'delayed'.freeze
-  DATA_RELEASE_TIMINGS = [
-    DATA_RELEASE_TIMING_STANDARD,
-    'immediate',
-    DATA_RELEASE_TIMING_DELAYED
-  ].freeze
-  DATA_RELEASE_PREVENTION_REASONS = [
-    'data validity',
-    'legal',
-    'replication of data subset'
-  ].freeze
+  DATA_RELEASE_TIMING_NEVER = 'never'.freeze
+  DATA_RELEASE_TIMING_DELAYED = 'delayed'.freeze
+  DATA_RELEASE_TIMINGS = [DATA_RELEASE_TIMING_STANDARD, 'immediate', DATA_RELEASE_TIMING_DELAYED].freeze
+  DATA_RELEASE_PREVENTION_REASONS = ['data validity', 'legal', 'replication of data subset'].freeze
 
   DATA_RELEASE_DELAY_FOR_OTHER = 'other'.freeze
-  DATA_RELEASE_DELAY_REASONS_STANDARD = [
-    'phd study',
-    DATA_RELEASE_DELAY_FOR_OTHER
-  ].freeze
-  DATA_RELEASE_DELAY_REASONS_ASSAY = [
-    'phd study',
-    'assay of no other use',
-    DATA_RELEASE_DELAY_FOR_OTHER
-  ].freeze
+  DATA_RELEASE_DELAY_REASONS_STANDARD = ['phd study', DATA_RELEASE_DELAY_FOR_OTHER].freeze
+  DATA_RELEASE_DELAY_REASONS_ASSAY = ['phd study', 'assay of no other use', DATA_RELEASE_DELAY_FOR_OTHER].freeze
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
@@ -103,18 +92,16 @@ class Study < ApplicationRecord
   has_many_events
   has_many_lab_events
 
-  role_relation(:followed_by,       'follower')
-  role_relation(:managed_by,        'manager')
+  role_relation(:followed_by, 'follower')
+  role_relation(:managed_by, 'manager')
   role_relation(:collaborated_with, 'collaborator')
 
   belongs_to :user
 
-  has_many :data_access_contacts, ->() {
-                                    where(roles: { name: 'Data Access Contact' })
-                                  }, through: :roles, source: :users
-  has_many :followers, ->() { where(roles: { name: 'follower' }) }, through: :roles, source: :users
-  has_many :managers, ->() { where(roles: { name: 'manager' }) }, through: :roles, source: :users
-  has_many :owners, ->() { where(roles: { name: 'owner' }) }, through: :roles, source: :users
+  has_many :data_access_contacts, -> { where(roles: { name: 'Data Access Contact' }) }, through: :roles, source: :users
+  has_many :followers, -> { where(roles: { name: 'follower' }) }, through: :roles, source: :users
+  has_many :managers, -> { where(roles: { name: 'manager' }) }, through: :roles, source: :users
+  has_many :owners, -> { where(roles: { name: 'owner' }) }, through: :roles, source: :users
   has_many :study_samples, inverse_of: :study
   has_many :orders
   has_many :submissions, through: :orders
@@ -124,23 +111,27 @@ class Study < ApplicationRecord
   has_many :study_reports
   has_many :aliquots
   has_many :initial_requests, class_name: 'Request', foreign_key: :initial_study_id
-  has_many :assets_through_aliquots,  ->() { distinct }, through: :aliquots, source: :receptacle
-  has_many :assets_through_requests,  ->() { distinct }, through: :initial_requests, source: :asset
+  has_many :assets_through_aliquots, -> { distinct }, through: :aliquots, source: :receptacle
+  has_many :assets_through_requests, -> { distinct }, through: :initial_requests, source: :asset
   has_many :requests, through: :assets_through_aliquots, source: :requests_as_source
-  has_many :request_types, ->() { distinct }, through: :requests
-  has_many :items, ->() { distinct }, through: :requests
-  has_many :projects, ->() { distinct }, through: :orders
+  has_many :request_types, -> { distinct }, through: :requests
+  has_many :items, -> { distinct }, through: :requests
+  has_many :projects, -> { distinct }, through: :orders
   has_many :comments, as: :commentable
-  has_many :events, ->() { order('created_at ASC, id ASC') }, as: :eventful
+  has_many :events, -> { order('created_at ASC, id ASC') }, as: :eventful
   has_many :documents, as: :documentable
   has_many :sample_manifests
-  has_many :suppliers, ->() { distinct }, through: :sample_manifests
+  has_many :suppliers, -> { distinct }, through: :sample_manifests
 
   # Validations
   validates :name, uniqueness: { case_sensitive: false }, presence: true, latin1: true
   validates :name, length: { maximum: 200 }
-  validates :abbreviation, format: { with: /\A[\w_-]+\z/i, allow_blank: false,
-                                     message: 'cannot contain spaces or be blank' }
+  validates :abbreviation,
+            format: {
+              with: /\A[\w_-]+\z/i,
+              allow_blank: false,
+              message: 'cannot contain spaces or be blank'
+            }
   validate :validate_ethically_approved
 
   # Callbacks
@@ -196,14 +187,26 @@ class Study < ApplicationRecord
     custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
     custom_attribute(:study_name_abbreviation)
 
-    custom_attribute(:data_release_strategy, required: true, in: DATA_RELEASE_STRATEGIES,
-                                             default: DATA_RELEASE_STRATEGY_MANAGED)
+    custom_attribute(
+      :data_release_strategy,
+      required: true,
+      in: DATA_RELEASE_STRATEGIES,
+      default: DATA_RELEASE_STRATEGY_MANAGED
+    )
     custom_attribute(:data_release_standard_agreement, default: YES, in: YES_OR_NO, if: :managed?)
 
-    custom_attribute(:data_release_timing, required: true, default: DATA_RELEASE_TIMING_STANDARD,
-                                           in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER])
-    custom_attribute(:data_release_delay_reason, required: true, in: DATA_RELEASE_DELAY_REASONS_ASSAY,
-                                                 if: :delayed_release?)
+    custom_attribute(
+      :data_release_timing,
+      required: true,
+      default: DATA_RELEASE_TIMING_STANDARD,
+      in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER]
+    )
+    custom_attribute(
+      :data_release_delay_reason,
+      required: true,
+      in: DATA_RELEASE_DELAY_REASONS_ASSAY,
+      if: :delayed_release?
+    )
     custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
     custom_attribute(:bam, default: true)
 
@@ -244,21 +247,31 @@ class Study < ApplicationRecord
     custom_attribute(:s3_email_list)
     custom_attribute(:data_deletion_period)
 
-    REMAPPED_ATTRIBUTES = {
-      contaminated_human_dna: YES_OR_NO,
-      remove_x_and_autosomes: YES_OR_NO,
-      study_sra_hold: STUDY_SRA_HOLDS,
-      contains_human_dna: YES_OR_NO,
-      commercially_available: YES_OR_NO
-    }.transform_values { |v| v.index_by { |b| b.downcase } }
+    REMAPPED_ATTRIBUTES =
+      {
+        contaminated_human_dna: YES_OR_NO,
+        remove_x_and_autosomes: YES_OR_NO,
+        study_sra_hold: STUDY_SRA_HOLDS,
+        contains_human_dna: YES_OR_NO,
+        commercially_available: YES_OR_NO
+      }.transform_values { |v| v.index_by { |b| b.downcase } }
 
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji
     validates :study_abstract, :study_study_title, :study_description, :s3_email_list, utf8mb3: true
+
     # These fields are restricted further as they aren't expected to ever contain anything more than ASCII
-    validates :study_project_id, :ega_dac_accession_number, :ega_policy_accession_number, :study_ebi_accession_number,
-              :array_express_accession_number, :hmdmc_approval_number,
-              format: { with: /\A[[:ascii:]]+\z/, message: 'only allows ASCII', allow_blank: true }
+    validates :study_project_id,
+              :ega_dac_accession_number,
+              :ega_policy_accession_number,
+              :study_ebi_accession_number,
+              :array_express_accession_number,
+              :hmdmc_approval_number,
+              format: {
+                with: /\A[[:ascii:]]+\z/,
+                message: 'only allows ASCII',
+                allow_blank: true
+              }
 
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?
@@ -276,72 +289,63 @@ class Study < ApplicationRecord
   # See app/models/study/metadata.rb for further customization
 
   # Scopes
-  scope :for_search_query, ->(query) {
-                             joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%",
-                                                           query, query])
-                           }
+  scope :for_search_query,
+        ->(query) {
+          joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
+        }
 
   scope :with_no_ethical_approval, -> { where(ethically_approved: false) }
 
-  scope :is_active,   -> { where(state: 'active') }
+  scope :is_active, -> { where(state: 'active') }
   scope :is_inactive, -> { where(state: 'inactive') }
-  scope :is_pending,  -> { where(state: 'pending') }
+  scope :is_pending, -> { where(state: 'pending') }
 
   scope :newest_first, -> { order(created_at: :desc) }
   scope :with_user_included, -> { includes(:user) }
 
-  scope :in_assets, ->(assets) {
-    select('DISTINCT studies.*')
-      .joins([
-        'LEFT JOIN aliquots ON aliquots.study_id = studies.id'
-      ])
-      .where(['aliquots.receptacle_id IN (?)', assets.map(&:id)])
-  }
-
-  scope :for_sample_accessioning, ->() {
-    joins(:study_metadata)
-      .where("study_metadata.study_ebi_accession_number <> ''")
-      .where(study_metadata: {
-               data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN,
-                                       Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS
-             })
-  }
-
-  scope :awaiting_ethical_approval, ->() {
-    joins(:study_metadata)
-      .where(
-        ethically_approved: false,
-        study_metadata: {
-          contains_human_dna: Study::YES,
-          contaminated_human_dna: Study::NO,
-          commercially_available: Study::NO
+  scope :in_assets,
+        ->(assets) {
+          select('DISTINCT studies.*')
+            .joins(['LEFT JOIN aliquots ON aliquots.study_id = studies.id'])
+            .where(['aliquots.receptacle_id IN (?)', assets.map(&:id)])
         }
-      )
-  }
 
-  scope :contaminated_with_human_dna, ->() {
-    joins(:study_metadata)
-      .where(
-        study_metadata: {
-          contaminated_human_dna: Study::YES
+  scope :for_sample_accessioning,
+        -> {
+          joins(:study_metadata)
+            .where("study_metadata.study_ebi_accession_number <> ''")
+            .where(
+              study_metadata: {
+                data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
+                data_release_timing: Study::DATA_RELEASE_TIMINGS
+              }
+            )
         }
-      )
-  }
 
-  scope :with_remove_x_and_autosomes, ->() {
-    joins(:study_metadata)
-      .where(
-        study_metadata: {
-          remove_x_and_autosomes: Study::YES
+  scope :awaiting_ethical_approval,
+        -> {
+          joins(:study_metadata).where(
+            ethically_approved: false,
+            study_metadata: {
+              contains_human_dna: Study::YES,
+              contaminated_human_dna: Study::NO,
+              commercially_available: Study::NO
+            }
+          )
         }
-      )
-  }
+
+  scope :contaminated_with_human_dna,
+        -> { joins(:study_metadata).where(study_metadata: { contaminated_human_dna: Study::YES }) }
+
+  scope :with_remove_x_and_autosomes,
+        -> { joins(:study_metadata).where(study_metadata: { remove_x_and_autosomes: Study::YES }) }
 
   scope :by_state, ->(state) { where(state: state) }
 
-  scope :by_user, ->(login) {
-                    joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } })
-                  }
+  scope :by_user,
+        ->(login) {
+          joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } })
+        }
 
   scope :with_related_owners_included, -> { includes(:owners) }
 
@@ -357,7 +361,12 @@ class Study < ApplicationRecord
   def validate_ethically_approved
     return true if valid_ethically_approved?
 
-    message = ethical_approval_required? ? 'should be either true or false for this study.' : 'should be not applicable (null) not false.'
+    message =
+      if ethical_approval_required?
+        'should be either true or false for this study.'
+      else
+        'should be not applicable (null) not false.'
+      end
     errors.add(:ethically_approved, message)
     false
   end
@@ -365,11 +374,13 @@ class Study < ApplicationRecord
   def each_well_for_qc_report_in_batches(exclude_existing, product_criteria, plate_purposes = nil)
     # @note We include aliquots here, despite the fact they are only needed if we have to set a poor-quality flag
     #       as in some cases failures are not as rare as you may imagine, and it can cause major performance issues.
-    base_scope = Well.on_plate_purpose_included(PlatePurpose.where(name: plate_purposes || STOCK_PLATE_PURPOSES))
-                     .for_study_through_aliquot(self)
-                     .without_blank_samples
-                     .includes(:well_attribute, :aliquots, :map, samples: :sample_metadata)
-                     .readonly(true)
+    base_scope =
+      Well
+        .on_plate_purpose_included(PlatePurpose.where(name: plate_purposes || STOCK_PLATE_PURPOSES))
+        .for_study_through_aliquot(self)
+        .without_blank_samples
+        .includes(:well_attribute, :aliquots, :map, samples: :sample_metadata)
+        .readonly(true)
     scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
     scope.find_in_batches { |wells| yield wells }
   end
@@ -382,15 +393,11 @@ class Study < ApplicationRecord
   end
 
   def mark_deactive
-    unless inactive?
-      logger.warn "Study deactivation failed! #{errors.map(&:to_s)}"
-    end
+    logger.warn "Study deactivation failed! #{errors.map(&:to_s)}" unless inactive?
   end
 
   def mark_active
-    unless active?
-      logger.warn "Study activation failed! #{errors.map(&:to_s)}"
-    end
+    logger.warn "Study activation failed! #{errors.map(&:to_s)}" unless active?
   end
 
   def text_comments
@@ -402,11 +409,7 @@ class Study < ApplicationRecord
     total = counts.values.sum
     failed = counts['failed'] || 0
     cancelled = counts['cancelled'] || 0
-    if (total - failed - cancelled) > 0
-      (counts.fetch('passed', 0) * 100) / (total - failed - cancelled)
-    else
-      0
-    end
+    (total - failed - cancelled) > 0 ? (counts.fetch('passed', 0) * 100) / (total - failed - cancelled) : 0
   end
 
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
@@ -483,9 +486,7 @@ class Study < ApplicationRecord
   end
 
   def accession_all_samples
-    if accession_number?
-      samples.find_each(&:accession)
-    end
+    samples.find_each(&:accession) if accession_number?
   end
 
   def abbreviation
@@ -503,16 +504,20 @@ class Study < ApplicationRecord
   end
 
   def ethical_approval_required?
-    (study_metadata.contains_human_dna == Study::YES &&
-    study_metadata.contaminated_human_dna == Study::NO &&
-    study_metadata.commercially_available == Study::NO)
+    (
+      study_metadata.contains_human_dna == Study::YES && study_metadata.contaminated_human_dna == Study::NO &&
+        study_metadata.commercially_available == Study::NO
+    )
   end
 
   def accession_service
     case data_release_strategy
-    when 'open' then EnaAccessionService.new
-    when 'managed' then EgaAccessionService.new
-    else NoAccessionService.new(self)
+    when 'open'
+      EnaAccessionService.new
+    when 'managed'
+      EgaAccessionService.new
+    else
+      NoAccessionService.new(self)
     end
   end
 
@@ -526,11 +531,7 @@ class Study < ApplicationRecord
 
   def mailing_list_of_managers
     configured_managers = managers.pluck(:email).compact.uniq
-    if configured_managers.empty?
-      configatron.fetch(:ssr_emails, User.all_administrators_emails)
-    else
-      configured_managers
-    end
+    configured_managers.empty? ? configatron.fetch(:ssr_emails, User.all_administrators_emails) : configured_managers
   end
 
   def subject_type

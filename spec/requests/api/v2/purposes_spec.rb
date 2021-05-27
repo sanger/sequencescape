@@ -13,8 +13,10 @@ describe 'Purposes API', with: :api_v2 do
 
     it 'sends a list of purposes' do
       api_get '/api/v2/purposes'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(Purpose.count)
     end

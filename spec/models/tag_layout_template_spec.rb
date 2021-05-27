@@ -31,7 +31,8 @@ describe TagLayoutTemplate do
 
       it { is_expected.to be_a TagLayout }
 
-      it 'passes in the correct properties' do # rubocop:todo RSpec/AggregateExamples
+      it 'passes in the correct properties' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(subject.plate).to eq(plate)
         expect(subject.direction).to eq('column')
         expect(subject.walking_by).to eq('wells of plate')
@@ -44,10 +45,12 @@ describe TagLayoutTemplate do
         subject
         submissions = plate.submissions.map(&:id)
         expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
-        TagLayout::TemplateSubmission.where(submission_id: submissions).each do |tlts|
-          expect(tlts.tag_layout_template).to eq(template)
-          expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
-        end
+        TagLayout::TemplateSubmission
+          .where(submission_id: submissions)
+          .each do |tlts|
+            expect(tlts.tag_layout_template).to eq(template)
+            expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
+          end
       end
 
       context 'with a tag2 group' do
@@ -56,7 +59,8 @@ describe TagLayoutTemplate do
 
         it { is_expected.to be_a TagLayout }
 
-        it 'passes in the correct properties' do # rubocop:todo RSpec/AggregateExamples
+        it 'passes in the correct properties' do
+          # rubocop:todo RSpec/AggregateExamples
           expect(subject.plate).to eq(plate)
           expect(subject.tag2_group).to eq(tag2_group)
         end
@@ -67,10 +71,12 @@ describe TagLayoutTemplate do
           subject
           submissions = plate.submissions.map(&:id)
           expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
-          TagLayout::TemplateSubmission.where(submission_id: submissions).each do |tlts|
-            expect(tlts.tag_layout_template).to eq(template)
-            expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
-          end
+          TagLayout::TemplateSubmission
+            .where(submission_id: submissions)
+            .each do |tlts|
+              expect(tlts.tag_layout_template).to eq(template)
+              expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
+            end
         end
       end
 
@@ -82,7 +88,8 @@ describe TagLayoutTemplate do
 
         it { is_expected.to be_a TagLayout }
 
-        it 'passes in the correct properties' do # rubocop:todo RSpec/AggregateExamples
+        it 'passes in the correct properties' do
+          # rubocop:todo RSpec/AggregateExamples
           expect(subject.plate).to eq(plate)
           expect(subject.tag2_group).to eq(tag2_group)
         end
@@ -93,10 +100,12 @@ describe TagLayoutTemplate do
           subject
           submissions = plate.submissions.map(&:id)
           expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
-          TagLayout::TemplateSubmission.where(submission_id: submissions).each do |tlts|
-            expect(tlts.tag_layout_template).to eq(template)
-            expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
-          end
+          TagLayout::TemplateSubmission
+            .where(submission_id: submissions)
+            .each do |tlts|
+              expect(tlts.tag_layout_template).to eq(template)
+              expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
+            end
         end
       end
     end
@@ -107,7 +116,8 @@ describe TagLayoutTemplate do
 
       it { is_expected.to be_a TagLayout }
 
-      it 'passes in the correct properties' do # rubocop:todo RSpec/AggregateExamples
+      it 'passes in the correct properties' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(subject.plate).to eq(plate)
         expect(subject.direction).to eq('row')
         expect(subject.walking_by).to eq('wells in pools')

@@ -12,6 +12,7 @@ module DataRelease # rubocop:todo Style/Documentation
   def ena_accession_required?
     return false unless enforce_accessioning
     return true unless valid_data_release_properties?
+
     # TODO[xxx]: was this removed?
     return false if study_metadata.never_release?
 

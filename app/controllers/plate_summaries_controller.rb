@@ -13,17 +13,22 @@ class PlateSummariesController < ApplicationController # rubocop:todo Style/Docu
     @sequencing_batches = @plate.descendant_lanes.include_creation_batches.map(&:creation_batches).flatten.uniq
   end
 
-  def search
+  # rubocop:todo Metrics/MethodLength
+  def search # rubocop:todo Metrics/AbcSize
     candidate_plate = Plate.find_from_any_barcode(params[:plate_barcode])
     @barcode = params[:plate_barcode]
     @plates = candidate_plate&.source_plates
 
     if @plates.blank?
-      redirect_back fallback_location: root_path, flash: { error: "No suitable plates found for barcode #{params[:plate_barcode]}" }
+      redirect_back fallback_location: root_path,
+                    flash: {
+                      error: "No suitable plates found for barcode #{params[:plate_barcode]}"
+                    }
     elsif @plates.one?
       redirect_to plate_summary_path(@plates.first.human_barcode)
     else
       render :search
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

@@ -3,11 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::Tube, type: :model, heron: true do
-  let(:params) do
-    {
-      barcode: 'FD00000001'
-    }
-  end
+  let(:params) { { barcode: 'FD00000001' } }
 
   it 'is valid with all relevant attributes' do
     tube = described_class.new(params)
@@ -21,8 +17,7 @@ RSpec.describe Heron::Factories::Tube, type: :model, heron: true do
 
   it 'is not valid unless the barcode is unique in database for that format' do
     barcode = 'FD00000001'
-    create(:barcode, barcode: barcode, asset: create(:sample_tube),
-                     format: Barcode.matching_barcode_format(barcode))
+    create(:barcode, barcode: barcode, asset: create(:sample_tube), format: Barcode.matching_barcode_format(barcode))
     tube = described_class.new(params)
     expect(tube).to be_invalid
   end
@@ -30,9 +25,7 @@ RSpec.describe Heron::Factories::Tube, type: :model, heron: true do
   describe '#create' do
     it 'persists the tube if it is valid' do
       tube = described_class.new(params)
-      expect do
-        tube.create
-      end.to change(SampleTube, :count).by(1)
+      expect { tube.create }.to change(SampleTube, :count).by(1)
     end
 
     it 'creates a tube with the barcode specified' do

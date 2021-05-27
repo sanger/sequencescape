@@ -1,8 +1,7 @@
 module Tasks::PrepKitBarcodeHandler # rubocop:todo Style/Documentation
-  def render_prep_kit_barcode_task(task, params)
-  end
+  def render_prep_kit_barcode_task(task, params); end
 
-  def do_prep_kit_barcode_task(_task, params)
+  def do_prep_kit_barcode_task(_task, params) # rubocop:todo Metrics/MethodLength
     barcode = params[:prep_kit_barcode].strip
     if barcode.blank?
       flash[:error] = 'Please enter a Kit Barcode'

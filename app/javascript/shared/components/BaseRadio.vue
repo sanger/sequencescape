@@ -22,11 +22,7 @@
 -->
 <template>
   <div>
-    <div
-      v-for="option in options"
-      :key="option.value"
-      :class="styles"
-    >
+    <div v-for="option in options" :key="option.value" :class="styles">
       <input
         :id="`${id}-${option.value}`"
         v-model="value"
@@ -35,11 +31,8 @@
         class="custom-control-input"
         :value="option.value"
         @change="change"
-      >
-      <label
-        class="custom-control-label"
-        :for="`${id}-${option.value}`"
-      >{{ option.label }}</label>
+      />
+      <label class="custom-control-label" :for="`${id}-${option.value}`">{{ option.label }}</label>
     </div>
   </div>
 </template>
@@ -51,40 +44,38 @@
 // See https://vuejs.org/v2/style-guide/#Component-instance-options-order-recommended
 // for order of other options
 export default {
-  name: 'BaseRadio',
+  name: "BaseRadio",
   model: {
-    prop: 'selected',
-    event: 'change'
+    prop: "selected",
+    event: "change",
   },
   props: {
     options: { type: Array, required: true }, // Array of objects { value: 'option value', label: 'Displayed label' }
     selected: { type: [Number, String], required: false, default: null },
     inline: { type: Boolean, required: false, default: false },
     name: { type: String, required: true },
-    id: { type: String, required: true } // Unique id essential for generating labels
+    id: { type: String, required: true }, // Unique id essential for generating labels
   },
   data: function () {
     return {
-      value: this.selected
-    }
+      value: this.selected,
+    };
   },
   computed: {
     styles() {
       return {
-        'custom-control': true,
-        'custom-radio': true,
-        'custom-control-inline': this.inline
-      }
-    }
+        "custom-control": true,
+        "custom-radio": true,
+        "custom-control-inline": this.inline,
+      };
+    },
   },
   methods: {
     change() {
-      this.$emit('change', this.value)
-    }
+      this.$emit("change", this.value);
+    },
   },
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -29,24 +29,28 @@ RSpec.describe Request do
       expect(submission.requests.for_order_including_submission_based_requests(order2).length).to eq 2
     end
 
-    it 'an order without requests should at least find the sequencing requests' do # rubocop:todo RSpec/AggregateExamples
+    it 'an order without requests should at least find the sequencing requests' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(submission.requests.for_order_including_submission_based_requests(order3).length).to eq 1
     end
 
-    it 'when filtering from submission and scoping with an order of another submission, none of the requests are included' do # rubocop:todo RSpec/AggregateExamples
+    it 'when filtering from submission and scoping with an order of another submission, none of the requests are included' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(order4.submission.requests.for_order_including_submission_based_requests(order1).length).to eq 0
       expect(order4.submission.requests.for_order_including_submission_based_requests(order2).length).to eq 0
       expect(order4.submission.requests.for_order_including_submission_based_requests(order3).length).to eq 0
       expect(submission.requests.for_order_including_submission_based_requests(order4).length).to eq 0
     end
 
-    it 'requests from other submission behave independently' do # rubocop:todo RSpec/AggregateExamples
+    it 'requests from other submission behave independently' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(order4.requests.length).to eq 1
       expect(order4.submission.requests.length).to eq 2
       expect(order4.submission.requests.for_order_including_submission_based_requests(order4).length).to eq 2
     end
 
-    it 'can be used as any other request scope' do # rubocop:todo RSpec/AggregateExamples
+    it 'can be used as any other request scope' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(described_class.for_order_including_submission_based_requests(order1).length).to eq 2
       expect(described_class.for_order_including_submission_based_requests(order2).length).to eq 2
       expect(described_class.for_order_including_submission_based_requests(order3).length).to eq 1
@@ -58,36 +62,38 @@ RSpec.describe Request do
     setup do
       @genotyping_request_type = create :request_type, name: 'genotyping'
       @cherrypick_request_type = create :request_type, name: 'cherrypick', target_asset_type: nil
-      @submission = FactoryHelp.submission(
-        request_types: [@cherrypick_request_type,
-                        @genotyping_request_type].map(&:id), asset_group_name: 'to avoid asset errors'
-      )
+      @submission =
+        FactoryHelp.submission(
+          request_types: [@cherrypick_request_type, @genotyping_request_type].map(&:id),
+          asset_group_name: 'to avoid asset errors'
+        )
 
       @genotype_pipeline = create :pipeline, name: 'genotyping pipeline', request_types: [@genotyping_request_type]
-      @cherrypick_pipeline = create :pipeline, name: 'cherrypick pipeline', request_types: [@cherrypick_request_type], next_pipeline_id: @genotype_pipeline.id
+      @cherrypick_pipeline =
+        create :pipeline,
+               name: 'cherrypick pipeline',
+               request_types: [@cherrypick_request_type],
+               next_pipeline_id: @genotype_pipeline.id
 
-      @request1 = create(
-        :request_without_assets,
-        asset: create(:sample_tube),
-        target_asset: nil,
-        submission: @submission,
-        request_metadata_attributes: {},
-        request_type: @cherrypick_request_type
-      )
+      @request1 =
+        create(
+          :request_without_assets,
+          asset: create(:sample_tube),
+          target_asset: nil,
+          submission: @submission,
+          request_metadata_attributes: {},
+          request_type: @cherrypick_request_type
+        )
     end
     context 'with valid input' do
-      setup do
-        @request2 = create :request, submission: @submission, request_type: @genotyping_request_type
-      end
+      setup { @request2 = create :request, submission: @submission, request_type: @genotyping_request_type }
       it 'return the correct next request' do
         assert_equal [@request2], @request1.next_requests
       end
     end
 
     context 'where asset hasnt been created for second request' do
-      setup do
-        @request2 = create :request, asset: nil, submission: @submission, request_type: @genotyping_request_type
-      end
+      setup { @request2 = create :request, asset: nil, submission: @submission, request_type: @genotyping_request_type }
       it 'return the correct next request' do
         assert_equal [@request2], @request1.next_requests
       end
@@ -103,20 +109,14 @@ RSpec.describe Request do
     let(:order1) { create(:linear_submission, request_types: order1_request_types, request_options: request_options) }
     let(:order2) { create(:linear_submission, request_types: order2_request_types, request_options: request_options) }
     let(:order1_request1) do
-      submission.requests.detect do |r|
-        r.order == order1 && r.request_type_id == order1_request_types.first
-      end
+      submission.requests.detect { |r| r.order == order1 && r.request_type_id == order1_request_types.first }
     end
     let(:order2_request1) do
-      submission.requests.detect do |r|
-        r.order == order2 && r.request_type_id == order2_request_types.first
-      end
+      submission.requests.detect { |r| r.order == order2 && r.request_type_id == order2_request_types.first }
     end
     let(:request_options) { {} }
 
-    before do
-      submission.build_batch
-    end
+    before { submission.build_batch }
 
     context 'for a non-multiplexed_submission' do
       let(:order1_request_types) { create_list(:request_type, 3).map(&:id) }
@@ -239,10 +239,10 @@ RSpec.describe Request do
     it 'return same properties' do
       @request.reload
       @new_request.reload
-      original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil,
-                                                                       'updated_at' => nil)
-      copied_attributes = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil,
-                                                                         'updated_at' => nil)
+      original_attributes =
+        @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
+      copied_attributes =
+        @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
       assert_equal original_attributes, copied_attributes
     end
 
@@ -264,7 +264,8 @@ RSpec.describe Request do
         expect(request.errors).to be_empty
       end
 
-      it 'have request as valid' do # rubocop:todo RSpec/AggregateExamples
+      it 'have request as valid' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(request).to be_valid
       end
     end
@@ -284,9 +285,7 @@ RSpec.describe Request do
     end
 
     context 'when started' do
-      setup do
-        @request.start!
-      end
+      setup { @request.start! }
 
       it "return 'Started'" do
         expect(@request.state).to eq 'started'
@@ -346,9 +345,7 @@ RSpec.describe Request do
       end
 
       context 'do not allow the transition' do
-        setup do
-          @request.state = 'passed'
-        end
+        setup { @request.state = 'passed' }
 
         it 'to started' do
           # At least we'll know when and where it's blowing up.
@@ -414,9 +411,7 @@ RSpec.describe Request do
 
       @all_states = @open_states + @closed_states
 
-      @all_states.each do |state|
-        create :request, state: state
-      end
+      @all_states.each { |state| create :request, state: state }
 
       assert_equal @all_states.size, described_class.count
     end
@@ -434,9 +429,7 @@ RSpec.describe Request do
   end
 
   describe '#ready?' do
-    setup do
-      @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
-    end
+    setup { @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests) }
 
     it 'check any non-sequencing request is always ready' do
       assert_equal true, @library_creation_request.ready?

@@ -12,11 +12,7 @@ describe 'Asset submission', js: true do
   let(:selected_request_type) { original_request_type }
   let(:selected_read_length) { '76' }
   let!(:original_request) do
-    create(request_factory,
-           study: study,
-           project: project,
-           asset: asset,
-           request_type: original_request_type)
+    create(request_factory, study: study, project: project, asset: asset, request_type: original_request_type)
   end
 
   shared_examples 'it allows additional sequencing' do
@@ -34,8 +30,8 @@ describe 'Asset submission', js: true do
       expect(page).to have_content 'Created request'
       expect(page).to have_current_path(receptacle_path(asset.receptacle))
       expect { Delayed::Worker.new.work_off }.to change {
-                                                   asset.requests_as_source.where(request_type_id: selected_request_type).count
-                                                 }.by 1
+        asset.requests_as_source.where(request_type_id: selected_request_type).count
+      }.by 1
     end
   end
 
@@ -52,8 +48,8 @@ describe 'Asset submission', js: true do
       expect(page).to have_content 'Created request'
       expect(page).to have_current_path(receptacle_path(asset.receptacle))
       expect { Delayed::Worker.new.work_off }.to change {
-                                                   asset.requests_as_source.where(request_type_id: selected_request_type).count
-                                                 }.by 1
+        asset.requests_as_source.where(request_type_id: selected_request_type).count
+      }.by 1
     end
 
     it 'request additional sequencing with override study' do
@@ -72,8 +68,8 @@ describe 'Asset submission', js: true do
       expect(page).to have_content 'Created request'
       expect(page).to have_current_path(receptacle_path(asset.receptacle))
       expect { Delayed::Worker.new.work_off }.to change {
-                                                   asset.requests_as_source.where(request_type_id: selected_request_type).count
-                                                 }.by 1
+        asset.requests_as_source.where(request_type_id: selected_request_type).count
+      }.by 1
     end
   end
 
@@ -103,11 +99,7 @@ describe 'Asset submission', js: true do
       let(:study) { asset.aliquots.first.study }
       let(:project) { asset.aliquots.first.project }
       let!(:original_request) do
-        create(request_factory,
-               study: nil,
-               project: nil,
-               asset: asset,
-               request_type: original_request_type)
+        create(request_factory, study: nil, project: nil, asset: asset, request_type: original_request_type)
       end
       let(:selected_read_length) { '108' }
 

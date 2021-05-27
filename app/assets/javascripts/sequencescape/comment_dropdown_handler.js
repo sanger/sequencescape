@@ -8,20 +8,19 @@
 //                     to show/hide
 //
 // Dependent on: jquery
-( function($, undefined){
+(function ($, undefined) {
   "use strict";
 
   var attachEvents;
 
-  attachEvents = function(){
-    $('.show-comment').on('click',function(){
+  attachEvents = function () {
+    $(".show-comment").on("click", function () {
       $(this.dataset.commentField).slideDown();
-    })
-    $('.hide-comment').on('click',function(){
+    });
+    $(".hide-comment").on("click", function () {
       $(this.dataset.commentField).slideUp();
-    })
+    });
   };
 
-  $(document).ready( attachEvents );
-
+  $(document).ready(attachEvents);
 })(jQuery);

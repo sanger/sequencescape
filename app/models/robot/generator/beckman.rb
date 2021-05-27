@@ -8,7 +8,6 @@ class Robot::Generator::Beckman < Robot::Generator::Hamilton
   # def filename
   #   "#{@batch.id}_batch_#{@plate_barcode}.csv"
   # end
-
   # def as_text
   #   mapping(picking_data)
   # end

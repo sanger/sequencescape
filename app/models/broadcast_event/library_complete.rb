@@ -16,7 +16,12 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent # rubocop:todo Style/Docu
 
   has_subjects(:stock_plate, :original_stock_plates)
   has_subjects(:sample) do |tube, e|
-    tube.requests_as_target.for_event_notification_by_order(e.order).including_samples_from_source.map(&:samples).flatten
+    tube
+      .requests_as_target
+      .for_event_notification_by_order(e.order)
+      .including_samples_from_source
+      .map(&:samples)
+      .flatten
   end
 
   def order

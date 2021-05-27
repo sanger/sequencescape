@@ -1,3 +1,4 @@
+# rubocop:todo Metrics/ModuleLength
 module Core::Endpoint::BasicHandler::Actions # rubocop:todo Style/Documentation
   class UnsupportedAction < StandardError # rubocop:todo Style/Documentation
     def initialize(action, _request)
@@ -20,14 +21,14 @@ module Core::Endpoint::BasicHandler::Actions # rubocop:todo Style/Documentation
     read: 200,
     update: 200,
     delete: 200,
-
     create_from_file: 201,
     update_from_file: 200
   }.freeze
 
   ACTIONS_WITH_SUCCESS_CODES.each do |action, status_code|
     line = __LINE__ + 1
-    class_eval("
+    class_eval(
+      "
       def #{action}(request, path, &block)
         current, *rest = path
         handler = handler_for(current)
@@ -47,7 +48,10 @@ module Core::Endpoint::BasicHandler::Actions # rubocop:todo Style/Documentation
       def _#{action}(request, response)
         raise ::Core::Service::UnsupportedAction
       end
-    ", __FILE__, line)
+    ",
+      __FILE__,
+      line
+    )
   end
 
   def check_request_io_class!(request)
@@ -58,26 +62,34 @@ module Core::Endpoint::BasicHandler::Actions # rubocop:todo Style/Documentation
     singleton_class.class_eval('def check_request_io_class!(_) ; end', __FILE__, __LINE__)
   end
 
-  def disable(*actions)
+  def disable(*actions) # rubocop:todo Metrics/MethodLength
     actions.each do |action|
       line = __LINE__ + 1
-      singleton_class.class_eval("
+      singleton_class.class_eval(
+        "
         def _#{action}(request, response)
           raise ::Core::Service::UnsupportedAction
         end
-      ", __FILE__, line)
+      ",
+        __FILE__,
+        line
+      )
       @actions.delete(action.to_sym)
     end
   end
 
-  def deprecate(*actions)
+  def deprecate(*actions) # rubocop:todo Metrics/MethodLength
     actions.each do |action|
       line = __LINE__ + 1
-      singleton_class.class_eval("
+      singleton_class.class_eval(
+        "
         def _#{action}(request, response)
           raise ::Core::Service::DeprecatedAction
         end
-      ", __FILE__, line)
+      ",
+        __FILE__,
+        line
+      )
       @actions.delete(action.to_sym)
     end
   end
@@ -88,32 +100,36 @@ module Core::Endpoint::BasicHandler::Actions # rubocop:todo Style/Documentation
     action_guard(name, options[:if]) if options.key?(:if)
   end
 
-  def declare_action(name, options, &block)
+  def declare_action(name, options, &block) # rubocop:todo Metrics/MethodLength
     action_implementation_method =
       case
       when block
         singleton_class.class_eval { define_method(:"_#{name}_internal", &block) }
         :"_#{name}_internal"
-
-      when options[:to] then options[:to]
-      else raise StandardError, 'Block or :to option needed to declare action'
+      when options[:to]
+        options[:to]
+      else
+        raise StandardError, 'Block or :to option needed to declare action'
       end
 
     line = __LINE__ + 1
-    singleton_class.class_eval("
+    singleton_class.class_eval(
+      "
       def _#{name}(request, response)
         object = #{action_implementation_method}(request, response)
         yield(endpoint_for_object(object).instance_handler, object)
       end
-    ", __FILE__, line)
+    ",
+      __FILE__,
+      line
+    )
   end
   private :declare_action
 
   def generate_json_actions(object, options)
     options[:stream].block('actions') do |result|
-      actions(object, options).each do |name, url|
-        result.attribute(name, url)
-      end
+      actions(object, options).each { |name, url| result.attribute(name, url) }
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

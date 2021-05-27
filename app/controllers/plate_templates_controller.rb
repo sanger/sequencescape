@@ -11,19 +11,16 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
   def new
     @plate_rows = params[:rows].to_i
     @plate_cols = params[:cols].to_i
-    if @plate_rows == 0
-      @plate_rows = Map::Coordinate.plate_length(96)
-    end
-    if @plate_cols == 0
-      @plate_cols = Map::Coordinate.plate_width(96)
-    end
+    @plate_rows = Map::Coordinate.plate_length(96) if @plate_rows == 0
+    @plate_cols = Map::Coordinate.plate_width(96) if @plate_cols == 0
 
     respond_to do |format|
       format.html # new.html.erb
     end
   end
 
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     if params[:name].blank?
       flash[:error] = 'Please enter a name'
       redirect_to new_plate_template_path
@@ -31,11 +28,18 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
     end
 
     pattern = PlateTemplate.new
-    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well],
-                           rows: params[:rows], cols: params[:cols])
+    pattern.update_params!(
+      name: params[:name],
+      user_id: current_user.id,
+      wells: params[:empty_well],
+      rows: params[:rows],
+      cols: params[:cols]
+    )
     flash[:notice] = 'Template saved'
     redirect_to plate_templates_path
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def edit
     @pattern = PlateTemplate.find(params[:id])
@@ -43,10 +47,15 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
     @plate_cols = Map::Coordinate.plate_width(@pattern.size)
   end
 
-  def update
+  def update # rubocop:todo Metrics/AbcSize
     pattern = PlateTemplate.find(params[:id])
-    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well],
-                           rows: params[:rows], cols: params[:cols])
+    pattern.update_params!(
+      name: params[:name],
+      user_id: current_user.id,
+      wells: params[:empty_well],
+      rows: params[:rows],
+      cols: params[:cols]
+    )
     flash[:notice] = 'Template updated'
     redirect_to plate_templates_path
   end
@@ -55,8 +64,6 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
     pattern = PlateTemplate.find(params[:id])
     pattern.destroy
 
-    respond_to do |format|
-      format.html { redirect_to(plate_templates_path) }
-    end
+    respond_to { |format| format.html { redirect_to(plate_templates_path) } }
   end
 end

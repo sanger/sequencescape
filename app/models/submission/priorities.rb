@@ -1,12 +1,10 @@
 module Submission::Priorities # rubocop:todo Style/Documentation
   def self.priorities
-    %w(None Low Medium High)
+    %w[None Low Medium High]
   end
 
   def self.options
-    (0...priorities.count).map do |i|
-      ["#{priorities[i]} - #{i}", i]
-    end
+    (0...priorities.count).map { |i| ["#{priorities[i]} - #{i}", i] }
   end
 
   def self.included(base)

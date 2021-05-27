@@ -31,10 +31,10 @@ class Transfer::BetweenPlates < Transfer
   # plate has been put on the robot, as the number of columns transferred could be less than
   # an entire plate.  Subsequent plates are therefore only partially complete.
   #++
-  def each_transfer
-    source_wells          = valid_source_wells.index_by(&:map_description)
+  def each_transfer # rubocop:todo Metrics/AbcSize
+    source_wells = valid_source_wells.index_by(&:map_description)
     destination_locations = transfers.values_at(*source_wells.keys).flatten
-    destination_wells     = destination.wells.located_at_position(destination_locations).index_by(&:map_description)
+    destination_wells = destination.wells.located_at_position(destination_locations).index_by(&:map_description)
 
     source_wells.each do |location, source_well|
       Array(transfers[location]).each do |target_well_location|
@@ -49,10 +49,11 @@ class Transfer::BetweenPlates < Transfer
   # Retrieves the source wells, and filters out those associated with wells which
   # shouldn't be transferred (ie. empty wells, or those which are cancelled)
   def valid_source_wells
-    source.wells
-          .located_at_position(transfers.keys)
-          .with_pool_id
-          .reject { |well| should_well_not_be_transferred?(well) }
+    source
+      .wells
+      .located_at_position(transfers.keys)
+      .with_pool_id
+      .reject { |well| should_well_not_be_transferred?(well) }
   end
 
   #
@@ -73,7 +74,8 @@ class Transfer::BetweenPlates < Transfer
   #
   # @return [Hash] Destination wells and associated submission
   #                eg. { 'A1' => 12345, 'B1' -> 67890 }
-  def calculate_location_submissions
+  # rubocop:todo Metrics/MethodLength
+  def calculate_location_submissions # rubocop:todo Metrics/AbcSize
     # We're probably just stamping
     return {} if simple_stamp? || pre_cap_groups.empty?
 
@@ -83,9 +85,11 @@ class Transfer::BetweenPlates < Transfer
       found_pre_cap_groups = pre_cap_groups.select { |_uuid, group_details| group_details[:wells].sort == sources.sort }
 
       if found_pre_cap_groups.length > 1
-        errors.add(:base,
-                   "Found #{found_pre_cap_groups.length} different pools matching the condition for #{sources} to "\
-                   "#{dest_loc} with requests in state start or pending. Please cancel the requests not needed.")
+        errors.add(
+          :base,
+          "Found #{found_pre_cap_groups.length} different pools matching the condition for #{sources} to " \
+            "#{dest_loc} with requests in state start or pending. Please cancel the requests not needed."
+        )
         raise ActiveRecord::RecordInvalid, self
       end
 
@@ -93,8 +97,10 @@ class Transfer::BetweenPlates < Transfer
       transfer_details = found_pre_cap_groups[uuid]
 
       if transfer_details.nil?
-        errors.add(:base,
-                   "Could not find appropriate pool for #{sources} to #{dest_loc}. Check you don't have repool submissions on failed wells.")
+        errors.add(
+          :base,
+          "Could not find appropriate pool for #{sources} to #{dest_loc}. Check you don't have repool submissions on failed wells."
+        )
         raise ActiveRecord::RecordInvalid, self
       end
 
@@ -102,6 +108,8 @@ class Transfer::BetweenPlates < Transfer
       store[dest_loc] = transfer_details[:submission_id]
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def pre_cap_groups
     @pre_cap_groups ||= source.pre_cap_groups
@@ -126,12 +134,11 @@ class Transfer::BetweenPlates < Transfer
   #                eg. { 'A1' => ['A1', 'B1'] }
   #
   def destination_sources
-    @destination_sources ||= begin
-      dest_sources = Hash.new { |h, i| h[i] = [] }
-      transfers.each do |source, dests|
-        dests.each { |dest| dest_sources[dest] << source }
+    @destination_sources ||=
+      begin
+        dest_sources = Hash.new { |h, i| h[i] = [] }
+        transfers.each { |source, dests| dests.each { |dest| dest_sources[dest] << source } }
+        dest_sources
       end
-      dest_sources
-    end
   end
 end

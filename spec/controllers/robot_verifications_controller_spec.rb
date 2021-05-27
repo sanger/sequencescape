@@ -8,11 +8,9 @@ RSpec.describe RobotVerificationsController, type: :controller do
   let(:robot) do
     create :robot_with_verification_behaviour, barcode: '1', number_of_sources: 4, number_of_destinations: 1
   end
-  let(:plate) { create :plate, barcode: 142334 }
+  let(:plate) { create :plate, barcode: 142_334 }
 
-  setup do
-    session[:user] = user.id
-  end
+  setup { session[:user] = user.id }
 
   describe '#index' do
     before { get :index, session: { user: user.id } }
@@ -36,20 +34,10 @@ RSpec.describe RobotVerificationsController, type: :controller do
     end
     let(:barcodes) { { destination_plate_barcode: plate.machine_barcode } }
     let(:bed_barcodes) do
-      {
-        '1' => '580000001806',
-        '2' => '580000002810',
-        '3' => '580000003824',
-        '4' => '580000004838'
-      }
+      { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' }
     end
     let(:plate_barcodes) do
-      {
-        'DN127162U' => 'DN127162U',
-        'DN127167C' => 'DN127167C',
-        'DN127168D' => 'DN127168D',
-        'DN134443T' => 'DN134443T'
-      }
+      { 'DN127162U' => 'DN127162U', 'DN127167C' => 'DN127167C', 'DN127168D' => 'DN127168D', 'DN134443T' => 'DN134443T' }
     end
     let(:destination_bed_barcodes) { { '1' => '580000005842' } }
     let(:destination_plate_barcodes) { { plate.machine_barcode => plate.machine_barcode } }
@@ -81,9 +69,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
     end
 
     context 'with valid inputs' do
-      setup do
-        post :download, params: download_params
-      end
+      setup { post :download, params: download_params }
 
       it 'is successful' do
         expect(response).to have_http_status(:success)
@@ -93,28 +79,12 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
     context 'with invalid inputs' do
       context 'when nothing is scanned' do
-        let(:bed_barcodes) do
-          {
-            '1' => '',
-            '2' => '',
-            '3' => '',
-            '4' => ''
-          }
-        end
-        let(:plate_barcodes) do
-          {
-            'DN127162U' => '',
-            'DN127167C' => '',
-            'DN127168D' => '',
-            'DN134443T' => ''
-          }
-        end
+        let(:bed_barcodes) { { '1' => '', '2' => '', '3' => '', '4' => '' } }
+        let(:plate_barcodes) { { 'DN127162U' => '', 'DN127167C' => '', 'DN127168D' => '', 'DN134443T' => '' } }
         let(:destination_bed_barcodes) { { '1' => '' } }
         let(:destination_plate_barcodes) { { plate.machine_barcode => '' } }
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'redirects and sets the flash error' do
           expect(response).to redirect_to(robot_verifications_path)
@@ -124,18 +94,9 @@ RSpec.describe RobotVerificationsController, type: :controller do
       end
 
       context 'when the source plates are missing' do
-        let(:plate_barcodes) do
-          {
-            'DN127162U' => '',
-            'DN127167C' => '',
-            'DN127168D' => '',
-            'DN134443T' => ''
-          }
-        end
+        let(:plate_barcodes) { { 'DN127162U' => '', 'DN127167C' => '', 'DN127168D' => '', 'DN134443T' => '' } }
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -145,18 +106,9 @@ RSpec.describe RobotVerificationsController, type: :controller do
       end
 
       context 'when the source beds are missing' do
-        let(:bed_barcodes) do
-          {
-            '1' => '',
-            '2' => '',
-            '3' => '',
-            '4' => ''
-          }
-        end
+        let(:bed_barcodes) { { '1' => '', '2' => '', '3' => '', '4' => '' } }
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -175,9 +127,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
           }
         end
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -188,17 +138,10 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
       context 'when the source beds are mixed up' do
         let(:bed_barcodes) do
-          {
-            '4' => '580000001806',
-            '3' => '580000002810',
-            '1' => '580000003824',
-            '2' => '580000004838'
-          }
+          { '4' => '580000001806', '3' => '580000002810', '1' => '580000003824', '2' => '580000004838' }
         end
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -209,12 +152,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
       context 'when 2 source beds and plates are mixed up' do
         let(:bed_barcodes) do
-          {
-            '1' => 'DN127162U',
-            '2' => '580000002810',
-            '3' => '580000003824',
-            '4' => '580000004838'
-          }
+          { '1' => 'DN127162U', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' }
         end
         let(:plate_barcodes) do
           {
@@ -225,9 +163,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
           }
         end
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -239,9 +175,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
       context 'when the destination plate is missing' do
         let(:destination_plate_barcodes) { { plate.machine_barcode => '' } }
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -253,9 +187,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
       context 'when the destination bed is missing' do
         let(:destination_bed_barcodes) { { '1' => '' } }
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -268,9 +200,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
         let(:destination_bed_barcodes) { { '1' => plate.machine_barcode } }
         let(:destination_plate_barcodes) { { plate.machine_barcode => '580000005842' } }
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'redirects and displays an error', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -281,12 +211,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
       context 'when there are spaces in the input barcodes' do
         let(:bed_barcodes) do
-          {
-            '1' => ' 580000001806',
-            '2' => '580000002810    ',
-            '3' => '  580000003824',
-            '4' => '580000004838'
-          }
+          { '1' => ' 580000001806', '2' => '580000002810    ', '3' => '  580000003824', '4' => '580000004838' }
         end
         let(:plate_barcodes) do
           {
@@ -297,9 +222,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
           }
         end
 
-        setup do
-          post :download, params: download_params
-        end
+        setup { post :download, params: download_params }
 
         it 'is successful', :aggregate_failures do
           expect(response).to have_http_status(:success)
@@ -333,9 +256,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
           }
         end
 
-        setup do
-          post :submission, params: submission_params
-        end
+        setup { post :submission, params: submission_params }
 
         it('is successful') { is_expected.to respond_with :success }
       end
@@ -352,9 +273,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
           }
         end
 
-        setup do
-          post :submission, params: submission_params
-        end
+        setup { post :submission, params: submission_params }
 
         it 'works', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -374,9 +293,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
           }
         end
 
-        setup do
-          post :submission, params: submission_params
-        end
+        setup { post :submission, params: submission_params }
 
         it 'works', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -396,9 +313,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
           }
         end
 
-        setup do
-          post :submission, params: submission_params
-        end
+        setup { post :submission, params: submission_params }
 
         it 'works', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
@@ -418,9 +333,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
           }
         end
 
-        setup do
-          post :submission, params: submission_params
-        end
+        setup { post :submission, params: submission_params }
 
         it 'works', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)

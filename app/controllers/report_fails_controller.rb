@@ -8,16 +8,22 @@ class ReportFailsController < ApplicationController
     @report_fail = ReportFail.new(nil, nil, [])
   end
 
-  def create
-    @report_fail = ReportFail.new(params_for_report_fails[:user_code],
-                                  params_for_report_fails[:failure_id],
-                                  params_for_report_fails[:barcodes])
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
+    @report_fail =
+      ReportFail.new(
+        params_for_report_fails[:user_code],
+        params_for_report_fails[:failure_id],
+        params_for_report_fails[:barcodes]
+      )
     if @report_fail.save
       flash.now[:notice] = 'Failure saved'
     else
       flash.now[:error] = @report_fail.errors.full_messages.join('; ')
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   protected
 

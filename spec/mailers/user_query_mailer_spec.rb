@@ -9,16 +9,13 @@ describe UserQueryMailer, type: :mailer do
     Timecop.freeze(new_time)
   end
 
-  after do
-    Timecop.return
-  end
+  after { Timecop.return }
 
   describe 'request for help' do
     let!(:user_query) { build :user_query }
     let(:mail) { described_class.request_for_help(user_query) }
 
-    let(:expected_body) do
-      <<~HEREDOC
+    let(:expected_body) { <<~HEREDOC }
         Dear developer,
 
           <p>This request was sent on September 1st, 2008 12:00, from www.example.com/some_page.</p>
@@ -29,7 +26,6 @@ describe UserQueryMailer, type: :mailer do
 
         Please, respond asap
       HEREDOC
-    end
 
     it 'renders the headers' do
       expect(mail.subject).to eq('Request for help')

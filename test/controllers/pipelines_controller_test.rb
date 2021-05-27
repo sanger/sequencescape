@@ -7,28 +7,22 @@ class PipelinesControllerTest < ActionController::TestCase
   context 'Pipelines controller' do
     setup do
       @controller = PipelinesController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
       @user = FactoryBot.create :user
       session[:user] = @user.id
     end
     should_require_login
 
     context '#index' do
-      setup do
-        get :index
-      end
+      setup { get :index }
 
       should respond_with :success
     end
 
     context '#batches' do
-      setup do
-        @pipeline = FactoryBot.create :pipeline
-      end
+      setup { @pipeline = FactoryBot.create :pipeline }
       context 'without any pipeline batches' do
-        setup do
-          get :batches, params: { id: @pipeline.id.to_s }
-        end
+        setup { get :batches, params: { id: @pipeline.id.to_s } }
 
         should respond_with :success
       end

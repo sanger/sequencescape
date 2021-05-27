@@ -3,18 +3,16 @@
 require 'test_helper'
 require 'batches_controller'
 
-class BatchesControllerTest < ActionController::TestCase
+class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
   context 'BatchesController' do
     setup do
       @controller = BatchesController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
     end
     should_require_login
 
     context 'with a false user for npg' do
-      setup do
-        session[:current_user] = :false
-      end
+      setup { session[:current_user] = :false }
 
       context 'NPG xml view' do
         setup do
@@ -25,17 +23,30 @@ class BatchesControllerTest < ActionController::TestCase
           @sample = create :sample
           @submission = create :submission_without_order, priority: 3
 
-          @library = create(:empty_library_tube).tap do |library_tube|
-            library_tube.aliquots.create!(sample: @sample, project: @project, study: @study, library: library_tube,
-                                          library_type: 'Standard')
-          end
+          @library =
+            create(:empty_library_tube).tap do |library_tube|
+              library_tube.aliquots.create!(
+                sample: @sample,
+                project: @project,
+                study: @study,
+                library: library_tube,
+                library_type: 'Standard'
+              )
+            end
           @lane = create(:empty_lane, qc_state: 'failed')
-          @request_one = pipeline.request_types.first.create!(
-            asset: @library, target_asset: @lane,
-            project: @project, study: @study,
-            submission: @submission,
-            request_metadata_attributes: { fragment_size_required_from: 100, fragment_size_required_to: 200, read_length: 76 }
-          )
+          @request_one =
+            pipeline.request_types.first.create!(
+              asset: @library,
+              target_asset: @lane,
+              project: @project,
+              study: @study,
+              submission: @submission,
+              request_metadata_attributes: {
+                fragment_size_required_from: 100,
+                fragment_size_required_to: 200,
+                read_length: 76
+              }
+            )
 
           batch = create :batch, pipeline: pipeline
           batch.batch_requests.create!(request: @request_one, position: 1)
@@ -107,24 +118,31 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'accepts valid layouts' do
-          post :verify_tube_layout, params: { id: @batch.id,
-                                              'barcode_0' => '3980654321768',
-                                              'barcode_1' => '3980123456878' }
+          post :verify_tube_layout,
+               params: {
+                 :id => @batch.id,
+                 'barcode_0' => '3980654321768',
+                 'barcode_1' => '3980123456878'
+               }
           assert_equal 'All of the tubes are in their correct positions.', flash[:notice]
         end
 
         should 'rejects invalid layouts' do
-          post :verify_tube_layout, params: { id: @batch.id,
-                                              'barcode_0' => '3980123456878',
-                                              'barcode_1' => '3980654321768' }
-          assert_equal ['The tube at position 1 is incorrect: expected NT654321L.',
-                        'The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
+          post :verify_tube_layout,
+               params: {
+                 :id => @batch.id,
+                 'barcode_0' => '3980123456878',
+                 'barcode_1' => '3980654321768'
+               }
+          assert_equal [
+                         'The tube at position 1 is incorrect: expected NT654321L.',
+                         'The tube at position 2 is incorrect: expected NT123456W.'
+                       ],
+                       flash[:error]
         end
 
         should 'rejects missing tubes' do
-          post :verify_tube_layout, params: { id: @batch.id,
-                                              'barcode_0' => '3980654321768',
-                                              'barcode_1' => '' }
+          post :verify_tube_layout, params: { :id => @batch.id, 'barcode_0' => '3980654321768', 'barcode_1' => '' }
           assert_equal ['The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
         end
       end
@@ -135,16 +153,21 @@ class BatchesControllerTest < ActionController::TestCase
           @requests = create_list(:cherrypick_request_for_pipeline, 2, request_type: @pipeline.request_types.first)
           @selected_request = @requests.first
           @submission = @selected_request.submission || raise('No Sub')
-          @plate      = @selected_request.asset.plate || raise('No plate')
+          @plate = @selected_request.asset.plate || raise('No plate')
         end
 
         should '#create' do
-          post :create, params: { id: @pipeline.id,
-                                  utf8: '✓',
-                                  action_on_requests: 'create_batch',
-                                  request_group: { "#{@plate.id}, #{@submission.id}" => '1' },
-                                  "request_group_#{@plate.id}_#{@submission.id}_size": '1',
-                                  commit: 'Submit' }
+          post :create,
+               params: {
+                 id: @pipeline.id,
+                 utf8: '✓',
+                 action_on_requests: 'create_batch',
+                 request_group: {
+                   "#{@plate.id}, #{@submission.id}" => '1'
+                 },
+                 "request_group_#{@plate.id}_#{@submission.id}_size": '1',
+                 commit: 'Submit'
+               }
         end
       end
 
@@ -152,8 +175,10 @@ class BatchesControllerTest < ActionController::TestCase
         setup do
           @pipeline_next = create :pipeline, name: 'Next pipeline'
           @pipeline = create :pipeline, name: 'New Pipeline', automated: false, next_pipeline_id: @pipeline_next.id
-          @pipeline_qc_manual = create :pipeline, name: 'Manual quality control', automated: false, next_pipeline_id: @pipeline_next.id
-          @pipeline_qc = create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_qc_manual.id
+          @pipeline_qc_manual =
+            create :pipeline, name: 'Manual quality control', automated: false, next_pipeline_id: @pipeline_next.id
+          @pipeline_qc =
+            create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_qc_manual.id
 
           @ws = @pipeline.workflow # :name => 'A New workflow', :item_limit => 2
           @ws_two = @pipeline_qc.workflow # :name => 'Another workflow', :item_limit => 2
@@ -162,7 +187,7 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_one = create(:batch, pipeline: @pipeline)
           @batch_two = create(:batch, pipeline: @pipeline_qc)
 
-          @sample   = create :sample_tube
+          @sample = create :sample_tube
           @library1 = create :empty_library_tube
           @library1.parents << @sample
           @library2 = create :empty_library_tube
@@ -172,11 +197,19 @@ class BatchesControllerTest < ActionController::TestCase
           @target_two = create(:sample_tube)
 
           # TODO: add a control_request_type to pipeline...
-          @request_one = @pipeline.request_types.first.create!(asset: @library1, target_asset: @target_one,
-                                                               project: create(:project))
+          @request_one =
+            @pipeline.request_types.first.create!(
+              asset: @library1,
+              target_asset: @target_one,
+              project: create(:project)
+            )
           @batch_one.batch_requests.create!(request: @request_one, position: 1)
-          @request_two = @pipeline.request_types.first.create!(asset: @library2, target_asset: @target_two,
-                                                               project: create(:project))
+          @request_two =
+            @pipeline.request_types.first.create!(
+              asset: @library2,
+              target_asset: @target_two,
+              project: create(:project)
+            )
           @batch_one.batch_requests.create!(request: @request_two, position: 2)
           @batch_one.reload
         end
@@ -198,10 +231,10 @@ class BatchesControllerTest < ActionController::TestCase
           setup do
             @old_count = Batch.count
 
-            @request_three = @pipeline.request_types.first.create!(asset: @library1,
-                                                                   project: FactoryBot.create(:project))
-            @request_four = @pipeline.request_types.first.create!(asset: @library2,
-                                                                  project: FactoryBot.create(:project))
+            @request_three =
+              @pipeline.request_types.first.create!(asset: @library1, project: FactoryBot.create(:project))
+            @request_four =
+              @pipeline.request_types.first.create!(asset: @library2, project: FactoryBot.create(:project))
           end
 
           context 'redirect to #show new batch' do
@@ -217,11 +250,15 @@ class BatchesControllerTest < ActionController::TestCase
 
           context 'hide_requests' do
             setup do
-              post :create, params: {
-                id: @pipeline.id,
-                request: { @request_three.id => '0', @request_four.id => '1' },
-                action_on_requests: 'hide_from_inbox'
-              }
+              post :create,
+                   params: {
+                     id: @pipeline.id,
+                     request: {
+                       @request_three.id => '0',
+                       @request_four.id => '1'
+                     },
+                     action_on_requests: 'hide_from_inbox'
+                   }
             end
 
             should 'hide the requests from the inbox' do
@@ -234,11 +271,15 @@ class BatchesControllerTest < ActionController::TestCase
 
           context 'cancel_requests' do
             setup do
-              post :create, params: {
-                id: @pipeline.id,
-                request: { @request_three.id => '0', @request_four.id => '1' },
-                action_on_requests: 'cancel_requests'
-              }
+              post :create,
+                   params: {
+                     id: @pipeline.id,
+                     request: {
+                       @request_three.id => '0',
+                       @request_four.id => '1'
+                     },
+                     action_on_requests: 'cancel_requests'
+                   }
             end
 
             should 'cancel the requests' do
@@ -295,9 +336,7 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           context 'posting without a failure reason' do
-            setup do
-              post :fail_items, params: { id: @batch_one.id, failure: { reason: '', comment: '' } }
-            end
+            setup { post :fail_items, params: { id: @batch_one.id, failure: { reason: '', comment: '' } } }
             should 'not allow failing a batch/items without specifying a reason and set the flash' do
               assert_includes flash[:error], 'Please specify a failure reason for this batch'
               assert_redirected_to action: :fail, id: @batch_one.id
@@ -308,9 +347,17 @@ class BatchesControllerTest < ActionController::TestCase
             context 'individual items' do
               setup do
                 EventSender.expects(:send_fail_event).returns(true).times(1)
-                post :fail_items, params: { id: @batch_one.id,
-                                            failure: { reason: 'PCR not completed', comment: '' },
-                                            requested_fail: { @request_one.id.to_s => 'on' } }
+                post :fail_items,
+                     params: {
+                       id: @batch_one.id,
+                       failure: {
+                         reason: 'PCR not completed',
+                         comment: ''
+                       },
+                       requested_fail: {
+                         @request_one.id.to_s => 'on'
+                       }
+                     }
               end
               should 'create a failure on each item in this batch and have two items related' do
                 assert_equal 0, @batch_one.failures.size
@@ -319,6 +366,7 @@ class BatchesControllerTest < ActionController::TestCase
                 # First item
                 assert_equal 1, @batch_one.requests.first.failures.size
                 assert_equal 'PCR not completed', @batch_one.requests.first.failures.first.reason
+
                 # Second item
                 assert_equal 0, @batch_one.requests.last.failures.size
               end
@@ -330,9 +378,18 @@ class BatchesControllerTest < ActionController::TestCase
             context 'odd values' do
               setup do
                 EventSender.expects(:send_fail_event).times(0)
-                post :fail_items, params: { id: @batch_one.id,
-                                            failure: { reason: 'PCR not completed', comment: '' },
-                                            requested_fail: { @request_one.id.to_s => 'blue', 'control' => 'on' } }
+                post :fail_items,
+                     params: {
+                       id: @batch_one.id,
+                       failure: {
+                         reason: 'PCR not completed',
+                         comment: ''
+                       },
+                       requested_fail: {
+                         @request_one.id.to_s => 'blue',
+                         'control' => 'on'
+                       }
+                     }
               end
               should 'not create a failure' do
                 assert_equal 0, @batch_one.failures.size
@@ -340,6 +397,7 @@ class BatchesControllerTest < ActionController::TestCase
 
                 # First item
                 assert_equal 0, @batch_one.requests.first.failures.size
+
                 # Second item
                 assert_equal 0, @batch_one.requests.last.failures.size
               end
@@ -350,9 +408,18 @@ class BatchesControllerTest < ActionController::TestCase
             context 'odd values' do
               setup do
                 EventSender.expects(:send_fail_event).times(0)
-                post :fail_items, params: { id: @batch_one.id,
-                                            failure: { reason: 'PCR not completed', comment: '' },
-                                            requested_fail: { @request_one.id.to_s => 'on', 'not_a_request' => 'on' } }
+                post :fail_items,
+                     params: {
+                       id: @batch_one.id,
+                       failure: {
+                         reason: 'PCR not completed',
+                         comment: ''
+                       },
+                       requested_fail: {
+                         @request_one.id.to_s => 'on',
+                         'not_a_request' => 'on'
+                       }
+                     }
               end
               should 'not create a failure' do
                 assert_equal 0, @batch_one.failures.size
@@ -360,6 +427,7 @@ class BatchesControllerTest < ActionController::TestCase
 
                 # First item
                 assert_equal 0, @batch_one.requests.first.failures.size
+
                 # Second item
                 assert_equal 0, @batch_one.requests.last.failures.size
                 assert flash['error'].include?("Couldn't find all Requests with 'id'")
@@ -420,14 +488,25 @@ class BatchesControllerTest < ActionController::TestCase
         order_role = OrderRole.new role: 'test'
 
         order = create :order, order_role: order_role, study: study, assets: [asset], project: project
-        request = create :well_request, asset: (create :well_with_sample_and_plate), target_asset: (create :well_with_sample_and_plate), order: order
+        request =
+          create :well_request,
+                 asset: (create :well_with_sample_and_plate),
+                 target_asset: (create :well_with_sample_and_plate),
+                 order: order
         @batch = create :batch
         @batch.requests << request
 
         RestClient.expects(:post)
 
-        post :print_plate_barcodes, params: { printer: barcode_printer.name, count: '3',
-                                              printable: { @batch.output_plates.first.human_barcode => 'on' }, batch_id: @batch.id.to_s }
+        post :print_plate_barcodes,
+             params: {
+               printer: barcode_printer.name,
+               count: '3',
+               printable: {
+                 @batch.output_plates.first.human_barcode => 'on'
+               },
+               batch_id: @batch.id.to_s
+             }
       end
 
       should '#print_barcodes should send print request' do
@@ -438,23 +517,30 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable,
-                                        batch_id: @batch.id.to_s }
+        post :print_barcodes,
+             params: {
+               printer: barcode_printer.name,
+               count: '3',
+               printable: printable,
+               batch_id: @batch.id.to_s
+             }
       end
 
       should '#print_multiplex_barcodes should send print request' do
-        pipeline = create :pipeline,
-                          name: 'Test pipeline',
-                          workflow: Workflow.create!(item_limit: 8),
-                          multiplexed: true
+        pipeline = create :pipeline, name: 'Test pipeline', workflow: Workflow.create!(item_limit: 8), multiplexed: true
         batch = pipeline.batches.create!
         library_tube = create :library_tube, barcode: '111'
         printable = { library_tube.id => 'on' }
 
         RestClient.expects(:post)
 
-        post :print_multiplex_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable,
-                                                  batch_id: batch.id.to_s }
+        post :print_multiplex_barcodes,
+             params: {
+               printer: barcode_printer.name,
+               count: '3',
+               printable: printable,
+               batch_id: batch.id.to_s
+             }
       end
     end
   end

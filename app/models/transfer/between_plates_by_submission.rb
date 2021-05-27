@@ -17,7 +17,8 @@ class Transfer::BetweenPlatesBySubmission < Transfer
   # that it came from.  Hence all stock wells that are part of the same submission will be transferred to
   # the same well.
   #++
-  def well_to_destination
+  # rubocop:todo Metrics/MethodLength
+  def well_to_destination # rubocop:todo Metrics/AbcSize
     {}.tap do |sources_to_target|
       # Group the wells based on the submission
       groups = source.wells.in_column_major_order.with_pool_id.group_by(&:pool_id).delete_if { |k, _| k.nil? }.values
@@ -34,6 +35,8 @@ class Transfer::BetweenPlatesBySubmission < Transfer
       end
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
   private :well_to_destination
 
   def record_transfer(source, destination)

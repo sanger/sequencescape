@@ -4,6 +4,8 @@ namespace :traction do
   desc 'Create the traction request types'
   task create_request_types: [:environment] do
     puts 'Creating request types...'
+
+    # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       unless RequestType.exists?(key: 'traction_grid_ion')
         RequestType.create!(
@@ -16,11 +18,17 @@ namespace :traction do
           billable: true,
           request_purpose: :standard
         ) do |rt|
-          LibraryTypesRequestType.create!(request_type: rt,
-                                          library_type: LibraryType.find_or_create_by!(name: 'Rapid'), is_default: true)
+          LibraryTypesRequestType.create!(
+            request_type: rt,
+            library_type: LibraryType.find_or_create_by!(name: 'Rapid'),
+            is_default: true
+          )
 
-          LibraryTypesRequestType.create!(request_type: rt,
-                                          library_type: LibraryType.find_or_create_by!(name: 'Ligation'), is_default: false)
+          LibraryTypesRequestType.create!(
+            request_type: rt,
+            library_type: LibraryType.find_or_create_by!(name: 'Ligation'),
+            is_default: false
+          )
 
           RequestType::Validator.create!(
             request_type: rt,
@@ -31,16 +39,17 @@ namespace :traction do
           RequestType::Validator.create!(
             request_type: rt,
             request_option: 'data_type',
-            valid_options: RequestType::Validator::ArrayWithDefault.new(['basecalls', 'basecalls and raw data'],
-                                                                        'basecalls')
+            valid_options:
+              RequestType::Validator::ArrayWithDefault.new(['basecalls', 'basecalls and raw data'], 'basecalls')
           )
         end
       end
     end
+    # rubocop:enable Metrics/BlockLength
   end
 
   desc 'Create the traction submission templates'
-  task create_submission_templates: %i(environment create_request_types) do
+  task create_submission_templates: %i[environment create_request_types] do
     puts 'Creating submission templates....'
     ActiveRecord::Base.transaction do
       unless SubmissionTemplate.exists?(name: 'Traction - GridION')
@@ -61,9 +70,7 @@ namespace :traction do
     puts 'Creating purposes...'
     ActiveRecord::Base.transaction do
       (barcode_printer_type = BarcodePrinterType.find_by(name: '1D Tube')) || raise('Cannot find 1D printer')
-      {
-        'saphyr' => ['Tube::Purpose', 'SampleTube']
-      }.each do |name, (type, asset_type)|
+      { 'saphyr' => %w[Tube::Purpose SampleTube] }.each do |name, (type, asset_type)|
         type.constantize.create!(name: name, barcode_printer_type: barcode_printer_type, target_type: asset_type)
       end
     end

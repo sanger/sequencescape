@@ -9,9 +9,22 @@ module SequencescapeExcel
   class Column
     include Helpers::Attributes
 
-    setup_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings,
-                     :attribute, :range,
-                     defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
+    setup_attributes :name,
+                     :heading,
+                     :number,
+                     :type,
+                     :validation,
+                     :value,
+                     :unlocked,
+                     :conditional_formattings,
+                     :attribute,
+                     :range,
+                     defaults: {
+                       number: 0,
+                       type: :string,
+                       conditional_formattings: {},
+                       validation: NullValidation.new
+                     }
 
     validates_presence_of :name, :heading
 
@@ -34,11 +47,7 @@ module SequencescapeExcel
     def validation=(validation)
       return if validation.nil?
 
-      @validation = if validation.is_a?(Hash)
-                      Validation.new(validation)
-                    else
-                      validation.dup
-                    end
+      @validation = validation.is_a?(Hash) ? Validation.new(validation) : validation.dup
     end
 
     ##
@@ -47,11 +56,12 @@ module SequencescapeExcel
     def conditional_formattings=(conditional_formattings)
       return if conditional_formattings.nil?
 
-      @conditional_formattings = if conditional_formattings.is_a?(Hash)
-                                   ConditionalFormattingList.new(conditional_formattings)
-                                 else
-                                   conditional_formattings.dup
-                                 end
+      @conditional_formattings =
+        if conditional_formattings.is_a?(Hash)
+          ConditionalFormattingList.new(conditional_formattings)
+        else
+          conditional_formattings.dup
+        end
     end
 
     ##
@@ -59,11 +69,7 @@ module SequencescapeExcel
     def range=(attributes)
       return if attributes.nil?
 
-      @range = if attributes.empty?
-                 NullRange.new
-               else
-                 Range.new(attributes)
-               end
+      @range = attributes.empty? ? NullRange.new : Range.new(attributes)
     end
 
     ##
@@ -145,9 +151,9 @@ module SequencescapeExcel
       end
 
       def inspect
-        "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, "\
-        "@validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, "\
-        "@conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
+        "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, " \
+          "@validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, " \
+          "@conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
       end
 
       private

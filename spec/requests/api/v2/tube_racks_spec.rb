@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe 'TubeRacks API', with: :api_v2 do
   context 'with multiple TubeRacks' do
-    before do
-      create_list(:tube_rack, 5)
-    end
+    before { create_list(:tube_rack, 5) }
 
     it 'sends a list of tube_racks' do
       api_get '/api/v2/tube_racks'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end

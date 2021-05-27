@@ -32,7 +32,8 @@ RSpec.describe RecordLoader::RequestTypeLoader, type: :model, loader: true do
 
       # If I split this out into independent tests, than RSpec/AggregateFailures shouts at me,
       # and the overall readability feels reduced. So overruling RuboCop here.
-      it 'sets attributes on the created records' do # rubocop:disable RSpec/ExampleLength
+      it 'sets attributes on the created records' do
+        # rubocop:disable RSpec/ExampleLength
         expect(RequestType.last).to have_attributes(
           name: 'Example type 2',
           asset_type: 'Well',

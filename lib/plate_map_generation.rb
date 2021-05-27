@@ -5,7 +5,7 @@
 # to remove dependency on the database.
 # This assumes the shapes will not change
 class PlateMapGeneration
-  def self.maps
+  def self.maps # rubocop:todo Metrics/MethodLength
     [
       {
         name: 'Standard',
@@ -14,20 +14,8 @@ class PlateMapGeneration
         description_strategy: 'Coordinate',
         sizes: [96, 384]
       },
-      {
-        name: 'Fluidigm96',
-        horizontal_ratio: 3,
-        vertical_ratio: 8,
-        description_strategy: 'Sequential',
-        sizes: [96]
-      },
-      {
-        name: 'Fluidigm192',
-        horizontal_ratio: 3,
-        vertical_ratio: 4,
-        description_strategy: 'Sequential',
-        sizes: [192]
-      },
+      { name: 'Fluidigm96', horizontal_ratio: 3, vertical_ratio: 8, description_strategy: 'Sequential', sizes: [96] },
+      { name: 'Fluidigm192', horizontal_ratio: 3, vertical_ratio: 4, description_strategy: 'Sequential', sizes: [192] },
       {
         name: 'StripTubeColumn',
         horizontal_ratio: 1,
@@ -40,9 +28,7 @@ class PlateMapGeneration
 
   # Idempotent method of generating required asset shapes and maps
   def self.generate!
-    ActiveRecord::Base.transaction do
-      maps.each { |config| new(**config).save! }
-    end
+    ActiveRecord::Base.transaction { maps.each { |config| new(**config).save! } }
   end
 
   def initialize(name:, horizontal_ratio:, vertical_ratio:, sizes:, description_strategy: 'coordinate')
@@ -53,12 +39,15 @@ class PlateMapGeneration
     @description_strategy = "Map::#{description_strategy.camelcase}"
   end
 
-  def save!
-    @shape = AssetShape.create_with(
-      horizontal_ratio: @horizontal_ratio,
-      vertical_ratio: @vertical_ratio,
-      description_strategy: @description_strategy
-    ).find_or_create_by!(name: @name)
+  def save! # rubocop:todo Metrics/MethodLength
+    @shape =
+      AssetShape
+        .create_with(
+          horizontal_ratio: @horizontal_ratio,
+          vertical_ratio: @vertical_ratio,
+          description_strategy: @description_strategy
+        )
+        .find_or_create_by!(name: @name)
 
     @sizes.each do |size|
       next if Map.find_by(asset_size: size, asset_shape_id: @shape.id).present?

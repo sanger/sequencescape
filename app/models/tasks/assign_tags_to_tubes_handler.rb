@@ -7,7 +7,7 @@ module Tasks::AssignTagsToTubesHandler
     ActiveRecord::Base.transaction do
       @batch.requests.each do |request|
         tag_id = params[:tag][request.id.to_s] or next
-        tag    = @tag_group.tags.find(tag_id)
+        tag = @tag_group.tags.find(tag_id)
         tag.tag!(request.target_asset)
       end
     end

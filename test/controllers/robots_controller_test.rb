@@ -14,17 +14,13 @@ class RobotsControllerTest < ActionController::TestCase
     should_require_login
 
     context '#index' do
-      setup do
-        get :index
-      end
+      setup { get :index }
       should respond_with :success
       should_not set_flash
     end
 
     context '#new' do
-      setup do
-        get :new
-      end
+      setup { get :new }
       should respond_with :success
       should_not set_flash
     end
@@ -42,25 +38,19 @@ class RobotsControllerTest < ActionController::TestCase
     end
 
     context '#show' do
-      setup do
-        get :show, params: { id: @robot.id }
-      end
+      setup { get :show, params: { id: @robot.id } }
       should respond_with :success
       should_not set_flash
     end
 
     context '#edit' do
-      setup do
-        get :edit, params: { id: @robot.id }
-      end
+      setup { get :edit, params: { id: @robot.id } }
       should respond_with :success
       should_not set_flash
     end
 
     context '#update' do
-      setup do
-        put :update, params: { id: @robot.id, robot: { name: 'tecan' } }
-      end
+      setup { put :update, params: { id: @robot.id, robot: { name: 'tecan' } } }
 
       should 'update name' do
         assert_equal 'tecan', Robot.find(@robot.id).name

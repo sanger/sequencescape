@@ -7,15 +7,13 @@ describe '/api/1/plate-purpose-uuid' do
   let(:authorised_app) { create :api_application }
   let(:uuid) { '00000000-1111-2222-3333-444444444444' }
 
-  before do
-    create :dilution_plate_purpose, :uuidable, uuid: uuid, name: 'Example purpose'
-  end
+  before { create :dilution_plate_purpose, :uuidable, uuid: uuid, name: 'Example purpose' }
 
   describe '#get' do
     subject(:url) { '/api/1/' + uuid }
 
     let(:response_body) do
-      %({
+      '{
         "dilution_plate_purpose": {
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
@@ -30,7 +28,7 @@ describe '/api/1/plate-purpose-uuid' do
             }
           }
         }
-      })
+      }'
     end
     let(:response_code) { 200 }
 
@@ -68,9 +66,7 @@ describe '/api/1/plate-purpose-uuid' do
 
     context 'when unuthorized' do
       let(:response_code) { 501 }
-      let(:response_body) do
-        '{"general": [ "requested action is not supported on this resource" ]}'
-      end
+      let(:response_body) { '{"general": [ "requested action is not supported on this resource" ]}' }
 
       it 'prevents resource creation' do
         user_api_request create(:user), :post, url, payload

@@ -7,7 +7,7 @@ class EventsControllerTest < ActionController::TestCase
   context 'EventsController' do
     setup do
       @controller = EventsController.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
       @event = Event.create
     end
 
@@ -32,9 +32,7 @@ class EventsControllerTest < ActionController::TestCase
       # correctly. This tests we preserve the actual behaviour, which
       # also feels like the RIGHT behaviour.
       context 'XML' do
-        setup do
-          get :create, params: { format: :xml, event: { key: 'blah' } }
-        end
+        setup { get :create, params: { format: :xml, event: { key: 'blah' } } }
         should respond_with :success
       end
     end

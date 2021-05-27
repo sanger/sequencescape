@@ -11,31 +11,26 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
 
   context 'with a single transfer' do
     let(:creation_attributes) do
-      {
-        user: user,
-        transfer_requests_attributes: [
-          { asset: asset, target_asset: target_asset }
-        ]
-      }
+      { user: user, transfer_requests_attributes: [{ asset: asset, target_asset: target_asset }] }
     end
 
     context 'and no outer requests' do
       describe '#save' do
         let(:transfer_request) { subject.transfer_requests.first }
 
-        before do
-          expect(subject.save).to be true
-        end
+        before { expect(subject.save).to be true }
 
         it 'creates a transfer request' do
           expect(subject.transfer_requests.count).to eq(1)
         end
 
-        it 'sets the expected asset' do # rubocop:todo RSpec/AggregateExamples
+        it 'sets the expected asset' do
+          # rubocop:todo RSpec/AggregateExamples
           expect(transfer_request.asset).to eq(asset)
         end
 
-        it 'sets the expected target_asset' do # rubocop:todo RSpec/AggregateExamples
+        it 'sets the expected target_asset' do
+          # rubocop:todo RSpec/AggregateExamples
           expect(transfer_request.target_asset).to eq(target_asset.receptacle)
         end
       end
@@ -48,19 +43,19 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
       describe '#save' do
         let(:transfer_request) { subject.transfer_requests.first }
 
-        before do
-          expect(subject.save).to be true
-        end
+        before { expect(subject.save).to be true }
 
         it 'creates a transfer request' do
           expect(subject.transfer_requests.count).to eq(1)
         end
 
-        it 'sets the expected asset' do # rubocop:todo RSpec/AggregateExamples
+        it 'sets the expected asset' do
+          # rubocop:todo RSpec/AggregateExamples
           expect(transfer_request.asset).to eq(asset)
         end
 
-        it 'sets the expected target_asset' do # rubocop:todo RSpec/AggregateExamples
+        it 'sets the expected target_asset' do
+          # rubocop:todo RSpec/AggregateExamples
           expect(transfer_request.target_asset).to eq(target_asset.receptacle)
         end
       end
@@ -85,27 +80,29 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
             }
           end
 
-          before do
-            expect(subject.save).to be true
-          end
+          before { expect(subject.save).to be true }
 
           it 'creates a transfer request' do
             expect(subject.transfer_requests.count).to eq(1)
           end
 
-          it 'sets the expected asset' do # rubocop:todo RSpec/AggregateExamples
+          it 'sets the expected asset' do
+            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.asset).to eq(asset)
           end
 
-          it 'sets the expected target_asset' do # rubocop:todo RSpec/AggregateExamples
+          it 'sets the expected target_asset' do
+            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.target_asset).to eq(target_asset.receptacle)
           end
 
-          it 'sets submission id on the transfer request' do # rubocop:todo RSpec/AggregateExamples
+          it 'sets submission id on the transfer request' do
+            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.submission_id).to eq(outer_request.submission_id)
           end
 
-          it 'sets request_id on the target aliquot' do # rubocop:todo RSpec/AggregateExamples
+          it 'sets request_id on the target aliquot' do
+            # rubocop:todo RSpec/AggregateExamples
             expect(target_asset.aliquots.first.request_id).to eq(outer_request.id)
           end
         end
@@ -139,33 +136,33 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
           let(:creation_attributes) do
             {
               user: user,
-              transfer_requests_attributes: [
-                { asset: asset, target_asset: target_asset, outer_request: outer_request }
-              ]
+              transfer_requests_attributes: [{ asset: asset, target_asset: target_asset, outer_request: outer_request }]
             }
           end
 
-          before do
-            expect(subject.save).to be true
-          end
+          before { expect(subject.save).to be true }
 
           it 'creates a transfer request' do
             expect(subject.transfer_requests.count).to eq(1)
           end
 
-          it 'sets the expected asset' do # rubocop:todo RSpec/AggregateExamples
+          it 'sets the expected asset' do
+            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.asset).to eq(asset)
           end
 
-          it 'sets the expected target_asset' do # rubocop:todo RSpec/AggregateExamples
+          it 'sets the expected target_asset' do
+            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.target_asset).to eq(target_asset.receptacle)
           end
 
-          it 'sets submission id on the transfer request' do # rubocop:todo RSpec/AggregateExamples
+          it 'sets submission id on the transfer request' do
+            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.submission_id).to eq(outer_request.submission_id)
           end
 
-          it 'sets request_id on the target aliquot' do # rubocop:todo RSpec/AggregateExamples
+          it 'sets request_id on the target aliquot' do
+            # rubocop:todo RSpec/AggregateExamples
             expect(target_asset.aliquots.first.request_id).to eq(outer_request.id)
           end
         end

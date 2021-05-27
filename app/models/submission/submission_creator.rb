@@ -4,10 +4,10 @@ require 'aasm'
 
 # Used to handle the rendering of the submission/order pages in the
 # web-based submission interface
-class Submission::SubmissionCreator < Submission::PresenterSkeleton
-  SubmissionsCreaterError  = Class.new(StandardError)
+class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:todo Metrics/ClassLength
+  SubmissionsCreaterError = Class.new(StandardError)
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
-  InvalidInputException    = Class.new(SubmissionsCreaterError)
+  InvalidInputException = Class.new(SubmissionsCreaterError)
 
   self.attributes = %i[
     id
@@ -33,9 +33,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   rescue AASM::InvalidTransition
     submission.errors.add(:base, 'Submissions can not be edited once they are submitted for building.')
   rescue ActiveRecord::RecordInvalid => e
-    e.record.errors.full_messages.each do |message|
-      submission.errors.add(:base, message)
-    end
+    e.record.errors.full_messages.each { |message| submission.errors.add(:base, message) }
   rescue Submission::ProjectValidation::Error => e
     submission.errors.add(:base, e.message)
   end
@@ -89,7 +87,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   # Creates a new submission and adds an initial order on the submission using
   # the parameters
-  def save
+  # rubocop:todo Metrics/MethodLength
+  def save # rubocop:todo Metrics/AbcSize
     begin
       ActiveRecord::Base.transaction do
         # Add assets to the order...
@@ -112,20 +111,20 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     rescue SubmissionsCreaterError, Asset::Finder::InvalidInputException => e
       order.errors.add(:base, e.message)
     rescue ActiveRecord::RecordInvalid => e
-      e.record.errors.full_messages.each do |message|
-        order.errors.add(:base, message)
-      end
+      e.record.errors.full_messages.each { |message| order.errors.add(:base, message) }
     end
 
     # Having got through that lot, return whether the save was successful or not
     order.errors.empty?
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   # this is more order_receptacles, asset_group is actually receptacle group
-  def order_assets
-    input_methods = %i[asset_group_id sample_names_text barcodes_wells_text].select do |input_method|
-      send(input_method).present?
-    end
+  # rubocop:todo Metrics/MethodLength
+  def order_assets # rubocop:todo Metrics/AbcSize
+    input_methods =
+      %i[asset_group_id sample_names_text barcodes_wells_text].select { |input_method| send(input_method).present? }
 
     raise InvalidInputException, 'No Samples found' if input_methods.empty?
     unless input_methods.size == 1
@@ -133,22 +132,18 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     end
 
     case input_methods.first
-    when :asset_group_id then { asset_group: find_asset_group }
+    when :asset_group_id
+      { asset_group: find_asset_group }
     when :sample_names_text
-      {
-        assets: wells_on_specified_plate_purpose_for(
-          plate_purpose,
-          find_samples_from_text(sample_names_text)
-        )
-      }
+      { assets: wells_on_specified_plate_purpose_for(plate_purpose, find_samples_from_text(sample_names_text)) }
     when :barcodes_wells_text
-      {
-        assets: find_assets_from_text(barcodes_wells_text)
-      }
-
-    else raise StandardError, "No way to determine assets for input choice #{input_methods.first}"
+      { assets: find_assets_from_text(barcodes_wells_text) }
+    else
+      raise StandardError, "No way to determine assets for input choice #{input_methods.first}"
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   # This is a legacy of the old controller...
   def wells_on_specified_plate_purpose_for(plate_purpose, samples)
@@ -222,17 +217,19 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   private
 
-  def create_order
+  # rubocop:todo Metrics/MethodLength
+  def create_order # rubocop:todo Metrics/AbcSize
     order_role = OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
-    new_order = template.new_order(
-      study: study,
-      project: project,
-      user: @user,
-      request_options: order_params,
-      comments: comments,
-      pre_cap_group: pre_capture_plex_group,
-      order_role: order_role
-    )
+    new_order =
+      template.new_order(
+        study: study,
+        project: project,
+        user: @user,
+        request_options: order_params,
+        comments: comments,
+        pre_cap_group: pre_capture_plex_group,
+        order_role: order_role
+      )
     if order_params
       new_order.request_type_multiplier do |sequencing_request_type_id|
         new_order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
@@ -242,13 +239,15 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     new_order
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   # Returns Samples based on Sample name or Sanger ID
   # This is a legacy of the old controller...
   def find_samples_from_text(sample_text)
     names = sample_text.split(/\s+/)
     samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
 
-    name_set  = Set.new(names)
+    name_set = Set.new(names)
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
     not_found = name_set - found_set
     raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(', ')} not found" unless not_found.empty?

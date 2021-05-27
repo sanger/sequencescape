@@ -30,27 +30,30 @@ module Net
     end
 
     # Adapted from https://raw.githubusercontent.com/jruby/jruby/9.0.5.0/lib/ruby/stdlib/net/http.rb
+    # rubocop:todo Metrics/PerceivedComplexity
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
     def connect # rubocop:todo Metrics/CyclomaticComplexity
-      if proxy? then
+      if proxy?
         conn_address = proxy_address
-        conn_port    = proxy_port
+        conn_port = proxy_port
       else
         conn_address = address
-        conn_port    = port
+        conn_port = port
       end
 
       D "opening connection to #{conn_address}:#{conn_port}..."
-      s = Timeout.timeout(@open_timeout, Net::OpenTimeout) do
-        TCPSocket.open(conn_address, conn_port, @local_host, @local_port)
-      end
+      s =
+        Timeout.timeout(@open_timeout, Net::OpenTimeout) do
+          TCPSocket.open(conn_address, conn_port, @local_host, @local_port)
+        end
       s.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
       D 'opened'
       if use_ssl?
         ssl_parameters = Hash.new
         iv_list = instance_variables
         SSL_IVNAMES.each_with_index do |ivname, i|
-          if iv_list.include?(ivname) &&
-             (value = instance_variable_get(ivname))
+          if iv_list.include?(ivname) && (value = instance_variable_get(ivname))
             ssl_parameters[SSL_ATTRIBUTES[i]] = value if value
           end
         end
@@ -70,8 +73,10 @@ module Net
           if proxy?
             buf = "CONNECT #{@address}:#{@port} HTTP/#{HTTPVersion}\r\n"
             buf << "Host: #{@address}:#{@port}\r\n"
+
             # MODIFICATION BEGINS
             additional_proxy_headers.each { |k, v| buf << "#{k}: #{v}\r\n" }
+
             # MODIFICATION ENDS
             if proxy_user
               credential = ["#{proxy_user}:#{proxy_pass}"].pack('m')
@@ -83,15 +88,14 @@ module Net
             HTTPResponse.read_new(@socket).value
           end
           if @ssl_session &&
-             (Process.clock_gettime(Process::CLOCK_REALTIME) < @ssl_session.time.to_f + @ssl_session.timeout)
+               (Process.clock_gettime(Process::CLOCK_REALTIME) < @ssl_session.time.to_f + @ssl_session.timeout)
             s.session = @ssl_session if @ssl_session
           end
+
           # Server Name Indication (SNI) RFC 3546
           s.hostname = @address if s.respond_to? :hostname=
           Timeout.timeout(@open_timeout, Net::OpenTimeout) { s.connect }
-          if @ssl_context.verify_mode != OpenSSL::SSL::VERIFY_NONE
-            s.post_connection_check(@address)
-          end
+          s.post_connection_check(@address) if @ssl_context.verify_mode != OpenSSL::SSL::VERIFY_NONE
           @ssl_session = s.session
         rescue => e
           D "Conn close because of connect error #{e}"
@@ -101,6 +105,10 @@ module Net
       end
       on_connect
     end
+
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
     private :connect
   end
 end

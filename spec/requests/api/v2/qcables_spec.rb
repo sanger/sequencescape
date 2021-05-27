@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe 'Qcables API', with: :api_v2 do
   context 'with multiple Qcables' do
-    before do
-      create_list(:qcable, 5)
-    end
+    before { create_list(:qcable, 5) }
 
     it 'sends a list of qcables' do
       api_get '/api/v2/qcables'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end

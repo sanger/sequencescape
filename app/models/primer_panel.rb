@@ -12,8 +12,10 @@ class PrimerPanel < ApplicationRecord
   include SharedBehaviour::Named
 
   serialize :programs
+
   # The name: Used to identify the assay set.
   validates :name, presence: true
+
   # The number of SNP sites targeted by the panel. Primarily used for reference, and to ensure
   # that SNP calls can be presented along with the expected number of hits.
   validates :snp_count, numericality: { greater_than: 0, only_integer: true }

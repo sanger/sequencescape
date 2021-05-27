@@ -2,9 +2,7 @@
 
 FactoryBot.define do
   trait :plate_exists_in_sequencescape do
-    transient do
-      sequence(:index) { |n| n }
-    end
+    transient { sequence(:index) { |n| n } }
 
     barcode { "AKER-#{index}" }
 
@@ -27,8 +25,7 @@ FactoryBot.define do
 
   factory :container, class: 'Aker::Container', traits: [:plate_exists_in_sequencescape]
 
-  factory :container_with_address, class: 'Aker::Container', traits: %i[
-    plate_exists_in_sequencescape
-    with_address_for_aker
-  ]
+  factory :container_with_address,
+          class: 'Aker::Container',
+          traits: %i[plate_exists_in_sequencescape with_address_for_aker]
 end

@@ -29,13 +29,15 @@ class Transfer::FromPlateToTube < Transfer
     destination.update!(name: "#{source_barcode} #{range}")
   end
 
-  def each_transfer
+  def each_transfer # rubocop:todo Metrics/AbcSize
     # Partition the source plate wells into ones that are good and others that are bad.  The
     # bad wells will be eliminated after we've done the transfers for the good ones.
     source_wells = source.wells.includes(:aliquots, :transfer_requests_as_target)
-    bad_wells, good_wells = source_wells.located_at_position(transfers).with_pool_id.partition do |well|
-      well.nil? or well.aliquots.empty? or well.failed? or well.cancelled?
-    end
+    bad_wells, good_wells =
+      source_wells
+        .located_at_position(transfers)
+        .with_pool_id
+        .partition { |well| well.nil? or well.aliquots.empty? or well.failed? or well.cancelled? }
 
     good_wells.each { |well| yield(well, destination) }
 

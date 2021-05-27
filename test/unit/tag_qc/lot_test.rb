@@ -14,9 +14,7 @@ class LotTest < ActiveSupport::TestCase
     should belong_to :template
 
     context 'when validating' do
-      setup do
-        create :lot
-      end
+      setup { create :lot }
 
       should validate_uniqueness_of(:lot_number).case_insensitive
     end

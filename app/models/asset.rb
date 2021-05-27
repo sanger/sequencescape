@@ -21,7 +21,7 @@ require 'eventful_record'
 # - {Receptacle}: Abstract class inherited by any asset which can contain stuff directly
 #
 # Some of the above are further subclasses to handle specific behaviours.
-class Asset < ApplicationRecord
+class Asset < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Api::Messages::QcResultIO::AssetExtensions
   include Event::PlateEvents
   extend EventfulRecord
@@ -29,11 +29,14 @@ class Asset < ApplicationRecord
   self.abstract_class = true
 
   class_attribute :stock_message_template, instance_writer: false
+
   # The partial used to render the list of assets on the asset show page
   class_attribute :sample_partial, instance_writer: false
+
   # When set to true, allows assets of this type to be automatically moved
   # from the asset_group show page
   class_attribute :automatic_move, instance_writer: false
+
   # Determines if the user is presented with the request additional sequencing link
   class_attribute :sequenceable, instance_writer: false
 
@@ -46,17 +49,17 @@ class Asset < ApplicationRecord
   delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
 
   has_many_events do
-    event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)
-    event_constructor(:create_state_update!,           Event::AssetSetQcStateEvent,   :create_updated!)
-    event_constructor(:create_scanned_into_lab!,       Event::ScannedIntoLabEvent,    :create_for_asset!)
-    event_constructor(:create_labware_failed!,         Event::LabwareFailedEvent,     :create_for_asset!)
-    event_constructor(:create_plate!,                  Event::PlateCreationEvent,     :create_for_asset!)
-    event_constructor(:create_gel_qc!,                 Event::SampleLogisticsQcEvent, :create_gel_qc_for_asset!)
-    event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
-    event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
-    event_constructor(:updated_fluidigm_plate!,        Event::SequenomLoading,        :updated_fluidigm_plate!)
-    event_constructor(:update_gender_markers!,         Event::SequenomLoading,        :created_update_gender_makers!)
-    event_constructor(:update_sequenom_count!,         Event::SequenomLoading,        :created_update_sequenom_count!)
+    event_constructor(:create_external_release!, ExternalReleaseEvent, :create_for_asset!)
+    event_constructor(:create_state_update!, Event::AssetSetQcStateEvent, :create_updated!)
+    event_constructor(:create_scanned_into_lab!, Event::ScannedIntoLabEvent, :create_for_asset!)
+    event_constructor(:create_labware_failed!, Event::LabwareFailedEvent, :create_for_asset!)
+    event_constructor(:create_plate!, Event::PlateCreationEvent, :create_for_asset!)
+    event_constructor(:create_gel_qc!, Event::SampleLogisticsQcEvent, :create_gel_qc_for_asset!)
+    event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
+    event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
+    event_constructor(:updated_fluidigm_plate!, Event::SequenomLoading, :updated_fluidigm_plate!)
+    event_constructor(:update_gender_markers!, Event::SequenomLoading, :created_update_gender_makers!)
+    event_constructor(:update_sequenom_count!, Event::SequenomLoading, :created_update_sequenom_count!)
   end
   has_many_lab_events
 
@@ -69,7 +72,7 @@ class Asset < ApplicationRecord
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
 
-  scope :sorted, ->() { order('map_id ASC') }
+  scope :sorted, -> { order('map_id ASC') }
 
   scope :recent_first, -> { order(id: :desc) }
 
@@ -78,9 +81,7 @@ class Asset < ApplicationRecord
   scope :include_for_show, -> { includes(:studies) }
 
   def summary_hash
-    {
-      asset_id: id
-    }
+    { asset_id: id }
   end
 
   # Returns the type of asset that can be considered appropriate for request types.
@@ -183,7 +184,8 @@ class Asset < ApplicationRecord
   def register_stock!
     class_name = self.class.name
     if stock_message_template.nil?
-      raise StandardError, "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class."
+      raise StandardError,
+            "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class."
     end
 
     Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')

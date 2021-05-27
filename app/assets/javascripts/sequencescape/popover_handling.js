@@ -1,10 +1,10 @@
 (function ($, undefined) {
   var attachEvents;
 
-  attachEvents = function(){
+  attachEvents = function () {
     $('.popover-trigger[data-toggle="popover"]').popover({
-      trigger: 'hover click',
-      html: true
+      trigger: "hover click",
+      html: true,
     });
   };
 

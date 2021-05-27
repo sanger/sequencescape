@@ -1,8 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for CustomMetadatumCollections
 class ::Endpoints::CustomMetadatumCollections < ::Core::Endpoint::Base
-  model do
-    action(:create, to: :standard_create!)
-  end
+  model { action(:create, to: :standard_create!) }
 
   instance do
     belongs_to(:asset, json: 'asset', to: 'asset')

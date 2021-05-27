@@ -12,22 +12,22 @@ describe '/api/1/asset_audits' do
 
     context 'without a labware' do
       let(:payload) do
-        %({
+        '{
           "asset_audit": {
             "message": "My message",
             "key": "some_key",
             "created_by": "john",
             "witnessed_by": "jane"
           }
-        })
+        }'
       end
 
       let(:response_body) do
-        %({
-        "content": {
-          "asset": ["can't be blank"]
+        "{
+        \"content\": {
+          \"asset\": [\"can't be blank\"]
         }
-      })
+      }"
       end
       let(:response_code) { 422 }
 
@@ -39,23 +39,14 @@ describe '/api/1/asset_audits' do
     end
 
     context 'without a key' do
-      let(:payload) do
-        {
-          asset_audit: {
-            message: 'My message',
-            created_by: 'john',
-            asset: labware.uuid
-
-          }
-        }.to_json
-      end
+      let(:payload) { { asset_audit: { message: 'My message', created_by: 'john', asset: labware.uuid } }.to_json }
 
       let(:response_body) do
-        %({
+        '{
           "content": {
             "key": ["Key can only contain letters, numbers or _"]
           }
-        })
+        }'
       end
       let(:response_code) { 422 }
 
@@ -68,23 +59,15 @@ describe '/api/1/asset_audits' do
 
     context 'with an invalid key' do
       let(:payload) do
-        {
-          asset_audit: {
-            message: 'My message',
-            key: '<key>',
-            created_by: 'john',
-            asset: labware.uuid
-
-          }
-        }.to_json
+        { asset_audit: { message: 'My message', key: '<key>', created_by: 'john', asset: labware.uuid } }.to_json
       end
 
       let(:response_body) do
-        %({
+        '{
           "content": {
             "key": ["Key can only contain letters, numbers or _"]
           }
-        })
+        }'
       end
       let(:response_code) { 422 }
 
@@ -116,7 +99,6 @@ describe '/api/1/asset_audits' do
             key: 'some_key',
             message: 'My message',
             witnessed_by: 'jane',
-
             asset: {
               actions: {},
               uuid: labware.uuid
@@ -160,7 +142,6 @@ describe '/api/1/asset_audits' do
             metadata: {
               bed_1: 'plate_1'
             },
-
             asset: {
               actions: {},
               uuid: labware.uuid

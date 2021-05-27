@@ -6,8 +6,8 @@ class PacBioSequencingRequest < CustomerRequest # rubocop:todo Style/Documentati
   delegate :insert_size, :sequencing_type, to: :request_metadata
 
   has_metadata as: Request do
-    custom_attribute(:insert_size,      validator: true, required: true, integer: true, selection: true)
-    custom_attribute(:sequencing_type,  validator: true, required: true, selection: true)
+    custom_attribute(:insert_size, validator: true, required: true, integer: true, selection: true)
+    custom_attribute(:sequencing_type, validator: true, required: true, selection: true)
   end
   include Request::CustomerResponsibility
 
@@ -21,8 +21,7 @@ class PacBioSequencingRequest < CustomerRequest # rubocop:todo Style/Documentati
     PacBioSequencingRequest::RequestOptionsValidator
   end
 
-  def on_started
-  end
+  def on_started; end
 
   def source_tube
     asset&.labware

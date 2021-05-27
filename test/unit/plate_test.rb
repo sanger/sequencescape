@@ -3,12 +3,17 @@
 require 'test_helper'
 require './spec/lib/mock_parser'
 
-class PlateTest < ActiveSupport::TestCase
+class PlateTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   def create_plate_with_fluidigm(fluidigm_barcode)
     barcode = '1234567'
     purpose = create :plate_purpose
-    purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode}", size: 192, barcode: barcode,
-                                          fluidigm_barcode: fluidigm_barcode)
+    purpose.create!(
+      :do_not_create_wells,
+      name: "Cherrypicked #{barcode}",
+      size: 192,
+      barcode: barcode,
+      fluidigm_barcode: fluidigm_barcode
+    )
   end
 
   context '' do
@@ -117,9 +122,7 @@ class PlateTest < ActiveSupport::TestCase
   end
 
   context 'A Plate' do
-    setup do
-      @plate = Plate.create!
-    end
+    setup { @plate = Plate.create! }
 
     context 'without attachments' do
       should 'not report any qc_data' do
@@ -128,11 +131,7 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     context 'with attached qc data' do
-      setup do
-        File.open('test/data/manifests/mismatched_plate.csv') do |file|
-          @plate.add_qc_file file
-        end
-      end
+      setup { File.open('test/data/manifests/mismatched_plate.csv') { |file| @plate.add_qc_file file } }
 
       should 'return any qc data' do
         assert @plate.qc_files.count == 1

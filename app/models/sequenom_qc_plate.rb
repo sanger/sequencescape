@@ -24,11 +24,7 @@ class SequenomQcPlate < Plate
     return [] if parents.empty?
 
     source_barcodes.map do |plate_barcode|
-      if plate_barcode.blank?
-        nil
-      else
-        parents.detect { |plate| plate.barcode_number == plate_barcode }
-      end
+      plate_barcode.blank? ? nil : parents.detect { |plate| plate.barcode_number == plate_barcode }
     end
   end
 

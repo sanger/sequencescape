@@ -14,8 +14,13 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:pipeline_name) { pipeline.name }
   let(:max_plates) { 17 }
   let(:robot) do
-    create(:full_robot, barcode: '1111', number_of_sources: max_plates,
-                        number_of_destinations: 1, max_plates_value: max_plates)
+    create(
+      :full_robot,
+      barcode: '1111',
+      number_of_sources: max_plates,
+      number_of_destinations: 1,
+      max_plates_value: max_plates
+    )
   end
   let(:robot_barcode) { SBCF::SangerBarcode.new(prefix: 'RB', number: robot.barcode).machine_barcode }
   let(:submission) { create :submission }
@@ -37,16 +42,14 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:custom_destination_type) { nil }
   let(:custom_destination_type_name) { custom_destination_type.name || nil }
   let(:expected_pick_files_by_destination_plate) { nil }
-  let!(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2) }
+  let!(:plates) do
+    create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2)
+  end
 
-  before do
-    plate_template
-    plate_type
-    target_purpose
-    robot
-    custom_destination_type
-    control_plate
 
+  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def initialize_plates(plates)
     plates.each do |plate|
       plate.wells.each_with_index do |well, index|
         # create the requests for cherrypicking
@@ -67,6 +70,20 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
         )
       end
     end
+  end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  
+  
+  before do
+    plate_template
+    plate_type
+    target_purpose
+    robot
+    custom_destination_type
+    control_plate
+
+    initialize_plates(plates)
 
     allow(PlateBarcode).to receive(:create).and_return(_destination_plate_barcode, _destination_plate_barcode_2)
 
@@ -96,71 +113,172 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:layout_volume_option) { 'Pick by ng/µl' }
     let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
     let(:expected_plates_by_destination_plate) do
-      {
-        destination_plate_human_barcode => {
-          1 => { sources: [plates[0], plates[1], plates[2]] }
-        }
-      }
-    end
-    let(:expected_tecan_file) do
-      <<~TECAN
-        C;
-        C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
-        C;
-        A;BUFF;;96-TROUGH;1;;49.1
-        D;#{destination_plate_human_barcode};;Custom Type;1;;49.1
-        W;
-        A;BUFF;;96-TROUGH;2;;49.2
-        D;#{destination_plate_human_barcode};;Custom Type;2;;49.2
-        W;
-        A;BUFF;;96-TROUGH;3;;49.1
-        D;#{destination_plate_human_barcode};;Custom Type;3;;49.1
-        W;
-        A;BUFF;;96-TROUGH;4;;49.2
-        D;#{destination_plate_human_barcode};;Custom Type;4;;49.2
-        W;
-        A;BUFF;;96-TROUGH;5;;49.1
-        D;#{destination_plate_human_barcode};;Custom Type;5;;49.1
-        W;
-        A;BUFF;;96-TROUGH;6;;49.2
-        D;#{destination_plate_human_barcode};;Custom Type;6;;49.2
-        W;
-        C;
-        A;#{plates[0].human_barcode};;ABgene 0765;1;;15.9
-        D;#{destination_plate_human_barcode};;Custom Type;1;;15.9
-        W;
-        A;#{plates[0].human_barcode};;ABgene 0765;2;;15.8
-        D;#{destination_plate_human_barcode};;Custom Type;2;;15.8
-        W;
-        A;#{plates[1].human_barcode};;ABgene 0765;1;;15.9
-        D;#{destination_plate_human_barcode};;Custom Type;3;;15.9
-        W;
-        A;#{plates[1].human_barcode};;ABgene 0765;2;;15.8
-        D;#{destination_plate_human_barcode};;Custom Type;4;;15.8
-        W;
-        A;#{plates[2].human_barcode};;ABgene 0765;1;;15.9
-        D;#{destination_plate_human_barcode};;Custom Type;5;;15.9
-        W;
-        A;#{plates[2].human_barcode};;ABgene 0765;2;;15.8
-        D;#{destination_plate_human_barcode};;Custom Type;6;;15.8
-        W;
-        C;
-        C; SCRC1 = #{plates[0].human_barcode}
-        C; SCRC2 = #{plates[1].human_barcode}
-        C; SCRC3 = #{plates[2].human_barcode}
-        C;
-        C; DEST1 = #{destination_plate_human_barcode}
-      TECAN
+      { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
     let(:expected_pick_files_by_destination_plate) do
-      {
-        destination_plate_human_barcode => {
-          1 => expected_tecan_file
-        }
-      }
+      { destination_plate_human_barcode => { 1 => expected_tecan_file } }
     end
 
-    it_behaves_like 'a cherrypicking procedure'
+    context 'when robot is using 96-Trough buffer (Tecan v1)' do
+      let(:expected_tecan_file) do
+        <<~TECAN
+          C;
+          C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
+          C;
+          A;BUFF;;96-TROUGH;1;;49.1
+          D;#{destination_plate_human_barcode};;Custom Type;1;;49.1
+          W;
+          A;BUFF;;96-TROUGH;2;;49.2
+          D;#{destination_plate_human_barcode};;Custom Type;2;;49.2
+          W;
+          A;BUFF;;96-TROUGH;3;;49.1
+          D;#{destination_plate_human_barcode};;Custom Type;3;;49.1
+          W;
+          A;BUFF;;96-TROUGH;4;;49.2
+          D;#{destination_plate_human_barcode};;Custom Type;4;;49.2
+          W;
+          A;BUFF;;96-TROUGH;5;;49.1
+          D;#{destination_plate_human_barcode};;Custom Type;5;;49.1
+          W;
+          A;BUFF;;96-TROUGH;6;;49.2
+          D;#{destination_plate_human_barcode};;Custom Type;6;;49.2
+          W;
+          C;
+          A;#{plates[0].human_barcode};;ABgene 0765;1;;15.9
+          D;#{destination_plate_human_barcode};;Custom Type;1;;15.9
+          W;
+          A;#{plates[0].human_barcode};;ABgene 0765;2;;15.8
+          D;#{destination_plate_human_barcode};;Custom Type;2;;15.8
+          W;
+          A;#{plates[1].human_barcode};;ABgene 0765;1;;15.9
+          D;#{destination_plate_human_barcode};;Custom Type;3;;15.9
+          W;
+          A;#{plates[1].human_barcode};;ABgene 0765;2;;15.8
+          D;#{destination_plate_human_barcode};;Custom Type;4;;15.8
+          W;
+          A;#{plates[2].human_barcode};;ABgene 0765;1;;15.9
+          D;#{destination_plate_human_barcode};;Custom Type;5;;15.9
+          W;
+          A;#{plates[2].human_barcode};;ABgene 0765;2;;15.8
+          D;#{destination_plate_human_barcode};;Custom Type;6;;15.8
+          W;
+          C;
+          C; SCRC1 = #{plates[0].human_barcode}
+          C; SCRC2 = #{plates[1].human_barcode}
+          C; SCRC3 = #{plates[2].human_barcode}
+          C;
+          C; DEST1 = #{destination_plate_human_barcode}
+        TECAN
+      end
+
+      it_behaves_like 'a cherrypicking procedure'
+    end
+
+    context 'when robot is using 8-Trough buffer (Tecan v2)' do
+      let!(:plates) do
+        create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 4)
+      end
+
+      let(:robot) do
+        create(:full_robot_tecan_v2, barcode: '1111', number_of_sources: max_plates,
+                                     number_of_destinations: 1, max_plates_value: max_plates)
+      end
+
+      let(:source_plates_ordered_in_row_order_by_destination) do
+        # In Tecan we give priority to picking source plates by row order of the
+        # destination wells, so following A1, A2, ... B1, B2....
+        [plates[0], plates[2], plates[1]]
+      end
+
+      let(:expected_tecan_file) do
+        <<~TECAN
+          C;
+          C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
+          C;
+          A;BUFF Trough;;Trough 100ml;1;;49.1
+          D;#{destination_plate_human_barcode};;Custom Type;1;;49.1
+          W;
+          A;BUFF Trough;;Trough 100ml;2;;49.2
+          D;#{destination_plate_human_barcode};;Custom Type;2;;49.2
+          W;
+          A;BUFF Trough;;Trough 100ml;3;;49.3
+          D;#{destination_plate_human_barcode};;Custom Type;3;;49.3
+          W;
+          A;BUFF Trough;;Trough 100ml;4;;49.4
+          D;#{destination_plate_human_barcode};;Custom Type;4;;49.4
+          W;
+          A;BUFF Trough;;Trough 100ml;5;;49.1
+          D;#{destination_plate_human_barcode};;Custom Type;5;;49.1
+          W;
+          A;BUFF Trough;;Trough 100ml;6;;49.2
+          D;#{destination_plate_human_barcode};;Custom Type;6;;49.2
+          W;
+          A;BUFF Trough;;Trough 100ml;7;;49.3
+          D;#{destination_plate_human_barcode};;Custom Type;7;;49.3
+          W;
+          A;BUFF Trough;;Trough 100ml;8;;49.4
+          D;#{destination_plate_human_barcode};;Custom Type;8;;49.4
+          W;
+          A;BUFF Trough;;Trough 100ml;1;;49.1
+          D;#{destination_plate_human_barcode};;Custom Type;9;;49.1
+          W;
+          A;BUFF Trough;;Trough 100ml;2;;49.2
+          D;#{destination_plate_human_barcode};;Custom Type;10;;49.2
+          W;
+          A;BUFF Trough;;Trough 100ml;3;;49.3
+          D;#{destination_plate_human_barcode};;Custom Type;11;;49.3
+          W;
+          A;BUFF Trough;;Trough 100ml;4;;49.4
+          D;#{destination_plate_human_barcode};;Custom Type;12;;49.4
+          W;
+          C;
+          A;#{plates[0].human_barcode};;ABgene 0765;1;;15.9
+          D;#{destination_plate_human_barcode};;Custom Type;1;;15.9
+          W;
+          A;#{plates[0].human_barcode};;ABgene 0765;2;;15.8
+          D;#{destination_plate_human_barcode};;Custom Type;2;;15.8
+          W;
+          A;#{plates[0].human_barcode};;ABgene 0765;3;;15.7
+          D;#{destination_plate_human_barcode};;Custom Type;3;;15.7
+          W;
+          A;#{plates[0].human_barcode};;ABgene 0765;4;;15.6
+          D;#{destination_plate_human_barcode};;Custom Type;4;;15.6
+          W;
+          A;#{plates[1].human_barcode};;ABgene 0765;1;;15.9
+          D;#{destination_plate_human_barcode};;Custom Type;5;;15.9
+          W;
+          A;#{plates[1].human_barcode};;ABgene 0765;2;;15.8
+          D;#{destination_plate_human_barcode};;Custom Type;6;;15.8
+          W;
+          A;#{plates[1].human_barcode};;ABgene 0765;3;;15.7
+          D;#{destination_plate_human_barcode};;Custom Type;7;;15.7
+          W;
+          A;#{plates[1].human_barcode};;ABgene 0765;4;;15.6
+          D;#{destination_plate_human_barcode};;Custom Type;8;;15.6
+          W;
+          A;#{plates[2].human_barcode};;ABgene 0765;1;;15.9
+          D;#{destination_plate_human_barcode};;Custom Type;9;;15.9
+          W;
+          A;#{plates[2].human_barcode};;ABgene 0765;2;;15.8
+          D;#{destination_plate_human_barcode};;Custom Type;10;;15.8
+          W;
+          A;#{plates[2].human_barcode};;ABgene 0765;3;;15.7
+          D;#{destination_plate_human_barcode};;Custom Type;11;;15.7
+          W;
+          A;#{plates[2].human_barcode};;ABgene 0765;4;;15.6
+          D;#{destination_plate_human_barcode};;Custom Type;12;;15.6
+          W;
+          C;
+          C; SCRC1 = #{source_plates_ordered_in_row_order_by_destination[0].human_barcode}
+          C; SCRC2 = #{source_plates_ordered_in_row_order_by_destination[1].human_barcode}
+          C; SCRC3 = #{source_plates_ordered_in_row_order_by_destination[2].human_barcode}
+          C;
+          C; DEST1 = #{destination_plate_human_barcode}
+        TECAN
+      end
+
+      it_behaves_like 'a cherrypicking procedure'
+    end
   end
 
   describe 'where picking by ng for a tecan robot' do
@@ -168,14 +286,9 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:layout_volume_option) { 'Pick by ng' }
     let(:plate_type) { create :plate_type, name: 'ABgene_0800', maximum_volume: 800 }
     let(:expected_plates_by_destination_plate) do
-      {
-        destination_plate_human_barcode => {
-          1 => { sources: [plates[0], plates[1], plates[2]] }
-        }
-      }
+      { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
-    let(:expected_tecan_file) do
-      <<~TECAN
+    let(:expected_tecan_file) { <<~TECAN }
         C;
         C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100
         C;
@@ -204,13 +317,8 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
         C;
         C; DEST1 = #{destination_plate_human_barcode}
       TECAN
-    end
     let(:expected_pick_files_by_destination_plate) do
-      {
-        destination_plate_human_barcode => {
-          1 => expected_tecan_file
-        }
-      }
+      { destination_plate_human_barcode => { 1 => expected_tecan_file } }
     end
 
     it_behaves_like 'a cherrypicking procedure'
@@ -219,11 +327,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   describe 'where the number of plates does not exceed the max beds for the robot' do
     let(:layout_volume_option) { 'Pick by µl' }
     let(:expected_plates_by_destination_plate) do
-      {
-        destination_plate_human_barcode => {
-          1 => { sources: [plates[0], plates[1], plates[2]] }
-        }
-      }
+      { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
 
     it_behaves_like 'a cherrypicking procedure'
@@ -233,12 +337,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:layout_volume_option) { 'Pick by µl' }
     let(:max_plates) { 2 }
     let(:expected_plates_by_destination_plate) do
-      {
-        destination_plate_human_barcode => {
-          1 => { sources: [plates[0], plates[1]] },
-          2 => { sources: [plates[2]] }
-        }
-      }
+      { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1]] }, 2 => { sources: [plates[2]] } } }
     end
 
     it_behaves_like 'a cherrypicking procedure'
@@ -254,11 +353,17 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {
-          1 => { sources: [plates[0], plates[1]] },
-          2 => { sources: [plates[2], plates[3]] }
+          1 => {
+            sources: [plates[0], plates[1]]
+          },
+          2 => {
+            sources: [plates[2], plates[3]]
+          }
         },
         destination_plate_human_barcode_2 => {
-          1 => { sources: [plates[3]] }
+          1 => {
+            sources: [plates[3]]
+          }
         }
       }
     end
@@ -267,8 +372,8 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   end
 
   describe 'where there is a control plate and a single destination' do
-    let(:plate1) { create  :plate_with_untagged_wells, sample_count: 2 }
-    let(:plate2) { create  :plate_with_untagged_wells, sample_count: 2 }
+    let(:plate1) { create :plate_with_untagged_wells, sample_count: 2 }
+    let(:plate2) { create :plate_with_untagged_wells, sample_count: 2 }
     let(:control_plate) { create :control_plate, sample_count: 2 }
     let(:plates) { [plate1, plate2] }
     let(:max_plates) { 25 }
@@ -277,11 +382,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:layout_volume_option) { 'Pick by ng/µl' }
     let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
     let(:expected_plates_by_destination_plate) do
-      {
-        destination_plate_human_barcode => {
-          1 => { sources: [plates[0], plates[1]], control: control_plate }
-        }
-      }
+      { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1]], control: control_plate } } }
     end
 
     it_behaves_like 'a cherrypicking procedure'
@@ -292,8 +393,13 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
       let(:expected_plates_by_destination_plate) do
         {
           destination_plate_human_barcode => {
-            1 => { sources: [plate1], control: control_plate },
-            2 => { sources: [plate2] }
+            1 => {
+              sources: [plate1],
+              control: control_plate
+            },
+            2 => {
+              sources: [plate2]
+            }
           }
         }
       end
@@ -303,8 +409,8 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   end
 
   describe 'where there is a control plate and multiple destinations', js: true do
-    let(:plate1) { create  :plate_with_untagged_wells, sample_count: 50 }
-    let(:plate2) { create  :plate_with_untagged_wells, sample_count: 50 }
+    let(:plate1) { create :plate_with_untagged_wells, sample_count: 50 }
+    let(:plate2) { create :plate_with_untagged_wells, sample_count: 50 }
     let(:control_plate) { create :control_plate, sample_count: 2 }
 
     let(:plates) { [plate1, plate2] }
@@ -316,10 +422,16 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {
-          1 => { sources: [plates[0], plates[1]], control: control_plate }
+          1 => {
+            sources: [plates[0], plates[1]],
+            control: control_plate
+          }
         },
         destination_plate_human_barcode_2 => {
-          1 => { sources: [plates[1]], control: control_plate }
+          1 => {
+            sources: [plates[1]],
+            control: control_plate
+          }
         }
       }
     end
@@ -332,11 +444,19 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
       let(:expected_plates_by_destination_plate) do
         {
           destination_plate_human_barcode => {
-            1 => { sources: [plates[0]], control: control_plate },
-            2 => { sources: [plates[1]] }
+            1 => {
+              sources: [plates[0]],
+              control: control_plate
+            },
+            2 => {
+              sources: [plates[1]]
+            }
           },
           destination_plate_human_barcode_2 => {
-            1 => { sources: [plates[1]], control: control_plate }
+            1 => {
+              sources: [plates[1]],
+              control: control_plate
+            }
           }
         }
       end

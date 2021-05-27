@@ -12,14 +12,15 @@ module LabelPrinter
       end
 
       def create_label(plate)
-        { left_text: plate.human_barcode,
+        {
+          left_text: plate.human_barcode,
           right_text: "#{plate.prefix} #{plate.barcode_number}",
-          barcode: barcode(plate) }
+          barcode: barcode(plate)
+        }
       end
 
       def create_extra_label(plate)
-        { left_text: date_today,
-          right_text: plate.purpose.name }
+        { left_text: date_today, right_text: plate.purpose.name }
       end
     end
   end

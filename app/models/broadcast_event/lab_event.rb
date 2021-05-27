@@ -15,6 +15,7 @@ class BroadcastEvent::LabEvent < BroadcastEvent
   has_subject :flowcell, :flowcell
   has_subjects :sample, :samples
   has_subjects :study, :eventful_studies
+
   # We may not actually be a sequencing batch
   has_subjects(:sequencing_source_labware) { |seed, event| seed.eventful.sequencing? ? event.source_labware : [] }
   has_subjects(:library_source_labware) do |seed, event|

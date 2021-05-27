@@ -35,7 +35,7 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
     end
   end
 
-  def filter
+  def filter # rubocop:todo Metrics/AbcSize
     filters = params[:filter] || {}
 
     by_scope = BY_SCOPES.fetch(filters[:by], :scoped)
@@ -51,7 +51,8 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
     render partial: 'filtered_projects'
   end
 
-  def managed_update
+  # rubocop:todo Metrics/MethodLength
+  def managed_update # rubocop:todo Metrics/AbcSize
     @project = Project.find(params[:id])
     authorize! :managed_update, @project
 
@@ -67,9 +68,7 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
     pre_approved = @project.approved?
 
     if @project.update(params[:project])
-      if pre_approved == false && @project.approved == true
-        EventFactory.project_approved(@project, current_user)
-      end
+      EventFactory.project_approved(@project, current_user) if pre_approved == false && @project.approved == true
 
       flash[:notice] = 'Your project has been updated'
       redirect_to controller: 'admin/projects', action: 'update', id: @project.id
@@ -79,6 +78,8 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
       render action: :show, id: @project.id and return
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def sort
     @projects = Project.all.sort_by(&:name)

@@ -38,8 +38,9 @@ Given /^the reference genome for sample "([^"]+)" is "([^"]+)"$/ do |name, value
 end
 
 Given /^the sample "([^"]+)" belongs to the study "([^"]+)"$/ do |sample_name, study_name|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  study  = Study.find_by(name: study_name) or raise StandardError, "Cannot find study with name #{study_name.inspect}"
+  sample = Sample.find_by(name: sample_name) or
+    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
+  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study with name #{study_name.inspect}"
   study.samples << sample
 end
 
@@ -49,39 +50,46 @@ Then /^the reference genome for the sample "([^"]+)" should be "([^"]+)"$/ do |n
 end
 
 Then /^the XML root attribute "([^"]+)" sent to the accession service for sample "([^"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
+  sample = Sample.find_by(name: sample_name) or
+    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").map(&:to_s)[0])
 end
 
 Then /^the XML sent for sample "([^"]+)" validates with the schema "([^"]+)"$/ do |sample_name, schema|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
+  sample = Sample.find_by(name: sample_name) or
+    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
+
   # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
-  xsd = Nokogiri::XML::Schema(File.open(schema))
+  xsd = Nokogiri::XML.Schema(File.open(schema))
   result = xsd.validate(Nokogiri(xml))
   assert(result.length == 0, result.map(&:message).join(''))
 end
 
 Then /^the XML tag "([^"]+)" sent to the accession service for sample "([^"]+)" should be not present$/ do |xml_attr, sample_name|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
+  sample = Sample.find_by(name: sample_name) or
+    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").length == 0)
 end
 
 Then /^the XML tag "([^"]+)" sent to the accession service for sample "([^"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
+  sample = Sample.find_by(name: sample_name) or
+    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").text)
 end
 
 Given /^the metadata attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
+  sample = Sample.find_by(name: sample_name) or
+    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   sample.sample_metadata.update({ attr_name => (value unless value == 'empty') })
 end
 
 Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
+  sample = Sample.find_by(name: sample_name) or
+    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   sample.update({ attr_name => (value unless value == 'empty') })
 end
 
@@ -110,7 +118,8 @@ end
 
 Given /^the sample "([^"]+)" is in the (sample tube|well) "([^"]+)"$/ do |sample_name, _asset_type, asset_name|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  asset = Labware.find_by(name: asset_name).receptacle or raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
+  asset = Labware.find_by(name: asset_name).receptacle or
+    raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
   asset.aliquots.clear
   asset.aliquots.create!(sample: sample)
 end
@@ -122,14 +131,21 @@ Given(/^the sample "([^"]+)" has the accession number "([^"]+)"$/) do |name, val
 end
 
 When /^I (create|update) an? accession number for sample "([^"]+)"$/ do |action_type, sample_name|
-  step %{I am on the show page for sample "#{sample_name}"}
+  step "I am on the show page for sample \"#{sample_name}\""
   action_str = action_type == 'create' ? 'Generate Accession Number' : 'Update EBI Sample data'
-  step(%{I follow "#{action_str}"})
+  step("I follow \"#{action_str}\"")
 end
 
 Then /^I (should|should not) have (sent|received) the attribute "([^"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, _dest|
-  xml = type_action == 'sent' ? FakeAccessionService.instance.sent.last['SAMPLE'] : FakeAccessionService.instance.last_received
-  assert_equal (state_action == 'should'), Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).present?, "XML was: #{xml}"
+  xml =
+    if type_action == 'sent'
+      FakeAccessionService.instance.sent.last['SAMPLE']
+    else
+      FakeAccessionService.instance.last_received
+    end
+  assert_equal (state_action == 'should'),
+               Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).present?,
+               "XML was: #{xml}"
 end
 
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
@@ -140,13 +156,13 @@ end
 
 Given /^a sample named "([^"]+)" exists for accession/ do |sample_name|
   study_name = "study for sample #{sample_name}"
-  step(%{a study named "#{study_name}" exists for accession})
-  step(%{the sample named "#{sample_name}" exists with ID 200})
-  step(%{study "#{study_name}" has an accession number})
+  step("a study named \"#{study_name}\" exists for accession")
+  step("the sample named \"#{sample_name}\" exists with ID 200")
+  step("study \"#{study_name}\" has an accession number")
   step('I am the owner of sample "sample"')
-  step(%{the sample "#{sample_name}" belongs to the study "#{study_name}"})
-  step(%{the sample "#{sample_name}" has the Taxon ID "99999"})
-  step(%{the sample "#{sample_name}" has the common name "Human"})
+  step("the sample \"#{sample_name}\" belongs to the study \"#{study_name}\"")
+  step("the sample \"#{sample_name}\" has the Taxon ID \"99999\"")
+  step("the sample \"#{sample_name}\" has the common name \"Human\"")
 end
 
 Given /^the Sanger sample ID of the last sample is "([^"]+)"$/ do |id|
@@ -155,9 +171,7 @@ Given /^the Sanger sample ID of the last sample is "([^"]+)"$/ do |id|
 end
 
 Given /^all samples have a Sanger sample ID based on "([^"]+)"$/ do |id|
-  Sample.all.each_with_index do |sample, index|
-    sample.update!(sanger_sample_id: "#{id}#{'%02d' % (index + 1)}")
-  end
+  Sample.all.each_with_index { |sample, index| sample.update!(sanger_sample_id: "#{id}#{'%02d' % (index + 1)}") }
 end
 
 Given /^the supplier sample name of the last sample is "([^"]+)"$/ do |name|

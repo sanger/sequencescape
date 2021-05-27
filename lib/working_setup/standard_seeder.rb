@@ -8,7 +8,7 @@ module WorkingSetup
   #
   # @author Genome Research Ltd.
   #
-  class StandardSeeder
+  class StandardSeeder # rubocop:todo Metrics/ClassLength
     attr_reader :program
 
     def initialize(purposes = [])
@@ -36,38 +36,56 @@ module WorkingSetup
       Sample.all.each { |s| study_b.samples << s }
       create_purposes
 
-      Robot.create!(name: 'Picking robot', location: 'In a lab').tap do |robot|
-        robot.create_max_plates_property(value: 10)
-      end
+      Robot
+        .create!(name: 'Picking robot', location: 'In a lab')
+        .tap { |robot| robot.create_max_plates_property(value: 10) }
     end
 
-    def plates_of_purpose(name, number)
+    # rubocop:todo Metrics/MethodLength
+    def plates_of_purpose(name, number) # rubocop:todo Metrics/AbcSize
       purpose = Purpose.find_by!(name: name)
       number.times do
         purpose.create!.tap do |plate|
           plate.wells.each do |w|
-            w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{w.map.description}",
-                                                      studies: [study, study_b]))
+            w.aliquots.create!(
+              sample:
+                Sample.create!(name: "sample_#{plate.human_barcode}_#{w.map.description}", studies: [study, study_b])
+            )
           end
           puts "#{name}: #{plate.ean13_barcode}-#{plate.human_barcode}"
         end
       end
     end
 
-    def tag_plates(lot_type: 'IDT Tags', template: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)', size: 30)
+    # rubocop:enable Metrics/MethodLength
+
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
+    def tag_plates(
+      lot_type: 'IDT Tags',
+      template: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)',
+      size: 30
+    )
       puts 'Setting up tag plates...'
-      lot = LotType.find_by!(name: lot_type).lots.create!(
-        lot_number: Time.current.to_i.to_s,
-        template: TagLayoutTemplate.find_by!(name: template),
-        user: user,
-        received_at: Time.current
-      )
+      lot =
+        LotType
+          .find_by!(name: lot_type)
+          .lots
+          .create!(
+            lot_number: Time.current.to_i.to_s,
+            template: TagLayoutTemplate.find_by!(name: template),
+            user: user,
+            received_at: Time.current
+          )
       qcc = QcableCreator.create!(lot: lot, user: user, count: size)
       qcc.qcables.each do |qcable|
         qcable.update!(state: 'available')
         puts "Tag Plate: #{qcable.asset.ean13_barcode}"
       end
     end
+
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     def create_purposes
       @purposes.each { |options| plates_of_purpose(*options) }
@@ -83,15 +101,16 @@ module WorkingSetup
       existing = User.find_by(login: 'admin')
       return existing if existing
 
-      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A')
-          .tap(&:grant_administrator)
+      User
+        .create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A')
+        .tap(&:grant_administrator)
     end
 
     def faculty_sponsor
       @faculty_sponsor ||= UatActions::StaticRecords.faculty_sponsor
     end
 
-    def create_project(name)
+    def create_project(name) # rubocop:todo Metrics/MethodLength
       existing = Project.find_by(name: name)
       return existing if existing
 
@@ -102,11 +121,12 @@ module WorkingSetup
         project_metadata_attributes: {
           project_cost_code: '1111',
           project_funding_model: 'Internal'
-        }, &:activate!
+        },
+        &:activate!
       )
     end
 
-    def create_study(name)
+    def create_study(name) # rubocop:todo Metrics/MethodLength
       existing = Study.find_by(name: name)
       return existing if existing
 
@@ -129,9 +149,11 @@ module WorkingSetup
       end
     end
 
-    def sample_named(name, study)
+    def sample_named(name, study) # rubocop:todo Metrics/MethodLength
       {
-        'sample_tube_attributes' => { 'two_dimensional_barcode' => '' },
+        'sample_tube_attributes' => {
+          'two_dimensional_barcode' => ''
+        },
         'study' => study,
         'asset_group_name' => 'asset_group',
         'sample_attributes' => {
@@ -163,7 +185,8 @@ module WorkingSetup
             'treatment' => '',
             'geographical_region' => '',
             'sample_sra_hold' => 'Hold',
-            'rnai' => '', 'time_point' => '',
+            'rnai' => '',
+            'time_point' => '',
             'sample_description' => '',
             'age' => '',
             'developmental_stage' => '',

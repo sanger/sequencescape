@@ -9,7 +9,7 @@
 # via submission_id, either set explicitly, (eg Transfer::BetweenPlates#calculate_location_submissions)
 # or extracted from the pool_id attribute on well, which itself is populated as part of an
 # sql query. (See #with_pool_id on the well association in {Plate})
-class TransferRequest < ApplicationRecord
+class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include AASM
   include AASM::Extensions
@@ -21,6 +21,7 @@ class TransferRequest < ApplicationRecord
 
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
+
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
   # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, optional: false
@@ -29,7 +30,9 @@ class TransferRequest < ApplicationRecord
   has_one :source_labware, through: :asset, source: :labware
   has_many :associated_requests, through: :asset, source: :requests_as_source
   has_many :transfer_request_collection_transfer_requests, dependent: :destroy
-  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests, inverse_of: :transfer_requests
+  has_many :transfer_request_collections,
+           through: :transfer_request_collection_transfer_requests,
+           inverse_of: :transfer_requests
   has_many :target_aliquots, through: :target_asset, source: :aliquots
   has_many :target_aliquot_requests, through: :target_aliquots, source: :request
 
@@ -39,6 +42,7 @@ class TransferRequest < ApplicationRecord
   scope :for_request, ->(request) { where(asset_id: request.asset_id) }
   scope :include_submission, -> { includes(submission: :uuid_object) }
   scope :include_for_request_state_change, -> { includes(:target_aliquot_requests, associated_requests: :request_type) }
+
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
   validate :outer_request_candidates_length, on: :create
@@ -95,7 +99,7 @@ class TransferRequest < ApplicationRecord
 
     # Not all transfer quests will make this transition, but this way we push the
     # decision back up to the pipeline
-    event :qc     do
+    event :qc do
       transitions to: :qc_complete, from: [:passed]
     end
   end
@@ -135,7 +139,7 @@ class TransferRequest < ApplicationRecord
   end
 
   # A sibling request is a customer request out of the same asset and in the same submission
-  def sibling_requests
+  def sibling_requests # rubocop:todo Metrics/AbcSize
     if associated_requests.loaded?
       associated_requests.select { |r| r.submission_id == submission_id }
     elsif asset.requests.loaded?
@@ -182,24 +186,27 @@ class TransferRequest < ApplicationRecord
     # 2) We've got multiple aliquots from a single request, such as in Chromium
     # Failing silently at this point could result in aliquots being assigned to the wrong study
     # or the correct request information being missing downstream. (Which is then tricky to diagnose and repair)
-    asset.aliquots.reduce(true) do |valid, aliquot|
-      compatible = next_request_index[aliquot.id].present?
-      unless compatible
-        errors.add(:outer_request,
-                   "not found for aliquot #{aliquot.id} with previous request #{aliquot.request}")
+    asset
+      .aliquots
+      .reduce(true) do |valid, aliquot|
+        compatible = next_request_index[aliquot.id].present?
+        unless compatible
+          errors.add(:outer_request, "not found for aliquot #{aliquot.id} with previous request #{aliquot.request}")
+        end
+        valid && compatible
       end
-      valid && compatible
-    end
   end
 
   private
 
   def next_request_index
-    @next_request_index ||= asset.aliquots.each_with_object({}) do |aliquot, store|
-      store[aliquot.id] = outer_request_candidates.detect do |r|
-        aliquot.request&.next_requests_via_submission&.include?(r)
-      end
-    end
+    @next_request_index ||=
+      asset
+        .aliquots
+        .each_with_object({}) do |aliquot, store|
+          store[aliquot.id] =
+            outer_request_candidates.detect { |r| aliquot.request&.next_requests_via_submission&.include?(r) }
+        end
   end
 
   def outer_request_candidates
@@ -235,17 +242,11 @@ class TransferRequest < ApplicationRecord
   # where two plates were subject to separate PCR processes, before being
   # merged together again.
   def aliquots_for_transfer
-    if merge_equivalent_aliquots
-      duplicates_of_distinct_source_aliquots_only
-    else
-      duplicates_of_all_source_aliquots
-    end
+    merge_equivalent_aliquots ? duplicates_of_distinct_source_aliquots_only : duplicates_of_all_source_aliquots
   end
 
   def duplicates_of_all_source_aliquots
-    asset.aliquots.map do |aliquot|
-      aliquot.dup(aliquot_attributes(aliquot))
-    end
+    asset.aliquots.map { |aliquot| aliquot.dup(aliquot_attributes(aliquot)) }
   end
 
   def duplicates_of_distinct_source_aliquots_only

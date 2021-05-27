@@ -3,7 +3,16 @@
 require 'test_helper'
 
 class SampleManifestPlateTest < ActiveSupport::TestCase
-  attr_reader :only_first_label, :manifest, :plate_label, :plate1, :plate2, :plates, :study_abbreviation, :purpose, :barcode1, :label
+  attr_reader :only_first_label,
+              :manifest,
+              :plate_label,
+              :plate1,
+              :plate2,
+              :plates,
+              :study_abbreviation,
+              :purpose,
+              :barcode1,
+              :label
 
   context 'labels for plate sample manifest rapid_core' do
     setup do
@@ -22,12 +31,14 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
 
       options = { sample_manifest: manifest, only_first_label: false, purpose: @purpose }
       @plate_label = LabelPrinter::Label::SampleManifestPlate.new(options)
-      @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-                 bottom_left: (plate1.human_barcode).to_s,
-                 top_right: purpose.name,
-                 bottom_right: "#{study_abbreviation} #{barcode1}",
-                 top_far_right: nil,
-                 barcode: (plate1.machine_barcode).to_s }
+      @label = {
+        top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
+        bottom_left: (plate1.human_barcode).to_s,
+        top_right: purpose.name,
+        bottom_right: "#{study_abbreviation} #{barcode1}",
+        top_far_right: nil,
+        barcode: (plate1.machine_barcode).to_s
+      }
     end
 
     should 'have the right plates' do

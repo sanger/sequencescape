@@ -28,18 +28,19 @@ module Heron
       #
       module Recipients
         def self.included(klass)
-          klass.instance_eval do
-            validate :check_recipients, if: :recipients
-          end
+          klass.instance_eval { validate :check_recipients, if: :recipients }
         end
 
         def recipients
           return unless @params[recipients_key]
           return if errors.count.positive?
 
-          @recipients ||= params_for_recipient.keys.each_with_object({}) do |coordinate, memo|
-            memo[coordinate] = recipient_factory.new(params_for_recipient[coordinate])
-          end
+          @recipients ||=
+            params_for_recipient
+              .keys
+              .each_with_object({}) do |coordinate, memo|
+                memo[coordinate] = recipient_factory.new(params_for_recipient[coordinate])
+              end
         end
 
         def check_recipients
@@ -50,18 +51,19 @@ module Heron
 
             next if recipient.valid?
 
-            recipient.errors.each do |k, v|
-              errors.add("Recipient at #{coordinate} #{k}", v)
-            end
+            recipient.errors.each { |k, v| errors.add("Recipient at #{coordinate} #{k}", v) }
           end
         end
 
         def params_for_recipient
           return unless @params[recipients_key]
 
-          @params_for_recipient ||= @params[recipients_key].keys.each_with_object({}) do |location, obj|
-            obj[unpad_coordinate(location)] = @params.dig(recipients_key, location).except(:content)
-          end
+          @params_for_recipient ||=
+            @params[recipients_key]
+              .keys
+              .each_with_object({}) do |location, obj|
+                obj[unpad_coordinate(location)] = @params.dig(recipients_key, location).except(:content)
+              end
         end
       end
     end

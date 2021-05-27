@@ -10,7 +10,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   end
 
   let(:my_config) do
-    %(
+    '
     sample_metadata.gender              <=   gender
     sample_metadata.donor_id            <=   donor_id
     sample_metadata.supplier_name       <=   supplier_name
@@ -18,19 +18,15 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
     sample_metadata.sample_common_name  <=   common_name
     well_attribute.measured_volume      <=>  volume
     well_attribute.concentration        <=>  concentration
-    )
+    '
   end
 
   let(:json) do
     file = File.read(File.join('spec', 'data', 'aker', 'job.json'))
     JSON.parse(file).with_indifferent_access
   end
-  let(:params) do
-    json[:job][:materials].first
-  end
-  let(:container_params) do
-    json[:job][:container]
-  end
+  let(:params) { json[:job][:materials].first }
+  let(:container_params) { json[:job][:container] }
 
   let(:container) { Aker::Factories::Container.new(container_params.merge(address: params[:address])) }
   let(:study) { create :study }
@@ -68,9 +64,12 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   end
 
   it 'is not valid unless the container is valid' do
-    material = described_class.new(params,
-                                   Aker::Factories::Container.new(container_params.merge(address: params[:address]).except(:barcode)),
-                                   study)
+    material =
+      described_class.new(
+        params,
+        Aker::Factories::Container.new(container_params.merge(address: params[:address]).except(:barcode)),
+        study
+      )
     material.create
 
     expect(material).not_to be_valid

@@ -10,15 +10,13 @@ class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
     [:remove]
   end
 
-  def is_read_length_consistent_for_batch?(batch)
+  def is_read_length_consistent_for_batch?(batch) # rubocop:todo Metrics/AbcSize
     if (batch.requests.size == 0) || (batch.requests.first.request_metadata.nil?)
       # No requests selected or the pipeline doesn't contain metadata to check
       return true
     end
 
-    read_length_list = batch.requests.map do |request|
-      request.request_metadata.read_length
-    end.compact
+    read_length_list = batch.requests.filter_map { |request| request.request_metadata.read_length }
 
     # The pipeline doen't contain the read_length attribute
     return true if read_length_list.size == 0
@@ -32,7 +30,7 @@ class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
   # The guys in sequencing want to be able to re-run a request in another batch.  What we've agreed is that
   # the request will be failed and then an identical request will be resubmitted to their inbox.  The
   # "failed" request should not be charged for.
-  def detach_request_from_batch(batch, request)
+  def detach_request_from_batch(batch, request) # rubocop:todo Metrics/MethodLength
     request.fail!
 
     # Note that the request metadata also needs to be cloned for this to work.
@@ -40,8 +38,13 @@ class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
       request.dup.tap do |request_clone|
         rma = request.request_metadata.attributes.merge(request: request_clone)
         request_clone.update!(state: 'pending', target_asset_id: nil, request_metadata_attributes: rma)
-        request_clone.comments.create!(description: "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now}")
-        request.comments.create!(description: "The request #{request_clone.id} is an automatically created clone of this one")
+        request_clone.comments.create!(
+          description:
+            "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now}"
+        )
+        request.comments.create!(
+          description: "The request #{request_clone.id} is an automatically created clone of this one"
+        )
       end
     end
   end

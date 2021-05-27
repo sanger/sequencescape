@@ -42,8 +42,10 @@ class Role < ApplicationRecord
   #
   def authorizes?(check)
     case check
-    when nil then true
-    when Class then authorizable.is_a?(check)
+    when nil
+      true
+    when Class
+      authorizable.is_a?(check)
     else
       check == authorizable
     end

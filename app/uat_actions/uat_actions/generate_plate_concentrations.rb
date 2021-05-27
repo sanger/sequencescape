@@ -8,24 +8,31 @@ class UatActions::GeneratePlateConcentrations < UatActions
   form_field :plate_barcode,
              :text_field,
              label: 'Plate barcode',
-             help: 'Enter the barcode of the plate for which you want to add concentrations. '\
-                   'NB. only well containing aliquots will have concentrations set.'
+             help:
+               'Enter the barcode of the plate for which you want to add concentrations. ' \
+                 'NB. only well containing aliquots will have concentrations set.'
   form_field :concentration_units,
              :select,
              label: 'Concentration type (ng/µl or nM)',
              help: 'Select your choice of creating a concentration in ng/µl or as a molarity',
              select_options: %w[ng/ul nM],
-             options: { include_blank: 'Select a type...' }
+             options: {
+               include_blank: 'Select a type...'
+             }
   form_field :minimum_concentration,
              :number_field,
              label: 'Minimum concentration',
              help: 'The minimum concentration the wells should have.',
-             options: { minimum: 0 }
+             options: {
+               minimum: 0
+             }
   form_field :maximum_concentration,
              :number_field,
              label: 'Maximum concentration',
              help: 'The maximum concentration the wells should have.',
-             options: { minimum: 0 }
+             options: {
+               minimum: 0
+             }
 
   #
   # Returns a default copy of the UatAction which will be used to fill in the form, with values
@@ -86,7 +93,7 @@ class UatActions::GeneratePlateConcentrations < UatActions
     format('%.3f', value)
   end
 
-  def construct_qc_assay
+  def construct_qc_assay # rubocop:todo Metrics/MethodLength
     qc_assay = QcAssay.new
     num_wells_written = 0
 

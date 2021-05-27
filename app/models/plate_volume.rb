@@ -34,15 +34,22 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
     self.barcode = match[1]
   end
 
-  def update_well_volumes
+  def update_well_volumes # rubocop:todo Metrics/MethodLength
     qc_assay = QcAssay.new
     extract_well_volumes do |well_description, volume|
       short_well_description = Map.strip_description(well_description)
       well = location_to_well[short_well_description]
       next if well.blank?
 
-      QcResult.create(asset: well, key: 'volume', value: volume, units: 'ul', assay_type: ASSAY_TYPE,
-                      assay_version: ASSAY_VERSION, qc_assay: qc_assay)
+      QcResult.create(
+        asset: well,
+        key: 'volume',
+        value: volume,
+        units: 'ul',
+        assay_type: ASSAY_TYPE,
+        assay_version: ASSAY_VERSION,
+        qc_assay: qc_assay
+      )
     end
   end
 
@@ -64,9 +71,7 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
   class << self
     def process_all_volume_check_files(folder = configatron.plate_volume_files)
       all_plate_volume_file_names(folder).each do |filename|
-        File.open(File.join(folder, filename), 'r') do |file|
-          catch(:no_source_plate) { handle_volume(filename, file) }
-        end
+        File.open(File.join(folder, filename), 'r') { |file| catch(:no_source_plate) { handle_volume(filename, file) } }
       end
     end
 
@@ -76,9 +81,7 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
     private :all_plate_volume_file_names
 
     def handle_volume(filename, file)
-      ActiveRecord::Base.transaction do
-        find_for_filename(sanitized_filename(file)).call(filename, file)
-      end
+      ActiveRecord::Base.transaction { find_for_filename(sanitized_filename(file)).call(filename, file) }
     rescue => e
       Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
     end
@@ -91,10 +94,9 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
     end
 
     def find_for_filename(filename)
-      find_by(uploaded_file_name: filename) or
-        lambda { |filename, file|
-          PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
-        }
+      find_by(uploaded_file_name: filename) or lambda do |filename, file|
+        PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
+      end
     end
   end
 end

@@ -9,12 +9,15 @@ module Sanger
         def should_have_instance_methods(*methods)
           dt = described_type
           should "have instance methods #{methods.join(',')}" do
-            methods.each do |method|
-              assert dt.new.respond_to?(method), "Missing instance methods #{method} on #{dt}"
-            end
+            methods.each { |method| assert dt.new.respond_to?(method), "Missing instance methods #{method} on #{dt}" }
           end
         end
 
+        # rubocop:todo Metrics/PerceivedComplexity
+        # rubocop:todo Metrics/MethodLength
+        # rubocop:todo Metrics/AbcSize
+        # rubocop:todo Metrics/BlockLength
+        # rubocop:todo Metrics/CyclomaticComplexity
         def should_require_login(*actions)
           params = (actions.pop if actions.last.is_a?(Hash)) || {}
           actions << :index if actions.empty?
@@ -31,7 +34,7 @@ module Sanger
                     assert true
                   rescue ActionView::MissingTemplate
                     flunk "Missing template for #{action} action"
-                  rescue
+                  rescue StandardError
                     # The assumption below does not look right, as there also might be a problem with routes
                     # in case of nested resources, for example. Should we fix it?
                     # Assume any other problem is due to the controller not handling things
@@ -64,6 +67,11 @@ module Sanger
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/BlockLength
+        # rubocop:enable Metrics/CyclomaticComplexity
       end
     end
   end

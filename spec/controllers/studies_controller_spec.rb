@@ -11,9 +11,7 @@ RSpec.describe StudiesController do
 
   it_behaves_like 'it requires login'
 
-  setup do
-    session[:user] = user.id
-  end
+  setup { session[:user] = user.id }
 
   describe '#new' do
     setup { get :new }
@@ -31,21 +29,23 @@ RSpec.describe StudiesController do
 
     context 'with valid options' do
       let(:params) do
-        { 'study' => {
-          'name' => 'hello',
-          'reference_genome_id' => reference_genome.id,
-          'study_metadata_attributes' => {
-            'faculty_sponsor_id' => create(:faculty_sponsor, name: 'Me'),
-            'study_description' => 'some new study',
-            'program_id' => program.id,
-            'contains_human_dna' => 'No',
-            'contaminated_human_dna' => 'No',
-            'commercially_available' => 'No',
-            'data_release_study_type_id' => data_release_study_type,
-            'data_release_strategy' => 'open',
-            'study_type_id' => StudyType.find_or_create_by(name: 'Not specified').id
+        {
+          'study' => {
+            'name' => 'hello',
+            'reference_genome_id' => reference_genome.id,
+            'study_metadata_attributes' => {
+              'faculty_sponsor_id' => create(:faculty_sponsor, name: 'Me'),
+              'study_description' => 'some new study',
+              'program_id' => program.id,
+              'contains_human_dna' => 'No',
+              'contaminated_human_dna' => 'No',
+              'commercially_available' => 'No',
+              'data_release_study_type_id' => data_release_study_type,
+              'data_release_strategy' => 'open',
+              'study_type_id' => StudyType.find_or_create_by(name: 'Not specified').id
+            }
           }
-        } }
+        }
       end
 
       it 'works', :aggregate_failures do
@@ -64,11 +64,7 @@ RSpec.describe StudiesController do
         post :create, params: { 'study' => { 'name' => 'hello 2' } }
       end
 
-      let(:params) do
-        {
-          'study' => { 'name' => 'hello 2' }
-        }
-      end
+      let(:params) { { 'study' => { 'name' => 'hello 2' } } }
 
       specify(:aggregate_failures) do
         expect(subject).to render_template :new

@@ -28,9 +28,7 @@ module Heron
       #
       module Contents
         def self.included(klass)
-          klass.instance_eval do
-            validate :contents
-          end
+          klass.instance_eval { validate :contents }
         end
 
         def study_uuid
@@ -41,10 +39,13 @@ module Heron
           return if errors.count.positive?
           return unless params_for_contents
 
-          @contents ||= params_for_contents.keys.each_with_object({}) do |coordinate, memo|
-            samples_params = [params_for_contents[coordinate]].flatten.compact
-            memo[unpad_coordinate(coordinate)] = _factories_for_location(coordinate, samples_params)
-          end
+          @contents ||=
+            params_for_contents
+              .keys
+              .each_with_object({}) do |coordinate, memo|
+                samples_params = [params_for_contents[coordinate]].flatten.compact
+                memo[unpad_coordinate(coordinate)] = _factories_for_location(coordinate, samples_params)
+              end
         end
 
         # Creates aliquots for the samples that will be created from contents.
@@ -63,17 +64,18 @@ module Heron
         end
 
         def add_aliquots_into_location(container, factories)
-          factories.each do |factory|
-            factory.create_aliquot_at(container) if factory.valid?
-          end
+          factories.each { |factory| factory.create_aliquot_at(container) if factory.valid? }
         end
 
         def params_for_contents
           return unless @params[recipients_key]
 
-          @params_for_contents ||= @params[recipients_key].keys.each_with_object({}) do |location, obj|
-            obj[unpad_coordinate(location)] = @params.dig(recipients_key, location, :content)
-          end
+          @params_for_contents ||=
+            @params[recipients_key]
+              .keys
+              .each_with_object({}) do |location, obj|
+                obj[unpad_coordinate(location)] = @params.dig(recipients_key, location, :content)
+              end
         end
 
         def _factories_for_location(location, samples_params)

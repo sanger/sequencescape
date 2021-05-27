@@ -1,11 +1,10 @@
 module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documentation
-  def do_set_characterisation_descriptors_task(_task, params)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def do_set_characterisation_descriptors_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     @count = 0
-    @values = if params[:values].nil?
-                {}
-              else
-                params[:values]
-              end
+    @values = params[:values].nil? ? {} : params[:values]
 
     # Perform the necessary updates if we've passed batch creation
     updated = 0
@@ -13,25 +12,21 @@ module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documen
     @batch.requests.each do |request|
       event = LabEvent.new(batch_id: @batch.id, description: @task.name)
 
-      if params[:requests].present? && params[:requests][(request.id).to_s].present? && params[:requests][(request.id).to_s][:descriptors].present?
+      if params[:requests].present? && params[:requests][(request.id).to_s].present? &&
+           params[:requests][(request.id).to_s][:descriptors].present?
         # Descriptors: create description for event
 
         event.descriptors = params[:requests][(request.id).to_s][:descriptors]
         event.descriptor_fields = ordered_fields(params[:requests][(request.id).to_s][:fields])
-
       end
 
       event.save!
       current_user.lab_events << event
       request.lab_events << event
 
-      unless request.asset.try(:resource)
-        EventSender.send_request_update(request, 'update', "Passed: #{@task.name}")
-      end
+      EventSender.send_request_update(request, 'update', "Passed: #{@task.name}") unless request.asset.try(:resource)
 
-      if request.has_passed(@batch, @task) || request.failed?
-        updated += 1
-      end
+      updated += 1 if request.has_passed(@batch, @task) || request.failed?
     end
 
     # Did all the requests get updated?
@@ -48,7 +43,11 @@ module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documen
     false
   end
 
-  def render_set_characterisation_descriptors_task(_task, params)
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+
+  def render_set_characterisation_descriptors_task(_task, params) # rubocop:todo Metrics/AbcSize
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
@@ -57,10 +56,6 @@ module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documen
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
-    @values = if params[:values].nil?
-                {}
-              else
-                params[:values]
-              end
+    @values = params[:values].nil? ? {} : params[:values]
   end
 end

@@ -30,10 +30,7 @@ RSpec.describe RecordLoader::PlateTypeLoader, type: :model, loader: true do
 
     it 'sets attributes on the created records' do
       record_loader.create!
-      expect(PlateType.last).to have_attributes(
-        name: 'Unique attribute 2',
-        maximum_volume: 24
-      )
+      expect(PlateType.last).to have_attributes(name: 'Unique attribute 2', maximum_volume: 24)
     end
   end
 end

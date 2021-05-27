@@ -48,13 +48,11 @@ shared_examples 'a cherrypicking procedure' do
           fill_in('micro_litre_volume_required', with: '13')
         when 'Pick by ng/µl'
           fill_in('Volume Required', with: '65')
-          within('#pick_by_nano_grams_per_micro_litre') do
-            fill_in('Robot Minimum Picking Volume', with: '1.0')
-          end
+          within('#pick_by_nano_grams_per_micro_litre') { fill_in('Robot Minimum Picking Volume', with: '1.0') }
         when 'Pick by ng'
           within('#pick_by_nano_grams') do
             fill_in('Robot Minimum Picking Volume', with: '2.0')
-            fill_in('Quantity to pick', with: 10000)
+            fill_in('Quantity to pick', with: 10_000)
             fill_in('Minimum Volume', with: 20)
             fill_in('Maximum Volume', with: 150)
           end
@@ -72,9 +70,7 @@ shared_examples 'a cherrypicking procedure' do
         expect(page).to have_content('Batch released!')
         expected_input_count = plates.count
         expected_input_count += 1 if control_plate
-        within('#input_assets table tbody') do
-          expect(page).to have_selector('tr', count: expected_input_count)
-        end
+        within('#input_assets table tbody') { expect(page).to have_selector('tr', count: expected_input_count) }
         within('#output_assets table tbody') do
           expect(page).to have_selector('tr', count: expected_plates_by_destination_plate.size)
         end
@@ -90,15 +86,14 @@ shared_examples 'a cherrypicking procedure' do
       end
 
       step 'Print and check the worksheet for each output destination plate' do
+        # rubocop:todo Metrics/BlockLength
         expected_plates_by_destination_plate.each do |(destination_barcode, expected_plates)|
           step 'check the show plate screen' do
             visit batch_path(batch_id)
 
             within('#output_assets table tbody') do
               row = page.find('tr', text: /#{destination_barcode}/)
-              within(row) do
-                click_link 'Show plate'
-              end
+              within(row) { click_link 'Show plate' }
             end
 
             destination_plate = Plate.find_by_barcode(destination_barcode)
@@ -117,9 +112,7 @@ shared_examples 'a cherrypicking procedure' do
 
             within('#output_assets table tbody') do
               row = page.all('tr', text: /#{destination_barcode}/).first
-              within(row) do
-                click_link 'Print worksheet'
-              end
+              within(row) { click_link 'Print worksheet' }
             end
 
             expect(page).to have_content('This worksheet was generated')
@@ -133,15 +126,9 @@ shared_examples 'a cherrypicking procedure' do
                 end
 
                 control_plate = expected_plates[pick_number_index][:control]
-                if control_plate
-                  within('#control_plates') do
-                    expect(page).to have_content(control_plate.human_barcode)
-                  end
-                end
+                within('#control_plates') { expect(page).to have_content(control_plate.human_barcode) } if control_plate
 
-                within('#destination_plate') do
-                  expect(page).to have_content(destination_barcode)
-                end
+                within('#destination_plate') { expect(page).to have_content(destination_barcode) }
 
                 # check barcode
                 within("#batchbarcode_#{destination_barcode}-#{pick_number_index}") do
@@ -166,6 +153,7 @@ shared_examples 'a cherrypicking procedure' do
             end
           end
         end
+        # rubocop:enable Metrics/BlockLength
       end
     end
 
@@ -219,15 +207,14 @@ shared_examples 'a cherrypicking procedure' do
                   fill_in('CTRL 1', with: SBCF::SangerBarcode.new(prefix: 'BD', number: max_plates).machine_barcode)
                 end
               end
+
               # fill in robot bed barcode for destination
               fill_in('DEST 1', with: get_machine_barcode_for_bed('DEST1'))
             end
 
             step 'scan plate barcodes' do
               # source plate barcodes
-              current_source_plates.each do |plate|
-                fill_in(plate.human_barcode, with: plate.human_barcode)
-              end
+              current_source_plates.each { |plate| fill_in(plate.human_barcode, with: plate.human_barcode) }
 
               # control plate barcode
               fill_in(control_plate.human_barcode, with: control_plate.human_barcode) if control_plate
@@ -239,8 +226,7 @@ shared_examples 'a cherrypicking procedure' do
             step 'optionally set custom destination plate type' do
               # optionally fill in custom plate type for the destination
               if custom_destination_type
-                select(custom_destination_type_name,
-                       from: "plate_types[#{destination_barcode}]")
+                select(custom_destination_type_name, from: "plate_types[#{destination_barcode}]")
               end
             end
 
@@ -264,25 +250,32 @@ shared_examples 'a cherrypicking procedure' do
               # SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
               # DN1000001A,A1,ABgene 0765,15.85,DN20000001B,A1,ABgene 0800,15.85,49.15
               # DownloadHelpers.wait_for_download("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
-              generated_file = DownloadHelpers.downloaded_file(
-                "#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv", timeout: 10
-              )
+              generated_file =
+                DownloadHelpers.downloaded_file(
+                  "#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv",
+                  timeout: 10
+                )
               generated_lines = generated_file.lines
 
               expect(generated_lines).not_to be_empty
 
               # check generated lines match expected by calculation
-              plates_and_controls_barcodes = [
-                current_expected_plates[pick_number_index][:sources],
-                current_expected_plates[pick_number_index][:control]
-              ].flatten.compact.map(&:human_barcode)
+              plates_and_controls_barcodes =
+                [
+                  current_expected_plates[pick_number_index][:sources],
+                  current_expected_plates[pick_number_index][:control]
+                ].flatten.compact.map(&:human_barcode)
 
-              input_wells_requests_for_current_pick = current_destination_plate.wells.map(&:transfer_requests_as_target).select do |r|
-                # Assuming there is only one asset for the TransferRequest,
-                # As pooling is not supported in cherrypicking,
-                # ie. a well can only have one input sample
-                plates_and_controls_barcodes.include?(Labware.find(r.first.asset.labware_id).human_barcode)
-              end
+              input_wells_requests_for_current_pick =
+                current_destination_plate
+                  .wells
+                  .map(&:transfer_requests_as_target)
+                  .select do |r|
+                    # Assuming there is only one asset for the TransferRequest,
+                    # As pooling is not supported in cherrypicking,
+                    # ie. a well can only have one input sample
+                    plates_and_controls_barcodes.include?(Labware.find(r.first.asset.labware_id).human_barcode)
+                  end
               expected_num_lines = input_wells_requests_for_current_pick.count + NUM_HAMILTON_HEADER_LINES
               expect(generated_lines.length).to eq(expected_num_lines)
 
@@ -311,7 +304,7 @@ shared_examples 'a cherrypicking procedure' do
                   expect(generated_lines[index]).to eq(expected_line), "Error on line #{index} in #{expected_file}"
                 end
               end
-            when 'Tecan'
+            when 'Tecan', 'TecanV2'
               # for Robot::Generator::Tecan
               # Tecan files start with 2 lines of dynamic information for user and date, e.g.
               # C;
@@ -321,7 +314,7 @@ shared_examples 'a cherrypicking procedure' do
               # C;
 
               # then 3 rows for each buffer transfer into the destination, e.g.
-              # A;BUFF;;96-TROUGH;1;;49.1
+              # A;BUFF Trough;;Trough 100ml;1;;49.1
               # D;DN3U;;Custom Type;1;;49.1
               # W;
 
@@ -341,9 +334,11 @@ shared_examples 'a cherrypicking procedure' do
               # C; SCRC2 = DN2T
               # C;
               # C; DEST1 = DN3U
-              generated_file = DownloadHelpers.downloaded_file(
-                "#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl", timeout: 10
-              )
+              generated_file =
+                DownloadHelpers.downloaded_file(
+                  "#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.gwl",
+                  timeout: 10
+                )
               generated_lines = generated_file.lines
 
               # check count of controls present in destination file lines is correct
@@ -353,7 +348,9 @@ shared_examples 'a cherrypicking procedure' do
                 generated_lines.each do |line|
                   count_control_plate_entries += 1 if /#{control_plate.human_barcode}/.match?(line)
                 end
-                expect(count_control_plate_entries).to eq(control_plate.contained_samples.count + NUM_TECAN_EXTRA_BARCODE_LINES)
+                expect(count_control_plate_entries).to eq(
+                  control_plate.contained_samples.count + NUM_TECAN_EXTRA_BARCODE_LINES
+                )
               end
 
               # optionally if an expected file was supplied. compare it to the result
@@ -364,6 +361,7 @@ shared_examples 'a cherrypicking procedure' do
                 # fetch our expected file structure
                 expected_file = expected_pick_files_by_destination_plate[destination_barcode][pick_number_index]
                 expected_file_lines = expected_file.lines
+
                 # Shift off the comment lines
                 expected_file_lines.shift(NUM_TECAN_HEADER_LINES)
 

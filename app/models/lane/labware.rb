@@ -3,6 +3,7 @@
 # Temporary placeholder class until we introduce Flowcell proper
 class Lane::Labware < Labware
   include SingleReceptacleLabware
+
   # Not entirely sure this is correct, as really flowcells are the labware,
   # but we do rely on asset link to Lane. Currently aware of:
   # - Linking in {SpikedBuffer}, although this could be replaced with an actual transfer

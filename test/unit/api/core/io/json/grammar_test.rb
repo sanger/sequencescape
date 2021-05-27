@@ -10,9 +10,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
         @object, @stream = mock('Target object'), mock('Stream')
       end
 
-      teardown do
-        @target.call(@object, :options, @stream)
-      end
+      teardown { @target.call(@object, :options, @stream) }
 
       should 'not stream nil intermediate values' do
         @object.expects(:root).returns(nil)
@@ -41,10 +39,11 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       stream, nested_stream = mock('Stream'), mock('Nested Stream')
       stream.expects(:block).with(:attribute_name).yields(nested_stream)
 
-      children = ['Child 1', 'Child 2'].map do |name|
-        child = mock(name).tap { |child| child.expects(:call).with(:object, :options, nested_stream) }
-        [name, child]
-      end.to_h
+      children =
+        ['Child 1', 'Child 2'].map do |name|
+          child = mock(name).tap { |child| child.expects(:call).with(:object, :options, nested_stream) }
+          [name, child]
+        end.to_h
 
       target = Core::Io::Json::Grammar::Node.new(:attribute_name, children)
       target.call(:object, :options, stream)
@@ -58,7 +57,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
 
     context 'with object' do
       setup do
-        @object  = OpenStruct.new(created_at: 'now', updated_at: 'tomorrow')
+        @object = OpenStruct.new(created_at: 'now', updated_at: 'tomorrow')
         @handler = mock('Handler')
       end
 
@@ -70,10 +69,11 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
 
         options = { handled_by: @handler }
 
-        children = ['Child 1', 'Child 2'].map do |name|
-          child = mock(name).tap { |child| child.expects(:call).with(@object, options, nested_stream) }
-          [name, child]
-        end.to_h
+        children =
+          ['Child 1', 'Child 2'].map do |name|
+            child = mock(name).tap { |child| child.expects(:call).with(@object, options, nested_stream) }
+            [name, child]
+          end.to_h
         target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(json_root: :root_json), children)
         target.call(@object, options, stream)
       end

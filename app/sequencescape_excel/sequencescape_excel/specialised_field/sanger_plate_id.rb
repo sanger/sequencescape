@@ -15,14 +15,16 @@ module SequencescapeExcel
 
       validate :check_container
 
-      def update(attributes = {})
+      # rubocop:todo Metrics/PerceivedComplexity
+      # rubocop:todo Metrics/MethodLength
+      # rubocop:todo Metrics/AbcSize
+      def update(attributes = {}) # rubocop:todo Metrics/CyclomaticComplexity
         return unless valid? && attributes[:aliquot].present? && foreign_barcode_format.present?
 
         # checking if the plate this well belongs to already has this foreign barcode set in its list of barcodes.
         # or if it contains a foreign barcode with the same format, then update that existing one
-        foreign_barcode = attributes[:aliquot].receptacle.plate.barcodes.find do |item|
-          item[:format] == foreign_barcode_format.to_s
-        end
+        foreign_barcode =
+          attributes[:aliquot].receptacle.plate.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
         if foreign_barcode.present?
           if foreign_barcode.barcode != value
             foreign_barcode.update(barcode: value)
@@ -37,6 +39,10 @@ module SequencescapeExcel
           end
         end
       end
+
+      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/PerceivedComplexity
 
       private
 

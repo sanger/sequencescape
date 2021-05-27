@@ -12,8 +12,7 @@ class SessionsController < ApplicationController # rubocop:todo Style/Documentat
     redirect_to action: :login
   end
 
-  def settings
-  end
+  def settings; end
 
   def login
     return unless request.post?
@@ -23,9 +22,7 @@ class SessionsController < ApplicationController # rubocop:todo Style/Documentat
       flash[:notice] = 'Logged in successfully'
       redirect_back_or_default(controller: :studies)
     else
-      if params
-        flash.now[:error] = "Your log in details don't match our records. Please try again."
-      end
+      flash.now[:error] = "Your log in details don't match our records. Please try again." if params
     end
   end
 

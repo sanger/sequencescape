@@ -11,18 +11,14 @@ RSpec.describe SubmissionsController, type: :controller do
 
   context 'Submissions controller' do
     setup do
-      @user       = create :user
+      @user = create :user
       @controller = described_class.new
-      @request    = ActionController::TestRequest.create(@controller)
+      @request = ActionController::TestRequest.create(@controller)
 
       session[:user] = @user
 
-      @plate = build :plate, barcode: 123456
-      %w[
-        A1 A2 A3
-        B1 B2 B3
-        C1 C2 C3
-      ].each do |location|
+      @plate = build :plate, barcode: 123_456
+      %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
         well = build :well_with_sample_and_without_plate, map: Map.find_by(description: location)
         @plate.wells << well
       end
@@ -30,13 +26,16 @@ RSpec.describe SubmissionsController, type: :controller do
       @plate.save
       @study = create :study, name: 'A study'
       @project = create :project, name: 'A project'
-      submission_template_hash = { name: 'Cherrypicking for Pulldown',
-                                   submission_class_name: 'LinearSubmission',
-                                   product_catalogue: 'Generic',
-                                   submission_parameters: { info_differential: 5,
-                                                            asset_input_methods: ['select an asset group',
-                                                                                  'enter a list of sample names found on plates'],
-                                                            request_types: [request_type.key] } }
+      submission_template_hash = {
+        name: 'Cherrypicking for Pulldown',
+        submission_class_name: 'LinearSubmission',
+        product_catalogue: 'Generic',
+        submission_parameters: {
+          info_differential: 5,
+          asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
+          request_types: [request_type.key]
+        }
+      }
       @submission_template = SubmissionSerializer.construct!(submission_template_hash)
     end
 
@@ -57,25 +56,28 @@ RSpec.describe SubmissionsController, type: :controller do
       setup do
         @samples = samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
-        post(:create, params: {
-               submission: {
-                 is_a_sequencing_order: 'false',
-                 comments: '',
-                 template_id: @submission_template.id.to_s,
-                 order_params: {
-                   'read_length' => '37',
-                   'fragment_size_required_to' => '400',
-                   'bait_library_name' => 'Human all exon 50MB',
-                   'fragment_size_required_from' => '100',
-                   'library_type' => 'Agilent Pulldown'
-                 },
-                 asset_group_id: '',
-                 study_id: @study.id.to_s,
-                 sample_names_text: samples[1..4].join("\n"),
-                 plate_purpose_id: @plate.plate_purpose.id.to_s,
-                 project_name: 'A project'
-               }
-             })
+        post(
+          :create,
+          params: {
+            submission: {
+              is_a_sequencing_order: 'false',
+              comments: '',
+              template_id: @submission_template.id.to_s,
+              order_params: {
+                'read_length' => '37',
+                'fragment_size_required_to' => '400',
+                'bait_library_name' => 'Human all exon 50MB',
+                'fragment_size_required_from' => '100',
+                'library_type' => 'Agilent Pulldown'
+              },
+              asset_group_id: '',
+              study_id: @study.id.to_s,
+              sample_names_text: samples[1..4].join("\n"),
+              plate_purpose_id: @plate.plate_purpose.id.to_s,
+              project_name: 'A project'
+            }
+          }
+        )
       end
 
       it 'create the appropriate orders' do
@@ -87,24 +89,33 @@ RSpec.describe SubmissionsController, type: :controller do
           @new_plate = FactoryBot.create :plate, plate_purpose: @plate.purpose
           @well = create :well, map: Map.find_by(description: 'A1'), plate: @new_plate
           create(:aliquot, sample: Sample.find_by(name: @samples.first), receptacle: @well)
-          post(:create, params: { submission: {
-                 is_a_sequencing_order: 'false',
-                 comments: '',
-                 template_id: @submission_template.id.to_s,
-                 order_params: {
-                   'read_length' => '37', 'fragment_size_required_to' => '400',
-                   'bait_library_name' => 'Human all exon 50MB',
-                   'fragment_size_required_from' => '100', 'library_type' => 'Agilent Pulldown'
-                 },
-                 asset_group_id: '',
-                 study_id: @study.id.to_s,
-                 sample_names_text: @samples[0...4].join("\n"),
-                 plate_purpose_id: @plate.plate_purpose.id.to_s, project_name: 'A project'
-               } })
+          post(
+            :create,
+            params: {
+              submission: {
+                is_a_sequencing_order: 'false',
+                comments: '',
+                template_id: @submission_template.id.to_s,
+                order_params: {
+                  'read_length' => '37',
+                  'fragment_size_required_to' => '400',
+                  'bait_library_name' => 'Human all exon 50MB',
+                  'fragment_size_required_from' => '100',
+                  'library_type' => 'Agilent Pulldown'
+                },
+                asset_group_id: '',
+                study_id: @study.id.to_s,
+                sample_names_text: @samples[0...4].join("\n"),
+                plate_purpose_id: @plate.plate_purpose.id.to_s,
+                project_name: 'A project'
+              }
+            }
+          )
         end
 
         it 'find the latest version' do
           per_plate = Order.last.assets.group_by(&:plate)
+
           # Return an empty hash if we have no hits, makes the test failures clearer.
           per_plate.default = []
           assert_equal 1, per_plate[@new_plate].count
@@ -116,35 +127,36 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'by sample name and working dilution' do
       setup do
         @order_count = Order.count
-        @wd_plate = create :working_dilution_plate, barcode: 123457
-        %w[
-          A1 A2 A3
-          B1 B2 B3
-          C1 C2 C3
-        ].each do |location|
+        @wd_plate = create :working_dilution_plate, barcode: 123_457
+        %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
           well = create :empty_well, map: Map.find_by(description: location)
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
         samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
-        post(:create, params: { submission: {
-               is_a_sequencing_order: 'false',
-               comments: '',
-               template_id: @submission_template.id.to_s,
-               order_params: {
-                 'read_length' => '37',
-                 'fragment_size_required_to' => '400',
-                 'bait_library_name' => 'Human all exon 50MB',
-                 'fragment_size_required_from' => '100',
-                 'library_type' => 'Agilent Pulldown'
-               },
-               asset_group_id: '',
-               study_id: @study.id.to_s,
-               sample_names_text: samples[1..4].join("\n"),
-               plate_purpose_id: @wd_plate.plate_purpose.id.to_s,
-               project_name: 'A project'
-             } })
+        post(
+          :create,
+          params: {
+            submission: {
+              is_a_sequencing_order: 'false',
+              comments: '',
+              template_id: @submission_template.id.to_s,
+              order_params: {
+                'read_length' => '37',
+                'fragment_size_required_to' => '400',
+                'bait_library_name' => 'Human all exon 50MB',
+                'fragment_size_required_from' => '100',
+                'library_type' => 'Agilent Pulldown'
+              },
+              asset_group_id: '',
+              study_id: @study.id.to_s,
+              sample_names_text: samples[1..4].join("\n"),
+              plate_purpose_id: @wd_plate.plate_purpose.id.to_s,
+              project_name: 'A project'
+            }
+          }
+        )
       end
 
       it 'used the working dilution plate' do
@@ -181,9 +193,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'it allow submission by plate barcode and wells' do
-      setup do
-        post :create, params: plate_submission('DN123456P:A1,B3,C2')
-      end
+      setup { post :create, params: plate_submission('DN123456P:A1,B3,C2') }
 
       it 'create the appropriate orders' do
         assert_equal 3, Order.first.assets.count
@@ -191,9 +201,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'it allow submission by plate barcode and rows' do
-      setup do
-        post :create, params: plate_submission('DN123456P:B,C')
-      end
+      setup { post :create, params: plate_submission('DN123456P:B,C') }
 
       it 'create the appropriate orders' do
         assert_equal 6, Order.first.assets.count
@@ -201,9 +209,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'it allow submission by plate barcode and columns' do
-      setup do
-        post :create, params: plate_submission('DN123456P:1,2,3')
-      end
+      setup { post :create, params: plate_submission('DN123456P:1,2,3') }
 
       it 'create the appropriate orders' do
         assert_equal 9, Order.first.assets.count
@@ -214,10 +220,14 @@ RSpec.describe SubmissionsController, type: :controller do
       setup do
         @shared_template = 'shared_template'
         @sample = create :sample
-        @asset_a = create :sample_tube, sample:  @sample
-        @asset_b = create :sample_tube, sample:  @sample
+        @asset_a = create :sample_tube, sample: @sample
+        @asset_b = create :sample_tube, sample: @sample
         @secondary_submission = create :submission
-        @secondary_order = create :order, assets: [@asset_b.receptacle], template_name: @shared_template, submission: @secondary_submission
+        @secondary_order =
+          create :order,
+                 assets: [@asset_b.receptacle],
+                 template_name: @shared_template,
+                 submission: @secondary_submission
         @submission = create :submission
         @order = create :order, assets: [@asset_a.receptacle], template_name: @shared_template, submission: @submission
       end
@@ -238,7 +248,8 @@ RSpec.describe SubmissionsController, type: :controller do
         sample_manifest = create :tube_sample_manifest_with_samples
         @samples_names = sample_manifest.samples.map(&:name).join(', ')
         @submission = create :submission
-        @order = create :order, assets: sample_manifest.labware, template_name: @shared_template, submission: @submission
+        @order =
+          create :order, assets: sample_manifest.labware, template_name: @shared_template, submission: @submission
       end
 
       it 'warn the user about not ready samples' do
@@ -266,24 +277,26 @@ RSpec.describe SubmissionsController, type: :controller do
     end
   end
 
-  def plate_submission(text)
-    { submission: {
-      is_a_sequencing_order: 'false',
-      comments: '',
-      template_id: @submission_template.id.to_s,
-      order_params: {
-        'read_length' => '37',
-        'fragment_size_required_to' => '400',
-        'bait_library_name' => 'Human all exon 50MB',
-        'fragment_size_required_from' => '100',
-        'library_type' => 'Agilent Pulldown'
-      },
-      asset_group_id: '',
-      study_id: @study.id.to_s,
-      sample_names_text: '',
-      barcodes_wells_text: text,
-      plate_purpose_id: @plate.plate_purpose.id.to_s,
-      project_name: 'A project'
-    } }
+  def plate_submission(text) # rubocop:todo Metrics/MethodLength
+    {
+      submission: {
+        is_a_sequencing_order: 'false',
+        comments: '',
+        template_id: @submission_template.id.to_s,
+        order_params: {
+          'read_length' => '37',
+          'fragment_size_required_to' => '400',
+          'bait_library_name' => 'Human all exon 50MB',
+          'fragment_size_required_from' => '100',
+          'library_type' => 'Agilent Pulldown'
+        },
+        asset_group_id: '',
+        study_id: @study.id.to_s,
+        sample_names_text: '',
+        barcodes_wells_text: text,
+        plate_purpose_id: @plate.plate_purpose.id.to_s,
+        project_name: 'A project'
+      }
+    }
   end
 end

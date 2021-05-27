@@ -5,7 +5,9 @@ module SampleManifest::CoreBehaviour # rubocop:todo Style/Documentation
   module NoSpecializedValidation
     def validate_specialized_fields(*args); end
 
-    def specialized_fields(*_args); {}; end
+    def specialized_fields(*_args)
+      {}
+    end
   end
 
   module Shared # rubocop:todo Style/Documentation
@@ -63,16 +65,26 @@ module SampleManifest::CoreBehaviour # rubocop:todo Style/Documentation
 
   private
 
-  def behaviour_module
+  # rubocop:todo Metrics/MethodLength
+  def behaviour_module # rubocop:todo Metrics/CyclomaticComplexity
     case asset_type
-    when '1dtube'              then 'SampleTubeBehaviour'
-    when 'plate'               then 'PlateBehaviour'
-    when 'tube_rack'           then 'TubeRackBehaviour'
-    when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'
-    when 'library'             then 'LibraryTubeBehaviour'
-    when 'library_plate'       then 'LibraryPlateBehaviour'
-    when nil                   then 'UnspecifiedBehaviour'
-    else raise StandardError, "Unknown core behaviour (#{asset_type.inspect}) for sample manifest"
+    when '1dtube'
+      'SampleTubeBehaviour'
+    when 'plate'
+      'PlateBehaviour'
+    when 'tube_rack'
+      'TubeRackBehaviour'
+    when 'multiplexed_library'
+      'MultiplexedLibraryBehaviour'
+    when 'library'
+      'LibraryTubeBehaviour'
+    when 'library_plate'
+      'LibraryPlateBehaviour'
+    when nil
+      'UnspecifiedBehaviour'
+    else
+      raise StandardError, "Unknown core behaviour (#{asset_type.inspect}) for sample manifest"
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

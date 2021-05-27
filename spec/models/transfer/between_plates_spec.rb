@@ -12,7 +12,13 @@ describe Transfer::BetweenPlates do
       source: source,
       destination: destination,
       user: user,
-      transfers: { 'A1' => 'A1', 'B1' => 'B1', 'C1' => 'C1', 'D1' => 'D1', 'E1' => 'E1' }
+      transfers: {
+        'A1' => 'A1',
+        'B1' => 'B1',
+        'C1' => 'C1',
+        'D1' => 'D1',
+        'E1' => 'E1'
+      }
     )
   end
 

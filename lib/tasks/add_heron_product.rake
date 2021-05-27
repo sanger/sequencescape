@@ -15,11 +15,7 @@ namespace :product_heron do
 
       product = Product.create!(name: 'Heron')
 
-      ProductCriteria.create!(
-        product: product,
-        stage: 'stock',
-        configuration: ADDITIONAL_CRITERIA
-      )
+      ProductCriteria.create!(product: product, stage: 'stock', configuration: ADDITIONAL_CRITERIA)
     end
   end
 
@@ -27,9 +23,7 @@ namespace :product_heron do
     puts 'Adding storage location...'
 
     ActiveRecord::Base.transaction do
-      ADDITIONAL_CRITERIA = {
-        storage_location: {}
-      }.freeze
+      ADDITIONAL_CRITERIA = { storage_location: {} }.freeze
 
       product = Product.find_by!(name: 'Heron')
       existing_product_criteria = product.stock_criteria

@@ -8,21 +8,14 @@ Before('@api') do
 end
 
 # Ensure that the number of results displayed per page by the API is always 1.
-Before('@new-api') do
-  ::Core::Endpoint::BasicHandler::Paged.results_per_page = 1
-end
+Before('@new-api') { ::Core::Endpoint::BasicHandler::Paged.results_per_page = 1 }
 
 # Enables a replacement Sample endpoint for the object service tests, disabling it after
 class TestSampleEndpoint < ::Core::Endpoint::Base
-  model do
-    action(:create, to: :standard_create!)
-  end
+  model { action(:create, to: :standard_create!) }
 
   instance do
-    has_many(
-      :receptacles, json: 'receptacles', to: 'receptacles',
-                    include: %i[labware requests]
-    )
+    has_many(:receptacles, json: 'receptacles', to: 'receptacles', include: %i[labware requests])
 
     action(:update, to: :standard_update!)
   end
@@ -40,14 +33,18 @@ end
 module ::Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Documentation
   %i[object class].each do |name|
     line = __LINE__ + 1
-    module_eval("
+    module_eval(
+      "
       def endpoint_for_#{name}_with_object_service(target, *args, &block)
         return ::TestSampleEndpoint if ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api? and (target.is_a?(::Sample) or target == ::Sample)
         endpoint_for_#{name}_without_object_service(target, *args, &block)
       end
       alias_method(:endpoint_for_#{name}_without_object_service, :endpoint_for_#{name})
       alias_method(:endpoint_for_#{name}, :endpoint_for_#{name}_with_object_service)
-    ", __FILE__, line)
+    ",
+      __FILE__,
+      line
+    )
   end
 
   def self.testing_api?
@@ -59,9 +56,5 @@ module ::Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Docum
   end
 end
 
-Before('@object_service') do
-  ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api = true
-end
-After('@object_service') do
-  ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api = false
-end
+Before('@object_service') { ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api = true }
+After('@object_service') { ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api = false }

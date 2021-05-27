@@ -9,15 +9,12 @@ class Io::Aliquot < Core::Io::Base
     {
       tag: :tag_group,
       tag2: :tag_group,
-      sample: [
-        :study_reference_genome,
-        :uuid_object,
-        { sample_metadata: :reference_genome }
-      ]
+      sample: [:study_reference_genome, :uuid_object, { sample_metadata: :reference_genome }]
     }
   ].freeze
 
-  define_attribute_and_json_mapping("
+  define_attribute_and_json_mapping(
+    '
                 sample  => sample
 
               tag.name  => tag.name
@@ -36,5 +33,6 @@ class Io::Aliquot < Core::Io::Base
         insert_size.to  => insert_size.to
 
              suboptimal => suboptimal
-  ")
+  '
+  )
 end

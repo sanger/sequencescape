@@ -28,6 +28,7 @@ RSpec.describe Lane do
     # request = create :sequencing_request, target_asset: lane
     batch = create :sequencing_batch
     batch.requests << request
+
     # as requests_as_targets is a scope, not the above instance of batch receive the message
     expect(Batch.count).to eq 1
     expect_any_instance_of(Batch).to receive(:rebroadcast)

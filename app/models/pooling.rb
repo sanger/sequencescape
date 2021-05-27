@@ -2,7 +2,7 @@
 
 # Used by {PoolingsController} to take multiple scanned {Tube} barcodes containing
 # one or more {Aliquot aliquots} and use them to generate a new {MultiplexedLibraryTube}
-class Pooling
+class Pooling # rubocop:todo Metrics/ClassLength
   include ActiveModel::Model
 
   attr_writer :barcodes, :source_assets
@@ -40,9 +40,7 @@ class Pooling
   end
 
   def each_transfer
-    source_assets.each do |source_asset|
-      yield source_asset, @stock_mx_tube || @standard_mx_tube
-    end
+    source_assets.each { |source_asset| yield source_asset, @stock_mx_tube || @standard_mx_tube }
     return unless stock_mx_tube_required?
 
     yield @stock_mx_tube, @standard_mx_tube
@@ -69,9 +67,13 @@ class Pooling
   end
 
   def print_job
-    @print_job ||= LabelPrinter::PrintJob.new(barcode_printer,
-                                              LabelPrinter::Label::MultiplexedTube,
-                                              assets: target_assets, count: count)
+    @print_job ||=
+      LabelPrinter::PrintJob.new(
+        barcode_printer,
+        LabelPrinter::Label::MultiplexedTube,
+        assets: target_assets,
+        count: count
+      )
   end
 
   def message
@@ -100,9 +102,8 @@ class Pooling
   # This allows ANY asset barcode to match, either via human or machine readable formats
   # =~ is a fuzzy matcher
   def assets_not_in_sqsc
-    @assets_not_in_sqsc ||= barcodes.reject do |barcode|
-      found_barcodes.detect { |found_barcode| found_barcode =~ barcode }
-    end
+    @assets_not_in_sqsc ||=
+      barcodes.reject { |barcode| found_barcodes.detect { |found_barcode| found_barcode =~ barcode } }
   end
 
   def found_barcodes
@@ -111,31 +112,26 @@ class Pooling
 
   def all_source_assets_are_in_sqsc
     if assets_not_in_sqsc.present?
-      errors.add(:source_assets,
-                 "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in Sequencescape")
+      errors.add(:source_assets, "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in Sequencescape")
     end
   end
 
   def expected_numbers_found
     if source_assets.length != barcodes.length
-      errors.add(:source_assets,
-                 "found #{source_assets.length} assets, but #{barcodes.length} barcodes were scanned.")
+      errors.add(:source_assets, "found #{source_assets.length} assets, but #{barcodes.length} barcodes were scanned.")
     end
   end
 
   def source_assets_can_be_pooled
     assets_with_no_aliquot = []
-    source_assets.each do |asset|
-      assets_with_no_aliquot << asset.machine_barcode if asset.aliquots.empty?
-    end
+    source_assets.each { |asset| assets_with_no_aliquot << asset.machine_barcode if asset.aliquots.empty? }
     if assets_with_no_aliquot.present?
-      errors.add(:source_assets,
-                 "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots")
+      errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots")
     end
     errors.add(:tags_combinations, 'are not compatible and result in a tag clash') if tag_clash?
   end
 
-  def execute_print_job
+  def execute_print_job # rubocop:todo Metrics/AbcSize
     return unless print_job_required?
 
     if print_job.execute

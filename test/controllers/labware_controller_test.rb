@@ -5,7 +5,7 @@ require 'test_helper'
 class LabwareControllerTest < ActionController::TestCase
   setup do
     @controller = LabwareController.new
-    @request    = ActionController::TestRequest.create(@controller)
+    @request = ActionController::TestRequest.create(@controller)
     @user = create :admin, api_key: 'abc'
     session[:user] = @user.id
   end
@@ -30,8 +30,14 @@ class LabwareControllerTest < ActionController::TestCase
     should '#print_labels should send print request' do
       asset = create :sample_tube
       RestClient.expects(:post)
-      post :print_labels, params: { printables: { asset.id.to_s => 'true' }, printer: barcode_printer.name,
-                                    id: asset.id.to_s }
+      post :print_labels,
+           params: {
+             printables: {
+               asset.id.to_s => 'true'
+             },
+             printer: barcode_printer.name,
+             id: asset.id.to_s
+           }
     end
   end
 end

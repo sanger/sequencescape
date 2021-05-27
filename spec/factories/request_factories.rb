@@ -14,16 +14,12 @@
 #   request to be valid.
 FactoryBot.define do
   factory :multiplexed_library_creation_request, parent: :request do
-    sti_type      { 'MultiplexedLibraryCreationRequest' }
-    asset         { |asset| asset.association(:sample_tube)  }
-    target_asset  { |asset| asset.association(:library_tube) }
+    sti_type { 'MultiplexedLibraryCreationRequest' }
+    asset { |asset| asset.association(:sample_tube) }
+    target_asset { |asset| asset.association(:library_tube) }
     association(:request_type, factory: :multiplexed_library_creation_request_type)
     request_metadata_attributes do
-      {
-        fragment_size_required_from: 150,
-        fragment_size_required_to: 400,
-        library_type: 'Standard'
-      }
+      { fragment_size_required_from: 150, fragment_size_required_to: 400, library_type: 'Standard' }
     end
   end
 
@@ -44,7 +40,8 @@ FactoryBot.define do
       # This is all a bit 'clever' and should be simplified
       # We could use the request class is removing it completely is tricky
       metadata_factory = :"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}"
-      request.request_metadata_attributes = attributes_for(metadata_factory) if request.request_metadata.new_record? && FactoryBot.factories.registered?(metadata_factory)
+      request.request_metadata_attributes = attributes_for(metadata_factory) if request.request_metadata.new_record? &&
+        FactoryBot.factories.registered?(metadata_factory)
       request.sti_type = request.request_type.request_class_name
     end
 
@@ -70,9 +67,7 @@ FactoryBot.define do
     end
 
     factory(:complete_sequencing_request) do
-      transient do
-        event_descriptors { { 'Chip Barcode' => 'fcb' } }
-      end
+      transient { event_descriptors { { 'Chip Barcode' => 'fcb' } } }
       association(:asset, factory: :library_tube)
       association(:target_asset, factory: :lane)
 
@@ -87,9 +82,7 @@ FactoryBot.define do
     association(:request_type, factory: :library_creation_request_type)
 
     request_metadata_attributes do
-      { fragment_size_required_from: 100,
-        fragment_size_required_to: 200,
-        library_type: 'Standard' }
+      { fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: 'Standard' }
     end
   end
 
@@ -139,16 +132,12 @@ FactoryBot.define do
   end
 
   factory :cherrypick_for_fluidigm_request do
-    transient do
-      target_purpose { create :plate_purpose }
-    end
+    transient { target_purpose { create :plate_purpose } }
     association :asset, factory: :well
     association :target_asset, factory: :well
     association(:request_type, factory: :cherrypick_request_type)
     request_purpose { :standard }
-    request_metadata_attributes do
-      { target_purpose: target_purpose }
-    end
+    request_metadata_attributes { { target_purpose: target_purpose } }
 
     factory :final_cherrypick_for_fluidigm_request do
       association(:request_type, factory: :request_type, key: 'pick_to_fluidigm')
@@ -156,9 +145,7 @@ FactoryBot.define do
   end
 
   factory :request_without_assets, parent: :request_base do
-    transient do
-      user_login { 'abc123' }
-    end
+    transient { user_login { 'abc123' } }
     project
     state { 'pending' }
     study
@@ -173,14 +160,15 @@ FactoryBot.define do
     factory :request_with_submission do
       after(:build) do |request|
         unless request.submission
-          request.submission = FactoryHelp.submission(
-            study: request.initial_study,
-            project: request.initial_project,
-            request_types: [request.request_type.try(:id)].compact.map(&:to_s),
-            user: request.user,
-            assets: [request.asset].compact,
-            request_options: request.request_metadata.attributes
-          )
+          request.submission =
+            FactoryHelp.submission(
+              study: request.initial_study,
+              project: request.initial_project,
+              request_types: [request.request_type.try(:id)].compact.map(&:to_s),
+              user: request.user,
+              assets: [request.asset].compact,
+              request_options: request.request_metadata.attributes
+            )
         end
       end
     end
@@ -188,20 +176,20 @@ FactoryBot.define do
 
   factory :request_with_sequencing_request_type, parent: :request_without_assets do
     # the sample should be setup correctly and the assets should be valid
-    asset            { |asset|    asset.association(:library_tube) }
+    asset { |asset| asset.association(:library_tube) }
     request_metadata { |metadata| metadata.association(:request_metadata_for_standard_sequencing) }
-    request_type     { |rt|       rt.association(:sequencing_request_type) }
+    request_type { |rt| rt.association(:sequencing_request_type) }
   end
 
   factory :well_request, parent: :request_without_assets do
     # the sample should be setup correctly and the assets should be valid
-    request_type { |rt|    rt.association(:well_request_type) }
-    asset        { |asset| asset.association(:well) }
+    request_type { |rt| rt.association(:well_request_type) }
+    asset { |asset| asset.association(:well) }
     target_asset { |asset| asset.association(:well) }
   end
 
   factory :request_suitable_for_starting, parent: :request_without_assets do
-    asset        { |asset| asset.association(:sample_tube)        }
+    asset { |asset| asset.association(:sample_tube) }
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
@@ -212,8 +200,8 @@ FactoryBot.define do
   end
 
   factory :lib_pcr_xp_request, parent: :request_without_assets do
-    request_type { |rt|    rt.association(:lib_pcr_xp_request_type) }
-    asset        { |asset| asset.association(:well) }
+    request_type { |rt| rt.association(:lib_pcr_xp_request_type) }
+    asset { |asset| asset.association(:well) }
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
@@ -234,18 +222,21 @@ FactoryBot.define do
       next if request.request_type.nil?
 
       if request.request_metadata.new_record?
-        request.request_metadata = build(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/,
-                                                                                                          '_')}")
+        request.request_metadata =
+          build(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}")
       end
       request.sti_type = request.request_type.request_class_name
     end
   end
 
-  factory(:request_library_creation, class: 'Request::LibraryCreation',
-                                     aliases: [:library_creation_request_for_testing_sequencing_requests]) do
+  factory(
+    :request_library_creation,
+    class: 'Request::LibraryCreation',
+    aliases: [:library_creation_request_for_testing_sequencing_requests]
+  ) do
     association(:request_type, factory: :library_creation_request_type)
     request_purpose { :standard }
-    asset        { |target| target.association(:well_with_sample_and_plate) }
+    asset { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_metadata_attributes { { fragment_size_required_from: 300, fragment_size_required_to: 500 } }
   end
@@ -258,18 +249,18 @@ FactoryBot.define do
   end
 
   factory :pac_bio_sample_prep_request do |_r|
-    target_asset    { |ta| ta.association(:pac_bio_library_tube) }
-    asset           { |a|   a.association(:well) }
-    submission      { |s|   s.association(:submission) }
+    target_asset { |ta| ta.association(:pac_bio_library_tube) }
+    asset { |a| a.association(:well) }
+    submission { |s| s.association(:submission) }
     association(:request_type, factory: :pac_bio_sample_prep_request_type)
     request_purpose { :standard }
   end
 
   factory :pac_bio_sequencing_request do
-    target_asset    { |ta| ta.association(:well) }
-    asset           { |a|   a.association(:pac_bio_library_tube) }
-    submission      { |s|   s.association(:submission) }
-    request_type    { |s| s.association(:pac_bio_sequencing_request_type) }
+    target_asset { |ta| ta.association(:well) }
+    asset { |a| a.association(:pac_bio_library_tube) }
+    submission { |s| s.association(:submission) }
+    request_type { |s| s.association(:pac_bio_sequencing_request_type) }
     request_purpose { :standard }
   end
 end

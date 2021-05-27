@@ -30,9 +30,7 @@ class MessengerCreator < ApplicationRecord
   validate :template_exists?
 
   def create!(base)
-    finder.new(base).each_target do |target|
-      Messenger.create!(target: target, root: root, template: template)
-    end
+    finder.new(base).each_target { |target| Messenger.create!(target: target, root: root, template: template) }
   end
 
   private

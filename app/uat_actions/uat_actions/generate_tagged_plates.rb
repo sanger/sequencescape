@@ -7,37 +7,45 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
   EXCLUDED_WALKING = ['wells in pools', 'manual by pool'].freeze
 
   self.title = 'Generate Tagged Plates'
+
   # The description displays on the list of UAT actions to provide additional information
-  self.description = 'Generates a plate of tagged samples. For plates of tags for use in Limber see "Generate Tag plates".'
+  self.description =
+    'Generates a plate of tagged samples. For plates of tags for use in Limber see "Generate Tag plates".'
 
   # @see UatActions::GeneratePlates for other fields
   form_field :tag_group_name,
              :select,
              label: 'i7 (tag) Tag group',
-             help: 'Select the tag group to use for the i7 tag. '\
-                   'This tag is usually set both for single and dual '\
-                   'indexing.',
+             help:
+               'Select the tag group to use for the i7 tag. ' \
+                 'This tag is usually set both for single and dual ' \
+                 'indexing.',
              select_options: -> { TagGroup.visible.alphabetical.pluck(:name) }
   form_field :tag2_group_name,
              :select,
              label: 'i5 (tag2) Tag group',
-             help: 'Select the tag group to use for the i7 tag. '\
-                   'Set to \'Untagged\' for single indexed samples.',
+             help:
+               'Select the tag group to use for the i7 tag. ' \
+                 'Set to \'Untagged\' for single indexed samples.',
              select_options: -> { TagGroup.visible.alphabetical.pluck(:name) },
-             options: { include_blank: 'Untagged' }
+             options: {
+               include_blank: 'Untagged'
+             }
   form_field :direction,
              :select,
              label: 'Tag direction',
-             help: 'The order in which tags will be laid out on the plate. '\
-                   'Most commonly \'column\'.',
+             help:
+               'The order in which tags will be laid out on the plate. ' \
+                 'Most commonly \'column\'.',
              select_options: -> { TagLayout::DIRECTIONS.keys }
   form_field :walking_by,
              :select,
              label: 'Tag layout pattern',
-             help: 'Select the algorithm used to layout tags. The most common '\
-                   'are: \'wells of plate\' which uses a fixed tag layout '\
-                   'across the plate. \'manual by plate\' which selects tags '\
-                   'for each occupied well in turn.',
+             help:
+               'Select the algorithm used to layout tags. The most common ' \
+                 'are: \'wells of plate\' which uses a fixed tag layout ' \
+                 'across the plate. \'manual by plate\' which selects tags ' \
+                 'for each occupied well in turn.',
              # NOTE: We filter out the 'by pool' options here as they are
              # driven by submission information
              select_options: -> { TagLayout::WALKING_ALGORITHMS.keys - EXCLUDED_WALKING }

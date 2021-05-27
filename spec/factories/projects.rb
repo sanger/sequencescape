@@ -2,10 +2,10 @@
 
 FactoryBot.define do
   factory :project do
-    name                { generate :project_name }
-    enforce_quotas      { false }
-    approved            { true }
-    state               { 'active' }
+    name { generate :project_name }
+    enforce_quotas { false }
+    approved { true }
+    state { 'active' }
     project_metadata
 
     factory :project_with_order do

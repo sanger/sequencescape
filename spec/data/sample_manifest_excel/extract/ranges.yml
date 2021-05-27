@@ -21,8 +21,8 @@ dna_source:
     - Tissue
 yes_no:
   options:
-    - 'Yes'
-    - 'No'
+    - "Yes"
+    - "No"
 purification_method:
   options:
     - Glassmilk/Qiagen
@@ -40,8 +40,8 @@ concentration_determined_by:
 dna_storage_conditions:
   options:
     - +4C
-    - '-20C'
-    - '-80C'
+    - "-20C"
+    - "-80C"
 library_type:
   identifier: :name
   scope: :alphabetical

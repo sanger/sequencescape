@@ -23,6 +23,7 @@ class ProductTest < ActiveSupport::TestCase
 
     should 'not be destroyable' do
       @product_a = create :product
+
       # ActiveRecord::RecordNotDestroyed is the Rails4 exception for this
       # Added here as Rails 2 is a bit useless with appropriate exceptions
       assert_raise(ActiveRecord::RecordNotDestroyed) { @product_a.destroy! }

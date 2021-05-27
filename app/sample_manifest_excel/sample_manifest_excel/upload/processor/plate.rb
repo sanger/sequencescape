@@ -19,7 +19,10 @@ module SampleManifestExcel
         end
 
         # Return the row of the first encountered barcode mismatch
-        def duplicate_barcodes
+        # rubocop:todo Metrics/PerceivedComplexity
+        # rubocop:todo Metrics/MethodLength
+        # rubocop:todo Metrics/AbcSize
+        def duplicate_barcodes # rubocop:todo Metrics/CyclomaticComplexity
           return nil, nil unless upload.respond_to?('rows')
 
           unique_bcs = {}
@@ -41,6 +44,7 @@ module SampleManifestExcel
             else
               unique_bcs[plate_barcode] = plate_id_for_sample
             end
+
             # Check that a plate has only one barcode
             if unique_plates.key?(plate_id_for_sample)
               err_msg = 'Plate has multiple barcodes.'
@@ -51,6 +55,10 @@ module SampleManifestExcel
           end
           [nil, nil]
         end
+
+        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/PerceivedComplexity
 
         def find_plate_id_for_sample_id(sample_id)
           sample_manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: sample_id)

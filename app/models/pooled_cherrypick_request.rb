@@ -15,10 +15,10 @@ class PooledCherrypickRequest < CustomerRequest # rubocop:todo Style/Documentati
 
   private
 
-  def aliquots_for_transfer
+  def aliquots_for_transfer # rubocop:todo Metrics/AbcSize
     asset.aliquots.map do |aliquot|
       aliquot.dup.tap do |clone|
-        clone.study_id   = initial_study_id   || aliquot.study_id
+        clone.study_id = initial_study_id || aliquot.study_id
         clone.project_id = initial_project_id || aliquot.project_id
       end
     end.reject do |candidate_aliquot|

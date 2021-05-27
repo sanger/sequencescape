@@ -8,14 +8,15 @@ class ReportFail
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
-  attr_reader :failed_labware_barcodes, :user_code, :failure_id, :failure_options, :selected_option,
-              :disabled_options
+  attr_reader :failed_labware_barcodes, :user_code, :failure_id, :failure_options, :selected_option, :disabled_options
 
   validates :failed_labware_barcodes, :user_code, :failure_id, presence: true
-  validates :user, presence: {
-    message: 'could not be found with that swipecard or barcode. '\
-             'You may need to update your swipecard in Sequencescape.'
-  }
+  validates :user,
+            presence: {
+              message:
+                'could not be found with that swipecard or barcode. ' \
+                  'You may need to update your swipecard in Sequencescape.'
+            }
 
   def initialize(user_code, failure_id, failed_labware_barcodes)
     @user_code = user_code.try(:strip)
@@ -38,11 +39,7 @@ class ReportFail
 
     failed_labware.each do |labware|
       labware.events.create_labware_failed!(failure_id, user.login)
-      BroadcastEvent::LabwareFailed.create!(
-        seed: labware,
-        user: user,
-        properties: { failure_reason: failure_id }
-      )
+      BroadcastEvent::LabwareFailed.create!(seed: labware, user: user, properties: { failure_reason: failure_id })
     end
 
     valid?

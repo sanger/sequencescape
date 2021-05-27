@@ -1,14 +1,13 @@
 # Handles the behaviour of {AddSpikedInControlTask} and included in {WorkflowsController}
 # {include:AddSpikedInControlTask}
 module Tasks::AddSpikedInControlHandler
-  def do_add_spiked_in_control_task(task, params)
+  # rubocop:todo Metrics/MethodLength
+  def do_add_spiked_in_control_task(task, params) # rubocop:todo Metrics/AbcSize
     batch = @batch || Batch.find(params[:batch_id])
     barcode = params[:barcode].first
     control = SpikedBuffer.find_by_barcode(barcode)
     request_id_set = Set.new
-    params[:request].each do |k, v|
-      request_id_set << k.to_i if v == 'on'
-    end
+    params[:request].each { |k, v| request_id_set << k.to_i if v == 'on' }
 
     unless control
       flash[:error] = "Can't find a spiked hybridization buffer with barcode #{barcode}"
@@ -20,4 +19,5 @@ module Tasks::AddSpikedInControlHandler
       eventify_batch(batch, task)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

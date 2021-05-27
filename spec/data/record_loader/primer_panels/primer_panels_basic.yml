@@ -6,16 +6,16 @@ Unique attribute:
   programs:
     pcr 1:
       name: example
-      duration: '225'
+      duration: "225"
     pcr 2:
       name: example_2
-      duration: '120'
+      duration: "120"
 Unique attribute 2:
   snp_count: 2
   programs:
     pcr 1:
       name: example
-      duration: '225'
+      duration: "225"
     pcr 2:
       name: example_2
-      duration: '120'
+      duration: "120"

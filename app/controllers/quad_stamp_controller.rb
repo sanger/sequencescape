@@ -1,8 +1,8 @@
 # Handles transfer of 1-4 96 well plates or tube racks onto a single new
 # 384 well plate
 class QuadStampController < ApplicationController
-  before_action :set_plate_purposes, only: [:new, :create]
-  before_action :set_barcode_printers, only: [:new, :create]
+  before_action :set_plate_purposes, only: %i[new create]
+  before_action :set_barcode_printers, only: %i[new create]
 
   def new
     @quad_creator = Plate::QuadCreator.new
@@ -12,26 +12,33 @@ class QuadStampController < ApplicationController
     end
   end
 
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @user = User.find_with_barcode_or_swipecard_code(params[:quad_creator][:user_barcode])
     @target_purpose = Purpose.find(params[:quad_creator][:target_purpose_id])
-    @quad_creator = Plate::QuadCreator.new(parent_barcodes: parent_barcodes.to_hash, target_purpose: @target_purpose,
-                                           user: @user)
+    @quad_creator =
+      Plate::QuadCreator.new(parent_barcodes: parent_barcodes.to_hash, target_purpose: @target_purpose, user: @user)
 
     if @quad_creator.save
       print_labels
-      redirect_to labware_path(@quad_creator.target_plate), notice: "A new #{@target_purpose.name} plate was created and labels printed"
+      redirect_to labware_path(@quad_creator.target_plate),
+                  notice: "A new #{@target_purpose.name} plate was created and labels printed"
     else
       render :new
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   private
 
-  def print_labels
-    print_job = LabelPrinter::PrintJob.new(params.dig(:barcode_printer, :name),
-                                           LabelPrinter::Label::AssetRedirect,
-                                           printables: @quad_creator.target_plate)
+  def print_labels # rubocop:todo Metrics/MethodLength
+    print_job =
+      LabelPrinter::PrintJob.new(
+        params.dig(:barcode_printer, :name),
+        LabelPrinter::Label::AssetRedirect,
+        printables: @quad_creator.target_plate
+      )
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -48,15 +55,18 @@ class QuadStampController < ApplicationController
   # Selects barcode printers for the user to choose from.
   # Attempts to first get 384-well label specific printers (384-well plates take narrow 6mm labels)
   def set_barcode_printers
-    @barcode_printers = BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType384DoublePlate.all).order('name asc')
+    @barcode_printers =
+      BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType384DoublePlate.all).order('name asc')
     if @barcode_printers.blank?
       @barcode_printers = BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType96Plate.all).order('name asc')
     end
   end
 
   def parent_barcodes
-    params.require(:quad_creator)
-          .require(:parent_barcodes).permit(:quad_1, :quad_2, :quad_3, :quad_4)
-          .reject { |_key, barcode| barcode.blank? }
+    params
+      .require(:quad_creator)
+      .require(:parent_barcodes)
+      .permit(:quad_1, :quad_2, :quad_3, :quad_4)
+      .reject { |_key, barcode| barcode.blank? }
   end
 end

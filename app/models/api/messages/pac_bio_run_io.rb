@@ -18,37 +18,27 @@ class Api::Messages::PacBioRunIO < Api::Base
       map_attribute_to_json_attribute(:uuid, 'well_uuid_lims')
 
       with_nested_has_many_association(:requests_as_target, as: 'samples') do
-        with_association(:initial_project) do
-          map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')
-        end
+        with_association(:initial_project) { map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code') }
 
-        with_association(:initial_study) do
-          map_attribute_to_json_attribute(:uuid, 'study_uuid')
-        end
+        with_association(:initial_study) { map_attribute_to_json_attribute(:uuid, 'study_uuid') }
 
         with_association(:asset) do
           map_attribute_to_json_attribute(:external_identifier, 'pac_bio_library_tube_id_lims')
           map_attribute_to_json_attribute(:uuid, 'pac_bio_library_tube_uuid')
 
-          with_association(:labware) do
-            map_attribute_to_json_attribute(:name, 'pac_bio_library_tube_name')
-          end
+          with_association(:labware) { map_attribute_to_json_attribute(:name, 'pac_bio_library_tube_name') }
 
           map_attribute_to_json_attribute(:id, 'pac_bio_library_tube_legacy_id')
 
           with_association(:primary_aliquot) do
-            with_association(:sample) do
-              map_attribute_to_json_attribute(:uuid, 'sample_uuid')
-            end
+            with_association(:sample) { map_attribute_to_json_attribute(:uuid, 'sample_uuid') }
 
             with_association(:tag) do
               map_attribute_to_json_attribute(:oligo, 'tag_sequence')
               map_attribute_to_json_attribute(:tag_group_id, 'tag_set_id_lims')
               map_attribute_to_json_attribute(:map_id, 'tag_identifier')
 
-              with_association(:tag_group) do
-                map_attribute_to_json_attribute(:name, 'tag_set_name')
-              end
+              with_association(:tag_group) { map_attribute_to_json_attribute(:name, 'tag_set_name') }
             end
           end
         end

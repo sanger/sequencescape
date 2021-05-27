@@ -13,9 +13,7 @@ class SearchesController < ApplicationController # rubocop:todo Style/Documentat
     if params[:type].blank?
       global_searchable_classes
     else
-      [global_searchable_classes.detect do |klass|
-         klass.name == params[:type]
-       end]
+      [global_searchable_classes.detect { |klass| klass.name == params[:type] }]
     end
   end
 end

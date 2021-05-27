@@ -2,11 +2,7 @@
 
 require_relative 'well_range'
 
-ParameterType(
-  name: 'plate_id',
-  regexp: /the plate with ID (\d+)/,
-  transformer: ->(id) { Plate.find(id) }
-)
+ParameterType(name: 'plate_id', regexp: /the plate with ID (\d+)/, transformer: ->(id) { Plate.find(id) })
 
 ParameterType(
   name: 'asset_id',
@@ -56,33 +52,13 @@ ParameterType(
   transformer: ->(start, finish) { WellRange.new(start, finish) }
 )
 
-ParameterType(
-  name: 'all_submissions',
-  regexp: /all submissions/,
-  type: Array,
-  transformer: ->(_) { Submission.all }
-)
+ParameterType(name: 'all_submissions', regexp: /all submissions/, type: Array, transformer: ->(_) { Submission.all })
 
-ParameterType(
-  name: 'direction',
-  regexp: /(to|from)/,
-  type: String,
-  transformer: ->(direction) { direction }
-)
+ParameterType(name: 'direction', regexp: /(to|from)/, type: String, transformer: ->(direction) { direction })
 
-ParameterType(
-  name: 'relationship',
-  regexp: /(parent|child)/,
-  type: String,
-  transformer: ->(direction) { direction }
-)
+ParameterType(name: 'relationship', regexp: /(parent|child)/, type: String, transformer: ->(direction) { direction })
 
-ParameterType(
-  name: 'batch',
-  regexp: /the last batch/,
-  type: Batch,
-  transformer: ->(_) { Batch.last }
-)
+ParameterType(name: 'batch', regexp: /the last batch/, type: Batch, transformer: ->(_) { Batch.last })
 
 ParameterType(
   name: 'tag_layout_template',
@@ -122,14 +98,17 @@ ParameterType(
 ParameterType(
   name: 'request_class',
   regexp: /(pulldown|illumina-b) library creation/,
-  transformer: lambda { |name|
-    case name
-    when 'pulldown' then Pulldown::Requests::LibraryCreation
-    when 'illumina-b' then IlluminaB::Requests::StdLibraryRequest
-    else
-      raise StandardError, "Unknown type #{name}"
+  transformer:
+    lambda do |name|
+      case name
+      when 'pulldown'
+        Pulldown::Requests::LibraryCreation
+      when 'illumina-b'
+        IlluminaB::Requests::StdLibraryRequest
+      else
+        raise StandardError, "Unknown type #{name}"
+      end
     end
-  }
 )
 
 ParameterType(

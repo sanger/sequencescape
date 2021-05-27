@@ -31,25 +31,22 @@ module Accession
     end
 
     def name
-      @name ||= (sample.sample_metadata.sample_public_name  || sample.name).sanitize
+      @name ||= (sample.sample_metadata.sample_public_name || sample.name).sanitize
     end
 
     def title
       @title ||= (sample.sample_metadata.sample_public_name || sample.sanger_sample_id)
     end
 
-    def to_xml
+    # rubocop:todo Metrics/MethodLength
+    def to_xml # rubocop:todo Metrics/AbcSize
       tag_groups = tags.by_group
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.SAMPLE_SET(XML_NAMESPACE) do
         xml.SAMPLE(alias: ebi_alias) do
           xml.TITLE title if title.present?
-          xml.SAMPLE_NAME do
-            tag_groups[:sample_name].each do |_k, tag|
-              xml.tag!(tag.label, tag.value)
-            end
-          end
+          xml.SAMPLE_NAME { tag_groups[:sample_name].each { |_k, tag| xml.tag!(tag.label, tag.value) } }
           xml.SAMPLE_ATTRIBUTES do
             tag_groups[:sample_attributes].each do |_k, tag|
               xml.SAMPLE_ATTRIBUTE do
@@ -71,6 +68,8 @@ module Accession
       xml.target!
     end
 
+    # rubocop:enable Metrics/MethodLength
+
     def ebi_alias
       sample.uuid
     end
@@ -87,9 +86,7 @@ module Accession
     private
 
     def set_studies
-      sample.studies
-            .for_sample_accessioning
-            .group_by { |study| study.study_metadata.data_release_strategy }
+      sample.studies.for_sample_accessioning.group_by { |study| study.study_metadata.data_release_strategy }
     end
 
     def check_sample
@@ -105,9 +102,7 @@ module Accession
     end
 
     def check_studies
-      unless studies_valid?
-        errors.add(:sample, 'has no appropriate studies.')
-      end
+      errors.add(:sample, 'has no appropriate studies.') unless studies_valid?
     end
 
     def studies_valid?

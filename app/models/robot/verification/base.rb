@@ -3,10 +3,13 @@
 require_dependency 'robot/verification'
 
 # Base class for handling bed verification for picking robots
-class Robot::Verification::Base
+class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
   attr_reader :errors
 
-  def validate_barcode_params(barcode_hash)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def validate_barcode_params(barcode_hash) # rubocop:todo Metrics/CyclomaticComplexity
     return yield('No barcodes specified') if barcode_hash.nil?
 
     if barcode_hash[:batch_barcode].blank? || !Batch.valid_barcode?(barcode_hash[:batch_barcode])
@@ -18,10 +21,15 @@ class Robot::Verification::Base
     if barcode_hash[:user_barcode].blank? || !User.find_with_barcode_or_swipecard_code(barcode_hash[:user_barcode])
       yield('User barcode invalid')
     end
-    if barcode_hash[:destination_plate_barcode].blank? || !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
+    if barcode_hash[:destination_plate_barcode].blank? ||
+         !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
       yield('Destination plate barcode invalid')
     end
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   #
   # Returns an array of all pick numbers associated with the corresponding batch and plate_barcode
@@ -47,8 +55,9 @@ class Robot::Verification::Base
   # There will only be more than one pick if the number of source plates exceed the max plates allowed on the robot
   # and therefore more than one pick is needed to transfer from all the wells onto the destination plate
   def pick_number_to_expected_layout(batch, destination_plate_barcode, max_beds)
-    generate_picking_data_hash(batch, destination_plate_barcode, max_beds)
-      .transform_values { |data_object| layout_data_object(data_object) }
+    generate_picking_data_hash(batch, destination_plate_barcode, max_beds).transform_values do |data_object|
+      layout_data_object(data_object)
+    end
   end
 
   # Returns all pick information by destination_bed barcode
@@ -61,12 +70,17 @@ class Robot::Verification::Base
   # @param [Integer] max_beds The max_beds for plates on the robot
   def all_picks(batch, max_beds)
     # @note No optimization yet.
-    batch.output_plates.each_with_object({}) do |plate, store|
-      store[plate.machine_barcode] = pick_number_to_expected_layout(batch, plate.machine_barcode, max_beds)
-    end
+    batch
+      .output_plates
+      .each_with_object({}) do |plate, store|
+        store[plate.machine_barcode] = pick_number_to_expected_layout(batch, plate.machine_barcode, max_beds)
+      end
   end
 
-  def valid_submission?(params)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def valid_submission?(params) # rubocop:todo Metrics/CyclomaticComplexity
     destination_plate_barcode = params[:barcodes][:destination_plate_barcode]
     batch = Batch.find_by(id: params[:batch_id])
     robot = Robot.find_by(id: params[:robot_id])
@@ -100,11 +114,16 @@ class Robot::Verification::Base
     true
   end
 
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+
   def record_plate_types(plate_types_params)
     plate_types_params.each do |plate_barcode, plate_type|
       next if plate_barcode.blank? || plate_type.blank?
 
-      plate = Plate.with_barcode(plate_barcode).first or raise "Unable to locate plate #{plate_barcode.inspect} for robot verification"
+      plate = Plate.with_barcode(plate_barcode).first or
+        raise "Unable to locate plate #{plate_barcode.inspect} for robot verification"
       plate.plate_type = plate_type
       plate.save!
     end
@@ -127,9 +146,7 @@ class Robot::Verification::Base
       mapping_sorted = sort_mapping_by_destination_well(destination_barcode, destination_info['mapping'])
       mapping_sorted.each do |map_well|
         barcode, _well = map_well['src_well']
-        if block_given?
-          next unless yield barcode
-        end
+        next unless yield barcode if block_given?
         all_barcodes[barcode] ||= all_barcodes.length + 1
       end
     end
@@ -151,20 +168,34 @@ class Robot::Verification::Base
 
   # Returns a hash of barcodes to indexes used for ordering plates to beds for the worksheet
   def barcode_to_plate_index(plates)
-    plates.each_with_object({}).with_index do |(plate, barcodes_to_indexes), index|
-      barcodes_to_indexes[plate[0]] = index + 1
-    end
+    plates
+      .each_with_object({})
+      .with_index { |(plate, barcodes_to_indexes), index| barcodes_to_indexes[plate[0]] = index + 1 }
   end
 
   def generate_picking_data_hash(batch, destination_plate_barcode, max_beds)
     cached_pick_data(batch, max_beds).picking_data_hash(destination_plate_barcode)
   end
 
-  def valid_plate_locations?(params, batch, robot, expected_plate_layout)
-    return false unless valid_source_plates_on_robot?(params[:bed_barcodes], params[:plate_barcodes], robot, batch,
-                                                      expected_plate_layout)
-    return false unless valid_destination_plates_on_robot?(params[:destination_bed_barcodes],
-                                                           params[:destination_plate_barcodes], robot, batch, expected_plate_layout)
+  def valid_plate_locations?(params, batch, robot, expected_plate_layout) # rubocop:todo Metrics/MethodLength
+    unless valid_source_plates_on_robot?(
+             params[:bed_barcodes],
+             params[:plate_barcodes],
+             robot,
+             batch,
+             expected_plate_layout
+           )
+      return false
+    end
+    unless valid_destination_plates_on_robot?(
+             params[:destination_bed_barcodes],
+             params[:destination_plate_barcodes],
+             robot,
+             batch,
+             expected_plate_layout
+           )
+      return false
+    end
 
     true
   end
@@ -177,7 +208,9 @@ class Robot::Verification::Base
     valid_plates_on_robot?(beds, plates, 'DEST', robot, batch, all_expected_plate_layout[0])
   end
 
+  # rubocop:todo Metrics/ParameterLists
   def valid_plates_on_robot?(beds, plates, bed_prefix, robot, _batch, expected_plate_layout)
+    # rubocop:enable Metrics/ParameterLists
     return false if expected_plate_layout.blank?
 
     expected_plate_layout.each do |plate_barcode, sort_number|

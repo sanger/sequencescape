@@ -25,5 +25,5 @@ class Purpose::Relationship < ApplicationRecord
   belongs_to :child, class_name: 'Purpose'
 
   scope :with_parent, ->(plate_purpose) { where(parent_id: plate_purpose) }
-  scope :with_child,  ->(plate_purpose) { where(child_id: plate_purpose) }
+  scope :with_child, ->(plate_purpose) { where(child_id: plate_purpose) }
 end

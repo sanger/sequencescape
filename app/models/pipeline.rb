@@ -5,7 +5,7 @@
 # and to from there progress a {Batch} through the associated workflow.
 # @note Generally speaking we are trying to migrate pipelines out of the Sequencescape
 #       core.
-class Pipeline < ApplicationRecord
+class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include Pipeline::BatchValidation
   include SharedBehaviour::Named
@@ -16,12 +16,24 @@ class Pipeline < ApplicationRecord
   self.inheritance_column = 'sti_type'
 
   # Custom class attributes
-  class_attribute :batch_worksheet, :requires_position,
-                  :inbox_partial, :library_creation, :pulldown, :prints_a_worksheet_per_task,
-                  :genotyping, :sequencing, :purpose_information, :can_create_stock_assets,
-                  :inbox_eager_loading, :group_by_submission, :group_by_parent,
-                  :generate_target_assets_on_batch_create, :pick_to,
-                  :asset_type, :request_sort_order, :pick_data,
+  class_attribute :batch_worksheet,
+                  :requires_position,
+                  :inbox_partial,
+                  :library_creation,
+                  :pulldown,
+                  :prints_a_worksheet_per_task,
+                  :genotyping,
+                  :sequencing,
+                  :purpose_information,
+                  :can_create_stock_assets,
+                  :inbox_eager_loading,
+                  :group_by_submission,
+                  :group_by_parent,
+                  :generate_target_assets_on_batch_create,
+                  :pick_to,
+                  :asset_type,
+                  :request_sort_order,
+                  :pick_data,
                   instance_writer: false
 
   # Pipeline defaults
@@ -46,7 +58,7 @@ class Pipeline < ApplicationRecord
   delegate :item_limit, :batch_limit?, to: :workflow
 
   belongs_to :control_request_type, class_name: 'RequestType'
-  belongs_to :next_pipeline,     class_name: 'Pipeline'
+  belongs_to :next_pipeline, class_name: 'Pipeline'
   belongs_to :previous_pipeline, class_name: 'Pipeline'
 
   has_one :workflow, class_name: 'Workflow', inverse_of: :pipeline, required: true
@@ -72,13 +84,11 @@ class Pipeline < ApplicationRecord
 
   scope :externally_managed, -> { where(externally_managed: true) }
   scope :internally_managed, -> { where(externally_managed: false) }
-  scope :active,             -> { where(active: true) }
-  scope :inactive,           -> { where(active: false) }
+  scope :active, -> { where(active: true) }
+  scope :inactive, -> { where(active: false) }
 
-  scope :for_request_type, ->(rt) {
-    joins(:pipelines_request_types)
-      .where(pipelines_request_types: { request_type_id: rt })
-  }
+  scope :for_request_type,
+        ->(rt) { joins(:pipelines_request_types).where(pipelines_request_types: { request_type_id: rt }) }
 
   def custom_message
     # Override this in subclasses if you want to display a custom message in the _pipeline_limit partial (blue box on pipeline show page)
@@ -163,19 +173,17 @@ class Pipeline < ApplicationRecord
 
   def requests_in_inbox(show_held_requests = true)
     apply_includes(
-      requests.unbatched
-              .pipeline_pending(show_held_requests)
-              .with_present_asset
-              .order(request_sort_order)
-              .send(inbox_eager_loading)
+      requests
+        .unbatched
+        .pipeline_pending(show_held_requests)
+        .with_present_asset
+        .order(request_sort_order)
+        .send(inbox_eager_loading)
     )
   end
 
   def request_count_in_inbox(show_held_requests)
-    requests.unbatched
-            .pipeline_pending(show_held_requests)
-            .with_present_asset
-            .count
+    requests.unbatched.pipeline_pending(show_held_requests).with_present_asset.count
   end
 
   def pick_information?(_)

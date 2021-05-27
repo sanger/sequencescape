@@ -3,7 +3,7 @@ module AssetsHelper # rubocop:todo Style/Documentation
     plate_layout.cell_name_for_well_at(row, column)
   end
 
-  def well_information(plate_layout, row, column)
+  def well_information(plate_layout, row, column) # rubocop:todo Metrics/MethodLength
     well = plate_layout.well_at(row, column)
     if plate_layout.empty_well_at?(row, column)
       ['Empty', '', '']
@@ -12,10 +12,10 @@ module AssetsHelper # rubocop:todo Style/Documentation
     elsif plate_layout.bad_well_at?(row, column)
       ['Error', (well[:error]).to_s, '']
     else
-      raise StandardError, "Unknown well status ((#{plate_layout.location_for_well_at(row,
-                                                                                      column)}) = #{plate_layout.well_at(
-                                                                                        row, column
-                                                                                      ).inspect})"
+      raise StandardError,
+            "Unknown well status ((#{plate_layout.location_for_well_at(row, column)}) = #{
+              plate_layout.well_at(row, column).inspect
+            })"
     end
   end
 
@@ -42,7 +42,7 @@ module AssetsHelper # rubocop:todo Style/Documentation
   # or the 'params[:foo_id]' value if @foo is nil.
   def instance_variable_or_id_param(name, &block)
     field_name, value = :"#{name}_id", instance_variable_get(:"@#{name}")
-    value_id          = value.nil? ? params[field_name] : value.id
+    value_id = value.nil? ? params[field_name] : value.id
     concat(capture(field_name, value_id, &block))
   end
 

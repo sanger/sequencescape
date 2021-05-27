@@ -3,15 +3,12 @@
 require 'rails_helper'
 
 describe 'Plates API', with: :api_v2, tags: :lighthouse do
-  let(:params) do
-  end
+  let(:params) {}
 
   describe '#create' do
     include BarcodeHelper
 
-    before do
-      mock_plate_barcode_service
-    end
+    before { mock_plate_barcode_service }
 
     let(:request) { api_post '/api/v2/plates', payload }
     let(:plate) do
@@ -39,16 +36,16 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
         {
           'data' => {
             'type' => 'plates',
-            'attributes' => {
-            },
-            relationships: {
+            'attributes' => {},
+            :relationships => {
               purpose: {
-                data: { id: purpose.id.to_s, type: 'purposes' }
+                data: {
+                  id: purpose.id.to_s,
+                  type: 'purposes'
+                }
               },
               wells: {
-                data: [
-                  { type: 'wells', id: well.id }, { type: 'wells', id: well2.id }
-                ]
+                data: [{ type: 'wells', id: well.id }, { type: 'wells', id: well2.id }]
               }
             }
           }
@@ -64,14 +61,14 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
   end
 
   context 'with multiple plates' do
-    before do
-      create_list(:plate, 5)
-    end
+    before { create_list(:plate, 5) }
 
     it 'sends a list of plates' do
       api_get '/api/v2/plates'
+
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
+
       # check to make sure the right amount of messages are returned
       expect(json['data'].length).to eq(5)
     end
@@ -102,9 +99,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
     end
 
     context 'when the ancestor is a tube rack' do
-      let(:purpose) do
-        create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96')
-      end
+      let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
       let(:rack) { create :tube_rack }
       let(:plate_factory) { ::Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose: purpose) }
       let(:tubes) { create_list(:sample_tube, 2) }
@@ -132,9 +127,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
     # These tests validate both behaviours, as corrected in the monkey patch in
     # config/initializers/patch_json_api_resource.rb
     context 'with mixed ancestors' do
-      before do
-        resource_model.parents << create(:plate) << create(:multiplexed_library_tube)
-      end
+      before { resource_model.parents << create(:plate) << create(:multiplexed_library_tube) }
 
       it 'handles polymorphic relationships properly' do
         api_get "/api/v2/plates/#{resource_model.id}/parents"
@@ -156,9 +149,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
     end
 
     context 'with comments on plates' do
-      before do
-        resource_model.comments.create(title: 'Test', description: 'We have some text', user: create(:user))
-      end
+      before { resource_model.comments.create(title: 'Test', description: 'We have some text', user: create(:user)) }
 
       it 'returns the comment' do
         api_get "/api/v2/plates/#{resource_model.id}/comments"

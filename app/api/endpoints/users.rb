@@ -1,9 +1,6 @@
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Users
 class ::Endpoints::Users < ::Core::Endpoint::Base
-  model do
-  end
+  model {}
 
-  instance do
-    action(:update, to: :standard_update!)
-  end
+  instance { action(:update, to: :standard_update!) }
 end

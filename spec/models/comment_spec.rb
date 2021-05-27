@@ -8,11 +8,13 @@ RSpec.describe Comment, type: :model do
       expect(subject).to belong_to(:commentable).required
     end
 
-    it 'belongs to a user' do # rubocop:todo RSpec/AggregateExamples
+    it 'belongs to a user' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(subject).to belong_to :user
     end
 
-    it 'can have many comments' do # rubocop:todo RSpec/AggregateExamples
+    it 'can have many comments' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(subject).to have_many :comments
     end
   end
@@ -42,9 +44,9 @@ RSpec.describe Comment, type: :model do
     let(:asset2) { create :empty_sample_tube }
 
     let(:order1) { create :order_with_submission, study: study, assets: [asset], project: project }
-    let(:order2) { create :order,  study: study, assets: [asset], project: project }
-    let(:order3) { create :order,  study: study, assets: [asset2], project: project }
-    let(:order4) { create :order_with_submission,  study: study, assets: [asset2], project: project }
+    let(:order2) { create :order, study: study, assets: [asset], project: project }
+    let(:order3) { create :order, study: study, assets: [asset2], project: project }
+    let(:order4) { create :order_with_submission, study: study, assets: [asset2], project: project }
 
     let(:submission) { order1.submission }
     let(:submission2) { order4.submission }
@@ -66,10 +68,13 @@ RSpec.describe Comment, type: :model do
     context 'from an order' do
       before do
         order1.add_comment('My comment to order 1', user)
+
         # From a different order
         order2.add_comment('My comment to order 2', user)
+
         # Order without own requests
         order3.add_comment('My comment to order 3', user)
+
         # Order from a different submission
         order4.add_comment('My comment to order 4', user)
       end
@@ -80,12 +85,14 @@ RSpec.describe Comment, type: :model do
         expect(request3.comments.length).to eq(1)
       end
 
-      it 'always adds comments to the sequencing requests of the submission' do # rubocop:todo RSpec/AggregateExamples
+      it 'always adds comments to the sequencing requests of the submission' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(sequencing_request.comments.length).to eq(3)
         expect(sequencing_request2.comments.length).to eq(1)
       end
 
-      it 'includes all the comments in the submission requests comment list' do # rubocop:todo RSpec/AggregateExamples
+      it 'includes all the comments in the submission requests comment list' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(submission.requests.map(&:comments).flatten.length).to eq(5)
         expect(order4.submission.requests.map(&:comments).flatten.length).to eq(2)
       end

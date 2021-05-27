@@ -26,9 +26,11 @@ class WorkCompletion::TubeCompletion
       # This is because submission.next_requests tries to take a shortcut through
       # the target_asset if it is defined.
       upstream.next_requests.each { |ds| ds.update!(asset: target_tube) }
+
       # In some cases, such as the Illumina-C pipelines, requests might be
       # connected upfront. We don't want to touch these.
       upstream.target_asset ||= target_tube
+
       # We don't try and pass failed requests.
       # I'm not 100% convinced this decision belongs here, and instead
       # we may want to let the client specify wells to pass, and perform
@@ -41,7 +43,6 @@ class WorkCompletion::TubeCompletion
   end
 
   def detect_upstream_requests
-    CustomerRequest.includes(WorkCompletion::REQUEST_INCLUDES)
-                   .where(id: target_tube.aliquots.pluck(:request_id))
+    CustomerRequest.includes(WorkCompletion::REQUEST_INCLUDES).where(id: target_tube.aliquots.pluck(:request_id))
   end
 end

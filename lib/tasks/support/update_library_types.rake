@@ -2,7 +2,7 @@
 
 namespace :support do
   desc 'Update the library types of all the lanes of the given batch https://github.com/sanger/sequencescape/blob/develop/lib/tasks/README.md#update-library-type-for-given-batch'
-  task :update_library_types, [:batch_id, :library_type_name] => [:environment] do |_task, args|
+  task :update_library_types, %i[batch_id library_type_name] => [:environment] do |_task, args|
     puts('*' * 80)
     puts('TASK STARTING')
     puts('*' * 80)
@@ -14,7 +14,8 @@ namespace :support do
     library_type_name = args.library_type_name
 
     puts('Confirming library type')
-    new_library_type = LibraryType.find_by(name: library_type_name) || raise("Unable to find library type #{library_type_name}")
+    new_library_type =
+      LibraryType.find_by(name: library_type_name) || raise("Unable to find library type #{library_type_name}")
 
     # Get the lanes for this batch
     puts('Getting lanes for this batch')
@@ -27,11 +28,13 @@ namespace :support do
       puts('Updating records')
       lanes.each do |lane|
         lane.aliquots.each do |aliquot|
-          Aliquot.where(library_id: aliquot.library_id).each do |ali|
-            ali.library_type = new_library_type.name
-            ali.save!
-            record_count += 1
-          end
+          Aliquot
+            .where(library_id: aliquot.library_id)
+            .each do |ali|
+              ali.library_type = new_library_type.name
+              ali.save!
+              record_count += 1
+            end
         end
       end
     end
@@ -55,7 +58,7 @@ namespace :support do
     puts(e.backtrace)
   end
 
-  def print_summary(batch_id, lanes, record_count, elapsed)
+  def print_summary(batch_id, lanes, record_count, elapsed) # rubocop:todo Metrics/AbcSize
     puts('*' * 80)
     puts('TASK COMPLETE')
     puts('*' * 80)

@@ -1,5 +1,7 @@
 class EventfulMailer < ActionMailer::Base # rubocop:todo Style/Documentation
+  # rubocop:todo Metrics/ParameterLists
   def confirm_event(receiver, eventful, message, content, _milestone, sent_at = Time.zone.now)
+    # rubocop:enable Metrics/ParameterLists
     @eventful = eventful
     @message = message
     @content = content
@@ -23,7 +25,9 @@ class EventfulMailer < ActionMailer::Base # rubocop:todo Style/Documentation
     )
   end
 
+  # rubocop:todo Metrics/ParameterLists
   def confirm_sample_event(receiver, eventful, message, content, _milestone, sent_at = Time.zone.now)
+    # rubocop:enable Metrics/ParameterLists
     @eventful = eventful
     @message = message
     @content = content
@@ -57,7 +61,9 @@ class EventfulMailer < ActionMailer::Base # rubocop:todo Style/Documentation
     )
   end
 
+  # rubocop:todo Metrics/ParameterLists
   def confirm_external_release_event(receiver, eventful, message, content, _milestone, sent_at = Time.zone.now)
+    # rubocop:enable Metrics/ParameterLists
     @eventful = eventful
     @message = message
     @content = content

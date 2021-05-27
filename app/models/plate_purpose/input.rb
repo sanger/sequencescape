@@ -14,8 +14,8 @@
 class PlatePurpose::Input < PlatePurpose
   self.state_changer = StateChanger::InputPlate
 
-  UNREADY_STATE  = 'pending'
-  READY_STATE    = 'passed'
+  UNREADY_STATE = 'pending'
+  READY_STATE = 'passed'
   WELL_STATE_PRIORITY = %w[pending started passed failed cancelled].freeze
 
   def state_of(plate)
@@ -26,9 +26,8 @@ class PlatePurpose::Input < PlatePurpose
     # All of the wells with aliquots must have customer requests for us to consider the plate passed
     well_requests = CustomerRequest.where(asset_id: ids_of_wells_with_aliquots)
 
-    wells_states = well_requests.group_by(&:asset_id).values.map do |requests|
-      calculate_state_of_well(requests.map(&:state))
-    end
+    wells_states =
+      well_requests.group_by(&:asset_id).values.map { |requests| calculate_state_of_well(requests.map(&:state)) }
 
     return UNREADY_STATE unless wells_states.count == ids_of_wells_with_aliquots.count
 
@@ -42,9 +41,12 @@ class PlatePurpose::Input < PlatePurpose
     return UNREADY_STATE if unique_states.include?(:unready)
 
     case unique_states.sort
-    when ['failed'], %w[cancelled failed] then 'failed'
-    when ['cancelled'] then 'cancelled'
-    else READY_STATE
+    when ['failed'], %w[cancelled failed]
+      'failed'
+    when ['cancelled']
+      'cancelled'
+    else
+      READY_STATE
     end
   end
 

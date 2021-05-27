@@ -6,12 +6,6 @@ module DescriptorJavascriptHelper # rubocop:todo Style/Documentation
   private
 
   def link_to_with_onclick_only(on_click_code, &block)
-    concat(
-      tag.a(
-        capture(&block),
-        href: 'javascript:void();',
-        onClick: on_click_code
-      )
-    )
+    concat(tag.a(capture(&block), href: 'javascript:void();', onClick: on_click_code))
   end
 end

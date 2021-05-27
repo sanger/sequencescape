@@ -18,7 +18,6 @@ class Event::ScannedIntoLabEvent < Event # rubocop:todo Style/Documentation
   end
 
   def qc_state_not_final?
-    asset.respond_to?(:receptacle) &&
-      %w[passed failed].exclude?(asset.receptacle.qc_state)
+    asset.respond_to?(:receptacle) && %w[passed failed].exclude?(asset.receptacle.qc_state)
   end
 end

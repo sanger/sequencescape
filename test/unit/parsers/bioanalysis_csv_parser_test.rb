@@ -3,12 +3,10 @@
 require './test/test_helper'
 require 'csv'
 
-class BioanalysisCsvParserTest < ActiveSupport::TestCase
+class BioanalysisCsvParserTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
   def read_file(filename)
     content = nil
-    File.open(filename, 'r') do |fd|
-      content = fd.read
-    end
+    File.open(filename, 'r') { |fd| content = fd.read }
     content
   end
 
@@ -67,16 +65,28 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
       end
 
       should 'use get_groups method to find matching regexp' do
-        test_data = [[24, 25], [37, 38], [49, 50], [61, 62], [73, 74], [85, 86],
-                     [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157, 158]]
+        test_data = [
+          [24, 25],
+          [37, 38],
+          [49, 50],
+          [61, 62],
+          [73, 74],
+          [85, 86],
+          [97, 98],
+          [109, 110],
+          [121, 122],
+          [133, 134],
+          [145, 146],
+          [157, 158]
+        ]
         assert_equal test_data, @parser.get_groups(/Overall.*/m)
       end
 
       should 'parses a CSV example file' do
         assert_equal '25.65', @parser.concentration('A1')
-        assert_equal '72.5',  @parser.molarity('A1')
+        assert_equal '72.5', @parser.molarity('A1')
         assert_equal '18.06', @parser.concentration('B1')
-        assert_equal '50.5',  @parser.molarity('B1')
+        assert_equal '50.5', @parser.molarity('B1')
       end
 
       should 'map by well' do

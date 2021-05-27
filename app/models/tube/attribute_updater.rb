@@ -81,9 +81,5 @@ module Tube::AttributeUpdater
   end
 
   # Hash mapping potential QCResult#key to handlers
-  HANDLER = {
-    'volume' => Volume,
-    'concentration' => Molarity,
-    'molarity' => Molarity
-  }.freeze
+  HANDLER = { 'volume' => Volume, 'concentration' => Molarity, 'molarity' => Molarity }.freeze
 end

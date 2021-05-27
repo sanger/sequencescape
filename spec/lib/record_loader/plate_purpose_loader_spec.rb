@@ -17,16 +17,17 @@ RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
     let(:selected_files) { nil }
 
     context 'and no existing purposes' do
-      setup do
-        subject.create!
-      end
+      setup { subject.create! }
 
       it 'creates purposes from all files' do
         expect(Purpose.where(name: created_purposes).count).to eq(3)
       end
 
-      it 'sets the barcode printer' do # rubocop:todo RSpec/AggregateExamples
-        expect(Purpose.where(name: created_purposes).last.barcode_printer_type).to eq(BarcodePrinterType.find_by(name: '96 Well Plate'))
+      it 'sets the barcode printer' do
+        # rubocop:todo RSpec/AggregateExamples
+        expect(Purpose.where(name: created_purposes).last.barcode_printer_type).to eq(
+          BarcodePrinterType.find_by(name: '96 Well Plate')
+        )
       end
     end
 
@@ -43,9 +44,7 @@ RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
 
   context 'with a specific file specified' do
     let(:selected_files) { '002_example' }
-    setup do
-      subject.create!
-    end
+    setup { subject.create! }
     let(:the_creator) { Plate::Creator.joins(:plate_purposes).find_by(plate_purposes: { name: created_purposes.last }) }
 
     it 'creates purposes from the selected file files' do
@@ -57,7 +56,8 @@ RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
       expect(Plate::Creator.joins(:plate_purposes).where(plate_purposes: { name: created_purposes.last })).to exist
     end
 
-    it 'sets creator parents' do # rubocop:todo RSpec/AggregateExamples
+    it 'sets creator parents' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(the_creator.parent_plate_purposes).to eq(PlatePurpose.where(name: 'Stock Plate'))
     end
   end

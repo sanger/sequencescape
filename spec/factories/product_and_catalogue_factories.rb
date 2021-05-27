@@ -14,14 +14,14 @@ FactoryBot.define do
   end
 
   factory :product do
-    name            { FactoryBot.generate :product_name }
-    deprecated_at   { nil }
+    name { FactoryBot.generate :product_name }
+    deprecated_at { nil }
   end
 
   factory :product_criteria do
     product
-    stage         { 'stock' }
-    behaviour     { 'Basic' }
+    stage { 'stock' }
+    behaviour { 'Basic' }
     configuration { { total_micrograms: { greater_than: 50 }, sanger_sample_id: {} } }
   end
 

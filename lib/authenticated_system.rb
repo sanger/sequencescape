@@ -48,37 +48,36 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
   #
   #   skip_before_action :login_required
   #
-  def login_required
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def login_required # rubocop:todo Metrics/CyclomaticComplexity
     username, passwd = get_auth_data
 
     if username && passwd
       user = User.authenticate(username, passwd)
-      self.current_user = if user.nil?
-                            :false
-                          else
-                            user
-                          end
+      self.current_user = user.nil? ? :false : user
     elsif params[:api_key]
       user = User.find_by(api_key: params[:api_key])
-      self.current_user = if user.nil?
-                            :false
-                          else
-                            user
-                          end
+      self.current_user = user.nil? ? :false : user
     end
 
     respond_to do |accepts|
       accepts.html { logged_in? && authorized? ? true : access_denied }
       accepts.csv { logged_in? && authorized? ? true : access_denied }
       if configatron.disable_api_authentication == true
-        accepts.xml  { true }
+        accepts.xml { true }
         accepts.json { true }
       else
-        accepts.xml  { logged_in? && authorized? ? true : access_denied }
+        accepts.xml { logged_in? && authorized? ? true : access_denied }
         accepts.json { logged_in? && authorized? ? true : access_denied }
       end
     end
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def setup_current_user
     username, passwd = get_auth_data
@@ -99,12 +98,8 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
         store_location
         redirect_to controller: '/sessions', action: 'login'
       end
-      accepts.xml do
-        render xml: { error: "Couldn't authenticate you" }, status: :unauthorized
-      end
-      accepts.json do
-        render json: { error: "Couldn't authenticate you" }, status: :unauthorized
-      end
+      accepts.xml { render xml: { error: "Couldn't authenticate you" }, status: :unauthorized }
+      accepts.json { render json: { error: "Couldn't authenticate you" }, status: :unauthorized }
     end
     false
   end
@@ -131,25 +126,31 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
 
   # When called with before_action :login_from_cookie will check for an :auth_token
   # cookie and log the user back in if apropriate
-  def login_from_cookie
+  # rubocop:todo Metrics/MethodLength
+  def login_from_cookie # rubocop:todo Metrics/AbcSize
     return unless cookies[:auth_token] && !logged_in?
 
     user = User.find_by(remember_token: cookies[:auth_token])
     if user && user.remember_token?
       user.remember_me
       self.current_user = user
-      cookies[:auth_token] = { value: self.current_user.remember_token,
-                               expires: self.current_user.remember_token_expires_at }
+      cookies[:auth_token] = {
+        value: self.current_user.remember_token,
+        expires: self.current_user.remember_token_expires_at
+      }
       flash[:notice] = 'Logged in successfully'
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   private
 
-  @@http_auth_headers = %w(X-HTTP_AUTHORIZATION HTTP_AUTHORIZATION Authorization)
+  @@http_auth_headers = %w[X-HTTP_AUTHORIZATION HTTP_AUTHORIZATION Authorization]
+
   # gets BASIC auth info
   def get_auth_data
-    auth_key  = @@http_auth_headers.detect { |h| request.env.has_key?(h) }
+    auth_key = @@http_auth_headers.detect { |h| request.env.has_key?(h) }
     auth_data = request.env[auth_key].to_s.split if auth_key.present?
     auth_data && auth_data[0] == 'Basic' ? Base64.decode64(auth_data[1]).split(':')[0..1] : [nil, nil]
   end

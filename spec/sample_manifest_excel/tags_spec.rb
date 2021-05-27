@@ -57,23 +57,28 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
     let(:test_file_name) { 'test.xlsx' }
     let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
 
-    after(:all) do
-      SampleManifestExcel.reset!
-    end
+    after(:all) { SampleManifestExcel.reset! }
 
-    after do
-      File.delete(test_file_name) if File.exist?(test_file_name)
-    end
+    after { File.delete(test_file_name) if File.exist?(test_file_name) }
 
     context 'tag sequences' do
       let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
 
       it 'fails if the tags are invalid' do
-        download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, manifest_type: 'tube_multiplexed_library_with_tag_sequences',
-                                               validation_errors: [:tags])
+        download =
+          build(
+            :test_download_tubes,
+            columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup,
+            manifest_type: 'tube_multiplexed_library_with_tag_sequences',
+            validation_errors: [:tags]
+          )
         download.save(test_file_name)
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file,
-                                                       column_list: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, start_row: 9)
+        upload =
+          SampleManifestExcel::Upload::Base.new(
+            file: test_file,
+            column_list: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup,
+            start_row: 9
+          )
         expect(TestTagChecker.new(upload)).not_to be_valid
       end
     end
@@ -82,11 +87,20 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
       let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
 
       it 'fails if the tags are invalid' do
-        download = build(:test_download_tubes,
-                         columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, manifest_type: 'tube_multiplexed_library', validation_errors: [:tags])
+        download =
+          build(
+            :test_download_tubes,
+            columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup,
+            manifest_type: 'tube_multiplexed_library',
+            validation_errors: [:tags]
+          )
         download.save(test_file_name)
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file,
-                                                       column_list: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, start_row: 9)
+        upload =
+          SampleManifestExcel::Upload::Base.new(
+            file: test_file,
+            column_list: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup,
+            start_row: 9
+          )
         expect(TestTagChecker.new(upload)).not_to be_valid
       end
     end

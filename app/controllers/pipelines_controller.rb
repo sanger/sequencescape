@@ -37,15 +37,16 @@ class PipelinesController < ApplicationController
     end
   end
 
-  def show
+  # rubocop:todo Metrics/MethodLength
+  def show # rubocop:todo Metrics/AbcSize
     expires_now
     @show_held_requests = (params[:view] == 'all')
 
-    @pending_batches     = @pipeline.batches.pending_for_ui.includes_for_ui
+    @pending_batches = @pipeline.batches.pending_for_ui.includes_for_ui
     @batches_in_progress = @pipeline.batches.in_progress_for_ui.includes_for_ui
-    @completed_batches   = @pipeline.batches.completed_for_ui.includes_for_ui
-    @released_batches    = @pipeline.batches.released_for_ui.includes_for_ui
-    @failed_batches      = @pipeline.batches.failed_for_ui.includes_for_ui
+    @completed_batches = @pipeline.batches.completed_for_ui.includes_for_ui
+    @released_batches = @pipeline.batches.released_for_ui.includes_for_ui
+    @failed_batches = @pipeline.batches.failed_for_ui.includes_for_ui
 
     @batches = @last5_batches = @pipeline.batches.latest_first.includes_for_ui
 
@@ -53,11 +54,13 @@ class PipelinesController < ApplicationController
 
     if @pipeline.group_by_parent?
       Rails.logger.info('Pipeline grouped by parent')
+
       # We use the inbox presenter
       @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
       @requests_waiting = @inbox_presenter.requests_waiting
     elsif @pipeline.group_by_submission?
       Rails.logger.info('Pipeline grouped by submission')
+
       # Convert to an array now as otherwise the comments counter attempts to be too clever
       # and treats the requests like a scope. Not only does this result in a more complicated
       # query, but also an invalid one
@@ -69,6 +72,7 @@ class PipelinesController < ApplicationController
       Rails.logger.info('Pipeline fallback behaviour')
       @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
       @requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
+
       # We convert to an array here as otherwise rails tries to be smart and use
       # the scope in subsequent queries. Not only does it fail, but we may as
       # well fetch the result now anyway.
@@ -76,6 +80,8 @@ class PipelinesController < ApplicationController
       @requests_samples_count = Request.where(id: @requests).joins(:samples).group(:id).count
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def summary; end
 
@@ -136,7 +142,7 @@ class PipelinesController < ApplicationController
   private
 
   def prepare_batch_and_pipeline
-    @batch    = Batch.find(params[:id])
+    @batch = Batch.find(params[:id])
     @pipeline = @batch.pipeline
   end
 

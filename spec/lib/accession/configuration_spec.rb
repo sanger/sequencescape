@@ -24,7 +24,7 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
   end
 
   context 'with a valid folder' do
-    let(:folder)  { File.join('spec', 'data', 'accession') }
+    let(:folder) { File.join('spec', 'data', 'accession') }
 
     before do
       configuration.folder = folder
@@ -35,11 +35,13 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
       expect(configuration).to be_loaded
     end
 
-    it 'loads the tag list' do # rubocop:todo RSpec/AggregateExamples
+    it 'loads the tag list' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.tags).to eq(Accession::TagList.new(configuration.load_file(folder, 'tags')))
     end
 
-    it 'freezes all of the configuration options' do # rubocop:todo RSpec/AggregateExamples
+    it 'freezes all of the configuration options' do
+      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.tags).to be_frozen
     end
   end

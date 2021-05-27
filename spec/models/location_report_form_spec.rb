@@ -3,14 +3,10 @@
 require 'rails_helper'
 require 'support/lab_where_client_helper'
 
-RSpec.configure do |c|
-  c.include LabWhereClientHelper
-end
+RSpec.configure { |c| c.include LabWhereClientHelper }
 
 RSpec.describe LocationReport::LocationReportForm, type: :model do
-  let(:studies) do
-    create_list(:study, 2)
-  end
+  let(:studies) { create_list(:study, 2) }
 
   let(:study_1) { studies[0] }
   let(:study_2) { studies[1] }
@@ -136,18 +132,21 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       end
 
       it 'is valid to enter barcodes with commas separating them' do
-        location_report_form.barcodes_text = "#{plate_1.machine_barcode},#{plate_2.machine_barcode},#{plate_3.machine_barcode}"
+        location_report_form.barcodes_text =
+          "#{plate_1.machine_barcode},#{plate_2.machine_barcode},#{plate_3.machine_barcode}"
         expect(location_report_form).to be_valid
       end
 
       it 'is valid to enter barcodes with commas and spaces separating them' do
-        location_report_form.barcodes_text = "#{plate_1.machine_barcode},   #{plate_2.machine_barcode}   ,  #{plate_3.machine_barcode}"
+        location_report_form.barcodes_text =
+          "#{plate_1.machine_barcode},   #{plate_2.machine_barcode}   ,  #{plate_3.machine_barcode}"
         expect(location_report_form).to be_valid
       end
 
       context 'when barcodes are input with varied spacing or spaces at the beginning or end' do
         before do
-          location_report_form.barcodes_text = " #{plate_1.machine_barcode} #{plate_2.human_barcode}     #{plate_3.machine_barcode}        "
+          location_report_form.barcodes_text =
+            " #{plate_1.machine_barcode} #{plate_2.human_barcode}     #{plate_3.machine_barcode}        "
         end
 
         it 'the model is valid' do
@@ -182,15 +181,14 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       let(:plate_purpose_ids) { [plt_1_purpose.id] }
       let(:barcodes_text) { plate_1.machine_barcode.to_s }
 
-      before do
-        location_report_form.save
-      end
+      before { location_report_form.save }
 
       it 'creates a location report' do
         expect(location_report_form.location_report).to be_present
       end
 
-      it 'creates a valid location report' do # rubocop:todo RSpec/AggregateExamples
+      it 'creates a valid location report' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(location_report_form.location_report).to be_valid
       end
 
@@ -199,7 +197,9 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
         expect(location_report_form.location_report.report_type).to eq('type_selection')
         expect(location_report_form.location_report.faculty_sponsor_ids).to eq([study_1_sponsor.id])
         expect(location_report_form.location_report.study_id).to eq(study_1.id)
-        expect(location_report_form.location_report.start_date.strftime('%Y-%m-%d %H:%M:%S')).to eq('2016-01-01 00:00:00')
+        expect(location_report_form.location_report.start_date.strftime('%Y-%m-%d %H:%M:%S')).to eq(
+          '2016-01-01 00:00:00'
+        )
         expect(location_report_form.location_report.end_date.strftime('%Y-%m-%d %H:%M:%S')).to eq('2016-03-01 00:00:00')
         expect(location_report_form.location_report.plate_purpose_ids).to eq([plt_1_purpose.id])
         expect(location_report_form.location_report.barcodes).to eq([plate_1.machine_barcode])
@@ -248,11 +248,13 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
         expect(location_report_form.location_report).to be_present
       end
 
-      it 'creates a valid location report' do # rubocop:todo RSpec/AggregateExamples
+      it 'creates a valid location report' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(location_report_form.location_report).to be_valid
       end
 
-      it 'correctly records the form object information in the location report' do # rubocop:todo RSpec/AggregateExamples
+      it 'correctly records the form object information in the location report' do
+        # rubocop:todo RSpec/AggregateExamples
         expect(location_report_form.location_report.name).to eq('Test_name')
         expect(location_report_form.location_report.report_type).to eq('type_labwhere')
         expect(location_report_form.location_report.location_barcode).to eq('1001')

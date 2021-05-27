@@ -32,8 +32,8 @@ class UatActionsController < ApplicationController
   private
 
   def find_uat_action_class
-    @uat_action_class = UatActions.find(params[:id]) ||
-                        raise(ActionController::RoutingError, "No UAT action: #{params[:id]}")
+    @uat_action_class =
+      UatActions.find(params[:id]) || raise(ActionController::RoutingError, "No UAT action: #{params[:id]}")
   end
 
   def uat_action_params
@@ -44,8 +44,9 @@ class UatActionsController < ApplicationController
   def check_environment
     return unless Rails.env.production?
 
-    redirect_back fallback_location: root_path, flash: {
-      error: 'UAT actions cannot be performed in the production version of Sequencescape.'
-    }
+    redirect_back fallback_location: root_path,
+                  flash: {
+                    error: 'UAT actions cannot be performed in the production version of Sequencescape.'
+                  }
   end
 end

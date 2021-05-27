@@ -22,6 +22,8 @@
 
   li {
     @extend .nav-item;
-    a { @extend .nav-link; }
+    a {
+      @extend .nav-link;
+    }
   }
 }

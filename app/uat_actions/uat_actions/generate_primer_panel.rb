@@ -3,6 +3,7 @@
 # Will construct a primer panel
 class UatActions::GeneratePrimerPanel < UatActions
   self.title = 'Generate primer panel'
+
   # The description displays on the list of UAT actions to provide additional information
   self.description = 'Generates a primer panel with the specified details'
 
@@ -11,29 +12,23 @@ class UatActions::GeneratePrimerPanel < UatActions
              :text_field,
              label: 'Primer Panel Name',
              help: 'It will not create a primer panel with a name that already exists.'
-  form_field :snp_count,
-             :number_field,
-             label: 'SNP count',
-             help: 'The number of SNPs',
-             options: { minimum: 1 }
-  form_field :pcr_1_name,
-             :text_field,
-             label: 'PCR Program 1 Name',
-             help: 'The name of the PCR 1 program.'
+  form_field :snp_count, :number_field, label: 'SNP count', help: 'The number of SNPs', options: { minimum: 1 }
+  form_field :pcr_1_name, :text_field, label: 'PCR Program 1 Name', help: 'The name of the PCR 1 program.'
   form_field :pcr_1_duration,
              :number_field,
              label: 'PCR Program 1 Duration (minutes)',
              help: 'The duration of PCR Program 1 in minutes',
-             options: { minimum: 1 }
-  form_field :pcr_2_name,
-             :text_field,
-             label: 'PCR Program 2 Name',
-             help: 'The name of the PCR 2 program.'
+             options: {
+               minimum: 1
+             }
+  form_field :pcr_2_name, :text_field, label: 'PCR Program 2 Name', help: 'The name of the PCR 2 program.'
   form_field :pcr_2_duration,
              :number_field,
              label: 'PCR Program 2 Duration (minutes)',
              help: 'The duration of PCR Program 2 in minutes',
-             options: { minimum: 1 }
+             options: {
+               minimum: 1
+             }
 
   validates :name, presence: { message: 'needs a name' }
   validates :snp_count, numericality: { greater_than: 0, only_integer: true, allow_blank: false }
@@ -73,11 +68,19 @@ class UatActions::GeneratePrimerPanel < UatActions
     @existing_primer_panel ||= PrimerPanel.find_by(name: name)
   end
 
-  def primer_panel_params
+  def primer_panel_params # rubocop:todo Metrics/MethodLength
     {
-      name: name, snp_count: snp_count, programs: {
-        'pcr 1' => { 'name' => pcr_1_name, 'duration' => pcr_1_duration },
-        'pcr 2' => { 'name' => pcr_2_name, 'duration' => pcr_2_duration }
+      name: name,
+      snp_count: snp_count,
+      programs: {
+        'pcr 1' => {
+          'name' => pcr_1_name,
+          'duration' => pcr_1_duration
+        },
+        'pcr 2' => {
+          'name' => pcr_2_name,
+          'duration' => pcr_2_duration
+        }
       }
     }
   end

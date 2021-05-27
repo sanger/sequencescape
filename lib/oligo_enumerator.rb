@@ -7,6 +7,7 @@
 #
 class OligoEnumerator
   include Enumerable
+
   #
   # Generate an oligo enumerator
   #
@@ -22,9 +23,7 @@ class OligoEnumerator
   end
 
   def each
-    @size.times do |i|
-      yield tag(i + @initial)
-    end
+    @size.times { |i| yield tag(i + @initial) }
   end
 
   def tag(i)

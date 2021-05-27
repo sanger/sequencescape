@@ -1,5 +1,3 @@
 # frozen_string_literal: true
 
-FactoryBot.define do
-  factory :pre_capture_pool
-end
+FactoryBot.define { factory :pre_capture_pool }

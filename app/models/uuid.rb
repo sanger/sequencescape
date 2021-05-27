@@ -12,6 +12,7 @@ class Uuid < ApplicationRecord
         # and only require them asynchronously.
         class_attribute :lazy_uuid_generation
         self.lazy_uuid_generation = false
+
         # Ensure that the resource has a UUID and that it's always created when the instance is created.
         # It seems better not to do this but the performance of the API is directly affected by having to
         # create these instances when they do not exist.
@@ -19,7 +20,7 @@ class Uuid < ApplicationRecord
         after_create :ensure_uuid_created, unless: :lazy_uuid_generation?
 
         # Some named scopes ...
-        scope :include_uuid, ->() { includes(:uuid_object) }
+        scope :include_uuid, -> { includes(:uuid_object) }
         scope :with_uuid, ->(uuid) { joins(:uuid_object).where(uuids: { external_id: uuid }) }
       end
     end
@@ -75,6 +76,7 @@ class Uuid < ApplicationRecord
   scope :include_resource, -> { includes(:resource) }
   scope :with_external_id, ->(external_id) { where(external_id: external_id) }
   scope :with_resource_by_type_and_id, ->(t, id) { where(resource_type: t, resource_id: id) }
+
   # Limits the query to resources of the given type if provided. Otherwise returns all
   scope :limited_to_resource, ->(resource_type) { resource_type.nil? ? all : where(resource_type: resource_type) }
 
@@ -91,9 +93,7 @@ class Uuid < ApplicationRecord
   end
 
   def self.translate_uuids_to_ids_in_params(params)
-    params.transform_values! do |value|
-      uuid?(value) ? find_id(value) : value
-    end
+    params.transform_values! { |value| uuid?(value) ? find_id(value) : value }
   end
 
   def self.uuid?(value)
@@ -120,8 +120,7 @@ class Uuid < ApplicationRecord
   def self.find_uuid!(resource_type, resource_id)
     return unless resource_id # return nil for nil
 
-    find_uuid(resource_type, resource_id) ||
-      create!(resource_type: resource_type, resource_id: resource_id).external_id
+    find_uuid(resource_type, resource_id) || create!(resource_type: resource_type, resource_id: resource_id).external_id
   end
 
   # Given a list of internal ids, create uuids in bulk
@@ -132,9 +131,9 @@ class Uuid < ApplicationRecord
     return if resource_ids.empty?
 
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
-    uuids_to_create = ids_missing_uuids.map do |id|
-      create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid)
-    end
+    uuids_to_create =
+      ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid) }
+
     # Uuid.import uuids_to_create unless uuids_to_create.empty?
 
     nil
@@ -147,9 +146,8 @@ class Uuid < ApplicationRecord
   end
 
   def self.generate_all_uuids_for_class(base_class_name)
-    eval(base_class_name).find_in_batches(batch_size: 5000) do |group|
-      generate_uuids!(base_class_name.to_s, group.map(&:id))
-    end
+    eval(base_class_name)
+      .find_in_batches(batch_size: 5000) { |group| generate_uuids!(base_class_name.to_s, group.map(&:id)) }
   end
 
   # Find the id corresponding to the uuid. Check the resource and base_class names are as expected if they are given.
@@ -163,17 +161,18 @@ class Uuid < ApplicationRecord
 
   class << self
     def lookup_single_uuid(uuid)
-      with_external_id(uuid).first or
-        raise ActiveRecord::RecordNotFound, "Could not find UUID #{uuid.inspect}"
+      with_external_id(uuid).first or raise ActiveRecord::RecordNotFound, "Could not find UUID #{uuid.inspect}"
     end
 
     def lookup_many_uuids(uuids)
-      with_external_id(uuids).all.tap do |found|
-        missing = uuids - found.map(&:external_id)
-        unless missing.empty?
-          raise ActiveRecord::RecordNotFound, "Could not find UUIDs #{missing.map(&:inspect).join(',')}"
+      with_external_id(uuids)
+        .all
+        .tap do |found|
+          missing = uuids - found.map(&:external_id)
+          unless missing.empty?
+            raise ActiveRecord::RecordNotFound, "Could not find UUIDs #{missing.map(&:inspect).join(',')}"
+          end
         end
-      end
     end
   end
 end

@@ -16,19 +16,21 @@ describe LabelPrinter::Label::SampleManifestPlateDouble, sample_manifest: true d
       plate = sample_manifest_plates.first
       expected_label = {
         labels: {
-          body: [{
-            main_label: {
-              left_text: plate.human_barcode,
-              right_text: "#{sample_manifest.study.abbreviation} #{plate.barcode_number}",
-              barcode: plate.machine_barcode
+          body: [
+            {
+              main_label: {
+                left_text: plate.human_barcode,
+                right_text: "#{sample_manifest.study.abbreviation} #{plate.barcode_number}",
+                barcode: plate.machine_barcode
+              }
+            },
+            {
+              extra_label: {
+                left_text: Time.zone.today.strftime('%e-%^b-%Y'),
+                right_text: sample_manifest.purpose.name
+              }
             }
-          },
-                 {
-                   extra_label: {
-                     left_text: Time.zone.today.strftime('%e-%^b-%Y'),
-                     right_text: sample_manifest.purpose.name
-                   }
-                 }]
+          ]
         }
       }
       expect(subject.to_h).to eq(expected_label)

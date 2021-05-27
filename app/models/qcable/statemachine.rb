@@ -1,17 +1,18 @@
 module Qcable::Statemachine # rubocop:todo Style/Documentation
-  def self.included(base)
+  # rubocop:todo Metrics/MethodLength
+  def self.included(base) # rubocop:todo Metrics/AbcSize
     base.class_eval do
       ## State machine
       ## namespace: true as destroyed clashes with rails, but we can't easily rename the state
       aasm column: :state, whiny_persistence: true, namespace: true, name: 'qc_state' do
         state :created
-        state :pending,        enter: :on_stamp
-        state :failed,         enter: :on_failed
-        state :passed,         enter: :on_passed
-        state :available,      enter: :on_released
-        state :destroyed,      enter: :on_destroyed
+        state :pending, enter: :on_stamp
+        state :failed, enter: :on_failed
+        state :passed, enter: :on_passed
+        state :available, enter: :on_released
+        state :destroyed, enter: :on_destroyed
         state :qc_in_progress, enter: :on_qc
-        state :exhausted,      enter: :on_used
+        state :exhausted, enter: :on_used
 
         initial_state Proc.new { |qcable| qcable.default_state }
 
@@ -51,6 +52,8 @@ module Qcable::Statemachine # rubocop:todo Style/Documentation
       scope :unavailable, -> { where(state: %i[created pending failed passed destroyed qc_in_progress exhausted]) }
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   #--
   # These are the callbacks that will be made on entry to a given state.  This allows

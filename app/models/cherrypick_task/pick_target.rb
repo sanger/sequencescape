@@ -10,7 +10,7 @@ class CherrypickTask::PickTarget
   end
 
   # Base class for different pick target beha
-  class Base
+  class Base # rubocop:todo Metrics/ClassLength
     def initialize(template, asset_shape = nil, partial = nil)
       @wells = []
       @size = template.size
@@ -34,16 +34,17 @@ class CherrypickTask::PickTarget
     end
 
     # Creates control requests for the control assets provided and adds them to the batch
-    def create_control_requests!(batch, control_assets)
-      control_requests = control_assets.map do |control_asset|
-        CherrypickRequest.create(
-          asset: control_asset,
-          target_asset: Well.new,
-          submission: batch.requests.first.submission,
-          request_type: batch.requests.first.request_type,
-          request_purpose: 'standard'
-        )
-      end
+    def create_control_requests!(batch, control_assets) # rubocop:todo Metrics/MethodLength
+      control_requests =
+        control_assets.map do |control_asset|
+          CherrypickRequest.create(
+            asset: control_asset,
+            target_asset: Well.new,
+            submission: batch.requests.first.submission,
+            request_type: batch.requests.first.request_type,
+            request_purpose: 'standard'
+          )
+        end
       batch.requests << control_requests
       control_requests
     end
@@ -65,6 +66,7 @@ class CherrypickTask::PickTarget
       while control_posns.include?(current_well_index)
         control_asset = control_assets[control_posns.find_index(current_well_index)]
         add_control_request(batch, control_asset)
+
         # above adds to current_destination_plate, so current_well_index should be recalculated
         current_well_index = content.length
       end
@@ -94,12 +96,18 @@ class CherrypickTask::PickTarget
       remaining_controls.concat(remaining_used_wells).flatten
     end
 
+    # rubocop:todo Metrics/ParameterLists
     def push_with_controls(request_id, plate_barcode, well_location, control_posns, batch, control_assets)
+      # rubocop:enable Metrics/ParameterLists
       @wells << [request_id, plate_barcode, well_location]
-      if control_posns # would be nil if no control plate selected
+      if control_posns
+        # would be nil if no control plate selected
         add_any_consecutive_control_requests(control_posns, batch, control_assets)
+
         # This assumes that the template wells will fall at the end of the plate
-        add_remaining_control_requests(control_posns, batch, control_assets) if (@wells.length + remaining_wells(control_posns).length) == @size
+        if (@wells.length + remaining_wells(control_posns).length) == @size
+          add_remaining_control_requests(control_posns, batch, control_assets)
+        end
       end
       add_any_wells_from_template_or_partial(@wells)
       self
@@ -119,11 +127,12 @@ class CherrypickTask::PickTarget
     # then used in add_any_wells_from_template_or_partial to fill them in as wells are added by the
     # pick.
     def initialize_already_occupied_wells_from(template, partial)
-      @used_wells = {}.tap do |wells|
-        [partial, template].compact.each do |plate|
-          plate.wells.each { |w| wells[w.map.horizontal_plate_position] = w.map.description }
+      @used_wells =
+        {}.tap do |wells|
+          [partial, template].compact.each do |plate|
+            plate.wells.each { |w| wells[w.map.horizontal_plate_position] = w.map.description }
+          end
         end
-      end
     end
     private :initialize_already_occupied_wells_from
 
@@ -160,9 +169,7 @@ class CherrypickTask::PickTarget
 
     # rubocop:todo Style/MultilineBlockChain
     def completed_view
-      @wells.dup.tap do |wells|
-        complete(wells)
-      end.each_with_index.inject([]) do |wells, (well, index)|
+      @wells.dup.tap { |wells| complete(wells) }.each_with_index.inject([]) do |wells, (well, index)|
         wells.tap { wells[@shape.horizontal_to_vertical(index + 1, @size)] = well }
       end.compact
     end
@@ -190,9 +197,7 @@ class CherrypickTask::PickTarget
 
     # rubocop:todo Style/MultilineBlockChain
     def completed_view
-      @wells.dup.tap do |wells|
-        complete(wells)
-      end.each_with_index.inject([]) do |wells, (well, index)|
+      @wells.dup.tap { |wells| complete(wells) }.each_with_index.inject([]) do |wells, (well, index)|
         wells.tap { wells[@shape.vertical_to_interlaced_vertical(index + 1, @size)] = well }
       end.compact
     end

@@ -11,13 +11,14 @@ module User::Authentication # rubocop:todo Style/Documentation
     crypted_password == encrypt(password)
   end
 
-  def update_profile_via_ldap
+  def update_profile_via_ldap # rubocop:todo Metrics/AbcSize
     ldap = Net::LDAP.new(host: configatron.ldap_server, port: configatron.ldap_port)
 
     filter = Net::LDAP::Filter.eq('uid', login)
     treebase = 'ou=people,dc=sanger,dc=ac,dc=uk'
 
     ldap_profile = ldap.search(base: treebase, filter: filter)[0]
+
     # If we have two or more records, something is off with LDAP
 
     { email: 'mail', first_name: 'givenname', last_name: 'sn' }.each do |attr, ldap_attr|
@@ -47,19 +48,21 @@ module User::Authentication # rubocop:todo Style/Documentation
   end
 
   module Ldap # rubocop:todo Style/Documentation
-    def authenticate_with_ldap(login, password)
+    # rubocop:todo Metrics/MethodLength
+    def authenticate_with_ldap(login, password) # rubocop:todo Metrics/AbcSize
       # TODO: - Extract LDAP specifics to configuration
       username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
-      ldap = Net::LDAP.new(
-        host: configatron.ldap_server,
-        port: configatron.ldap_secure_port,
-        encryption: :simple_tls,
-        auth: {
-          method: :simple,
-          username: username,
-          password: password
-        }
-      )
+      ldap =
+        Net::LDAP.new(
+          host: configatron.ldap_server,
+          port: configatron.ldap_secure_port,
+          encryption: :simple_tls,
+          auth: {
+            method: :simple,
+            username: username,
+            password: password
+          }
+        )
       begin
         ldap.bind
       rescue StandardError => e
@@ -74,6 +77,8 @@ module User::Authentication # rubocop:todo Style/Documentation
         false
       end
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     def register_or_update_via_ldap(login)
       u = find_or_create_by(login: login)

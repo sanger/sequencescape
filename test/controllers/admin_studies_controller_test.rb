@@ -7,7 +7,7 @@ module Admin
     context 'Studies controller' do
       setup do
         @controller = Admin::StudiesController.new
-        @request    = ActionController::TestRequest.create(@controller)
+        @request = ActionController::TestRequest.create(@controller)
       end
 
       should_require_login
@@ -24,9 +24,14 @@ module Admin
 
         context '#managed_update (without changes)' do
           setup do
-            get :managed_update, params: { id: @study.id,
-                                           study: { name: @study.name,
-                                                    reference_genome_id: @study.reference_genome_id } }
+            get :managed_update,
+                params: {
+                  id: @study.id,
+                  study: {
+                    name: @study.name,
+                    reference_genome_id: @study.reference_genome_id
+                  }
+                }
           end
 
           should 'not send an email' do
@@ -46,9 +51,7 @@ module Admin
         end
 
         context 'with a data_access_coordinator role' do
-          setup do
-            @user.roles << (create :data_access_coordinator_role)
-          end
+          setup { @user.roles << (create :data_access_coordinator_role) }
 
           should "change 'ethically_approved'" do
             Rails.logger.info '******** First Request'

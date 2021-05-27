@@ -1,5 +1,6 @@
 require 'rexml/document'
 
+# rubocop:todo Metrics/ClassLength
 class StudiesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -12,12 +13,22 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   around_action :rescue_validation, only: %i[close open]
 
-  def setup_studies_from_scope(exclude_nested_resource = false)
+  # rubocop:todo Metrics/MethodLength
+  def setup_studies_from_scope(exclude_nested_resource = false) # rubocop:todo Metrics/AbcSize
     if logged_in? && (not exclude_nested_resource)
       @alternatives = [
-        'interesting', 'followed', 'managed & active', 'managed & inactive',
-        'pending', 'pending ethical approval', 'contaminated with human dna',
-        'remove x and autosomes', 'active', 'inactive', 'collaborations', 'all'
+        'interesting',
+        'followed',
+        'managed & active',
+        'managed & inactive',
+        'pending',
+        'pending ethical approval',
+        'contaminated with human dna',
+        'remove x and autosomes',
+        'active',
+        'inactive',
+        'collaborations',
+        'all'
       ]
       @studies = studies_from_scope(@alternatives[params[:scope].to_i])
     elsif params[:project_id] && !(project = Project.find(params[:project_id])).nil?
@@ -27,12 +38,14 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   def index
     # Please do not user current_user outside this block, you kill the API calls
     setup_studies_from_scope(@exclude_nested_resource)
     respond_to do |format|
       format.html
-      format.xml  { render(action: (@exclude_nested_resource ? 'index' : 'index_deprecated_xml')) }
+      format.xml { render(action: (@exclude_nested_resource ? 'index' : 'index_deprecated_xml')) }
       format.json { render json: Study.all.to_json }
     end
   end
@@ -46,14 +59,13 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   def new
     @study = Study.new
-    respond_to do |format|
-      format.html
-    end
+    respond_to { |format| format.html }
   end
 
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
-  def create
+  # rubocop:todo Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       @study = Study.new(params['study'].merge(user: current_user))
       @study.save!
@@ -64,17 +76,19 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     flash[:notice] = 'Your study has been created'
     respond_to do |format|
       format.html { redirect_to study_path(@study) }
-      format.xml  { render xml: @study, status: :created, location: @study }
+      format.xml { render xml: @study, status: :created, location: @study }
       format.json { render json: @study, status: :created, location: @study }
     end
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Problems creating your new study'
     respond_to do |format|
       format.html { render action: 'new' }
-      format.xml  { render xml: @study.errors, status: :unprocessable_entity }
+      format.xml { render xml: @study.errors, status: :unprocessable_entity }
       format.json { render json: @study.errors, status: :unprocessable_entity }
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def show
     @study = Study.find(params[:id])
@@ -92,7 +106,8 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     @users = User.all
   end
 
-  def update
+  # rubocop:todo Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:id])
 
     ActiveRecord::Base.transaction do
@@ -115,6 +130,8 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: 'edit', id: @study.id
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def study_status
     @study = Study.find(params[:id])
@@ -146,13 +163,13 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     @users = User.order(:first_name)
   end
 
-  def follow
+  def follow # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:id])
     if current_user.follower_of?(@study)
       current_user.remove_role 'follower', @study
       flash[:notice] = "You have stopped following the '#{@study.name}' study."
     else
-      current_user.follower_of?(@study)
+      current_user.grant_follower(@study)
       flash[:notice] = "You are now following the '#{@study.name}' study."
     end
     redirect_to study_information_path(@study)
@@ -202,7 +219,8 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
-  def rescue_accession_errors
+  # rubocop:todo Metrics/MethodLength
+  def rescue_accession_errors # rubocop:todo Metrics/AbcSize
     yield
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = 'Please fill in the required fields'
@@ -217,6 +235,8 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     flash[:error] = e.message
     redirect_to(edit_study_path(@study))
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   def accession
     rescue_accession_errors do
@@ -264,7 +284,8 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     @study = Study.find(params[:id])
   end
 
-  def self.role_helper(name, success_action, error_action, &block)
+  # rubocop:todo Metrics/MethodLength
+  def self.role_helper(name, success_action, error_action, &block) # rubocop:todo Metrics/AbcSize
     define_method("#{name}_role") do
       ActiveRecord::Base.transaction do
         @study = Study.find(params[:id])
@@ -283,7 +304,9 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
-  role_helper(:grant, 'added', 'adding')     { |user, study, name| user.grant_role(name, study) }
+  # rubocop:enable Metrics/MethodLength
+
+  role_helper(:grant, 'added', 'adding') { |user, study, name| user.grant_role(name, study) }
   role_helper(:remove, 'remove', 'removing') { |user, study, name| user.remove_role(name, study) }
 
   def projects
@@ -308,24 +331,43 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   private
 
-  def studies_from_scope(scope)
-    studies = case scope
-              when 'interesting'                 then Study.of_interest_to(current_user)
-              when 'followed'                    then Study.followed_by(current_user)
-              when 'managed & active'            then Study.managed_by(current_user).is_active
-              when 'managed & inactive'          then Study.managed_by(current_user).is_inactive
-              when 'pending'                     then Study.is_pending
-              when 'pending ethical approval'    then Study.awaiting_ethical_approval
-              when 'contaminated with human dna' then Study.contaminated_with_human_dna
-              when 'remove x and autosomes'      then Study.with_remove_x_and_autosomes
-              when 'active'                      then Study.is_active
-              when 'inactive'                    then Study.is_inactive
-              when 'collaborations'              then Study.collaborated_with(current_user)
-              when 'all'                         then Study
-              else                               raise StandardError, "Unknown scope '#{scope}'"
-              end
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def studies_from_scope(scope) # rubocop:todo Metrics/CyclomaticComplexity
+    studies =
+      case scope
+      when 'interesting'
+        Study.of_interest_to(current_user)
+      when 'followed'
+        Study.followed_by(current_user)
+      when 'managed & active'
+        Study.managed_by(current_user).is_active
+      when 'managed & inactive'
+        Study.managed_by(current_user).is_inactive
+      when 'pending'
+        Study.is_pending
+      when 'pending ethical approval'
+        Study.awaiting_ethical_approval
+      when 'contaminated with human dna'
+        Study.contaminated_with_human_dna
+      when 'remove x and autosomes'
+        Study.with_remove_x_and_autosomes
+      when 'active'
+        Study.is_active
+      when 'inactive'
+        Study.is_inactive
+      when 'collaborations'
+        Study.collaborated_with(current_user)
+      when 'all'
+        Study
+      else
+        raise StandardError, "Unknown scope '#{scope}'"
+      end
     studies.newest_first
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   def rescue_validation
     begin
@@ -337,3 +379,4 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

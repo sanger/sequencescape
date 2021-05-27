@@ -30,10 +30,7 @@ RSpec.describe RecordLoader::TubePurposeLoader, type: :model, loader: true do
 
     it 'sets attributes on the created records' do
       record_loader.create!
-      expect(Tube::Purpose.first).to have_attributes(
-        name: 'Tube Purpose Name',
-        target_type: 'LibraryTube'
-      )
+      expect(Tube::Purpose.first).to have_attributes(name: 'Tube Purpose Name', target_type: 'LibraryTube')
     end
   end
 end

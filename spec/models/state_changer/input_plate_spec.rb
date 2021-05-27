@@ -33,6 +33,7 @@ RSpec.describe StateChanger::InputPlate do
 
     it 'fails the requests', :aggregate_failures do
       state_changer.update_labware_state
+
       # Requests are started and we create one event per order.
       expect(library_requests.map(&:reload)).to all(be_failed)
     end

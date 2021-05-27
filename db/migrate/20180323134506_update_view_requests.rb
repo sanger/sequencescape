@@ -2,11 +2,11 @@
 
 # The requests view had been updated to include request purpose, which is now an enum.
 # This adds the previously untracked request_purpose column to the view in a compatible manner.
-class UpdateViewRequests < ActiveRecord::Migration[5.1]
+class UpdateViewRequests < ActiveRecord::Migration[5.1] # rubocop:todo Metrics/ClassLength
   def self.up
     ViewsSchema.update_view(
       'view_requests',
-      %{SELECT
+      "SELECT
           `u`.`external_id` AS `uuid`,
           `r`.`id` AS `internal_id`,
           `rt`.`name` AS `request_type`,
@@ -72,14 +72,14 @@ class UpdateViewRequests < ActiveRecord::Migration[5.1]
            left join `assets` `ta` on((`r`.`target_asset_id` = `ta`.`id`)))
            left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset'))))
            left join `barcode_prefixes` `tbp` on((`ta`.`barcode_prefix_id` = `tbp`.`id`)))
-           left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))}
+           left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))"
     )
   end
 
   def self.down
     ViewsSchema.update_view(
       'view_requests',
-      %{select `u`.`external_id` AS `uuid`,
+      "select `u`.`external_id` AS `uuid`,
                `r`.`id` AS `internal_id`,
                `rt`.`name` AS `request_type`,
                `rm`.`fragment_size_required_from` AS `fragment_size_from`,
@@ -143,7 +143,7 @@ class UpdateViewRequests < ActiveRecord::Migration[5.1]
                  left join `assets` `ta` on((`r`.`target_asset_id` = `ta`.`id`)))
                  left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset'))))
                  left join `barcode_prefixes` `tbp` on((`ta`.`barcode_prefix_id` = `tbp`.`id`)))
-                 left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))}
+                 left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))"
     )
   end
 end

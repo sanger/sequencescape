@@ -15,21 +15,91 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     end
   end
 
-  let(:columns)          { configuration.columns.tube_library_with_tag_sequences.dup }
-  let(:sample_manifest)  { create(:tube_sample_manifest_with_tubes_and_manifest_assets) }
-  let(:tube)             { sample_manifest.labware.first }
-  let(:tag_group)        { create(:tag_group) }
+  let(:columns) { configuration.columns.tube_library_with_tag_sequences.dup }
+  let(:sample_manifest) { create(:tube_sample_manifest_with_tubes_and_manifest_assets) }
+  let(:tube) { sample_manifest.labware.first }
+  let(:tag_group) { create(:tag_group) }
   let(:data) do
-    [tube.human_barcode, sample_manifest.sample_manifest_assets.first.sanger_sample_id,
-     'AA', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
-     'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
-     9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
+    [
+      tube.human_barcode,
+      sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+      'AA',
+      '',
+      'My reference genome',
+      'My New Library Type',
+      200,
+      1500,
+      'SCG--1222_A01',
+      '',
+      1,
+      1,
+      'Unknown',
+      '',
+      '',
+      '',
+      'Cell Line',
+      'Nov-16',
+      'Nov-16',
+      '',
+      'No',
+      '',
+      'OTHER',
+      '',
+      '',
+      '',
+      '',
+      '',
+      'SCG--1222_A01',
+      9606,
+      'Homo sapiens',
+      '',
+      '',
+      '',
+      '',
+      11,
+      'Unknown'
+    ]
   end
   let(:data_with_spaces) do
-    [tube.human_barcode, sample_manifest.sample_manifest_assets.first.sanger_sample_id,
-     ' ATTACTCG ', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
-     'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
-     9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
+    [
+      tube.human_barcode,
+      sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+      ' ATTACTCG ',
+      '',
+      'My reference genome',
+      'My New Library Type',
+      200,
+      1500,
+      'SCG--1222_A01',
+      '',
+      1,
+      1,
+      'Unknown',
+      '',
+      '',
+      '',
+      'Cell Line',
+      'Nov-16',
+      'Nov-16',
+      '',
+      'No',
+      '',
+      'OTHER',
+      '',
+      '',
+      '',
+      '',
+      '',
+      'SCG--1222_A01',
+      9606,
+      'Homo sapiens',
+      '',
+      '',
+      '',
+      '',
+      11,
+      'Unknown'
+    ]
   end
 
   it 'is not valid without row number' do
@@ -46,8 +116,9 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it '#value returns value for specified key' do
-    expect(described_class.new(number: 1, data: data,
-                               columns: columns).value(:sanger_sample_id)).to eq(sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id)
+    expect(described_class.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(
+      sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id
+    )
   end
 
   it '#at returns value at specified index (offset by 1)' do
@@ -83,7 +154,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   it 'is not valid without a primary receptacle or sample' do
     data[1] = 2
     expect(described_class.new(number: 1, data: data, columns: columns)).not_to be_valid
-    data[1] = 999999
+    data[1] = 999_999
     row = described_class.new(number: 1, data: data, columns: columns)
     expect(row).not_to be_valid
     expect(row.errors.full_messages).to include('Row 1 - Sample can\'t be blank.')
@@ -145,10 +216,47 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it 'knows if it is empty' do
-    empty_data = [sample_manifest.labware.first.human_barcode, sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
-                  '', '', '', '', '', '', '', '', '', '', '', '', '',
-                  '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-                  '', '', '', '', '', '', '', sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id, '']
+    empty_data = [
+      sample_manifest.labware.first.human_barcode,
+      sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
+      ''
+    ]
     row = described_class.new(number: 1, data: data, columns: columns)
     empty_row = described_class.new(number: 1, data: empty_data, columns: columns)
     expect(row.empty?).to be false
@@ -192,8 +300,11 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       @rows = []
       library_tubes.each_with_index do |tube, i|
         sma = create(:sample_manifest_asset, sample_manifest: manifest, asset: tube.receptacle)
-        create(:external_multiplexed_library_tube_creation_request, asset: tube.receptacle,
-                                                                    target_asset: mx_library_tube.receptacle)
+        create(
+          :external_multiplexed_library_tube_creation_request,
+          asset: tube.receptacle,
+          target_asset: mx_library_tube.receptacle
+        )
         row_data = data.dup
         row_data[0] = tube.human_barcode
         row_data[1] = sma.sanger_sample_id
@@ -214,9 +325,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       mx_library_tube.samples.each_with_index do |sample, i|
         expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:i7])
         expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:i5])
-        sample.primary_receptacle.requests.each do |request|
-          expect(request.state).to eq('passed')
-        end
+        sample.primary_receptacle.requests.each { |request| expect(request.state).to eq('passed') }
       end
     end
   end
@@ -232,8 +341,12 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     before do
       @rows = []
       library_tubes.each_with_index do |tube, i|
-        create(:sample_manifest_asset, sample_manifest: manifest, asset: tube,
-                                       sanger_sample_id: tube.samples.first.sanger_sample_id)
+        create(
+          :sample_manifest_asset,
+          sample_manifest: manifest,
+          asset: tube,
+          sanger_sample_id: tube.samples.first.sanger_sample_id
+        )
         rq = create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
         rq.manifest_processed!
         row_data = data.dup

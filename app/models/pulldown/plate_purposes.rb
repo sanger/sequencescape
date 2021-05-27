@@ -12,15 +12,17 @@
 #
 # @todo #2396 Remove
 module Pulldown::PlatePurposes
-  ISCH_PURPOSE_FLOWS = [[
-    'Lib PCR-XP',
-    'ISCH lib pool',
-    'ISCH hyb',
-    'ISCH cap lib',
-    'ISCH cap lib PCR',
-    'ISCH cap lib PCR-XP',
-    'ISCH cap lib pool'
-  ]].freeze
+  ISCH_PURPOSE_FLOWS = [
+    [
+      'Lib PCR-XP',
+      'ISCH lib pool',
+      'ISCH hyb',
+      'ISCH cap lib',
+      'ISCH cap lib PCR',
+      'ISCH cap lib PCR-XP',
+      'ISCH cap lib pool'
+    ]
+  ].freeze
 
   PLATE_PURPOSE_FLOWS = [
     [
@@ -32,7 +34,8 @@ module Pulldown::PlatePurposes
       'WGS lib PCR',
       'WGS lib PCR-XP',
       'WGS lib pool'
-    ], [
+    ],
+    [
       'SC stock DNA',
       'SC Covaris',
       'SC post-Cov',
@@ -45,7 +48,8 @@ module Pulldown::PlatePurposes
       'SC cap lib PCR',
       'SC cap lib PCR-XP',
       'SC cap lib pool'
-    ], [
+    ],
+    [
       'ISC stock DNA',
       'ISC Covaris',
       'ISC post-Cov',
@@ -59,7 +63,8 @@ module Pulldown::PlatePurposes
       'ISC cap lib PCR',
       'ISC cap lib PCR-XP',
       'ISC cap lib pool'
-    ], ISCH_PURPOSE_FLOWS.first
+    ],
+    ISCH_PURPOSE_FLOWS.first
   ].freeze
 
   STOCK_PLATE_PURPOSES = ['WGS stock DNA', 'SC stock DNA', 'ISC stock DNA'].freeze
@@ -68,9 +73,9 @@ module Pulldown::PlatePurposes
     def create_purposes(branch)
       initial = Purpose.find_by!(name: branch.first)
       branch[1..].inject(initial) do |parent, new_purpose_name|
-        PlatePurpose.create!(name: new_purpose_name).tap do |child_purpose|
-          parent.child_relationships.create!(child: child_purpose)
-        end
+        PlatePurpose
+          .create!(name: new_purpose_name)
+          .tap { |child_purpose| parent.child_relationships.create!(child: child_purpose) }
       end
     end
   end
