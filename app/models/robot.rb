@@ -53,6 +53,7 @@ class Robot < ApplicationRecord # rubocop:todo Style/Documentation
     {
       'Hamilton' => Robot::Generator::Hamilton,
       'Tecan' => Robot::Generator::Tecan,
+      'TecanV2' => Robot::Generator::TecanV2,
       'Beckman' => Robot::Generator::Beckman
     }.fetch(generation_behaviour_property&.value, Robot::Generator::Tecan)
   end

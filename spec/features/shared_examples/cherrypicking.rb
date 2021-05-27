@@ -304,7 +304,7 @@ shared_examples 'a cherrypicking procedure' do
                   expect(generated_lines[index]).to eq(expected_line), "Error on line #{index} in #{expected_file}"
                 end
               end
-            when 'Tecan'
+            when 'Tecan', 'TecanV2'
               # for Robot::Generator::Tecan
               # Tecan files start with 2 lines of dynamic information for user and date, e.g.
               # C;
@@ -314,7 +314,7 @@ shared_examples 'a cherrypicking procedure' do
               # C;
 
               # then 3 rows for each buffer transfer into the destination, e.g.
-              # A;BUFF;;96-TROUGH;1;;49.1
+              # A;BUFF Trough;;Trough 100ml;1;;49.1
               # D;DN3U;;Custom Type;1;;49.1
               # W;
 
