@@ -42,6 +42,33 @@ RSpec.describe SamplesController, type: :controller do
           expect { action }.to change(sample, :user_id_of_consent_withdrawn).from(nil).to(current_user.id)
         end
       end
+
+      context 'when setting values from checktext_field fields' do
+        let(:action) do
+          post :update,
+               session: {
+                 user: current_user.id
+               },
+               params: {
+                 id: sample.id,
+                 sample: {
+                   sample_metadata_attributes: {
+                     consent_withdrawn: true,
+                     sample_metadata: {
+                       genotype: 'test genotype'
+                     }
+                   }
+                 }
+               }
+          sample.reload
+        end
+
+        it 'changes the genotype' do
+          expect(sample.sample_metadata.genotype).to be_nil
+          action
+          expect(sample.sample_metadata.genotype).to eq('test genotype')
+        end
+      end
     end
   end
 end

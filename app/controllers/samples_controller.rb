@@ -265,25 +265,25 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
         :donor_id,
         {
           sample_metadata: [
-          :genotype,
-          :phenotype,
-          :age,
-          :developmental_stage,
-          :cell_type,
-          :disease_state,
-          :compound,
-          :dose,
-          :immunoprecipitate,
-          :growth_condition,
-          :rnai,
-          :organism_part,
-          :time_point,
-          :subject,
-          :donor_id,
-          :disease,
-          :treatment
-        ]
-      }
+            :genotype,
+            :phenotype,
+            :age,
+            :developmental_stage,
+            :cell_type,
+            :disease_state,
+            :compound,
+            :dose,
+            :immunoprecipitate,
+            :growth_condition,
+            :rnai,
+            :organism_part,
+            :time_point,
+            :subject,
+            :donor_id,
+            :disease,
+            :treatment
+          ]
+        }
       ]
     }
   end
