@@ -12,34 +12,89 @@ RSpec.describe SamplesController, type: :controller do
     context 'when the user is the owner of the study' do
       before { current_user.roles.create(authorizable_id: sample.id, authorizable_type: 'Sample', name: 'owner') }
 
-      context 'when changing withdraw consent' do
-        let(:consent) { true }
-        let(:action) do
-          post :update,
-               session: {
-                 user: current_user.id
-               },
-               params: {
-                 id: sample.id,
-                 sample: {
-                   sample_metadata_attributes: {
-                     consent_withdrawn: consent
-                   }
+      let(:action) do
+        post :update,
+             session: {
+               user: current_user.id
+             },
+             params: {
+               id: sample.id,
+               sample: {
+                 sample_metadata_attributes: {
+                   consent_withdrawn: consent
                  }
                }
-          sample.reload
+             }
+        sample.reload
+      end
+
+      context 'when consent withdrawn starts off false' do
+        context 'when changing withdraw consent' do
+          let(:consent) { true }
+
+          it 'changes the consent withdrawn' do
+            expect { action }.to change(sample, :consent_withdrawn).to(true)
+          end
+
+          it 'sets a timestamp in the sample' do
+            expect { action }.to change(sample, :date_of_consent_withdrawn).from(nil)
+          end
+
+          it 'sets the user that changed the consent' do
+            expect { action }.to change(sample, :user_id_of_consent_withdrawn).from(nil).to(current_user.id)
+          end
         end
 
-        it 'changes the consent withdrawn' do
-          expect { action }.to change(sample, :consent_withdrawn).to(true)
+        context 'when not changing withdraw consent' do
+          let(:consent) { false }
+
+          it 'does not change the consent withdrawn' do
+            expect { action }.not_to change(sample, :consent_withdrawn)
+          end
+
+          it 'does not set a timestamp in the sample' do
+            expect { action }.not_to change(sample, :date_of_consent_withdrawn)
+          end
+
+          it 'does not set the user that changed the consent' do
+            expect { action }.not_to change(sample, :user_id_of_consent_withdrawn)
+          end
+        end
+      end
+
+      context 'when consent withdrawn starts off true' do
+        let(:sample) { create :sample, consent_withdrawn: true, date_of_consent_withdrawn: Time.zone.today, user_id_of_consent_withdrawn: current_user.id }
+
+        context 'when changing withdraw consent' do
+          let(:consent) { false }
+
+          it 'changes the consent withdrawn' do
+            expect { action }.to change(sample, :consent_withdrawn).to(false)
+          end
+
+          it 'does not change the timestamp' do
+            expect { action }.not_to change(sample, :date_of_consent_withdrawn)
+          end
+
+          it 'does not change the user that changed the consent' do
+            expect { action }.not_to change(sample, :user_id_of_consent_withdrawn)
+          end
         end
 
-        it 'sets a timestamp in the sample' do
-          expect { action }.to change(sample, :date_of_consent_withdrawn).from(nil)
-        end
+        context 'when not changing withdraw consent' do
+          let(:consent) { true }
 
-        it 'sets the user that changed the consent' do
-          expect { action }.to change(sample, :user_id_of_consent_withdrawn).from(nil).to(current_user.id)
+          it 'does not change the consent withdrawn' do
+            expect { action }.not_to change(sample, :consent_withdrawn)
+          end
+
+          it 'does not set a timestamp in the sample' do
+            expect { action }.not_to change(sample, :date_of_consent_withdrawn)
+          end
+
+          it 'does not set the user that changed the consent' do
+            expect { action }.not_to change(sample, :user_id_of_consent_withdrawn)
+          end
         end
       end
     end
