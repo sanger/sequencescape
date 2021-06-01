@@ -94,9 +94,19 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     @sample = Sample.find(params[:id])
     authorize! :update, @sample
 
-    cleaned_params = clean_params_from_check(params[:sample]).permit(default_permitted_metadata_fields)
+    cleaned_params = params[:sample].permit(default_permitted_metadata_fields)
     cleaned_params[:date_of_consent_withdrawn] = DateTime.now
     cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
+
+    # not sure why the 'checktext_field' values arrive in an extra nested hash
+    # extract them to be values in the outer 'sample_metadata_attributes' hash
+    if cleaned_params[:sample_metadata_attributes][:sample_metadata]
+      cleaned_params[:sample_metadata_attributes][:sample_metadata].each do |k,v|
+        cleaned_params[:sample_metadata_attributes][k] = v
+      end
+      cleaned_params[:sample_metadata_attributes].delete(:sample_metadata)
+    end
+
     if @sample.update(cleaned_params)
       flash[:notice] = 'Sample details have been updated'
       redirect_to sample_path(@sample)
@@ -202,57 +212,78 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
 
   def default_permitted_metadata_fields # rubocop:todo Metrics/MethodLength
     {
-      sample_metadata_attributes: %i[
-        consent_withdrawn
-        organism
-        gc_content
-        cohort
-        gender
-        country_of_origin
-        geographical_region
-        ethnicity
-        dna_source
-        volume
-        mother
-        father
-        replicate
-        sample_public_name
-        sample_common_name
-        sample_strain_att
-        sample_taxon_id
-        sample_ebi_accession_number
-        sample_sra_hold
-        sample_description
-        sibling
-        is_resubmitted
-        date_of_sample_collection
-        date_of_sample_extraction
-        sample_extraction_method
-        sample_purified
-        purification_method
-        concentration
-        concentration_determined_by
-        sample_type
-        sample_storage_conditions
-        supplier_name
-        reference_genome_id
-        genotype
-        phenotype
-        age
-        developmental_stage
-        cell_type
-        disease_state
-        compound
-        dose
-        immunoprecipitate
-        growth_condition
-        rnai
-        organism_part
-        time_point
-        disease
-        subject
-        treatment
-        donor_id
+      sample_metadata_attributes: [
+        :consent_withdrawn,
+        :organism,
+        :gc_content,
+        :cohort,
+        :gender,
+        :country_of_origin,
+        :geographical_region,
+        :ethnicity,
+        :dna_source,
+        :volume,
+        :mother,
+        :father,
+        :replicate,
+        :sample_public_name,
+        :sample_common_name,
+        :sample_strain_att,
+        :sample_taxon_id,
+        :sample_ebi_accession_number,
+        :sample_sra_hold,
+        :sample_description,
+        :sibling,
+        :is_resubmitted,
+        :date_of_sample_collection,
+        :date_of_sample_extraction,
+        :sample_extraction_method,
+        :sample_purified,
+        :purification_method,
+        :concentration,
+        :concentration_determined_by,
+        :sample_type,
+        :sample_storage_conditions,
+        :supplier_name,
+        :reference_genome_id,
+        :genotype,
+        :phenotype,
+        :age,
+        :developmental_stage,
+        :cell_type,
+        :disease_state,
+        :compound,
+        :dose,
+        :immunoprecipitate,
+        :growth_condition,
+        :rnai,
+        :organism_part,
+        :time_point,
+        :disease,
+        :subject,
+        :treatment,
+        :donor_id,
+        {
+          sample_metadata: [
+          :genotype,
+          :phenotype,
+          :age,
+          :developmental_stage,
+          :cell_type,
+          :disease_state,
+          :compound,
+          :dose,
+          :immunoprecipitate,
+          :growth_condition,
+          :rnai,
+          :organism_part,
+          :time_point,
+          :subject,
+          :donor_id,
+          :disease,
+          :treatment
+        ]
+      }
       ]
     }
   end
