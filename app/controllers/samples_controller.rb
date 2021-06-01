@@ -61,10 +61,10 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     authorize! :release, @sample
 
     if @sample.released?
-      flash[:notice] = "Sample '#{@sample.name}' already publically released"
+      flash[:notice] = "Sample '#{@sample.name}' already publicly released"
     else
       @sample.release
-      flash[:notice] = "Sample '#{@sample.name}' publically released"
+      flash[:notice] = "Sample '#{@sample.name}' publicly released"
     end
     redirect_to sample_path(@sample)
   end

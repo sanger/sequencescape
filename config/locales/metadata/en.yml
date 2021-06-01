@@ -194,7 +194,7 @@ en:
 
         sample_description:
           label: Sample Description
-          help: Optional description which will be released publically with the sample
+          help: Optional description which will be released publicly with the sample
           edit_info: "ENA tag"
 
         reference_genome_id:
