@@ -16,19 +16,19 @@ module Api
       has_many :studies
       has_many :projects
 
-      has_many :requests_as_source, readonly: true
-      has_many :requests_as_target, readonly: true
+      has_many :requests_as_source, readonly: true, class_name: 'Request'
+      has_many :requests_as_target, readonly: true, class_name: 'Request'
       has_many :aliquots, readonly: true
 
-      has_many :downstream_assets, readonly: true, polymorphic: true
-      has_many :downstream_wells, readonly: true
-      has_many :downstream_plates, readonly: true
-      has_many :downstream_tubes, readonly: true
+      has_many :downstream_assets, readonly: true, polymorphic: true, class_name: 'Receptacle'
+      has_many :downstream_wells, readonly: true, class_name: 'Well'
+      has_many :downstream_plates, readonly: true, class_name: 'Plate'
+      has_many :downstream_tubes, readonly: true, class_name: 'Tube'
 
-      has_many :upstream_assets, readonly: true, polymorphic: true
-      has_many :upstream_wells, readonly: true
-      has_many :upstream_plates, readonly: true
-      has_many :upstream_tubes, readonly: true
+      has_many :upstream_assets, readonly: true, polymorphic: true, class_name: 'Receptacle'
+      has_many :upstream_wells, readonly: true, class_name: 'Well'
+      has_many :upstream_plates, readonly: true, class_name: 'Plate'
+      has_many :upstream_tubes, readonly: true, class_name: 'Tube'
 
       # Attributes
       attribute :uuid, readonly: true

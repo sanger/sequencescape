@@ -232,7 +232,7 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     json (2.5.1)
-    jsonapi-resources (0.9.0)
+    jsonapi-resources (0.10.4)
       activerecord (>= 4.1)
       concurrent-ruby
       railties (>= 4.1)
@@ -256,7 +256,7 @@ GEM
     mime-types-data (3.2021.0225)
     mini_magick (4.11.0)
     mini_mime (1.1.0)
-    mini_portile2 (2.5.1)
+    mini_portile2 (2.5.3)
     mini_racer (0.4.0)
       libv8-node (~> 15.14.0.0)
     minitest (5.14.4)
@@ -273,7 +273,7 @@ GEM
     net-ldap (0.17.0)
     netrc (0.11.0)
     nio4r (2.5.7)
-    nokogiri (1.11.3)
+    nokogiri (1.11.6)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     parallel (1.20.1)
@@ -547,7 +547,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   json
-  jsonapi-resources (= 0.9.0)
+  jsonapi-resources (= 0.10.4)
   jsonapi-resources-matchers
   knapsack_pro
   launchy

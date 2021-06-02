@@ -21,15 +21,15 @@ module Api
       has_many :wells, readonly: true
       has_many :comments, readonly: true
 
-      has_many :ancestors, readonly: true, polymorphic: true
-      has_many :descendants, readonly: true, polymorphic: true
-      has_many :parents, readonly: true, polymorphic: true
-      has_many :children, readonly: true, polymorphic: true
+      has_many :ancestors, readonly: true, polymorphic: true, class_name: 'Labware'
+      has_many :descendants, readonly: true, polymorphic: true, class_name: 'Labware'
+      has_many :parents, readonly: true, polymorphic: true, class_name: 'Labware'
+      has_many :children, readonly: true, polymorphic: true, class_name: 'Labware'
 
-      has_many :child_plates, readonly: true
-      has_many :child_tubes, readonly: true
+      has_many :child_plates, readonly: true, class_name: 'Plate'
+      has_many :child_tubes, readonly: true, class_name: 'Tube'
 
-      has_many :direct_submissions, readonly: true
+      has_many :direct_submissions, readonly: true, class_name: 'Submission'
 
       # Attributes
       attribute :uuid, readonly: true

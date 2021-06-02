@@ -10,7 +10,7 @@ module Api
 
       has_one :custom_metadatum_collection
       has_many :comments, readonly: true
-      has_many :direct_submissions, readonly: true
+      has_many :direct_submissions, readonly: true, class_name: 'Submission'
 
       filter :purpose_name,
              apply:

@@ -19,12 +19,12 @@ module Api
       has_many :studies, readonly: true
       has_many :projects, readonly: true
       has_many :aliquots, readonly: true
-      has_many :direct_submissions, readonly: true
+      has_many :direct_submissions, readonly: true, class_name: 'Submission'
 
-      has_many :ancestors, readonly: true, polymorphic: true
-      has_many :descendants, readonly: true, polymorphic: true
-      has_many :parents, readonly: true, polymorphic: true
-      has_many :children, readonly: true, polymorphic: true
+      has_many :ancestors, readonly: true, polymorphic: true, class_name: 'Labware'
+      has_many :descendants, readonly: true, polymorphic: true, class_name: 'Labware'
+      has_many :parents, readonly: true, polymorphic: true, class_name: 'Labware'
+      has_many :children, readonly: true, polymorphic: true, class_name: 'Labware'
 
       has_many :comments, readonly: true
 
