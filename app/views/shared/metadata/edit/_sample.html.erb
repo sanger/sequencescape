@@ -60,25 +60,25 @@
     <%= metadata_fields.select_by_association(:reference_genome)%>
 
     <!-- array express field -->
-    <%= metadata_fields.checktext_field(:genotype) %>
-    <%= metadata_fields.checktext_field(:phenotype) %>
-    <%= metadata_fields.checktext_field(:age) %>
-    <%= metadata_fields.checktext_field(:developmental_stage) %>
-    <%= metadata_fields.checktext_field(:cell_type) %>
-    <%= metadata_fields.checktext_field(:disease_state) %>
-    <%= metadata_fields.checktext_field(:compound) %>
-    <%= metadata_fields.checktext_field(:dose) %>
-    <%= metadata_fields.checktext_field(:immunoprecipitate) %>
-    <%= metadata_fields.checktext_field(:growth_condition) %>
-    <%= metadata_fields.checktext_field(:rnai) %>
-    <%= metadata_fields.checktext_field(:organism_part) %>
-    <%= metadata_fields.checktext_field(:time_point) %>
+    <%= metadata_fields.text_field(:genotype) %>
+    <%= metadata_fields.text_field(:phenotype) %>
+    <%= metadata_fields.text_field(:age) %>
+    <%= metadata_fields.text_field(:developmental_stage) %>
+    <%= metadata_fields.text_field(:cell_type) %>
+    <%= metadata_fields.text_field(:disease_state) %>
+    <%= metadata_fields.text_field(:compound) %>
+    <%= metadata_fields.text_field(:dose) %>
+    <%= metadata_fields.text_field(:immunoprecipitate) %>
+    <%= metadata_fields.text_field(:growth_condition) %>
+    <%= metadata_fields.text_field(:rnai) %>
+    <%= metadata_fields.text_field(:organism_part) %>
+    <%= metadata_fields.text_field(:time_point) %>
 
     <!-- EGA field -->
-    <%= metadata_fields.checktext_field(:subject) %>
-    <%= metadata_fields.checktext_field(:donor_id) %>
-    <%= metadata_fields.checktext_field(:disease) %>
-    <%= metadata_fields.checktext_field(:treatment)%>
+    <%= metadata_fields.text_field(:subject) %>
+    <%= metadata_fields.text_field(:donor_id) %>
+    <%= metadata_fields.text_field(:disease) %>
+    <%= metadata_fields.text_field(:treatment)%>
 
     <%  metadata_fields.finalize_related_fields %>
   <% end %>
