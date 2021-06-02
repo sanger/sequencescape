@@ -63,7 +63,12 @@ RSpec.describe SamplesController, type: :controller do
       end
 
       context 'when consent withdrawn starts off true' do
-        let(:sample) { create :sample, consent_withdrawn: true, date_of_consent_withdrawn: Time.zone.today, user_id_of_consent_withdrawn: current_user.id }
+        let(:sample) do
+          create :sample,
+                 consent_withdrawn: true,
+                 date_of_consent_withdrawn: Time.zone.today,
+                 user_id_of_consent_withdrawn: current_user.id
+        end
 
         context 'when changing withdraw consent' do
           let(:consent) { false }
