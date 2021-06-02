@@ -50,3 +50,4 @@ yarn-debug.log*
 config/cucumber.yml
 config/database.yml
 *.min.js
+lib/tasks/working_setup.rake
