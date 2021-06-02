@@ -117,6 +117,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     end
 
     context 'when robot is using 96-Trough buffer (Tecan v1)' do
+      #prettier-ignore
       let(:expected_tecan_file) do
         <<~TECAN
           C;
@@ -190,6 +191,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
         [plates[0], plates[2], plates[1]]
       end
 
+      #prettier-ignore
       let(:expected_tecan_file) do
         <<~TECAN
           C;
@@ -288,6 +290,8 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
+
+    #prettier-ignore
     let(:expected_tecan_file) do
       <<~TECAN
         C;
