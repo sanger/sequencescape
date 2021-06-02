@@ -214,9 +214,9 @@ yarn prettier --check .
 yarn prettier --write .
 ```
 
-Prettier rules are configured in .prettierrc.json
-Whole files can be ignored in .prettierignore
-Sections of files can be disabled using #prettier-ignore
+- Prettier rules are configured in .prettierrc.json
+- Whole files can be ignored in .prettierignore
+- Sections of files can be disabled using #prettier-ignore
 
 ## Rake tasks
 
