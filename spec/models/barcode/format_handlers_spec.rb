@@ -261,5 +261,12 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode " 1234567890NBC\na"
   end
 
+  describe Barcode::FormatHandlers::UkBiocentreV6 do
+    it_has_a_valid_barcode 'RNAsst10088', prefix: 'RNAsst', number: 10_088, suffix: nil
+    it_has_a_valid_barcode 'RNAsst0539473', prefix: 'RNAsst', number: 539_473, suffix: nil
+    it_has_an_invalid_barcode 'RNAsst-10088'
+    it_has_an_invalid_barcode 'INVALID'
+  end
+
   # rubocop:enable RSpec/EmptyExampleGroup
 end
