@@ -2,6 +2,8 @@
 
 source 'https://rubygems.org'
 
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+
 group :default do
   gem 'bootsnap'
   gem 'rails', '~> 5.2.3'
@@ -179,7 +181,12 @@ group :test, :cucumber do
   gem 'capybara-selenium'
   gem 'database_cleaner'
   gem 'factory_bot_rails', require: false
-  gem 'jsonapi-resources-matchers', require: false
+
+  # V1.1.0 not released to ruby-gems. Using GH commit instead
+  gem 'jsonapi-resources-matchers',
+      require: false,
+      github: 'G5/jsonapi-resources-matchers',
+      branch: 'e7149153d1fd49a6ddd3720d66613dfe865f069d'
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false

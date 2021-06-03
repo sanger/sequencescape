@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/G5/jsonapi-resources-matchers.git
+  revision: e7149153d1fd49a6ddd3720d66613dfe865f069d
+  branch: e7149153d1fd49a6ddd3720d66613dfe865f069d
+  specs:
+    jsonapi-resources-matchers (1.1.0)
+      jsonapi-resources (>= 0.9)
+
+GIT
   remote: https://github.com/resgraph/acts-as-dag.git
   revision: 5e185dddff6563ee9ee92611555cd9d9a519d280
   branch: 5e185dddff6563ee9ee92611555cd9d9a519d280
@@ -236,8 +244,6 @@ GEM
       activerecord (>= 4.1)
       concurrent-ruby
       railties (>= 4.1)
-    jsonapi-resources-matchers (1.0.0)
-      jsonapi-resources (>= 0.9.0)
     knapsack_pro (2.15.0)
       rake
     launchy (2.5.0)
@@ -273,7 +279,7 @@ GEM
     net-ldap (0.17.0)
     netrc (0.11.0)
     nio4r (2.5.7)
-    nokogiri (1.11.6)
+    nokogiri (1.11.7)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     parallel (1.20.1)
@@ -548,7 +554,7 @@ DEPENDENCIES
   jquery-ui-rails
   json
   jsonapi-resources (= 0.10.4)
-  jsonapi-resources-matchers
+  jsonapi-resources-matchers!
   knapsack_pro
   launchy
   mime-types

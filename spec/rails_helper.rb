@@ -84,6 +84,7 @@ RSpec.configure do |config|
 
   config.include ApiV2Helper, with: :api_v2
   config.include RSpec::Longrun::DSL
+  config.include RSpec::JsonExpectations::Matchers
 
   Capybara.add_selector(:data_behavior) { xpath { |name| XPath.css("[data-behavior='#{name}']") } }
 

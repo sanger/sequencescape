@@ -22,7 +22,7 @@ describe 'WorkOrders API', with: :api_v2 do
       end
     end
 
-    it 'sends a list of work_orders' do
+    it 'sends a list of work_orders', aggregate_failures: true do
       api_get '/api/v2/work_orders'
 
       # test for the 200 status-code
@@ -32,7 +32,7 @@ describe 'WorkOrders API', with: :api_v2 do
       expect(json['data'].length).to eq(5)
     end
 
-    it 'allows filtering of work_orders by state' do
+    it 'allows filtering of work_orders by state', aggregate_failures: true do
       api_get '/api/v2/work_orders?filter[state]=pending'
 
       # test for the 200 status-code
@@ -42,7 +42,7 @@ describe 'WorkOrders API', with: :api_v2 do
       expect(json['data'].length).to eq(3)
     end
 
-    it 'allows filtering of work_orders by order type' do
+    it 'allows filtering of work_orders by order type', aggregate_failures: true do
       api_get "/api/v2/work_orders?filter[order_type]=#{our_request_type.key}"
 
       # test for the 200 status-code
@@ -52,7 +52,7 @@ describe 'WorkOrders API', with: :api_v2 do
       expect(json['data'].length).to eq(3)
     end
 
-    it 'allows filtering of work_orders by order type and state' do
+    it 'allows filtering of work_orders by order type and state', aggregate_failures: true do
       api_get "/api/v2/work_orders?filter[order_type]=#{our_request_type.key}&filter[state]=pending"
 
       # test for the 200 status-code
@@ -75,14 +75,14 @@ describe 'WorkOrders API', with: :api_v2 do
 
     let(:expected_includes) do
       # Note, we don't test the actual resource content here.
-      [
+      UnorderedArray(
         { 'type' => 'studies', 'id' => study.id.to_s },
         { 'type' => 'wells', 'id' => well.id.to_s },
         { 'type' => 'samples', 'id' => sample.id.to_s }
-      ]
+      )
     end
 
-    it 'can inline all necessary information' do
+    it 'can inline all necessary information', aggregate_failures: true do
       api_get '/api/v2/work_orders?include=study,samples,project,source_receptacle'
 
       # test for the 200 status-code
@@ -93,7 +93,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
   end
 
-  context 'with a request' do
+  context 'with a request', aggregate_failures: true do
     let(:requests) { create_list :library_request, 2 }
     let(:work_order) { create :work_order, requests: requests }
 
@@ -110,13 +110,13 @@ describe 'WorkOrders API', with: :api_v2 do
       }
     end
 
-    it 'sends an individual work_order' do
+    it 'sends an individual work_order', aggregate_failures: true do
       api_get "/api/v2/work_orders/#{work_order.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('work_orders')
     end
 
-    it 'allows update of a work order' do
+    it 'allows update of a work order', aggregate_failures: true do
       api_patch "/api/v2/work_orders/#{work_order.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('work_orders')
