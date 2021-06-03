@@ -4,18 +4,18 @@ module Api
   module V2
     # QcAssaysController
     class QcAssaysController < JSONAPI::ResourceController
-      def create # rubocop:todo Metrics/MethodLength
+      def create
         @qc_result_factory = QcResultFactory.new(qc_assay_params)
         if @qc_result_factory.valid?
           @qc_result_factory.save
-          render json:
-                   JSONAPI::ResourceSerializer
-                     .new(QcAssayResource)
-                     .serialize_to_hash(QcAssayResource.new(@qc_result_factory.qc_assay, nil)),
-                 status: :created
+          render json: serialize_resource(QcAssayResource.new(@qc_result_factory.qc_assay, nil)), status: :created
         else
           render json: { errors: @qc_result_factory.errors }, status: :unprocessable_entity
         end
+      end
+
+      def serialize_resource(resource)
+        { data: JSONAPI::ResourceSerializer.new(QcAssayResource).object_hash(resource, {}) }
       end
 
       def qc_assay_params
