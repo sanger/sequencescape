@@ -27,6 +27,7 @@ module Api
       has_many :children, readonly: true, polymorphic: true, class_name: 'Labware'
 
       has_many :comments, readonly: true
+      has_many :state_changes, readonly: true
 
       # Attributes
       attribute :uuid, readonly: true
