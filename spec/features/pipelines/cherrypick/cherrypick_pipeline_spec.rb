@@ -284,7 +284,10 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
-    let(:expected_tecan_file) { <<~TECAN }
+
+    #prettier-ignore
+    let(:expected_tecan_file) do
+      <<~TECAN
         C;
         C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100
         C;
@@ -313,6 +316,8 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
         C;
         C; DEST1 = #{destination_plate_human_barcode}
       TECAN
+    end
+
     let(:expected_pick_files_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => expected_tecan_file } }
     end

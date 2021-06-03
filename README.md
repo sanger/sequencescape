@@ -41,6 +41,7 @@ a organisation of 900 people.
   - [Stating rails](#stating-rails)
     - [Delayed job](#delayed-job)
 - [Testing](#testing)
+- [Linting and formatting](#linting-and-formatting)
 - [Rake tasks](#rake-tasks)
 - [Supporting applications](#supporting-applications)
   - [Barcode printing](#barcode-printing)
@@ -197,6 +198,25 @@ Testing is done in three ways; using rspec, rails test and feature tests.
    ```shell
    bundle exec rake test -f
    ```
+
+## Linting and formatting
+
+Rubocop is used for linting.
+
+```shell
+bundle exec rubocop
+```
+
+Prettier is used for formatting.
+
+```shell
+yarn prettier --check .
+yarn prettier --write .
+```
+
+- Prettier rules are configured in .prettierrc.json
+- Whole files can be ignored in .prettierignore
+- Sections of files can be disabled using #prettier-ignore
 
 ## Rake tasks
 
