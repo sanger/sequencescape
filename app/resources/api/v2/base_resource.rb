@@ -13,15 +13,6 @@ module Api
       Tube.descendants.each { |subclass| model_hint model: subclass, resource: :tube }
       Request.descendants.each { |subclass| model_hint model: subclass, resource: :request }
 
-      # This extension allows the readonly property to be used on attributes/relationships
-      # prior to the 0.10 upgrade. This avoids the need to override updatable_fields on
-      # every resource. Readonly does not work on attributes in 0.9 by default
-      # This can be removed as soon as we update to 0.10, which is currently only in alpha
-      def self.updatable_fields(context)
-        super - _attributes.select { |_attr, options| options[:readonly] }.keys -
-          _relationships.select { |_rel_key, rel| rel.options[:readonly] }.keys
-      end
-
       # This extension allows the writeonly property to be used on attributes/relationships
       #  This avoids the need to override fetchable_fields on
       # every resource.
@@ -47,6 +38,13 @@ module Api
         else
           super
         end
+      end
+
+      # Monkey patch for issue: https://github.com/cerebris/jsonapi-resources/issues/1160
+      # Note: The example patch is against 0.10.5, which we're blocked from due to other issues
+      def _replace_polymorphic_to_one_link(relationship_type, key_value, key_type, options)
+        key_model_class = self.class.resource_klass_for(key_type.to_s)._model_class
+        super(relationship_type, key_value, key_model_class, options)
       end
     end
   end

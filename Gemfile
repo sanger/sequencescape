@@ -58,12 +58,9 @@ group :default do
   gem 'uuidtools'
 
   # API v2
-  # Pinned to 0.9.0
-  # We apply some monkey patches to this which aren't compatible with later version
-  # I've done some preliminary work here:
-  # https://github.com/JamesGlover/sequencescape/tree/depfu/update/jsonapi-resources-0.9.5
-  # but not only is there a failing test, but performance was tanking in a few places
-  # due to not correctly eager loading dependencies on nested resources.
+  # Pinned to 0.10.4
+  # Avoids issues introduced in later versions:
+  # https://github.com/cerebris/jsonapi-resources/issues/1369
   gem 'jsonapi-resources', '= 0.10.4'
 
   # Wraps bunny with connection pooling ad consumer process handling
