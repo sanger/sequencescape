@@ -95,8 +95,13 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     authorize! :update, @sample
 
     cleaned_params = params[:sample].permit(default_permitted_metadata_fields)
-    cleaned_params[:date_of_consent_withdrawn] = DateTime.now
-    cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
+
+    # if consent is being withdrawn and wasn't previously, set a couple of fields
+    if (cleaned_params[:sample_metadata_attributes][:consent_withdrawn] == 'true') && !@sample.consent_withdrawn
+      cleaned_params[:date_of_consent_withdrawn] = DateTime.now
+      cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
+    end
+
     if @sample.update(cleaned_params)
       flash[:notice] = 'Sample details have been updated'
       redirect_to sample_path(@sample)

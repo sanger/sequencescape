@@ -2,7 +2,6 @@
 
 # Module with the file generation functionality for Tecan robots
 module Robot::Generator::Behaviours::TecanDefault
-
   def mapping(data_object: picking_data)
     raise ArgumentError, 'Data object not present for Tecan mapping' if data_object.nil?
     output_file_contents = [header(data_object)]
@@ -78,6 +77,7 @@ module Robot::Generator::Behaviours::TecanDefault
     'C;'
   end
 
+  # rubocop:todo Metrics/MethodLength
   def buffers(data_object, total_volume)
     buffer = []
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
@@ -88,10 +88,13 @@ module Robot::Generator::Behaviours::TecanDefault
       vert_map_id =
         Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
 
-      buffer << "A;#{buffer_info(vert_map_id)};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
+      buffer <<
+        "A;#{buffer_info(vert_map_id)};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
     end
     buffer.join("\n")
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:todo Metrics/PerceivedComplexity
   # rubocop:todo Metrics/AbcSize
@@ -107,6 +110,6 @@ module Robot::Generator::Behaviours::TecanDefault
     footer
   end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/PerceivedComplexity
-  end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/PerceivedComplexity
+end
