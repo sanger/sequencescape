@@ -248,8 +248,8 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::PlymouthV1 do
-    it_has_a_valid_barcode 'PLY-chp-123456', prefix: 'PLY', number: 123456, suffix: nil
-    it_has_a_valid_barcode 'PLY-chp-12345678', prefix: 'PLY', number: 12345678, suffix: nil
+    it_has_a_valid_barcode 'PLY-chp-123456', prefix: 'PLY', number: 123_456, suffix: nil
+    it_has_a_valid_barcode 'PLY-chp-12345678', prefix: 'PLY', number: 12_345_678, suffix: nil
     it_has_an_invalid_barcode 'PLY-123456'
     it_has_an_invalid_barcode 'PLY-chp-_123456'
     it_has_an_invalid_barcode 'INVALID'
