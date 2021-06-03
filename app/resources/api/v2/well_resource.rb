@@ -30,8 +30,8 @@ module Api
       has_many :upstream_plates, readonly: true, class_name: 'Plate'
       has_many :upstream_tubes, readonly: true, class_name: 'Tube'
 
-      has_many :transfer_requests_as_source, readonly: true, class_name: 'Request'
-      has_many :transfer_requests_as_target, readonly: true, class_name: 'Request'
+      has_many :transfer_requests_as_source, readonly: true, class_name: 'TransferRequest'
+      has_many :transfer_requests_as_target, readonly: true, class_name: 'TransferRequest'
 
       # Attributes
       attribute :uuid, readonly: true

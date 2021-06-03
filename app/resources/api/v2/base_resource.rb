@@ -21,6 +21,12 @@ module Api
           self.class._relationships.select { |_rel_key, rel| rel.options[:writeonly] }.keys
       end
 
+      # This extension allows the immutable property to be used on attributes/relationships
+      def self.updatable_fields(context)
+        super - _attributes.select { |_attr, options| options[:immutable] }.keys -
+          _relationships.select { |_rel_key, rel| rel.options[:immutable] }.keys
+      end
+
       # Eager load specified models by default. Useful when attributes are
       # dependent on an associated model.
       def self.default_includes(*inclusions)

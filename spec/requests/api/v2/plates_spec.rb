@@ -129,17 +129,8 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
     context 'with mixed ancestors' do
       before { resource_model.parents << create(:plate) << create(:multiplexed_library_tube) }
 
-      it 'handles polymorphic relationships properly' do
+      it 'handles polymorphic resources properly' do
         api_get "/api/v2/plates/#{resource_model.id}/parents"
-        expect(response).to have_http_status(:success), response.body
-        expect(json['data'].length).to eq(2)
-        types = json['data'].map { |anc| anc['type'] }
-        expect(types).to include('plates')
-        expect(types).to include('tubes')
-      end
-
-      it 'handles polymorphic relationships properly' do
-        api_get "/api/v2/plates/#{resource_model.id}/relationships/parents"
         expect(response).to have_http_status(:success), response.body
         expect(json['data'].length).to eq(2)
         types = json['data'].map { |anc| anc['type'] }
