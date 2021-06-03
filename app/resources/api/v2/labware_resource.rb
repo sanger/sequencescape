@@ -23,9 +23,8 @@ module Api
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
       filter :without_children, apply: ->(records, _value, _options) { records.without_children }
-      filter :created_at_gt, apply: (lambda do |records, value, _options|
-        records.where('labware.created_at > ?', value[0].to_date)
-      end)
+      filter :created_at_gt,
+             apply: (lambda { |records, value, _options| records.where('labware.created_at > ?', value[0].to_date) })
     end
   end
 end

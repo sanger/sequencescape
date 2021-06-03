@@ -11,7 +11,7 @@
     <%= metadata_fields.text_field(:country_of_origin) %>
     <%= metadata_fields.text_field(:geographical_region) %>
     <%= metadata_fields.text_field(:ethnicity) %>
-    <%= metadata_fields.select(:dna_source, Sample::DNA_SOURCES) %>
+    <%= metadata_fields.select(:dna_source, Sample::DNA_SOURCES,include_blank: true) %>
     <%= metadata_fields.text_field(:volume) %>
     <%= metadata_fields.text_field(:mother) %>
     <%= metadata_fields.text_field(:father) %>
@@ -19,7 +19,7 @@
 
     <%# Fields for 'Next-gen sequencing' %>
     <%= metadata_fields.text_field(:organism) %>
-    <%= metadata_fields.select(:gc_content, Sample::GC_CONTENTS) %>
+    <%= metadata_fields.select(:gc_content, Sample::GC_CONTENTS,include_blank: true) %>
 
     <%# Fields for the SLF pipeline, by the looks of it %>
     <%= metadata_fields.text_field(:sibling) %>
@@ -40,7 +40,7 @@
 
     <!-- ENA requirement -->
     <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
-      <%= group.select(:sample_sra_hold, Sample::SRA_HOLD_VALUES) %>
+      <%= group.select(:sample_sra_hold, Sample::SRA_HOLD_VALUES,include_blank: true) %>
       <%= group.text_field(:sample_common_name, 'data-organism' => 'common_name') %>
       <input class='btn btn-default validate_organism' type='button' value='Lookup'/>
       <%= group.text_field(:sample_taxon_id,    'data-organism' => 'taxon_id') %>
@@ -60,25 +60,25 @@
     <%= metadata_fields.select_by_association(:reference_genome)%>
 
     <!-- array express field -->
-    <%= metadata_fields.checktext_field(:genotype) %>
-    <%= metadata_fields.checktext_field(:phenotype) %>
-    <%= metadata_fields.checktext_field(:age) %>
-    <%= metadata_fields.checktext_field(:developmental_stage) %>
-    <%= metadata_fields.checktext_field(:cell_type) %>
-    <%= metadata_fields.checktext_field(:disease_state) %>
-    <%= metadata_fields.checktext_field(:compound) %>
-    <%= metadata_fields.checktext_field(:dose) %>
-    <%= metadata_fields.checktext_field(:immunoprecipitate) %>
-    <%= metadata_fields.checktext_field(:growth_condition) %>
-    <%= metadata_fields.checktext_field(:rnai) %>
-    <%= metadata_fields.checktext_field(:organism_part) %>
-    <%= metadata_fields.checktext_field(:time_point) %>
+    <%= metadata_fields.text_field(:genotype) %>
+    <%= metadata_fields.text_field(:phenotype) %>
+    <%= metadata_fields.text_field(:age) %>
+    <%= metadata_fields.text_field(:developmental_stage) %>
+    <%= metadata_fields.text_field(:cell_type) %>
+    <%= metadata_fields.text_field(:disease_state) %>
+    <%= metadata_fields.text_field(:compound) %>
+    <%= metadata_fields.text_field(:dose) %>
+    <%= metadata_fields.text_field(:immunoprecipitate) %>
+    <%= metadata_fields.text_field(:growth_condition) %>
+    <%= metadata_fields.text_field(:rnai) %>
+    <%= metadata_fields.text_field(:organism_part) %>
+    <%= metadata_fields.text_field(:time_point) %>
 
     <!-- EGA field -->
-    <%= metadata_fields.checktext_field(:subject) %>
-    <%= metadata_fields.checktext_field(:donor_id) %>
-    <%= metadata_fields.checktext_field(:disease) %>
-    <%= metadata_fields.checktext_field(:treatment)%>
+    <%= metadata_fields.text_field(:subject) %>
+    <%= metadata_fields.text_field(:donor_id) %>
+    <%= metadata_fields.text_field(:disease) %>
+    <%= metadata_fields.text_field(:treatment)%>
 
     <%  metadata_fields.finalize_related_fields %>
   <% end %>

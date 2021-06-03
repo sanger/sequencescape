@@ -36,7 +36,7 @@ jobs:
             ${{ runner.os }}-
       # Run prettier prior to the cops
       - name: Run prettier
-        run: yarn prettier --check
+        run: yarn prettier --check .
       # Actually run our cops with flags to improve the details of lint errors
       # and parallel to try and improve speed
       - name: Run rubocop
