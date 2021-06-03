@@ -6,7 +6,6 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
     view_for(:radio_field, 'shared/metadata/radio_field')
     view_for(:header, 'shared/metadata/header')
     view_for(:document, 'shared/metadata/edit_document_field')
-    view_for(:checktext, 'shared/metadata/edit_checktext_field')
 
     @related_fields, @changing = [], []
   end
@@ -32,15 +31,6 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
       options[:selected] = association_target.default.for_select_dropdown.last
     end
     select(:"#{association}_id", association_target.for_select_association, options, html_options)
-  end
-
-  # Very broken looking combination of textbox and option field. Seems
-  # to allow specifying N/A or the value from the text box. Text box appears to
-  # get rendered twice, which appears to be a bug.
-  def checktext_field(field, options = {})
-    options[:class] ||= []
-    options[:class] << ' form-control'
-    property_field(:field, field) { render_view(:checktext, field, options) }
   end
 
   %i[text_area text_field number_field].each do |field|

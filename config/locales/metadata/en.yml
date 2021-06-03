@@ -257,7 +257,7 @@ en:
         age:
           label: Age
           edit_info: "Array Express"
-          help: valid units are  second, minute, hour, day, month year.
+          help: "Number or range of numbers followed by one of the following units: seconds, minutes, hours, days, weeks, months, years. Examples: 4.5 weeks, 2-3 years"
         developmental_stage:
           label: Developmental Stage
           edit_info: "Array Express"
@@ -276,6 +276,7 @@ en:
         dose:
           label: Dose
           edit_info: "Array Express"
+          help: "Number followed by a space and the unit. Example: 5.3 mg"
         immunoprecipitate:
           label: Immunoprecipitate
           edit_info: "Array Express"

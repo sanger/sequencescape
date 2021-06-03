@@ -94,7 +94,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     @sample = Sample.find(params[:id])
     authorize! :update, @sample
 
-    cleaned_params = clean_params_from_check(params[:sample]).permit(default_permitted_metadata_fields)
+    cleaned_params = params[:sample].permit(default_permitted_metadata_fields)
 
     # if consent is being withdrawn and wasn't previously, set a couple of fields
     if (cleaned_params[:sample_metadata_attributes][:consent_withdrawn] == 'true') && !@sample.consent_withdrawn
