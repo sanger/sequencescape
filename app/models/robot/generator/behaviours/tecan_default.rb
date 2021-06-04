@@ -6,7 +6,7 @@ module Robot::Generator::Behaviours::TecanDefault
     raise ArgumentError, 'Data object not present for Tecan mapping' if data_object.nil?
     output_file_contents = [header(data_object)]
 
-    buffer_data = buffers(data_object, total_volume)
+    buffer_data = buffers(data_object)
     if buffer_data.present?
       output_file_contents << buffer_data
       output_file_contents << buffer_seperator
@@ -22,7 +22,11 @@ module Robot::Generator::Behaviours::TecanDefault
   end
 
   def header(data_object)
-    "C;\nC; This file created by #{data_object['user']} on #{data_object['time']}\nC;"
+    <<~HEADER
+      C;
+      C; This file created by #{data_object['user']} on #{data_object['time']}
+      C;
+    HEADER
   end
 
   def tecan_precision_value(value)
@@ -64,7 +68,7 @@ module Robot::Generator::Behaviours::TecanDefault
     'C;'
   end
 
-  def buffers(data_object, total_volume)
+  def buffers(data_object)
     buffer = []
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
       next unless total_volume > mapping['volume']
