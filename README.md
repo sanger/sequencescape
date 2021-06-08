@@ -136,7 +136,19 @@ The `config/database.yml` file saves the list of databases.
    bundle exec rails webpacker:install
    ```
 
-### Stating rails
+### Starting services
+
+You can quickly spin up all required services if you use foreman
+
+```shell
+gem install foreman
+foreman start -p 3000
+```
+
+Note: Do _not_ add foreman to the gemfile. [See the foreman Github for more
+information](https://github.com/ddollar/foreman/wiki/Don't-Bundle-Foreman)
+
+#### Stating rails
 
 ```shell
 bundle exec rails s

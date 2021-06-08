@@ -94,4 +94,23 @@ describe 'Wells API', with: :api_v2 do
       end
     end
   end
+
+  context 'with aliquots and requests included when request is null' do
+    let(:well) { create :untagged_well }
+
+    describe '#get' do
+      before { api_get "/api/v2/wells/#{well.id}?include=aliquots.request" }
+
+      it 'sends an individual well' do
+        expect(response).to have_http_status(:success)
+        expect(json.dig('data', 'type')).to eq('wells')
+      end
+
+      it 'returns a null request data attribute for aliquots', aggregate_failures: true do
+        aliquot = json['included'].find { |r| r['type'] == 'aliquots' }
+        expect(aliquot.dig('relationships', 'request')).to have_key('data')
+        expect(aliquot.dig('relationships', 'request', 'data')).to eq(nil)
+      end
+    end
+  end
 end

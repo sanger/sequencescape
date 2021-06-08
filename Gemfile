@@ -61,7 +61,7 @@ group :default do
   # Pinned to 0.10.4
   # Avoids issues introduced in later versions:
   # https://github.com/cerebris/jsonapi-resources/issues/1369
-  gem 'jsonapi-resources', '= 0.10.4'
+  gem 'jsonapi-resources'
 
   # Wraps bunny with connection pooling ad consumer process handling
   gem 'sanger_warren'
