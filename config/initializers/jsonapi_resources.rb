@@ -25,6 +25,8 @@ end
 #   with aliquots and requests included when request is null
 #     #get
 #       returns a null request data attribute for aliquots
+# https://github.com/cerebris/jsonapi-resources/issues/1371
+# Proposed fix and PR: https://github.com/cerebris/jsonapi-resources/pull/1372
 class JSONAPI::Processor
   def load_included(resource_klass, source_resource_id_tree, include_related, options)
     source_rids = source_resource_id_tree.fragments.keys
