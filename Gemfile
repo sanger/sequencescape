@@ -140,7 +140,7 @@ group :development, :test, :cucumber do
   gem 'pry-stack_explorer'
 
   # Asset compilation, js and style libraries
-  gem 'bootstrap'
+  gem 'bootstrap', '~>4.0' # Pinned as v5 has significant changes
   gem 'font-awesome-sass'
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
@@ -200,7 +200,6 @@ group :test, :cucumber do
 end
 
 group :cucumber do
-  gem 'cucumber'
   gem 'cucumber-rails', require: false
   gem 'mime-types'
   gem 'rubyzip'
