@@ -40,7 +40,7 @@ RSpec.describe Api::V2::StudiesController, type: :request, aker: true do
   end
 
   it 'api request returns the correct studies' do
-    get api_v2_studies_path, params: { "filter[state]": 'active', "filter[user]": user_1.login }
+    get api_v2_studies_path, params: { 'filter[state]': 'active', 'filter[user]': user_1.login }
     expect(response).to be_successful
     json = ActiveSupport::JSON.decode(response.body)
     expect(json['data'].length).to eq(3)
