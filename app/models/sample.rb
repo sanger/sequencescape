@@ -230,7 +230,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 with: /\A[[:ascii:]]+\z/,
                 message: 'only allows ASCII'
               },
-              if: :supplier_name_changed?
+              if: :supplier_name_changed? && :supplier_name?
 
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
