@@ -137,6 +137,18 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
         expect(types).to include('plates')
         expect(types).to include('tubes')
       end
+
+      it 'handles included polymorphic resources properly', aggregate_failures: true do
+        api_get "/api/v2/plates/#{resource_model.id}?include=parents"
+        expect(response).to have_http_status(:success), response.body
+        relationships = json.dig('data', 'relationships', 'parents', 'data') || :no_key
+        expect(relationships).to be_an(Array)
+        expect(relationships.length).to eq(2)
+        types = relationships.map { |anc| anc['type'] }
+        expect(types).to contain_exactly('plates', 'tubes')
+        included_types = json.fetch('included', []).map { |anc| anc['type'] }
+        expect(included_types).to contain_exactly('plates', 'tubes')
+      end
     end
 
     context 'with comments on plates' do
