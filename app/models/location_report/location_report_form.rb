@@ -10,17 +10,10 @@ class LocationReport::LocationReportForm
   include ActiveModel::AttributeMethods
 
   # Attributes
-  attr_accessor :user,
-                :report_type,
-                :location_barcode,
-                :faculty_sponsor_ids,
-                :study_id,
-                :start_date,
-                :end_date,
-                :plate_purpose_ids
+  attr_accessor :user, :report_type, :faculty_sponsor_ids, :study_id, :start_date, :end_date, :plate_purpose_ids
 
   attr_accessor :barcodes_text
-  attr_reader :name
+  attr_reader :name, :location_barcode
   attr_writer :location_report, :barcodes
 
   # validations
@@ -32,6 +25,10 @@ class LocationReport::LocationReportForm
   def name=(input_name)
     @name = input_name.gsub(/[^A-Za-z0-9_\-.\s]/, '').squish.gsub(/\s/, '_') if input_name.present?
     @name = Time.current.to_formatted_s(:number) if input_name.blank?
+  end
+
+  def location_barcode=(location_barcode)
+    @location_barcode = location_barcode&.strip
   end
 
   def location_report # rubocop:todo Metrics/MethodLength
