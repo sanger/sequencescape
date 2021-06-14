@@ -149,4 +149,22 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       end
     end
   end
+
+  context 'updating supplier name' do
+    let(:sample) { create :sample }
+
+    it 'validates that supplier name allows only ASCII characteres' do
+      expect(sample.sample_metadata.supplier_name).to be_nil
+      sample.sample_metadata.supplier_name = 'भारत'
+      expect(sample.sample_metadata.save).to eq false
+    end
+
+    it 'can have the supplier name blanked' do
+      expect(sample.sample_metadata.supplier_name).to be_nil
+      sample.sample_metadata.update!(supplier_name: 'something')
+      expect(sample.sample_metadata.supplier_name).not_to be_nil
+      sample.sample_metadata.update!(supplier_name: nil)
+      expect(sample.sample_metadata.supplier_name).to be_nil
+    end
+  end
 end
