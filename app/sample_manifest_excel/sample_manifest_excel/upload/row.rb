@@ -87,7 +87,7 @@ module SampleManifestExcel
         if sample.updated_by_manifest && !override
           @sample_skipped = true
         else
-          update_specialised_fields(tag_group)
+          update_specialised_fields(tag_group, false)
           asset.save!
           metadata.save!
           sample.updated_by_manifest = true
@@ -103,8 +103,8 @@ module SampleManifestExcel
           aliquot.previous_changes.present?
       end
 
-      def update_specialised_fields(tag_group)
-        specialised_fields.each { |specialised_field| specialised_field.update(aliquot: aliquot, tag_group: tag_group) }
+      def update_specialised_fields(tag_group, early)
+        specialised_fields.select { |field| field.process_early == early }.each { |specialised_field| specialised_field.update(aliquot: aliquot, tag_group: tag_group) }
       end
 
       def update_metadata_fields
@@ -159,7 +159,17 @@ module SampleManifestExcel
       def validate_sample
         check_sample_present
         sample_can_be_updated
-        return errors.empty?
+        errors.empty?
+      end
+
+      def check_specialised_fields(early)
+        return unless errors.empty?
+
+        specialised_fields.select { |field| field.process_early == early }.each do |specialised_field|
+          unless specialised_field.valid?
+            errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
+          end
+        end
       end
 
       private
@@ -178,7 +188,7 @@ module SampleManifestExcel
         return unless errors.empty?
 
         check_primary_receptacle
-        check_specialised_fields
+        check_specialised_fields(false)
         check_sample_metadata
       end
 
@@ -186,16 +196,6 @@ module SampleManifestExcel
         return if sample.primary_receptacle.present?
 
         errors.add(:base, "#{row_title} Does not have a primary receptacle.")
-      end
-
-      def check_specialised_fields
-        return unless errors.empty?
-
-        specialised_fields.each do |specialised_field|
-          unless specialised_field.valid?
-            errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
-          end
-        end
       end
 
       def check_sample_metadata

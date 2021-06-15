@@ -42,23 +42,19 @@ module SampleManifestExcel
         end
 
         def process_early_specialised_fields
-          problem = false
+          return false unless early_specialised_fields_valid?
 
+          upload.rows.each { |row| row.update_specialised_fields(nil, true) }
+          true
+        end
+
+        def early_specialised_fields_valid?
+          upload.rows.each { |row| row.check_specialised_fields(true) }
           upload.rows.each do |row|
-            row.specialised_fields.each do |field|
-              if field.instance_of? SequencescapeExcel::SpecialisedField::SangerPlateId # TODO: change this to identify based on an attribute on the specialised field model
-                unless field.valid?
-                  upload.errors.add(:base, "Row #{row.number} - #{field.errors.full_messages.join(', ')}")
-                  problem = true
-                  next
-                end
-
-                field.update
-              end
-            end
+            upload.errors.add(:base, "Row #{row.number} - #{row.errors.full_messages.join(', ')}") unless row.errors.empty?
           end
 
-          return !problem
+          upload.errors.empty?
         end
 
         def create_samples_if_not_present
