@@ -5,5 +5,9 @@ FactoryBot.define do
     sanger_sample_id
     sample_manifest
     association(:asset, factory: :receptacle)
+
+    after(:build) do |sample_manifest_asset|
+      sample_manifest_asset.sample_manifest.labware = [sample_manifest_asset.asset.labware]
+    end
   end
 end
