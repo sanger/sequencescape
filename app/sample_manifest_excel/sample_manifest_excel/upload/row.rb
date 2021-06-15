@@ -19,8 +19,8 @@ module SampleManifestExcel
       validates :number, presence: true, numericality: true
       validate :sanger_sample_id_exists?, if: :sanger_sample_id
       validates_presence_of :data, :columns
-      validate :check_sample_present
-      validate :sample_can_be_updated
+      # validate :check_sample_present # This calls sample and therefore 'generate_sample_and_aliquot' (# This is where register_stock? gets called)
+      # validate :sample_can_be_updated # This calls sample and therefore 'generate_sample_and_aliquot' (# This is where register_stock? gets called)
       delegate :present?, to: :sample, prefix: true
 
       ##

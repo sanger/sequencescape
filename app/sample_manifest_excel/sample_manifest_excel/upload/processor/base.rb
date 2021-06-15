@@ -26,6 +26,26 @@ module SampleManifestExcel
         def run(tag_group)
           return unless valid?
 
+          # here, do Sanger Plate ID specialised field update first
+          # run the validation beforehand as well
+          upload.rows.each do |row|
+            row.specialised_fields.each do |field|
+              if field.instance_of? SequencescapeExcel::SpecialisedField::SangerPlateId # TODO: change this to identify based on an attribute on the specialised field model
+                unless field.valid?
+                  upload.errors.add(:base, "Row #{row.number} - #{field.errors.full_messages.join(', ')}")
+                  return
+                end
+
+                field.update
+              end
+            end
+          end
+
+          # then, find or create samples (take sample validation out from earlier)
+
+          # then, run the sample validation that I took out earlier
+
+          # then, continue as normal
           update_samples_and_aliquots(tag_group)
           update_sample_manifest
         end
