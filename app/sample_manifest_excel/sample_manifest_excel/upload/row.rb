@@ -156,6 +156,12 @@ module SampleManifestExcel
         sample.primary_receptacle.labware
       end
 
+      def validate_sample
+        check_sample_present
+        sample_can_be_updated
+        return errors.empty?
+      end
+
       private
 
       def manifest_asset

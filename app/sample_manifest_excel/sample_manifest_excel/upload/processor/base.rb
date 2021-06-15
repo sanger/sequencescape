@@ -28,12 +28,29 @@ module SampleManifestExcel
 
           # here, do Sanger Plate ID specialised field update first
           # run the validation beforehand as well
+          return unless process_early_specialised_fields
+
+          # then, find or create samples (take sample validation out from earlier)
+          create_samples_if_not_present
+
+          # then, run the sample validation that I took out earlier
+          return unless samples_valid?
+
+          # then, continue as normal
+          update_samples_and_aliquots(tag_group)
+          update_sample_manifest
+        end
+
+        def process_early_specialised_fields
+          problem = false
+
           upload.rows.each do |row|
             row.specialised_fields.each do |field|
               if field.instance_of? SequencescapeExcel::SpecialisedField::SangerPlateId # TODO: change this to identify based on an attribute on the specialised field model
                 unless field.valid?
                   upload.errors.add(:base, "Row #{row.number} - #{field.errors.full_messages.join(', ')}")
-                  return
+                  problem = true
+                  next
                 end
 
                 field.update
@@ -41,18 +58,29 @@ module SampleManifestExcel
             end
           end
 
-          # then, find or create samples (take sample validation out from earlier)
+          return !problem
+        end
 
-          # then, run the sample validation that I took out earlier
+        def create_samples_if_not_present
+          upload.rows.each(&:sample)
+        end
 
-          # then, continue as normal
-          update_samples_and_aliquots(tag_group)
-          update_sample_manifest
+        def samples_valid?
+          all_valid = true
+
+          upload.rows.each do |row|
+            unless row.validate_sample
+              upload.errors.add(:base, "Row #{row.number} - #{row.errors.full_messages.join(', ')}")
+              all_valid = false
+            end
+          end
+
+          all_valid
         end
 
         def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
-            row.update_sample(tag_group, upload.override)
+            row.update_sample(tag_group, upload.override) # This is where the foreign barcode gets inserted
             substitutions << row.aliquot.substitution_hash if row.reuploaded?
           end
           update_downstream_aliquots unless no_substitutions?
