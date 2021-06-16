@@ -7,7 +7,8 @@ FactoryBot.define do
     association(:asset, factory: :receptacle)
 
     after(:build) do |sample_manifest_asset|
-      sample_manifest_asset.sample_manifest.labware = [sample_manifest_asset.asset.labware]
+      sample_manifest_asset.sample_manifest.labware = [sample_manifest_asset.asset.labware] if sample_manifest_asset
+        .sample_manifest
     end
   end
 end
