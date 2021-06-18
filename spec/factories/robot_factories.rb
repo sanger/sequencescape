@@ -55,9 +55,7 @@ FactoryBot.define do
       end
 
       factory :full_robot_tecan_v2 do
-        transient do
-          generation_behaviour_value { 'TecanV2' }
-        end
+        transient { generation_behaviour_value { 'TecanV2' } }
       end
 
       factory :hamilton do

@@ -50,6 +50,7 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
     it { is_expected.to have_many(:descendants) }
     it { is_expected.to have_many(:parents) }
     it { is_expected.to have_many(:children) }
+    it { is_expected.to have_many(:state_changes) }
 
     # Custom method tests
     # Add tests for any custom methods you've added.

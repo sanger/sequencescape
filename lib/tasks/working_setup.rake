@@ -1,8 +1,8 @@
 require './lib/oligo_enumerator'
 
+# rubocop:disable Rails/RakeEnvironment
 namespace :working do
   # We don't want to load Sequencescape just to tell the user that nothing happens.
-  # rubocop:disable Rails/RakeEnvironment
   task :basic do
     puts '📣 working:basic no longer generates records. These are made automatically when seeding development.'
   end
@@ -20,5 +20,5 @@ namespace :working do
     puts 'Users, studies, projects, suppliers and printers have all been moved to seeds specific to the development environment.'
     puts 'Tag plates, and various stock plates can all be generated through UAT actions.'
   end
-  # rubocop:enable Rails/RakeEnvironment
 end
+# rubocop:enable Rails/RakeEnvironment

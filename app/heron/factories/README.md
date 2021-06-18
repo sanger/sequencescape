@@ -22,7 +22,7 @@ tables by using their column name:
 ::Heron::Factories::Sample.new({ study_uuid: 'uuid', name: 'My sample' }).create
 ```
 
-By default, the same value from sanger_sampe_id will be applied in the name and sanger_sample_id
+By default, the same value from sanger_sample_id will be applied in the name and sanger_sample_id
 columns.
 
 ```ruby
@@ -32,7 +32,9 @@ columns.
 ```
 
 If a sample_uuid is provided it won't create a new sample, but retrieve an already existing
-one that uses that uuid. In this case we don't need to specify the study:
+one that uses that uuid. In this case we don't need to specify the study.
+**Beware!** if the uuid you supply does not exist, and you specify a study, it will create a new sample
+and ignore the uuid you've specified.
 
 ```ruby
 # This will return an already existing sample with uuid 'existing_uuid'

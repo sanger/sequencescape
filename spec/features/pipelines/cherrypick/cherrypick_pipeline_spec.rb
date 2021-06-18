@@ -42,10 +42,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:custom_destination_type) { nil }
   let(:custom_destination_type_name) { custom_destination_type.name || nil }
   let(:expected_pick_files_by_destination_plate) { nil }
-  let!(:plates) do
-    create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2)
-  end
-
+  let!(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2) }
 
   # rubocop:todo Metrics/AbcSize
   # rubocop:todo Metrics/MethodLength
@@ -71,10 +68,10 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
       end
     end
   end
+
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/MethodLength
-  
-  
+
   before do
     plate_template
     plate_type
@@ -120,6 +117,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     end
 
     context 'when robot is using 96-Trough buffer (Tecan v1)' do
+      #prettier-ignore
       let(:expected_tecan_file) do
         <<~TECAN
           C;
@@ -175,13 +173,16 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     end
 
     context 'when robot is using 8-Trough buffer (Tecan v2)' do
-      let!(:plates) do
-        create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 4)
-      end
+      let!(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 4) }
 
       let(:robot) do
-        create(:full_robot_tecan_v2, barcode: '1111', number_of_sources: max_plates,
-                                     number_of_destinations: 1, max_plates_value: max_plates)
+        create(
+          :full_robot_tecan_v2,
+          barcode: '1111',
+          number_of_sources: max_plates,
+          number_of_destinations: 1,
+          max_plates_value: max_plates
+        )
       end
 
       let(:source_plates_ordered_in_row_order_by_destination) do
@@ -190,6 +191,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
         [plates[0], plates[2], plates[1]]
       end
 
+      #prettier-ignore
       let(:expected_tecan_file) do
         <<~TECAN
           C;
@@ -288,7 +290,10 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
-    let(:expected_tecan_file) { <<~TECAN }
+
+    #prettier-ignore
+    let(:expected_tecan_file) do
+      <<~TECAN
         C;
         C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100
         C;
@@ -317,6 +322,8 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
         C;
         C; DEST1 = #{destination_plate_human_barcode}
       TECAN
+    end
+
     let(:expected_pick_files_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => expected_tecan_file } }
     end
