@@ -6,6 +6,9 @@ FactoryBot.define do
     sample_manifest
     association(:asset, factory: :receptacle)
 
-    after(:build) { |sma| sma.sample_manifest.labware = [sma.asset.labware] if sma.sample_manifest && sma.asset }
+    after(:build) do |sma|
+      sma.sample_manifest.labware = [sma.asset.labware] if sma.sample_manifest &&
+        sma.sample_manifest.core_behaviour.respond_to?(:labware=) && sma.asset
+    end
   end
 end
