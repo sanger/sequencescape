@@ -55,24 +55,12 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload).not_to be_valid
   end
 
-  it 'is not valid unless all of the rows are valid - library_type' do
+  it 'is not valid unless all of the rows are valid - sanger_sample_id_invalid' do
     download =
       build(
         :test_download_tubes,
         columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-        validation_errors: [:library_type]
-      )
-    download.save(test_file_name)
-    upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
-    expect(upload).not_to be_valid
-  end
-
-  it 'is not valid unless all of the rows are valid - insert-size' do
-    download =
-      build(
-        :test_download_tubes,
-        columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-        validation_errors: [:insert_size_from]
+        validation_errors: [:sanger_sample_id_invalid]
       )
     download.save(test_file_name)
     upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)

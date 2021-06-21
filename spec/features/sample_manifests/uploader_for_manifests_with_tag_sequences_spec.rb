@@ -97,7 +97,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
         end
 
         it 'no file' do
@@ -116,7 +116,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
         end
       end
 
@@ -243,7 +243,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
             :test_download_tubes_cgap,
             columns: columns,
             manifest_type: 'tube_multiplexed_library_with_tag_sequences',
-            validation_errors: [:library_type]
+            validation_errors: [:sanger_sample_id_invalid]
           )
         end
 
@@ -349,7 +349,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
             :test_download_tubes,
             columns: columns,
             manifest_type: 'tube_multiplexed_library',
-            validation_errors: %i[library_type tags]
+            validation_errors: %i[tags]
           )
         end
 
@@ -359,7 +359,6 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
           expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
-          expect(page).to have_content('Row 10 - could not find My personal library type library type.')
           expect(page.text).to match(/Tags clash Same tags [A-Z]+, [A-Z]+ are used on rows 10, 15./)
         end
 
@@ -377,7 +376,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
             :test_download_tubes_cgap,
             columns: columns,
             manifest_type: 'tube_multiplexed_library',
-            validation_errors: [:library_type]
+            validation_errors: [:sanger_sample_id_invalid]
           )
         end
 
@@ -497,7 +496,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
         end
       end
 
