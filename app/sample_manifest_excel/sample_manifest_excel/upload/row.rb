@@ -19,6 +19,7 @@ module SampleManifestExcel
       validates :number, presence: true, numericality: true
       validate :sanger_sample_id_exists?, if: :sanger_sample_id
       validates_presence_of :data, :columns
+
       # validate :check_sample_present # This calls sample and therefore 'generate_sample_and_aliquot' (# This is where register_stock? gets called)
       # validate :sample_can_be_updated # This calls sample and therefore 'generate_sample_and_aliquot' (# This is where register_stock? gets called)
       delegate :present?, to: :sample, prefix: true
@@ -89,6 +90,7 @@ module SampleManifestExcel
         else
           update_specialised_fields(tag_group, false)
           asset.save!
+          update_metadata_fields
           metadata.save!
           sample.updated_by_manifest = true
           sample.empty_supplier_sample_name = false
@@ -104,7 +106,9 @@ module SampleManifestExcel
       end
 
       def update_specialised_fields(tag_group, early)
-        specialised_fields.select { |field| field.process_early == early }.each { |specialised_field| specialised_field.update(aliquot: aliquot, tag_group: tag_group) }
+        specialised_fields.select { |field| field.process_early == early }.each do |specialised_field|
+          specialised_field.update(aliquot: aliquot, tag_group: tag_group)
+        end
       end
 
       def update_metadata_fields
