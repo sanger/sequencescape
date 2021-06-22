@@ -49,9 +49,12 @@ module SampleManifestExcel
         end
 
         def early_specialised_fields_valid?
-          upload.rows.each { |row| row.check_specialised_fields(true) }
           upload.rows.each do |row|
-            upload.errors.add(:base, "Row #{row.number} - #{row.errors.full_messages.join(', ')}") unless row.errors.empty?
+            row.check_specialised_fields(true)
+
+            next if row.errors.empty?
+
+            upload.errors.add(:base, "Row #{row.number} - #{row.errors.full_messages.join(', ')}")
           end
 
           upload.errors.empty?
