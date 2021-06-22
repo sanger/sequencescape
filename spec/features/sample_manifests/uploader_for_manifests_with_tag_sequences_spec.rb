@@ -130,7 +130,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
         end
       end
     end
@@ -225,7 +225,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
           expect(page).to have_content('Same tags AA, TT are used on rows 10, 15.')
         end
 
@@ -252,7 +252,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
         end
       end
 
@@ -271,7 +271,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
         end
       end
     end
@@ -358,7 +358,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
           expect(page.text).to match(/Tags clash Same tags [A-Z]+, [A-Z]+ are used on rows 10, 15./)
         end
 
@@ -385,7 +385,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
         end
       end
 
@@ -404,7 +404,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
         end
       end
     end
@@ -510,7 +510,7 @@ describe 'Sample manifest with tag sequences', sample_manifest: true do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded. See errors below.')
+          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
         end
       end
     end

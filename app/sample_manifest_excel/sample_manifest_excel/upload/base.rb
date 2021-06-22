@@ -73,7 +73,7 @@ module SampleManifestExcel
           processor.run(tag_group)
           return true if processed?
 
-          # One of out post processing checks failed, something went wrong, so we
+          # One of our post processing checks failed, something went wrong, so we
           # roll everything back
           raise ActiveRecord::Rollback
         end
