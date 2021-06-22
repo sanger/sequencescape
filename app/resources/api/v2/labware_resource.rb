@@ -14,7 +14,11 @@ module Api
       has_many :comments, readonly: true
       has_many :direct_submissions, readonly: true
       has_many :state_changes, readonly: true
+
       has_many :ancestors, readonly: true, polymorphic: true
+      has_many :descendants, readonly: true, polymorphic: true
+      has_many :parents, readonly: true, polymorphic: true
+      has_many :children, readonly: true, polymorphic: true
 
       filter :purpose_name,
              apply:
