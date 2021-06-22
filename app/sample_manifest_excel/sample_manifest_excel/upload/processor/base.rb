@@ -26,38 +26,22 @@ module SampleManifestExcel
         def run(tag_group)
           return unless valid?
 
-          # here, do Sanger Plate ID specialised field update first
-          # run the validation beforehand as well
-          return unless process_early_specialised_fields
+          # Do foreign barcode specialised field updates first
+          update_early_specialised_fields
 
-          # then, find or create samples (take sample validation out from earlier)
+          # find or create samples
           create_samples_if_not_present
 
-          # then, run the sample validation that I took out earlier
+          # run the validation that depends on samples being present
           return unless samples_valid?
 
-          # then, continue as normal
+          # perform the metadata and remaining specialised fields updates
           update_samples_and_aliquots(tag_group)
           update_sample_manifest
         end
 
-        def process_early_specialised_fields
-          return false unless early_specialised_fields_valid?
-
+        def update_early_specialised_fields
           upload.rows.each { |row| row.update_specialised_fields(nil, true) }
-          true
-        end
-
-        def early_specialised_fields_valid?
-          upload.rows.each do |row|
-            row.check_specialised_fields(true)
-
-            next if row.errors.empty?
-
-            upload.errors.add(:base, row.errors.full_messages.join(', ').to_s)
-          end
-
-          upload.errors.empty?
         end
 
         def create_samples_if_not_present

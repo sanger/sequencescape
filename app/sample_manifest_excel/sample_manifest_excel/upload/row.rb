@@ -22,6 +22,7 @@ module SampleManifestExcel
 
       # validate :check_sample_present # This calls sample and therefore 'generate_sample_and_aliquot' (# This is where register_stock? gets called)
       # validate :sample_can_be_updated # This calls sample and therefore 'generate_sample_and_aliquot' (# This is where register_stock? gets called)
+      validate :check_early_specialised_fields
       delegate :present?, to: :sample, prefix: true
 
       ##
@@ -166,14 +167,12 @@ module SampleManifestExcel
         errors.empty?
       end
 
-      def check_specialised_fields(early)
-        return unless errors.empty?
+      def check_early_specialised_fields
+        check_specialised_fields(true)
+      end
 
-        specialised_fields.select { |field| field.process_early == early }.each do |specialised_field|
-          unless specialised_field.valid?
-            errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
-          end
-        end
+      def check_late_specialised_fields
+        check_specialised_fields(false)
       end
 
       private
@@ -192,7 +191,7 @@ module SampleManifestExcel
         return unless errors.empty?
 
         check_primary_receptacle
-        check_specialised_fields(false)
+        check_late_specialised_fields
         check_sample_metadata
       end
 
@@ -200,6 +199,16 @@ module SampleManifestExcel
         return if sample.primary_receptacle.present?
 
         errors.add(:base, "#{row_title} Does not have a primary receptacle.")
+      end
+
+      def check_specialised_fields(early)
+        return unless errors.empty?
+
+        specialised_fields.select { |field| field.process_early == early }.each do |specialised_field|
+          unless specialised_field.valid?
+            errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
+          end
+        end
       end
 
       def check_sample_metadata
