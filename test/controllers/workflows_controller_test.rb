@@ -4,7 +4,7 @@ require 'test_helper'
 
 ActionController::TestCase.include AuthenticatedTestHelper
 
-class WorkflowsControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class WorkflowsControllerTest < ActionController::TestCase
   context 'WorkflowController' do
     setup do
       @controller = WorkflowsController.new
@@ -15,12 +15,6 @@ class WorkflowsControllerTest < ActionController::TestCase # rubocop:todo Metric
       @pipeline_user = FactoryBot.create :pipeline_admin
     end
     should_require_login
-
-    context '#index' do
-      setup { get :index }
-
-      should respond_with :success
-    end
 
     context '#stage' do
       setup do
@@ -120,17 +114,6 @@ class WorkflowsControllerTest < ActionController::TestCase # rubocop:todo Metric
           assert_equal 'Complete', Batch.find(@batch.id).lab_events.last.description
         end
       end
-    end
-
-    context '#sort' do
-      setup do
-        @workflow = FactoryBot.create(:pipeline).workflow
-
-        # Err. WorkflowsController. Why is this not just id??
-        get :sort, params: { workflow_id: @workflow.id.to_s }
-      end
-
-      should respond_with :success
     end
   end
 end
