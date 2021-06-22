@@ -54,7 +54,7 @@ module SampleManifestExcel
 
             next if row.errors.empty?
 
-            upload.errors.add(:base, "Row #{row.number} - #{row.errors.full_messages.join(', ')}")
+            upload.errors.add(:base, row.errors.full_messages.join(', ').to_s)
           end
 
           upload.errors.empty?
@@ -69,7 +69,7 @@ module SampleManifestExcel
 
           upload.rows.each do |row|
             unless row.validate_sample
-              upload.errors.add(:base, "Row #{row.number} - #{row.errors.full_messages.join(', ')}")
+              upload.errors.add(:base, row.errors.full_messages.join(', ').to_s)
               all_valid = false
             end
           end
