@@ -89,7 +89,7 @@ module SampleManifestExcel
         if sample.updated_by_manifest && !override
           @sample_skipped = true
         else
-          update_specialised_fields(tag_group, false)
+          update_late_specialised_fields(tag_group)
           asset.save!
           update_metadata_fields
           metadata.save!
@@ -110,6 +110,14 @@ module SampleManifestExcel
         specialised_fields.select { |field| field.process_early == early }.each do |specialised_field|
           specialised_field.update(aliquot: aliquot, tag_group: tag_group)
         end
+      end
+
+      def update_early_specialised_fields
+        update_specialised_fields(nil, true)
+      end
+
+      def update_late_specialised_fields(tag_group)
+        update_specialised_fields(tag_group, false)
       end
 
       def update_metadata_fields

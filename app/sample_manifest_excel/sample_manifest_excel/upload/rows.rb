@@ -33,6 +33,19 @@ module SampleManifestExcel
         map { |row| row.at(row_num) }
       end
 
+      def samples_valid?
+        all_valid = true
+
+        items.each do |row|
+          unless row.validate_sample
+            errors.add(:base, row.errors.full_messages.join(', ').to_s)
+            all_valid = false
+          end
+        end
+
+        all_valid
+      end
+
       private
 
       def create_rows(cache)
