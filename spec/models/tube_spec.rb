@@ -63,7 +63,6 @@ describe Tube, type: :model do
     end
 
     it "returns nothing if it hasn't been scanned in" do
-      # rubocop:todo RSpec/AggregateExamples
       expect(unscanned_in_asset.scanned_in_date).to be_blank
     end
   end

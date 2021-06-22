@@ -20,7 +20,6 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
   end
 
   it 'picks out tags which are required for each service' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(tag_list.required_for(build(:ena_service)).count).to eq(2)
     expect(tag_list.required_for(build(:ega_service)).count).to eq(5)
   end

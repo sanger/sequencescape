@@ -10,7 +10,7 @@ class DummyWorkflowController < WorkflowsController
   end
 end
 
-class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   MockBc = Struct.new(:barcode)
 
   # rubocop:todo Metrics/MethodLength

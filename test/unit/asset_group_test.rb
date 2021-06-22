@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class AssetGroupTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class AssetGroupTest < ActiveSupport::TestCase
   context 'An AssetGroup' do
     setup do
       Study.destroy_all

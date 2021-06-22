@@ -3,7 +3,7 @@
 require 'test_helper'
 require 'submissions_controller'
 
-class SplitSubmissionBatchesTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class SplitSubmissionBatchesTest < ActionController::TestCase
   context 'when I have a submission' do
     setup do
       @user = FactoryBot.create :user

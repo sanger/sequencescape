@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class EventTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class EventTest < ActiveSupport::TestCase
   context 'An Event' do
     setup { Study.destroy_all }
     should belong_to :eventful

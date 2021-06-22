@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class PmbClientTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class PmbClientTest < ActiveSupport::TestCase
   attr_reader :labels
 
   def setup # rubocop:todo Metrics/MethodLength

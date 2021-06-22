@@ -3,7 +3,7 @@
 require 'test_helper'
 require 'batches_controller'
 
-class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class BatchesControllerTest < ActionController::TestCase
   context 'BatchesController' do
     setup do
       @controller = BatchesController.new

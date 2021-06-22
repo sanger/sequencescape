@@ -6,8 +6,11 @@ require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
+
 RSpec/AggregateExamples:
-  AddAggregateFailuresMetadata: false
+  # Aggregate examples can be useful, but the cop gets into nasty battles with
+  # other Spec cops, and is only really of value in expensive tests.
+  Enabled: false
 # Added exclude because api and feature specs do not have a specific class.
 RSpec/DescribeClass:
   Exclude:
@@ -149,3 +152,12 @@ RSpec/ExampleLength:
   # Disable for features, as we might want to step through long processes
   Exclude:
     - "spec/features/**/*"
+
+Metrics/ClassLength:
+  inherit_mode:
+    merge:
+      - Exclude
+  # Disable for features, as we might want to step through long processes
+  Exclude:
+    - "spec/**/*"
+    - "test/**/*"

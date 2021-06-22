@@ -84,7 +84,6 @@ describe 'Wells API', with: :api_v2 do
       end
 
       it 'updates the well' do
-        # rubocop:todo RSpec/ExampleLength
         updated_model = Well.find(well.id)
         expect(updated_model.pcr_cycles).to eq 11
         expect(updated_model.submit_for_sequencing).to eq false

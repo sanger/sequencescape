@@ -65,7 +65,6 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
     end
 
     it 'has a fragment_size_required_to' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(subject.request_metadata.fragment_size_required_to).to eq(fragment_size_required_to)
     end
 
@@ -78,12 +77,10 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
     end
 
     it 'has a library_type' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(subject.request_metadata.library_type).to eq(library_type)
     end
 
     it 'has pcr_cycles' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(subject.request_metadata.pcr_cycles).to eq(pcr_cycles)
     end
 

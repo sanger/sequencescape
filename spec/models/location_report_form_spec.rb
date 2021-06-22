@@ -188,7 +188,6 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       end
 
       it 'creates a valid location report' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(location_report_form.location_report).to be_valid
       end
 
@@ -249,12 +248,10 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       end
 
       it 'creates a valid location report' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(location_report_form.location_report).to be_valid
       end
 
       it 'correctly records the form object information in the location report' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(location_report_form.location_report.name).to eq('Test_name')
         expect(location_report_form.location_report.report_type).to eq('type_labwhere')
         expect(location_report_form.location_report.location_barcode).to eq('1001')

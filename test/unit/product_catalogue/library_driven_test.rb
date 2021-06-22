@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class LibraryDrivenTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class LibraryDrivenTest < ActiveSupport::TestCase
   context 'When using a ProductCatalogue that is library driven' do
     setup do
       def link_product_with_pc(product, product_catalogue, library_type_name)

@@ -14,7 +14,7 @@ class DummyWorkflowController < WorkflowsController
   end
 end
 
-class PlateTransferTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class PlateTransferTaskTest < ActiveSupport::TestCase
   context 'PlateTransferHandler' do
     setup do
       @workflows_controller = DummyWorkflowController.new

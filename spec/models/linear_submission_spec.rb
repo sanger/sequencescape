@@ -99,7 +99,6 @@ RSpec.describe LinearSubmission do
             end
 
             it "not save a comment if one isn't supplied" do
-              # rubocop:todo RSpec/AggregateExamples
               expect(mpx_submission.comments).to be_blank
             end
           end
@@ -173,7 +172,6 @@ RSpec.describe LinearSubmission do
       end
 
       it 'save request_types as array of Integers' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(submission.orders.first.request_types).to be_a Array
         expect(submission.orders.first.request_types).to eq(request_type_option)
       end
@@ -208,7 +206,6 @@ RSpec.describe LinearSubmission do
           end
 
           it 'sets metadata on sequencing requests' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(sequencing_request.request_metadata).to have_attributes(
               customer_accepts_responsibility: nil,
               read_length: 108

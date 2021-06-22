@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Studies
-  class AssetGroupsControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+  class AssetGroupsControllerTest < ActionController::TestCase
     @assetgroup_count = AssetGroup.count
     @study_count = Study.count
 
