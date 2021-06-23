@@ -33,7 +33,7 @@ module SampleManifestExcel
           create_samples_if_not_present
 
           # run the validation that depends on samples being present
-          return unless upload.rows.samples_valid?
+          return unless samples_valid?
 
           # perform the metadata and remaining specialised fields updates
           update_samples_and_aliquots(tag_group)
@@ -46,6 +46,19 @@ module SampleManifestExcel
 
         def create_samples_if_not_present
           upload.rows.each(&:sample)
+        end
+
+        def samples_valid?
+          all_valid = true
+
+          upload.rows.each do |row|
+            unless row.validate_sample
+              upload.errors.add(:base, row.errors.full_messages.join(', ').to_s)
+              all_valid = false
+            end
+          end
+
+          all_valid
         end
 
         def update_samples_and_aliquots(tag_group)
