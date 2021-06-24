@@ -34,16 +34,17 @@ class SampleManifest::Uploader
       if upload.process(tag_group)
         upload.complete
         upload.broadcast_sample_manifest_updated_event(user)
-        true
-      else
-        extract_errors
-        upload.fail
-
-        # One of our post processing checks failed, something went wrong, so we
-        # roll everything back
-        raise ActiveRecord::Rollback
+        return true
       end
+
+      # One of our post processing checks failed, something went wrong, so we
+      # roll everything back
+      raise ActiveRecord::Rollback
     end
+
+    extract_errors
+    upload.fail
+    false
   end
 
   private
