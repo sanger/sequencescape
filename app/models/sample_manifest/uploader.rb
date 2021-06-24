@@ -28,16 +28,21 @@ class SampleManifest::Uploader
   end
 
   def run!
-    return false unless valid?
+    ActiveRecord::Base.transaction do
+      return false unless valid?
 
-    if upload.process(tag_group)
-      upload.complete
-      upload.broadcast_sample_manifest_updated_event(user)
-      true
-    else
-      extract_errors
-      upload.fail
-      false
+      if upload.process(tag_group)
+        upload.complete
+        upload.broadcast_sample_manifest_updated_event(user)
+        true
+      else
+        extract_errors
+        upload.fail
+
+        # One of our post processing checks failed, something went wrong, so we
+        # roll everything back
+        raise ActiveRecord::Rollback
+      end
     end
   end
 

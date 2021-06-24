@@ -66,17 +66,13 @@ module SampleManifestExcel
       # An upload can only be processed if the upload is valid.
       # Processing involves updating the sample manifest and all of its associated samples.
       def process(tag_group)
-        ActiveRecord::Base.transaction do
-          sample_manifest.last_errors = nil
-          sample_manifest.start!
-          @cache.populate!
-          processor.run(tag_group)
-          return true if processed?
+        sample_manifest.last_errors = nil
+        sample_manifest.start!
+        @cache.populate!
+        processor.run(tag_group)
+        return true if processed?
 
-          # One of our post processing checks failed, something went wrong, so we
-          # roll everything back
-          raise ActiveRecord::Rollback
-        end
+        false
       end
 
       def data_at(column_name)
