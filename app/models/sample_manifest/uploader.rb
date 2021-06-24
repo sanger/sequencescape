@@ -27,6 +27,7 @@ class SampleManifest::Uploader
       SampleManifestExcel::Upload::Base.new(file: file, column_list: self.configuration.columns.all, override: override)
   end
 
+  # rubocop:disable Metrics/MethodLength
   def run!
     ActiveRecord::Base.transaction do
       return false unless valid?
@@ -46,6 +47,8 @@ class SampleManifest::Uploader
     upload.fail
     false
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   private
 

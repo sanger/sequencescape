@@ -5,7 +5,7 @@ module SampleManifestExcel
     module Processor
       ##
       # Uploads will be processed slightly differently based on the manifest type.
-      class Base
+      class Base # rubocop:todo Metrics/ClassLength
         include ActiveModel::Model
         include SequencescapeExcel::SubclassChecker
 
