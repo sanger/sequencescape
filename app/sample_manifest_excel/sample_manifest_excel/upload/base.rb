@@ -14,7 +14,7 @@ module SampleManifestExcel
     # *Retrieve the sample manifest
     # *Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
-    class Base # rubocop:todo Metrics/ClassLength
+    class Base
       include ActiveModel::Model
 
       attr_accessor :file, :column_list, :start_row, :override
@@ -80,20 +80,20 @@ module SampleManifestExcel
         rows.data_at(required_column.number) if required_column.present?
       end
 
+      def complete
+        sample_manifest.finished!
+      end
+
       def broadcast_sample_manifest_updated_event(user)
         # Send to event warehouse
         sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted.map(&:id))
 
         # Log legacy events: Show on history page, and may be used by reports.
         # We can get rid of these when:
-        # - History page is updates with event warehouse viewer
+        # - History page is updated with event warehouse viewer
         # - We've confirmed that no external reports use these events
         samples_to_be_broadcasted.each { |sample| sample.handle_update_event(user) }
         labware_to_be_broadcasted.each { |labware| labware.events.updated_using_sample_manifest!(user) }
-      end
-
-      def complete
-        sample_manifest.finished!
       end
 
       def fail
