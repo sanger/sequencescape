@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class SampleTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class SampleTest < ActiveSupport::TestCase
   def assert_accession_service(type)
     service =
       {

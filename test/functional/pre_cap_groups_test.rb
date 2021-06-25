@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class PreCapGroupsTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class PreCapGroupsTest < ActiveSupport::TestCase
   def with_pools(*pools)
     pools.each_with_index do |well_locs, index|
       @plate

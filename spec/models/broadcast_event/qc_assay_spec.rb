@@ -41,12 +41,10 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
       end
 
       it 'sets the event type based on the qc_assay' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json('event' => { 'event_type' => 'quant_example_assay' })
       end
 
       it 'sends the lot number as metadata' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json(
           'event' => {
             'metadata' => {
@@ -116,12 +114,10 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
       end
 
       it 'sets the event type based on the qc_assay' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json('event' => { 'event_type' => 'quant_example_assay' })
       end
 
       it 'sends the lot number as metadata' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json(
           'event' => {
             'metadata' => {

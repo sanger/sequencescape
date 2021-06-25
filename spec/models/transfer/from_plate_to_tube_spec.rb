@@ -11,7 +11,6 @@ describe Transfer::FromPlateToTube do
   end
 
   it 'transfers only the specified transfers' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(transfer_with_transfers.transfers).to eq(%w[A1 B1])
   end
 

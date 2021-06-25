@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class FlexibleSubmissionTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class FlexibleSubmissionTest < ActiveSupport::TestCase
   context 'FlexibleSubmission' do
     setup do
       @assets = create(:two_column_plate).wells.to_a

@@ -30,27 +30,22 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingDefault,
     end
 
     it 'has some options' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default.options).to eq(options[:options])
     end
 
     it 'has some style' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default.style).to eq(options[:style])
     end
 
     it 'must not be an expression' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default).not_to be_expression
     end
 
     it '#combine with conditional_formatting will produce correct options' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default.combine).to eq(options.except(:type))
     end
 
     it 'be comparable' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(conditional_formatting_default).to eq(described_class.new(options))
     end
   end

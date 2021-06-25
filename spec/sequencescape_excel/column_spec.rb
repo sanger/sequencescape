@@ -37,7 +37,6 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
   end
 
   it 'must have a name' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(options).name).to eq(options[:name])
   end
 
@@ -46,12 +45,10 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
   end
 
   it 'has a type' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(options).type).to eq(options[:type])
   end
 
   it 'has a value' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(options).value).to eq(options[:value])
     expect(described_class.new(options.except(:value)).value).to be_nil
   end
@@ -69,7 +66,6 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
   end
 
   it 'has a number' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(options).number).to eq(options[:number])
   end
 
@@ -102,7 +98,6 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     end
 
     it 'will have a range name' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(column.range_name).to be_present
     end
 
@@ -135,19 +130,16 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     end
 
     it 'sets the reference' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(column.range).to eq(range)
     end
 
     it 'modifies the validation' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(column.validation.formula1).to eq(range_list.find_by(column.range_name).absolute_reference)
       expect(worksheet.data_validation_rules).to be_all { |rule| rule.sqref == column.range.reference }
       expect(column.validation).to be_saved
     end
 
     it 'modifies the conditional formatting' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(column.conditional_formattings.count).to eq(options[:conditional_formattings].length)
       expect(column.conditional_formattings).to be_saved
     end

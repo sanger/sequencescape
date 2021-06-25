@@ -21,17 +21,14 @@ RSpec.describe Labware, type: :model do
       end
 
       it 'adds 1 child to the labware' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(labware.reload.children.size).to eq(1)
       end
 
       it 'sets the correct child' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(child_labware).to eq(labware.reload.children.first)
       end
 
       it 'sets the correct parents' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(parents).to eq(labware.reload.parents)
       end
     end
@@ -54,17 +51,14 @@ RSpec.describe Labware, type: :model do
       end
 
       it 'adds 1 child to the labware' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(labware.reload.children.size).to eq(1)
       end
 
       it 'sets the correct child' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(child_labware).to eq(labware.reload.children.first)
       end
 
       it 'sets the correct parents' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(parents).to eq(labware.reload.parents)
       end
     end

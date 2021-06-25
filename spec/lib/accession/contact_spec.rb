@@ -19,7 +19,6 @@ RSpec.describe Accession::Contact, type: :model, accession: true do
   end
 
   it 'has an email' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(subject.email).to eq('user1@example.com')
   end
 

@@ -3,7 +3,6 @@
 require 'cancan/matchers'
 # Disable the aggregate example cop as these tests are fast, and it doesn't
 # especially help readability
-# rubocop:disable RSpec/AggregateExamples
 RSpec.describe Ability do
   subject(:ability) { described_class.new(user) }
 
@@ -465,4 +464,3 @@ RSpec.describe Ability do
     it_behaves_like 'it grants only granted_permissions'
   end
 end
-# rubocop:enable RSpec/AggregateExamples

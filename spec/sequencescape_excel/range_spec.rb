@@ -26,48 +26,39 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     it 'has a first row' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.first_row).to eq(4)
     end
 
     it 'sets the first column' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.first_column).to eq(1)
     end
 
     it 'sets the last column' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.last_column).to eq(3)
       expect(described_class.new(options: options, first_column: 4, first_row: 4).last_column).to eq(6)
     end
 
     it 'has a first_cell' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.first_cell).to eq(SequencescapeExcel::Cell.new(range.first_row, range.first_column))
     end
 
     it 'has a last_cell' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.last_cell).to eq(SequencescapeExcel::Cell.new(range.last_row, range.last_column))
     end
 
     it 'has a first cell reference' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.first_cell_reference).to eq(range.first_cell.reference)
     end
 
     it 'sets the reference' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.reference).to eq("#{range.first_cell.reference}:#{range.last_cell.reference}")
     end
 
     it 'sets the fixed reference' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.fixed_reference).to eq("#{range.first_cell.fixed}:#{range.last_cell.fixed}")
     end
 
     it '#references should return first_cell reference, reference, fixed_reference and absolute_reference' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.references).to eq(
         first_cell_reference: range.first_cell_reference,
         reference: range.reference,
@@ -77,7 +68,6 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     it 'is static, not dynamic' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range).to be_static
       expect(range).not_to be_dynamic
     end
@@ -162,12 +152,10 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     it 'does not have a first cell' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.first_cell).to be_nil
     end
 
     it 'does not have a last cell' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.last_cell).to be_nil
     end
   end
@@ -180,42 +168,34 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
     end
 
     it 'has a first row' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.first_row).to eq(10)
     end
 
     it 'has a first column' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.first_column).to eq(3)
     end
 
     it 'has a last column' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.last_column).to eq(60)
     end
 
     it 'has a first_cell' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.first_cell).to eq(SequencescapeExcel::Cell.new(range.first_row, range.first_column))
     end
 
     it 'has a last_cell' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.last_cell).to eq(SequencescapeExcel::Cell.new(range.last_row, range.last_column))
     end
 
     it 'sets the fixed_reference' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.reference).to eq("#{range.first_cell.reference}:#{range.last_cell.reference}")
     end
 
     it 'sets the fixed reference' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.fixed_reference).to eq("#{range.first_cell.fixed}:#{range.last_cell.fixed}")
     end
 
     it 'has an absolute reference' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(range.absolute_reference).to eq(range.fixed_reference)
     end
 
@@ -251,7 +231,6 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
       end
 
       it 'set absolute reference' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(range.absolute_reference).to eq("Sheet1!#{range.fixed_reference}")
       end
     end

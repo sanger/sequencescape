@@ -21,17 +21,14 @@ describe PlatePurpose, type: :model do
       end
 
       it 'builds a plate of the correct size' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.size).to eq size
       end
 
       it 'sets itself as the purpose' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.purpose).to eq(plate_purpose)
       end
 
       it 'creates wells' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.wells.count).to eq size
       end
     end

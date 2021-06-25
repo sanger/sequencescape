@@ -15,7 +15,6 @@ describe Robot::Generator::Tecan, type: :model do
         end
 
         it 'generates the expected output' do
-          # rubocop:todo RSpec/AggregateExamples
           expect(generator.as_text).to eq expected_output
         end
 
