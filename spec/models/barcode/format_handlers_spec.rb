@@ -276,6 +276,5 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode '00210783400000001 '
   end
 
-
   # rubocop:enable RSpec/EmptyExampleGroup
 end

@@ -448,7 +448,7 @@ module Barcode::FormatHandlers
   # Support for Brants Bridge centre
   # Expected formats:
   # nnnnnnnnnnnnnnnnn
-  # where n is a digit 
+  # where n is a digit
   class BrantsBridge < BaseRegExBarcode
     self.format = /\A(?<number>[0-9]{17})\z/
   end
