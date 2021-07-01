@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class CherrypickTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class CherrypickTaskTest < ActiveSupport::TestCase
   # Pads the cherrypicked view of a plate with empty wells
   def pad_expected_plate_with_empty_wells(template, plate)
     plate.concat([CherrypickTask::EMPTY_WELL] * (template.size - plate.size))

@@ -2,7 +2,6 @@ namespace :db do
   namespace :views do
     desc 'Export the views to a schema file'
     task :dump_schema do
-      # rubocop:disable Rails/RakeEnvironment
       File.open('./db/views_schema.tmp', 'w') do |schema|
         schema.puts '# This is an automatically generated file by rake:db:views:dump_schema'
         schema.puts "require 'views_schema'"
@@ -21,7 +20,6 @@ namespace :db do
 
     desc 'Reload the dumped schema'
     task :schema_load do
-      # rubocop:disable Rails/RakeEnvironment
       ActiveRecord::Tasks::DatabaseTasks.send(
         :each_current_configuration,
         ActiveRecord::Tasks::DatabaseTasks.env

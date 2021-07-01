@@ -25,7 +25,7 @@ class AuthenticationController < ApplicationController
   end
 end
 
-class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class AuthenticationControllerTest < ActionController::TestCase
   # def skip_routing
   #   Rails.application.routes.draw do
   #     get 'authentication/open'

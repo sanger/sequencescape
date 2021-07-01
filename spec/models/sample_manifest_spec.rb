@@ -4,7 +4,6 @@ require 'rails_helper'
 
 # Rubocop doesn't like the .and change {}.by bits and will
 # result in repeatedly indenting them to the level of the last call in the previous chain
-# rubocop:disable Layout/MultilineMethodCallIndentation
 
 RSpec.describe SampleManifest, type: :model, sample_manifest: true do
   let(:user) { create :user }
@@ -207,7 +206,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               end
 
               it 'is a multiplexed library tube' do
-                # rubocop:todo RSpec/AggregateExamples
                 expect(subject.first).to be_a(MultiplexedLibraryTube)
               end
             end
@@ -274,7 +272,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
             end
 
             it 'is a library tube' do
-              # rubocop:todo RSpec/AggregateExamples
               expect(labware.first).to be_a(LibraryTube)
             end
           end
@@ -326,7 +323,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               end
 
               it 'is a sample tube' do
-                # rubocop:todo RSpec/AggregateExamples
                 expect(labware.first).to be_a(SampleTube)
               end
             end
@@ -366,5 +362,3 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     end
   end
 end
-
-# rubocop:enable Layout/MultilineMethodCallIndentation

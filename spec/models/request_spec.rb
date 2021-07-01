@@ -30,12 +30,10 @@ RSpec.describe Request do
     end
 
     it 'an order without requests should at least find the sequencing requests' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(submission.requests.for_order_including_submission_based_requests(order3).length).to eq 1
     end
 
     it 'when filtering from submission and scoping with an order of another submission, none of the requests are included' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(order4.submission.requests.for_order_including_submission_based_requests(order1).length).to eq 0
       expect(order4.submission.requests.for_order_including_submission_based_requests(order2).length).to eq 0
       expect(order4.submission.requests.for_order_including_submission_based_requests(order3).length).to eq 0
@@ -43,14 +41,12 @@ RSpec.describe Request do
     end
 
     it 'requests from other submission behave independently' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(order4.requests.length).to eq 1
       expect(order4.submission.requests.length).to eq 2
       expect(order4.submission.requests.for_order_including_submission_based_requests(order4).length).to eq 2
     end
 
     it 'can be used as any other request scope' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(described_class.for_order_including_submission_based_requests(order1).length).to eq 2
       expect(described_class.for_order_including_submission_based_requests(order2).length).to eq 2
       expect(described_class.for_order_including_submission_based_requests(order3).length).to eq 1
@@ -265,7 +261,6 @@ RSpec.describe Request do
       end
 
       it 'have request as valid' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(request).to be_valid
       end
     end

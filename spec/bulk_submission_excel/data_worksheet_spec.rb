@@ -48,7 +48,6 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
     end
 
     it 'last row should be correct' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.last_row).to eq(spreadsheet.sheet(0).last_row)
     end
 
@@ -79,24 +78,20 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk
     end
 
     it 'adds all of the details' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(spreadsheet.sheet(0).last_row).to eq(assets.count + 2)
     end
 
     it 'updates all of the columns' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.columns.values).to be_all(&:updated?)
     end
 
     it 'panes should be frozen correctly' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.axlsx_worksheet.sheet_view.pane.x_split).to eq(worksheet.freeze_after_column(:sanger_sample_id))
       expect(worksheet.axlsx_worksheet.sheet_view.pane.y_split).to eq(worksheet.first_row - 1)
       expect(worksheet.axlsx_worksheet.sheet_view.pane.state).to eq('frozen')
     end
 
     it 'worksheet is not protected with password and columns and rows format can be changed' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.axlsx_worksheet.sheet_protection.password).not_to be_present
     end
 

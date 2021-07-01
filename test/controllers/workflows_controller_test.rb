@@ -4,7 +4,7 @@ require 'test_helper'
 
 ActionController::TestCase.include AuthenticatedTestHelper
 
-class WorkflowsControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class WorkflowsControllerTest < ActionController::TestCase
   context 'WorkflowController' do
     setup do
       @controller = WorkflowsController.new

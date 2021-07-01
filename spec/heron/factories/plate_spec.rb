@@ -145,7 +145,6 @@ RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: t
         end
 
         it 'stores the error message from samples' do
-          # rubocop:todo RSpec/AggregateExamples
           expect(plate_factory.tap(&:validate).errors.full_messages).to eq(
             [
               'Content a1 Wrong Unexisting field for sample or sample_metadata',

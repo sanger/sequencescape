@@ -14,7 +14,6 @@ describe CherrypickRequest do
   end
 
   it 'creates a transfer request between the source and target assets' do
-    # rubocop:todo RSpec/AggregateExamples
     # This behaviour is required for the Generic Lims pipelines due to limitations
     # in the state machine.
     expect(source_asset.transfer_requests_as_source.count).to eq(1)

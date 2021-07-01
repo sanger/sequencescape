@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class PlatesControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class PlatesControllerTest < ActionController::TestCase
   context 'Plate' do
     setup do
       @prefix = 'DN'

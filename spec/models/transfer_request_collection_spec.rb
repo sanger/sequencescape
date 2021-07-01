@@ -25,12 +25,10 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
         end
 
         it 'sets the expected asset' do
-          # rubocop:todo RSpec/AggregateExamples
           expect(transfer_request.asset).to eq(asset)
         end
 
         it 'sets the expected target_asset' do
-          # rubocop:todo RSpec/AggregateExamples
           expect(transfer_request.target_asset).to eq(target_asset.receptacle)
         end
       end
@@ -50,12 +48,10 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
         end
 
         it 'sets the expected asset' do
-          # rubocop:todo RSpec/AggregateExamples
           expect(transfer_request.asset).to eq(asset)
         end
 
         it 'sets the expected target_asset' do
-          # rubocop:todo RSpec/AggregateExamples
           expect(transfer_request.target_asset).to eq(target_asset.receptacle)
         end
       end
@@ -87,22 +83,18 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
           end
 
           it 'sets the expected asset' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.asset).to eq(asset)
           end
 
           it 'sets the expected target_asset' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.target_asset).to eq(target_asset.receptacle)
           end
 
           it 'sets submission id on the transfer request' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.submission_id).to eq(outer_request.submission_id)
           end
 
           it 'sets request_id on the target aliquot' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(target_asset.aliquots.first.request_id).to eq(outer_request.id)
           end
         end
@@ -147,22 +139,18 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
           end
 
           it 'sets the expected asset' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.asset).to eq(asset)
           end
 
           it 'sets the expected target_asset' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.target_asset).to eq(target_asset.receptacle)
           end
 
           it 'sets submission id on the transfer request' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(transfer_request.submission_id).to eq(outer_request.submission_id)
           end
 
           it 'sets request_id on the target aliquot' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(target_asset.aliquots.first.request_id).to eq(outer_request.id)
           end
         end

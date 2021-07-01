@@ -167,13 +167,11 @@ class CherrypickTask::PickTarget
     end
     private :well_position
 
-    # rubocop:todo Style/MultilineBlockChain
     def completed_view
       @wells.dup.tap { |wells| complete(wells) }.each_with_index.inject([]) do |wells, (well, index)|
         wells.tap { wells[@shape.horizontal_to_vertical(index + 1, @size)] = well }
       end.compact
     end
-    # rubocop:enable Style/MultilineBlockChain
   end
 
   # Deals with generating the pick plate by travelling in a column direction, so A1, B1, C1 ...
@@ -195,12 +193,10 @@ class CherrypickTask::PickTarget
     end
     private :well_position
 
-    # rubocop:todo Style/MultilineBlockChain
     def completed_view
       @wells.dup.tap { |wells| complete(wells) }.each_with_index.inject([]) do |wells, (well, index)|
         wells.tap { wells[@shape.vertical_to_interlaced_vertical(index + 1, @size)] = well }
       end.compact
     end
-    # rubocop:enable Style/MultilineBlockChain
   end
 end

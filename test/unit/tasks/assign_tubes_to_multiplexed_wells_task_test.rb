@@ -18,7 +18,7 @@ class DummyWorkflowController < WorkflowsController
   end
 end
 
-class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
   context 'AssignTubesToMultiplexedWellsHandler' do
     setup do
       @workflows_controller = DummyWorkflowController.new
