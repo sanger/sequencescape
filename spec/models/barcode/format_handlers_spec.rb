@@ -268,5 +268,14 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'INVALID'
   end
 
+  describe Barcode::FormatHandlers::BrantsBridge do
+    it_has_a_valid_barcode '00000000002107834', number: 2_107_834 # trims off the leading zeros
+    it_has_a_valid_barcode '10877393330000001', number: 10_877_393_330_000_001
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode '00210783400000001 '
+  end
+
+
   # rubocop:enable RSpec/EmptyExampleGroup
 end
