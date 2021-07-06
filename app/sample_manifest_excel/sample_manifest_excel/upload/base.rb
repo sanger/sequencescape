@@ -70,9 +70,8 @@ module SampleManifestExcel
         sample_manifest.start!
         @cache.populate!
         processor.run(tag_group)
-        return true if processed?
 
-        false
+        processed?
       end
 
       def data_at(column_name)
