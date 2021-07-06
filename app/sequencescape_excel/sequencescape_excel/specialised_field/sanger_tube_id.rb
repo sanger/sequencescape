@@ -38,10 +38,6 @@ module SequencescapeExcel
       # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/PerceivedComplexity
 
-      def process_early
-        true
-      end
-
       private
 
       def check_container

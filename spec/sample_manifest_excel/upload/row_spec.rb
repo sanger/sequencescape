@@ -180,7 +180,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     sample_count = Sample.count
     row = described_class.new(number: 1, data: data, columns: columns)
     row.sample
-    row.update_specialised_fields(tag_group, false)
+    row.update_specialised_fields(tag_group)
     aliquot = row.aliquot
     expect(Sample.count - sample_count).to eq(1)
     expect(aliquot.tag.oligo).to eq('AA')

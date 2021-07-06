@@ -26,22 +26,15 @@ module SampleManifestExcel
         def run(tag_group)
           return unless valid?
 
-          # Do foreign barcode specialised field updates first
-          update_early_specialised_fields
-
           # find or create samples
           create_samples_if_not_present
 
-          # run the validation that depends on samples being present
+          # run the validation (some depends on samples being present)
           return unless samples_valid?
 
-          # perform the metadata and remaining specialised fields updates
+          # update the metadata and specialised fields
           update_samples_and_aliquots(tag_group)
           update_sample_manifest
-        end
-
-        def update_early_specialised_fields
-          upload.rows.each(&:update_early_specialised_fields)
         end
 
         def create_samples_if_not_present

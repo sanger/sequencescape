@@ -24,10 +24,6 @@ module SequencescapeExcel
       def update(_attributes = {}); end
 
       def link(_other_fields); end
-
-      def process_early
-        false
-      end
     end
   end
 end

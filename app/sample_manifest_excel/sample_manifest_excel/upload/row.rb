@@ -20,7 +20,6 @@ module SampleManifestExcel
       validate :sanger_sample_id_exists?, if: :sanger_sample_id
       validates_presence_of :data, :columns
 
-      validate :check_early_specialised_fields
       delegate :present?, to: :sample, prefix: true
 
       ##
@@ -87,7 +86,7 @@ module SampleManifestExcel
         if sample.updated_by_manifest && !override
           @sample_skipped = true
         else
-          update_late_specialised_fields(tag_group)
+          update_specialised_fields(tag_group)
           asset.save!
           update_metadata_fields
           metadata.save!
@@ -104,18 +103,8 @@ module SampleManifestExcel
           aliquot.previous_changes.present?
       end
 
-      def update_specialised_fields(tag_group, early)
-        specialised_fields.select { |field| field.process_early == early }.each do |specialised_field|
-          specialised_field.update(aliquot: aliquot, tag_group: tag_group)
-        end
-      end
-
-      def update_early_specialised_fields
-        update_specialised_fields(nil, true)
-      end
-
-      def update_late_specialised_fields(tag_group)
-        update_specialised_fields(tag_group, false)
+      def update_specialised_fields(tag_group)
+        specialised_fields.each { |specialised_field| specialised_field.update(aliquot: aliquot, tag_group: tag_group) }
       end
 
       def update_metadata_fields
@@ -177,14 +166,6 @@ module SampleManifestExcel
         errors.empty?
       end
 
-      def check_early_specialised_fields
-        check_specialised_fields(true)
-      end
-
-      def check_late_specialised_fields
-        check_specialised_fields(false)
-      end
-
       private
 
       def manifest_asset
@@ -201,7 +182,7 @@ module SampleManifestExcel
         return unless errors.empty?
 
         check_primary_receptacle
-        check_late_specialised_fields
+        check_specialised_fields
         check_sample_metadata
       end
 
@@ -211,10 +192,10 @@ module SampleManifestExcel
         errors.add(:base, "#{row_title} Does not have a primary receptacle.")
       end
 
-      def check_specialised_fields(early)
+      def check_specialised_fields
         return unless errors.empty?
 
-        specialised_fields.select { |field| field.process_early == early }.each do |specialised_field|
+        specialised_fields.each do |specialised_field|
           unless specialised_field.valid?
             errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
           end
