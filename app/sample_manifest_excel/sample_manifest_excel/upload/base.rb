@@ -14,7 +14,7 @@ module SampleManifestExcel
     # *Retrieve the sample manifest
     # *Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
-    class Base
+    class Base # rubocop:todo Metrics/ClassLength
       include ActiveModel::Model
 
       attr_accessor :file, :column_list, :start_row, :override
@@ -92,6 +92,11 @@ module SampleManifestExcel
         labware_to_be_broadcasted.each { |labware| labware.events.updated_using_sample_manifest!(user) }
       end
 
+      # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH
+      def register_stock_resources
+        stock_receptacles_to_be_registered.each(&:register_stock!)
+      end
+
       def fail
         # If we've failed, do not update the manifest file, trying to do so
         # causes exceptions
@@ -154,6 +159,12 @@ module SampleManifestExcel
 
       def labware_to_be_broadcasted
         @labware_to_be_broadcasted ||= rows.select(&:changed?).reduce(Set.new) { |set, row| set << row.labware }
+      end
+
+      def stock_receptacles_to_be_registered
+        return [] unless sample_manifest.core_behaviour.stocks?
+
+        @stock_receptacles_to_be_registered ||= rows.select(&:sample_created?).map(&:asset)
       end
     end
   end

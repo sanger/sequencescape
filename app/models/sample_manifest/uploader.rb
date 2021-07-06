@@ -35,6 +35,7 @@ class SampleManifest::Uploader
       if upload.process(tag_group)
         upload.finished!
         upload.broadcast_sample_manifest_updated_event(user)
+        upload.register_stock_resources
         return true
       end
 

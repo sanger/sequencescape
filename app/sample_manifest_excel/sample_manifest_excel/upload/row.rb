@@ -152,6 +152,10 @@ module SampleManifestExcel
         @sample_skipped || sample_updated?
       end
 
+      def sample_created?
+        sample_updated? && !reuploaded?
+      end
+
       def aliquot_transferred?
         @aliquot_transferred
       end
