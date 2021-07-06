@@ -90,7 +90,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
     expect(upload.sample_manifest.state).to eq 'pending'
     upload.process(tag_group)
-    upload.complete
+    upload.finished!
     expect(upload.sample_manifest.state).to eq 'completed'
   end
 

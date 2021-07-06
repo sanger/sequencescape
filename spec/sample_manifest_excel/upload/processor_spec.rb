@@ -153,7 +153,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         before do
           upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
-          upload.complete
+          upload.finished!
         end
 
         after { File.delete(new_test_file) if File.exist?(new_test_file_name) }
@@ -298,7 +298,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(tag_group)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -381,7 +381,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -559,7 +559,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -601,7 +601,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }

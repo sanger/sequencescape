@@ -33,7 +33,7 @@ class SampleManifest::Uploader
       return false unless valid?
 
       if upload.process(tag_group)
-        upload.complete
+        upload.finished!
         upload.broadcast_sample_manifest_updated_event(user)
         return true
       end
