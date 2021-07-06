@@ -21,18 +21,15 @@ module SequencescapeExcel
       def update(_attributes = {}) # rubocop:todo Metrics/CyclomaticComplexity
         return unless valid? && foreign_barcode_format.present?
 
-        tube_receptacle = sample_manifest_asset.asset
-        sample_manifest = sample_manifest_asset.sample_manifest
-
         # if this tube's list of barcodes already contains a foreign barcode with the same format then update the existing one
-        foreign_barcode = tube_receptacle.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
+        foreign_barcode = asset.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
         if foreign_barcode.present?
           if foreign_barcode.barcode != value
             foreign_barcode.update(barcode: value)
             sample_manifest.update_barcodes if sample_manifest.present?
           end
         else
-          tube_receptacle.labware.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
+          asset.labware.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
           sample_manifest.update_barcodes if sample_manifest.present?
         end
       end
