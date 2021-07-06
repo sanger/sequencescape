@@ -63,7 +63,7 @@ module SampleManifestExcel
 
         def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
-            row.update_sample(tag_group, upload.override) # This is where the foreign barcode gets inserted
+            row.update_sample(tag_group, upload.override)
             substitutions << row.aliquot.substitution_hash if row.reuploaded?
           end
           update_downstream_aliquots unless no_substitutions?

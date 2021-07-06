@@ -10,12 +10,12 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController # r
       @uploader = create_uploader
 
       if @uploader.run!
-        display_success('Sample manifest successfully uploaded.')
+        success('Sample manifest successfully uploaded.')
       else
-        display_error('Your sample manifest couldn\'t be uploaded.')
+        error('Your sample manifest couldn\'t be uploaded.')
       end
     else
-      display_error('No file attached')
+      error('No file attached')
     end
   end
 
@@ -23,14 +23,14 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController # r
     SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, params[:override])
   end
 
-  def display_success(message)
+  def success(message)
     flash[:notice] = message
     redirect_target = (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
 
     redirect_to redirect_target
   end
 
-  def display_error(message)
+  def error(message)
     flash.now[:error] = message
     prepare_manifest_pagination
     render :new
