@@ -119,8 +119,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           build(:test_download_tubes, columns: column_list, manifest_type: 'tube_library_with_tag_sequences')
         end
 
-        it 'will not generate samples prior to processing' do
+        it 'will not generate samples on initialisation' do
           expect { upload }.not_to change(Sample, :count)
+        end
+
+        it 'will not generate samples on validation' do
+          expect { upload.valid? }.not_to change(Sample, :count)
         end
 
         it 'will process', :aggregate_failures do
@@ -149,7 +153,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         before do
           upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
-          upload.complete
+          upload.finished!
         end
 
         after { File.delete(new_test_file) if File.exist?(new_test_file_name) }
@@ -230,8 +234,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             )
           end
 
-          it 'will not generate samples prior to processing' do
+          it 'will not generate samples on initialization' do
             expect { upload }.not_to change(Sample, :count)
+          end
+
+          it 'will not generate samples on validation' do
+            expect { upload.valid? }.not_to change(Sample, :count)
           end
 
           it 'will transfer the aliquots to the multiplexed library tube' do
@@ -290,7 +298,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(tag_group)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -373,7 +381,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -459,8 +467,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when valid' do
         let(:download) { build(:test_download_plates, columns: column_list) }
 
-        it 'will not generate samples prior to processing' do
+        it 'will not generate samples on initialization' do
           expect { processor }.not_to change(Sample, :count)
+        end
+
+        it 'will not generate samples on validation' do
+          expect { processor.valid? }.not_to change(Sample, :count)
         end
 
         it 'will process', :aggregate_failures do
@@ -547,7 +559,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -589,7 +601,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -663,8 +675,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
 
       shared_examples_for 'tube rack manifest upload success case' do
-        it 'will not generate samples prior to processing' do
+        it 'will not generate samples on intitialization' do
           expect { upload }.not_to change(Sample, :count)
+        end
+
+        it 'will not generate samples on validation' do
+          expect { upload.valid? }.not_to change(Sample, :count)
         end
 
         it 'will process', :aggregate_failures do

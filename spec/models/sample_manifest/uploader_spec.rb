@@ -181,7 +181,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
           :test_download_tubes,
           manifest_type: 'tube_library_with_tag_sequences',
           columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-          validation_errors: [:insert_size_from]
+          validation_errors: [:sanger_sample_id_invalid]
         )
       download.save(test_file_name)
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
@@ -193,7 +193,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
           :test_download_tubes,
           manifest_type: 'tube_multiplexed_library_with_tag_sequences',
           columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup,
-          validation_errors: [:insert_size_from]
+          validation_errors: [:sanger_sample_id_invalid]
         )
       download.save(test_file_name)
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
@@ -205,7 +205,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
           :test_download_tubes,
           manifest_type: 'tube_multiplexed_library',
           columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup,
-          validation_errors: [:insert_size_from]
+          validation_errors: [:sanger_sample_id_invalid]
         )
       download.save(test_file_name)
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
