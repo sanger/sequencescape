@@ -27,19 +27,29 @@ class SampleManifest::Uploader
       SampleManifestExcel::Upload::Base.new(file: file, column_list: self.configuration.columns.all, override: override)
   end
 
+  # rubocop:disable Metrics/MethodLength
   def run!
-    return false unless valid?
+    ActiveRecord::Base.transaction do
+      return false unless valid?
 
-    if upload.process(tag_group)
-      upload.complete
-      upload.broadcast_sample_manifest_updated_event(user)
-      true
-    else
-      extract_errors
-      upload.fail
-      false
+      if upload.process(tag_group)
+        upload.finished!
+        upload.broadcast_sample_manifest_updated_event(user)
+        upload.register_stock_resources
+        return true
+      end
+
+      # One of our post processing checks failed, something went wrong, so we
+      # roll everything back
+      raise ActiveRecord::Rollback
     end
+
+    extract_errors
+    upload.fail
+    false
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   private
 
