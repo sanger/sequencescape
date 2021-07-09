@@ -4,7 +4,6 @@ require 'rails_helper'
 
 # Rubocop doesn't like the .and change {}.by bits and will
 # result in repeatedly indenting them to the level of the last call in the previous chain
-# rubocop:disable Layout/MultilineMethodCallIndentation
 
 RSpec.describe SampleManifest, type: :model, sample_manifest: true do
   let(:user) { create :user }
@@ -68,10 +67,10 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
             it 'create sample and aliquots' do
               sma1 = manifest.sample_manifest_assets.first
               expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1).and change(Messenger, :count).by(1)
+                .by(1).and change { study.samples.count }.by(1)
               sma2 = manifest.sample_manifest_assets.last
               expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1).and change(Messenger, :count).by(1)
+                .by(1).and change { study.samples.count }.by(1)
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
             end
@@ -207,7 +206,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               end
 
               it 'is a multiplexed library tube' do
-                # rubocop:todo RSpec/AggregateExamples
                 expect(subject.first).to be_a(MultiplexedLibraryTube)
               end
             end
@@ -274,7 +272,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
             end
 
             it 'is a library tube' do
-              # rubocop:todo RSpec/AggregateExamples
               expect(labware.first).to be_a(LibraryTube)
             end
           end
@@ -304,7 +301,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
             it 'create sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
               expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1).and change(Messenger, :count).by(1)
+                .by(1).and change { study.samples.count }.by(1)
               expect(SampleTube.last.aliquots.first.library).to be_nil
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
@@ -326,7 +323,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               end
 
               it 'is a sample tube' do
-                # rubocop:todo RSpec/AggregateExamples
                 expect(labware.first).to be_a(SampleTube)
               end
             end
@@ -366,5 +362,3 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     end
   end
 end
-
-# rubocop:enable Layout/MultilineMethodCallIndentation

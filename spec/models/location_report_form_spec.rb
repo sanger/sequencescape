@@ -188,11 +188,10 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       end
 
       it 'creates a valid location report' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(location_report_form.location_report).to be_valid
       end
 
-      it 'correctly records the form object information in the location report' do
+      it 'correctly records the form object information in the location report', aggregate_failures: true do
         expect(location_report_form.location_report.name).to eq('Test_name')
         expect(location_report_form.location_report.report_type).to eq('type_selection')
         expect(location_report_form.location_report.faculty_sponsor_ids).to eq([study_1_sponsor.id])
@@ -224,6 +223,14 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
         end
       end
 
+      context 'when barcode is whitespace padded' do
+        let(:location_barcode) { ' 1001 ' }
+
+        it 'the model is valid' do
+          expect(location_report_form).to be_valid
+        end
+      end
+
       context 'for an invalid location' do
         let(:location_barcode) { '9999' }
 
@@ -249,12 +256,10 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       end
 
       it 'creates a valid location report' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(location_report_form.location_report).to be_valid
       end
 
-      it 'correctly records the form object information in the location report' do
-        # rubocop:todo RSpec/AggregateExamples
+      it 'correctly records the form object information in the location report', aggregate_failures: true do
         expect(location_report_form.location_report.name).to eq('Test_name')
         expect(location_report_form.location_report.report_type).to eq('type_labwhere')
         expect(location_report_form.location_report.location_barcode).to eq('1001')

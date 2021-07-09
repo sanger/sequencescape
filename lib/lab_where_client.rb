@@ -11,7 +11,8 @@ module LabWhereClient
     def path_to(instance, target)
       raise LabwhereException, 'LabWhere service URL not set' if base_url.nil?
 
-      [base_url, instance.endpoint, target].compact.join('/')
+      encoded_target = ERB::Util.url_encode(target)
+      [base_url, instance.endpoint, encoded_target].compact.join('/')
     end
 
     def parse_json(str)

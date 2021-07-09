@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class DataReleaseTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class DataReleaseTest < ActiveSupport::TestCase
   context 'A study' do
     setup { @study = create :study }
     context '#valid_data_release_properties?' do

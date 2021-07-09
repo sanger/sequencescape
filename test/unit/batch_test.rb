@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class BatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class BatchTest < ActiveSupport::TestCase
   context 'A batch' do
     context 'on its own' do
       setup { @batch = build :batch }

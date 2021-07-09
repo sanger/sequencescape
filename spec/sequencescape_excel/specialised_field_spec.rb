@@ -236,7 +236,10 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         sample_1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
         field = described_class.new(value: 'CGAP-ABC022', sample_manifest_asset: sample_manifest_asset_1)
         expect(field).to be_valid
+
         field.update(aliquot: sample_1.wells.first.aliquots.first)
+
+        sample_1_plate.reload
         expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
         expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
       end
@@ -278,7 +281,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         sample_1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
         field = described_class.new(value: 'CGAP-ABC022', sample_manifest_asset: manifest_asset)
         expect(field).to be_valid
+
         field.update(aliquot: sample_1_tube.aliquots.first)
+
         sample_1_tube.reload
         expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
         expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil

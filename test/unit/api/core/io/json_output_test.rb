@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class Core::Io::JsonOutputTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class Core::Io::JsonOutputTest < ActiveSupport::TestCase
   module BasicMethods
     def object_json(_object, options)
       options[:stream]

@@ -4,7 +4,7 @@ require 'test_helper'
 require 'timecop'
 require 'csv'
 
-class QcReport::FileTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class QcReport::FileTest < ActiveSupport::TestCase
   include ActionDispatch::TestProcess
 
   context 'QcReport File' do

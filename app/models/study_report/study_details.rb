@@ -83,7 +83,6 @@ module StudyReport::StudyDetails # rubocop:todo Style/Documentation
         .for_study_report
         .where(id: asset_ids)
         .each do |asset|
-          # rubocop:disable Rails/FindEach
           asset_progress_data = asset.qc_report
           next if asset_progress_data.nil?
 

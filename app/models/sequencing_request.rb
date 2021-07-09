@@ -41,7 +41,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
     # Do nothing
   end
 
-  # Returns true if a request is read for batching
+  # Returns true if a request is ready for batching
   def ready? # rubocop:todo Metrics/CyclomaticComplexity
     # Reject any requests with missing or empty assets.
     # We use most tagged aliquot here, as its already loaded.

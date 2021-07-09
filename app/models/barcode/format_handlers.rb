@@ -444,4 +444,12 @@ module Barcode::FormatHandlers
   class UkBiocentreV6 < BaseRegExBarcode
     self.format = /\A(?<prefix>RNAsst)(?<number>\d+)\z/
   end
+
+  # Support for Brants Bridge centre
+  # Expected formats:
+  # nnnnnnnnnnnnnnnnn
+  # where n is a digit
+  class BrantsBridge < BaseRegExBarcode
+    self.format = /\A(?<number>[0-9]{17})\z/
+  end
 end

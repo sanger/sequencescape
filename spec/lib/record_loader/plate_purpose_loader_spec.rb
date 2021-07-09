@@ -24,7 +24,6 @@ RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
       end
 
       it 'sets the barcode printer' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(Purpose.where(name: created_purposes).last.barcode_printer_type).to eq(
           BarcodePrinterType.find_by(name: '96 Well Plate')
         )
@@ -57,7 +56,6 @@ RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
     end
 
     it 'sets creator parents' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(the_creator.parent_plate_purposes).to eq(PlatePurpose.where(name: 'Stock Plate'))
     end
   end

@@ -14,7 +14,6 @@ RSpec.describe Api::V2::SampleResource, type: :resource do
   end
 
   it 'has sample metadata information' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(subject).to have_one(:sample_metadata).with_class_name('SampleMetadata')
   end
 end
