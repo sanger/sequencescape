@@ -36,7 +36,6 @@ end
 
 SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.request_types << rt
