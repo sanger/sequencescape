@@ -28,7 +28,6 @@
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-vue": "^6.2.2",
     "jest": "^26.2.2",
-    "markdown-toc": "^1.2.0",
     "miragejs": "^0.1.40",
     "prettier": "^2.3.0",
     "vue-jest": "^3.0.6",
