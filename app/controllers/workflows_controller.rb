@@ -12,14 +12,15 @@
 #
 # @note A large amount of the task processing actually occurs within the controller.
 #       These methods are included via the various Handler modules.
-class WorkflowsController < ApplicationController # rubocop:todo Metrics/ClassLength
+class WorkflowsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_workflow_by_id, only: %i[show batches]
 
   attr_accessor :plate_purpose_options, :spreadsheet_layout, :batch
 
+  # @todo These actions should be extracted from the controller, and instead be handled by an object invoked
+  #       by the task
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToTubesHandler
@@ -36,52 +37,6 @@ class WorkflowsController < ApplicationController # rubocop:todo Metrics/ClassLe
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler
-
-  # Lists all the workflows
-  # @note JG: While this works, I don't think it is used.
-  # @todo Remove (Including route)
-  def index
-    @workflows = Workflow.all
-
-    respond_to do |format|
-      format.html
-      format.xml { render xml: @workflows.to_xml }
-    end
-  end
-
-  # Shows a summary of the steps within a workflow
-  # @note JG: This is a remnant from when workflows were user editable. I don't believe it is used
-  #       and while it doesn't throw exceptions, its output is likely misleading for many pipelines.
-  # @todo Remove (Including route)
-  def show
-    respond_to do |format|
-      format.html
-      format.xml { render xml: @workflow.to_xml }
-    end
-  end
-
-  # Presumably used to list all batches associated with a workflow
-  # Not listed in routes
-  # @todo Remove
-  def batches
-    @workflow = Workflow.find(params[:id])
-
-    # TODO: association broken here - something to do with the attachables polymorph?
-    @batches = Batch.where(workflow_id: @workflow.id).sort_by(&:id).reverse
-  end
-
-  # Appears to be remnant of workflow editing? Shouldn't be in use any more.
-  # @todo Remove (Including route, which doesn't even seem to match up properly).
-  #       Also tested in workflows_controller_test.rb, but that test can be removed.
-  def sort
-    @workflow = Workflow.find(params[:workflow_id])
-    @task_list = @workflow.tasks
-    @task_list.each do |task|
-      task.sorted = params['task_list'].index(task.id.to_s) + 1
-      task.save
-    end
-    head :ok
-  end
 
   # TODO: This needs to be made RESTful.
   # 1: Routes need to be refactored to provide more sensible urls
@@ -191,10 +146,6 @@ class WorkflowsController < ApplicationController # rubocop:todo Metrics/ClassLe
     name = names.shift.to_s.dup
     names.each { |n| name << "[#{n}]" }
     name
-  end
-
-  def find_workflow_by_id
-    @workflow = Workflow.find(params[:id])
   end
 
   def eventify_batch(batch, task)

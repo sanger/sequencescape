@@ -174,11 +174,9 @@ class BatchesControllerTest < ActionController::TestCase
       context 'actions' do
         setup do
           @pipeline_next = create :pipeline, name: 'Next pipeline'
-          @pipeline = create :pipeline, name: 'New Pipeline', automated: false, next_pipeline_id: @pipeline_next.id
-          @pipeline_qc_manual =
-            create :pipeline, name: 'Manual quality control', automated: false, next_pipeline_id: @pipeline_next.id
-          @pipeline_qc =
-            create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_qc_manual.id
+          @pipeline = create :pipeline, name: 'New Pipeline'
+          @pipeline_qc_manual = create :pipeline, name: 'Manual quality control'
+          @pipeline_qc = create :pipeline, name: 'quality control'
 
           @ws = @pipeline.workflow # :name => 'A New workflow', :item_limit => 2
           @ws_two = @pipeline_qc.workflow # :name => 'Another workflow', :item_limit => 2

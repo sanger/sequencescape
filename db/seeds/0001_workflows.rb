@@ -13,19 +13,6 @@ ProductLine.create(name: 'Illumina-B')
 ProductLine.create(name: 'Illumina-C')
 ProductLine.create(name: 'Illumina-HTP')
 
-# Utility method for getting a sequence of Pipeline instances to flow properly.  Call with a Hash mapping the
-# flow from left to right, if you get what I mean!
-# This is pretty much legacy behaviour now. I wouldn't worry too much about this for any new pipelines.
-# Besides, whey are you adding new pipelines to Sequencescape, this interface is incredibly clunky.
-def set_pipeline_flow_to(sequence)
-  sequence.each do |current_name, next_name|
-    current_pipeline, next_pipeline =
-      [current_name, next_name].map { |name| Pipeline.find_by(name: name) or raise "Cannot find pipeline '#{name}'" }
-    current_pipeline.update!(next_pipeline_id: next_pipeline.id)
-    next_pipeline.update!(previous_pipeline_id: current_pipeline.id)
-  end
-end
-
 # import [ :name ], locations_data, :validate => false
 
 #### RequestInformationTypes
@@ -56,7 +43,6 @@ end
 
 LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipeline|
   pipeline.sorter = 0
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.request_types << RequestType.create!(
@@ -104,7 +90,6 @@ end
 
 MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparation') do |pipeline|
   pipeline.sorter = 0
-  pipeline.automated = false
   pipeline.active = true
   pipeline.multiplexed = true
 
@@ -163,7 +148,6 @@ end
 
 MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparation') do |pipeline|
   pipeline.sorter = 0
-  pipeline.automated = false
   pipeline.active = true
   pipeline.multiplexed = true
   pipeline.group_name = 'Library creation'
@@ -258,7 +242,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_se_request_type
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -319,7 +302,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_se_request_type
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -372,7 +354,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_se_request_type
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -452,7 +433,6 @@ SequencingPipeline.create!(
   request_types: single_ended_hi_seq_sequencing
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -505,7 +485,6 @@ SequencingPipeline.create!(
   request_types: single_ended_hi_seq_sequencing
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -613,7 +592,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 3
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -674,7 +652,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 8
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -713,7 +690,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 8
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -759,7 +735,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 9
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -806,7 +781,6 @@ SequencingPipeline.create!(
 ) do |pipeline|
   pipeline.sorter = 9
   pipeline.max_size = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -852,7 +826,6 @@ SequencingPipeline.create!(
 ) do |pipeline|
   pipeline.sorter = 9
   pipeline.max_size = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -896,7 +869,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 8
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -931,7 +903,6 @@ end
 # TODO: This pipeline has been cloned from the 'Cluster formation PE (no controls)'.  Needs checking
 SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do |pipeline|
   pipeline.sorter = 8
-  pipeline.automated = false
   pipeline.active = true
 
   %w[a b c].each do |pl|
@@ -1004,7 +975,6 @@ end
 
 CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   pipeline.sorter = 10
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.request_types << RequestType.find_by!(key: 'cherrypick')
@@ -1023,7 +993,6 @@ end
 
 PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.sorter = 14
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.request_types << RequestType.create!(
@@ -1064,7 +1033,6 @@ end.tap { |pipeline| create_request_information_types(pipeline, 'sequencing_type
 
 PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
   pipeline.sorter = 14
-  pipeline.automated = false
   pipeline.active = true
   pipeline.max_size = 96
 
@@ -1135,8 +1103,6 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
     )
 end.tap { |pipeline| create_request_information_types(pipeline, 'sequencing_type', 'insert_size') }
 
-set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
-
 # Pulldown pipelines
 pulldown_variants = %w[WGS SC ISC]
 ['Pulldown', 'Illumina-A Pulldown'].each do |lab|
@@ -1144,7 +1110,7 @@ pulldown_variants = %w[WGS SC ISC]
     pipeline_name = "#{lab} #{pipeline_type}"
     Pipeline.create!(name: pipeline_name) do |pipeline|
       pipeline.sorter = Pipeline.maximum(:sorter) + 1
-      pipeline.automated = false
+
       pipeline.active = true
       pipeline.externally_managed = true
 
@@ -1167,7 +1133,6 @@ end
 
 SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.request_types << RequestType.create!(key: 'miseq_sequencing', name: 'MiSeq sequencing') do |request_type|
@@ -1241,7 +1206,6 @@ Workflow
 CherrypickPipeline.create!(
   name: 'Illumina-C Cherrypick',
   active: true,
-  automated: false,
   group_name: 'Illumina-C Library creation',
   max_size: 3000,
   sorter: 10,
@@ -1379,7 +1343,6 @@ x10_requests_types =
 ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq v4 PE #{type}",
-    automated: false,
     active: true,
     sorter: 9,
     max_size: 8,
@@ -1431,7 +1394,6 @@ x10_requests_types =
 
   SequencingPipeline.create!(
     name: "HiSeq v4 SE #{type}",
-    automated: false,
     active: true,
     sorter: 9,
     max_size: 8,
@@ -1476,7 +1438,6 @@ end
 ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
-    automated: false,
     active: true,
     sorter: 9,
     max_size: 8,
@@ -1638,7 +1599,6 @@ end
 
 SequencingPipeline.create!(
   name: 'HiSeq 4000 PE (spiked in controls)',
-  automated: false,
   active: true,
   sorter: 10,
   max_size: 8,
@@ -1653,7 +1613,6 @@ end
 
 SequencingPipeline.create!(
   name: 'HiSeq 4000 SE (spiked in controls)',
-  automated: false,
   active: true,
   sorter: 10,
   max_size: 8,

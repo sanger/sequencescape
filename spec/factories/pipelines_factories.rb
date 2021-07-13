@@ -48,10 +48,7 @@ FactoryBot.define do
 
   factory :pipeline do
     name { generate :pipeline_name }
-    automated { false }
     active { true }
-    next_pipeline_id { nil }
-    previous_pipeline_id { nil }
 
     transient do
       item_limit { 2 }
@@ -80,7 +77,6 @@ FactoryBot.define do
     transient { request_type { build(:cherrypick_request_type) } }
 
     name { generate :pipeline_name }
-    automated { false }
     active { true }
     max_size { 3000 }
     summary { true }
@@ -111,7 +107,6 @@ FactoryBot.define do
 
   factory :sequencing_pipeline do
     name { generate :pipeline_name }
-    automated { false }
     active { true }
 
     workflow { build :lab_workflow_for_pipeline }
@@ -137,10 +132,7 @@ FactoryBot.define do
 
   factory :library_creation_pipeline do
     name { |_a| FactoryBot.generate :pipeline_name }
-    automated { false }
     active { true }
-    next_pipeline_id { nil }
-    previous_pipeline_id { nil }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -151,7 +143,6 @@ FactoryBot.define do
 
   factory :multiplexed_library_creation_pipeline do
     name { |_a| FactoryBot.generate :pipeline_name }
-    automated { false }
     active { true }
 
     after(:build) do |pipeline|

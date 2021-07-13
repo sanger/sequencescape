@@ -2,7 +2,6 @@
 
 PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipeline|
   pipeline.sorter = 14
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.request_types << RequestType.create!(
@@ -85,5 +84,3 @@ pbs =
     asset_shape: AssetShape.find_by(name: 'Standard')
   )
 AssignTubesToMultiplexedWellsTask.all.each { |task| task.update!(purpose: pbs) }
-
-set_pipeline_flow_to('PacBio Tagged Library Prep' => 'PacBio Sequencing')

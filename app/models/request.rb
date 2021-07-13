@@ -430,12 +430,16 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     lab_events_for_batch(batch).any? { |event| event.description == task.name }
   end
 
+  # Returns the lab_events associated with `batch`
+  # While for the most-part each request only belongs to a single batch at any one time,
+  # they may have belonged to other batches historically.
+  #
+  # @param batch [Batch] The batch to filter events by
+  #
+  # @return [Array<LabEvent>,LabEvent::ActiveRecord_Associations_CollectionProxy] Events associated with `batch`
+  #
   def lab_events_for_batch(batch)
     lab_events.loaded? ? lab_events.select { |le| le.batch_id == batch.id } : lab_events.where(batch_id: batch.id)
-  end
-
-  def event_with_key_value(k, v = nil)
-    v.nil? ? false : lab_events.with_descriptor(k, v).first
   end
 
   def next_requests

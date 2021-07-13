@@ -34,7 +34,6 @@ namespace :sequencing do
           SequencingPipeline.create!(
             # rubocop:todo Metrics/BlockLength
             name: 'NovaSeq 6000 PE',
-            automated: false,
             active: true,
             sorter: 10,
             max_size: 4,
