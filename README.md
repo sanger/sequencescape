@@ -298,7 +298,7 @@ node module. To install it, make sure you have install the dev dependencies from
 the table of contents, run:
 
 ```shell
-yarn markdown-toc -i README.md --bullets "*"
+npx markdown-toc -i README.md --bullets "*"
 ```
 
 ### CI
