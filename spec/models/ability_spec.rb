@@ -18,7 +18,7 @@ RSpec.describe Ability do
       BaitLibrary::Supplier => %i[create edit read delete],
       BaitLibraryType => %i[create edit read delete],
       BarcodePrinter => %i[create edit read delete],
-      Batch => %i[rollback edit create_stock_asset sample_prep_worksheet print verify],
+      Batch => %i[rollback edit sample_prep_worksheet print verify],
       Comment => %i[create delete new],
       CustomText => %i[create edit read delete],
       Delayed::Job => %i[read],

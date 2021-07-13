@@ -17,13 +17,11 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   class_attribute :batch_worksheet,
                   :requires_position,
                   :inbox_partial,
-                  :library_creation,
                   :pulldown,
                   :prints_a_worksheet_per_task,
                   :genotyping,
                   :sequencing,
                   :purpose_information,
-                  :can_create_stock_assets,
                   :inbox_eager_loading,
                   :group_by_submission,
                   :group_by_parent,
@@ -38,14 +36,12 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   self.batch_worksheet = 'detailed_worksheet'
   self.requires_position = true
   self.inbox_partial = 'default_inbox'
-  self.library_creation = false
   self.pulldown = false
   self.prints_a_worksheet_per_task = false
   self.genotyping = false
   self.sequencing = false
   self.purpose_information = true
   self.pick_to = true
-  self.can_create_stock_assets = false
   self.inbox_eager_loading = :loaded_for_inbox_display
   self.group_by_submission = false
   self.group_by_parent = false
@@ -121,14 +117,7 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def post_finish_batch(batch, user); end
 
   def completed_request_as_part_of_release_batch(request)
-    if library_creation?
-      unless request.failed?
-        EventSender.send_pass_event(request, '', "Passed #{name}.", id)
-        EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")
-      end
-    else
-      EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")
-    end
+    EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")
   end
 
   def on_start_batch(batch, user)

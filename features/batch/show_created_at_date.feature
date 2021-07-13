@@ -11,7 +11,6 @@ Feature: Show the date of creation of a batch
       And I should see "This batch belongs to pipeline: <pipeline>"
 
     Examples:
-      | pipeline                       |
-      | Cluster formation PE           |
-      | Cluster formation SE           |
-      | Illumina-C Library preparation |
+      | pipeline             |
+      | Cherrypick           |
+      | MiSeq sequencing     |

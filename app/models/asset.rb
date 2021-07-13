@@ -110,23 +110,6 @@ class Asset < ApplicationRecord
     nil
   end
 
-  def assign_relationships(parents, child)
-    parents.each do |parent|
-      parent.children.delete(child)
-      AssetLink.create_edge(parent, self)
-    end
-    AssetLink.create_edge(self, child)
-  end
-
-  def add_parent(parent)
-    return unless parent
-
-    # should be self.parents << parent but that doesn't work
-    save!
-    parent.save!
-    AssetLink.create_edge!(parent, self)
-  end
-
   def original_stock_plates
     ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
   end

@@ -202,11 +202,7 @@ class BatchTest < ActiveSupport::TestCase
 
     should_have_instance_methods :assigned_user, :start, :fail, :workflow, :started?, :released?, :qc_state
 
-    setup do
-      @pipeline_next = create :pipeline, name: 'Next pipeline'
-      @pipeline = create :library_creation_pipeline, name: 'Pipeline for BatchTest'
-      @pipeline_qc = create :pipeline, name: 'quality control'
-    end
+    setup { @pipeline = create :sequencing_pipeline, name: 'Pipeline for BatchTest' }
 
     context 'create requests' do
       setup do
@@ -632,7 +628,6 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should 'check that with the pipeline that the batch is valid' do
-      @batch.pipeline.expects(:validation_of_batch_for_completion).with(@batch)
       @batch.complete!(@user)
     end
   end
