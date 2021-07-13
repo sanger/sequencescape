@@ -14,7 +14,6 @@ class WorkflowsControllerTest < ActionController::TestCase
       session[:user] = @user.id
       @pipeline_user = FactoryBot.create :pipeline_admin
     end
-    should_require_login
 
     context '#stage' do
       setup do
