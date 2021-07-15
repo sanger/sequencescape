@@ -241,7 +241,7 @@ library_types =
   )
 
 %i[illumina_c_multiplexed_library_creation illumina_c_library_creation].each do |request_class_symbol|
-  request_type = RequestType.find_by(key: request_class_symbol.to_s)
+  request_type = RequestType.find_by!(key: request_class_symbol.to_s)
   library_types.each do |library_type|
     LibraryTypesRequestType.create!(request_type: request_type, library_type: library_type, is_default: false)
   end

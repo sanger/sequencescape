@@ -14,9 +14,6 @@ module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
 
       # The batch requires positions on it's requests if the pipeline does
       delegate :requires_position?, to: :pipeline
-
-      # Ensure that the batch is valid to be marked as completed
-      validate(if: :completed?) { |record| record.pipeline.validation_of_batch_for_completion(record) }
     end
   end
 
