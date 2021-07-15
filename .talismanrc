@@ -1,4 +1,6 @@
 fileignoreconfig:
+- filename: .github/workflows/ruby_test_next_rails.yml
+  checksum: 66ee16977f6a29dadf842e69a72abe194479581f67c3e584cf895af7f8b75cd0
 - filename: GemfileNext.lock
   checksum: e2eccc8039be1ddd52ad18a2b43ff10ea74aff0c12091a090e68768a2d7be75e
 - filename: db/schema.rb
