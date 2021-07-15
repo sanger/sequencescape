@@ -41,7 +41,12 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     def construct! # rubocop:todo Metrics/AbcSize
       transaction do
         plate = proxy_association.owner
-        plate.maps.in_row_major_order.ids.map { |location_id| { map_id: location_id } }.tap do |wells|
+        plate.maps.in_row_major_order.ids.map do |location_id|
+          # @note sti_type is here due to https://github.com/zdennis/activerecord-import/issues/735
+          # which is fixed (literally 2h before I ran into the issue) in master, but no
+          # release yet.
+          { map_id: location_id, sti_type: 'Well' }
+        end.tap do |wells|
           plate.wells.import(wells)
           ids = plate.wells.ids
           well_type = Well.base_class.name
