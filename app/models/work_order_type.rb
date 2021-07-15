@@ -11,5 +11,7 @@ class WorkOrderType < ApplicationRecord
               with: /\A[a-z0-9_]+\z/,
               message: 'should only contain lower case letters, numbers and underscores.'
             },
-            uniqueness: true
+            uniqueness: {
+              case_sensitive: false
+            }
 end

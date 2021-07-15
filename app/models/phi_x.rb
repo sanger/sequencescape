@@ -55,7 +55,7 @@ module PhiX
   # Returns the names of valid tag options for creation of PhiX libraries.
   # @return [Array] Valid tag options
   def self.tag_option_names
-    tag_options.keys
+    tag_options.keys.map(&:to_s)
   end
 
   # Returns the default tag option which will be automatically selected when
@@ -100,7 +100,7 @@ module PhiX
   #
   # @return [String] The named tag option.
   def self.tag_option_for(i7_oligo:, i5_oligo:)
-    tag_options.key('i7_oligo' => i7_oligo, 'i5_oligo' => i5_oligo) ||
+    tag_options.deep_symbolize_keys.key(i7_oligo: i7_oligo, i5_oligo: i5_oligo)&.to_s ||
       "UNKNOWN i7:#{i7_oligo || '-'} i5:#{i5_oligo || '-'}"
   end
 
@@ -111,7 +111,7 @@ module PhiX
   #
   # @return [Tag, nil] The tag to apply, or nil if it is to be untagged
   def self.find_tag(tag_option, tag_type)
-    oligo = tag_options.dig(tag_option, tag_type)
+    oligo = tag_options.dig(tag_option.to_sym, tag_type)
     return nil if oligo.nil?
 
     tag_group.tags.create_with(map_id: configuration[:tag_map_id]).find_or_create_by!(oligo: oligo)

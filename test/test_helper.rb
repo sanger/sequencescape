@@ -38,6 +38,9 @@ require "#{Rails.root}/test/unit/task_test_base"
 PlateMapGeneration.generate!
 
 class ActiveSupport::TestCase
+  # Run tests in parallel with specified workers
+  # parallelize(workers: :number_of_processors)
+
   extend Sanger::Testing::Controller::Macros
   include FactoryBot::Syntax::Methods
 
@@ -64,7 +67,7 @@ class ActiveSupport::TestCase
   # test cases which use the @david style and don't mind the speed hit (each
   # instantiated fixtures translates to a database query per test method),
   # then set this back to true.
-  self.use_instantiated_fixtures = false
+  # self.use_instantiated_fixtures = false
 
   # DON'T...
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
