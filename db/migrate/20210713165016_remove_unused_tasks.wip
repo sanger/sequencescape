@@ -1,0 +1,42 @@
+class RemoveUnusedTasks < ActiveRecord::Migration[5.2]
+  def up
+    Task.where(sti_type: %w[AssignTagsTask SetCharacterisationDescriptorsTask]).each(&:destroy)
+  end
+
+  def down
+    raise ActiveRecord::IrreversibleMigration unless ENV['NO_REALLY'] == 'true'
+
+    Workflow
+      .find_by(name: 'Illumina-B MX Library Preparation')
+      .tasks
+      .create!(
+        [
+          { name: 'Assign Tags', sorted: 1, sti_type: 'AssignTagsTask', lab_activity: true },
+          {
+            name: 'Characterisation',
+            sorted: 4,
+            batched: true,
+            sti_type: 'SetCharacterisationDescriptorsTask',
+            lab_activity: true
+          }
+        ]
+      )
+    Workflow
+      .find_by(name: 'Illumina-C MX Library Preparation')
+      .tasks
+      .create!(
+        [
+          { name: 'Assign Tags', sorted: 1, sti_type: 'AssignTagsTask', lab_activity: true },
+          {
+            name: 'Characterisation',
+            sorted: 4,
+            batched: true,
+            interactive: false,
+            per_item: false,
+            sti_type: 'SetCharacterisationDescriptorsTask',
+            lab_activity: true
+          }
+        ]
+      )
+  end
+end
