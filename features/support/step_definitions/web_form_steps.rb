@@ -121,11 +121,7 @@ When /^(?:|I )attach the relative file "([^"]+)" to "([^"]+)"(?: within "([^"]+)
   with_scope(selector) { attach_file(field, File.expand_path(path)) }
 end
 
-<<<<<<< HEAD
 When /^I fill in "([^"]*)" with(?: the)? multiline text:?$/ do |field, value|
-=======
-When /^I fill in "([^\"]*)" with(?: the)? multiline text:?$/ do |field, value|
->>>>>>> d54497ddc (Ruby 2.6 update throughout)
   find_field(field).send_keys(value)
 rescue NotImplementedError
   fill_in(field, with: value)
