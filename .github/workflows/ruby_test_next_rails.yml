@@ -1,4 +1,4 @@
-name: Ruby Test
+name: Ruby Test (Rails 6)
 env:
   TZ: Europe/London
   CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID || '9c624e5d90c5b319d678e06d66c7671f1661fda826436d475f9679b54be63e26' }}
