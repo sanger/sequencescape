@@ -70,12 +70,12 @@ class PhiX::Stock
   # Finds or creates the i7 {Tag tag} (tag 1) according to the selected {#tags}
   # @return [Tag,nil] The selected tag, or nil if none is specified
   def i7_tag
-    @i7_tag ||= PhiX.find_tag(tags.to_sym, :i7_oligo)
+    @i7_tag ||= PhiX.find_tag(tags, :i7_oligo)
   end
 
   # Finds or creates the i5 {Tag tag} (tag 2) according to the selected {#tags}
   # @return [Tag,nil] The selected tag, or nil if none is specified
   def i5_tag
-    @i5_tag ||= PhiX.find_tag(tags.to_sym, :i5_oligo)
+    @i5_tag ||= PhiX.find_tag(tags, :i5_oligo)
   end
 end
