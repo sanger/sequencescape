@@ -70,11 +70,29 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
 
   belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
-  has_one :spiked_in_buffer_links,
-          -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
-          class_name: 'AssetLink',
-          foreign_key: :descendant_id,
-          inverse_of: :descendant
+
+  # Annoyingly we need two versions of the association, as Rails 5 and Rails 6 seem to
+  # have distinct behaviour differences.
+  if Rails.version.starts_with?('5')
+    has_one :spiked_in_buffer_links,
+            # If we try to use the Rails 6 version, Rails 5 doesn't seem to perform the join
+            -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
+            class_name: 'AssetLink',
+            foreign_key: :descendant_id,
+            inverse_of: :descendant
+  else
+    has_one :spiked_in_buffer_links,
+            -> {
+              # If we use joins(:ancestor) here, Rails 6 seems to try to find an ancestor
+              # relationship on Labware.
+              joins('INNER JOIN labware AS sbl ON sbl.id = asset_links.ancestor_id')
+                .where(sbl: { sti_type: 'SpikedBuffer' })
+                .direct
+            },
+            class_name: 'AssetLink',
+            foreign_key: :descendant_id,
+            inverse_of: :descendant
+  end
   has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
   has_many :asset_audits, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
   has_many :volume_updates, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
@@ -224,7 +242,7 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
         nil
       elsif /\A[0-9]{1,7}\z/.match?(source_barcode)
         # Just a number
-        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode).first # rubocop:disable Rails/FindBy
+        joins(:barcodes).order(:id).find_by('barcodes.barcode LIKE "__?_"', source_barcode)
       else
         find_by_barcode(source_barcode)
       end
