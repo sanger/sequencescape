@@ -204,12 +204,8 @@ class BatchTest < ActiveSupport::TestCase
 
     setup do
       @pipeline_next = create :pipeline, name: 'Next pipeline'
-      @pipeline =
-        create :library_creation_pipeline,
-               name: 'Pipeline for BatchTest',
-               automated: false,
-               next_pipeline_id: @pipeline_next.id
-      @pipeline_qc = create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_next.id
+      @pipeline = create :library_creation_pipeline, name: 'Pipeline for BatchTest'
+      @pipeline_qc = create :pipeline, name: 'quality control'
     end
 
     context 'create requests' do

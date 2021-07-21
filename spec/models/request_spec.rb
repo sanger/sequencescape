@@ -65,11 +65,7 @@ RSpec.describe Request do
         )
 
       @genotype_pipeline = create :pipeline, name: 'genotyping pipeline', request_types: [@genotyping_request_type]
-      @cherrypick_pipeline =
-        create :pipeline,
-               name: 'cherrypick pipeline',
-               request_types: [@cherrypick_request_type],
-               next_pipeline_id: @genotype_pipeline.id
+      @cherrypick_pipeline = create :pipeline, name: 'cherrypick pipeline', request_types: [@cherrypick_request_type]
 
       @request1 =
         create(
