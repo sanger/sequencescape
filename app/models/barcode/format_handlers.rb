@@ -452,4 +452,12 @@ module Barcode::FormatHandlers
   class BrantsBridge < BaseRegExBarcode
     self.format = /\A(?<number>[0-9]{17})\z/
   end
+
+  # Support for Leamington Spa centre
+  # Expected formats:
+  # CHERYnnnnnn
+  # where n is a digit
+  class LeamingtonSpa < BaseRegExBarcode
+    self.format = /\A(?<prefix>CHERY)(?<number>\d+)\z/
+  end
 end

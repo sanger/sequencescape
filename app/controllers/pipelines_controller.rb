@@ -83,6 +83,8 @@ class PipelinesController < ApplicationController
 
   # rubocop:enable Metrics/MethodLength
 
+  # Renders the batch summary
+  # @todo More out of the pipelines controller
   def summary; end
 
   def finish
