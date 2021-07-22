@@ -4,7 +4,7 @@ fileignoreconfig:
 - filename: GemfileNext.lock
   checksum: e2eccc8039be1ddd52ad18a2b43ff10ea74aff0c12091a090e68768a2d7be75e
 - filename: app/models/labware.rb
-  checksum: 1d1ab926f1c8cb971988766e45930678405253b9ff5f0d6e5843687ff2066563
+  checksum: 7dd4bdcd358dda80633a495f39fa78c02485444574e7d0f4da766af769d0cc90
 - filename: app/models/phi_x.rb
   checksum: cfb8ea01d9f6b04408d4ab066e79dc820e9f92ab26caad40f2a701b021173d56
 - filename: db/schema.rb
