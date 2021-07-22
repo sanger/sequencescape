@@ -36,7 +36,7 @@ class AuthenticationControllerTest < ActionController::TestCase
   # end
 
   context 'Authenticated pages' do
-    before do
+    setup do
       @controller = AuthenticationController.new
       @request = ActionController::TestRequest.create(@controller)
       @request.host = 'www.example.com'
@@ -44,13 +44,13 @@ class AuthenticationControllerTest < ActionController::TestCase
     end
 
     context 'with configatron disable_api_authentication set to true' do
-      before { configatron.stubs(:disable_api_authentication).returns(true) }
+      setup { configatron.stubs(:disable_api_authentication).returns(true) }
       context 'allow access to open HTML content' do
-        before { get :open }
+        setup { get :open }
         should respond_with :success
       end
       context 'allow access to open XML content' do
-        before do
+        setup do
           @request.accept = 'application/xml'
           get :open
         end
@@ -60,7 +60,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
       end
       context 'allow access to open JSON content' do
-        before do
+        setup do
           @request.accept = 'application/json'
           get :open
         end
@@ -70,12 +70,12 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
       end
       context 'require login to restricted HTML content' do
-        before { get :restricted }
+        setup { get :restricted }
         should respond_with :redirect
         should redirect_to('login page') { login_path }
       end
       context 'require login to restricted XML' do
-        before do
+        setup do
           @request.accept = 'application/xml'
           get :restricted
         end
@@ -85,7 +85,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
       end
       context 'require login to restricted JSON' do
-        before do
+        setup do
           @request.accept = 'application/json'
           get :restricted
         end
@@ -97,52 +97,52 @@ class AuthenticationControllerTest < ActionController::TestCase
     end
 
     context 'with configatron disable_api_authentication set to false' do
-      before do
+      setup do
         @memo = configatron.disable_api_authentication
         configatron.disable_api_authentication = false
       end
       teardown { configatron.disable_api_authentication = @memo }
       context 'and HTML request' do
         context 'will allow access to open content' do
-          before { get :open }
+          setup { get :open }
           should respond_with :success
         end
         context 'will require login to restricted content' do
-          before { get :restricted }
+          setup { get :restricted }
           should respond_with :redirect
           should redirect_to('login page') { login_path }
         end
         context 'with valid api_key will not require login to restricted content' do
-          before do
+          setup do
             @user = FactoryBot.create :user
             get :restricted, params: { api_key: @user.api_key }
           end
           should respond_with :success
         end
         context 'with an invalid api_key will require login to restricted content' do
-          before { get :restricted, params: { api_key: 'fakeapikey' } }
+          setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :redirect
           should redirect_to('login page') { login_path }
         end
       end
       context 'and XML request' do
-        before { @request.accept = 'application/xml' }
+        setup { @request.accept = 'application/xml' }
         context 'will allow access to open content' do
-          before { get :open }
+          setup { get :open }
           should respond_with :success
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.media_type
           end
         end
         context 'will require login to restricted content' do
-          before { get :restricted }
+          setup { get :restricted }
           should respond_with :unauthorized
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.media_type
           end
         end
         context 'with valid api_key will not require login to restricted content' do
-          before do
+          setup do
             @user = FactoryBot.create :user
             get :restricted, params: { api_key: @user.api_key }
           end
@@ -152,7 +152,7 @@ class AuthenticationControllerTest < ActionController::TestCase
           end
         end
         context 'with an invalid api_key will require login to restricted content' do
-          before { get :restricted, params: { api_key: 'fakeapikey' } }
+          setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :unauthorized
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.media_type
@@ -160,23 +160,23 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
       end
       context 'and JSON request' do
-        before { @request.accept = 'application/json' }
+        setup { @request.accept = 'application/json' }
         context 'will allow access to open content' do
-          before { get :open }
+          setup { get :open }
           should respond_with :success
           should 'Respond with json' do
             assert_equal 'application/json', @response.media_type
           end
         end
         context 'will require login to restricted content' do
-          before { get :restricted }
+          setup { get :restricted }
           should respond_with :unauthorized
           should 'Respond with json' do
             assert_equal 'application/json', @response.media_type
           end
         end
         context 'with valid api_key will not require login to restricted content' do
-          before do
+          setup do
             @user = FactoryBot.create :user
             get :restricted, params: { api_key: @user.api_key }
           end
@@ -186,7 +186,7 @@ class AuthenticationControllerTest < ActionController::TestCase
           end
         end
         context 'with an invalid api_key will require login to restricted content' do
-          before { get :restricted, params: { api_key: 'fakeapikey' } }
+          setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :unauthorized
           should 'Respond with json' do
             assert_equal 'application/json', @response.media_type

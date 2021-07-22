@@ -5,17 +5,17 @@ require 'batches_controller'
 
 class BatchesControllerTest < ActionController::TestCase
   context 'BatchesController' do
-    before do
+    setup do
       @controller = BatchesController.new
       @request = ActionController::TestRequest.create(@controller)
     end
     should_require_login
 
     context 'with a false user for npg' do
-      before { session[:current_user] = :false }
+      setup { session[:current_user] = :false }
 
       context 'NPG xml view' do
-        before do
+        setup do
           pipeline = create :sequencing_pipeline
 
           @study = create(:study)
@@ -73,13 +73,13 @@ class BatchesControllerTest < ActionController::TestCase
     end
 
     context 'with a user logged in' do
-      before do
+      setup do
         @user = create :user
         session[:user] = @user.id
       end
 
       context 'with a few batches' do
-        before do
+        setup do
           @batch_one = create :batch
           @batch_two = create :batch
         end
@@ -104,7 +104,7 @@ class BatchesControllerTest < ActionController::TestCase
       end
 
       context '#verify_tube_layout' do
-        before do
+        setup do
           @pipeline = create :pipeline
           @asset1 = create :sample_tube, barcode: '123456'
           @asset2 = create :sample_tube, barcode: '654321'
@@ -148,7 +148,7 @@ class BatchesControllerTest < ActionController::TestCase
       end
 
       context 'with a cherrypick pipeline' do
-        before do
+        setup do
           @pipeline = create :cherrypick_pipeline
           @requests = create_list(:cherrypick_request_for_pipeline, 2, request_type: @pipeline.request_types.first)
           @selected_request = @requests.first
@@ -172,7 +172,7 @@ class BatchesControllerTest < ActionController::TestCase
       end
 
       context 'actions' do
-        before do
+        setup do
           @pipeline_next = create :pipeline, name: 'Next pipeline'
           @pipeline = create :pipeline, name: 'New Pipeline', automated: false, next_pipeline_id: @pipeline_next.id
           @pipeline_qc_manual =
@@ -228,7 +228,7 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         context '#create' do
-          before do
+          setup do
             @old_count = Batch.count
 
             @request_three =
@@ -238,7 +238,7 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           context 'redirect to #show new batch' do
-            before do
+            setup do
               post :create, params: { id: @pipeline.id, request: { @request_three.id => '0', @request_four.id => '1' } }
             end
 
@@ -249,7 +249,7 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           context 'hide_requests' do
-            before do
+            setup do
               post :create,
                    params: {
                      id: @pipeline.id,
@@ -270,7 +270,7 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           context 'cancel_requests' do
-            before do
+            setup do
               post :create,
                    params: {
                      id: @pipeline.id,
@@ -291,7 +291,7 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           context 'create batch and assign requests' do
-            before do
+            setup do
               @old_count = Batch.count
               post :create, params: { id: @pipeline.id, request: { @request_three.id => '1', @request_four.id => '1' } }
               @batch = Batch.last
@@ -330,13 +330,13 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         context '#fail_items' do
-          before do
+          setup do
             # We need to ensure the batch is started before we fail it.
             @batch_one.start!(create(:user))
           end
 
           context 'posting without a failure reason' do
-            before { post :fail_items, params: { id: @batch_one.id, failure: { reason: '', comment: '' } } }
+            setup { post :fail_items, params: { id: @batch_one.id, failure: { reason: '', comment: '' } } }
             should 'not allow failing a batch/items without specifying a reason and set the flash' do
               assert_includes flash[:error], 'Please specify a failure reason for this batch'
               assert_redirected_to action: :fail, id: @batch_one.id
@@ -345,7 +345,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context 'posting with a failure reason' do
             context 'individual items' do
-              before do
+              setup do
                 EventSender.expects(:send_fail_event).returns(true).times(1)
                 post :fail_items,
                      params: {
@@ -376,7 +376,7 @@ class BatchesControllerTest < ActionController::TestCase
             # - Non 'on' values returned from the front-end (Which indicates something strange has happened with the checkboxes)
             # - Filtering of 'control' ids. (Associated with some old batches)
             context 'odd values' do
-              before do
+              setup do
                 EventSender.expects(:send_fail_event).times(0)
                 post :fail_items,
                      params: {
@@ -406,7 +406,7 @@ class BatchesControllerTest < ActionController::TestCase
             # If request ids are missing we were previously throwing a 404, and failing half the batch
             # Now we should abort the whole action with an error
             context 'odd values' do
-              before do
+              setup do
                 EventSender.expects(:send_fail_event).times(0)
                 post :fail_items,
                      params: {
@@ -439,7 +439,7 @@ class BatchesControllerTest < ActionController::TestCase
     end
 
     context 'Find by barcode (found)' do
-      before do
+      setup do
         @controller.stubs(:current_user).returns(@admin)
         @batch = FactoryBot.create :batch
         request = FactoryBot.create :request
@@ -459,7 +459,7 @@ class BatchesControllerTest < ActionController::TestCase
     end
 
     context 'Find by barcode (not found)' do
-      before do
+      setup do
         @controller.stubs(:current_user).returns(@admin)
         get :find_batch_by_barcode, params: { id: '62c7axx' }, format: :xml
       end
@@ -474,7 +474,7 @@ class BatchesControllerTest < ActionController::TestCase
     context 'Send print requests' do
       attr_reader :barcode_printer
 
-      before do
+      setup do
         @user = create :user
         @controller.stubs(:current_user).returns(@user)
         @barcode_printer = create :barcode_printer
