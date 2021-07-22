@@ -26,12 +26,12 @@ RSpec.describe DriverFilesController, type: :controller do
 
     let(:batch) { create :batch, requests: requests, pipeline: pipeline, user: current_user }
 
-    setup do
+    before do
       get :show, params: { batch_id: batch.id, robot_id: robot.id, pick_number: 1 }, session: { user: current_user.id }
     end
 
     it 'returns an appropriate file' do
-      expect(response.content_type).to eq 'text/plain'
+      expect(response.media_type).to eq 'text/plain'
       expect(response.headers['Content-Disposition']).to(
         include("attachment; filename=\"#{batch.id}_batch_#{destination_plate.human_barcode}_1.gwl\"")
       )

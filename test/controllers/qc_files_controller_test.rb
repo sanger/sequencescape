@@ -5,7 +5,7 @@ require 'qc_files_controller'
 
 class QcFilesControllerTest < ActionController::TestCase
   context '#show' do
-    setup do
+    before do
       File.open(Rails.root.join('test/data/190_tube_sample_info.xls')) do |file|
         @asset = create(:sample_tube)
         @qc_file =
@@ -28,7 +28,7 @@ class QcFilesControllerTest < ActionController::TestCase
     should 'return the file' do
       get :show, params: { id: @qc_file.id }
       assert_response :success
-      assert_equal 'application/vnd.ms-excel', response.content_type
+      assert_equal 'application/vnd.ms-excel', response.media_type
     end
   end
 end

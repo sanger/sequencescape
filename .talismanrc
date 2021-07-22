@@ -15,3 +15,5 @@ fileignoreconfig:
   checksum: 6ed51ea13dbcdbb1619a30858ea931a25d3c189286156f9b220520c1f744a559
 - filename: db/views_schema.rb
   checksum: 75c424408649e9c4543cca446bff1e53661db4cf5001918fa4b98a23faeb23d6
+- filename: test/controllers/authentication_controller_test.rb
+  checksum: 79d081fcbe6ecb88d6d1a5e81e6ede960aff929dfd4954d1665e8cc61680b5e8
