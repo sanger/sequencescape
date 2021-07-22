@@ -161,11 +161,3 @@ Metrics/ClassLength:
   Exclude:
     - "spec/**/*"
     - "test/**/*"
-
-RSpec/Rails/AvoidSetupHook:
-  inherit_mode:
-    merge:
-      - Exclude
-  # Disable for features, as we might want to step through long processes
-  Exclude:
-    - "test/controllers/**/*"
