@@ -861,7 +861,7 @@ RSpec/MultipleDescribes:
 
 # Offense count: 736
 RSpec/MultipleExpectations:
-  Max: 21
+  Max: 18
 
 # Offense count: 787
 # Configuration parameters: AllowSubject.

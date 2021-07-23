@@ -161,3 +161,7 @@ Metrics/ClassLength:
   Exclude:
     - "spec/**/*"
     - "test/**/*"
+
+RSpec/MultipleExpectations:
+  Exclude:
+    - "spec/features/**/*"
