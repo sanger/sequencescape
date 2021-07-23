@@ -592,7 +592,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def rebroadcast
-    messengers.each(&:queue_for_broadcast)
+    messengers.each(&:resend)
   end
 
   def pick_information?
