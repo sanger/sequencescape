@@ -126,7 +126,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This essentially meant that tag clashes would result in sample dropouts.
   # (presumably because << triggers save not save!)
   def no_tag1?
-    tag_id == UNASSIGNED_TAG || tag.nil?
+    tag_id == UNASSIGNED_TAG || tag_id.nil? && tag.nil?
   end
 
   def tag1?
@@ -134,7 +134,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def no_tag2?
-    tag2_id == UNASSIGNED_TAG || tag2.nil?
+    tag2_id == UNASSIGNED_TAG || tag2_id.nil? && tag2.nil?
   end
 
   def tag2?
