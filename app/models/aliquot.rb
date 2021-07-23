@@ -73,8 +73,8 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   convert_labware_to_receptacle_for :library, :receptacle
 
-  before_validation { |record| record.tag_id ||= UNASSIGNED_TAG unless tag }
-  before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG unless tag2 }
+  before_validation { |aliquot| aliquot.tag_id ||= UNASSIGNED_TAG unless aliquot.tag_id? || tag }
+  before_validation { |aliquot| aliquot.tag2_id ||= UNASSIGNED_TAG unless aliquot.tag2_id? || tag2 }
 
   broadcast_with_warren
 
