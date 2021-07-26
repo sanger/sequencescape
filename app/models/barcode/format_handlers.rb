@@ -460,4 +460,13 @@ module Barcode::FormatHandlers
   class LeamingtonSpa < BaseRegExBarcode
     self.format = /\A(?<prefix>CHERY)(?<number>\d+)\z/
   end
+
+  # Support for Newcastle centre
+  # Expected formats:
+  # ICHNEnnnnnc
+  # where n is a digit
+  # and c is a letter
+  class Newcastle < BaseRegExBarcode
+    self.format = /\A(?<prefix>ICHNE)(?<number>\d+)(?<suffix>[A-Z|a-z]{1})\z/
+  end
 end
