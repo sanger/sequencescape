@@ -19,7 +19,13 @@ class Item < ApplicationRecord
 
   validates :version, presence: true
   validates :name, presence: true
-  validates :name, uniqueness: { scope: [:version], on: :create, message: 'already in use (item)' }
+  validates :name,
+            uniqueness: {
+              scope: [:version],
+              on: :create,
+              message: 'already in use (item)',
+              case_sensitive: false
+            }
 
   scope :for_search_query, ->(query) { where(['name LIKE ? OR id=?', "%#{query}%", query]) }
 

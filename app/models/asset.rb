@@ -135,10 +135,6 @@ class Asset < ApplicationRecord # rubocop:todo Metrics/ClassLength
     ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
   end
 
-  def spiked_in_buffer
-    nil
-  end
-
   def has_stock_asset?
     false
   end

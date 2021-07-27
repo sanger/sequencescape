@@ -87,7 +87,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
           ).order('tag1s.map_id ASC, tag2s.map_id ASC')
         }
   scope :untagged, -> { where(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
-  scope :any_tags, -> { where.not(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
+  scope :any_tags, -> { where.not(tag_id: UNASSIGNED_TAG).or(where.not(tag2_id: UNASSIGNED_TAG)) }
 
   delegate :library_name, to: :library, allow_nil: true
 

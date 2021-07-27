@@ -475,7 +475,9 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def add_comment(comment, user, title = nil)
-    comments.create(description: comment, user: user, title: title)
+    # Unscope comments to fix Rails 6 deprecation warnings. But I *think* this
+    # essentially models the new behaviour in 6.1 So should be removable then
+    Comment.unscoped { comments.create(description: comment, user: user, title: title) }
   end
 
   def return_pending_to_inbox!

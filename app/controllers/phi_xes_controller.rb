@@ -18,6 +18,6 @@ class PhiXesController < ApplicationController
   def show
     @stock = PhiX::Stock.new(number: 1, tags: PhiX.default_tag_option)
     @spiked_buffer = PhiX::SpikedBuffer.new(number: 1)
-    @tag_option_names = PhiX.tag_option_names
+    @tag_option_names = PhiX.tag_option_names.map(&:to_s)
   end
 end
