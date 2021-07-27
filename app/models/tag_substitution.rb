@@ -87,6 +87,10 @@ class TagSubstitution # rubocop:todo Metrics/ClassLength
     @substitutions = substitutions.map { |attrs| Substitution.new(attrs.dup, self) }
   end
 
+  def updated_substitutions
+    @updated_substitutions ||= @substitutions.select(&:updated?)
+  end
+
   # Perform the substitution, add comments to all tubes and lanes and rebroadcast all flowcells
   # @return [Boolean] returns true if the operation was successful, false otherwise
   def save # rubocop:todo Metrics/MethodLength
@@ -94,8 +98,8 @@ class TagSubstitution # rubocop:todo Metrics/ClassLength
 
     # First set all tags to null to avoid the issue of tag clashes
     ActiveRecord::Base.transaction do
-      @substitutions.each(&:nullify_tags)
-      @substitutions.each(&:substitute_tags)
+      updated_substitutions.each(&:nullify_tags)
+      updated_substitutions.each(&:substitute_tags)
       apply_comments
       rebroadcast_flowcells
     end
@@ -150,7 +154,7 @@ class TagSubstitution # rubocop:todo Metrics/ClassLength
 
   def comment_text
     @comment_text ||=
-      @substitutions.each_with_object(comment_header) do |substitution, comment|
+      updated_substitutions.each_with_object(comment_header) do |substitution, comment|
         substitution_comment = substitution.comment(oligo_index)
         comment << substitution_comment << "\n" if substitution_comment.present?
       end
