@@ -97,8 +97,8 @@ class TagSubstitution # rubocop:todo Metrics/ClassLength
       @substitutions.each(&:nullify_tags)
       @substitutions.each(&:substitute_tags)
       apply_comments
+      rebroadcast_flowcells
     end
-    rebroadcast_flowcells
     true
   rescue ActiveRecord::RecordNotUnique => e
     # We'll specifically handle tag clashes here so that we can produce more informative messages

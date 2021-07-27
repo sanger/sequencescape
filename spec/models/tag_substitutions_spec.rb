@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe TagSubstitution do
+describe TagSubstitution, warren: true do
   # Works for: Library manifests, old tube pipelines
   # We have two samples, each with unique tags, which only exist
   # in aliquots identified by the library id. We don't need to consider:
@@ -23,27 +23,35 @@ describe TagSubstitution do
   let(:additional_parameters) { {} }
 
   shared_examples 'tag substitution' do
-    before { assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}" }
+    describe '#save' do
+      before { assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}" }
 
-    it 'perform the correct tag substitutions' do
-      expect(library_aliquot_a.reload.tag).to eq sample_a_new_tag
-      expect(library_aliquot_b.reload.tag).to eq sample_b_new_tag
-      expect(mx_aliquot_a.reload.tag).to eq sample_a_new_tag
-      expect(mx_aliquot_b.reload.tag).to eq sample_b_new_tag
+      it 'perform the correct tag substitutions' do
+        expect(library_aliquot_a.reload.tag).to eq sample_a_new_tag
+        expect(library_aliquot_b.reload.tag).to eq sample_b_new_tag
+        expect(mx_aliquot_a.reload.tag).to eq sample_a_new_tag
+        expect(mx_aliquot_b.reload.tag).to eq sample_b_new_tag
+      end
+
+      it 'perform the correct tag2 substitutions' do
+        expect(library_aliquot_a.reload.tag2).to eq sample_a_new_tag2
+        expect(library_aliquot_b.reload.tag2).to eq sample_b_new_tag2
+        expect(mx_aliquot_a.reload.tag2).to eq sample_a_new_tag2
+        expect(mx_aliquot_b.reload.tag2).to eq sample_b_new_tag2
+      end
+
+      it 'assigns comments to the lanes and tubes' do
+        expect(library_tube_a.receptacle.comments.map(&:description)).to eq [comment]
+        expect(library_tube_b.receptacle.comments.map(&:description)).to eq [comment]
+        expect(mx_library_tube.receptacle.comments.map(&:description)).to eq [comment]
+        expect(lane.comments.map(&:description)).to eq [comment]
+      end
     end
 
-    it 'perform the correct tag2 substitutions' do
-      expect(library_aliquot_a.reload.tag2).to eq sample_a_new_tag2
-      expect(library_aliquot_b.reload.tag2).to eq sample_b_new_tag2
-      expect(mx_aliquot_a.reload.tag2).to eq sample_a_new_tag2
-      expect(mx_aliquot_b.reload.tag2).to eq sample_b_new_tag2
-    end
-
-    it 'assigns comments to the lanes and tubes' do
-      expect(library_tube_a.receptacle.comments.map(&:description)).to eq [comment]
-      expect(library_tube_b.receptacle.comments.map(&:description)).to eq [comment]
-      expect(mx_library_tube.receptacle.comments.map(&:description)).to eq [comment]
-      expect(lane.comments.map(&:description)).to eq [comment]
+    it 'rebroadcasts the flowcell' do
+      expect { subject.save }.to change {
+        Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")
+      }.by(1)
     end
   end
 
@@ -98,6 +106,11 @@ describe TagSubstitution do
              tag2: sample_a_orig_tag2,
              library: library_tube_a,
              receptacle: lane
+    end
+
+    let!(:flowcell_message) do
+      batch = create(:sequencing_batch, request_attributes: [{ target_asset: lane }])
+      create :flowcell_messenger, target: batch
     end
 
     context 'with only tag 1' do
