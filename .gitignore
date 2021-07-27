@@ -43,5 +43,4 @@ sbin
 yarn-debug.log*
 .yarn-integrity
 /vendor
-
 .talismanrc

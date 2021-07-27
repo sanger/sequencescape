@@ -58,8 +58,6 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   delegate :item_limit, :batch_limit?, to: :workflow
 
   belongs_to :control_request_type, class_name: 'RequestType'
-  belongs_to :next_pipeline, class_name: 'Pipeline'
-  belongs_to :previous_pipeline, class_name: 'Pipeline'
 
   has_one :workflow, class_name: 'Workflow', inverse_of: :pipeline, required: true
 

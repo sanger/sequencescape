@@ -413,7 +413,7 @@ Rails
     resources :lab_searches
     resources :events
 
-    resources :workflows, only: %i[index show] do
+    resources :workflows, only: [] do
       member do
         # Yes, this is every bit as horrible as it looks.
         # HTTP Verbs! Gotta catch em all!
@@ -422,12 +422,8 @@ Rails
         patch 'stage/:id' => 'workflows#stage'
         get 'stage/:id' => 'workflows#stage'
         post 'stage/:id' => 'workflows#stage'
-        get :auto
       end
-      collection do
-        get :generate_manifest
-        get :sort
-      end
+      collection { get :generate_manifest }
     end
 
     resources :asset_audits

@@ -85,7 +85,7 @@ module SequencingQcBatch
   private
 
   def qc_pipeline_update
-    self.qc_pipeline = Pipeline.find_by(name: 'quality control', automated: true)
+    self.qc_pipeline = Pipeline.find_by(name: 'quality control')
     self.qc_state = 'qc_pending'
   end
 end
