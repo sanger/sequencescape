@@ -49,7 +49,6 @@ module Accession
     # This is horribe but necessary.
     # Set the proxy to ensure you don't get a bad request error.
     def set_proxy # rubocop:todo Metrics/AbcSize
-      # rubocop:todo Rails/EnvironmentVariableAccess
       if configatron.disable_web_proxy == true
         RestClient.proxy = nil
       elsif configatron.fetch(:proxy).present?
@@ -58,7 +57,6 @@ module Accession
       elsif ENV['http_proxy'].present?
         RestClient.proxy = ENV['http_proxy']
       end
-      # rubocop:enable Rails/EnvironmentVariableAccess
     end
   end
 end

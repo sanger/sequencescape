@@ -7,7 +7,7 @@ describe Pulldown::Requests do
 
   %i[wgs sc isc].each do |request_type|
     context request_type.to_s.upcase do
-      setup do
+      before do
         # I moved it here from minitest unit tests
         # but these libraries do not exist, test was never finished
         @request = create(:"pulldown_#{request_type}_request")

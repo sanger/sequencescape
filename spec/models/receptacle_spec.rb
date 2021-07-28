@@ -14,7 +14,8 @@ RSpec.describe Receptacle, type: :model do
   describe '#update_from_qc' do
     let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
 
-    setup { receptacle.update_from_qc(qc_result) }
+    before { receptacle.update_from_qc(qc_result) }
+
     context 'when key: molarity with nM' do
       let(:key) { 'molarity' }
       let(:value) { 100 }

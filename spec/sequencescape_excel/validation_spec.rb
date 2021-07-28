@@ -11,7 +11,10 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
   end
 
   it 'is comparable' do
+    # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(described_class.new(options: options)).to eq(described_class.new(options: options))
+
+    # rubocop:enable RSpec/IdenticalEqualityAssertion
     expect(described_class.new(options: options.except(:formula1))).not_to eq(described_class.new(options: options))
   end
 

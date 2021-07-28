@@ -160,6 +160,8 @@ Metrics/ClassLength:
   # Disable for features, as we might want to step through long processes
   Exclude:
     - "spec/**/*"
+RSpec/Rails/AvoidSetupHook:
+  Exclude:
     - "test/**/*"
 
 RSpec/MultipleExpectations:

@@ -69,7 +69,8 @@ describe TagLayout do
         end
 
         context 'with a partial plate' do
-          setup { plate.wells.located_at('B1').first.aliquots.clear }
+          before { plate.wells.located_at('B1').first.aliquots.clear }
+
           let(:expected_tag_layout) do
             { 'A1' => [1], 'C1' => [3], 'D1' => [4], 'E1' => [5], 'F1' => [6], 'G1' => [7], 'H1' => [8] }
           end
@@ -956,7 +957,8 @@ describe TagLayout do
         end
 
         context 'with a partial plate' do
-          setup { plate.wells.located_at('B1').first.aliquots.clear }
+          before { plate.wells.located_at('B1').first.aliquots.clear }
+
           let(:expected_tag_layout) do
             {
               'A1' => [1, 2, 3, 4],
@@ -992,7 +994,8 @@ describe TagLayout do
         end
 
         context 'with a partial plate and initial tag' do
-          setup { plate.wells.located_at('B1').first.aliquots.clear }
+          before { plate.wells.located_at('B1').first.aliquots.clear }
+
           let(:initial_tag) { 4 }
           let(:expected_tag_layout) do
             {

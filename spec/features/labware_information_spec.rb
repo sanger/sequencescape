@@ -38,21 +38,23 @@ describe 'Viewing labware' do
     let(:labware) { create :plate, well_count: 2 }
 
     context 'when in labwhere' do
-      setup do
+      before do
         stub_lwclient_labware_find_by_bc(
           lw_barcode: labware.machine_barcode,
           lw_locn_name: 'location',
           lw_locn_parentage: 'place > location'
         )
       end
+
       it_behaves_like 'labware'
     end
 
     context 'when not in labwhere' do
-      setup do
+      before do
         stub_lwclient_labware_find_by_bc(lw_barcode: labware.human_barcode)
         stub_lwclient_labware_find_by_bc(lw_barcode: labware.machine_barcode)
       end
+
       it_behaves_like 'labware'
     end
   end

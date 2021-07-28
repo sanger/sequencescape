@@ -7,7 +7,7 @@ RSpec.describe Request::Statistics::Counter do
 
   # The counter isn't initialized with a hash but rather gets
   # set up in a loop. So we mimic the behaviour here
-  setup do
+  before do
     subject['cancelled'] = 3
     subject['pending'] = 3
     subject['passed'] = 4

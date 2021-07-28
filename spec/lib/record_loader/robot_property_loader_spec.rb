@@ -17,7 +17,7 @@ RSpec.describe RecordLoader::RobotPropertyLoader, type: :model, loader: true do
   context 'with robot_properties_example yml file selected' do
     let(:selected_files) { 'robot_properties_example' }
 
-    setup do
+    before do
       create :robot, name: 'Robot 1'
       create :robot, name: 'Robot 2'
     end

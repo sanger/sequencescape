@@ -178,7 +178,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
       return
     end
 
-    # rubocop:todo Rails/EnvironmentVariableAccess
     rc = RestClient::Resource.new(URI.parse(url).to_s)
     if configatron.disable_web_proxy == true
       RestClient.proxy = nil
@@ -188,8 +187,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     elsif ENV['http_proxy'].present?
       RestClient.proxy = ENV['http_proxy']
     end
-
-    # rubocop:enable Rails/EnvironmentVariableAccess
 
     # rc.verbose = true
     body = rc.get.body

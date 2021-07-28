@@ -154,7 +154,7 @@ describe '/api/1/extraction_attributes' do
           }"
         end
 
-        setup do
+        before do
           @well1 = target_plate.wells.located_at('A1').first!
           @well2 = target_plate.wells.located_at('B1').first!
           @well3 = target_plate.wells.located_at('C1').first!
