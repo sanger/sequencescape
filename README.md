@@ -65,8 +65,9 @@ In addition to the [externally hosted YARD docs](https://www.rubydoc.info/github
 yard server -r --gems -m sequencescape .
 ```
 
-You can then access the Sequencescape documentation through: http://localhost:8808/docs/sequencescape
-Yard will also try and document the installed gems: http://localhost:8808/docs
+You can then access the Sequencescape documentation through: [http://localhost:8808/docs/sequencescape](http://localhost:8808/docs/sequencescape)
+
+Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
 
 ## Requirements
 
@@ -162,7 +163,7 @@ bundle exec ./script/delayed_job start
 ### Message broker
 
 Sequencescape has its own message broker and consumer. To develop this or run it locally, you
-must have RabbitMQ installed. It may be easiest to use the docker image (https://hub.docker.com/_/rabbitmq).
+must have RabbitMQ installed. It may be easiest to use the docker image [https://hub.docker.com/_/rabbitmq](https://hub.docker.com/_/rabbitmq).
 
 `docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 -p 5672:5672 rabbitmq:3-management`
 
