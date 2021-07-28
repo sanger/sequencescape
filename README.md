@@ -118,7 +118,7 @@ bundle install
 
 #### Adjusting config
 
-Copy the `config/aker.example.yml` file to `config/aker.example.yml`.
+Copy the `config/aker.yml.example` file to `config/aker.yml`.
 
 The `config/database.yml` file saves the list of databases.
 
@@ -136,7 +136,7 @@ The `config/database.yml` file saves the list of databases.
    bundle exec rails webpacker:install
    ```
 
-### Stating rails
+### Starting rails
 
 ```shell
 bundle exec rails s
