@@ -11,5 +11,11 @@ FactoryBot.define do
     root { 'barcode' }
     association(:target, factory: :barcode)
     template { 'BarcodeIO' }
+
+    factory :flowcell_messenger do
+      root { 'flowcell' }
+      association(:target, factory: :sequencing_batch)
+      template { 'FlowcellIO' }
+    end
   end
 end

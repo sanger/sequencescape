@@ -70,11 +70,14 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
 
   belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
+
   has_one :spiked_in_buffer_links,
-          -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
+          # If we try to use the Rails 6 version, Rails 5 doesn't seem to perform the join
+          -> { includes(:ancestor).references(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
           class_name: 'AssetLink',
           foreign_key: :descendant_id,
           inverse_of: :descendant
+
   has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
   has_many :asset_audits, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
   has_many :volume_updates, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
@@ -224,7 +227,7 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
         nil
       elsif /\A[0-9]{1,7}\z/.match?(source_barcode)
         # Just a number
-        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode).first # rubocop:disable Rails/FindBy
+        joins(:barcodes).order(:id).find_by('barcodes.barcode LIKE "__?_"', source_barcode)
       else
         find_by_barcode(source_barcode)
       end

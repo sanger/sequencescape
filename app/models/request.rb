@@ -264,7 +264,18 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
         -> {
           preload(
             [
-              { submission: { orders: :study }, asset: %i[requests scanned_into_lab_event most_tagged_aliquot] },
+              :upstream_requests,
+              {
+                submission: {
+                  orders: :study
+                },
+                asset: [
+                  :requests_as_target,
+                  :requests,
+                  :most_tagged_aliquot,
+                  { labware: %i[barcodes scanned_into_lab_event] }
+                ]
+              },
               { request_type: :product_line }
             ]
           )
@@ -475,7 +486,9 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def add_comment(comment, user, title = nil)
-    comments.create(description: comment, user: user, title: title)
+    # Unscope comments to fix Rails 6 deprecation warnings. But I *think* this
+    # essentially models the new behaviour in 6.1 So should be removable then
+    Comment.unscoped { comments.create(description: comment, user: user, title: title) }
   end
 
   def return_pending_to_inbox!

@@ -6,7 +6,7 @@ module Aker
     belongs_to :asset, class_name: 'Receptacle'
     convert_labware_to_receptacle_for :asset, :target_asset
 
-    validates :barcode, presence: true, uniqueness: { scope: :address }
+    validates :barcode, presence: true, uniqueness: { scope: :address, case_sensitive: false }
     validate :not_change_barcode
     validate :not_change_address
 

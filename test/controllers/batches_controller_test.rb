@@ -57,7 +57,7 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'Respond with xml' do
-          assert_equal 'application/xml', @response.content_type
+          assert_equal 'application/xml', @response.media_type
         end
 
         should 'have api version attribute on root object' do
@@ -451,7 +451,7 @@ class BatchesControllerTest < ActionController::TestCase
       end
       should 'show batch' do
         assert_response :success
-        assert_equal 'application/xml', @response.content_type
+        assert_equal 'application/xml', @response.media_type
         assert_template 'batches/show'
       end
     end
@@ -464,7 +464,7 @@ class BatchesControllerTest < ActionController::TestCase
       should 'show error' do
         # this is the wrong response!
         assert_response :success
-        assert_equal 'application/xml', @response.content_type
+        assert_equal 'application/xml', @response.media_type
         assert_template 'batches/batch_error'
       end
     end

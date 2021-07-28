@@ -22,7 +22,7 @@ class PhiX::Stock
   attr_accessor :number
 
   validates :name, presence: true
-  validates :tags, inclusion: { in: PhiX.tag_option_names }
+  validates :tags, inclusion: { in: PhiX.tag_option_names.map(&:to_s) }
   validates :concentration, numericality: { greater_than: 0, only_integer: false }
   validates :number, numericality: { greater_than: 0, only_integer: true }
 

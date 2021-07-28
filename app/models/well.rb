@@ -96,7 +96,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
           )
         }
 
-  scope :without_report, ->(product_criteria) { where.not(id: Well.with_report(product_criteria)) }
+  scope :without_report, ->(product_criteria) { where.not(id: with_report(product_criteria)) }
 
   scope :stock_wells_for,
         ->(wells) { joins(:target_well_links).where(well_links: { target_well_id: [wells].flatten.map(&:id) }) }

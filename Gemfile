@@ -1,14 +1,22 @@
 # frozen_string_literal: true
+next_rails = ENV['BUNDLE_GEMFILE']&.end_with?('GemfileNext')
 
 source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'rails', '~> 5.2.3'
+
+  if next_rails
+    gem 'rails', '~> 6.0.0'
+  else
+    gem 'rails', '~> 5.2.3'
+  end
 
   # State machine
   gem 'aasm'
-  gem 'after_commit_everywhere', '~> 0.1', '>= 0.1.5' # aasm requirement
+
+  # Required by AASM
+  gem 'after_commit_everywhere', '~> 0.1', '>= 0.1.5'
   gem 'configatron'
   gem 'formtastic'
   gem 'rest-client' # curb substitute.
@@ -119,6 +127,9 @@ group :development do
 
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
+
+  # Rails 6 adds listen to assist with reloading
+  gem 'listen'
 end
 
 group :development, :linting do
@@ -193,6 +204,8 @@ group :test, :cucumber do
   # Essentially does two things:
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
+  # Causing problems in Rails 6. Remove from Rspec, left in place for cucumber, but can
+  # probably be remove there as well.
   gem 'transactional_capybara'
 
   # Keep webdriver in sync with chrome to prevent frustrating CI failures

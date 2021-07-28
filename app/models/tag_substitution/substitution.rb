@@ -157,11 +157,11 @@ class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
     original_tag_id || original_tag2_id
   end
 
-  private
-
   def updated?
     substitute_tag? || substitute_tag2? || @other_attributes.present?
   end
+
+  private
 
   def substitute_tag?
     original_tag_id && original_tag_id != substitute_tag_id
@@ -175,6 +175,6 @@ class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
     attributes = { sample_id: sample_id, library_id: library_id }
     attributes[:tag_id] = original_tag_id if original_tag_id
     attributes[:tag2_id] = original_tag2_id if original_tag2_id
-    Aliquot.where(attributes).pluck(:id)
+    Aliquot.where(attributes).ids
   end
 end

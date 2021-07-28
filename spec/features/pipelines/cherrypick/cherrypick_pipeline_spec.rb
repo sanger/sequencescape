@@ -42,7 +42,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:custom_destination_type) { nil }
   let(:custom_destination_type_name) { custom_destination_type.name || nil }
   let(:expected_pick_files_by_destination_plate) { nil }
-  let!(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2) }
+  let(:plates) { create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2) }
 
   # rubocop:todo Metrics/AbcSize
   # rubocop:todo Metrics/MethodLength
