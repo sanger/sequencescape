@@ -63,8 +63,6 @@ class Purpose < ApplicationRecord
         labware.ancestors_of_purpose(source_purpose_id)
       elsif labware.respond_to?(:stock_plate)
         labware.stock_plate
-      else
-        nil
       end
     end
   end
