@@ -186,7 +186,7 @@ it to actually send messages in development mode.
 
 ## Testing
 
-Testing is done in three ways; using rspec, rails test and feature tests.
+Testing is done in two ways; using rspec and via rails tests.
 
 1. To run the rspec tests (found in `rspec/` dir.):
 
