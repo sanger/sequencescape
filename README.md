@@ -163,7 +163,7 @@ bundle exec ./script/delayed_job start
 ### Message broker
 
 Sequencescape has its own message broker and consumer. To develop this or run it locally, you
-must have RabbitMQ installed. It may be easiest to use the docker image [https://hub.docker.com/_/rabbitmq](https://hub.docker.com/_/rabbitmq).
+must have RabbitMQ installed. It may be easiest to use the docker image [https://hub.docker.com/\_/rabbitmq](https://hub.docker.com/_/rabbitmq).
 
 `docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 -p 5672:5672 rabbitmq:3-management`
 
