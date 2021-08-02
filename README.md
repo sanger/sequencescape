@@ -190,21 +190,21 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
 
 1. To run the rspec tests (found in `rspec/` dir.):
 
-  ```shell
-  bundle exec rspec --fail-fast [<path_to_spec>]
-  ```
+   ```shell
+   bundle exec rspec --fail-fast [<path_to_spec>]
+   ```
 
 1. To run the rails tests (found in `tests/` dir.):
 
-  ```shell
-  bundle exec rake test -f
-  ```
+   ```shell
+   bundle exec rake test -f
+   ```
 
 1. To run cucumber tests (found in `features/` dir.):
 
-  ```shell
-  bundle exec cucumber
-  ```
+   ```shell
+   bundle exec cucumber
+   ```
 
 ## Linting and formatting
 
