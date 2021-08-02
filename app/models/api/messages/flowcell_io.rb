@@ -21,7 +21,7 @@ class Api::Messages::FlowcellIO < Api::Base
     ]
   }
 
-  # Included in SequencingRequest
+  # Included in SequencingRequest model
   module LaneExtensions
     # rubocop:todo Metrics/MethodLength
     def self.included(base) # rubocop:todo Metrics/AbcSize
@@ -104,7 +104,8 @@ class Api::Messages::FlowcellIO < Api::Base
     # rubocop:enable Metrics/MethodLength
   end
 
-  module ControlLaneExtensions # rubocop:todo Style/Documentation
+  # Included in ControlRequest model
+  module ControlLaneExtensions
     def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
         def mx_library
@@ -158,7 +159,8 @@ class Api::Messages::FlowcellIO < Api::Base
     end
   end
 
-  module AliquotExtensions # rubocop:todo Style/Documentation
+  # Included in Aliquot model
+  module AliquotExtensions
     def aliquot_type
       tags? ? 'library_indexed' : 'library'
     end
@@ -168,13 +170,15 @@ class Api::Messages::FlowcellIO < Api::Base
     end
   end
 
-  module ProjectExtensions # rubocop:todo Style/Documentation
+  # Included in Project model
+  module ProjectExtensions
     def project_cost_code_for_uwh
       project_cost_code.length > 20 ? 'Custom' : project_cost_code
     end
   end
 
-  module Extensions # rubocop:todo Style/Documentation
+  # Included in Batch model
+  module Extensions
     module ClassMethods # rubocop:todo Style/Documentation
     end
 
