@@ -59,11 +59,7 @@ class Purpose < ApplicationRecord
     ActiveSupport::Deprecation.silence do
       # Rails 6 lets us do this:
       # ActiveSupport::Deprecation.allow(:stock_plate) do
-      if source_purpose_id.present?
-        labware.ancestors_of_purpose(source_purpose_id)
-      elsif labware.respond_to?(:stock_plate)
-        labware.stock_plate
-      end
+      source_purpose_id.present? ? labware.ancestors_of_purpose(source_purpose_id) : labware.try(:stock_plate)
     end
   end
 
@@ -73,13 +69,7 @@ class Purpose < ApplicationRecord
     ActiveSupport::Deprecation.silence do
       # Rails 6 lets us do this:
       # ActiveSupport::Deprecation.allow(:stock_plate) do
-      if source_purpose_id.present?
-        labware.ancestors_of_purpose(source_purpose_id)
-      elsif labware.respond_to?(:stock_plate)
-        [labware.stock_plate].compact
-      else
-        []
-      end
+      source_purpose_id.present? ? labware.ancestors_of_purpose(source_purpose_id) : [labware.try(:stock_plate)].compact
     end
   end
 
