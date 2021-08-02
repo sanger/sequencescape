@@ -21,6 +21,10 @@ class Api::Messages::FlowcellIO < Api::Base
     ]
   }
 
+  #
+  # The following modules add methods onto the relevant models, which are used below in generation of the flowcell MLWH message.
+  #
+
   # Included in SequencingRequest model
   module LaneExtensions
     # rubocop:todo Metrics/MethodLength
@@ -200,8 +204,14 @@ class Api::Messages::FlowcellIO < Api::Base
     end
   end
 
+  # Batch is the main / top-level model that contributes to the message sent to the MLWH.
   renders_model(::Batch)
 
+  #
+  # The following section maps attributes on Sequencescape models to attributes in the json message that is passed to the MLWH.
+  #
+
+  # The following methods come from the Batch model or the relevant module above.
   map_attribute_to_json_attribute(:flowcell_barcode)
   map_attribute_to_json_attribute(:id, 'flowcell_id')
   map_attribute_to_json_attribute(:read_length, 'forward_read_length')
@@ -209,8 +219,9 @@ class Api::Messages::FlowcellIO < Api::Base
 
   map_attribute_to_json_attribute(:updated_at)
 
+  # The following methods come from the Request model or the relevant module above.
+  # They are included in the MLWH message under 'lanes'.
   with_nested_has_many_association(:requests, as: :lanes) do
-    # actually requests
     map_attribute_to_json_attribute(:manual_qc)
     map_attribute_to_json_attribute(:position)
     map_attribute_to_json_attribute(:priority)
@@ -224,8 +235,9 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:workflow)
     map_attribute_to_json_attribute(:loading_concentration)
 
+    # The following methods come from the Aliquot model or the relevant module above.
+    # They are included in the MLWH message under 'samples'.
     with_nested_has_many_association(:lane_samples, as: :samples) do
-      # actually aliquots
       map_attribute_to_json_attribute(:aliquot_index_value, 'tag_index')
       map_attribute_to_json_attribute(:suboptimal, 'suboptimal')
 
@@ -257,6 +269,8 @@ class Api::Messages::FlowcellIO < Api::Base
       map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
     end
 
+    # The following methods come from the Aliquot model or the relevant module above.
+    # They are included in the MLWH message under 'controls'.
     with_nested_has_many_association(:controls) do
       with_association(:tag) do
         map_attribute_to_json_attribute(:map_id, 'tag_index')
