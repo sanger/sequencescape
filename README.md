@@ -200,7 +200,13 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
    bundle exec rake test -f
    ```
 
-1. To run cucumber tests (found in `features/` dir.):
+1. To run cucumber tests (found in `features/` dir.) first ensure you have a `sequencescape_test_cuke` database configured by running:
+
+   ```shell
+   RAILS_ENV=cucumber bundle exec rake db:setup
+   ```
+
+   then run cucumber itself:
 
    ```shell
    bundle exec cucumber
