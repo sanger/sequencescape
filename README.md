@@ -65,8 +65,9 @@ In addition to the [externally hosted YARD docs](https://www.rubydoc.info/github
 yard server -r --gems -m sequencescape .
 ```
 
-You can then access the Sequencescape documentation through: http://localhost:8808/docs/sequencescape
-Yard will also try and document the installed gems: http://localhost:8808/docs
+You can then access the Sequencescape documentation through: [http://localhost:8808/docs/sequencescape](http://localhost:8808/docs/sequencescape)
+
+Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
 
 ## Requirements
 
@@ -118,7 +119,7 @@ bundle install
 
 #### Adjusting config
 
-Copy the `config/aker.example.yml` file to `config/aker.example.yml`.
+Copy the `config/aker.yml.example` file to `config/aker.yml`.
 
 The `config/database.yml` file saves the list of databases.
 
@@ -136,7 +137,7 @@ The `config/database.yml` file saves the list of databases.
    bundle exec rails webpacker:install
    ```
 
-### Stating rails
+### Starting rails
 
 ```shell
 bundle exec rails s
@@ -162,7 +163,7 @@ bundle exec ./script/delayed_job start
 ### Message broker
 
 Sequencescape has its own message broker and consumer. To develop this or run it locally, you
-must have RabbitMQ installed. It may be easiest to use the docker image (https://hub.docker.com/_/rabbitmq).
+must have RabbitMQ installed. It may be easiest to use the docker image [https://hub.docker.com/\_/rabbitmq](https://hub.docker.com/_/rabbitmq).
 
 `docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 -p 5672:5672 rabbitmq:3-management`
 
@@ -185,7 +186,7 @@ it to actually send messages in development mode.
 
 ## Testing
 
-Testing is done in three ways; using rspec, rails test and feature tests.
+Testing is done in one of three ways; using rspec, via rails tests or with cucumber.
 
 1. To run the rspec tests (found in `rspec/` dir.):
 
@@ -197,6 +198,18 @@ Testing is done in three ways; using rspec, rails test and feature tests.
 
    ```shell
    bundle exec rake test -f
+   ```
+
+1. To run cucumber tests (found in `features/` dir.) first ensure you have a `sequencescape_test_cuke` database configured by running:
+
+   ```shell
+   RAILS_ENV=cucumber bundle exec rake db:setup
+   ```
+
+   then run cucumber itself:
+
+   ```shell
+   bundle exec cucumber
    ```
 
 ## Linting and formatting
