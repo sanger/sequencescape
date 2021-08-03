@@ -135,7 +135,7 @@ RSpec.describe Labware, type: :model do
       let(:parentage) { 'Sanger / Ogilvie / AA316' }
       let(:location) { 'Shelf 1' }
 
-      setup do
+      before do
         stub_lwclient_labware_find_by_bc(
           lw_barcode: plate.human_barcode,
           lw_locn_name: location,
@@ -168,7 +168,7 @@ RSpec.describe Labware, type: :model do
         }
       end
 
-      setup do
+      before do
         stub_lwclient_labware_bulk_find_by_bc(
           [
             { lw_barcode: plate_1.human_barcode, lw_locn_name: location_1, lw_locn_parentage: parentage_1 },

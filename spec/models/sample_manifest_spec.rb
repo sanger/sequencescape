@@ -22,7 +22,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     let(:manifest) { create :sample_manifest, study: study, count: count, asset_type: asset_type, purpose: purpose }
     let(:purpose) { nil }
 
-    setup do
+    before do
       barcode = build(:plate_barcode, barcode: 23)
       barcode2 = build(:plate_barcode, barcode: 24)
       allow(PlateBarcode).to receive(:create).and_return(barcode, barcode2)
@@ -31,7 +31,8 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     context 'when asset_type: plate' do
       let(:asset_type) { 'plate' }
 
-      setup { Delayed::Worker.delay_jobs = false }
+      before { Delayed::Worker.delay_jobs = false }
+
       teardown { Delayed::Worker.delay_jobs = true }
 
       # rubocop:todo Metrics/BlockLength
@@ -52,7 +53,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
 
           context 'when generation has completed' do
-            setup { manifest.generate }
+            before { manifest.generate }
 
             it 'returns the details of the created samples' do
               sample_id = SangerSampleId.order(id: :desc).limit(96 * count).last.id
@@ -84,7 +85,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         let(:purpose) { create :plate_purpose, size: 2 }
         let(:count) { 1 }
 
-        setup { manifest.generate }
+        before { manifest.generate }
 
         it 'create a plate of the correct purpose' do
           assert_equal purpose, Plate.last.purpose
@@ -96,7 +97,8 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       let(:asset_type) { 'library_plate' }
       let(:count) { 1 }
 
-      setup { Delayed::Worker.delay_jobs = false }
+      before { Delayed::Worker.delay_jobs = false }
+
       teardown { Delayed::Worker.delay_jobs = true }
 
       it 'create 1 plate(s), 96 wells' do
@@ -112,7 +114,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       end
 
       context 'follwing generation' do
-        setup { manifest.generate }
+        before { manifest.generate }
 
         it 'returns the details of the created samples' do
           sample_id = SangerSampleId.order(id: :desc).limit(96 * count).last.id
@@ -138,7 +140,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         let(:purpose) { create :plate_purpose, size: 2 }
         let(:count) { 1 }
 
-        setup { manifest.generate }
+        before { manifest.generate }
 
         it 'create a plate of the correct purpose' do
           assert_equal purpose, Plate.last.purpose
@@ -178,7 +180,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
 
           context 'after generation' do
-            setup { manifest.generate }
+            before { manifest.generate }
 
             it 'returns the details of the created samples' do
               sample_id = SangerSampleId.order(id: :desc).limit(count).last.id
@@ -241,7 +243,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         end
 
         context 'once generated' do
-          setup { manifest.generate }
+          before { manifest.generate }
 
           it 'returns the details of the created samples' do
             sample_id = SangerSampleId.order(id: :desc).limit(count).last.id
@@ -296,7 +298,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
 
           context 'when generation has completed' do
-            setup { manifest.generate }
+            before { manifest.generate }
 
             it 'create sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
@@ -352,7 +354,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     let(:manifest) { create(:sample_manifest, count: 37, asset_type: 'plate') }
     let(:plate_barcodes) { Array.new(37) { |i| build(:plate_barcode, barcode: i + 1) } }
 
-    setup do
+    before do
       allow(PlateBarcode).to receive(:create).and_return(*plate_barcodes)
       manifest.generate
     end

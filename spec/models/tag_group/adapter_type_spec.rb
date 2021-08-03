@@ -18,7 +18,8 @@ describe TagGroup::AdapterType do
       end
 
       context 'when it is in use' do
-        setup { create :tag_group, adapter_type: adapter_type }
+        before { create :tag_group, adapter_type: adapter_type }
+
         it { is_expected.to be false }
       end
     end
@@ -44,7 +45,8 @@ describe TagGroup::AdapterType do
   end
 
   context 'when its name is already in use' do
-    setup { create :adapter_type, name: 'name' }
+    before { create :adapter_type, name: 'name' }
+
     let(:name) { 'name' }
 
     it { is_expected.not_to be_valid }

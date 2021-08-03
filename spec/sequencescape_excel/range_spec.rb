@@ -14,7 +14,11 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
       last_row: 10,
       worksheet_name: 'Sheet1'
     }
+
+    # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(described_class.new(attributes)).to eq(described_class.new(attributes))
+
+    # rubocop:enable RSpec/IdenticalEqualityAssertion
     expect(described_class.new(attributes.except(:last_row))).not_to eq(described_class.new(attributes))
   end
 

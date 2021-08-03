@@ -8,7 +8,7 @@ describe PsdFormatter do
 
   let(:log) { StringIO.new }
 
-  setup do
+  before do
     Rails.logger = Logger.new(log)
     Rails.logger.formatter = described_class.new(deployment_info)
   end

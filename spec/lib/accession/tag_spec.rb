@@ -44,7 +44,7 @@ RSpec.describe Accession::Tag, type: :model, accession: true do
   end
 
   it 'is comparable' do
-    expect(build(:accession_tag)).to eq(build(:accession_tag))
+    expect(build(:accession_tag)).to eq(build(:accession_tag)) # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(build(:sample_taxon_id_accession_tag)).not_to eq(build(:accession_tag))
   end
 end

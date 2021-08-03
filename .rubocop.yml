@@ -161,6 +161,9 @@ Metrics/ClassLength:
   Exclude:
     - "spec/**/*"
     - "test/**/*"
+RSpec/Rails/AvoidSetupHook:
+  Exclude:
+    - "test/**/*"
 
 RSpec/MultipleExpectations:
   Exclude:
