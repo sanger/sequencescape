@@ -86,6 +86,122 @@ class BatchesControllerTest < ActionController::TestCase
       end
     end
 
+    context 'when PhiX is spiked in during library prep' do
+      setup do
+        pipeline = create :sequencing_pipeline
+
+        @study = create(:study)
+        @project = create(:project)
+        @sample = create :sample
+        @submission = create :submission_without_order, priority: 3
+
+        @library =
+          create(:empty_library_tube).tap do |library_tube|
+            library_tube.aliquots.create!(
+              sample: @sample,
+              project: @project,
+              study: @study,
+              library: library_tube,
+              library_type: 'Standard'
+            )
+          end
+
+        @phix = create :spiked_buffer, :tube_barcode
+
+        @lane = create(:empty_lane, qc_state: 'failed')
+        @lane.labware.parents << @library
+        @library.parents << @phix
+
+        @request_one =
+          pipeline.request_types.first.create!(
+            asset: @library,
+            target_asset: @lane,
+            project: @project,
+            study: @study,
+            submission: @submission,
+            request_metadata_attributes: {
+              fragment_size_required_from: 100,
+              fragment_size_required_to: 200,
+              read_length: 76
+            }
+          )
+
+        batch = create :batch, pipeline: pipeline
+        batch.batch_requests.create!(request: @request_one, position: 1)
+        batch.reload
+        batch.start!(create(:user))
+
+        get :show, params: { id: batch.id, format: :xml }
+      end
+
+      should 'have information about spiked in buffers' do
+        assert_select 'hyb_buffer', 1
+        assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
+        assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
+        assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
+        assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
+        assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
+      end
+    end
+
+    context 'when the lane has multiple SpikedBuffer ancestors' do
+      setup do
+        pipeline = create :sequencing_pipeline
+
+        @study = create(:study)
+        @project = create(:project)
+        @sample = create :sample
+        @submission = create :submission_without_order, priority: 3
+
+        @library =
+          create(:empty_library_tube).tap do |library_tube|
+            library_tube.aliquots.create!(
+              sample: @sample,
+              project: @project,
+              study: @study,
+              library: library_tube,
+              library_type: 'Standard'
+            )
+          end
+
+        @phix = create :spiked_buffer_with_parent, :tube_barcode
+
+        @lane = create(:empty_lane, qc_state: 'failed')
+        @lane.labware.parents << @library
+        @library.parents << @phix
+
+        @request_one =
+          pipeline.request_types.first.create!(
+            asset: @library,
+            target_asset: @lane,
+            project: @project,
+            study: @study,
+            submission: @submission,
+            request_metadata_attributes: {
+              fragment_size_required_from: 100,
+              fragment_size_required_to: 200,
+              read_length: 76
+            }
+          )
+
+        batch = create :batch, pipeline: pipeline
+        batch.batch_requests.create!(request: @request_one, position: 1)
+        batch.reload
+        batch.start!(create(:user))
+
+        get :show, params: { id: batch.id, format: :xml }
+      end
+
+      should 'have information about spiked in buffers' do
+        assert_select 'hyb_buffer', 1
+        assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
+        assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
+        assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
+        assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
+        assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
+      end
+    end
+
     context 'with a user logged in' do
       setup do
         @user = create :user
