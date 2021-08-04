@@ -33,7 +33,12 @@ class BatchesControllerTest < ActionController::TestCase
                 library_type: 'Standard'
               )
             end
+
+          @phix = create :spiked_buffer, :tube_barcode
+
           @lane = create(:empty_lane, qc_state: 'failed')
+          @lane.labware.parents << @phix
+
           @request_one =
             pipeline.request_types.first.create!(
               asset: @library,
@@ -68,6 +73,15 @@ class BatchesControllerTest < ActionController::TestCase
 
         should 'expose the library information correctly' do
           assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
+        end
+
+        should 'have information about spiked in buffers' do
+          assert_select 'hyb_buffer', 1
+          assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
+          assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
+          assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
+          assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
+          assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
         end
       end
     end
