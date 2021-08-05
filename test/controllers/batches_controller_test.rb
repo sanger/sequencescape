@@ -37,7 +37,7 @@ class BatchesControllerTest < ActionController::TestCase
           @phix = create :spiked_buffer, :tube_barcode
 
           @lane = create(:empty_lane, qc_state: 'failed')
-          @lane.labware.parents << @phix
+          @lane.labware.parents << @library
 
           @request_one =
             pipeline.request_types.first.create!(
@@ -53,152 +53,90 @@ class BatchesControllerTest < ActionController::TestCase
               }
             )
 
-          batch = create :batch, pipeline: pipeline
-          batch.batch_requests.create!(request: @request_one, position: 1)
-          batch.reload
-          batch.start!(create(:user))
-
-          get :show, params: { id: batch.id, format: :xml }
+          @batch = create :batch, pipeline: pipeline
+          @batch.batch_requests.create!(request: @request_one, position: 1)
+          @batch.reload
+          @batch.start!(create(:user))
         end
 
-        should 'Respond with xml' do
-          assert_equal 'application/xml', @response.media_type
-        end
+        context 'when there is no PhiX' do
+          setup { get :show, params: { id: @batch.id, format: :xml } }
 
-        should 'have api version attribute on root object' do
-          assert_response :success
-          assert_select "lane[position='1'][id='#{@lane.id}'][priority='3']"
-          assert_select "library[request_id='#{@request_one.id}'][qc_state='fail']"
-        end
-
-        should 'expose the library information correctly' do
-          assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
-        end
-
-        should 'have information about spiked in buffers' do
-          assert_select 'hyb_buffer', 1
-          assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
-          assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
-          assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
-          assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
-          assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
-        end
-      end
-    end
-
-    context 'when PhiX is spiked in during library prep' do
-      setup do
-        pipeline = create :sequencing_pipeline
-
-        @study = create(:study)
-        @project = create(:project)
-        @sample = create :sample
-        @submission = create :submission_without_order, priority: 3
-
-        @library =
-          create(:empty_library_tube).tap do |library_tube|
-            library_tube.aliquots.create!(
-              sample: @sample,
-              project: @project,
-              study: @study,
-              library: library_tube,
-              library_type: 'Standard'
-            )
+          should 'Respond with xml' do
+            assert_equal 'application/xml', @response.media_type
           end
 
-        @phix = create :spiked_buffer, :tube_barcode
-
-        @lane = create(:empty_lane, qc_state: 'failed')
-        @lane.labware.parents << @library
-        @library.parents << @phix
-
-        @request_one =
-          pipeline.request_types.first.create!(
-            asset: @library,
-            target_asset: @lane,
-            project: @project,
-            study: @study,
-            submission: @submission,
-            request_metadata_attributes: {
-              fragment_size_required_from: 100,
-              fragment_size_required_to: 200,
-              read_length: 76
-            }
-          )
-
-        batch = create :batch, pipeline: pipeline
-        batch.batch_requests.create!(request: @request_one, position: 1)
-        batch.reload
-        batch.start!(create(:user))
-
-        get :show, params: { id: batch.id, format: :xml }
-      end
-
-      should 'have information about spiked in buffers' do
-        assert_select 'hyb_buffer', 1
-        assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
-        assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
-        assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
-        assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
-        assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
-      end
-    end
-
-    context 'when the lane has multiple SpikedBuffer ancestors' do
-      setup do
-        pipeline = create :sequencing_pipeline
-
-        @study = create(:study)
-        @project = create(:project)
-        @sample = create :sample
-        @submission = create :submission_without_order, priority: 3
-
-        @library =
-          create(:empty_library_tube).tap do |library_tube|
-            library_tube.aliquots.create!(
-              sample: @sample,
-              project: @project,
-              study: @study,
-              library: library_tube,
-              library_type: 'Standard'
-            )
+          should 'have api version attribute on root object' do
+            assert_response :success
+            assert_select "lane[position='1'][id='#{@lane.id}'][priority='3']"
+            assert_select "library[request_id='#{@request_one.id}'][qc_state='fail']"
           end
 
-        @phix = create :spiked_buffer_with_parent, :tube_barcode
+          should 'expose the library information correctly' do
+            assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
+          end
 
-        @lane = create(:empty_lane, qc_state: 'failed')
-        @lane.labware.parents << @library
-        @library.parents << @phix
+          should 'not have information about spiked in buffers' do
+            assert_select 'hyb_buffer', 0
+          end
+        end
 
-        @request_one =
-          pipeline.request_types.first.create!(
-            asset: @library,
-            target_asset: @lane,
-            project: @project,
-            study: @study,
-            submission: @submission,
-            request_metadata_attributes: {
-              fragment_size_required_from: 100,
-              fragment_size_required_to: 200,
-              read_length: 76
-            }
-          )
+        context 'when PhiX is spiked in at sequencing stage' do
+          setup do
+            @lane.labware.parents << @phix
 
-        batch = create :batch, pipeline: pipeline
-        batch.batch_requests.create!(request: @request_one, position: 1)
-        batch.reload
-        batch.start!(create(:user))
+            get :show, params: { id: @batch.id, format: :xml }
+          end
 
-        get :show, params: { id: batch.id, format: :xml }
-      end
+          should 'have information about spiked in buffers' do
+            assert_select 'hyb_buffer', 1
+            assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
+            assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
+            assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
+            assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
+            assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
+          end
+        end
 
-      should 'have information about spiked in buffers' do
-        assert_select 'hyb_buffer', 1
-        assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
-        assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
-        assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
-        assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
-        assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
+        context 'when PhiX is spiked in during library prep' do
+          context 'when the lane has a single SpikedBuffer ancestor' do
+            setup do
+              @library.parents << @phix
+
+              get :show, params: { id: @batch.id, format: :xml }
+            end
+
+            should 'have information about spiked in buffers' do
+              assert_select 'hyb_buffer', 1
+              assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
+              assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
+              assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
+              assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
+              assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
+            end
+          end
+
+          context 'when the lane has multiple SpikedBuffer ancestors' do
+            setup do
+              @phix_with_parent = create :spiked_buffer_with_parent, :tube_barcode
+              @library.parents << @phix_with_parent
+
+              get :show, params: { id: @batch.id, format: :xml }
+            end
+
+            should 'have information about spiked in buffers' do
+              # puts @response.body
+              # puts "phix library id: #{@phix_with_parent.aliquots.first.library_id}"
+              # puts "phix parent library id: #{@phix_with_parent.parents.first.aliquots.first.library_id}"
+              assert_select 'hyb_buffer', 1
+              assert_select "sample[library_id='#{@phix_with_parent.aliquots.first.library_id}']", 1
+              assert_select "tag[tag_id='#{@phix_with_parent.aliquots.first.tag_id}']", 1
+              assert_select 'index', @phix_with_parent.aliquots.first.tag.map_id.to_s, 1
+              assert_select 'expected_sequence', @phix_with_parent.aliquots.first.tag.oligo.to_s, 1
+              assert_select 'tag_group_id', @phix_with_parent.aliquots.first.tag.tag_group_id.to_s, 1
+            end
+          end
+        end
       end
     end
 
