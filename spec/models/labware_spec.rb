@@ -114,6 +114,12 @@ RSpec.describe Labware, type: :model do
         expect(labware.spiked_in_buffer).to eq(spiked_buffer_child)
       end
     end
+
+    context 'when there is no SpikedBuffer ancestor at all' do
+      it 'returns nil' do
+        expect(labware.spiked_in_buffer).to be_nil
+      end
+    end
   end
 
   context 'when checking scopes' do
