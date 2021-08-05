@@ -64,6 +64,58 @@ RSpec.describe Labware, type: :model do
     end
   end
 
+  describe 'spiked_in_buffer' do
+    let(:labware) { create(:labware) }
+    let(:parent_labware) { create(:labware) }
+    let(:spiked_buffer_parent) { create :spiked_buffer, :tube_barcode }
+    let(:spiked_buffer_child) { create :spiked_buffer, :tube_barcode }
+
+    before { labware.parents << parent_labware }
+
+    context 'when there is a direct parent SpikedBuffer tube and an indirect ancestor' do
+      before do
+        # Create the SpikedBuffer child before the parent
+        # Tests obscure (but existing) case in historical data
+        spiked_buffer_child
+        spiked_buffer_parent
+        spiked_buffer_child.parents << spiked_buffer_parent
+
+        # Add the SpikedBuffer as a direct parent of this labware
+        labware.parents << spiked_buffer_child
+      end
+
+      it 'returns the SpikedBuffer linked directly to this labware' do
+        # Check the child was created before the parent
+        expect(spiked_buffer_child.id).to be < spiked_buffer_parent.id
+
+        # Order of creation should be ignored in this case, because there is a direct SpikedBuffer parent
+        expect(labware.spiked_in_buffer).to eq(spiked_buffer_child)
+      end
+    end
+
+    context 'when there are no direct parent SpikedBuffer tubes, and multiple indirect ancestors' do
+      before do
+        # Create the SpikedBuffer child after the parent
+        # Tests expected situation from now on
+        spiked_buffer_parent
+        spiked_buffer_child
+        spiked_buffer_child.parents << spiked_buffer_parent
+
+        # Add the SpikedBuffer as a parent of the labware one level up
+        parent_labware.parents << spiked_buffer_child
+      end
+
+      it 'returns the most recently created SpikedBuffer' do
+        # Check the child was created after the parent
+        expect(spiked_buffer_child.id).to be > spiked_buffer_parent.id
+
+        # The child SpikedBuffer was created most recently, so it will choose that.
+        # As a proxy for the most direct ancestor, assuming parents get created before children.
+        expect(labware.spiked_in_buffer).to eq(spiked_buffer_child)
+      end
+    end
+  end
+
   context 'when checking scopes' do
     describe '#with_barcode' do
       let!(:ean13_plates_list) { create_list(:plate_with_tagged_wells, 2) }
