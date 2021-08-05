@@ -117,26 +117,18 @@ Rails/DynamicFindBy:
   Exclude:
     - "app/sample_manifest_excel/**/*"
     - "test/app/sample_manifest_excel/**/*"
-  Whitelist:
+  AllowedMethods:
     - find_by_sql
     - find_by_id_or_name
     - find_by_id_or_name!
     - find_by_barcode
-    - find_by_or_null
 # Method length limits make little sense when you are describing a table schema
 # or a view.
 Metrics/MethodLength:
   Exclude:
     - "db/migrate/*"
-    - "db/migrate_asset_refactor/*"
-Layout/FirstArrayElementIndentation:
-  EnforcedStyle: consistent
 Style/ClassAndModuleChildren:
   Enabled: false
-# This should be the rubocop defaults, not sure why its kicking up a fuss.
-Layout/SpaceBeforeBlockBraces:
-  EnforcedStyle: space
-  EnforcedStyleForEmptyBraces: space
 Rails/UnknownEnv:
   Environments:
     - production
@@ -157,7 +149,7 @@ Metrics/ClassLength:
   inherit_mode:
     merge:
       - Exclude
-  # Disable for features, as we might want to step through long processes
+  # Disable for features and tests, we want lots of tests
   Exclude:
     - "spec/**/*"
     - "test/**/*"
