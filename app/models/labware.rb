@@ -71,7 +71,8 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
 
   belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
 
-  # Gets the SpikedBuffer tube that is a direct parent of this labware, if it exists
+  # Gets the SpikedBuffer tube that is a direct parent of this labware, if it exists.
+  # The original implementation of spiked_in_buffer just supported direct parent tubes.
   has_one :spiked_in_buffer_links,
           # If we try to use the Rails 6 version, Rails 5 doesn't seem to perform the join
           -> { includes(:ancestor).references(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
@@ -79,8 +80,8 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
           foreign_key: :descendant_id,
           inverse_of: :descendant
 
-  # Gets the most recent SpikedBuffer tube ancestor, if it exists, to use if `spiked_in_buffer_links` returns nil
-  # For when PhiX gets added during library prep rather than at sequencing time.
+  # Gets the most recent SpikedBuffer tube ancestor, if it exists, to use if there is no direct parent SpikedBuffer tube.
+  # Added to support PhiX being added during library prep rather than at sequencing time (for Heron).
   has_one :spiked_in_buffer_most_recent_links,
           # If we try to use the Rails 6 version, Rails 5 doesn't seem to perform the join
           -> {
@@ -169,6 +170,8 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
 
   # Gets the relevant SpikedBuffer tube, if one exists, by using the two associations.
   # A direct parent SpikedBuffer tube is used if it exists, otherwise the most recent ancestor.
+  # This was necessary to avoid affecting historical data, for which the direct parent should be used,
+  # even though there is another ancestor that was created more recently.
   def spiked_in_buffer
     asset_link = spiked_in_buffer_links || spiked_in_buffer_most_recent_links
     asset_link.present? ? asset_link.ancestor : nil
