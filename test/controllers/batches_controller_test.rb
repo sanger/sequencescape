@@ -126,8 +126,6 @@ class BatchesControllerTest < ActionController::TestCase
 
             should 'have information about spiked in buffers' do
               # puts @response.body
-              # puts "phix library id: #{@phix_with_parent.aliquots.first.library_id}"
-              # puts "phix parent library id: #{@phix_with_parent.parents.first.aliquots.first.library_id}"
               assert_select 'hyb_buffer', 1
               assert_select "sample[library_id='#{@phix_with_parent.aliquots.first.library_id}']", 1
               assert_select "tag[tag_id='#{@phix_with_parent.aliquots.first.tag_id}']", 1

@@ -12,7 +12,14 @@ xml.batch do
           request: [
             {
               target_asset: {
-                spiked_in_buffer: [:index, { aliquots: %i[library tag tag2 aliquot_index sample] }],
+                labware: {
+                  spiked_in_buffer_links: {
+                    ancestor: [:index, { aliquots: %i[library tag tag2 aliquot_index sample] }]
+                  },
+                  spiked_in_buffer_most_recent_links: {
+                    ancestor: [:index, { aliquots: %i[library tag tag2 aliquot_index sample] }]
+                  }
+                },
                 aliquots: %i[library tag tag2 aliquot_index bait_library sample]
               }
             },
