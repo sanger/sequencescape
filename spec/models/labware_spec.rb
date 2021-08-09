@@ -95,8 +95,7 @@ RSpec.describe Labware, type: :model do
 
     context 'when there are no direct parent SpikedBuffer tubes, and multiple indirect ancestors' do
       before do
-        # Create the SpikedBuffer child after the parent
-        # Tests expected situation from now on
+        # Create the SpikedBuffer child after the parent (normal expected scenario)
         spiked_buffer_parent
         spiked_buffer_child
         spiked_buffer_child.parents << spiked_buffer_parent
