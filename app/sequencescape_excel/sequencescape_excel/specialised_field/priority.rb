@@ -13,7 +13,6 @@ module SequencescapeExcel
         return unless valid?
 
         sample.priority = value if value.present?
-        sample.save
       end
 
       private
