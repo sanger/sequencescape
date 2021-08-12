@@ -78,7 +78,8 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
       redirect_to controller: 'admin/studies', action: 'update', id: @study.id
     end
   rescue ActiveRecord::RecordInvalid => e
-    logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}}"
+    errors = @study.errors.full_messages
+    logger.warn "Failed to update attributes: #{errors}}"
     flash[:error] = 'Failed to update attributes for study!'
     render action: :show, id: @study.id and return
   end
