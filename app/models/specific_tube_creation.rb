@@ -15,7 +15,7 @@ class SpecificTubeCreation < TubeCreation
   has_many :parent_associations,
            foreign_key: 'asset_creation_id',
            class_name: 'AssetCreation::ParentAssociation',
-           inverse_of: 'specific_tube_creation'
+           inverse_of: 'asset_creation'
   has_many :parents, through: :parent_associations, class_name: 'Labware'
 
   # [Array<Hash>] An optional array of hashes which get passed in to the create! action
