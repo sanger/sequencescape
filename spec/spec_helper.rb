@@ -151,6 +151,17 @@ RSpec.configure do |config|
     Warren.handler.disable!
   end
 
+  config.around(:each, accessioning_enabled: true) do |ex|
+    original_value = configatron.accession_samples
+    Accession.configure do |accession|
+      accession.folder = File.join('spec', 'data', 'accession')
+      accession.load!
+    end
+    configatron.accession_samples = true
+    ex.run
+    configatron.accession_samples = original_value
+  end
+
   config.before do
     # Reset the all sequences at the beginning of each
     # test to reduce the impact test order has on test execution

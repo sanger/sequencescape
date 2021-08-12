@@ -147,7 +147,6 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
     end
 
     it 'will upload a valid plate sample manifest' do
-      broadcast_events_count = BroadcastEvent.count
       download =
         build(
           :test_download_plates,
@@ -157,10 +156,22 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
       download.save(test_file_name)
       Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
-      uploader.run!
+      expect { uploader.run! }.to change(BroadcastEvent, :count).by(1)
       expect(uploader).to be_processed
-      expect(BroadcastEvent.count).to eq broadcast_events_count + 1
       expect(uploader.upload.sample_manifest).to be_completed
+    end
+
+    it 'will generate sample accessions', accessioning_enabled: true do
+      download =
+        build(
+          :test_download_plates,
+          manifest_type: 'plate_full',
+          columns: SampleManifestExcel.configuration.columns.plate_full.dup,
+          study: create(:open_study, accession_number: 'acc')
+        )
+      download.save(test_file_name)
+      uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
+      expect { uploader.run! }.to change(Delayed::Job, :count).by(4)
     end
 
     it 'will not upload an invalid 1d tube sample manifest' do

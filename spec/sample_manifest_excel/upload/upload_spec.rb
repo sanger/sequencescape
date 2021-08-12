@@ -345,21 +345,9 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
         expect(upload).to be_processed
       end
 
-      context 'when accessioning is enabled' do
-        before do
-          @cache_configatron = configatron.accession_samples
-          configatron.accession_samples = true
-          Accession.configure do |config|
-            config.folder = File.join('spec', 'data', 'accession')
-            config.load!
-          end
-        end
-
-        after { configatron.accession_samples = @cache_configatron } # rubocop:disable RSpec/InstanceVariable
-
-        it 'only generates one acccession job' do
-          sample_count = 4
-          expect { upload.process(nil) }.to change(Delayed::Job, :count).by(sample_count)
+      context 'when accessioning is enabled', accessioning_enabled: true do
+        it 'surpresses accessioning' do
+          expect { upload.process(nil) }.not_to change(Delayed::Job, :count)
         end
       end
     end
