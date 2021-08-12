@@ -12,12 +12,29 @@ class SpecificTubeCreation < TubeCreation
 
   validates :child_purposes, presence: true
 
+  has_many :parent_associations,
+           foreign_key: 'asset_creation_id',
+           class_name: 'AssetCreation::ParentAssociation',
+           inverse_of: 'specific_tube_creation'
+  has_many :parents, through: :parent_associations, class_name: 'Labware'
+
   # [Array<Hash>] An optional array of hashes which get passed in to the create! action
   #               on tube_purpose.
   #               Allows overriding default attributes, or setting custom
   #               values for. eg. name.
   #               eg. [{ name: 'Tube one' }, { name: 'Tube two' }]
   attr_writer :tube_attributes
+
+  def set_parents=(uuids)
+    self.parents = uuids.map { |uuid| Uuid.find_by(external_id: uuid).resource }
+    self.parent = parents.first
+  end
+
+  def set_parent=(uuid)
+    parent = Uuid.find_by(external_id: uuid).resource
+    self.parents = [parent]
+    self.parent = parent
+  end
 
   def set_child_purposes=(uuids)
     self.child_purposes = uuids.map { |uuid| Uuid.find_by(external_id: uuid).resource }

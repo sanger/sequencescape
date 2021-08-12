@@ -94,65 +94,67 @@ describe 'TubeCreation endpoints' do
         it 'is successful' do
           api_request :get, "/api/1/#{tube_creation.uuid}"
 
-          expected_json_body = construct_expected_response_body(parent_plate, child_purpose, tube_creation)
+          expected_json_body = construct_expected_response_body(parent_plate, tube_creation)
           expect(JSON.parse(response.body)).to include_json(JSON.parse(expected_json_body))
           expect(status).to eq(response_code)
         end
       end
     end
 
-    # context 'when the tube has multiple parents' do
-    #   def construct_expected_response_body(parents, child_purpose, new_tube_creation)
-    #     # binding.pry
-    #     "{
-    #       \"tube_creation\": {
-    #         \"actions\": {
-    #           \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}\"
-    #         },
-    #         \"parents\": {
-    #           \"actions\": {
-    #             \"read\": \"http://www.example.com/api/1/#{parents[0].uuid}\",
-    #             \"read\": \"http://www.example.com/api/1/#{parents[1].uuid}\",
-    #           }
-    #         },
-    #         \"child_purpose\": {
-    #           \"actions\": {
-    #             \"read\": \"http://www.example.com/api/1/#{child_purpose.uuid}\"
-    #           }
-    #         },
-    #         \"children\": {
-    #           \"actions\": {
-    #             \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}/children\"
-    #           },
-    #           \"size\": 1
-    #         },
+    context 'when the tube has multiple parents' do
+      # rubocop:disable Metrics/MethodLength
+      def construct_expected_response_body(new_tube_creation)
+        "{
+          \"specific_tube_creation\": {
+            \"actions\": {
+              \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}\"
+            },
+            \"parents\": {
+              \"actions\": {
+                \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}/parents\"
+              }
+            },
+            \"child_purposes\": {
+              \"actions\": {
+                \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}/child_purposes\"
+              }
+            },
+            \"children\": {
+              \"actions\": {
+                \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}/children\"
+              },
+              \"size\": 1
+            },
 
-    #         \"uuid\": \"#{new_tube_creation.uuid}\"
-    #       }
-    #     }"
-    #   end
+            \"uuid\": \"#{new_tube_creation.uuid}\"
+          }
+        }"
+      end
 
-    #   let!(:parent_tube) { create :tube }
-    #   let(:payload) do
-    #     "{
-    #       \"tube_creation\":{
-    #         \"user\": \"#{user.uuid}\",
-    #         \"parents\":\"[#{parent_plate.uuid}, #{parent_tube.uuid}]\",
-    #         \"child_purpose\":\"#{child_purpose.uuid}\"
-    #       }
-    #     }"
-    #   end
+      # rubocop:enable Metrics/MethodLength
 
-    #   let(:response_code) { 201 }
+      let!(:parent_tube) { create :tube }
+      let(:payload) do
+        "{
+          \"specific_tube_creation\":{
+            \"user\": \"#{user.uuid}\",
+            \"parents\":[\"#{parent_plate.uuid}\", \"#{parent_tube.uuid}\"],
+            \"child_purposes\":[\"#{child_purpose.uuid}\"]
+          }
+        }"
+      end
 
-    #   it 'is successful' do
-    #     api_request :post, endpoint, payload
-    #     puts "*** response body: #{response.body} ***"
-    #     new_tube_creation = TubeCreation.last
-    #     response_body = construct_expected_response_body([parent_plate, parent_tube], child_purpose, new_tube_creation)
-    #     # expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
-    #     expect(status).to eq(response_code)
-    #   end
-    # end
+      let(:response_code) { 201 }
+
+      it 'is successful' do
+        api_request :post, endpoint, payload
+
+        new_tube_creation = SpecificTubeCreation.last
+        response_body = construct_expected_response_body(new_tube_creation)
+
+        expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
+        expect(status).to eq(response_code)
+      end
+    end
   end
 end
