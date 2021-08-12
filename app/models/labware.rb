@@ -78,7 +78,26 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
           foreign_key: :descendant_id,
           inverse_of: :descendant
 
-  has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
+  has_one :spiked_in_buffer_most_recent_links,
+          # If we try to use the Rails 6 version, Rails 5 doesn't seem to perform the join
+          -> {
+            includes(:ancestor)
+              .references(:ancestor)
+              .where(labware: { sti_type: 'SpikedBuffer' })
+              .order(ancestor_id: :desc)
+          },
+          class_name: 'AssetLink',
+          foreign_key: :descendant_id,
+          inverse_of: :descendant
+
+  # Gets the SpikedBuffer tube that is a direct parent of this labware, if it exists.
+  # The original implementation of spiked_in_buffer only supported direct parent tubes.
+  has_one :direct_spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
+
+  # Gets the most recent SpikedBuffer tube ancestor, if it exists, to use if there is no direct parent SpikedBuffer tube.
+  # Added to support PhiX being added during library prep rather than at sequencing time (for Heron).
+  has_one :most_recent_spiked_in_buffer, through: :spiked_in_buffer_most_recent_links, source: :ancestor
+
   has_many :asset_audits, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
   has_many :volume_updates, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
   has_many :state_changes, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
@@ -151,6 +170,14 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
     return [self] if plate_purpose_id == ancestor_purpose_id
 
     ancestors.order(id: :desc).where(plate_purpose_id: ancestor_purpose_id)
+  end
+
+  # Gets the relevant SpikedBuffer tube, if one exists, by using the two associations.
+  # A direct parent SpikedBuffer tube is used if it exists, otherwise the most recent ancestor.
+  # This was necessary to avoid affecting historical data, for which the direct parent should be used,
+  # even though there is another ancestor that was created more recently.
+  def spiked_in_buffer
+    direct_spiked_in_buffer || most_recent_spiked_in_buffer
   end
 
   def human_barcode

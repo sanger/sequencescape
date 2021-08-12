@@ -17,6 +17,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
              request_type: request_type,
              event_descriptors: request_data
     end
+
     let(:mx_tube1) { create :multiplexed_library_tube, sample_count: 1 }
 
     let(:request_type) { sequencing_pipeline.request_types.first }
@@ -192,6 +193,33 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
 
       it 'generates valid json' do
         expect(subject.as_json).to include_json(expected_json)
+      end
+
+      context 'when PhiX is spiked in during library prep' do
+        # Link PhiX (SpikedBuffer) tube not as a direct parent of the lane,
+        # but as a parent of the pool tube (as used in Heron pipeline).
+        let(:lane1) do
+          create(:lane, aliquots: mx_tube1.aliquots.map(&:dup)).tap do |lane|
+            lane.labware.parents << mx_tube1
+            mx_tube1.parents << phix
+            lane.index_aliquots
+          end
+        end
+
+        # Check the barcode and aliquot can still be retrieved from the PhiX tube
+        it 'generates valid json' do
+          expect(subject.as_json).to include_json(expected_json)
+        end
+
+        context 'when there are multiple SpikedBuffer ancestors' do
+          let(:phix) { create :spiked_buffer_with_parent, :tube_barcode }
+
+          # To test whether the PhiX barcode and aliquot come from the correct ancestor,
+          # when the lane has multiple SpikedBuffer tube ancestors
+          it 'generates valid json' do
+            expect(subject.as_json).to include_json(expected_json)
+          end
+        end
       end
     end
   end
