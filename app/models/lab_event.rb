@@ -30,8 +30,7 @@ class LabEvent < ApplicationRecord # rubocop:todo Style/Documentation
   end
 
   def descriptor_value_for(name)
-    descriptors.each { |desc| return desc.value if desc.name.casecmp(name.to_s).zero? }
-    nil
+    descriptors.detect { |desc| desc.name.casecmp?(name.to_s) }&.value
   end
 
   def add_new_descriptor(name, value)
