@@ -72,15 +72,13 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
         expect(page).to have_text('James')
         expect(page).to have_text('XP')
         expect(page).to have_text('23')
-        # Currently failing
-        # expect(page).to have_text('Check stored')
+        expect(page).to have_text('Check stored')
       end
       within(all('li').last) do
         expect(page).to have_text('James')
         expect(page).to have_text('XP')
         expect(page).to have_text('23')
-        # Currently failing
-        # expect(page).to have_text('Check stored')
+        expect(page).to have_text('Check stored')
       end
     end
     click_on 'Release this batch'

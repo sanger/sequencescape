@@ -9,8 +9,6 @@ class LabEvent < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :user
   belongs_to :eventful, polymorphic: true
 
-  before_validation :unescape_for_descriptors
-
   scope :with_descriptor, ->(k, v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
 
   scope :with_flowcell_barcode,
@@ -19,10 +17,6 @@ class LabEvent < ApplicationRecord # rubocop:todo Style/Documentation
   delegate :flowcell, :eventful_studies, :samples, to: :eventful
 
   after_create :generate_broadcast_event
-
-  def unescape_for_descriptors
-    self[:descriptors] = (self[:descriptors] || {}).to_h.transform_keys { |key| CGI.unescape(key) }
-  end
 
   def self.find_batch_id_by_barcode(barcode)
     batch_ids = with_flowcell_barcode(barcode).distinct.pluck(:batch_id)
