@@ -37,7 +37,11 @@ module ActsAsDescriptable # :nodoc:
   end
 
   def descriptors
-    [].tap { |response| each_descriptor { |field, value| response.push(Descriptor.new(name: field, value: value)) } }
+    descriptor_fields.filter_map do |field|
+      next if field.blank?
+
+      Descriptor.new(name: field, value: descriptor_value(field))
+    end
   end
 
   def descriptor_value(key)
@@ -51,15 +55,5 @@ module ActsAsDescriptable # :nodoc:
 
   def descriptor_hash
     read_attribute(:descriptors) || {}
-  end
-
-  private
-
-  def each_descriptor
-    descriptor_fields.each do |field|
-      next if field.blank?
-
-      yield(field, descriptor_hash[field])
-    end
   end
 end
