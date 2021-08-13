@@ -10,8 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: nelonoel/branch-name@v1.0.1
-
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
