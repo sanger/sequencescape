@@ -16,6 +16,12 @@ table.table-dense-information {
   @extend .table-sm;
 }
 
+table.table-batch-summary {
+  caption {
+    caption-side: top;
+  }
+}
+
 /* main-row encompasses the bulk of the application */
 .main-row {
   margin-bottom: 10px;
