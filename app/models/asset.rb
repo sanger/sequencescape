@@ -106,10 +106,6 @@ class Asset < ApplicationRecord # rubocop:todo Metrics/ClassLength
     RequestType.where(asset_type: label)
   end
 
-  def external_identifier
-    "#{sti_type}#{id}"
-  end
-
   def details
     nil
   end
