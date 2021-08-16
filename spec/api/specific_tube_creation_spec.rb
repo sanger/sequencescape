@@ -33,54 +33,53 @@ describe 'TubeCreation endpoints' do
     context 'when the payload has all the required information' do
       # rubocop:disable Metrics/MethodLength
       def construct_expected_response_body(parent_plate, new_tube_creation)
-        "{
-          \"specific_tube_creation\": {
-            \"actions\": {
-              \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}\"
+        {
+          specific_tube_creation: {
+            actions: {
+              read: "http://www.example.com/api/1/#{new_tube_creation.uuid}"
             },
-            \"parent\": {
-              \"actions\": {
-                \"read\": \"http://www.example.com/api/1/#{parent_plate.uuid}\"
+            parent: {
+              actions: {
+                read: "http://www.example.com/api/1/#{parent_plate.uuid}"
               }
             },
-            \"child_purposes\": {
-              \"actions\": {
-                \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}/child_purposes\"
+            child_purposes: {
+              actions: {
+                read: "http://www.example.com/api/1/#{new_tube_creation.uuid}/child_purposes"
               }
             },
-            \"children\": {
-              \"actions\": {
-                \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}/children\"
+            children: {
+              actions: {
+                read: "http://www.example.com/api/1/#{new_tube_creation.uuid}/children"
               },
-              \"size\": 1
+              size: 1
             },
-
-            \"uuid\": \"#{new_tube_creation.uuid}\"
+            uuid: new_tube_creation.uuid.to_s
           }
-        }"
+        }
       end
 
       # rubocop:enable Metrics/MethodLength
 
       let(:payload) do
-        "{
-          \"specific_tube_creation\":{
-            \"user\": \"#{user.uuid}\",
-            \"parent\":\"#{parent_plate.uuid}\",
-            \"child_purposes\":[\"#{child_purpose.uuid}\"]
+        {
+          specific_tube_creation: {
+            user: user.uuid.to_s,
+            parent: parent_plate.uuid.to_s,
+            child_purposes: [child_purpose.uuid.to_s]
           }
-        }"
+        }
       end
 
       let(:response_code) { 201 }
 
       it 'is successful' do
-        api_request :post, endpoint, payload
+        api_request :post, endpoint, JSON.generate(payload)
 
         new_tube_creation = SpecificTubeCreation.last
         response_body = construct_expected_response_body(parent_plate, new_tube_creation)
 
-        expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
+        expect(JSON.parse(response.body)).to include_json(response_body)
         expect(status).to eq(response_code)
       end
 
@@ -95,7 +94,7 @@ describe 'TubeCreation endpoints' do
           api_request :get, "/api/1/#{tube_creation.uuid}"
 
           expected_json_body = construct_expected_response_body(parent_plate, tube_creation)
-          expect(JSON.parse(response.body)).to include_json(JSON.parse(expected_json_body))
+          expect(JSON.parse(response.body)).to include_json(expected_json_body)
           expect(status).to eq(response_code)
         end
       end
@@ -104,55 +103,54 @@ describe 'TubeCreation endpoints' do
     context 'when the tube has multiple parents' do
       # rubocop:disable Metrics/MethodLength
       def construct_expected_response_body(new_tube_creation)
-        "{
-          \"specific_tube_creation\": {
-            \"actions\": {
-              \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}\"
+        {
+          specific_tube_creation: {
+            actions: {
+              read: "http://www.example.com/api/1/#{new_tube_creation.uuid}"
             },
-            \"parents\": {
-              \"actions\": {
-                \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}/parents\"
+            parents: {
+              actions: {
+                read: "http://www.example.com/api/1/#{new_tube_creation.uuid}/parents"
               }
             },
-            \"child_purposes\": {
-              \"actions\": {
-                \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}/child_purposes\"
+            child_purposes: {
+              actions: {
+                read: "http://www.example.com/api/1/#{new_tube_creation.uuid}/child_purposes"
               }
             },
-            \"children\": {
-              \"actions\": {
-                \"read\": \"http://www.example.com/api/1/#{new_tube_creation.uuid}/children\"
+            children: {
+              actions: {
+                read: "http://www.example.com/api/1/#{new_tube_creation.uuid}/children"
               },
-              \"size\": 1
+              size: 1
             },
-
-            \"uuid\": \"#{new_tube_creation.uuid}\"
+            uuid: new_tube_creation.uuid.to_s
           }
-        }"
+        }
       end
 
       # rubocop:enable Metrics/MethodLength
 
       let!(:parent_tube) { create :tube }
       let(:payload) do
-        "{
-          \"specific_tube_creation\":{
-            \"user\": \"#{user.uuid}\",
-            \"parents\":[\"#{parent_plate.uuid}\", \"#{parent_tube.uuid}\"],
-            \"child_purposes\":[\"#{child_purpose.uuid}\"]
+        {
+          specific_tube_creation: {
+            user: user.uuid.to_s,
+            parents: [parent_plate.uuid.to_s, parent_tube.uuid.to_s],
+            child_purposes: [child_purpose.uuid.to_s]
           }
-        }"
+        }
       end
 
       let(:response_code) { 201 }
 
       it 'is successful' do
-        api_request :post, endpoint, payload
+        api_request :post, endpoint, JSON.generate(payload)
 
         new_tube_creation = SpecificTubeCreation.last
         response_body = construct_expected_response_body(new_tube_creation)
 
-        expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
+        expect(JSON.parse(response.body)).to include_json(response_body)
         expect(status).to eq(response_code)
       end
     end
