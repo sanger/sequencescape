@@ -55,6 +55,11 @@ class SpecificTubeCreation < TubeCreation
     true
   end
 
+  def connect_parent_and_children
+    parents.each { |parent| children.each { |child| AssetLink.create_edge!(parent, child) } }
+  end
+  private :connect_parent_and_children
+
   def create_children!
     self.children =
       child_purposes.each_with_index.map do |child_purpose, index|
