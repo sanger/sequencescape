@@ -5,7 +5,7 @@ class AssetCreation < ApplicationRecord
   class ParentAssociation < ApplicationRecord # rubocop:todo Style/Documentation
     self.table_name = ('asset_creation_parents')
     belongs_to :asset_creation
-    belongs_to :parent, class_name: 'Asset'
+    belongs_to :parent, class_name: 'Labware'
   end
 
   include Uuid::Uuidable
