@@ -20,6 +20,7 @@ RSpec.describe Api::StudyIO, type: :model do
   let(:reference_genome) { create :reference_genome }
 
   let!(:manager) { create :manager, authorizable: subject }
+  let!(:manager2) { create :manager, authorizable: subject }
 
   let(:expected_json) do
     {
@@ -50,7 +51,10 @@ RSpec.describe Api::StudyIO, type: :model do
       'data_access_group' => 'something',
       's3_email_list' => 'aa1@sanger.ac.uk;aa2@sanger.ac.uk',
       'data_deletion_period' => '3 months',
-      'manager' => [{ login: manager.login, email: manager.email, name: manager.name }]
+      'manager' => [
+        { login: manager.login, email: manager.email, name: manager.name },
+        { login: manager2.login, email: manager2.email, name: manager2.name }
+      ]
     }
   end
 
