@@ -67,12 +67,18 @@ module SampleManifestExcel
       # An upload can only be processed if the upload is valid.
       # Processing involves updating the sample manifest and all of its associated samples.
       def process(tag_group)
+        # Temporarily disable accessioning until we invoke it explicitly
+        # If we don't do this, then any accidental triggering of sample
+        # saves will result in duplicate accessions
+        Sample::Current.processing_manifest = true
         sample_manifest.last_errors = nil
         sample_manifest.start!
         @cache.populate!
         processor.run(tag_group)
 
         processed?
+      ensure
+        Sample::Current.processing_manifest = false
       end
 
       def data_at(column_name)
@@ -82,14 +88,18 @@ module SampleManifestExcel
 
       def broadcast_sample_manifest_updated_event(user)
         # Send to event warehouse
-        sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted.map(&:id))
+        sample_manifest.updated_broadcast_event(user, changed_samples.map(&:id))
 
         # Log legacy events: Show on history page, and may be used by reports.
         # We can get rid of these when:
         # - History page is updated with event warehouse viewer
         # - We've confirmed that no external reports use these events
-        samples_to_be_broadcasted.each { |sample| sample.handle_update_event(user) }
-        labware_to_be_broadcasted.each { |labware| labware.events.updated_using_sample_manifest!(user) }
+        changed_samples.each { |sample| sample.handle_update_event(user) }
+        changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(user) }
+      end
+
+      def trigger_accessioning
+        changed_samples.each(&:accession)
       end
 
       # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH
@@ -153,12 +163,12 @@ module SampleManifestExcel
         processor.present?
       end
 
-      def samples_to_be_broadcasted
-        @samples_to_be_broadcasted ||= rows.select(&:changed?).map(&:sample)
+      def changed_samples
+        @changed_samples ||= rows.select(&:changed?).map(&:sample)
       end
 
-      def labware_to_be_broadcasted
-        @labware_to_be_broadcasted ||= rows.select(&:changed?).reduce(Set.new) { |set, row| set << row.labware }
+      def changed_labware
+        @changed_labware ||= rows.select(&:changed?).reduce(Set.new) { |set, row| set << row.labware }
       end
 
       def stock_receptacles_to_be_registered

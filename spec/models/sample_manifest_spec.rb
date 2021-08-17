@@ -35,7 +35,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
       teardown { Delayed::Worker.delay_jobs = true }
 
-      # rubocop:todo Metrics/BlockLength
+      # rubocop:disable Metrics/BlockLength
       [1, 2].each do |count|
         context "count: #{count}" do
           let(:count) { count }
@@ -162,7 +162,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     context 'when asset_type: multiplexed_library' do
       let(:asset_type) { 'multiplexed_library' }
 
-      # rubocop:todo Metrics/BlockLength
+      # rubocop:disable Metrics/BlockLength
       [2, 3].each do |count|
         context "#{count} libraries(s)" do
           let(:count) { count }
