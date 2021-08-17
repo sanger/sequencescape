@@ -40,6 +40,7 @@ FactoryBot.define do
   end
 
   factory :lab_event do
+    descriptors { {} }
     descriptor_fields { descriptors.keys }
 
     factory :flowcell_event do
