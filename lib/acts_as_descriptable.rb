@@ -30,18 +30,11 @@
 
 module ActsAsDescriptable # :nodoc:
   def self.included(base)
-    base.class_eval do
-      serialize :descriptors
-      serialize :descriptor_fields, Array
-    end
+    base.class_eval { serialize :descriptors }
   end
 
   def descriptors
-    descriptor_fields.filter_map do |field|
-      next if field.blank?
-
-      Descriptor.new(name: field, value: descriptor_value(field))
-    end
+    descriptor_hash.map { |field, value| Descriptor.new(name: field, value: value) }
   end
 
   def descriptor_value(key)
@@ -50,10 +43,13 @@ module ActsAsDescriptable # :nodoc:
 
   def add_descriptor(descriptor)
     write_attribute(:descriptors, descriptor_hash.merge(descriptor.name => descriptor.value))
-    write_attribute(:descriptor_fields, descriptor_fields.push(descriptor.name))
   end
 
   def descriptor_hash
     read_attribute(:descriptors) || {}
+  end
+
+  def descriptor_fields=(fields)
+    # Ignore for now while we remove this
   end
 end

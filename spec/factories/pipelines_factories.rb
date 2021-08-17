@@ -41,7 +41,6 @@ FactoryBot.define do
 
   factory :lab_event do
     descriptors { {} }
-    descriptor_fields { descriptors.keys }
 
     factory :flowcell_event do
       descriptors { { 'Chip Barcode' => 'fcb' } }
