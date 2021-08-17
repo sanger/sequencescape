@@ -43,7 +43,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
                 submission: create(:submission)
   end
 
-  it 'can be processed-' do
+  it 'can be processed' do
     login_user(user)
     visit pipeline_path(pipeline)
     within('#available-requests') { all('input[type=checkbox]', count: 2).each(&:check) }
@@ -53,17 +53,10 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
     click_on 'Next step'
 
     # We don't currently have labels, so this doesn't work
-    # fill_in('Operator', with: 'James')
-    # select('XP', from: 'workflow')
-    # fill_in('Lane loading concentration (pM)', with: 23)
-    # fill_in('+4 field of weirdness', with: 'Check stored')
-    within('.content') do
-      fields = all('input[type=text]')
-      fields[0].fill_in(with: 'James')
-      fields[1].fill_in(with: 23)
-      fields[2].fill_in(with: 'Check stored')
-      select('XP')
-    end
+    fill_in('Operator', with: 'James')
+    select('XP', from: 'Workflow (Standard or Xp)')
+    fill_in('Lane loading concentration (pM)', with: 23)
+    fill_in('+4 field of weirdness', with: 'Check stored')
 
     click_on 'Next step'
 
