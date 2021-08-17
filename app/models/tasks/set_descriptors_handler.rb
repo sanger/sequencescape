@@ -9,27 +9,6 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
 
-    # If qc_state is qc_manual then update it
-    # @note Only seems to have been used over a 7 month period between
-    #       2009-12-09 14:53:15 and 2010-06-16 12:20:11
-    #       Not sure why its duplicated.
-    #       I believe we originally had additional tasks within SS that would be
-    #       performed after the run had been processed.
-    if @batch.qc_state == 'qc_manual'
-      @batch.lab_events.create(
-        description: 'Manual QC',
-        message: "Manual QC started for batch #{@batch.id}",
-        user_id: current_user.id
-      )
-      @batch.lab_events.create(
-        description: 'Manual QC',
-        message: "Manual QC started for batch #{@batch.id}",
-        user_id: current_user.id
-      )
-      @batch.qc_state = @batch.qc_next_state
-      @batch.save
-    end
-
     @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
