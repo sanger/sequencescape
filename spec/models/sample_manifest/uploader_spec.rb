@@ -162,16 +162,20 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
     end
 
     it 'will generate sample accessions', accessioning_enabled: true do
+      number_of_plates = 2
+      samples_per_plate = 2
       download =
         build(
           :test_download_plates,
+          num_plates: number_of_plates,
+          num_samples_per_plate: samples_per_plate,
           manifest_type: 'plate_full',
           columns: SampleManifestExcel.configuration.columns.plate_full.dup,
           study: create(:open_study, accession_number: 'acc')
         )
       download.save(test_file_name)
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
-      expect { uploader.run! }.to change(Delayed::Job, :count).by(4)
+      expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
     end
 
     it 'will not upload an invalid 1d tube sample manifest' do
