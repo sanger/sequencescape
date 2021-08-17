@@ -1,6 +1,12 @@
 require_dependency 'broadcast_event/lab_event'
 
-class LabEvent < ApplicationRecord # rubocop:todo Style/Documentation
+# Lab events are created as part of the traditional Sequencescape based pipelines
+# the track the information supplied in each step, mostly in the form of descriptors:
+# key value pairs.
+# They can be associated with individual requests, or the batch as a whole.
+# The information is mainly displayed on the batch summary screen, but also acts
+# as a source of information for the FlowcellIO message
+class LabEvent < ApplicationRecord
   include ActsAsDescriptable
 
   CHIP_BARCODE_STEPS = ['Cluster generation', 'Add flowcell chip barcode', 'Loading'].freeze
