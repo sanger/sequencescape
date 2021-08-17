@@ -22,7 +22,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting,
   end
 
   it 'is comparable' do
-    expect(described_class.new(rule)).to eq(described_class.new(rule))
+    expect(described_class.new(rule)).to eq(described_class.new(rule)) # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(described_class.new(rule)).not_to eq(described_class.new(rule.merge(options: { option1: 'another_value' })))
   end
 

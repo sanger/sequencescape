@@ -47,7 +47,7 @@ RSpec.describe LinearSubmission do
           ).submission
         end
 
-        setup do
+        before do
           expected_metric
           mpx_submission.built!
         end
@@ -81,7 +81,7 @@ RSpec.describe LinearSubmission do
           ).submission
         end
 
-        setup { mpx_submission.built! }
+        before { mpx_submission.built! }
 
         describe '#process!' do
           context 'when library_creation then sequencing' do
@@ -165,7 +165,7 @@ RSpec.describe LinearSubmission do
         ).submission
       end
 
-      setup { submission.built! }
+      before { submission.built! }
 
       it 'not be a multiplexed submission' do
         expect(submission.multiplexed?).to be false
@@ -187,7 +187,8 @@ RSpec.describe LinearSubmission do
         end
 
         context 'when it has been run' do
-          setup { submission.process! }
+          before { submission.process! }
+
           let(:library_request) { submission.requests.find_by!(request_type_id: library_creation_request_type.id) }
           let(:sequencing_request) { submission.requests.find_by!(request_type_id: sequencing_request_type.id) }
 
@@ -268,7 +269,7 @@ RSpec.describe LinearSubmission do
           ).submission
         end
 
-        setup { submission.built! }
+        before { submission.built! }
 
         it 'builds the requests' do
           expect { submission.process! }.to change(Request, :count).by(12) &
@@ -298,7 +299,7 @@ RSpec.describe LinearSubmission do
           ).submission
         end
 
-        setup { submission.built! }
+        before { submission.built! }
 
         it 'builds the requests' do
           expect { submission.process! }.to change(Request, :count).by(7) &

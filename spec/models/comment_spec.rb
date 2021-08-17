@@ -21,7 +21,7 @@ RSpec.describe Comment, type: :model do
     let(:request) { create :sequencing_request, asset: tube }
     let(:tube) { create :multiplexed_library_tube }
 
-    setup do
+    before do
       create :comment, commentable: tube, description: 'An excellent tube'
       create :comment, commentable: tube.receptacle, description: 'A good receptacle'
       create :comment, commentable: request, description: 'A reasonable request'
@@ -95,7 +95,7 @@ RSpec.describe Comment, type: :model do
     end
 
     context 'from a submission' do
-      setup do
+      before do
         submission.add_comment('My comment from submission 1', user)
         submission2.add_comment('My comment from submission 2', user, 'Test')
       end

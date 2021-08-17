@@ -6,7 +6,7 @@ require 'timecop'
 RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
   subject { described_class.to_hash(well) }
 
-  before { Timecop.freeze(Time.zone.parse('2012-03-11 10:22:42')) }
+  before { Timecop.freeze(Time.zone.parse('2012-03-11 10:22:42')) } # rubocop:todo RSpec/ScatteredSetup
 
   after { Timecop.return }
 
@@ -20,7 +20,7 @@ RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
   let(:study) { create :study }
   let(:aliquot) { create :aliquot, study: study, sample: sample, receptacle: well }
 
-  setup { aliquot }
+  before { aliquot } # rubocop:todo RSpec/ScatteredSetup
 
   let(:expected_json) do
     {

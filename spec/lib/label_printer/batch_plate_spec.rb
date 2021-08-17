@@ -98,7 +98,7 @@ context 'printing labels' do
   let(:printables) { { plate1.human_barcode => 'on' } }
   let(:options) { { count: count, printable: printables, batch: batch } }
 
-  setup do
+  before do
     batch.requests << request1
     batch.requests << request2
   end

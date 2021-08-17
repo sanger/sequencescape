@@ -9,12 +9,13 @@ RSpec.describe StudiesController do
   let(:program) { create(:program) }
   let(:user) { create(:owner) }
 
+  before { session[:user] = user.id }
+
   it_behaves_like 'it requires login'
 
-  setup { session[:user] = user.id }
-
   describe '#new' do
-    setup { get :new }
+    before { get :new }
+
     it 'works', :aggregate_failures do
       expect(subject).to respond_with :success
       expect(subject).to render_template :new
@@ -22,7 +23,7 @@ RSpec.describe StudiesController do
   end
 
   describe '#create' do
-    setup do
+    before do
       @study_count = Study.count
       post :create, params: params
     end
@@ -59,7 +60,7 @@ RSpec.describe StudiesController do
     end
 
     context 'with invalid options' do
-      setup do
+      before do
         @initial_study_count = Study.count
         post :create, params: { 'study' => { 'name' => 'hello 2' } }
       end

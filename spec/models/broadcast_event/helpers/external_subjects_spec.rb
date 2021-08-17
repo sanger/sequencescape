@@ -30,7 +30,7 @@ RSpec.describe BroadcastEvent::Helpers::ExternalSubjects, heron_events: true do
   let(:subjects_definition) { [sub1, sub2, sub3] }
   let(:instance) { testing_event_class.new(seed: labware, properties: { subjects: subjects_definition }) }
 
-  setup { stub_const('TestingClass', testing_event_class) }
+  before { stub_const('TestingClass', testing_event_class) }
 
   it 'can instantiate the class' do
     inst = testing_event_class.new(seed: labware)

@@ -54,7 +54,10 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
   end
 
   it 'is comparable' do
+    # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(described_class.new(options)).to eq(described_class.new(options))
+
+    # rubocop:enable RSpec/IdenticalEqualityAssertion
     expect(described_class.new(options.merge(heading: 'SOME OTHER NAME'))).not_to eq(described_class.new(options))
   end
 

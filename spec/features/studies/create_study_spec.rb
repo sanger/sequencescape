@@ -5,12 +5,13 @@ require 'rails_helper'
 describe 'Create a study' do
   let(:user) { create :admin }
 
-  setup do
+  before do
     create :faculty_sponsor, name: 'Jack Sponsor'
     create :data_release_study_type, name: 'genomic sequencing'
     create :study_type
     create :program
   end
+
   it 'displays the expected fields' do
     login_user user
     visit root_path

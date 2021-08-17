@@ -35,7 +35,7 @@ describe TagLayoutTemplate do
         expect(subject.plate).to eq(plate)
         expect(subject.direction).to eq('column')
         expect(subject.walking_by).to eq('wells of plate')
-        expect(tag2_group).to eq(tag2_group)
+        expect(tag2_group).to eq(tag2_group) # rubocop:todo RSpec/IdenticalEqualityAssertion
       end
 
       it 'records itself against the submissions' do

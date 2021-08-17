@@ -63,7 +63,8 @@ end
 describe QcResult, warren: true do
   let(:warren) { Warren.handler }
 
-  setup { warren.clear_messages }
+  before { warren.clear_messages }
+
   let(:resource) { build :qc_result }
   let(:routing_key) { 'message.qc_result.' }
 

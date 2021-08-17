@@ -31,7 +31,7 @@ describe RequestType do
     end
 
     context 'with a purpose' do
-      setup do
+      before do
         @rp = :internal
         @nrequest_type = create(:request_type, request_purpose: @rp)
       end
@@ -43,7 +43,7 @@ describe RequestType do
     end
 
     context 'when deprecated,' do
-      setup { @deprecated_request_type = create(:request_type, deprecated: true) }
+      before { @deprecated_request_type = create(:request_type, deprecated: true) }
 
       it 'not create deprecated requests' do
         expect { @deprecated_request_type.create! }.to raise_error RequestType::DeprecatedError

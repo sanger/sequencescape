@@ -251,7 +251,6 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   def post_files(file_params) # rubocop:todo Metrics/CyclomaticComplexity
     rc = rest_client_resource
 
-    # rubocop:todo Rails/EnvironmentVariableAccess
     if configatron.disable_web_proxy == true
       RestClient.proxy = nil
     elsif configatron.fetch(:proxy).present?
@@ -264,8 +263,6 @@ class AccessionService # rubocop:todo Metrics/ClassLength
     elsif ENV['http_proxy'].present?
       RestClient.proxy = ENV['http_proxy']
     end
-
-    # rubocop:enable Rails/EnvironmentVariableAccess
 
     payload =
       file_params.each_with_object({}) do |param, hash|

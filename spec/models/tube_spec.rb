@@ -48,7 +48,7 @@ describe Tube, type: :model do
     let(:scanned_in_asset) { create(:tube) }
     let(:unscanned_in_asset) { create(:tube) }
 
-    setup do
+    before do
       create(
         :event,
         content: Time.zone.today.to_s,

@@ -11,7 +11,7 @@ RSpec.describe ParentsController do
     let(:child) { create :lane }
     let(:parents) { create_list(:library_tube, parent_number).map(&:receptacle) }
 
-    setup do
+    before do
       parents.each { |parent| create :sequencing_request, target_asset: child, asset: parent }
       child.reload
       get :show, params: { receptacle_id: child.id }, session: { user: current_user.id }

@@ -22,7 +22,7 @@ RSpec.describe SequencescapeExcel::Cell, type: :model, sample_manifest_excel: tr
   end
 
   it 'is comparable' do
-    expect(described_class.new(1, 1)).to eq(described_class.new(1, 1))
+    expect(described_class.new(1, 1)).to eq(described_class.new(1, 1)) # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(described_class.new(1, 1)).not_to eq(described_class.new(2, 1))
   end
 end

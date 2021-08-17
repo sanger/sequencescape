@@ -10,7 +10,7 @@ RSpec.describe SequencingRequest, type: :model do
     subject { sequencing_request.ready? }
 
     context 'with a reception event' do
-      setup { library_tube.create_scanned_into_lab_event!(content: '2018-01-01') }
+      before { library_tube.create_scanned_into_lab_event!(content: '2018-01-01') }
 
       context 'with no upstream requests as target' do
         it { is_expected.to be true }

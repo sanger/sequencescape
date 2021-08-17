@@ -10,7 +10,7 @@ describe ReportFailsController, type: :controller do
     let(:sample_tube) { create :sample_tube, barcode: 1 }
 
     shared_examples 'a successful failure event' do
-      setup do
+      before do
         post :create,
              params: {
                report_fail: {
@@ -33,7 +33,7 @@ describe ReportFailsController, type: :controller do
     end
 
     shared_examples 'an unsuccessful failure event' do
-      setup do
+      before do
         post :create,
              params: {
                report_fail: {

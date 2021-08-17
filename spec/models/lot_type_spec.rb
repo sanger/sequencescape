@@ -5,7 +5,7 @@ require 'broadcast_event/lab_event'
 
 RSpec.describe LotType do
   context 'validating' do
-    setup { create :lot }
+    before { create :lot }
 
     it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
   end
