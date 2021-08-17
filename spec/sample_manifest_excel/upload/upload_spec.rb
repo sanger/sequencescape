@@ -346,7 +346,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       end
 
       context 'when accessioning is enabled', accessioning_enabled: true do
-        it 'suppresses accessioning' do
+        it 'suppresses accessioning to allow explicit triggering after upload' do
           expect { upload.process(nil) }.not_to change(Delayed::Job, :count)
         end
       end
