@@ -16,7 +16,7 @@ class SpecificTubeCreation < TubeCreation
            foreign_key: 'asset_creation_id',
            class_name: 'AssetCreation::ParentAssociation',
            inverse_of: 'asset_creation'
-  has_many :parents, through: :parent_associations, class_name: 'Labware'
+  has_many :parents, through: :parent_associations, class_name: 'Labware' # also has a belongs_to inherited from TubeCreation
 
   # [Array<Hash>] An optional array of hashes which get passed in to the create! action
   #               on tube_purpose.
@@ -25,15 +25,14 @@ class SpecificTubeCreation < TubeCreation
   #               eg. [{ name: 'Tube one' }, { name: 'Tube two' }]
   attr_writer :tube_attributes
 
-  def set_parents=(uuids)
-    self.parents = uuids.map { |uuid| Uuid.find_by(external_id: uuid).resource }
-    self.parent = parents.first
+  # singular 'parent' getter to stay backwards compatible
+  def parent
+    parents.first
   end
 
-  def set_parent=(uuid)
-    parent = Uuid.find_by(external_id: uuid).resource
+  # singular 'parent' setter to stay backwards compatible
+  def parent=(parent)
     self.parents = [parent]
-    self.parent = parent
   end
 
   def set_child_purposes=(uuids)
