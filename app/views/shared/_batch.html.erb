@@ -31,7 +31,7 @@
           <% if edit -%>
             <td class="center" style="cursor:move;"><%= icon('fas', 'arrows-alt-v ') %></td>
           <% elsif stage %>
-              <td><input name='request[<%= request.id %>]' id="sample <%= i+1  %> checkbox" class='sample_check select_all_target' value="on" type='checkbox' checked></td>
+              <td><input name='request[<%= request.id %>]' id="sample-<%= i+1  %>-checkbox" class='sample_check select_all_target' value="on" type='checkbox' checked></td>
           <% end -%>
           <td><%= request.position %></td>
 

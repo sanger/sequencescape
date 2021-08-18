@@ -5,8 +5,16 @@ require 'rails_helper'
 RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
   let(:user) { create :user }
   let(:pipeline) do
+    # rubocop:disable Metrics/BlockLength
     create(:sequencing_pipeline).tap do |pipeline|
       workflow = pipeline.workflow
+      create(
+        :set_descriptors_task,
+        name: 'Specify Dilution Volume',
+        workflow: workflow,
+        per_item: true,
+        descriptor_attributes: [{ kind: 'Text', sorter: 0, name: 'Concentration' }]
+      )
       create(:add_spiked_in_control_task, workflow: workflow)
       create(
         :set_descriptors_task,
@@ -29,6 +37,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
         ]
       )
     end
+    # rubocop:enable Metrics/BlockLength
   end
 
   let(:spiked_buffer) { create :spiked_buffer, :tube_barcode }
@@ -48,11 +57,18 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
     visit pipeline_path(pipeline)
     within('#available-requests') { all('input[type=checkbox]', count: 2).each(&:check) }
     first(:button, 'Submit').click
-    click_on('Add Spiked in control')
-    fill_in('Barcode', with: spiked_buffer.machine_barcode)
+    click_on('Specify Dilution Volume')
+
+    all(:field, 'Concentration').each_with_index { |field, index| field.fill_in(with: 1.2 + index) }
+
     click_on 'Next step'
 
-    # We don't currently have labels, so this doesn't work
+    fill_in('Barcode', with: spiked_buffer.machine_barcode)
+
+    click_on 'Next step'
+
+    find('#sample-1-checkbox').uncheck
+
     fill_in('Operator', with: 'James')
     select('XP', from: 'Workflow (Standard or Xp)')
     fill_in('Lane loading concentration (pM)', with: 23)
@@ -60,14 +76,22 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
     click_on 'Next step'
 
+    find('#sample-2-checkbox').uncheck
+
+    fill_in('+4 field of weirdness', with: 'Something else')
+
+    click_on 'Next step'
+
     within '#sample' do
       within(first('li')) do
+        expect(page).to have_text('1.2')
         expect(page).to have_text('James')
         expect(page).to have_text('XP')
         expect(page).to have_text('23')
-        expect(page).to have_text('Check stored')
+        expect(page).to have_text('Something else')
       end
       within(all('li').last) do
+        expect(page).to have_text('2.2')
         expect(page).to have_text('James')
         expect(page).to have_text('XP')
         expect(page).to have_text('23')
