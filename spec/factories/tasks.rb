@@ -51,7 +51,7 @@ FactoryBot.define do
 
   factory :add_spiked_in_control_task do
     name { 'Add Spiked in control' }
-    sorted { 0 }
+    sorted { 1 }
     lab_activity { true }
     workflow
   end

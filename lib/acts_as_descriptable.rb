@@ -48,8 +48,4 @@ module ActsAsDescriptable # :nodoc:
   def descriptor_hash
     read_attribute(:descriptors) || {}
   end
-
-  def descriptor_fields=(fields)
-    # Ignore for now while we remove this
-  end
 end

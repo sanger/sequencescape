@@ -17,7 +17,6 @@ module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documen
         # Descriptors: create description for event
 
         event.descriptors = params[:requests][(request.id).to_s][:descriptors]
-        event.descriptor_fields = ordered_fields(params[:requests][(request.id).to_s][:fields])
       end
 
       event.save!
@@ -55,7 +54,6 @@ module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documen
     @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
-    @count = 0
     @values = params[:values].nil? ? {} : params[:values]
   end
 end

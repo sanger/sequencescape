@@ -104,12 +104,6 @@ class WorkflowsController < ApplicationController
 
   private
 
-  def ordered_fields(fields)
-    response = Array.new
-    fields.keys.sort_by(&:to_i).each { |key| response.push fields[key] }
-    response
-  end
-
   # Flattens nested hashes down into a single layer in a similar manner
   # to rails form parameter naming.
   # @example Flattening a hash multiple levels deep

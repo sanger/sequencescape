@@ -4,7 +4,7 @@
 #       When the warehouse was switched to a queue based system the same JSON
 #       exposed via the API was used to form the message payload.
 class Api::Base # rubocop:todo Metrics/ClassLength
-  UNSERIALIZED_COLUMNS = [:descriptor_fields].freeze
+  UNSERIALIZED_COLUMNS = [].freeze
 
   class_attribute :includes
   self.includes = []
