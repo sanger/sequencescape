@@ -113,6 +113,11 @@ class Task < ApplicationRecord
 
   def partial; end
 
+  # By default, most tasks willonly support unreleased batches
+  def can_process?(batch)
+    batch.released? ? [false, 'Disabled on released batches'] : [true, nil]
+  end
+
   def included_for_do_task
     %i[requests pipeline lab_events]
   end

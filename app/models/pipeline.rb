@@ -10,8 +10,6 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Pipeline::BatchValidation
   include SharedBehaviour::Named
 
-  ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
-
   # Rails class attributes
   self.inheritance_column = 'sti_type'
 

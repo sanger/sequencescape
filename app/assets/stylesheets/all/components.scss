@@ -75,6 +75,7 @@ input[type="submit"]:not(.btn) {
   @extend .list-group-flush;
   a {
     @extend .list-group-item;
+    @extend .list-group-item-action;
   }
 }
 
@@ -170,6 +171,17 @@ dl.order-summary {
   }
   dd {
     @extend .col-10;
+  }
+}
+
+dl.descriptive-list-inline {
+  dt {
+    display: inline;
+    padding-right: 0.5em;
+  }
+  dd {
+    display: inline;
+    padding-right: 1em;
   }
 }
 

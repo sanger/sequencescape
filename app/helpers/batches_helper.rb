@@ -3,6 +3,33 @@ module BatchesHelper # rubocop:todo Style/Documentation
     labware.purpose&.name.presence || 'Unassigned'
   end
 
+  def each_action(batch) # rubocop:todo Metrics/MethodLength
+    batch.tasks&.each_with_index do |task, index|
+      enabled, message = task.can_process?(batch)
+      link =
+        if enabled
+          { controller: :workflows, action: :stage, id: index, batch_id: batch.id, workflow_id: batch.workflow.id }
+        else
+          '#'
+        end
+      yield task.name, link, enabled, message
+    end
+    yield(*fail_links(batch))
+  end
+
+  def fail_links(batch)
+    if batch.pending?
+      [
+        'Fail batch or requests',
+        '#',
+        false,
+        'Batches can not be failed when pending. Try reset batch under edit instead'
+      ]
+    else
+      ['Fail batch or requests', { action: :fail, id: batch.id }, true, nil]
+    end
+  end
+
   # Used by both assets/show.xml.builder and batches/show.xml.builder
   def output_aliquot(xml, aliquot) # rubocop:todo Metrics/AbcSize
     xml.sample(
@@ -34,12 +61,6 @@ module BatchesHelper # rubocop:todo Style/Documentation
 
       xml.insert_size(from: aliquot.insert_size.from, to: aliquot.insert_size.to) if aliquot.insert_size.present?
     end
-  end
-
-  def workflow_name(batch)
-    return unless batch && batch.workflow
-
-    batch.workflow.name.gsub(/Cluster formation | \([^)]*\)/, '')
   end
 
   def batch_link(batch, options)

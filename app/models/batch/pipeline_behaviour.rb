@@ -20,12 +20,6 @@ module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
     end
   end
 
-  def show_actions?
-    return true if pipeline.is_a?(CherrypickForPulldownPipeline)
-
-    !released?
-  end
-
   def has_item_limit?
     item_limit.present?
   end

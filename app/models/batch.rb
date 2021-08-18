@@ -110,6 +110,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   delegate :size, to: :requests
   delegate :sequencing?, :generate_target_assets_on_batch_create?, :min_size, to: :pipeline
+  delegate :name, to: :workflow, prefix: true
 
   alias friendly_name id
 
@@ -567,20 +568,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     requests.count
   end
 
-  def show_actions?
-    released? == false or pipeline.class.const_get(:ALWAYS_SHOW_RELEASE_ACTIONS)
-  end
-
   def npg_set_state
     if all_requests_qced?
       self.state = 'released'
       qc_complete
       save!
     end
-  end
-
-  def show_fail_link?
-    released? && sequencing?
   end
 
   def downstream_requests_needing_asset(request)

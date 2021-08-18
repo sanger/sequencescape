@@ -4,41 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
   let(:user) { create :user }
-  let(:pipeline) do
-    # rubocop:disable Metrics/BlockLength
-    create(:sequencing_pipeline).tap do |pipeline|
-      workflow = pipeline.workflow
-      create(
-        :set_descriptors_task,
-        name: 'Specify Dilution Volume',
-        workflow: workflow,
-        per_item: true,
-        descriptor_attributes: [{ kind: 'Text', sorter: 0, name: 'Concentration' }]
-      )
-      create(:add_spiked_in_control_task, workflow: workflow)
-      create(
-        :set_descriptors_task,
-        workflow: workflow,
-        descriptor_attributes: [
-          { kind: 'Text', sorter: 2, name: 'Operator' },
-          {
-            kind: 'Selection',
-            sorter: 3,
-            name: 'Workflow (Standard or Xp)',
-            selection: {
-              'Standard' => 'Standard',
-              'XP' => 'XP'
-            },
-            value: 'Standard'
-          },
-          { kind: 'Text', sorter: 4, name: 'Lane loading concentration (pM)' },
-          # We had a bug where the + was being stripped from the beginning of field names
-          { kind: 'Text', sorter: 5, name: '+4 field of weirdness' }
-        ]
-      )
-    end
-    # rubocop:enable Metrics/BlockLength
-  end
+  let(:pipeline) { create(:sequencing_pipeline, :with_workflow) }
 
   let(:spiked_buffer) { create :spiked_buffer, :tube_barcode }
 
@@ -100,5 +66,47 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
     end
     click_on 'Release this batch'
     expect(page).to have_content('Batch released')
+  end
+
+  context 'when a batch has been created' do
+    let(:batch) { create :batch, pipeline: pipeline, requests: pipeline.requests, state: 'released' }
+
+    before do
+      batch.requests.each_with_index do |request, i|
+        create :lab_event,
+               eventful: request,
+               batch: batch,
+               user: user,
+               description: 'Specify Dilution Volume',
+               descriptors: {
+                 'Concentration' => (1.2 + i).to_s
+               }
+        create :lab_event,
+               eventful: request,
+               batch: batch,
+               user: user,
+               description: 'Set descriptors',
+               descriptors: {
+                 'Operator' => 'James',
+                 'Workflow (Standard or Xp)' => 'XP',
+                 'Lane loading concentration (pM)' => '23',
+                 '+4 field of weirdness' => 'Something else'
+               }
+      end
+    end
+
+    it 'descriptors can be edited' do
+      login_user(user)
+      visit pipeline_path(pipeline)
+      click_on('Released')
+      within('#released') { click_link(batch.id.to_s) }
+      click_on('Specify Dilution Volume')
+      fill_in('Concentration', currently_with: 1.2, with: 1.5)
+      fill_in('Concentration', currently_with: 2.2, with: 3.5)
+      click_on 'Update'
+
+      # We expect to be back on the batch page, rather than the next step
+      expect(page).to have_content('Process your batch or change its composition')
+    end
   end
 end
