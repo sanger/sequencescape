@@ -141,6 +141,10 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
 
   delegate :state_changer, to: :purpose, allow_nil: true
 
+  def external_identifier
+    "#{sti_type}#{id}"
+  end
+
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id
 

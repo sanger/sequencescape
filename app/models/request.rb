@@ -450,7 +450,11 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @return [Array<LabEvent>,LabEvent::ActiveRecord_Associations_CollectionProxy] Events associated with `batch`
   #
   def lab_events_for_batch(batch)
-    lab_events.loaded? ? lab_events.select { |le| le.batch_id == batch.id } : lab_events.where(batch_id: batch.id)
+    if lab_events.loaded?
+      lab_events.select { |le| le.batch_id == batch.id }.sort_by(&:created_at)
+    else
+      lab_events.where(batch_id: batch.id).order(:created_at)
+    end
   end
 
   def next_requests

@@ -96,8 +96,9 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def detect_descriptor(name)
-          lab_events.each { |e| e.descriptor_value_for(name).tap { |bc| return bc if bc.present? } }
-          nil # We have no flowcell barcode
+          # Sort here goes by id ascending, so we use a reverse each, in order to find the most recent descriptor with the passed in 'name'
+          lab_events.sort.reverse_each { |e| e.descriptor_value_for(name).tap { |bc| return bc if bc.present? } }
+          nil # We have no matching descriptor
         end
       end
     end

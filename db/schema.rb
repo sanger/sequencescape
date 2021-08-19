@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_09_140308) do
+ActiveRecord::Schema.define(version: 2021_08_17_144508) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -274,6 +274,22 @@ ActiveRecord::Schema.define(version: 2021_07_09_140308) do
     t.index ["updated_at"], name: "index_batches_on_updated_at"
   end
 
+  create_table "bkp_lab_events", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "id", default: 0, null: false
+    t.text "description", limit: 16777215, collation: "utf8mb4_unicode_ci"
+    t.text "descriptors", limit: 16777215, collation: "utf8mb4_unicode_ci"
+    t.text "descriptor_fields", limit: 16777215, collation: "utf8mb4_unicode_ci"
+    t.integer "eventful_id"
+    t.string "eventful_type", limit: 50, collation: "utf8mb4_unicode_ci"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "filename", collation: "utf8mb4_unicode_ci"
+    t.binary "data"
+    t.text "message", limit: 16777215, collation: "utf8mb4_unicode_ci"
+    t.integer "user_id"
+    t.integer "batch_id"
+  end
+
   create_table "broadcast_events", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "sti_type"
     t.string "seed_type"
@@ -511,15 +527,12 @@ ActiveRecord::Schema.define(version: 2021_07_09_140308) do
   end
 
   create_table "lab_events", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.text "description", limit: 16777215
+    t.string "description"
     t.text "descriptors", limit: 16777215
-    t.text "descriptor_fields", limit: 16777215
     t.integer "eventful_id"
     t.string "eventful_type", limit: 50
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "filename"
-    t.binary "data"
     t.text "message", limit: 16777215
     t.integer "user_id"
     t.integer "batch_id"

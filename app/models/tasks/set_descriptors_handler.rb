@@ -72,7 +72,7 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
               # params[:fields] => <ActionController::Parameters {"1"=>"Operator", "2"=>"Workflow (Standard or Xp)", "3"=>"DPX1", "4"=>"DPX2", "5"=>"DPX3", "6"=>"NovaSeq Xp Mainfold", "7"=>"Pipette Carousel", "8"=>"PhiX lot #", "9"=>"PhiX %", "10"=>"Lane loading concentration (pM)", "11"=>"Comment"} permitted: true>
               # I believe that some of this complexity predates ordered hashes in ruby, and was an attempt to maintain field order.
               unless params[:descriptors].nil?
-                event.descriptors = params[:descriptors]
+                event.descriptors = params[:descriptors].to_unsafe_hash
                 event.descriptor_fields = ordered_fields(params[:fields])
 
                 # Cache values to populate the next request on the same stage

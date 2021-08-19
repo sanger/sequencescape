@@ -40,9 +40,10 @@ FactoryBot.define do
   end
 
   factory :lab_event do
+    descriptors { {} }
+
     factory :flowcell_event do
       descriptors { { 'Chip Barcode' => 'fcb' } }
-      descriptor_fields { descriptors.keys }
     end
   end
 
@@ -171,15 +172,6 @@ FactoryBot.define do
       request.request_metadata.fragment_size_required_to = 500
       request.request_metadata.library_type = create(:library_type)
     end
-  end
-
-  factory :task do
-    name { 'New task' }
-    association(:workflow, factory: :lab_workflow)
-    sorted { nil }
-    batched { nil }
-    location { '' }
-    interactive { nil }
   end
 
   factory :pipeline_admin, class: 'User' do

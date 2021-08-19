@@ -2,42 +2,33 @@
 <% @count = 0 if @count.nil? %>
 <% @count += 1 %>
 <% prefix = '' %>
+<%# We generate our own ids, as there appears to be a discrepency between the
+    way label_tag and text_field handle spaces %>
+<% field_id = "descriptor_#{descriptor_counter}_#{request&.id}" %>
 <% if request %>
   <tr>
-  <td width='35%' class='request'><%= descriptor.name %>: <%= required_marker if descriptor.is_required? %></td>
+  <td width='35%' class='request'><%= label_tag field_id, descriptor.name %>: <%= required_marker if descriptor.is_required? %></td>
   <td width='65%'>
     <% value = descriptor_value descriptor %>
     <% if descriptor.kind == 'Selection' %>
-      <% if descriptor.key == "tag_number" %>
-        <%= select_tag "requests[#{request.id}][descriptors][#{descriptor.name}]", options_for_select(descriptor.selection.values.sort{|x, y| x.to_i <=> y.to_i}, value) %>
-      <% else %>
-        <%= select_tag "requests[#{request.id}][descriptors][#{descriptor.name}]", options_for_select(descriptor.selection.values, value) %>
-      <% end %>
-    <% elsif descriptor.kind == 'File upload' %>
-      <%= file_field_tag "requests[#{request.id}][upload][#{descriptor.name}" %>
+      <%= select_tag "requests[#{request.id}][descriptors][#{descriptor.name}]", options_for_select(descriptor.selection.values, value), id: field_id %>
     <% else %>
-      <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), value: value %>
+      <%= text_field "requests[#{request.id}][descriptors]", descriptor.name, value: value, id: field_id %>
     <% end %>
-    <%= hidden_field "requests[#{request.id}][fields]", @count, value: descriptor.name %>
+    <%= hidden_field "requests[#{request.id}][fields]", @count, value: descriptor.name, id: field_id %>
   </td>
   </tr>
 <% else %>
 <tr>
-<td width='35%' class='request'><%= descriptor.name %>: <%= required_marker if descriptor.is_required? %></td>
+<td width='35%' class='request'><%= label_tag field_id, descriptor.name %>: <%= required_marker if descriptor.is_required? %></td>
 <td width='65%'>
   <% value = descriptor_value descriptor %>
   <% if descriptor.kind == 'Selection' %>
-    <% if descriptor.key == "tag_number" %>
-      <%= select_tag "descriptors[#{descriptor.name}]", options_for_select(descriptor.selection.values.sort{|x, y| x.to_i <=> y.to_i}, value) %>
-    <% else %>
-      <%= select_tag "descriptors[#{descriptor.name}]", options_for_select(descriptor.selection.values, value) %>
-    <% end %>
-  <% elsif descriptor.kind == 'File upload' %>
-    <%= file_field_tag "upload[#{descriptor.name}]" %>
+    <%= select_tag "descriptors[#{descriptor.name}]", options_for_select(descriptor.selection.values, value), id: field_id %>
   <% else %>
-    <%= text_field 'descriptors', u(descriptor.name), value: value %>
+    <%= text_field 'descriptors', descriptor.name, value: value, id: field_id %>
   <% end %>
-  <%= hidden_field 'fields', @count, value: descriptor.name %>
+  <%= hidden_field 'fields', @count, value: descriptor.name, id: field_id %>
 </td>
 </tr>
 <% end %>
