@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe UatActions::IntergrationSuiteTools do
+describe UatActions::IntegrationSuiteTools do
   context 'valid options' do
     let(:parameters) { {} }
     let(:uat_action) { described_class.new(parameters) }

@@ -613,7 +613,7 @@ RSpec/ContextWording:
     - 'spec/sequencescape_excel/conditional_formatting_default_spec.rb'
     - 'spec/sequencescape_excel/worksheet_spec.rb'
     - 'spec/shared_contexts/limber_shared_context.rb'
-    - 'spec/uat_actions/intergration_suite_tools_spec.rb'
+    - 'spec/uat_actions/integration_suite_tools_spec.rb'
     - 'spec/uat_actions/test_submission_spec.rb'
 
 # Offense count: 4
