@@ -33,7 +33,12 @@ class BatchesControllerTest < ActionController::TestCase
                 library_type: 'Standard'
               )
             end
+
+          @phix = create :spiked_buffer, :tube_barcode
+
           @lane = create(:empty_lane, qc_state: 'failed')
+          @lane.labware.parents << @library
+
           @request_one =
             pipeline.request_types.first.create!(
               asset: @library,
@@ -48,26 +53,86 @@ class BatchesControllerTest < ActionController::TestCase
               }
             )
 
-          batch = create :batch, pipeline: pipeline
-          batch.batch_requests.create!(request: @request_one, position: 1)
-          batch.reload
-          batch.start!(create(:user))
-
-          get :show, params: { id: batch.id, format: :xml }
+          @batch = create :batch, pipeline: pipeline
+          @batch.batch_requests.create!(request: @request_one, position: 1)
+          @batch.reload
+          @batch.start!(create(:user))
         end
 
-        should 'Respond with xml' do
-          assert_equal 'application/xml', @response.media_type
+        context 'when there is no PhiX' do
+          setup { get :show, params: { id: @batch.id, format: :xml } }
+
+          should 'Respond with xml' do
+            assert_equal 'application/xml', @response.media_type
+          end
+
+          should 'have api version attribute on root object' do
+            assert_response :success
+            assert_select "lane[position='1'][id='#{@lane.id}'][priority='3']"
+            assert_select "library[request_id='#{@request_one.id}'][qc_state='fail']"
+          end
+
+          should 'expose the library information correctly' do
+            assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
+          end
+
+          should 'not have information about spiked in buffers' do
+            assert_select 'hyb_buffer', 0
+          end
         end
 
-        should 'have api version attribute on root object' do
-          assert_response :success
-          assert_select "lane[position='1'][id='#{@lane.id}'][priority='3']"
-          assert_select "library[request_id='#{@request_one.id}'][qc_state='fail']"
+        context 'when PhiX is spiked in at sequencing stage' do
+          setup do
+            @lane.labware.parents << @phix
+
+            get :show, params: { id: @batch.id, format: :xml }
+          end
+
+          should 'have information about spiked in buffers' do
+            assert_select 'hyb_buffer', 1
+            assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
+            assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
+            assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
+            assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
+            assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
+          end
         end
 
-        should 'expose the library information correctly' do
-          assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
+        context 'when PhiX is spiked in during library prep' do
+          context 'when the lane has a single SpikedBuffer ancestor' do
+            setup do
+              @library.parents << @phix
+
+              get :show, params: { id: @batch.id, format: :xml }
+            end
+
+            should 'have information about spiked in buffers' do
+              assert_select 'hyb_buffer', 1
+              assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
+              assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
+              assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
+              assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
+              assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
+            end
+          end
+
+          context 'when the lane has multiple SpikedBuffer ancestors' do
+            setup do
+              @phix_with_parent = create :spiked_buffer_with_parent, :tube_barcode
+              @library.parents << @phix_with_parent
+
+              get :show, params: { id: @batch.id, format: :xml }
+            end
+
+            should 'have information about spiked in buffers' do
+              assert_select 'hyb_buffer', 1
+              assert_select "sample[library_id='#{@phix_with_parent.aliquots.first.library_id}']", 1
+              assert_select "tag[tag_id='#{@phix_with_parent.aliquots.first.tag_id}']", 1
+              assert_select 'index', @phix_with_parent.aliquots.first.tag.map_id.to_s, 1
+              assert_select 'expected_sequence', @phix_with_parent.aliquots.first.tag.oligo.to_s, 1
+              assert_select 'tag_group_id', @phix_with_parent.aliquots.first.tag.tag_group_id.to_s, 1
+            end
+          end
         end
       end
     end

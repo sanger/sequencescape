@@ -12,7 +12,10 @@ xml.batch do
           request: [
             {
               target_asset: {
-                spiked_in_buffer: [:index, { aliquots: %i[library tag tag2 aliquot_index sample] }],
+                labware: {
+                  direct_spiked_in_buffer: [:index, { aliquots: %i[library tag tag2 aliquot_index sample] }],
+                  most_recent_spiked_in_buffer: [:index, { aliquots: %i[library tag tag2 aliquot_index sample] }]
+                },
                 aliquots: %i[library tag tag2 aliquot_index bait_library sample]
               }
             },
