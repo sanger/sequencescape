@@ -7,6 +7,7 @@ class ::Io::SpecificTubeCreation < ::Core::Io::Base
   define_attribute_and_json_mapping(
     '
      user <=> user
+     parents <= parents
      parent <=> parent
      set_child_purposes <=  child_purposes
      tube_attributes <= tube_attributes
