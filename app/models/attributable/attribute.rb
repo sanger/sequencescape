@@ -175,7 +175,7 @@ module Attributable
       selection_values || selection_from_metadata(validator_source) || []
     end
 
-    def to_field_info(validator_source = nil) # rubocop:todo Metrics/MethodLength
+    def to_field_info(validator_source = nil)
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
         display_name: display_name,

@@ -5,7 +5,7 @@ module RequestType::Validation
     DelegateValidation::CompositeValidator.construct(request_class.delegate_validator, request_type_validator)
   end
 
-  def request_type_validator # rubocop:todo Metrics/MethodLength
+  def request_type_validator
     request_type = self
 
     Class.new(RequestTypeValidator) do

@@ -5,7 +5,7 @@ require 'test_helper'
 class PmbClientTest < ActiveSupport::TestCase
   attr_reader :labels
 
-  def setup # rubocop:todo Metrics/MethodLength
+  def setup
     @labels = {
       'header' => {
         'header_text_1' => 'header_text_1',

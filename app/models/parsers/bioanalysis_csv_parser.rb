@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ClassLength
 class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
   class InvalidFile < StandardError
   end
@@ -152,4 +151,3 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
     content[0..10].detect { |line| /Version Created/ === line[0] && /^B.*/ === line[1] }.present?
   end
 end
-# rubocop:enable Metrics/ClassLength

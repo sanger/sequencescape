@@ -42,7 +42,7 @@ class Transfer::BetweenPlateAndTubes < Transfer # rubocop:todo Style/Documentati
       end
   end
 
-  def barcode_to_hash(barcoded) # rubocop:todo Metrics/MethodLength
+  def barcode_to_hash(barcoded)
     if barcoded.present?
       yield(
         {

@@ -5,7 +5,6 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   before_action :find_user
   authorize_resource
 
-  # rubocop:todo Metrics/MethodLength
   def show # rubocop:todo Metrics/AbcSize
     @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all)
 
@@ -21,8 +20,6 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
       flash.now[:error] = 'Wrong PMB Label Template'
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def edit; end
 

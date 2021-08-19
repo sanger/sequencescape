@@ -31,7 +31,7 @@ class LocationReport::LocationReportForm
     @location_barcode = location_barcode&.strip
   end
 
-  def location_report # rubocop:todo Metrics/MethodLength
+  def location_report
     @location_report ||
       @location_report =
         LocationReport.new(

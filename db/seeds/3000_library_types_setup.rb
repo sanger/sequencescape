@@ -2,7 +2,7 @@
 
 # rubocop:todo Metrics/ModuleLength
 module SetupLibraryTypes # rubocop:todo Style/Documentation
-  def self.existing_associations_for(request_type) # rubocop:todo Metrics/MethodLength
+  def self.existing_associations_for(request_type)
     {
       'LibraryCreationRequest' => [
         'No PCR',
@@ -119,7 +119,7 @@ module SetupLibraryTypes # rubocop:todo Style/Documentation
     ]
   end
 
-  def self.existing_defaults_for(request_type) # rubocop:todo Metrics/MethodLength
+  def self.existing_defaults_for(request_type)
     {
       'LibraryCreationRequest' => 'Standard',
       'MultiplexedLibraryCreationRequest' => 'Standard',

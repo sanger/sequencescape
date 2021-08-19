@@ -14,7 +14,6 @@ class StudyReportsController < ApplicationController # rubocop:todo Style/Docume
     create
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     study = Study.find_by(id: params[:study_report][:study])
     study_report = StudyReport.create!(study: study, user: @current_user)
@@ -35,8 +34,6 @@ class StudyReportsController < ApplicationController # rubocop:todo Style/Docume
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def show
     study_report = StudyReport.find(params[:id])

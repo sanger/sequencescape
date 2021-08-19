@@ -1,4 +1,3 @@
-# rubocop:todo Metrics/ClassLength
 class StockStamper # rubocop:todo Style/Documentation
   include ActiveModel::Model
 
@@ -146,4 +145,3 @@ class StockStamper # rubocop:todo Style/Documentation
     errors.add(:plates_barcodes, 'are not identical') unless source_plate_barcode == destination_plate_barcode
   end
 end
-# rubocop:enable Metrics/ClassLength

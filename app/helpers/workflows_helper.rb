@@ -41,7 +41,7 @@ module WorkflowsHelper
     )
   end
 
-  def gel_qc_select_box(request, status, html_options = {}) # rubocop:todo Metrics/MethodLength
+  def gel_qc_select_box(request, status, html_options = {})
     html_options.delete(:generate_blank)
     status = 'OK' if status.blank? || status == 'Pass'
     select_tag(

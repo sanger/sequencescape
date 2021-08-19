@@ -1,4 +1,3 @@
-# rubocop:todo Metrics/ClassLength
 class Studies::AssetGroupsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -39,7 +38,6 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     @study = Study.find(params[:study_id])
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:study_id])
     @asset_group = AssetGroup.new(params[:asset_group])
@@ -59,9 +57,6 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
@@ -77,8 +72,6 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def destroy
     @asset_group = AssetGroup.find(params[:id])
@@ -113,7 +106,6 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
   def add # rubocop:todo Metrics/AbcSize
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
@@ -130,8 +122,6 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def printing
     @study = Study.find(params[:study_id])
     @asset_groups = @study.asset_groups
@@ -144,7 +134,6 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     @labware = @asset_group.labware.select { |asset| asset.is_a?(Barcode::Barcodeable) }
   end
 
-  # rubocop:todo Metrics/MethodLength
   def print_labels # rubocop:todo Metrics/AbcSize
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
@@ -159,6 +148,4 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
       redirect_to print_study_asset_group_path(@study, @asset_group)
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end
-# rubocop:enable Metrics/ClassLength

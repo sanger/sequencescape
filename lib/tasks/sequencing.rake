@@ -7,7 +7,6 @@ namespace :sequencing do
   namespace :novaseq do
     desc 'Setting up NovaSeq 6000 PE pipeline'
     task setup: :environment do
-      # rubocop:todo Metrics/BlockLength
       ActiveRecord::Base.transaction do
         unless RequestType.exists?(key: 'illumina_htp_novaseq_6000_paired_end_sequencing')
           RequestType
@@ -32,7 +31,6 @@ namespace :sequencing do
         end
         unless SequencingPipeline.exists?(name: 'NovaSeq 6000 PE')
           SequencingPipeline.create!(
-            # rubocop:todo Metrics/BlockLength
             name: 'NovaSeq 6000 PE',
             active: true,
             sorter: 10,
@@ -42,7 +40,7 @@ namespace :sequencing do
             min_size: 1
           ) do |pipeline|
             pipeline.request_types = RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing')
-            pipeline # rubocop:todo Metrics/BlockLength
+            pipeline
               .build_workflow(name: 'NovaSeq 6000 PE')
               .tap do |wf|
                 AddSpikedInControlTask.create!(
@@ -95,7 +93,6 @@ namespace :sequencing do
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
     end
   end
 

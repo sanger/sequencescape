@@ -6,7 +6,6 @@ require 'rails/performance_test_help'
 class WorkCompletionsTest < ActionDispatch::PerformanceTest
   self.profile_options = { runs: 1, metrics: %i[wall_time memory], formats: [:flat] }
 
-  # rubocop:todo Metrics/MethodLength
   def setup # rubocop:todo Metrics/AbcSize
     @user = create :user
 
@@ -44,8 +43,6 @@ class WorkCompletionsTest < ActionDispatch::PerformanceTest
         end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   test 'WorkCompletion.create performance' do
     ActiveRecord::Base.transaction do

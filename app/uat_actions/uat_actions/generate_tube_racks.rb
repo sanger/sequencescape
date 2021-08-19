@@ -23,7 +23,6 @@ class UatActions::GenerateTubeRacks < UatActions
     new(rack_count: 1, study_name: UatActions::StaticRecords.study.name)
   end
 
-  # rubocop:todo Metrics/MethodLength
   def perform # rubocop:todo Metrics/AbcSize
     purpose = Purpose.find_by(name: 'TR Stock 96')
     rack_count.to_i.times do |i|
@@ -42,11 +41,9 @@ class UatActions::GenerateTubeRacks < UatActions
     true
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   private
 
-  def construct_tubes(rack) # rubocop:todo Metrics/MethodLength
+  def construct_tubes(rack)
     rack_map.each do |i|
       tube = Tube::Purpose.standard_sample_tube.create!
 

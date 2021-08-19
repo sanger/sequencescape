@@ -4,7 +4,6 @@ module BatchesHelper # rubocop:todo Style/Documentation
   end
 
   # Used by both assets/show.xml.builder and batches/show.xml.builder
-  # rubocop:todo Metrics/MethodLength
   def output_aliquot(xml, aliquot) # rubocop:todo Metrics/AbcSize
     xml.sample(
       sample_id: aliquot.sample_id,
@@ -36,8 +35,6 @@ module BatchesHelper # rubocop:todo Style/Documentation
       xml.insert_size(from: aliquot.insert_size.from, to: aliquot.insert_size.to) if aliquot.insert_size.present?
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def workflow_name(batch)
     return unless batch && batch.workflow

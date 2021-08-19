@@ -68,7 +68,7 @@ class UatActions::GeneratePrimerPanel < UatActions
     @existing_primer_panel ||= PrimerPanel.find_by(name: name)
   end
 
-  def primer_panel_params # rubocop:todo Metrics/MethodLength
+  def primer_panel_params
     {
       name: name,
       snp_count: snp_count,

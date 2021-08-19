@@ -89,7 +89,7 @@ module IlluminaC::Helper
       @cherrypick_options = skip ? [false] : [true, false]
     end
 
-    def each_submission_template # rubocop:todo Metrics/MethodLength
+    def each_submission_template
       cherrypick_options.each do |cherrypick|
         sequencing.each do |sequencing_request_type|
           yield(

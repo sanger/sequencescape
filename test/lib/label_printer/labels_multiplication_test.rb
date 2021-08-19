@@ -15,7 +15,7 @@ end
 class ExampleLabelTest < ActiveSupport::TestCase
   attr_reader :example_label, :label, :labels, :plate1, :plate2, :plate3, :plate4
 
-  def setup # rubocop:todo Metrics/MethodLength
+  def setup
     @example_label = ExampleLabel.new
     @plate1 = create :plate, name: 'Plate 1', barcode: '1111'
     @plate2 = create :plate, name: 'Plate 2', barcode: '2222'

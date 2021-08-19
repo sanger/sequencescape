@@ -82,7 +82,7 @@ module SampleManifestExcel
         @sample_manifest ||= create_sample_manifest
       end
 
-      def create_sample_manifest # rubocop:todo Metrics/MethodLength
+      def create_sample_manifest
         case manifest_type
         when /plate/
           FactoryBot.create(
@@ -255,7 +255,7 @@ module SampleManifestExcel
       # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/PerceivedComplexity
 
-      def build_tube_sample_manifest_asset # rubocop:todo Metrics/MethodLength
+      def build_tube_sample_manifest_asset
         asset =
           if %w[
                tube_multiplexed_library

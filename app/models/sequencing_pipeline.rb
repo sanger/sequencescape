@@ -30,7 +30,7 @@ class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
   # The guys in sequencing want to be able to re-run a request in another batch.  What we've agreed is that
   # the request will be failed and then an identical request will be resubmitted to their inbox.  The
   # "failed" request should not be charged for.
-  def detach_request_from_batch(batch, request) # rubocop:todo Metrics/MethodLength
+  def detach_request_from_batch(batch, request)
     request.fail!
 
     # Note that the request metadata also needs to be cloned for this to work.

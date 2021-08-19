@@ -3,7 +3,7 @@ module StudyReport::StudyDetails # rubocop:todo Style/Documentation
   BATCH_SIZE = 1000
 
   # This will pull out all well ids from stock plates in the study
-  def each_stock_well_id_in_study_in_batches(&block) # rubocop:todo Metrics/MethodLength
+  def each_stock_well_id_in_study_in_batches(&block)
     # Stock wells are determined by the requests leading from the stock plate
     handle_wells(
       :requests,
@@ -36,7 +36,7 @@ module StudyReport::StudyDetails # rubocop:todo Style/Documentation
   end
   private :well_report_ids
 
-  def progress_report_header # rubocop:todo Metrics/MethodLength
+  def progress_report_header
     [
       'Status',
       'Study',
@@ -75,7 +75,6 @@ module StudyReport::StudyDetails # rubocop:todo Style/Documentation
   def progress_report_on_all_assets # rubocop:todo Metrics/AbcSize
     yield(progress_report_header)
 
-    # rubocop:todo Metrics/BlockLength
     each_stock_well_id_in_study_in_batches do |asset_ids|
       # eager loading of well_attribute , can only be done on  wells ...
       # We've already split into batches, so find_each here only slows things down.
@@ -122,7 +121,6 @@ module StudyReport::StudyDetails # rubocop:todo Style/Documentation
           )
         end
     end
-    # rubocop:enable Metrics/BlockLength
   end
   # rubocop:enable Metrics/MethodLength
 end

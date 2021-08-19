@@ -1,6 +1,5 @@
-# rubocop:todo Metrics/ClassLength
 class PacBio::SampleSheet # rubocop:todo Style/Documentation
-  def header_metadata(batch) # rubocop:todo Metrics/MethodLength
+  def header_metadata(batch)
     [
       ['Version', '1.0.0', nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
       ['Unique ID', batch.id, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
@@ -55,7 +54,7 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
     ]
   end
 
-  def column_headers # rubocop:todo Metrics/MethodLength
+  def column_headers
     [
       'Well No.',
       'Sample Name',
@@ -105,7 +104,6 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
     list.map(&sym).uniq.join(separator)
   end
 
-  # rubocop:todo Metrics/MethodLength
   def row(requests, batch) # rubocop:todo Metrics/AbcSize
     # Read these lines when secondary analysis activated
     #  replace_non_alphanumeric(library_tube.pac_bio_library_tube_metadata.protocol),
@@ -141,8 +139,6 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
     ]
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def lookup_collection_protocol(request)
     return 'Standard Seq v3' if request.request_metadata.sequencing_type == 'Standard'
     return 'MagBead Standard Seq v2' if request.request_metadata.sequencing_type == 'MagBead'
@@ -150,4 +146,3 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
     request.request_metadata.sequencing_type
   end
 end
-# rubocop:enable Metrics/ClassLength

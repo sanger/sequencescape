@@ -162,7 +162,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Fail specific requests on this batch
-  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false) # rubocop:todo Metrics/MethodLength
+  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false)
     ActiveRecord::Base.transaction do
       requests
         .find(requests_to_fail)
@@ -444,7 +444,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       errors.add('Swap: ', 'The second lane cannot be found')
     return unless batch_request_left.present? && batch_request_right.present?
 
-    # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
       batch_request_left
@@ -487,8 +486,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
         user_id: current_user.id
       )
     end
-
-    # rubocop:enable Metrics/BlockLength
 
     true
   end

@@ -60,7 +60,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Style/
     @sample_manifests = SampleManifest.paginate(page: params[:page])
   end
 
-  def print_labels # rubocop:todo Metrics/MethodLength
+  def print_labels
     print_job =
       LabelPrinter::PrintJob.new(
         params[:printer],

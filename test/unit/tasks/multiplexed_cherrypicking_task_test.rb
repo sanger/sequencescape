@@ -51,7 +51,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   end
 
   # Generate the parameters
-  def params # rubocop:todo Metrics/MethodLength
+  def params
     {
       request_locations: request_location_hash,
       commit: 'Next step',

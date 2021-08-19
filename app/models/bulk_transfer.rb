@@ -38,7 +38,7 @@ class BulkTransfer < ApplicationRecord
 
   attr_accessor :well_transfers
 
-  def build_transfers! # rubocop:todo Metrics/MethodLength
+  def build_transfers!
     ActiveRecord::Base.transaction do
       each_transfer do |source, destination, transfers|
         Transfer::BetweenPlates.create!(

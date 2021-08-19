@@ -10,7 +10,7 @@ class CherrypickTask::PickTarget
   end
 
   # Base class for different pick target beha
-  class Base # rubocop:todo Metrics/ClassLength
+  class Base
     def initialize(template, asset_shape = nil, partial = nil)
       @wells = []
       @size = template.size
@@ -34,7 +34,7 @@ class CherrypickTask::PickTarget
     end
 
     # Creates control requests for the control assets provided and adds them to the batch
-    def create_control_requests!(batch, control_assets) # rubocop:todo Metrics/MethodLength
+    def create_control_requests!(batch, control_assets)
       control_requests =
         control_assets.map do |control_asset|
           CherrypickRequest.create(
