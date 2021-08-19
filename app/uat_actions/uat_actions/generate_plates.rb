@@ -2,7 +2,7 @@
 
 # Will construct plates with well_count wells filled with samples
 class UatActions::GeneratePlates < UatActions
-  self.title = 'Generate Plate'
+  self.title = 'Generate plate'
   self.description = 'Generate plates in the selected study.'
 
   form_field :plate_purpose_name,

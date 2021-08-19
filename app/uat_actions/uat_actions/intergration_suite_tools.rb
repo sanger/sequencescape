@@ -2,7 +2,7 @@
 
 # Will construct plates with well_count wells filled with samples
 class UatActions::IntergrationSuiteTools < UatActions
-  self.title = 'Intergration suite tools'
+  self.title = 'Integration suite tools'
 
   # The description displays on the list of UAT actions to provide additional information
   self.description =
