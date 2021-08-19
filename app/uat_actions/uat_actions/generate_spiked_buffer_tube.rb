@@ -8,7 +8,7 @@ class UatActions::GenerateSpikedBufferTube < UatActions
   self.description = 'Generates one or more spiked buffer tubes, with a parent stock tube.'
 
   # Form fields
-  form_field :num_tubes,
+  form_field :tube_count,
              :number_field,
              label: 'Number of tubes',
              help: 'The number of spiked buffer tubes that should be generated',
@@ -21,7 +21,7 @@ class UatActions::GenerateSpikedBufferTube < UatActions
   #
   # @return [UatActions::GenerateSpikedBufferTube] A default object for rendering a form
   def self.default
-    new(num_tubes: 1)
+    new(tube_count: 1)
   end
 
   #
@@ -57,7 +57,7 @@ class UatActions::GenerateSpikedBufferTube < UatActions
       name: "uat-phix-spikedbuffer-#{timestamp}",
       parent_barcode: parent_stocks.first.human_barcode,
       concentration: 10,
-      number: num_tubes,
+      number: tube_count,
       volume: 10
     }
     spiked_buffer = PhiX::SpikedBuffer.new(phi_x_spiked_buffers_params)
