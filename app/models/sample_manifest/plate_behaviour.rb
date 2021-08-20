@@ -1,5 +1,4 @@
 module SampleManifest::PlateBehaviour
-  # rubocop:todo Metrics/ClassLength
   class Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::Shared
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
@@ -146,8 +145,6 @@ module SampleManifest::PlateBehaviour
     end
     # rubocop:enable Metrics/MethodLength
   end
-
-  # rubocop:enable Metrics/ClassLength
 
   class Core < Base
     include SampleManifest::CoreBehaviour::StockAssets

@@ -8,7 +8,7 @@ class Api::BatchRequestIO < Api::Base
       end
     end
 
-    def self.included(base) # rubocop:todo Metrics/MethodLength
+    def self.included(base)
       base.class_eval do
         extend ClassMethods
 

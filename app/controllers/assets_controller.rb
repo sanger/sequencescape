@@ -16,7 +16,6 @@
 #         and shows the qc information for plates.
 class AssetsController < ApplicationController
   # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
   # rubocop:todo Metrics/AbcSize
   def show # rubocop:todo Metrics/CyclomaticComplexity
     # LEGACY API FOR CGP to allow switch-over
@@ -44,7 +43,6 @@ class AssetsController < ApplicationController
   end
 
   # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/PerceivedComplexity
 
   # TODO: This is currently used from the PhiX::SpikedBuffersController and
@@ -62,7 +60,6 @@ class AssetsController < ApplicationController
   end
 
   # JG 23/12/2020: I can't find any links to this page, and think we can probably lose it.
-  # rubocop:todo Metrics/MethodLength
   def lookup # rubocop:todo Metrics/AbcSize
     if params[:asset] && params[:asset][:barcode]
       @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
@@ -84,5 +81,4 @@ class AssetsController < ApplicationController
       end
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

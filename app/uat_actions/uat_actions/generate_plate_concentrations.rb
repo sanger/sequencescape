@@ -93,7 +93,7 @@ class UatActions::GeneratePlateConcentrations < UatActions
     format('%.3f', value)
   end
 
-  def construct_qc_assay # rubocop:todo Metrics/MethodLength
+  def construct_qc_assay
     qc_assay = QcAssay.new
     num_wells_written = 0
 

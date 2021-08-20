@@ -64,7 +64,6 @@ module BootstrapHelper # rubocop:todo Style/Documentation
   # <div class="page-header">
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
-  # rubocop:todo Metrics/MethodLength
   def page_title(title, subtitle = nil, titlecase: true, badges: []) # rubocop:todo Metrics/AbcSize
     tag.div(class: 'page-header') do
       title_class = title.length > 25 ? 'title-long' : 'title-short'
@@ -84,8 +83,6 @@ module BootstrapHelper # rubocop:todo Style/Documentation
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def pagination(collection)
     will_paginate collection, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'
   end
@@ -99,7 +96,7 @@ module BootstrapHelper # rubocop:todo Style/Documentation
     tag.div(class: "col-#{screen}-#{size}", &block)
   end
 
-  def progress_bar(count) # rubocop:todo Metrics/MethodLength
+  def progress_bar(count)
     css_class =
       if count < 25
         'bg-danger'

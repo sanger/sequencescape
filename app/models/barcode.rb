@@ -6,7 +6,7 @@
 #
 # @author [grl]
 #
-class Barcode < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Barcode < ApplicationRecord
   require 'sanger_barcode_format'
   require 'sanger_barcode_format/legacy_methods'
   extend SBCF::LegacyMethods

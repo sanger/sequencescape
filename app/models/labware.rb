@@ -2,7 +2,7 @@
 
 # Labware represents a physical object which moves around the lab.
 # It has one or more receptacles.
-class Labware < Asset # rubocop:todo Metrics/ClassLength
+class Labware < Asset
   include Commentable
   include Uuid::Uuidable
   include AssetLink::Associations

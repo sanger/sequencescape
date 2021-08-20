@@ -80,7 +80,6 @@ module Submission::StateMachine
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
   def configure_state_machine # rubocop:todo Metrics/AbcSize
     aasm column: :state, whiny_persistence: true do
       state :building, initial: true, exit: :valid_for_leaving_building_state
@@ -116,7 +115,6 @@ module Submission::StateMachine
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
   private :configure_state_machine
 
   UnprocessedStates = %w[building pending processing].freeze

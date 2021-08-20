@@ -65,7 +65,6 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
   private :_read
   standard_action(:read)
 
-  # rubocop:todo Metrics/MethodLength
   def separate(associations, _) # rubocop:todo Metrics/AbcSize
     associations[@options[:json].to_s] =
       lambda do |object, options, stream|
@@ -81,8 +80,6 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
         end
       end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def core_path(*args)
     options = args.extract_options!

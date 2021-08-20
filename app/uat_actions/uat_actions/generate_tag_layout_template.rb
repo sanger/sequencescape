@@ -38,7 +38,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
   validates :tag_group_name, presence: { message: 'needs a choice' }
   validates :direction_algorithm, presence: { message: 'needs a choice' }
 
-  def perform # rubocop:todo Metrics/MethodLength
+  def perform
     report[:name] = name
     return true if existing_tag_layout_template
 

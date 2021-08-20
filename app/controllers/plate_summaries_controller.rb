@@ -13,7 +13,6 @@ class PlateSummariesController < ApplicationController # rubocop:todo Style/Docu
     @sequencing_batches = @plate.descendant_lanes.include_creation_batches.map(&:creation_batches).flatten.uniq
   end
 
-  # rubocop:todo Metrics/MethodLength
   def search # rubocop:todo Metrics/AbcSize
     candidate_plate = Plate.find_from_any_barcode(params[:plate_barcode])
     @barcode = params[:plate_barcode]
@@ -30,5 +29,4 @@ class PlateSummariesController < ApplicationController # rubocop:todo Style/Docu
       render :search
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

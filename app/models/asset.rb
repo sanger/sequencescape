@@ -21,7 +21,7 @@ require 'eventful_record'
 # - {Receptacle}: Abstract class inherited by any asset which can contain stuff directly
 #
 # Some of the above are further subclasses to handle specific behaviours.
-class Asset < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Asset < ApplicationRecord
   include Api::Messages::QcResultIO::AssetExtensions
   include Event::PlateEvents
   extend EventfulRecord

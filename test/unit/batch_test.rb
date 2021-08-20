@@ -446,7 +446,6 @@ class BatchTest < ActiveSupport::TestCase
         end
       end
 
-      # rubocop:todo Metrics/BlockLength
       {
         sequencing_pipeline: :sequencing_request_with_assets,
         pipeline: :request
@@ -483,7 +482,6 @@ class BatchTest < ActiveSupport::TestCase
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
     end
 
     context '#qc_previous_state!' do
@@ -502,7 +500,6 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     context '#swap' do
-      # rubocop:todo Metrics/BlockLength
       # We must test swapping requests at different and same positions, as well as ones which would clash if not adjusted
       [[3, 4], [4, 4], [2, 1]].each do |left_position, right_position|
         context "when swapping #{left_position} and #{right_position}" do
@@ -547,7 +544,6 @@ class BatchTest < ActiveSupport::TestCase
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
     end
 
     context '#detach_request' do

@@ -25,7 +25,7 @@
 #      }
 #    ]
 #  ).save #=> true
-class TagSubstitution # rubocop:todo Metrics/ClassLength
+class TagSubstitution
   include ActiveModel::Model
 
   # The user performing the substitution, gets recorded on the generated comments [optional]
@@ -164,7 +164,7 @@ class TagSubstitution # rubocop:todo Metrics/ClassLength
     @commented_assets ||= (Receptacle.on_a(Tube).with_required_aliquots(all_aliquots).pluck(:id) + lane_ids).uniq
   end
 
-  def apply_comments # rubocop:todo Metrics/MethodLength
+  def apply_comments
     commentable_type = Receptacle.base_class.name
     Comment.import(
       commented_assets.map do |asset_id|

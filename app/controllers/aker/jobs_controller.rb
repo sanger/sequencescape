@@ -11,7 +11,7 @@ module Aker
       @jobs = Aker::Job.paginate(page: params[:page], per_page: 10).order(created_at: :desc)
     end
 
-    def show # rubocop:todo Metrics/MethodLength
+    def show
       recover_from_connection_refused do
         @aker_job =
           JSON.parse(
@@ -30,7 +30,7 @@ module Aker
       end
     end
 
-    def start # rubocop:todo Metrics/MethodLength
+    def start
       recover_from_connection_refused do
         response =
           RestClient::Request.execute(
@@ -57,7 +57,7 @@ module Aker
 
     private
 
-    def _finish_action(url) # rubocop:todo Metrics/MethodLength
+    def _finish_action(url)
       recover_from_connection_refused do
         response =
           RestClient::Request.execute(

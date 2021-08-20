@@ -15,7 +15,7 @@ module CommentsProxy
     # - Finds any comments associated with the asset
     # - OR with any requests returned by request_ids
     # - Then group them together to perform de-duplication
-    def comment_assn # rubocop:todo Metrics/MethodLength
+    def comment_assn
       @comment_assn ||=
         Comment
           .where(commentable_type: 'Request', commentable_id: request_ids)

@@ -13,7 +13,6 @@ class Studies::InformationController < ApplicationController
   before_action :evil_parameter_hack!
   before_action :discover_study
 
-  # rubocop:todo Metrics/MethodLength
   def show # rubocop:todo Metrics/AbcSize
     @summary = params[:summary] || 'sample-progress'
     @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
@@ -31,8 +30,6 @@ class Studies::InformationController < ApplicationController
       format.json { render json: Study.all.to_json }
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # rubocop:todo Metrics/PerceivedComplexity
   # rubocop:todo Metrics/MethodLength

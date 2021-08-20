@@ -3,7 +3,7 @@
 # A {Labware} may have a single {Receptacle}, such as in the case of a {Tube}
 # or multiple, in the case of a {Plate}.
 # Work can be {Request requested} on a particular receptacle.
-class Receptacle < Asset # rubocop:todo Metrics/ClassLength
+class Receptacle < Asset
   include Uuid::Uuidable
   include Commentable
   include Transfer::State

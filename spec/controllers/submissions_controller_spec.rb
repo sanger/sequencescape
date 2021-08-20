@@ -277,7 +277,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
   end
 
-  def plate_submission(text) # rubocop:todo Metrics/MethodLength
+  def plate_submission(text)
     {
       submission: {
         is_a_sequencing_order: 'false',

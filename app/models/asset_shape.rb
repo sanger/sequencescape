@@ -51,7 +51,7 @@ class AssetShape < ApplicationRecord
     interlace(well_position, plate_size)
   end
 
-  def generate_map(size) # rubocop:todo Metrics/MethodLength
+  def generate_map(size)
     raise StandardError, 'Map already exists' if Map.find_by(asset_size: size, asset_shape_id: id).present?
 
     ActiveRecord::Base.transaction do

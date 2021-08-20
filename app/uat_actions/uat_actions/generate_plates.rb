@@ -68,7 +68,7 @@ class UatActions::GeneratePlates < UatActions
     false
   end
 
-  def construct_wells(plate) # rubocop:todo Metrics/MethodLength
+  def construct_wells(plate)
     wells(plate).each do |well|
       sample_name = "sample_#{plate.human_barcode}_#{well.map.description}"
       sample =

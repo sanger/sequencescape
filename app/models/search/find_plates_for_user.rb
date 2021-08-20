@@ -1,5 +1,4 @@
 class Search::FindPlatesForUser < Search # rubocop:todo Style/Documentation
-  # rubocop:todo Metrics/MethodLength
   def scope(user_criteria) # rubocop:todo Metrics/AbcSize
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked
     # for transfer) the destination plate becomes the end of the chain.
@@ -19,5 +18,4 @@ class Search::FindPlatesForUser < Search # rubocop:todo Style/Documentation
       .limit(criteria['limit'])
       .order('plate_owners.id DESC')
   end
-  # rubocop:enable Metrics/MethodLength
 end

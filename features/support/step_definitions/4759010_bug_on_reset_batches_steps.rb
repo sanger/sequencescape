@@ -5,7 +5,6 @@ Given /^sequencescape is setup for 4759010$/ do
   group = FactoryBot.create(:tag_group, name: 'Tag group for 4759010', tag_count: 10)
 end
 
-# rubocop:todo Metrics/BlockLength
 Given /^a batch in "Illumina-B MX Library Preparation" has been setup for feature 4759010$/ do
   pipeline = Pipeline.find_by(name: 'Illumina-B MX Library Preparation') or
     raise StandardError, "Cannot find pipeline 'Illumina-B MX Library Preparation'"
@@ -58,4 +57,3 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
   # batch.requests << request
   asset_group.assets << request.asset
 end
-# rubocop:enable Metrics/BlockLength

@@ -162,7 +162,6 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     add :about, title
   end
 
-  # rubocop:todo Metrics/MethodLength
   def tabulated_error_messages_for(*params) # rubocop:todo Metrics/AbcSize
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
     objects = params.filter_map { |object_name| instance_variable_get("@#{object_name}") }
@@ -178,13 +177,11 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   # <li class="nav-item">
   #   <a class="nav-link <active>" id="name-tab" data-toggle="tab" href="#name"
   #    role="tab" aria-controls="name" aria-selected="true">name</a>
   # </li>
-  def tab(name, target: nil, active: false, id: nil) # rubocop:todo Metrics/MethodLength
+  def tab(name, target: nil, active: false, id: nil)
     target ||= name.parameterize
     active_class = active ? 'active' : ''
     id ||= "#{name}-tab".parameterize
