@@ -4,7 +4,7 @@ module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
       # The associations with the pipeline
       belongs_to :pipeline
       delegate :workflow, :item_limit, :multiplexed?, to: :pipeline
-      delegate :tasks, to: :workflow
+      delegate :tasks, to: :workflow, allow_nil: true
 
       # The validations that the pipeline & batch are correct
       validates :pipeline, presence: true

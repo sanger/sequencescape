@@ -7,7 +7,7 @@ module WorkflowsHelper
   # blank string...
   def descriptor_value(descriptor)
     # Refactored to remove reliance on @values
-    params[:values].try(:[], descriptor.name) || @study.try(:descriptor_value, descriptor.name) || ''
+    params.fetch(:values, @values).try(:[], descriptor.name) || @study.try(:descriptor_value, descriptor.name) || ''
   end
 
   # Returns a link to any available request comments with "None" as a

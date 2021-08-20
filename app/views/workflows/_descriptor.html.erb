@@ -4,14 +4,14 @@
 <% field_id = "descriptor_#{descriptor_counter}_#{request&.id}" %>
 <% base_field_name = request ? "requests[#{request.id}][descriptors]" : 'descriptors' %>
 
-<tr>
-  <td width='35%' class='request'><%= label_tag field_id, descriptor.name %>: <%= required_marker if descriptor.is_required? %></td>
-  <td width='65%'>
+<div class="grid-form">
+  <%= label_tag field_id, descriptor.name, class: descriptor.is_required? ? 'required' : '' %>
+  <div class="field">
     <% value = descriptor_value descriptor %>
     <% if descriptor.kind == 'Selection' %>
       <%= select_tag "#{base_field_name}[#{descriptor.name}]", options_for_select(descriptor.selection.values, value), id: field_id %>
     <% else %>
       <%= text_field "#{base_field_name}", descriptor.name, value: value, id: field_id %>
     <% end %>
-  </td>
-</tr>
+  </div>
+</div>

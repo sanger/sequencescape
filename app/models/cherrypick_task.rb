@@ -30,6 +30,12 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     )
   end
 
+  # Its not the end of the world if we do end up here, it already redirects to the previous step, but
+  # since we've got this functionality, lets use it here as well.
+  def can_process?(_)
+    [false, 'Can only be accessed via the previous step']
+  end
+
   # rubocop:todo Metrics/ParameterLists
   def pick_new_plate(requests, template, robot, plate_purpose, control_source_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)

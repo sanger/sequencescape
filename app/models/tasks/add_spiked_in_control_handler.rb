@@ -16,7 +16,7 @@ module Tasks::AddSpikedInControlHandler
 
     Batch.transaction do
       task.add_control(batch, control, request_id_set)
-      eventify_batch(batch, task)
+      create_batch_events(batch, task)
     end
   end
   # rubocop:enable Metrics/MethodLength

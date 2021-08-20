@@ -30,7 +30,7 @@ module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documen
 
     # Did all the requests get updated?
     if updated == @batch.requests.count
-      eventify_batch @batch, @task
+      create_batch_events @batch, @task
       return true
     else
       # Some requests have yet to pass this task

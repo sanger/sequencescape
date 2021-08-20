@@ -113,7 +113,7 @@ class Task < ApplicationRecord
 
   def partial; end
 
-  # By default, most tasks willonly support unreleased batches
+  # By default, most tasks will only support unreleased batches
   def can_process?(batch)
     batch.released? ? [false, 'Disabled on released batches'] : [true, nil]
   end

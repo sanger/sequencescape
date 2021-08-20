@@ -17,7 +17,7 @@ class WorkflowsController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  attr_accessor :plate_purpose_options, :spreadsheet_layout, :batch
+  attr_accessor :plate_purpose_options, :spreadsheet_layout, :batch, :values
 
   # @todo These actions should be extracted from the controller, and instead be handled by an object invoked
   #       by the task
@@ -121,8 +121,7 @@ class WorkflowsController < ApplicationController
   def flatten_hash(hash = params, ancestor_names = []) # rubocop:todo Metrics/MethodLength
     flat_hash = {}
     hash.each do |k, v|
-      names = Array.new(ancestor_names)
-      names << k
+      names = [*ancestor_names, k]
       if v.is_a?(Hash)
         flat_hash.merge!(flatten_hash(v, names))
       else
@@ -135,14 +134,11 @@ class WorkflowsController < ApplicationController
     flat_hash
   end
 
-  def flat_hash_key(names)
-    names = Array.new(names)
-    name = names.shift.to_s.dup
-    names.each { |n| name << "[#{n}]" }
-    name
+  def flat_hash_key(keys)
+    keys.reduce { |flattened_keys, key| flattened_keys << "[#{key}]" }
   end
 
-  def eventify_batch(batch, task)
+  def create_batch_events(batch, task)
     event = batch.lab_events.build(description: 'Complete', user: current_user, batch: batch)
     event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
     event.add_descriptor Descriptor.new(name: 'task', value: task.name)
