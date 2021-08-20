@@ -60,9 +60,10 @@ class WorkflowsController < ApplicationController
       eager_loading = @task.included_for_do_task
       @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
 
-      unless @batch.editable?
-        flash[:error] = 'You cannot make changes to a completed batch.'
-        redirect_back fallback_location: root_path
+      editable, message = @task.can_process?(@batch)
+
+      unless editable
+        redirect_back fallback_location: batch_path(@batch), alert: message
         return false
       end
 
@@ -78,9 +79,11 @@ class WorkflowsController < ApplicationController
     end
 
     # Is this the last task in the workflow?
-    if @stage >= @workflow.tasks.size
+    if params[:commit] == 'Update'
+      redirect_to batch_path(@batch)
+    elsif @stage >= @workflow.tasks.size
       # All requests have finished all tasks: finish workflow
-      redirect_to finish_batch_url(@batch)
+      redirect_to finish_batch_path(@batch)
     else
       if @batch.nil? || @task.included_for_render_task != eager_loading
         @batch = Batch.includes(@task.included_for_render_task).find(params[:batch_id])

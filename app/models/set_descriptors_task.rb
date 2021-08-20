@@ -18,8 +18,6 @@ class SetDescriptorsTask < Task # rubocop:todo Style/Documentation
     end
 
     def perform
-      return false if params[:next_stage].nil?
-
       # Process each request that has been checked.
 
       requests.each do |request|
@@ -43,10 +41,6 @@ class SetDescriptorsTask < Task # rubocop:todo Style/Documentation
         user: current_user,
         eventful: request
       )
-
-      # Cache values to populate the next request on the same stage
-      # This is as we re-render the same page if only some requests have been updated.
-      controller.values ||= params[:descriptors] || {}
 
       # Some receptacles are flagged as 'resource'. There are 43 of these in the production database,
       # all are from 2009 - 2010.
@@ -120,5 +114,35 @@ class SetDescriptorsTask < Task # rubocop:todo Style/Documentation
 
   def do_task(workflows_controller, params)
     DescriptorSetter.new(controller: workflows_controller, params: params, task: self).perform
+  end
+
+  #
+  # Returns an array of {Descriptor} objects for the task, populated with the values for
+  # the most recent matching {LabEvent} on the {Request}
+  # @note We can't just use LabEvent#descriptors as it doesn't return type information
+  #
+  # @param request [Request] The request to find the values for
+  #
+  # @return [Array<Descriptor>] Array of descriptors with appropriate values
+  #
+  def descriptors_for(request)
+    values = request.most_recent_event_named(name)&.descriptor_hash || {}
+    descriptors_with_values(values)
+  end
+
+  #
+  # Returns an array of {Descriptor} objects for the task, populated with the values
+  # from the provided hash
+  #
+  # @param values [Hash<String:String>] Hash of key-value pairs
+  #
+  # @return [Array<Descriptor>] Array of descriptors with appropriate values
+  #
+  def descriptors_with_values(values)
+    descriptors.map do |descriptor|
+      descriptor.dup.tap do |valued_descriptor|
+        valued_descriptor.value = (values || {}).fetch(descriptor.name, descriptor.value)
+      end
+    end
   end
 end

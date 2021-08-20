@@ -60,7 +60,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   end
 
   def concentration
-    event = lab_events_for_batch(batch).reverse.detect { |e| e.description == 'Specify Dilution Volume' }
+    event = most_recent_event_named('Specify Dilution Volume')
     return ' ' if event.nil?
 
     concentration = event.descriptor_value('Concentration')

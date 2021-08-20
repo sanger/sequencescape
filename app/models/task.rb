@@ -134,10 +134,6 @@ class Task < ApplicationRecord
     raise NotImplementedError, "Please Implement a do_task for #{self.class.name}"
   end
 
-  def sub_events_for(_event)
-    []
-  end
-
   def find_batch(batch_id)
     Batch.includes(:requests, :pipeline, :lab_events).find(batch_id)
   end

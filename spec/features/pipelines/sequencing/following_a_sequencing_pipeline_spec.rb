@@ -103,6 +103,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       click_on('Specify Dilution Volume')
       fill_in('Concentration', currently_with: 1.2, with: 1.5)
       fill_in('Concentration', currently_with: 2.2, with: 3.5)
+
       click_on 'Update'
 
       # We expect to be back on the batch page, rather than the next step

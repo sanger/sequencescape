@@ -1,7 +1,11 @@
 
 <div class="next_step_task">
-  <span id="stage_links"><%= submit_tag('Next step', id: 'stage_button') %>
-  <span id="stage_loading" style="display: none;"><%= image_tag "ajax-loader.gif", size: "10x10", alt: "Saving" %> Saving</span>
+ <span id="stage_links">
+ <% if @batch.released? %>
+    <%= submit_tag('Update', id: 'update_button', disable_with: 'Saving') %>
+ <% else %>
+    <%= submit_tag('Next step', id: 'stage_button', disable_with: 'Saving') %>
+ <% end %>
    or <%= link_to "cancel", batch_path(@batch) %></span>
 </div>
 
@@ -16,10 +20,6 @@
         alert('Please select one or more items.');
         return false;
       }
-
-      $('#stage_button').prop('disabled',true);
-      $('#stage_links').hide();
-      $('#stage_loading').show();
       return true;
     });
   })(jQuery);
