@@ -1,7 +1,6 @@
 import $ from "jquery";
 
 import "jszip";
-import "pdfmake";
 import "datatables.net-bs4";
 import "datatables.net-buttons-bs4";
 import "datatables.net-buttons/js/buttons.colVis.js";
