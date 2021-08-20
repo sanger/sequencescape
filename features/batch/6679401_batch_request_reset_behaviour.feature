@@ -9,7 +9,7 @@ Feature: Resetting batches and their requests across the various pipelines
 
     Given I am on the "<pipeline>" pipeline page
     When I follow "View pending batch 1"
-    Then I should not see "Fail batch or items"
+    Then I should not see "Fail batch or requests"
     When I follow "<link>"
     And I follow "Fail batch"
     And I check "Remove request" for 1 to 5

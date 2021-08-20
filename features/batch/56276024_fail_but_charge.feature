@@ -9,7 +9,7 @@ Feature: Option to fail but charge requests in a batch
 
     Given I am on the "<pipeline>" pipeline page
     When I follow "View pending batch 1"
-    Then I should not see "Fail batch or items"
+    Then I should not see "Fail batch or requests"
     When the batch is started
     And I follow "<first step>"
     And I follow "Fail batch"

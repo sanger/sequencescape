@@ -11,7 +11,7 @@ Background:
     When I follow "<pipeline_type>"
     And I am on the last batch show page
     Then I should see "This batch belongs to pipeline: <pipeline_type>"
-    And I should see "Fail batch or items"
+    And I should see "Fail batch or requests"
 
   Examples:
     | pipeline_type                                   |
