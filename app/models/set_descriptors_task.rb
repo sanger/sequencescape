@@ -126,8 +126,7 @@ class SetDescriptorsTask < Task # rubocop:todo Style/Documentation
   # @return [Array<Descriptor>] Array of descriptors with appropriate values
   #
   def descriptors_for(request)
-    values = request.most_recent_event_named(name)&.descriptor_hash || {}
-    descriptors_with_values(values)
+    descriptors_with_values(descriptor_hash_for(request))
   end
 
   #
@@ -141,8 +140,21 @@ class SetDescriptorsTask < Task # rubocop:todo Style/Documentation
   def descriptors_with_values(values)
     descriptors.map do |descriptor|
       descriptor.dup.tap do |valued_descriptor|
-        valued_descriptor.value = (values || {}).fetch(descriptor.name, descriptor.value)
+        valued_descriptor.value = values.fetch(descriptor.name, descriptor.value)
       end
     end
+  end
+
+  # Returns true if we should collect descriptors per request.
+  # Always true if {#per_item} is true, otherwise true if requests have different
+  # values
+  def per_item_for(requests)
+    per_item || requests.map { |request| descriptor_hash_for(request) }.uniq.many?
+  end
+
+  private
+
+  def descriptor_hash_for(request)
+    request.most_recent_event_named(name)&.descriptor_hash || {}
   end
 end

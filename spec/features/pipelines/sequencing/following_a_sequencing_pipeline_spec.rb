@@ -44,16 +44,19 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
     find('#sample-2-checkbox').uncheck
 
-    fill_in('+4 field of weirdness', with: 'Something else')
+    # Pending question on issue#3225 may be populated with previous v
+    fill_in('+4 field of weirdness', with: 'Something else', currently_with: '')
 
     click_on 'Next step'
 
     within '#sample' do
       within(first('li')) do
         expect(page).to have_text('1.2')
-        expect(page).to have_text('James')
-        expect(page).to have_text('XP')
-        expect(page).to have_text('23')
+
+        # Pending question on issue#3225
+        # expect(page).to have_text('James')
+        # expect(page).to have_text('XP')
+        # expect(page).to have_text('23')
         expect(page).to have_text('Something else')
       end
       within(all('li').last) do
@@ -90,7 +93,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
                  'Operator' => 'James',
                  'Workflow (Standard or Xp)' => 'XP',
                  'Lane loading concentration (pM)' => '23',
-                 '+4 field of weirdness' => 'Something else'
+                 '+4 field of weirdness' => "Something else #{i}"
                }
       end
     end
@@ -108,6 +111,59 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
       # We expect to be back on the batch page, rather than the next step
       expect(page).to have_content('Process your batch or change its composition')
+
+      click_link 'View summary'
+
+      within '#page-content' do
+        within(first('li')) do
+          expect(page).to have_text('1.5')
+          expect(page).to have_text('James')
+          expect(page).to have_text('XP')
+          expect(page).to have_text('23')
+          expect(page).to have_text('Something else 0')
+        end
+        within(all('li').last) do
+          expect(page).to have_text('3.5')
+          expect(page).to have_text('James')
+          expect(page).to have_text('XP')
+          expect(page).to have_text('23')
+          expect(page).to have_text('Something else 1')
+        end
+      end
+    end
+
+    it 'multiple descriptors can be edited' do
+      login_user(user)
+      visit pipeline_path(pipeline)
+      click_on('Released')
+      within('#released') { click_link(batch.id.to_s) }
+      click_on('Set descriptors')
+      fill_in('+4 field of weirdness', currently_with: 'Something else 0', with: 'Not that')
+      fill_in('+4 field of weirdness', currently_with: 'Something else 1', with: 'Or that either')
+
+      click_on 'Update'
+
+      # We expect to be back on the batch page, rather than the next step
+      expect(page).to have_content('Process your batch or change its composition')
+
+      click_link 'View summary'
+
+      within '#page-content' do
+        within(first('li')) do
+          expect(page).to have_text('1.2')
+          expect(page).to have_text('James')
+          expect(page).to have_text('XP')
+          expect(page).to have_text('23')
+          expect(page).to have_text('Not that')
+        end
+        within(all('li').last) do
+          expect(page).to have_text('2.2')
+          expect(page).to have_text('James')
+          expect(page).to have_text('XP')
+          expect(page).to have_text('23')
+          expect(page).to have_text('Or that either')
+        end
+      end
     end
   end
 end
