@@ -26,8 +26,8 @@ class SetDescriptorsTask < Task # rubocop:todo Style/Documentation
       end
 
       return false unless all_requests_processed?
-
       create_batch_events
+      batch.save
       true
     end
 

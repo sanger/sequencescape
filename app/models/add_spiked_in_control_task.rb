@@ -9,23 +9,27 @@ class AddSpikedInControlTask < Task
     'add_spiked_in_control'
   end
 
+  def can_process?(batch)
+    batch.released? ? [true, 'Edit'] : [true, nil]
+  end
+
   def do_task(controller, params)
     controller.do_add_spiked_in_control_task(self, params)
   end
 
-  def add_control(batch, control_asset, request_id_set)
-    return false unless batch && control_asset
+  def add_control(batch, phi_x_tube, request_id_set)
+    return false unless batch && phi_x_tube
 
     batch.requests.each do |request|
       next unless request_id_set.include? request.id
 
       lane = request.target_asset.labware
       next unless lane
-
-      AssetLink.create_edge(control_asset, lane)
+      lane.direct_spiked_in_buffer = nil
+      lane.parents << phi_x_tube
     end
 
-    control_asset.save!
+    batch.save
     true
   end
 end

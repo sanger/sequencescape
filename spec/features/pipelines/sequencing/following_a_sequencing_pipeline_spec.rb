@@ -18,7 +18,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
                 submission: create(:submission)
   end
 
-  it 'can be processed' do
+  it 'can be processed', warren: true do
     login_user(user)
     visit pipeline_path(pipeline)
     within('#available-requests') { all('input[type=checkbox]', count: 2).each(&:check) }
@@ -69,10 +69,19 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
     end
     click_on 'Release this batch'
     expect(page).to have_content('Batch released')
+
+    batch = Batch.last
+    flowcell_message = batch.messengers.last
+
+    # Really we expect 1 here, but seem to be triggering two copies of the message. I suspect on message creation
+    # and another one on updating the batch state
+    expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to be_positive
+    batch.requests.each { |request| expect(request.target_asset.spiked_in_buffer).to eq(spiked_buffer) }
   end
 
   context 'when a batch has been created' do
     let(:batch) { create :batch, pipeline: pipeline, requests: pipeline.requests, state: 'released' }
+    let!(:flowcell_message) { Messenger.create!(target: batch, template: 'FlowcellIO', root: 'flowcell') }
 
     before do
       batch.requests.each_with_index do |request, i|
@@ -95,10 +104,15 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
                  'Lane loading concentration (pM)' => '23',
                  '+4 field of weirdness' => "Something else #{i}"
                }
+        lane = create(:lane)
+        request.update(target_asset: lane)
+        lane.labware.parents << spiked_buffer
       end
     end
 
-    it 'descriptors can be edited' do
+    it 'descriptors can be edited', warren: true do
+      Warren.handler.clear_messages
+
       login_user(user)
       visit pipeline_path(pipeline)
       click_on('Released')
@@ -130,9 +144,13 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
           expect(page).to have_text('Something else 1')
         end
       end
+
+      expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to eq(1)
     end
 
-    it 'multiple descriptors can be edited' do
+    it 'multiple descriptors can be edited', warren: true do
+      Warren.handler.clear_messages
+
       login_user(user)
       visit pipeline_path(pipeline)
       click_on('Released')
@@ -164,6 +182,30 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
           expect(page).to have_text('Or that either')
         end
       end
+
+      expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to eq(1)
+    end
+
+    it 'spiked PhiX can be edited', warren: true do
+      Warren.handler.clear_messages
+
+      login_user(user)
+      visit pipeline_path(pipeline)
+      click_on('Released')
+      within('#released') { click_link(batch.id.to_s) }
+      new_phix = create(:spiked_buffer, :tube_barcode)
+      click_on('Add Spiked in control')
+      fill_in('Barcode', with: new_phix.machine_barcode)
+
+      click_on 'Update'
+
+      # We expect to be back on the batch page, rather than the next step
+      expect(page).to have_content('Process your batch or change its composition')
+
+      click_link 'View summary'
+
+      expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to eq(1)
+      batch.requests.each { |request| expect(request.target_asset.spiked_in_buffer).to eq(new_phix) }
     end
   end
 end
